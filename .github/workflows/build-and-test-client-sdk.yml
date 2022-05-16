@@ -1,0 +1,58 @@
+name: "Build and Test Client SDK"
+on:
+  pull_request:
+  push:
+    branches:
+    - feature/github-actions-ci
+    paths-ignore:
+    - README.md
+    - LICENSE
+jobs:
+  build-and-test-net-core:
+    name: BuildAndTest-${{matrix.os}}-${{ matrix.dotnet-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+#        - macos-latest
+#        - ubuntu-latest
+        - windows-latest
+        dotnet-version:
+        - '3.1.x'
+        - '6.0.x'
+        - '4.6.2'
+        include:
+        - dotnet-version: '3.1.x'
+          framework: netcoreapp3.1
+          download: true
+        - dotnet-version: '6.0.x'
+          framework: net6.0
+          download: true
+        - dotnet-version: '4.6.2'
+          framework: net462
+          download: false
+    steps:
+    - name: Clone this repo (sdk-dotnet)
+      uses: actions/checkout@v3
+      with:
+        path: sdk-dotnet
+    - name: "Clone the temporalio/api repo"
+      uses: actions/checkout@v3
+      with:
+        repository: temporalio/api
+        path: api
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+      if: ${{ matrix.download }}
+    - name: Test with dotnet
+      run: dotnet test -f ${{ matrix.framework }} -c Release --filter "Category=Common|Category=Client" --logger "trx;LogFileName=client-${{ matrix.dotnet-version }}.trx" --results-directory _testresults sdk-dotnet/Src/Temporal.Sdk.sln
+    - name: Upload dotnet test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: dotnet-client-results-${{ matrix.dotnet-version }}
+        path: _testresults
+      # Use always() to always run this step to publish test results when there are test failures
+      if: ${{ always() }}

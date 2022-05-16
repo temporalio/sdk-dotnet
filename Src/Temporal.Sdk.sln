@@ -56,11 +56,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Managed-Src", "Managed-Src"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5BDCEACB-BC8D-463B-8BF7-CE743ED5FBF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporal.Sdk.Common.Tests", "Tests\Temporal.Sdk.Common.Tests\Temporal.Sdk.Common.Tests.csproj", "{998F4687-794E-4C1D-BD3E-16EB4D657DC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Temporal.Sdk.Common.Tests", "Tests\Temporal.Sdk.Common.Tests\Temporal.Sdk.Common.Tests.csproj", "{998F4687-794E-4C1D-BD3E-16EB4D657DC3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{358405B5-48F0-4CFF-8634-4FB0424EBCF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkflowClient.UsageSamples", "Samples\WorkflowClient.UsageSamples\Temporal.Sdk.WorkflowClient.UsageSamples.csproj", "{1D783A90-4558-420E-BE15-7B4A8567DF14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Temporal.Sdk.WorkflowClient.UsageSamples", "Samples\WorkflowClient.UsageSamples\Temporal.Sdk.WorkflowClient.UsageSamples.csproj", "{1D783A90-4558-420E-BE15-7B4A8567DF14}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{5BA36C33-3628-4A02-92AE-5F7B35BFB8C0}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\dependabot.yml = ..\.github\dependabot.yml
+		..\.github\pull_request_template.md = ..\.github\pull_request_template.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{FC67058E-A75E-4013-9B6F-BCD1BA775405}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\build-and-test-client-sdk.yml = ..\.github\workflows\build-and-test-client-sdk.yml
+		..\.github\workflows\client-sdk-test-report.yml = ..\.github\workflows\client-sdk-test-report.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,6 +120,8 @@ Global
 		{D5032D09-C116-4821-A17F-48A877FD2DF6} = {E3E0E0E6-1584-4548-99A8-36EB2AF2D734}
 		{998F4687-794E-4C1D-BD3E-16EB4D657DC3} = {5BDCEACB-BC8D-463B-8BF7-CE743ED5FBF2}
 		{1D783A90-4558-420E-BE15-7B4A8567DF14} = {358405B5-48F0-4CFF-8634-4FB0424EBCF5}
+		{5BA36C33-3628-4A02-92AE-5F7B35BFB8C0} = {FF933DEC-86A3-4061-B431-623D75560363}
+		{FC67058E-A75E-4013-9B6F-BCD1BA775405} = {5BA36C33-3628-4A02-92AE-5F7B35BFB8C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E8142887-814F-45CE-9A2D-B4F6E5B752A8}
