@@ -94,7 +94,8 @@ jobs:
         if: ${{ always() }}  # create ZIP even if not everything got built
         run: 7z a -tzip -mx9 TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip _build/bin/${{matrix.build-config}}-AnyCPU/
 
-      - name: Upload Binaries        
+      - name: Upload Binaries
+        if: ${{ (matrix.build-config == 'Release') }}
         uses: actions/upload-artifact@v3
         with:
           name: Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
