@@ -48,7 +48,7 @@ jobs:
     
     steps:
       - name: Unit tests ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
-        uses: actions/checkout@v3
+        uses: dorny/test-reporter@v1.5.0
         with:          
           artifact: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
           name: TestReport Unit ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
