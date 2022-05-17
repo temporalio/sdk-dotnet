@@ -70,6 +70,7 @@ jobs:
           path: macrogreg/temporal-dotnet-buildtools
 
       - name: Setup .NET
+        if: ${{ contains(matrix.dotnet-moniker, 'NetFx') }}
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{matrix.dotnet-version}}
