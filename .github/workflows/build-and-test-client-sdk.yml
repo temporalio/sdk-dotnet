@@ -69,11 +69,12 @@ jobs:
           repository: macrogreg/temporal-dotnet-buildtools
           path: macrogreg/temporal-dotnet-buildtools
 
-      - name: Setup .NET
-        if: ${{ ! contains(matrix.dotnet-moniker, 'NetFx') }}  # Skip setting up NetFx since its already present on Win hosts
+      - name: Setup .NET        
         uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: ${{matrix.dotnet-version}}
+        with:  # We *target* and we *run tests on* different .NET versions. but we always build using the latest.
+          dotnet-version: | 
+            3.1.x
+            6.0.x
 
       - name: Build Solution
         run: dotnet build -f ${{matrix.framework}} -c ${{matrix.build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
