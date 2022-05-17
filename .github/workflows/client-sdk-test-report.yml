@@ -12,7 +12,7 @@ on:
 jobs:
 
   report:
-    name: Test Reports (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+    name: Test Reports (${{matrix.testkind-moniker}}) [${{ github.event.workflow_run.head_commit.author.name}}|${{ github.event.workflow_run.head_branch}}|${{ github.event.workflow_run.id}}] ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
     continue-on-error: true
     runs-on: ubuntu-latest
 
@@ -68,7 +68,7 @@ jobs:
             os-specifier: 'macos-latest'
     
     steps:
-      - name: Generate report (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+      - name: Generate report (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}} [${{ github.event.workflow_run.head_commit.author.name}} | ${{ github.event.workflow_run.head_branch}} | ${{ github.event.workflow_run.id}}] | ${{ github.event.workflow_run.timestamp}}] | ${{ github.event.workflow_run.message}}]
         uses: dorny/test-reporter@v1.5.0
         with:          
           artifact: TestResults_${{matrix.testkind-moniker}}_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
