@@ -86,7 +86,7 @@ jobs:
       - name: Upload Binaries        
         uses: actions/upload-artifact@v3
         with:
-          name: TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          name: Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
           path: TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip
 
       - name: Run Unit Tests
@@ -96,7 +96,7 @@ jobs:
         if: ${{ always() }}  # upload test results even if tests failed
         uses: actions/upload-artifact@v3
         with:
-          name: TemporalSDK_TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          name: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
           path: _testresults/Unit
       
       - name: Run Integration Tests
@@ -107,5 +107,5 @@ jobs:
         if: ${{ always() }}  # upload test results even if tests failed
         uses: actions/upload-artifact@v3
         with:
-          name: TemporalSDK_TestResults_Int_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          name: TestResults_Int_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
           path: _testresults/Int
