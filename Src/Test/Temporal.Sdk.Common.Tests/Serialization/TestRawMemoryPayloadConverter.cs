@@ -1,6 +1,10 @@
 using System;
 using System.IO;
+
+#if NETCOREAPP3_1_OR_GREATER
 using System.Linq;
+#endif
+
 using Google.Protobuf;
 using Temporal.Api.Common.V1;
 using Temporal.Serialization;
@@ -71,7 +75,7 @@ namespace Temporal.Sdk.Common.Tests.Serialization
             Assert.Equal(buffer.Length, actual.Length);
             foreach (byte b in buffer)
             {
-                byte read = (byte)actual.ReadByte();
+                byte read = (byte) actual.ReadByte();
                 Assert.Equal(b, read);
             }
         }
