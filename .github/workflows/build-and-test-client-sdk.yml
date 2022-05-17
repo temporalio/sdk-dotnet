@@ -70,13 +70,13 @@ jobs:
           path: macrogreg/temporal-dotnet-buildtools
 
       - name: Setup .NET
-        if: ${{ contains(matrix.dotnet-moniker, 'NetFx') }}
+        if: ${{ contains(matrix.dotnet-moniker, 'NetFx') }}  # Skip setting up NetFx since its already present on Win hosts
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{matrix.dotnet-version}}
 
       - name: Build Solution
-        run: dotnet build -c ${{matrix.build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
+        run: dotnet build -f ${{matrix.framework}} -c ${{matrix.build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
 
       - name: ZIP Binaries
         if: ${{ always() }}  # create ZIP even if not everything got built
@@ -89,7 +89,7 @@ jobs:
           path: TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip
 
       - name: Run Unit Tests
-        run: dotnet test -f ${{ matrix.framework }} -c ${{matrix.build-config}} -l "trx;LogFileName=UnitTest_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.trx" --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln
+        run: dotnet test -f ${{matrix.framework}} -c ${{matrix.build-config}} -l "trx;LogFileName=UnitTest_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.trx" --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln
 
       - name: Upload Unit Test Results
         if: ${{ always() }}  # upload test results even if tests failed
@@ -100,7 +100,7 @@ jobs:
       
       - name: Run Integration Tests
         if: ${{ always() }}  # run Int tests even if Unit tests failed
-        run: dotnet test -f ${{ matrix.framework }} -c ${{matrix.build-config}} -l "trx;LogFileName=IntTest_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.trx" --results-directory _testresults/Int sdk-dotnet/Src/Test/Temporal.Sdk.Test.Int.Automation.sln
+        run: dotnet test -f ${{matrix.framework}} -c ${{matrix.build-config}} -l "trx;LogFileName=IntTest_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.trx" --results-directory _testresults/Int sdk-dotnet/Src/Test/Temporal.Sdk.Test.Int.Automation.sln
 
       - name: Upload Integration Test Results
         if: ${{ always() }}  # upload test results even if tests failed
