@@ -1,7 +1,7 @@
-name: 'Client SDK Test Report'
+name: 'Test Report'
 on:
   workflow_run:
-    workflows: ['Build and Test Client SDK']  # runs after CI workflow
+    workflows: ['Build and Test']  # runs after CI workflow
     types:
       - completed
     branches:
@@ -12,12 +12,16 @@ on:
 jobs:
 
   report:
-    name: "Generate Test Reports"
+    name: Test Reports (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
+        testkind-moniker:
+          - Unit
+          - Int
+
         os-moniker:
           - 'Win'
           - 'Linux'
@@ -63,21 +67,11 @@ jobs:
             os-moniker: 'MacOS'
     
     steps:
-      - name: Unit test report ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+      - name: Generate report (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
         uses: dorny/test-reporter@v1.5.0
         with:          
-          artifact: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
-          name: TestReport Unit ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+          artifact: TestResults_${{matrix.testkind-moniker}}_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          name: TestReport ${{matrix.testkind-moniker}} ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
           path: '*.trx'
           reporter: dotnet-trx
-          max-annotations: '50'
-
-      - name: Integration test report ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
-        if: ${{ always() }}  # generate this report even if previous report failed
-        uses: dorny/test-reporter@v1.5.0
-        with:          
-          artifact: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
-          name: TestReport Unit ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
-          path: '*.trx'
-          reporter: dotnet-trx
-          max-annotations: '50'
+          max-annotations: '50'      
