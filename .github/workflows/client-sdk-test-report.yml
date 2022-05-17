@@ -1,7 +1,7 @@
 name: 'Test Report'
 on:
   workflow_run:
-    workflows: ['Build and Test']  # runs after CI workflow
+    workflows: ['CI-Gates']  # runs after CI workflow
     types:
       - completed
     branches:

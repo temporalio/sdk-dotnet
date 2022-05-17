@@ -97,11 +97,11 @@ namespace Temporal.Util
     }
 }
 
+#if !NETCOREAPP3_0_OR_GREATER
 // When building against older frameworks, the `CallerArgumentExpressionAttribute` is missing.
-// For those cases, we define it here. 
+// For those cases, we define it here.
 // Since the attribute is only used at compile time, this will not create any issues.
 // If an old compiler is used, this will be simply ignored.
-#if !NETCOREAPP3_0_OR_GREATER
 namespace System.Runtime.CompilerServices
 {
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
