@@ -70,7 +70,7 @@ jobs:
           path: macrogreg/temporal-dotnet-buildtools
 
       - name: Setup .NET
-        if: ${{ contains(matrix.dotnet-moniker, 'NetFx') }}  # Skip setting up NetFx since its already present on Win hosts
+        if: ${{ ! contains(matrix.dotnet-moniker, 'NetFx') }}  # Skip setting up NetFx since its already present on Win hosts
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: ${{matrix.dotnet-version}}
