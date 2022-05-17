@@ -38,13 +38,6 @@ jobs:
           - 'Debug'
           - 'Release'
 
-        exclude:
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'Linux'
-
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'MacOS'            
-
         include:
           - dotnet-moniker: 'NetCore3.1'
             dotnet-version: '3.1.x'
@@ -67,6 +60,13 @@ jobs:
 
           - os-moniker: 'MacOS'
             os-specifier: 'macos-latest'
+
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'
 
     steps:
       - name: Clone this repo (sdk-dotnet)
@@ -122,13 +122,6 @@ jobs:
           - 'Debug'
           - 'Release'
 
-        exclude:
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'Linux'
-
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'MacOS'            
-
         include:
           - dotnet-moniker: 'NetCore3.1'
             dotnet-version: '3.1.x'
@@ -151,6 +144,13 @@ jobs:
 
           - os-moniker: 'MacOS'
             os-specifier: 'macos-latest'
+
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'
 
     steps:
       - name: Clone this repo (sdk-dotnet)
@@ -191,8 +191,8 @@ jobs:
       matrix:
         os-moniker:
           - 'Win'
-#          - 'Linux'   <<< Temporarili disable Int tests on non-win until we know how to deploy Temporal Lite
-#          - 'MacOS'   <<< Temporarili disable Int tests on non-win until we know how to deploy Temporal Lite
+          - 'Linux'
+          - 'MacOS'
 
         dotnet-moniker:
           - 'NetCore3.1'
@@ -202,13 +202,6 @@ jobs:
         build-config:
           - 'Debug'
           - 'Release'
-
-        exclude:
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'Linux'
-
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'MacOS'            
 
         include:
           - dotnet-moniker: 'NetCore3.1'
@@ -233,6 +226,17 @@ jobs:
           - os-moniker: 'MacOS'
             os-specifier: 'macos-latest'
 
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'         
+
+          # Temporarily disable INT tests on non-win until we know how to deploy Temporal Lite:
+          - os-moniker: 'Linux'
+          - os-moniker: 'MacOS'
+          
     steps:
       - name: Clone this repo (sdk-dotnet)
         uses: actions/checkout@v3
