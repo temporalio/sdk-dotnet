@@ -1,38 +1,77 @@
-name: 'Client SDK Test Report'
+name: 'Test Report'
 on:
   workflow_run:
-    workflows: ['Build and Test Client SDK']  # runs after CI workflow
+    workflows: ['Build and Test']  # runs after CI workflow
     types:
       - completed
     branches:
-      - main
+      - master
       - FeatureIntegration
       - FeatureIntegration/**
 
 jobs:
 
   report:
-    name: "Generate Test Reports"
+    name: Test Reports (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - windows-latest
-        dotnet-version:
-          - '3.1.x'
-          - '6.0.x'
-          - '4.6.2'
+        testkind-moniker:
+          - Unit
+          - Int
+
+        os-moniker:
+          - 'Win'
+          - 'Linux'
+          - 'MacOS'
+
+        dotnet-moniker:
+          - 'NetCore3.1'
+          - 'Net6'
+          - 'NetFx4.6'
+
         build-config:
           - 'Debug'
           - 'Release'
+
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'
+
+        include:
+          - dotnet-moniker: 'NetCore3.1'
+            dotnet-version: '3.1.x'
+            framework: 'netcoreapp3.1'
+
+
+          - dotnet-moniker: 'Net6'
+            dotnet-version: '6.0.x'
+            framework: 'net6.0'
+
+          - dotnet-moniker: 'NetFx4.6'
+            dotnet-version: '4.6.2'
+            framework: 'net462'
+
+          - os-moniker: 'Win'
+            os-specifier: 'windows-latest'
+
+          - os-moniker: 'Linux'
+            os-specifier: 'ubuntu-latest'
+
+          - os-moniker: 'MacOS'
+            os-specifier: 'macos-latest'
     
     steps:
-      - name: Unit tests ${{matrix.os}}/${{matrix.dotnet-version}}/${{build-config}}
-        uses: actions/checkout@v3
+      - name: Generate report (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+        uses: dorny/test-reporter@v1.5.0
         with:          
-          artifact: TemporalSDK_TestResults_Unit_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
-          name: TestReport Unit ${{matrix.os}}/${{matrix.dotnet-version}}/${{build-config}}
+          artifact: TestResults_${{matrix.testkind-moniker}}_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          name: TestReport ${{matrix.testkind-moniker}} ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
           path: '*.trx'
           reporter: dotnet-trx
+          max-annotations: '50'      
