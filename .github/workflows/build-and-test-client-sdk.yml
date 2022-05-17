@@ -4,10 +4,7 @@ on:
     branches:
       - master
       - FeatureIntegration
-      - FeatureIntegration/**
-    paths-ignore:
-      - README.md
-      - LICENSE
+      - FeatureIntegration/**    
 
   workflow_dispatch:
   pull_request:
@@ -19,8 +16,9 @@ on:
 
 jobs:
 
-  build_and_test_windows:
-    name: Build and Test ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+# ----------- ----------- ----------- ----------- -----------
+  build_all:
+    name: Build ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
     runs-on: ${{matrix.os-specifier}}
 
     strategy:
@@ -28,6 +26,8 @@ jobs:
       matrix:
         os-moniker:
           - 'Win'
+          - 'Linux'
+          - 'MacOS'
 
         dotnet-moniker:
           - 'NetCore3.1'
@@ -38,21 +38,200 @@ jobs:
           - 'Debug'
           - 'Release'
 
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'            
+
         include:
           - dotnet-moniker: 'NetCore3.1'
             dotnet-version: '3.1.x'
-            framework: netcoreapp3.1
+            framework: 'netcoreapp3.1'
+
 
           - dotnet-moniker: 'Net6'
             dotnet-version: '6.0.x'
-            framework: net6.0
+            framework: 'net6.0'
 
           - dotnet-moniker: 'NetFx4.6'
             dotnet-version: '4.6.2'
-            framework: net462
+            framework: 'net462'
 
-          - os-moniker: Win
-            os-specifier: windows-latest
+          - os-moniker: 'Win'
+            os-specifier: 'windows-latest'
+
+          - os-moniker: 'Linux'
+            os-specifier: 'ubuntu-latest'
+
+          - os-moniker: 'MacOS'
+            os-specifier: 'macos-latest'
+
+    steps:
+      - name: Clone this repo (sdk-dotnet)
+        uses: actions/checkout@v3
+        with:
+          path: sdk-dotnet
+
+      - name: "Clone the 'temporalio/api' repo"
+        uses: actions/checkout@v3
+        with:
+          repository: temporalio/api
+          path: api
+      
+      - name: Setup .NET        
+        uses: actions/setup-dotnet@v2
+        with:  # We *target* and we *run tests on* different .NET versions. but we always build using the latest.
+          dotnet-version: | 
+            3.1.x
+            6.0.x
+
+      - name: Build Solution
+        run: dotnet build -f ${{matrix.framework}} -c ${{matrix.build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
+
+      - name: ZIP Binaries
+        if: ${{ always() }}  # create ZIP even if not everything got built
+        run: 7z a -tzip -mx9 TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip _build/bin/${{matrix.build-config}}-AnyCPU/
+
+      - name: Upload Binaries        
+        uses: actions/upload-artifact@v3
+        with:
+          name: Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          path: TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip
+
+# ----------- ----------- ----------- ----------- -----------
+  test_unit:
+    name: Test (Unit) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+    runs-on: ${{matrix.os-specifier}}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os-moniker:
+          - 'Win'
+          - 'Linux'
+          - 'MacOS'
+
+        dotnet-moniker:
+          - 'NetCore3.1'
+          - 'Net6'
+          - 'NetFx4.6'
+
+        build-config:
+          - 'Debug'
+          - 'Release'
+
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'            
+
+        include:
+          - dotnet-moniker: 'NetCore3.1'
+            dotnet-version: '3.1.x'
+            framework: 'netcoreapp3.1'
+
+
+          - dotnet-moniker: 'Net6'
+            dotnet-version: '6.0.x'
+            framework: 'net6.0'
+
+          - dotnet-moniker: 'NetFx4.6'
+            dotnet-version: '4.6.2'
+            framework: 'net462'
+
+          - os-moniker: 'Win'
+            os-specifier: 'windows-latest'
+
+          - os-moniker: 'Linux'
+            os-specifier: 'ubuntu-latest'
+
+          - os-moniker: 'MacOS'
+            os-specifier: 'macos-latest'
+
+    steps:
+      - name: Clone this repo (sdk-dotnet)
+        uses: actions/checkout@v3
+        with:
+          path: sdk-dotnet
+
+      - name: "Clone the 'temporalio/api' repo"
+        uses: actions/checkout@v3
+        with:
+          repository: temporalio/api
+          path: api
+
+      - name: Setup .NET        
+        uses: actions/setup-dotnet@v2
+        with:  # We *target* and we *run tests on* different .NET versions. but we always build using the latest.
+          dotnet-version: | 
+            3.1.x
+            6.0.x
+
+      - name: Build & Run Unit Tests
+        run: dotnet test -f ${{matrix.framework}} -c ${{matrix.build-config}} -l "trx;LogFileName=UnitTest_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.trx" --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln
+
+      - name: Upload Unit Test Results
+        if: ${{ always() }}  # upload test results even if tests failed
+        uses: actions/upload-artifact@v3
+        with:
+          name: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          path: _testresults/Unit
+          
+# ----------- ----------- ----------- ----------- -----------
+  test_int:
+    name: Test (Int) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+    runs-on: ${{matrix.os-specifier}}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os-moniker:
+          - 'Win'
+#          - 'Linux'   <<< Temporarili disable Int tests on non-win until we know how to deploy Temporal Lite
+#          - 'MacOS'   <<< Temporarili disable Int tests on non-win until we know how to deploy Temporal Lite
+
+        dotnet-moniker:
+          - 'NetCore3.1'
+          - 'Net6'
+          - 'NetFx4.6'
+
+        build-config:
+          - 'Debug'
+          - 'Release'
+
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'            
+
+        include:
+          - dotnet-moniker: 'NetCore3.1'
+            dotnet-version: '3.1.x'
+            framework: 'netcoreapp3.1'
+
+
+          - dotnet-moniker: 'Net6'
+            dotnet-version: '6.0.x'
+            framework: 'net6.0'
+
+          - dotnet-moniker: 'NetFx4.6'
+            dotnet-version: '4.6.2'
+            framework: 'net462'
+
+          - os-moniker: 'Win'
+            os-specifier: 'windows-latest'
+
+          - os-moniker: 'Linux'
+            os-specifier: 'ubuntu-latest'
+
+          - os-moniker: 'MacOS'
+            os-specifier: 'macos-latest'
 
     steps:
       - name: Clone this repo (sdk-dotnet)
@@ -79,31 +258,7 @@ jobs:
             3.1.x
             6.0.x
 
-      - name: Build Solution
-        run: dotnet build -f ${{matrix.framework}} -c ${{matrix.build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
-
-      - name: ZIP Binaries
-        if: ${{ always() }}  # create ZIP even if not everything got built
-        run: 7z a -tzip -mx9 TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip _build/bin/${{matrix.build-config}}-AnyCPU/SDK/        
-
-      - name: Upload Binaries        
-        uses: actions/upload-artifact@v3
-        with:
-          name: Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
-          path: TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip
-
-      - name: Run Unit Tests
-        run: dotnet test -f ${{matrix.framework}} -c ${{matrix.build-config}} -l "trx;LogFileName=UnitTest_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.trx" --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln
-
-      - name: Upload Unit Test Results
-        if: ${{ always() }}  # upload test results even if tests failed
-        uses: actions/upload-artifact@v3
-        with:
-          name: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
-          path: _testresults/Unit
-      
       - name: Run Integration Tests
-        if: ${{ always() }}  # run Int tests even if Unit tests failed
         run: dotnet test -f ${{matrix.framework}} -c ${{matrix.build-config}} -l "trx;LogFileName=IntTest_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.trx" --results-directory _testresults/Int sdk-dotnet/Src/Test/Temporal.Sdk.Test.Int.Automation.sln
 
       - name: Upload Integration Test Results
@@ -112,3 +267,5 @@ jobs:
         with:
           name: TestResults_Int_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
           path: _testresults/Int
+
+# ----------- ----------- ----------- ----------- ----------- 

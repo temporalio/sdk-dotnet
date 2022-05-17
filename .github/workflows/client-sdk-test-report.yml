@@ -20,6 +20,8 @@ jobs:
       matrix:
         os-moniker:
           - 'Win'
+          - 'Linux'
+          - 'MacOS'
 
         dotnet-moniker:
           - 'NetCore3.1'
@@ -30,24 +32,48 @@ jobs:
           - 'Debug'
           - 'Release'
 
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'            
+
         include:
           - dotnet-moniker: 'NetCore3.1'
             dotnet-version: '3.1.x'
-            framework: netcoreapp3.1
+            framework: 'netcoreapp3.1'
+
 
           - dotnet-moniker: 'Net6'
             dotnet-version: '6.0.x'
-            framework: net6.0
+            framework: 'net6.0'
 
           - dotnet-moniker: 'NetFx4.6'
             dotnet-version: '4.6.2'
-            framework: net462
+            framework: 'net462'
 
-          - os-moniker: Win
-            os-specifier: windows-latest
+          - os-moniker: 'Win'
+            os-specifier: 'windows-latest'
+
+          - os-moniker: 'Linux'
+            os-specifier: 'ubuntu-latest'
+
+          - os-moniker: 'MacOS'
+            os-specifier: 'macos-latest'
     
     steps:
-      - name: Unit tests ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+      - name: Unit test report ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+        uses: dorny/test-reporter@v1.5.0
+        with:          
+          artifact: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
+          name: TestReport Unit ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+          path: '*.trx'
+          reporter: dotnet-trx
+          max-annotations: '50'
+
+      - name: Integration test report ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+        if: ${{ always() }}  # generate this report even if previous report failed
         uses: dorny/test-reporter@v1.5.0
         with:          
           artifact: TestResults_Unit_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}
