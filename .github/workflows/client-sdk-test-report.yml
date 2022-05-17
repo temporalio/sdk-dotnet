@@ -54,3 +54,4 @@ jobs:
           name: TestReport Unit ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
           path: '*.trx'
           reporter: dotnet-trx
+          max-annotations: '50'
