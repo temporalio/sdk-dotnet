@@ -13,6 +13,7 @@ jobs:
 
   report:
     name: Test Reports (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+    continue-on-error: true
     runs-on: ubuntu-latest
 
     strategy:
