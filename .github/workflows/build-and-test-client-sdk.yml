@@ -20,7 +20,7 @@ on:
 jobs:
 
   build_and_test_windows:
-    name: BuildAndTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{build-config}}
+    name: BuildAndTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{matrix.build-config}}
     runs-on: ${{matrix.os}}
 
     strategy:
@@ -67,35 +67,35 @@ jobs:
           dotnet-version: ${{matrix.dotnet-version}}
 
       - name: Build Solution
-        run: dotnet build -c ${{build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
+        run: dotnet build -c ${{matrix.build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
 
       - name: ZIP Binaries
         if: ${{ always() }}  # create ZIP even if not everything got built
-        run: 7z a -tzip -mx9 TemporalSDK.Bin.${{matrix.os}}.${{matrix.dotnet-version}}.${{build-config}}.zip _build/bin/Debug-AnyCPU/SDK/        
+        run: 7z a -tzip -mx9 TemporalSDK.Bin.${{matrix.os}}.${{matrix.dotnet-version}}.${{matrix.build-config}}.zip _build/bin/Debug-AnyCPU/SDK/        
 
       - name: Upload Binaries        
         uses: actions/upload-artifact@v3
         with:
-          name: TemporalSDK_Bin_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
-          path: TemporalSDK_Bin_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}.zip
+          name: TemporalSDK_Bin_${{matrix.os}}_${{matrix.dotnet-version}}_${{matrix.build-config}}
+          path: TemporalSDK_Bin_${{matrix.os}}_${{matrix.dotnet-version}}_${{matrix.build-config}}.zip
 
       - name: Run Unit Tests
-        run: dotnet test -f ${{ matrix.framework }} -c ${{build-config}} -l "trx;LogFileName=UnitTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{build-config}}.trx" --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln
+        run: dotnet test -f ${{ matrix.framework }} -c ${{matrix.build-config}} -l "trx;LogFileName=UnitTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{matrix.build-config}}.trx" --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln
 
       - name: Upload Unit Test Results
         if: ${{ always() }}  # upload test results even if tests failed
         uses: actions/upload-artifact@v3
         with:
-          name: TemporalSDK_TestResults_Unit_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
+          name: TemporalSDK_TestResults_Unit_${{matrix.os}}_${{matrix.dotnet-version}}_${{matrix.build-config}}
           path: _testresults/Unit
       
       - name: Run Integration Tests
         if: ${{ always() }}  # run Int tests even if Unit tests failed
-        run: dotnet test -f ${{ matrix.framework }} -c ${{build-config}} -l "trx;LogFileName=UnitTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{build-config}}.trx" --results-directory _testresults/Int sdk-dotnet/Src/Test/Temporal.Sdk.Test.Int.Automation.sln
+        run: dotnet test -f ${{ matrix.framework }} -c ${{matrix.build-config}} -l "trx;LogFileName=UnitTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{matrix.build-config}}.trx" --results-directory _testresults/Int sdk-dotnet/Src/Test/Temporal.Sdk.Test.Int.Automation.sln
 
       - name: Upload Integration Test Results
         if: ${{ always() }}  # upload test results even if tests failed
         uses: actions/upload-artifact@v3
         with:
-          name: TemporalSDK_TestResults_Int_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
+          name: TemporalSDK_TestResults_Int_${{matrix.os}}_${{matrix.dotnet-version}}_${{matrix.build-config}}
           path: _testresults/Int
