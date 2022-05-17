@@ -1,4 +1,4 @@
-name: "Build and Test Client SDK"
+name: 'Build and Test Client SDK'
 on:
   push:
     branches:
@@ -69,8 +69,11 @@ jobs:
       - name: Build Solution
         run: dotnet build -c ${{build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
 
-      - name: ZIP and Upload Binaries
-        run: 7z a -tzip -mx9 TemporalSDK.Bin.${{matrix.os}}.${{matrix.dotnet-version}}.${{build-config}}.zip _build/bin/Debug-AnyCPU/SDK/
+      - name: ZIP Binaries
+        if: ${{ always() }}  # create ZIP even if not everything got built
+        run: 7z a -tzip -mx9 TemporalSDK.Bin.${{matrix.os}}.${{matrix.dotnet-version}}.${{build-config}}.zip _build/bin/Debug-AnyCPU/SDK/        
+
+      - name: Upload Binaries        
         uses: actions/upload-artifact@v3
         with:
           name: TemporalSDK_Bin_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
