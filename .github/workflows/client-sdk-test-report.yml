@@ -36,6 +36,13 @@ jobs:
           - 'Debug'
           - 'Release'
 
+        exclude:
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'Linux'
+
+          - dotnet-moniker: 'NetFx4.6'
+            os-moniker: 'MacOS'
+
         include:
           - dotnet-moniker: 'NetCore3.1'
             dotnet-version: '3.1.x'
@@ -58,13 +65,6 @@ jobs:
 
           - os-moniker: 'MacOS'
             os-specifier: 'macos-latest'
-
-        exclude:
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'Linux'
-
-          - dotnet-moniker: 'NetFx4.6'
-            os-moniker: 'MacOS'
     
     steps:
       - name: Generate report (${{matrix.testkind-moniker}}) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
