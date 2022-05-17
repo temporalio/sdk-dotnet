@@ -27,14 +27,17 @@ jobs:
       fail-fast: false
       matrix:
         os-moniker:
-          - 'Win'        
+          - 'Win'
+
         dotnet-moniker:
           - 'NetCore3.1'
           - 'Net6'
           - 'NetFx4.6'
+
         build-config:
           - 'Debug'
           - 'Release'
+
         include:
           - dotnet-moniker: 'NetCore3.1'
             dotnet-version: '3.1.x'
