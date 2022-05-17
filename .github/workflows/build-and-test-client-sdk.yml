@@ -20,7 +20,7 @@ on:
 jobs:
 
   build_and_test_windows:
-    name: BuildAndTest ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+    name: Build and Test ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
     runs-on: ${{matrix.os-specifier}}
 
     strategy:
@@ -79,7 +79,7 @@ jobs:
 
       - name: ZIP Binaries
         if: ${{ always() }}  # create ZIP even if not everything got built
-        run: 7z a -tzip -mx9 TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip _build/bin/Debug-AnyCPU/SDK/        
+        run: 7z a -tzip -mx9 TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip _build/bin/${{matrix.build-config}}-AnyCPU/SDK/        
 
       - name: Upload Binaries        
         uses: actions/upload-artifact@v3
