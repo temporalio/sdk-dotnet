@@ -2,7 +2,7 @@ name: 'Build and Test Client SDK'
 on:
   push:
     branches:
-      - main
+      - master
       - FeatureIntegration
       - FeatureIntegration/**
     paths-ignore:
@@ -13,7 +13,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches:
-      - main
+      - master
       - FeatureIntegration
       - FeatureIntegration/**
 
