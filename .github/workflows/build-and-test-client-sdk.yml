@@ -183,7 +183,7 @@ jobs:
           
 # ----------- ----------- ----------- ----------- -----------
   test_int:
-    name: Test (Int) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
+    name: Test (Integration) ${{matrix.os-moniker}}/${{matrix.dotnet-moniker}}/${{matrix.build-config}}
     runs-on: ${{matrix.os-specifier}}
 
     strategy:
