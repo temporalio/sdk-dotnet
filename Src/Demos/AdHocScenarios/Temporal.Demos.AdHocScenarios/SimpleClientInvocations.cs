@@ -12,6 +12,7 @@ namespace Temporal.Demos.AdHocScenarios
 {
     internal class SimpleClientInvocations
     {
+        // Dummy comment
         public void Run()
         {
             Console.WriteLine();
