@@ -1,25 +1,38 @@
 name: 'Client SDK Test Report'
 on:
   workflow_run:
-    workflows: ['Build and Test Client SDK']                     # runs after CI workflow
+    workflows: ['Build and Test Client SDK']  # runs after CI workflow
     types:
       - completed
-    branches: ['main', 'master']
+    branches:
+      - main
+      - FeatureIntegration
+      - FeatureIntegration/**
+
 jobs:
+
   report:
+    name: "Generate Test Reports"
     runs-on: ubuntu-latest
+
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
+        os:
+          - windows-latest
         dotnet-version:
           - '3.1.x'
           - '6.0.x'
           - '4.6.2'
+        build-config:
+          - 'Debug'
+          - 'Release'
+    
     steps:
-    - name: Test Reporter
-      uses: dorny/test-reporter@v1.5.0
-      with:
-        artifact: dotnet-client-results-${{ matrix.dotnet-version }}
-        name: dotnet-client-results-${{ matrix.dotnet-version }}
-        path: '*.trx'
-        reporter: dotnet-trx
+      - name: Unit tests ${{matrix.os}}/${{matrix.dotnet-version}}/${{build-config}}
+        uses: actions/checkout@v3
+        with:          
+          artifact: TemporalSDK_TestResults_Unit_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
+          name: TestReport Unit ${{matrix.os}}/${{matrix.dotnet-version}}/${{build-config}}
+          path: '*.trx'
+          reporter: dotnet-trx

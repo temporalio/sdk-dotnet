@@ -54,9 +54,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Managed-Src", "Managed-Src"
 		Shared\Managed-Src\README.md = Shared\Managed-Src\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5BDCEACB-BC8D-463B-8BF7-CE743ED5FBF2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{5BDCEACB-BC8D-463B-8BF7-CE743ED5FBF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Temporal.Sdk.Common.Tests", "Tests\Temporal.Sdk.Common.Tests\Temporal.Sdk.Common.Tests.csproj", "{998F4687-794E-4C1D-BD3E-16EB4D657DC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Temporal.Sdk.Common.Tests", "Test\Temporal.Sdk.Common.Tests\Temporal.Sdk.Common.Tests.csproj", "{998F4687-794E-4C1D-BD3E-16EB4D657DC3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{358405B5-48F0-4CFF-8634-4FB0424EBCF5}"
 EndProject

@@ -1,58 +1,98 @@
 name: "Build and Test Client SDK"
 on:
-  pull_request:
   push:
     branches:
-    - feature/github-actions-ci
+      - main
+      - FeatureIntegration
+      - FeatureIntegration/**
     paths-ignore:
-    - README.md
-    - LICENSE
+      - README.md
+      - LICENSE
+
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - FeatureIntegration
+      - FeatureIntegration/**
+
 jobs:
-  build-and-test-net-core:
-    name: BuildAndTest-${{matrix.os}}-${{ matrix.dotnet-version }}
-    runs-on: ${{ matrix.os }}
+
+  build_and_test_windows:
+    name: BuildAndTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{build-config}}
+    runs-on: ${{matrix.os}}
+
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os:
-#        - macos-latest
-#        - ubuntu-latest
-        - windows-latest
+          - windows-latest
         dotnet-version:
-        - '3.1.x'
-        - '6.0.x'
-        - '4.6.2'
+          - '3.1.x'
+          - '6.0.x'
+          - '4.6.2'
+        build-config:
+          - 'Debug'
+          - 'Release'
         include:
-        - dotnet-version: '3.1.x'
-          framework: netcoreapp3.1
-          download: true
-        - dotnet-version: '6.0.x'
-          framework: net6.0
-          download: true
-        - dotnet-version: '4.6.2'
-          framework: net462
-          download: false
+          - dotnet-version: '3.1.x'
+            framework: netcoreapp3.1
+          - dotnet-version: '6.0.x'
+            framework: net6.0
+          - dotnet-version: '4.6.2'
+            framework: net462
+
     steps:
-    - name: Clone this repo (sdk-dotnet)
-      uses: actions/checkout@v3
-      with:
-        path: sdk-dotnet
-    - name: "Clone the temporalio/api repo"
-      uses: actions/checkout@v3
-      with:
-        repository: temporalio/api
-        path: api
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ matrix.dotnet-version }}
-      if: ${{ matrix.download }}
-    - name: Test with dotnet
-      run: dotnet test -f ${{ matrix.framework }} -c Release --filter "Category=Common|Category=Client" --logger "trx;LogFileName=client-${{ matrix.dotnet-version }}.trx" --results-directory _testresults sdk-dotnet/Src/Temporal.Sdk.sln
-    - name: Upload dotnet test results
-      uses: actions/upload-artifact@v3
-      with:
-        name: dotnet-client-results-${{ matrix.dotnet-version }}
-        path: _testresults
-      # Use always() to always run this step to publish test results when there are test failures
-      if: ${{ always() }}
+      - name: Clone this repo (sdk-dotnet)
+        uses: actions/checkout@v3
+        with:
+          path: sdk-dotnet
+
+      - name: "Clone the 'temporalio/api' repo"
+        uses: actions/checkout@v3
+        with:
+          repository: temporalio/api
+          path: api
+
+      - name: "Clone the 'macrogreg/temporal-dotnet-buildtools' repo"
+        uses: actions/checkout@v3
+        with:
+          repository: macrogreg/temporal-dotnet-buildtools
+          path: macrogreg/temporal-dotnet-buildtools
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{matrix.dotnet-version}}
+
+      - name: Build Solution
+        run: dotnet build -c ${{build-config}} sdk-dotnet/Src/Temporal.Sdk.sln
+
+      - name: ZIP and Upload Binaries
+        run: 7z a -tzip -mx9 TemporalSDK.Bin.${{matrix.os}}.${{matrix.dotnet-version}}.${{build-config}}.zip _build/bin/Debug-AnyCPU/SDK/
+        uses: actions/upload-artifact@v3
+        with:
+          name: TemporalSDK_Bin_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
+          path: TemporalSDK_Bin_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}.zip
+
+      - name: Run Unit Tests
+        run: dotnet test -f ${{ matrix.framework }} -c ${{build-config}} -l "trx;LogFileName=UnitTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{build-config}}.trx" --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln
+
+      - name: Upload Unit Test Results
+        if: ${{ always() }}  # upload test results even if tests failed
+        uses: actions/upload-artifact@v3
+        with:
+          name: TemporalSDK_TestResults_Unit_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
+          path: _testresults/Unit
+      
+      - name: Run Integration Tests
+        if: ${{ always() }}  # run Int tests even if Unit tests failed
+        run: dotnet test -f ${{ matrix.framework }} -c ${{build-config}} -l "trx;LogFileName=UnitTest-${{matrix.os}}-${{matrix.dotnet-version}}-${{build-config}}.trx" --results-directory _testresults/Int sdk-dotnet/Src/Test/Temporal.Sdk.Test.Int.Automation.sln
+
+      - name: Upload Integration Test Results
+        if: ${{ always() }}  # upload test results even if tests failed
+        uses: actions/upload-artifact@v3
+        with:
+          name: TemporalSDK_TestResults_Int_${{matrix.os}}_${{matrix.dotnet-version}}_${{build-config}}
+          path: _testresults/Int
