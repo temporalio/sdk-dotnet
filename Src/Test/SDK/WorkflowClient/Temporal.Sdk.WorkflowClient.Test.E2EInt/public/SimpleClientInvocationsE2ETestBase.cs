@@ -26,7 +26,7 @@ namespace Temporal.Sdk.WorkflowClient.Test.E2EInt
             string channelType = TlsOptions == TestTlsOptions.None ? "plain unsecured" : "tls secured";
             CoutWriteLine($"Creating a client over a ({channelType}) channel...");
 
-            ITemporalClient client = await InitTemporalClient();
+            ITemporalClient client = CreateTemporalClient();
 
             string demoWfId = TestCaseContextMonikers.ForWorkflowId(this);
             string demoTaskQueue = TestCaseContextMonikers.ForTaskQueue(this);
@@ -335,13 +335,6 @@ namespace Temporal.Sdk.WorkflowClient.Test.E2EInt
             CoutWriteLine();
             CoutWriteLine($"E2E Scenario complete ({nameof(SimpleClientInvocationsE2ETest)}).");
             CoutWriteLine();
-        }
-
-        private async Task<ITemporalClient> InitTemporalClient()
-        {
-            TemporalClient client = CreateTemporalClient();
-            await client.EnsureConnectedAsync();
-            return client;
         }
     }
 }
