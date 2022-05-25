@@ -73,24 +73,24 @@ namespace Temporal.TestUtil
                 TestTlsOptions.None => new TemporalClient(),
                 TestTlsOptions.Server => new TemporalClient(new TemporalClientConfiguration
                 {
-                    ServiceConnection = new TemporalClientConfiguration.Connection("localhost",
-                        Port,
-                        true,
-                        null,
-                        false,
-                        TemporalClientConfiguration.TlsCertificate.FromPemFile(TestEnvironment.CaCertificatePath)),
+                    ServiceConnection = new TemporalClientConfiguration.Connection(ServerHost: "localhost",
+                        ServerPort: Port,
+                        IsTlsEnabled: true,
+                        ClientIdentityCert: null,
+                        SkipServerCertValidation: false,
+                        ServerCertAuthority: TemporalClientConfiguration.TlsCertificate.FromPemFile(TestEnvironment.CaCertificatePath)),
                 }),
                 TestTlsOptions.Mutual => new TemporalClient(new TemporalClientConfiguration
                 {
                     ServiceConnection = new TemporalClientConfiguration.Connection("localhost",
-                        Port,
-                        true,
-                        TemporalClientConfiguration.TlsCertificate.FromPemFile(TestEnvironment.ClientCertificatePath,
-                            TestEnvironment.ClientKeyPath),
-                        false,
-                        TemporalClientConfiguration.TlsCertificate.FromPemFile(TestEnvironment.CaCertificatePath)),
+                        ServerPort: Port,
+                    IsTlsEnabled: true,
+                    ClientIdentityCert: TemporalClientConfiguration.TlsCertificate.FromPemFile(TestEnvironment.ClientCertificatePath,
+                        TestEnvironment.ClientKeyPath),
+                    SkipServerCertValidation: false,
+                    ServerCertAuthority: TemporalClientConfiguration.TlsCertificate.FromPemFile(TestEnvironment.CaCertificatePath)),
                 }),
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentException("Invalid value for TlsOptions", nameof(TlsOptions))
             };
         }
 

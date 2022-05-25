@@ -35,21 +35,6 @@
     <Compile Include="$(SharedSrcBaseDir)\Temporal.TestUtil\public\TestBase.cs" Link="$(SharedSrcBaseLabel)\Temporal.TestUtil\public\%(Filename)%(Extension)" />       
     <Compile Include="..\..\Shared\Temporal.TestUtil\internal\TestTlsOptions.cs">
       <Link>Shared-Test-Src\Temporal.TestUtil\internal\TestTlsOptions.cs</Link>
-    </Compile>       
-    <Compile Update="Temporal.Sdk.WorkflowClient.Test.Int\public\TemporalClientTlsTest.cs">
-      <Link>Shared-Test-Src\Temporal.TestUtil\internal\CertificateKeyPair.cs</Link>
-    </Compile>       
-    <Compile Update="Temporal.Sdk.WorkflowClient.Test.Int\public\TemporalClientMutualTlsTest.cs">
-      <Link>Shared-Test-Src\Temporal.TestUtil\internal\CertificateKeyPair.cs</Link>
-    </Compile>       
-    <Compile Update="Temporal.Sdk.WorkflowClient.Test.E2EInt\public\AbstractSimpleClientInvocationsE2ETest.cs">
-      <Link>Shared-Test-Src\Temporal.TestUtil\internal\CertificateKeyPair.cs</Link>
-    </Compile>       
-    <Compile Update="Temporal.Sdk.WorkflowClient.Test.E2EInt\public\SimpleClientInvocationsE2EWithTlsTest.cs">
-      <Link>Shared-Test-Src\Temporal.TestUtil\internal\CertificateKeyPair.cs</Link>
-    </Compile>       
-    <Compile Update="Temporal.Sdk.WorkflowClient.Test.E2EInt\public\SimpleClientInvocationsE2EWithMutualTlsTest.cs">
-      <Link>Shared-Test-Src\Temporal.TestUtil\internal\CertificateKeyPair.cs</Link>
     </Compile>
   </ItemGroup>
   
