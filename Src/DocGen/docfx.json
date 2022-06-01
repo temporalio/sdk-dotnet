@@ -82,14 +82,21 @@
     //
     // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator.csproj` project before invoking DocFx.
     "content": [
-      //{
-      //  "src": "ApiDoc/net462",
-      //  "files": [ "**.yml", "index.md" ]
-      //},
-      //{
-      //  "src": "ApiDoc/netcoreapp3.1",
-      //  "files": [ "**.yml", "index.md" ]
-      //},
+      {
+        "src": "ApiDoc",
+        "files": [ "toc.yml", "index.md" ],
+        "dest": "ApiDoc"
+      },
+      {
+        "src": "ApiDoc/net462",
+        "files": [ "toc.yml", "index.md" ],
+        "dest": "ApiDoc/net462"
+      },
+      {
+        "src": "ApiDoc/netcoreapp3.1",
+        "files": [ "toc.yml", "index.md" ],
+        "dest": "ApiDoc/netcoreapp3.1"
+      },
       {
         "src": "ApiDoc/net6.0",
         "files": [ "**.yml", "index.md" ],
@@ -115,13 +122,14 @@
     "overwrite": [
       {
         "src": ".",
-        "files": [ "ApiDoc/**.md" ]
+        "files": [ "ApiDoc/**.md" ],
+        "exclude": [ "ApiDoc/**/README.md", "ApiDoc/**/index.md" ]
       }
     ],
     "dest": "_site",
     "globalMetadataFiles": [ "GlobalMetadata.json" ],
     "fileMetadataFiles": [ "FileMetadata.json" ],
-    "template": [ "default" ], // [ "default" ], // [ "statictoc" ],
+    "template": [ "statictoc" ], // [ "default" ], // [ "statictoc" ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,

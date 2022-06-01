@@ -1,6 +1,3 @@
----
-uid: Docs.Articles.Index
----
 # Documentation & Articles
 ## Temporal SDK for .NET
 

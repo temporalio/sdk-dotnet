@@ -3,8 +3,6 @@
 - name: Home
   href: index.md
 - name: API Reference
-  items:    
-    - name: .NET 6.0
-      href: ApiDoc/net6.0/
+  href: ApiDoc/
 - name: Articles
   href: Articles/
