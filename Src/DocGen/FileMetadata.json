@@ -1,5 +1,11 @@
 ﻿//
 // See https://dotnet.github.io/docfx/tutorial/docfx.exe_user_manual.html#323-separated-metadata-files-for-global-metadata-and-file-metadata
-// 
+//
 {
+  "_appFooter": {
+    "**": "<i>Temporal SDK Reference: .NET Cross Target</i>",
+    "ApiDoc/net462/**": "<i>Temporal SDK Reference: Net Fx 4.6.2 Target</i>",
+    "ApiDoc/netcoreapp3.1/**": "<i>Temporal SDK Reference: Net Core 3.1 Target</i>",
+    "ApiDoc/net6.0/**": "<i>Temporal SDK Reference: Net 6 Target</i>"
+  }
 }

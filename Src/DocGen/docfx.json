@@ -50,33 +50,15 @@
       "disableDefaultFilter": false
     }
   ],
-  // This currently fails due to a DocFx issue: https://github.com/dotnet/docfx/issues/3067
-  //
-  //"merge": {
-  //  "content": [
-  //    {
-  //      "src": "ApiDoc/net462",
-  //      "files": "*.yml"
-  //    },
-  //    {
-  //      "src": "ApiDoc/netcoreapp3.1",
-  //      "files": "*.yml"
-  //    },
-  //    {
-  //      "src": "ApiDoc/net6.0",
-  //      "files": "*.yml"
-  //    }
-  //  ],
-  //  "fileMetadata": {
-  //    "platform": {
-  //      "ApiDoc/net462/*.yml": [ "net462" ],
-  //      "ApiDoc/netcoreapp3.1/*.yml": [ "netcoreapp3.1" ],
-  //      "ApiDoc/net6.0/*.yml": [ "net6.0" ]
-  //    }
-  //  },
-  //  "dest": "ApiDoc/all-targets"
-  //},
   "build": {
+    // We cannot merge the metadata fot the different target frameworks due to a bug in DocFx:
+    // https://github.com/dotnet/docfx/issues/3067
+    // To work around, we call `build` 3 times for each of the target Frameworks and write data into
+    // the respective subdirectory based on the corresopnding metadata.
+    //
+    // This is is the 1st call: for Net Fx 4.6.2.
+    // ----------- ----------- ----------- ----------- -----------
+    //
     // Remember that paths here are relative to `$(BuildOutputRoot)\DocFx\`.
     // See the comment at the top of this file for details.
     //
@@ -89,19 +71,19 @@
       },
       {
         "src": "ApiDoc/net462",
-        "files": [ "toc.yml", "index.md" ],
+        "files": [ "**.yml", "index.md" ],
         "dest": "ApiDoc/net462"
       },
-      {
-        "src": "ApiDoc/netcoreapp3.1",
-        "files": [ "toc.yml", "index.md" ],
-        "dest": "ApiDoc/netcoreapp3.1"
-      },
-      {
-        "src": "ApiDoc/net6.0",
-        "files": [ "**.yml", "index.md" ],
-        "dest": "ApiDoc/net6.0"
-      },
+      //{
+      //  "src": "ApiDoc/netcoreapp3.1",
+      //  "files": [ "toc.yml", "index.md" ],
+      //  "dest": "ApiDoc/netcoreapp3.1"
+      //},
+      //{
+      //  "src": "ApiDoc/net6.0",
+      //  "files": [ "toc.yml", "index.md" ],
+      //  "dest": "ApiDoc/net6.0"
+      //},
       {
         "src": ".",
         "files": [ "Articles/**/*", "Articles/**" ],
@@ -136,5 +118,143 @@
     "keepFileLink": false,
     "cleanupCacheHistory": true,
     "disableGitFeatures": false
-  }
+  },
+  "build": {
+    // We cannot merge the metadata fot the different target frameworks due to a bug in DocFx:
+    // https://github.com/dotnet/docfx/issues/3067
+    // To work around, we call `build` 3 times for each of the target Frameworks and write data into
+    // the respective subdirectory based on the corresopnding metadata.
+    //
+    // This is is the 2nd call: for Net Core 3.1.
+    // ----------- ----------- ----------- ----------- -----------
+    //
+    // Remember that paths here are relative to `$(BuildOutputRoot)\DocFx\`.
+    // See the comment at the top of this file for details.
+    //
+    // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator.csproj` project before invoking DocFx.
+    "content": [
+      {
+        "src": "ApiDoc",
+        "files": [ "toc.yml", "index.md" ],
+        "dest": "ApiDoc"
+      },
+      //{
+      //  "src": "ApiDoc/net462",
+      //  "files": [ "toc.yml", "index.md" ],
+      //  "dest": "ApiDoc/net462"
+      //},
+      {
+        "src": "ApiDoc/netcoreapp3.1",
+        "files": [ "**.yml", "index.md" ],
+        "dest": "ApiDoc/netcoreapp3.1"
+      },
+      //{
+      //  "src": "ApiDoc/net6.0",
+      //  "files": [ "toc.yml", "index.md" ],
+      //  "dest": "ApiDoc/net6.0"
+      //},
+      {
+        "src": ".",
+        "files": [ "Articles/**/*", "Articles/**" ],
+        "exclude": [ "Articles/Resources/**" ]
+      },
+      {
+        "src": ".",
+        "files": [ "toc.yml", "index.md" ]
+      }
+    ],
+    "resource": [
+      {
+        "src": ".",
+        "files": [ "ApiDoc/Resources/**", "Articles/Resources/**" ],
+        "exclude": [ "ApiDoc/Resources/README.md", "Articles/Resources/README.md" ]
+      }
+    ],
+    "overwrite": [
+      {
+        "src": ".",
+        "files": [ "ApiDoc/**.md" ],
+        "exclude": [ "ApiDoc/**/README.md", "ApiDoc/**/index.md" ]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadataFiles": [ "GlobalMetadata.json" ],
+    "fileMetadataFiles": [ "FileMetadata.json" ],
+    "template": [ "statictoc" ], // [ "default" ], // [ "statictoc" ],
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": true,
+    "disableGitFeatures": false
+  },
+  //"build": {
+  //  // We cannot merge the metadata fot the different target frameworks due to a bug in DocFx:
+  //  // https://github.com/dotnet/docfx/issues/3067
+  //  // To work around, we call `build` 3 times for each of the target Frameworks and write data into
+  //  // the respective subdirectory based on the corresopnding metadata.
+  //  //
+  //  // This is is the 3rd call: for Net 6.
+  //  // ----------- ----------- ----------- ----------- -----------
+  //  //
+  //  // Remember that paths here are relative to `$(BuildOutputRoot)\DocFx\`.
+  //  // See the comment at the top of this file for details.
+  //  //
+  //  // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator.csproj` project before invoking DocFx.
+  //  "content": [
+  //    {
+  //      "src": "ApiDoc",
+  //      "files": [ "toc.yml", "index.md" ],
+  //      "dest": "ApiDoc"
+  //    },
+  //    {
+  //      "src": "ApiDoc/net462",
+  //      "files": [ "toc.yml", "index.md" ],
+  //      "dest": "ApiDoc/net462"
+  //    },
+  //    //{
+  //    //  "src": "ApiDoc/netcoreapp3.1",
+  //    //  "files": [ "toc.yml", "index.md" ],
+  //    //  "dest": "ApiDoc/netcoreapp3.1"
+  //    //},
+  //    {
+  //      "src": "ApiDoc/net6.0",
+  //      "files": [ "**.yml", "index.md" ],
+  //      "dest": "ApiDoc/net6.0"
+  //    },
+  //    {
+  //      "src": ".",
+  //      "files": [ "Articles/**/*", "Articles/**" ],
+  //      "exclude": [ "Articles/Resources/**" ]
+  //    },
+  //    {
+  //      "src": ".",
+  //      "files": [ "toc.yml", "index.md" ]
+  //    }
+  //  ],
+  //  "resource": [
+  //    {
+  //      "src": ".",
+  //      "files": [ "ApiDoc/Resources/**", "Articles/Resources/**" ],
+  //      "exclude": [ "ApiDoc/Resources/README.md", "Articles/Resources/README.md" ]
+  //    }
+  //  ],
+  //  "overwrite": [
+  //    {
+  //      "src": ".",
+  //      "files": [ "ApiDoc/**.md" ],
+  //      "exclude": [ "ApiDoc/**/README.md", "ApiDoc/**/index.md" ]
+  //    }
+  //  ],
+  //  "dest": "_site",
+  //  "globalMetadataFiles": [ "GlobalMetadata.json" ],
+  //  "fileMetadataFiles": [ "FileMetadata.json" ],
+  //  "template": [ "statictoc" ], // [ "default" ], // [ "statictoc" ],
+  //  "postProcessors": [],
+  //  "markdownEngineName": "markdig",
+  //  "noLangKeyword": false,
+  //  "keepFileLink": false,
+  //  "cleanupCacheHistory": true,
+  //  "disableGitFeatures": false
+  //}
 }
