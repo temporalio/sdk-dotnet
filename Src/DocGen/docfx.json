@@ -1,0 +1,132 @@
+{
+  // This `docfx.json` file will be copied to `$(BuildOutputRoot)\DocFx\` before the build, so that FocFx operates
+  // outside the source directory as much as possilbe. So the relative path here are relative to that folder.
+  //
+  // `$(BuildOutputRoot)` is defined in `RepoAndBuild-DirectoryStructure.props`.
+  // Usually, it is `$(EnlistmentRoot)\..\$(BuildOutputFolderName)` = `$(EnlistmentRoot)\..\_build`, but it can also be
+  //  set to `$(EnlistmentRoot)\$(BuildOutputFolderName)` by modifying the `$(ForceBinaryOutputIntoEnlistment)` flag.
+
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../../sdk-dotnet/Src",
+          "files": [ "SDK/Common/Temporal.Sdk.Common.csproj" ]
+        }
+      ],
+      "dest": "ApiDoc/net462",
+      "properties": {
+        "TargetFramework": "net462"
+      },
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    },
+    {
+      "src": [
+        {
+          "src": "../../sdk-dotnet/Src",
+          "files": [ "SDK/Common/Temporal.Sdk.Common.csproj" ]
+        }
+      ],
+      "dest": "ApiDoc/netcoreapp3.1",
+      "properties": {
+        "TargetFramework": "netcoreapp3.1"
+      },
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    },
+    {
+      "src": [
+        {
+          "src": "../../sdk-dotnet/Src",
+          "files": [ "SDK/Common/Temporal.Sdk.Common.csproj" ]
+        }
+      ],
+      "dest": "ApiDoc/net6.0",
+      "properties": {
+        "TargetFramework": "net6.0"
+      },
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    }
+  ],
+  // This currently fails due to a DocFx issue: https://github.com/dotnet/docfx/issues/3067
+  //
+  //"merge": {
+  //  "content": [
+  //    {
+  //      "src": "ApiDoc/net462",
+  //      "files": "*.yml"
+  //    },
+  //    {
+  //      "src": "ApiDoc/netcoreapp3.1",
+  //      "files": "*.yml"
+  //    },
+  //    {
+  //      "src": "ApiDoc/net6.0",
+  //      "files": "*.yml"
+  //    }
+  //  ],
+  //  "fileMetadata": {
+  //    "platform": {
+  //      "ApiDoc/net462/*.yml": [ "net462" ],
+  //      "ApiDoc/netcoreapp3.1/*.yml": [ "netcoreapp3.1" ],
+  //      "ApiDoc/net6.0/*.yml": [ "net6.0" ]
+  //    }
+  //  },
+  //  "dest": "ApiDoc/all-targets"
+  //},
+  "build": {
+    // Remember that paths here are relative to `$(BuildOutputRoot)\DocFx\`.
+    // See the comment at the top of this file for details.
+    //
+    // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator.csproj` project before invoking DocFx.
+    "content": [
+      //{
+      //  "src": "ApiDoc/net462",
+      //  "files": [ "**.yml", "index.md" ]
+      //},
+      //{
+      //  "src": "ApiDoc/netcoreapp3.1",
+      //  "files": [ "**.yml", "index.md" ]
+      //},
+      {
+        "src": "ApiDoc/net6.0",
+        "files": [ "**.yml", "index.md" ],
+        "dest": "ApiDoc/net6.0"
+      },
+      {
+        "src": ".",
+        "files": [ "Articles/**/*", "Articles/**" ],
+        "exclude": [ "Articles/Resources/**" ]
+      },
+      {
+        "src": ".",
+        "files": [ "toc.yml", "index.md" ]
+      }
+    ],
+    "resource": [
+      {
+        "src": ".",
+        "files": [ "ApiDoc/Resources/**", "Articles/Resources/**" ],
+        "exclude": [ "ApiDoc/Resources/README.md", "Articles/Resources/README.md" ]
+      }
+    ],
+    "overwrite": [
+      {
+        "src": ".",
+        "files": [ "ApiDoc/**.md" ]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadataFiles": [ "GlobalMetadata.json" ],
+    "fileMetadataFiles": [ "FileMetadata.json" ],
+    "template": [ "default" ], // [ "default" ], // [ "statictoc" ],
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": true,
+    "disableGitFeatures": false
+  }
+}

@@ -6,12 +6,12 @@
             Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 
     <PropertyGroup>
-        <SharedTestSrcBaseDir>$(SourceRoot)\Test\Shared</SharedTestSrcBaseDir>
+        <SharedTestSrcBaseDir>$(SrcRoot)\Test\Shared</SharedTestSrcBaseDir>
         <SharedTestSrcBaseLabel>Shared-Test-Src</SharedTestSrcBaseLabel>
     </PropertyGroup>
        
     <PropertyGroup>    
-        <SdkTestSrcBaseDir>$(SourceRoot)\Test\SDK</SdkTestSrcBaseDir>
+        <SdkTestSrcBaseDir>$(SrcRoot)\Test\SDK</SdkTestSrcBaseDir>
         <SdkTestSrcBaseLabel>Sdk-Test-Src</SdkTestSrcBaseLabel>
     </PropertyGroup>
     

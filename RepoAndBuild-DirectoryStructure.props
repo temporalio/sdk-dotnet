@@ -71,12 +71,12 @@
     <!--                                                                                                                                                    -->
     <!-- # Details                                                                                                                                          -->
     <!--                                                                                                                                                    -->
-    <!-- The logic in this file uses two marker files placed in the repo: “.EnlistmentRoot.marker” and “.SourceRoot.marker”:                                -->
+    <!-- The logic in this file uses two marker files placed in the repo: “.EnlistmentRoot.marker” and “.SrcRoot.marker”:                                -->
     <!--                                                                                                                                                    -->
     <!--  - “.EnlistmentRoot.marker” must be placed into the root of the repository.                                                                        -->
     <!--    It is the top-most folder; typically, it is the folder that contains the ".git/" subfolder.                                                     -->
     <!--                                                                                                                                                    -->
-    <!--  - “.SourceRoot.marker” must be placed into the root folder of all code sources in the repository.                                                 -->
+    <!--  - “.SrcRoot.marker” must be placed into the root folder of all code sources in the repository.                                                 -->
     <!--    This “source root” may be the same as the repository root (you may place both files next to each other), or it may be a subfolder.              -->
     <!--    For example, the repo root may contain other sub-folders in the root, containing other files, such as documentation.                            -->
     <!--                                                                                                                                                    -->
@@ -136,14 +136,14 @@
         <!-- You can use ForceBinaryOutputIntoEnlistment to control that behaviour.                                                                         -->
         <EnlistmentRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '.EnlistmentRoot.marker'))</EnlistmentRoot>
 
-        <!-- SourceRoot is the root folder of the source code in the repository. It may be the same as EnlistmentRoot, or it may be                         -->
+        <!-- SrcRoot is the root folder of the source code in the repository. It may be the same as EnlistmentRoot, or it may be                         -->
         <!-- a subfolder, if there are other sub-folders in the root, containing other files, such as documentation.                                        -->
         <!-- It us used to compute RelativeOutputPathBase below.                                                                                            -->
-        <SourceRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '.SourceRoot.marker'))</SourceRoot>
+        <SrcRoot>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), '.SrcRoot.marker'))</SrcRoot>
 
-        <!-- RelativeProjectPathBase is relative path from SourceRoot to the project file being built.                                                      -->
+        <!-- RelativeProjectPathBase is relative path from SrcRoot to the project file being built.                                                      -->
         <!-- will be used as the relative path from the binary roots to the respective bianary files.                                                       -->
-        <RelativeProjectPathBase>$(MSBuildProjectDirectory.Substring($(SourceRoot.Length)))</RelativeProjectPathBase>
+        <RelativeProjectPathBase>$(MSBuildProjectDirectory.Substring($(SrcRoot.Length)))</RelativeProjectPathBase>
 
         <!-- By default, binary output directories ("bin\" and "obj\", ...) should be placed directly ABOVE the root of the repository.                     -->
         <!-- However, ForceBinaryOutputIntoEnlistment allows putting the binarlies INTO the repository root.                                                -->
@@ -258,7 +258,7 @@
 
         <Message Text="[$(RdrctOutptMsgPrefix)]     MSBuildProjectDirectory:         &quot;$(MSBuildProjectDirectory)&quot;." Importance="high" />
         <Message Text="[$(RdrctOutptMsgPrefix)]     EnlistmentRoot:                  &quot;$(EnlistmentRoot)&quot;." Importance="high" />
-        <Message Text="[$(RdrctOutptMsgPrefix)]     SourceRoot:                      &quot;$(SourceRoot)&quot;." Importance="high" />
+        <Message Text="[$(RdrctOutptMsgPrefix)]     SrcRoot:                         &quot;$(SrcRoot)&quot;." Importance="high" />
         <Message Text="[$(RdrctOutptMsgPrefix)]     RelativeProjectPathBase:         &quot;$(RelativeProjectPathBase)&quot;." Importance="high" />
 
         <Message Text="[$(RdrctOutptMsgPrefix)]     BuildOutputRoot:                 &quot;$(BuildOutputRoot)&quot;." Importance="high" />
