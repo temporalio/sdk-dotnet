@@ -9,15 +9,19 @@ namespace Temporal.Serialization
     /// This is a sample. In the long run, we will move it to the samples directory.
     /// For now, we keep it here to exemplify custom <c>IPayloadConverter</c> implementation.
     /// </para>
-    /// The "build-in" payload converters can only de-/serialize a <see cref="Payloads"/>-collections with a
-    /// single <see cref="Payload"/>-entry, with the exception of <see cref="UnnamedContainerPayloadConverter"/>,
-    /// which can deal with any number of <see cref="Payload"/>-entries, but can only de-/serialize to and from 
-    /// an <see cref="Temporal.Common.Payloads.PayloadContainers.IUnnamed"/>. Such container offers strongly-typed lazy
-    /// access to the underlying data. Hopwever, users may provide their own implementations of <see cref="IPayloadConverter"/> that
-    /// handle mupliple <see cref="Payload"/>-entries. This class is an example of a <c>IPayloadConverter</c> that can 
-    /// convert any 3-tuple to/from a <see cref="Payloads"/>-collection with three <see cref="Payload"/>-entries.
-    /// (Note that a production implementation is likely to be based on a <see cref="ValueTuple"/> type.)
-    /// </summary>    
+    /// The "build-in" payload converters can only de-/serialize a <c>Payloads</c>-collection with a single
+    /// <c>Payload</c>-entry (see namespace <c>Temporal.Api.Common.V1</c> for <c>Payload</c> and <c>Payloads</c>).
+    /// An exception is the <see cref="UnnamedContainerPayloadConverter"/>, which can deal with any number of
+    /// <c>Payload</c>-entries, but can only de-/serialize to and from an
+    /// <see cref="Temporal.Common.Payloads.PayloadContainers.IUnnamed"/>-container.
+    /// Such container offers strongly-typed lazy access to the underlying data.
+    /// Notably, users may provide their own implementations of <see cref="IPayloadConverter"/> that handle
+    /// mupliple <c>Payload</c>-entries. This class is an example of auch a <c>IPayloadConverter</c>.
+    /// It that can convert any 3-tuple to/from a <c>Payloads</c>-collection with three <c>Payload</c>-entries.
+    /// (Note that a production implementation is likely to be based on a <c>ValueTuple</c> type.)
+    /// </summary>
+    /// <seealso cref="Temporal.Api.Common.V1.Payloads"/>
+    /// <seealso cref="Temporal.Api.Common.V1.Payload"/>
     public sealed class TuplePayloadConverter<T1, T2, T3> : DelegatingPayloadConverterBase
     {
         public override bool TrySerialize<T>(T item, Payloads serializedDataAccumulator)

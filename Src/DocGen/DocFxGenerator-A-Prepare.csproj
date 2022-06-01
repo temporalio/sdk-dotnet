@@ -28,6 +28,7 @@
     <!--
     We need to make sure that all project referenced in `docfx.json` are built before we start creating the docs.
     -->
+    <ProjectReference Include="$(SdkSrcBaseDir)\Api.Client.ManagedGrpc\Temporal.Api.Client.ManagedGrpc.csproj" />  
     <ProjectReference Include="$(SdkSrcBaseDir)\Common\Temporal.Sdk.Common.csproj" />
     <ProjectReference Include="$(SdkSrcBaseDir)\WorkflowClient\Temporal.Sdk.WorkflowClient.csproj" />
   </ItemGroup>
@@ -37,9 +38,9 @@
     <!-- These files must be be copied into the DocFx Build Root folder before invoking DocFx: -->
     
     <InternalItemToDocFxBuildRoot Include="DocFx-Metadata.json" />
-    <InternalItemToDocFxBuildRoot Include="DocFx-Build-net462.json" />
-    <InternalItemToDocFxBuildRoot Include="DocFx-Build-netcoreapp3.1.json" />
-    <InternalItemToDocFxBuildRoot Include="DocFx-Build-net6.0.json" />
+    <InternalItemToDocFxBuildRoot Include="DocFx-net462.json" />
+    <InternalItemToDocFxBuildRoot Include="DocFx-netcoreapp3.1.json" />
+    <InternalItemToDocFxBuildRoot Include="DocFx-net6.0.json" />
     <InternalItemToDocFxBuildRoot Include="GlobalMetadata.json" />
     <InternalItemToDocFxBuildRoot Include="FileMetadata.json" />
   
@@ -54,7 +55,7 @@
     <ExternalItemToDocFxBuildRoot Include="$(DocFilesRoot)/**/*" />
     
     <!-- Display these files as a group in VS Solution Explorer: -->
-    <None Include="@(ExternalItemToDocFxBuildRoot)" Link="Repo\Docs\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
+    <None Include="@(ExternalItemToDocFxBuildRoot)" Link="_Repo\Docs\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
   
   </ItemGroup>
       

@@ -1,0 +1,85 @@
+{
+  // This `DocFx-xyz.json` file will be copied to `$(BuildOutputRoot)\DocFx\` before the build, so that FocFx operates
+  // outside the source directory as much as possilbe. So the relative paths here are relative to that folder.
+  //
+  // `$(BuildOutputRoot)` is defined in `RepoAndBuild-DirectoryStructure.props`.
+  // Usually, it is `$(EnlistmentRoot)\..\$(BuildOutputFolderName)` = `$(EnlistmentRoot)\..\_build`, but it can also be
+  //  set to `$(EnlistmentRoot)\$(BuildOutputFolderName)` by modifying the `$(ForceBinaryOutputIntoEnlistment)` flag.
+  //
+  // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator-A-Prepare.csproj`
+  // project before invoking DocFx.
+
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../../sdk-dotnet/Src",
+          "files": [
+            "SDK/Api.Client.ManagedGrpc/Temporal.Api.Client.ManagedGrpc.csproj",
+            "SDK/Common/Temporal.Sdk.Common.csproj",
+            "SDK/WorkflowClient/Temporal.Sdk.WorkflowClient.csproj"
+          ]
+        },
+        {
+          "src": "..",  // Read the source files that are auto-generated from protos.
+          "files": [            
+            "obj/Debug-AnyCPU/SDK/Api.Client.ManagedGrpc/net462/**/*.cs"            
+          ]
+        }
+      ],
+      "dest": "ApiDoc/net462",
+      "properties": {
+        "TargetFramework": "net462"
+      },
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "src": "ApiDoc",
+        "files": [ "toc.yml", "index.md" ],
+        "dest": "ApiDoc"
+      },
+      {
+        "src": "ApiDoc/net462",
+        "files": [ "**.yml", "index.md" ],
+        "dest": "ApiDoc/net462"
+      },      
+      {
+        "src": ".",
+        "files": [ "Articles/**/*", "Articles/**" ],
+        "exclude": [ "Articles/Resources/**" ]
+      },
+      {
+        "src": ".",
+        "files": [ "toc.yml", "index.md" ]
+      }
+    ],
+    "resource": [
+      {
+        "src": ".",
+        "files": [ "ApiDoc/Resources/**", "Articles/Resources/**" ],
+        "exclude": [ "ApiDoc/Resources/README.md", "Articles/Resources/README.md" ]
+      }
+    ],
+    "overwrite": [
+      {
+        "src": ".",
+        "files": [ "ApiDoc/**.md" ],
+        "exclude": [ "ApiDoc/**/README.md", "ApiDoc/**/index.md" ]
+      }
+    ],
+    "dest": "_site",
+    "globalMetadataFiles": [ "GlobalMetadata.json" ],
+    "fileMetadataFiles": [ "FileMetadata.json" ],
+    "template": [ "statictoc" ], // [ "default" ], // [ "statictoc" ],
+    "postProcessors": [],
+    "markdownEngineName": "markdig",
+    "noLangKeyword": false,
+    "keepFileLink": false,
+    "cleanupCacheHistory": true,
+    "disableGitFeatures": false
+  }
+}

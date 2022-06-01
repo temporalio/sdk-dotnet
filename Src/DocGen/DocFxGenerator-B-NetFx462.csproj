@@ -6,155 +6,55 @@
 
   <PropertyGroup>
     <!--
-    The Doc generation is driven by `docfx.json` and is initiated by including a package reference to "docfx.console" below.
-    Within the `docfx.json` file we generate docs for all our target frameworks.
-    Thus, a single invocation of the docfx generator results in all target frameworks being addressed.
-    To avoid re-doing is many times, we only need to invoke docfx once. For that, we arbitrary pick one of the target frameworks.
+    Add comment!
     -->
-    <BuildDocFx Condition="'$(TargetFramework)' == 'net6.0'">true</BuildDocFx>
-    <BuildDocFx Condition="'$(TargetFramework)' != 'net6.0'">false</BuildDocFx>    
+    <BuildDocFx Condition="'$(TargetFramework)' == 'net462'">true</BuildDocFx>
+    <BuildDocFx Condition="'$(TargetFramework)' != 'net462'">false</BuildDocFx>    
   </PropertyGroup>
-  
 
   <ItemGroup Condition="'$(BuildDocFx)' == 'true'">
-    <!--
-    We need to make sure that all project referenced in `docfx.json` are built before we build this project.
-    -->
-    <ProjectReference Include="$(SdkSrcBaseDir)\Common\Temporal.Sdk.Common.csproj" />
-    <ProjectReference Include="$(SdkSrcBaseDir)\WorkflowClient\Temporal.Sdk.WorkflowClient.csproj" />
+    <!-- Chain the `DocFxGenerator-Xyz` projects: -->
+    <ProjectReference Include="$(MSBuildProjectDirectory)\DocFxGenerator-A-Prepare.csproj" />    
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Prefix qualifier for diagnostic messages on build output console: -->
+    <!-- Maintain constant width for layout! -->
+    <!--
+    Template: 
+    <DocFxGeneratorPrefixSuffix>X&lt;1234567&gt;</DocFxGeneratorPrefixSuffix>
+    -->
+    <DocFxGeneratorPrefixSuffix>B&lt;NetFx&gt;  </DocFxGeneratorPrefixSuffix>
+  </PropertyGroup>
   
   <PropertyGroup>
 
+    <DocFxConfigForTargetFx>DocFx-net462.json</DocFxConfigForTargetFx>
+
     <!-- The input file / config file for DocFx. -->
-    <!-- This is what drived the DocFx invocation performed by the PackageReference to "docfx.console" below. -->
-    <DocfxConfigFile>$(DocFxBuildRoot)\docfx.json</DocfxConfigFile>
-    
-    
-    <LogFile>$(DocFxBuildRoot)\DocFxLog-$(TimeStampNow)-$(TargetFramework).log</LogFile>
-    
-    <!-- The acceptable value for `LogLevel` could be Verbose, Info, Warning, Error. -->
-    <LogLevel>Verbose</LogLevel>
-    
+    <!-- This is what drives the DocFx invocation performed by the PackageReference to "docfx.console" below. -->
+    <DocfxConfigFile>$(DocFxBuildRoot)\$(DocFxConfigForTargetFx)</DocfxConfigFile>
+
+    <!-- The DocFx log file for this invocation: -->
+    <LogFile>$(DocFxBuildRoot)\DocFxLog-$(TimeStampNow)-$(TargetFramework).log</LogFile>    
   </PropertyGroup>
 
   <ItemGroup>
-    <!--
-    These files will be copied into the DocFx Build Root folder before invoking DocFx.
-    -->
-    <InternalItemToDocFxBuildRoot Include="docfx.json" />
-    <InternalItemToDocFxBuildRoot Include="GlobalMetadata.json" />
-    <InternalItemToDocFxBuildRoot Include="FileMetadata.json" />    
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--
-    These files will be copied into the `Docs/` subfolder within the DocFx Build Root before invoking DocFx.
-    -->
-    <ExternalItemToDocFxBuildRoot Include="$(DocFilesRoot)/**/*" />    
-  </ItemGroup>
-  
-  <ItemGroup>
-    <!--
-    Make sure that the files are visible in the VS Solution Explorer in a grouped fashion:
-    -->
-    <None Include="@(InternalItemToDocFxBuildRoot)" Link="CopyTo-DocFxBuildRoot\PROJECT-Files\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
+    <!-- Clear auto-discovered project files from VS Solution Explorer view: -->
+    <None Remove="@(None)" />
     
-    <None Include="@(ExternalItemToDocFxBuildRoot)" Link="CopyTo-DocFxBuildRoot\EXTERNAL-Files\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
+    <!-- Display ONLY the relevant config file as a part of this project in VS Solution Explorer: -->
+    <None Include="$(DocFxConfigForTargetFx)" Visible="true" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(BuildDocFx)' == 'true'">
-    <!--
-    This will actually invoke DocFx.
-    -->
+    
+    <!-- This will actually invoke DocFx: -->
+    
     <PackageReference Include="docfx.console" Version="2.59.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <Target Name="PrintDocFxGeneratorDetails_Common" BeforeTargets="Build">
-    <!--
-    This target prints diagnostic info to the build log.
-    -->
-    <Message Text="[$(DocFxGeneratorPrefix)]     Project file:           &quot;$(MSBuildProjectFullPath)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     TargetFramework:        &quot;$(TargetFramework)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     BuildDocFx:             &quot;$(BuildDocFx)&quot;." />
-  </Target>
-
-  <Target Name="PrintDocFxGeneratorDetails_DOBuildDocFx" AfterTargets="PrintDocFxGeneratorDetails_Common" Condition="'$(BuildDocFx)' == 'true'">
-    <!--
-    This target prints diagnostic info to the build log.
-    -->
-    <Message Text="[$(DocFxGeneratorPrefix)]       &gt;&gt;&gt; Docs WILL be built via a Package Reference to &quot;docfx.console&quot;." Condition="'$(BuildDocFx)' == 'true'" Importance="high" />    
-    
-    <Message Text="[$(DocFxGeneratorPrefix)]     TimeStampNow:           &quot;$(TimeStampNow)&quot;." Importance="high" />
-    
-    <Message Text="[$(DocFxGeneratorPrefix)]     DocFilesRoot:           &quot;$(DocFilesRoot)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     DocFxBuildRoot:         &quot;$(DocFxBuildRoot)&quot;." Importance="high" />
-    
-    <Message Text="[$(DocFxGeneratorPrefix)]     DocfxConfigFile:        &quot;$(DocfxConfigFile)&quot;." Importance="high" />    
-    <Message Text="[$(DocFxGeneratorPrefix)]     OutputFolder:           &quot;$(OutputFolder)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     LogFile:                &quot;$(LogFile)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     LogLevel:               &quot;$(LogLevel)&quot;." Importance="high" />    
-    
-    <Message Text=" " Importance="high" />
-  </Target>
-
-  <Target Name="PrintDocFxGeneratorDetails_DONTBuildDocFx" AfterTargets="PrintDocFxGeneratorDetails_Common" Condition="'$(BuildDocFx)' != 'true'">
-    <!--
-    This target prints diagnostic info to the build log.
-    -->
-    <Message Text="[$(DocFxGeneratorPrefix)]       &gt;&gt;&gt; Docs will NOT be built." Importance="high" />    
-    <Message Text=" " Importance="high" />
-  </Target>
-
-  <Target Name="CopyFilesToDocFxBuild" Condition="'$(BuildDocFx)' == 'true'" AfterTargets="PrintDocFxGeneratorDetails_DOBuildDocFx;PrintDocFxGeneratorDetails_DONTBuildDocFx" BeforeTargets="Build">
-    <!--
-    This target copies the necessary files to the DocFx Build Root folder and subfolders before invoking DocFx.
-    -->
-
-    <Copy SourceFiles="@(InternalItemToDocFxBuildRoot)" DestinationFiles="$(DocFxBuildRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="false" Retries="4" RetryDelayMilliseconds="500">      
-          <Output TaskParameter="CopiedFiles" ItemName="InternalsCopiedToDocFxBuildRoot" />
-    </Copy>
-
-    <Copy SourceFiles="@(ExternalItemToDocFxBuildRoot)" DestinationFiles="$(DocFxBuildRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="false" Retries="4" RetryDelayMilliseconds="500">
-          <Output TaskParameter="CopiedFiles" ItemName="ExternalsCopiedToDocFxBuildRoot" />
-    </Copy>
-
-    <Message Text="[$(DocFxGeneratorPrefix)]     CopyFilesToDocFxBuild:  InternalsCopiedToDocFxBuildRoot=&quot;@(InternalsCopiedToDocFxBuildRoot)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     CopyFilesToDocFxBuild:  ExternalsCopiedToDocFxBuildRoot=&quot;@(ExternalsCopiedToDocFxBuildRoot)&quot;." Importance="high" />
-    <Message Text=" " Importance="high" />
-  </Target>
-
-  <Target Name="CleanObjDirs" Condition="'$(BuildDocFx)' == 'true'" AfterTargets="DocGenerateMetadata">
-    
-    <!--
-    DocFx is too bumb to avoid polluting source folders.
-    So we have to clean up after it. Since we are deleting folders in the source directories, let's play is safe
-    and list them explicitly rather than trying to discover them.
-    ! Remember to add here every project for which we generate API Docs, so that the respective `obj` folder can be cleaned up !
-    -->
-    
-    <ItemGroup>    
-      <ObjDirs Include="$(SrcRoot)\SDK\Common\obj" />
-      <ObjDirs Include="$(SrcRoot)\SDK\WorkflowClient\obj" />
-      <ObjDirs Include="$(SrcRoot)\SDK\Api.Client.ManagedGrpc\obj" />    
-    </ItemGroup>
-    
-    <Message Text="[$(DocFxGeneratorPrefix)]     Project file:           &quot;$(MSBuildProjectFullPath)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     TargetFramework:        &quot;$(TargetFramework)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     CleanObjDirs:           SrcRoot=&quot;$(SrcRoot)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]     CleanObjDirs:           ObjDirs=&quot;@(ObjDirs)&quot;." Importance="high" />
-
-    <RemoveDir Directories="@(ObjDirs)">
-               <Output TaskParameter="RemovedDirectories" ItemName="RemovedObjDirs" />
-    </RemoveDir>
-    
-    <Message Text="[$(DocFxGeneratorPrefix)]     CleanObjDirs:           RemovedObjDirs=&quot;@(RemovedObjDirs)&quot;." Importance="high" />
-    <Message Text=" " Importance="high" />
-  
-  </Target>
 
 </Project>

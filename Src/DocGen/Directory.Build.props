@@ -8,6 +8,11 @@
   <PropertyGroup>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Clear default compliation items set by higher level Directories: -->
+    <Compile Remove="@(Compile)"/>
+  </ItemGroup>
     
   <PropertyGroup>
     
