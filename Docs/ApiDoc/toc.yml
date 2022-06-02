@@ -1,9 +1,23 @@
-#
 - name: Overview
   href: index.md
 - name: .Net 6.0
-  href: net6.0/
-- name: ".Net Core 3.1"
-  href: netcoreapp3.1/
-- name: ".Net Framework 4.6.2"
-  href: net462/
+  items:
+  - name: SDK
+    href: net6.0/toc.yml
+    topicHref: net6.0/index.md
+  - name: Low-level gRPC API
+    href: net6.0/GrpcApi/toc.yml
+- name: .Net Core 3.1
+  items:
+  - name: SDK
+    href: netcoreapp3.1/toc.yml
+    topicHref: netcoreapp3.1/index.md
+  - name: Low-level gRPC API
+    href: netcoreapp3.1/GrpcApi/toc.yml
+- name: .Net Framework 4.6.2  
+  items:
+  - name: SDK
+    href: net462/toc.yml
+    topicHref: net462/index.md
+  - name: Low-level gRPC API
+    href: net462/GrpcApi/toc.yml

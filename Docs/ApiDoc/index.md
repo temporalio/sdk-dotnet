@@ -8,6 +8,6 @@ For example, Net Fx and Net Core use different gRPC implementations, which requi
 
 Use the links below to browse the respective API reference.
 
-* [Temporal SDK for **Net Fx 4.6.2**](net462/).
-* [Temporal SDK for **Net Core 3.1**](netcoreapp3.1/).
-* [Temporal SDK for **Net 6**](net6.0/).
+* [Temporal SDK for **Net Fx 4.6.2**](net462/index.md).
+* [Temporal SDK for **Net Core 3.1**](netcoreapp3.1/index.md).
+* [Temporal SDK for **Net 6**](net6.0/index.md).

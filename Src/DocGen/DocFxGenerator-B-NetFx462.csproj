@@ -1,9 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <None Include="Directory.Build.props" />
-  </ItemGroup>
-
   <PropertyGroup>
     <!--
     Add comment!
@@ -12,7 +8,7 @@
     <BuildDocFx Condition="'$(TargetFramework)' != 'net462'">false</BuildDocFx>    
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(BuildDocFx)' == 'true'">
+  <ItemGroup>
     <!-- Chain the `DocFxGenerator-Xyz` projects: -->
     <ProjectReference Include="$(MSBuildProjectDirectory)\DocFxGenerator-A-Prepare.csproj" />    
   </ItemGroup>
@@ -45,6 +41,9 @@
     
     <!-- Display ONLY the relevant config file as a part of this project in VS Solution Explorer: -->
     <None Include="$(DocFxConfigForTargetFx)" Visible="true" />
+
+    <!-- Display Dir-wide settings file in VS Solution Explorer: -->
+    <None Include="Directory.Build.props" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(BuildDocFx)' == 'true'">

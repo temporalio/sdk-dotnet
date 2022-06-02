@@ -19,21 +19,34 @@
             "SDK/Common/Temporal.Sdk.Common.csproj",
             "SDK/WorkflowClient/Temporal.Sdk.WorkflowClient.csproj"
           ]
-        },
-        {
-          "src": "..",  // Read the source files that are auto-generated from protos.
-          "files": [            
-            "obj/Debug-AnyCPU/SDK/Api.Client.ManagedGrpc/net462/**/*.cs"            
-          ]
         }
       ],
       "dest": "ApiDoc/net462",
+      "filter": "Filter-AllTemporalGrpcApi.yml",
+      "properties": {
+        "TargetFramework": "net462"
+      },
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false
+    },
+    {
+      "src": [
+        {
+          "src": "../../sdk-dotnet/Src",
+          "files": [
+            "SDK/Api.Client.ManagedGrpc/Temporal.Api.Client.ManagedGrpc.csproj"
+          ]
+        }
+      ],
+      "dest": "ApiDoc/net462/GrpcApi",
+      "filter": "Filter-Gogoproto.yml",
       "properties": {
         "TargetFramework": "net462"
       },
       "disableGitFeatures": false,
       "disableDefaultFilter": false
     }
+
   ],
   "build": {
     "content": [
@@ -46,7 +59,17 @@
         "src": "ApiDoc/net462",
         "files": [ "**.yml", "index.md" ],
         "dest": "ApiDoc/net462"
-      },      
+      },
+      {
+        "src": "ApiDoc/netcoreapp3.1",
+        "files": [ "toc.yml", "index.md" ],
+        "dest": "ApiDoc/netcoreapp3.1"
+      },
+      {
+        "src": "ApiDoc/net6.0",
+        "files": [ "toc.yml", "index.md" ],
+        "dest": "ApiDoc/net6.0"
+      },
       {
         "src": ".",
         "files": [ "Articles/**/*", "Articles/**" ],
@@ -70,6 +93,9 @@
         "files": [ "ApiDoc/**.md" ],
         "exclude": [ "ApiDoc/**/README.md", "ApiDoc/**/index.md" ]
       }
+    ],
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
     ],
     "dest": "_site",
     "globalMetadataFiles": [ "GlobalMetadata.json" ],

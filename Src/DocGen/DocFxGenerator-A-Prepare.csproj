@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <!--
-    This project copied the files required for the DocFx execution to the build folder.
+    This project copies the files required for the DocFx execution to the build folder.
     We only need to do that once for all the target frameworks. So we arbitraty pick one,
     do it when the project is build for that Fx and skip for others.
     -->
@@ -43,6 +43,8 @@
     <InternalItemToDocFxBuildRoot Include="DocFx-net6.0.json" />
     <InternalItemToDocFxBuildRoot Include="GlobalMetadata.json" />
     <InternalItemToDocFxBuildRoot Include="FileMetadata.json" />
+    <InternalItemToDocFxBuildRoot Include="Filter-AllTemporalGrpcApi.yml" />
+    <InternalItemToDocFxBuildRoot Include="Filter-Gogoproto.yml" />
   
     <!-- Display these files as a group in VS Solution Explorer: -->
     <None Include="@(InternalItemToDocFxBuildRoot)" Link="DocFx-Config-Files\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
@@ -99,7 +101,12 @@
             <Output TaskParameter="DeletedFiles" ItemName="CleanedDocFxBuildFiles" />
     </Delete>
     
-    <Message Text="[$(DocFxGeneratorPrefix) $(DocFxGeneratorPrefixSuffix)]    CopyFilesToDocFxBuild:  CleanedDocFxBuildFiles{@(CleanedDocFxBuildFiles-&gt;Count())}=&quot;@(CleanedDocFxBuildFiles)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix) $(DocFxGeneratorPrefixSuffix)]    CopyFilesToDocFxBuild:  CleanedDocFxBuildFiles-&gt;Count()=&quot;@(CleanedDocFxBuildFiles-&gt;Count())&quot;." Importance="high" />
+    
+    <!-- Uncomment this line to see all deleted files. There might be a lot. -->
+    <!--
+    <Message Text="[$(DocFxGeneratorPrefix) $(DocFxGeneratorPrefixSuffix)]    CopyFilesToDocFxBuild:  CleanedDocFxBuildFiles=&quot;@(CleanedDocFxBuildFiles)&quot;." Importance="high" />
+    -->
     
     <Message Text="[$(DocFxGeneratorPrefix) $(DocFxGeneratorPrefixSuffix)]    CopyFilesToDocFxBuild:  Will attempt to remove the dir `DocFxBuildRoot`. It may fail if the dir is open locally. That should be benign." Importance="high" 
              Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'" />
