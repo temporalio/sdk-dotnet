@@ -1,6 +1,5 @@
-# `sdk-dotnet /Doc/`
-This folder is reserved for use by Github Pages.
+# `sdk-dotnet /Docs/`
 
-Its name is dictated by the Github Pages automation.
+This folder contains documentation-related files.
 
-Refer to the [`/Docs`](../Docs) directory for actual documentation-related files.
+Do not confuse it with the [`/Doc`](../Doc) directory, which is reserved for use by Github Pages automation (the name is dictated by Github).
