@@ -66,16 +66,16 @@
       },
       // Pre-populate the index pages for the other targets with placeholders.
       // We run this target (Net Fx 4.x) first, we cannot overwrite the other target's landing pages.
-      {
-        "src": "ApiDoc/netcoreapp3.1",
-        "files": [ "toc.yml", "index.md" ],
-        "dest": "ApiDoc/netcoreapp3.1"
-      },
-      {
-        "src": "ApiDoc/net6.0",
-        "files": [ "toc.yml", "index.md" ],
-        "dest": "ApiDoc/net6.0"
-      },
+      //{
+      //  "src": "ApiDoc/netcoreapp3.1",
+      //  "files": [ "toc.yml", "index.md" ],
+      //  "dest": "ApiDoc/netcoreapp3.1"
+      //},
+      //{
+      //  "src": "ApiDoc/net6.0",
+      //  "files": [ "toc.yml", "index.md" ],
+      //  "dest": "ApiDoc/net6.0"
+      //},
       {
         "src": ".",
         "files": [ "Articles/**/*", "Articles/**" ],

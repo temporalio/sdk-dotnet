@@ -1,10 +1,10 @@
 - name: Temporal SDK for .NET
         (Alpha)
-  href: /
+  href: ../../index.md
 - name: Articles
-  href: /Articles/
+  href: ../../Articles/index.md
 - name: API Reference
-  href: /ApiDoc/
+  href: ../index.md
 - name: .Net Framework 4.6.2
   href: index.md
   items:
