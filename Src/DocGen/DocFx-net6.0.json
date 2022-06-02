@@ -96,7 +96,7 @@
     "globalMetadataFiles": [ "GlobalMetadata.json" ],
     "fileMetadataFiles": [ "FileMetadata.json" ],
     "template": [ "statictoc" ], // [ "default" ], // [ "statictoc" ],
-    "postProcessors": [],
+    "postProcessors": [ "ExtractSearchIndex" ],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,
     "keepFileLink": false,

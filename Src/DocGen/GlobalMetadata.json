@@ -3,7 +3,7 @@
 //
 {
   "_appTitle": "Temporal SDK for .NET",
-  "_enableSearch": "false",
+  "_enableSearch": "true",
   "_enableNewTab": "true",
   "_gitContribute": {
     "apiSpecFolder": "Docs/ApiDoc"

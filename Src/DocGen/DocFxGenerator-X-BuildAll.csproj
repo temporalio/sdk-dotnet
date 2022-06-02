@@ -10,7 +10,6 @@
     <ProjectReference Include="$(MSBuildProjectDirectory)\DocFxGenerator-B-NetFx462.csproj" />
     <ProjectReference Include="$(MSBuildProjectDirectory)\DocFxGenerator-C-NetCoreApp31.csproj" />
     <ProjectReference Include="$(MSBuildProjectDirectory)\DocFxGenerator-D-Net6.csproj" />
-    <ProjectReference Include="$(MSBuildProjectDirectory)\DocFxGenerator-E-Cleanup.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
