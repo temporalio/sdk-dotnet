@@ -54,6 +54,10 @@
   "build": {
     "content": [
       {
+        "src": ".",
+        "files": [ "toc.yml", "index.md" ]
+      },
+      {
         "src": "ApiDoc",
         "files": [ "toc.yml", "index.md" ],
         "dest": "ApiDoc"
@@ -63,16 +67,10 @@
         "files": [ "**.yml", "index.md" ],
         "dest": "ApiDoc/net6.0"
       },
-      // We pre-populated the landing pages / index pages for all targets when we built the first target.
-      // Now, we only write the landing page for this target (Net 6.x) and avoid overwriting other target's pages.
       {
         "src": ".",
         "files": [ "Articles/**/*", "Articles/**" ],
         "exclude": [ "Articles/Resources/**" ]
-      },
-      {
-        "src": ".",
-        "files": [ "toc.yml", "index.md" ]
       }
     ],
     "resource": [

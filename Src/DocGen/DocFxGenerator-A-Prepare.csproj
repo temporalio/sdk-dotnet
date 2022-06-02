@@ -24,7 +24,7 @@
     <DocFxGeneratorPrefixSuffix>A&lt;Prepare&gt;</DocFxGeneratorPrefixSuffix>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(BuildDocFx)' == 'true'">
+  <ItemGroup>
     <!--
     We need to make sure that all project referenced in `docfx.json` are built before we start creating the docs.
     -->
@@ -61,7 +61,10 @@
   
   </ItemGroup>
       
-  <Target Name="CopyFilesToDocFxBuild" Condition="'$(BuildDocFx)' == 'true'" AfterTargets="PrintDocFxGeneratorDetails_DOBuildDocFx;PrintDocFxGeneratorDetails_DONTBuildDocFx" BeforeTargets="Build">
+  <Target Name="CopyFilesToDocFxBuild"
+          Condition="'$(BuildDocFx)' == 'true'"
+          AfterTargets="PrintDocFxGeneratorDetails_DOBuildDocFx;PrintDocFxGeneratorDetails_DONTBuildDocFx"
+          BeforeTargets="Build">
     <!--
     This target copies the necessary files to the DocFx Build Root folder and subfolders before invoking DocFx.
     -->
