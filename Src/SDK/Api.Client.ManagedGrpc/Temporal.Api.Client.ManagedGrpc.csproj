@@ -1,57 +1,83 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>    
-    <PackageReference Include="Grpc" Version="2.44.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.44.0" PrivateAssets="All" />
-    <PackageReference Include="Google.Protobuf" Version="3.19.4" />
+    <PackageReference Include="Grpc" Version="2.46.3" />
+    <PackageReference Include="Grpc.Tools" Version="2.46.3" PrivateAssets="All" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.1" />
   </ItemGroup>
 
-  <PropertyGroup>    
+  <PropertyGroup>
+    
     <ProtoApiRepoBaseDir>$(EnlistmentRoot)\..\api</ProtoApiRepoBaseDir>
+    <ProtoApiRepoBaseDir>$([System.IO.Path]::GetFullPath( $(ProtoApiRepoBaseDir) ))</ProtoApiRepoBaseDir>
+    
     <AutoGenOutputBaseDir>$(MSBuildThisFileDirectory)AutoGenOutput</AutoGenOutputBaseDir>
+  
   </PropertyGroup>
 
-  <!--
-  The auto-generated CS files are initially placed in the Obj folder:
-    _build\obj\Debug-AnyCPU\SDK\RawClient-Managed\<TargetFx>\temporal\**\*.cs
-  and
-    _build\obj\Debug-AnyCPU\SDK\RawClient-Managed\<TargetFx>\dependencies\**\*.cs
-  
-  They are build into the binary assembly FROM THERE.
-  
-  We MANUALLY copy them into $(AutoGenOutputBaseDir) so that we can diff them with earlier versons as a part of code review.
-  We need to make sure that the copy is not included into the complication to avoid duplicated. This is done below.
-  In the long term, that copy process needs to be automated. Ideally, just emit the auto-gen into $(AutoGenOutputBaseDir).
-  For that we need to find a resolution or a workaround for 
-    https://github.com/grpc/grpc/issues/29161
-  Then, `OutputDir` and `GrpcOutputDir` below will need to be moved into the `Protobuf` item set definition.
-  
-  However, we can also create a target that will just copy the files out of the Obj folder:
-    <Target Name="CopyAutoGenFilesIntoProjectFolder" AfterTargets="Build">
-      <Copy ... />...</Copy> 
-    </Target>  
-  -->
-    
-  <ItemGroup>
-    <Protobuf Include = "$(ProtoApiRepoBaseDir)\**\*.proto" 
-              Link = "ProtoApi\%(RecursiveDir)%(Filename)%(Extension)" 
-              Access = "Public"
-              ProtoCompile = "True"
-              ProtoRoot = "$(ProtoApiRepoBaseDir)"
-              CompileOutputs = "true"
-         
-              GrpcServices = "client" />
+  <PropertyGroup>
+    <IsProtoApiRepoPresent Condition="Exists('$(ProtoApiRepoBaseDir)')">true</IsProtoApiRepoPresent>
+    <IsProtoApiRepoPresent Condition="!Exists('$(ProtoApiRepoBaseDir)')">false</IsProtoApiRepoPresent>
+  </PropertyGroup> 
+
+  <ItemGroup Condition="'$(IsProtoApiRepoPresent)' == 'true'">
     <!--
-              OutputDir = "$(AutoGenOutputBaseDir)"
-              GrpcOutputDir = "$(AutoGenOutputBaseDir)"
+    If the Temporal Proto API repo is located at `$(ProtoApiRepoBaseDir)`, we will compile the proto files and place the results
+    into this project's directory. The resulting files will be committed to this repo (.NET SDK repo). This has some advantages:
+     - This repo can be built without a hard dependency on `temporalio/api`.
+       However, `temporalio/api` SHOULD be present to ensure that the most recent protos are used.
+     - If the protos, and thus the resulting auto-generated CS files change, the respective delta will be explicitly visible in
+       the PR. The developers will can take note, and can act on it, if required.
+     - Having using enlisted source files avoid some difficulties with the Src Doc generation tooling and allows the API Docs to
+       point to sources.
+    
+    We set `CompileOutputs` to false. Instead, we compile the generated files in a normal manner, like any other project file
+    would be. The advantage of it is that the will be compiled using the normal build cycle. On contrary, using `CompileOutputs`
+    sometimes results in an eager compilation initialted by the `Grpc.Tools` package.
     -->
+    <Protobuf Include="$(ProtoApiRepoBaseDir)\**\*.proto"
+              Link="ProtoApi\%(RecursiveDir)%(Filename)%(Extension)"
+              Access="Public"
+              ProtoCompile="True"
+              ProtoRoot="$(ProtoApiRepoBaseDir)"
+              CompileOutputs="false"
+              GrpcServices="none"              
+              OutputDir="$(AutoGenOutputBaseDir)"
+              GrpcOutputDir="$(AutoGenOutputBaseDir)" />
+              
+
+    <!--
+    Most Proto files only define data contracts, so we use `GrpcServices="none"` above.
+    Below we must explicity enable the generation of the service client stub for the Protos that contain a service definition.
+    -->
+    <Protobuf Update="$(ProtoApiRepoBaseDir)\**\operatorservice\v1\service.proto"
+              GrpcServices="client" />
+
+    <Protobuf Update="$(ProtoApiRepoBaseDir)\**\workflowservice\v1\service.proto"
+              GrpcServices="client" />
   </ItemGroup>
 
-  <ItemGroup>
-    <!-- Ensure we do not try to compile the files in $(AutoGenOutputBaseDir). See the long comment above for details. -->
-    <Compile Remove = "$(AutoGenOutputBaseDir)\**\*.*" />
-    <None Include = "$(AutoGenOutputBaseDir)\**\*.*" />    
-  </ItemGroup>
+  <Target Name="DisplayProtoApiRegnerationInfo" BeforeTargets="Build">
 
+    <Message Text="[$(MSBuildProjectName)]    TargetFramework=&quot;$(TargetFramework)&quot;; Configuration=&quot;$(Configuration)&quot;; Platform=&quot;$(Platform)&quot;; Project=&quot;$(MSBuildProjectFullPath)&quot;."
+             Importance="high" />
+
+    <Message Text="[$(MSBuildProjectName)]    ProtoApiRepoBaseDir = &quot;$(ProtoApiRepoBaseDir)&quot;." Importance="high" />
+    <Message Text="[$(MSBuildProjectName)]    IsProtoApiRepoPresent = &quot;$(IsProtoApiRepoPresent)&quot;." Importance="high" />
+    
+    <Message Text="[$(MSBuildProjectName)]    New CS files for gRPC Stubs and Data Contracts will NOT be re-generated from Protos." Importance="high"
+             Condition="'$(IsProtoApiRepoPresent)' != 'true'"/>
+    <Message Text="[$(MSBuildProjectName)]    Existing sources from this repo will be used." Importance="high"
+             Condition="'$(IsProtoApiRepoPresent)' != 'true'"/>
+
+    <Message Text="[$(MSBuildProjectName)]    New CS files for gRPC Stubs and Data Contracts WILL be re-generated from @(Protobuf->Count()) Protos." Importance="high"
+             Condition="'$(IsProtoApiRepoPresent)' == 'true'"/>
+    <Message Text="[$(MSBuildProjectName)]    Files in `AutoGenOutputBaseDir` will be ubdated accordingly and may need to be committed if they have changed." Importance="high"
+             Condition="'$(IsProtoApiRepoPresent)' == 'true'"/>
+    <Message Text="[$(MSBuildProjectName)]    `AutoGenOutputBaseDir` = &quot;$(AutoGenOutputBaseDir)&quot;." Importance="high"
+             Condition="'$(IsProtoApiRepoPresent)' == 'true'"/>
+    
+    <Message Text=" " Importance="high" />
+  </Target>
 
 </Project>

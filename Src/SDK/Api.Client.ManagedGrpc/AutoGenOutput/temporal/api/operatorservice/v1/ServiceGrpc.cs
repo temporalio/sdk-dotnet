@@ -147,8 +147,8 @@ namespace Temporal.Api.OperatorService.V1 {
       /// <summary>
       /// AddSearchAttributes add custom search attributes.
       ///
-      /// If successful, returns AddSearchAttributesResponse.
-      /// If fails, returns INTERNAL code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details
+      /// Returns ALREADY_EXISTS status code if a Search Attribute with any of the specified names already exists
+      /// Returns INTERNAL status code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details if registration process fails,
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -163,8 +163,8 @@ namespace Temporal.Api.OperatorService.V1 {
       /// <summary>
       /// AddSearchAttributes add custom search attributes.
       ///
-      /// If successful, returns AddSearchAttributesResponse.
-      /// If fails, returns INTERNAL code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details
+      /// Returns ALREADY_EXISTS status code if a Search Attribute with any of the specified names already exists
+      /// Returns INTERNAL status code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details if registration process fails,
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -177,8 +177,8 @@ namespace Temporal.Api.OperatorService.V1 {
       /// <summary>
       /// AddSearchAttributes add custom search attributes.
       ///
-      /// If successful, returns AddSearchAttributesResponse.
-      /// If fails, returns INTERNAL code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details
+      /// Returns ALREADY_EXISTS status code if a Search Attribute with any of the specified names already exists
+      /// Returns INTERNAL status code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details if registration process fails,
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -193,8 +193,8 @@ namespace Temporal.Api.OperatorService.V1 {
       /// <summary>
       /// AddSearchAttributes add custom search attributes.
       ///
-      /// If successful, returns AddSearchAttributesResponse.
-      /// If fails, returns INTERNAL code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details
+      /// Returns ALREADY_EXISTS status code if a Search Attribute with any of the specified names already exists
+      /// Returns INTERNAL status code with temporal.api.errordetails.v1.SystemWorkflowFailure in Error Details if registration process fails,
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -206,6 +206,8 @@ namespace Temporal.Api.OperatorService.V1 {
       }
       /// <summary>
       /// RemoveSearchAttributes removes custom search attributes.
+      ///
+      /// Returns NOT_FOUND status code if a Search Attribute with any of the specified names is not registered
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -219,6 +221,8 @@ namespace Temporal.Api.OperatorService.V1 {
       }
       /// <summary>
       /// RemoveSearchAttributes removes custom search attributes.
+      ///
+      /// Returns NOT_FOUND status code if a Search Attribute with any of the specified names is not registered
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -230,6 +234,8 @@ namespace Temporal.Api.OperatorService.V1 {
       }
       /// <summary>
       /// RemoveSearchAttributes removes custom search attributes.
+      ///
+      /// Returns NOT_FOUND status code if a Search Attribute with any of the specified names is not registered
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -243,6 +249,8 @@ namespace Temporal.Api.OperatorService.V1 {
       }
       /// <summary>
       /// RemoveSearchAttributes removes custom search attributes.
+      ///
+      /// Returns NOT_FOUND status code if a Search Attribute with any of the specified names is not registered
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>

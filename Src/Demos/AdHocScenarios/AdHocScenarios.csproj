@@ -18,7 +18,7 @@
   </ItemGroup>
   
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
-    <PackageReference Include="Grpc.Core" Version="2.44.0" />
+    <PackageReference Include="Grpc.Core" Version="2.46.3" />
   </ItemGroup>
 
   <ItemGroup>
