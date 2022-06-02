@@ -97,6 +97,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocFxGenerator-D-Net6", "Do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocFxGenerator-X-BuildAll", "DocGen\DocFxGenerator-X-BuildAll.csproj", "{23741D41-E468-41C7-BC59-04A33E3EF50E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocFxGenerator-E-Cleanup", "DocGen\DocFxGenerator-E-Cleanup.csproj", "{F651D5FE-B60E-47FD-A6EE-68A5AE028BED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,10 @@ Global
 		{23741D41-E468-41C7-BC59-04A33E3EF50E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23741D41-E468-41C7-BC59-04A33E3EF50E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23741D41-E468-41C7-BC59-04A33E3EF50E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F651D5FE-B60E-47FD-A6EE-68A5AE028BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F651D5FE-B60E-47FD-A6EE-68A5AE028BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F651D5FE-B60E-47FD-A6EE-68A5AE028BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F651D5FE-B60E-47FD-A6EE-68A5AE028BED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +183,7 @@ Global
 		{EB086238-5816-431C-8160-065E424D03A0} = {9D4F6D41-EE7D-4261-B963-B19568A3BBB9}
 		{F42B693B-83D2-4185-9426-95B2F4140B21} = {9D4F6D41-EE7D-4261-B963-B19568A3BBB9}
 		{23741D41-E468-41C7-BC59-04A33E3EF50E} = {9D4F6D41-EE7D-4261-B963-B19568A3BBB9}
+		{F651D5FE-B60E-47FD-A6EE-68A5AE028BED} = {9D4F6D41-EE7D-4261-B963-B19568A3BBB9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E8142887-814F-45CE-9A2D-B4F6E5B752A8}
