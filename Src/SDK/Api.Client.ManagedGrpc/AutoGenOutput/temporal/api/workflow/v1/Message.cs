@@ -84,10 +84,27 @@ namespace Temporal.Api.Workflow.V1 {
             "a19jb21wbGV0ZWRfaWQYAyABKAMSNQoLY3JlYXRlX3RpbWUYBCABKAsyGi5n",
             "b29nbGUucHJvdG9idWYuVGltZXN0YW1wQgSQ3x8BEjUKC2V4cGlyZV90aW1l",
             "GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIEkN8fARISCgpy",
-            "ZXNldHRhYmxlGAYgASgIQo8BChtpby50ZW1wb3JhbC5hcGkud29ya2Zsb3cu",
-            "djFCDE1lc3NhZ2VQcm90b1ABWidnby50ZW1wb3JhbC5pby9hcGkvd29ya2Zs",
-            "b3cvdjE7d29ya2Zsb3eqAhhUZW1wb3JhbC5BcGkuV29ya2Zsb3cuVjHqAhtU",
-            "ZW1wb3JhbDo6QXBpOjpXb3JrZmxvdzo6VjFiBnByb3RvMw=="));
+            "ZXNldHRhYmxlGAYgASgIIt4FChhOZXdXb3JrZmxvd0V4ZWN1dGlvbkluZm8S",
+            "EwoLd29ya2Zsb3dfaWQYASABKAkSOwoNd29ya2Zsb3dfdHlwZRgCIAEoCzIk",
+            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEjgKCnRhc2tf",
+            "cXVldWUYAyABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tR",
+            "dWV1ZRIvCgVpbnB1dBgEIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "UGF5bG9hZHMSQwoad29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVvdXQYBSABKAsy",
+            "GS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25CBJjfHwESPQoUd29ya2Zsb3df",
+            "cnVuX3RpbWVvdXQYBiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25C",
+            "BJjfHwESPgoVd29ya2Zsb3dfdGFza190aW1lb3V0GAcgASgLMhkuZ29vZ2xl",
+            "LnByb3RvYnVmLkR1cmF0aW9uQgSY3x8BEk4KGHdvcmtmbG93X2lkX3JldXNl",
+            "X3BvbGljeRgIIAEoDjIsLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5Xb3JrZmxv",
+            "d0lkUmV1c2VQb2xpY3kSOQoMcmV0cnlfcG9saWN5GAkgASgLMiMudGVtcG9y",
+            "YWwuYXBpLmNvbW1vbi52MS5SZXRyeVBvbGljeRIVCg1jcm9uX3NjaGVkdWxl",
+            "GAogASgJEioKBG1lbW8YCyABKAsyHC50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
+            "Lk1lbW8SQwoRc2VhcmNoX2F0dHJpYnV0ZXMYDCABKAsyKC50ZW1wb3JhbC5h",
+            "cGkuY29tbW9uLnYxLlNlYXJjaEF0dHJpYnV0ZXMSLgoGaGVhZGVyGA0gASgL",
+            "Mh4udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5IZWFkZXJCjwEKG2lvLnRlbXBv",
+            "cmFsLmFwaS53b3JrZmxvdy52MUIMTWVzc2FnZVByb3RvUAFaJ2dvLnRlbXBv",
+            "cmFsLmlvL2FwaS93b3JrZmxvdy92MTt3b3JrZmxvd6oCGFRlbXBvcmFsLkFw",
+            "aS5Xb3JrZmxvdy5WMeoCG1RlbXBvcmFsOjpBcGk6OldvcmtmbG93OjpWMWIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, global::Temporal.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporal.Api.Common.V1.MessageReflection.Descriptor, global::Temporal.Api.Failure.V1.MessageReflection.Descriptor, global::Temporal.Api.TaskQueue.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -97,7 +114,8 @@ namespace Temporal.Api.Workflow.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Workflow.V1.PendingChildExecutionInfo), global::Temporal.Api.Workflow.V1.PendingChildExecutionInfo.Parser, new[]{ "WorkflowId", "RunId", "WorkflowTypeName", "InitiatedId", "ParentClosePolicy" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Workflow.V1.PendingWorkflowTaskInfo), global::Temporal.Api.Workflow.V1.PendingWorkflowTaskInfo.Parser, new[]{ "State", "ScheduledTime", "OriginalScheduledTime", "StartedTime", "Attempt" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Workflow.V1.ResetPoints), global::Temporal.Api.Workflow.V1.ResetPoints.Parser, new[]{ "Points" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Workflow.V1.ResetPointInfo), global::Temporal.Api.Workflow.V1.ResetPointInfo.Parser, new[]{ "BinaryChecksum", "RunId", "FirstWorkflowTaskCompletedId", "CreateTime", "ExpireTime", "Resettable" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Workflow.V1.ResetPointInfo), global::Temporal.Api.Workflow.V1.ResetPointInfo.Parser, new[]{ "BinaryChecksum", "RunId", "FirstWorkflowTaskCompletedId", "CreateTime", "ExpireTime", "Resettable" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Workflow.V1.NewWorkflowExecutionInfo), global::Temporal.Api.Workflow.V1.NewWorkflowExecutionInfo.Parser, new[]{ "WorkflowId", "WorkflowType", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "WorkflowIdReusePolicy", "RetryPolicy", "CronSchedule", "Memo", "SearchAttributes", "Header" }, null, null, null, null)
           }));
     }
     #endregion
@@ -3129,6 +3147,754 @@ namespace Temporal.Api.Workflow.V1 {
           }
           case 48: {
             Resettable = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// NewWorkflowExecutionInfo is a shared message that encapsulates all the
+  /// required arguments to starting a workflow in different contexts.
+  /// </summary>
+  public sealed partial class NewWorkflowExecutionInfo : pb::IMessage<NewWorkflowExecutionInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<NewWorkflowExecutionInfo> _parser = new pb::MessageParser<NewWorkflowExecutionInfo>(() => new NewWorkflowExecutionInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<NewWorkflowExecutionInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporal.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NewWorkflowExecutionInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NewWorkflowExecutionInfo(NewWorkflowExecutionInfo other) : this() {
+      workflowId_ = other.workflowId_;
+      workflowType_ = other.workflowType_ != null ? other.workflowType_.Clone() : null;
+      taskQueue_ = other.taskQueue_ != null ? other.taskQueue_.Clone() : null;
+      input_ = other.input_ != null ? other.input_.Clone() : null;
+      workflowExecutionTimeout_ = other.workflowExecutionTimeout_ != null ? other.workflowExecutionTimeout_.Clone() : null;
+      workflowRunTimeout_ = other.workflowRunTimeout_ != null ? other.workflowRunTimeout_.Clone() : null;
+      workflowTaskTimeout_ = other.workflowTaskTimeout_ != null ? other.workflowTaskTimeout_.Clone() : null;
+      workflowIdReusePolicy_ = other.workflowIdReusePolicy_;
+      retryPolicy_ = other.retryPolicy_ != null ? other.retryPolicy_.Clone() : null;
+      cronSchedule_ = other.cronSchedule_;
+      memo_ = other.memo_ != null ? other.memo_.Clone() : null;
+      searchAttributes_ = other.searchAttributes_ != null ? other.searchAttributes_.Clone() : null;
+      header_ = other.header_ != null ? other.header_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NewWorkflowExecutionInfo Clone() {
+      return new NewWorkflowExecutionInfo(this);
+    }
+
+    /// <summary>Field number for the "workflow_id" field.</summary>
+    public const int WorkflowIdFieldNumber = 1;
+    private string workflowId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string WorkflowId {
+      get { return workflowId_; }
+      set {
+        workflowId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "workflow_type" field.</summary>
+    public const int WorkflowTypeFieldNumber = 2;
+    private global::Temporal.Api.Common.V1.WorkflowType workflowType_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Common.V1.WorkflowType WorkflowType {
+      get { return workflowType_; }
+      set {
+        workflowType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "task_queue" field.</summary>
+    public const int TaskQueueFieldNumber = 3;
+    private global::Temporal.Api.TaskQueue.V1.TaskQueue taskQueue_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.TaskQueue.V1.TaskQueue TaskQueue {
+      get { return taskQueue_; }
+      set {
+        taskQueue_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "input" field.</summary>
+    public const int InputFieldNumber = 4;
+    private global::Temporal.Api.Common.V1.Payloads input_;
+    /// <summary>
+    /// Serialized arguments to the workflow.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Common.V1.Payloads Input {
+      get { return input_; }
+      set {
+        input_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "workflow_execution_timeout" field.</summary>
+    public const int WorkflowExecutionTimeoutFieldNumber = 5;
+    private global::Google.Protobuf.WellKnownTypes.Duration workflowExecutionTimeout_;
+    /// <summary>
+    /// Total workflow execution timeout including retries and continue as new.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration WorkflowExecutionTimeout {
+      get { return workflowExecutionTimeout_; }
+      set {
+        workflowExecutionTimeout_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "workflow_run_timeout" field.</summary>
+    public const int WorkflowRunTimeoutFieldNumber = 6;
+    private global::Google.Protobuf.WellKnownTypes.Duration workflowRunTimeout_;
+    /// <summary>
+    /// Timeout of a single workflow run.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration WorkflowRunTimeout {
+      get { return workflowRunTimeout_; }
+      set {
+        workflowRunTimeout_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "workflow_task_timeout" field.</summary>
+    public const int WorkflowTaskTimeoutFieldNumber = 7;
+    private global::Google.Protobuf.WellKnownTypes.Duration workflowTaskTimeout_;
+    /// <summary>
+    /// Timeout of a single workflow task.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration WorkflowTaskTimeout {
+      get { return workflowTaskTimeout_; }
+      set {
+        workflowTaskTimeout_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "workflow_id_reuse_policy" field.</summary>
+    public const int WorkflowIdReusePolicyFieldNumber = 8;
+    private global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy workflowIdReusePolicy_ = global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy.Unspecified;
+    /// <summary>
+    /// Default: WORKFLOW_ID_REUSE_POLICY_ALLOW_DUPLICATE.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy WorkflowIdReusePolicy {
+      get { return workflowIdReusePolicy_; }
+      set {
+        workflowIdReusePolicy_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "retry_policy" field.</summary>
+    public const int RetryPolicyFieldNumber = 9;
+    private global::Temporal.Api.Common.V1.RetryPolicy retryPolicy_;
+    /// <summary>
+    /// The retry policy for the workflow. Will never exceed `workflow_execution_timeout`.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Common.V1.RetryPolicy RetryPolicy {
+      get { return retryPolicy_; }
+      set {
+        retryPolicy_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cron_schedule" field.</summary>
+    public const int CronScheduleFieldNumber = 10;
+    private string cronSchedule_ = "";
+    /// <summary>
+    /// See https://docs.temporal.io/docs/content/what-is-a-temporal-cron-job/
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string CronSchedule {
+      get { return cronSchedule_; }
+      set {
+        cronSchedule_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "memo" field.</summary>
+    public const int MemoFieldNumber = 11;
+    private global::Temporal.Api.Common.V1.Memo memo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Common.V1.Memo Memo {
+      get { return memo_; }
+      set {
+        memo_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "search_attributes" field.</summary>
+    public const int SearchAttributesFieldNumber = 12;
+    private global::Temporal.Api.Common.V1.SearchAttributes searchAttributes_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Common.V1.SearchAttributes SearchAttributes {
+      get { return searchAttributes_; }
+      set {
+        searchAttributes_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "header" field.</summary>
+    public const int HeaderFieldNumber = 13;
+    private global::Temporal.Api.Common.V1.Header header_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Common.V1.Header Header {
+      get { return header_; }
+      set {
+        header_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as NewWorkflowExecutionInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(NewWorkflowExecutionInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (WorkflowId != other.WorkflowId) return false;
+      if (!object.Equals(WorkflowType, other.WorkflowType)) return false;
+      if (!object.Equals(TaskQueue, other.TaskQueue)) return false;
+      if (!object.Equals(Input, other.Input)) return false;
+      if (!object.Equals(WorkflowExecutionTimeout, other.WorkflowExecutionTimeout)) return false;
+      if (!object.Equals(WorkflowRunTimeout, other.WorkflowRunTimeout)) return false;
+      if (!object.Equals(WorkflowTaskTimeout, other.WorkflowTaskTimeout)) return false;
+      if (WorkflowIdReusePolicy != other.WorkflowIdReusePolicy) return false;
+      if (!object.Equals(RetryPolicy, other.RetryPolicy)) return false;
+      if (CronSchedule != other.CronSchedule) return false;
+      if (!object.Equals(Memo, other.Memo)) return false;
+      if (!object.Equals(SearchAttributes, other.SearchAttributes)) return false;
+      if (!object.Equals(Header, other.Header)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (WorkflowId.Length != 0) hash ^= WorkflowId.GetHashCode();
+      if (workflowType_ != null) hash ^= WorkflowType.GetHashCode();
+      if (taskQueue_ != null) hash ^= TaskQueue.GetHashCode();
+      if (input_ != null) hash ^= Input.GetHashCode();
+      if (workflowExecutionTimeout_ != null) hash ^= WorkflowExecutionTimeout.GetHashCode();
+      if (workflowRunTimeout_ != null) hash ^= WorkflowRunTimeout.GetHashCode();
+      if (workflowTaskTimeout_ != null) hash ^= WorkflowTaskTimeout.GetHashCode();
+      if (WorkflowIdReusePolicy != global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy.Unspecified) hash ^= WorkflowIdReusePolicy.GetHashCode();
+      if (retryPolicy_ != null) hash ^= RetryPolicy.GetHashCode();
+      if (CronSchedule.Length != 0) hash ^= CronSchedule.GetHashCode();
+      if (memo_ != null) hash ^= Memo.GetHashCode();
+      if (searchAttributes_ != null) hash ^= SearchAttributes.GetHashCode();
+      if (header_ != null) hash ^= Header.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (WorkflowId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(WorkflowId);
+      }
+      if (workflowType_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(WorkflowType);
+      }
+      if (taskQueue_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(TaskQueue);
+      }
+      if (input_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Input);
+      }
+      if (workflowExecutionTimeout_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(WorkflowExecutionTimeout);
+      }
+      if (workflowRunTimeout_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(WorkflowRunTimeout);
+      }
+      if (workflowTaskTimeout_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(WorkflowTaskTimeout);
+      }
+      if (WorkflowIdReusePolicy != global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy.Unspecified) {
+        output.WriteRawTag(64);
+        output.WriteEnum((int) WorkflowIdReusePolicy);
+      }
+      if (retryPolicy_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(RetryPolicy);
+      }
+      if (CronSchedule.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(CronSchedule);
+      }
+      if (memo_ != null) {
+        output.WriteRawTag(90);
+        output.WriteMessage(Memo);
+      }
+      if (searchAttributes_ != null) {
+        output.WriteRawTag(98);
+        output.WriteMessage(SearchAttributes);
+      }
+      if (header_ != null) {
+        output.WriteRawTag(106);
+        output.WriteMessage(Header);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (WorkflowId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(WorkflowId);
+      }
+      if (workflowType_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(WorkflowType);
+      }
+      if (taskQueue_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(TaskQueue);
+      }
+      if (input_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Input);
+      }
+      if (workflowExecutionTimeout_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(WorkflowExecutionTimeout);
+      }
+      if (workflowRunTimeout_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(WorkflowRunTimeout);
+      }
+      if (workflowTaskTimeout_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(WorkflowTaskTimeout);
+      }
+      if (WorkflowIdReusePolicy != global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy.Unspecified) {
+        output.WriteRawTag(64);
+        output.WriteEnum((int) WorkflowIdReusePolicy);
+      }
+      if (retryPolicy_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(RetryPolicy);
+      }
+      if (CronSchedule.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(CronSchedule);
+      }
+      if (memo_ != null) {
+        output.WriteRawTag(90);
+        output.WriteMessage(Memo);
+      }
+      if (searchAttributes_ != null) {
+        output.WriteRawTag(98);
+        output.WriteMessage(SearchAttributes);
+      }
+      if (header_ != null) {
+        output.WriteRawTag(106);
+        output.WriteMessage(Header);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (WorkflowId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(WorkflowId);
+      }
+      if (workflowType_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(WorkflowType);
+      }
+      if (taskQueue_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TaskQueue);
+      }
+      if (input_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Input);
+      }
+      if (workflowExecutionTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(WorkflowExecutionTimeout);
+      }
+      if (workflowRunTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(WorkflowRunTimeout);
+      }
+      if (workflowTaskTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(WorkflowTaskTimeout);
+      }
+      if (WorkflowIdReusePolicy != global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) WorkflowIdReusePolicy);
+      }
+      if (retryPolicy_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RetryPolicy);
+      }
+      if (CronSchedule.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CronSchedule);
+      }
+      if (memo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Memo);
+      }
+      if (searchAttributes_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SearchAttributes);
+      }
+      if (header_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Header);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(NewWorkflowExecutionInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.WorkflowId.Length != 0) {
+        WorkflowId = other.WorkflowId;
+      }
+      if (other.workflowType_ != null) {
+        if (workflowType_ == null) {
+          WorkflowType = new global::Temporal.Api.Common.V1.WorkflowType();
+        }
+        WorkflowType.MergeFrom(other.WorkflowType);
+      }
+      if (other.taskQueue_ != null) {
+        if (taskQueue_ == null) {
+          TaskQueue = new global::Temporal.Api.TaskQueue.V1.TaskQueue();
+        }
+        TaskQueue.MergeFrom(other.TaskQueue);
+      }
+      if (other.input_ != null) {
+        if (input_ == null) {
+          Input = new global::Temporal.Api.Common.V1.Payloads();
+        }
+        Input.MergeFrom(other.Input);
+      }
+      if (other.workflowExecutionTimeout_ != null) {
+        if (workflowExecutionTimeout_ == null) {
+          WorkflowExecutionTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        WorkflowExecutionTimeout.MergeFrom(other.WorkflowExecutionTimeout);
+      }
+      if (other.workflowRunTimeout_ != null) {
+        if (workflowRunTimeout_ == null) {
+          WorkflowRunTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        WorkflowRunTimeout.MergeFrom(other.WorkflowRunTimeout);
+      }
+      if (other.workflowTaskTimeout_ != null) {
+        if (workflowTaskTimeout_ == null) {
+          WorkflowTaskTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        WorkflowTaskTimeout.MergeFrom(other.WorkflowTaskTimeout);
+      }
+      if (other.WorkflowIdReusePolicy != global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy.Unspecified) {
+        WorkflowIdReusePolicy = other.WorkflowIdReusePolicy;
+      }
+      if (other.retryPolicy_ != null) {
+        if (retryPolicy_ == null) {
+          RetryPolicy = new global::Temporal.Api.Common.V1.RetryPolicy();
+        }
+        RetryPolicy.MergeFrom(other.RetryPolicy);
+      }
+      if (other.CronSchedule.Length != 0) {
+        CronSchedule = other.CronSchedule;
+      }
+      if (other.memo_ != null) {
+        if (memo_ == null) {
+          Memo = new global::Temporal.Api.Common.V1.Memo();
+        }
+        Memo.MergeFrom(other.Memo);
+      }
+      if (other.searchAttributes_ != null) {
+        if (searchAttributes_ == null) {
+          SearchAttributes = new global::Temporal.Api.Common.V1.SearchAttributes();
+        }
+        SearchAttributes.MergeFrom(other.SearchAttributes);
+      }
+      if (other.header_ != null) {
+        if (header_ == null) {
+          Header = new global::Temporal.Api.Common.V1.Header();
+        }
+        Header.MergeFrom(other.Header);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            WorkflowId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (workflowType_ == null) {
+              WorkflowType = new global::Temporal.Api.Common.V1.WorkflowType();
+            }
+            input.ReadMessage(WorkflowType);
+            break;
+          }
+          case 26: {
+            if (taskQueue_ == null) {
+              TaskQueue = new global::Temporal.Api.TaskQueue.V1.TaskQueue();
+            }
+            input.ReadMessage(TaskQueue);
+            break;
+          }
+          case 34: {
+            if (input_ == null) {
+              Input = new global::Temporal.Api.Common.V1.Payloads();
+            }
+            input.ReadMessage(Input);
+            break;
+          }
+          case 42: {
+            if (workflowExecutionTimeout_ == null) {
+              WorkflowExecutionTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(WorkflowExecutionTimeout);
+            break;
+          }
+          case 50: {
+            if (workflowRunTimeout_ == null) {
+              WorkflowRunTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(WorkflowRunTimeout);
+            break;
+          }
+          case 58: {
+            if (workflowTaskTimeout_ == null) {
+              WorkflowTaskTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(WorkflowTaskTimeout);
+            break;
+          }
+          case 64: {
+            WorkflowIdReusePolicy = (global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy) input.ReadEnum();
+            break;
+          }
+          case 74: {
+            if (retryPolicy_ == null) {
+              RetryPolicy = new global::Temporal.Api.Common.V1.RetryPolicy();
+            }
+            input.ReadMessage(RetryPolicy);
+            break;
+          }
+          case 82: {
+            CronSchedule = input.ReadString();
+            break;
+          }
+          case 90: {
+            if (memo_ == null) {
+              Memo = new global::Temporal.Api.Common.V1.Memo();
+            }
+            input.ReadMessage(Memo);
+            break;
+          }
+          case 98: {
+            if (searchAttributes_ == null) {
+              SearchAttributes = new global::Temporal.Api.Common.V1.SearchAttributes();
+            }
+            input.ReadMessage(SearchAttributes);
+            break;
+          }
+          case 106: {
+            if (header_ == null) {
+              Header = new global::Temporal.Api.Common.V1.Header();
+            }
+            input.ReadMessage(Header);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            WorkflowId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (workflowType_ == null) {
+              WorkflowType = new global::Temporal.Api.Common.V1.WorkflowType();
+            }
+            input.ReadMessage(WorkflowType);
+            break;
+          }
+          case 26: {
+            if (taskQueue_ == null) {
+              TaskQueue = new global::Temporal.Api.TaskQueue.V1.TaskQueue();
+            }
+            input.ReadMessage(TaskQueue);
+            break;
+          }
+          case 34: {
+            if (input_ == null) {
+              Input = new global::Temporal.Api.Common.V1.Payloads();
+            }
+            input.ReadMessage(Input);
+            break;
+          }
+          case 42: {
+            if (workflowExecutionTimeout_ == null) {
+              WorkflowExecutionTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(WorkflowExecutionTimeout);
+            break;
+          }
+          case 50: {
+            if (workflowRunTimeout_ == null) {
+              WorkflowRunTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(WorkflowRunTimeout);
+            break;
+          }
+          case 58: {
+            if (workflowTaskTimeout_ == null) {
+              WorkflowTaskTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(WorkflowTaskTimeout);
+            break;
+          }
+          case 64: {
+            WorkflowIdReusePolicy = (global::Temporal.Api.Enums.V1.WorkflowIdReusePolicy) input.ReadEnum();
+            break;
+          }
+          case 74: {
+            if (retryPolicy_ == null) {
+              RetryPolicy = new global::Temporal.Api.Common.V1.RetryPolicy();
+            }
+            input.ReadMessage(RetryPolicy);
+            break;
+          }
+          case 82: {
+            CronSchedule = input.ReadString();
+            break;
+          }
+          case 90: {
+            if (memo_ == null) {
+              Memo = new global::Temporal.Api.Common.V1.Memo();
+            }
+            input.ReadMessage(Memo);
+            break;
+          }
+          case 98: {
+            if (searchAttributes_ == null) {
+              SearchAttributes = new global::Temporal.Api.Common.V1.SearchAttributes();
+            }
+            input.ReadMessage(SearchAttributes);
+            break;
+          }
+          case 106: {
+            if (header_ == null) {
+              Header = new global::Temporal.Api.Common.V1.Header();
+            }
+            input.ReadMessage(Header);
             break;
           }
         }

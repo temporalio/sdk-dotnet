@@ -28,44 +28,46 @@ namespace Temporal.Api.Namespace.V1 {
             "bXBvcmFsLmFwaS5uYW1lc3BhY2UudjEaHmdvb2dsZS9wcm90b2J1Zi9kdXJh",
             "dGlvbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90bxoh",
             "ZGVwZW5kZW5jaWVzL2dvZ29wcm90by9nb2dvLnByb3RvGiV0ZW1wb3JhbC9h",
-            "cGkvZW51bXMvdjEvbmFtZXNwYWNlLnByb3RvIvgBCg1OYW1lc3BhY2VJbmZv",
+            "cGkvZW51bXMvdjEvbmFtZXNwYWNlLnByb3RvIpQCCg1OYW1lc3BhY2VJbmZv",
             "EgwKBG5hbWUYASABKAkSNAoFc3RhdGUYAiABKA4yJS50ZW1wb3JhbC5hcGku",
             "ZW51bXMudjEuTmFtZXNwYWNlU3RhdGUSEwoLZGVzY3JpcHRpb24YAyABKAkS",
             "EwoLb3duZXJfZW1haWwYBCABKAkSQAoEZGF0YRgFIAMoCzIyLnRlbXBvcmFs",
             "LmFwaS5uYW1lc3BhY2UudjEuTmFtZXNwYWNlSW5mby5EYXRhRW50cnkSCgoC",
-            "aWQYBiABKAkaKwoJRGF0YUVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgC",
-            "IAEoCToCOAEi6AIKD05hbWVzcGFjZUNvbmZpZxJJCiB3b3JrZmxvd19leGVj",
-            "dXRpb25fcmV0ZW50aW9uX3R0bBgBIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5E",
-            "dXJhdGlvbkIEmN8fARI8CgxiYWRfYmluYXJpZXMYAiABKAsyJi50ZW1wb3Jh",
-            "bC5hcGkubmFtZXNwYWNlLnYxLkJhZEJpbmFyaWVzEkQKFmhpc3RvcnlfYXJj",
-            "aGl2YWxfc3RhdGUYAyABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuQXJj",
-            "aGl2YWxTdGF0ZRIcChRoaXN0b3J5X2FyY2hpdmFsX3VyaRgEIAEoCRJHChl2",
-            "aXNpYmlsaXR5X2FyY2hpdmFsX3N0YXRlGAUgASgOMiQudGVtcG9yYWwuYXBp",
-            "LmVudW1zLnYxLkFyY2hpdmFsU3RhdGUSHwoXdmlzaWJpbGl0eV9hcmNoaXZh",
-            "bF91cmkYBiABKAkisAEKC0JhZEJpbmFyaWVzEkYKCGJpbmFyaWVzGAEgAygL",
-            "MjQudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5CYWRCaW5hcmllcy5CaW5h",
-            "cmllc0VudHJ5GlkKDUJpbmFyaWVzRW50cnkSCwoDa2V5GAEgASgJEjcKBXZh",
-            "bHVlGAIgASgLMigudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5CYWRCaW5h",
-            "cnlJbmZvOgI4ASJoCg1CYWRCaW5hcnlJbmZvEg4KBnJlYXNvbhgBIAEoCRIQ",
-            "CghvcGVyYXRvchgCIAEoCRI1CgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2ds",
-            "ZS5wcm90b2J1Zi5UaW1lc3RhbXBCBJDfHwEi6gEKE1VwZGF0ZU5hbWVzcGFj",
-            "ZUluZm8SEwoLZGVzY3JpcHRpb24YASABKAkSEwoLb3duZXJfZW1haWwYAiAB",
-            "KAkSRgoEZGF0YRgDIAMoCzI4LnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEu",
-            "VXBkYXRlTmFtZXNwYWNlSW5mby5EYXRhRW50cnkSNAoFc3RhdGUYBCABKA4y",
-            "JS50ZW1wb3JhbC5hcGkuZW51bXMudjEuTmFtZXNwYWNlU3RhdGUaKwoJRGF0",
-            "YUVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAFClAEKHGlv",
-            "LnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjFCDE1lc3NhZ2VQcm90b1ABWiln",
-            "by50ZW1wb3JhbC5pby9hcGkvbmFtZXNwYWNlL3YxO25hbWVzcGFjZaoCGVRl",
-            "bXBvcmFsLkFwaS5OYW1lc3BhY2UuVjHqAhxUZW1wb3JhbDo6QXBpOjpOYW1l",
-            "c3BhY2U6OlYxYgZwcm90bzM="));
+            "aWQYBiABKAkSGgoSc3VwcG9ydHNfc2NoZWR1bGVzGGQgASgIGisKCURhdGFF",
+            "bnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIugCCg9OYW1l",
+            "c3BhY2VDb25maWcSSQogd29ya2Zsb3dfZXhlY3V0aW9uX3JldGVudGlvbl90",
+            "dGwYASABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25CBJjfHwESPAoM",
+            "YmFkX2JpbmFyaWVzGAIgASgLMiYudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52",
+            "MS5CYWRCaW5hcmllcxJEChZoaXN0b3J5X2FyY2hpdmFsX3N0YXRlGAMgASgO",
+            "MiQudGVtcG9yYWwuYXBpLmVudW1zLnYxLkFyY2hpdmFsU3RhdGUSHAoUaGlz",
+            "dG9yeV9hcmNoaXZhbF91cmkYBCABKAkSRwoZdmlzaWJpbGl0eV9hcmNoaXZh",
+            "bF9zdGF0ZRgFIAEoDjIkLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5BcmNoaXZh",
+            "bFN0YXRlEh8KF3Zpc2liaWxpdHlfYXJjaGl2YWxfdXJpGAYgASgJIrABCgtC",
+            "YWRCaW5hcmllcxJGCghiaW5hcmllcxgBIAMoCzI0LnRlbXBvcmFsLmFwaS5u",
+            "YW1lc3BhY2UudjEuQmFkQmluYXJpZXMuQmluYXJpZXNFbnRyeRpZCg1CaW5h",
+            "cmllc0VudHJ5EgsKA2tleRgBIAEoCRI3CgV2YWx1ZRgCIAEoCzIoLnRlbXBv",
+            "cmFsLmFwaS5uYW1lc3BhY2UudjEuQmFkQmluYXJ5SW5mbzoCOAEiaAoNQmFk",
+            "QmluYXJ5SW5mbxIOCgZyZWFzb24YASABKAkSEAoIb3BlcmF0b3IYAiABKAkS",
+            "NQoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
+            "YW1wQgSQ3x8BIuoBChNVcGRhdGVOYW1lc3BhY2VJbmZvEhMKC2Rlc2NyaXB0",
+            "aW9uGAEgASgJEhMKC293bmVyX2VtYWlsGAIgASgJEkYKBGRhdGEYAyADKAsy",
+            "OC50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLlVwZGF0ZU5hbWVzcGFjZUlu",
+            "Zm8uRGF0YUVudHJ5EjQKBXN0YXRlGAQgASgOMiUudGVtcG9yYWwuYXBpLmVu",
+            "dW1zLnYxLk5hbWVzcGFjZVN0YXRlGisKCURhdGFFbnRyeRILCgNrZXkYASAB",
+            "KAkSDQoFdmFsdWUYAiABKAk6AjgBIioKD05hbWVzcGFjZUZpbHRlchIXCg9p",
+            "bmNsdWRlX2RlbGV0ZWQYASABKAhClAEKHGlvLnRlbXBvcmFsLmFwaS5uYW1l",
+            "c3BhY2UudjFCDE1lc3NhZ2VQcm90b1ABWilnby50ZW1wb3JhbC5pby9hcGkv",
+            "bmFtZXNwYWNlL3YxO25hbWVzcGFjZaoCGVRlbXBvcmFsLkFwaS5OYW1lc3Bh",
+            "Y2UuVjHqAhxUZW1wb3JhbDo6QXBpOjpOYW1lc3BhY2U6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, global::Temporal.Api.Enums.V1.NamespaceReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.NamespaceInfo), global::Temporal.Api.Namespace.V1.NamespaceInfo.Parser, new[]{ "Name", "State", "Description", "OwnerEmail", "Data", "Id" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.NamespaceInfo), global::Temporal.Api.Namespace.V1.NamespaceInfo.Parser, new[]{ "Name", "State", "Description", "OwnerEmail", "Data", "Id", "SupportsSchedules" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.NamespaceConfig), global::Temporal.Api.Namespace.V1.NamespaceConfig.Parser, new[]{ "WorkflowExecutionRetentionTtl", "BadBinaries", "HistoryArchivalState", "HistoryArchivalUri", "VisibilityArchivalState", "VisibilityArchivalUri" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.BadBinaries), global::Temporal.Api.Namespace.V1.BadBinaries.Parser, new[]{ "Binaries" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.BadBinaryInfo), global::Temporal.Api.Namespace.V1.BadBinaryInfo.Parser, new[]{ "Reason", "Operator", "CreateTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.UpdateNamespaceInfo), global::Temporal.Api.Namespace.V1.UpdateNamespaceInfo.Parser, new[]{ "Description", "OwnerEmail", "Data", "State" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, })
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.UpdateNamespaceInfo), global::Temporal.Api.Namespace.V1.UpdateNamespaceInfo.Parser, new[]{ "Description", "OwnerEmail", "Data", "State" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Namespace.V1.NamespaceFilter), global::Temporal.Api.Namespace.V1.NamespaceFilter.Parser, new[]{ "IncludeDeleted" }, null, null, null, null)
           }));
     }
     #endregion
@@ -112,6 +114,7 @@ namespace Temporal.Api.Namespace.V1 {
       ownerEmail_ = other.ownerEmail_;
       data_ = other.data_.Clone();
       id_ = other.id_;
+      supportsSchedules_ = other.supportsSchedules_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -195,6 +198,22 @@ namespace Temporal.Api.Namespace.V1 {
       }
     }
 
+    /// <summary>Field number for the "supports_schedules" field.</summary>
+    public const int SupportsSchedulesFieldNumber = 100;
+    private bool supportsSchedules_;
+    /// <summary>
+    /// Whether scheduled workflows are supported on this namespace. This is only needed
+    /// temporarily while the feature is experimental, so we can give it a high tag.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool SupportsSchedules {
+      get { return supportsSchedules_; }
+      set {
+        supportsSchedules_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -216,6 +235,7 @@ namespace Temporal.Api.Namespace.V1 {
       if (OwnerEmail != other.OwnerEmail) return false;
       if (!Data.Equals(other.Data)) return false;
       if (Id != other.Id) return false;
+      if (SupportsSchedules != other.SupportsSchedules) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -229,6 +249,7 @@ namespace Temporal.Api.Namespace.V1 {
       if (OwnerEmail.Length != 0) hash ^= OwnerEmail.GetHashCode();
       hash ^= Data.GetHashCode();
       if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (SupportsSchedules != false) hash ^= SupportsSchedules.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -268,6 +289,10 @@ namespace Temporal.Api.Namespace.V1 {
         output.WriteRawTag(50);
         output.WriteString(Id);
       }
+      if (SupportsSchedules != false) {
+        output.WriteRawTag(160, 6);
+        output.WriteBool(SupportsSchedules);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -299,6 +324,10 @@ namespace Temporal.Api.Namespace.V1 {
         output.WriteRawTag(50);
         output.WriteString(Id);
       }
+      if (SupportsSchedules != false) {
+        output.WriteRawTag(160, 6);
+        output.WriteBool(SupportsSchedules);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -324,6 +353,9 @@ namespace Temporal.Api.Namespace.V1 {
       size += data_.CalculateSize(_map_data_codec);
       if (Id.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      }
+      if (SupportsSchedules != false) {
+        size += 2 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -352,6 +384,9 @@ namespace Temporal.Api.Namespace.V1 {
       data_.Add(other.data_);
       if (other.Id.Length != 0) {
         Id = other.Id;
+      }
+      if (other.SupportsSchedules != false) {
+        SupportsSchedules = other.SupportsSchedules;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -392,6 +427,10 @@ namespace Temporal.Api.Namespace.V1 {
             Id = input.ReadString();
             break;
           }
+          case 800: {
+            SupportsSchedules = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -429,6 +468,10 @@ namespace Temporal.Api.Namespace.V1 {
           }
           case 50: {
             Id = input.ReadString();
+            break;
+          }
+          case 800: {
+            SupportsSchedules = input.ReadBool();
             break;
           }
         }
@@ -1364,6 +1407,8 @@ namespace Temporal.Api.Namespace.V1 {
     private readonly pbc::MapField<string, string> data_ = new pbc::MapField<string, string>();
     /// <summary>
     /// A key-value map for any customized purpose.
+    /// If data already exists on the namespace, 
+    /// this will merge with the existing key values. 
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1576,6 +1621,200 @@ namespace Temporal.Api.Namespace.V1 {
           }
           case 32: {
             State = (global::Temporal.Api.Enums.V1.NamespaceState) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class NamespaceFilter : pb::IMessage<NamespaceFilter>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<NamespaceFilter> _parser = new pb::MessageParser<NamespaceFilter>(() => new NamespaceFilter());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<NamespaceFilter> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporal.Api.Namespace.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NamespaceFilter() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NamespaceFilter(NamespaceFilter other) : this() {
+      includeDeleted_ = other.includeDeleted_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NamespaceFilter Clone() {
+      return new NamespaceFilter(this);
+    }
+
+    /// <summary>Field number for the "include_deleted" field.</summary>
+    public const int IncludeDeletedFieldNumber = 1;
+    private bool includeDeleted_;
+    /// <summary>
+    /// By default namespaces in NAMESPACE_STATE_DELETED state are not included.
+    /// Setting include_deleted to true will include deleted namespaces.
+    /// Note: Namespace is in NAMESPACE_STATE_DELETED state when it was deleted from the system but associated data is not deleted yet.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IncludeDeleted {
+      get { return includeDeleted_; }
+      set {
+        includeDeleted_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as NamespaceFilter);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(NamespaceFilter other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (IncludeDeleted != other.IncludeDeleted) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (IncludeDeleted != false) hash ^= IncludeDeleted.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (IncludeDeleted != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(IncludeDeleted);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (IncludeDeleted != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(IncludeDeleted);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (IncludeDeleted != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(NamespaceFilter other) {
+      if (other == null) {
+        return;
+      }
+      if (other.IncludeDeleted != false) {
+        IncludeDeleted = other.IncludeDeleted;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            IncludeDeleted = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            IncludeDeleted = input.ReadBool();
             break;
           }
         }

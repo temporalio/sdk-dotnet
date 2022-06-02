@@ -241,6 +241,34 @@ namespace Temporal.Api.WorkflowService.V1 {
     static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest> __Marshaller_temporal_api_workflowservice_v1_ListTaskQueuePartitionsRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse> __Marshaller_temporal_api_workflowservice_v1_ListTaskQueuePartitionsResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest> __Marshaller_temporal_api_workflowservice_v1_CreateScheduleRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse> __Marshaller_temporal_api_workflowservice_v1_CreateScheduleResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest> __Marshaller_temporal_api_workflowservice_v1_DescribeScheduleRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse> __Marshaller_temporal_api_workflowservice_v1_DescribeScheduleResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest> __Marshaller_temporal_api_workflowservice_v1_UpdateScheduleRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse> __Marshaller_temporal_api_workflowservice_v1_UpdateScheduleResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest> __Marshaller_temporal_api_workflowservice_v1_PatchScheduleRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse> __Marshaller_temporal_api_workflowservice_v1_PatchScheduleResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest> __Marshaller_temporal_api_workflowservice_v1_ListScheduleMatchingTimesRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse> __Marshaller_temporal_api_workflowservice_v1_ListScheduleMatchingTimesResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest> __Marshaller_temporal_api_workflowservice_v1_DeleteScheduleRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse> __Marshaller_temporal_api_workflowservice_v1_DeleteScheduleResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest> __Marshaller_temporal_api_workflowservice_v1_ListSchedulesRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse> __Marshaller_temporal_api_workflowservice_v1_ListSchedulesResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.RegisterNamespaceRequest, global::Temporal.Api.WorkflowService.V1.RegisterNamespaceResponse> __Method_RegisterNamespace = new grpc::Method<global::Temporal.Api.WorkflowService.V1.RegisterNamespaceRequest, global::Temporal.Api.WorkflowService.V1.RegisterNamespaceResponse>(
@@ -561,6 +589,62 @@ namespace Temporal.Api.WorkflowService.V1 {
         "ListTaskQueuePartitions",
         __Marshaller_temporal_api_workflowservice_v1_ListTaskQueuePartitionsRequest,
         __Marshaller_temporal_api_workflowservice_v1_ListTaskQueuePartitionsResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest, global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse> __Method_CreateSchedule = new grpc::Method<global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest, global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "CreateSchedule",
+        __Marshaller_temporal_api_workflowservice_v1_CreateScheduleRequest,
+        __Marshaller_temporal_api_workflowservice_v1_CreateScheduleResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest, global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse> __Method_DescribeSchedule = new grpc::Method<global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest, global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "DescribeSchedule",
+        __Marshaller_temporal_api_workflowservice_v1_DescribeScheduleRequest,
+        __Marshaller_temporal_api_workflowservice_v1_DescribeScheduleResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest, global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse> __Method_UpdateSchedule = new grpc::Method<global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest, global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "UpdateSchedule",
+        __Marshaller_temporal_api_workflowservice_v1_UpdateScheduleRequest,
+        __Marshaller_temporal_api_workflowservice_v1_UpdateScheduleResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest, global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse> __Method_PatchSchedule = new grpc::Method<global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest, global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "PatchSchedule",
+        __Marshaller_temporal_api_workflowservice_v1_PatchScheduleRequest,
+        __Marshaller_temporal_api_workflowservice_v1_PatchScheduleResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest, global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse> __Method_ListScheduleMatchingTimes = new grpc::Method<global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest, global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "ListScheduleMatchingTimes",
+        __Marshaller_temporal_api_workflowservice_v1_ListScheduleMatchingTimesRequest,
+        __Marshaller_temporal_api_workflowservice_v1_ListScheduleMatchingTimesResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest, global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse> __Method_DeleteSchedule = new grpc::Method<global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest, global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "DeleteSchedule",
+        __Marshaller_temporal_api_workflowservice_v1_DeleteScheduleRequest,
+        __Marshaller_temporal_api_workflowservice_v1_DeleteScheduleResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest, global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse> __Method_ListSchedules = new grpc::Method<global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest, global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "ListSchedules",
+        __Marshaller_temporal_api_workflowservice_v1_ListSchedulesRequest,
+        __Marshaller_temporal_api_workflowservice_v1_ListSchedulesResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -1899,9 +1983,9 @@ namespace Temporal.Api.WorkflowService.V1 {
       /// RequestCancelWorkflowExecution is called by workers when they want to request cancellation of
       /// a workflow execution.
       ///
-      /// This result in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
-      /// workflow history and a new workflow task created for the workflow. Fails with `NotFound` if
-      /// the workflow is already completed or doesn't exist.
+      /// This results in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
+      /// workflow history and a new workflow task created for the workflow. It returns success if the requested
+      /// workflow is already closed. It fails with 'NotFound' if the requested workflow doesn't exist.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -1917,9 +2001,9 @@ namespace Temporal.Api.WorkflowService.V1 {
       /// RequestCancelWorkflowExecution is called by workers when they want to request cancellation of
       /// a workflow execution.
       ///
-      /// This result in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
-      /// workflow history and a new workflow task created for the workflow. Fails with `NotFound` if
-      /// the workflow is already completed or doesn't exist.
+      /// This results in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
+      /// workflow history and a new workflow task created for the workflow. It returns success if the requested
+      /// workflow is already closed. It fails with 'NotFound' if the requested workflow doesn't exist.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -1933,9 +2017,9 @@ namespace Temporal.Api.WorkflowService.V1 {
       /// RequestCancelWorkflowExecution is called by workers when they want to request cancellation of
       /// a workflow execution.
       ///
-      /// This result in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
-      /// workflow history and a new workflow task created for the workflow. Fails with `NotFound` if
-      /// the workflow is already completed or doesn't exist.
+      /// This results in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
+      /// workflow history and a new workflow task created for the workflow. It returns success if the requested
+      /// workflow is already closed. It fails with 'NotFound' if the requested workflow doesn't exist.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -1951,9 +2035,9 @@ namespace Temporal.Api.WorkflowService.V1 {
       /// RequestCancelWorkflowExecution is called by workers when they want to request cancellation of
       /// a workflow execution.
       ///
-      /// This result in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
-      /// workflow history and a new workflow task created for the workflow. Fails with `NotFound` if
-      /// the workflow is already completed or doesn't exist.
+      /// This results in a new `WORKFLOW_EXECUTION_CANCEL_REQUESTED` event being written to the
+      /// workflow history and a new workflow task created for the workflow. It returns success if the requested
+      /// workflow is already closed. It fails with 'NotFound' if the requested workflow doesn't exist.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -2962,6 +3046,406 @@ namespace Temporal.Api.WorkflowService.V1 {
       public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse> ListTaskQueuePartitionsAsync(global::Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_ListTaskQueuePartitions, null, options, request);
+      }
+      /// <summary>
+      /// Creates a new schedule.
+      /// (-- api-linter: core::0133::method-signature=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::response-message-name=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::http-uri-parent=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse CreateSchedule(global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return CreateSchedule(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Creates a new schedule.
+      /// (-- api-linter: core::0133::method-signature=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::response-message-name=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::http-uri-parent=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse CreateSchedule(global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_CreateSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Creates a new schedule.
+      /// (-- api-linter: core::0133::method-signature=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::response-message-name=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::http-uri-parent=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse> CreateScheduleAsync(global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return CreateScheduleAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Creates a new schedule.
+      /// (-- api-linter: core::0133::method-signature=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::response-message-name=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0133::http-uri-parent=disabled
+      ///     aip.dev/not-precedent: CreateSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.CreateScheduleResponse> CreateScheduleAsync(global::Temporal.Api.WorkflowService.V1.CreateScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_CreateSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Returns the schedule description and current state of an existing schedule.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse DescribeSchedule(global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DescribeSchedule(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Returns the schedule description and current state of an existing schedule.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse DescribeSchedule(global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_DescribeSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Returns the schedule description and current state of an existing schedule.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse> DescribeScheduleAsync(global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DescribeScheduleAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Returns the schedule description and current state of an existing schedule.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.DescribeScheduleResponse> DescribeScheduleAsync(global::Temporal.Api.WorkflowService.V1.DescribeScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_DescribeSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Changes the configuration or state of an existing schedule.
+      /// (-- api-linter: core::0134::response-message-name=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0134::method-signature=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse UpdateSchedule(global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return UpdateSchedule(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Changes the configuration or state of an existing schedule.
+      /// (-- api-linter: core::0134::response-message-name=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0134::method-signature=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse UpdateSchedule(global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_UpdateSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Changes the configuration or state of an existing schedule.
+      /// (-- api-linter: core::0134::response-message-name=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0134::method-signature=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse> UpdateScheduleAsync(global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return UpdateScheduleAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Changes the configuration or state of an existing schedule.
+      /// (-- api-linter: core::0134::response-message-name=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0134::method-signature=disabled
+      ///     aip.dev/not-precedent: UpdateSchedule RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.UpdateScheduleResponse> UpdateScheduleAsync(global::Temporal.Api.WorkflowService.V1.UpdateScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_UpdateSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Makes a specific change to a schedule or triggers an immediate action.
+      /// (-- api-linter: core::0134::synonyms=disabled
+      ///     aip.dev/not-precedent: we have both patch and update. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse PatchSchedule(global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return PatchSchedule(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Makes a specific change to a schedule or triggers an immediate action.
+      /// (-- api-linter: core::0134::synonyms=disabled
+      ///     aip.dev/not-precedent: we have both patch and update. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse PatchSchedule(global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_PatchSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Makes a specific change to a schedule or triggers an immediate action.
+      /// (-- api-linter: core::0134::synonyms=disabled
+      ///     aip.dev/not-precedent: we have both patch and update. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse> PatchScheduleAsync(global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return PatchScheduleAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Makes a specific change to a schedule or triggers an immediate action.
+      /// (-- api-linter: core::0134::synonyms=disabled
+      ///     aip.dev/not-precedent: we have both patch and update. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.PatchScheduleResponse> PatchScheduleAsync(global::Temporal.Api.WorkflowService.V1.PatchScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_PatchSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Lists matching times within a range.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse ListScheduleMatchingTimes(global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListScheduleMatchingTimes(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Lists matching times within a range.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse ListScheduleMatchingTimes(global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_ListScheduleMatchingTimes, null, options, request);
+      }
+      /// <summary>
+      /// Lists matching times within a range.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse> ListScheduleMatchingTimesAsync(global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListScheduleMatchingTimesAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Lists matching times within a range.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse> ListScheduleMatchingTimesAsync(global::Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_ListScheduleMatchingTimes, null, options, request);
+      }
+      /// <summary>
+      /// Deletes a schedule, removing it from the system.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse DeleteSchedule(global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DeleteSchedule(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Deletes a schedule, removing it from the system.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse DeleteSchedule(global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_DeleteSchedule, null, options, request);
+      }
+      /// <summary>
+      /// Deletes a schedule, removing it from the system.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse> DeleteScheduleAsync(global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DeleteScheduleAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// Deletes a schedule, removing it from the system.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteSchedule doesn't follow Google API format --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.DeleteScheduleResponse> DeleteScheduleAsync(global::Temporal.Api.WorkflowService.V1.DeleteScheduleRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_DeleteSchedule, null, options, request);
+      }
+      /// <summary>
+      /// List all schedules in a namespace.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse ListSchedules(global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListSchedules(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// List all schedules in a namespace.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse ListSchedules(global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_ListSchedules, null, options, request);
+      }
+      /// <summary>
+      /// List all schedules in a namespace.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse> ListSchedulesAsync(global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListSchedulesAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// List all schedules in a namespace.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.WorkflowService.V1.ListSchedulesResponse> ListSchedulesAsync(global::Temporal.Api.WorkflowService.V1.ListSchedulesRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_ListSchedules, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]

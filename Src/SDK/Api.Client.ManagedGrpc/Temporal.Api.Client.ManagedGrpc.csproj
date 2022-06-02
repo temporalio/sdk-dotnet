@@ -19,7 +19,34 @@
     <IsProtoApiRepoPresent Condition="Exists('$(ProtoApiRepoBaseDir)')">true</IsProtoApiRepoPresent>
     <IsProtoApiRepoPresent Condition="!Exists('$(ProtoApiRepoBaseDir)')">false</IsProtoApiRepoPresent>
   </PropertyGroup> 
-
+  
+  <!--
+  Turning these on and off seems to affect some ghost issues in intellisense (not Build), and duplication warnings.
+  Need to watch thing before settling on a direction.
+  { - - - - - - - - - - -  
+  -->
+  <PropertyGroup>
+    <DirectCompileCs>true</DirectCompileCs>
+    <CompileProtobufCs>false</CompileProtobufCs>
+  </PropertyGroup>
+  <!--
+  - - - - - - - - - - - }
+  -->
+  
+  <PropertyGroup>
+    <CleanCompileItems>false</CleanCompileItems>
+    <CleanCompileItems Condition="'$(DirectCompileCs)' != 'true' And '$(IsProtoApiRepoPresent)' == 'true'">true</CleanCompileItems>
+  </PropertyGroup>
+  
+  <ItemGroup Condition="'$(CleanCompileItems)' == 'true'">
+    <!--
+    Ensure we do not try to compile the files in $(AutoGenOutputBaseDir) again, since they are already compiled by `Grpc.Tools`
+    via the `CompileOutputs="true"` option on the `Protobuf` items collection. See the long comment above for details.
+    -->    
+    <Compile Remove = "$(AutoGenOutputBaseDir)\**\*.*" />
+    <None Include = "$(AutoGenOutputBaseDir)\**\*.*" />
+  </ItemGroup>
+  
   <ItemGroup Condition="'$(IsProtoApiRepoPresent)' == 'true'">
     <!--
     If the Temporal Proto API repo is located at `$(ProtoApiRepoBaseDir)`, we will compile the proto files and place the results
@@ -29,23 +56,17 @@
      - If the protos, and thus the resulting auto-generated CS files change, the respective delta will be explicitly visible in
        the PR. The developers will can take note, and can act on it, if required.
      - Having using enlisted source files avoid some difficulties with the Src Doc generation tooling and allows the API Docs to
-       point to sources.
-    
-    We set `CompileOutputs` to false. Instead, we compile the generated files in a normal manner, like any other project file
-    would be. The advantage of it is that the will be compiled using the normal build cycle. On contrary, using `CompileOutputs`
-    sometimes results in an eager compilation initialted by the `Grpc.Tools` package.
+       point to sources.    
     -->
     <Protobuf Include="$(ProtoApiRepoBaseDir)\**\*.proto"
               Link="ProtoApi\%(RecursiveDir)%(Filename)%(Extension)"
               Access="Public"
               ProtoCompile="True"
               ProtoRoot="$(ProtoApiRepoBaseDir)"
-              CompileOutputs="false"
+              CompileOutputs="$(CompileProtobufCs)"
               GrpcServices="none"              
               OutputDir="$(AutoGenOutputBaseDir)"
               GrpcOutputDir="$(AutoGenOutputBaseDir)" />
-              
-
     <!--
     Most Proto files only define data contracts, so we use `GrpcServices="none"` above.
     Below we must explicity enable the generation of the service client stub for the Protos that contain a service definition.
@@ -62,8 +83,14 @@
     <Message Text="[$(MSBuildProjectName)]    TargetFramework=&quot;$(TargetFramework)&quot;; Configuration=&quot;$(Configuration)&quot;; Platform=&quot;$(Platform)&quot;; Project=&quot;$(MSBuildProjectFullPath)&quot;."
              Importance="high" />
 
+    
+    <Message Text="[$(MSBuildProjectName)]    DirectCompileCs = &quot;$(DirectCompileCs)&quot;." Importance="high" />
+    <Message Text="[$(MSBuildProjectName)]    CompileProtobufCs = &quot;$(CompileProtobufCs)&quot;." Importance="high" />
+    
     <Message Text="[$(MSBuildProjectName)]    ProtoApiRepoBaseDir = &quot;$(ProtoApiRepoBaseDir)&quot;." Importance="high" />
     <Message Text="[$(MSBuildProjectName)]    IsProtoApiRepoPresent = &quot;$(IsProtoApiRepoPresent)&quot;." Importance="high" />
+    
+    <Message Text="[$(MSBuildProjectName)]    CleanCompileItems = &quot;$(CleanCompileItems)&quot;; Compile->Count() = &quot;@(Compile->Count())&quot;." Importance="high" />
     
     <Message Text="[$(MSBuildProjectName)]    New CS files for gRPC Stubs and Data Contracts will NOT be re-generated from Protos." Importance="high"
              Condition="'$(IsProtoApiRepoPresent)' != 'true'"/>

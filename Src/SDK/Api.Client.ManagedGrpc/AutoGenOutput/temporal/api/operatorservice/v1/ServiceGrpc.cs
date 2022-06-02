@@ -86,6 +86,14 @@ namespace Temporal.Api.OperatorService.V1 {
     static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.ListSearchAttributesRequest> __Marshaller_temporal_api_operatorservice_v1_ListSearchAttributesRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.ListSearchAttributesRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.ListSearchAttributesResponse> __Marshaller_temporal_api_operatorservice_v1_ListSearchAttributesResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.ListSearchAttributesResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest> __Marshaller_temporal_api_operatorservice_v1_DeleteNamespaceRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse> __Marshaller_temporal_api_operatorservice_v1_DeleteNamespaceResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest> __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse> __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.AddSearchAttributesRequest, global::Temporal.Api.OperatorService.V1.AddSearchAttributesResponse> __Method_AddSearchAttributes = new grpc::Method<global::Temporal.Api.OperatorService.V1.AddSearchAttributesRequest, global::Temporal.Api.OperatorService.V1.AddSearchAttributesResponse>(
@@ -110,6 +118,22 @@ namespace Temporal.Api.OperatorService.V1 {
         "ListSearchAttributes",
         __Marshaller_temporal_api_operatorservice_v1_ListSearchAttributesRequest,
         __Marshaller_temporal_api_operatorservice_v1_ListSearchAttributesResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest, global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse> __Method_DeleteNamespace = new grpc::Method<global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest, global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "DeleteNamespace",
+        __Marshaller_temporal_api_operatorservice_v1_DeleteNamespaceRequest,
+        __Marshaller_temporal_api_operatorservice_v1_DeleteNamespaceResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest, global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse> __Method_DeleteWorkflowExecution = new grpc::Method<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest, global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "DeleteWorkflowExecution",
+        __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionRequest,
+        __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -261,7 +285,7 @@ namespace Temporal.Api.OperatorService.V1 {
         return CallInvoker.AsyncUnaryCall(__Method_RemoveSearchAttributes, null, options, request);
       }
       /// <summary>
-      /// GetSearchAttributes returns comprehensive information about search attributes.
+      /// ListSearchAttributes returns comprehensive information about search attributes.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -274,7 +298,7 @@ namespace Temporal.Api.OperatorService.V1 {
         return ListSearchAttributes(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// GetSearchAttributes returns comprehensive information about search attributes.
+      /// ListSearchAttributes returns comprehensive information about search attributes.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -285,7 +309,7 @@ namespace Temporal.Api.OperatorService.V1 {
         return CallInvoker.BlockingUnaryCall(__Method_ListSearchAttributes, null, options, request);
       }
       /// <summary>
-      /// GetSearchAttributes returns comprehensive information about search attributes.
+      /// ListSearchAttributes returns comprehensive information about search attributes.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -298,7 +322,7 @@ namespace Temporal.Api.OperatorService.V1 {
         return ListSearchAttributesAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// GetSearchAttributes returns comprehensive information about search attributes.
+      /// ListSearchAttributes returns comprehensive information about search attributes.
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -307,6 +331,138 @@ namespace Temporal.Api.OperatorService.V1 {
       public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.ListSearchAttributesResponse> ListSearchAttributesAsync(global::Temporal.Api.OperatorService.V1.ListSearchAttributesRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_ListSearchAttributes, null, options, request);
+      }
+      /// <summary>
+      /// DeleteNamespace synchronously deletes a namespace and asynchronously reclaims all namespace resources.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse DeleteNamespace(global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DeleteNamespace(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// DeleteNamespace synchronously deletes a namespace and asynchronously reclaims all namespace resources.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse DeleteNamespace(global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_DeleteNamespace, null, options, request);
+      }
+      /// <summary>
+      /// DeleteNamespace synchronously deletes a namespace and asynchronously reclaims all namespace resources.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse> DeleteNamespaceAsync(global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DeleteNamespaceAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// DeleteNamespace synchronously deletes a namespace and asynchronously reclaims all namespace resources.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.DeleteNamespaceResponse> DeleteNamespaceAsync(global::Temporal.Api.OperatorService.V1.DeleteNamespaceRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_DeleteNamespace, null, options, request);
+      }
+      /// <summary>
+      /// DeleteWorkflowExecution deletes a closed workflow execution asynchronously (workflow must be completed or terminated before).
+      /// This method is EXPERIMENTAL and may be changed or removed in a later release.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse DeleteWorkflowExecution(global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DeleteWorkflowExecution(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// DeleteWorkflowExecution deletes a closed workflow execution asynchronously (workflow must be completed or terminated before).
+      /// This method is EXPERIMENTAL and may be changed or removed in a later release.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse DeleteWorkflowExecution(global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_DeleteWorkflowExecution, null, options, request);
+      }
+      /// <summary>
+      /// DeleteWorkflowExecution deletes a closed workflow execution asynchronously (workflow must be completed or terminated before).
+      /// This method is EXPERIMENTAL and may be changed or removed in a later release.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse> DeleteWorkflowExecutionAsync(global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DeleteWorkflowExecutionAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// DeleteWorkflowExecution deletes a closed workflow execution asynchronously (workflow must be completed or terminated before).
+      /// This method is EXPERIMENTAL and may be changed or removed in a later release.
+      /// (-- api-linter: core::0135::method-signature=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// (-- api-linter: core::0135::response-message-name=disabled
+      ///     aip.dev/not-precedent: DeleteNamespace RPC doesn't follow Google API format. --)
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse> DeleteWorkflowExecutionAsync(global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_DeleteWorkflowExecution, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
