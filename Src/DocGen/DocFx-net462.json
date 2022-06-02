@@ -9,6 +9,9 @@
   // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator-A-Prepare.csproj`
   // project before invoking DocFx.
 
+  // The order in which we run the generation for the docs is important (see comments below).
+  // (1) Net Fx, (2) Net Core, (3) Net 6
+
   "metadata": [
     {
       "src": [
@@ -21,7 +24,7 @@
           ]
         }
       ],
-      "dest": "ApiDoc/net462",
+      "dest": "ApiDoc/net462/Sdk",
       "filter": "Filter-AllTemporalGrpcApi.yml",
       "properties": {
         "TargetFramework": "net462"
@@ -59,7 +62,10 @@
         "src": "ApiDoc/net462",
         "files": [ "**.yml", "index.md" ],
         "dest": "ApiDoc/net462"
+
       },
+      // Pre-populate the index pages for the other targets with placeholders.
+      // We run this target (Net Fx 4.x) first, we cannot overwrite the other target's landing pages.
       {
         "src": "ApiDoc/netcoreapp3.1",
         "files": [ "toc.yml", "index.md" ],

@@ -12,5 +12,5 @@ For example, Net Fx and Net Core use different gRPC implementations, which requi
 
 Use the links below to switch to browsing an SDK targeting a different .NET version:
 
-* [Temporal SDK for **Net Core 3.1**](../netcoreapp3.1/index.md).
-* [Temporal SDK for **Net 6**](../net6.0/index.md).
+* [Temporal SDK for **Net Core 3.1**](../netcoreapp3.1/).
+* [Temporal SDK for **Net 6**](../net6.0/).

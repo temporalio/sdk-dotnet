@@ -1,4 +1,12 @@
-- name: Overview
+- name: Temporal SDK for .NET
+        (v. Alpha)
+  href: /
+- name: API Reference
+  href: /ApiDoc/
+- name: Articles
   href: index.md
-- name: Repo
-  href: https://github.com/temporalio/sdk-dotnet
+  items:
+    - name: Repo on Github
+      href: https://github.com/temporalio/sdk-dotnet
+    - name: Readme
+      href: https://github.com/temporalio/sdk-dotnet/blob/master/README.md
