@@ -52,12 +52,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- All filed in the `$(EnlistmentRoot)\Docs` folder must be copied into the DocFx working / binary folder before we build the docs: -->
+    <!-- All filed in the `$(EnlistmentRoot)\Doc` folder must be copied into the DocFx working / binary folder before we build the docs: -->
     
     <ExternalItemToDocFxBuildRoot Include="$(DocFilesRoot)/**/*" />
     
     <!-- Display these files as a group in VS Solution Explorer: -->
-    <None Include="@(ExternalItemToDocFxBuildRoot)" Link="_Repo\Docs\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
+    <None Include="@(ExternalItemToDocFxBuildRoot)" Link="_Repo\Doc\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
   
   </ItemGroup>
       

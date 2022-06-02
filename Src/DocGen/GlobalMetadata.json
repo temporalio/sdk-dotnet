@@ -6,6 +6,6 @@
   "_enableSearch": "true",
   "_enableNewTab": "true",
   "_gitContribute": {
-    "apiSpecFolder": "Docs/ApiDoc"
+    "apiSpecFolder": "Doc/ApiDoc"
   }
 }

@@ -24,8 +24,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- All files in the `$(EnlistmentRoot)\Docs` are relevant. Display them as a group in VS Solution Explorer: -->
-    <None Include="$(DocFilesRoot)/**/*" Link="_Repo\Docs\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
+    <!-- All files in the `$(EnlistmentRoot)\Doc` are relevant. Display them as a group in VS Solution Explorer: -->
+    <None Include="$(DocFilesRoot)/**/*" Link="_Repo\Doc\%(RecursiveDir)%(Filename)%(Extension)" Visible="true" />
 
   </ItemGroup>
 

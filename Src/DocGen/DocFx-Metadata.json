@@ -62,7 +62,7 @@
     // Remember that paths here are relative to `$(BuildOutputRoot)\DocFx\`.
     // See the comment at the top of this file for details.
     //
-    // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator.csproj` project before invoking DocFx.
+    // In addition, the contents of `$(EnlistmentRoot)\Doc` are copied to `.\Doc` by the `DocFxGenerator.csproj` project before invoking DocFx.
     "content": [
       {
         "src": "ApiDoc",
@@ -131,7 +131,7 @@
     // Remember that paths here are relative to `$(BuildOutputRoot)\DocFx\`.
     // See the comment at the top of this file for details.
     //
-    // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator.csproj` project before invoking DocFx.
+    // In addition, the contents of `$(EnlistmentRoot)\Doc` are copied to `.\Doc` by the `DocFxGenerator.csproj` project before invoking DocFx.
     "content": [
       {
         "src": "ApiDoc",
@@ -200,7 +200,7 @@
   //  // Remember that paths here are relative to `$(BuildOutputRoot)\DocFx\`.
   //  // See the comment at the top of this file for details.
   //  //
-  //  // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator.csproj` project before invoking DocFx.
+  //  // In addition, the contents of `$(EnlistmentRoot)\Doc` are copied to `.\Doc` by the `DocFxGenerator.csproj` project before invoking DocFx.
   //  "content": [
   //    {
   //      "src": "ApiDoc",

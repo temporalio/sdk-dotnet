@@ -23,7 +23,7 @@
     <TimeStampNow>$([System.DateTime]::Now.ToString(yyMMdd-HHmmss))</TimeStampNow>
     
     <!-- Location of the documentation files, articles and the-like in the repo: -->    
-    <DocFilesRoot>$(EnlistmentRoot)\Docs</DocFilesRoot>
+    <DocFilesRoot>$(EnlistmentRoot)\Doc</DocFilesRoot>
     
     <!-- Working directory / output directory for DocFx (licated in the overall build output directory): -->
     <DocFxBuildRoot>$(BuildOutputRoot)\DocFx</DocFxBuildRoot>

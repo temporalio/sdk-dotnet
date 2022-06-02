@@ -6,7 +6,7 @@
   // Usually, it is `$(EnlistmentRoot)\..\$(BuildOutputFolderName)` = `$(EnlistmentRoot)\..\_build`, but it can also be
   //  set to `$(EnlistmentRoot)\$(BuildOutputFolderName)` by modifying the `$(ForceBinaryOutputIntoEnlistment)` flag.
   //
-  // In addition, the contents of `$(EnlistmentRoot)\Docs` are copied to `.\Docs` by the `DocFxGenerator-A-Prepare.csproj`
+  // In addition, the contents of `$(EnlistmentRoot)\Doc` are copied to `.\Doc` by the `DocFxGenerator-A-Prepare.csproj`
   // project before invoking DocFx.
 
   // The order in which we run the generation for the docs is important (see comments below).

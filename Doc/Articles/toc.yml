@@ -1,3 +1,5 @@
+# This file helps defining the navigation structure for the DocFx-generated site.
+#
 - name: Temporal SDK for .NET
         (Alpha)
   href: /

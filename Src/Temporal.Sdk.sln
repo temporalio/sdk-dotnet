@@ -85,7 +85,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Temporal.Sdk.Common.Test.Unit", "Test\SDK\Common\Temporal.Sdk.Common.Test.Unit.csproj", "{E3F286FE-170B-4FB0-B32B-89E2E6493758}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{9D4F6D41-EE7D-4261-B963-B19568A3BBB9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{9D4F6D41-EE7D-4261-B963-B19568A3BBB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DocFxGenerator-A-Prepare", "DocGen\DocFxGenerator-A-Prepare.csproj", "{AFFEA009-00EF-425B-9C85-FC49DF70DC08}"
 EndProject
