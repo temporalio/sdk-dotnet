@@ -1,0 +1,306 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+    <!-- When building from the command line, specify the `BuildDocFx` property to control whether documentation needs to be built. -->
+    <!-- By default, we do NOT build it.                                                                                            -->
+    <!-- Modify `BuildDocFx` to change the default.                                                                                 -->
+  
+    <BuildDocFxDefault>true</BuildDocFxDefault>  
+  
+    <BuildDocFx Condition="'$(BuildDocFx)' == ''">$(BuildDocFxDefault)</BuildDocFx>
+    
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <!--
+    The DocFcx scripts and executables we use are intended for Windows only. On other platforms we skip API Ref Docs generation.
+    -->
+    <BuildDocFx Condition="'$(OS)' != 'Windows_NT'">false</BuildDocFx>        
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+    We build docs for all target frameworks defined in the upper folder Directory.Build.props.
+    (Should be: `net462;netcoreapp3.1;net6.0`). However, for building the docs, we only need one target.
+    It does not matter which - we will pick one arbitrary. This project file will call a script. That
+    script, in turn, will build the docs for each of the targets multiple frameworks. Note that the list
+    of such targets is duplicated within the script.    
+    -->
+    <TargetFrameworks />
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Clear the default compliation items set by higher level Directories: -->
+    <Compile Remove="$(SharedSrcBaseDir)\System.Runtime.CompilerServices\internal\IsExternalInit.cs" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    
+    <!-- Prefix for diagnostic messages on build output console: -->
+    <DocFxGeneratorPrefix>DocFx Generator</DocFxGeneratorPrefix>
+    
+    <!-- Location of the documentation files, articles and the-like in the repo: -->
+    <DocFilesRoot>$(EnlistmentRoot)\Doc</DocFilesRoot>
+
+    <!-- Working directory / output directory for DocFx (located in the overall build output directory): -->
+    <DocFxBuildRoot>$(BuildOutputRoot)\DocFx</DocFxBuildRoot>
+    
+    <!-- Directory where the DocFx binary executable will be placed (located in the overall build output directory): -->
+    <DocFxBinExeDir>$(BuildOutputRoot)\DocFx.Bin</DocFxBinExeDir>
+
+    <!-- LogFx log details level: -->
+    <!-- (Acceptable values are: `Verbose`, `Info`, `Warning`, `Error`.) -->
+    <DocFxLogLevel>Info</DocFxLogLevel>
+
+  </PropertyGroup>  
+  
+  <ItemGroup>
+    <!--
+    We need to make sure that all projects for which we may be generating the docs are built before we start creating the docs.
+    -->
+    <ProjectReference Include="$(SdkSrcBaseDir)\Api.Client.ManagedGrpc\Temporal.Api.Client.ManagedGrpc.csproj" />  
+    <ProjectReference Include="$(SdkSrcBaseDir)\Common\Temporal.Sdk.Common.csproj" />
+    <ProjectReference Include="$(SdkSrcBaseDir)\WorkflowClient\Temporal.Sdk.WorkflowClient.csproj" />
+  </ItemGroup>
+
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <ItemGroup>
+    <!--
+    These files must be be copied into the DocFx Build Root folder before invoking DocFx:
+    -->    
+    <InternalItemToDocFxBuildRoot Include="DocFx-net462.json" />
+    <InternalItemToDocFxBuildRoot Include="DocFx-netcoreapp3.1.json" />
+    <InternalItemToDocFxBuildRoot Include="DocFx-net6.0.json" />
+    <InternalItemToDocFxBuildRoot Include="GlobalMetadata.json" />
+    <InternalItemToDocFxBuildRoot Include="FileMetadata.json" />
+    <InternalItemToDocFxBuildRoot Include="Filter-AllTemporalGrpcApi.yml" />
+    <InternalItemToDocFxBuildRoot Include="Filter-Gogoproto.yml" />
+    
+    <!-- Uncomment to skip copying these during local debugging: -->
+    <!--
+    <InternalItemToDocFxBuildRoot Remove="@(InternalItemToDocFxBuildRoot)" />
+    -->
+  
+    <!-- Display these files as a group in VS Solution Explorer: -->
+    <None Include="@(InternalItemToDocFxBuildRoot)"
+          Link="DocFx-Config-Files\%(RecursiveDir)%(Filename)%(Extension)"
+          Visible="true" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+    All files in the `$(EnlistmentRoot)\Doc` folder must be copied into the DocFx working / binary folder before we build the docs:
+    -->    
+    <ExternalItemToDocFxBuildRoot Include="$(DocFilesRoot)/**/*" />
+    
+    <!-- Display these files as a group in VS Solution Explorer: -->
+    <None Include="@(ExternalItemToDocFxBuildRoot)"
+          Link="_Repo\Doc\%(RecursiveDir)%(Filename)%(Extension)"
+          Visible="true" />
+  
+  </ItemGroup>
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <Target Name="DocFxGenerator_PrintDetails_Common"
+          BeforeTargets="Build">
+    <!--
+    This target prints diagnostic info to the build log.
+    -->
+    <Message Text="[$(DocFxGeneratorPrefix)]    Project file:      &quot;$(MSBuildProjectFullPath)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    TargetFramework:   &quot;$(TargetFramework)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    OS:                &quot;$(OS)&quot;." Importance="high" />    
+    <Message Text="[$(DocFxGeneratorPrefix)]    BuildDocFxDefault: &quot;$(BuildDocFxDefault)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    BuildDocFx:        &quot;$(BuildDocFx)&quot;." Importance="high" />
+  </Target>
+
+  <Target Name="DocFxGenerator_PrintDetails_DONTBuildDocFx"
+          AfterTargets="DocFxGenerator_PrintDetails_Common"
+          Condition="'$(BuildDocFx)' != 'true'">
+    <!--
+    This target prints diagnostic info to the build log.
+    -->
+    <Message Text="[$(DocFxGeneratorPrefix)]      &gt;&gt;&gt; Main project functionality will NOT be invoked." Importance="high" />
+    <Message Text=" " Importance="high" />
+  </Target>
+
+  <Target Name="DocFxGenerator_PrintDetails_DOBuildDocFx"
+          AfterTargets="DocFxGenerator_PrintDetails_Common"
+          Condition="'$(BuildDocFx)' == 'true'">
+    <!--
+    This target prints diagnostic info to the build log.
+    -->
+    <Message Text="[$(DocFxGeneratorPrefix)]      &gt;&gt;&gt; Main project functionality WILL be invoked." Importance="high" />
+
+    <Message Text="[$(DocFxGeneratorPrefix)]    DocFilesRoot:      &quot;$(DocFilesRoot)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    DocFxBuildRoot:    &quot;$(DocFxBuildRoot)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    DocFxBinExeDir:    &quot;$(DocFxBinExeDir)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    DocFxLogLevel:     &quot;$(DocFxLogLevel)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    Timestamp:         $([System.DateTime]::Now.ToString('HH:mm:ss.fffff'))." Importance="high" />
+    <Message Text=" " Importance="high" />
+  </Target>
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <Target Name="DocFxGenerator_CopyFilesBuildDir"
+          Condition="'$(BuildDocFx)' == 'true'"
+          AfterTargets="DocFxGenerator_PrintDetails_DOBuildDocFx;DocFxGenerator_PrintDetails_DONTBuildDocFx"
+          BeforeTargets="Build">
+    <!--
+    This target copies the necessary files to the DocFx Build Root folder and subfolders before invoking DocFx.
+    -->
+    
+    <!-- Clean the target directory: -->
+    
+    <PropertyGroup>
+      <!--
+      We want to delete / clean everything in $(DocFxBuildRoot), but if something went wrong and $(DocFxBuildRoot) is
+      not populated correctly, we could delete too much. In the worst case, it points to the root directory and we delete
+      the entire file system. To protect, we check whether it ends in what we excpect it to end.
+      `$(DocFxBuildRoot)` should be `$(BuildOutputRoot)\DocFx`, where `$(BuildOutputRoot)` is a global path ending in `_build`.
+      If the values of those properties are changed where they are defined, we will need to update this check here.
+      This is better than to delete all files on a disk by mistake.
+      -->
+      <ExpectedDocFxBuildRootSuffix>_build\DocFx</ExpectedDocFxBuildRootSuffix>
+      <SafeToCleanDocFxBuildRoot Condition="$(DocFxBuildRoot.EndsWith($(ExpectedDocFxBuildRootSuffix))) == true">true</SafeToCleanDocFxBuildRoot>
+      <SafeToCleanDocFxBuildRoot Condition="$(DocFxBuildRoot.EndsWith($(ExpectedDocFxBuildRootSuffix))) == false">false</SafeToCleanDocFxBuildRoot>
+    </PropertyGroup>
+    
+    <!--
+    We could just apply RemoveDir to $(DocFxBuildRoot), but it may fail if we are doing local development and the folder is open by some app or console.
+    So we delete all files in $(DocFxBuildRoot), then attempt to remove the dir, but if failing to remove it should be benign beyond cosmetic aspects.
+    -->
+
+    <ItemGroup Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'">
+      <DocFxBuildFilesToClean Include="$(DocFxBuildRoot)\**\*.*" />
+    </ItemGroup>
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: `DocFxBuildRoot`=&quot;$(DocFxBuildRoot)&quot;." Importance="high" />
+             
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will delete @(DocFxBuildFilesToClean-&gt;Count()) files to clean `DocFxBuildRoot`." Importance="high"
+             Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'" />
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will NOT clean `DocFxBuildRoot`, becasue it is not formed as expected." Importance="high"
+             Condition="'$(SafeToCleanDocFxBuildRoot)' != 'true'" />
+    
+    <Delete Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'"
+            Files="@(DocFxBuildFilesToClean)">
+            <Output TaskParameter="DeletedFiles"
+                    ItemName="CleanedDocFxBuildFiles" />
+    </Delete>
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: CleanedDocFxBuildFiles-&gt;Count()=&quot;@(CleanedDocFxBuildFiles-&gt;Count())&quot;." Importance="high" />
+    
+    <!-- Uncomment this line to see all deleted files. There might be a lot. -->
+    <!--
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: CleanedDocFxBuildFiles=&quot;@(CleanedDocFxBuildFiles)&quot;." Importance="high" />
+    -->
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will attempt to remove the dir `DocFxBuildRoot`. It may fail if the dir is open locally. That should be benign." Importance="high" 
+             Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'" />
+    
+    <RemoveDir Directories="$(DocFxBuildRoot)"
+               ContinueOnError="WarnAndContinue">
+               <Output TaskParameter="RemovedDirectories"
+                       ItemName="RemovedDocFxBuildRootDir" />
+    </RemoveDir>
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: RemovedDocFxBuildRootDirs{@(RemovedDocFxBuildRootDirs-&gt;Count())}=&quot;@(RemovedDocFxBuildRootDirs)&quot;." Importance="high" />
+        
+    <Message Text=" " Importance="high" />
+    
+    <!-- Target directory cleaned. Now copy files. -->
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will now copy InternalItemToDocFxBuildRoot{@(InternalItemToDocFxBuildRoot-&gt;Count())} files to `DocFxBuildRoot`." Importance="high" />
+
+    <Copy SourceFiles="@(InternalItemToDocFxBuildRoot)"
+          DestinationFiles="$(DocFxBuildRoot)\%(RecursiveDir)%(Filename)%(Extension)"
+          SkipUnchangedFiles="false"
+          Retries="4"
+          RetryDelayMilliseconds="500">      
+          <Output TaskParameter="CopiedFiles"
+                  ItemName="InternalsCopied" />
+    </Copy>
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will now copy ExternalItemToDocFxBuildRoot{@(ExternalItemToDocFxBuildRoot-&gt;Count())} files to `DocFxBuildRoot`." Importance="high" />
+
+    <Copy SourceFiles="@(ExternalItemToDocFxBuildRoot)"
+          DestinationFiles="$(DocFxBuildRoot)\%(RecursiveDir)%(Filename)%(Extension)"
+          SkipUnchangedFiles="false"
+          Retries="4"
+          RetryDelayMilliseconds="500">
+          <Output TaskParameter="CopiedFiles"
+                  ItemName="ExternalsCopied" />
+    </Copy>
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: InternalsCopied{@(InternalsCopied-&gt;Count())}=&quot;@(InternalsCopied)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: ExternalsCopied{@(ExternalsCopied-&gt;Count())}=&quot;@(ExternalsCopied)&quot;." Importance="high" />
+    <Message Text=" " Importance="high" />
+  </Target>
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <Target Name="DocFxGenerator_InvokeDocFx"
+          Condition="'$(BuildDocFx)' == 'true'"
+          AfterTargets="DocFxGenerator_CopyFilesBuildDir;Build">
+    
+    <PropertyGroup>
+      <DocFxScriptCommand>$(MSBuildProjectDirectory)\GenerateApiRefDocs.bat $(DocFxBuildRoot) $(DocFxBinExeDir) $(DocFxLogLevel)</DocFxScriptCommand>
+    </PropertyGroup>
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    InvokeDocFx:       Timestamp: $([System.DateTime]::Now.ToString('HH:mm:ss.fffff'))." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    InvokeDocFx:       DocFxScriptCommand: &quot;$(DocFxScriptCommand)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    InvokeDocFx:       Calling DocFx now." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    InvokeDocFx:       =========== =========== =========== =========== =========== =========== =========== =========== " Importance="high" />
+    
+    <Exec Command="$(DocFxScriptCommand)"></Exec>
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    InvokeDocFx:       =========== =========== =========== =========== =========== =========== =========== =========== " Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    InvokeDocFx:       DocFx completed." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    InvokeDocFx:       Timestamp: $([System.DateTime]::Now.ToString('HH:mm:ss.fffff'))." Importance="high" />
+    <Message Text=" " Importance="high" />
+  
+  </Target>
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <Target Name="DocFxGenerator_CleanObjDirs"
+          Condition="'$(BuildDocFx)' == 'true'"
+          AfterTargets="Build;DocFxGenerator_InvokeDocFx">
+    <!--
+    DocFx is too dumb to avoid polluting source folders.
+    So we have to clean up after it. Since we are deleting folders in the source directories, let's play is safe
+    and list them explicitly rather than trying to discover them.
+    ! Remember to add here every project for which we generate API Docs, so that the respective `obj` folder can be cleaned up !
+    -->
+    <ItemGroup>
+      <ObjDirs Include="$(SrcRoot)\SDK\Common\obj" />
+      <ObjDirs Include="$(SrcRoot)\SDK\WorkflowClient\obj" />
+      <ObjDirs Include="$(SrcRoot)\SDK\Api.Client.ManagedGrpc\obj" />
+    </ItemGroup>
+
+    <Message Text="[$(DocFxGeneratorPrefix)]    CleanObjDirs:      DocFx done. Cleaning Obj Directories." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CleanObjDirs:      Timestamp:       $([System.DateTime]::Now.ToString('HH:mm:ss.fffff'))." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CleanObjDirs:      Project file:    &quot;$(MSBuildProjectFullPath)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CleanObjDirs:      TargetFramework: &quot;$(TargetFramework)&quot;." Importance="high" />    
+    <Message Text="[$(DocFxGeneratorPrefix)]    CleanObjDirs:      SrcRoot:         &quot;$(SrcRoot)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CleanObjDirs:      ObjDirs:         {@(ObjDirs->Count())}=&quot;@(ObjDirs)&quot;." Importance="high" />
+
+    <RemoveDir Directories="@(ObjDirs)">
+               <Output TaskParameter="RemovedDirectories"
+                       ItemName="RemovedObjDirs" />
+    </RemoveDir>
+
+    <Message Text="[$(DocFxGeneratorPrefix)]    CleanObjDirs:    RemovedObjDirs:  {@(RemovedObjDirs->Count())}=&quot;@(RemovedObjDirs)&quot;." Importance="high" />
+    <Message Text=" " Importance="high" />
+
+  </Target>
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+</Project>
