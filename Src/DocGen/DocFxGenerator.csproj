@@ -19,19 +19,28 @@
     <!--
     The DocFcx scripts and executables we use are intended for Windows only. On other platforms we skip API Ref Docs generation.
     -->
-    <BuildDocFx Condition="'$(OS)' != 'Windows_NT'">false</BuildDocFx>        
+    <BuildDocFx Condition="'$(OS)' != 'Windows_NT'">false</BuildDocFx>
   </PropertyGroup>
+
+  <!--
+    Note that the list of target frameworks for API Ref Doc generation is located WITHIN the script.
+    That list should match what we support.
+  -->
 
   <PropertyGroup>
     <!--
-    We build docs for all target frameworks defined in the upper folder Directory.Build.props.
+    We build docs for all target frameworks defined in the upper folder `Directory.Build.props`.
     (Should be: `net462;netcoreapp3.1;net6.0`). However, for building the docs, we only need one target.
     It does not matter which - we will pick one arbitrary. This project file will call a script. That
-    script, in turn, will build the docs for each of the targets multiple frameworks. Note that the list
-    of such targets is duplicated within the script.    
+    script, in turn, will build the docs for each of the multiple target frameworks.
+    When building locally, MSBuild respects the `TargetFrameworks` setting. So clearing that and setting
+    a single `TargetFramework` would ensure that this project only builds for one target. However, in
+    the CI we build this project as a part of the entire solution while explicitly specifying each of
+    the supported target frameworks to the build. So we must not fail the build for any of them. Thus,
+    we are "supporting" all of the targets, but we opt out of actually generating any docs for any
+    target, except `net6.0` (this choice is arbitrary, as long as we pick a signle target).
     -->
-    <TargetFrameworks />
-    <TargetFramework>net6.0</TargetFramework>
+    <BuildDocFx Condition="'$(TargetFramework)' != 'net6.0'">false</BuildDocFx>
   </PropertyGroup>
 
   <ItemGroup>
