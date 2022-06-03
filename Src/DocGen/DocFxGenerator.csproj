@@ -7,7 +7,7 @@
     <!-- By default, we do NOT build it.                                                                                            -->
     <!-- Modify `BuildDocFx` to change the default.                                                                                 -->
   
-    <BuildDocFxDefault>true</BuildDocFxDefault>  
+    <BuildDocFxDefault>false</BuildDocFxDefault>  
   
     <BuildDocFx Condition="'$(BuildDocFx)' == ''">$(BuildDocFxDefault)</BuildDocFx>
     
