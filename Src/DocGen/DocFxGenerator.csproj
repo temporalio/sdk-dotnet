@@ -1,31 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup>
-    
+
+<PropertyGroup>    
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-    <!-- When building from the command line, specify the `BuildDocFx` property to control whether documentation needs to be built. -->
-    <!-- By default, we do NOT build it.                                                                                            -->
-    <!-- Modify `BuildDocFx` to change the default.                                                                                 -->
-  
-    <BuildDocFxDefault>false</BuildDocFxDefault>  
-  
-    <BuildDocFx Condition="'$(BuildDocFx)' == ''">$(BuildDocFxDefault)</BuildDocFx>
-    
+    <!-- When building from the command line, specify the `BuildApiRefDocs` (=`true` or `false`) property to control whether        -->
+    <!-- documentation needs to be built.                                                                                           -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
-  
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+    <!-- If `BuildApiRefDocs` is not specified, we will fall back to the the value of `BuildDocFxDefault`, which is defined below.  -->
+    <!-- Normally, the default is `false` (we will NOT build the Ref Docs), becasue it takes a relatively long time to build the    -->
+    <!-- docs and we want to only do that on demand. However, you can change the default if required.                               -->
+    <!-- Note that even if Doc buildig is turned on, it will only happen in the right environment (Windown/Net6). See below for     -->
+    <!-- some details on that.                                                                                                      -->
+
+    <BuildDocFxDefault>false</BuildDocFxDefault>    
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->  
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <!--
     The DocFcx scripts and executables we use are intended for Windows only. On other platforms we skip API Ref Docs generation.
     -->
     <BuildDocFx Condition="'$(OS)' != 'Windows_NT'">false</BuildDocFx>
   </PropertyGroup>
-
-  <!--
-    Note that the list of target frameworks for API Ref Doc generation is located WITHIN the script.
-    That list should match what we support.
-  -->
 
   <PropertyGroup>
     <!--
@@ -42,7 +39,23 @@
     -->
     <BuildDocFx Condition="'$(TargetFramework)' != 'net6.0'">false</BuildDocFx>
   </PropertyGroup>
+  
+  <!--
+    Note that the list of target frameworks for API Ref Doc generation is located WITHIN the script.
+    That list should match what we support.
+  -->
 
+  <PropertyGroup>    
+    <!--
+    If something around the environment or the targets dissallow `BuildDocFx` from being True,
+    then it was already set ty False above. Otherwise we init it now:
+    If `BuildApiRefDocs` was specified to the command line, we use that value.
+    Otherwise we use `BuildDocFxDefault`.
+    -->
+    <BuildDocFx Condition="'$(BuildDocFx)' == '' And '$(BuildApiRefDocs)' != ''">$(BuildApiRefDocs)</BuildDocFx>
+    <BuildDocFx Condition="'$(BuildDocFx)' == ''">$(BuildDocFxDefault)</BuildDocFx>    
+  </PropertyGroup>
+  
   <ItemGroup>
     <!-- Clear the default compliation items set by higher level Directories: -->
     <Compile Remove="$(SharedSrcBaseDir)\System.Runtime.CompilerServices\internal\IsExternalInit.cs" />
@@ -122,11 +135,28 @@
     <!--
     This target prints diagnostic info to the build log.
     -->
-    <Message Text="[$(DocFxGeneratorPrefix)]    Project file:      &quot;$(MSBuildProjectFullPath)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]    TargetFramework:   &quot;$(TargetFramework)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]    OS:                &quot;$(OS)&quot;." Importance="high" />    
-    <Message Text="[$(DocFxGeneratorPrefix)]    BuildDocFxDefault: &quot;$(BuildDocFxDefault)&quot;." Importance="high" />
-    <Message Text="[$(DocFxGeneratorPrefix)]    BuildDocFx:        &quot;$(BuildDocFx)&quot;." Importance="high" />
+    <PropertyGroup>
+      <BuildApiRefDocsUsageMsg>
+[$(DocFxGeneratorPrefix)]    Project file: &quot;$(MSBuildProjectFullPath)&quot;.
+[$(DocFxGeneratorPrefix)]    *!* Specify the `BuildApiRefDocs` property to the Build to set whether API Reference Docs should be generated.
+[$(DocFxGeneratorPrefix)]    *!* By default this is off, since it can take a long time.
+[$(DocFxGeneratorPrefix)]    *!*
+[$(DocFxGeneratorPrefix)]    *!* For example, on the command line you can specify:
+[$(DocFxGeneratorPrefix)]    *!*   > dotnet build -f net6.0 -c Debug Temporal.Sdk.sln /p:BuildApiRefDocs=True
+[$(DocFxGeneratorPrefix)]    *!* 
+[$(DocFxGeneratorPrefix)]    *!* Note, that even if doc generation is requested, it can only occur in the right environment (Win/Net6).
+[$(DocFxGeneratorPrefix)]    *!* Check the value of `BuildDocFx` (displayed below) to see whether the docs will actually be generated.
+[$(DocFxGeneratorPrefix)]    *!*
+[$(DocFxGeneratorPrefix)]    *!* BuildApiRefDocs:   &quot;$(BuildApiRefDocs)&quot;.
+[$(DocFxGeneratorPrefix)]    *!* BuildDocFx:        &quot;$(BuildDocFx)&quot;.
+[$(DocFxGeneratorPrefix)]    *!* TargetFramework:   &quot;$(TargetFramework)&quot;.
+[$(DocFxGeneratorPrefix)]    *!* OS:                &quot;$(OS)&quot;.
+[$(DocFxGeneratorPrefix)]    *!* BuildDocFxDefault: &quot;$(BuildDocFxDefault)&quot;.
+      </BuildApiRefDocsUsageMsg>
+    </PropertyGroup>
+    
+    <Message Text="$(BuildApiRefDocsUsageMsg)" Importance="high" />
+    <Message Text=" " Importance="high" />
   </Target>
 
   <Target Name="DocFxGenerator_PrintDetails_DONTBuildDocFx"
@@ -135,6 +165,7 @@
     <!--
     This target prints diagnostic info to the build log.
     -->
+    <Message Text="[$(DocFxGeneratorPrefix)]    BuildDocFx:        &quot;$(BuildDocFx)&quot;." Importance="high" />
     <Message Text="[$(DocFxGeneratorPrefix)]      &gt;&gt;&gt; Main project functionality will NOT be invoked." Importance="high" />
     <Message Text=" " Importance="high" />
   </Target>
@@ -145,6 +176,7 @@
     <!--
     This target prints diagnostic info to the build log.
     -->
+    <Message Text="[$(DocFxGeneratorPrefix)]    BuildDocFx:        &quot;$(BuildDocFx)&quot;." Importance="high" />
     <Message Text="[$(DocFxGeneratorPrefix)]      &gt;&gt;&gt; Main project functionality WILL be invoked." Importance="high" />
 
     <Message Text="[$(DocFxGeneratorPrefix)]    DocFilesRoot:      &quot;$(DocFilesRoot)&quot;." Importance="high" />
