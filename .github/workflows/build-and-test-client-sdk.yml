@@ -103,7 +103,7 @@ jobs:
 
 # ----------- ----------- ----------- ----------- -----------
   build_api-ref_docs:
-    name: Build API Reference Docs
+    name: Generate API Reference Docs
     runs-on: 'windows-latest'
 
     steps:
