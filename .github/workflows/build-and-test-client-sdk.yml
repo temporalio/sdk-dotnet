@@ -124,13 +124,13 @@ jobs:
 
       - name: ZIP Doc Website
         if: ${{ always() }}  # create ZIP even if not everything got built
-        run: 7z a -tzip -mx9 temporalio.github.io_sdk-dotnet.zip _build/DocFx/_site/
+        run: _build\DocFx\CreateRefDocZip.bat
 
       - name: Upload Binaries        
         uses: actions/upload-artifact@v3
         with:
-          name: Temporal_dotNetSdk_ApiReference
-          path: temporalio.github.io_sdk-dotnet.zip
+          name: Temporal_DotNetSdk_ApiReference
+          path: TemporalIO.GitHub.IO_Sdk-DotNet.zip
 
 # ----------- ----------- ----------- ----------- -----------
   test_unit:

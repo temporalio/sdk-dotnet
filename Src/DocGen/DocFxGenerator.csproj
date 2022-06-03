@@ -96,23 +96,9 @@
     <!--
     These files must be be copied into the DocFx Build Root folder before invoking DocFx:
     -->    
-    <InternalItemToDocFxBuildRoot Include="DocFx-net462.json" />
-    <InternalItemToDocFxBuildRoot Include="DocFx-netcoreapp3.1.json" />
-    <InternalItemToDocFxBuildRoot Include="DocFx-net6.0.json" />
-    <InternalItemToDocFxBuildRoot Include="GlobalMetadata.json" />
-    <InternalItemToDocFxBuildRoot Include="FileMetadata.json" />
-    <InternalItemToDocFxBuildRoot Include="Filter-AllTemporalGrpcApi.yml" />
-    <InternalItemToDocFxBuildRoot Include="Filter-Gogoproto.yml" />
-    
-    <!-- Uncomment to skip copying these during local debugging: -->
-    <!--
-    <InternalItemToDocFxBuildRoot Remove="@(InternalItemToDocFxBuildRoot)" />
-    -->
-  
-    <!-- Display these files as a group in VS Solution Explorer: -->
-    <None Include="@(InternalItemToDocFxBuildRoot)"
-          Link="DocFx-Config-Files\%(RecursiveDir)%(Filename)%(Extension)"
-          Visible="true" />    
+    <InternalItemToDocFxBuildRoot Include="DocFx-Config-Files/**/*" />
+    <InternalItemToDocFxBuildRoot Include="Distributed-Docs-Files/**/*" />
+    <InternalItemToDocFxBuildRoot Include="CreateRefDocZip.bat" />
   </ItemGroup>
 
   <ItemGroup>
