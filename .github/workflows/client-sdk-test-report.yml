@@ -6,6 +6,7 @@ on:
       - completed
     branches:
       - master
+      - GhPages
       - FeatureIntegration
       - FeatureIntegration/**
 

@@ -1,0 +1,54 @@
+name: 'Deploy API Docs to GH Pages'
+
+# !! This scripts COMMITS and PUSHES to the CURRENT branch. !!
+# !! Only run it on the GhPages branch. !!
+# !! Never run it on the master branch. !!
+on:  
+  push:
+    branches:
+      - GhPages
+  
+jobs:
+  
+# ----------- ----------- ----------- ----------- -----------
+  build_deploy_api_ref_docs:
+    name: Generate and Deploy API Reference Docs
+    runs-on: 'windows-latest'
+
+    steps:
+      - name: Clone this repo (sdk-dotnet)
+        uses: actions/checkout@v3
+        with:
+          path: sdk-dotnet
+
+      - name: Setup .NET        
+        uses: actions/setup-dotnet@v2
+        with:  # We *target* and we *run tests on* different .NET versions. but we always build using the latest.
+          dotnet-version: | 
+            3.1.x
+            6.0.x
+
+      - name: Build Solution and API Reference Documentation
+        run: dotnet build -f net6.0 -c Debug sdk-dotnet/Src/Temporal.Sdk.sln /p:BuildApiRefDocs=True
+
+      - name: Upload Binaries
+        if: ${{ always() }}  # upload even if not everything got built
+        uses: actions/upload-artifact@v3
+        with:
+          name: Temporal_DotNetSdk_ApiReference
+          path: |
+            _build/DocFx/go.temporal.io/
+            _build/DocFx/ApiReference.ReadMe.md
+            _build/DocFx/HostDocs.bat
+
+
+      - name: Replace GitHub Pages dir in the repo
+        run: sdk-dotnet\.github\scripts\CopyRefDocsToGHPagesDir.bat
+
+      # !! The next step COMMITS and PUSHES to the CURRENT branch. !!
+      # !! Only run it on the GhPages branch. !!
+      # !! Never run it on the master branch. !!
+      - name: Commit/Push/Deploy changes
+        run: sdk-dotnet\.github\scripts\GitCommitPushGHPagesDir.bat
+
+# ----------- ----------- ----------- ----------- -----------
