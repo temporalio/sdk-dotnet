@@ -50,7 +50,6 @@ jobs:
             dotnet-version: '3.1.x'
             framework: 'netcoreapp3.1'
 
-
           - dotnet-moniker: 'Net6'
             dotnet-version: '6.0.x'
             framework: 'net6.0'
@@ -102,7 +101,7 @@ jobs:
           path: TemporalSDK_Bin_${{matrix.os-moniker}}_${{matrix.dotnet-moniker}}_${{matrix.build-config}}.zip
 
 # ----------- ----------- ----------- ----------- -----------
-  build_api-ref_docs:
+  build_api_ref_docs:
     name: Generate API Reference Docs
     runs-on: 'windows-latest'
 
@@ -130,7 +129,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Temporal_DotNetSdk_ApiReference
-          path: TemporalIO.GitHub.IO_Sdk-DotNet.zip
+          path: Go.Temporal.IO_Sdk-DotNet.zip
 
 # ----------- ----------- ----------- ----------- -----------
   test_unit:

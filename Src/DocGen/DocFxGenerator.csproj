@@ -62,6 +62,11 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <!-- Set `DocFxCleanBuildDir` to `false` to avoid deleting everythng in the $(DocFxBuildRoot) before building. -->
+    <DocFxCleanBuildDir>true</DocFxCleanBuildDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
     
     <!-- Prefix for diagnostic messages on build output console: -->
     <DocFxGeneratorPrefix>DocFx Generator</DocFxGeneratorPrefix>
@@ -184,7 +189,7 @@
     -->
     
     <!-- Clean the target directory: -->
-    
+
     <PropertyGroup>
       <!--
       We want to delete / clean everything in $(DocFxBuildRoot), but if something went wrong and $(DocFxBuildRoot) is
@@ -207,16 +212,27 @@
     <ItemGroup Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'">
       <DocFxBuildFilesToClean Include="$(DocFxBuildRoot)\**\*.*" />
     </ItemGroup>
-    
+
+    <PropertyGroup>
+      <DoCleanDocFxBuildRoot>false</DoCleanDocFxBuildRoot>
+      <DoCleanDocFxBuildRoot Condition="'$(DocFxCleanBuildDir)' != 'false' And '$(SafeToCleanDocFxBuildRoot)' == 'true'">true</DoCleanDocFxBuildRoot>
+    </PropertyGroup>
+
     <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: `DocFxBuildRoot`=&quot;$(DocFxBuildRoot)&quot;." Importance="high" />
+   
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will NOT clean `DocFxBuildRoot`, becasue it is not formed as expected (`SafeToCleanDocFxBuildRoot`=&quot;$(SafeToCleanDocFxBuildRoot)&quot;)." Importance="high"
+             Condition="'$(SafeToCleanDocFxBuildRoot)' != 'true'" />
+
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: DoCleanDocFxBuildRoot = ( (DocFxCleanBuildDir != False) AND (SafeToCleanDocFxBuildRoot == True))." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    *!* Use the `DocFxCleanBuildDir` property to control whether the `DocFxBuildRoot` will be cleaned." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir:   - DocFxCleanBuildDir=&quot;$(DocFxCleanBuildDir)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir:   - SafeToCleanDocFxBuildRoot=&quot;$(SafeToCleanDocFxBuildRoot)&quot;." Importance="high" />
+    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: =&gt; DoCleanDocFxBuildRoot=&quot;$(DoCleanDocFxBuildRoot)&quot; " Importance="high" />
              
     <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will delete @(DocFxBuildFilesToClean-&gt;Count()) files to clean `DocFxBuildRoot`." Importance="high"
-             Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'" />
+             Condition="'$(DoCleanDocFxBuildRoot)' == 'true'" />
     
-    <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will NOT clean `DocFxBuildRoot`, becasue it is not formed as expected." Importance="high"
-             Condition="'$(SafeToCleanDocFxBuildRoot)' != 'true'" />
-    
-    <Delete Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'"
+    <Delete Condition="'$(DoCleanDocFxBuildRoot)' == 'true'"
             Files="@(DocFxBuildFilesToClean)">
             <Output TaskParameter="DeletedFiles"
                     ItemName="CleanedDocFxBuildFiles" />
@@ -230,12 +246,13 @@
     -->
     
     <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: Will attempt to remove the dir `DocFxBuildRoot`. It may fail if the dir is open locally. That should be benign." Importance="high" 
-             Condition="'$(SafeToCleanDocFxBuildRoot)' == 'true'" />
+             Condition="'$(DoCleanDocFxBuildRoot)' == 'true'" />
     
-    <RemoveDir Directories="$(DocFxBuildRoot)"
+    <RemoveDir Condition="'$(DoCleanDocFxBuildRoot)' == 'true'"
+               Directories="$(DocFxBuildRoot)"
                ContinueOnError="WarnAndContinue">
                <Output TaskParameter="RemovedDirectories"
-                       ItemName="RemovedDocFxBuildRootDir" />
+                       ItemName="RemovedDocFxBuildRootDirs" />
     </RemoveDir>
     
     <Message Text="[$(DocFxGeneratorPrefix)]    CopyFilesBuildDir: RemovedDocFxBuildRootDirs{@(RemovedDocFxBuildRootDirs-&gt;Count())}=&quot;@(RemovedDocFxBuildRootDirs)&quot;." Importance="high" />

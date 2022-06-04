@@ -91,7 +91,7 @@
     "xrefService": [
       "https://xref.docs.microsoft.com/query?uid={uid}"
     ],
-    "dest": "temporalio.github.io/sdk-dotnet",
+    "dest": "go.temporal.io/sdk-dotnet",
     "globalMetadataFiles": [ "GlobalMetadata.json" ],
     "fileMetadataFiles": [ "FileMetadata.json" ],
     "template": [ "statictoc" ], // [ "default" ], // [ "statictoc" ],

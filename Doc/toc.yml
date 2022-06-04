@@ -3,6 +3,6 @@
 - name: Home
   href: index.md
 - name: API Reference
-  href: ApiDoc/
+  href: ApiDoc/index.md
 - name: Articles
-  href: Articles/
+  href: Articles/index.md

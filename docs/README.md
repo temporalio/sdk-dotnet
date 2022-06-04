@@ -1,4 +1,4 @@
-# `sdk-dotnet /Docs/`
+# `sdk-dotnet /docs/`
 This folder is reserved for use by Github Pages.
 
 Its name is dictated by the Github Pages automation.
