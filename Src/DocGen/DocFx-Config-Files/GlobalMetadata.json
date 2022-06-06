@@ -7,5 +7,7 @@
   "_enableNewTab": "true",
   "_gitContribute": {
     "apiSpecFolder": "Doc/ApiDoc"
-  }
+  },
+  "_appLogoPath": "Articles/Resources/TemporalLogo-TopNavi-WhiteOnTrnsp.png",
+  "_appFaviconPath": "Articles/Resources/TemporalLogo-Favicon-BlackOnTrnsp.64x64.png"
 }
