@@ -111,10 +111,16 @@
     All files in the `$(EnlistmentRoot)\Doc` folder must be copied into the DocFx working / binary folder before we build the docs:
     -->    
     <ExternalItemToDocFxBuildRoot Include="$(DocFilesRoot)/**/*" />
+    <UnpublishedDocItems Include="$(DocFilesRoot)/**/Drafts/**/*" />
+    <ExternalItemToDocFxBuildRoot Remove="@(UnpublishedDocItems)" />
     
     <!-- Display these files as a group in VS Solution Explorer: -->
     <None Include="@(ExternalItemToDocFxBuildRoot)"
-          Link="_Repo\Doc\%(RecursiveDir)%(Filename)%(Extension)"
+          Link="_Repo\Doc (Published)\%(RecursiveDir)%(Filename)%(Extension)"
+          Visible="true" />
+
+    <None Include="@(UnpublishedDocItems)"
+          Link="_Repo\Doc (Unpublished)\%(RecursiveDir)%(Filename)%(Extension)"
           Visible="true" />
   
   </ItemGroup>

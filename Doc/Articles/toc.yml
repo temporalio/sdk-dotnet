@@ -8,7 +8,7 @@
 - name: Articles
   href: index.md
   items:
-    - name: Repo on Github
-      href: https://github.com/temporalio/sdk-dotnet
-    - name: Readme
-      href: https://github.com/temporalio/sdk-dotnet/blob/master/README.md
+    - name: What is Temporal?
+      href: What_is_Temporal.md
+    - name: Abut Temporal SDK for .NET.
+      href: About_Temporal_SDK_for_DotNet.md
