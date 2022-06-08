@@ -1,4 +1,4 @@
-# API Reference
+# API Reference<br /><small>Temporal SDK for .NET (_Alpha_)</small>
 
 Temporal SDK for .NET targets 3 different Framework versions to allow using it in applications that run on all common .NET versions.
 

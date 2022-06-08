@@ -5,14 +5,19 @@
   href: ../index.md
 - name: API Reference
   href: ../ApiDoc/index.md
-- name: Articles
+- name: Getting stated
   href: index.md
   items:
-    - Getting Stated
-      - name: What is Temporal?
-        href: What_is_Temporal.md
-      - name: Abuot Temporal SDK for .NET.
-        href: About_Temporal_SDK_for_DotNet.md
-    - Temporal Data Model
-      - name: Workflows, -Chains and -Runs
-        href: Workflow_Chains_and_Runs.md      
+    - name: What is Temporal?
+      href: What_is_Temporal.md
+    - name: About the Temporal SDK for .NET
+      href: About_Temporal_SDK_for_DotNet.md
+    - name: Using the Temporal SDK for .NET
+      href: Using_Temporal_SDK_for_DotNet.md
+    - name: Contribution Guide
+      href: Contribution_Guide.md          
+- name: Temporal Data Model
+  href: index.md
+  items:
+    - name: Workflows, -Chains and -Runs
+      href: Workflow_Chains_and_Runs.md      

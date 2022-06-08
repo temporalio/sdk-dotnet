@@ -1,15 +1,12 @@
-# Documentation & Articles<br /><small>Temporal SDK for .NET</small>
+# Articles & Documentation<br /><small>Temporal SDK for .NET (_Alpha_)</small>
 
-We are currently in _Alpha_. Please try us out.
-
-## Articles
+## Getting started
 
 * [What is Temporal?](./What_is_Temporal.md)
-* [About the Temporal SDK for .NET.](./About_Temporal_SDK_for_DotNet.md)
+* [About the Temporal SDK for .NET](./About_Temporal_SDK_for_DotNet.md).
+* [Using the Temporal SDK for .NET](./Using_Temporal_SDK_for_DotNet.md).
+* [Contribution Guide](./Contribution_Guide.md).
 
-## Other resources
+## Temporal Data Model
 
-* .NET SDK Repo: <https://github.com/temporalio/sdk-dotnet>
-* .NET SDK Readme: <https://github.com/temporalio/sdk-dotnet/blob/master/README.md>
-* Temporal Website: <https://temporal.io/>
-* Temporal Documentation (not language specific): <https://docs.temporal.io>
+* [Workflows, -Chains and -Runs](./Workflow_Chains_and_Runs.md).

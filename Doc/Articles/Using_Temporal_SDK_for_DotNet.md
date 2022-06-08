@@ -20,7 +20,7 @@ To do that,
     - The Artifacts starting with `TestResults_` contain the results of running tests that are part of our Continuous Integration pipeline. 
     - The `Temporal_DotNetSdk_ApiReference` artifact contains the API Reference Documentation site generated during the build. (You may be reading the hosted version of it right now. If not, it's [here](https://dotnet.temporal.io).)
   - For example:  
-  ![Screenshot of Pull Request Artifacts](./Resources/Using_Temporal_SDK_for_DotNet.Screenshot_of_PR_Artifacts.jpg)
+  [![Screenshot of Pull Request Artifacts](./Resources/Using_Temporal_SDK_for_DotNet.Screenshot_of_PR_Artifacts.jpg)](./Resources/Using_Temporal_SDK_for_DotNet.Screenshot_of_PR_Artifacts.jpg)
 
 ## Usage
 
@@ -58,4 +58,4 @@ Demonstrated scenarios:
     * Address specific Runs within a Workflow Chain.
     * Interact with Workflow Runs: send Signals, execute Queries, request Cancellation, obtain Description, Terminate, await Conclusion.
     * Obtain immediate results if available, without performing long-running remote calls.
-    * Navigate across Workflow CHains, Runs, and back.
+    * Navigate across Workflow Chains, Runs, and back.

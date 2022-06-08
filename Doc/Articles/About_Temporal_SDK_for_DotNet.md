@@ -1,6 +1,6 @@
 # Welcome to the Temporal SDK for .NET.
 
-_[Temporal](https://www.temporal.io) SDK for .NET_ is a set of libraries that enable writing applications using any .NET language that are based on the [Temporal programming model](./WhatIsTemporal.md).
+Temporal SDK for .NET_ is a set of libraries that enable writing applications using any .NET language that are based on the [Temporal programming model](./What_is_Temporal.md).
 
 ## The SDK is currently under construction.
 
@@ -55,9 +55,12 @@ Our .NET SDK is currently being built.
 We are keen to make sure that what we build is what you need.
 So, we'd love to learn about your specific use-cases and requirements. In addition, are keen to work with partners who can test our early pre-release versions. Such partnerships tend to be win-win scenarios, as such support may enable us to prioritize your requirements.
 
-In addition, we happily accept contributions. We can collaborate on features and in certain cases, your contributions can affect our roadmap and prioritization. Please reach out to us!
+In addition, we happily accept contributions. We can collaborate on features and in certain cases, your contributions can affect our roadmap and prioritization.  
+Please reach out to us!
 
-* Join our public Slack channel: [https://**temporalio**.slack.com/channels/**dotnet-sdk**](https://temporalio.slack.com/channels/dotnet-sdk).
-* File a Github issue: [https://github.com/**temporalio/sdk-dotnet/issues**](https://github.com/temporalio/sdk-dotnet/issues).
+* Join our public Slack channel:  
+[https://**temporalio**.slack.com/channels/**dotnet-sdk**](https://temporalio.slack.com/channels/dotnet-sdk).
+* File a Github issue:  
+[https://github.com/**temporalio/sdk-dotnet/issues**](https://github.com/temporalio/sdk-dotnet/issues).
 
 In addition, please see out [Contribution Guide](ToDo).
