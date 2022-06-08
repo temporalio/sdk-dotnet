@@ -8,7 +8,11 @@
 - name: Articles
   href: index.md
   items:
-    - name: What is Temporal?
-      href: What_is_Temporal.md
-    - name: Abut Temporal SDK for .NET.
-      href: About_Temporal_SDK_for_DotNet.md
+    - Getting Stated
+      - name: What is Temporal?
+        href: What_is_Temporal.md
+      - name: Abuot Temporal SDK for .NET.
+        href: About_Temporal_SDK_for_DotNet.md
+    - Temporal Data Model
+      - name: Workflows, -Chains and -Runs
+        href: Workflow_Chains_and_Runs.md      

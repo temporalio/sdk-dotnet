@@ -36,7 +36,7 @@ namespace Temporal.Sdk.WorkflowClient.UsageSamples
     /// completes.
     /// However, in some advanced scenarios users need to explicitly interact with a specific Run within the 
     /// Workflow Chain representing a particular logical workflow. This is done using a `IWorkflowRunHandle`
-    /// instances. Examples in this file demosntrate how to do that.
+    /// instances. Examples in this file demonstrate how to do that.
     /// </summary>
     /// <remarks>This class contains usage sample intended for education and API review. It may not actually execute
     /// successfully because IDs used in these samples may not actually exist on the backing Temporal server.</remarks>
@@ -149,14 +149,14 @@ namespace Temporal.Sdk.WorkflowClient.UsageSamples
             //    Typically, the first Run is used to IDENTIFY the entire chain.
             //    I.e., the workflow-run-id of the first Run within a Workflow Chain identifies not only that
             //    particular Run, but also the Workflow Chain as a whole.
-            //  - The LATEST Run of a Chain is the Run that has startd most recently. Such LATEST Run is sometimes
+            //  - The LATEST Run of a Chain is the Run that has started most recently. Such LATEST Run is sometimes
             //    also termed CURRENT. However, technically, the latest run may have a `Running` status (then the
             //    entire Chain is also said to be Running) or it may already have concluded (then the entire Chain
             //    is said to be concluded). To account for this, the .NET Workflow Client SDK uses the term LATEST
             //    rather than CURRENT.
-            //  - The FINAL Run of a chain is the Run that concludes the chain. No furhter Runs are known to follow
+            //  - The FINAL Run of a chain is the Run that concludes the chain. No further Runs are known to follow
             //    after the final run of a given Workflow Chain. In most scenarios it is not known with what Status
-            //    a Run will comclude, until it does so. Therefore, a workflow may not have a final Run until it
+            //    a Run will conclude, until it does so. Therefore, a workflow may not have a final Run until it
             //    eventually concludes.
             //
             // The examples below show how to obtain and use handles to specific Runs within a given workflow:

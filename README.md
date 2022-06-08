@@ -1,7 +1,4 @@
-[![Build and Test Client SDK](https://github.com/temporalio/sdk-dotnet/actions/workflows/build-and-test-client-sdk.yml/badge.svg)](https://github.com/temporalio/sdk-dotnet/actions/workflows/build-and-test-client-sdk.yml)
-
-
-# Temporal SDK for .NET <br />`sdk-dotnet`
+# Temporal SDK for .NET <br />`temporalio/sdk-dotnet`
 
 ## What is Temporal?
 Temporal is a programming model for the Cloud that makes writing highly scalable and reliable Apps as straight forward as simple software that runs on a single machine.
@@ -28,22 +25,37 @@ We happily accept contributions, and we gladly partner up with users to work on 
 
 ## Installation
 
-* Nuget not yet available
-* Use Artifacts
-* Clone and build
+We are working on making the SDK available as a NuGet package and as an official Release soon. In the meantime you can install the SDK manually.
+
+* **[Read more about Installing the SDK on the Documentation site](https://dotnet.temporal.io/Articles/About_Temporal_SDK_for_DotNet.html#installation)**.
+* View the article directly (<small>[./Doc/Articles/Using_Temporal_SDK_for_DotNet.md#installation](./Doc/Articles/Using_Temporal_SDK_for_DotNet.md#installation)</small>).
 
 ## Usage
 
-Section per sample file
+The SDK repository contains detailed examples for how to use the SDK is different application scenarios.
+
+* **[View the usage samples directory on the SDK Documentation site](https://dotnet.temporal.io/Articles/Using_Temporal_SDK_for_DotNet.html#usage)**.
+* View the article directly (<small>[./Doc/Articles/Using_Temporal_SDK_for_DotNet.md#installation](./Doc/Articles/Using_Temporal_SDK_for_DotNet.md#usage)</small>).
 
 ## Contributing
 
-* Current BUild state
-* Dev Environment
-* Building
-* Building docs
-* Running tests
+We keenly welcome user feedback and contributions of any kind.  
+For details, please check out our COntribution Guide.
+
+* **[Read the Contribution Guide on the SDK Documentation site](https://dotnet.temporal.io/Articles/Contribution_Guide.html)**.
+* View the article directly (<small>[./Doc/Articles/Using_Temporal_SDK_for_DotNet.md#installation](./Doc/Articles/Contribution_Guide.md)</small>).
+
+## Current repo state
+
+<small>
+
+> NOTE:  
+> If you are viewing a fork, this refers to the upstream repo ([`temporalio/sdk-dotnet`](https://github.com/temporalio/sdk-dotnet/)).
+
+</small>
+
+[![Build and Test Client SDK](https://github.com/temporalio/sdk-dotnet/actions/workflows/build-and-test-client-sdk.yml/badge.svg)](https://github.com/temporalio/sdk-dotnet/actions/workflows/build-and-test-client-sdk.yml)
 
 ## License
 
-* Link
+The Temporal SDK for .NET is distributed under the [MIT License](./LICENSE).

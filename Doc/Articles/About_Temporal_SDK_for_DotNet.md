@@ -2,11 +2,11 @@
 
 _[Temporal](https://www.temporal.io) SDK for .NET_ is a set of libraries that enable writing applications using any .NET language that are based on the [Temporal programming model](./WhatIsTemporal.md).
 
-## The SDK currently under construction.
+## The SDK is currently under construction.
 
 <big>🏗</big> Temporal SDK for .NET is currently in early stages of development.
 
-### Our roadmap:
+### Roadmap:
 
 📅 **Client SDK. Alpha.** _Release in June '22_.  
 <small>Allows .NET applications to act as "clients" to Temporal-applications written in any language readily supported by Temporal.</small>  
@@ -22,6 +22,15 @@ _[Temporal](https://www.temporal.io) SDK for .NET_ is a set of libraries that en
 <big> ⇣ </big>   
 📅 **Client & Worker SDK. GA v1.** _Planned_.  
 <small>Offers full party with other Temporal SDKs, including the latest system features. Confidently handles mission-critical production workloads and hyper-scale.</small>  
+
+### Detailed work items tracker:
+
+* <https://github.com/orgs/temporalio/projects/11/views/4>
+
+### Issues & Work items repository:
+
+* <https://github.com/temporalio/sdk-dotnet/issues>
+
 
 ## Supported platforms
 
