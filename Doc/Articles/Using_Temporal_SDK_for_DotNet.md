@@ -6,17 +6,17 @@ The SDK is currently [in development](./About_Temporal_SDK_for_DotNet.md#the-sdk
 In the meantime you can install the SDK using one of the following approaches:
 
 * Clone the SDK repo and build the SDK.  
-Instructions for building the SDK on your local machine are found in the [Contribution Guide](ToDo).
+Instructions for building the SDK on your local machine are found in the [Contribution Guide](./Contribution_Guide.md).
 
 * Download a build artifact from a recent commit into the `master` branch.  
-To do that,  
+To do that:  
   - View the list of Pull Requests recently merged into `master`:  
 <small><https://github.com/temporalio/sdk-dotnet/pulls?q=is%3Apr+is%3Aclosed+base%3Amaster></small>
   - Click on a Pull Request from that list.
   - Click on the _Checks_ tab.
   - Click on the _Artifacts_ drop-down.
-  - You will see a list of artifacts produces by building the branch after merging the PR you selected.
-    - The Artifacts starting with `Bin_` contain the built SDK binaries.
+  - You will see a list of artifacts produced by building the branch after merging the PR you selected.
+    - The Artifacts starting with `Bin_` contain the built SDK binaries (most likely, you are looking for these).
     - The Artifacts starting with `TestResults_` contain the results of running tests that are part of our Continuous Integration pipeline. 
     - The `Temporal_DotNetSdk_ApiReference` artifact contains the API Reference Documentation site generated during the build. (You may be reading the hosted version of it right now. If not, it's [here](https://dotnet.temporal.io).)
   - For example:  
@@ -29,8 +29,8 @@ To get started with using the SDK in your app, please see the usage samples:
 1. Simple usage scenarios for the **Workflow Client**.  
 See [`Part1_SimpleClientUsage.cs`](https://github.com/temporalio/sdk-dotnet/blob/master/Src/Samples/WorkflowClient.UsageSamples/Temporal.Sdk.WorkflowClient.UsageSamples/public/Part1_SimpleClientUsage.cs).  
 Demonstrated scenarios:
-    * Create workflow client that eagerly validates connection.
-    * Create a workflow client that validates connection during the initial remote call.
+    * Create workflow client that eagerly validate the connection.
+    * Create a workflow client that validates the connection during the initial remote call.
     * Start a new workflow.
     * Access and interact with an existing workflow.
     * Obtain the result of a workflow.
@@ -47,7 +47,7 @@ Demonstrated scenarios:
     * Get the Type Name of a workflow.
     * Check whether a workflow with a particular workflow-id exists.
     * Wait for a workflow to conclude without accessing its result.
-    * Request a workflow cancellation and wait for the cancellation to occur for a certain amount of time while interactively displaying progress status. If the workflow does not respect the cancellation request withing a particular time, terminate the workflow.
+    * Request a workflow cancellation and wait for the cancellation to occur for a certain amount of time, while interactively displaying progress status. If the workflow does not respect the cancellation request within a particular time, terminate the workflow.
     * Alternative methods for starting a workflow.
     
 0. Using the **Workflow Client** to work with individual Workflow Runs (read more about [Workflows, -Chains and -Runs within the Temporal data model](./Workflow_Chains_and_Runs.md)).  

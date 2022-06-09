@@ -2,39 +2,40 @@
 
     
 In this article we consider similarities and differences between 2 key concepts in Temporal:
-"_Workflow Chain_" and "_Workflow Run_".
+"_Workflow Chain_" and "_Workflow Run_".  
+In most typical applications you will never need to dive deep into this topic. You will simply _use_ Workflows and everything will "just work". However, Temporal experts and users of certain advanced scenarios will need to understand this space.
 
-## Workflow Chain:
+## Workflow Chain
 
 Technically, a Temporal workflow is a chain-sequence of one or more _Workflow Runs_ from the initial invocation of a workflow to its eventual conclusion.
 Thus, a logical workflow (as in "just" workflow, or "the" workflow) is really a _Workflow Chain_.           
 
-## Workflow Run:
+## Workflow Run
 
-A _Workflow Run_ single execution of the main workflow routine.
+A _Workflow Run_ is single execution of the main workflow routine.
 
-Completely executing a workflow from the initial invocation to the eventual conclusion involves a chain of one or more _Workflow Runs_.
+Completely executing a logical workflow from the initial invocation to the eventual conclusion involves a chain of one or more _Workflow Runs_.
 
 The Temporal server orchestrates the execution of workflows by ensuring that Workers execute _Workflow Runs_ as required to complete a _Workflow Chain_ (aka a logical Workflow).
 
-## .NET Client SDK Data Model:
+## .NET Client SDK Data Model
 
 * _Workflow Chains_ are modeled by instances of type `IWorkflowHandle`.
 * _Workflow Runs_ are modeled by instances of type `IWorkflowRunHandle`.
 
 
-In most scenarios, users only need to interact with logical workflows, i.e., with _Workflow Chains_ via the respective `IWorkflowHandle` instances. For example, when a user needs to send a signal to a workflow (or perform a query, terminate, cancel, etc...), they invoke a corresponding `IWorkflowHandle` API. Under the covers, the handle automatically interacts with the current _Run_ within the _Workflow Chain_ it represents.
+In most scenarios, users only need to interact with logical workflows, i.e., with _Workflow Chains_ via the respective `IWorkflowHandle` instances. For example, when a user needs to send a signal to a workflow (or perform a query, terminate, cancel, etc...), they invoke a corresponding `IWorkflowHandle` API. Under the covers, the handle automatically interacts with the current _Run_ within the _Workflow Chain_ represented by the handle.
 
 Similarly, when a users polls for the result of a workflow, the respective `IWorkflowHandle` API automatically "follows" the _Chain_ until the "final" _Run_ of a chain completes.
 
-However, in some advanced scenarios users need to explicitly interact with a specific _Run_ within the _Workflow Chain_ representing a particular logical workflow. This is done using a `IWorkflowRunHandle` instances
+However, in some advanced scenarios users need to explicitly interact with a specific _Run_ within the _Workflow Chain_ representing a particular logical workflow. This is done using a `IWorkflowRunHandle` instances.
 
 Examples that demonstrate how to do that can be found in [this sample](https://github.com/temporalio/sdk-dotnet/blob/master/Src/Samples/WorkflowClient.UsageSamples/Temporal.Sdk.WorkflowClient.UsageSamples/public/Part3_AddressIndividualRuns.cs).
 
 ## Specific _Workflow Runs_ within _Workflow Chains_:
 
 As discussed above, a Temporal workflow is a _Chain_ of one or more _Workflow Runs_. Such a _Workflow Chain_ spans from the initial invocation of a workflow to its eventual conclusion.
-A _Chain_ may include many _Runs_, however, some of the runs have a special significance:
+A _Chain_ may include many _Runs_, however, some of the _Runs_ have a special significance:
 
 - The **FIRST** _Run_ of a _Chain_ is the _Run_ that was initiated when the logical workflow was started.  
 Typically, the first _Run_ is used to IDENTIFY the entire chain.

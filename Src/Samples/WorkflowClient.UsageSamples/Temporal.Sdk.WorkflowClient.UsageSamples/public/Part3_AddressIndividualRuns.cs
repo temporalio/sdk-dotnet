@@ -31,9 +31,9 @@ namespace Temporal.Sdk.WorkflowClient.UsageSamples
     /// via the respective `IWorkflowHandle` instances. For example, when a user needs to send a signal to
     /// a workflow (or perform a query, terminate, cancel, etc...) they invoke a corresponding
     /// `IWorkflowHandle` API. Under the covers, the handle automatically interacts with the current Run
-    /// within the Workflow Chain it represents. Similarly, when a users polls for the result of a workflow,
-    /// the respective `IWorkflowHandle` API automatically "follows" the chain until the "final" run of a chain
-    /// completes.
+    /// within the Workflow Chain represented by the handle. Similarly, when a users polls for the result
+    /// of a workflow, the respective `IWorkflowHandle` API automatically "follows" the chain until the
+    /// "final" run of a chain completes.
     /// However, in some advanced scenarios users need to explicitly interact with a specific Run within the 
     /// Workflow Chain representing a particular logical workflow. This is done using a `IWorkflowRunHandle`
     /// instances. Examples in this file demonstrate how to do that.

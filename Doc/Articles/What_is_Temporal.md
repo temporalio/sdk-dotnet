@@ -1,6 +1,6 @@
 # What is Temporal?
 
-Temporal is a programming model for the Cloud that makes writing highly scalable and reliable Apps as straight forward as simple software that runs on a single machine.
+Temporal is a programming model for the Cloud that makes writing highly scalable and reliable Apps as straight forward as writing simple software that runs on a single machine.
 
 ## Why Temporal?
 
