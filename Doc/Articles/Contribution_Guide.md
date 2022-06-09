@@ -258,9 +258,9 @@ Some of the style rules that are currently not automatically enforced due to mis
   ```
   ```cs
   void AnotherInterestingMethod(string param,
-                           int value,
-                           object state,
-                           CancellationToken cancelToken)
+                               int value,
+                               object state,
+                               CancellationToken cancelToken)
   {        
   }
   ```
