@@ -269,12 +269,12 @@ Some of the style rules that are currently not automatically enforced due to mis
 
 * Use named parameters when passing undescriptive literals:
   ```cs
-  void DoSomething(int id, string name, SomeType contextData, bool beCool);
+  void DoSomething(int id, string name, SomeType contextData, int checkSum, bool beCool);
   
   // ---
 
-  int currentId = ...;
+  int checkSum = ...;
   SomeType processingContext = ...;
-  DoSomething(currentId, name: null, processingContext, beCool: true);
+  DoSomething(id: 42, name: null, processingContext, checkSum, beCool: true);
   ```
 
