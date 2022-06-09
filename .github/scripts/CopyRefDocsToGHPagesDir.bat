@@ -1,6 +1,6 @@
 @SET DEPLDOC_GHPAGES_DIR=%CD%\sdk-dotnet\docs
 @SET DEPLDOC_DOCFX_WORK_ROOT=%CD%\_build\DocFx
-@SET DEPLDOC_DOCFX_SITE_DIR=%DEPLDOC_DOCFX_WORK_ROOT%\go.temporal.io\sdk-dotnet
+@SET DEPLDOC_DOCFX_SITE_DIR=%DEPLDOC_DOCFX_WORK_ROOT%\dotnet.temporal.io
 
 @ECHO\
 @ECHO  ** Deleting current contents of the GH Pages directory, except "CNAME".

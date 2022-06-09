@@ -24,7 +24,7 @@ jobs:
 
       - name: Setup .NET        
         uses: actions/setup-dotnet@v2
-        with:  # We *target* and we *run tests on* different .NET versions. but we always build using the latest.
+        with:  # We *target* and we *run tests on* different .NET versions, but we always build using the latest.
           dotnet-version: | 
             3.1.x
             6.0.x
@@ -38,7 +38,7 @@ jobs:
         with:
           name: Temporal_DotNetSdk_ApiReference
           path: |
-            _build/DocFx/go.temporal.io/
+            _build/DocFx/dotnet.temporal.io/
             _build/DocFx/ApiReference.ReadMe.md
             _build/DocFx/HostDocs.bat
 

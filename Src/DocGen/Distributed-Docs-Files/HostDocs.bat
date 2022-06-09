@@ -17,7 +17,7 @@ REM Constants used later:
 
 SET DOCFX_RELEASE_URL=https://github.com/dotnet/docfx/releases/download/v2.59.2/docfx.zip
 SET DOCFX_BINEXE_DIR=DocFx.Bin
-SET DOCFX_SITE_DIR_PATH=go.temporal.io/sdk-dotnet
+SET DOCFX_SITE_DIR_PATH=dotnet.temporal.io
 
 REM Switch to the script's folder.
 
