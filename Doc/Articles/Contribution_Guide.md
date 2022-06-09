@@ -257,7 +257,7 @@ Some of the style rules that are currently not automatically enforced due to mis
   }
   ```
   ```cs
-  AnotherInterestingMethod(string param,
+  void AnotherInterestingMethod(string param,
                            int value,
                            object state,
                            CancellationToken cancelToken)
