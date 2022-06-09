@@ -20,10 +20,15 @@
 </small>
 
 ## What is Temporal?
+
 Temporal is a programming model for the Cloud that makes writing highly scalable and reliable Apps as straight forward as simple software that runs on a single machine.
 
 * **[Read more about Temporal on the SDK Documentation site](https://dotnet.temporal.io/Articles/What_is_Temporal.html)**.
 * View the article directly (<small>[./Doc/Articles/What_is_Temporal.md](./Doc/Articles/What_is_Temporal.md)</small>).
+
+See also:
+* Temporal home page: <https://www.temporal.io/>.
+* Temporal central documentation site: <https://docs.temporal.io/>.
 
 ## About Temporal SDK for .NET.
 
