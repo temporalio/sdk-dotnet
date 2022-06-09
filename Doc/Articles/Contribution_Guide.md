@@ -233,10 +233,10 @@ Integration tests include communicating to a version of Temporal server and vali
 
 We use Microsoft's "new" [`.editorconfig`-based style checker](https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp.CodeStyle/) to validate and enforce our code styling rules. Our guidelines are documented in the [`\sdk-dotnet\Src\.editorconfig`](https://github.com/temporalio/sdk-dotnet/blob/master/Src/.editorconfig).
 
-The code analyzer is still maturing, and unfortunately it does not yet allow to configure all of our styling rules, as it was possible in some of the legacy tools.
+The code analyzer is still maturing, and unfortunately it does not yet allow to configure all of our styling rules, as it was possible with some of the legacy tools.
 
-We kindly ask you that you try to notice and follow our coding conventions, even we they are not (yet) all automatically enforced. Of course, we know that is is not always feasible and we will point things out as necessary in a code review. Please be lenient with us, we are not trying to be a pain, just filling in where automation lack.  
-(If you are an expert, we will gladly accept a contribution in this space.)
+We kindly ask you that you try to notice and follow our coding conventions, even we they are not (yet) all automatically enforced. Of course, we know that is is not always feasible and we will point things out as necessary in a code review. Please be lenient with us, we are not trying to be a pain, just filling in where automation lacks.  
+(If you are an expert, we will gladly accept a contribution to address the gaps in this space.)
 
 Some of the style rules that are currently not automatically enforced due to missing tooling features include:
 
