@@ -124,6 +124,10 @@
           Visible="true" />
   
   </ItemGroup>
+
+  <PropertyGroup>
+    <DeployedFileMetadataFile>$(DocFxBuildRoot)\FileMetadata.json</DeployedFileMetadataFile>
+  </PropertyGroup>
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
@@ -294,7 +298,24 @@
     <Message Text=" " Importance="high" />
   </Target>
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+  <Import Project="$(SdkSrcBaseDir)\ProductVersion.props" />
   
+  <Target Name="DocFxGenerator_ApplyFileMetadataFileTemplate"
+          Condition="'$(BuildDocFx)' == 'true'"
+          AfterTargets="DocFxGenerator_CopyFilesBuildDir"
+          BeforeTargets="Build">
+    
+    <Message Text="[$(DocFxGeneratorPrefix)]    ApplyFileMetadataFileTemplate: Replacing &quot;{AssemblyVersionForDocFx}&quot; with &quot;$(InformationalVersion)&quot; in &quot;$(DeployedFileMetadataFile)&quot;." Importance="high" />
+    
+    <WriteLinesToFile File="$(DeployedFileMetadataFile)"
+                      Lines="$([System.IO.File]::ReadAllText('$(DeployedFileMetadataFile)').Replace('{AssemblyVersionForDocFx}','$(InformationalVersion)'))"
+                      Overwrite="true"/>
+
+  </Target>
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
   <Target Name="DocFxGenerator_InvokeDocFx"
           Condition="'$(BuildDocFx)' == 'true'"

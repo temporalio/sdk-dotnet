@@ -93,7 +93,10 @@
     "dest": "dotnet.temporal.io",
     "globalMetadataFiles": [ "GlobalMetadata.json" ],
     "fileMetadataFiles": [ "FileMetadata.json" ],
-    "template": [ "statictoc" ], // [ "default" ], // [ "statictoc" ],
+    "template": [
+      "statictoc",  // "default",  "statictoc"
+      "Templates/StaticToc.Custom"
+    ],
     "postProcessors": [ "ExtractSearchIndex" ],
     "markdownEngineName": "markdig",
     "noLangKeyword": false,

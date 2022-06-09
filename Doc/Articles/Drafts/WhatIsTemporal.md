@@ -1,6 +1,6 @@
 # What is Temporal?
 
-> NOTE: <br/>
+> [!CAUTION]    
 > **This is a draft/work in progress.
 > Information in this article has not been reviewed and may be incomplete.**
 

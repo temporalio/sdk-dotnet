@@ -12,14 +12,14 @@
 
 ### Getting started
 
-* [What is Temporal?](./What_is_Temporal.md)
-* [About the Temporal SDK for .NET](./About_Temporal_SDK_for_DotNet.md).
-* [Using the Temporal SDK for .NET](./Using_Temporal_SDK_for_DotNet.md).
-* [Contribution Guide](./Contribution_Guide.md).
+* [What is Temporal?](./Articles/What_is_Temporal.md)
+* [About the Temporal SDK for .NET](./Articles/About_Temporal_SDK_for_DotNet.md).
+* [Using the Temporal SDK for .NET](./Articles/Using_Temporal_SDK_for_DotNet.md).
+* [Contribution Guide](./Articles/Contribution_Guide.md).
 
 ### Temporal Data Model
 
-* [Workflows, -Chains and -Runs](./Workflow_Chains_and_Runs.md).
+* [Workflows, -Chains and -Runs](./Articles/Workflow_Chains_and_Runs.md).
 
 ## Other resources
 

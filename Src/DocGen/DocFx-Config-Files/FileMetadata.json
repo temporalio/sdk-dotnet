@@ -7,5 +7,17 @@
     "ApiDoc/net462/**": "<i>Temporal SDK Reference: Net Fx 4.6.2 Target</i>",
     "ApiDoc/netcoreapp3.1/**": "<i>Temporal SDK Reference: Net Core 3.1 Target</i>",
     "ApiDoc/net6.0/**": "<i>Temporal SDK Reference: Net 6 Target</i>"
+  },
+  "_docfxTargetFrameworkDescription": {
+    "**": "",
+    "ApiDoc/net462/**": ".NET Framework 4.6.2",
+    "ApiDoc/netcoreapp3.1/**": ".NET Core 3.1",
+    "ApiDoc/net6.0/**": ".NET 6"
+  },
+  "_docfxAssemblyVersion": {    // The token "AssemblyVersionForDocFx" (with the '{' and the '}') will be replaced
+    "**": "",                   // by the build script after the file is copied to the destination.
+    "ApiDoc/net462/**": "{AssemblyVersionForDocFx}",
+    "ApiDoc/netcoreapp3.1/**": "{AssemblyVersionForDocFx}",
+    "ApiDoc/net6.0/**": "{AssemblyVersionForDocFx}"
   }
 }

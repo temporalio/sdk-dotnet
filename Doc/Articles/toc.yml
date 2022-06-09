@@ -5,14 +5,16 @@
   href: ../index.md
 - name: API Reference
   href: ../ApiDoc/index.md
+- name: Articles
+  href: index.md
 - name: Getting stated
   href: index.md
   items:
     - name: What is Temporal?
       href: What_is_Temporal.md
-    - name: About the Temporal SDK for .NET
+    - name: About the SDK
       href: About_Temporal_SDK_for_DotNet.md
-    - name: Using the Temporal SDK for .NET
+    - name: Using the SDK
       href: Using_Temporal_SDK_for_DotNet.md
     - name: Contribution Guide
       href: Contribution_Guide.md          

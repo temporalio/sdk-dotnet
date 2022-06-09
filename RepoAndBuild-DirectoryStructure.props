@@ -71,19 +71,19 @@
     <!--                                                                                                                                                    -->
     <!-- # Details                                                                                                                                          -->
     <!--                                                                                                                                                    -->
-    <!-- The logic in this file uses two marker files placed in the repo: “.EnlistmentRoot.marker” and “.SrcRoot.marker”:                                -->
+    <!-- The logic in this file uses two marker files placed in the repo: “.EnlistmentRoot.marker” and “.SrcRoot.marker”:                                   -->
     <!--                                                                                                                                                    -->
     <!--  - “.EnlistmentRoot.marker” must be placed into the root of the repository.                                                                        -->
     <!--    It is the top-most folder; typically, it is the folder that contains the ".git/" subfolder.                                                     -->
     <!--                                                                                                                                                    -->
-    <!--  - “.SrcRoot.marker” must be placed into the root folder of all code sources in the repository.                                                 -->
+    <!--  - “.SrcRoot.marker” must be placed into the root folder of all code sources in the repository.                                                    -->
     <!--    This “source root” may be the same as the repository root (you may place both files next to each other), or it may be a subfolder.              -->
     <!--    For example, the repo root may contain other sub-folders in the root, containing other files, such as documentation.                            -->
     <!--                                                                                                                                                    -->
     <!-- After the binary output was redirected by this PROPS file, your directory structure will look something like this:                                 -->
     <!--                                                                                                                                                    -->
     <!--     c:\Code\                                           <== Root for your code repos                                                                -->
-    <!--             Tmprl-SDK-DotNet\                          <== A shared folder collecting one or more repors that "build together" in a group          -->
+    <!--             Tmprl-SDK-DotNet\                          <== A shared folder collecting one or more repos that "build together" in a group           -->
     <!--                     _build\                            <== Root folder for build output for ALL repos in this group                                -->
     <!--                             bin\                                                                                                                   -->
     <!--                                     . . .                                                                                                          -->

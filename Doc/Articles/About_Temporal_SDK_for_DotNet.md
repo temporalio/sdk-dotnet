@@ -63,4 +63,4 @@ Please reach out to us!
 * File a Github issue:  
 [https://github.com/**temporalio/sdk-dotnet/issues**](https://github.com/temporalio/sdk-dotnet/issues).
 
-In addition, please see out [Contribution Guide](ToDo).
+In addition, please see our [Contribution Guide](./Contribution_Guide.md).
