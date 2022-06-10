@@ -1,0 +1,5257 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/a/sdk-dotnet/sdk-dotnet/_build/DocFx",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      },
+      "is_incremental": false
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "ApiDoc/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/index.html",
+          "hash": "uSOhyDxJNvKAm63Roc237Mbh5YYlgNmYbLM1RK9ILQE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.CancelTimerCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.CancelTimerCommandAttributes.html",
+          "hash": "l2NFR4z3UgC6TmaJzhz3UnmiG+Ah+DAU79FnjjdlPqY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.CancelWorkflowExecutionCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.CancelWorkflowExecutionCommandAttributes.html",
+          "hash": "u8XDx8iJdP9hqU3GCt9hEYi2HDsNvOfx2R4XjQbTaoI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.Command.AttributesOneofCase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.Command.AttributesOneofCase.html",
+          "hash": "pHN+7YxB8L6S8+dpZevx+tnaCyr7Ijxtb3ul5rExXas="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.Command.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.Command.html",
+          "hash": "Kq+w+2SjS8BSoblG7CGS/iTjHY0Ct7bGZW5fahFct9Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.CompleteWorkflowExecutionCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.CompleteWorkflowExecutionCommandAttributes.html",
+          "hash": "Mb8lhvnSn4UtGbs7qvcSxHrGntScQoXnPaYiO78Vibs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.ContinueAsNewWorkflowExecutionCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.ContinueAsNewWorkflowExecutionCommandAttributes.html",
+          "hash": "e/jkD4O4M/jnl55byEcoYQyMjCdu4GA0e9QSxivD8lA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.FailWorkflowExecutionCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.FailWorkflowExecutionCommandAttributes.html",
+          "hash": "aZwPKpQljvuyICtz8SsJaHzqaD9SbXtbb+LOfb76C7w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.MessageReflection.html",
+          "hash": "Id2LWT02jkObL+mybnsxXv8bvsFgMEKQuGqUIO68MjA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.RecordMarkerCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.RecordMarkerCommandAttributes.html",
+          "hash": "10pYdVX1q+6L7WXoIqWCPFuIWD7ME+RRASQaDnpYZrc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.RequestCancelActivityTaskCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.RequestCancelActivityTaskCommandAttributes.html",
+          "hash": "FmnGbaLHv+YspBdMYYDUmHecSCtLmiP3q50kWbFYKfY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.RequestCancelExternalWorkflowExecutionCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.RequestCancelExternalWorkflowExecutionCommandAttributes.html",
+          "hash": "mrMGpUISBUpGDKFqcj5NlAS/E/B6fPRv0fiXLuoxKxM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.ScheduleActivityTaskCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.ScheduleActivityTaskCommandAttributes.html",
+          "hash": "deYSg0qDoreNNOaQJ1ItBWIj0A0IpOicOflRQiBoHdE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.SignalExternalWorkflowExecutionCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.SignalExternalWorkflowExecutionCommandAttributes.html",
+          "hash": "3HziDFStyOmpIyTS6VEldOCUuGCgVcQkPiAqSP2O4A8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.StartChildWorkflowExecutionCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.StartChildWorkflowExecutionCommandAttributes.html",
+          "hash": "mzppi85QbhGP3FZO/WG0v2QeoT+2i7g2iuh/dU6madg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.StartTimerCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.StartTimerCommandAttributes.html",
+          "hash": "l7CirfD3zkA8uuEa12OYIv/7xWkqb0wEE9cXO2Dds+4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.UpsertWorkflowSearchAttributesCommandAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.UpsertWorkflowSearchAttributesCommandAttributes.html",
+          "hash": "NQ2haUjICZdSBsLrg0iut5pFct61cuB8iW9J6/SzSQY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Command.V1.html",
+          "hash": "2H43x05uhSfpA9CbOc0nOVnjOjpnU4fNgurVRlDfHwg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.ActivityType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.ActivityType.html",
+          "hash": "q5w6gJLBpdIcoUa/Izis2W9OWX8B1NCofRkL4j9SScQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.DataBlob.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.DataBlob.html",
+          "hash": "e/mhYFdsTgtk7SWKnUp4E3d/v42STW+k/hJg53GWSyg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Header.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Header.html",
+          "hash": "C807Hmzuqh0RfSiATNiDpVYyGWjZqAAPsr7xBiILcDg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Memo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Memo.html",
+          "hash": "M/rRXaI1fIPh338oTMXUzTUTDtLcrkAw1DcNZwDWlsg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.MessageReflection.html",
+          "hash": "tezQmqln6nIhhiIIML6szmc2IM1DThtFIy9sE/MXurw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Payload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Payload.html",
+          "hash": "xooXRqMBhQ52tbx0sNn2E8m1kLzrSSXUgG4hYEKLfkM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Payloads.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.Payloads.html",
+          "hash": "Om/3vr8UUp350lRRbcuhdFis3+M+q34UtIV9+xUeRJ8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.RetryPolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.RetryPolicy.html",
+          "hash": "JNf/SCI9VCieRT1xVtvcE6xdemaR8Q+nNnSk72nflog="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.SearchAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.SearchAttributes.html",
+          "hash": "YVdAMDK7NtHwJDR1M09q8EKoc/OEnS3zcQfDtAsD4Vk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.WorkflowExecution.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.WorkflowExecution.html",
+          "hash": "jDKTKxkzK6OUYFdVvz/9G9FvhF4HKQ5yQG6mGKFCpK4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.WorkflowType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.WorkflowType.html",
+          "hash": "mM3GO2tDobfeutk7wHKA8Pr/rLOaibPNRlI18JEpUls="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Common.V1.html",
+          "hash": "oMizP634cACkebQf8H+o3l41jdFO2y+VGd3wgCo14gI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ArchivalState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ArchivalState.html",
+          "hash": "DW8I5k6HaybZ+qmdrQ9s5Jd1uG3TyHI5yVBhn/Z5zXI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause.html",
+          "hash": "ZGxc1TyorRui+3jcADAgDr1zJpO36Jv/Y1cS1CYiBYM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CommandType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CommandType.html",
+          "hash": "KyAxu05XHxYzGL2iuQafP2QquhnHfEcQ5bC7a57+RSg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CommandTypeReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CommandTypeReflection.html",
+          "hash": "WogNgmVmFd81A5bgvL3ZjQKxFUbjiscgWtZGZg+2Sh8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CommonReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.CommonReflection.html",
+          "hash": "pbhrSFmIMhe90WwyCaaxeIo2u8i49GLWKvJowtk6wnQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ContinueAsNewInitiator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ContinueAsNewInitiator.html",
+          "hash": "5ZOuQu1x0sZ+6jzc0op3ehxosDolCS/beIIskrsuIJ0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.EncodingType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.EncodingType.html",
+          "hash": "b+emh8ED7o3nhhh7DQ4qOPBIuz1ixTS8gTmn86y5v2M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.EventType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.EventType.html",
+          "hash": "PvQB1nKI4g5OpxoGyYJPzYCFV+wrALI4oB/9MdDyGTo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.EventTypeReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.EventTypeReflection.html",
+          "hash": "JE7ZiROgFZiu/XYB9oKferDZUYF9ssGmIM6lUnkJYwk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.FailedCauseReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.FailedCauseReflection.html",
+          "hash": "AZhN5W1C3UHdQg65cNj87E+zcbkK1hgSw38hYnQfAw0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.HistoryEventFilterType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.HistoryEventFilterType.html",
+          "hash": "Mu0TSJES5LzRq2Od4kTMApwXS15T/z0MG8X1i8SoGjI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.IndexedValueType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.IndexedValueType.html",
+          "hash": "TYE7qUkFQnfzOmmkxjM1kEZ99R+bv7klTY0NtDngUxQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.NamespaceReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.NamespaceReflection.html",
+          "hash": "zam5YSJC8YLS4BD0tyNwLtPDve4nmMYKHKuhDzwgM7w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.NamespaceState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.NamespaceState.html",
+          "hash": "SLEbxKJ/wPNN4BnXbCpvzS8T+JbfywHimYUcK3SL2aA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ParentClosePolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ParentClosePolicy.html",
+          "hash": "znvqgGLobMcyDfliQ10zmjB1lgA3i7kIR8G0/gblgcU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.PendingActivityState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.PendingActivityState.html",
+          "hash": "e3iOoM2OUNllpCKpRytjaz9n4IeKPOHEeWKyES0cD0k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.PendingWorkflowTaskState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.PendingWorkflowTaskState.html",
+          "hash": "Z+MzZo04m+aEAyK10/ccFDsWPQok5HZmI6mLqAOitiw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.QueryReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.QueryReflection.html",
+          "hash": "ckWAfZhrO187HBsS7O8Pu4uFTddhnOn3eIeWZFnICZI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.QueryRejectCondition.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.QueryRejectCondition.html",
+          "hash": "0J1kIRKUrfdHsa0dAx1yD7M2IKgAz+q5T0XF/cDFQ+U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.QueryResultType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.QueryResultType.html",
+          "hash": "HnTiWi32e2jG6duXvZH1KEVYkvmi+nm4Rpa5QohfxZ0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ReplicationState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ReplicationState.html",
+          "hash": "BAti9NA/UNoz3mc/TWq/UFnex83LSdkOnEm/qV/V+xc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ResetReapplyType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ResetReapplyType.html",
+          "hash": "bZtfD0ByT+xizajtt6VBe5XOwK1FeCFtSDzW6eIBCxo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ResetReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ResetReflection.html",
+          "hash": "RMj3XzpY4y7N7bEy/HEY0VgpvY8wYfApxH464Hc5Tkc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ResourceExhaustedCause.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ResourceExhaustedCause.html",
+          "hash": "G5z/75SNP0rE8ll9Fb9VbhT4NiXvY46KNaZNOKg1/dg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.RetryState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.RetryState.html",
+          "hash": "zM07FrPBBiU3nBNzJKzsYlZ0koRJ07VE1An9aDBvJes="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ScheduleOverlapPolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ScheduleOverlapPolicy.html",
+          "hash": "unJwIX1TQhs4oBJpCJvyJRjYCl1IglzHgSKkJ5HPFw4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ScheduleReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.ScheduleReflection.html",
+          "hash": "8/nuOroietAcXpsy4dYRz2K5SeSUZInV45OAG5FXq0U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.Severity.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.Severity.html",
+          "hash": "uB2NNvAOqV70ZDAVQq1TJy4IdUJBMDrI1iNkIC3rPoM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause.html",
+          "hash": "BoyXqVKzSgJPWjT67Se9RSPnppxUbQoSD0DVr9MKLpM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.StartChildWorkflowExecutionFailedCause.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.StartChildWorkflowExecutionFailedCause.html",
+          "hash": "VcsJw9rAsdODjPGliPod3O2m9eSFke/tI3j14XKL/58="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TaskQueueKind.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TaskQueueKind.html",
+          "hash": "f6mAYaiZstzJ+gpzoAawfr8U9RBOYVxA5CNOZaa75xE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TaskQueueReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TaskQueueReflection.html",
+          "hash": "hHbGAFE7cKvuSQ+0IGRCNeUXlZS6/AVw2XY1Zgz8+uc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TaskQueueType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TaskQueueType.html",
+          "hash": "llf523sjCBjApGeGbF3JDeHJRMmA5jwAmhinOfgEf7o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TimeoutType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.TimeoutType.html",
+          "hash": "n188mHQgTnejuoqn0Go0subyl1Dm0Q3edWfb0Si3W18="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowExecutionStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowExecutionStatus.html",
+          "hash": "tIiwM28YTYW9I+yzvTSv1BOqUH56MPvsMWd43qSIxaU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowIdReusePolicy.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowIdReusePolicy.html",
+          "hash": "Pim2C/MvsfR61vR3ehDQB3zP3fuE101GjcAfbW2Vx8c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowReflection.html",
+          "hash": "+AzDEgeo4oHed/tN/kI1ReeCPBRU5epjqgX1sxuVj9M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowTaskFailedCause.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.WorkflowTaskFailedCause.html",
+          "hash": "8bzGgKlrG0yY74gv2n+/qkE4QVBtYZK4DaiyshCsGLQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Enums.V1.html",
+          "hash": "7CY/sNGr7AdjtCoRExiKnDuFzKyFV6j47C/BkR5vlp0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.CancellationAlreadyRequestedFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.CancellationAlreadyRequestedFailure.html",
+          "hash": "JNw7xZEjENsYFJ9QzMsz6mEV70xx+CaTwHoe6cM6gk0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.ClientVersionNotSupportedFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.ClientVersionNotSupportedFailure.html",
+          "hash": "4vtdA3AXYl9huaasLmraiLXFUZqaC9C+MkQqTaeq3dw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.MessageReflection.html",
+          "hash": "tEf+sx5Prom9fvtAbQQh33Dvy6DRTs4AA0JZBKLZYeE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceAlreadyExistsFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceAlreadyExistsFailure.html",
+          "hash": "+8j0hJLne2hHQ94Ep+h/dF1kiHimd275xGDhDlM1Abc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceInvalidStateFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceInvalidStateFailure.html",
+          "hash": "sAh7OW8gqoZZDuyql2FJqhUATF/s85JiE9+9GGocXjI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceNotActiveFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceNotActiveFailure.html",
+          "hash": "wg1XxFT/XLOg549I53mQvKZ4MfTyooUs89ARWR7fXCA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceNotFoundFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NamespaceNotFoundFailure.html",
+          "hash": "u5OthefTGTuki+Pwn5CUEKUGMwR3YXV3rdl5TiQRoZc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NotFoundFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.NotFoundFailure.html",
+          "hash": "d/oZwfv3OU70bxYwLeDiSbxy4BPADtagAA3uXdBzdcU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.PermissionDeniedFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.PermissionDeniedFailure.html",
+          "hash": "ZOeLLvnm30zlsmA6KLRwluA/9fUvIB3UPK0zvJsIa4U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.QueryFailedFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.QueryFailedFailure.html",
+          "hash": "DBxgE3y6beKzPjSU7sE/DgpKcsp4//RYnPor0XvsiGI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.ResourceExhaustedFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.ResourceExhaustedFailure.html",
+          "hash": "4ix1EeSsbavQ05U8QlFXfWiV1E9FZm2gQSymlHzW6qY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.ServerVersionNotSupportedFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.ServerVersionNotSupportedFailure.html",
+          "hash": "i10wCon60LKiaVIoFF/uzuF3WYqbyg8Jsa+QCVC/wf4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.SystemWorkflowFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.SystemWorkflowFailure.html",
+          "hash": "BMlYRmV4andYVVEkhtKpD3Qm2474JT5/rT2BXyguQBI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure.html",
+          "hash": "j4ZLZOaALGbFIV+cSueAQxxXwzK5uFxs/dmATOjiBoY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.WorkflowNotReadyFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.WorkflowNotReadyFailure.html",
+          "hash": "0o6/lmhsgrWs02kUgy/VAJiqkRkvg0yCQlDzp0kYoNA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.ErrorDetails.V1.html",
+          "hash": "M2fGF+HsrsHpdFADI8eib7lA57Zk8sGwJzovoktX2dM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ActivityFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ActivityFailureInfo.html",
+          "hash": "1m1xImLz8xrhF2vjcuCZPaSVRe/DqdRyJi0P4l1keeU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ApplicationFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ApplicationFailureInfo.html",
+          "hash": "6UVrx2tWk3XZBo48ItvzUO3A/sLVCJ4PQYuE6uyueMQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.CanceledFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.CanceledFailureInfo.html",
+          "hash": "711YhQRigbCKivLnhJ+4at/5b0yAslWvvUJNX+evR0o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ChildWorkflowExecutionFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ChildWorkflowExecutionFailureInfo.html",
+          "hash": "4hOGRAxLTt0rkf/Xcm2vuaAM5Q9xOUKA+o0tlCVzWpI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.Failure.FailureInfoOneofCase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.Failure.FailureInfoOneofCase.html",
+          "hash": "hnlWCHW/SSsIaTOifY1SDI65ZzleXopjXSPc+Hnnw9Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.Failure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.Failure.html",
+          "hash": "3GKPHYEK8hHJpLuRxDtx7S88pl/5b/aLZMGtcp2BYT8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.MessageReflection.html",
+          "hash": "mHwhfh6HlCGYV40SoIt4GYahiHx5SUPY7Uh3Uylrdy0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ResetWorkflowFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ResetWorkflowFailureInfo.html",
+          "hash": "RY1Rg+NnWJ+iHlKj4pK+X134QDRJUF1yVPAVDKFIhvk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ServerFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.ServerFailureInfo.html",
+          "hash": "n+KrOgQXvPcVfP1/EmyteSAmk99lQ0yUNnarEwvoXz8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.TerminatedFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.TerminatedFailureInfo.html",
+          "hash": "WKDA+Vx6LSSArMz8oqV4Og+KZYB0R62HXR/fVWrokh4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.TimeoutFailureInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.TimeoutFailureInfo.html",
+          "hash": "8l7VlCHAN+ViNoC89l8EA1fi8HPQV972ENHQjqV8g3c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Failure.V1.html",
+          "hash": "/88qkCBzJMf1SJ+/hFJWxkOM3rgL42ED13oV9Q1ikTI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.MessageReflection.html",
+          "hash": "UTisPp1lM4TgLLnsUhWb+Uw8e7JP+zZhz2f48zvPVLE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.StartTimeFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.StartTimeFilter.html",
+          "hash": "7yiBOMLfrb0q1aEpYjMQ4W+dopPwERYENMBrHcLwuks="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.StatusFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.StatusFilter.html",
+          "hash": "bbmiX0hd6kyjncAFAHoW7EAZMBOn7Ra9qRg4YFhvvr4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.WorkflowExecutionFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.WorkflowExecutionFilter.html",
+          "hash": "/+oKJPCoUlBOd0+fL/CEokrzXEWYnX/Gkg4lACvWLpw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.WorkflowTypeFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.WorkflowTypeFilter.html",
+          "hash": "u+hxfAL8fG96h0G3TIxmfd+rvKa6+ZMe8QHK+qqx97s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Filter.V1.html",
+          "hash": "d4RnRuemNLmkdrX2eT/cFKc8A8ELoyn7+BhjHy5DyBU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskCancelRequestedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskCancelRequestedEventAttributes.html",
+          "hash": "kSGtSVbnHD/O+R80qnulxM84DbYRyUk/P83b7fWrxTs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskCanceledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskCanceledEventAttributes.html",
+          "hash": "KZCxZPJV1CD0VIDtBi2wge1BT0isJRBj5eQpxtg2tKc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskCompletedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskCompletedEventAttributes.html",
+          "hash": "Y/yt/X2q6vZMgvU/ma9kPWB6aTLe6lII/kYTm1bSPO0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskFailedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskFailedEventAttributes.html",
+          "hash": "TN4jhYhKAQZiwJhqnVMLPxdBgKCypFrJNpmzBZEKJ+0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskScheduledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskScheduledEventAttributes.html",
+          "hash": "arbCoJ8kdN6H1mfXlWTSBfRVmRh+qZn8wcrOrKKlXKY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskStartedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskStartedEventAttributes.html",
+          "hash": "xcSlkRpUn+q74A8JIl0+NUmKz7gKKi0Faj0gXdbJiF8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskTimedOutEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ActivityTaskTimedOutEventAttributes.html",
+          "hash": "abq0jLplas7jCGKHl9ZsYu3nX+uZVqFhd7AhvZ+hW38="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionCanceledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionCanceledEventAttributes.html",
+          "hash": "ZD2YhKzmZh3ED6FDgbyTE6J1WNXz9SJ3fmN4+l59eTo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionCompletedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionCompletedEventAttributes.html",
+          "hash": "HEUg5c2zPnjUTYaCELQrHAla3uqDmIIDsYBqWTTxXwY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionFailedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionFailedEventAttributes.html",
+          "hash": "2KhT/aSZMlyMJ00pXSqanEYlhJutV+kUBUaCrMHLLiM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionStartedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionStartedEventAttributes.html",
+          "hash": "c84bhQbVZQiUo0uiZnobf1fTnANhEfIHW/ens3Ezkzg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionTerminatedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionTerminatedEventAttributes.html",
+          "hash": "B2ydvHNbGA6AGH2nHHoy1L2EKjeJbgXIHTn8XnaT7+Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionTimedOutEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ChildWorkflowExecutionTimedOutEventAttributes.html",
+          "hash": "o/+NhMdycqSEwWKbDgnN8+nor65s7//a3REQtGdpW6Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ExternalWorkflowExecutionCancelRequestedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ExternalWorkflowExecutionCancelRequestedEventAttributes.html",
+          "hash": "wd2jzBcggOwL/iZBRSQE+ZvgTPsM9pruE/gBxxUXglc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ExternalWorkflowExecutionSignaledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.ExternalWorkflowExecutionSignaledEventAttributes.html",
+          "hash": "mDtzO7Yabqc20GJO+q4zwd/s2y5Yfg5ly1XBcSVT/20="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.History.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.History.html",
+          "hash": "5kIF8ztcz2XxtTk7nsCAAgYBC6U9J8QLC1/QVVgD448="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.HistoryEvent.AttributesOneofCase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.HistoryEvent.AttributesOneofCase.html",
+          "hash": "6F1BCAB+nbhbP56QZAgjeH/pnW+tKCyqHqc8FEuTIwg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.HistoryEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.HistoryEvent.html",
+          "hash": "WVPNRxGHJiFSOdnYxeq6F+/HV4cvsdUr8LA8t2Efm4w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.MarkerRecordedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.MarkerRecordedEventAttributes.html",
+          "hash": "KRVQyhdXDIyhYJpdA6y+y4gw0dc/tz4jW/sjHpZE+as="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.MessageReflection.html",
+          "hash": "f9yUvrEsq3w/94+9RHlRYG6tbNZlRa4X0aNaijC3Zco="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.RequestCancelExternalWorkflowExecutionFailedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.RequestCancelExternalWorkflowExecutionFailedEventAttributes.html",
+          "hash": "6aJdw5WVnd00lFALeLSp6pqrZi1AJhRmKV5Pvhn3HLA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.RequestCancelExternalWorkflowExecutionInitiatedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.RequestCancelExternalWorkflowExecutionInitiatedEventAttributes.html",
+          "hash": "rWKDoUQm3+5Had5eaT510bC+lb1r8oE7l/me8lTR+mw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.SignalExternalWorkflowExecutionFailedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.SignalExternalWorkflowExecutionFailedEventAttributes.html",
+          "hash": "TzIyPOzubaj+GtK9432MKd7ipFjdmBzVPBkCDqLJ2V8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.SignalExternalWorkflowExecutionInitiatedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.SignalExternalWorkflowExecutionInitiatedEventAttributes.html",
+          "hash": "bKm10S0Zl5BL2ehZYrJ6iKdWHwOPp/KWcHkV17/p7sw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.StartChildWorkflowExecutionFailedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.StartChildWorkflowExecutionFailedEventAttributes.html",
+          "hash": "9l8kUYMISEdlnZqA2YksvCUc/2q3Og7Nn6Z81ppXwok="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.StartChildWorkflowExecutionInitiatedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.StartChildWorkflowExecutionInitiatedEventAttributes.html",
+          "hash": "AkzGxdZEbo+nsTi3EO2KWy2i00E6ZIORUJD2ts35MlU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.TimerCanceledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.TimerCanceledEventAttributes.html",
+          "hash": "m0hVL99RAYQ6OkomRIB19jFwWWWx/G+3iiTdE5hy7Ys="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.TimerFiredEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.TimerFiredEventAttributes.html",
+          "hash": "oK7IRgyEd0V9gKUalECjSQ0+rD8yJ7Znt2vyfoIolYg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.TimerStartedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.TimerStartedEventAttributes.html",
+          "hash": "W2GfiNDOzXQh6xhivLQQPnzMKw+PKxccch3u46ZoZXY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.UpsertWorkflowSearchAttributesEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.UpsertWorkflowSearchAttributesEventAttributes.html",
+          "hash": "WI4WyWUTwFIUX6KvSDi5Az5YDf8M2C2oGOtj6PPZEiI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionCancelRequestedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionCancelRequestedEventAttributes.html",
+          "hash": "ZKyZtif9dwy1SX635Wiu7smLIeHeD96cQY7SrzfgKEQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionCanceledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionCanceledEventAttributes.html",
+          "hash": "tWum37fkq8n4Y7JyGMOPaZjk2OnHYQnZIvlHX4T/DVU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionCompletedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionCompletedEventAttributes.html",
+          "hash": "mUUluzhVJlNZ9fufNZzgcr2TsWb2e3l460pGuV409w4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionContinuedAsNewEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionContinuedAsNewEventAttributes.html",
+          "hash": "lOg+pfr6rXDdW52EITL3VA/45wXp5hV/UDyZ9YeLbdc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionFailedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionFailedEventAttributes.html",
+          "hash": "I6fIJRoOSmM+90b/zaHdocJk19xgQkHXp2WelS6yq9o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionSignaledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionSignaledEventAttributes.html",
+          "hash": "pfsnYlzgR4jhHV0n947/3gS1OIc3kvyZIGtPeeSCfUs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionStartedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionStartedEventAttributes.html",
+          "hash": "+LdqG2hlHJEhIOfVQbMEwjMTB2hlJ80CUj/NuIUtdwY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionTerminatedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionTerminatedEventAttributes.html",
+          "hash": "E7h0NND0wCHPCktrkmaIHzuQwmVJSj7n+yYCeeELVSI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionTimedOutEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowExecutionTimedOutEventAttributes.html",
+          "hash": "VjQuaEdM57Yhk0y2H3wQrxWNw51DEx+B2ISt5A6lsKI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskCompletedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskCompletedEventAttributes.html",
+          "hash": "IRO2Cof3wGfD7iG+qsVQe0gLzDtpR9OGP5sPCiM2hPA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskFailedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskFailedEventAttributes.html",
+          "hash": "TfqLZ2p95czqGEOylryvauzo2r0rAVqvTQLhiB3IgqE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskScheduledEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskScheduledEventAttributes.html",
+          "hash": "rtIdriUQfJyZc99BMsjGHTlFiSKy4VjP4dNclc+QXjs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskStartedEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskStartedEventAttributes.html",
+          "hash": "DR//Ula351jMOINgK4RgEWqWrO9sOm/uUIF+NmCyqHY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskTimedOutEventAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.WorkflowTaskTimedOutEventAttributes.html",
+          "hash": "yVI66Jn8WGcWaOvxi6j431+imxeSPh9TtDOtQEB3xr4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.History.V1.html",
+          "hash": "51zUi+l6ckwU8X6bMe5H3Y3rf5EN1ZFF2Lv2c7lkU3k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.BadBinaries.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.BadBinaries.html",
+          "hash": "YAA3tsJUGwDFmJXQexa6LRd3qG/fzAjDQv8duJLt4fA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.BadBinaryInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.BadBinaryInfo.html",
+          "hash": "d2X0gG8p7n8hDmw51Yczd/SNh+Z0n4h8JdQf74juU7w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.MessageReflection.html",
+          "hash": "RxaJtTJqM3V5NMXPQ8wuC50qN2/pnc9q5IxSVLno2Xk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.NamespaceConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.NamespaceConfig.html",
+          "hash": "yWi9MTkymsoYvIObrklzEjvbMhT5ZS9XdOv6FPNl0co="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.NamespaceFilter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.NamespaceFilter.html",
+          "hash": "LYjfQsRoBibv8Osj4YZzYy3zc2CBKh+Ad7/rs4lH5bU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.NamespaceInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.NamespaceInfo.html",
+          "hash": "UAzSfqBFQXFRYakltUSxXspwJj5TBzaUKeoTcwulbQM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.UpdateNamespaceInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.UpdateNamespaceInfo.html",
+          "hash": "KhW2EUjsS+e8W5iMkjU3Ugr4RXPhE9QBuviOp89Xi9c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Namespace.V1.html",
+          "hash": "XkWpncFzUndqpPkMKBlBvYK2zofHOtn9sOj3IFK3xX0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.AddSearchAttributesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.AddSearchAttributesRequest.html",
+          "hash": "0vpmrQcNZj2iKg0sc8QjfTTUu5ovpKcUJDGHHbb3z34="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.AddSearchAttributesResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.AddSearchAttributesResponse.html",
+          "hash": "ynUcfKxOjg8S+E9k3HHQ9B/ySL6S6f0IfuGzLbko4DI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteNamespaceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteNamespaceRequest.html",
+          "hash": "CZj0bZIdaP853TKeeReY/tnl4VTai83/g3fHlXjZVBQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteNamespaceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteNamespaceResponse.html",
+          "hash": "6Rhi2hAX8bTBt7E149GVDFx4MTgmdq9xlkk4rteK0kQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest.html",
+          "hash": "j0+2Tpb8PzR0QqTTFaf7mEmvX8ILp2XJ+Fx4iyLvDMc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse.html",
+          "hash": "fFgES4jURv9ud8Aip0Po5NDpS4MwychGiQ+UXdbdIew="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.ListSearchAttributesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.ListSearchAttributesRequest.html",
+          "hash": "HLTfP1CmEXo9yIh/+wg7u1W0sQMg24Iby6fmnbROa2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.ListSearchAttributesResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.ListSearchAttributesResponse.html",
+          "hash": "4ZqbC8VQTg3Sub4PFDxs/OJCbvCizu6n0r4YB6lwfR8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.OperatorService.OperatorServiceClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.OperatorService.OperatorServiceClient.html",
+          "hash": "s8vYaepY14YQulZbeOBgsO74UHWpkxaDNLtVgJggMVQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.OperatorService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.OperatorService.html",
+          "hash": "DwZLGCEIZYYkLBVetGsoCLCrNbaIVb7wIB24gIhKXZ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.RemoveSearchAttributesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.RemoveSearchAttributesRequest.html",
+          "hash": "C6x4t9T7Hr+uOfG4lfyFAr5S+yiDnhUYT/G2/qkRSv8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.RemoveSearchAttributesResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.RemoveSearchAttributesResponse.html",
+          "hash": "UGaYr5dsXldX3foA4iBizIQF5Dk50BdqKfqMylOVxlQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.RequestResponseReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.RequestResponseReflection.html",
+          "hash": "oLOsxxi8sCvBSV3BUQaSg+nEoJwkVzBmdTPlQfGskLA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.ServiceReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.ServiceReflection.html",
+          "hash": "rygrVHv+IGT4wf1vn+4GT/iO8RsQwkEM0OPDLns4VXA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.OperatorService.V1.html",
+          "hash": "LccaipwRuVB+M9iKkjUFxwaCUFkco+8wkVJKU2AGPGU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.MessageReflection.html",
+          "hash": "UFsIVKbTp4DwfN8lDpwrHHJOXBDhkM7OC/lDEYfazXM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.QueryRejected.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.QueryRejected.html",
+          "hash": "+HztbrCSeInDSxp0G2XeaVT0+MR0huVVcO8U1CV3Gb0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.WorkflowQuery.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.WorkflowQuery.html",
+          "hash": "9XzuJLIGRmqEN3Ye2ksyMEB2rujwdKq5hLttW0huudg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.WorkflowQueryResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.WorkflowQueryResult.html",
+          "hash": "hrVCA8DjhhWH/VQ2dBxwFfQSX2hzdaHKyfHQ9n1OaPE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Query.V1.html",
+          "hash": "n3a1f0lCYHuIG4UxqdSk7cFmbMbNeXXNNBfpgt6L/Z0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.ClusterReplicationConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.ClusterReplicationConfig.html",
+          "hash": "SzuTF+wAbRyBjX43gJt0i6GQ+5KtVVqELMSLvARBw70="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.MessageReflection.html",
+          "hash": "nVfcACZwd7Z2TygpL/GgWW0Us1h0r3tHr6Z66WPJXYg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.NamespaceReplicationConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.NamespaceReplicationConfig.html",
+          "hash": "g/dfX61ZR4AknumWv5p6Z4cBx1M0qaITDnk80KEadRQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Replication.V1.html",
+          "hash": "pK23wQPeiD50vio2oO0EQ6Ciu0/ZJm7e087G7cM7FFM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.BackfillRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.BackfillRequest.html",
+          "hash": "jfOOJ4nVcBZxhpsS5bSMZCCk3/LaohndG6t5PXPBav8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.CalendarSpec.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.CalendarSpec.html",
+          "hash": "arBZpUZ3jyKXBKhJ1/fMIcDXIO8u39LHg4+/DW1GRLQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.IntervalSpec.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.IntervalSpec.html",
+          "hash": "zMGguAm57paAmQa+rr0RGBPXlSrzkOOY5gI6AIRgnrs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.MessageReflection.html",
+          "hash": "Aahh7BlUXHvV96Qjr6VKZnmrBz8gYDQSlQbX/FA0O08="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.Schedule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.Schedule.html",
+          "hash": "nTm8K34S7apR37xWBett4l9dwQKOsXoolomP113qfhs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleAction.ActionOneofCase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleAction.ActionOneofCase.html",
+          "hash": "3Lu8xNwZuPA/jLzUKWizTDaDM19/grG0C9lAbt/IgNw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleAction.html",
+          "hash": "5LIbpFYFtCB3A1tMXAjSYf3ugEHNAImtgu1qGIglzCA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleActionResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleActionResult.html",
+          "hash": "gvrjfLBv4KTiW1b66dp6een+bcriO9chX8rM0tZiqho="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleInfo.html",
+          "hash": "fO34bMg2efoghOToVjOoXdgViznS+i6WcmxvUD9FehQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleListEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleListEntry.html",
+          "hash": "UvKeaL48ld4M7aT7jirZ4j3FjXE3vQw0DD8MO0arZ3g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.SchedulePatch.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.SchedulePatch.html",
+          "hash": "jasNjAVhTEha2U7C4PgNrroLgDq5Wsho1qee59rBCnY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.SchedulePolicies.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.SchedulePolicies.html",
+          "hash": "gMFlwZ+ho2oZW30U7wQOVGY62qaIAAaFivBIHAkNYNs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleSpec.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleSpec.html",
+          "hash": "8ftTK+EW47tkQdAJEK7JjW+v/fHZfjC+OvJNj+Krn4g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleState.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.ScheduleState.html",
+          "hash": "xXm+I5aH5JAQjiAi8UeW2tp4xXJ4T5c8N9osRWllLQE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.TriggerImmediatelyRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.TriggerImmediatelyRequest.html",
+          "hash": "QuFZ63WUw9MM3TndxvUtezbmmRqbf4MpRjbWUT3vpGo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Schedule.V1.html",
+          "hash": "TIARWUS+jWc7Ih186Cr1CHyxlU9u1YJr80iUeYlbfJ0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.MessageReflection.html",
+          "hash": "5MLAuImQaCV/QxFD/A9I5CDS9BY24C7qr/AtpJXUaVI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.PollerInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.PollerInfo.html",
+          "hash": "WvNiPPjyMFRLNV4911DsuA7fFdVqbfuFIqgpYzGjb1E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.StickyExecutionAttributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.StickyExecutionAttributes.html",
+          "hash": "//xLI9K8PkEJECwc7z1EDSt9kDXA28JvqH0rMPejlEM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskIdBlock.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskIdBlock.html",
+          "hash": "JgEqnjkQF15/jLKftoxLoZuUO5mSm0W3Ln3hy8MWiEg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueue.html",
+          "hash": "o4ZRDG8OicrfFdgqOK8L9jYQ3vs4NFNyC+CbZsxdUs4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueueMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueueMetadata.html",
+          "hash": "GTTYQWS/tQRWmbYKR7qlT88JzvVz+ikKMKBizgLxivE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueuePartitionMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueuePartitionMetadata.html",
+          "hash": "QqwQSRXdqsVVDR9L3Op7GGdmXwuAanjaTvquKROI3NU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueueStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.TaskQueueStatus.html",
+          "hash": "HlO+9gRzl40LlTOpPd+D0nWRjU31TG952HhdGHedpUs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.TaskQueue.V1.html",
+          "hash": "LYQB4lyQnZC6Fb11c8IoPQy97HLdfdDYoCoLl8qvp2c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.Alert.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.Alert.html",
+          "hash": "n5xiHtW9gG/kSuTfxQk7V062PkKA/UJV8Zl4WX7qKjQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.MessageReflection.html",
+          "hash": "kvhhM5H6wKPSwMjKcHbxC4JRHV8KU8VEuNygGQhTPRI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.ReleaseInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.ReleaseInfo.html",
+          "hash": "/pjuAOhjlIc0I4joMW1A1gguFjPylB8//C+TcgK8yLk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.VersionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.VersionInfo.html",
+          "hash": "xRdgwAQwyxNQW2qCZXM4axTgTwWLyGMzw3iO9j3nhU4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Version.V1.html",
+          "hash": "n0Hsrbo3IbliD1KiuM990GR3bGX1JVcu4h+A/NxcubA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.MessageReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.MessageReflection.html",
+          "hash": "DSMVO2jeHwKSAKa37biVqnvMWmf4UJuv540JO53Ite4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.NewWorkflowExecutionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.NewWorkflowExecutionInfo.html",
+          "hash": "jxbaaKtxXQSYg58J1i6OrDat+LHMIuUd39dLrkwnIq0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.PendingActivityInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.PendingActivityInfo.html",
+          "hash": "ZhiHLe1tauhOdlz5GD7NxPE7Rxlq3788Ej3xzBzJZt0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.PendingChildExecutionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.PendingChildExecutionInfo.html",
+          "hash": "QDbv4W4C2uX8e+wSgTFu2d7FgEQCp/RzwNletvx3f60="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.PendingWorkflowTaskInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.PendingWorkflowTaskInfo.html",
+          "hash": "vCe8OQkf1E6jHK/y07PSx64N39rDwj7jS8pQSJGdSaY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.ResetPointInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.ResetPointInfo.html",
+          "hash": "uyngWocIQJZ1OP+lw02iDpgoGK+H+SD6hBvWXj+XTGA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.ResetPoints.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.ResetPoints.html",
+          "hash": "z24+0xXRlld0NARLwEV9J5Jgm2/760ly+qgbhHUP5Qo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.WorkflowExecutionConfig.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.WorkflowExecutionConfig.html",
+          "hash": "3MuIiJOuGTlr4ELpfCmXrLg/tUBxg2WXv50CMRFUiUw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.WorkflowExecutionInfo.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.WorkflowExecutionInfo.html",
+          "hash": "mUHrrIKogo+JSf583DCvPJ6OVxPnbl9hdJU792FRjU0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.Workflow.V1.html",
+          "hash": "3ab6mWXOZqG1IsHEdAniB3TcgOs3FHt5QZBxg5LGk0E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CountWorkflowExecutionsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CountWorkflowExecutionsRequest.html",
+          "hash": "cbohxK2oNQ/MAGPBaiMfzTUslHXuBPbZlUYlB8UrDb0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CountWorkflowExecutionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CountWorkflowExecutionsResponse.html",
+          "hash": "2Qa53Mzi4wEbHZJrGHqbCUmzbT4t7B4RiIvqMcbVV64="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CreateScheduleRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CreateScheduleRequest.html",
+          "hash": "+0Ma3HMIZ4+7tbk39APJShU+Vug7wzO4f9FKcZw2FT4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CreateScheduleResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.CreateScheduleResponse.html",
+          "hash": "z8PShiWa/YkTYWntfUqGg6v43jBdaRf44ZGecJFsXpo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeleteScheduleRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeleteScheduleRequest.html",
+          "hash": "C4apB/SeuP8i3nc0OdXlzGzRl2xeGi7DH0eCTFWgZsc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeleteScheduleResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeleteScheduleResponse.html",
+          "hash": "AsTHC3VURZ6DRanel+h5kPFQh38DQLYM4r3f2iG+xKY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeprecateNamespaceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeprecateNamespaceRequest.html",
+          "hash": "rhw9hjA9FFA23FAbgsvmsvUCANmzMIjVk6+GaKDhQRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeprecateNamespaceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DeprecateNamespaceResponse.html",
+          "hash": "GdawnWIIfYQzKwzemR63xv2T0B9uYg2tMM6yPZE00bk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeNamespaceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeNamespaceRequest.html",
+          "hash": "tcJ/z3sr85QeEkr9e6gp1kQ3Eo/B3+0o1srwsHGTtdw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeNamespaceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeNamespaceResponse.html",
+          "hash": "JupIRWB7AQpO0CeUkeySxxBluQc5yhWHUFrRBGp+R+k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeScheduleRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeScheduleRequest.html",
+          "hash": "+ZsKxGoksjlZZGRxJqlUZbRpY2HezLuG10oYf8enVzk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeScheduleResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeScheduleResponse.html",
+          "hash": "1vKJKJlAGuFEX7iUAMfcdPboGY3vntU+ieq5keao5TI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeTaskQueueRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeTaskQueueRequest.html",
+          "hash": "tmBqPqFxyGXKNEcrItJd5Q0vpnx/BdPWYKPklk3BaNc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeTaskQueueResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeTaskQueueResponse.html",
+          "hash": "imORSlV6JFyLeajweEx2II0fLSGxLcI2ACZvNLkJhqk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeWorkflowExecutionRequest.html",
+          "hash": "To2tWljAirVh4iEWLnYRDffeRTsTgU7RULMUHKnNP24="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.DescribeWorkflowExecutionResponse.html",
+          "hash": "joRwHov6QLO2hyFJ1CPmMamSEqk30VrTyomCzW88fE0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetClusterInfoRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetClusterInfoRequest.html",
+          "hash": "sOdyI5Zgh+ebsQZWTCs5C8DVkPBHdkMCkC23RftyeJA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetClusterInfoResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetClusterInfoResponse.html",
+          "hash": "Q8Pgau8AH4x9XGM+nw4qS4MGJ3AP6Pecft9oEC/I63E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSearchAttributesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSearchAttributesRequest.html",
+          "hash": "wmzuvP4Fh2ufshEmPKq+7RrhxBI5S0lTtBJAMHZtoTw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSearchAttributesResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSearchAttributesResponse.html",
+          "hash": "7Kp8uVFhfXCFcrKzHHZB120d+G4+qWfd+66UGHg3GFg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoRequest.html",
+          "hash": "Q5WkzGnbZBKWNyWSxQsu8TyTYFOKiPnsMzeLL+WCW9c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoResponse.Types.Capabilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoResponse.Types.Capabilities.html",
+          "hash": "cgbaD6eDxG9DA08WMz5B1j4CkTaVttp0g86aTWi9jfw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoResponse.Types.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoResponse.Types.html",
+          "hash": "lgf5LsmqeHCZ5ogZntLtF2uUpxv84Rs5mlQEomy3lIQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetSystemInfoResponse.html",
+          "hash": "4aEBMbD7VQzzm5BI/zlVP4q/5DMmSdIV6QjQv6u5WqE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryRequest.html",
+          "hash": "gqDEcNQKhUsOKKRvAldMzVL7wdjVmsWhCmBXHUNIQAU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse.html",
+          "hash": "tbipkvwrwyojiwJ974ZT7iDur1cW9ZxUcTfIdkP7/so="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseRequest.html",
+          "hash": "duUcoVkXq/L+rTayh7GRCm33mKu2XVAu5R11f5+9UyA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.GetWorkflowExecutionHistoryReverseResponse.html",
+          "hash": "9DQkoJTZ5SpojkxtXehLV5QIONP33lFbIsZLlf6O+8g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsRequest.html",
+          "hash": "v+dRaXK1Q2ysOyHxsxqgJuuvsxpwRtkMINmZZrdu/n8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListArchivedWorkflowExecutionsResponse.html",
+          "hash": "QnzAae+Jo4P8t4Mud2qjf2+ys7t4z7D5nsDhDjqAvBQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListClosedWorkflowExecutionsRequest.FiltersOneofCase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListClosedWorkflowExecutionsRequest.FiltersOneofCase.html",
+          "hash": "shXV2GvB8pVcy8xSHi0GdYnZSxUZm10N1eJOLdy9k4c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListClosedWorkflowExecutionsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListClosedWorkflowExecutionsRequest.html",
+          "hash": "XqSNz44B45eth/AYjtze74fvUJZWGac3kxePa1E3bRg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListClosedWorkflowExecutionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListClosedWorkflowExecutionsResponse.html",
+          "hash": "za/IfZ6wqoYI8IMOpUb1S7RpVe/yx7g5FnV/rtW5x1k="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListNamespacesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListNamespacesRequest.html",
+          "hash": "AK0PlE0oTcwms26HutVDHqHYqGQemISQw+Z4UQ1UnHY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListNamespacesResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListNamespacesResponse.html",
+          "hash": "EE/2qJRX/ZNv/qpm6GNvza6xa5uScK5l1Bmkf2GfDXI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListOpenWorkflowExecutionsRequest.FiltersOneofCase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListOpenWorkflowExecutionsRequest.FiltersOneofCase.html",
+          "hash": "dDHFiDYdojlPom1WUcu5K20q+ybkSaqKp5Pn1kp4wvI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListOpenWorkflowExecutionsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListOpenWorkflowExecutionsRequest.html",
+          "hash": "+t1ZVpXBZ9dLLly//m4mV7JFnR3JcHyBkTbBFv7ZuKM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListOpenWorkflowExecutionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListOpenWorkflowExecutionsResponse.html",
+          "hash": "o2tZ0UVWCtVMmG8uOCwADjOZftaWJkHYFWjU/i1HSm4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesRequest.html",
+          "hash": "7aQ+nDogM8USuwy1Nkm0vcQ+xiy9eE0mPC67IcAOuMo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListScheduleMatchingTimesResponse.html",
+          "hash": "u4YzCmHBy/Vw4u0yumo/JayL8lzuhyTjdVZdxopgNMQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListSchedulesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListSchedulesRequest.html",
+          "hash": "KIXZPOKadbQgvCnvdaI16glF2Vwd1KOe51NYoxkIA6c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListSchedulesResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListSchedulesResponse.html",
+          "hash": "NfBcmuVnf7FnluiO/G25vTn2oLJTwyVyUSrcLOoBm9Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest.html",
+          "hash": "X+vppGS4jkLLQNGMO93iKSf/Q5m8YGQq0l6T8Xlgj4g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse.html",
+          "hash": "VghmLp9rno8itPPJvtldWNmYOFsxa1WNYtcQHtWFyE4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListWorkflowExecutionsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListWorkflowExecutionsRequest.html",
+          "hash": "edmF1fWh2taU4+CeTN/UM95p+JSRQW4BZ9Oq71DtWMA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListWorkflowExecutionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ListWorkflowExecutionsResponse.html",
+          "hash": "0ROsEJGvl5mLH0O1OuXp2kfa8XQoJ7xhI5zVlmpwEEY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PatchScheduleRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PatchScheduleRequest.html",
+          "hash": "8bio26yivM5RnA44BaDEhIY8Pw4MxRsHA06ILH2rQVU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PatchScheduleResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PatchScheduleResponse.html",
+          "hash": "QQit8qJSzz3IMJZL64hHuFYsNxljPvOnDk4pZw6khJM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollActivityTaskQueueRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollActivityTaskQueueRequest.html",
+          "hash": "fjzX6M4Ux36TqRMIqeua/9Z4/OsSSSd9325M9O01+zY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollActivityTaskQueueResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollActivityTaskQueueResponse.html",
+          "hash": "liqggHaViigTKXu+dhU72CH1AqJir27YLxWIeep7zRI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollWorkflowTaskQueueRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollWorkflowTaskQueueRequest.html",
+          "hash": "J8GVl0AdpvVScQQ51rlLVXcoWNPuIMj1zkxIMgxN03U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollWorkflowTaskQueueResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.PollWorkflowTaskQueueResponse.html",
+          "hash": "gAbKKu/vR5qECLX10VZEVrin3PUDd0eA+hdzERP7gKQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.QueryWorkflowRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.QueryWorkflowRequest.html",
+          "hash": "vTSJQtl+CMWSyzLXjyPfDdRwtq7AARk+zdjhW5c+L2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.QueryWorkflowResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.QueryWorkflowResponse.html",
+          "hash": "luE+b7ePmnAjjjM0N8qrO0NsM9yEzXRu2RV2Ih8xbUY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdRequest.html",
+          "hash": "z7iLLDu+EYPE1+eilHjZUe48uZk/KHN45SwdzecQTbU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatByIdResponse.html",
+          "hash": "VZj4xQPC48sghacEfiJQMxSayLpLlfHea6VVds6uU/I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatRequest.html",
+          "hash": "jvYweZiiKVtpGZDzRQWp/k5MpX/lTTJ0gkTeYyx1ujg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RecordActivityTaskHeartbeatResponse.html",
+          "hash": "+ZNML5GjBm4fPsTYPfoxDL19J/VIp2mJ7njCNsmBZpk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RegisterNamespaceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RegisterNamespaceRequest.html",
+          "hash": "ShMABVZQKZj7j5+/rVN46Wm+g0kM+tmeHzT4w+NH5Sg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RegisterNamespaceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RegisterNamespaceResponse.html",
+          "hash": "NEgbGd7Y/fTkqwRudDzajlFJzvQ7yn5RYSaqdKFS2Hc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RequestCancelWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RequestCancelWorkflowExecutionRequest.html",
+          "hash": "O2MdpfreytPZScUESqHfpnDoe80nv9oVQMxTbvW3CS8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RequestCancelWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RequestCancelWorkflowExecutionResponse.html",
+          "hash": "DyXbGE7dnx1bemE3M+/IciNYhTnk1j4653bC37VBhqI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RequestResponseReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RequestResponseReflection.html",
+          "hash": "iHQ71zC+EEPEJPtW0eFPrHVwNjhyHvkapvfdBjjgG6E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetStickyTaskQueueRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetStickyTaskQueueRequest.html",
+          "hash": "lYMJvhuWgRErHxmJjBGmuMN6TWj6wBZ71z5+D+qTGXA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetStickyTaskQueueResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetStickyTaskQueueResponse.html",
+          "hash": "Y1EM8e+SDuGL9reH4eEIfHMkJChdtINEzW/Ef/dhqAk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetWorkflowExecutionRequest.html",
+          "hash": "ZIsTsDJOxLvOmTiqF0mPtelYUUPRP18Yzecx86gCYeo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ResetWorkflowExecutionResponse.html",
+          "hash": "Z8fr5RPKSLaXB1MMI6kP7liYtB0lOIf4ejX3VBebwGk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdRequest.html",
+          "hash": "5hgrY7L2VkH9jjg5vI/soYIz0oaLgAvjQJy33jtBU/s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledByIdResponse.html",
+          "hash": "vhKjdkDdQd3qyo35T8OLbV1NlQPTU1YzTnilqhK5VMc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledRequest.html",
+          "hash": "mAVHqlROtalEQ3BUWJU1oowneZWPqHtFuCr7QP8XU/U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCanceledResponse.html",
+          "hash": "LsZkvQ6ckH/rKUWcDfL6cIm2Tq5w8ekrKmGD2DEaZEk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdRequest.html",
+          "hash": "rcDh+YaQz2oMcmyFYFtET8olM4csmeVDYtcK8t38Qjo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedByIdResponse.html",
+          "hash": "iL1welBWv2fGRaTV9pHHIrTM7eMpXdaPaDJDvegNDVI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedRequest.html",
+          "hash": "wGSX1acFfg4zW7O3COa64JvDdr6dVGs2zDdjEVsKCFo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskCompletedResponse.html",
+          "hash": "fAAqjwAdA/PErQjKuDnirAoC227nYnPTPh4VHQ+hQzI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedByIdRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedByIdRequest.html",
+          "hash": "5j1qSHKFpDoWbEi0Ro/HvPwKU+9Z0UMqdYheQBgkxvg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedByIdResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedByIdResponse.html",
+          "hash": "okaubRzRelcBQBzUnBE2yA0y/PvFjnGNqNjYnWZIi3o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedRequest.html",
+          "hash": "h/zNyPd0UXkT+Zu4DaPIae7dgoscMzGWSy6//9tLSmM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondActivityTaskFailedResponse.html",
+          "hash": "1naoK1XXaz+373udFb6TMBK6Gvi2ljiDo8q55Q7jq3E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondQueryTaskCompletedRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondQueryTaskCompletedRequest.html",
+          "hash": "elQzyA7gD2yjowdIdbQV+Gc8qxugDQhRJgc/m8CjrF4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondQueryTaskCompletedResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondQueryTaskCompletedResponse.html",
+          "hash": "Wvy6zx4C8VgbkdCJx4r33x96eJsRFHwh7OsYMz03f38="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskCompletedRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskCompletedRequest.html",
+          "hash": "/0kZjRnmTR4PApIq433shaonAIvIA8E8zeRHuNAjF1o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskCompletedResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskCompletedResponse.html",
+          "hash": "6XW7uZyN5NPbbbSzoqcXPaPzzx2n3H2uoTpNQebl4xQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskFailedRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskFailedRequest.html",
+          "hash": "HwiO2M2o8fLiKp2oQuuzxKXb0vsX8nmcWCRJHy0vRJg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskFailedResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.RespondWorkflowTaskFailedResponse.html",
+          "hash": "9/TDc3tjX7ysSvyHHlCw/03xUk1Hnw140BXX8gG5oos="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ScanWorkflowExecutionsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ScanWorkflowExecutionsRequest.html",
+          "hash": "ZCBfE86OZaOMSjQ40bUmmrzdZlXNeloDbPBB5Kg8O20="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ScanWorkflowExecutionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ScanWorkflowExecutionsResponse.html",
+          "hash": "JV8tyLTiVns4CFrBWS/EOtjEM7iZ5hjl9clH7FGjtUs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ServiceReflection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.ServiceReflection.html",
+          "hash": "sh4JGMPZOv3si23q48vSLUR5D7Ks4VRZW3cyQ4np0bs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest.html",
+          "hash": "HnpYap2d1jtH6sTXNj9r88KbSK5xh2Pr9a6TkuOJqWQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse.html",
+          "hash": "ZOf9fjZCirSrO6/V1zB1qZHGnKu0s99lpxLR0rUy6A8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWorkflowExecutionRequest.html",
+          "hash": "UFcx8zz39PhGSL/I4dxKGrPF95zGVPWnn6+m4sOR5aA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.SignalWorkflowExecutionResponse.html",
+          "hash": "Vs4i2eYN0o9mhmDyiLjjr/aCNYwylUcOTCOF8xtvmI0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.StartWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.StartWorkflowExecutionRequest.html",
+          "hash": "999C0+f/Rkax6rcZdnpBzO2JZjWghOmEo5GFMxD7yz8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.StartWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.StartWorkflowExecutionResponse.html",
+          "hash": "2GBPaaGqUy1V97iE/BBb6Rrq98pp74kJ3aUZ+TV0osE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.TerminateWorkflowExecutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.TerminateWorkflowExecutionRequest.html",
+          "hash": "uN6icQge9j/wKe5tlEC6QgmlfJNg/E7sZKCI28CzCFY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.TerminateWorkflowExecutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.TerminateWorkflowExecutionResponse.html",
+          "hash": "uVacpOBqKySZM2FEqIqj2FSSgw/wLkzlvZC+p93Q3ds="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateNamespaceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateNamespaceRequest.html",
+          "hash": "zR6BqCGvmCFDwj3jK/5lbAyZlmQgm91znPv90h6eQjs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateNamespaceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateNamespaceResponse.html",
+          "hash": "kQFqLSE5PqT8uQK2vD3zpj4PAHnn+n5E2tB4U6ZjDZA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateScheduleRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateScheduleRequest.html",
+          "hash": "zajKdSqiaLyxbZiLHaoQd1pNz/CizhO68IMqm7IWCXg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateScheduleResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.UpdateScheduleResponse.html",
+          "hash": "JPiRB2yZ2wi1L7j8KfNI3upVocG8fy1Y2HFRV4Wb6+E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.WorkflowService.WorkflowServiceClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.WorkflowService.WorkflowServiceClient.html",
+          "hash": "pneay6ltvX20u9yGAADjQlxB41c6Hea0WK6T9DL8N0M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.WorkflowService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.WorkflowService.html",
+          "hash": "sJM+Hfc/hu90NagqSMiP4QILCjpM2IRidbW0w4qKrjY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/GrpcApi/Temporal.Api.WorkflowService.V1.html",
+          "hash": "Ajx1XLJBS4exv3g2TojmG7AzKg1hBAg3cFobEkw1IdM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.IPayload.Void.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.IPayload.Void.html",
+          "hash": "J+06295TXOrXtZtgmGNJR05gV2yI2MwppW8C+JK3d7w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.IPayload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.IPayload.html",
+          "hash": "OI1JZa7voxo1riOX2h2ku9H0xOtrv9P1t/u6Tn+SRXw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payload.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payload.html",
+          "hash": "F09p9evMOC9BSVFXU6WsDY9fpev6KeBwjMVSryh6PRc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Enumerable-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Enumerable-1.html",
+          "hash": "Cnm5I1AsA1IYTk6GygH2HSBhFxYl7XSB4TH/yaIsoas="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Enumerable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Enumerable.html",
+          "hash": "1TPrvvTzg2s936d8soElgq7Rfr4OO2YE00VO3I0/OR8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.IUnnamed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.IUnnamed.html",
+          "hash": "9muXcgZpNt4lAy92tTw1HyGCkVTijJyNW26HZDynvZU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.Empty.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.Empty.html",
+          "hash": "Rgf8GIJhR9K8FDOLByTHRZXAkuapd43aMumFNFuxEZU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.InstanceBacked-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.InstanceBacked-1.html",
+          "hash": "T8FA5PGuaunkoXYcK7v7ocbxhg3NV+IDX4VecZjxPso="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.SerializedDataBacked.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.SerializedDataBacked.html",
+          "hash": "Ge/+NffuA3mfgCWkZqC3YK3D/qxnoSa+8MDNFCrAS/g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.Unnamed.html",
+          "hash": "OXnVf8jkNYKlYI329hQe5pIqQ+JhN3HH53XEGUmWrfg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.UnnamedEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.UnnamedEntry.html",
+          "hash": "oJYgA+i7+SX4beSeqjcRbPL1o1z8dYUUqASnzA3WaEQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.PayloadContainers.html",
+          "hash": "zcOum8qWhDF3tRSowcaowYwKUPjmCYoJMz5URE7t5gQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.Payloads.html",
+          "hash": "y4uhQ8CBAhjInbWn5tcAHBisiuoTGkTiur/+qAdcTf8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.TryResult-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.TryResult-1.html",
+          "hash": "GaTA31m4mVXK/L1KLLByZEzecPmUVVrcDlaKOT93Hsk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.TryResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.TryResult.html",
+          "hash": "4IvQh7yxmy/rvxdccyiK0TkAn+Bv615YTg0ud7UuI3A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Common.html",
+          "hash": "Ky4nqjRGzdGsz4hO2L/CQfYeMJ2Z60ijLVC+74Qo6jg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.CompositePayloadCodec.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.CompositePayloadCodec.html",
+          "hash": "U3M5enef3m91WHoVB80tL18as9nlB71wDtv9qqltvqg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.CompositePayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.CompositePayloadConverter.html",
+          "hash": "O64x4MNheranV3ZLPdZPfaNdjYzx8JjLjESNY97vZyA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.DelegatingPayloadConverterBase.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.DelegatingPayloadConverterBase.html",
+          "hash": "A1YpcG93z8uyNNsLNyv2TtU0jGhyChvfs7/o863YKKY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.DiagnosticCatchAllPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.DiagnosticCatchAllPayloadConverter.html",
+          "hash": "qOBxD31eHu++gCmdvYcVkCUHejfF3YLT3AeN20+c2Uw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.IPayloadCodec.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.IPayloadCodec.html",
+          "hash": "mK6a8XIfnnsVouHAGqCwFzvEjZxYqdFeBra0ol0/jvM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.IPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.IPayloadConverter.html",
+          "hash": "/YGh3WmM72ELgH5pHPXBH2RDNC5d9X9hx6iPnIcuSVI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.NewtonsoftJsonPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.NewtonsoftJsonPayloadConverter.html",
+          "hash": "mRZvw+MTdF2zneeDpyGyH1B/VqVOzuNj0O03xEtoKBg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.NullPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.NullPayloadConverter.html",
+          "hash": "69au7NInAwxCYgfN71PgNj0eiZchRGEw9+Z9kcgfxrg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.PayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.PayloadConverter.html",
+          "hash": "0VrwzwEpuvWWOKBkk9GzvR8L4HtHRkQLjs5bFz9ICg8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.ProtobufJsonPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.ProtobufJsonPayloadConverter.html",
+          "hash": "sKsBdM2FdUbWZoiS0BJS6U+rrrbh62tSGiews0ArMh4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.ProtobufPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.ProtobufPayloadConverter.html",
+          "hash": "LGzbNNYzLiT23OE4tML+NDIT++HwYAyUIjoxg5mXnyA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.RawMemoryPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.RawMemoryPayloadConverter.html",
+          "hash": "uAMhepaU/inDfBl7MX9qB5b2rAadcv0J1V0qv/OLeBo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.TuplePayloadConverter-3.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.TuplePayloadConverter-3.html",
+          "hash": "P8dPiEnuU0R/qDPVgr+1A7EEYL2lQ8W+8jC38gSeIlA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.UnnamedContainerPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.UnnamedContainerPayloadConverter.html",
+          "hash": "N5XYVadwrWQBa7vIAVLLxNC2+nkX7YoQL6WcviPzna0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.VoidPayloadConverter.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.VoidPayloadConverter.html",
+          "hash": "2O1VEaXU03edC2RmOcJXwnTEdYimsjlmPD/k+EnyHao="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Serialization.html",
+          "hash": "ZlGLgxVwDPjNC04ZGwP6F40ZNuZXoPf/3DLz8c9VA/E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Util.HResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Util.HResult.html",
+          "hash": "VMORrbgtj9gmbFuN4YNT/WW/BSK4mvVEtns1RtRq/TQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.Util.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.Util.html",
+          "hash": "0x8eyt5KxeIud6XQbNouviPWpM/rHpfWHIvXxenEh7E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ActivityException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ActivityException.html",
+          "hash": "4WpOsr38Dvd4o6IwfIW79dsLalJx+qH23LsFlnzfSMA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ApplicationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ApplicationException.html",
+          "hash": "vSs2v9ER1cSJAr3IN361kvdRSY90V6LCrFdo+NKkLDM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.CancellationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.CancellationException.html",
+          "hash": "VhYckDXb/bJ03hsENaiXv8IawTM1/r6nLdXsLe3kBTM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ChildWorkflowException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ChildWorkflowException.html",
+          "hash": "XcTMoJhZGj+BN47zXny+iEUEg8ufhQ99/ZqqkroAzqs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ITemporalFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ITemporalFailure.html",
+          "hash": "pdfywFyeSNgZKyzNL96dtZuwXH41QEdivtfesf693Z4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.OrchesrationServerException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.OrchesrationServerException.html",
+          "hash": "67D3B4iWAsQobOycqUHT4IsAa4w7dfPih7FFkPrcfxw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ResetWorkflowException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.ResetWorkflowException.html",
+          "hash": "OzHXqNN0oN9VM89pyPt2DwEteqvjLHwjJjKyxcP6wHA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TemporalFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TemporalFailure.html",
+          "hash": "vCjFjKC51xMhUSYB+QW06HOgycqbTfJC+61kVDuTZ6g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TemporalServiceException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TemporalServiceException.html",
+          "hash": "L0xdLBKY3yAIzePoRI9jXVe59j0cKkAqoMhSF/GS8OU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TerminationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TerminationException.html",
+          "hash": "ssP0wEIZ/xmO8X5U6jBkS8zMLm1fZnqkM71Bgfb2gh8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TimeoutException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.TimeoutException.html",
+          "hash": "PP7Xgr3+0LAXoiZiLh1SPkYZNWqye6nm2Fgy4rOx9cw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowAlreadyExistsException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowAlreadyExistsException.html",
+          "hash": "93qA3eLlLc7mWUoYqph6WJwoHmKi0oe6bUnqNJ59b8s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowConcludedAbnormallyException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowConcludedAbnormallyException.html",
+          "hash": "jST60eXDe3WDG3Jb3ve1CCXfgr3882SscUQ7NLSlj0I="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowNotFoundException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowNotFoundException.html",
+          "hash": "rmGuHDHdyVXlK23QYXIbiy/t8k+yR3blOLFsQ8FBTMA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowQueryException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.WorkflowQueryException.html",
+          "hash": "13+omtuZvNLz8keeVblR28qVnYmj2o6nZuXEiFTQumI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Errors.html",
+          "hash": "9Atw6GOT8XU5eeJaWT8e0R4TEUikxpDOdL98HGlDMjs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.ITemporalClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.ITemporalClient.html",
+          "hash": "DJUVIhxgRs2rn1EhFlfMVUirx0Yg+5bGpThpArovSew="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.IWorkflowHandle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.IWorkflowHandle.html",
+          "hash": "6OBNtNW2UIYTPxt3trPOCtMd3EFc6lrmkRdMBUcqQuk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.IWorkflowRunHandle.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.IWorkflowRunHandle.html",
+          "hash": "AOHJzG0CVpaEtNPo04hdp3NtVTYSLC2pRRtjuoCZogw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.IWorkflowRunResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.IWorkflowRunResult.html",
+          "hash": "dq2MbBWXfTDCjXmYRtizlASmfvktMG9vNdzVhwuTTD8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.AwaitConclusion.Arguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.AwaitConclusion.Arguments.html",
+          "hash": "pm6CM9SRlt6MOEhGGpC/Bvy+MifgnNAQxu+OOUG+/mA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.AwaitConclusion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.AwaitConclusion.html",
+          "hash": "oVqxv+APqkZ0ugJL/YDp7Wwql2QSfEwWJ5/hgr6QO8E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.DescribeWorkflow.Arguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.DescribeWorkflow.Arguments.html",
+          "hash": "WcfFzltsgjazZt6ZXyucyoqUPAcnnFgHZRyNhYjsZwI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.DescribeWorkflow.Result.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.DescribeWorkflow.Result.html",
+          "hash": "wGOI+FyKckOPkyBUQwO7KS3O1ETC3b0iKk6qjgaVXTs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.DescribeWorkflow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.DescribeWorkflow.html",
+          "hash": "iBzazuOcaL4gb2+0IEL1hiRHkdMH948t0lIGtEZqqi8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.GetWorkflowChainId.Arguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.GetWorkflowChainId.Arguments.html",
+          "hash": "UKsFRVR8ChF6sf2yriukw5t20f4nuV5TcSFizQoR/cw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.GetWorkflowChainId.Result.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.GetWorkflowChainId.Result.html",
+          "hash": "k0QUjsuj+z1ku3tdqPIjLjWAHS2ZwwPlV+y9xHCKfGA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.GetWorkflowChainId.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.GetWorkflowChainId.html",
+          "hash": "Ec7talmQqrTzsBoqWx8WAaRrU6dJr2IAAl7wEwTBBCM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.ITemporalClientInterceptor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.ITemporalClientInterceptor.html",
+          "hash": "JM2cTq966s5vL3+82uGZSUaUbEZ0XwQ38irOszwOIJ0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.IWorkflowOperationArguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.IWorkflowOperationArguments.html",
+          "hash": "u+0IfuTjYqlkZUUeYq0e+GJm3jkNHXMjk1Y8Jp2FF+4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.IWorkflowOperationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.IWorkflowOperationResult.html",
+          "hash": "dFOnyfIJh1fTNdJt9hh0qZ6OvViW0MCiQV+A+6TZ1fY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.QueryWorkflow.Arguments-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.QueryWorkflow.Arguments-1.html",
+          "hash": "+k6onU1dCUJcSTMQvhvHvwmDW1YpqV8nLyWW6PW6HIQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.QueryWorkflow.Result-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.QueryWorkflow.Result-1.html",
+          "hash": "yx0HTzPQwTCpVhAklWXJ0sZMAeH6Znhy+H0NrhdlWSI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.QueryWorkflow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.QueryWorkflow.html",
+          "hash": "/T+c8tjDhpv/3RUB09j8gTvxjiQ6zFtyo+Ahfc1V3p0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.RequestCancellation.Arguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.RequestCancellation.Arguments.html",
+          "hash": "j6hDDPJhZ7A+hfbagaXTM5DsRC5mWbt8yLvNVXPGotQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.RequestCancellation.Result.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.RequestCancellation.Result.html",
+          "hash": "ik6kUtyC+I7j/iO/JKbDjNqOvTU6lzBkB0d+kfQIu+0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.RequestCancellation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.RequestCancellation.html",
+          "hash": "ydvtnkDjwrpFLVCEIC0+NRgPIDn89OywI8312KvOMeE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.ServiceInvocationPipelineItemFactoryArguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.ServiceInvocationPipelineItemFactoryArguments.html",
+          "hash": "O31e7t3mJ+B7/jt7eD+sbT5dbvu4moIU0KI6kHHAxj8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.SignalWorkflow.Arguments-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.SignalWorkflow.Arguments-1.html",
+          "hash": "JZJNqIv1KuhYDnU/b3j2TpvqqjkGKTgOND6FpOR9bLk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.SignalWorkflow.Result.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.SignalWorkflow.Result.html",
+          "hash": "3momsSt25lpnkqFbHsaKd7AgBjmG6d2UMCvKHrW2yag="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.SignalWorkflow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.SignalWorkflow.html",
+          "hash": "Vqe61eRduIkCnRFisOUs60Q+hTkYzAk5qWgA00HJZqc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.Base-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.Base-1.html",
+          "hash": "dB/pUpr6YTP62jMkkcgWps5HK1AXFsrxNkS0xkAbPtI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.StartOnly-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.StartOnly-1.html",
+          "hash": "YeJEgKzswZfXB5+wr9wfvAIbzgnpPRqi1YDoKISMh/M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.WithSignal-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.WithSignal-2.html",
+          "hash": "nNSFkzO4q2PI7VgGF0gCHNbE8Ou7b+UVF33BjuUcabw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Arguments.html",
+          "hash": "h30zTTw8vxQgfO+eQ/ZXu7puAdQkz1pa3l1WI1K3K4Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Result.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.Result.html",
+          "hash": "Ty0BmuiBwZD7vXUAKLrLFLWsSBLqlJP6YtJNqzS1W6Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.StartWorkflow.html",
+          "hash": "C8wrAb2tXFCp22yzh9mL2cgyKHyuIxbhvdsOc93r69M="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.TerminateWorkflow.Arguments-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.TerminateWorkflow.Arguments-1.html",
+          "hash": "2IhIil2Wk0WYdb0u54sAfk/64PqEBpVdqv31fNTRGlc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.TerminateWorkflow.Result.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.TerminateWorkflow.Result.html",
+          "hash": "0vZbgJC8SRxKJUDavjTeSR4UTDY29OXYzoo2PE6oUGI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.TerminateWorkflow.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.TerminateWorkflow.html",
+          "hash": "q0bpH4TGm2Irw/HE3Hb2PHXEfqka45PqovWAscIzJw0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.Interceptors.html",
+          "hash": "86gPV/WQvd6coYl17aJ+IN8GUzLShgzrPcJDF5Kc7SY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.MalformedServerResponseException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.MalformedServerResponseException.html",
+          "hash": "mCL8i6zQrx1voBPBrF9YRDPPLObkmv/s8975xjcMaxI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.QueryWorkflowConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.QueryWorkflowConfiguration.html",
+          "hash": "y99fZpSoKSd/Ep5arY2+hY2Z05TWhZYKYDajFW/rwwo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.SignalWorkflowConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.SignalWorkflowConfiguration.html",
+          "hash": "JJNSQZgUVO5Bln0OHq4HAiQTyT+CYu1ubgJ9rz0e97w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.StartWorkflowConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.StartWorkflowConfiguration.html",
+          "hash": "vCxD2i0T2JR9E9Vofaw76pED8hAdsOCYkO7b4U/gGGI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.OperationConfigurations.html",
+          "hash": "ed2GdejIuXwNpp4Y8ROMdGi9prYl6sbUMZMJrBhbU7o="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClient.html",
+          "hash": "Uw3IHhpPpAeTkKQdkcyyHWjXn7M6pyk4nzVrNKZ52oQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClientConfiguration.Connection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClientConfiguration.Connection.html",
+          "hash": "/4KoRfQI1etMnFSXA+wKWnpFlOJSu2bHRLuRO3V1loo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClientConfiguration.TlsCertificate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClientConfiguration.TlsCertificate.html",
+          "hash": "UR/h7CmLTWPqFneboZXFR8Cjr6e45JsvvS9Yk2ab85s="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClientConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.TemporalClientConfiguration.html",
+          "hash": "DNcmXgEHDj4JBF9CFeFfE1CH1XylGIsNid8rZwH02TI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/Sdk/Temporal.WorkflowClient.html",
+          "hash": "JPtQXk9eUrXXauGvhZHJDbVbWgXXD4MXKbWcsyvLHrk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "ApiDoc/net6.0/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "ApiDoc/net6.0/index.html",
+          "hash": "xCM/Vfla/xiQumRB3yA0fbTLxiu71h6MXwj/AKvlg6Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "Articles/About_Temporal_SDK_for_DotNet.md",
+      "output": {
+        ".html": {
+          "relative_path": "Articles/About_Temporal_SDK_for_DotNet.html",
+          "hash": "9i2KzgZGZNilLfvaqBcGHVLK+U2XorHQViRH6BubAII="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "Articles/Contribution_Guide.md",
+      "output": {
+        ".html": {
+          "relative_path": "Articles/Contribution_Guide.html",
+          "hash": "nuXAaEU3gyACqsIYLVry6f09DPX+e9JHSBabqC6TWsI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "Articles/Resources/Contribution_Guide.Dir_Structure_after_Bin-Placement.jpg",
+      "output": {
+        "resource": {
+          "relative_path": "Articles/Resources/Contribution_Guide.Dir_Structure_after_Bin-Placement.jpg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "Articles/Resources/Contribution_Guide.Recommended_Repo_Directory_Structure.jpg",
+      "output": {
+        "resource": {
+          "relative_path": "Articles/Resources/Contribution_Guide.Recommended_Repo_Directory_Structure.jpg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "Articles/Resources/Contribution_Guide.VS_Test_Explorer.jpg",
+      "output": {
+        "resource": {
+          "relative_path": "Articles/Resources/Contribution_Guide.VS_Test_Explorer.jpg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "Articles/Resources/TemporalLogo-Favicon-BlackOnTrnsp.64x64.png",
+      "output": {
+        "resource": {
+          "relative_path": "Articles/Resources/TemporalLogo-Favicon-BlackOnTrnsp.64x64.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "Articles/Resources/TemporalLogo-TopNavi-WhiteOnTrnsp.png",
+      "output": {
+        "resource": {
+          "relative_path": "Articles/Resources/TemporalLogo-TopNavi-WhiteOnTrnsp.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "Articles/Resources/Using_Temporal_SDK_for_DotNet.Screenshot_of_PR_Artifacts.jpg",
+      "output": {
+        "resource": {
+          "relative_path": "Articles/Resources/Using_Temporal_SDK_for_DotNet.Screenshot_of_PR_Artifacts.jpg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "Articles/Using_Temporal_SDK_for_DotNet.md",
+      "output": {
+        ".html": {
+          "relative_path": "Articles/Using_Temporal_SDK_for_DotNet.html",
+          "hash": "YSaU7AxyxfkHnHEeH5RKZyde5AzTnYP4QRUNvasfVac="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "Articles/What_is_Temporal.md",
+      "output": {
+        ".html": {
+          "relative_path": "Articles/What_is_Temporal.html",
+          "hash": "LWKoovLAGRFXKlGdoBMJ1kNMehhMm6/bn35nR5GuFco="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "Articles/Workflow_Chains_and_Runs.md",
+      "output": {
+        ".html": {
+          "relative_path": "Articles/Workflow_Chains_and_Runs.html",
+          "hash": "uGpsA8bU/HPHG3OKVOLg77bsaQS0b9UFYM39sW4oPfI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "Articles/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "Articles/index.html",
+          "hash": "7LT2esY1OlPrGMBUEN+PXiTj7+EjIjor5PJIfUmfAvM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidFileLink"
+      ],
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "BwNDAIqWX4X2kqMaWSiCZT7S1FQY3HkxNcNsMh3ynAM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 9,
+          "skipped_file_count": 8
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 417,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

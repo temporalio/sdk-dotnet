@@ -1,0 +1,248 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Using the Temporal SDK for .NET. | Temporal SDK for .NET </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Using the Temporal SDK for .NET. | Temporal SDK for .NET ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../Articles/Resources/TemporalLogo-Favicon-BlackOnTrnsp.64x64.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../Articles/Resources/TemporalLogo-TopNavi-WhiteOnTrnsp.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                
+                <ul class="nav level1 navbar-nav">
+                      <li>
+                          <a href="../index.html" title="Home">Home</a>
+                      </li>
+                      <li>
+                          <a href="../ApiDoc/index.html" title="API Reference">API Reference</a>
+                      </li>
+                      <li>
+                          <a href="../Articles/index.html" title="Articles">Articles</a>
+                      </li>
+                </ul>    </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <a href="../index.html" title="Temporal SDK for .NET (Alpha)" class="">Temporal SDK for .NET (Alpha)</a>
+                    </li>
+                    <li class="">
+                      <a href="../ApiDoc/index.html" title="API Reference" class="">API Reference</a>
+                    </li>
+                    <li class="">
+                      <a href="index.html" title="Articles" class="">Articles</a>
+                    </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="index.html" title="Getting stated" class="">Getting stated</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="What_is_Temporal.html" title="What is Temporal?" class="">What is Temporal?</a>
+                          </li>
+                          <li class="">
+                            <a href="About_Temporal_SDK_for_DotNet.html" title="About the SDK" class="">About the SDK</a>
+                          </li>
+                          <li class="active">
+                            <a href="Using_Temporal_SDK_for_DotNet.html" title="Using the SDK" class="active">Using the SDK</a>
+                          </li>
+                          <li class="">
+                            <a href="Contribution_Guide.html" title="Contribution Guide" class="">Contribution Guide</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="index.html" title="Temporal Data Model" class="">Temporal Data Model</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Workflow_Chains_and_Runs.html" title="Workflows, -Chains and -Runs" class="">Workflows, -Chains and -Runs</a>
+                          </li>
+                        </ul>  </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="using-the-temporal-sdk-for-net">Using the Temporal SDK for .NET.</h1>
+
+<h2 id="installation">Installation</h2>
+<p>The SDK is currently <a href="About_Temporal_SDK_for_DotNet.html#the-sdk-is-currently-under-construction">in development</a> and we will release <a href="https://www.nuget.org/">NuGet</a> packages very soon.  At that time we will also publish official releases on our <a href="https://github.com/temporalio/sdk-dotnet">Github repository</a>.<br>
+In the meantime you can install the SDK using one of the following approaches:</p>
+<ul>
+<li><p>Clone the SDK repo and build the SDK.<br>
+Instructions for building the SDK on your local machine are found in the <a href="Contribution_Guide.html">Contribution Guide</a>.</p>
+</li>
+<li><p>Download a build artifact from a recent commit into the <code>master</code> branch.<br>
+To do that:</p>
+<ul>
+<li>View the list of Pull Requests recently merged into <code>master</code>:<br>
+<small><a href="https://github.com/temporalio/sdk-dotnet/pulls?q=is%3Apr+is%3Aclosed+base%3Amaster">https://github.com/temporalio/sdk-dotnet/pulls?q=is%3Apr+is%3Aclosed+base%3Amaster</a></small></li>
+<li>Click on a Pull Request from that list.</li>
+<li>Click on the <em>Checks</em> tab.</li>
+<li>Click on the <em>Artifacts</em> drop-down.</li>
+<li>You will see a list of artifacts produced by building the branch after merging the PR you selected.
+<ul>
+<li>The Artifacts starting with <code>Bin_</code> contain the built SDK binaries (most likely, you are looking for these).</li>
+<li>The Artifacts starting with <code>TestResults_</code> contain the results of running tests that are part of our Continuous Integration pipeline.</li>
+<li>The <code>Temporal_DotNetSdk_ApiReference</code> artifact contains the API Reference Documentation site generated during the build. (You may be reading the hosted version of it right now. If not, it's <a href="https://dotnet.temporal.io">here</a>.)</li>
+</ul>
+</li>
+<li>For example:<br>
+<a href="Resources/Using_Temporal_SDK_for_DotNet.Screenshot_of_PR_Artifacts.jpg"><img src="Resources/Using_Temporal_SDK_for_DotNet.Screenshot_of_PR_Artifacts.jpg" alt="Screenshot of Pull Request Artifacts"></a></li>
+</ul>
+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<p>To get started with using the SDK in your app, please see the usage samples:</p>
+<ol>
+<li><p>Simple usage scenarios for the <strong>Workflow Client</strong>.<br>
+See <a href="https://github.com/temporalio/sdk-dotnet/blob/master/Src/Samples/WorkflowClient.UsageSamples/Temporal.Sdk.WorkflowClient.UsageSamples/public/Part1_SimpleClientUsage.cs"><code>Part1_SimpleClientUsage.cs</code></a>.<br>
+Demonstrated scenarios:</p>
+<ul>
+<li>Create workflow client that eagerly validate the connection.</li>
+<li>Create a workflow client that validates the connection during the initial remote call.</li>
+<li>Start a new workflow.</li>
+<li>Access and interact with an existing workflow.</li>
+<li>Obtain the result of a workflow.</li>
+<li>Send a signal to a workflow.</li>
+<li>Query a workflow.</li>
+<li>Cancel a workflow.</li>
+<li>Terminate a workflow.</li>
+</ul>
+</li>
+<li><p>Advanced usage scenarios for the <strong>Workflow Client</strong>.<br>
+See <a href="https://github.com/temporalio/sdk-dotnet/blob/master/Src/Samples/WorkflowClient.UsageSamples/Temporal.Sdk.WorkflowClient.UsageSamples/public/Part2_AdvancedClientUsage.cs"><code>Part2_AdvancedClientUsage.cs</code></a>.<br>
+Demonstrated scenarios:</p>
+<ul>
+<li>Get detailed information about a workflow; for example, Task Queue Name and Kind.</li>
+<li>Get the Status of a workflow.</li>
+<li>Get the Type Name of a workflow.</li>
+<li>Check whether a workflow with a particular workflow-id exists.</li>
+<li>Wait for a workflow to conclude without accessing its result.</li>
+<li>Request a workflow cancellation and wait for the cancellation to occur for a certain amount of time, while interactively displaying progress status. If the workflow does not respect the cancellation request within a particular time, terminate the workflow.</li>
+<li>Alternative methods for starting a workflow.</li>
+</ul>
+</li>
+<li><p>Using the <strong>Workflow Client</strong> to work with individual Workflow Runs (read more about <a href="Workflow_Chains_and_Runs.html">Workflows, -Chains and -Runs within the Temporal data model</a>).<br>
+See <a href="https://github.com/temporalio/sdk-dotnet/blob/master/Src/Samples/WorkflowClient.UsageSamples/Temporal.Sdk.WorkflowClient.UsageSamples/public/Part3_AddressIndividualRuns.cs"><code>Part3_AddressIndividualRuns.cs</code></a>.<br>
+Demonstrated scenarios:</p>
+<ul>
+<li>Obtain a handle for a specific Workflow Run; get the Status of a particular Workflow Run.</li>
+<li>Obtain the result of a particular Workflow Run, without following the Workflow Chain.</li>
+<li>Address specific Runs within a Workflow Chain.</li>
+<li>Interact with Workflow Runs: send Signals, execute Queries, request Cancellation, obtain Description, Terminate, await Conclusion.</li>
+<li>Obtain immediate results if available, without performing long-running remote calls.</li>
+<li>Navigate across Workflow Chains, Runs, and back.</li>
+</ul>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <i>Temporal SDK Reference: .NET Cross Target</i>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

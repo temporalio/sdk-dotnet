@@ -1,0 +1,430 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Contribution Guide | Temporal SDK for .NET </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Contribution Guide | Temporal SDK for .NET ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../Articles/Resources/TemporalLogo-Favicon-BlackOnTrnsp.64x64.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../Articles/Resources/TemporalLogo-TopNavi-WhiteOnTrnsp.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                
+                <ul class="nav level1 navbar-nav">
+                      <li>
+                          <a href="../index.html" title="Home">Home</a>
+                      </li>
+                      <li>
+                          <a href="../ApiDoc/index.html" title="API Reference">API Reference</a>
+                      </li>
+                      <li>
+                          <a href="../Articles/index.html" title="Articles">Articles</a>
+                      </li>
+                </ul>    </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <a href="../index.html" title="Temporal SDK for .NET (Alpha)" class="">Temporal SDK for .NET (Alpha)</a>
+                    </li>
+                    <li class="">
+                      <a href="../ApiDoc/index.html" title="API Reference" class="">API Reference</a>
+                    </li>
+                    <li class="">
+                      <a href="index.html" title="Articles" class="">Articles</a>
+                    </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="index.html" title="Getting stated" class="">Getting stated</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="What_is_Temporal.html" title="What is Temporal?" class="">What is Temporal?</a>
+                          </li>
+                          <li class="">
+                            <a href="About_Temporal_SDK_for_DotNet.html" title="About the SDK" class="">About the SDK</a>
+                          </li>
+                          <li class="">
+                            <a href="Using_Temporal_SDK_for_DotNet.html" title="Using the SDK" class="">Using the SDK</a>
+                          </li>
+                          <li class="active">
+                            <a href="Contribution_Guide.html" title="Contribution Guide" class="active">Contribution Guide</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="index.html" title="Temporal Data Model" class="">Temporal Data Model</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="Workflow_Chains_and_Runs.html" title="Workflows, -Chains and -Runs" class="">Workflows, -Chains and -Runs</a>
+                          </li>
+                        </ul>  </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="contribution-guide">Contribution Guide</h1>
+
+<h2 id="please-talk-to-us">Please talk to us!</h2>
+<p>Temporal is built for our users and with our users. We build our software openly, rather than merely <em>publishing</em> it as open source.<br>
+Our code is shared on Github under <a href="https://github.com/temporalio/sdk-dotnet/"><code>temporalio/sdk-dotnet</code></a>. You can learn what we are currently focussed on in the <a href="https://github.com/orgs/temporalio/projects/11/views/4">project item tracker</a>.</p>
+<p>Please, reach out to us with questions, requests and suggestions. We also welcome any kind of contributions you can make to the SDK. Of course, anything that is added to our code base, needs to meet the quality and reliability bar we hold ourselves to, and that our users expect from us. We also need to make sure to stay focussed, as anything that is part of the system needs to be supported in the long term.</p>
+<p>So, if you would like to make any contribution beyond something really trivial, please touch base with us first. Please use any of these communication channels:</p>
+<ul>
+<li><p>Participate in our public Slack channel:<br>
+<a href="https://temporalio.slack.com/channels/dotnet-sdk">https://<strong>temporalio</strong>.slack.com/channels/<strong>dotnet-sdk</strong></a>.</p>
+</li>
+<li><p>Submit an issue, a request or a suggestion:<br>
+<a href="https://github.com/temporalio/sdk-dotnet/issues">https://github.com/<strong>temporalio/sdk-dotnet/issues</strong></a>.</p>
+</li>
+</ul>
+<h2 id="contribution-process">Contribution Process</h2>
+<ul>
+<li><p>If, after touching base with us (see above), you would like to contribute to our code base, please fork the <a href="https://github.com/temporalio/sdk-dotnet/"><code>temporalio/sdk-dotnet</code></a>-repo, push your change to your fork, and open a Pull Request for a merge into our <code>master</code> brach.</p>
+</li>
+<li><p>Please cross-reference your PR with the issue(s) you opened earlier to discuss your change, and please describe in detail what is being changed and why. Please include any additional details that you think are relevant.
+Make sure your change is well-tested, that all existing CI-gates are passing, and that you follow our <a href="#style-guidelines">style guidelines</a>.</p>
+</li>
+<li><p>If you need more time to work on the PR before it is ready for review, please mark if as <em>Draft</em> in the meantime.</p>
+</li>
+<li><p>We try to respond to pull requests quickly. However, if we got heads down on something and overlooked your request, please be lenient with us: we are a small team trying to keep a lot of balls in the air. Reach out to us on Slack (see above) and grab our attention.</p>
+</li>
+</ul>
+<h2 id="development-environment">Development Environment</h2>
+<p>In general, you can build the Temporal SDK for .NET anywhere you can build a .NET app.
+We have active contributors using VS Code on Linux and building from the <code>dotnet</code> command line. Others use MacOS and JetBrains Rider. All these and other combinations work.<br>
+However, <em>officially</em>, we support the following development environment:<br>
+<small>(Here, &quot;<em>official support</em>&quot; means that if you are using a different environment, it should still work; but if something does not work quite right, we may not be equipped to actively help you resolving it.)</small></p>
+<ul>
+<li>Windows 10 or 11.</li>
+<li>Microsoft Visual Studio Professional 2022 (or Enterprise 2022) or later.</li>
+<li>.NET SDK 6.0.200 or later <small>(for compiling/building and running tests on the <code>net6.0</code> target)</small>.</li>
+<li>.NET SDK 3.1.419 or later <small>(for running tests on the <code>netcoreapp3.1</code> target)</small>.</li>
+<li>.NET Framework 4.6.2 or later <small>(for running tests on the <code>net462</code> target)</small>.</li>
+</ul>
+<p>You will need to be online during your first build: The build system will not only download packages, but also run scripts that download additional tools.</p>
+<h2 id="conventions-for-repo-and-directory-structure">Conventions for repo and directory structure</h2>
+<p>We use a &quot;light-up&quot; multi-repo approach to building.
+That means that our main repo is self-sufficient and can be built in isolation, but if you place it into a specific directory structure with other repos, additional features will light up.<br>
+For example, we can automatically pick up the latest gRPC proto definitions for the Temporal service APIs and data contracts, if the build system detects a clone of the respective API repo.</p>
+<p>The following instructions refer to the main (aka &quot;upstream&quot;) repo (<code>temporalio/sdk-dotnet</code>). If you simply want to build the SDK, just clone it on your local machine. However, if you plan to make changes, please fork it and clone your own fork to your local machine instead. We assume the above-mentioned <em>supported</em> <a href="#development-environment">development environment</a>.</p>
+<p>The directory structure expected by the build system is configured in the <a href="https://github.com/temporalio/sdk-dotnet/blob/master/RepoAndBuild-DirectoryStructure.props"><code>\sdk-dotnet\RepoAndBuild-DirectoryStructure.props</code></a> file located in the repo root. That file is the source of truth for the structure described below.</p>
+<h4 id="repo-groups">Repo Groups</h4>
+<p>We use the term <em>Repo Group</em> to refer to a set of repos that are related in a sense that they can or must refer to each other during the build process. I.e., they &quot;build together&quot;.<br>
+Generally, a repo that does not interact with other repos in that way can be seen as a <em>Repo Group</em> of size 1.</p>
+<p>Locally, we organize code by creating a &quot;container&quot; directory (aka &quot;wrapper&quot; directory) for each <em>Repo Group</em>. (Nothing do do with Docker, just a directory that <em>contains</em> a <em>Repo Group</em>.) The names of such &quot;containers&quot; may be anything, but we find that a short, descriptive name works best.
+Within each &quot;container&quot; we clone the necessary repos using the repo name for the respective directory.
+For example:</p>
+<pre><code>C:\Code\
+    Tmprl-SDK-DotNet\ 
+        sdk-dotnet\
+        api\
+    NetFx\ 
+        runtime\
+    TmprlLt\
+        temporalite\
+    ...
+</code></pre>
+<p>Some of the benefits of this approach include:</p>
+<ul>
+<li><p>You can use different &quot;container&quot; directories to enlist into the same repo (or a fork) many times, keeping an identical internal structure. E.g.</p>
+<pre><code>C:\Code\
+    Tmprl-SDK-DotNet\           🡸 Clone of my personal fork
+        sdk-dotnet\
+        api\
+    Tmprl-SDK-DotNet-Direct\    🡸 Clone of the upstream repo
+        sdk-dotnet\     
+    ...
+</code></pre>
+</li>
+<li><p>It is easier to search files and perform other file operations across the entire <em>Repo Group</em>.</p>
+</li>
+<li><p>You can place your binary output and other build artifacts OUTSIDE the repo, into a folder that is placed next to the repos' directories within the group &quot;container&quot;.</p>
+<ul>
+<li>Placing build artifacts outside the repo keeps things clean and concise.</li>
+<li>It also makes it easy for the build to use all the repos within the group, while being isolated from other repos.</li>
+<li>It also helps to avoid the need for searching for the binaries all over the repositories, for cleaning them manually and/or for collecting them in one place later.</li>
+</ul>
+</li>
+</ul>
+<div class="NOTE">
+<h5>Note</h5>
+<p>In this article, when we refer to specific files, we do that relative to the root of the <em>Repo Group</em>.</p>
+</div>
+<h4 id="cloning--enlisting">Cloning / Enlisting</h4>
+<p>The <code>git clone</code> command must be issued from a &quot;wrapper directory&quot; that has a short, descriptive name for the Repo Group. E.g.:</p>
+<pre><code>C:\Code&gt;mkdir Tmprl-SDK-DotNet
+C:\Code&gt;cd Tmprl-SDK-DotNet
+C:\Code\Tmprl-SDK-DotNet&gt;git clone https://github.com/temporalio/sdk-dotnet.git
+Cloning into 'sdk-dotnet'...
+</code></pre>
+<p>Next, you can optionally clone the repo that contains the <em>proto</em> files that define Temporal's gRPC service APIs and the data contracts used by those APIs (<a href="https://github.com/temporalio/api"><code>temporalio/api</code></a>). If you place this repo into a Repo Group with the SDK, the build system will use the <em>protos</em> to re-generate the .NET representations for the data contracts and the service stubs. Otherwise, the build system will use the versions included in the SDK repo.</p>
+<h4 id="detailed-directory-structure">Detailed directory structure</h4>
+<p>The <a href="https://github.com/temporalio/sdk-dotnet/blob/master/RepoAndBuild-DirectoryStructure.props"><code>\sdk-dotnet\RepoAndBuild-DirectoryStructure.props</code></a>-file modifies the MSBuild properties that point to output directories. This makes sure to collect the binaries for all projects in a single place as follows:<br>
+<small>[Narrow screen scrambles the view below? <a href="Resources/Contribution_Guide.Recommended_Repo_Directory_Structure.jpg">View as image</a>.]</small></p>
+<pre><code>c:\Code\                        🡸 Root for your code (can be anything you want)
+    Tmprl-SDK-DotNet\           🡸 A &quot;container&quot; for your Repo Group
+    _build\                     🡸 A shared build output dir for all repos in
+        . . .                      the group
+    sdk-dotnet\                 🡸 Repo root dir has THE SAME NAME AS THE GIT REPO
+        Doc\                    🡸 A dir within the repo (e.g. containing docs)
+            . . .
+        Src\                    🡸 Another dir within the repo (e.g. the source code)
+            . . .                
+        . . .                   🡸 . . .
+        .gitignore
+        LICENSE                 🡸 A file within the repo root dir
+        README.md               🡸 . . .
+        Directory.Build.props   🡸 The repo-wide build properties
+        RepoAndBuild-DirectoryStructure.props  🡸 This dir structure is set here
+        . . .
+                                                                                                                                       
+    api\                        🡸 The root dir for another repo in this group
+        . . .
+        dependencies\           🡸 Repo files and subdirectories
+            . . .
+        . . .
+        Directory.Build.props   🡸 The repo-wide build properties 
+        . . .                      (omitted when MSBuild is not used in the repo)
+        RepoAndBuild-DirectoryStructure.props  🡸 This dir structure is set here
+        . . .                                     (omitted if MSBuild is not used)
+Tmprl-SDK-Java\                 🡸 Some groups have only one repository (mono-repo)
+    sdk-java\                   🡸 Mono-repos are the entry in their &quot;containers&quot;
+        gradle\
+        build\
+        . . . 
+VueJS\                          🡸 Repos that do not build using this pattern
+    vue\                           still get a &quot;container&quot; with a pretty name
+        src\
+        test\
+        . . .
+</code></pre>
+<h5 id="mechanism--details">Mechanism &amp; Details</h5>
+<p>To create this structure the build system uses two marker files placed in the repo: <code>.EnlistmentRoot.marker</code> and <code>.SrcRoot.marker</code>:</p>
+<ul>
+<li><p><strong><code>.EnlistmentRoot.marker</code></strong> must be placed into the <em>root of the repository</em>.<br>
+It is the top-most folder; typically, it is the folder that contains the &quot;.git&quot; subfolder.</p>
+</li>
+<li><p><strong><code>.SrcRoot.marker</code></strong> must be placed into the <em>root folder of all code sources in the repository</em>.<br>
+In general, this &quot;source root&quot; may be the same as the repository root (you may place both files next to each other). The &quot;source root&quot; may also be a subfolder, for example, if the repo root contains other sub-folders unrelated to sources, such as documentation.<br>
+In the <em>sdk-dotnet</em> repo, the &quot;source root&quot; is located in the <code>sdk-dotnet\Src</code> sub-folder.<br>
+The <code>.SrcRoot.marker</code> and the concept of &quot;source root&quot; are used to automatically place build artifacts: Each artifact will be placed within the <em>Build Output Root</em> using the same relative path, as the artifact's source project's relative path within the folder marked with <code>.SrcRoot.marker</code>.</p>
+</li>
+</ul>
+<p>After the binary output redirection, your directory structure will look something like this:<br>
+<small>[Narrow screen scrambles the view below? <a href="Resources/Contribution_Guide.Dir_Structure_after_Bin-Placement.jpg">View as image</a>.]</small></p>
+<pre><code>c:\Code\                        🡸 Root for your code repos
+    Tmprl-SDK-DotNet\           🡸 The &quot;container&quot; for this Repo Group
+        _build\                 🡸 Build Output Root for ALL repos in this group
+            bin\
+                . . .
+            obj\
+                . . .
+                        
+        sdk-dotnet\             🡸 The repo root dir has the name of the Git repo
+            Doc\                🡸 Repo contents
+            Src\                🡸 . . .
+            . . .
+        api\                    🡸 The repo root dir for another repo in this group
+            . . .
+            . . .
+</code></pre>
+<h2 id="building">Building</h2>
+<p>You can build the Temporal SDK for .NET from within Visual Studio or from the command line.</p>
+<ul>
+<li><p>If you are using Visual Studio, open the main solution file and build the solution (<code>F6</code>):<br>
+<code>\sdk-dotnet\Src\Temporal.Sdk.sln</code>.</p>
+</li>
+<li><p>On the command line, type:<br>
+<code>dotnet build  sdk-dotnet/Src/Temporal.Sdk.sln</code><br>
+<small>(adjust the path for your current directory)</small></p>
+</li>
+<li><p>You can customize your build. E.g.:<br>
+<code>dotnet build -f &lt;TargetFramework&gt; -c &lt;Configuration&gt; sdk-dotnet/Src/Temporal.Sdk.sln</code></p>
+<ul>
+<li><code>&lt;TargetFramework&gt;</code>: <code>net6.0</code>, <code>netcoreapp3.1</code> or <code>net462</code>.</li>
+<li><code>&lt;Configuration&gt;</code>: <code>Debug</code> or <code>Release</code>.</li>
+</ul>
+</li>
+</ul>
+<h2 id="building-the-static-api-reference-documentation-website">Building the static API Reference Documentation website</h2>
+<div class="NOTE">
+<h5>Note</h5>
+<p>The API Reference Documentation generator uses tools that only work under Windows.
+If you are using a different OS, please the version hosted at <a href="https://dotnet.temporal.io">https://dotnet.temporal.io</a>.</p>
+</div>
+<p>The solution includes the project located at <code>\sdk-dotnet\Src\DocGen\DocFxGenerator.csproj</code>. That project generates the static website containing the API Reference Documentation extracted from sources, and some additional articles. You may be reading this page on the hosted version of that website.</p>
+<p>We use <a href="https://dotnet.github.io/docfx/">DocFx</a> to generate that documentation.
+Compared to building the actual SDK binaries, that process takes a long time, so the documentation site is not generated by default. To turn on the generation of the documentation site, set the MSBuild property <code>BuildApiRefDocs</code> to <code>true</code> when initiating the build.</p>
+<p>An easy way to generate the API Reference Documentation is to execute:<br>
+<code>\sdk-dotnet\Src\DocGen\BuildApiRefDocs.bat</code></p>
+<p>The script simply runs the build with the above-named property set. It will automatically download DocFx, generate the documentation, and place it under <code>\_build\DocFx\dotnet.temporal.io</code>.</p>
+<h2 id="running-tests">Running tests</h2>
+<p>You can run all tests from within Visual Studio or from the command line.</p>
+<ul>
+<li><p>To run the tests from within Visual Studio, open the Test Explorer (<code>Ctrl-E, T</code>) and click on Run all Tests (or <code>Ctrl-R, V</code>).<br>
+<a href="Resources/Contribution_Guide.VS_Test_Explorer.jpg"><img src="Resources/Contribution_Guide.VS_Test_Explorer.jpg" alt="Screenshot of VS Test Explorer"></a></p>
+</li>
+<li><p>To run the tests from the command line, execute:<br>
+<code>dotnet test --results-directory _testresults sdk-dotnet/Src/Temporal.Sdk.sln</code></p>
+</li>
+<li><p>You can be more specific about what group of tests you want to run by using one of the <code>.snl</code> files in <code>\sdk-dotnet\Src\Test\</code>. E.g.:<br>
+<code>dotnet test --results-directory _testresults/Unit sdk-dotnet/Src/Test/Temporal.Sdk.Test.Unit.Automation.sln</code></p>
+</li>
+</ul>
+<p>The SDK contains both, unit and integration tests.<br>
+Integration tests include communicating to a version of Temporal server and validating the resulting behavior or responses. For that, we currently use <a href="https://github.com/macrogreg/temporalite/">our own fork</a> of <a href="https://github.com/DataDog/temporalite">Temporal Lite</a>. The test harness will download and install Temporal Lite into the Build Output Folder.</p>
+<h2 id="style-guidelines">Style guidelines</h2>
+<p>We use Microsoft's &quot;new&quot; <a href="https://www.nuget.org/packages/Microsoft.CodeAnalysis.CSharp.CodeStyle/"><code>.editorconfig</code>-based style checker</a> to validate and enforce our code styling rules. Our guidelines are documented in the <a href="https://github.com/temporalio/sdk-dotnet/blob/master/Src/.editorconfig"><code>\sdk-dotnet\Src\.editorconfig</code></a>.</p>
+<p>The code analyzer is still maturing, and unfortunately it does not yet allow to configure all of our styling rules, as it was possible with some of the legacy tools.</p>
+<p>We kindly ask you that you try to notice and follow our coding conventions, even those that are not (yet) supported by the tooling. Of course, we know that is is not always feasible and we will point things out as necessary in a code review. Please be patient with us, we are not trying to be a pain, just filling in where automation lacks.<br>
+(Btw., we will gladly accept a contribution to address the gaps in this space.)</p>
+<p>Some of the style rules that are currently not automatically enforced due to missing tooling features include:</p>
+<ul>
+<li><p>Multi-line string layout:</p>
+<pre><code class="lang-cs">SomeApiWithARelativelyLongName.Invocation(&quot;Lines should not be too wide; Strings should&quot;
+                                        + &quot; start with aligned quotation marks, and plusses&quot;
+                                        + &quot; should be on the lower line. Spaces should be on&quot;
+                                        + &quot; the lower line. Lorem ipsum dolor sit amet,&quot;
+                                        + &quot; consectetur adipiscing elit, sed do eiusmod&quot;
+                                        + &quot; tempor incididunt ut labore et dolore magna aliqua.&quot;);
+</code></pre>
+</li>
+<li><p>Parameters should be all on the same line or aligned under each other:</p>
+<pre><code class="lang-cs">void SomeMethodWithAnInterestingName(string param, int value, object state)
+{      
+}
+</code></pre>
+<pre><code class="lang-cs">void AnotherInterestingMethod(string param,
+                              int value,
+                              object state,
+                              CancellationToken cancelToken)
+{        
+}
+</code></pre>
+</li>
+<li><p>We <em>do</em> use the <code>...Async</code> suffix.</p>
+</li>
+<li><p>Use named parameters when passing undescriptive literals:</p>
+<pre><code class="lang-cs">void DoSomething(int id, string name, SomeType contextData, int checkSum, bool beCool);
+
+// ---
+
+int checkSum = ...;
+SomeType processingContext = ...;
+DoSomething(id: 42, name: null, processingContext, checkSum, beCool: true);
+</code></pre>
+</li>
+<li><p>If we pick on something in a code review that is not listed here, let's make sure to add it to this list.</p>
+</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <i>Temporal SDK Reference: .NET Cross Target</i>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

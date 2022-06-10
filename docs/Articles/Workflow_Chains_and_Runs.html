@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Temporal Data Model:Workflows, -Chains and -Runs | Temporal SDK for .NET </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Temporal Data Model:Workflows, -Chains and -Runs | Temporal SDK for .NET ">
+    <meta name="generator" content="docfx 2.59.2.0">
+    
+    <link rel="shortcut icon" href="../Articles/Resources/TemporalLogo-Favicon-BlackOnTrnsp.64x64.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    <meta property="docfx:rel" content="../">
+    <meta property="docfx:newtab" content="true">
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../Articles/Resources/TemporalLogo-TopNavi-WhiteOnTrnsp.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                
+                <ul class="nav level1 navbar-nav">
+                      <li>
+                          <a href="../index.html" title="Home">Home</a>
+                      </li>
+                      <li>
+                          <a href="../ApiDoc/index.html" title="API Reference">API Reference</a>
+                      </li>
+                      <li>
+                          <a href="../Articles/index.html" title="Articles">Articles</a>
+                      </li>
+                </ul>    </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="">
+                      <a href="../index.html" title="Temporal SDK for .NET (Alpha)" class="">Temporal SDK for .NET (Alpha)</a>
+                    </li>
+                    <li class="">
+                      <a href="../ApiDoc/index.html" title="API Reference" class="">API Reference</a>
+                    </li>
+                    <li class="">
+                      <a href="index.html" title="Articles" class="">Articles</a>
+                    </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="index.html" title="Getting stated" class="">Getting stated</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="What_is_Temporal.html" title="What is Temporal?" class="">What is Temporal?</a>
+                          </li>
+                          <li class="">
+                            <a href="About_Temporal_SDK_for_DotNet.html" title="About the SDK" class="">About the SDK</a>
+                          </li>
+                          <li class="">
+                            <a href="Using_Temporal_SDK_for_DotNet.html" title="Using the SDK" class="">Using the SDK</a>
+                          </li>
+                          <li class="">
+                            <a href="Contribution_Guide.html" title="Contribution Guide" class="">Contribution Guide</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a href="index.html" title="Temporal Data Model" class="">Temporal Data Model</a>
+                        
+                        <ul class="nav level2">
+                          <li class="active">
+                            <a href="Workflow_Chains_and_Runs.html" title="Workflows, -Chains and -Runs" class="active">Workflows, -Chains and -Runs</a>
+                          </li>
+                        </ul>  </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="temporal-data-modelworkflows--chains-and--runs"><small>Temporal Data Model:</small><br>Workflows, -Chains and -Runs</h1>
+
+<p>In this article we consider similarities and differences between 2 key concepts in Temporal:
+&quot;<em>Workflow Chain</em>&quot; and &quot;<em>Workflow Run</em>&quot;.<br>
+In most typical applications you will never need to dive deep into this topic. You will simply <em>use</em> Workflows and everything will &quot;just work&quot;. However, Temporal experts and users of certain advanced scenarios will need to understand this space.</p>
+<h2 id="workflow-chain">Workflow Chain</h2>
+<p>Technically, a Temporal workflow is a chain-sequence of one or more <em>Workflow Runs</em> from the initial invocation of a workflow to its eventual conclusion.
+Thus, a logical workflow (as in &quot;just&quot; workflow, or &quot;the&quot; workflow) is really a <em>Workflow Chain</em>.</p>
+<h2 id="workflow-run">Workflow Run</h2>
+<p>A <em>Workflow Run</em> is single execution of the main workflow routine.</p>
+<p>Completely executing a logical workflow from the initial invocation to the eventual conclusion involves a chain of one or more <em>Workflow Runs</em>.</p>
+<p>The Temporal server orchestrates the execution of workflows by ensuring that Workers execute <em>Workflow Runs</em> as required to complete a <em>Workflow Chain</em> (aka a logical Workflow).</p>
+<h2 id="net-client-sdk-data-model">.NET Client SDK Data Model</h2>
+<ul>
+<li><em>Workflow Chains</em> are modeled by instances of type <code>IWorkflowHandle</code>.</li>
+<li><em>Workflow Runs</em> are modeled by instances of type <code>IWorkflowRunHandle</code>.</li>
+</ul>
+<p>In most scenarios, users only need to interact with logical workflows, i.e., with <em>Workflow Chains</em> via the respective <code>IWorkflowHandle</code> instances. For example, when a user needs to send a signal to a workflow (or perform a query, terminate, cancel, etc...), they invoke a corresponding <code>IWorkflowHandle</code> API. Under the covers, the handle automatically interacts with the current <em>Run</em> within the <em>Workflow Chain</em> represented by the handle.</p>
+<p>Similarly, when a users polls for the result of a workflow, the respective <code>IWorkflowHandle</code> API automatically &quot;follows&quot; the <em>Chain</em> until the &quot;final&quot; <em>Run</em> of a chain completes.</p>
+<p>However, in some advanced scenarios users need to explicitly interact with a specific <em>Run</em> within the <em>Workflow Chain</em> representing a particular logical workflow. This is done using a <code>IWorkflowRunHandle</code> instances.</p>
+<p>Examples that demonstrate how to do that can be found in <a href="https://github.com/temporalio/sdk-dotnet/blob/master/Src/Samples/WorkflowClient.UsageSamples/Temporal.Sdk.WorkflowClient.UsageSamples/public/Part3_AddressIndividualRuns.cs">this sample</a>.</p>
+<h2 id="specific-workflow-runs-within-workflow-chains">Specific <em>Workflow Runs</em> within <em>Workflow Chains</em>:</h2>
+<p>As discussed above, a Temporal workflow is a <em>Chain</em> of one or more <em>Workflow Runs</em>. Such a <em>Workflow Chain</em> spans from the initial invocation of a workflow to its eventual conclusion.
+A <em>Chain</em> may include many <em>Runs</em>, however, some of the <em>Runs</em> have a special significance:</p>
+<ul>
+<li><p>The <strong>FIRST</strong> <em>Run</em> of a <em>Chain</em> is the <em>Run</em> that was initiated when the logical workflow was started.<br>
+Typically, the first <em>Run</em> is used to IDENTIFY the entire chain.
+I.e., the workflow-run-id of the first <em>Run</em> within a <em>Workflow Chain</em> identifies not only that particular <em>Run</em>, but also the <em>Workflow Chain</em> as a whole.</p>
+</li>
+<li><p>The <strong>LATEST</strong> <em>Run</em> of a <em>Chain</em> is the <em>Run</em> that has started most recently.<br>
+Such LATEST <em>Run</em> is sometimes also termed CURRENT. However, technically, the latest <em>Run</em> may have a <code>Running</code> status (then the entire <em>Chain</em> is also said to be <em>Running</em>) or it may already have <em>concluded</em> (then the entire <em>Chain</em> is said to be <em>concluded</em>). To account for this, the .NET Workflow Client SDK uses the term LATEST rather than CURRENT.</p>
+</li>
+<li><p>The <strong>FINAL</strong> <em>Run</em> of a <em>Chain</em> is the <em>Run</em> that concludes the <em>Chain</em>. No further <em>Runs</em> are known to follow after the final <em>Run</em> of a given <em>Workflow Chain</em>. In most scenarios it is not known with what Status a <em>Run</em> will conclude, until it does so. Therefore, a workflow may not have a final <em>Run</em> until it eventually concludes.</p>
+</li>
+</ul>
+<p>Examples for addressing specific Runs within a workflow can be found <a href="https://github.com/temporalio/sdk-dotnet/blob/db93bbedf9af6c03dfe9d09b22109df853e0139f/Src/Samples/WorkflowClient.UsageSamples/Temporal.Sdk.WorkflowClient.UsageSamples/public/Part3_AddressIndividualRuns.cs#L143-L242">here</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            <i>Temporal SDK Reference: .NET Cross Target</i>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
