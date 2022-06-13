@@ -84,10 +84,18 @@ namespace Temporal.Api.Schedule.V1 {
             "dWxlLnYxLlNjaGVkdWxlQWN0aW9uEjwKCHBvbGljaWVzGAMgASgLMioudGVt",
             "cG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlUG9saWNpZXMSNgoFc3Rh",
             "dGUYBCABKAsyJy50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjEuU2NoZWR1bGVT",
-            "dGF0ZSKZAQoRU2NoZWR1bGVMaXN0RW50cnkSEwoLc2NoZWR1bGVfaWQYASAB",
-            "KAkSKgoEbWVtbxgCIAEoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24udjEuTWVt",
-            "bxJDChFzZWFyY2hfYXR0cmlidXRlcxgDIAEoCzIoLnRlbXBvcmFsLmFwaS5j",
-            "b21tb24udjEuU2VhcmNoQXR0cmlidXRlc0KPAQobaW8udGVtcG9yYWwuYXBp",
+            "dGF0ZSKrAgoQU2NoZWR1bGVMaXN0SW5mbxI0CgRzcGVjGAEgASgLMiYudGVt",
+            "cG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlU3BlYxI7Cg13b3JrZmxv",
+            "d190eXBlGAIgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxv",
+            "d1R5cGUSDQoFbm90ZXMYAyABKAkSDgoGcGF1c2VkGAQgASgIEkYKDnJlY2Vu",
+            "dF9hY3Rpb25zGAUgAygLMi4udGVtcG9yYWwuYXBpLnNjaGVkdWxlLnYxLlNj",
+            "aGVkdWxlQWN0aW9uUmVzdWx0Ej0KE2Z1dHVyZV9hY3Rpb25fdGltZXMYBiAD",
+            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQgSQ3x8BItMBChFTY2hl",
+            "ZHVsZUxpc3RFbnRyeRITCgtzY2hlZHVsZV9pZBgBIAEoCRIqCgRtZW1vGAIg",
+            "ASgLMhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5NZW1vEkMKEXNlYXJjaF9h",
+            "dHRyaWJ1dGVzGAMgASgLMigudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5TZWFy",
+            "Y2hBdHRyaWJ1dGVzEjgKBGluZm8YBCABKAsyKi50ZW1wb3JhbC5hcGkuc2No",
+            "ZWR1bGUudjEuU2NoZWR1bGVMaXN0SW5mb0KPAQobaW8udGVtcG9yYWwuYXBp",
             "LnNjaGVkdWxlLnYxQgxNZXNzYWdlUHJvdG9QAVonZ28udGVtcG9yYWwuaW8v",
             "YXBpL3NjaGVkdWxlL3YxO3NjaGVkdWxlqgIYVGVtcG9yYWwuQXBpLlNjaGVk",
             "dWxlLlYx6gIbVGVtcG9yYWw6OkFwaTo6U2NoZWR1bGU6OlYxYgZwcm90bzM="));
@@ -106,7 +114,8 @@ namespace Temporal.Api.Schedule.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Schedule.V1.SchedulePatch), global::Temporal.Api.Schedule.V1.SchedulePatch.Parser, new[]{ "TriggerImmediately", "BackfillRequest", "Pause", "Unpause" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Schedule.V1.ScheduleInfo), global::Temporal.Api.Schedule.V1.ScheduleInfo.Parser, new[]{ "ActionCount", "MissedCatchupWindow", "OverlapSkipped", "RunningWorkflows", "RecentActions", "FutureActionTimes", "CreateTime", "UpdateTime", "InvalidScheduleError" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Schedule.V1.Schedule), global::Temporal.Api.Schedule.V1.Schedule.Parser, new[]{ "Spec", "Action", "Policies", "State" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Schedule.V1.ScheduleListEntry), global::Temporal.Api.Schedule.V1.ScheduleListEntry.Parser, new[]{ "ScheduleId", "Memo", "SearchAttributes" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Schedule.V1.ScheduleListInfo), global::Temporal.Api.Schedule.V1.ScheduleListInfo.Parser, new[]{ "Spec", "WorkflowType", "Notes", "Paused", "RecentActions", "FutureActionTimes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporal.Api.Schedule.V1.ScheduleListEntry), global::Temporal.Api.Schedule.V1.ScheduleListEntry.Parser, new[]{ "ScheduleId", "Memo", "SearchAttributes", "Info" }, null, null, null, null)
           }));
     }
     #endregion
@@ -4087,6 +4096,396 @@ namespace Temporal.Api.Schedule.V1 {
   }
 
   /// <summary>
+  /// ScheduleListInfo is an abbreviated set of values from Schedule and ScheduleInfo
+  /// that's returned in ListSchedules.
+  /// </summary>
+  public sealed partial class ScheduleListInfo : pb::IMessage<ScheduleListInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ScheduleListInfo> _parser = new pb::MessageParser<ScheduleListInfo>(() => new ScheduleListInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ScheduleListInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporal.Api.Schedule.V1.MessageReflection.Descriptor.MessageTypes[12]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ScheduleListInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ScheduleListInfo(ScheduleListInfo other) : this() {
+      spec_ = other.spec_ != null ? other.spec_.Clone() : null;
+      workflowType_ = other.workflowType_ != null ? other.workflowType_.Clone() : null;
+      notes_ = other.notes_;
+      paused_ = other.paused_;
+      recentActions_ = other.recentActions_.Clone();
+      futureActionTimes_ = other.futureActionTimes_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ScheduleListInfo Clone() {
+      return new ScheduleListInfo(this);
+    }
+
+    /// <summary>Field number for the "spec" field.</summary>
+    public const int SpecFieldNumber = 1;
+    private global::Temporal.Api.Schedule.V1.ScheduleSpec spec_;
+    /// <summary>
+    /// From spec:
+    /// Some fields are too large/unimportant for the purpose of listing, so we'll clear them
+    /// from this copy of spec: exclude_calendar, jitter, timezone_data.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Schedule.V1.ScheduleSpec Spec {
+      get { return spec_; }
+      set {
+        spec_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "workflow_type" field.</summary>
+    public const int WorkflowTypeFieldNumber = 2;
+    private global::Temporal.Api.Common.V1.WorkflowType workflowType_;
+    /// <summary>
+    /// From action:
+    /// Action is a oneof field, but we need to encode this in JSON and oneof fields don't work
+    /// well with JSON. If action is start_workflow, this is set:
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Common.V1.WorkflowType WorkflowType {
+      get { return workflowType_; }
+      set {
+        workflowType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "notes" field.</summary>
+    public const int NotesFieldNumber = 3;
+    private string notes_ = "";
+    /// <summary>
+    /// From state:
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Notes {
+      get { return notes_; }
+      set {
+        notes_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "paused" field.</summary>
+    public const int PausedFieldNumber = 4;
+    private bool paused_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Paused {
+      get { return paused_; }
+      set {
+        paused_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "recent_actions" field.</summary>
+    public const int RecentActionsFieldNumber = 5;
+    private static readonly pb::FieldCodec<global::Temporal.Api.Schedule.V1.ScheduleActionResult> _repeated_recentActions_codec
+        = pb::FieldCodec.ForMessage(42, global::Temporal.Api.Schedule.V1.ScheduleActionResult.Parser);
+    private readonly pbc::RepeatedField<global::Temporal.Api.Schedule.V1.ScheduleActionResult> recentActions_ = new pbc::RepeatedField<global::Temporal.Api.Schedule.V1.ScheduleActionResult>();
+    /// <summary>
+    /// From info (maybe fewer entries):
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporal.Api.Schedule.V1.ScheduleActionResult> RecentActions {
+      get { return recentActions_; }
+    }
+
+    /// <summary>Field number for the "future_action_times" field.</summary>
+    public const int FutureActionTimesFieldNumber = 6;
+    private static readonly pb::FieldCodec<global::Google.Protobuf.WellKnownTypes.Timestamp> _repeated_futureActionTimes_codec
+        = pb::FieldCodec.ForMessage(50, global::Google.Protobuf.WellKnownTypes.Timestamp.Parser);
+    private readonly pbc::RepeatedField<global::Google.Protobuf.WellKnownTypes.Timestamp> futureActionTimes_ = new pbc::RepeatedField<global::Google.Protobuf.WellKnownTypes.Timestamp>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Google.Protobuf.WellKnownTypes.Timestamp> FutureActionTimes {
+      get { return futureActionTimes_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ScheduleListInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ScheduleListInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Spec, other.Spec)) return false;
+      if (!object.Equals(WorkflowType, other.WorkflowType)) return false;
+      if (Notes != other.Notes) return false;
+      if (Paused != other.Paused) return false;
+      if(!recentActions_.Equals(other.recentActions_)) return false;
+      if(!futureActionTimes_.Equals(other.futureActionTimes_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (spec_ != null) hash ^= Spec.GetHashCode();
+      if (workflowType_ != null) hash ^= WorkflowType.GetHashCode();
+      if (Notes.Length != 0) hash ^= Notes.GetHashCode();
+      if (Paused != false) hash ^= Paused.GetHashCode();
+      hash ^= recentActions_.GetHashCode();
+      hash ^= futureActionTimes_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (spec_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Spec);
+      }
+      if (workflowType_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(WorkflowType);
+      }
+      if (Notes.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Notes);
+      }
+      if (Paused != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(Paused);
+      }
+      recentActions_.WriteTo(output, _repeated_recentActions_codec);
+      futureActionTimes_.WriteTo(output, _repeated_futureActionTimes_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (spec_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Spec);
+      }
+      if (workflowType_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(WorkflowType);
+      }
+      if (Notes.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Notes);
+      }
+      if (Paused != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(Paused);
+      }
+      recentActions_.WriteTo(ref output, _repeated_recentActions_codec);
+      futureActionTimes_.WriteTo(ref output, _repeated_futureActionTimes_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (spec_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Spec);
+      }
+      if (workflowType_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(WorkflowType);
+      }
+      if (Notes.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Notes);
+      }
+      if (Paused != false) {
+        size += 1 + 1;
+      }
+      size += recentActions_.CalculateSize(_repeated_recentActions_codec);
+      size += futureActionTimes_.CalculateSize(_repeated_futureActionTimes_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ScheduleListInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.spec_ != null) {
+        if (spec_ == null) {
+          Spec = new global::Temporal.Api.Schedule.V1.ScheduleSpec();
+        }
+        Spec.MergeFrom(other.Spec);
+      }
+      if (other.workflowType_ != null) {
+        if (workflowType_ == null) {
+          WorkflowType = new global::Temporal.Api.Common.V1.WorkflowType();
+        }
+        WorkflowType.MergeFrom(other.WorkflowType);
+      }
+      if (other.Notes.Length != 0) {
+        Notes = other.Notes;
+      }
+      if (other.Paused != false) {
+        Paused = other.Paused;
+      }
+      recentActions_.Add(other.recentActions_);
+      futureActionTimes_.Add(other.futureActionTimes_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (spec_ == null) {
+              Spec = new global::Temporal.Api.Schedule.V1.ScheduleSpec();
+            }
+            input.ReadMessage(Spec);
+            break;
+          }
+          case 18: {
+            if (workflowType_ == null) {
+              WorkflowType = new global::Temporal.Api.Common.V1.WorkflowType();
+            }
+            input.ReadMessage(WorkflowType);
+            break;
+          }
+          case 26: {
+            Notes = input.ReadString();
+            break;
+          }
+          case 32: {
+            Paused = input.ReadBool();
+            break;
+          }
+          case 42: {
+            recentActions_.AddEntriesFrom(input, _repeated_recentActions_codec);
+            break;
+          }
+          case 50: {
+            futureActionTimes_.AddEntriesFrom(input, _repeated_futureActionTimes_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (spec_ == null) {
+              Spec = new global::Temporal.Api.Schedule.V1.ScheduleSpec();
+            }
+            input.ReadMessage(Spec);
+            break;
+          }
+          case 18: {
+            if (workflowType_ == null) {
+              WorkflowType = new global::Temporal.Api.Common.V1.WorkflowType();
+            }
+            input.ReadMessage(WorkflowType);
+            break;
+          }
+          case 26: {
+            Notes = input.ReadString();
+            break;
+          }
+          case 32: {
+            Paused = input.ReadBool();
+            break;
+          }
+          case 42: {
+            recentActions_.AddEntriesFrom(ref input, _repeated_recentActions_codec);
+            break;
+          }
+          case 50: {
+            futureActionTimes_.AddEntriesFrom(ref input, _repeated_futureActionTimes_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// ScheduleListEntry is returned by ListSchedules.
   /// </summary>
   public sealed partial class ScheduleListEntry : pb::IMessage<ScheduleListEntry>
@@ -4103,7 +4502,7 @@ namespace Temporal.Api.Schedule.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporal.Api.Schedule.V1.MessageReflection.Descriptor.MessageTypes[12]; }
+      get { return global::Temporal.Api.Schedule.V1.MessageReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4126,6 +4525,7 @@ namespace Temporal.Api.Schedule.V1 {
       scheduleId_ = other.scheduleId_;
       memo_ = other.memo_ != null ? other.memo_.Clone() : null;
       searchAttributes_ = other.searchAttributes_ != null ? other.searchAttributes_.Clone() : null;
+      info_ = other.info_ != null ? other.info_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4171,6 +4571,18 @@ namespace Temporal.Api.Schedule.V1 {
       }
     }
 
+    /// <summary>Field number for the "info" field.</summary>
+    public const int InfoFieldNumber = 4;
+    private global::Temporal.Api.Schedule.V1.ScheduleListInfo info_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporal.Api.Schedule.V1.ScheduleListInfo Info {
+      get { return info_; }
+      set {
+        info_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -4189,6 +4601,7 @@ namespace Temporal.Api.Schedule.V1 {
       if (ScheduleId != other.ScheduleId) return false;
       if (!object.Equals(Memo, other.Memo)) return false;
       if (!object.Equals(SearchAttributes, other.SearchAttributes)) return false;
+      if (!object.Equals(Info, other.Info)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4199,6 +4612,7 @@ namespace Temporal.Api.Schedule.V1 {
       if (ScheduleId.Length != 0) hash ^= ScheduleId.GetHashCode();
       if (memo_ != null) hash ^= Memo.GetHashCode();
       if (searchAttributes_ != null) hash ^= SearchAttributes.GetHashCode();
+      if (info_ != null) hash ^= Info.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4229,6 +4643,10 @@ namespace Temporal.Api.Schedule.V1 {
         output.WriteRawTag(26);
         output.WriteMessage(SearchAttributes);
       }
+      if (info_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Info);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4251,6 +4669,10 @@ namespace Temporal.Api.Schedule.V1 {
         output.WriteRawTag(26);
         output.WriteMessage(SearchAttributes);
       }
+      if (info_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Info);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4269,6 +4691,9 @@ namespace Temporal.Api.Schedule.V1 {
       }
       if (searchAttributes_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(SearchAttributes);
+      }
+      if (info_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Info);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4296,6 +4721,12 @@ namespace Temporal.Api.Schedule.V1 {
           SearchAttributes = new global::Temporal.Api.Common.V1.SearchAttributes();
         }
         SearchAttributes.MergeFrom(other.SearchAttributes);
+      }
+      if (other.info_ != null) {
+        if (info_ == null) {
+          Info = new global::Temporal.Api.Schedule.V1.ScheduleListInfo();
+        }
+        Info.MergeFrom(other.Info);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4330,6 +4761,13 @@ namespace Temporal.Api.Schedule.V1 {
             input.ReadMessage(SearchAttributes);
             break;
           }
+          case 34: {
+            if (info_ == null) {
+              Info = new global::Temporal.Api.Schedule.V1.ScheduleListInfo();
+            }
+            input.ReadMessage(Info);
+            break;
+          }
         }
       }
     #endif
@@ -4361,6 +4799,13 @@ namespace Temporal.Api.Schedule.V1 {
               SearchAttributes = new global::Temporal.Api.Common.V1.SearchAttributes();
             }
             input.ReadMessage(SearchAttributes);
+            break;
+          }
+          case 34: {
+            if (info_ == null) {
+              Info = new global::Temporal.Api.Schedule.V1.ScheduleListInfo();
+            }
+            input.ReadMessage(Info);
             break;
           }
         }

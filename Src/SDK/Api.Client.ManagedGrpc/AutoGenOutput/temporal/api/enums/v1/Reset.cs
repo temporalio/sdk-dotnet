@@ -40,7 +40,9 @@ namespace Temporal.Api.Enums.V1 {
   }
   #region Enums
   /// <summary>
-  /// TODO: What is this?
+  /// Reset reapplay(replay) options
+  /// * RESET_REAPPLY_TYPE_SIGNAL (default) - Signals are reapplied when workflow is reset
+  /// * RESET_REAPPLY_TYPE_NONE - nothing is reapplied
   /// </summary>
   public enum ResetReapplyType {
     [pbr::OriginalName("RESET_REAPPLY_TYPE_UNSPECIFIED")] Unspecified = 0,

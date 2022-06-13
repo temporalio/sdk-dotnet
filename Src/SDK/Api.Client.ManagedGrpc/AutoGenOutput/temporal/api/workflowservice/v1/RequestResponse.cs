@@ -16398,7 +16398,7 @@ namespace Temporal.Api.WorkflowService.V1 {
     public const int ResetReapplyTypeFieldNumber = 6;
     private global::Temporal.Api.Enums.V1.ResetReapplyType resetReapplyType_ = global::Temporal.Api.Enums.V1.ResetReapplyType.Unspecified;
     /// <summary>
-    /// Should be removed. Appears unused.
+    /// Reset reapplay(replay) options.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

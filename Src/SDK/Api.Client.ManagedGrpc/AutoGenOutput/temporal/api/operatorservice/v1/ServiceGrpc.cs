@@ -94,6 +94,26 @@ namespace Temporal.Api.OperatorService.V1 {
     static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest> __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse> __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest> __Marshaller_temporal_api_operatorservice_v1_AddOrUpdateRemoteClusterRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse> __Marshaller_temporal_api_operatorservice_v1_AddOrUpdateRemoteClusterResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest> __Marshaller_temporal_api_operatorservice_v1_RemoveRemoteClusterRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse> __Marshaller_temporal_api_operatorservice_v1_RemoveRemoteClusterResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DescribeClusterRequest> __Marshaller_temporal_api_operatorservice_v1_DescribeClusterRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DescribeClusterRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.DescribeClusterResponse> __Marshaller_temporal_api_operatorservice_v1_DescribeClusterResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.DescribeClusterResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.ListClustersRequest> __Marshaller_temporal_api_operatorservice_v1_ListClustersRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.ListClustersRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.ListClustersResponse> __Marshaller_temporal_api_operatorservice_v1_ListClustersResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.ListClustersResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest> __Marshaller_temporal_api_operatorservice_v1_ListClusterMembersRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse> __Marshaller_temporal_api_operatorservice_v1_ListClusterMembersResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.AddSearchAttributesRequest, global::Temporal.Api.OperatorService.V1.AddSearchAttributesResponse> __Method_AddSearchAttributes = new grpc::Method<global::Temporal.Api.OperatorService.V1.AddSearchAttributesRequest, global::Temporal.Api.OperatorService.V1.AddSearchAttributesResponse>(
@@ -134,6 +154,46 @@ namespace Temporal.Api.OperatorService.V1 {
         "DeleteWorkflowExecution",
         __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionRequest,
         __Marshaller_temporal_api_operatorservice_v1_DeleteWorkflowExecutionResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest, global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse> __Method_AddOrUpdateRemoteCluster = new grpc::Method<global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest, global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "AddOrUpdateRemoteCluster",
+        __Marshaller_temporal_api_operatorservice_v1_AddOrUpdateRemoteClusterRequest,
+        __Marshaller_temporal_api_operatorservice_v1_AddOrUpdateRemoteClusterResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest, global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse> __Method_RemoveRemoteCluster = new grpc::Method<global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest, global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "RemoveRemoteCluster",
+        __Marshaller_temporal_api_operatorservice_v1_RemoveRemoteClusterRequest,
+        __Marshaller_temporal_api_operatorservice_v1_RemoveRemoteClusterResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.DescribeClusterRequest, global::Temporal.Api.OperatorService.V1.DescribeClusterResponse> __Method_DescribeCluster = new grpc::Method<global::Temporal.Api.OperatorService.V1.DescribeClusterRequest, global::Temporal.Api.OperatorService.V1.DescribeClusterResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "DescribeCluster",
+        __Marshaller_temporal_api_operatorservice_v1_DescribeClusterRequest,
+        __Marshaller_temporal_api_operatorservice_v1_DescribeClusterResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.ListClustersRequest, global::Temporal.Api.OperatorService.V1.ListClustersResponse> __Method_ListClusters = new grpc::Method<global::Temporal.Api.OperatorService.V1.ListClustersRequest, global::Temporal.Api.OperatorService.V1.ListClustersResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "ListClusters",
+        __Marshaller_temporal_api_operatorservice_v1_ListClustersRequest,
+        __Marshaller_temporal_api_operatorservice_v1_ListClustersResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest, global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse> __Method_ListClusterMembers = new grpc::Method<global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest, global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "ListClusterMembers",
+        __Marshaller_temporal_api_operatorservice_v1_ListClusterMembersRequest,
+        __Marshaller_temporal_api_operatorservice_v1_ListClusterMembersResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -463,6 +523,246 @@ namespace Temporal.Api.OperatorService.V1 {
       public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionResponse> DeleteWorkflowExecutionAsync(global::Temporal.Api.OperatorService.V1.DeleteWorkflowExecutionRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_DeleteWorkflowExecution, null, options, request);
+      }
+      /// <summary>
+      /// AddOrUpdateRemoteCluster adds or updates remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse AddOrUpdateRemoteCluster(global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return AddOrUpdateRemoteCluster(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// AddOrUpdateRemoteCluster adds or updates remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse AddOrUpdateRemoteCluster(global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_AddOrUpdateRemoteCluster, null, options, request);
+      }
+      /// <summary>
+      /// AddOrUpdateRemoteCluster adds or updates remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse> AddOrUpdateRemoteClusterAsync(global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return AddOrUpdateRemoteClusterAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// AddOrUpdateRemoteCluster adds or updates remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse> AddOrUpdateRemoteClusterAsync(global::Temporal.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_AddOrUpdateRemoteCluster, null, options, request);
+      }
+      /// <summary>
+      /// RemoveRemoteCluster removes remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse RemoveRemoteCluster(global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return RemoveRemoteCluster(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// RemoveRemoteCluster removes remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse RemoveRemoteCluster(global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_RemoveRemoteCluster, null, options, request);
+      }
+      /// <summary>
+      /// RemoveRemoteCluster removes remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse> RemoveRemoteClusterAsync(global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return RemoveRemoteClusterAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// RemoveRemoteCluster removes remote cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterResponse> RemoveRemoteClusterAsync(global::Temporal.Api.OperatorService.V1.RemoveRemoteClusterRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_RemoveRemoteCluster, null, options, request);
+      }
+      /// <summary>
+      /// DescribeCluster returns information about Temporal cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.DescribeClusterResponse DescribeCluster(global::Temporal.Api.OperatorService.V1.DescribeClusterRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DescribeCluster(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// DescribeCluster returns information about Temporal cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.DescribeClusterResponse DescribeCluster(global::Temporal.Api.OperatorService.V1.DescribeClusterRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_DescribeCluster, null, options, request);
+      }
+      /// <summary>
+      /// DescribeCluster returns information about Temporal cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.DescribeClusterResponse> DescribeClusterAsync(global::Temporal.Api.OperatorService.V1.DescribeClusterRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return DescribeClusterAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// DescribeCluster returns information about Temporal cluster.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.DescribeClusterResponse> DescribeClusterAsync(global::Temporal.Api.OperatorService.V1.DescribeClusterRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_DescribeCluster, null, options, request);
+      }
+      /// <summary>
+      /// ListClusters returns information about Temporal clusters.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.ListClustersResponse ListClusters(global::Temporal.Api.OperatorService.V1.ListClustersRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListClusters(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// ListClusters returns information about Temporal clusters.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.ListClustersResponse ListClusters(global::Temporal.Api.OperatorService.V1.ListClustersRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_ListClusters, null, options, request);
+      }
+      /// <summary>
+      /// ListClusters returns information about Temporal clusters.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.ListClustersResponse> ListClustersAsync(global::Temporal.Api.OperatorService.V1.ListClustersRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListClustersAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// ListClusters returns information about Temporal clusters.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.ListClustersResponse> ListClustersAsync(global::Temporal.Api.OperatorService.V1.ListClustersRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_ListClusters, null, options, request);
+      }
+      /// <summary>
+      /// ListClusterMembers returns information about Temporal cluster members.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse ListClusterMembers(global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListClusterMembers(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// ListClusterMembers returns information about Temporal cluster members.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse ListClusterMembers(global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_ListClusterMembers, null, options, request);
+      }
+      /// <summary>
+      /// ListClusterMembers returns information about Temporal cluster members.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse> ListClusterMembersAsync(global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return ListClusterMembersAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// ListClusterMembers returns information about Temporal cluster members.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Temporal.Api.OperatorService.V1.ListClusterMembersResponse> ListClusterMembersAsync(global::Temporal.Api.OperatorService.V1.ListClusterMembersRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_ListClusterMembers, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
