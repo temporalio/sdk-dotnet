@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <AssemblyName>Temporal.Demos.AdHocScenarios</AssemblyName>
+    <AssemblyName>Temporal.Sdk.Prototypes.WorkflowClientInvocations</AssemblyName>
     <RootNamespace></RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SDK\Api.Client.ManagedGrpc\Temporal.Api.Client.ManagedGrpc.csproj" />
-    <ProjectReference Include="..\..\SDK\WorkflowClient\Temporal.Sdk.WorkflowClient.csproj" />
+    <ProjectReference Include="$(SdkSrcBaseDir)\Api.Client.ManagedGrpc\Temporal.Api.Client.ManagedGrpc.csproj" />
+    <ProjectReference Include="$(SdkSrcBaseDir)\WorkflowClient\Temporal.Sdk.WorkflowClient.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) == false">   
