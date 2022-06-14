@@ -40,7 +40,7 @@
         CS1712: Type parameter 'type_parameter' has no matching typeparam tag in the XML comment on 'type_or_member' (but other type parameters do)
         (Note that disabling here might not be sufficient, and the warnings need to ALSO be disabled in .editorconfig)
         
-        This is also required to allo IDE0005 (Using directive is unnecessary) to be reported at build time. See:
+        This is also required to allow IDE0005 (Using directive is unnecessary) to be reported at build time. See:
         https://github.com/dotnet/roslyn/issues/41640
         https://github.com/dotnet/roslyn/issues/53720
         -->
