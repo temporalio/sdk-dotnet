@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Temporal.Common;
 using Temporal.Serialization;
 using Temporal.Util;
@@ -384,10 +385,12 @@ namespace Temporal.WorkflowClient
 
             WorkflowServiceClientEnvelope grpcClientEnvelope = GetOrCreateGrpcClientEnvelope();
 
+            ILogger<TemporalServiceInvoker> logger = (Configuration.LoggerFactory ?? Configuration.LoggerFactory).CreateLogger<TemporalServiceInvoker>();
             ITemporalClientInterceptor downstream = new TemporalServiceInvoker(grpcClientEnvelope,
                                                                                _identityMarker,
                                                                                payloadConverter,
-                                                                               payloadCodec);
+                                                                               payloadCodec,
+                                                                               logger);
 
             // Build the pipeline by creating the chain of interceptors ending with the sink:
 

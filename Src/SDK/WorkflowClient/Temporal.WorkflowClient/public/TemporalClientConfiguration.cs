@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 #if NETCOREAPP3_1_OR_GREATER
 using System.Security.Cryptography.X509Certificates;
@@ -48,7 +50,8 @@ namespace Temporal.WorkflowClient
                                 string ClientIdentityMarker,
                                 Func<ServiceInvocationPipelineItemFactoryArguments, IPayloadConverter> PayloadConverterFactory,
                                 Func<ServiceInvocationPipelineItemFactoryArguments, IPayloadCodec> PayloadCodecFactory,
-                                Action<ServiceInvocationPipelineItemFactoryArguments, IList<ITemporalClientInterceptor>> ClientInterceptorFactory)
+                                Action<ServiceInvocationPipelineItemFactoryArguments, IList<ITemporalClientInterceptor>> ClientInterceptorFactory,
+                                ILoggerFactory LoggerFactory)
     {
 
         #region Static APIs
@@ -60,7 +63,10 @@ namespace Temporal.WorkflowClient
         /// </summary>
         public static TemporalClientConfiguration ForLocalHost()
         {
-            return new TemporalClientConfiguration();
+            return new TemporalClientConfiguration
+            {
+                LoggerFactory = NullLoggerFactory.Instance,
+            };
         }
 
         /// <summary>
@@ -78,7 +84,8 @@ namespace Temporal.WorkflowClient
                                                                                             clientCertPemFilePath,
                                                                                             clientKeyPemFilePath),
                 Namespace = @namespace,
-                ClientIdentityMarker = null
+                ClientIdentityMarker = null,
+                LoggerFactory = NullLoggerFactory.Instance,
             };
         }
 
@@ -100,7 +107,8 @@ namespace Temporal.WorkflowClient
             {
                 ServiceConnection = TemporalClientConfiguration.Connection.ForTemporalCloud(@namespace, clientCert),
                 Namespace = @namespace,
-                ClientIdentityMarker = null
+                ClientIdentityMarker = null,
+                LoggerFactory = NullLoggerFactory.Instance,
             };
         }
 #endif
@@ -152,7 +160,8 @@ namespace Temporal.WorkflowClient
                    ClientIdentityMarker: null,
                    PayloadConverterFactory: null,
                    PayloadCodecFactory: null,
-                   ClientInterceptorFactory: null)
+                   ClientInterceptorFactory: null,
+                   LoggerFactory: NullLoggerFactory.Instance)
         {
         }
     }

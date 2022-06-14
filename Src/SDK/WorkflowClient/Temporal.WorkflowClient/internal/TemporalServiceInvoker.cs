@@ -6,6 +6,7 @@ using Temporal.Util;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Microsoft.Extensions.Logging;
 using Temporal.Api.Common.V1;
 using Temporal.Api.Enums.V1;
 using Temporal.Api.History.V1;
@@ -27,11 +28,13 @@ namespace Temporal.WorkflowClient
         private readonly string _clientIdentityMarker;
         private readonly IPayloadConverter _payloadConverter;
         private readonly IPayloadCodec _payloadCodec;
+        private readonly ILogger<TemporalServiceInvoker> _logger;
 
         public TemporalServiceInvoker(WorkflowServiceClientEnvelope grpcClientEnvelope,
                                       string clientIdentityMarker,
                                       IPayloadConverter payloadConverter,
-                                      IPayloadCodec payloadCodec)
+                                      IPayloadCodec payloadCodec,
+                                      ILogger<TemporalServiceInvoker> logger)
         {
             Validate.NotNull(grpcClientEnvelope);
             Validate.NotNullOrWhitespace(clientIdentityMarker);
@@ -44,6 +47,7 @@ namespace Temporal.WorkflowClient
             _clientIdentityMarker = clientIdentityMarker;
             _payloadConverter = payloadConverter;
             _payloadCodec = payloadCodec;
+            _logger = logger;
         }
 
         public void Init(ITemporalClientInterceptor _)
