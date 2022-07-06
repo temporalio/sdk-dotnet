@@ -21,6 +21,10 @@
 
 * [Workflows, -Chains and -Runs](./Articles/Workflow_Chains_and_Runs.md).
 
+### Specifications
+
+* [High-level SDK Specification](./Articles/Temporal_SDK_for-DotNet_High-Level_Spec.md).
+
 ## Other resources
 
 * .NET SDK Repo: <https://github.com/temporalio/sdk-dotnet>.

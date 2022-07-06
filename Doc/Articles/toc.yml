@@ -22,4 +22,9 @@
   href: index.md
   items:
     - name: Workflows, -Chains and -Runs
-      href: Workflow_Chains_and_Runs.md      
+      href: Workflow_Chains_and_Runs.md
+- name: Specifications
+  href: index.md
+  items:
+    - name: High-level SDK Specification
+      href: Temporal_SDK_for-DotNet_High-Level_Spec.md      

@@ -10,3 +10,7 @@
 ## Temporal Data Model
 
 * [Workflows, -Chains and -Runs](./Workflow_Chains_and_Runs.md).
+
+## Specifications
+
+* [High-level SDK Specification](./Temporal_SDK_for-DotNet_High-Level_Spec.md).
