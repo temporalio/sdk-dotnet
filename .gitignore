@@ -1,0 +1,7 @@
+
+# Build results
+bin/
+obj/
+/src/Temporalio/Bridge/target
+/src/Temporalio/Bridge/Cargo.lock
+/.vs

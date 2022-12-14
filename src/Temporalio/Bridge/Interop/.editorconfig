@@ -1,0 +1,4 @@
+
+[*.cs]
+generated_code = true
+dotnet_diagnostic.CS0649.severity = none

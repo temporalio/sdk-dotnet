@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net462</TargetFrameworks>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- https://github.com/dotnet/roslyn/issues/41640#issuecomment-985780130 -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.21.9" />
+    <PackageReference Include="Castle.Core" Version="5.1.0" />
+  </ItemGroup>
+
+  <!-- Build/copy debug/release bridge DLL -->
+  
+  <Target Name="CargoBuildDebug" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Debug'">
+    <Exec Command="cargo build" WorkingDirectory="Bridge"/>
+  </Target>
+  <Target Name="CopyBridgeDLLDebug" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Debug'">
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+      <!-- Support different platforms -->
+      <Content Include="Bridge/target/debug/temporal_sdk_bridge.dll">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <Link>temporal_sdk_bridge.dll</Link>
+        <PublishState>Included</PublishState>
+      </Content>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="cargo build --release" WorkingDirectory="Bridge"/>
+  </Target>
+  <Target Name="CopyBridgeDLLRelease" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="cargo build --release" WorkingDirectory="Bridge"/>
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+      <Content Include="Bridge/target/release/temporal_sdk_bridge.dll">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <Link>temporal_sdk_bridge.dll</Link>
+        <PublishState>Included</PublishState>
+      </Content>
+    </ItemGroup>
+  </Target>
+
+</Project>

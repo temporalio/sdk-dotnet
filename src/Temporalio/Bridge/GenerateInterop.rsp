@@ -1,0 +1,12 @@
+--config
+compatible-codegen
+--with-access-specifier
+*=internal
+--file
+src/Temporalio/Bridge/include/temporal-sdk-bridge.h
+--namespace
+Temporalio.Bridge.Interop
+--libraryPath
+temporal_sdk_bridge
+--output
+src/Temporalio/Bridge/Interop/Interop.cs

@@ -1,0 +1,35 @@
+[package]
+name = "temporal-sdk-bridge"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "temporal_sdk_bridge"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+anyhow = "1.0"
+futures = "0.3"
+libc = "0.2"
+log = "0.4"
+parking_lot = "0.12"
+prost = "0.11"
+prost-types = "0.11"
+temporal-client = { version = "0.1.0", path = "./sdk-core/client" }
+temporal-sdk-core = { version = "0.1.0", path = "./sdk-core/core" }
+temporal-sdk-core-api = { version = "0.1.0", path = "./sdk-core/core-api" }
+temporal-sdk-core-protos = { version = "0.1.0", path = "./sdk-core/sdk-core-protos" }
+tokio = "1.15"
+tokio-stream = "0.1"
+tokio-util = "0.7"
+tonic = "0.8"
+url = "2.2"
+
+[profile.release]
+opt-level = 3
+debug = false
+lto = true
+incremental = false
+
+[build-dependencies]
+cbindgen = "0.24"
