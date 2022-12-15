@@ -77,8 +77,9 @@ Install [docfx](https://dotnet.github.io/docfx/), then run:
 
 TODO:
 
-* Fix generated api doc (see TODO on index.md there)
-* Fill out XML api doc
+* Fix generated api doc
+  * Specifically make `Temporalio.Api` have children collapsed by default
+  * Switch/update template to full width
 * Confirm we can detect unused imports
 * Build out CI
 * Formatting/style guide:

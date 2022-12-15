@@ -1,9 +1,9 @@
 
-# Home Heading
+# Temporal .NET SDK
 
-Hello!
+See:
 
-TODO:
-* Fill this out
-* Fill out api/index.md
-* Move API TOC elsewhere or hide it
+* [GitHub Repository](https://github.com/temporalio/sdk-dotnet)
+* Application Development Guide (TODO)
+* [API Documentation](api)
+* Samples (TODO)
