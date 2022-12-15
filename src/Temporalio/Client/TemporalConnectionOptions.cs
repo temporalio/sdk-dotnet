@@ -3,38 +3,74 @@ using System.Collections.Generic;
 
 namespace Temporalio.Client
 {
-    public class TemporalConnectionOptions
+    /// <summary>
+    /// Options for <see cref="TemporalConnection.ConnectAsync" />.
+    /// <see cref="TemporalConnectionOptions.TargetHost" /> is required.
+    /// </summary>
+    public class TemporalConnectionOptions : ICloneable
     {
+        /// <summary>
+        /// Create default options.
+        /// </summary>
         public TemporalConnectionOptions() { }
 
+        /// <summary>
+        /// Create default options with a target host.
+        /// </summary>
+        /// <param name="targetHost">Target host to connect to.</param>
+        /// <seealso cref="TemporalConnectionOptions.TargetHost" />
         public TemporalConnectionOptions(string targetHost) : this()
         {
             this.TargetHost = targetHost;
         }
 
-        public TemporalConnectionOptions(TemporalConnectionOptions other)
-        {
-            TargetHost = other.TargetHost;
-            Runtime = other.Runtime;
-            Lazy = other.Lazy;
-            Metadata = other.Metadata;
-        }
-
+        /// <summary>
+        /// Gets or sets the Temporal server <c>host:port</c> to connect to.
+        /// </summary>
+        /// <remarks>
+        /// This is required for all connections.
+        /// </remarks>
         public string? TargetHost { get; set; }
 
+        /// <summary>
+        /// Gets or sets the TLS options for connection.
+        /// </summary>
+        /// <remarks>
+        /// This must be set, even to a default instance, to do any TLS connection.
+        /// </remarks>
         public TlsOptions? TlsOptions { get; set; }
 
+        /// <summary>
+        /// Gets or sets retry options for this connection.
+        /// </summary>
+        /// <remarks>
+        /// This only applies if the call is being retried, which by default is usually all
+        /// high-level client calls but no raw gRPC calls.
+        /// </remarks>
         public RpcRetryOptions? RpcRetryOptions { get; set; }
 
+        /// <summary>
+        /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
+        /// </summary>
+        /// <seealso cref="RpcOptions.Metadata" />
         public IEnumerable<KeyValuePair<string, string>>? RpcMetadata { get; set; }
 
+        /// <summary>
+        /// Gets or sets the identity for this connection.
+        /// </summary>
+        /// <remarks>
+        /// By default this is <c>pid@hostname</c>.
+        /// </remarks>
         public string? Identity { get; set; }
 
+        /// <summary>
+        /// Runtime for this connection.
+        /// </summary>
+        /// <remarks>
+        /// By default this uses <see cref="Runtime.Default" /> which is lazily created when first
+        /// needed.
+        /// </remarks>
         public Runtime? Runtime { get; set; }
-
-        public bool Lazy { get; set; } = false;
-
-        public IEnumerable<KeyValuePair<string, string>>? Metadata { get; set; } = null;
 
         internal void ParseTargetHost(out string? ip, out int? port)
         {
@@ -62,6 +98,15 @@ namespace Temporalio.Client
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Create a shallow copy of these options.
+        /// </summary>
+        /// <returns>A shallow copy of these options.</returns>
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }

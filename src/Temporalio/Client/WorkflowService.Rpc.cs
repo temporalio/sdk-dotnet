@@ -9,276 +9,606 @@ namespace Temporalio.Client
 {
     public abstract partial class WorkflowService
     {
+        /// <summary>
+        /// Invoke CountWorkflowExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<CountWorkflowExecutionsResponse> CountWorkflowExecutionsAsync(CountWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("CountWorkflowExecutions", req, CountWorkflowExecutionsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke CreateSchedule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<CreateScheduleResponse> CreateScheduleAsync(CreateScheduleRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("CreateSchedule", req, CreateScheduleResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DeleteSchedule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DeleteScheduleResponse> DeleteScheduleAsync(DeleteScheduleRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DeleteSchedule", req, DeleteScheduleResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DeleteWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DeleteWorkflowExecutionResponse> DeleteWorkflowExecutionAsync(DeleteWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DeleteWorkflowExecution", req, DeleteWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DeprecateNamespace.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DeprecateNamespaceResponse> DeprecateNamespaceAsync(DeprecateNamespaceRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DeprecateNamespace", req, DeprecateNamespaceResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DescribeBatchOperation.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DescribeBatchOperationResponse> DescribeBatchOperationAsync(DescribeBatchOperationRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DescribeBatchOperation", req, DescribeBatchOperationResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DescribeNamespace.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DescribeNamespaceResponse> DescribeNamespaceAsync(DescribeNamespaceRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DescribeNamespace", req, DescribeNamespaceResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DescribeSchedule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DescribeScheduleResponse> DescribeScheduleAsync(DescribeScheduleRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DescribeSchedule", req, DescribeScheduleResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DescribeTaskQueue.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DescribeTaskQueueResponse> DescribeTaskQueueAsync(DescribeTaskQueueRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DescribeTaskQueue", req, DescribeTaskQueueResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke DescribeWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<DescribeWorkflowExecutionResponse> DescribeWorkflowExecutionAsync(DescribeWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("DescribeWorkflowExecution", req, DescribeWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke GetClusterInfo.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<GetClusterInfoResponse> GetClusterInfoAsync(GetClusterInfoRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("GetClusterInfo", req, GetClusterInfoResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke GetSearchAttributes.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<GetSearchAttributesResponse> GetSearchAttributesAsync(GetSearchAttributesRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("GetSearchAttributes", req, GetSearchAttributesResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke GetSystemInfo.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<GetSystemInfoResponse> GetSystemInfoAsync(GetSystemInfoRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("GetSystemInfo", req, GetSystemInfoResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke GetWorkerBuildIdOrdering.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<GetWorkerBuildIdOrderingResponse> GetWorkerBuildIdOrderingAsync(GetWorkerBuildIdOrderingRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("GetWorkerBuildIdOrdering", req, GetWorkerBuildIdOrderingResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke GetWorkflowExecutionHistory.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<GetWorkflowExecutionHistoryResponse> GetWorkflowExecutionHistoryAsync(GetWorkflowExecutionHistoryRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("GetWorkflowExecutionHistory", req, GetWorkflowExecutionHistoryResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke GetWorkflowExecutionHistoryReverse.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<GetWorkflowExecutionHistoryReverseResponse> GetWorkflowExecutionHistoryReverseAsync(GetWorkflowExecutionHistoryReverseRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("GetWorkflowExecutionHistoryReverse", req, GetWorkflowExecutionHistoryReverseResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListArchivedWorkflowExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListArchivedWorkflowExecutionsResponse> ListArchivedWorkflowExecutionsAsync(ListArchivedWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListArchivedWorkflowExecutions", req, ListArchivedWorkflowExecutionsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListBatchOperations.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListBatchOperationsResponse> ListBatchOperationsAsync(ListBatchOperationsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListBatchOperations", req, ListBatchOperationsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListClosedWorkflowExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListClosedWorkflowExecutionsResponse> ListClosedWorkflowExecutionsAsync(ListClosedWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListClosedWorkflowExecutions", req, ListClosedWorkflowExecutionsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListNamespaces.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListNamespacesResponse> ListNamespacesAsync(ListNamespacesRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListNamespaces", req, ListNamespacesResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListOpenWorkflowExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListOpenWorkflowExecutionsResponse> ListOpenWorkflowExecutionsAsync(ListOpenWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListOpenWorkflowExecutions", req, ListOpenWorkflowExecutionsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListScheduleMatchingTimes.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListScheduleMatchingTimesResponse> ListScheduleMatchingTimesAsync(ListScheduleMatchingTimesRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListScheduleMatchingTimes", req, ListScheduleMatchingTimesResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListSchedules.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListSchedulesResponse> ListSchedulesAsync(ListSchedulesRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListSchedules", req, ListSchedulesResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListTaskQueuePartitions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListTaskQueuePartitionsResponse> ListTaskQueuePartitionsAsync(ListTaskQueuePartitionsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListTaskQueuePartitions", req, ListTaskQueuePartitionsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ListWorkflowExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ListWorkflowExecutionsResponse> ListWorkflowExecutionsAsync(ListWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListWorkflowExecutions", req, ListWorkflowExecutionsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke PatchSchedule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<PatchScheduleResponse> PatchScheduleAsync(PatchScheduleRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("PatchSchedule", req, PatchScheduleResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke PollActivityTaskQueue.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<PollActivityTaskQueueResponse> PollActivityTaskQueueAsync(PollActivityTaskQueueRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("PollActivityTaskQueue", req, PollActivityTaskQueueResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke PollWorkflowTaskQueue.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<PollWorkflowTaskQueueResponse> PollWorkflowTaskQueueAsync(PollWorkflowTaskQueueRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("PollWorkflowTaskQueue", req, PollWorkflowTaskQueueResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke QueryWorkflow.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<QueryWorkflowResponse> QueryWorkflowAsync(QueryWorkflowRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("QueryWorkflow", req, QueryWorkflowResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RecordActivityTaskHeartbeat.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RecordActivityTaskHeartbeatResponse> RecordActivityTaskHeartbeatAsync(RecordActivityTaskHeartbeatRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RecordActivityTaskHeartbeat", req, RecordActivityTaskHeartbeatResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RecordActivityTaskHeartbeatById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RecordActivityTaskHeartbeatByIdResponse> RecordActivityTaskHeartbeatByIdAsync(RecordActivityTaskHeartbeatByIdRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RecordActivityTaskHeartbeatById", req, RecordActivityTaskHeartbeatByIdResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RegisterNamespace.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RegisterNamespaceResponse> RegisterNamespaceAsync(RegisterNamespaceRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RegisterNamespace", req, RegisterNamespaceResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RequestCancelWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RequestCancelWorkflowExecutionResponse> RequestCancelWorkflowExecutionAsync(RequestCancelWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RequestCancelWorkflowExecution", req, RequestCancelWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ResetStickyTaskQueue.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ResetStickyTaskQueueResponse> ResetStickyTaskQueueAsync(ResetStickyTaskQueueRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ResetStickyTaskQueue", req, ResetStickyTaskQueueResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ResetWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ResetWorkflowExecutionResponse> ResetWorkflowExecutionAsync(ResetWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ResetWorkflowExecution", req, ResetWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondActivityTaskCanceled.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondActivityTaskCanceledResponse> RespondActivityTaskCanceledAsync(RespondActivityTaskCanceledRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondActivityTaskCanceled", req, RespondActivityTaskCanceledResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondActivityTaskCanceledById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondActivityTaskCanceledByIdResponse> RespondActivityTaskCanceledByIdAsync(RespondActivityTaskCanceledByIdRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondActivityTaskCanceledById", req, RespondActivityTaskCanceledByIdResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondActivityTaskCompleted.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondActivityTaskCompletedResponse> RespondActivityTaskCompletedAsync(RespondActivityTaskCompletedRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondActivityTaskCompleted", req, RespondActivityTaskCompletedResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondActivityTaskCompletedById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondActivityTaskCompletedByIdResponse> RespondActivityTaskCompletedByIdAsync(RespondActivityTaskCompletedByIdRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondActivityTaskCompletedById", req, RespondActivityTaskCompletedByIdResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondActivityTaskFailed.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondActivityTaskFailedResponse> RespondActivityTaskFailedAsync(RespondActivityTaskFailedRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondActivityTaskFailed", req, RespondActivityTaskFailedResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondActivityTaskFailedById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondActivityTaskFailedByIdResponse> RespondActivityTaskFailedByIdAsync(RespondActivityTaskFailedByIdRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondActivityTaskFailedById", req, RespondActivityTaskFailedByIdResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondQueryTaskCompleted.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondQueryTaskCompletedResponse> RespondQueryTaskCompletedAsync(RespondQueryTaskCompletedRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondQueryTaskCompleted", req, RespondQueryTaskCompletedResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondWorkflowTaskCompleted.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondWorkflowTaskCompletedResponse> RespondWorkflowTaskCompletedAsync(RespondWorkflowTaskCompletedRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondWorkflowTaskCompleted", req, RespondWorkflowTaskCompletedResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke RespondWorkflowTaskFailed.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<RespondWorkflowTaskFailedResponse> RespondWorkflowTaskFailedAsync(RespondWorkflowTaskFailedRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RespondWorkflowTaskFailed", req, RespondWorkflowTaskFailedResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke ScanWorkflowExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<ScanWorkflowExecutionsResponse> ScanWorkflowExecutionsAsync(ScanWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ScanWorkflowExecutions", req, ScanWorkflowExecutionsResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke SignalWithStartWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<SignalWithStartWorkflowExecutionResponse> SignalWithStartWorkflowExecutionAsync(SignalWithStartWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("SignalWithStartWorkflowExecution", req, SignalWithStartWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke SignalWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<SignalWorkflowExecutionResponse> SignalWorkflowExecutionAsync(SignalWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("SignalWorkflowExecution", req, SignalWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke StartBatchOperation.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<StartBatchOperationResponse> StartBatchOperationAsync(StartBatchOperationRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("StartBatchOperation", req, StartBatchOperationResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke StartWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<StartWorkflowExecutionResponse> StartWorkflowExecutionAsync(StartWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("StartWorkflowExecution", req, StartWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke StopBatchOperation.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<StopBatchOperationResponse> StopBatchOperationAsync(StopBatchOperationRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("StopBatchOperation", req, StopBatchOperationResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke TerminateWorkflowExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<TerminateWorkflowExecutionResponse> TerminateWorkflowExecutionAsync(TerminateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("TerminateWorkflowExecution", req, TerminateWorkflowExecutionResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke UpdateNamespace.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<UpdateNamespaceResponse> UpdateNamespaceAsync(UpdateNamespaceRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("UpdateNamespace", req, UpdateNamespaceResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke UpdateSchedule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<UpdateScheduleResponse> UpdateScheduleAsync(UpdateScheduleRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("UpdateSchedule", req, UpdateScheduleResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke UpdateWorkerBuildIdOrdering.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<UpdateWorkerBuildIdOrderingResponse> UpdateWorkerBuildIdOrderingAsync(UpdateWorkerBuildIdOrderingRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("UpdateWorkerBuildIdOrdering", req, UpdateWorkerBuildIdOrderingResponse.Parser, options);
         }
 
+        /// <summary>
+        /// Invoke UpdateWorkflow.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
         public async Task<UpdateWorkflowResponse> UpdateWorkflowAsync(UpdateWorkflowRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("UpdateWorkflow", req, UpdateWorkflowResponse.Parser, options);

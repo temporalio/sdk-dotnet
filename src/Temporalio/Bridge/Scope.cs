@@ -87,8 +87,8 @@ namespace Temporalio.Bridge
                     handle.Free();
                 }
             }
-            // This keep alive does nothing obviously, but it's good documentation to
-            // understand the purpose of this separate dispose call
+            // This keep alive does nothing obviously, but it's good documentation to understand the
+            // purpose of this separate dispose call
             GC.KeepAlive(toKeepAlive);
             GC.SuppressFinalize(this);
         }

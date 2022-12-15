@@ -5,71 +5,55 @@ using Google.Protobuf;
 
 namespace Temporalio.Client
 {
-    public class TemporalConnection : IBridgeClientProvider
+    /// <summary>
+    /// Connection to Temporal.
+    /// </summary>
+    public sealed class TemporalConnection : ITemporalConnection
     {
+        /// <summary>
+        /// Connect to Temporal.
+        /// </summary>
+        /// <param name="options">Options for connecting.</param>
+        /// <returns>The established connection.</returns>
         public static async Task<TemporalConnection> ConnectAsync(TemporalConnectionOptions options)
         {
-            var conn = new TemporalConnection(options, true);
-            // Ask for the value to force attempted connect
-            if (!options.Lazy)
-            {
-                await conn.client.Value;
-            }
-            return conn;
+            var runtime = options.Runtime ?? Runtime.Default;
+            var client = await Bridge.Client.ConnectAsync(runtime.runtime, options);
+            return new TemporalConnection(client);
         }
 
-        private readonly Lazy<Task<Bridge.Client>> client;
+        private readonly Bridge.Client client;
 
-        public TemporalConnection(TemporalConnectionOptions options) : this(options, false) { }
-
-        private TemporalConnection(TemporalConnectionOptions options, bool allowNonLazy)
+        private TemporalConnection(Bridge.Client client)
         {
-            if (!allowNonLazy && !options.Lazy)
-            {
-                throw new ArgumentException(
-                    "Option must have lazy as true if instantiating directly, otherwise use 'Connect'"
-                );
-            }
-            var runtime = options.Runtime ?? Runtime.Default;
-            // TODO(cretz): TLS
-            if (options.TargetHost == null)
-            {
-                throw new ArgumentException("TargetHost is required");
-            }
-            else if (options.TargetHost.Contains("://"))
-            {
-                throw new ArgumentException("TargetHost cannot have ://");
-            }
-            var targetUrl = $"http://{options.TargetHost}";
-
-            // Default thread safety of "only one can initialize/publish" is
-            // what we want
-            client = new Lazy<Task<Bridge.Client>>(
-                () =>
-                    Task.Factory
-                        .StartNew(
-                            async () => await Bridge.Client.ConnectAsync(runtime.runtime, options)
-                        )
-                        .Unwrap()
-            );
+            this.client = client;
             WorkflowService = new WorkflowService.Impl(this);
             OperatorService = new OperatorService.Impl(this);
             TestService = new TestService.Impl(this);
         }
 
+        /// <inheritdoc />
         public WorkflowService WorkflowService { get; private init; }
+
+        /// <inheritdoc />
         public OperatorService OperatorService { get; private init; }
+
+        /// <inheritdoc />
         public TestService TestService { get; private init; }
 
-        public Task<bool> CheckHealthAsync(
-            RpcService service = RpcService.Workflow,
-            RpcOptions? options = null
-        )
+        /// <summary>
+        /// Check health for the given service type.
+        /// </summary>
+        /// <param name="service">Service type to check health for. Defaults to
+        /// <see cref="TemporalConnection.WorkflowService" /></param>
+        /// <param name="options">RPC options for the check call.</param>
+        /// <returns>True if healthy, false otherwise.</returns>
+        public Task<bool> CheckHealthAsync(RpcService? service = null, RpcOptions? options = null)
         {
             throw new NotImplementedException();
         }
 
-        internal protected async Task<T> InvokeRpcAsync<T>(
+        internal async Task<T> InvokeRpcAsync<T>(
             RpcService service,
             string rpc,
             IMessage req,
@@ -77,9 +61,8 @@ namespace Temporalio.Client
             RpcOptions? options = null
         ) where T : IMessage<T>
         {
-            var client = await this.client.Value;
             return await client.Call(
-                (Bridge.Interop.RpcService)service,
+                service.Service,
                 rpc,
                 req,
                 resp,
@@ -90,17 +73,7 @@ namespace Temporalio.Client
             );
         }
 
-        public async Task<SafeHandle> ConnectedBridgeClientAsync()
-        {
-            return await this.client.Value;
-        }
-
-        public enum RpcService
-        {
-            Workflow = 1,
-            Operator,
-            Test,
-            Health,
-        }
+        /// <inheritdoc />
+        public SafeHandle BridgeClient => this.client;
     }
 }

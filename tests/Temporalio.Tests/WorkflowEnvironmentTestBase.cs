@@ -14,5 +14,5 @@ public abstract class WorkflowEnvironmentTestBase
         this.env = env;
     }
 
-    protected Temporalio.Client.TemporalClient Client => env.Client;
+    protected Temporalio.Client.ITemporalClient Client => env.Client;
 }

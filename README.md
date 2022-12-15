@@ -81,3 +81,13 @@ TODO:
 * Fill out XML api doc
 * Confirm we can detect unused imports
 * Build out CI
+* Formatting/style guide:
+  * Line len 100 max on everything where reasonable
+  * Rules for options classes
+    * Shallow-copyable via clone
+    * Empty constructor and constructor with required params
+    * TODO(cretz): Validation? Probably don't want attributes?
+  * Rules for triple-slash docs
+    * `<summary>` and `<remarks>` tags and end tags are on their own line
+    * Although annoying, every param and returns is docd. Can omit return on untyped `Task`.
+    * Punctuation on all. Full sentences not required.

@@ -15,8 +15,8 @@ namespace Temporalio.Bridge
                 var options = new Interop.RuntimeOptions();
                 var res = Interop.Methods.runtime_new(&options);
                 GC.KeepAlive(options);
-                // If it failed, copy byte array, free runtime and byte array.
-                // Otherwise just return runtime.
+                // If it failed, copy byte array, free runtime and byte array. Otherwise just return
+                // runtime.
                 if (res.fail != null)
                 {
                     var message = ByteArrayRef.StrictUTF8.GetString(

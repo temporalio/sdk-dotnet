@@ -1,10 +1,19 @@
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Temporalio.Client
 {
+    /// <summary>
+    /// Provides a handle to the underlying bridge for use internally.
+    /// </summary>
+    /// <remarks>
+    /// Developers should not implement this directly. It is already implemented by
+    /// <see cref="ITemporalConnection" />.
+    /// </remarks>
     public interface IBridgeClientProvider
     {
-        public Task<SafeHandle> ConnectedBridgeClientAsync();
+        /// <summary>
+        /// Gets the handle to the connected bridge.
+        /// </summary>
+        public SafeHandle BridgeClient { get; }
     }
 }

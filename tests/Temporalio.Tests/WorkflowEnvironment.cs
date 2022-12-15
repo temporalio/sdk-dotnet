@@ -21,6 +21,6 @@ public class WorkflowEnvironment : IAsyncLifetime
         }
     }
 
-    public Temporalio.Client.TemporalClient Client =>
+    public Temporalio.Client.ITemporalClient Client =>
         env?.Client ?? throw new InvalidOperationException("Environment not created");
 }

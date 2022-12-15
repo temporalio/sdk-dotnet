@@ -28,7 +28,7 @@ namespace Temporalio.Bridge
                 target_url = scope.ByteArray($"http://{options.TargetHost}"),
                 client_name = ClientName.Ref,
                 client_version = ClientVersion.Ref,
-                metadata = scope.Metadata(options.Metadata),
+                metadata = scope.Metadata(options.RpcMetadata),
                 identity = scope.ByteArray(
                     options.Identity
                         ?? System.Diagnostics.Process.GetCurrentProcess().Id

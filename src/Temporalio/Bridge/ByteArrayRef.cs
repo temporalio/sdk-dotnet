@@ -33,8 +33,7 @@ namespace Temporalio.Bridge
             {
                 foreach (var pair in metadata)
                 {
-                    // If either have a newline, we error since it would make
-                    // an invalid set
+                    // If either have a newline, we error since it would make an invalid set
                     if (pair.Key.IndexOf('\n') >= 0 || pair.Value.IndexOf('\n') >= 0)
                     {
                         throw new ArgumentException("Metadata keys/values cannot have newlines");
@@ -63,8 +62,7 @@ namespace Temporalio.Bridge
             {
                 foreach (var value in values)
                 {
-                    // If has a newline, we error since it would make an
-                    // invalid set
+                    // If has a newline, we error since it would make an invalid set
                     if (value.IndexOf('\n') >= 0)
                     {
                         throw new ArgumentException("Value cannot have newline");

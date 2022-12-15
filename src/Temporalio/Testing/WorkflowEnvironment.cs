@@ -5,12 +5,27 @@ using Temporalio.Client;
 
 namespace Temporalio.Testing
 {
+    /// <summary>
+    /// Workflow environment for testing with Temporal.
+    /// </summary>
+    /// <remarks>
+    /// In modern versions of .NET, this implements <see cref="IAsyncDisposable" /> which means it
+    /// can be used in an <c>await using</c> block.
+    /// </remarks>
 #if NETCOREAPP3_0_OR_GREATER
     public class WorkflowEnvironment : IAsyncDisposable
 #else
     public class WorkflowEnvironment
 #endif
     {
+        /// <summary>
+        /// Start a local test server with full Temporal capabilities but no time skipping.
+        /// </summary>
+        /// <param name="options">Options for the server.</param>
+        /// <returns>The started environment.</returns>
+        /// <remarks>
+        /// By default this lazily downloads a server from the internet if not already present.
+        /// </remarks>
         public static async Task<WorkflowEnvironment> StartLocalAsync(
             WorkflowEnvironmentStartLocalOptions? options = null
         )
@@ -24,6 +39,14 @@ namespace Temporalio.Testing
             return await StartEphemeralAsync(server, options);
         }
 
+        /// <summary>
+        /// Start a local test server with time skipping but limited Temporal capabilities.
+        /// </summary>
+        /// <param name="options">Options for the server.</param>
+        /// <returns>The started environment.</returns>
+        /// <remarks>
+        /// By default this lazily downloads a server from the internet if not already present.
+        /// </remarks>
         public static async Task<WorkflowEnvironment> StartTimeSkippingAsync(
             WorkflowEnvironmentStartTimeSkippingOptions? options = null
         )
@@ -42,15 +65,9 @@ namespace Temporalio.Testing
             TemporalClientConnectOptions options
         )
         {
-            // Cannot be lazy
-            if (options.Lazy)
-            {
-                throw new InvalidOperationException(
-                    "Workflow environment cannot have Lazy option as true"
-                );
-            }
             // Copy the options, replacing target
-            options = new(options) { TargetHost = server.Target };
+            options = (TemporalClientConnectOptions)options.Clone();
+            options.TargetHost = server.Target;
             // If we can't connect, shutdown the server before returning
             try
             {
@@ -73,20 +90,50 @@ namespace Temporalio.Testing
             }
         }
 
-        public WorkflowEnvironment(TemporalClient client)
+        /// <summary>
+        /// Create a non-time-skipping workflow environment from an existing client.
+        /// </summary>
+        /// <param name="client">Client to use for this environment.</param>
+        public WorkflowEnvironment(ITemporalClient client)
         {
             Client = client;
         }
 
-        public TemporalClient Client { get; protected init; }
+        /// <summary>
+        /// Gets the client for this workflow environment.
+        /// </summary>
+        public ITemporalClient Client { get; protected init; }
 
+        /// <summary>
+        /// Whether this environment supports time skipping.
+        /// </summary>
         public virtual bool SupportsTimeSkipping => false;
 
+        /// <summary>
+        /// Sleep in this environment.
+        /// </summary>
+        /// <param name="millisecondsDelay">Number of milliseconds to sleep.</param>
+        /// <param name="cancellationToken">If present, cancellation token for the sleep.</param>
+        /// <remarks>
+        /// In non-time-skipping environments, this is just
+        /// <see cref="Task.Delay(int, CancellationToken)" />, but in time-skipping environments
+        /// this may simply fast forward time.
+        /// </remarks>
         public Task DelayAsync(int millisecondsDelay, CancellationToken? cancellationToken = null)
         {
             return DelayAsync(TimeSpan.FromMilliseconds(millisecondsDelay), cancellationToken);
         }
 
+        /// <summary>
+        /// Sleep in this environment.
+        /// </summary>
+        /// <param name="delay">Amount of time to sleep.</param>
+        /// <param name="cancellationToken">If present, cancellation token for the sleep.</param>
+        /// <remarks>
+        /// In non-time-skipping environments, this is just
+        /// <see cref="Task.Delay(TimeSpan, CancellationToken)" />, but in time-skipping
+        /// environments this may simply fast forward time.
+        /// </remarks>
         public virtual Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken = null)
         {
             if (cancellationToken == null)
@@ -96,22 +143,44 @@ namespace Temporalio.Testing
             return Task.Delay(delay, cancellationToken.Value);
         }
 
+        /// <summary>
+        /// Get the current time for the environment.
+        /// </summary>
+        /// <returns>The current time for the environment</returns>
+        /// <remarks>
+        /// For non-time-skipping environments this is just <see cref="DateTime.Now" />, but in
+        /// time-skipping environments this may be a different time.
+        /// </remarks>
         public virtual Task<DateTime> GetCurrentTimeAsync()
         {
             return Task.FromResult(DateTime.Now);
         }
 
+        /// <summary>
+        /// Disable automatic time skipping.
+        /// </summary>
+        /// <returns>The disposable that must be disposed to re-enable auto time skipping.</returns>
+        /// <remarks>
+        /// This has no effect if time skipping is already disabled (which is always the case in
+        /// non-time-skipping environments).
+        /// </remarks>
         public virtual IDisposable AutoTimeSkippingDisabled()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Shutdown this server.
+        /// </summary>
         public virtual Task ShutdownAsync()
         {
             return Task.CompletedTask;
         }
 
 #if NETCOREAPP3_0_OR_GREATER
+        /// <summary>
+        /// Shutdown and dispose this server.
+        /// </summary>
         public async ValueTask DisposeAsync()
         {
             await ShutdownAsync();
@@ -149,7 +218,7 @@ namespace Temporalio.Testing
                     };
                     await Client.Connection.TestService.UnlockTimeSkippingWithSleepAsync(
                         req,
-                        new(cancellationToken: cancellationToken)
+                        new RpcOptions { CancellationToken = cancellationToken }
                     );
                 }
             }

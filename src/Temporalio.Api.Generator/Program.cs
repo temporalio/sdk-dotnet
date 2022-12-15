@@ -131,6 +131,13 @@ static string GenerateServiceRPCSource(
         {
             resp = call + "Response";
         }
+        // TODO(cretz): Copy docs from gRPC service?
+        code += "\n        /// <summary>";
+        code += $"\n        /// Invoke {call}.";
+        code += "\n        /// </summary>";
+        code += "\n        /// <param name=\"req\">Request for the call.</param>";
+        code += "\n        /// <param name=\"options\">Optional RPC options.</param>";
+        code += "\n        /// <returns>RPC response</returns>";
         code +=
             $"\n        public async Task<{resp}> {call}Async({req} req, RpcOptions? options = null)\n";
         code += "        {\n";

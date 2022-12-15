@@ -1,6 +1,5 @@
 namespace Temporalio.Tests.Client;
 
-using System;
 using Xunit;
 using Xunit.Abstractions;
 
