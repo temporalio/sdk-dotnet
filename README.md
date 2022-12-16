@@ -85,7 +85,7 @@ TODO:
 * Formatting/style guide:
   * Line len 100 max on everything where reasonable
   * Rules for options classes
-    * Shallow-copyable via clone
+    * Shallow-copyable via virtual clone
     * Empty constructor and constructor with required params
     * TODO(cretz): Validation? Probably don't want attributes?
   * Rules for triple-slash docs

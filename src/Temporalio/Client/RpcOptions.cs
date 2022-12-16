@@ -39,7 +39,8 @@ namespace Temporalio.Client
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public object Clone()
+        /// <remarks>Does not create copies of metadata or cancellation token.</remarks>
+        public virtual object Clone()
         {
             return this.MemberwiseClone();
         }

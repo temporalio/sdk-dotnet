@@ -9,8 +9,8 @@ namespace Temporalio.Testing
     /// Workflow environment for testing with Temporal.
     /// </summary>
     /// <remarks>
-    /// In modern versions of .NET, this implements <see cref="IAsyncDisposable" /> which means it
-    /// can be used in an <c>await using</c> block.
+    /// In modern versions of .NET, this implements <c>IAsyncDisposable</c> which means it can be
+    /// used in an <c>await using</c> block.
     /// </remarks>
 #if NETCOREAPP3_0_OR_GREATER
     public class WorkflowEnvironment : IAsyncDisposable

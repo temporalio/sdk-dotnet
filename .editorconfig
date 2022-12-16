@@ -5,7 +5,6 @@
 
 # Warn on unused imports
 dotnet_diagnostic.IDE0005.severity = warning
-dotnet_diagnostic.IDE0005.severity = warning
 
 ###
 

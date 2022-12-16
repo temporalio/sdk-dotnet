@@ -1,9 +1,11 @@
+using System;
+
 namespace Temporalio.Client
 {
     /// <summary>
     /// TLS options for Temporal connections.
     /// </summary>
-    public class TlsOptions
+    public class TlsOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the PEM-formatted root CA certificate to validate the server certificate
@@ -31,5 +33,15 @@ namespace Temporalio.Client
         /// This must be combined with <see cref="TlsOptions.ClientCert" />.
         /// </remarks>
         public byte[]? ClientPrivateKey { get; set; }
+
+        /// <summary>
+        /// Create a shallow copy of these options.
+        /// </summary>
+        /// <returns>A shallow copy of these options.</returns>
+        /// <remarks>Does not create copies of byte arrays.</remarks>
+        public virtual object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

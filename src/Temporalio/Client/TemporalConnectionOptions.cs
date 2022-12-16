@@ -104,9 +104,19 @@ namespace Temporalio.Client
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public object Clone()
+        /// <remarks>Does not create copies of RPC metadata or runtime.</remarks>
+        public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            var copy = (TemporalConnectionOptions)this.MemberwiseClone();
+            if (TlsOptions != null)
+            {
+                copy.TlsOptions = (TlsOptions)TlsOptions.Clone();
+            }
+            if (RpcRetryOptions != null)
+            {
+                copy.RpcRetryOptions = (RpcRetryOptions)RpcRetryOptions.Clone();
+            }
+            return copy;
         }
     }
 }

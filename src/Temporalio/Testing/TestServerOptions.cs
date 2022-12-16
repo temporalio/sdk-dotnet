@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Temporalio.Testing
@@ -8,7 +9,7 @@ namespace Temporalio.Testing
     /// <remarks>
     /// <b>WARNING: This API is subject to change/removal</b>
     /// </remarks>
-    public class TestServerOptions
+    public class TestServerOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the existing executable path for the test server.
@@ -35,7 +36,8 @@ namespace Temporalio.Testing
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public object Clone()
+        /// <remarks>Does not create a copy of the extra args.</remarks>
+        public virtual object Clone()
         {
             return this.MemberwiseClone();
         }

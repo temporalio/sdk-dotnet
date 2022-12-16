@@ -5,7 +5,7 @@ namespace Temporalio.Client
     /// <summary>
     /// Retry options that can be set at the connection level to apply on calls that are retried.
     /// </summary>
-    public class RpcRetryOptions
+    public class RpcRetryOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the initial retry interval.
@@ -41,7 +41,7 @@ namespace Temporalio.Client
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public object Clone()
+        public virtual object Clone()
         {
             return this.MemberwiseClone();
         }

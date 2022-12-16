@@ -1,9 +1,11 @@
+using System;
+
 namespace Temporalio.Client
 {
     /// <summary>
     /// Options for a <see cref="TemporalClient" />.
     /// </summary>
-    public class TemporalClientOptions
+    public class TemporalClientOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the client namespace. Default is "default".
@@ -24,7 +26,7 @@ namespace Temporalio.Client
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public object Clone()
+        public virtual object Clone()
         {
             return this.MemberwiseClone();
         }
