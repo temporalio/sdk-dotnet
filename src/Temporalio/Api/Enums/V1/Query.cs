@@ -32,10 +32,10 @@ namespace Temporalio.Api.Enums.V1 {
             "X1VOU1BFQ0lGSUVEEAASHwobUVVFUllfUkVKRUNUX0NPTkRJVElPTl9OT05F",
             "EAESIwofUVVFUllfUkVKRUNUX0NPTkRJVElPTl9OT1RfT1BFThACEjAKLFFV",
             "RVJZX1JFSkVDVF9DT05ESVRJT05fTk9UX0NPTVBMRVRFRF9DTEVBTkxZEANC",
-            "gAEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIKUXVlcnlQcm90b1ABWiFn",
+            "ggEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIKUXVlcnlQcm90b1ABWiFn",
             "by50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlv",
-            "LkFwaS5FbnVtcy5WMeoCGFRlbXBvcmFsOjpBcGk6OkVudW1zOjpWMWIGcHJv",
-            "dG8z"));
+            "LkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.QueryResultType), typeof(global::Temporalio.Api.Enums.V1.QueryRejectCondition), }, null, null));

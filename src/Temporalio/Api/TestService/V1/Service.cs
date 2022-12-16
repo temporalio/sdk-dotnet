@@ -43,10 +43,10 @@ namespace Temporalio.Api.TestService.V1 {
             "Ki50ZW1wb3JhbC5hcGkudGVzdHNlcnZpY2UudjEuU2xlZXBSZXNwb25zZSIA",
             "El8KDkdldEN1cnJlbnRUaW1lEhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5GjMu",
             "dGVtcG9yYWwuYXBpLnRlc3RzZXJ2aWNlLnYxLkdldEN1cnJlbnRUaW1lUmVz",
-            "cG9uc2UiAEKgAQoeaW8udGVtcG9yYWwuYXBpLnRlc3RzZXJ2aWNlLnYxQgxT",
+            "cG9uc2UiAEKiAQoeaW8udGVtcG9yYWwuYXBpLnRlc3RzZXJ2aWNlLnYxQgxT",
             "ZXJ2aWNlUHJvdG9QAVotZ28udGVtcG9yYWwuaW8vYXBpL3Rlc3RzZXJ2aWNl",
             "L3YxO3Rlc3RzZXJ2aWNlqgIdVGVtcG9yYWxpby5BcGkuVGVzdFNlcnZpY2Uu",
-            "VjHqAh5UZW1wb3JhbDo6QXBpOjpUZXN0U2VydmljZTo6VjFiBnByb3RvMw=="));
+            "VjHqAiBUZW1wb3JhbGlvOjpBcGk6OlRlc3RTZXJ2aWNlOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.TestService.V1.RequestResponseReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, null));

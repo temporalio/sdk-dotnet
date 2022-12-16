@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cih0ZW1wb3JhbC9hcGkvZW51bXMvdjEvY29tbWFuZF90eXBlLnByb3RvEhV0",
-            "ZW1wb3JhbC5hcGkuZW51bXMudjEq8QUKC0NvbW1hbmRUeXBlEhwKGENPTU1B",
+            "ZW1wb3JhbC5hcGkuZW51bXMudjEqmgYKC0NvbW1hbmRUeXBlEhwKGENPTU1B",
             "TkRfVFlQRV9VTlNQRUNJRklFRBAAEicKI0NPTU1BTkRfVFlQRV9TQ0hFRFVM",
             "RV9BQ1RJVklUWV9UQVNLEAESLQopQ09NTUFORF9UWVBFX1JFUVVFU1RfQ0FO",
             "Q0VMX0FDVElWSVRZX1RBU0sQAhIcChhDT01NQU5EX1RZUEVfU1RBUlRfVElN",
@@ -42,10 +42,11 @@ namespace Temporalio.Api.Enums.V1 {
             "QVJDSF9BVFRSSUJVVEVTEA0SJwojQ09NTUFORF9UWVBFX0FDQ0VQVF9XT1JL",
             "RkxPV19VUERBVEUQDhIpCiVDT01NQU5EX1RZUEVfQ09NUExFVEVfV09SS0ZM",
             "T1dfVVBEQVRFEA8SKwonQ09NTUFORF9UWVBFX01PRElGWV9XT1JLRkxPV19Q",
-            "Uk9QRVJUSUVTEBBChgEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIQQ29t",
-            "bWFuZFR5cGVQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7",
-            "ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGFRlbXBvcmFsOjpB",
-            "cGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "Uk9QRVJUSUVTEBASJwojQ09NTUFORF9UWVBFX1JFSkVDVF9XT1JLRkxPV19V",
+            "UERBVEUQEUKIAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhBDb21tYW5k",
+            "VHlwZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
+            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
+            "OjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.CommandType), }, null, null));
@@ -82,6 +83,7 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("COMMAND_TYPE_COMPLETE_WORKFLOW_UPDATE")] CompleteWorkflowUpdate = 15,
     [pbr::OriginalName("COMMAND_TYPE_MODIFY_WORKFLOW_PROPERTIES")] ModifyWorkflowProperties = 16,
+    [pbr::OriginalName("COMMAND_TYPE_REJECT_WORKFLOW_UPDATE")] RejectWorkflowUpdate = 17,
   }
 
   #endregion

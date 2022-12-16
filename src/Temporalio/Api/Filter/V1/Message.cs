@@ -34,10 +34,10 @@ namespace Temporalio.Api.Filter.V1 {
             "b29nbGUucHJvdG9idWYuVGltZXN0YW1wQgSQ3x8BEjUKC2xhdGVzdF90aW1l",
             "GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIEkN8fASJOCgxT",
             "dGF0dXNGaWx0ZXISPgoGc3RhdHVzGAEgASgOMi4udGVtcG9yYWwuYXBpLmVu",
-            "dW1zLnYxLldvcmtmbG93RXhlY3V0aW9uU3RhdHVzQocBChlpby50ZW1wb3Jh",
+            "dW1zLnYxLldvcmtmbG93RXhlY3V0aW9uU3RhdHVzQokBChlpby50ZW1wb3Jh",
             "bC5hcGkuZmlsdGVyLnYxQgxNZXNzYWdlUHJvdG9QAVojZ28udGVtcG9yYWwu",
             "aW8vYXBpL2ZpbHRlci92MTtmaWx0ZXKqAhhUZW1wb3JhbGlvLkFwaS5GaWx0",
-            "ZXIuVjHqAhlUZW1wb3JhbDo6QXBpOjpGaWx0ZXI6OlYxYgZwcm90bzM="));
+            "ZXIuVjHqAhtUZW1wb3JhbGlvOjpBcGk6OkZpbHRlcjo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

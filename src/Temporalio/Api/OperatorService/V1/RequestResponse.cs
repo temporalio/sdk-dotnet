@@ -64,11 +64,11 @@ namespace Temporalio.Api.OperatorService.V1 {
             "c3Rlcl9uYW1lGAEgASgJEhIKCmNsdXN0ZXJfaWQYAiABKAkSDwoHYWRkcmVz",
             "cxgDIAEoCRIgChhpbml0aWFsX2ZhaWxvdmVyX3ZlcnNpb24YBCABKAMSGwoT",
             "aGlzdG9yeV9zaGFyZF9jb3VudBgFIAEoBRIdChVpc19jb25uZWN0aW9uX2Vu",
-            "YWJsZWQYBiABKAhCvAEKImlvLnRlbXBvcmFsLmFwaS5vcGVyYXRvcnNlcnZp",
+            "YWJsZWQYBiABKAhCvgEKImlvLnRlbXBvcmFsLmFwaS5vcGVyYXRvcnNlcnZp",
             "Y2UudjFCFFJlcXVlc3RSZXNwb25zZVByb3RvUAFaNWdvLnRlbXBvcmFsLmlv",
             "L2FwaS9vcGVyYXRvcnNlcnZpY2UvdjE7b3BlcmF0b3JzZXJ2aWNlqgIhVGVt",
-            "cG9yYWxpby5BcGkuT3BlcmF0b3JTZXJ2aWNlLlYx6gIiVGVtcG9yYWw6OkFw",
-            "aTo6T3BlcmF0b3JTZXJ2aWNlOjpWMWIGcHJvdG8z"));
+            "cG9yYWxpby5BcGkuT3BlcmF0b3JTZXJ2aWNlLlYx6gIkVGVtcG9yYWxpbzo6",
+            "QXBpOjpPcGVyYXRvclNlcnZpY2U6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

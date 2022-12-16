@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cih0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZmFpbGVkX2NhdXNlLnByb3RvEhV0",
-            "ZW1wb3JhbC5hcGkuZW51bXMudjEq2gwKF1dvcmtmbG93VGFza0ZhaWxlZENh",
+            "ZW1wb3JhbC5hcGkuZW51bXMudjEq6A4KF1dvcmtmbG93VGFza0ZhaWxlZENh",
             "dXNlEioKJldPUktGTE9XX1RBU0tfRkFJTEVEX0NBVVNFX1VOU1BFQ0lGSUVE",
             "EAASMAosV09SS0ZMT1dfVEFTS19GQUlMRURfQ0FVU0VfVU5IQU5ETEVEX0NP",
             "TU1BTkQQARI/CjtXT1JLRkxPV19UQVNLX0ZBSUxFRF9DQVVTRV9CQURfU0NI",
@@ -61,7 +61,13 @@ namespace Temporalio.Api.Enums.V1 {
             "SUxFRF9DQVVTRV9CQURfU0VBUkNIX0FUVFJJQlVURVMQFxI2CjJXT1JLRkxP",
             "V19UQVNLX0ZBSUxFRF9DQVVTRV9OT05fREVURVJNSU5JU1RJQ19FUlJPUhAY",
             "EkgKRFdPUktGTE9XX1RBU0tfRkFJTEVEX0NBVVNFX0JBRF9NT0RJRllfV09S",
-            "S0ZMT1dfUFJPUEVSVElFU19BVFRSSUJVVEVTEBkq8wEKJlN0YXJ0Q2hpbGRX",
+            "S0ZMT1dfUFJPUEVSVElFU19BVFRSSUJVVEVTEBkSRQpBV09SS0ZMT1dfVEFT",
+            "S19GQUlMRURfQ0FVU0VfUEVORElOR19DSElMRF9XT1JLRkxPV1NfTElNSVRf",
+            "RVhDRUVERUQQGhJACjxXT1JLRkxPV19UQVNLX0ZBSUxFRF9DQVVTRV9QRU5E",
+            "SU5HX0FDVElWSVRJRVNfTElNSVRfRVhDRUVERUQQGxI9CjlXT1JLRkxPV19U",
+            "QVNLX0ZBSUxFRF9DQVVTRV9QRU5ESU5HX1NJR05BTFNfTElNSVRfRVhDRUVE",
+            "RUQQHBJECkBXT1JLRkxPV19UQVNLX0ZBSUxFRF9DQVVTRV9QRU5ESU5HX1JF",
+            "UVVFU1RfQ0FOQ0VMX0xJTUlUX0VYQ0VFREVEEB0q8wEKJlN0YXJ0Q2hpbGRX",
             "b3JrZmxvd0V4ZWN1dGlvbkZhaWxlZENhdXNlEjsKN1NUQVJUX0NISUxEX1dP",
             "UktGTE9XX0VYRUNVVElPTl9GQUlMRURfQ0FVU0VfVU5TUEVDSUZJRUQQABJH",
             "CkNTVEFSVF9DSElMRF9XT1JLRkxPV19FWEVDVVRJT05fRkFJTEVEX0NBVVNF",
@@ -85,10 +91,10 @@ namespace Temporalio.Api.Enums.V1 {
             "UkNFX0VYSEFVU1RFRF9DQVVTRV9DT05DVVJSRU5UX0xJTUlUEAISLgoqUkVT",
             "T1VSQ0VfRVhIQVVTVEVEX0NBVVNFX1NZU1RFTV9PVkVSTE9BREVEEAMSLgoq",
             "UkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNFX1BFUlNJU1RFTkNFX0xJTUlUEARC",
-            "hgEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIQRmFpbGVkQ2F1c2VQcm90",
+            "iAEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIQRmFpbGVkQ2F1c2VQcm90",
             "b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1w",
-            "b3JhbGlvLkFwaS5FbnVtcy5WMeoCGFRlbXBvcmFsOjpBcGk6OkVudW1zOjpW",
-            "MWIGcHJvdG8z"));
+            "b3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6",
+            "OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowTaskFailedCause), typeof(global::Temporalio.Api.Enums.V1.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedCause), }, null, null));
@@ -141,6 +147,31 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_NON_DETERMINISTIC_ERROR")] NonDeterministicError = 24,
     [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_BAD_MODIFY_WORKFLOW_PROPERTIES_ATTRIBUTES")] BadModifyWorkflowPropertiesAttributes = 25,
+    /// <summary>
+    /// We send the below error codes to users when their requests would violate a size constraint
+    /// of their workflow. We do this to ensure that the state of their workflow does not become too
+    /// large because that can cause severe performance degradation. You can modify the thresholds for
+    /// each of these errors within your dynamic config.
+    ///
+    /// Spawning a new child workflow would cause this workflow to exceed its limit of pending child
+    /// workflows.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_PENDING_CHILD_WORKFLOWS_LIMIT_EXCEEDED")] PendingChildWorkflowsLimitExceeded = 26,
+    /// <summary>
+    /// Starting a new activity would cause this workflow to exceed its limit of pending activities
+    /// that we track.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_PENDING_ACTIVITIES_LIMIT_EXCEEDED")] PendingActivitiesLimitExceeded = 27,
+    /// <summary>
+    /// A workflow has a buffer of signals that have not yet reached their destination. We return this
+    /// error when sending a new signal would exceed the capacity of this buffer.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_PENDING_SIGNALS_LIMIT_EXCEEDED")] PendingSignalsLimitExceeded = 28,
+    /// <summary>
+    /// Similarly, we have a buffer of pending requests to cancel other workflows. We return this error
+    /// when our capacity for pending cancel requests is already reached.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_PENDING_REQUEST_CANCEL_LIMIT_EXCEEDED")] PendingRequestCancelLimitExceeded = 29,
   }
 
   public enum StartChildWorkflowExecutionFailedCause {

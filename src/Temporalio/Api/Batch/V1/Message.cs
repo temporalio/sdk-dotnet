@@ -39,18 +39,20 @@ namespace Temporalio.Api.Batch.V1 {
             "Eg4KBnNpZ25hbBgBIAEoCRIvCgVpbnB1dBgCIAEoCzIgLnRlbXBvcmFsLmFw",
             "aS5jb21tb24udjEuUGF5bG9hZHMSLgoGaGVhZGVyGAMgASgLMh4udGVtcG9y",
             "YWwuYXBpLmNvbW1vbi52MS5IZWFkZXISEAoIaWRlbnRpdHkYBCABKAkiLgoa",
-            "QmF0Y2hPcGVyYXRpb25DYW5jZWxsYXRpb24SEAoIaWRlbnRpdHkYASABKAlC",
-            "ggEKGGlvLnRlbXBvcmFsLmFwaS5iYXRjaC52MUIMTWVzc2FnZVByb3RvUAFa",
-            "IWdvLnRlbXBvcmFsLmlvL2FwaS9iYXRjaC92MTtiYXRjaKoCF1RlbXBvcmFs",
-            "aW8uQXBpLkJhdGNoLlYx6gIYVGVtcG9yYWw6OkFwaTo6QmF0Y2g6OlYxYgZw",
-            "cm90bzM="));
+            "QmF0Y2hPcGVyYXRpb25DYW5jZWxsYXRpb24SEAoIaWRlbnRpdHkYASABKAki",
+            "KgoWQmF0Y2hPcGVyYXRpb25EZWxldGlvbhIQCghpZGVudGl0eRgBIAEoCUKE",
+            "AQoYaW8udGVtcG9yYWwuYXBpLmJhdGNoLnYxQgxNZXNzYWdlUHJvdG9QAVoh",
+            "Z28udGVtcG9yYWwuaW8vYXBpL2JhdGNoL3YxO2JhdGNoqgIXVGVtcG9yYWxp",
+            "by5BcGkuQmF0Y2guVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkJhdGNoOjpWMWIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Gogoproto.GogoReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationInfo), global::Temporalio.Api.Batch.V1.BatchOperationInfo.Parser, new[]{ "JobId", "State", "StartTime", "CloseTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationTermination), global::Temporalio.Api.Batch.V1.BatchOperationTermination.Parser, new[]{ "Details", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationSignal), global::Temporalio.Api.Batch.V1.BatchOperationSignal.Parser, new[]{ "Signal", "Input", "Header", "Identity" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationCancellation), global::Temporalio.Api.Batch.V1.BatchOperationCancellation.Parser, new[]{ "Identity" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationCancellation), global::Temporalio.Api.Batch.V1.BatchOperationCancellation.Parser, new[]{ "Identity" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationDeletion), global::Temporalio.Api.Batch.V1.BatchOperationDeletion.Parser, new[]{ "Identity" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1114,6 +1116,202 @@ namespace Temporalio.Api.Batch.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(BatchOperationCancellation other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// BatchOperationDeletion sends deletion requests to batch workflows.
+  /// Keep the parameter in sync with temporal.api.workflowservice.v1.DeleteWorkflowExecutionRequest.
+  /// </summary>
+  public sealed partial class BatchOperationDeletion : pb::IMessage<BatchOperationDeletion>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<BatchOperationDeletion> _parser = new pb::MessageParser<BatchOperationDeletion>(() => new BatchOperationDeletion());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<BatchOperationDeletion> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Batch.V1.MessageReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationDeletion() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationDeletion(BatchOperationDeletion other) : this() {
+      identity_ = other.identity_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationDeletion Clone() {
+      return new BatchOperationDeletion(this);
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 1;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the worker/client
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as BatchOperationDeletion);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(BatchOperationDeletion other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Identity != other.Identity) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(BatchOperationDeletion other) {
       if (other == null) {
         return;
       }

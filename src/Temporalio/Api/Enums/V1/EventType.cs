@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZXZlbnRfdHlwZS5wcm90bxIVdGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxKvEQCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
+            "cG9yYWwuYXBpLmVudW1zLnYxKvAQCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
             "RV9VTlNQRUNJRklFRBAAEikKJUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VU",
             "SU9OX1NUQVJURUQQARIrCidFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
             "Tl9DT01QTEVURUQQAhIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
@@ -67,16 +67,16 @@ namespace Temporalio.Api.Enums.V1 {
             "SUdOQUxfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX0ZBSUxFRBAmEjMK",
             "L0VWRU5UX1RZUEVfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX1NJR05B",
             "TEVEECcSMAosRVZFTlRfVFlQRV9VUFNFUlRfV09SS0ZMT1dfU0VBUkNIX0FU",
-            "VFJJQlVURVMQKBIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX1VQREFURV9SRVFV",
-            "RVNURUQQKRInCiNFVkVOVF9UWVBFX1dPUktGTE9XX1VQREFURV9BQ0NFUFRF",
-            "RBAqEigKJEVWRU5UX1RZUEVfV09SS0ZMT1dfVVBEQVRFX0NPTVBMRVRFRBAr",
-            "EjYKMkVWRU5UX1RZUEVfV09SS0ZMT1dfUFJPUEVSVElFU19NT0RJRklFRF9F",
-            "WFRFUk5BTExZECwSNgoyRVZFTlRfVFlQRV9BQ1RJVklUWV9QUk9QRVJUSUVT",
-            "X01PRElGSUVEX0VYVEVSTkFMTFkQLRIrCidFVkVOVF9UWVBFX1dPUktGTE9X",
-            "X1BST1BFUlRJRVNfTU9ESUZJRUQQLkKEAQoYaW8udGVtcG9yYWwuYXBpLmVu",
-            "dW1zLnYxQg5FdmVudFR5cGVQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkv",
-            "ZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGFRl",
-            "bXBvcmFsOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "VFJJQlVURVMQKBInCiNFVkVOVF9UWVBFX1dPUktGTE9XX1VQREFURV9SRUpF",
+            "Q1RFRBApEicKI0VWRU5UX1RZUEVfV09SS0ZMT1dfVVBEQVRFX0FDQ0VQVEVE",
+            "ECoSKAokRVZFTlRfVFlQRV9XT1JLRkxPV19VUERBVEVfQ09NUExFVEVEECsS",
+            "NgoyRVZFTlRfVFlQRV9XT1JLRkxPV19QUk9QRVJUSUVTX01PRElGSUVEX0VY",
+            "VEVSTkFMTFkQLBI2CjJFVkVOVF9UWVBFX0FDVElWSVRZX1BST1BFUlRJRVNf",
+            "TU9ESUZJRURfRVhURVJOQUxMWRAtEisKJ0VWRU5UX1RZUEVfV09SS0ZMT1df",
+            "UFJPUEVSVElFU19NT0RJRklFRBAuQoYBChhpby50ZW1wb3JhbC5hcGkuZW51",
+            "bXMudjFCDkV2ZW50VHlwZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9l",
+            "bnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVt",
+            "cG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EventType), }, null, null));
@@ -292,7 +292,7 @@ namespace Temporalio.Api.Enums.V1 {
     /// <summary>
     /// Workflow update request has been received
     /// </summary>
-    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_UPDATE_REQUESTED")] WorkflowUpdateRequested = 41,
+    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_UPDATE_REJECTED")] WorkflowUpdateRejected = 41,
     /// <summary>
     /// Workflow update request has been accepted by user workflow code
     /// </summary>

@@ -27,18 +27,18 @@ namespace Temporalio.Api.Enums.V1 {
             "CiJ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvY29tbW9uLnByb3RvEhV0ZW1wb3Jh",
             "bC5hcGkuZW51bXMudjEqXwoMRW5jb2RpbmdUeXBlEh0KGUVOQ09ESU5HX1RZ",
             "UEVfVU5TUEVDSUZJRUQQABIYChRFTkNPRElOR19UWVBFX1BST1RPMxABEhYK",
-            "EkVOQ09ESU5HX1RZUEVfSlNPThACKuwBChBJbmRleGVkVmFsdWVUeXBlEiIK",
+            "EkVOQ09ESU5HX1RZUEVfSlNPThACKpECChBJbmRleGVkVmFsdWVUeXBlEiIK",
             "HklOREVYRURfVkFMVUVfVFlQRV9VTlNQRUNJRklFRBAAEhsKF0lOREVYRURf",
             "VkFMVUVfVFlQRV9URVhUEAESHgoaSU5ERVhFRF9WQUxVRV9UWVBFX0tFWVdP",
             "UkQQAhIaChZJTkRFWEVEX1ZBTFVFX1RZUEVfSU5UEAMSHQoZSU5ERVhFRF9W",
             "QUxVRV9UWVBFX0RPVUJMRRAEEhsKF0lOREVYRURfVkFMVUVfVFlQRV9CT09M",
-            "EAUSHwobSU5ERVhFRF9WQUxVRV9UWVBFX0RBVEVUSU1FEAYqXgoIU2V2ZXJp",
-            "dHkSGAoUU0VWRVJJVFlfVU5TUEVDSUZJRUQQABIRCg1TRVZFUklUWV9ISUdI",
-            "EAESEwoPU0VWRVJJVFlfTUVESVVNEAISEAoMU0VWRVJJVFlfTE9XEANCgQEK",
-            "GGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUILQ29tbW9uUHJvdG9QAVohZ28u",
-            "dGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5B",
-            "cGkuRW51bXMuVjHqAhhUZW1wb3JhbDo6QXBpOjpFbnVtczo6VjFiBnByb3Rv",
-            "Mw=="));
+            "EAUSHwobSU5ERVhFRF9WQUxVRV9UWVBFX0RBVEVUSU1FEAYSIwofSU5ERVhF",
+            "RF9WQUxVRV9UWVBFX0tFWVdPUkRfTElTVBAHKl4KCFNldmVyaXR5EhgKFFNF",
+            "VkVSSVRZX1VOU1BFQ0lGSUVEEAASEQoNU0VWRVJJVFlfSElHSBABEhMKD1NF",
+            "VkVSSVRZX01FRElVTRACEhAKDFNFVkVSSVRZX0xPVxADQoMBChhpby50ZW1w",
+            "b3JhbC5hcGkuZW51bXMudjFCC0NvbW1vblByb3RvUAFaIWdvLnRlbXBvcmFs",
+            "LmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1z",
+            "LlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), }, null, null));
@@ -61,6 +61,7 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("INDEXED_VALUE_TYPE_DOUBLE")] Double = 4,
     [pbr::OriginalName("INDEXED_VALUE_TYPE_BOOL")] Bool = 5,
     [pbr::OriginalName("INDEXED_VALUE_TYPE_DATETIME")] Datetime = 6,
+    [pbr::OriginalName("INDEXED_VALUE_TYPE_KEYWORD_LIST")] KeywordList = 7,
   }
 
   public enum Severity {

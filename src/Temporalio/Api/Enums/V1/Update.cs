@@ -28,16 +28,13 @@ namespace Temporalio.Api.Enums.V1 {
             "bC5hcGkuZW51bXMudjEqjgEKH1dvcmtmbG93VXBkYXRlUmVzdWx0QWNjZXNz",
             "U3R5bGUSMwovV09SS0ZMT1dfVVBEQVRFX1JFU1VMVF9BQ0NFU1NfU1RZTEVf",
             "VU5TUEVDSUZJRUQQABI2CjJXT1JLRkxPV19VUERBVEVfUkVTVUxUX0FDQ0VT",
-            "U19TVFlMRV9SRVFVSVJFX0lOTElORRABKo0BCiJXb3JrZmxvd1VwZGF0ZUR1",
-            "cmFiaWxpdHlQcmVmZXJlbmNlEjUKMVdPUktGTE9XX1VQREFURV9EVVJBQklM",
-            "SVRZX1BSRUZFUkVOQ0VfVU5TUEVDSUZJRUQQABIwCixXT1JLRkxPV19VUERB",
-            "VEVfRFVSQUJJTElUWV9QUkVGRVJFTkNFX0JZUEFTUxABQoEBChhpby50ZW1w",
-            "b3JhbC5hcGkuZW51bXMudjFCC1VwZGF0ZVByb3RvUAFaIWdvLnRlbXBvcmFs",
-            "LmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1z",
-            "LlYx6gIYVGVtcG9yYWw6OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "U19TVFlMRV9SRVFVSVJFX0lOTElORRABQoMBChhpby50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjFCC1VwZGF0ZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9l",
+            "bnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVt",
+            "cG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowUpdateResultAccessStyle), typeof(global::Temporalio.Api.Enums.V1.WorkflowUpdateDurabilityPreference), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowUpdateResultAccessStyle), }, null, null));
     }
     #endregion
 
@@ -50,20 +47,6 @@ namespace Temporalio.Api.Enums.V1 {
     /// response body
     /// </summary>
     [pbr::OriginalName("WORKFLOW_UPDATE_RESULT_ACCESS_STYLE_REQUIRE_INLINE")] RequireInline = 1,
-  }
-
-  public enum WorkflowUpdateDurabilityPreference {
-    /// <summary>
-    /// The workflow expresses no preference as to the durability of the
-    /// the associated update.
-    /// </summary>
-    [pbr::OriginalName("WORKFLOW_UPDATE_DURABILITY_PREFERENCE_UNSPECIFIED")] Unspecified = 0,
-    /// <summary>
-    /// Used by a workflow to indicate that no workflow state mutation occurred
-    /// while processing the update and that it wishes that the update not be
-    /// made durable (and thus not take up space in workflow history).
-    /// </summary>
-    [pbr::OriginalName("WORKFLOW_UPDATE_DURABILITY_PREFERENCE_BYPASS")] Bypass = 1,
   }
 
   #endregion

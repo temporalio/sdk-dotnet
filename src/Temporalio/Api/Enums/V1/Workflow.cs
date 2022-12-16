@@ -68,10 +68,10 @@ namespace Temporalio.Api.Enums.V1 {
             "b3V0VHlwZRIcChhUSU1FT1VUX1RZUEVfVU5TUEVDSUZJRUQQABIfChtUSU1F",
             "T1VUX1RZUEVfU1RBUlRfVE9fQ0xPU0UQARIiCh5USU1FT1VUX1RZUEVfU0NI",
             "RURVTEVfVE9fU1RBUlQQAhIiCh5USU1FT1VUX1RZUEVfU0NIRURVTEVfVE9f",
-            "Q0xPU0UQAxIaChZUSU1FT1VUX1RZUEVfSEVBUlRCRUFUEARCgwEKGGlvLnRl",
+            "Q0xPU0UQAxIaChZUSU1FT1VUX1RZUEVfSEVBUlRCRUFUEARChQEKGGlvLnRl",
             "bXBvcmFsLmFwaS5lbnVtcy52MUINV29ya2Zsb3dQcm90b1ABWiFnby50ZW1w",
             "b3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5F",
-            "bnVtcy5WMeoCGFRlbXBvcmFsOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "bnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), }, null, null));

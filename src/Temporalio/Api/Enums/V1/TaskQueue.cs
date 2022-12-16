@@ -30,10 +30,10 @@ namespace Temporalio.Api.Enums.V1 {
             "Uk1BTBABEhoKFlRBU0tfUVVFVUVfS0lORF9TVElDS1kQAipsCg1UYXNrUXVl",
             "dWVUeXBlEh8KG1RBU0tfUVVFVUVfVFlQRV9VTlNQRUNJRklFRBAAEhwKGFRB",
             "U0tfUVVFVUVfVFlQRV9XT1JLRkxPVxABEhwKGFRBU0tfUVVFVUVfVFlQRV9B",
-            "Q1RJVklUWRACQoQBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCDlRhc2tR",
+            "Q1RJVklUWRACQoYBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCDlRhc2tR",
             "dWV1ZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
-            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIYVGVtcG9yYWw6OkFwaTo6",
-            "RW51bXM6OlYxYgZwcm90bzM="));
+            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
+            "OjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), }, null, null));

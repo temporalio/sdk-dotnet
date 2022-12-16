@@ -52,11 +52,11 @@ namespace Temporalio.Api.TaskQueue.V1 {
             "c19jb21wYXRpYmxlGAIgASgLMigudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52",
             "MS5WZXJzaW9uSWROb2RlEkcKFXByZXZpb3VzX2luY29tcGF0aWJsZRgDIAEo",
             "CzIoLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVmVyc2lvbklkTm9kZSIk",
-            "CglWZXJzaW9uSWQSFwoPd29ya2VyX2J1aWxkX2lkGAEgASgJQpYBChxpby50",
+            "CglWZXJzaW9uSWQSFwoPd29ya2VyX2J1aWxkX2lkGAEgASgJQpgBChxpby50",
             "ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxQgxNZXNzYWdlUHJvdG9QAVopZ28u",
             "dGVtcG9yYWwuaW8vYXBpL3Rhc2txdWV1ZS92MTt0YXNrcXVldWWqAhtUZW1w",
-            "b3JhbGlvLkFwaS5UYXNrUXVldWUuVjHqAhxUZW1wb3JhbDo6QXBpOjpUYXNr",
-            "UXVldWU6OlYxYgZwcm90bzM="));
+            "b3JhbGlvLkFwaS5UYXNrUXVldWUuVjHqAh5UZW1wb3JhbGlvOjpBcGk6OlRh",
+            "c2tRdWV1ZTo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

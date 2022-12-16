@@ -25,18 +25,18 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cit0ZW1wb3JhbC9hcGkvZW51bXMvdjEvYmF0Y2hfb3BlcmF0aW9uLnByb3Rv",
-            "EhV0ZW1wb3JhbC5hcGkuZW51bXMudjEqoAEKEkJhdGNoT3BlcmF0aW9uVHlw",
+            "EhV0ZW1wb3JhbC5hcGkuZW51bXMudjEqwQEKEkJhdGNoT3BlcmF0aW9uVHlw",
             "ZRIkCiBCQVRDSF9PUEVSQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEiIKHkJB",
             "VENIX09QRVJBVElPTl9UWVBFX1RFUk1JTkFURRABEh8KG0JBVENIX09QRVJB",
             "VElPTl9UWVBFX0NBTkNFTBACEh8KG0JBVENIX09QRVJBVElPTl9UWVBFX1NJ",
-            "R05BTBADKqYBChNCYXRjaE9wZXJhdGlvblN0YXRlEiUKIUJBVENIX09QRVJB",
-            "VElPTl9TVEFURV9VTlNQRUNJRklFRBAAEiEKHUJBVENIX09QRVJBVElPTl9T",
-            "VEFURV9SVU5OSU5HEAESIwofQkFUQ0hfT1BFUkFUSU9OX1NUQVRFX0NPTVBM",
-            "RVRFRBACEiAKHEJBVENIX09QRVJBVElPTl9TVEFURV9GQUlMRUQQA0KJAQoY",
-            "aW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhNCYXRjaE9wZXJhdGlvblByb3Rv",
-            "UAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBv",
-            "cmFsaW8uQXBpLkVudW1zLlYx6gIYVGVtcG9yYWw6OkFwaTo6RW51bXM6OlYx",
-            "YgZwcm90bzM="));
+            "R05BTBADEh8KG0JBVENIX09QRVJBVElPTl9UWVBFX0RFTEVURRAEKqYBChNC",
+            "YXRjaE9wZXJhdGlvblN0YXRlEiUKIUJBVENIX09QRVJBVElPTl9TVEFURV9V",
+            "TlNQRUNJRklFRBAAEiEKHUJBVENIX09QRVJBVElPTl9TVEFURV9SVU5OSU5H",
+            "EAESIwofQkFUQ0hfT1BFUkFUSU9OX1NUQVRFX0NPTVBMRVRFRBACEiAKHEJB",
+            "VENIX09QRVJBVElPTl9TVEFURV9GQUlMRUQQA0KLAQoYaW8udGVtcG9yYWwu",
+            "YXBpLmVudW1zLnYxQhNCYXRjaE9wZXJhdGlvblByb3RvUAFaIWdvLnRlbXBv",
+            "cmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVu",
+            "dW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.BatchOperationType), typeof(global::Temporalio.Api.Enums.V1.BatchOperationState), }, null, null));
@@ -50,6 +50,7 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("BATCH_OPERATION_TYPE_TERMINATE")] Terminate = 1,
     [pbr::OriginalName("BATCH_OPERATION_TYPE_CANCEL")] Cancel = 2,
     [pbr::OriginalName("BATCH_OPERATION_TYPE_SIGNAL")] Signal = 3,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_DELETE")] Delete = 4,
   }
 
   public enum BatchOperationState {
