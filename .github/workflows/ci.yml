@@ -77,9 +77,6 @@ jobs:
         uses: nikeee/docfx-action@v1.0.0
         with:
           args: src/Temporalio.ApiDoc/docfx.json
-      name: Build Documentation
-      with:
-        args: path/to/your/docfx.json
 
       - name: Deploy docs
         if: ${{ matrix.docsTarget }}
