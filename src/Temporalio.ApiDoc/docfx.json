@@ -1,0 +1,69 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "Temporalio/*.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**"
+          ],
+          "src": ".."
+        }
+      ],
+      "dest": "obj/_metadata",
+      "filter": "filterConfig.yml"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "index.md"
+        ],
+        "src": "api",
+        "dest": "api"
+      },
+      {
+        "files": [
+          "*.yml"
+        ],
+        "src": "obj/_metadata",
+        "dest": "api"
+      },
+      {
+        "files": [
+          "index.md",
+          "toc.yml"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "favicon.ico",
+          "logo.png"
+        ]
+      }
+    ],
+    "globalMetadata": {
+      "_appFaviconPath": "favicon.ico",
+      "_appFooter": "<span></span>",
+      "_appLogoPath": "logo.png",
+      "_appTitle": "Temporal .NET SDK",
+      "_enableSearch": true,
+      "_disableContribution": true
+    },
+    "markdownEngineName": "markdig",
+    "dest": "obj/_site",
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
+    ],
+    "template": [
+      "statictoc",
+      "templates/material"
+    ]
+  }
+}
