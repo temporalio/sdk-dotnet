@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Core-owned runtime.
+    /// </summary>
     internal class Runtime : SafeHandle
     {
         internal readonly unsafe Interop.Runtime* ptr;

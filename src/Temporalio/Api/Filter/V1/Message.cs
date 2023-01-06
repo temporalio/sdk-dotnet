@@ -39,7 +39,7 @@ namespace Temporalio.Api.Filter.V1 {
             "aW8vYXBpL2ZpbHRlci92MTtmaWx0ZXKqAhhUZW1wb3JhbGlvLkFwaS5GaWx0",
             "ZXIuVjHqAhtUZW1wb3JhbGlvOjpBcGk6OkZpbHRlcjo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Filter.V1.WorkflowExecutionFilter), global::Temporalio.Api.Filter.V1.WorkflowExecutionFilter.Parser, new[]{ "WorkflowId", "RunId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Filter.V1.WorkflowTypeFilter), global::Temporalio.Api.Filter.V1.WorkflowTypeFilter.Parser, new[]{ "Name" }, null, null, null, null),

@@ -25,6 +25,12 @@ typedef struct ByteArrayRef {
   size_t size;
 } ByteArrayRef;
 
+/**
+ * Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
+ * values cannot contain a newline within.
+ */
+typedef struct ByteArrayRef MetadataRef;
+
 typedef struct ClientTlsOptions {
   struct ByteArrayRef server_root_ca_cert;
   struct ByteArrayRef domain;
@@ -45,11 +51,7 @@ typedef struct ClientOptions {
   struct ByteArrayRef target_url;
   struct ByteArrayRef client_name;
   struct ByteArrayRef client_version;
-  /**
-   * Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
-   * values cannot contain a newline within.
-   */
-  struct ByteArrayRef metadata;
+  MetadataRef metadata;
   struct ByteArrayRef identity;
   const struct ClientTlsOptions *tls_options;
   const struct ClientRetryOptions *retry_options;
@@ -78,11 +80,7 @@ typedef struct RpcCallOptions {
   struct ByteArrayRef rpc;
   struct ByteArrayRef req;
   bool retry;
-  /**
-   * Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
-   * values cannot contain a newline within.
-   */
-  struct ByteArrayRef metadata;
+  MetadataRef metadata;
   /**
    * 0 means no timeout
    */
@@ -96,9 +94,9 @@ typedef struct RpcCallOptions {
 typedef void (*ClientRpcCallCallback)(void *user_data, const struct ByteArray *success, const struct ByteArray *fail);
 
 /**
- * If success or fail are not null, they must be manually freed when done.
- * Runtime is always present, but it should never be used if fail is present,
- * only freed after fail is freed.
+ * If fail is not null, it must be manually freed when done. Runtime is always
+ * present, but it should never be used if fail is present, only freed after
+ * fail is freed using it.
  */
 typedef struct RuntimeOrFail {
   struct Runtime *runtime;

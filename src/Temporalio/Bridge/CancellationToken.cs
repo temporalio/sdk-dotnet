@@ -3,8 +3,14 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Core-owned cancellation token.
+    /// </summary>
     internal class CancellationToken : SafeHandle
     {
+        /// <summary>
+        /// Create a core cancellation token from the given cancellation token.
+        /// </summary>
         public static CancellationToken FromThreading(System.Threading.CancellationToken token)
         {
             var ret = new CancellationToken();

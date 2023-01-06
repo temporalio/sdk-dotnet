@@ -38,7 +38,8 @@ namespace Temporalio.Testing
         /// Gets or sets the version to version of Temporalite to download.
         /// </summary>
         /// <remarks>
-        /// By default, the best one for this SDK version is chosen.
+        /// By default, the best one for this SDK version is chosen. This can be a semantic version,
+        /// "latest", or "default".
         /// </remarks>
         public string DownloadVersion { get; set; } = "default";
 

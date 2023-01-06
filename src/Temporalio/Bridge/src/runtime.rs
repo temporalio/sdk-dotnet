@@ -61,9 +61,9 @@ pub struct Runtime {
     pub(crate) core: Arc<CoreRuntime>,
 }
 
-/// If success or fail are not null, they must be manually freed when done.
-/// Runtime is always present, but it should never be used if fail is present,
-/// only freed after fail is freed.
+/// If fail is not null, it must be manually freed when done. Runtime is always
+/// present, but it should never be used if fail is present, only freed after
+/// fail is freed using it.
 #[repr(C)]
 pub struct RuntimeOrFail {
     runtime: *mut Runtime,

@@ -4,6 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Disposable collection of items we need to keep alive while this object is in scope.
+    /// </summary>
     internal sealed class Scope : IDisposable
     {
         private readonly IList<object> toKeepAlive = new List<object>();

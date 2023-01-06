@@ -41,7 +41,7 @@ namespace Temporalio.Api.Replication.V1 {
             "LkFwaS5SZXBsaWNhdGlvbi5WMeoCIFRlbXBvcmFsaW86OkFwaTo6UmVwbGlj",
             "YXRpb246OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Replication.V1.ClusterReplicationConfig), global::Temporalio.Api.Replication.V1.ClusterReplicationConfig.Parser, new[]{ "ClusterName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Replication.V1.NamespaceReplicationConfig), global::Temporalio.Api.Replication.V1.NamespaceReplicationConfig.Parser, new[]{ "ActiveClusterName", "Clusters", "State" }, null, null, null, null),

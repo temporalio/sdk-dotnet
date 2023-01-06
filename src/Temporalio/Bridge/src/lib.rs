@@ -26,11 +26,13 @@ impl ByteArrayRef {
     }
 
     fn to_vec(&self) -> Vec<u8> {
-        unsafe { std::slice::from_raw_parts(self.data, self.size).to_vec() }
+        self.to_slice().to_vec()
     }
 
     fn to_str(&self) -> &str {
-        // Trust caller to send UTF8
+        // Trust caller to send UTF8. Even if we did do a checked call here with
+        // error, the caller can still have a bad pointer or something else
+        // wrong. Therefore we trust the caller implicitly.
         unsafe { std::str::from_utf8_unchecked(std::slice::from_raw_parts(self.data, self.size)) }
     }
 
@@ -129,7 +131,8 @@ impl Drop for ByteArray {
     fn drop(&mut self) {
         // In cases where freeing is disabled (or technically some other
         // drop-but-not-freed situation though we don't expect any), the bytes
-        // remain non-null so we re-own them here
+        // remain non-null so we re-own them here. See "byte_array_free" in
+        // runtime.rs.
         if !self.data.is_null() {
             unsafe { Vec::from_raw_parts(self.data as *mut u8, self.size, self.cap) };
         }

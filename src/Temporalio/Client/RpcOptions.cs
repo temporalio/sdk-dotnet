@@ -21,7 +21,8 @@ namespace Temporalio.Client
         /// Gets or sets the gRPC metadata for the call (i.e. the headers).
         /// </summary>
         /// <remarks>
-        /// Newlines are not allowed in keys or values.
+        /// Newlines are not allowed in keys or values. Keys here will override any connection-level
+        /// metadata values for the same keys.
         /// </remarks>
         public IEnumerable<KeyValuePair<string, string>>? Metadata { get; set; }
 

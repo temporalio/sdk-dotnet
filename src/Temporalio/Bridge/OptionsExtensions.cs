@@ -2,6 +2,10 @@ using System;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Extension methods for converting high-level options classes to the lower-level interop
+    /// structs expected by Core.
+    /// </summary>
     internal static class OptionsExtensions
     {
         private static readonly ByteArrayRef ClientName = ByteArrayRef.FromUTF8("temporal-dotnet");
@@ -15,17 +19,18 @@ namespace Temporalio.Bridge
             Scope scope
         )
         {
-            if (options.TargetHost == null)
+            if (String.IsNullOrEmpty(options.TargetHost))
             {
                 throw new ArgumentException("TargetHost is required");
             }
-            else if (options.TargetHost.Contains("://"))
+            else if (options.TargetHost!.Contains("://"))
             {
                 throw new ArgumentException("TargetHost cannot have ://");
             }
+            var scheme = options.TlsOptions == null ? "http" : "https";
             return new Interop.ClientOptions()
             {
-                target_url = scope.ByteArray($"http://{options.TargetHost}"),
+                target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
                 client_name = ClientName.Ref,
                 client_version = ClientVersion.Ref,
                 metadata = scope.Metadata(options.RpcMetadata),

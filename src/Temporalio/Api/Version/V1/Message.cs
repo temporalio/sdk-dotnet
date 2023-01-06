@@ -42,7 +42,7 @@ namespace Temporalio.Api.Version.V1 {
             "L3ZlcnNpb24vdjE7dmVyc2lvbqoCGVRlbXBvcmFsaW8uQXBpLlZlcnNpb24u",
             "VjHqAhxUZW1wb3JhbGlvOjpBcGk6OlZlcnNpb246OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Version.V1.ReleaseInfo), global::Temporalio.Api.Version.V1.ReleaseInfo.Parser, new[]{ "Version", "ReleaseTime", "Notes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Version.V1.Alert), global::Temporalio.Api.Version.V1.Alert.Parser, new[]{ "Message", "Severity" }, null, null, null, null),

@@ -16,14 +16,16 @@ use temporal_client::{
 use tonic::metadata::MetadataKey;
 use url::Url;
 
+/// Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
+/// values cannot contain a newline within.
+type MetadataRef = ByteArrayRef;
+
 #[repr(C)]
 pub struct ClientOptions {
     target_url: ByteArrayRef,
     client_name: ByteArrayRef,
     client_version: ByteArrayRef,
-    /// Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
-    /// values cannot contain a newline within.
-    metadata: ByteArrayRef,
+    metadata: MetadataRef,
     identity: ByteArrayRef,
     tls_options: *const ClientTlsOptions,
     retry_options: *const ClientRetryOptions,
@@ -142,9 +144,7 @@ pub struct RpcCallOptions {
     rpc: ByteArrayRef,
     req: ByteArrayRef,
     retry: bool,
-    /// Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
-    /// values cannot contain a newline within.
-    metadata: ByteArrayRef,
+    metadata: MetadataRef,
     /// 0 means no timeout
     timeout_millis: u32,
     cancellation_token: *const CancellationToken,
@@ -396,8 +396,8 @@ impl TryFrom<&ClientOptions> for CoreClientOptions {
         let mut opts_builder = ClientOptionsBuilder::default();
         opts_builder
             .target_url(Url::parse(opts.target_url.to_str())?)
-            .client_name(opts.client_name.to_str())
-            .client_version(opts.client_version.to_str())
+            .client_name(opts.client_name.to_string())
+            .client_version(opts.client_version.to_string())
             .identity(opts.identity.to_string())
             .retry_config(
                 unsafe { opts.retry_options.as_ref() }.map_or(RetryConfig::default(), |c| c.into()),

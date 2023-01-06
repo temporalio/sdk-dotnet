@@ -83,6 +83,40 @@ File.WriteAllText(
     )
 );
 
+// Change Gogoproto namespace to Temporalio.Api.Dependencies.Gogoproto
+foreach (
+    var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).GetFiles(
+        "*.cs",
+        SearchOption.AllDirectories
+    )
+)
+{
+    if (fi.Extension != ".cs")
+    {
+        continue;
+    }
+    string contents = File.ReadAllText(fi.FullName);
+    if (fi.Name == "Gogo.cs")
+    {
+        // Just change the namespace field;
+        File.WriteAllText(
+            fi.FullName,
+            contents.Replace(
+                "namespace Gogoproto ",
+                "namespace Temporalio.Api.Dependencies.Gogoproto "
+            )
+        );
+    }
+    else
+    {
+        var newContents = contents.Replace("Gogoproto.", "Temporalio.Api.Dependencies.Gogoproto.");
+        if (contents != newContents)
+        {
+            File.WriteAllText(fi.FullName, newContents);
+        }
+    }
+}
+
 static void Protoc(string file, string outDir, string baseNamespace, params string[] includes)
 {
     var protocArgs = new List<string> { "--csharp_out=" + outDir };

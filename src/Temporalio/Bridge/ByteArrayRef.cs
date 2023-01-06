@@ -7,11 +7,17 @@ using Google.Protobuf;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Representation of a byte array owned by .NET.
+    /// </summary>
     internal class ByteArrayRef
     {
         public static readonly ByteArrayRef Empty = new(new byte[0]);
         internal static readonly UTF8Encoding StrictUTF8 = new(false, true);
 
+        /// <summary>
+        /// Convert a string to a UTF-8 byte array.
+        /// </summary>
         public static ByteArrayRef FromUTF8(string s)
         {
             if (s.Length == 0)
@@ -21,11 +27,18 @@ namespace Temporalio.Bridge
             return new ByteArrayRef(StrictUTF8.GetBytes(s));
         }
 
+        /// <summary>
+        /// Convert a proto to a byte array.
+        /// </summary>
         public static ByteArrayRef FromProto(IMessage p)
         {
             return new ByteArrayRef(p.ToByteArray());
         }
 
+        /// <summary>
+        /// Convert an enumerable set of metadata pairs to a byte array. No key or value may contain
+        /// a newline.
+        /// </summary>
         public static ByteArrayRef FromMetadata(IEnumerable<KeyValuePair<string, string>> metadata)
         {
             var stream = new MemoryStream();
@@ -55,6 +68,10 @@ namespace Temporalio.Bridge
             return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
         }
 
+        /// <summary>
+        /// Convert an enumerable set of strings to a newline-delimited byte array. No value can
+        /// contain a newline.
+        /// </summary>
         public static ByteArrayRef FromNewlineDelimited(IEnumerable<string> values)
         {
             var stream = new MemoryStream();

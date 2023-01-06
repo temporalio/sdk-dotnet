@@ -5,11 +5,17 @@ using Google.Protobuf;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Representation of a byte array owned by Core.
+    /// </summary>
     internal class ByteArray : SafeHandle
     {
         private readonly Runtime runtime;
         private readonly unsafe Interop.ByteArray* byteArray;
 
+        /// <summary>
+        /// Instantiate this handle referencing the given pointer.
+        /// </summary>
         public unsafe ByteArray(Runtime runtime, Interop.ByteArray* byteArray)
             : base((IntPtr)byteArray, true)
         {
@@ -25,6 +31,9 @@ namespace Temporalio.Bridge
             return true;
         }
 
+        /// <summary>
+        /// Convert the byte array to a UTF8 string.
+        /// </summary>
         public string ToUTF8()
         {
             unsafe
@@ -33,6 +42,9 @@ namespace Temporalio.Bridge
             }
         }
 
+        /// <summary>
+        /// Convert the byte array to a protobuf message.
+        /// </summary>
         public T ToProto<T>(MessageParser<T> parser) where T : IMessage<T>
         {
             unsafe

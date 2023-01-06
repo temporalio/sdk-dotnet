@@ -6,6 +6,9 @@ using Google.Protobuf;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Core-owned Temporal client.
+    /// </summary>
     internal class Client : SafeHandle
     {
         public static async Task<Client> ConnectAsync(

@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Core-owned ephemeral server.
+    /// </summary>
     internal class EphemeralServer : SafeHandle
     {
         public static async Task<EphemeralServer> StartTemporaliteAsync(

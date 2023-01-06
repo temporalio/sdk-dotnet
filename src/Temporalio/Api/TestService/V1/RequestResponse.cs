@@ -41,7 +41,7 @@ namespace Temporalio.Api.TestService.V1 {
             "aWNlqgIdVGVtcG9yYWxpby5BcGkuVGVzdFNlcnZpY2UuVjHqAiBUZW1wb3Jh",
             "bGlvOjpBcGk6OlRlc3RTZXJ2aWNlOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Gogoproto.GogoReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TestService.V1.LockTimeSkippingRequest), global::Temporalio.Api.TestService.V1.LockTimeSkippingRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TestService.V1.LockTimeSkippingResponse), global::Temporalio.Api.TestService.V1.LockTimeSkippingResponse.Parser, null, null, null, null, null),

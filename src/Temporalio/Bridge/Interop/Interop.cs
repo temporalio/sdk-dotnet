@@ -73,7 +73,7 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef client_version;
 
-        [NativeTypeName("struct ByteArrayRef")]
+        [NativeTypeName("MetadataRef")]
         public ByteArrayRef metadata;
 
         [NativeTypeName("struct ByteArrayRef")]
@@ -122,7 +122,7 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("bool")]
         public byte retry;
 
-        [NativeTypeName("struct ByteArrayRef")]
+        [NativeTypeName("MetadataRef")]
         public ByteArrayRef metadata;
 
         [NativeTypeName("uint32_t")]

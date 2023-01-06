@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace Gogoproto {
+namespace Temporalio.Api.Dependencies.Gogoproto {
 
   /// <summary>Holder for reflection information generated from dependencies/gogoproto/gogo.proto</summary>
   public static partial class GogoReflection {

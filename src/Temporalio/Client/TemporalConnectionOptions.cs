@@ -103,7 +103,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
-        /// <returns>A shallow copy of these options.</returns>
+        /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         /// <remarks>Does not create copies of RPC metadata or runtime.</remarks>
         public virtual object Clone()
         {

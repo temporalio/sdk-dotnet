@@ -50,10 +50,6 @@ Can add options like:
 
 ### Rebuilding Rust extension and interop layer
 
-To rebuild DLL, make sure `protoc` is on the `PATH`, then:
-
-    cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml
-
 To regen core interop from header, install
 [ClangSharpPInvokeGenerator](https://github.com/dotnet/ClangSharp#generating-bindings) like:
 
@@ -62,6 +58,9 @@ To regen core interop from header, install
 Then, run:
 
     ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
+
+The Rust DLL is built automatically when the project is built. `protoc` may need to be on the `PATH` to build the Rust
+DLL.
 
 ### Regenerating protos
 
