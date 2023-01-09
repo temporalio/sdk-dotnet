@@ -1,0 +1,84 @@
+name: Continuous Integration
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - "releases/*"
+
+jobs:
+  build-lint-test:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest, ubuntu-arm]
+        include:
+          - os: windows-latest
+            checkTarget: true
+            docsTarget: true
+          - os: ubuntu-arm
+            runsOn: buildjet-4vcpu-ubuntu-2204-arm
+    runs-on: ${{ matrix.runsOn || matrix.os }}
+    steps:
+      - name: Print build information
+        run: "echo head_ref: ${{ github.head_ref }}, ref: ${{ github.ref }}, os: ${{ matrix.os }}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/Temporalio/Bridge
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        # We intentionally just build debug mode in this CI
+        run: dotnet build
+
+      - name: Regen + format to confirm unchanged
+        if: ${{ matrix.checkTarget }}
+        run: |
+          dotnet tool install --global csharpier
+          dotnet tool install --global ClangSharpPInvokeGenerator
+          ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
+          dotnet run --project src/Temporalio.Api.Generator
+          dotnet format style && dotnet format analyzers && dotnet csharpier .
+
+      - name: Regen + format verify unchanged
+        if: ${{ matrix.checkTarget }}
+        shell: bash
+        run: |
+          [[ -z $(git status --porcelain src) ]] || (git diff; echo "Code changed on regen + format"; exit 1)
+
+      - name: Test
+        run: dotnet test --logger "console;verbosity=detailed"
+
+      - name: Build docs
+        if: ${{ matrix.docsTarget }}
+        uses: nikeee/docfx-action@v1.0.0
+        with:
+          args: src/Temporalio.ApiDoc/docfx.json
+
+      - name: Deploy docs
+        if: ${{ matrix.docsTarget }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        run: npx vercel deploy src/Temporalio.ApiDoc/obj/_site --prod --yes
+
