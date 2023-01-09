@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Temporalio.Runtime;
 
 namespace Temporalio.Client
 {
@@ -17,19 +18,20 @@ namespace Temporalio.Client
         /// <returns>The established connection.</returns>
         public static async Task<TemporalConnection> ConnectAsync(TemporalConnectionOptions options)
         {
-            var runtime = options.Runtime ?? Runtime.Default;
+            var runtime = options.Runtime ?? TemporalRuntime.Default;
             var client = await Bridge.Client.ConnectAsync(runtime.runtime, options);
-            return new TemporalConnection(client);
+            return new TemporalConnection(client, options);
         }
 
         private readonly Bridge.Client client;
 
-        private TemporalConnection(Bridge.Client client)
+        private TemporalConnection(Bridge.Client client, TemporalConnectionOptions options)
         {
             this.client = client;
             WorkflowService = new WorkflowService.Impl(this);
             OperatorService = new OperatorService.Impl(this);
             TestService = new TestService.Impl(this);
+            Options = options;
         }
 
         /// <inheritdoc />
@@ -40,6 +42,9 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public TestService TestService { get; private init; }
+
+        /// <inheritdoc />
+        public TemporalConnectionOptions Options { get; private init; }
 
         /// <inheritdoc />
         public Task<bool> CheckHealthAsync(RpcService? service = null, RpcOptions? options = null)

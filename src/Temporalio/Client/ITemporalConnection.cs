@@ -28,6 +28,11 @@ namespace Temporalio.Client
         public TestService TestService { get; }
 
         /// <summary>
+        /// Gets the options used to create this connection.
+        /// </summary>
+        public TemporalConnectionOptions Options { get; }
+
+        /// <summary>
         /// Check health for the given service type.
         /// </summary>
         /// <param name="service">Service type to check health for. Defaults to

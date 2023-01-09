@@ -10,5 +10,10 @@ namespace Temporalio.Client
         /// Gets the connection associated with this client.
         /// </summary>
         ITemporalConnection Connection { get; }
+
+        /// <summary>
+        /// Gets the options used to create this client.
+        /// </summary>
+        TemporalClientOptions Options { get; }
     }
 }
