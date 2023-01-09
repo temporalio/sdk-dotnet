@@ -15,6 +15,7 @@ jobs:
         include:
           - os: windows-latest
             checkTarget: true
+          - os: ubuntu-latest
             docsTarget: true
           - os: ubuntu-arm
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
@@ -44,26 +45,26 @@ jobs:
       - name: Install protoc
         uses: arduino/setup-protoc@v1
         with:
+          # TODO(cretz): Upgrade when https://github.com/arduino/setup-protoc/issues/33 fixed
+          version: '3.x'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
         # We intentionally just build debug mode in this CI
         run: dotnet build
 
-      - name: Regen + format to confirm unchanged
+      - name: Regen + format and confirm unchanged
         if: ${{ matrix.checkTarget }}
         run: |
           dotnet tool install --global csharpier
           dotnet tool install --global ClangSharpPInvokeGenerator
+
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
           dotnet format style && dotnet format analyzers && dotnet csharpier .
 
-      - name: Regen + format verify unchanged
-        if: ${{ matrix.checkTarget }}
-        shell: bash
-        run: |
-          [[ -z $(git status --porcelain src) ]] || (git diff; echo "Code changed on regen + format"; exit 1)
+          git config --global core.safecrlf false
+          git diff --exit-code
 
       - name: Test
         run: dotnet test --logger "console;verbosity=detailed"
@@ -77,8 +78,7 @@ jobs:
       - name: Deploy docs
         if: ${{ matrix.docsTarget }}
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-        run: npx vercel deploy src/Temporalio.ApiDoc/obj/_site --prod --yes
+        run: npx vercel deploy src/Temporalio.ApiDoc/obj/_site --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
 

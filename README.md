@@ -64,7 +64,12 @@ DLL.
 
 ### Regenerating protos
 
-Must have `protoc` on the `PATH`, then:
+Must have `protoc` on the `PATH`. Note, for now you must use `protoc` 3.x until
+[our GH action downloader](https://github.com/arduino/setup-protoc/issues/33) is fixed or we change how we download
+protoc and check protos (since protobuf
+[changed some C# source](https://github.com/protocolbuffers/protobuf/pull/9981)).
+
+Then:
 
     dotnet run --project src/Temporalio.Api.Generator
 
