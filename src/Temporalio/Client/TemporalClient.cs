@@ -42,9 +42,7 @@ namespace Temporalio.Client
         /// <inheritdoc />
         public ITemporalConnection Connection { get; private init; }
 
-        /// <summary>
-        /// Gets the options originally passed to this client.
-        /// </summary>
+        /// <inheritdoc />
         public TemporalClientOptions Options { get; private init; }
 
         // TODO(cretz): High-level client methods
