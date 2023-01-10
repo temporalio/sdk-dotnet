@@ -76,7 +76,7 @@ jobs:
           args: src/Temporalio.ApiDoc/docfx.json
 
       - name: Deploy docs
-        if: ${{ matrix.docsTarget }}
+        if: ${{ github.ref == 'refs/heads/main' && matrix.docsTarget }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
