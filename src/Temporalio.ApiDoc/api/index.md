@@ -3,7 +3,7 @@
 
 Namespaces:
 
-* [Temporalio](Temporalio.html)
-* [Temporalio.Client](Temporalio.Client.html)
-* [Temporalio.Testing](Temporalio.Testing.html)
-* [Temporalio.Worker](Temporalio.Worker.html)
+* [Temporalio](/api/Temporalio.html)
+* [Temporalio.Client](/api/Temporalio.Client.html)
+* [Temporalio.Testing](/api/Temporalio.Testing.html)
+* [Temporalio.Worker](/api/Temporalio.Worker.html)

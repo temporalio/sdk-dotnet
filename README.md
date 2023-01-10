@@ -1,5 +1,12 @@
 # Temporal .NET SDK
 
+See:
+
+* NuGet Package (TODO)
+* Application Development Guide (TODO)
+* [API Documentation](https://dotnet.temporal.io/api)
+* Samples (TODO)
+
 ⚠️ UNDER ACTIVE DEVELOPMENT
 
 (for the previous .NET SDK repo, see https://github.com/temporalio/experiment-dotnet)
