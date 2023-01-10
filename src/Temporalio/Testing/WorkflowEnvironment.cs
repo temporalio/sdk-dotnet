@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Client;
+using Temporalio.Runtime;
 
 namespace Temporalio.Testing
 {
@@ -31,7 +32,7 @@ namespace Temporalio.Testing
         )
         {
             options ??= new();
-            var runtime = options.Runtime ?? Runtime.Default;
+            var runtime = options.Runtime ?? TemporalRuntime.Default;
             var server = await Bridge.EphemeralServer.StartTemporaliteAsync(
                 runtime.runtime,
                 options
@@ -52,7 +53,7 @@ namespace Temporalio.Testing
         )
         {
             options ??= new();
-            var runtime = options.Runtime ?? Runtime.Default;
+            var runtime = options.Runtime ?? TemporalRuntime.Default;
             var server = await Bridge.EphemeralServer.StartTestServerAsync(
                 runtime.runtime,
                 options

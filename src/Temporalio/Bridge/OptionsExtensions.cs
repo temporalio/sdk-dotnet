@@ -10,9 +10,138 @@ namespace Temporalio.Bridge
     {
         private static readonly ByteArrayRef ClientName = ByteArrayRef.FromUTF8("temporal-dotnet");
         private static readonly ByteArrayRef ClientVersion = ByteArrayRef.FromUTF8(
-            Temporalio.Runtime.Version
+            Temporalio.Runtime.TemporalRuntime.Version
         );
         private static readonly ByteArrayRef SdkName = ByteArrayRef.FromUTF8("sdk-dotnet");
+
+        public static unsafe Interop.RuntimeOptions ToInteropOptions(
+            this Temporalio.Runtime.TemporalRuntimeOptions options,
+            Scope scope
+        )
+        {
+            return new Interop.RuntimeOptions()
+            {
+                telemetry = scope.Pointer(options.Telemetry.ToInteropOptions(scope))
+            };
+        }
+
+        public static unsafe Interop.TelemetryOptions ToInteropOptions(
+            this Temporalio.Runtime.TelemetryOptions options,
+            Scope scope
+        )
+        {
+            return new Interop.TelemetryOptions()
+            {
+                tracing =
+                    options.Tracing == null
+                        ? null
+                        : scope.Pointer(options.Tracing.ToInteropOptions(scope)),
+                logging =
+                    options.Logging == null
+                        ? null
+                        : scope.Pointer(options.Logging.ToInteropOptions(scope)),
+                metrics =
+                    options.Metrics == null
+                        ? null
+                        : scope.Pointer(options.Metrics.ToInteropOptions(scope))
+            };
+        }
+
+        public static unsafe Interop.TracingOptions ToInteropOptions(
+            this Temporalio.Runtime.TracingOptions options,
+            Scope scope
+        )
+        {
+            if (String.IsNullOrEmpty(options.Filter.FilterString))
+            {
+                throw new ArgumentException("Tracing filter string is required");
+            }
+            return new Interop.TracingOptions()
+            {
+                filter = scope.ByteArray(options.Filter.FilterString),
+                opentelemetry = options.OpenTelemetry.ToInteropOptions(scope)
+            };
+        }
+
+        public static unsafe Interop.OpenTelemetryOptions ToInteropOptions(
+            this Temporalio.Runtime.OpenTelemetryOptions options,
+            Scope scope
+        )
+        {
+            if (String.IsNullOrEmpty(options.Url))
+            {
+                throw new ArgumentException("OpenTelemetry URL is required");
+            }
+            return new Interop.OpenTelemetryOptions()
+            {
+                url = scope.ByteArray(options.Url),
+                headers = scope.Metadata(options.Headers),
+                metric_periodicity_millis = (uint)(
+                    options.MetricPeriodicity == null
+                        ? 0
+                        : options.MetricPeriodicity.Value.TotalMilliseconds
+                )
+            };
+        }
+
+        public static unsafe Interop.LoggingOptions ToInteropOptions(
+            this Temporalio.Runtime.LoggingOptions options,
+            Scope scope
+        )
+        {
+            if (String.IsNullOrEmpty(options.Filter.FilterString))
+            {
+                throw new ArgumentException("Logging filter string is required");
+            }
+            return new Interop.LoggingOptions()
+            {
+                filter = scope.ByteArray(options.Filter.FilterString),
+                forward = (byte)0,
+            };
+        }
+
+        public static unsafe Interop.MetricsOptions ToInteropOptions(
+            this Temporalio.Runtime.MetricsOptions options,
+            Scope scope
+        )
+        {
+            Interop.PrometheusOptions* prometheus = null;
+            Interop.OpenTelemetryOptions* openTelemetry = null;
+            if (options.Prometheus != null)
+            {
+                if (options.OpenTelemetry != null)
+                {
+                    throw new ArgumentException(
+                        "Cannot have Prometheus and OpenTelemetry metrics options"
+                    );
+                }
+                if (String.IsNullOrEmpty(options.Prometheus.BindAddress))
+                {
+                    throw new ArgumentException("Prometheus options must have bind address");
+                }
+                prometheus = scope.Pointer(
+                    new Interop.PrometheusOptions()
+                    {
+                        bind_address = scope.ByteArray(options.Prometheus.BindAddress)
+                    }
+                );
+            }
+            else if (options.OpenTelemetry != null)
+            {
+                openTelemetry = scope.Pointer(options.OpenTelemetry.ToInteropOptions(scope));
+            }
+            else
+            {
+                throw new ArgumentException(
+                    "Must have either Prometheus or OpenTelemetry metrics options"
+                );
+            }
+            return new Interop.MetricsOptions()
+            {
+                prometheus = prometheus,
+                opentelemetry = openTelemetry
+            };
+        }
 
         public static unsafe Interop.ClientOptions ToInteropOptions(
             this Temporalio.Client.TemporalConnectionOptions options,
@@ -27,7 +156,7 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("TargetHost cannot have ://");
             }
-            var scheme = options.TlsOptions == null ? "http" : "https";
+            var scheme = options.Tls == null ? "http" : "https";
             return new Interop.ClientOptions()
             {
                 target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
@@ -41,13 +170,11 @@ namespace Temporalio.Bridge
                             + System.Net.Dns.GetHostName()
                 ),
                 tls_options =
-                    options.TlsOptions == null
-                        ? null
-                        : scope.Pointer(options.TlsOptions.ToInteropOptions(scope)),
+                    options.Tls == null ? null : scope.Pointer(options.Tls.ToInteropOptions(scope)),
                 retry_options =
-                    options.RpcRetryOptions == null
+                    options.RpcRetry == null
                         ? null
-                        : scope.Pointer(options.RpcRetryOptions.ToInteropOptions())
+                        : scope.Pointer(options.RpcRetry.ToInteropOptions())
             };
         }
 

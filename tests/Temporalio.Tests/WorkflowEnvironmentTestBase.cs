@@ -6,13 +6,13 @@ using Xunit.Abstractions;
 [Collection("Environment")]
 public abstract class WorkflowEnvironmentTestBase
 {
-    private readonly WorkflowEnvironment env;
-
     public WorkflowEnvironmentTestBase(ITestOutputHelper output, WorkflowEnvironment env)
     {
         Console.SetOut(new ConsoleWriter(output));
-        this.env = env;
+        Env = env;
     }
 
-    protected Temporalio.Client.ITemporalClient Client => env.Client;
+    protected WorkflowEnvironment Env { get; private init; }
+
+    protected Temporalio.Client.ITemporalClient Client => Env.Client;
 }
