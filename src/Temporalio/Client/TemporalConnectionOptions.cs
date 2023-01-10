@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Temporalio.Runtime;
 
 namespace Temporalio.Client
 {
@@ -38,7 +39,7 @@ namespace Temporalio.Client
         /// <remarks>
         /// This must be set, even to a default instance, to do any TLS connection.
         /// </remarks>
-        public TlsOptions? TlsOptions { get; set; }
+        public TlsOptions? Tls { get; set; }
 
         /// <summary>
         /// Gets or sets retry options for this connection.
@@ -47,7 +48,7 @@ namespace Temporalio.Client
         /// This only applies if the call is being retried, which by default is usually all
         /// high-level client calls but no raw gRPC calls.
         /// </remarks>
-        public RpcRetryOptions? RpcRetryOptions { get; set; }
+        public RpcRetryOptions? RpcRetry { get; set; }
 
         /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
@@ -67,10 +68,10 @@ namespace Temporalio.Client
         /// Runtime for this connection.
         /// </summary>
         /// <remarks>
-        /// By default this uses <see cref="Runtime.Default" /> which is lazily created when first
-        /// needed.
+        /// By default this uses <see cref="TemporalRuntime.Default" /> which is lazily created when
+        /// first needed.
         /// </remarks>
-        public Runtime? Runtime { get; set; }
+        public TemporalRuntime? Runtime { get; set; }
 
         internal void ParseTargetHost(out string? ip, out int? port)
         {
@@ -108,13 +109,13 @@ namespace Temporalio.Client
         public virtual object Clone()
         {
             var copy = (TemporalConnectionOptions)this.MemberwiseClone();
-            if (TlsOptions != null)
+            if (Tls != null)
             {
-                copy.TlsOptions = (TlsOptions)TlsOptions.Clone();
+                copy.Tls = (TlsOptions)Tls.Clone();
             }
-            if (RpcRetryOptions != null)
+            if (RpcRetry != null)
             {
-                copy.RpcRetryOptions = (RpcRetryOptions)RpcRetryOptions.Clone();
+                copy.RpcRetry = (RpcRetryOptions)RpcRetry.Clone();
             }
             return copy;
         }
