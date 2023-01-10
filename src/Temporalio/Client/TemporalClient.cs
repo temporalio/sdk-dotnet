@@ -34,7 +34,8 @@ namespace Temporalio.Client
         /// <inheritdoc />
         public string Namespace => Options.Namespace;
 
-        // TODO(cretz): public Converters.DataConverter DataConverter => Options.DataConverter;
+        /// <inheritdoc />
+        public Converters.DataConverter DataConverter => Options.DataConverter;
 
         /// <inheritdoc />
         public IBridgeClientProvider BridgeClientProvider => Connection;

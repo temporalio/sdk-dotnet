@@ -13,27 +13,25 @@ namespace Temporalio.Client
         /// <summary>
         /// Create default options.
         /// </summary>
-        public TemporalClientConnectOptions()
-        {
-            // TODO(cretz): DataConverter = Converters.DataConverter.Default;
-        }
+        public TemporalClientConnectOptions() { }
 
         /// <summary>
         /// Create default options with a target host.
         /// </summary>
         /// <param name="targetHost">Target host to connect to.</param>
         /// <seealso cref="TemporalConnectionOptions.TargetHost" />
-        public TemporalClientConnectOptions(string targetHost) : base(targetHost)
-        {
-            // TODO(cretz): DataConverter = Converters.DataConverter.Default;
-        }
+        public TemporalClientConnectOptions(string targetHost) : base(targetHost) { }
 
         /// <summary>
         /// Gets or sets the client namespace. Default is "default".
         /// </summary>
         public string Namespace { get; set; } = "default";
 
-        // TODO(cretz): public Converters.DataConverter DataConverter { get; set; }
+        /// <summary>
+        /// Gets or sets the client data converter.
+        /// </summary>
+        public Converters.DataConverter DataConverter { get; set; } =
+            Converters.DataConverter.Default;
 
         /// <summary>
         /// Create client options from a subset of these options for use in
@@ -45,7 +43,7 @@ namespace Temporalio.Client
             return new TemporalClientOptions()
             {
                 Namespace = Namespace,
-                // TODO(cretz): DataConverter = DataConverter
+                DataConverter = DataConverter
             };
         }
     }

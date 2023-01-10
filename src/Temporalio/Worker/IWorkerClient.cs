@@ -10,7 +10,10 @@ namespace Temporalio.Worker
         /// </summary>
         public string Namespace { get; }
 
-        // TODO(cretz): public Converters.DataConverter DataConverter { get; }
+        /// <summary>
+        /// Gets the data converter for this client.
+        /// </summary>
+        public Converters.DataConverter DataConverter { get; }
 
         /// <summary>
         /// Gets the bridge client provider for this client.

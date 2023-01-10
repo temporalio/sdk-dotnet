@@ -1,11 +1,11 @@
 namespace Temporalio.Tests.Runtime;
 
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using Temporalio.Client;
 using Xunit;
 using Xunit.Abstractions;
-using System.Net;
-using System.Net.Sockets;
-using System.Net.Http;
-using Temporalio.Client;
 
 public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
 {
@@ -17,20 +17,28 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
     {
         // Create two clients in separate runtimes with Prometheus endpoints and make calls on them
         var promAddr1 = $"127.0.0.1:{FreePort()}";
-        var client1 = await TemporalClient.ConnectAsync(new()
-        {
-            TargetHost = Client.Connection.Options.TargetHost,
-            Namespace = Client.Namespace,
-            Runtime = new(new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } })
-        });
+        var client1 = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Namespace,
+                Runtime = new(
+                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } }
+                )
+            }
+        );
         await client1.Connection.WorkflowService.GetSystemInfoAsync(new());
         var promAddr2 = $"127.0.0.1:{FreePort()}";
-        var client2 = await TemporalClient.ConnectAsync(new()
-        {
-            TargetHost = Client.Connection.Options.TargetHost,
-            Namespace = Client.Namespace,
-            Runtime = new(new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } })
-        });
+        var client2 = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Namespace,
+                Runtime = new(
+                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } }
+                )
+            }
+        );
         await client2.Connection.WorkflowService.GetSystemInfoAsync(new());
 
         // Check that Prometheus on each runtime is reporting metrics
