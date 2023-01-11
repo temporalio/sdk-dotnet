@@ -3,4 +3,5 @@
 bin/
 obj/
 /src/Temporalio/Bridge/target
+/tests/Temporalio.Tests/TestResults
 /.vs

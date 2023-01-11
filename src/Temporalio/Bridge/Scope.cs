@@ -77,8 +77,12 @@ namespace Temporalio.Bridge
 
         public IntPtr FunctionPointer<T>(T func) where T : Delegate
         {
-            toKeepAlive.Add(func);
-            return Marshal.GetFunctionPointerForDelegate(func);
+            // The delegate seems to get collected before called sometimes even if we add "func" to
+            // the keep alive list. Delegates are supposed to be reference types, but their pointers
+            // seem unstable. So we're going to alloc a handle for it. We can't pin it though.
+            var handle = GCHandle.Alloc(func);
+            toKeepAlive.Add(handle);
+            return Marshal.GetFunctionPointerForDelegate(handle.Target!);
         }
 
         public void Dispose()
