@@ -17,8 +17,11 @@ jobs:
             checkTarget: true
           - os: ubuntu-latest
             docsTarget: true
+        # TODO(cretz): Need to fix protoc downloader before this will work
+        # - os: ubuntu-arm
+        #   runsOn: buildjet-4vcpu-ubuntu-2204-arm
+        exclude:
           - os: ubuntu-arm
-            runsOn: buildjet-4vcpu-ubuntu-2204-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Print build information
