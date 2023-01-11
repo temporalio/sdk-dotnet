@@ -33,5 +33,25 @@ namespace Temporalio.Exceptions
         {
             Failure = failure;
         }
+
+        /// <summary>
+        /// Stack trace on the exception or on the failure if not on the exception.
+        /// </summary>
+        public override string? StackTrace
+        {
+            get
+            {
+                var stackTrace = base.StackTrace;
+                if (
+                    String.IsNullOrEmpty(stackTrace)
+                    && Failure != null
+                    && Failure.StackTrace.Length > 0
+                )
+                {
+                    stackTrace = Failure.StackTrace;
+                }
+                return stackTrace;
+            }
+        }
     }
 }

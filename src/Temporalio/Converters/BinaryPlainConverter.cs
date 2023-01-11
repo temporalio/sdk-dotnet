@@ -32,13 +32,13 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public T? ToValue<T>(Payload payload)
+        public object? ToValue(Payload payload, Type type)
         {
-            if (!typeof(T).Equals(typeof(byte[])))
+            if (!type.Equals(typeof(byte[])))
             {
-                throw new ArgumentException($"Payload is byte array, but type is {typeof(T)}");
+                throw new ArgumentException($"Payload is byte array, but type is {type}");
             }
-            return (T)(object)payload.Data.ToByteArray();
+            return payload.Data.ToByteArray();
         }
     }
 }

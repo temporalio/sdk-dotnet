@@ -12,24 +12,30 @@ namespace Temporalio.Converters
     public class FailureConverter : IFailureConverter
     {
         /// <summary>
-        /// Whether to move message and stack trace into encodable attribute section of failures.
+        /// Options this converter was created with.
         /// </summary>
-        public bool EncodeCommonAttributes { get; private init; }
+        /// <remarks>
+        /// Callers should never mutate this. Rather they should subclass the failure converter and
+        /// pass a different value into the protected constructor.
+        /// </remarks>
+        public FailureConverterOptions Options { get; private init; }
 
         /// <summary>
         /// Create a new failure converter.
         /// </summary>
-        public FailureConverter() : this(false) { }
+        public FailureConverter() : this(new()) { }
 
         /// <summary>
-        /// Create a new failure converter.
+        /// Create a new failure converter with the given options.
         /// </summary>
-        /// <param name="encodeCommonAttributes">
-        /// Whether to move message and stack trace into encodable attribute section of failures.
-        /// </param>
-        public FailureConverter(bool encodeCommonAttributes = false)
+        /// <param name="options">Options for the failure converter</param>
+        /// <remarks>
+        /// This is protected because payload converters are referenced as class types, not
+        /// instances, so only subclasses would call this.
+        /// </remarks>
+        protected FailureConverter(FailureConverterOptions options)
         {
-            EncodeCommonAttributes = encodeCommonAttributes;
+            Options = options;
         }
 
         /// <inheritdoc />
@@ -45,11 +51,17 @@ namespace Temporalio.Converters
                 );
 
             // Create new failure object. This means if it's already set we copy it. This is costly,
-            // but we prefer it over potentially mutating the failure on the existing exception
-            var failure = CreateFailureFromException(failureEx, payloadConverter);
+            // but we prefer it over potentially mutating the failure on the existing exception. We
+            // pass in the stack trace from the original exception always just in case it was
+            // converted to an application failure which won't have the original stack trace.
+            var failure = CreateFailureFromException(
+                failureEx,
+                exception.StackTrace,
+                payloadConverter
+            );
 
             // If requested, move message and stack trace to encoded attributes
-            if (EncodeCommonAttributes)
+            if (Options.EncodeCommonAttributes)
             {
                 failure.EncodedAttributes = payloadConverter.ToPayload(
                     new Dictionary<string, string>
@@ -64,7 +76,11 @@ namespace Temporalio.Converters
             return failure;
         }
 
-        private Failure CreateFailureFromException(FailureException exc, IPayloadConverter conv)
+        private Failure CreateFailureFromException(
+            FailureException exc,
+            string? stackTrace,
+            IPayloadConverter conv
+        )
         {
             // Copy existing failure if already there
             if (exc.Failure != null)
@@ -74,7 +90,7 @@ namespace Temporalio.Converters
             var failure = new Failure()
             {
                 Message = exc.Message,
-                StackTrace = exc.StackTrace ?? "",
+                StackTrace = stackTrace ?? "",
                 Cause = exc.InnerException == null ? null : ToFailure(exc.InnerException, conv)
             };
             switch (exc)
@@ -163,6 +179,19 @@ namespace Temporalio.Converters
                 default:
                     return new FailureException(failure, inner);
             }
+        }
+
+        /// <summary>
+        /// Failure converter with <see cref="FailureConverterOptions.EncodeCommonAttributes" /> as
+        /// true.
+        /// </summary>
+        public class WithEncodedCommonAttributes : FailureConverter
+        {
+            /// <summary>
+            /// Create failure converter with
+            /// <see cref="FailureConverterOptions.EncodeCommonAttributes" /> as true.
+            /// </summary>
+            public WithEncodedCommonAttributes() : base(new() { EncodeCommonAttributes = true }) { }
         }
     }
 }

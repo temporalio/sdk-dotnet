@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Temporalio.Api.Common.V1;
+using Temporalio.Converters;
 
 namespace Temporalio.Exceptions
 {
@@ -11,16 +13,21 @@ namespace Temporalio.Exceptions
     /// <param name="Converter">Converter to use for conversion.</param>
     /// <param name="Payloads">Raw payloads to convert.</param>
     public record InboundFailureDetails(
-        Converters.IPayloadConverter Converter,
-        IReadOnlyCollection<Payload> Payloads
+        IPayloadConverter Converter,
+        IReadOnlyCollection<Payload>? Payloads
     ) : IFailureDetails
     {
         /// <inheritdoc />
-        public int Count => Payloads.Count;
+        public int Count => Payloads?.Count ?? 0;
 
         /// <inheritdoc />
         public T? ElementAt<T>(int index)
         {
+            // Have to check ourselves here just in case no collection present
+            if (index >= Count)
+            {
+                throw new ArgumentOutOfRangeException("index");
+            }
             return Converter.ToValue<T>(Payloads.ElementAt(index));
         }
     }

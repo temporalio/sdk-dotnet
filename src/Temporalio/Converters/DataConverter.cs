@@ -7,12 +7,21 @@ namespace Temporalio.Converters
         IPayloadCodec? PayloadCodec = null
     ) : DataConverter(typeof(PayloadConverterType), typeof(FailureConverterType), PayloadCodec)
         where PayloadConverterType : IPayloadConverter, new()
-        where FailureConverterType : IFailureConverter, new() { }
+        where FailureConverterType : IFailureConverter, new()
+    {
+        /// <inheritdoc />
+        public new PayloadConverterType PayloadConverter =>
+            (PayloadConverterType)base.PayloadConverter;
+
+        /// <inheritdoc />
+        public new FailureConverterType FailureConverter =>
+            (FailureConverterType)base.FailureConverter;
+    }
 
     /// <inheritdoc />
     public record DataConverter<PayloadConverterType>(IPayloadCodec? PayloadCodec = null)
-        : DataConverter(typeof(PayloadConverterType), typeof(FailureConverter), PayloadCodec)
-        where PayloadConverterType : IPayloadConverter { }
+        : DataConverter<PayloadConverterType, FailureConverter>(PayloadCodec)
+        where PayloadConverterType : IPayloadConverter, new() { }
 
     /// <summary>
     /// Data converter which combines a payload converter, a failure converter, and a payload codec.
@@ -35,7 +44,7 @@ namespace Temporalio.Converters
         /// <summary>
         /// Default data converter instance.
         /// </summary>
-        public static DataConverter Default { get; } = new();
+        public static DataConverter<PayloadConverter, FailureConverter> Default { get; } = new();
 
         /// <summary>
         /// Eagerly instantiated instance of a payload converter. Note, this may not be the exact

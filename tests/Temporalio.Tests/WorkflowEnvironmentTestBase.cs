@@ -4,11 +4,11 @@ using Xunit;
 using Xunit.Abstractions;
 
 [Collection("Environment")]
-public abstract class WorkflowEnvironmentTestBase
+public abstract class WorkflowEnvironmentTestBase : TestBase
 {
     public WorkflowEnvironmentTestBase(ITestOutputHelper output, WorkflowEnvironment env)
+        : base(output)
     {
-        Console.SetOut(new ConsoleWriter(output));
         Env = env;
     }
 

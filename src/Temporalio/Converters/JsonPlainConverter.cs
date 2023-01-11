@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json;
 using Google.Protobuf;
 using Temporalio.Api.Common.V1;
@@ -22,11 +23,6 @@ namespace Temporalio.Converters
         protected JsonSerializerOptions SerializerOptions { get; private init; }
 
         /// <summary>
-        /// Create a default JSON converter.
-        /// </summary>
-        public JsonPlainConverter() : this(new()) { }
-
-        /// <summary>
         /// Create a JSON converter with the given serializer options.
         /// </summary>
         public JsonPlainConverter(JsonSerializerOptions serializerOptions)
@@ -47,9 +43,9 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public T? ToValue<T>(Payload payload)
+        public object? ToValue(Payload payload, Type type)
         {
-            return JsonSerializer.Deserialize<T>(payload.Data.ToByteArray(), SerializerOptions);
+            return JsonSerializer.Deserialize(payload.Data.ToByteArray(), type, SerializerOptions);
         }
     }
 }

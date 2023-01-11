@@ -52,7 +52,7 @@ namespace Temporalio.Exceptions
         {
             Type = type;
             NonRetryable = nonRetryable;
-            Details = new OutboundFailureDetails(details ?? new object[0]);
+            Details = new OutboundFailureDetails(details);
         }
 
         /// <inheritdoc />
@@ -67,7 +67,7 @@ namespace Temporalio.Exceptions
                 ?? throw new ArgumentException("No application failure info");
             Type = info.Type.Length == 0 ? null : info.Type;
             NonRetryable = info.NonRetryable;
-            Details = new InboundFailureDetails(converter, info.Details.Payloads_);
+            Details = new InboundFailureDetails(converter, info.Details?.Payloads_);
         }
 
         /// <summary>

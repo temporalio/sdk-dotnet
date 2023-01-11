@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,14 +9,19 @@ namespace Temporalio.Exceptions
     /// later.
     /// </summary>
     /// <param name="Details">Collection of details to reference.</param>
-    public record OutboundFailureDetails(IReadOnlyCollection<object> Details) : IFailureDetails
+    public record OutboundFailureDetails(IReadOnlyCollection<object>? Details) : IFailureDetails
     {
         /// <inheritdoc />
-        public int Count => Details.Count;
+        public int Count => Details?.Count ?? 0;
 
         /// <inheritdoc />
         public T? ElementAt<T>(int index)
         {
+            // Have to check ourselves here just in case no collection present
+            if (index >= Count)
+            {
+                throw new ArgumentOutOfRangeException("index");
+            }
             return (T)Details.ElementAt(index);
         }
     }

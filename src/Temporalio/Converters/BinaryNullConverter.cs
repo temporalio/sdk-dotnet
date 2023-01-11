@@ -30,20 +30,17 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public T? ToValue<T>(Payload payload)
+        public object? ToValue(Payload payload, Type type)
         {
             if (payload.Data.Length > 0)
             {
                 throw new ArgumentException("Expected empty data for binary/null");
             }
-            var ret = default(T);
-            if (ret != null)
+            else if (type.IsValueType)
             {
-                throw new ArgumentException(
-                    $"Payload is null, but type {typeof(T)} is not nullable"
-                );
+                throw new ArgumentException($"Payload is null, but {type} is not nullable");
             }
-            return ret;
+            return null;
         }
     }
 }

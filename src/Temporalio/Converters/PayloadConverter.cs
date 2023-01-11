@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 
@@ -11,7 +12,8 @@ namespace Temporalio.Converters
     /// <see cref="IEncodingConverter" />.
     /// </summary>
     /// <remarks>
-    /// See <see cref="PayloadConverter()" /> for the default set of encoding converters used.
+    /// See <see cref="PayloadConverter()" /> for the default set of encoding converters used. To
+    /// create a custom converter, a new class should extend this one.
     /// </remarks>
     public class PayloadConverter : IPayloadConverter
     {
@@ -57,19 +59,29 @@ namespace Temporalio.Converters
         /// that is using binary proto instead of JSON proto).
         /// </para>
         /// </remarks>
-        public PayloadConverter()
+        public PayloadConverter() : this(new JsonSerializerOptions()) { }
+
+        /// <summary>
+        /// <see cref="PayloadConverter()" />
+        /// </summary>
+        /// <param name="jsonSerializerOptions">Custom serializer options.</param>
+        /// <remarks>
+        /// This is protected because payload converters are referenced as class types, not
+        /// instances, so only subclasses would call this.
+        /// </remarks>
+        protected PayloadConverter(JsonSerializerOptions jsonSerializerOptions)
             : this(
                 new BinaryNullConverter(),
                 new BinaryPlainConverter(),
                 new JsonProtoConverter(),
                 new BinaryProtoConverter(),
-                new JsonPlainConverter()
+                new JsonPlainConverter(jsonSerializerOptions)
             ) { }
 
         /// <summary>
         /// <see cref="PayloadConverter(IEnumerable&lt;IEncodingConverter&gt;)" />
         /// </summary>
-        public PayloadConverter(params IEncodingConverter[] encodingConverters)
+        protected PayloadConverter(params IEncodingConverter[] encodingConverters)
             : this((IEnumerable<IEncodingConverter>)encodingConverters) { }
 
         /// <summary>
@@ -79,10 +91,11 @@ namespace Temporalio.Converters
         /// Encoding converters to use. Duplicate encodings not allowed.
         /// </param>
         /// <remarks>
-        /// When converting to a payload, each of the encoding converters are tried in order. When
-        /// converting from a payload, the encoding that matches is used.
+        /// This is protected because payload converters are referenced as class types, not
+        /// instances, so only subclasses would call this.
         /// </remarks>
-        public PayloadConverter(IEnumerable<IEncodingConverter> encodingConverters)
+        /// <seealso cref="PayloadConverter()" />
+        protected PayloadConverter(IEnumerable<IEncodingConverter> encodingConverters)
         {
             EncodingConverters = encodingConverters.ToList().AsReadOnly();
             IndexedEncodingConverters = encodingConverters.ToDictionary(
@@ -105,12 +118,12 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public T? ToValue<T>(Payload payload)
+        public object? ToValue(Payload payload, Type type)
         {
             var encoding = payload.Metadata["encoding"];
             if (IndexedEncodingConverters.TryGetValue(encoding, out var converter))
             {
-                return converter.ToValue<T>(payload);
+                return converter.ToValue(payload, type);
             }
             throw new ArgumentException($"Unknown payload encoding {encoding.ToStringUtf8()}");
         }

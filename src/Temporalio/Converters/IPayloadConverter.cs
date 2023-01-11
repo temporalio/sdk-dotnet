@@ -1,3 +1,4 @@
+using System;
 using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Converters
@@ -21,11 +22,11 @@ namespace Temporalio.Converters
         Payload ToPayload(object? value);
 
         /// <summary>
-        /// Conver the given payload to a value of the given type.
+        /// Convert the given payload to a value of the given type.
         /// </summary>
-        /// <typeparam name="T">The type to convert to.</typeparam>
         /// <param name="payload">The payload to convert.</param>
+        /// <param name="type">The type to convert to.</param>
         /// <returns>The converted value.</returns>
-        T? ToValue<T>(Payload payload);
+        object? ToValue(Payload payload, Type type);
     }
 }

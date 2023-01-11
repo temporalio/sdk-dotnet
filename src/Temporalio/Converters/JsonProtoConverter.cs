@@ -1,3 +1,4 @@
+using System;
 using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 
@@ -58,10 +59,10 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public T? ToValue<T>(Payload payload)
+        public object? ToValue(Payload payload, Type type)
         {
-            var desc = BinaryProtoConverter.AssertProtoPayload<T>(payload);
-            return (T?)Parser.Parse(payload.Data.ToStringUtf8(), desc);
+            var desc = BinaryProtoConverter.AssertProtoPayload(payload, type);
+            return Parser.Parse(payload.Data.ToStringUtf8(), desc);
         }
     }
 }

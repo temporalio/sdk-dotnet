@@ -11,16 +11,15 @@ namespace Temporalio.Converters
     /// </summary>
     public class BinaryProtoConverter : IEncodingConverter
     {
-        internal static MessageDescriptor AssertProtoPayload<T>(Payload payload)
+        internal static MessageDescriptor AssertProtoPayload(Payload payload, Type type)
         {
-            var type = typeof(T);
-            if (typeof(IMessage).IsAssignableFrom(type))
+            if (!typeof(IMessage).IsAssignableFrom(type))
             {
                 throw new ArgumentException($"Payload is protobuf message, but type is {type}");
             }
-            // TODO(cretz): Can this be done better?
+            // TODO(cretz): Can this be done better/cheaper?
             var desc =
-                type.GetField("Descriptor", BindingFlags.Public | BindingFlags.Static)
+                type.GetProperty("Descriptor", BindingFlags.Public | BindingFlags.Static)
                     ?.GetValue(null) as MessageDescriptor;
             if (desc == null)
             {
@@ -70,10 +69,10 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public T? ToValue<T>(Payload payload)
+        public object? ToValue(Payload payload, Type type)
         {
-            AssertProtoPayload<T>(payload);
-            var message = (T)Activator.CreateInstance(typeof(T))!;
+            AssertProtoPayload(payload, type);
+            var message = Activator.CreateInstance(type)!;
             ((IMessage)message).MergeFrom(payload.Data);
             return message;
         }

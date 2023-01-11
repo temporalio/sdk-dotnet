@@ -70,7 +70,8 @@ namespace Temporalio.Converters
         {
             if (payloads != null && payloads.Payloads_.Count > 0)
             {
-                var newPayloads = await func.Invoke(payloads.Payloads_);
+                // We have to convert to list just in case this is a lazy enumerable
+                var newPayloads = (await func.Invoke(payloads.Payloads_)).ToList();
                 payloads.Payloads_.Clear();
                 payloads.Payloads_.Add(newPayloads);
             }
