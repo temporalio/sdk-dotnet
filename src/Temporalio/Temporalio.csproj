@@ -32,7 +32,7 @@
   </PropertyGroup>
   
   <Target Name="CargoBuildDebug" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Debug'">
-    <Exec Command="cargo build" WorkingDirectory="Bridge"/>
+    <Exec Command="cargo build" WorkingDirectory="Bridge" />
   </Target>
   <Target Name="CopyBridgeDLLDebug" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Debug'">
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
@@ -45,10 +45,10 @@
   </Target>
 
   <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="cargo build --release" WorkingDirectory="Bridge"/>
+    <Exec Command="cargo build --release" WorkingDirectory="Bridge" />
   </Target>
   <Target Name="CopyBridgeDLLRelease" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release'">
-    <Exec Command="cargo build --release" WorkingDirectory="Bridge"/>
+    <Exec Command="cargo build --release" WorkingDirectory="Bridge" />
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
       <Content Include="Bridge/target/release/$(BridgeLibraryFile)">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -8,9 +8,29 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class CancellationToken : SafeHandle
     {
+        private CancellationToken()
+            : base(IntPtr.Zero, true)
+        {
+            unsafe
+            {
+                Ptr = Interop.Methods.cancellation_token_new();
+                SetHandle((IntPtr)Ptr);
+            }
+        }
+
+        /// <inheritdoc/>
+        public override unsafe bool IsInvalid => false;
+
+        /// <summary>
+        /// Gets internal token pointer.
+        /// </summary>
+        internal unsafe Interop.CancellationToken* Ptr { get; private init; }
+
         /// <summary>
         /// Create a core cancellation token from the given cancellation token.
         /// </summary>
+        /// <param name="token">Threading token.</param>
+        /// <returns>Created cancellation token.</returns>
         public static CancellationToken FromThreading(System.Threading.CancellationToken token)
         {
             var ret = new CancellationToken();
@@ -18,31 +38,22 @@ namespace Temporalio.Bridge
             return ret;
         }
 
-        internal readonly unsafe Interop.CancellationToken* ptr;
-
-        public CancellationToken() : base(IntPtr.Zero, true)
-        {
-            unsafe
-            {
-                ptr = Interop.Methods.cancellation_token_new();
-                SetHandle((IntPtr)ptr);
-            }
-        }
-
-        public override unsafe bool IsInvalid => false;
-
-        protected override unsafe bool ReleaseHandle()
-        {
-            Interop.Methods.cancellation_token_free(ptr);
-            return true;
-        }
-
+        /// <summary>
+        /// Cancel this token.
+        /// </summary>
         public void Cancel()
         {
             unsafe
             {
-                Interop.Methods.cancellation_token_cancel(ptr);
+                Interop.Methods.cancellation_token_cancel(Ptr);
             }
+        }
+
+        /// <inheritdoc/>
+        protected override unsafe bool ReleaseHandle()
+        {
+            Interop.Methods.cancellation_token_free(Ptr);
+            return true;
         }
     }
 }

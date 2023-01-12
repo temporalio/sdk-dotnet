@@ -14,8 +14,10 @@ namespace Temporalio.Bridge
         private readonly unsafe Interop.ByteArray* byteArray;
 
         /// <summary>
-        /// Instantiate this handle referencing the given pointer.
+        /// Initializes a new instance of the <see cref="ByteArray"/> class.
         /// </summary>
+        /// <param name="runtime">Runtime to use to free the byte array.</param>
+        /// <param name="byteArray">Byte array pointer.</param>
         public unsafe ByteArray(Runtime runtime, Interop.ByteArray* byteArray)
             : base((IntPtr)byteArray, true)
         {
@@ -23,17 +25,13 @@ namespace Temporalio.Bridge
             this.byteArray = byteArray;
         }
 
+        /// <inheritdoc/>
         public override unsafe bool IsInvalid => false;
-
-        protected override unsafe bool ReleaseHandle()
-        {
-            runtime.FreeByteArray(byteArray);
-            return true;
-        }
 
         /// <summary>
         /// Convert the byte array to a UTF8 string.
         /// </summary>
+        /// <returns>Converted string.</returns>
         public string ToUTF8()
         {
             unsafe
@@ -43,16 +41,26 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Convert the byte array to a protobuf message.
+        /// Convert the byte array to a proto message.
         /// </summary>
-        public T ToProto<T>(MessageParser<T> parser) where T : IMessage<T>
+        /// <typeparam name="T">Proto message type.</typeparam>
+        /// <param name="parser">Proto message parser to use.</param>
+        /// <returns>Parsed message.</returns>
+        public T ToProto<T>(MessageParser<T> parser)
+            where T : IMessage<T>
         {
             unsafe
             {
                 return parser.ParseFrom(
-                    new UnmanagedMemoryStream(byteArray->data, (long)byteArray->size)
-                );
+                    new UnmanagedMemoryStream(byteArray->data, (long)byteArray->size));
             }
+        }
+
+        /// <inheritdoc/>
+        protected override unsafe bool ReleaseHandle()
+        {
+            runtime.FreeByteArray(byteArray);
+            return true;
         }
     }
 }
