@@ -46,7 +46,7 @@ public class FailureConverterTests : TestBase
         {
             throw new ArgumentException("exc1", new InvalidOperationException("exc2"));
         };
-        var converter = new FailureConverter.WithEncodedCommonAttributes();
+        var converter = new DefaultFailureConverter.WithEncodedCommonAttributes();
         var failure = converter.ToFailure(
             Assert.Throws<ArgumentException>(throws),
             DataConverter.Default.PayloadConverter

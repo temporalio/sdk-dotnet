@@ -19,7 +19,7 @@ public class PayloadConverterTests : TestBase
         [property: JsonPropertyName("someString")] string? SomeString
     );
 
-    public class NoJsonProtoPayloadConverter : PayloadConverter
+    public class NoJsonProtoPayloadConverter : DefaultPayloadConverter
     {
         public NoJsonProtoPayloadConverter()
             : base(
@@ -29,7 +29,7 @@ public class PayloadConverterTests : TestBase
             ) { }
     }
 
-    public class CamelCasePayloadConverter : PayloadConverter
+    public class CamelCasePayloadConverter : DefaultPayloadConverter
     {
         public CamelCasePayloadConverter()
             : base(

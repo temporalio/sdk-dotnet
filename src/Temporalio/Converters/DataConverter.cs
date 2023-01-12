@@ -20,7 +20,7 @@ namespace Temporalio.Converters
 
     /// <inheritdoc />
     public record DataConverter<PayloadConverterType>(IPayloadCodec? PayloadCodec = null)
-        : DataConverter<PayloadConverterType, FailureConverter>(PayloadCodec)
+        : DataConverter<PayloadConverterType, DefaultFailureConverter>(PayloadCodec)
         where PayloadConverterType : IPayloadConverter, new() { }
 
     /// <summary>
@@ -44,7 +44,10 @@ namespace Temporalio.Converters
         /// <summary>
         /// Default data converter instance.
         /// </summary>
-        public static DataConverter<PayloadConverter, FailureConverter> Default { get; } = new();
+        public static DataConverter<
+            DefaultPayloadConverter,
+            DefaultFailureConverter
+        > Default { get; } = new();
 
         /// <summary>
         /// Eagerly instantiated instance of a payload converter. Note, this may not be the exact
@@ -68,6 +71,7 @@ namespace Temporalio.Converters
         /// <remarks>
         /// Non-inheriting users should use <see cref="Default" /> instead.
         /// </remarks>
-        public DataConverter() : this(typeof(PayloadConverter), typeof(FailureConverter)) { }
+        public DataConverter()
+            : this(typeof(DefaultPayloadConverter), typeof(DefaultFailureConverter)) { }
     }
 }

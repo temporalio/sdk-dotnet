@@ -5,7 +5,7 @@ namespace Temporalio.Converters
     /// <summary>
     /// Options for a failure converter.
     /// </summary>
-    public class FailureConverterOptions : ICloneable
+    public class DefaultFailureConverterOptions : ICloneable
     {
         /// <summary>
         /// If true, will move message and stack trace to/from encoded attributes which are subject

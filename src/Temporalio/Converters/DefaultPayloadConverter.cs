@@ -12,10 +12,10 @@ namespace Temporalio.Converters
     /// <see cref="IEncodingConverter" />.
     /// </summary>
     /// <remarks>
-    /// See <see cref="PayloadConverter()" /> for the default set of encoding converters used. To
-    /// create a custom converter, a new class should extend this one.
+    /// See <see cref="DefaultPayloadConverter()" /> for the default set of encoding converters
+    /// used. To create a custom converter, a new class should extend this one.
     /// </remarks>
-    public class PayloadConverter : IPayloadConverter
+    public class DefaultPayloadConverter : IPayloadConverter
     {
         // KeyedCollection not worth it and OrderedDictionary not generic. So we'll expose the
         // collection and maintain an internal dictionary.
@@ -59,17 +59,17 @@ namespace Temporalio.Converters
         /// that is using binary proto instead of JSON proto).
         /// </para>
         /// </remarks>
-        public PayloadConverter() : this(new JsonSerializerOptions()) { }
+        public DefaultPayloadConverter() : this(new JsonSerializerOptions()) { }
 
         /// <summary>
-        /// <see cref="PayloadConverter()" />
+        /// <see cref="DefaultPayloadConverter()" />
         /// </summary>
         /// <param name="jsonSerializerOptions">Custom serializer options.</param>
         /// <remarks>
         /// This is protected because payload converters are referenced as class types, not
         /// instances, so only subclasses would call this.
         /// </remarks>
-        protected PayloadConverter(JsonSerializerOptions jsonSerializerOptions)
+        protected DefaultPayloadConverter(JsonSerializerOptions jsonSerializerOptions)
             : this(
                 new BinaryNullConverter(),
                 new BinaryPlainConverter(),
@@ -79,9 +79,9 @@ namespace Temporalio.Converters
             ) { }
 
         /// <summary>
-        /// <see cref="PayloadConverter(IEnumerable&lt;IEncodingConverter&gt;)" />
+        /// <see cref="DefaultPayloadConverter(IEnumerable&lt;IEncodingConverter&gt;)" />
         /// </summary>
-        protected PayloadConverter(params IEncodingConverter[] encodingConverters)
+        protected DefaultPayloadConverter(params IEncodingConverter[] encodingConverters)
             : this((IEnumerable<IEncodingConverter>)encodingConverters) { }
 
         /// <summary>
@@ -94,8 +94,8 @@ namespace Temporalio.Converters
         /// This is protected because payload converters are referenced as class types, not
         /// instances, so only subclasses would call this.
         /// </remarks>
-        /// <seealso cref="PayloadConverter()" />
-        protected PayloadConverter(IEnumerable<IEncodingConverter> encodingConverters)
+        /// <seealso cref="DefaultPayloadConverter()" />
+        protected DefaultPayloadConverter(IEnumerable<IEncodingConverter> encodingConverters)
         {
             EncodingConverters = encodingConverters.ToList().AsReadOnly();
             IndexedEncodingConverters = encodingConverters.ToDictionary(

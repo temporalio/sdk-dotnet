@@ -9,7 +9,7 @@ namespace Temporalio.Converters
     /// <summary>
     /// Default implementation of <see cref="IFailureConverter" />.
     /// </summary>
-    public class FailureConverter : IFailureConverter
+    public class DefaultFailureConverter : IFailureConverter
     {
         /// <summary>
         /// Options this converter was created with.
@@ -18,12 +18,12 @@ namespace Temporalio.Converters
         /// Callers should never mutate this. Rather they should subclass the failure converter and
         /// pass a different value into the protected constructor.
         /// </remarks>
-        public FailureConverterOptions Options { get; private init; }
+        public DefaultFailureConverterOptions Options { get; private init; }
 
         /// <summary>
         /// Create a new failure converter.
         /// </summary>
-        public FailureConverter() : this(new()) { }
+        public DefaultFailureConverter() : this(new()) { }
 
         /// <summary>
         /// Create a new failure converter with the given options.
@@ -33,7 +33,7 @@ namespace Temporalio.Converters
         /// This is protected because payload converters are referenced as class types, not
         /// instances, so only subclasses would call this.
         /// </remarks>
-        protected FailureConverter(FailureConverterOptions options)
+        protected DefaultFailureConverter(DefaultFailureConverterOptions options)
         {
             Options = options;
         }
@@ -182,14 +182,14 @@ namespace Temporalio.Converters
         }
 
         /// <summary>
-        /// Failure converter with <see cref="FailureConverterOptions.EncodeCommonAttributes" /> as
-        /// true.
+        /// Failure converter with
+        /// <see cref="DefaultFailureConverterOptions.EncodeCommonAttributes" /> as true.
         /// </summary>
-        public class WithEncodedCommonAttributes : FailureConverter
+        public class WithEncodedCommonAttributes : DefaultFailureConverter
         {
             /// <summary>
             /// Create failure converter with
-            /// <see cref="FailureConverterOptions.EncodeCommonAttributes" /> as true.
+            /// <see cref="DefaultFailureConverterOptions.EncodeCommonAttributes" /> as true.
             /// </summary>
             public WithEncodedCommonAttributes() : base(new() { EncodeCommonAttributes = true }) { }
         }
