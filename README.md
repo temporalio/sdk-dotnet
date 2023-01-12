@@ -54,6 +54,15 @@ Can add options like:
   * TODO(cretz): This doesn't show Rust stdout. How do I do that?
 * `--filter "FullyQualifiedName=Temporalio.Tests.Client.TemporalClientTests.ConnectAsync_Connection_Succeeds"` to run a
   specific test
+* `--blame-crash` to do a host process dump on crash
+
+To help debug native pieces, this is also available as an in-proc test program. Run:
+
+    dotnet run --project tests/Temporalio.Tests
+
+Extra args can be added after `--`, e.g. `-- --verbose` would show verbose logs and `-- --help` would show other
+options. If the arguments are anything but `--help`, the current assembly is prepended to the args before sending to the
+xUnit runner.
 
 ### Rebuilding Rust extension and interop layer
 

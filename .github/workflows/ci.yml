@@ -42,12 +42,20 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
 
-      - name: Install protoc
+      - name: Install protoc (x64)
+        # Does not work on arm
+        if: ${{ matrix.os != 'ubuntu-arm' }}
         uses: arduino/setup-protoc@v1
         with:
           # TODO(cretz): Upgrade when https://github.com/arduino/setup-protoc/issues/33 fixed
           version: '3.x'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install protoc (Linux ARM)
+        if: ${{ matrix.os == 'ubuntu-arm' }}
+        run: |
+          sudo apt update -y
+          sudo apt install -y protobuf-compiler
 
       - name: Build
         # We intentionally just build debug mode in this CI
@@ -67,7 +75,14 @@ jobs:
           git diff --exit-code
 
       - name: Test
-        run: dotnet test --logger "console;verbosity=detailed"
+        run: dotnet test --logger "console;verbosity=detailed" --blame-crash
+
+      - name: Upload test failure
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-fail-${{ matrix.os }}
+          path: tests/Temporalio.Tests/TestResults
 
       - name: Build docs
         if: ${{ matrix.docsTarget }}

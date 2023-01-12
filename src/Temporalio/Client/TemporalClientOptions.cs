@@ -12,15 +12,11 @@ namespace Temporalio.Client
         /// </summary>
         public string Namespace { get; set; } = "default";
 
-        // TODO(cretz): public Converters.DataConverter DataConverter { get; set; }
-
         /// <summary>
-        /// Create default options.
+        /// Gets or sets the data converter.
         /// </summary>
-        public TemporalClientOptions()
-        {
-            // TODO(cretz): DataConverter = Converters.DataConverter.Default;
-        }
+        public Converters.DataConverter DataConverter { get; set; } =
+            Converters.DataConverter.Default;
 
         /// <summary>
         /// Create a shallow copy of these options.
