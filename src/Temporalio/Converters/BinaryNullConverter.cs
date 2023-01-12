@@ -10,8 +10,7 @@ namespace Temporalio.Converters
     public class BinaryNullConverter : IEncodingConverter
     {
         private static readonly ByteString EncodingByteString = ByteString.CopyFromUtf8(
-            "binary/null"
-        );
+            "binary/null");
 
         /// <inheritdoc />
         public string Encoding => "binary/null";

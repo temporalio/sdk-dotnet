@@ -11,16 +11,21 @@ namespace Temporalio.Client
     public class TemporalConnectionOptions : ICloneable
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalConnectionOptions"/> class.
         /// Create default options.
         /// </summary>
-        public TemporalConnectionOptions() { }
+        public TemporalConnectionOptions()
+        {
+        }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalConnectionOptions"/> class.
         /// Create default options with a target host.
         /// </summary>
         /// <param name="targetHost">Target host to connect to.</param>
         /// <seealso cref="TemporalConnectionOptions.TargetHost" />
-        public TemporalConnectionOptions(string targetHost) : this()
+        public TemporalConnectionOptions(string targetHost)
+            : this()
         {
             this.TargetHost = targetHost;
         }
@@ -65,41 +70,13 @@ namespace Temporalio.Client
         public string? Identity { get; set; }
 
         /// <summary>
-        /// Runtime for this connection.
+        /// Gets or sets runtime for this connection.
         /// </summary>
         /// <remarks>
         /// By default this uses <see cref="TemporalRuntime.Default" /> which is lazily created when
         /// first needed.
         /// </remarks>
         public TemporalRuntime? Runtime { get; set; }
-
-        internal void ParseTargetHost(out string? ip, out int? port)
-        {
-            ip = null;
-            port = null;
-            if (TargetHost != null)
-            {
-                var colonIndex = TargetHost.LastIndexOf(':');
-                if (colonIndex == -1)
-                {
-                    ip = TargetHost;
-                }
-                else
-                {
-                    ip = TargetHost.Substring(0, colonIndex);
-                    var portStr = TargetHost.Substring(colonIndex + 1);
-                    if (portStr != "" && portStr != "0")
-                    {
-                        int portInt;
-                        if (!Int32.TryParse(portStr, out portInt))
-                        {
-                            throw new ArgumentException("TargetHost does not have valid port");
-                        }
-                        port = portInt;
-                    }
-                }
-            }
-        }
 
         /// <summary>
         /// Create a shallow copy of these options.
@@ -118,6 +95,40 @@ namespace Temporalio.Client
                 copy.RpcRetry = (RpcRetryOptions)RpcRetry.Clone();
             }
             return copy;
+        }
+
+        /// <summary>
+        /// Parse the target host as IP and port.
+        /// </summary>
+        /// <param name="ip">Parsed IP.</param>
+        /// <param name="port">Parsed port.</param>
+        /// <exception cref="ArgumentException">If the format is invalid.</exception>
+        internal void ParseTargetHost(out string? ip, out int? port)
+        {
+            ip = null;
+            port = null;
+            if (TargetHost != null)
+            {
+                var colonIndex = TargetHost.LastIndexOf(':');
+                if (colonIndex == -1)
+                {
+                    ip = TargetHost;
+                }
+                else
+                {
+                    ip = TargetHost.Substring(0, colonIndex);
+                    var portStr = TargetHost.Substring(colonIndex + 1);
+                    if (portStr != string.Empty && portStr != "0")
+                    {
+                        int portInt;
+                        if (!int.TryParse(portStr, out portInt))
+                        {
+                            throw new ArgumentException("TargetHost does not have valid port");
+                        }
+                        port = portInt;
+                    }
+                }
+            }
         }
     }
 }

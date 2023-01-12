@@ -15,6 +15,9 @@ namespace Temporalio.Converters
         /// <summary>
         /// Encode all payloads in the given failure in place.
         /// </summary>
+        /// <param name="codec">Codec to use.</param>
+        /// <param name="failure">Failure to encode.</param>
+        /// <returns>Task for completion.</returns>
         public static Task EncodeFailureAsync(this IPayloadCodec codec, Failure failure)
         {
             return ApplyToFailurePayloadAsync(failure, codec.EncodeAsync);
@@ -23,6 +26,9 @@ namespace Temporalio.Converters
         /// <summary>
         /// Decode all payloads in the given failure in place.
         /// </summary>
+        /// <param name="codec">Codec to use.</param>
+        /// <param name="failure">Failure to decode.</param>
+        /// <returns>Task for completion.</returns>
         public static Task DecodeFailureAsync(this IPayloadCodec codec, Failure failure)
         {
             return ApplyToFailurePayloadAsync(failure, codec.DecodeAsync);
@@ -30,14 +36,13 @@ namespace Temporalio.Converters
 
         private static async Task ApplyToFailurePayloadAsync(
             Failure failure,
-            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func
-        )
+            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func)
         {
             if (failure.EncodedAttributes != null)
             {
                 failure.EncodedAttributes = (
-                    await func.Invoke(new Payload[] { failure.EncodedAttributes })
-                ).First();
+                    await func.Invoke(new Payload[] { failure.EncodedAttributes }))
+                .First();
             }
             switch (failure.FailureInfoCase)
             {
@@ -53,8 +58,7 @@ namespace Temporalio.Converters
                 case Failure.FailureInfoOneofCase.ResetWorkflowFailureInfo:
                     await ApplyPayloadsAsync(
                         failure.ResetWorkflowFailureInfo.LastHeartbeatDetails,
-                        func
-                    );
+                        func);
                     break;
             }
             if (failure.Cause != null)
@@ -65,8 +69,7 @@ namespace Temporalio.Converters
 
         private static async Task ApplyPayloadsAsync(
             Payloads payloads,
-            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func
-        )
+            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func)
         {
             if (payloads != null && payloads.Payloads_.Count > 0)
             {

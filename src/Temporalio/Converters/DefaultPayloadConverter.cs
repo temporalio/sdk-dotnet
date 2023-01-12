@@ -17,25 +17,8 @@ namespace Temporalio.Converters
     /// </remarks>
     public class DefaultPayloadConverter : IPayloadConverter
     {
-        // KeyedCollection not worth it and OrderedDictionary not generic. So we'll expose the
-        // collection and maintain an internal dictionary.
-
         /// <summary>
-        /// Encoding converters tried, in order, when converting to payload.
-        /// </summary>
-        public IReadOnlyCollection<IEncodingConverter> EncodingConverters { get; private init; }
-
-        /// <summary>
-        /// Encoding converters by encoding looked up when converting from payload.
-        /// </summary>
-        protected IReadOnlyDictionary<ByteString, IEncodingConverter> IndexedEncodingConverters
-        {
-            get;
-            private init;
-        }
-
-        /// <summary>
-        /// Create a default payload converter.
+        /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class.
         /// </summary>
         /// <remarks>
         /// The default payload converter uses the following set of payload converters in order:
@@ -59,33 +42,43 @@ namespace Temporalio.Converters
         /// that is using binary proto instead of JSON proto).
         /// </para>
         /// </remarks>
-        public DefaultPayloadConverter() : this(new JsonSerializerOptions()) { }
+        public DefaultPayloadConverter()
+            : this(new JsonSerializerOptions())
+        {
+        }
 
         /// <summary>
-        /// <see cref="DefaultPayloadConverter()" />
+        /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class.
         /// </summary>
         /// <param name="jsonSerializerOptions">Custom serializer options.</param>
         /// <remarks>
         /// This is protected because payload converters are referenced as class types, not
         /// instances, so only subclasses would call this.
         /// </remarks>
+        /// <seealso cref="DefaultPayloadConverter()" />
         protected DefaultPayloadConverter(JsonSerializerOptions jsonSerializerOptions)
             : this(
                 new BinaryNullConverter(),
                 new BinaryPlainConverter(),
                 new JsonProtoConverter(),
                 new BinaryProtoConverter(),
-                new JsonPlainConverter(jsonSerializerOptions)
-            ) { }
+                new JsonPlainConverter(jsonSerializerOptions))
+        {
+        }
 
         /// <summary>
-        /// <see cref="DefaultPayloadConverter(IEnumerable&lt;IEncodingConverter&gt;)" />
+        /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class.
         /// </summary>
+        /// <param name="encodingConverters">Encoding converters.</param>
+        /// <seealso cref="DefaultPayloadConverter(IEnumerable&lt;IEncodingConverter&gt;)" />
         protected DefaultPayloadConverter(params IEncodingConverter[] encodingConverters)
-            : this((IEnumerable<IEncodingConverter>)encodingConverters) { }
+            : this((IEnumerable<IEncodingConverter>)encodingConverters)
+        {
+        }
 
         /// <summary>
-        /// Create a payload converter for the given encoding converters in order.
+        /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class with a
+        /// set of encoding converters.
         /// </summary>
         /// <param name="encodingConverters">
         /// Encoding converters to use. Duplicate encodings not allowed.
@@ -99,8 +92,24 @@ namespace Temporalio.Converters
         {
             EncodingConverters = encodingConverters.ToList().AsReadOnly();
             IndexedEncodingConverters = encodingConverters.ToDictionary(
-                x => ByteString.CopyFromUtf8(x.Encoding)
-            );
+                x => ByteString.CopyFromUtf8(x.Encoding));
+        }
+
+        // KeyedCollection not worth it and OrderedDictionary not generic. So we'll expose the
+        // collection and maintain an internal dictionary.
+
+        /// <summary>
+        /// Gets the encoding converters tried, in order, when converting to payload.
+        /// </summary>
+        public IReadOnlyCollection<IEncodingConverter> EncodingConverters { get; private init; }
+
+        /// <summary>
+        /// Gets the encoding converters by encoding looked up when converting from payload.
+        /// </summary>
+        protected IReadOnlyDictionary<ByteString, IEncodingConverter> IndexedEncodingConverters
+        {
+            get;
+            private init;
         }
 
         /// <inheritdoc />

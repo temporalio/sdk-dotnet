@@ -2,26 +2,42 @@ using System;
 
 namespace Temporalio.Converters
 {
-    /// <inheritdoc />
-    public record DataConverter<PayloadConverterType, FailureConverterType>(
-        IPayloadCodec? PayloadCodec = null
-    ) : DataConverter(typeof(PayloadConverterType), typeof(FailureConverterType), PayloadCodec)
-        where PayloadConverterType : IPayloadConverter, new()
-        where FailureConverterType : IFailureConverter, new()
+    /// <summary>
+    /// <see cref="DataConverter" /> with typed payload and failure converters.
+    /// </summary>
+    /// <typeparam name="TPayloadConverterType">Payload converter type.</typeparam>
+    /// <typeparam name="TFailureConverterType">Failure converter type.</typeparam>
+    /// <param name="PayloadCodec">Payload codec.</param>
+    public record DataConverter<TPayloadConverterType, TFailureConverterType>(
+        IPayloadCodec? PayloadCodec = null) : DataConverter(typeof(TPayloadConverterType), typeof(TFailureConverterType), PayloadCodec)
+        where TPayloadConverterType : IPayloadConverter, new()
+        where TFailureConverterType : IFailureConverter, new()
     {
-        /// <inheritdoc />
-        public new PayloadConverterType PayloadConverter =>
-            (PayloadConverterType)base.PayloadConverter;
+        /// <summary>
+        /// Gets the eagerly instantiated instance of a payload converter. Note, this may not be the
+        /// exact instance used in workflows.
+        /// </summary>
+        public new TPayloadConverterType PayloadConverter =>
+            (TPayloadConverterType)base.PayloadConverter;
 
-        /// <inheritdoc />
-        public new FailureConverterType FailureConverter =>
-            (FailureConverterType)base.FailureConverter;
+        /// <summary>
+        /// Gets the eagerly instantiated instance of a failure converter. Note, this may not be the
+        /// exact instance used in workflows.
+        /// </summary>
+        public new TFailureConverterType FailureConverter =>
+            (TFailureConverterType)base.FailureConverter;
     }
 
-    /// <inheritdoc />
-    public record DataConverter<PayloadConverterType>(IPayloadCodec? PayloadCodec = null)
-        : DataConverter<PayloadConverterType, DefaultFailureConverter>(PayloadCodec)
-        where PayloadConverterType : IPayloadConverter, new() { }
+    /// <summary>
+    /// <see cref="DataConverter" /> with typed payload converters.
+    /// </summary>
+    /// <typeparam name="TPayloadConverterType">Payload converter type.</typeparam>
+    /// <param name="PayloadCodec">Payload codec.</param>
+    public record DataConverter<TPayloadConverterType>(IPayloadCodec? PayloadCodec = null)
+        : DataConverter<TPayloadConverterType, DefaultFailureConverter>(PayloadCodec)
+        where TPayloadConverterType : IPayloadConverter, new()
+    {
+    }
 
     /// <summary>
     /// Data converter which combines a payload converter, a failure converter, and a payload codec.
@@ -38,40 +54,39 @@ namespace Temporalio.Converters
     public record DataConverter(
         Type PayloadConverterType,
         Type FailureConverterType,
-        IPayloadCodec? PayloadCodec = null
-    )
+        IPayloadCodec? PayloadCodec = null)
     {
         /// <summary>
-        /// Default data converter instance.
+        /// Initializes a new instance of the <see cref="DataConverter"/> class with default
+        /// payload and failure converters.
         /// </summary>
-        public static DataConverter<
-            DefaultPayloadConverter,
-            DefaultFailureConverter
-        > Default { get; } = new();
+        /// <remarks>
+        /// Non-inheriting users should use <see cref="Default" /> instead.
+        /// </remarks>
+        public DataConverter()
+            : this(typeof(DefaultPayloadConverter), typeof(DefaultFailureConverter))
+        {
+        }
 
         /// <summary>
-        /// Eagerly instantiated instance of a payload converter. Note, this may not be the exact
-        /// instance used in workflows.
+        /// Gets default data converter instance.
+        /// </summary>
+        public static DataConverter<DefaultPayloadConverter, DefaultFailureConverter> Default { get; } = new();
+
+        /// <summary>
+        /// Gets the eagerly instantiated instance of a payload converter. Note, this may not be the
+        /// exact instance used in workflows.
         /// </summary>
         public IPayloadConverter PayloadConverter { get; } =
             Activator.CreateInstance(PayloadConverterType) as IPayloadConverter
             ?? throw new ArgumentException("Payload converter type not an IPayloadConverter");
 
         /// <summary>
-        /// Eagerly instantiated instance of a failure converter. Note, this may not be the exact
-        /// instance used in workflows.
+        /// Gets the eagerly instantiated instance of a failure converter. Note, this may not be the
+        /// exact instance used in workflows.
         /// </summary>
         public IFailureConverter FailureConverter { get; } =
             Activator.CreateInstance(FailureConverterType) as IFailureConverter
             ?? throw new ArgumentException("Failure converter type not an IFailureConverter");
-
-        /// <summary>
-        /// Create a default data converter with default payload and failure converters.
-        /// </summary>
-        /// <remarks>
-        /// Non-inheriting users should use <see cref="Default" /> instead.
-        /// </remarks>
-        public DataConverter()
-            : this(typeof(DefaultPayloadConverter), typeof(DefaultFailureConverter)) { }
     }
 }

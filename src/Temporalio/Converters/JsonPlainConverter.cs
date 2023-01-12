@@ -11,24 +11,24 @@ namespace Temporalio.Converters
     public class JsonPlainConverter : IEncodingConverter
     {
         private static readonly ByteString EncodingByteString = ByteString.CopyFromUtf8(
-            "json/plain"
-        );
+            "json/plain");
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonPlainConverter"/> class.
+        /// </summary>
+        /// <param name="serializerOptions">Serializer options.</param>
+        public JsonPlainConverter(JsonSerializerOptions serializerOptions)
+        {
+            SerializerOptions = serializerOptions;
+        }
 
         /// <inheritdoc />
         public string Encoding => "json/plain";
 
         /// <summary>
-        /// Serializer options used during conversion.
+        /// Gets the serializer options used during conversion.
         /// </summary>
         protected JsonSerializerOptions SerializerOptions { get; private init; }
-
-        /// <summary>
-        /// Create a JSON converter with the given serializer options.
-        /// </summary>
-        public JsonPlainConverter(JsonSerializerOptions serializerOptions)
-        {
-            SerializerOptions = serializerOptions;
-        }
 
         /// <inheritdoc />
         public bool TryToPayload(object? value, out Payload? payload)
@@ -37,8 +37,7 @@ namespace Temporalio.Converters
             payload.Metadata["encoding"] = EncodingByteString;
             // We'll just let serialization failure bubble out
             payload.Data = ByteString.CopyFrom(
-                JsonSerializer.SerializeToUtf8Bytes(value, SerializerOptions)
-            );
+                JsonSerializer.SerializeToUtf8Bytes(value, SerializerOptions));
             return true;
         }
 

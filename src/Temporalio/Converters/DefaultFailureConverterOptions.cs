@@ -8,8 +8,8 @@ namespace Temporalio.Converters
     public class DefaultFailureConverterOptions : ICloneable
     {
         /// <summary>
-        /// If true, will move message and stack trace to/from encoded attributes which are subject
-        /// to codecs (e.g. for encryption).
+        /// Gets or sets a value indicating whether message and stack trace to/from encoded
+        /// attributes which are subject to codecs (e.g. for encryption).
         /// </summary>
         public bool EncodeCommonAttributes { get; set; }
 

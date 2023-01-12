@@ -8,6 +8,7 @@ namespace Temporalio.Client
     /// </summary>
     public abstract partial class WorkflowService : RpcService
     {
+        /// <inheritdoc/>
         internal override Bridge.Interop.RpcService Service => Bridge.Interop.RpcService.Workflow;
 
         /// <summary>
@@ -18,7 +19,7 @@ namespace Temporalio.Client
             private readonly TemporalConnection connection;
 
             /// <summary>
-            /// Create an implementation of the workflow service.
+            /// Initializes a new instance of the <see cref="Impl"/> class.
             /// </summary>
             /// <param name="connection">Connection to use.</param>
             public Impl(TemporalConnection connection)
@@ -31,8 +32,7 @@ namespace Temporalio.Client
                 string rpc,
                 IMessage req,
                 MessageParser<T> resp,
-                RpcOptions? options = null
-            )
+                RpcOptions? options = null)
             {
                 return await connection.InvokeRpcAsync(this, rpc, req, resp, options);
             }

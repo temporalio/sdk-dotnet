@@ -11,43 +11,8 @@ namespace Temporalio.Converters
     /// </summary>
     public class BinaryProtoConverter : IEncodingConverter
     {
-        internal static MessageDescriptor AssertProtoPayload(Payload payload, Type type)
-        {
-            if (!typeof(IMessage).IsAssignableFrom(type))
-            {
-                throw new ArgumentException($"Payload is protobuf message, but type is {type}");
-            }
-            // TODO(cretz): Can this be done better/cheaper?
-            var desc =
-                type.GetProperty("Descriptor", BindingFlags.Public | BindingFlags.Static)
-                    ?.GetValue(null) as MessageDescriptor;
-            if (desc == null)
-            {
-                throw new ArgumentException(
-                    $"Protobuf type {type} does not have expected Descriptor static field"
-                );
-            }
-            if (payload.Metadata.TryGetValue("messageType", out var messageTypeBytes))
-            {
-                var messageType = messageTypeBytes.ToStringUtf8();
-                if (messageType != desc.FullName)
-                {
-                    throw new ArgumentException(
-                        $"Payload has protobuf message type {messageType} "
-                            + "but given type's message type is {desc.FullName}"
-                    );
-                }
-            }
-            else
-            {
-                throw new ArgumentException("Payload missing message type");
-            }
-            return desc;
-        }
-
         private static readonly ByteString EncodingByteString = ByteString.CopyFromUtf8(
-            "binary/protobuf"
-        );
+            "binary/protobuf");
 
         /// <inheritdoc />
         public string Encoding => "binary/protobuf";
@@ -75,6 +40,45 @@ namespace Temporalio.Converters
             var message = Activator.CreateInstance(type)!;
             ((IMessage)message).MergeFrom(payload.Data);
             return message;
+        }
+
+        /// <summary>
+        /// Confirm payload is the proto and return descriptor.
+        /// </summary>
+        /// <param name="payload">Payload to check.</param>
+        /// <param name="type">Proto message type.</param>
+        /// <returns>Proto descriptor.</returns>
+        /// <exception cref="ArgumentException">If payload is invalid.</exception>
+        internal static MessageDescriptor AssertProtoPayload(Payload payload, Type type)
+        {
+            if (!typeof(IMessage).IsAssignableFrom(type))
+            {
+                throw new ArgumentException($"Payload is protobuf message, but type is {type}");
+            }
+            // TODO(cretz): Can this be done better/cheaper?
+            var desc =
+                type.GetProperty("Descriptor", BindingFlags.Public | BindingFlags.Static)
+                    ?.GetValue(null) as MessageDescriptor;
+            if (desc == null)
+            {
+                throw new ArgumentException(
+                    $"Protobuf type {type} does not have expected Descriptor static field");
+            }
+            if (payload.Metadata.TryGetValue("messageType", out var messageTypeBytes))
+            {
+                var messageType = messageTypeBytes.ToStringUtf8();
+                if (messageType != desc.FullName)
+                {
+                    throw new ArgumentException(
+                        $"Payload has protobuf message type {messageType} "
+                            + "but given type's message type is {desc.FullName}");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Payload missing message type");
+            }
+            return desc;
         }
     }
 }

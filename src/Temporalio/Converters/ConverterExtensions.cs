@@ -10,7 +10,7 @@ namespace Temporalio.Converters
         /// <summary>
         /// Convert the given payload to a value of the given type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Value type.</typeparam>
         /// <param name="converter">The converter to use.</param>
         /// <param name="payload">The payload to convert.</param>
         /// <returns>The converted value.</returns>

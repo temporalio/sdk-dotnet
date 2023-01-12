@@ -11,16 +11,23 @@ namespace Temporalio.Client
     public class TemporalClientConnectOptions : TemporalConnectionOptions
     {
         /// <summary>
-        /// Create default options.
+        /// Initializes a new instance of the <see cref="TemporalClientConnectOptions"/> class with
+        /// default options.
         /// </summary>
-        public TemporalClientConnectOptions() { }
+        public TemporalClientConnectOptions()
+        {
+        }
 
         /// <summary>
-        /// Create default options with a target host.
+        /// Initializes a new instance of the <see cref="TemporalClientConnectOptions"/> class with
+        /// default options and a target host.
         /// </summary>
         /// <param name="targetHost">Target host to connect to.</param>
         /// <seealso cref="TemporalConnectionOptions.TargetHost" />
-        public TemporalClientConnectOptions(string targetHost) : base(targetHost) { }
+        public TemporalClientConnectOptions(string targetHost)
+            : base(targetHost)
+        {
+        }
 
         /// <summary>
         /// Gets or sets the client namespace. Default is "default".
@@ -43,7 +50,7 @@ namespace Temporalio.Client
             return new TemporalClientOptions()
             {
                 Namespace = Namespace,
-                DataConverter = DataConverter
+                DataConverter = DataConverter,
             };
         }
     }
