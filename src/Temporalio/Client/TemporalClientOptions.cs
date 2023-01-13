@@ -24,7 +24,7 @@ namespace Temporalio.Client
         /// <returns>A shallow copy of these options.</returns>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

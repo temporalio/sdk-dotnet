@@ -1,4 +1,11 @@
-
 [*.cs]
-generated_code = true
+
+##### Temporal additions ######
+
+# Please keep in alphabetical order by field.
+
 dotnet_diagnostic.CS0649.severity = none
+
+generated_code = true
+
+###############################

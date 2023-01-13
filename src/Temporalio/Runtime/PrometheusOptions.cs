@@ -3,28 +3,30 @@ using System;
 namespace Temporalio.Runtime
 {
     /// <summary>
-    /// Prometheus metric export options. <see cref="PrometheusOptions.BindAddress" /> is required.
+    /// Prometheus metric export options. <see cref="BindAddress" /> is required.
     /// </summary>
     public class PrometheusOptions : ICloneable
     {
         /// <summary>
-        /// Address to expose Prometheus metrics on.
+        /// Initializes a new instance of the <see cref="PrometheusOptions"/> class.
         /// </summary>
-        public string? BindAddress { get; set; }
+        public PrometheusOptions()
+        {
+        }
 
         /// <summary>
-        /// Create unset Prometheus options.
+        /// Initializes a new instance of the <see cref="PrometheusOptions"/> class.
         /// </summary>
-        public PrometheusOptions() { }
-
-        /// <summary>
-        /// Create PrometheusOptions with the given bind address.
-        /// </summary>
-        /// <param name="bindAddress"><see cref="PrometheusOptions.BindAddress" /></param>
+        /// <param name="bindAddress"><see cref="BindAddress" />.</param>
         public PrometheusOptions(string bindAddress)
         {
             BindAddress = bindAddress;
         }
+
+        /// <summary>
+        /// Gets or sets the address to expose Prometheus metrics on.
+        /// </summary>
+        public string? BindAddress { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
@@ -32,7 +34,7 @@ namespace Temporalio.Runtime
         /// <returns>A shallow copy of these options.</returns>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

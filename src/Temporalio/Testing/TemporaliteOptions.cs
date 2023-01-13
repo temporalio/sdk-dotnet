@@ -58,7 +58,7 @@ namespace Temporalio.Testing
         /// <remarks>Does not create a copy of the extra args.</remarks>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

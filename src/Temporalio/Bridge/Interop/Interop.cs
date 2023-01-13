@@ -11,13 +11,21 @@ namespace Temporalio.Bridge.Interop
         Health,
     }
 
-    internal partial struct CancellationToken { }
+    internal partial struct CancellationToken
+    {
+    }
 
-    internal partial struct Client { }
+    internal partial struct Client
+    {
+    }
 
-    internal partial struct EphemeralServer { }
+    internal partial struct EphemeralServer
+    {
+    }
 
-    internal partial struct Runtime { }
+    internal partial struct Runtime
+    {
+    }
 
     internal unsafe partial struct ByteArrayRef
     {
@@ -102,11 +110,7 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ClientConnectCallback(
-        void* user_data,
-        [NativeTypeName("struct Client *")] Client* success,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* fail
-    );
+    internal unsafe delegate void ClientConnectCallback(void* user_data, [NativeTypeName("struct Client *")] Client* success, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
     internal unsafe partial struct RpcCallOptions
     {
@@ -133,11 +137,7 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ClientRpcCallCallback(
-        void* user_data,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* success,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* fail
-    );
+    internal unsafe delegate void ClientRpcCallCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
     internal unsafe partial struct RuntimeOrFail
     {
@@ -260,149 +260,52 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void EphemeralServerStartCallback(
-        void* user_data,
-        [NativeTypeName("struct EphemeralServer *")] EphemeralServer* success,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* success_target,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* fail
-    );
+    internal unsafe delegate void EphemeralServerStartCallback(void* user_data, [NativeTypeName("struct EphemeralServer *")] EphemeralServer* success, [NativeTypeName("const struct ByteArray *")] ByteArray* success_target, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void EphemeralServerShutdownCallback(
-        void* user_data,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* fail
-    );
+    internal unsafe delegate void EphemeralServerShutdownCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
     internal static unsafe partial class Methods
     {
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct CancellationToken *")]
         public static extern CancellationToken* cancellation_token_new();
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void cancellation_token_cancel(
-            [NativeTypeName("struct CancellationToken *")] CancellationToken* token
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void cancellation_token_cancel([NativeTypeName("struct CancellationToken *")] CancellationToken* token);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void cancellation_token_free(
-            [NativeTypeName("struct CancellationToken *")] CancellationToken* token
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void cancellation_token_free([NativeTypeName("struct CancellationToken *")] CancellationToken* token);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void client_connect(
-            [NativeTypeName("struct Runtime *")] Runtime* runtime,
-            [NativeTypeName("const struct ClientOptions *")] ClientOptions* options,
-            void* user_data,
-            [NativeTypeName("ClientConnectCallback")] IntPtr callback
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void client_connect([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ClientOptions *")] ClientOptions* options, void* user_data, [NativeTypeName("ClientConnectCallback")] IntPtr callback);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void client_free([NativeTypeName("struct Client *")] Client* client);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void client_rpc_call(
-            [NativeTypeName("struct Client *")] Client* client,
-            [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options,
-            void* user_data,
-            [NativeTypeName("ClientRpcCallCallback")] IntPtr callback
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void client_rpc_call([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options, void* user_data, [NativeTypeName("ClientRpcCallCallback")] IntPtr callback);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct RuntimeOrFail")]
-        public static extern RuntimeOrFail runtime_new(
-            [NativeTypeName("const struct RuntimeOptions *")] RuntimeOptions* options
-        );
+        public static extern RuntimeOrFail runtime_new([NativeTypeName("const struct RuntimeOptions *")] RuntimeOptions* options);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void runtime_free(
-            [NativeTypeName("struct Runtime *")] Runtime* runtime
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void runtime_free([NativeTypeName("struct Runtime *")] Runtime* runtime);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void byte_array_free(
-            [NativeTypeName("struct Runtime *")] Runtime* runtime,
-            [NativeTypeName("const struct ByteArray *")] ByteArray* bytes
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void byte_array_free([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ByteArray *")] ByteArray* bytes);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void ephemeral_server_start_temporalite(
-            [NativeTypeName("struct Runtime *")] Runtime* runtime,
-            [NativeTypeName("const struct TemporaliteOptions *")] TemporaliteOptions* options,
-            void* user_data,
-            [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ephemeral_server_start_temporalite([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct TemporaliteOptions *")] TemporaliteOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void ephemeral_server_start_test_server(
-            [NativeTypeName("struct Runtime *")] Runtime* runtime,
-            [NativeTypeName("const struct TestServerOptions *")] TestServerOptions* options,
-            void* user_data,
-            [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ephemeral_server_start_test_server([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct TestServerOptions *")] TestServerOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void ephemeral_server_free(
-            [NativeTypeName("struct EphemeralServer *")] EphemeralServer* server
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ephemeral_server_free([NativeTypeName("struct EphemeralServer *")] EphemeralServer* server);
 
-        [DllImport(
-            "temporal_sdk_bridge",
-            CallingConvention = CallingConvention.Cdecl,
-            ExactSpelling = true
-        )]
-        public static extern void ephemeral_server_shutdown(
-            [NativeTypeName("struct EphemeralServer *")] EphemeralServer* server,
-            void* user_data,
-            [NativeTypeName("EphemeralServerShutdownCallback")] IntPtr callback
-        );
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ephemeral_server_shutdown([NativeTypeName("struct EphemeralServer *")] EphemeralServer* server, void* user_data, [NativeTypeName("EphemeralServerShutdownCallback")] IntPtr callback);
     }
 }

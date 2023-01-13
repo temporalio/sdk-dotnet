@@ -9,8 +9,12 @@ namespace Temporalio.Exceptions
     /// </summary>
     public class ActivityFailureException : FailureException
     {
-        /// <inheritdoc />
-        protected internal ActivityFailureException(Failure failure, Exception? inner)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActivityFailureException"/> class.
+        /// </summary>
+        /// <param name="failure">Underlying proto failure.</param>
+        /// <param name="inner">Inner exception if any.</param>
+        internal protected ActivityFailureException(Failure failure, Exception? inner)
             : base(failure, inner)
         {
             if (failure.ActivityFailureInfo == null)
@@ -19,11 +23,13 @@ namespace Temporalio.Exceptions
             }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the underlying protobuf failure object.
+        /// </summary>
         public new Failure Failure => base.Failure!;
 
         /// <summary>
-        /// Identity of the worker where this failed.
+        /// Gets the identity of the worker where this failed.
         /// </summary>
         public string? Identity
         {
@@ -35,17 +41,17 @@ namespace Temporalio.Exceptions
         }
 
         /// <summary>
-        /// Activity name or "type" that failed.
+        /// Gets the activity name or "type" that failed.
         /// </summary>
         public string ActivityType => Failure!.ActivityFailureInfo.ActivityType.Name;
 
         /// <summary>
-        /// Identifier of the activity that failed.
+        /// Gets the identifier of the activity that failed.
         /// </summary>
         public string ActivityID => Failure!.ActivityFailureInfo.ActivityId;
 
         /// <summary>
-        /// Retry state for the failure.
+        /// Gets the retry state for the failure.
         /// </summary>
         public RetryState RetryState => Failure!.ActivityFailureInfo.RetryState;
     }

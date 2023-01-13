@@ -14,7 +14,7 @@ namespace Temporalio.Testing
         public string? DownloadDirectory { get; set; }
 
         /// <summary>
-        /// Gets or sets whether the UI will be started with the server.
+        /// Gets or sets a value indicating whether the UI will be started with the server.
         /// </summary>
         public bool UI { get; set; } = false;
 

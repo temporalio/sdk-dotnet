@@ -9,21 +9,30 @@ namespace Temporalio.Exceptions
     /// </summary>
     public class CancelledFailureException : FailureException
     {
-        /// <inheritdoc />
-        protected internal CancelledFailureException(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CancelledFailureException"/> class.
+        /// </summary>
+        /// <param name="message">Message for the exception.</param>
+        /// <param name="details">Details for the exception.</param>
+        internal protected CancelledFailureException(
             string message,
-            IReadOnlyCollection<object>? details = null
-        ) : base(message)
+            IReadOnlyCollection<object>? details = null)
+            : base(message)
         {
             Details = new OutboundFailureDetails(details ?? new object[0]);
         }
 
-        /// <inheritdoc />
-        protected internal CancelledFailureException(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CancelledFailureException"/> class.
+        /// </summary>
+        /// <param name="failure">Underlying proto failure.</param>
+        /// <param name="inner">Inner exception if any.</param>
+        /// <param name="converter">Converter used for converting details.</param>
+        internal protected CancelledFailureException(
             Failure failure,
             Exception? inner,
-            Converters.IPayloadConverter converter
-        ) : base(failure, inner)
+            Converters.IPayloadConverter converter)
+            : base(failure, inner)
         {
             var info =
                 failure.CanceledFailureInfo
@@ -31,11 +40,13 @@ namespace Temporalio.Exceptions
             Details = new InboundFailureDetails(converter, info.Details.Payloads_);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the underlying protobuf failure object.
+        /// </summary>
         public new Failure Failure => base.Failure!;
 
         /// <summary>
-        /// Access to the details of the exception. This is never null.
+        /// Gets the details of the exception. This is never null.
         /// </summary>
         /// <remarks>
         /// This will be <see cref="OutboundFailureDetails" /> for user-created exceptions and

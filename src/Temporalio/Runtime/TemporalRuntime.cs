@@ -17,34 +17,39 @@ namespace Temporalio.Runtime
         /// </summary>
         public const string Version = "0.1.0-alpha1";
 
-        private static readonly Lazy<TemporalRuntime> _default =
+        private static readonly Lazy<TemporalRuntime> LazyDefault =
             new(() => new TemporalRuntime(new TemporalRuntimeOptions()));
 
         /// <summary>
-        /// Create or get the default runtime.
+        /// Initializes a new instance of the <see cref="TemporalRuntime"/> class.
+        /// </summary>
+        /// <param name="options">Options for the new runtime.</param>
+        /// <remarks>
+        /// This creates an entirely new thread pool and runtime in the Core backend. Please use
+        /// sparingly.
+        /// </remarks>
+        public TemporalRuntime(TemporalRuntimeOptions options)
+            : this(new Bridge.Runtime(options))
+        {
+        }
+
+        private TemporalRuntime(Bridge.Runtime runtime)
+        {
+            Runtime = runtime;
+        }
+
+        /// <summary>
+        /// Gets or creates the default runtime.
         /// </summary>
         /// <remarks>
         /// This is lazily created when first accessed. The default runtime is accessed when a
         /// runtime is not explicitly provided to a connection/client.
         /// </remarks>
-        public static TemporalRuntime Default => _default.Value;
-
-        internal readonly Bridge.Runtime runtime;
+        public static TemporalRuntime Default => LazyDefault.Value;
 
         /// <summary>
-        /// Create a new Temporal runtime with the given options.
+        /// Gets the runtime.
         /// </summary>
-        /// <param name="options">Options for the new runtime</param>
-        /// <remarks>
-        /// This creates an entirely new thread pool and runtime in the Core backend. Please use
-        /// sparingly.
-        /// </remarks>
-        public TemporalRuntime(TemporalRuntimeOptions options) : this(new Bridge.Runtime(options))
-        { }
-
-        private TemporalRuntime(Bridge.Runtime runtime)
-        {
-            this.runtime = runtime;
-        }
+        internal Bridge.Runtime Runtime { get; private init; }
     }
 }

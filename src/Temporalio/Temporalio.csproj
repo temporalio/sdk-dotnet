@@ -1,13 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net462</TargetFrameworks>
-    <LangVersion>9.0</LangVersion>
-    <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!-- https://github.com/dotnet/roslyn/issues/41640#issuecomment-985780130 -->
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>9.0</LangVersion>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net462</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

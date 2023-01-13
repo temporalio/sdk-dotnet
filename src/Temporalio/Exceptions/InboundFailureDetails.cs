@@ -14,8 +14,7 @@ namespace Temporalio.Exceptions
     /// <param name="Payloads">Raw payloads to convert.</param>
     public record InboundFailureDetails(
         IPayloadConverter Converter,
-        IReadOnlyCollection<Payload>? Payloads
-    ) : IFailureDetails
+        IReadOnlyCollection<Payload>? Payloads) : IFailureDetails
     {
         /// <inheritdoc />
         public int Count => Payloads?.Count ?? 0;

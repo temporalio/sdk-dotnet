@@ -8,25 +8,17 @@ namespace Temporalio.Runtime
     public class TracingOptions : ICloneable
     {
         /// <summary>
-        /// Tracing filter options.
+        /// Initializes a new instance of the <see cref="TracingOptions"/> class.
         /// </summary>
-        public TelemetryFilterOptions Filter { get; set; } = new();
+        public TracingOptions()
+        {
+        }
 
         /// <summary>
-        /// Tracing OpenTelemetry collector options.
+        /// Initializes a new instance of the <see cref="TracingOptions"/> class.
         /// </summary>
-        public OpenTelemetryOptions OpenTelemetry { get; set; } = new();
-
-        /// <summary>
-        /// Create unset tracing options.
-        /// </summary>
-        public TracingOptions() { }
-
-        /// <summary>
-        /// Creaet tracing options for the given filter and OpenTelemetry options.
-        /// </summary>
-        /// <param name="filter"><see cref="TracingOptions.Filter" /></param>
-        /// <param name="openTelemetry"><see cref="TracingOptions.OpenTelemetry" /></param>
+        /// <param name="filter"><see cref="Filter" />.</param>
+        /// <param name="openTelemetry"><see cref="OpenTelemetry" />.</param>
         public TracingOptions(TelemetryFilterOptions filter, OpenTelemetryOptions openTelemetry)
         {
             Filter = filter;
@@ -34,12 +26,22 @@ namespace Temporalio.Runtime
         }
 
         /// <summary>
+        /// Gets or sets the tracing filter options.
+        /// </summary>
+        public TelemetryFilterOptions Filter { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets the tracing OpenTelemetry collector options.
+        /// </summary>
+        public OpenTelemetryOptions OpenTelemetry { get; set; } = new();
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (TracingOptions)this.MemberwiseClone();
+            var copy = (TracingOptions)MemberwiseClone();
             copy.Filter = (TelemetryFilterOptions)Filter.Clone();
             copy.OpenTelemetry = (OpenTelemetryOptions)OpenTelemetry.Clone();
             return copy;

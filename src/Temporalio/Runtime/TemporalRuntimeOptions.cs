@@ -8,23 +8,25 @@ namespace Temporalio.Runtime
     public class TemporalRuntimeOptions : ICloneable
     {
         /// <summary>
-        /// Telemetry options.
+        /// Initializes a new instance of the <see cref="TemporalRuntimeOptions"/> class.
         /// </summary>
-        public TelemetryOptions Telemetry { get; set; } = new();
+        public TemporalRuntimeOptions()
+        {
+        }
 
         /// <summary>
-        /// Create default runtime options.
+        /// Initializes a new instance of the <see cref="TemporalRuntimeOptions"/> class.
         /// </summary>
-        public TemporalRuntimeOptions() { }
-
-        /// <summary>
-        /// Create runtime options with given telemetry options.
-        /// </summary>
-        /// <param name="telemetry"><see cref="TemporalRuntimeOptions.Telemetry" /></param>
+        /// <param name="telemetry"><see cref="Telemetry" />.</param>
         public TemporalRuntimeOptions(TelemetryOptions telemetry)
         {
             Telemetry = telemetry;
         }
+
+        /// <summary>
+        /// Gets or sets the telemetry options.
+        /// </summary>
+        public TelemetryOptions Telemetry { get; set; } = new();
 
         /// <summary>
         /// Create a shallow copy of these options.
@@ -32,7 +34,7 @@ namespace Temporalio.Runtime
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (TemporalRuntimeOptions)this.MemberwiseClone();
+            var copy = (TemporalRuntimeOptions)MemberwiseClone();
             copy.Telemetry = (TelemetryOptions)Telemetry.Clone();
             return copy;
         }

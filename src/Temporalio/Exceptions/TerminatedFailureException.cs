@@ -8,8 +8,12 @@ namespace Temporalio.Exceptions
     /// </summary>
     public class TerminatedFailureException : FailureException
     {
-        /// <inheritdoc />
-        protected internal TerminatedFailureException(Failure failure, Exception? inner)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TerminatedFailureException"/> class.
+        /// </summary>
+        /// <param name="failure">Underlying proto failure.</param>
+        /// <param name="inner">Inner exception if any.</param>
+        internal protected TerminatedFailureException(Failure failure, Exception? inner)
             : base(failure, inner)
         {
             if (failure.TerminatedFailureInfo == null)
@@ -18,7 +22,9 @@ namespace Temporalio.Exceptions
             }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the underlying protobuf failure object.
+        /// </summary>
         public new Failure Failure => base.Failure!;
     }
 }

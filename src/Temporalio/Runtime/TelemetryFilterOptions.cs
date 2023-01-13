@@ -4,30 +4,21 @@ namespace Temporalio.Runtime
 {
     /// <summary>
     /// A telemetry filter used in logging and tracing.
-    /// <see cref="TelemetryFilterOptions.FilterString" /> is required.
+    /// <see cref="FilterString" /> is required.
     /// </summary>
     public class TelemetryFilterOptions : ICloneable
     {
         /// <summary>
-        /// Filter string for telemetry filters.
+        /// Initializes a new instance of the <see cref="TelemetryFilterOptions"/> class.
         /// </summary>
-        /// <remarks>
-        /// This is in the Rust log format. For example, "temporal_sdk_core=DEBUG" sets the level
-        /// to <c>DEBUG</c> for the <c>temporal_sdk_core</c> Rust crate.
-        /// </remarks>
-        public string? FilterString { get; set; }
-
-        /// <summary>
-        /// Create filter options for the given filter string.
-        /// </summary>
-        /// <param name="filterString"><see cref="TelemetryFilterOptions.FilterString" /></param>
+        /// <param name="filterString"><see cref="FilterString" />.</param>
         public TelemetryFilterOptions(string filterString)
         {
             FilterString = filterString;
         }
 
         /// <summary>
-        /// Create filter options for the core and non-core levels given.
+        /// Initializes a new instance of the <see cref="TelemetryFilterOptions"/> class.
         /// </summary>
         /// <param name="core">Core level.</param>
         /// <param name="other">Non-core level.</param>
@@ -37,15 +28,6 @@ namespace Temporalio.Runtime
             var otherLevel = other.ToString().ToUpper();
             FilterString =
                 $"{otherLevel},temporal_sdk_core={coreLevel},temporal_client={coreLevel},temporal_sdk={coreLevel}";
-        }
-
-        /// <summary>
-        /// Create a shallow copy of these options.
-        /// </summary>
-        /// <returns>A shallow copy of these options.</returns>
-        public virtual object Clone()
-        {
-            return this.MemberwiseClone();
         }
 
         /// <summary>
@@ -76,7 +58,25 @@ namespace Temporalio.Runtime
             /// <summary>
             /// Error filter level.
             /// </summary>
-            Error
+            Error,
+        }
+
+        /// <summary>
+        /// Gets or sets the filter string for telemetry filters.
+        /// </summary>
+        /// <remarks>
+        /// This is in the Rust log format. For example, "temporal_sdk_core=DEBUG" sets the level
+        /// to <c>DEBUG</c> for the <c>temporal_sdk_core</c> Rust crate.
+        /// </remarks>
+        public string? FilterString { get; set; }
+
+        /// <summary>
+        /// Create a shallow copy of these options.
+        /// </summary>
+        /// <returns>A shallow copy of these options.</returns>
+        public virtual object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

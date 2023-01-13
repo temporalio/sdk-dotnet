@@ -9,12 +9,17 @@ namespace Temporalio.Exceptions
     /// </summary>
     public class TimeoutFailureException : FailureException
     {
-        /// <inheritdoc />
-        protected internal TimeoutFailureException(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimeoutFailureException"/> class.
+        /// </summary>
+        /// <param name="failure">Underlying proto failure.</param>
+        /// <param name="inner">Inner exception if any.</param>
+        /// <param name="converter">Converter used for converting details.</param>
+        internal protected TimeoutFailureException(
             Failure failure,
             Exception? inner,
-            Converters.IPayloadConverter converter
-        ) : base(failure, inner)
+            Converters.IPayloadConverter converter)
+            : base(failure, inner)
         {
             var info =
                 failure.TimeoutFailureInfo
@@ -22,16 +27,18 @@ namespace Temporalio.Exceptions
             LastHeartbeatDetails = new(converter, info.LastHeartbeatDetails.Payloads_);
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the underlying protobuf failure object.
+        /// </summary>
         public new Failure Failure => base.Failure!;
 
         /// <summary>
-        /// Type of timeout that occurred.
+        /// Gets the type of timeout that occurred.
         /// </summary>
         public TimeoutType TimeoutType => Failure!.TimeoutFailureInfo.TimeoutType;
 
         /// <summary>
-        /// Last heartbeat details of the activity if applicable.
+        /// Gets the last heartbeat details of the activity if applicable.
         /// </summary>
         public InboundFailureDetails LastHeartbeatDetails { get; protected init; }
     }

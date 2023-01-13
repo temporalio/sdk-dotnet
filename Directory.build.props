@@ -1,4 +1,11 @@
 <Project>
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
   <!-- Run StyleCop only on latest .NET version -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'netstandard2.0'">
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all" />

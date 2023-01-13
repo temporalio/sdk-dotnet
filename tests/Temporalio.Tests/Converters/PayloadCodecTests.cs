@@ -13,45 +13,9 @@ using Xunit.Abstractions;
 
 public class PayloadCodecTests : TestBase
 {
-    public PayloadCodecTests(ITestOutputHelper output) : base(output) { }
-
-    class Base64PayloadCodec : IPayloadCodec
+    public PayloadCodecTests(ITestOutputHelper output)
+        : base(output)
     {
-        public Task<IEnumerable<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads)
-        {
-            return Task.FromResult(
-                payloads.Select(
-                    p =>
-                        new Payload()
-                        {
-                            Data = ByteString.CopyFrom(
-                                Convert.ToBase64String(p.ToByteArray()),
-                                Encoding.ASCII
-                            ),
-                            Metadata =
-                            {
-                                new Dictionary<string, ByteString>
-                                {
-                                    ["encoding"] = ByteString.CopyFromUtf8("my-encoding")
-                                }
-                            }
-                        }
-                )
-            );
-        }
-
-        public Task<IEnumerable<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
-        {
-            return Task.FromResult(
-                payloads.Select(p =>
-                {
-                    Assert.Equal("my-encoding", p.Metadata["encoding"].ToStringUtf8());
-                    return Payload.Parser.ParseFrom(
-                        Convert.FromBase64String(p.Data.ToString(Encoding.ASCII))
-                    );
-                })
-            );
-        }
     }
 
     [Fact]
@@ -64,8 +28,8 @@ public class PayloadCodecTests : TestBase
             {
                 Details = new()
                 {
-                    Payloads_ = { { DataConverter.Default.PayloadConverter.ToPayload(34) } }
-                }
+                    Payloads_ = { { DataConverter.Default.PayloadConverter.ToPayload(34) } },
+                },
             },
             Cause = new()
             {
@@ -74,10 +38,10 @@ public class PayloadCodecTests : TestBase
                 {
                     LastHeartbeatDetails = new()
                     {
-                        Payloads_ = { { DataConverter.Default.PayloadConverter.ToPayload(78) } }
-                    }
-                }
-            }
+                        Payloads_ = { { DataConverter.Default.PayloadConverter.ToPayload(78) } },
+                    },
+                },
+            },
         };
         void AssertPayloadData(Payload payload, string encoding, string data)
         {
@@ -96,14 +60,12 @@ public class PayloadCodecTests : TestBase
         AssertPayloadNotData(
             encoded.ApplicationFailureInfo.Details.Payloads_.First(),
             "my-encoding",
-            "34"
-        );
+            "34");
         AssertPayloadNotData(encoded.Cause.EncodedAttributes, "my-encoding", "56");
         AssertPayloadNotData(
             encoded.Cause.TimeoutFailureInfo.LastHeartbeatDetails.Payloads_.First(),
             "my-encoding",
-            "78"
-        );
+            "78");
 
         var decoded = new Failure(encoded);
         await new Base64PayloadCodec().DecodeFailureAsync(decoded);
@@ -111,13 +73,45 @@ public class PayloadCodecTests : TestBase
         AssertPayloadData(
             decoded.ApplicationFailureInfo.Details.Payloads_.First(),
             "json/plain",
-            "34"
-        );
+            "34");
         AssertPayloadData(decoded.Cause.EncodedAttributes, "json/plain", "56");
         AssertPayloadData(
             decoded.Cause.TimeoutFailureInfo.LastHeartbeatDetails.Payloads_.First(),
             "json/plain",
-            "78"
-        );
+            "78");
+    }
+
+    public class Base64PayloadCodec : IPayloadCodec
+    {
+        public Task<IEnumerable<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads)
+        {
+            return Task.FromResult(
+                payloads.Select(
+                    p =>
+                        new Payload()
+                        {
+                            Data = ByteString.CopyFrom(
+                                Convert.ToBase64String(p.ToByteArray()),
+                                Encoding.ASCII),
+                            Metadata =
+                            {
+                                new Dictionary<string, ByteString>
+                                {
+                                    ["encoding"] = ByteString.CopyFromUtf8("my-encoding"),
+                                },
+                            },
+                        }));
+        }
+
+        public Task<IEnumerable<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
+        {
+            return Task.FromResult(
+                payloads.Select(p =>
+                {
+                    Assert.Equal("my-encoding", p.Metadata["encoding"].ToStringUtf8());
+                    return Payload.Parser.ParseFrom(
+                        Convert.FromBase64String(p.Data.ToString(Encoding.ASCII)));
+                }));
+        }
     }
 }

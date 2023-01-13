@@ -58,21 +58,22 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Build
-        # We intentionally just build debug mode in this CI
+        # We intentionally just build debug mode in this CI. We build before
+        # regen to confirm no interop header changes.
         run: dotnet build
 
-      - name: Regen + format and confirm unchanged
+      - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
         run: |
-          dotnet tool install --global csharpier
           dotnet tool install --global ClangSharpPInvokeGenerator
-
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
-          dotnet format style && dotnet format analyzers && dotnet csharpier .
-
           git config --global core.safecrlf false
           git diff --exit-code
+
+      - name: Check format
+        if: ${{ matrix.checkTarget }}
+        run: dotnet format --verify-no-changes
 
       - name: Test
         run: dotnet test --logger "console;verbosity=detailed" --blame-crash

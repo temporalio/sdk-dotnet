@@ -7,7 +7,10 @@ using Xunit.Abstractions;
 
 public class FailureConverterTests : TestBase
 {
-    public FailureConverterTests(ITestOutputHelper output) : base(output) { }
+    public FailureConverterTests(ITestOutputHelper output)
+        : base(output)
+    {
+    }
 
     [Fact]
     public void ToFailure_Common_Succeeds()
@@ -19,8 +22,7 @@ public class FailureConverterTests : TestBase
         };
         var failure = DataConverter.Default.FailureConverter.ToFailure(
             Assert.Throws<ArgumentException>(throws),
-            DataConverter.Default.PayloadConverter
-        );
+            DataConverter.Default.PayloadConverter);
         Assert.Equal("exc1", failure.Message);
         Assert.Contains("FailureConverterTests", failure.StackTrace);
         Assert.Equal("ArgumentException", failure.ApplicationFailureInfo.Type);
@@ -30,8 +32,7 @@ public class FailureConverterTests : TestBase
         // Add some details and confirm it properly deserializes too
         var exc = DataConverter.Default.FailureConverter.ToException(
             failure,
-            DataConverter.Default.PayloadConverter
-        );
+            DataConverter.Default.PayloadConverter);
         Assert.IsType<ApplicationFailureException>(exc);
         Assert.Equal(failure.Message, exc.Message);
         Assert.Equal(failure.StackTrace, exc.StackTrace);
@@ -49,8 +50,7 @@ public class FailureConverterTests : TestBase
         var converter = new DefaultFailureConverter.WithEncodedCommonAttributes();
         var failure = converter.ToFailure(
             Assert.Throws<ArgumentException>(throws),
-            DataConverter.Default.PayloadConverter
-        );
+            DataConverter.Default.PayloadConverter);
         Assert.Equal("Encoded failure", failure.Message);
         Assert.Empty(failure.StackTrace);
         Assert.Equal("ArgumentException", failure.ApplicationFailureInfo.Type);

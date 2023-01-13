@@ -34,13 +34,20 @@ Or for release:
 
 ### Code formatting
 
-Install [CSharpier](https://csharpier.com):
+This project uses StyleCop analyzers with some overrides in `.editorconfig`. To format, run:
 
-    dotnet tool install --global csharpier
+    dotnet format
 
-Run `dotnet format` then `csharpier`:
+Can also run with `--verify-no-changes` to ensure it is formatted.
 
-    dotnet format style && dotnet format analyzers && dotnet csharpier .
+#### VisualStudio Code
+
+When developing in vscode, the following JSON settings will enable StyleCop analyzers in:
+
+```json
+    "omnisharp.enableEditorConfigSupport": true,
+    "omnisharp.enableRoslynAnalyzers": true
+```
 
 ### Testing
 

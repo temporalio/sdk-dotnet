@@ -45,7 +45,7 @@ namespace Temporalio.Client
         public static async Task<TemporalConnection> ConnectAsync(TemporalConnectionOptions options)
         {
             var runtime = options.Runtime ?? TemporalRuntime.Default;
-            var client = await Bridge.Client.ConnectAsync(runtime.runtime, options);
+            var client = await Bridge.Client.ConnectAsync(runtime.Runtime, options);
             return new TemporalConnection(client, options);
         }
 

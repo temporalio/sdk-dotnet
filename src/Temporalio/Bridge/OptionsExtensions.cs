@@ -98,9 +98,9 @@ namespace Temporalio.Bridge
                 url = scope.ByteArray(options.Url),
                 headers = scope.Metadata(options.Headers),
                 metric_periodicity_millis = (uint)(
-                    options.MetricPeriodicity == null
+                    options.MetricsExportInterval == null
                         ? 0
-                        : options.MetricPeriodicity.Value.TotalMilliseconds),
+                        : options.MetricsExportInterval.Value.TotalMilliseconds),
             };
         }
 

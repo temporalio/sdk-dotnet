@@ -85,7 +85,7 @@ namespace Temporalio.Client
         /// <remarks>Does not create copies of RPC metadata or runtime.</remarks>
         public virtual object Clone()
         {
-            var copy = (TemporalConnectionOptions)this.MemberwiseClone();
+            var copy = (TemporalConnectionOptions)MemberwiseClone();
             if (Tls != null)
             {
                 copy.Tls = (TlsOptions)Tls.Clone();

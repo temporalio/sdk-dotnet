@@ -8,8 +8,12 @@ namespace Temporalio.Exceptions
     /// </summary>
     public class ServerFailureException : FailureException
     {
-        /// <inheritdoc />
-        protected internal ServerFailureException(Failure failure, Exception? inner)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerFailureException"/> class.
+        /// </summary>
+        /// <param name="failure">Underlying proto failure.</param>
+        /// <param name="inner">Inner exception if any.</param>
+        internal protected ServerFailureException(Failure failure, Exception? inner)
             : base(failure, inner)
         {
             if (failure.ServerFailureInfo == null)
@@ -18,11 +22,13 @@ namespace Temporalio.Exceptions
             }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the underlying protobuf failure object.
+        /// </summary>
         public new Failure Failure => base.Failure!;
 
         /// <summary>
-        /// Whether this exception is non-retryable.
+        /// Gets a value indicating whether this exception is non-retryable.
         /// </summary>
         public bool NonRetryable => Failure!.ServerFailureInfo.NonRetryable;
     }
