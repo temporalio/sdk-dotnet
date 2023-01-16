@@ -43,7 +43,7 @@ namespace Temporalio.Client
         /// <remarks>Does not create copies of metadata or cancellation token.</remarks>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

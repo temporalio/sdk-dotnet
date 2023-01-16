@@ -5,7 +5,7 @@ namespace Temporalio.Client
     /// <summary>
     /// Client for a Temporal namespace.
     /// </summary>
-    public class TemporalClient : ITemporalClient
+    public partial class TemporalClient : ITemporalClient
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalClient"/> class from an existing
@@ -45,7 +45,5 @@ namespace Temporalio.Client
                 await TemporalConnection.ConnectAsync(options),
                 options.ToClientOptions());
         }
-
-        // TODO(cretz): High-level client methods
     }
 }

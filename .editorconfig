@@ -19,6 +19,9 @@ dotnet_diagnostic.SA1513.severity = none
 # Don't require a blank line before single line comments
 dotnet_diagnostic.SA1515.severity = none
 
+# Do not require partial class documentation
+dotnet_diagnostic.SA1601.severity = none
+
 # Do not require file header
 dotnet_diagnostic.SA1633.severity = none
 
@@ -94,11 +97,11 @@ csharp_prefer_braces = true:suggestion
 #Style - expression bodied member options
 
 #prefer block bodies for accessors
-csharp_style_expression_bodied_accessors = false:suggestion
+csharp_style_expression_bodied_accessors = false
 #prefer block bodies for constructors
-csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_constructors = false
 #prefer block bodies for methods
-csharp_style_expression_bodied_methods = false:suggestion
+csharp_style_expression_bodied_methods = false
 #prefer expression-bodied members for properties
 csharp_style_expression_bodied_properties = true:suggestion
 

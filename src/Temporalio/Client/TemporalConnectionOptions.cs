@@ -27,7 +27,7 @@ namespace Temporalio.Client
         public TemporalConnectionOptions(string targetHost)
             : this()
         {
-            this.TargetHost = targetHost;
+            TargetHost = targetHost;
         }
 
         /// <summary>
