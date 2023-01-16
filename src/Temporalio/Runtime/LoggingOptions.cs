@@ -8,17 +8,14 @@ namespace Temporalio.Runtime
     public class LoggingOptions : ICloneable
     {
         /// <summary>
-        /// Logging filter options.
+        /// Initializes a new instance of the <see cref="LoggingOptions"/> class.
         /// </summary>
-        public TelemetryFilterOptions Filter { get; set; } = new();
+        public LoggingOptions()
+        {
+        }
 
         /// <summary>
-        /// Create default options.
-        /// </summary>
-        public LoggingOptions() { }
-
-        /// <summary>
-        /// Create options with given filter.
+        /// Initializes a new instance of the <see cref="LoggingOptions"/> class.
         /// </summary>
         /// <param name="filter">Filter options to set.</param>
         public LoggingOptions(TelemetryFilterOptions filter)
@@ -27,12 +24,17 @@ namespace Temporalio.Runtime
         }
 
         /// <summary>
+        /// Gets or sets the logging filter options.
+        /// </summary>
+        public TelemetryFilterOptions Filter { get; set; } = new();
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (LoggingOptions)this.MemberwiseClone();
+            var copy = (LoggingOptions)MemberwiseClone();
             copy.Filter = (TelemetryFilterOptions)Filter.Clone();
             return copy;
         }

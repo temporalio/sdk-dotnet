@@ -11,10 +11,28 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class Client : SafeHandle
     {
+        private readonly Runtime runtime;
+        private readonly unsafe Interop.Client* ptr;
+
+        private unsafe Client(Runtime runtime, Interop.Client* ptr)
+            : base((IntPtr)ptr, true)
+        {
+            this.runtime = runtime;
+            this.ptr = ptr;
+        }
+
+        /// <inheritdoc />
+        public override unsafe bool IsInvalid => false;
+
+        /// <summary>
+        /// Connect to Temporal.
+        /// </summary>
+        /// <param name="runtime">Runtime to use.</param>
+        /// <param name="options">Options for connection.</param>
+        /// <returns>Connected client.</returns>
         public static async Task<Client> ConnectAsync(
             Runtime runtime,
-            Temporalio.Client.TemporalConnectionOptions options
-        )
+            Temporalio.Client.TemporalConnectionOptions options)
         {
             using (var scope = new Scope())
             {
@@ -22,7 +40,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.client_connect(
-                        runtime.ptr,
+                        runtime.Ptr,
                         scope.Pointer(options.ToInteropOptions(scope)),
                         null,
                         scope.FunctionPointer<Interop.ClientConnectCallback>(
@@ -32,39 +50,31 @@ namespace Temporalio.Bridge
                                 {
                                     completion.TrySetException(
                                         new InvalidOperationException(
-                                            new ByteArray(runtime, fail).ToUTF8()
-                                        )
-                                    );
+                                            new ByteArray(runtime, fail).ToUTF8()));
                                 }
                                 else
                                 {
                                     completion.TrySetResult(new Client(runtime, success));
                                 }
-                            }
-                        )
-                    );
+                            }));
                 }
                 return await completion.Task;
             }
         }
 
-        private readonly Runtime runtime;
-        private readonly unsafe Interop.Client* ptr;
-
-        private unsafe Client(Runtime runtime, Interop.Client* ptr) : base((IntPtr)ptr, true)
-        {
-            this.runtime = runtime;
-            this.ptr = ptr;
-        }
-
-        public override unsafe bool IsInvalid => false;
-
-        protected override unsafe bool ReleaseHandle()
-        {
-            Interop.Methods.client_free(this.ptr);
-            return true;
-        }
-
+        /// <summary>
+        /// Make RPC call to Temporal.
+        /// </summary>
+        /// <typeparam name="T">Return proto type.</typeparam>
+        /// <param name="service">Service to call.</param>
+        /// <param name="rpc">RPC operation to call.</param>
+        /// <param name="req">Proto request.</param>
+        /// <param name="resp">Proto response parser.</param>
+        /// <param name="retry">Whether to retry or not.</param>
+        /// <param name="metadata">Metadata to include.</param>
+        /// <param name="timeout">Timeout for the call.</param>
+        /// <param name="cancellationToken">Cancellation token for the call.</param>
+        /// <returns>Response proto.</returns>
         public async Task<T> Call<T>(
             Interop.RpcService service,
             string rpc,
@@ -73,8 +83,8 @@ namespace Temporalio.Bridge
             bool retry,
             IEnumerable<KeyValuePair<string, string>>? metadata,
             TimeSpan? timeout,
-            System.Threading.CancellationToken? cancellationToken
-        ) where T : Google.Protobuf.IMessage<T>
+            System.Threading.CancellationToken? cancellationToken)
+            where T : Google.Protobuf.IMessage<T>
         {
             using (var scope = new Scope())
             {
@@ -92,9 +102,8 @@ namespace Temporalio.Bridge
                                 retry = (byte)(retry ? 1 : 0),
                                 metadata = scope.Metadata(metadata),
                                 timeout_millis = (uint)(timeout?.TotalMilliseconds ?? 0),
-                                cancellation_token = scope.CancellationToken(cancellationToken)
-                            }
-                        ),
+                                cancellation_token = scope.CancellationToken(cancellationToken),
+                            }),
                         null,
                         scope.FunctionPointer<Interop.ClientRpcCallCallback>(
                             (userData, success, fail) =>
@@ -103,20 +112,23 @@ namespace Temporalio.Bridge
                                 {
                                     completion.TrySetException(
                                         new InvalidOperationException(
-                                            new ByteArray(runtime, fail).ToUTF8()
-                                        )
-                                    );
+                                            new ByteArray(runtime, fail).ToUTF8()));
                                 }
                                 else
                                 {
                                     completion.TrySetResult(new ByteArray(runtime, success));
                                 }
-                            }
-                        )
-                    );
+                            }));
                 }
                 return (await completion.Task).ToProto(resp);
             }
+        }
+
+        /// <inheritdoc />
+        protected override unsafe bool ReleaseHandle()
+        {
+            Interop.Methods.client_free(this.ptr);
+            return true;
         }
     }
 }

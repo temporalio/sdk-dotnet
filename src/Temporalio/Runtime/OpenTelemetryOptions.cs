@@ -10,33 +10,35 @@ namespace Temporalio.Runtime
     public class OpenTelemetryOptions : ICloneable
     {
         /// <summary>
-        /// URL for the OpenTelemetry collector.
+        /// Initializes a new instance of the <see cref="OpenTelemetryOptions"/> class.
         /// </summary>
-        public string? Url { get; set; }
+        public OpenTelemetryOptions()
+        {
+        }
 
         /// <summary>
-        /// Headers to include in OpenTelemetry calls.
+        /// Initializes a new instance of the <see cref="OpenTelemetryOptions"/> class.
         /// </summary>
-        public IEnumerable<KeyValuePair<string, string>>? Headers { get; set; }
-
-        /// <summary>
-        /// How frequently in metrics should be exported.
-        /// </summary>
-        public TimeSpan? MetricPeriodicity { get; set; }
-
-        /// <summary>
-        /// Create unset OpenTelemetry options.
-        /// </summary>
-        public OpenTelemetryOptions() { }
-
-        /// <summary>
-        /// Create OpenTelemetry options with the given URL.
-        /// </summary>
-        /// <param name="url"><see cref="OpenTelemetryOptions.Url" /></param>
+        /// <param name="url"><see cref="Url" />.</param>
         public OpenTelemetryOptions(string url)
         {
             Url = url;
         }
+
+        /// <summary>
+        /// Gets or sets the URL for the OpenTelemetry collector.
+        /// </summary>
+        public string? Url { get; set; }
+
+        /// <summary>
+        /// Gets or sets the headers to include in OpenTelemetry calls.
+        /// </summary>
+        public IEnumerable<KeyValuePair<string, string>>? Headers { get; set; }
+
+        /// <summary>
+        /// Gets or sets how frequently in metrics should be exported.
+        /// </summary>
+        public TimeSpan? MetricsExportInterval { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
@@ -44,7 +46,7 @@ namespace Temporalio.Runtime
         /// <returns>A shallow copy of these options.</returns>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

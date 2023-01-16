@@ -1,0 +1,13 @@
+[*.cs]
+
+##### Temporal additions ######
+
+# Please keep in alphabetical order by field.
+
+# Do not need docs in test project
+dotnet_diagnostic.CS1591.severity = none
+
+# Do not need docs in test project
+dotnet_diagnostic.SA1600.severity = none
+
+###############################

@@ -10,7 +10,9 @@ using Xunit.Abstractions;
 public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
 {
     public TemporalRuntimeTests(ITestOutputHelper output, WorkflowEnvironment env)
-        : base(output, env) { }
+        : base(output, env)
+    {
+    }
 
     [Fact]
     public async Task Runtime_Separate_BothUsed()
@@ -23,10 +25,8 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
                 TargetHost = Client.Connection.Options.TargetHost,
                 Namespace = Client.Namespace,
                 Runtime = new(
-                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } }
-                )
-            }
-        );
+                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } }),
+            });
         await client1.Connection.WorkflowService.GetSystemInfoAsync(new());
         var promAddr2 = $"127.0.0.1:{FreePort()}";
         var client2 = await TemporalClient.ConnectAsync(
@@ -35,10 +35,8 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
                 TargetHost = Client.Connection.Options.TargetHost,
                 Namespace = Client.Namespace,
                 Runtime = new(
-                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } }
-                )
-            }
-        );
+                    new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } }),
+            });
         await client2.Connection.WorkflowService.GetSystemInfoAsync(new());
 
         // Check that Prometheus on each runtime is reporting metrics
@@ -51,7 +49,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
 
     private static int FreePort()
     {
-        TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+        var l = new TcpListener(IPAddress.Loopback, 0);
         l.Start();
         int port = ((IPEndPoint)l.LocalEndpoint).Port;
         l.Stop();

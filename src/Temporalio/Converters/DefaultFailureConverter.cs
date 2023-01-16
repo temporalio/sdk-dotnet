@@ -12,23 +12,17 @@ namespace Temporalio.Converters
     public class DefaultFailureConverter : IFailureConverter
     {
         /// <summary>
-        /// Options this converter was created with.
+        /// Initializes a new instance of the <see cref="DefaultFailureConverter"/> class.
         /// </summary>
-        /// <remarks>
-        /// Callers should never mutate this. Rather they should subclass the failure converter and
-        /// pass a different value into the protected constructor.
-        /// </remarks>
-        public DefaultFailureConverterOptions Options { get; private init; }
+        public DefaultFailureConverter()
+            : this(new())
+        {
+        }
 
         /// <summary>
-        /// Create a new failure converter.
+        /// Initializes a new instance of the <see cref="DefaultFailureConverter"/> class.
         /// </summary>
-        public DefaultFailureConverter() : this(new()) { }
-
-        /// <summary>
-        /// Create a new failure converter with the given options.
-        /// </summary>
-        /// <param name="options">Options for the failure converter</param>
+        /// <param name="options">Options for the failure converter.</param>
         /// <remarks>
         /// This is protected because payload converters are referenced as class types, not
         /// instances, so only subclasses would call this.
@@ -37,6 +31,15 @@ namespace Temporalio.Converters
         {
             Options = options;
         }
+
+        /// <summary>
+        /// Gets the options this converter was created with.
+        /// </summary>
+        /// <remarks>
+        /// Callers should never mutate this. Rather they should subclass the failure converter and
+        /// pass a different value into the protected constructor.
+        /// </remarks>
+        public DefaultFailureConverterOptions Options { get; private init; }
 
         /// <inheritdoc />
         public Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
@@ -47,8 +50,7 @@ namespace Temporalio.Converters
                 ?? new ApplicationFailureException(
                     exception.Message,
                     exception.InnerException,
-                    exception.GetType().Name
-                );
+                    exception.GetType().Name);
 
             // Create new failure object. This means if it's already set we copy it. This is costly,
             // but we prefer it over potentially mutating the failure on the existing exception. We
@@ -57,8 +59,7 @@ namespace Temporalio.Converters
             var failure = CreateFailureFromException(
                 failureEx,
                 exception.StackTrace,
-                payloadConverter
-            );
+                payloadConverter);
 
             // If requested, move message and stack trace to encoded attributes
             if (Options.EncodeCommonAttributes)
@@ -67,68 +68,10 @@ namespace Temporalio.Converters
                     new Dictionary<string, string>
                     {
                         ["message"] = failure.Message,
-                        ["stack_trace"] = failure.StackTrace
-                    }
-                );
+                        ["stack_trace"] = failure.StackTrace,
+                    });
                 failure.Message = "Encoded failure";
-                failure.StackTrace = "";
-            }
-            return failure;
-        }
-
-        private Failure CreateFailureFromException(
-            FailureException exc,
-            string? stackTrace,
-            IPayloadConverter conv
-        )
-        {
-            // Copy existing failure if already there
-            if (exc.Failure != null)
-            {
-                return new(exc.Failure);
-            }
-            var failure = new Failure()
-            {
-                Message = exc.Message,
-                StackTrace = stackTrace ?? "",
-                Cause = exc.InnerException == null ? null : ToFailure(exc.InnerException, conv)
-            };
-            switch (exc)
-            {
-                case ApplicationFailureException appExc:
-                    var appDet =
-                        appExc.Details as OutboundFailureDetails
-                        ?? throw new ArgumentException(
-                            "Application exception expected to have outbound details"
-                        );
-                    failure.ApplicationFailureInfo = new()
-                    {
-                        Type = appExc.Type ?? "",
-                        NonRetryable = appExc.NonRetryable,
-                        Details =
-                            appDet.Count == 0
-                                ? null
-                                : new() { Payloads_ = { appDet.Details.Select(conv.ToPayload) } }
-                    };
-                    break;
-                case CancelledFailureException canExc:
-                    var canDet =
-                        canExc.Details as OutboundFailureDetails
-                        ?? throw new ArgumentException(
-                            "Cancelled exception expected to have outbound details"
-                        );
-                    failure.CanceledFailureInfo = new()
-                    {
-                        Details =
-                            canDet.Count == 0
-                                ? null
-                                : new() { Payloads_ = { canDet.Details.Select(conv.ToPayload) } }
-                    };
-                    break;
-                default:
-                    throw new ArgumentException(
-                        $"Unexpected failure type {exc.GetType()} without failure proto"
-                    );
+                failure.StackTrace = string.Empty;
             }
             return failure;
         }
@@ -143,8 +86,7 @@ namespace Temporalio.Converters
                 try
                 {
                     var attrs = payloadConverter.ToValue<Dictionary<string, string>>(
-                        failure.EncodedAttributes
-                    )!;
+                        failure.EncodedAttributes)!;
                     if (attrs.TryGetValue("message", out string? message))
                     {
                         failure.Message = message;
@@ -181,6 +123,59 @@ namespace Temporalio.Converters
             }
         }
 
+        private Failure CreateFailureFromException(
+            FailureException exc,
+            string? stackTrace,
+            IPayloadConverter conv)
+        {
+            // Copy existing failure if already there
+            if (exc.Failure != null)
+            {
+                return new(exc.Failure);
+            }
+            var failure = new Failure()
+            {
+                Message = exc.Message,
+                StackTrace = stackTrace ?? string.Empty,
+                Cause = exc.InnerException == null ? null : ToFailure(exc.InnerException, conv),
+            };
+            switch (exc)
+            {
+                case ApplicationFailureException appExc:
+                    var appDet =
+                        appExc.Details as OutboundFailureDetails
+                        ?? throw new ArgumentException(
+                            "Application exception expected to have outbound details");
+                    failure.ApplicationFailureInfo = new()
+                    {
+                        Type = appExc.Type ?? string.Empty,
+                        NonRetryable = appExc.NonRetryable,
+                        Details =
+                            appDet.Count == 0
+                                ? null
+                                : new() { Payloads_ = { appDet.Details.Select(conv.ToPayload) } },
+                    };
+                    break;
+                case CancelledFailureException canExc:
+                    var canDet =
+                        canExc.Details as OutboundFailureDetails
+                        ?? throw new ArgumentException(
+                            "Cancelled exception expected to have outbound details");
+                    failure.CanceledFailureInfo = new()
+                    {
+                        Details =
+                            canDet.Count == 0
+                                ? null
+                                : new() { Payloads_ = { canDet.Details.Select(conv.ToPayload) } },
+                    };
+                    break;
+                default:
+                    throw new ArgumentException(
+                        $"Unexpected failure type {exc.GetType()} without failure proto");
+            }
+            return failure;
+        }
+
         /// <summary>
         /// Failure converter with
         /// <see cref="DefaultFailureConverterOptions.EncodeCommonAttributes" /> as true.
@@ -188,10 +183,12 @@ namespace Temporalio.Converters
         public class WithEncodedCommonAttributes : DefaultFailureConverter
         {
             /// <summary>
-            /// Create failure converter with
-            /// <see cref="DefaultFailureConverterOptions.EncodeCommonAttributes" /> as true.
+            /// Initializes a new instance of the <see cref="WithEncodedCommonAttributes"/> class.
             /// </summary>
-            public WithEncodedCommonAttributes() : base(new() { EncodeCommonAttributes = true }) { }
+            public WithEncodedCommonAttributes()
+                : base(new() { EncodeCommonAttributes = true })
+            {
+            }
         }
     }
 }

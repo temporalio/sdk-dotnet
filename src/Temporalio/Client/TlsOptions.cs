@@ -41,7 +41,7 @@ namespace Temporalio.Client
         /// <remarks>Does not create copies of byte arrays.</remarks>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
         }
     }
 }

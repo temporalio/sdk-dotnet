@@ -10,8 +10,7 @@ namespace Temporalio.Converters
     public class BinaryPlainConverter : IEncodingConverter
     {
         private static readonly ByteString EncodingByteString = ByteString.CopyFromUtf8(
-            "binary/plain"
-        );
+            "binary/plain");
 
         /// <inheritdoc />
         public string Encoding => "binary/plain";

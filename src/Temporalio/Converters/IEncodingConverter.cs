@@ -9,7 +9,7 @@ namespace Temporalio.Converters
     public interface IEncodingConverter
     {
         /// <summary>
-        /// The encoding name this converter represents.
+        /// Gets the encoding name this converter represents.
         /// </summary>
         /// <remarks>
         /// Implementers must put this value on the "encoding" metadata of created payloads.

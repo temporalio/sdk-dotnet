@@ -20,79 +20,8 @@ namespace Temporalio.Testing
 #endif
     {
         /// <summary>
-        /// Start a local test server with full Temporal capabilities but no time skipping.
-        /// </summary>
-        /// <param name="options">Options for the server.</param>
-        /// <returns>The started environment.</returns>
-        /// <remarks>
-        /// By default this lazily downloads a server from the internet if not already present.
-        /// </remarks>
-        public static async Task<WorkflowEnvironment> StartLocalAsync(
-            WorkflowEnvironmentStartLocalOptions? options = null
-        )
-        {
-            options ??= new();
-            var runtime = options.Runtime ?? TemporalRuntime.Default;
-            var server = await Bridge.EphemeralServer.StartTemporaliteAsync(
-                runtime.runtime,
-                options
-            );
-            return await StartEphemeralAsync(server, options);
-        }
-
-        /// <summary>
-        /// Start a local test server with time skipping but limited Temporal capabilities.
-        /// </summary>
-        /// <param name="options">Options for the server.</param>
-        /// <returns>The started environment.</returns>
-        /// <remarks>
-        /// By default this lazily downloads a server from the internet if not already present.
-        /// </remarks>
-        public static async Task<WorkflowEnvironment> StartTimeSkippingAsync(
-            WorkflowEnvironmentStartTimeSkippingOptions? options = null
-        )
-        {
-            options ??= new();
-            var runtime = options.Runtime ?? TemporalRuntime.Default;
-            var server = await Bridge.EphemeralServer.StartTestServerAsync(
-                runtime.runtime,
-                options
-            );
-            return await StartEphemeralAsync(server, options);
-        }
-
-        private static async Task<WorkflowEnvironment> StartEphemeralAsync(
-            Bridge.EphemeralServer server,
-            TemporalClientConnectOptions options
-        )
-        {
-            // Copy the options, replacing target
-            options = (TemporalClientConnectOptions)options.Clone();
-            options.TargetHost = server.Target;
-            // If we can't connect, shutdown the server before returning
-            try
-            {
-                return new WorkflowEnvironment.EphemeralServerBased(
-                    await TemporalClient.ConnectAsync(options),
-                    server
-                );
-            }
-            catch (Exception ex)
-            {
-                try
-                {
-                    await server.ShutdownAsync();
-                }
-                catch (Exception ex2)
-                {
-                    throw new AggregateException(ex, ex2);
-                }
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Create a non-time-skipping workflow environment from an existing client.
+        /// Initializes a new instance of the <see cref="WorkflowEnvironment"/> class for the given
+        /// client that does not support time skipping.
         /// </summary>
         /// <param name="client">Client to use for this environment.</param>
         public WorkflowEnvironment(ITemporalClient client)
@@ -106,15 +35,54 @@ namespace Temporalio.Testing
         public ITemporalClient Client { get; protected init; }
 
         /// <summary>
-        /// Whether this environment supports time skipping.
+        /// Gets a value indicating whether this environment supports time skipping.
         /// </summary>
         public virtual bool SupportsTimeSkipping => false;
+
+        /// <summary>
+        /// Start a local test server with full Temporal capabilities but no time skipping.
+        /// </summary>
+        /// <param name="options">Options for the server.</param>
+        /// <returns>The started environment.</returns>
+        /// <remarks>
+        /// By default this lazily downloads a server from the internet if not already present.
+        /// </remarks>
+        public static async Task<WorkflowEnvironment> StartLocalAsync(
+            WorkflowEnvironmentStartLocalOptions? options = null)
+        {
+            options ??= new();
+            var runtime = options.Runtime ?? TemporalRuntime.Default;
+            var server = await Bridge.EphemeralServer.StartTemporaliteAsync(
+                runtime.Runtime,
+                options);
+            return await StartEphemeralAsync(server, options);
+        }
+
+        /// <summary>
+        /// Start a local test server with time skipping but limited Temporal capabilities.
+        /// </summary>
+        /// <param name="options">Options for the server.</param>
+        /// <returns>The started environment.</returns>
+        /// <remarks>
+        /// By default this lazily downloads a server from the internet if not already present.
+        /// </remarks>
+        public static async Task<WorkflowEnvironment> StartTimeSkippingAsync(
+            WorkflowEnvironmentStartTimeSkippingOptions? options = null)
+        {
+            options ??= new();
+            var runtime = options.Runtime ?? TemporalRuntime.Default;
+            var server = await Bridge.EphemeralServer.StartTestServerAsync(
+                runtime.Runtime,
+                options);
+            return await StartEphemeralAsync(server, options);
+        }
 
         /// <summary>
         /// Sleep in this environment.
         /// </summary>
         /// <param name="millisecondsDelay">Number of milliseconds to sleep.</param>
         /// <param name="cancellationToken">If present, cancellation token for the sleep.</param>
+        /// <returns>Completion task.</returns>
         /// <remarks>
         /// In non-time-skipping environments, this is just
         /// <see cref="Task.Delay(int, CancellationToken)" />, but in time-skipping environments
@@ -130,6 +98,7 @@ namespace Temporalio.Testing
         /// </summary>
         /// <param name="delay">Amount of time to sleep.</param>
         /// <param name="cancellationToken">If present, cancellation token for the sleep.</param>
+        /// <returns>Completion task.</returns>
         /// <remarks>
         /// In non-time-skipping environments, this is just
         /// <see cref="Task.Delay(TimeSpan, CancellationToken)" />, but in time-skipping
@@ -147,7 +116,7 @@ namespace Temporalio.Testing
         /// <summary>
         /// Get the current time for the environment.
         /// </summary>
-        /// <returns>The current time for the environment</returns>
+        /// <returns>The current time for the environment.</returns>
         /// <remarks>
         /// For non-time-skipping environments this is just <see cref="DateTime.Now" />, but in
         /// time-skipping environments this may be a different time.
@@ -173,6 +142,7 @@ namespace Temporalio.Testing
         /// <summary>
         /// Shutdown this server.
         /// </summary>
+        /// <returns>Completion task.</returns>
         public virtual Task ShutdownAsync()
         {
             return Task.CompletedTask;
@@ -182,6 +152,7 @@ namespace Temporalio.Testing
         /// <summary>
         /// Shutdown and dispose this server.
         /// </summary>
+        /// <returns>Completion task.</returns>
         public async ValueTask DisposeAsync()
         {
             await ShutdownAsync();
@@ -189,22 +160,59 @@ namespace Temporalio.Testing
         }
 #endif
 
+        private static async Task<WorkflowEnvironment> StartEphemeralAsync(
+            Bridge.EphemeralServer server,
+            TemporalClientConnectOptions options)
+        {
+            // Copy the options, replacing target
+            options = (TemporalClientConnectOptions)options.Clone();
+            options.TargetHost = server.Target;
+            // If we can't connect, shutdown the server before returning
+            try
+            {
+                return new WorkflowEnvironment.EphemeralServerBased(
+                    await TemporalClient.ConnectAsync(options),
+                    server);
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    await server.ShutdownAsync();
+                }
+                catch (Exception ex2)
+                {
+                    throw new AggregateException(ex, ex2);
+                }
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Ephemeral server based workflow environment.
+        /// </summary>
         internal class EphemeralServerBased : WorkflowEnvironment
         {
             private readonly Bridge.EphemeralServer server;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="EphemeralServerBased"/> class.
+            /// </summary>
+            /// <param name="client">Client for the server.</param>
+            /// <param name="server">The underlying bridge server.</param>
             public EphemeralServerBased(TemporalClient client, Bridge.EphemeralServer server)
                 : base(client)
             {
                 this.server = server;
             }
 
+            /// <inheritdoc/>
             public override bool SupportsTimeSkipping => server.HasTestService;
 
+            /// <inheritdoc/>
             public async override Task DelayAsync(
                 TimeSpan delay,
-                CancellationToken? cancellationToken = null
-            )
+                CancellationToken? cancellationToken = null)
             {
                 if (!SupportsTimeSkipping)
                 {
@@ -215,15 +223,15 @@ namespace Temporalio.Testing
                     // Unlock with sleep
                     var req = new Api.TestService.V1.SleepRequest
                     {
-                        Duration = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(delay)
+                        Duration = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(delay),
                     };
                     await Client.Connection.TestService.UnlockTimeSkippingWithSleepAsync(
                         req,
-                        new RpcOptions { CancellationToken = cancellationToken }
-                    );
+                        new RpcOptions { CancellationToken = cancellationToken });
                 }
             }
 
+            /// <inheritdoc/>
             public async override Task<DateTime> GetCurrentTimeAsync()
             {
                 if (!SupportsTimeSkipping)
@@ -234,6 +242,7 @@ namespace Temporalio.Testing
                 return resp.Time.ToDateTime();
             }
 
+            /// <inheritdoc/>
             public async override Task ShutdownAsync()
             {
                 await server.ShutdownAsync();

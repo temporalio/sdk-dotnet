@@ -23,8 +23,7 @@ namespace Temporalio.Tests
         private static void JsonEqualCore(
             JsonElement expected,
             JsonElement actual,
-            Stack<object> path
-        )
+            Stack<object> path)
         {
             JsonValueKind valueKind = expected.ValueKind;
             AssertTrue(passCondition: valueKind == actual.ValueKind);
@@ -48,16 +47,14 @@ namespace Temporalio.Tests
                     {
                         AssertTrue(
                             passCondition: false,
-                            $"Property \"{property}\" missing from actual object."
-                        );
+                            $"Property \"{property}\" missing from actual object.");
                     }
 
                     foreach (var property in actualProperties.Except(expectedProperties))
                     {
                         AssertTrue(
                             passCondition: false,
-                            $"Actual object defines additional property \"{property}\"."
-                        );
+                            $"Actual object defines additional property \"{property}\".");
                     }
 
                     foreach (string name in expectedProperties)
@@ -76,8 +73,7 @@ namespace Temporalio.Tests
                     {
                         AssertTrue(
                             passCondition: actualEnumerator.MoveNext(),
-                            "Actual array contains fewer elements."
-                        );
+                            "Actual array contains fewer elements.");
                         path.Push(i++);
                         JsonEqualCore(expectedEnumerator.Current, actualEnumerator.Current, path);
                         path.Pop();
@@ -85,8 +81,7 @@ namespace Temporalio.Tests
 
                     AssertTrue(
                         passCondition: !actualEnumerator.MoveNext(),
-                        "Actual array contains additional elements."
-                    );
+                        "Actual array contains additional elements.");
                     break;
                 case JsonValueKind.String:
                     AssertTrue(passCondition: expected.GetString() == actual.GetString());
@@ -99,8 +94,7 @@ namespace Temporalio.Tests
                     break;
                 default:
                     throw new InvalidOperationException(
-                        $"Unexpected JsonValueKind: JsonValueKind.{valueKind}."
-                    );
+                        $"Unexpected JsonValueKind: JsonValueKind.{valueKind}.");
             }
 
             void AssertTrue(bool passCondition, string? message = null)
@@ -109,8 +103,7 @@ namespace Temporalio.Tests
                 {
                     message ??= "Expected JSON does not match actual value";
                     Assert.Fail(
-                        $"{message}\nExpected JSON: {expected}\n  Actual JSON: {actual}\n  in JsonPath: {BuildJsonPath(path)}"
-                    );
+                        $"{message}\nExpected JSON: {expected}\n  Actual JSON: {actual}\n  in JsonPath: {BuildJsonPath(path)}");
                 }
 
                 // TODO replace with JsonPath implementation for JsonElement

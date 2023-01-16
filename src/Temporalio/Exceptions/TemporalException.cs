@@ -7,13 +7,30 @@ namespace Temporalio.Exceptions
     /// </summary>
     public abstract class TemporalException : Exception
     {
-        /// <inheritdoc />
-        public TemporalException() { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalException"/> class.
+        /// </summary>
+        public TemporalException()
+        {
+        }
 
-        /// <inheritdoc />
-        public TemporalException(string message) : base(message) { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalException"/> class.
+        /// </summary>
+        /// <param name="message">Message for the exception.</param>
+        public TemporalException(string message)
+            : base(message)
+        {
+        }
 
-        /// <inheritdoc />
-        public TemporalException(string message, Exception? inner) : base(message, inner) { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalException"/> class.
+        /// </summary>
+        /// <param name="message">Message for the exception.</param>
+        /// <param name="inner">Cause of the exception.</param>
+        public TemporalException(string message, Exception? inner)
+            : base(message, inner)
+        {
+        }
     }
 }

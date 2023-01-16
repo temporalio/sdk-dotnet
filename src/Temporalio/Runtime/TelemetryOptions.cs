@@ -8,17 +8,17 @@ namespace Temporalio.Runtime
     public class TelemetryOptions : ICloneable
     {
         /// <summary>
-        /// Tracing options.
+        /// Gets or sets the tracing options.
         /// </summary>
         public TracingOptions? Tracing { get; set; }
 
         /// <summary>
-        /// Logging options.
+        /// Gets or sets the logging options.
         /// </summary>
         public LoggingOptions? Logging { get; set; } = new();
 
         /// <summary>
-        /// Metrics options.
+        /// Gets or sets the metrics options.
         /// </summary>
         public MetricsOptions? Metrics { get; set; }
 
@@ -28,7 +28,7 @@ namespace Temporalio.Runtime
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (TelemetryOptions)this.MemberwiseClone();
+            var copy = (TelemetryOptions)MemberwiseClone();
             if (Tracing != null)
             {
                 copy.Tracing = (TracingOptions)Tracing.Clone();

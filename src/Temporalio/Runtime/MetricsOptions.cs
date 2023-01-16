@@ -4,28 +4,20 @@ namespace Temporalio.Runtime
 {
     /// <summary>
     /// Metrics options for a runtime.
-    /// <see cref="MetricsOptions.Prometheus" /> or <see cref="MetricsOptions.OpenTelemetry" />
+    /// <see cref="Prometheus" /> or <see cref="OpenTelemetry" />
     /// is required (but not both).
     /// </summary>
     public class MetricsOptions : ICloneable
     {
         /// <summary>
-        /// Prometheus metrics options.
+        /// Initializes a new instance of the <see cref="MetricsOptions"/> class.
         /// </summary>
-        public PrometheusOptions? Prometheus { get; set; }
+        public MetricsOptions()
+        {
+        }
 
         /// <summary>
-        /// OpenTelemetry metrics options.
-        /// </summary>
-        public OpenTelemetryOptions? OpenTelemetry { get; set; }
-
-        /// <summary>
-        /// Create unset metrics options.
-        /// </summary>
-        public MetricsOptions() { }
-
-        /// <summary>
-        /// Create Prometheus-based metrics options.
+        /// Initializes a new instance of the <see cref="MetricsOptions"/> class.
         /// </summary>
         /// <param name="prometheus">Prometheus options.</param>
         public MetricsOptions(PrometheusOptions prometheus)
@@ -34,7 +26,7 @@ namespace Temporalio.Runtime
         }
 
         /// <summary>
-        /// Create OpenTelemetry-based metrics options.
+        /// Initializes a new instance of the <see cref="MetricsOptions"/> class.
         /// </summary>
         /// <param name="openTelemetry">OpenTelemetry options.</param>
         public MetricsOptions(OpenTelemetryOptions openTelemetry)
@@ -43,12 +35,22 @@ namespace Temporalio.Runtime
         }
 
         /// <summary>
+        /// Gets or sets the Prometheus metrics options.
+        /// </summary>
+        public PrometheusOptions? Prometheus { get; set; }
+
+        /// <summary>
+        /// Gets or sets the OpenTelemetry metrics options.
+        /// </summary>
+        public OpenTelemetryOptions? OpenTelemetry { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (MetricsOptions)this.MemberwiseClone();
+            var copy = (MetricsOptions)MemberwiseClone();
             if (Prometheus != null)
             {
                 copy.Prometheus = (PrometheusOptions)Prometheus.Clone();

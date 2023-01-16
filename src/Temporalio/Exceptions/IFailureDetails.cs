@@ -11,7 +11,7 @@ namespace Temporalio.Exceptions
     public interface IFailureDetails
     {
         /// <summary>
-        /// Number of details. May be 0.
+        /// Gets the number of details. May be 0.
         /// </summary>
         int Count { get; }
 

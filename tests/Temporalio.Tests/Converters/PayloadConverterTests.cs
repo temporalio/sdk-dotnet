@@ -12,36 +12,16 @@ using Xunit.Abstractions;
 
 public class PayloadConverterTests : TestBase
 {
-    public PayloadConverterTests(ITestOutputHelper output) : base(output) { }
-
-    public record SomeClass(
-        int SomeInt,
-        [property: JsonPropertyName("someString")] string? SomeString
-    );
-
-    public class NoJsonProtoPayloadConverter : DefaultPayloadConverter
+    public PayloadConverterTests(ITestOutputHelper output)
+        : base(output)
     {
-        public NoJsonProtoPayloadConverter()
-            : base(
-                DataConverter.Default.PayloadConverter.EncodingConverters.Where(
-                    c => !(c is JsonProtoConverter)
-                )
-            ) { }
-    }
-
-    public class CamelCasePayloadConverter : DefaultPayloadConverter
-    {
-        public CamelCasePayloadConverter()
-            : base(
-                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
-            ) { }
     }
 
     [Fact]
     public void ToPayload_Common_Succeeds()
     {
         // Null
-        AssertPayload(null, "binary/null", "");
+        AssertPayload(null, "binary/null", string.Empty);
 
         // Byte array
         AssertPayload(Encoding.ASCII.GetBytes("some binary"), "binary/plain", "some binary");
@@ -50,36 +30,31 @@ public class PayloadConverterTests : TestBase
         var proto = new Temporalio.Api.Common.V1.WorkflowExecution()
         {
             WorkflowId = "id1",
-            RunId = "id2"
+            RunId = "id2",
         };
         var payload = AssertPayload(
             proto,
             "json/protobuf",
-            expectedJson: "{\"workflowId\":\"id1\",\"runId\":\"id2\"}"
-        );
+            expectedJson: "{\"workflowId\":\"id1\",\"runId\":\"id2\"}");
         Assert.Equal(
             "temporal.api.common.v1.WorkflowExecution",
-            payload.Metadata["messageType"].ToStringUtf8()
-        );
+            payload.Metadata["messageType"].ToStringUtf8());
 
         // Binary proto (i.e. w/ JSON proto removed)
         payload = AssertPayload(
             proto,
             "binary/protobuf",
             expectedBytes: proto.ToByteArray(),
-            converterTypeOverride: typeof(NoJsonProtoPayloadConverter)
-        );
+            converterTypeOverride: typeof(NoJsonProtoPayloadConverter));
         Assert.Equal(
             "temporal.api.common.v1.WorkflowExecution",
-            payload.Metadata["messageType"].ToStringUtf8()
-        );
+            payload.Metadata["messageType"].ToStringUtf8());
 
         // JSON
         AssertPayload(
             new Dictionary<string, string>() { ["foo"] = "bar", ["baz"] = "qux" },
             "json/plain",
-            expectedJson: "{\"baz\":\"qux\",\"foo\":\"bar\"}"
-        );
+            expectedJson: "{\"baz\":\"qux\",\"foo\":\"bar\"}");
         AssertPayload("somestr", "json/plain", "\"somestr\"");
         AssertPayload(1234, "json/plain", "1234");
         AssertPayload(12.34, "json/plain", "12.34");
@@ -95,21 +70,18 @@ public class PayloadConverterTests : TestBase
             new object[] { "somestr", 1234 },
             "json/plain",
             expectedJson: "[\"somestr\",1234]",
-            decodeValueCheckAsJson: true
-        );
+            decodeValueCheckAsJson: true);
         AssertPayload(
             new SomeClass(1234, "foo"),
             "json/plain",
-            expectedJson: "{\"SomeInt\":1234,\"someString\":\"foo\"}"
-        );
+            expectedJson: "{\"SomeInt\":1234,\"someString\":\"foo\"}");
 
         // JSON with custom serializer options
         AssertPayload(
             new SomeClass(1234, "foo"),
             "json/plain",
             expectedJson: "{\"someInt\":1234,\"someString\":\"foo\"}",
-            converterTypeOverride: typeof(CamelCasePayloadConverter)
-        );
+            converterTypeOverride: typeof(CamelCasePayloadConverter));
     }
 
     [Fact]
@@ -127,8 +99,7 @@ public class PayloadConverterTests : TestBase
         string? expectedJson = null,
         byte[]? expectedBytes = null,
         bool decodeValueCheckAsJson = false,
-        Type? converterTypeOverride = null
-    )
+        Type? converterTypeOverride = null)
     {
         IPayloadConverter converter = DataConverter.Default.PayloadConverter;
         if (converterTypeOverride != null)
@@ -164,5 +135,28 @@ public class PayloadConverterTests : TestBase
             Assert.Equal(value, newValue);
         }
         return payload;
+    }
+
+    public record SomeClass(
+        int SomeInt,
+        [property: JsonPropertyName("someString")] string? SomeString);
+
+    public class NoJsonProtoPayloadConverter : DefaultPayloadConverter
+    {
+        public NoJsonProtoPayloadConverter()
+            : base(
+                DataConverter.Default.PayloadConverter.EncodingConverters.Where(
+                    c => c is not JsonProtoConverter))
+        {
+        }
+    }
+
+    public class CamelCasePayloadConverter : DefaultPayloadConverter
+    {
+        public CamelCasePayloadConverter()
+            : base(
+                new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
+        {
+        }
     }
 }

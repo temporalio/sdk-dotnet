@@ -9,6 +9,11 @@ namespace Temporalio.Client
     public abstract class RpcService
     {
         /// <summary>
+        /// Gets the service.
+        /// </summary>
+        internal abstract Bridge.Interop.RpcService Service { get; }
+
+        /// <summary>
         /// Invoke an RPC method.
         /// </summary>
         /// <typeparam name="T">Resulting protobuf message type.</typeparam>
@@ -21,9 +26,7 @@ namespace Temporalio.Client
             string rpc,
             IMessage req,
             MessageParser<T> resp,
-            RpcOptions? options = null
-        ) where T : Google.Protobuf.IMessage<T>;
-
-        internal abstract Bridge.Interop.RpcService Service { get; }
+            RpcOptions? options = null)
+            where T : Google.Protobuf.IMessage<T>;
     }
 }

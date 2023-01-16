@@ -12,7 +12,28 @@ namespace Temporalio.Exceptions
     public class FailureException : TemporalException
     {
         /// <summary>
-        /// Get the underlying protobuf failure object.
+        /// Initializes a new instance of the <see cref="FailureException"/> class.
+        /// </summary>
+        /// <param name="message">Message for the exception.</param>
+        /// <param name="inner">Cause of the exception.</param>
+        internal protected FailureException(string message, Exception? inner = null)
+            : base(message, inner)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FailureException"/> class.
+        /// </summary>
+        /// <param name="failure">Underlying proto failure.</param>
+        /// <param name="inner">Inner exception if any.</param>
+        internal protected FailureException(Failure failure, Exception? inner)
+            : base(failure.Message, inner)
+        {
+            Failure = failure;
+        }
+
+        /// <summary>
+        /// Gets the underlying protobuf failure object.
         /// </summary>
         /// <remarks>
         /// This is non-null except for user-created exceptions.
@@ -20,22 +41,7 @@ namespace Temporalio.Exceptions
         public Failure? Failure { get; protected init; } = null;
 
         /// <summary>
-        /// Create a user-created failure exception with a message.
-        /// </summary>
-        protected internal FailureException(string message, Exception? inner = null)
-            : base(message, inner) { }
-
-        /// <summary>
-        /// Create a server-created failure exception with a failure object.
-        /// </summary>
-        protected internal FailureException(Failure failure, Exception? inner)
-            : base(failure.Message, inner)
-        {
-            Failure = failure;
-        }
-
-        /// <summary>
-        /// Stack trace on the exception or on the failure if not on the exception.
+        /// Gets the stack trace on the exception or on the failure if not on the exception.
         /// </summary>
         public override string? StackTrace
         {
@@ -43,10 +49,9 @@ namespace Temporalio.Exceptions
             {
                 var stackTrace = base.StackTrace;
                 if (
-                    String.IsNullOrEmpty(stackTrace)
+                    string.IsNullOrEmpty(stackTrace)
                     && Failure != null
-                    && Failure.StackTrace.Length > 0
-                )
+                    && Failure.StackTrace.Length > 0)
                 {
                     stackTrace = Failure.StackTrace;
                 }

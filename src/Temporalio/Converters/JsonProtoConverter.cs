@@ -10,29 +10,18 @@ namespace Temporalio.Converters
     public class JsonProtoConverter : IEncodingConverter
     {
         private static readonly ByteString EncodingByteString = ByteString.CopyFromUtf8(
-            "json/protobuf"
-        );
-
-        /// <inheritdoc />
-        public string Encoding => "json/protobuf";
+            "json/protobuf");
 
         /// <summary>
-        /// Formatter used when converting to JSON.
+        /// Initializes a new instance of the <see cref="JsonProtoConverter"/> class.
         /// </summary>
-        protected JsonFormatter Formatter { get; private init; }
+        public JsonProtoConverter()
+            : this(JsonFormatter.Default, JsonParser.Default)
+        {
+        }
 
         /// <summary>
-        /// Parser used when converting from JSON.
-        /// </summary>
-        protected JsonParser Parser { get; private init; }
-
-        /// <summary>
-        /// Create a new default protobuf JSON converter.
-        /// </summary>
-        public JsonProtoConverter() : this(JsonFormatter.Default, JsonParser.Default) { }
-
-        /// <summary>
-        /// Create a new protobuf JSON converter with the given formatter and parser.
+        /// Initializes a new instance of the <see cref="JsonProtoConverter"/> class.
         /// </summary>
         /// <param name="formatter">Formatter used when converting to JSON.</param>
         /// <param name="parser">Parser used when converting from JSON.</param>
@@ -41,6 +30,19 @@ namespace Temporalio.Converters
             Formatter = formatter;
             Parser = parser;
         }
+
+        /// <inheritdoc />
+        public string Encoding => "json/protobuf";
+
+        /// <summary>
+        /// Gets the formatter used when converting to JSON.
+        /// </summary>
+        protected JsonFormatter Formatter { get; private init; }
+
+        /// <summary>
+        /// Gets the parser used when converting from JSON.
+        /// </summary>
+        protected JsonParser Parser { get; private init; }
 
         /// <inheritdoc />
         public bool TryToPayload(object? value, out Payload? payload)

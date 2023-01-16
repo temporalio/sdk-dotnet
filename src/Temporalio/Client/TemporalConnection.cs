@@ -11,18 +11,6 @@ namespace Temporalio.Client
     /// </summary>
     public sealed class TemporalConnection : ITemporalConnection
     {
-        /// <summary>
-        /// Connect to Temporal.
-        /// </summary>
-        /// <param name="options">Options for connecting.</param>
-        /// <returns>The established connection.</returns>
-        public static async Task<TemporalConnection> ConnectAsync(TemporalConnectionOptions options)
-        {
-            var runtime = options.Runtime ?? TemporalRuntime.Default;
-            var client = await Bridge.Client.ConnectAsync(runtime.runtime, options);
-            return new TemporalConnection(client, options);
-        }
-
         private readonly Bridge.Client client;
 
         private TemporalConnection(Bridge.Client client, TemporalConnectionOptions options)
@@ -47,18 +35,43 @@ namespace Temporalio.Client
         public TemporalConnectionOptions Options { get; private init; }
 
         /// <inheritdoc />
+        public SafeHandle BridgeClient => this.client;
+
+        /// <summary>
+        /// Connect to Temporal.
+        /// </summary>
+        /// <param name="options">Options for connecting.</param>
+        /// <returns>The established connection.</returns>
+        public static async Task<TemporalConnection> ConnectAsync(TemporalConnectionOptions options)
+        {
+            var runtime = options.Runtime ?? TemporalRuntime.Default;
+            var client = await Bridge.Client.ConnectAsync(runtime.Runtime, options);
+            return new TemporalConnection(client, options);
+        }
+
+        /// <inheritdoc />
         public Task<bool> CheckHealthAsync(RpcService? service = null, RpcOptions? options = null)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Invoke RPC call on this connection.
+        /// </summary>
+        /// <typeparam name="T">Proto response type.</typeparam>
+        /// <param name="service">RPC service to call.</param>
+        /// <param name="rpc">RPC operation.</param>
+        /// <param name="req">Request proto.</param>
+        /// <param name="resp">Response proto parser.</param>
+        /// <param name="options">RPC options.</param>
+        /// <returns>Response proto.</returns>
         internal async Task<T> InvokeRpcAsync<T>(
             RpcService service,
             string rpc,
             IMessage req,
             MessageParser<T> resp,
-            RpcOptions? options = null
-        ) where T : IMessage<T>
+            RpcOptions? options = null)
+            where T : IMessage<T>
         {
             return await client.Call(
                 service.Service,
@@ -68,11 +81,7 @@ namespace Temporalio.Client
                 options?.Retry ?? false,
                 options?.Metadata,
                 options?.Timeout,
-                options?.CancellationToken
-            );
+                options?.CancellationToken);
         }
-
-        /// <inheritdoc />
-        public SafeHandle BridgeClient => this.client;
     }
 }

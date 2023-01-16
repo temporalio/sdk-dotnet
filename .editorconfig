@@ -1,12 +1,30 @@
-# Inspired by other projects
 [*.cs]
 
-### Temporal additions ##
+##### Temporal additions ######
+
+# Please keep in alphabetical order by field.
 
 # Warn on unused imports
 dotnet_diagnostic.IDE0005.severity = warning
 
-###
+# Do not require "this." prefix, devs are smart enough to know when to qualify
+dotnet_diagnostic.SA1101.severity = none
+
+# Allow using directives outside of the namespace
+dotnet_diagnostic.SA1200.severity = none
+
+# Don't require a blank line after every closing brace
+dotnet_diagnostic.SA1513.severity = none
+
+# Don't require a blank line before single line comments
+dotnet_diagnostic.SA1515.severity = none
+
+# Do not require file header
+dotnet_diagnostic.SA1633.severity = none
+
+###############################
+
+# Most of the rest of this was taken from other projects
 
 #Core editorconfig formatting - indentation
 

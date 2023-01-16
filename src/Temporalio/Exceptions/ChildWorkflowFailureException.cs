@@ -9,8 +9,12 @@ namespace Temporalio.Exceptions
     /// </summary>
     public class ChildWorkflowFailureException : FailureException
     {
-        /// <inheritdoc />
-        protected internal ChildWorkflowFailureException(Failure failure, Exception? inner)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChildWorkflowFailureException"/> class.
+        /// </summary>
+        /// <param name="failure">Underlying proto failure.</param>
+        /// <param name="inner">Inner exception if any.</param>
+        internal protected ChildWorkflowFailureException(Failure failure, Exception? inner)
             : base(failure, inner)
         {
             if (failure.ChildWorkflowExecutionFailureInfo == null)
@@ -19,32 +23,34 @@ namespace Temporalio.Exceptions
             }
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// Gets the underlying protobuf failure object.
+        /// </summary>
         public new Failure Failure => base.Failure!;
 
         /// <summary>
-        /// Namespace of the failed child workflow.
+        /// Gets the namespace of the failed child workflow.
         /// </summary>
         public string Namespace => Failure!.ChildWorkflowExecutionFailureInfo.Namespace;
 
         /// <summary>
-        /// ID of the failed child workflow.
+        /// Gets the ID of the failed child workflow.
         /// </summary>
         public string WorkflowID =>
             Failure!.ChildWorkflowExecutionFailureInfo.WorkflowExecution.WorkflowId;
 
         /// <summary>
-        /// Run ID of the failed child workflow.
+        /// Gets the run ID of the failed child workflow.
         /// </summary>
         public string RunID => Failure!.ChildWorkflowExecutionFailureInfo.WorkflowExecution.RunId;
 
         /// <summary>
-        /// Child workflow name or "type" that failed.
+        /// Gets the child workflow name or "type" that failed.
         /// </summary>
         public string WorkflowType => Failure!.ChildWorkflowExecutionFailureInfo.WorkflowType.Name;
 
         /// <summary>
-        /// Retry state of the failure.
+        /// Gets the retry state of the failure.
         /// </summary>
         public RetryState RetryState => Failure!.ChildWorkflowExecutionFailureInfo.RetryState;
     }
