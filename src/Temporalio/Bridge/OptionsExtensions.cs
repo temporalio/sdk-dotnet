@@ -187,6 +187,9 @@ namespace Temporalio.Bridge
             else if (options.TargetHost!.Contains("://"))
             {
                 throw new ArgumentException("TargetHost cannot have ://");
+            } else if (options.Identity == null)
+            {
+                throw new ArgumentException("Identity missing from options.");
             }
             var scheme = options.Tls == null ? "http" : "https";
             return new Interop.ClientOptions()
@@ -195,11 +198,7 @@ namespace Temporalio.Bridge
                 client_name = ClientName.Ref,
                 client_version = ClientVersion.Ref,
                 metadata = scope.Metadata(options.RpcMetadata),
-                identity = scope.ByteArray(
-                    options.Identity
-                        ?? System.Diagnostics.Process.GetCurrentProcess().Id
-                            + "@"
-                            + System.Net.Dns.GetHostName()),
+                identity = scope.ByteArray(options.Identity),
                 tls_options =
                     options.Tls == null ? null : scope.Pointer(options.Tls.ToInteropOptions(scope)),
                 retry_options =

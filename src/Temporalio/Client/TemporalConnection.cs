@@ -35,7 +35,7 @@ namespace Temporalio.Client
         public TemporalConnectionOptions Options { get; private init; }
 
         /// <inheritdoc />
-        public SafeHandle BridgeClient => this.client;
+        public SafeHandle BridgeClient => client;
 
         /// <summary>
         /// Connect to Temporal.
@@ -44,6 +44,10 @@ namespace Temporalio.Client
         /// <returns>The established connection.</returns>
         public static async Task<TemporalConnection> ConnectAsync(TemporalConnectionOptions options)
         {
+            // Set default identity if unset
+            options.Identity ??= System.Diagnostics.Process.GetCurrentProcess().Id
+                            + "@"
+                            + System.Net.Dns.GetHostName();
             var runtime = options.Runtime ?? TemporalRuntime.Default;
             var client = await Bridge.Client.ConnectAsync(runtime.Runtime, options);
             return new TemporalConnection(client, options);

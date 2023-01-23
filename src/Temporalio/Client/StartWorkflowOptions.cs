@@ -4,6 +4,14 @@ using System.Collections.Generic;
 
 namespace Temporalio.Client {
     public class StartWorkflowOptions : ICloneable {
+
+        public StartWorkflowOptions() { }
+
+        public StartWorkflowOptions(string id, string taskQueue) {
+            ID = id;
+            TaskQueue = taskQueue;
+        }
+
         public string? ID { get; set; }
 
         public string? TaskQueue { get; set; }
@@ -16,15 +24,17 @@ namespace Temporalio.Client {
 
         public WorkflowIdReusePolicy IDReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
 
+        public RetryPolicy? RetryPolicy { get; set; }
+
         public string? CronSchedule { get; set; }
 
-        public IEnumerable<KeyValuePair<string, object>>? Memo { get; set; }
+        public IReadOnlyCollection<KeyValuePair<string, object>>? Memo { get; set; }
 
         public SearchAttributeDictionary? SearchAttributes { get; set; }
 
         public string? StartSignal { get; set; }
 
-        public object[]? StartSignalArgs { get; set; }
+        public IReadOnlyCollection<object?>? StartSignalArgs { get; set; }
 
         public RpcOptions? Rpc { get; set; }
 
@@ -34,7 +44,11 @@ namespace Temporalio.Client {
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            return MemberwiseClone();
+            var copy = (StartWorkflowOptions)MemberwiseClone();
+            if (Rpc != null) {
+                copy.Rpc = (RpcOptions)Rpc.Clone();
+            }
+            return copy;
         }
     }
 }

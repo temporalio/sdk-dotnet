@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Temporalio.Client
 {
@@ -17,6 +18,8 @@ namespace Temporalio.Client
         /// </summary>
         public Converters.DataConverter DataConverter { get; set; } =
             Converters.DataConverter.Default;
+
+        public IEnumerable<Interceptors.IClientInterceptor>? Interceptors { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

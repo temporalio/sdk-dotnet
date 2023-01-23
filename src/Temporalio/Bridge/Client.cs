@@ -78,13 +78,13 @@ namespace Temporalio.Bridge
         public async Task<T> Call<T>(
             Interop.RpcService service,
             string rpc,
-            Google.Protobuf.IMessage req,
-            Google.Protobuf.MessageParser<T> resp,
+            IMessage req,
+            MessageParser<T> resp,
             bool retry,
             IEnumerable<KeyValuePair<string, string>>? metadata,
             TimeSpan? timeout,
             System.Threading.CancellationToken? cancellationToken)
-            where T : Google.Protobuf.IMessage<T>
+            where T : IMessage<T>
         {
             using (var scope = new Scope())
             {
