@@ -259,6 +259,7 @@ namespace Temporalio.Client
                             resp.History.Events,
                             resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
                     }
+                    req.NextPageToken = resp.NextPageToken;
                 }
             }
         }

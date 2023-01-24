@@ -47,9 +47,6 @@ namespace Temporalio.Client.Interceptors
             return Next.StartWorkflowAsync<TResult>(input);
         }
 
-        // TODO(cretz): Document that this never returns an empty page while with a next page token
-        // is set (i.e. it immediately uses that token internally)
-
         /// <summary>
         /// Intercept a history event page fetch.
         /// </summary>

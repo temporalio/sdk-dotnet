@@ -139,7 +139,7 @@ namespace Temporalio.Converters
             }
             if (value is DateTime dateTimeValue)
             {
-                // 8601 with convert with timezone
+                // 8601 with timezone
                 value = dateTimeValue.ToString("o");
             }
             else if (value is not IEnumerable<string> && !value.GetType().IsPrimitive)

@@ -41,7 +41,8 @@ public class WorkflowEnvironment : IAsyncLifetime
     private KitchenSinkWorker StartKitchenSinkWorker()
     {
         // Build
-        var workerDir = Path.Join(TestUtils.CallerFilePath(), "../../golangworker");
+        var workerDir = Path.Join(
+          Path.GetDirectoryName(TestUtils.CallerFilePath())!, "../golangworker");
         var exePath = Path.Join(workerDir, "golangworker");
         var proc = Process.Start(new ProcessStartInfo("go")
         {
