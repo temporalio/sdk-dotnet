@@ -19,6 +19,14 @@ namespace Temporalio.Client
         public Converters.DataConverter DataConverter { get; set; } =
             Converters.DataConverter.Default;
 
+        /// <summary>
+        /// Gets or sets the interceptors to intercept client calls.
+        /// </summary>
+        /// <remarks>
+        /// Earlier interceptors in the list wrap later ones. If the interceptor in the list also
+        /// implements <see cref="Worker.Interceptors.IWorkerInterceptor" />, it will automatically
+        /// be used when the worker is created.
+        /// </remarks>
         public IEnumerable<Interceptors.IClientInterceptor>? Interceptors { get; set; }
 
         /// <summary>

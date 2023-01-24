@@ -1,30 +1,42 @@
-
 using System;
-using System.Reflection;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace Temporalio.Workflow
 {
+    /// <summary>
+    /// Internal representation of a workflow definition.
+    /// </summary>
+    /// <param name="Name">Workflow type name.</param>
+    /// <param name="Type">Type of the workflow.</param>
+    /// <param name="RunMethod">Workflow entry point.</param>
     internal record WorkflowDefinition(
         string Name,
-        Type Class,
-        MethodInfo RunMethod)
-        // TODO(cretz):
-        // bool ArgsInConstructor = false,
-        // IReadOnlyDictionary<string, MethodInfo>? SignalMethods = null,
-        // MethodInfo? DynamicSignal = null,
-        // IReadOnlyDictionary<string, MethodInfo>? QueryMethods = null,
-        // MethodInfo? DynamicQuery = null)
+        Type Type,
+        MethodInfo RunMethod) // TODO(cretz): Include signals and queries and such
     {
-        private static readonly ConcurrentDictionary<Type, WorkflowDefinition> definitionsByType = new();
+        private static readonly ConcurrentDictionary<Type, WorkflowDefinition> DefinitionsByType = new();
 
-        public static WorkflowDefinition FromType(Type type) {
-            return definitionsByType.GetOrAdd(type, CreateFromType);
+        /// <summary>
+        /// Get a workflow definition for the given type or fail. The result is cached.
+        /// </summary>
+        /// <param name="type">Type to get definition for.</param>
+        /// <returns>Definition for the type.</returns>
+        public static WorkflowDefinition FromType(Type type)
+        {
+            return DefinitionsByType.GetOrAdd(type, CreateFromType);
         }
 
-        public static WorkflowDefinition FromRunMethod(MethodInfo runMethod) {
-            if (runMethod.GetCustomAttribute<WorkflowRunAttribute>() == null) {
+        /// <summary>
+        /// Get a workflow definition for the given workflow run method or fail. The result is
+        /// cached.
+        /// </summary>
+        /// <param name="runMethod">Method with a <see cref="WorkflowRunAttribute" />.</param>
+        /// <returns>Definition for the type.</returns>
+        public static WorkflowDefinition FromRunMethod(MethodInfo runMethod)
+        {
+            if (runMethod.GetCustomAttribute<WorkflowRunAttribute>() == null)
+            {
                 throw new ArgumentException($"{runMethod} missing WorkflowRun attribute");
             }
             // We intentionally use reflected type because we don't allow inheritance of run methods
@@ -44,34 +56,42 @@ namespace Temporalio.Workflow
             foreach (var method in type.GetMethods())
             {
                 var runAttr = method.GetCustomAttribute<WorkflowRunAttribute>(false);
-                if (runAttr != null) {
+                if (runAttr != null)
+                {
                     if (method.DeclaringType != type)
                     {
                         throw new ArgumentException($"WorkflowRun on {method} must be declared on {type}, not inherited from {method.DeclaringType}");
-                    } else if (runMethod != null) {
+                    }
+                    else if (runMethod != null)
+                    {
                         throw new ArgumentException($"WorkflowRun on {method} and {runMethod}");
-                    } else if (!method.IsPublic) {
+                    }
+                    else if (!method.IsPublic)
+                    {
                         throw new ArgumentException($"WorkflowRun on {method} is not public");
                     }
                     runMethod = method;
                 }
             }
-            if (runMethod == null) {
+            if (runMethod == null)
+            {
                 throw new ArgumentException($"{type} does not have a WorkflowRun method");
             }
             // Use type name by default
             var name = attr.Name;
-            if (name == null) {
+            if (name == null)
+            {
                 // If type is an interface and name has a leading I followed by another capital, trim it
                 // off
                 name = type.Name;
-                if (type.IsInterface && name.Length > 1 && name[0] == 'I' && char.IsUpper(name[1])) {
-                    name = name[1..];
+                if (type.IsInterface && name.Length > 1 && name[0] == 'I' && char.IsUpper(name[1]))
+                {
+                    name = name.Substring(1);
                 }
             }
             return new WorkflowDefinition(
                 Name: name,
-                Class: type,
+                Type: type,
                 RunMethod: runMethod);
         }
     }

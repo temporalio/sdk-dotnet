@@ -12,10 +12,8 @@ namespace Temporalio.Client
         ITemporalConnection Connection { get; }
 
         /// <summary>
-        /// Gets the options used to create this client.
+        /// Gets the outbound interceptor in use.
         /// </summary>
-        TemporalClientOptions Options { get; }
-
         Interceptors.ClientOutboundInterceptor OutboundInterceptor { get; }
     }
 }

@@ -1,7 +1,11 @@
+#if NETCOREAPP3_0_OR_GREATER
 using System;
 
 namespace Temporalio.Client
 {
+    /// <summary>
+    /// Options for <see cref="ITemporalClient.ListWorkflows" />.
+    /// </summary>
     public class ListWorkflowsOptions : ICloneable
     {
         // TODO(cretz): RPC options etc
@@ -16,3 +20,4 @@ namespace Temporalio.Client
         }
     }
 }
+#endif

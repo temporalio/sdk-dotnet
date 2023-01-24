@@ -187,7 +187,8 @@ namespace Temporalio.Bridge
             else if (options.TargetHost!.Contains("://"))
             {
                 throw new ArgumentException("TargetHost cannot have ://");
-            } else if (options.Identity == null)
+            }
+            else if (options.Identity == null)
             {
                 throw new ArgumentException("Identity missing from options.");
             }

@@ -76,7 +76,7 @@ jobs:
         run: dotnet format --verify-no-changes
 
       - name: Test
-        run: dotnet test --logger "console;verbosity=detailed" --blame-crash
+        run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n
 
       - name: Upload test failure
         if: ${{ failure() }}
