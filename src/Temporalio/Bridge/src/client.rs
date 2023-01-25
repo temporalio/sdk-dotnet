@@ -162,11 +162,16 @@ pub enum RpcService {
     Health,
 }
 
-/// If success or fail are not null, they must be manually freed when done.
+/// If success or failure byte arrays inside fail are not null, they must be
+/// manually freed when done. Either success or failure_message are always
+/// present. Status code may still be 0 with a failure message. Failure details
+/// represent a protobuf gRPC status message.
 type ClientRpcCallCallback = unsafe extern "C" fn(
     user_data: *mut libc::c_void,
     success: *const ByteArray,
-    fail: *const ByteArray,
+    status_code: u32,
+    failure_message: *const ByteArray,
+    failure_details: *const ByteArray,
 );
 
 macro_rules! service_call {
@@ -206,15 +211,36 @@ pub extern "C" fn client_rpc_call(
             RpcService::Test => service_call!(call_test_service, client, options, cancel_token),
             RpcService::Health => service_call!(call_health_service, client, options, cancel_token),
         };
-        let (success, fail) = match res {
-            Ok(b) => (ByteArray::from_vec(b).into_raw(), std::ptr::null_mut()),
-            Err(err) => (
+        let (success, status_code, failure_message, failure_details) = match res {
+            Ok(b) => (
+                ByteArray::from_vec(b).into_raw(),
+                0,
                 std::ptr::null_mut(),
-                ByteArray::from_utf8(format!("{}", err)).into_raw(),
+                std::ptr::null_mut(),
             ),
+            Err(err) => match err.downcast::<tonic::Status>() {
+                Ok(status) => (
+                    std::ptr::null_mut(),
+                    status.code() as u32,
+                    ByteArray::from_utf8(status.message().to_string()).into_raw(),
+                    ByteArray::from_vec(status.details().to_owned()).into_raw(),
+                ),
+                Err(err) => (
+                    std::ptr::null_mut(),
+                    0,
+                    ByteArray::from_utf8(format!("{}", err)).into_raw(),
+                    std::ptr::null_mut(),
+                ),
+            },
         };
         unsafe {
-            callback(user_data.into(), success, fail);
+            callback(
+                user_data.into(),
+                success,
+                status_code,
+                failure_message,
+                failure_details,
+            );
         }
     });
 }
@@ -374,19 +400,6 @@ where
     P: Default,
 {
     Ok(res?.get_ref().encode_to_vec())
-    // TODO(cretz): Better error encoding
-    // match res {
-    //     Ok(resp) => Ok(resp.get_ref().encode_to_vec()),
-    //     Err(err) => {
-    //         Err(Python::with_gil(move |py| {
-    //             // Create tuple of "status", "message", and optional "details"
-    //             let code = err.code() as u32;
-    //             let message = err.message().to_owned();
-    //             let details = err.details().into_py(py);
-    //             RPCError::new_err((code, message, details))
-    //         }))
-    //     }
-    // }
 }
 
 impl TryFrom<&ClientOptions> for CoreClientOptions {

@@ -54,7 +54,7 @@ namespace Temporalio.Client
         public TimeSpan? TaskTimeout { get; set; }
 
         /// <summary>
-        /// Gets or sets how already-existnig IDs are treated.
+        /// Gets or sets how already-existing IDs are treated.
         /// </summary>
         public WorkflowIdReusePolicy IDReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
 

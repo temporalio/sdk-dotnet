@@ -107,6 +107,72 @@ namespace Temporalio.Client
             public override async Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
                 StartWorkflowInput input)
             {
+                try
+                {
+                    return await StartWorkflowAsyncUnwrapped<TResult>(input);
+                }
+                catch (Exceptions.RpcException e) when (
+                    e.Code == Exceptions.RpcException.StatusCode.AlreadyExists)
+                {
+                    // Throw already started if there is a single detail with the expected type
+                    var status = e.GrpcStatus.Value;
+                    if (status != null && status.Details.Count == 1)
+                    {
+                        if (status.Details[0].TryUnpack(out Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure failure))
+                        {
+                            throw new Exceptions.WorkflowAlreadyStartedException(
+                                e.Message,
+                                input.Options.ID!,
+                                failure.RunId);
+                        }
+                    }
+                    throw;
+                }
+            }
+
+            /// <inheritdoc />
+            public override async Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPage(
+                FetchWorkflowHistoryEventPageInput input)
+            {
+                var req = new GetWorkflowExecutionHistoryRequest()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Execution = new()
+                    {
+                        WorkflowId = input.ID,
+                        RunId = input.RunID ?? string.Empty,
+                    },
+                    MaximumPageSize = input.PageSize ?? 0,
+                    NextPageToken = input.NextPageToken == null ?
+                        ByteString.Empty : ByteString.CopyFrom(input.NextPageToken),
+                    WaitNewEvent = input.WaitNewEvent,
+                    HistoryEventFilterType = input.EventFilterType,
+                    SkipArchival = input.SkipArchival,
+                };
+                // While there is a next token and no events, keep trying
+                while (true)
+                {
+                    var resp = await Client.Connection.WorkflowService.GetWorkflowExecutionHistoryAsync(
+                        req, DefaultRetryOptions(input.Rpc));
+                    // We don't support raw history
+                    if (resp.RawHistory.Count > 0)
+                    {
+                        throw new InvalidOperationException("Unexpected raw history returned");
+                    }
+                    // Complete if we got any events or if there is no next page token
+                    if (resp.History.Events.Count > 0 || resp.NextPageToken.IsEmpty)
+                    {
+                        return new WorkflowHistoryEventPage(
+                            resp.History.Events,
+                            resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
+                    }
+                    req.NextPageToken = resp.NextPageToken;
+                }
+            }
+
+            private async Task<WorkflowHandle<TResult>> StartWorkflowAsyncUnwrapped<TResult>(
+                StartWorkflowInput input)
+            {
                 // We will build the non-signal-with-start request and convert to signal with start
                 // later if needed
                 var req = new StartWorkflowExecutionRequest()
@@ -221,46 +287,6 @@ namespace Temporalio.Client
                     Client: Client,
                     ID: req.WorkflowId,
                     ResultRunID: signalResp.RunId);
-            }
-
-            /// <inheritdoc />
-            public override async Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPage(
-                FetchWorkflowHistoryEventPageInput input)
-            {
-                var req = new GetWorkflowExecutionHistoryRequest()
-                {
-                    Namespace = Client.Options.Namespace,
-                    Execution = new()
-                    {
-                        WorkflowId = input.ID,
-                        RunId = input.RunID ?? string.Empty,
-                    },
-                    MaximumPageSize = input.PageSize ?? 0,
-                    NextPageToken = input.NextPageToken == null ?
-                        ByteString.Empty : ByteString.CopyFrom(input.NextPageToken),
-                    WaitNewEvent = input.WaitNewEvent,
-                    HistoryEventFilterType = input.EventFilterType,
-                    SkipArchival = input.SkipArchival,
-                };
-                // While there is a next token and no events, keep trying
-                while (true)
-                {
-                    var resp = await Client.Connection.WorkflowService.GetWorkflowExecutionHistoryAsync(
-                        req, DefaultRetryOptions(input.Rpc));
-                    // We don't support raw history
-                    if (resp.RawHistory.Count > 0)
-                    {
-                        throw new InvalidOperationException("Unexpected raw history returned");
-                    }
-                    // Complete if we got any events or if there is no next page token
-                    if (resp.History.Events.Count > 0 || resp.NextPageToken.IsEmpty)
-                    {
-                        return new WorkflowHistoryEventPage(
-                            resp.History.Events,
-                            resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
-                    }
-                    req.NextPageToken = resp.NextPageToken;
-                }
             }
         }
     }

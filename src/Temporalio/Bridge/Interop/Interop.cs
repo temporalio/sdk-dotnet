@@ -137,7 +137,7 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ClientRpcCallCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void ClientRpcCallCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_message, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_details);
 
     internal unsafe partial struct RuntimeOrFail
     {

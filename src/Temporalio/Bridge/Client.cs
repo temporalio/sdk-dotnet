@@ -106,13 +106,25 @@ namespace Temporalio.Bridge
                             }),
                         null,
                         scope.FunctionPointer<Interop.ClientRpcCallCallback>(
-                            (userData, success, fail) =>
+                            (userData, success, statusCode, failureMessage, failureDetails) =>
                             {
-                                if (fail != null)
+                                if (failureMessage != null && statusCode > 0)
+                                {
+                                    byte[]? rawStatus = null;
+                                    if (failureDetails != null)
+                                    {
+                                        rawStatus = new ByteArray(runtime, failureDetails).ToByteArray();
+                                    }
+                                    completion.TrySetException(new Exceptions.RpcException(
+                                        (Exceptions.RpcException.StatusCode)statusCode,
+                                        new ByteArray(runtime, failureMessage).ToUTF8(),
+                                        rawStatus));
+                                }
+                                else if (failureMessage != null)
                                 {
                                     completion.TrySetException(
-                                        new InvalidOperationException(
-                                            new ByteArray(runtime, fail).ToUTF8()));
+                                            new InvalidOperationException(
+                                                new ByteArray(runtime, failureMessage).ToUTF8()));
                                 }
                                 else
                                 {

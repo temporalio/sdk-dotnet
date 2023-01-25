@@ -13,7 +13,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task StartWorkflow_ManualReturnType_Succeeds()
     {
-        var workflowID = $"workflow1-{Guid.NewGuid()}";
+        var workflowID = $"workflow-{Guid.NewGuid()}";
         var handle = await Client.StartWorkflowAsync(
             IKitchenSinkWorkflow.Ref.RunAsync,
             new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
@@ -26,7 +26,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task StartWorkflow_KnownReturnType_Succeeds()
     {
-        var workflowID = $"workflow1-{Guid.NewGuid()}";
+        var workflowID = $"workflow-{Guid.NewGuid()}";
         var handle = await Client.StartWorkflowAsync(
             IKitchenSinkWorkflowWithReturnObject.Ref.RunAsync,
             new KSWorkflowParams(new KSAction(Result: new(Value: new KSWorkflowResult("Some String")))),
@@ -34,6 +34,28 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(workflowID, handle.ID);
         Assert.NotNull(handle.ResultRunID);
         Assert.Equal(new KSWorkflowResult("Some String"), await handle.GetResultAsync());
+    }
+
+    [Fact]
+    public async Task StartWorkflow_AlreadyExists_Throws()
+    {
+        // Start
+        var workflowID = $"workflow-{Guid.NewGuid()}";
+        var handle = await Client.StartWorkflowAsync(
+            IKitchenSinkWorkflow.Ref.RunAsync,
+            new KSWorkflowParams(new KSAction(Sleep: new(10000))),
+            new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+
+        // Try to start again
+        var err = await Assert.ThrowsAsync<Exceptions.WorkflowAlreadyStartedException>(async () =>
+        {
+            await Client.StartWorkflowAsync(
+                IKitchenSinkWorkflow.Ref.RunAsync,
+                new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+                new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        });
+        Assert.Equal(workflowID, err.WorkflowID);
+        Assert.Equal(handle.ResultRunID, err.RunID);
     }
 
     // TODO(cretz): tests/features:
@@ -44,7 +66,6 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     // * Cancel
     // * Cancel not found
     // * Terminate
-    // * ID already started
     // * Signal
     // * Query
     // * Query rejected
@@ -53,4 +74,5 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     // * Interceptor
     // * List
     // * Fetch history
+    // * Search attributes
 }
