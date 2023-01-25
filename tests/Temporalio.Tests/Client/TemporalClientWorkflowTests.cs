@@ -1,5 +1,6 @@
 namespace Temporalio.Tests.Client;
 
+using Temporalio.Client;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -27,13 +28,11 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     public async Task StartWorkflow_KnownReturnType_Succeeds()
     {
         var workflowID = $"workflow-{Guid.NewGuid()}";
-        var handle = await Client.StartWorkflowAsync(
+        var result = await Client.ExecuteWorkflowAsync(
             IKitchenSinkWorkflowWithReturnObject.Ref.RunAsync,
             new KSWorkflowParams(new KSAction(Result: new(Value: new KSWorkflowResult("Some String")))),
             new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
-        Assert.Equal(workflowID, handle.ID);
-        Assert.NotNull(handle.ResultRunID);
-        Assert.Equal(new KSWorkflowResult("Some String"), await handle.GetResultAsync());
+        Assert.Equal(new KSWorkflowResult("Some String"), result);
     }
 
     [Fact]
@@ -58,6 +57,19 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(handle.ResultRunID, err.RunID);
     }
 
+    // TODO(cretz):
+    // [Fact]
+    // public async Task StartWorkflow_Signal_Succeeds()
+    // {
+    //     var workflowID = $"workflow-{Guid.NewGuid()}";
+    //     var handle = await Client.ExecuteWorkflowAsync(
+    //         IKitchenSinkWorkflowWithReturnString.Ref.RunAsync,
+    //         new KSWorkflowParams(ActionSignal: "SomeActionSignal"),
+    //         new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+    //     // Send signal
+    //     // TODO(cretz)
+    // }
+
     // TODO(cretz): tests/features:
     // * ID reuse policy
     // * Start with signal
@@ -66,7 +78,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     // * Cancel
     // * Cancel not found
     // * Terminate
-    // * Signal
+    // * Signal (more)
     // * Query
     // * Query rejected
     // * Describe

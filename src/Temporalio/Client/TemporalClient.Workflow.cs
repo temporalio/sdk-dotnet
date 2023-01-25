@@ -21,7 +21,7 @@ namespace Temporalio.Client
             Func<Task<TResult>> workflow, StartWorkflowOptions options)
         {
             return StartWorkflowAsync<TResult>(
-                Workflow.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
                 new object?[0],
                 options);
         }
@@ -31,7 +31,7 @@ namespace Temporalio.Client
             Func<T, Task<TResult>> workflow, T arg, StartWorkflowOptions options)
         {
             return StartWorkflowAsync<TResult>(
-                Workflow.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
                 new object?[] { arg },
                 options);
         }
@@ -41,7 +41,7 @@ namespace Temporalio.Client
             Func<Task> workflow, StartWorkflowOptions options)
         {
             return StartWorkflowAsync(
-                Workflow.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
                 new object?[0],
                 options);
         }
@@ -51,7 +51,7 @@ namespace Temporalio.Client
             Func<T, Task> workflow, T arg, StartWorkflowOptions options)
         {
             return StartWorkflowAsync(
-                Workflow.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
                 new object?[] { arg },
                 options);
         }

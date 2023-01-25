@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.Reflection;
 
 namespace Temporalio.Workflow
 {
@@ -37,5 +39,41 @@ namespace Temporalio.Workflow
         /// method name.
         /// </summary>
         public string? Name { get; set; }
+
+        /// <summary>
+        /// Query definition.
+        /// </summary>
+        /// <param name="Name">Name of the query.</param>
+        /// <param name="Method">Method for the query handler.</param>
+        internal record Definition(string Name, MethodInfo Method)
+        {
+            private static readonly ConcurrentDictionary<MethodInfo, Definition> Definitions = new();
+
+            /// <summary>
+            /// Get a query definition from a method or fail. The result is cached.
+            /// </summary>
+            /// <param name="method">Query method.</param>
+            /// <returns>Query definition.</returns>
+            public static Definition FromMethod(MethodInfo method)
+            {
+                return Definitions.GetOrAdd(method, CreateFromMethod);
+            }
+
+            private static Definition CreateFromMethod(MethodInfo method)
+            {
+                var attr = method.GetCustomAttribute<WorkflowQueryAttribute>(false) ??
+                    throw new ArgumentException($"{method} missing WorkflowQuery attribute");
+                // Method must only return a Task (not a subclass thereof)
+                if (method.ReturnType != typeof(void))
+                {
+                    throw new ArgumentException($"WorkflowQuery method {method} must have void return type");
+                }
+                else if (!method.IsPublic)
+                {
+                    throw new ArgumentException($"WorkflowQuery method {method} must be public");
+                }
+                return new(attr.Name ?? method.Name, method);
+            }
+        }
     }
 }

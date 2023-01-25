@@ -21,6 +21,18 @@ public interface IKitchenSinkWorkflowWithReturnObject
     Task<KSWorkflowResult> RunAsync(KSWorkflowParams args);
 }
 
+[Workflow("kitchen_sink")]
+public interface IKitchenSinkWorkflowWithReturnString
+{
+    static readonly IKitchenSinkWorkflowWithReturnString Ref = Refs<IKitchenSinkWorkflowWithReturnString>.Instance;
+
+    [WorkflowRun]
+    Task<string> RunAsync(KSWorkflowParams args);
+
+    [WorkflowSignal]
+    Task SomeActionSignalAsync(KSAction action);
+}
+
 public record KSWorkflowResult(string SomeString);
 
 public record KSWorkflowParams(
