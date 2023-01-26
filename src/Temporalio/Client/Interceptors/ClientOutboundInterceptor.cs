@@ -69,6 +69,17 @@ namespace Temporalio.Client.Interceptors
         }
 
         /// <summary>
+        /// Intercept describe workflow calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Workflow execution description.</returns>
+        public virtual Task<WorkflowExecutionDescription> DescribeWorkflowAsync(
+            DescribeWorkflowInput input)
+        {
+            return Next.DescribeWorkflowAsync(input);
+        }
+
+        /// <summary>
         /// Intercept cancel workflow calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>

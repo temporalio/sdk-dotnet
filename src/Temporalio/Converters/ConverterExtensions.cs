@@ -142,6 +142,11 @@ namespace Temporalio.Converters
                 // 8601 with timezone
                 value = dateTimeValue.ToString("o");
             }
+            else if (value is DateTimeOffset dateTimeOffsetValue)
+            {
+                // 8601 with timezone
+                value = dateTimeOffsetValue.ToString("o");
+            }
             else if (value is not IEnumerable<string> && !value.GetType().IsPrimitive)
             {
                 throw new ArgumentException(

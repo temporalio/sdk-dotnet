@@ -66,4 +66,5 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     // * Interceptor
     // * List
     // * Search attributes
+    // * Memo
 }

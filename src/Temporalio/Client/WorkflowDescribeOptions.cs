@@ -3,9 +3,9 @@ using System;
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Options for <see cref="WorkflowHandle.CancelAsync" />.
+    /// Options for <see cref="WorkflowHandle.DescribeAsync" />.
     /// </summary>
-    public class WorkflowCancelOptions : ICloneable
+    public class WorkflowDescribeOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets RPC options for starting the workflow.
@@ -18,7 +18,7 @@ namespace Temporalio.Client
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (WorkflowSignalOptions)MemberwiseClone();
+            var copy = (WorkflowDescribeOptions)MemberwiseClone();
             if (Rpc != null)
             {
                 copy.Rpc = (RpcOptions)Rpc.Clone();

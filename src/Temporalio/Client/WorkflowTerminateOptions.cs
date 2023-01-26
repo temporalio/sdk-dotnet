@@ -4,15 +4,14 @@ using System.Collections.Generic;
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Options for <see cref="WorkflowHandle.TerminateAsync" />
-    /// and other overloads.
+    /// Options for <see cref="WorkflowHandle.TerminateAsync" />.
     /// </summary>
     public class WorkflowTerminateOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the termination details.
         /// </summary>
-        public IReadOnlyCollection<object?>? Details { get; set;  }
+        public IReadOnlyCollection<object?>? Details { get; set; }
 
         /// <summary>
         /// Gets or sets RPC options for starting the workflow.

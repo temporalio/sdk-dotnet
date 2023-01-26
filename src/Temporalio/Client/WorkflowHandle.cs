@@ -309,6 +309,20 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Get the current description of this workflow.
+        /// </summary>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Description for the workflow.</returns>
+        public Task<WorkflowExecutionDescription> DescribeAsync(
+            WorkflowDescribeOptions? options = null)
+        {
+            return Client.OutboundInterceptor.DescribeWorkflowAsync(new(
+                ID: ID,
+                RunID: RunID,
+                Options: options));
+        }
+
+        /// <summary>
         /// Request cancellation of this workflow.
         /// </summary>
         /// <param name="options">Cancellation options.</param>
@@ -342,11 +356,6 @@ namespace Temporalio.Client
 
         /*
         TODO(cretz):
-
-        public async Task<WorkflowExecutionDescription> DescribeAsync(RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
 
         #if NETCOREAPP3_0_OR_GREATER
 

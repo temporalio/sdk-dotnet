@@ -1,5 +1,7 @@
 namespace Temporalio.Tests.Client;
 
+using System;
+using Temporalio.Api.Enums.V1;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -42,6 +44,34 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
 
         // Confirm result
         Assert.Equal("Some String", res);
+    }
+
+    [Fact]
+    public async Task DescribeAsync_Simple_HasProperValues()
+    {
+        // Run
+        var handle = await Client.StartWorkflowAsync(
+            IKitchenSinkWorkflow.Ref.RunAsync,
+            new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        Assert.Equal("Some String", await handle.GetResultAsync());
+
+        // Describe
+        var desc = await handle.DescribeAsync();
+
+        // Check values
+        var beforeNow = DateTime.UtcNow.AddSeconds(-30);
+        var afterNow = DateTime.UtcNow.AddSeconds(30);
+        var temp = desc.CloseTime!.Value;
+        Assert.InRange(desc.CloseTime!.Value, beforeNow, afterNow);
+        Assert.InRange(desc.ExecutionTime!.Value, beforeNow, afterNow);
+        Assert.Null(desc.ParentID);
+        Assert.Null(desc.ParentRunID);
+        Assert.Equal(handle.FirstExecutionRunID, desc.RunID);
+        Assert.InRange(desc.StartTime, beforeNow, afterNow);
+        Assert.Equal(WorkflowExecutionStatus.Completed, desc.Status);
+        Assert.Equal(Env.KitchenSinkWorkerTaskQueue, desc.TaskQueue);
+        Assert.Equal("kitchen_sink", desc.WorkflowType);
     }
 
     [Fact]

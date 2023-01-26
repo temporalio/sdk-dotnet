@@ -222,6 +222,24 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
+            public override async Task<WorkflowExecutionDescription> DescribeWorkflowAsync(
+                DescribeWorkflowInput input)
+            {
+                var resp = await Client.Connection.WorkflowService.DescribeWorkflowExecutionAsync(
+                    new()
+                    {
+                        Namespace = Client.Options.Namespace,
+                        Execution = new()
+                        {
+                            WorkflowId = input.ID,
+                            RunId = input.RunID ?? string.Empty,
+                        },
+                    },
+                    DefaultRetryOptions(input.Options?.Rpc));
+                return new(resp);
+            }
+
+            /// <inheritdoc />
             public override async Task CancelWorkflowAsync(CancelWorkflowInput input)
             {
                 await Client.Connection.WorkflowService.RequestCancelWorkflowExecutionAsync(
