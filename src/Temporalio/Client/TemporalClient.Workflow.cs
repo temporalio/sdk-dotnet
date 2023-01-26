@@ -108,7 +108,7 @@ namespace Temporalio.Client
             {
                 try
                 {
-                    return await StartWorkflowAsyncUnwrapped<TResult>(input);
+                    return await StartWorkflowInternalAsync<TResult>(input);
                 }
                 catch (RpcException e) when (
                     e.Code == RpcException.StatusCode.AlreadyExists)
@@ -222,7 +222,7 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
-            public override async Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPage(
+            public override async Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPageAsync(
                 FetchWorkflowHistoryEventPageInput input)
             {
                 var req = new GetWorkflowExecutionHistoryRequest()
@@ -261,7 +261,7 @@ namespace Temporalio.Client
                 }
             }
 
-            private async Task<WorkflowHandle<TResult>> StartWorkflowAsyncUnwrapped<TResult>(
+            private async Task<WorkflowHandle<TResult>> StartWorkflowInternalAsync<TResult>(
                 StartWorkflowInput input)
             {
                 // We will build the non-signal-with-start request and convert to signal with start

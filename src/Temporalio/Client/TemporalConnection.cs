@@ -77,7 +77,7 @@ namespace Temporalio.Client
             RpcOptions? options = null)
             where T : IMessage<T>
         {
-            return await client.Call(
+            return await client.CallAsync(
                 service.Service,
                 rpc,
                 req,

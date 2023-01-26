@@ -75,7 +75,7 @@ namespace Temporalio.Bridge
         /// <param name="timeout">Timeout for the call.</param>
         /// <param name="cancellationToken">Cancellation token for the call.</param>
         /// <returns>Response proto.</returns>
-        public async Task<T> Call<T>(
+        public async Task<T> CallAsync<T>(
             Interop.RpcService service,
             string rpc,
             IMessage req,

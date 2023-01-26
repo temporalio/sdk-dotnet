@@ -76,7 +76,7 @@ namespace Temporalio.Client
             var histRunID = ResultRunID;
             while (true)
             {
-                var page = await Client.OutboundInterceptor.FetchWorkflowHistoryEventPage(new(
+                var page = await Client.OutboundInterceptor.FetchWorkflowHistoryEventPageAsync(new(
                     ID: ID,
                     RunID: histRunID,
                     PageSize: 0,

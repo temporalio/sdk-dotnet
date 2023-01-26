@@ -75,10 +75,10 @@ namespace Temporalio.Client.Interceptors
         /// <returns>
         /// Event page. This will not return an empty event set and a next page token.
         /// </returns>
-        public virtual Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPage(
+        public virtual Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPageAsync(
             FetchWorkflowHistoryEventPageInput input)
         {
-            return Next.FetchWorkflowHistoryEventPage(input);
+            return Next.FetchWorkflowHistoryEventPageAsync(input);
         }
 
         // TODO(cretz): Lots more

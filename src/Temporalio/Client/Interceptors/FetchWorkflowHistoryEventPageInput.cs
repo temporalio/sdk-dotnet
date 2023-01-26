@@ -3,7 +3,7 @@ using Temporalio.Api.Enums.V1;
 namespace Temporalio.Client.Interceptors
 {
     /// <summary>
-    /// Input for <see cref="ClientOutboundInterceptor.FetchWorkflowHistoryEventPage" />.
+    /// Input for <see cref="ClientOutboundInterceptor.FetchWorkflowHistoryEventPageAsync" />.
     /// </summary>
     /// <param name="ID">ID of the workflow.</param>
     /// <param name="RunID">Optional run ID of the workflow.</param>
