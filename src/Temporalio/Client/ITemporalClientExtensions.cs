@@ -20,6 +20,14 @@ namespace Temporalio.Client
         /// <param name="workflow">Workflow run method with a result but no argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow result.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// Workflow did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         public static async Task<TResult> ExecuteWorkflowAsync<TResult>(
             this ITemporalClient client,
             Func<Task<TResult>> workflow,
@@ -42,6 +50,14 @@ namespace Temporalio.Client
         /// <param name="arg">Workflow argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow result.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// Workflow did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         public static async Task<TResult> ExecuteWorkflowAsync<T, TResult>(
             this ITemporalClient client,
             Func<T, Task<TResult>> workflow,
@@ -62,6 +78,14 @@ namespace Temporalio.Client
         /// <param name="workflow">Workflow run method with no result or argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow completion task.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// Workflow did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         public static async Task ExecuteWorkflowAsync(
             this ITemporalClient client,
             Func<Task> workflow,
@@ -83,6 +107,14 @@ namespace Temporalio.Client
         /// <param name="arg">Workflow argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow completion task.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// Workflow did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         public static async Task ExecuteWorkflowAsync<T>(
             this ITemporalClient client,
             Func<T, Task> workflow,
@@ -104,6 +136,14 @@ namespace Temporalio.Client
         /// <param name="args">Arguments for the workflow.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow completion task.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// Workflow did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         public static async Task ExecuteWorkflowAsync(
             this ITemporalClient client,
             string workflow,
@@ -126,6 +166,14 @@ namespace Temporalio.Client
         /// <param name="args">Arguments for the workflow.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow result.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// Workflow did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         public static async Task<TResult> ExecuteWorkflowAsync<TResult>(
             this ITemporalClient client,
             string workflow,

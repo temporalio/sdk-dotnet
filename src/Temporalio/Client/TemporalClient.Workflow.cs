@@ -222,6 +222,50 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
+            public override async Task CancelWorkflowAsync(CancelWorkflowInput input)
+            {
+                await Client.Connection.WorkflowService.RequestCancelWorkflowExecutionAsync(
+                    new()
+                    {
+                        Namespace = Client.Options.Namespace,
+                        WorkflowExecution = new()
+                        {
+                            WorkflowId = input.ID,
+                            RunId = input.RunID ?? string.Empty,
+                        },
+                        FirstExecutionRunId = input.FirstExecutionRunID ?? string.Empty,
+                        Identity = Client.Connection.Options.Identity,
+                        RequestId = Guid.NewGuid().ToString(),
+                    },
+                    DefaultRetryOptions(input.Options?.Rpc));
+            }
+
+            /// <inheritdoc />
+            public override async Task TerminateWorkflowAsync(TerminateWorkflowInput input)
+            {
+                var req = new TerminateWorkflowExecutionRequest()
+                {
+                    Namespace = Client.Options.Namespace,
+                    WorkflowExecution = new()
+                    {
+                        WorkflowId = input.ID,
+                        RunId = input.RunID ?? string.Empty,
+                    },
+                    Reason = input.Reason ?? string.Empty,
+                    FirstExecutionRunId = input.FirstExecutionRunID ?? string.Empty,
+                    Identity = Client.Connection.Options.Identity,
+                };
+                if (input.Options?.Details != null && input.Options?.Details.Count > 0)
+                {
+                    req.Details = new Payloads();
+                    req.Details.Payloads_.AddRange(
+                        await Client.Options.DataConverter.ToPayloadsAsync(input.Options.Details));
+                }
+                await Client.Connection.WorkflowService.TerminateWorkflowExecutionAsync(
+                    req, DefaultRetryOptions(input.Options?.Rpc));
+            }
+
+            /// <inheritdoc />
             public override async Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPageAsync(
                 FetchWorkflowHistoryEventPageInput input)
             {

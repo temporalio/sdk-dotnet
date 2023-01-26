@@ -113,7 +113,7 @@ namespace Temporalio.Converters
                 case Failure.FailureInfoOneofCase.CanceledFailureInfo:
                     return new CancelledFailureException(failure, inner, payloadConverter);
                 case Failure.FailureInfoOneofCase.TerminatedFailureInfo:
-                    return new TerminatedFailureException(failure, inner);
+                    return new TerminatedFailureException(failure, inner, null);
                 case Failure.FailureInfoOneofCase.ActivityFailureInfo:
                     return new ActivityFailureException(failure, inner);
                 case Failure.FailureInfoOneofCase.ChildWorkflowExecutionFailureInfo:

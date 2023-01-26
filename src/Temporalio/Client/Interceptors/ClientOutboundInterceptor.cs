@@ -69,6 +69,26 @@ namespace Temporalio.Client.Interceptors
         }
 
         /// <summary>
+        /// Intercept cancel workflow calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for acceptance of the cancel.</returns>
+        public virtual Task CancelWorkflowAsync(CancelWorkflowInput input)
+        {
+            return Next.CancelWorkflowAsync(input);
+        }
+
+        /// <summary>
+        /// Intercept terminate workflow calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for termination completion.</returns>
+        public virtual Task TerminateWorkflowAsync(TerminateWorkflowInput input)
+        {
+            return Next.TerminateWorkflowAsync(input);
+        }
+
+        /// <summary>
         /// Intercept a history event page fetch.
         /// </summary>
         /// <param name="input">Input details of the call.</param>

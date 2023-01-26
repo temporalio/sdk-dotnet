@@ -13,6 +13,11 @@ namespace Temporalio.Client
         /// <param name="workflow">Workflow run method with a result but no argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
             Func<Task<TResult>> workflow, WorkflowStartOptions options);
 
@@ -25,6 +30,11 @@ namespace Temporalio.Client
         /// <param name="arg">Workflow argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<T, TResult>(
             Func<T, Task<TResult>> workflow, T arg, WorkflowStartOptions options);
 
@@ -34,6 +44,11 @@ namespace Temporalio.Client
         /// <param name="workflow">Workflow run method with no result or argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle> StartWorkflowAsync(
             Func<Task> workflow, WorkflowStartOptions options);
 
@@ -45,6 +60,11 @@ namespace Temporalio.Client
         /// <param name="arg">Workflow argument.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle> StartWorkflowAsync<T>(
             Func<T, Task> workflow, T arg, WorkflowStartOptions options);
 
@@ -55,6 +75,11 @@ namespace Temporalio.Client
         /// <param name="args">Arguments for the workflow.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle> StartWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options);
 
@@ -66,6 +91,11 @@ namespace Temporalio.Client
         /// <param name="args">Arguments for the workflow.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options);
 

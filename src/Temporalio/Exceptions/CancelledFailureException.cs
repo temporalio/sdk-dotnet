@@ -37,7 +37,7 @@ namespace Temporalio.Exceptions
             var info =
                 failure.CanceledFailureInfo
                 ?? throw new ArgumentException("No cancelled failure info");
-            Details = new InboundFailureDetails(converter, info.Details.Payloads_);
+            Details = new InboundFailureDetails(converter, info.Details?.Payloads_);
         }
 
         /// <summary>

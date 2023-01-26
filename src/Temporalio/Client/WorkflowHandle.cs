@@ -48,6 +48,7 @@ namespace Temporalio.Client
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public async Task GetResultAsync(
             bool followRuns = true, RpcOptions? rpcOptions = null)
         {
@@ -69,6 +70,7 @@ namespace Temporalio.Client
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public async Task<TResult> GetResultAsync<TResult>(
             bool followRuns = true, RpcOptions? rpcOptions = null)
         {
@@ -134,15 +136,19 @@ namespace Temporalio.Client
                                 Client.Options.DataConverter.PayloadConverter));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionTerminatedEventAttributes:
                             var termAttr = evt.WorkflowExecutionTerminatedEventAttributes;
-                            var reason = termAttr.Reason == string.Empty ?
+                            var message = termAttr.Reason == string.Empty ?
                                 "Workflow terminated" : termAttr.Reason;
+                            InboundFailureDetails? details = null;
+                            if (termAttr.Details != null && termAttr.Details.Payloads_.Count > 0)
+                            {
+                                details = new(
+                                    Client.Options.DataConverter.PayloadConverter,
+                                    termAttr.Details.Payloads_);
+                            }
                             throw new WorkflowFailureException(new TerminatedFailureException(
-                                new()
-                                {
-                                    Message = "Workflow terminated",
-                                    TerminatedFailureInfo = new(),
-                                },
-                                null));
+                                new() { Message = message, TerminatedFailureInfo = new() },
+                                null,
+                                details));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionTimedOutEventAttributes:
                             var timeAttr = evt.WorkflowExecutionTimedOutEventAttributes;
                             if (timeAttr.NewExecutionRunId != string.Empty && followRuns)
@@ -180,6 +186,7 @@ namespace Temporalio.Client
         /// Signal completion task. Means signal was accepted, but may not have been processed by
         /// the workflow yet.
         /// </returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public Task SignalAsync(Func<Task> signal, WorkflowSignalOptions? options = null)
         {
             return SignalAsync(
@@ -199,6 +206,7 @@ namespace Temporalio.Client
         /// Signal completion task. Means signal was accepted, but may not have been processed by
         /// the workflow yet.
         /// </returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public Task SignalAsync<T>(
             Func<T, Task> signal, T arg, WorkflowSignalOptions? options = null)
         {
@@ -218,6 +226,7 @@ namespace Temporalio.Client
         /// Signal completion task. Means signal was accepted, but may not have been processed by
         /// the workflow yet.
         /// </returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public Task SignalAsync(
             string signal, IReadOnlyCollection<object?> args, WorkflowSignalOptions? options = null)
         {
@@ -237,6 +246,11 @@ namespace Temporalio.Client
         /// <param name="query">Workflow query method.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>Query result.</returns>
+        /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
+        /// <exception cref="WorkflowQueryRejectedException">
+        /// Query rejected by server based on rejection condition.
+        /// </exception>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public Task<TQueryResult> QueryAsync<TQueryResult>(
             Func<TQueryResult> query, WorkflowQueryOptions? options = null)
         {
@@ -255,6 +269,11 @@ namespace Temporalio.Client
         /// <param name="arg">Query argument.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>Query result.</returns>
+        /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
+        /// <exception cref="WorkflowQueryRejectedException">
+        /// Query rejected by server based on rejection condition.
+        /// </exception>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public Task<TQueryResult> QueryAsync<T, TQueryResult>(
             Func<T, TQueryResult> query, T arg, WorkflowQueryOptions? options = null)
         {
@@ -272,6 +291,11 @@ namespace Temporalio.Client
         /// <param name="args">Query arguments.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>Query result.</returns>
+        /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
+        /// <exception cref="WorkflowQueryRejectedException">
+        /// Query rejected by server based on rejection condition.
+        /// </exception>
+        /// <exception cref="RpcException">Server-side error.</exception>
         public Task<TQueryResult> QueryAsync<TQueryResult>(
             string query, IReadOnlyCollection<object?> args, WorkflowQueryOptions? options = null)
         {
@@ -284,19 +308,40 @@ namespace Temporalio.Client
                 Headers: null));
         }
 
+        /// <summary>
+        /// Request cancellation of this workflow.
+        /// </summary>
+        /// <param name="options">Cancellation options.</param>
+        /// <returns>Cancel accepted task.</returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        public Task CancelAsync(WorkflowCancelOptions? options = null)
+        {
+            return Client.OutboundInterceptor.CancelWorkflowAsync(new(
+                ID: ID,
+                RunID: RunID,
+                FirstExecutionRunID: FirstExecutionRunID,
+                Options: options));
+        }
+
+        /// <summary>
+        /// Terminate this workflow.
+        /// </summary>
+        /// <param name="reason">Termination reason.</param>
+        /// <param name="options">Termination options.</param>
+        /// <returns>Terminate completed task.</returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        public Task TerminateAsync(string? reason = null, WorkflowTerminateOptions? options = null)
+        {
+            return Client.OutboundInterceptor.TerminateWorkflowAsync(new(
+                ID: ID,
+                RunID: RunID,
+                FirstExecutionRunID: FirstExecutionRunID,
+                Reason: reason,
+                Options: options));
+        }
+
         /*
         TODO(cretz):
-
-        public async Task CancelAsync(RpcOptions? options = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task TerminateAsync(
-            string? reason = null, object[]? args = null, RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<WorkflowExecutionDescription> DescribeAsync(RpcOptions? rpcOptions = null)
         {
