@@ -1,16 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Common.V1;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Api.TaskQueue.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client.Interceptors;
 using Temporalio.Converters;
-
-#if NETCOREAPP3_0_OR_GREATER
-using System.Collections.Generic;
-#endif
+using Temporalio.Exceptions;
 
 namespace Temporalio.Client
 {
@@ -18,7 +17,7 @@ namespace Temporalio.Client
     {
         /// <inheritdoc />
         public Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            Func<Task<TResult>> workflow, StartWorkflowOptions options)
+            Func<Task<TResult>> workflow, WorkflowStartOptions options)
         {
             return StartWorkflowAsync<TResult>(
                 Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
@@ -28,7 +27,7 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public Task<WorkflowHandle<TResult>> StartWorkflowAsync<T, TResult>(
-            Func<T, Task<TResult>> workflow, T arg, StartWorkflowOptions options)
+            Func<T, Task<TResult>> workflow, T arg, WorkflowStartOptions options)
         {
             return StartWorkflowAsync<TResult>(
                 Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
@@ -38,7 +37,7 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public Task<WorkflowHandle> StartWorkflowAsync(
-            Func<Task> workflow, StartWorkflowOptions options)
+            Func<Task> workflow, WorkflowStartOptions options)
         {
             return StartWorkflowAsync(
                 Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
@@ -48,7 +47,7 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public Task<WorkflowHandle> StartWorkflowAsync<T>(
-            Func<T, Task> workflow, T arg, StartWorkflowOptions options)
+            Func<T, Task> workflow, T arg, WorkflowStartOptions options)
         {
             return StartWorkflowAsync(
                 Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
@@ -58,14 +57,14 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public async Task<WorkflowHandle> StartWorkflowAsync(
-            string workflow, object?[] args, StartWorkflowOptions options)
+            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options)
         {
             return await StartWorkflowAsync<ValueTuple>(workflow, args, options);
         }
 
         /// <inheritdoc />
         public Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            string workflow, object?[] args, StartWorkflowOptions options)
+            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options)
         {
             return OutboundInterceptor.StartWorkflowAsync<TResult>(new(
                 Workflow: workflow,
@@ -94,7 +93,7 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public IAsyncEnumerator<WorkflowExecution> ListWorkflows(
-            string query, ListWorkflowsOptions? options = null)
+            string query, WorkflowListOptions? options = null)
         {
             throw new NotImplementedException();
         }
@@ -111,8 +110,8 @@ namespace Temporalio.Client
                 {
                     return await StartWorkflowAsyncUnwrapped<TResult>(input);
                 }
-                catch (Exceptions.RpcException e) when (
-                    e.Code == Exceptions.RpcException.StatusCode.AlreadyExists)
+                catch (RpcException e) when (
+                    e.Code == RpcException.StatusCode.AlreadyExists)
                 {
                     // Throw already started if there is a single detail with the expected type
                     var status = e.GrpcStatus.Value;
@@ -120,7 +119,7 @@ namespace Temporalio.Client
                     {
                         if (status.Details[0].TryUnpack(out Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure failure))
                         {
-                            throw new Exceptions.WorkflowAlreadyStartedException(
+                            throw new WorkflowAlreadyStartedException(
                                 e.Message,
                                 input.Options.ID!,
                                 failure.RunId);
@@ -128,6 +127,98 @@ namespace Temporalio.Client
                     }
                     throw;
                 }
+            }
+
+            /// <inheritdoc />
+            public override async Task SignalWorkflowAsync(SignalWorkflowInput input)
+            {
+                var req = new SignalWorkflowExecutionRequest()
+                {
+                    Namespace = Client.Options.Namespace,
+                    WorkflowExecution = new()
+                    {
+                        WorkflowId = input.ID,
+                        RunId = input.RunID ?? string.Empty,
+                    },
+                    SignalName = input.Signal,
+                    Identity = Client.Connection.Options.Identity,
+                    RequestId = Guid.NewGuid().ToString(),
+                };
+                if (input.Args.Count > 0)
+                {
+                    req.Input = new Payloads();
+                    req.Input.Payloads_.AddRange(
+                        await Client.Options.DataConverter.ToPayloadsAsync(input.Args));
+                }
+                if (input.Headers != null)
+                {
+                    req.Header = new();
+                    req.Header.Fields.Add(input.Headers);
+                }
+                await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
+                    req, DefaultRetryOptions(input.Options?.Rpc));
+            }
+
+            /// <inheritdoc />
+            public override async Task<TResult> QueryWorkflowAsync<TResult>(QueryWorkflowInput input)
+            {
+                var req = new QueryWorkflowRequest()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Execution = new()
+                    {
+                        WorkflowId = input.ID,
+                        RunId = input.RunID ?? string.Empty,
+                    },
+                    Query = new() { QueryType = input.Query },
+                };
+                if (input.Args.Count > 0)
+                {
+                    req.Query.QueryArgs = new Payloads();
+                    req.Query.QueryArgs.Payloads_.AddRange(
+                        await Client.Options.DataConverter.ToPayloadsAsync(input.Args));
+                }
+                if (input.Options?.RejectCondition != null)
+                {
+                    req.QueryRejectCondition = (QueryRejectCondition)input.Options.RejectCondition;
+                }
+                else if (Client.Options.QueryRejectCondition != null)
+                {
+                    req.QueryRejectCondition = (QueryRejectCondition)Client.Options.QueryRejectCondition;
+                }
+                if (input.Headers != null)
+                {
+                    req.Query.Header = new();
+                    req.Query.Header.Fields.Add(input.Headers);
+                }
+
+                // Invoke
+                QueryWorkflowResponse resp;
+                try
+                {
+                    resp = await Client.Connection.WorkflowService.QueryWorkflowAsync(
+                        req, DefaultRetryOptions(input.Options?.Rpc));
+                }
+                catch (RpcException e) when (
+                    e.GrpcStatus.Value != null &&
+                    e.GrpcStatus.Value.Details.Count == 1 &&
+                    e.GrpcStatus.Value.Details[0].Is(Api.ErrorDetails.V1.QueryFailedFailure.Descriptor))
+                {
+                    throw new WorkflowQueryFailedException(e.Message);
+                }
+
+                // Throw rejection if rejected
+                if (resp.QueryRejected != null)
+                {
+                    throw new WorkflowQueryRejectedException(resp.QueryRejected.Status);
+                }
+
+                if (resp.QueryResult == null)
+                {
+                    throw new InvalidOperationException("No result present");
+                }
+                return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
+                    resp.QueryResult.Payloads_);
             }
 
             /// <inheritdoc />

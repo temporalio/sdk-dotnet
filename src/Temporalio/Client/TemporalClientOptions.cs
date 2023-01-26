@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Temporalio.Api.Enums.V1;
 
 namespace Temporalio.Client
 {
@@ -28,6 +29,11 @@ namespace Temporalio.Client
         /// be used when the worker is created.
         /// </remarks>
         public IEnumerable<Interceptors.IClientInterceptor>? Interceptors { get; set; }
+
+        /// <summary>
+        /// Gets or sets the query rejection condition. This can be overridden on a per-query basis.
+        /// </summary>
+        public QueryRejectCondition? QueryRejectCondition { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

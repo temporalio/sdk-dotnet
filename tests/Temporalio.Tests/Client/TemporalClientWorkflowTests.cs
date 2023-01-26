@@ -12,11 +12,11 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task StartWorkflow_ManualReturnType_Succeeds()
+    public async Task StartWorkflowAsync_ManualReturnType_Succeeds()
     {
         var workflowID = $"workflow-{Guid.NewGuid()}";
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
+            IKitchenSinkWorkflowWithUnknownReturn.Ref.RunAsync,
             new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
             new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         Assert.Equal(workflowID, handle.ID);
@@ -25,18 +25,17 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task StartWorkflow_KnownReturnType_Succeeds()
+    public async Task StartWorkflowAsync_ReturnObject_Succeeds()
     {
-        var workflowID = $"workflow-{Guid.NewGuid()}";
         var result = await Client.ExecuteWorkflowAsync(
             IKitchenSinkWorkflowWithReturnObject.Ref.RunAsync,
             new KSWorkflowParams(new KSAction(Result: new(Value: new KSWorkflowResult("Some String")))),
-            new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
         Assert.Equal(new KSWorkflowResult("Some String"), result);
     }
 
     [Fact]
-    public async Task StartWorkflow_AlreadyExists_Throws()
+    public async Task StartWorkflowAsync_AlreadyExists_Throws()
     {
         // Start
         var workflowID = $"workflow-{Guid.NewGuid()}";
@@ -57,34 +56,14 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(handle.ResultRunID, err.RunID);
     }
 
-    // TODO(cretz):
-    // [Fact]
-    // public async Task StartWorkflow_Signal_Succeeds()
-    // {
-    //     var workflowID = $"workflow-{Guid.NewGuid()}";
-    //     var handle = await Client.ExecuteWorkflowAsync(
-    //         IKitchenSinkWorkflowWithReturnString.Ref.RunAsync,
-    //         new KSWorkflowParams(ActionSignal: "SomeActionSignal"),
-    //         new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
-    //     // Send signal
-    //     // TODO(cretz)
-    // }
-
     // TODO(cretz): tests/features:
     // * ID reuse policy
     // * Start with signal
     // * Continue as new follow
     // * Workflow failure
-    // * Cancel
-    // * Cancel not found
-    // * Terminate
-    // * Signal (more)
-    // * Query
     // * Query rejected
-    // * Describe
     // * Retry policy
     // * Interceptor
     // * List
-    // * Fetch history
     // * Search attributes
 }

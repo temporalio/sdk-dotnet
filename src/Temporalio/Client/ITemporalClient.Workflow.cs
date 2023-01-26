@@ -1,9 +1,6 @@
 using System;
-using System.Threading.Tasks;
-
-#if NETCOREAPP3_0_OR_GREATER
 using System.Collections.Generic;
-#endif
+using System.Threading.Tasks;
 
 namespace Temporalio.Client
 {
@@ -17,7 +14,7 @@ namespace Temporalio.Client
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            Func<Task<TResult>> workflow, StartWorkflowOptions options);
+            Func<Task<TResult>> workflow, WorkflowStartOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -29,7 +26,7 @@ namespace Temporalio.Client
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<T, TResult>(
-            Func<T, Task<TResult>> workflow, T arg, StartWorkflowOptions options);
+            Func<T, Task<TResult>> workflow, T arg, WorkflowStartOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -38,7 +35,7 @@ namespace Temporalio.Client
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
         Task<WorkflowHandle> StartWorkflowAsync(
-            Func<Task> workflow, StartWorkflowOptions options);
+            Func<Task> workflow, WorkflowStartOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -49,7 +46,7 @@ namespace Temporalio.Client
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
         Task<WorkflowHandle> StartWorkflowAsync<T>(
-            Func<T, Task> workflow, T arg, StartWorkflowOptions options);
+            Func<T, Task> workflow, T arg, WorkflowStartOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -59,7 +56,7 @@ namespace Temporalio.Client
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
         Task<WorkflowHandle> StartWorkflowAsync(
-            string workflow, object?[] args, StartWorkflowOptions options);
+            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -70,7 +67,7 @@ namespace Temporalio.Client
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            string workflow, object?[] args, StartWorkflowOptions options);
+            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options);
 
         /// <summary>
         /// Get a workflow handle for an existing workflow with unknown return type.
@@ -105,7 +102,7 @@ namespace Temporalio.Client
         /// <param name="options">Options for the list call.</param>
         /// <returns>Async enumerator for the workflows.</returns>
         public IAsyncEnumerator<WorkflowExecution> ListWorkflows(
-            string query, ListWorkflowsOptions? options = null);
+            string query, WorkflowListOptions? options = null);
 #endif
     }
 }

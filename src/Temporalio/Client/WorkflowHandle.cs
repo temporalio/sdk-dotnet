@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
@@ -170,41 +171,121 @@ namespace Temporalio.Client
             }
         }
 
+        /// <summary>
+        /// Signal a workflow with the given WorkflowSignal attributed method.
+        /// </summary>
+        /// <param name="signal">Workflow signal method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>
+        /// Signal completion task. Means signal was accepted, but may not have been processed by
+        /// the workflow yet.
+        /// </returns>
+        public Task SignalAsync(Func<Task> signal, WorkflowSignalOptions? options = null)
+        {
+            return SignalAsync(
+                Workflow.WorkflowSignalAttribute.Definition.FromMethod(signal.Method).Name,
+                new object?[0],
+                options);
+        }
+
+        /// <summary>
+        /// Signal a workflow with the given WorkflowSignal attributed method.
+        /// </summary>
+        /// <typeparam name="T">Signal argument type.</typeparam>
+        /// <param name="signal">Workflow signal method.</param>
+        /// <param name="arg">Signal argument.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>
+        /// Signal completion task. Means signal was accepted, but may not have been processed by
+        /// the workflow yet.
+        /// </returns>
+        public Task SignalAsync<T>(
+            Func<T, Task> signal, T arg, WorkflowSignalOptions? options = null)
+        {
+            return SignalAsync(
+                Workflow.WorkflowSignalAttribute.Definition.FromMethod(signal.Method).Name,
+                new object?[] { arg },
+                options);
+        }
+
+        /// <summary>
+        /// Signal a workflow with the given signal name and args.
+        /// </summary>
+        /// <param name="signal">Signal name.</param>
+        /// <param name="args">Signal args.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>
+        /// Signal completion task. Means signal was accepted, but may not have been processed by
+        /// the workflow yet.
+        /// </returns>
+        public Task SignalAsync(
+            string signal, IReadOnlyCollection<object?> args, WorkflowSignalOptions? options = null)
+        {
+            return Client.OutboundInterceptor.SignalWorkflowAsync(new(
+                ID: ID,
+                RunID: RunID,
+                Signal: signal,
+                Args: args,
+                Options: options,
+                Headers: null));
+        }
+
+        /// <summary>
+        /// Query a workflow with the given WorkflowQuery attributed method.
+        /// </summary>
+        /// <typeparam name="TQueryResult">Query result type.</typeparam>
+        /// <param name="query">Workflow query method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Query result.</returns>
+        public Task<TQueryResult> QueryAsync<TQueryResult>(
+            Func<TQueryResult> query, WorkflowQueryOptions? options = null)
+        {
+            return QueryAsync<TQueryResult>(
+                Workflow.WorkflowQueryAttribute.Definition.FromMethod(query.Method).Name,
+                new object?[0],
+                options);
+        }
+
+        /// <summary>
+        /// Query a workflow with the given WorkflowQuery attributed method.
+        /// </summary>
+        /// <typeparam name="T">Query argument type.</typeparam>
+        /// <typeparam name="TQueryResult">Query result type.</typeparam>
+        /// <param name="query">Workflow query method.</param>
+        /// <param name="arg">Query argument.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Query result.</returns>
+        public Task<TQueryResult> QueryAsync<T, TQueryResult>(
+            Func<T, TQueryResult> query, T arg, WorkflowQueryOptions? options = null)
+        {
+            return QueryAsync<TQueryResult>(
+                Workflow.WorkflowQueryAttribute.Definition.FromMethod(query.Method).Name,
+                new object?[] { arg },
+                options);
+        }
+
+        /// <summary>
+        /// Query a workflow with the given WorkflowQuery attributed method.
+        /// </summary>
+        /// <typeparam name="TQueryResult">Query result type.</typeparam>
+        /// <param name="query">Workflow query method.</param>
+        /// <param name="args">Query arguments.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Query result.</returns>
+        public Task<TQueryResult> QueryAsync<TQueryResult>(
+            string query, IReadOnlyCollection<object?> args, WorkflowQueryOptions? options = null)
+        {
+            return Client.OutboundInterceptor.QueryWorkflowAsync<TQueryResult>(new(
+                ID: ID,
+                RunID: RunID,
+                Query: query,
+                Args: args,
+                Options: options,
+                Headers: null));
+        }
+
         /*
         TODO(cretz):
-
-        public async Task SignalAsync(Func<Task> signal, RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task SignalAsync<T>(Func<T, Task> signal, T arg, RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task SignalAsync(string signal, object[] args, RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TQueryResult> QueryAsync<TQueryResult>(
-        Func<TQueryResult> query, RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TQueryResult> QueryAsync<T, TQueryResult>(
-        Func<T, TQueryResult> query, T arg, RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TQueryResult> QueryAsync<TQueryResult>(
-        string query, object[] args, RpcOptions? rpcOptions = null)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task CancelAsync(RpcOptions? options = null)
         {

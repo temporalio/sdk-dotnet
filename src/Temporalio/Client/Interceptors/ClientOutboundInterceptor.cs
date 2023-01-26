@@ -48,6 +48,27 @@ namespace Temporalio.Client.Interceptors
         }
 
         /// <summary>
+        /// Intercept signal workflow calls.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for acceptance of the signal.</returns>
+        public virtual Task SignalWorkflowAsync(SignalWorkflowInput input)
+        {
+            return Next.SignalWorkflowAsync(input);
+        }
+
+        /// <summary>
+        /// Intercept query workflow calls.
+        /// </summary>
+        /// <typeparam name="TResult">Return type of the query.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Result of the query.</returns>
+        public virtual Task<TResult> QueryWorkflowAsync<TResult>(QueryWorkflowInput input)
+        {
+            return Next.QueryWorkflowAsync<TResult>(input);
+        }
+
+        /// <summary>
         /// Intercept a history event page fetch.
         /// </summary>
         /// <param name="input">Input details of the call.</param>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Temporalio.Workflow
 {
@@ -63,10 +64,14 @@ namespace Temporalio.Workflow
             {
                 var attr = method.GetCustomAttribute<WorkflowQueryAttribute>(false) ??
                     throw new ArgumentException($"{method} missing WorkflowQuery attribute");
-                // Method must only return a Task (not a subclass thereof)
-                if (method.ReturnType != typeof(void))
+                // Method must not return void or a Task
+                if (method.ReturnType == typeof(void))
                 {
-                    throw new ArgumentException($"WorkflowQuery method {method} must have void return type");
+                    throw new ArgumentException($"WorkflowQuery method {method} must return a value");
+                }
+                else if (typeof(Task).IsAssignableFrom(method.ReturnType))
+                {
+                    throw new ArgumentException($"WorkflowQuery method {method} cannot return a Task");
                 }
                 else if (!method.IsPublic)
                 {

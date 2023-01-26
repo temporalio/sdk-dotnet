@@ -27,6 +27,6 @@ namespace Temporalio.Client
             IMessage req,
             MessageParser<T> resp,
             RpcOptions? options = null)
-            where T : Google.Protobuf.IMessage<T>;
+            where T : IMessage<T>;
     }
 }

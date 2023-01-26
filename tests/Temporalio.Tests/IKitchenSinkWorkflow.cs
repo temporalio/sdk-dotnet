@@ -9,7 +9,13 @@ public interface IKitchenSinkWorkflow
     static readonly IKitchenSinkWorkflow Ref = Refs<IKitchenSinkWorkflow>.Instance;
 
     [WorkflowRun]
-    Task<object?> RunAsync(KSWorkflowParams args);
+    Task<string> RunAsync(KSWorkflowParams args);
+
+    [WorkflowSignal]
+    Task SomeActionSignalAsync(KSAction action);
+
+    [WorkflowQuery]
+    string SomeQuery(string arg);
 }
 
 [Workflow("kitchen_sink")]
@@ -22,15 +28,12 @@ public interface IKitchenSinkWorkflowWithReturnObject
 }
 
 [Workflow("kitchen_sink")]
-public interface IKitchenSinkWorkflowWithReturnString
+public interface IKitchenSinkWorkflowWithUnknownReturn
 {
-    static readonly IKitchenSinkWorkflowWithReturnString Ref = Refs<IKitchenSinkWorkflowWithReturnString>.Instance;
+    static readonly IKitchenSinkWorkflowWithUnknownReturn Ref = Refs<IKitchenSinkWorkflowWithUnknownReturn>.Instance;
 
     [WorkflowRun]
     Task<string> RunAsync(KSWorkflowParams args);
-
-    [WorkflowSignal]
-    Task SomeActionSignalAsync(KSAction action);
 }
 
 public record KSWorkflowResult(string SomeString);

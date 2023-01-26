@@ -96,11 +96,16 @@ namespace Temporalio.Workflow
 
             private static Definition CreateFromType(Type type)
             {
-                type = Refs.GetUnproxiedType(type);
                 const BindingFlags bindingFlagsAny = (BindingFlags)(-1);
-                // Get the main attribute
+                // Unwrap the type
+                type = Refs.GetUnproxiedType(type);
+
+                // Get the main attribute, but throw immediately if it is not present
                 var attr = type.GetCustomAttribute<WorkflowAttribute>(false) ??
                     throw new ArgumentException($"{type} missing Workflow attribute");
+
+                // We will keep track of errors and only throw an aggregate at the end
+                var errs = new List<string>();
 
                 // Check constructors. We intentionally fetch non-public too to make sure the init
                 // attribute isn't set on them.
@@ -118,11 +123,15 @@ namespace Temporalio.Workflow
                     {
                         if (initConstructor != null)
                         {
-                            throw new ArgumentException($"WorkflowInit on {constructor} and {initConstructor}");
+                            errs.Add($"WorkflowInit on {constructor} and {initConstructor}");
                         }
                         else if (!constructor.IsPublic)
                         {
-                            throw new ArgumentException($"WorkflowInit on {constructor} is not public");
+                            errs.Add($"WorkflowInit on {constructor} is not public");
+                        }
+                        else
+                        {
+                            initConstructor = constructor;
                         }
                     }
                 }
@@ -141,49 +150,74 @@ namespace Temporalio.Workflow
                     {
                         if (method.DeclaringType != type)
                         {
-                            throw new ArgumentException($"WorkflowRun on {method} must be declared on {type}, not inherited from {method.DeclaringType}");
+                            errs.Add($"WorkflowRun on {method} must be declared on {type}, not inherited from {method.DeclaringType}");
                         }
                         else if (runMethod != null)
                         {
-                            throw new ArgumentException($"WorkflowRun on {method} and {runMethod}");
+                            errs.Add($"WorkflowRun on {method} and {runMethod}");
                         }
                         else if (!method.IsPublic)
                         {
-                            throw new ArgumentException($"WorkflowRun on {method} is not public");
+                            errs.Add($"WorkflowRun on {method} is not public");
                         }
                         else if (!typeof(Task).IsAssignableFrom(method.ReturnType))
                         {
-                            throw new ArgumentException($"WorkflowRun method {method} must return an instance of Task");
+                            errs.Add($"WorkflowRun method {method} must return an instance of Task");
                         }
                         else if (initConstructor != null &&
                             !method.GetParameters().SequenceEqual(initConstructor.GetParameters()))
                         {
-                            throw new ArgumentException($"WorkflowRun on {method} must match parameters of WorkflowInit on {initConstructor}");
+                            errs.Add($"WorkflowRun on {method} must match parameters of WorkflowInit on {initConstructor}");
                         }
-                        runMethod = method;
+                        else
+                        {
+                            runMethod = method;
+                        }
                     }
                     if (method.IsDefined(typeof(WorkflowSignalAttribute), false))
                     {
-                        var defn = WorkflowSignalAttribute.Definition.FromMethod(method);
-                        if (signals.ContainsKey(defn.Name))
+                        try
                         {
-                            throw new ArgumentException($"{type} has more than one signal named {defn.Name}");
+                            var defn = WorkflowSignalAttribute.Definition.FromMethod(method);
+                            if (signals.ContainsKey(defn.Name))
+                            {
+                                errs.Add($"{type} has more than one signal named {defn.Name}");
+                            }
+                            signals[defn.Name] = defn;
                         }
-                        signals[defn.Name] = defn;
+                        catch (ArgumentException e)
+                        {
+                            errs.Add(e.Message);
+                        }
                     }
                     if (method.IsDefined(typeof(WorkflowQueryAttribute), false))
                     {
-                        var defn = WorkflowQueryAttribute.Definition.FromMethod(method);
-                        if (queries.ContainsKey(defn.Name))
+                        try
                         {
-                            throw new ArgumentException($"{type} has more than one query named {defn.Name}");
+                            var defn = WorkflowQueryAttribute.Definition.FromMethod(method);
+                            if (queries.ContainsKey(defn.Name))
+                            {
+                                errs.Add($"{type} has more than one query named {defn.Name}");
+                            }
+                            queries[defn.Name] = defn;
                         }
-                        queries[defn.Name] = defn;
+                        catch (ArgumentException e)
+                        {
+                            errs.Add(e.Message);
+                        }
                     }
                 }
                 if (runMethod == null)
                 {
-                    throw new ArgumentException($"{type} does not have a WorkflowRun method");
+                    errs.Add($"{type} does not have a valid WorkflowRun method");
+                }
+
+                // If there are any errors, throw
+                if (errs.Count > 0)
+                {
+                    // TODO(cretz): Ok to use aggregate exception here or should I just
+                    // comma-delimit into a single message or something?
+                    throw new AggregateException(errs.Select(err => new ArgumentException(err)));
                 }
 
                 // Use given name or default
@@ -201,7 +235,7 @@ namespace Temporalio.Workflow
                 return new Definition(
                     Name: name,
                     Type: type,
-                    RunMethod: runMethod,
+                    RunMethod: runMethod!,
                     Instantiable: instantiable,
                     InitConstructor: initConstructor,
                     Signals: signals,

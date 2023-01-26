@@ -6,7 +6,7 @@ namespace Temporalio.Client
     /// <summary>
     /// Options for <see cref="ITemporalClient.ListWorkflows" />.
     /// </summary>
-    public class ListWorkflowsOptions : ICloneable
+    public class WorkflowListOptions : ICloneable
     {
         // TODO(cretz): RPC options etc
 

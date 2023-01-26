@@ -8,21 +8,21 @@ namespace Temporalio.Client
     /// Options for starting a workflow. <see cref="ID" /> and <see cref="TaskQueue" /> are
     /// required.
     /// </summary>
-    public class StartWorkflowOptions : ICloneable
+    public class WorkflowStartOptions : ICloneable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StartWorkflowOptions"/> class.
+        /// Initializes a new instance of the <see cref="WorkflowStartOptions"/> class.
         /// </summary>
-        public StartWorkflowOptions()
+        public WorkflowStartOptions()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StartWorkflowOptions"/> class.
+        /// Initializes a new instance of the <see cref="WorkflowStartOptions"/> class.
         /// </summary>
         /// <param name="id">Workflow ID.</param>
         /// <param name="taskQueue">Task queue to start workflow on.</param>
-        public StartWorkflowOptions(string id, string taskQueue)
+        public WorkflowStartOptions(string id, string taskQueue)
         {
             ID = id;
             TaskQueue = taskQueue;
@@ -102,7 +102,7 @@ namespace Temporalio.Client
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (StartWorkflowOptions)MemberwiseClone();
+            var copy = (WorkflowStartOptions)MemberwiseClone();
             if (Rpc != null)
             {
                 copy.Rpc = (RpcOptions)Rpc.Clone();
