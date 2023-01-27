@@ -42,7 +42,7 @@ namespace Temporalio.Client
         /// </param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Untyped task for waiting on result.</returns>
-        /// <exception cref="WorkflowFailureException">
+        /// <exception cref="WorkflowFailedException">
         /// Exception thrown for unsuccessful workflow result. The cause can be
         /// <see cref="CancelledFailureException" />, <see cref="TerminatedFailureException" />,
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in
@@ -63,8 +63,8 @@ namespace Temporalio.Client
         /// Whether to follow runs until the latest workflow is reached.
         /// </param>
         /// <param name="rpcOptions">RPC options.</param>
-        /// <returns>Untyped task for waiting on result.</returns>
-        /// <exception cref="WorkflowFailureException">
+        /// <returns>Result of the workflow.</returns>
+        /// <exception cref="WorkflowFailedException">
         /// Exception thrown for unsuccessful workflow result. The cause can be
         /// <see cref="CancelledFailureException" />, <see cref="TerminatedFailureException" />,
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in
@@ -122,11 +122,11 @@ namespace Temporalio.Client
                                 histRunID = failAttr.NewExecutionRunId;
                                 break;
                             }
-                            throw new WorkflowFailureException(
+                            throw new WorkflowFailedException(
                                 await Client.Options.DataConverter.ToExceptionAsync(failAttr.Failure));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionCanceledEventAttributes:
                             var cancelAttr = evt.WorkflowExecutionCanceledEventAttributes;
-                            throw new WorkflowFailureException(new CancelledFailureException(
+                            throw new WorkflowFailedException(new CancelledFailureException(
                                 new()
                                 {
                                     Message = "Workflow cancelled",
@@ -145,7 +145,7 @@ namespace Temporalio.Client
                                     Client.Options.DataConverter.PayloadConverter,
                                     termAttr.Details.Payloads_);
                             }
-                            throw new WorkflowFailureException(new TerminatedFailureException(
+                            throw new WorkflowFailedException(new TerminatedFailureException(
                                 new() { Message = message, TerminatedFailureInfo = new() },
                                 null,
                                 details));
@@ -156,7 +156,7 @@ namespace Temporalio.Client
                                 histRunID = timeAttr.NewExecutionRunId;
                                 break;
                             }
-                            throw new WorkflowFailureException(new TimeoutFailureException(
+                            throw new WorkflowFailedException(new TimeoutFailureException(
                                 new()
                                 {
                                     Message = "Workflow timed out",
@@ -167,6 +167,18 @@ namespace Temporalio.Client
                                 },
                                 null,
                                 Client.Options.DataConverter.PayloadConverter));
+                        case HistoryEvent.AttributesOneofCase.WorkflowExecutionContinuedAsNewEventAttributes:
+                            var contAttr = evt.WorkflowExecutionContinuedAsNewEventAttributes;
+                            if (contAttr.NewExecutionRunId == string.Empty)
+                            {
+                                throw new InvalidOperationException("Continue as new missing new run ID");
+                            }
+                            else if (followRuns)
+                            {
+                                histRunID = contAttr.NewExecutionRunId;
+                                break;
+                            }
+                            throw new WorkflowContinuedAsNewException(contAttr.NewExecutionRunId);
                     }
                 }
                 // If we didn't get a new ID to follow, we didn't get a completion event
@@ -415,8 +427,8 @@ namespace Temporalio.Client
         /// Whether to follow runs until the latest workflow is reached.
         /// </param>
         /// <param name="rpcOptions">RPC options.</param>
-        /// <returns>Untyped task for waiting on result.</returns>
-        /// <exception cref="WorkflowFailureException">
+        /// <returns>Result of the workflow.</returns>
+        /// <exception cref="WorkflowFailedException">
         /// Exception thrown for unsuccessful workflow result. The cause can be
         /// <see cref="CancelledFailureException" />, <see cref="TerminatedFailureException" />,
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in

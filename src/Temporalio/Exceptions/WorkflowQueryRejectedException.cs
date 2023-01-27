@@ -3,7 +3,7 @@ using Temporalio.Api.Enums.V1;
 namespace Temporalio.Exceptions
 {
     /// <summary>
-    /// Thrown when a query is rejected by the worker due to bad workflow status.
+    /// Thrown when a query is rejected by the server due to bad workflow status.
     /// </summary>
     public class WorkflowQueryRejectedException : TemporalException
     {

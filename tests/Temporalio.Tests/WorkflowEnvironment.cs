@@ -22,7 +22,18 @@ public class WorkflowEnvironment : IAsyncLifetime
     public async Task InitializeAsync()
     {
         // TODO(cretz): Support other environments
-        env = await Testing.WorkflowEnvironment.StartLocalAsync();
+        env = await Testing.WorkflowEnvironment.StartLocalAsync(new()
+        {
+            Temporalite = new()
+            {
+                ExtraArgs = new List<string>
+                {
+                    // Disable search attribute cache
+                    "--dynamic-config-value",
+                    "system.forceSearchAttributesCacheRefreshOnRead=true",
+                },
+            },
+        });
     }
 
     public async Task DisposeAsync()

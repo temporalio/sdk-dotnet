@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -64,7 +65,8 @@ type ErrorAction struct {
 }
 
 type ContinueAsNewAction struct {
-	WhileAboveZero int `json:"while_above_zero"`
+	WhileAboveZero int         `json:"while_above_zero"`
+	Result         interface{} `json:"result"`
 }
 
 type SleepAction struct {
@@ -72,7 +74,8 @@ type SleepAction struct {
 }
 
 type QueryHandlerAction struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
+	Error string `json:"error"`
 }
 
 type SignalAction struct {
@@ -148,6 +151,8 @@ func handleAction(
 		if action.ContinueAsNew.WhileAboveZero > 0 {
 			action.ContinueAsNew.WhileAboveZero--
 			return true, nil, workflow.NewContinueAsNewError(ctx, KitchenSinkWorkflow, params)
+		} else if action.ContinueAsNew.Result != nil {
+			return true, action.ContinueAsNew.Result, nil
 		}
 
 	case action.Sleep != nil:
@@ -156,7 +161,12 @@ func handleAction(
 		}
 
 	case action.QueryHandler != nil:
-		err := workflow.SetQueryHandler(ctx, action.QueryHandler.Name, func(arg string) (string, error) { return arg, nil })
+		err := workflow.SetQueryHandler(ctx, action.QueryHandler.Name, func(arg string) (string, error) {
+			if action.QueryHandler.Error != "" {
+				return "", errors.New(action.QueryHandler.Error)
+			}
+			return arg, nil
+		})
 		if err != nil {
 			return true, nil, err
 		}

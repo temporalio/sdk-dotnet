@@ -24,13 +24,13 @@ namespace Temporalio.Testing
         /// <remarks>
         /// <b>WARNING: This API is subject to change/removal</b>
         /// </remarks>
-        public TemporaliteOptions TemporaliteOptions { get; set; } = new();
+        public TemporaliteOptions Temporalite { get; set; } = new();
 
         /// <inheritdoc />
         public override object Clone()
         {
             var copy = (WorkflowEnvironmentStartLocalOptions)base.Clone();
-            copy.TemporaliteOptions = (TemporaliteOptions)TemporaliteOptions.Clone();
+            copy.Temporalite = (TemporaliteOptions)Temporalite.Clone();
             return copy;
         }
     }

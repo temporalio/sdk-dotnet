@@ -5,13 +5,13 @@ namespace Temporalio.Exceptions
     /// <summary>
     /// Exception thrown when a workflow has failed while waiting for the result.
     /// </summary>
-    public class WorkflowFailureException : TemporalException
+    public class WorkflowFailedException : TemporalException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowFailureException"/> class.
+        /// Initializes a new instance of the <see cref="WorkflowFailedException"/> class.
         /// </summary>
         /// <param name="inner">Cause of the exception.</param>
-        public WorkflowFailureException(Exception? inner)
+        public WorkflowFailedException(Exception? inner)
             : base("Workflow failed", inner)
         {
         }

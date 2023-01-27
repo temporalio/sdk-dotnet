@@ -19,13 +19,13 @@ namespace Temporalio.Testing
         /// <remarks>
         /// <b>WARNING: This API is subject to change/removal</b>
         /// </remarks>
-        public TestServerOptions TestServerOptions { get; set; } = new();
+        public TestServerOptions TestServer { get; set; } = new();
 
         /// <inheritdoc />
         public override object Clone()
         {
             var copy = (WorkflowEnvironmentStartTimeSkippingOptions)base.Clone();
-            copy.TestServerOptions = (TestServerOptions)TestServerOptions.Clone();
+            copy.TestServer = (TestServerOptions)TestServer.Clone();
             return copy;
         }
     }

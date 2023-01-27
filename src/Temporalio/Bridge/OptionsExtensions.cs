@@ -276,21 +276,20 @@ namespace Temporalio.Bridge
                 test_server = scope.Pointer(
                     new Interop.TestServerOptions()
                     {
-                        existing_path = scope.ByteArray(options.TemporaliteOptions.ExistingPath),
+                        existing_path = scope.ByteArray(options.Temporalite.ExistingPath),
                         sdk_name = SdkName.Ref,
                         sdk_version = ClientVersion.Ref,
-                        download_version = scope.ByteArray(
-                            options.TemporaliteOptions.DownloadVersion),
+                        download_version = scope.ByteArray(options.Temporalite.DownloadVersion),
                         download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                         port = (ushort)(port ?? 0),
-                        extra_args = scope.NewlineDelimited(options.TemporaliteOptions.ExtraArgs),
+                        extra_args = scope.NewlineDelimited(options.Temporalite.ExtraArgs),
                     }),
                 namespace_ = scope.ByteArray(options.Namespace),
                 ip = scope.ByteArray(ip),
-                database_filename = scope.ByteArray(options.TemporaliteOptions.DatabaseFilename),
+                database_filename = scope.ByteArray(options.Temporalite.DatabaseFilename),
                 ui = (byte)(options.UI ? 1 : 0),
-                log_format = scope.ByteArray(options.TemporaliteOptions.LogFormat),
-                log_level = scope.ByteArray(options.TemporaliteOptions.LogLevel),
+                log_format = scope.ByteArray(options.Temporalite.LogFormat),
+                log_level = scope.ByteArray(options.Temporalite.LogLevel),
             };
         }
 
@@ -313,13 +312,13 @@ namespace Temporalio.Bridge
             }
             return new Interop.TestServerOptions()
             {
-                existing_path = scope.ByteArray(options.TestServerOptions.ExistingPath),
+                existing_path = scope.ByteArray(options.TestServer.ExistingPath),
                 sdk_name = SdkName.Ref,
                 sdk_version = ClientVersion.Ref,
-                download_version = scope.ByteArray(options.TestServerOptions.DownloadVersion),
+                download_version = scope.ByteArray(options.TestServer.DownloadVersion),
                 download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                 port = (ushort)(port ?? 0),
-                extra_args = scope.NewlineDelimited(options.TestServerOptions.ExtraArgs),
+                extra_args = scope.NewlineDelimited(options.TestServer.ExtraArgs),
             };
         }
     }

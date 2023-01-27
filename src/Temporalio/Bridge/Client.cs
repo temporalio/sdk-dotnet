@@ -122,9 +122,20 @@ namespace Temporalio.Bridge
                                 }
                                 else if (failureMessage != null)
                                 {
-                                    completion.TrySetException(
-                                            new InvalidOperationException(
-                                                new ByteArray(runtime, failureMessage).ToUTF8()));
+                                    var failureString = new ByteArray(runtime, failureMessage).ToUTF8();
+                                    // If the cancellation token caused cancel, throw that instead
+                                    if (cancellationToken.HasValue &&
+                                        cancellationToken.Value.IsCancellationRequested &&
+                                        failureString == "Cancelled")
+                                    {
+                                        completion.TrySetException(
+                                            new OperationCanceledException(cancellationToken.Value));
+                                    }
+                                    else
+                                    {
+                                        completion.TrySetException(
+                                            new InvalidOperationException(failureString));
+                                    }
                                 }
                                 else
                                 {

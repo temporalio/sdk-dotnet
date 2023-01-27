@@ -381,8 +381,7 @@ namespace Temporalio.Client
                 }
                 if (input.Options.SearchAttributes != null && input.Options.SearchAttributes.Count > 0)
                 {
-                    req.SearchAttributes = DataConverter.Default.PayloadConverter.ToSearchAttributesProto(
-                        input.Options.SearchAttributes);
+                    req.SearchAttributes = input.Options.SearchAttributes.ToSearchAttributesProto();
                 }
                 if (input.Headers != null)
                 {

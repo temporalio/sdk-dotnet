@@ -24,7 +24,7 @@ namespace Temporalio.Client
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// <exception cref="Exceptions.WorkflowFailedException">
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
@@ -54,7 +54,7 @@ namespace Temporalio.Client
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// <exception cref="Exceptions.WorkflowFailedException">
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
@@ -82,7 +82,7 @@ namespace Temporalio.Client
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// <exception cref="Exceptions.WorkflowFailedException">
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
@@ -111,7 +111,7 @@ namespace Temporalio.Client
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// <exception cref="Exceptions.WorkflowFailedException">
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
@@ -140,7 +140,7 @@ namespace Temporalio.Client
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// <exception cref="Exceptions.WorkflowFailedException">
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
@@ -170,7 +170,7 @@ namespace Temporalio.Client
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailureException">
+        /// <exception cref="Exceptions.WorkflowFailedException">
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>

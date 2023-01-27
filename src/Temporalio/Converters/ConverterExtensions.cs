@@ -48,6 +48,23 @@ namespace Temporalio.Converters
         }
 
         /// <summary>
+        /// Decode and convert the given payload to a value of the given type.
+        /// </summary>
+        /// <remarks>
+        /// Usually <see cref="ToSingleValueAsync" /> is better because an encoder could have
+        /// encoded into multiple payloads. However for some maps like memos and headers, there may
+        /// only be a single payload to decode.
+        /// </remarks>
+        /// <typeparam name="T">Value type.</typeparam>
+        /// <param name="converter">The converter to use.</param>
+        /// <param name="payload">The payload to convert.</param>
+        /// <returns>Decoded and converted value.</returns>
+        public static Task<T> ToValueAsync<T>(this DataConverter converter, Payload payload)
+        {
+            return converter.ToSingleValueAsync<T>(new Payload[] { payload });
+        }
+
+        /// <summary>
         /// Decode and convert the given payloads to a single value.
         /// </summary>
         /// <typeparam name="T">Type to convert to.</typeparam>
@@ -102,12 +119,10 @@ namespace Temporalio.Converters
         /// <summary>
         /// Use the default payload converter to convert attribute values to search attributes.
         /// </summary>
-        /// <param name="converter">Converter to use.</param>
         /// <param name="attrs">Attributes to convert.</param>
         /// <returns>Protobuf search attributes.</returns>
         public static SearchAttributes ToSearchAttributesProto(
-            this DefaultPayloadConverter converter,
-            IReadOnlyCollection<KeyValuePair<string, object>> attrs)
+            this IReadOnlyCollection<KeyValuePair<string, object>> attrs)
         {
             return new()
             {
@@ -115,44 +130,56 @@ namespace Temporalio.Converters
                 {
                     attrs.ToDictionary(
                         pair => pair.Key,
-                        pair => converter.ToSearchAttributePayload(pair.Key, pair.Value)),
+                        pair =>
+                        {
+                            try
+                            {
+                                return DataConverter.Default.PayloadConverter.ToSearchAttributePayload(pair.Value);
+                            }
+                            catch (ArgumentException e)
+                            {
+                                throw new ArgumentException($"Failed converting search attribute {pair.Key}", e);
+                            }
+                        }),
                 },
             };
         }
 
         /// <summary>
-        /// Convert a value to a search attribute or fail.
+        /// Use the default payload converter to convert payloads to search attribute values.
         /// </summary>
-        /// <param name="converter">Converter to use.</param>
-        /// <param name="key">Key, used for exception messages.</param>
-        /// <param name="value">Value to convert.</param>
-        /// <returns>Payload with the search attribute.</returns>
+        /// <param name="payloads">Payloads to convert.</param>
+        /// <returns>Converted values.</returns>
         /// <exception cref="ArgumentException">
-        /// If the value isn't a DateTime, IEnumerable&lt;string&gt;, or primitive.
+        /// If any value isn't a DateTime, IEnumerable&lt;string&gt;, or primitive.
         /// </exception>
-        public static Payload ToSearchAttributePayload(
-            this DefaultPayloadConverter converter, string key, object value)
+        public static IDictionary<string, object> ToSearchAttributeValues(
+            this SearchAttributes payloads)
         {
-            if (value == null)
-            {
-                throw new ArgumentException($"Search attribute {key} has null value");
-            }
-            if (value is DateTime dateTimeValue)
-            {
-                // 8601 with timezone
-                value = dateTimeValue.ToString("o");
-            }
-            else if (value is DateTimeOffset dateTimeOffsetValue)
-            {
-                // 8601 with timezone
-                value = dateTimeOffsetValue.ToString("o");
-            }
-            else if (value is not IEnumerable<string> && !value.GetType().IsPrimitive)
-            {
-                throw new ArgumentException(
-                    $"Search attribute {key} must be DateTime, IEnumerable<string>, or primitive but is {value.GetType()}");
-            }
-            return converter.ToPayload(value);
+            return payloads.IndexedFields.ToSearchAttributeValues();
+        }
+
+        /// <summary>
+        /// Use the default payload converter to convert payloads to search attribute values.
+        /// </summary>
+        /// <param name="payloads">Payloads to convert.</param>
+        /// <returns>Converted values.</returns>
+        public static IDictionary<string, object> ToSearchAttributeValues(
+            this IEnumerable<KeyValuePair<string, Payload>> payloads)
+        {
+            return payloads.ToDictionary(
+                pair => pair.Key,
+                pair =>
+                {
+                    try
+                    {
+                        return DataConverter.Default.PayloadConverter.ToSearchAttributeValue(pair.Value);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        throw new ArgumentException($"Failed converting search attribute {pair.Key}", e);
+                    }
+                });
         }
     }
 }

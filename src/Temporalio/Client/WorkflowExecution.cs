@@ -3,15 +3,27 @@ using System.Collections.Generic;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.Workflow.V1;
+using Temporalio.Converters;
 
 namespace Temporalio.Client
 {
     /// <summary>
     /// Representation of a workflow execution.
     /// </summary>
-    /// <param name="RawInfo">Underlying protobuf information.</param>
-    public record WorkflowExecution(WorkflowExecutionInfo RawInfo)
+    public record WorkflowExecution
     {
+        private readonly Lazy<IDictionary<string, object>?> searchAttributes;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowExecution"/> class.
+        /// </summary>
+        /// <param name="rawInfo">Raw proto info.</param>
+        public WorkflowExecution(WorkflowExecutionInfo rawInfo)
+        {
+            RawInfo = rawInfo;
+            searchAttributes = new(() => RawSearchAttributes?.ToSearchAttributeValues());
+        }
+
         /// <summary>
         /// Gets when the workflow was closed if closed.
         /// </summary>
@@ -33,11 +45,6 @@ namespace Temporalio.Client
         public string ID => RawInfo.Execution.WorkflowId;
 
         /// <summary>
-        /// Gets the workflow memo dictionary if present.
-        /// </summary>
-        public IDictionary<string, Payload>? Memo => RawInfo.Memo?.Fields;
-
-        /// <summary>
         /// Gets the ID for the parent workflow if this was started as a child.
         /// </summary>
         public string? ParentID => RawInfo.ParentExecution?.WorkflowId;
@@ -48,15 +55,33 @@ namespace Temporalio.Client
         public string? ParentRunID => RawInfo.ParentExecution?.RunId;
 
         /// <summary>
+        /// Gets the raw proto info.
+        /// </summary>
+        public WorkflowExecutionInfo RawInfo { get; init; }
+
+        /// <summary>
+        /// Gets the workflow memo dictionary if present.
+        /// </summary>
+        public IDictionary<string, Payload>? RawMemo => RawInfo.Memo?.Fields;
+
+        /// <summary>
+        /// Gets the workflow search attribute dictionary if present.
+        /// </summary>
+        public IDictionary<string, Payload>? RawSearchAttributes =>
+            RawInfo.SearchAttributes?.IndexedFields;
+
+        /// <summary>
         /// Gets the run ID for the workflow.
         /// </summary>
         public string RunID => RawInfo.Execution.RunId;
 
         /// <summary>
-        /// Gets the workflow search attribute dictionary if present.
+        /// Gets the search attributes on the workflow.
         /// </summary>
-        public IDictionary<string, Payload>? SearchAttributes =>
-            RawInfo.SearchAttributes?.IndexedFields;
+        /// <remarks>
+        /// This is lazily converted on first access.
+        /// </remarks>
+        public IDictionary<string, object>? SearchAttributes => searchAttributes.Value;
 
         /// <summary>
         /// Gets when the workflow was created.

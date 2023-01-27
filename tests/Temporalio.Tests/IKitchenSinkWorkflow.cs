@@ -14,6 +14,9 @@ public interface IKitchenSinkWorkflow
     [WorkflowSignal]
     Task SomeActionSignalAsync(KSAction action);
 
+    [WorkflowSignal]
+    Task SomeSignalAsync(string arg);
+
     [WorkflowQuery]
     string SomeQuery(string arg);
 }
@@ -67,13 +70,15 @@ public record KSErrorAction(
     [property: JsonPropertyName("attempt")] bool Attempt = false);
 
 public record KSContinueAsNewAction(
-    [property: JsonPropertyName("while_above_zero")] int? WhileAboveZero = null);
+    [property: JsonPropertyName("while_above_zero")] int? WhileAboveZero = null,
+    [property: JsonPropertyName("result")] object? Result = null);
 
 public record KSSleepAction(
     [property: JsonPropertyName("millis")] long Millis);
 
 public record KSQueryHandlerAction(
-    [property: JsonPropertyName("name")] string Name);
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("error")] string? Error = null);
 
 public record KSSignalAction(
     [property: JsonPropertyName("name")] string Name);
