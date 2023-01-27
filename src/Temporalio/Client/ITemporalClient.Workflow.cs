@@ -131,7 +131,7 @@ namespace Temporalio.Client
         /// <param name="query">Query to use for filtering.</param>
         /// <param name="options">Options for the list call.</param>
         /// <returns>Async enumerator for the workflows.</returns>
-        public IAsyncEnumerator<WorkflowExecution> ListWorkflows(
+        public IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
             string query, WorkflowListOptions? options = null);
 #endif
     }

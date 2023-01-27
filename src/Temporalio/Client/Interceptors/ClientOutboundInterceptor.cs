@@ -1,6 +1,10 @@
 using System;
 using System.Threading.Tasks;
 
+#if NETCOREAPP3_0_OR_GREATER
+using System.Collections.Generic;
+#endif
+
 namespace Temporalio.Client.Interceptors
 {
     /// <summary>
@@ -112,6 +116,17 @@ namespace Temporalio.Client.Interceptors
             return Next.FetchWorkflowHistoryEventPageAsync(input);
         }
 
-        // TODO(cretz): Lots more
+#if NETCOREAPP3_0_OR_GREATER
+        /// <summary>
+        /// Intercept listing workflows.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Async enumerator for the workflows.</returns>
+        public virtual IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
+            ListWorkflowsInput input)
+        {
+            return Next.ListWorkflowsAsync(input);
+        }
+#endif
     }
 }

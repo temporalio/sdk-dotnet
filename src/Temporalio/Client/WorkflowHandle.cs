@@ -6,6 +6,11 @@ using Temporalio.Api.History.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 
+#if NETCOREAPP3_0_OR_GREATER
+using System.Runtime.CompilerServices;
+using System.Threading;
+#endif
+
 namespace Temporalio.Client
 {
     /// <summary>
@@ -366,30 +371,79 @@ namespace Temporalio.Client
                 Options: options));
         }
 
-        /*
-        TODO(cretz):
-
-        #if NETCOREAPP3_0_OR_GREATER
-
+    #if NETCOREAPP3_0_OR_GREATER
+        /// <summary>
+        /// Fetcgh history for the workflow.
+        /// </summary>
+        /// <param name="options">Options for history fetching.</param>
+        /// <returns>Fetched history.</returns>
         public async Task<WorkflowHistory> FetchHistoryAsync(
-            HistoryEventFilterType eventFilterType = HistoryEventFilterType.AllEvent,
-            bool skipArchival = false,
-            RpcOptions? rpcOptions = null)
+            WorkflowHistoryEventFetchOptions? options = null)
         {
-            throw new NotImplementedException();
+            WorkflowHistoryEventFetchOptions? eventFetchOptions = null;
+            if (options != null)
+            {
+                eventFetchOptions = new()
+                {
+                    EventFilterType = options.EventFilterType,
+                    SkipArchival = options.SkipArchival,
+                    Rpc = options.Rpc,
+                };
+            }
+            var events = new List<HistoryEvent>();
+            await foreach (var evt in FetchHistoryEventsAsync(eventFetchOptions))
+            {
+                events.Add(evt);
+            }
+            return new(ID, events);
         }
 
-        public IAsyncEnumerator<HistoryEvent> FetchHistoryEvents(
-            bool waitNewEvent = false,
-            HistoryEventFilterType eventFilterType = HistoryEventFilterType.AllEvent,
-            bool skipArchival = false,
-            RpcOptions? rpcOptions = null)
+        /// <summary>
+        /// Asynchronously iterate over history events.
+        /// </summary>
+        /// <param name="options">History event fetch options.</param>
+        /// <returns>Async enumerable to iterate events for.</returns>
+        public IAsyncEnumerable<HistoryEvent> FetchHistoryEventsAsync(
+            WorkflowHistoryEventFetchOptions? options = null)
         {
-            throw new NotImplementedException();
+            return FetchHistoryEventsInternalAsync(options);
         }
 
-        #endif
-        */
+        private async IAsyncEnumerable<HistoryEvent> FetchHistoryEventsInternalAsync(
+            WorkflowHistoryEventFetchOptions? options = null,
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            // Need to combine cancellation token
+            var rpcOptsAndCancelSource = (options?.Rpc ?? TemporalClient.RetryRpcOptions).
+                WithAdditionalCancellationToken(cancellationToken);
+            try
+            {
+                byte[]? nextPageToken = null;
+                do
+                {
+                    var page = await Client.OutboundInterceptor.FetchWorkflowHistoryEventPageAsync(new(
+                        ID: ID,
+                        RunID: RunID,
+                        PageSize: 0,
+                        NextPageToken: nextPageToken,
+                        WaitNewEvent: options?.WaitNewEvent ?? false,
+                        EventFilterType: options?.EventFilterType ?? HistoryEventFilterType.AllEvent,
+                        SkipArchival: options?.SkipArchival ?? false,
+                        Rpc: rpcOptsAndCancelSource.Item1));
+                    foreach (var evt in page.Events)
+                    {
+                        yield return evt;
+                    }
+                    nextPageToken = page.NextPageToken;
+                }
+                while (nextPageToken != null);
+            }
+            finally
+            {
+                rpcOptsAndCancelSource.Item2?.Dispose();
+            }
+        }
+#endif
     }
 
     /// <summary>

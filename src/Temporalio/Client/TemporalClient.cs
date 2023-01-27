@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Temporalio.Client
@@ -42,7 +43,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets a fixed set of retry-only RPC options.
         /// </summary>
-        protected static RpcOptions RetryRpcOptions { get; } = new RpcOptions() { Retry = true };
+        protected internal static RpcOptions RetryRpcOptions { get; } = new RpcOptions() { Retry = true };
 
         /// <summary>
         /// Connect to a Temporal namespace.

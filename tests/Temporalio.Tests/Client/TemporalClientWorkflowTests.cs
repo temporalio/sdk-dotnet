@@ -223,6 +223,36 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(memoVals, actualMemoVals);
     }
 
+    [Fact]
+    public async Task ListWorkflowsAsync_RunWithHistoryFetch_IsAccurate()
+    {
+        // Run 5 workflows. Use the same workflow ID over and over to make sure we don't clash with
+        // other tests.
+        var workflowID = $"workflow-{Guid.NewGuid()}";
+        var expectedResults = new HashSet<string>();
+        for (var i = 0; i < 5; i++)
+        {
+            var result = $"Index {i}";
+            expectedResults.Add(result);
+            await Client.ExecuteWorkflowAsync(
+                IKitchenSinkWorkflow.Ref.RunAsync,
+                new KSWorkflowParams(new KSAction(Result: new(Value: result))),
+                new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        }
+
+        // Now do a list and collect the actual params
+        var actualResults = new HashSet<string>();
+        await foreach (var wf in Client.ListWorkflowsAsync($"WorkflowId = '{workflowID}'"))
+        {
+            var hist = await Client.GetWorkflowHandle(wf.ID, runID: wf.RunID).FetchHistoryAsync();
+            var completeEvent = hist.Events.Single(evt => evt.WorkflowExecutionCompletedEventAttributes != null);
+            var result = await Client.Options.DataConverter.ToSingleValueAsync<string>(
+                completeEvent.WorkflowExecutionCompletedEventAttributes.Result.Payloads_);
+            actualResults.Add(result);
+        }
+        Assert.Equal(expectedResults, actualResults);
+    }
+
     internal record TracingEvent(string Name, object Input);
 
     internal class TracingClientInterceptor : IClientInterceptor
@@ -277,7 +307,4 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
             return base.TerminateWorkflowAsync(input);
         }
     }
-
-    // TODO(cretz): tests/features:
-    // * List
 }

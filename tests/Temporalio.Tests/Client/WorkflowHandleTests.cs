@@ -220,7 +220,4 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
         Assert.Equal("Some reason", inner.Message);
         Assert.Equal("Some details", inner.Details?.ElementAt<string>(0));
     }
-
-    // TODO(cretz): tests/features:
-    // * Fetch history
 }

@@ -11,6 +11,11 @@ using Temporalio.Client.Interceptors;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 
+#if NETCOREAPP3_0_OR_GREATER
+using System.Runtime.CompilerServices;
+using System.Threading;
+#endif
+
 namespace Temporalio.Client
 {
     public partial class TemporalClient
@@ -90,14 +95,12 @@ namespace Temporalio.Client
         }
 
 #if NETCOREAPP3_0_OR_GREATER
-
         /// <inheritdoc />
-        public IAsyncEnumerator<WorkflowExecution> ListWorkflows(
+        public IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
             string query, WorkflowListOptions? options = null)
         {
-            throw new NotImplementedException();
+            return OutboundInterceptor.ListWorkflowsAsync(new(Query: query, Options: options));
         }
-
 #endif
 
         internal partial class Impl
@@ -322,6 +325,48 @@ namespace Temporalio.Client
                     req.NextPageToken = resp.NextPageToken;
                 }
             }
+
+#if NETCOREAPP3_0_OR_GREATER
+            /// <inheritdoc />
+            public override IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
+                ListWorkflowsInput input)
+            {
+                return ListWorkflowsInternalAsync(input);
+            }
+
+            private async IAsyncEnumerable<WorkflowExecution> ListWorkflowsInternalAsync(
+                ListWorkflowsInput input,
+                [EnumeratorCancellation] CancellationToken cancellationToken = default)
+            {
+                // Need to combine cancellation token
+                var rpcOptsAndCancelSource = DefaultRetryOptions(input.Options?.Rpc).
+                    WithAdditionalCancellationToken(cancellationToken);
+                try
+                {
+                    var req = new ListWorkflowExecutionsRequest()
+                    {
+                        // TODO(cretz): Allow setting of page size or next page token?
+                        Namespace = Client.Options.Namespace,
+                        Query = input.Query,
+                    };
+                    do
+                    {
+                        var resp = await Client.Connection.WorkflowService.ListWorkflowExecutionsAsync(
+                            req, rpcOptsAndCancelSource.Item1);
+                        foreach (var exec in resp.Executions)
+                        {
+                            yield return new(exec);
+                        }
+                        req.NextPageToken = resp.NextPageToken;
+                    }
+                    while (!req.NextPageToken.IsEmpty);
+                }
+                finally
+                {
+                    rpcOptsAndCancelSource.Item2?.Dispose();
+                }
+            }
+#endif
 
             private async Task<WorkflowHandle<TResult>> StartWorkflowInternalAsync<TResult>(
                 StartWorkflowInput input)
