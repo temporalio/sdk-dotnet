@@ -7,6 +7,9 @@
 # Warn on unused imports
 dotnet_diagnostic.IDE0005.severity = warning
 
+# Cannot use range operator on older versions
+dotnet_diagnostic.IDE0057.severity = none
+
 # Do not require "this." prefix, devs are smart enough to know when to qualify
 dotnet_diagnostic.SA1101.severity = none
 
@@ -18,6 +21,9 @@ dotnet_diagnostic.SA1513.severity = none
 
 # Don't require a blank line before single line comments
 dotnet_diagnostic.SA1515.severity = none
+
+# Do not require partial class documentation
+dotnet_diagnostic.SA1601.severity = none
 
 # Do not require file header
 dotnet_diagnostic.SA1633.severity = none
@@ -94,11 +100,11 @@ csharp_prefer_braces = true:suggestion
 #Style - expression bodied member options
 
 #prefer block bodies for accessors
-csharp_style_expression_bodied_accessors = false:suggestion
+csharp_style_expression_bodied_accessors = false
 #prefer block bodies for constructors
-csharp_style_expression_bodied_constructors = false:suggestion
+csharp_style_expression_bodied_constructors = false
 #prefer block bodies for methods
-csharp_style_expression_bodied_methods = false:suggestion
+csharp_style_expression_bodied_methods = false
 #prefer expression-bodied members for properties
 csharp_style_expression_bodied_properties = true:suggestion
 
@@ -134,11 +140,6 @@ csharp_style_pattern_local_over_anonymous_function = true:suggestion
 
 #prefer accessibility modifiers to be declared except for public interface members. This will currently not differ from always and will act as future proofing for if C# adds default interface methods.
 dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
-
-#Style - Modifier preferences
-
-#when this rule is set to a list of modifiers, prefer the specified ordering.
-csharp_preferred_modifier_order = public,private,internal,protected,static,readonly,async,override,abstract,virtual,sealed:suggestion
 
 #Style - Pattern matching
 

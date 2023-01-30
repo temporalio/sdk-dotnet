@@ -23,7 +23,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             new()
             {
                 TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Namespace,
+                Namespace = Client.Options.Namespace,
                 Runtime = new(
                     new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } }),
             });
@@ -33,7 +33,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             new()
             {
                 TargetHost = Client.Connection.Options.TargetHost,
-                Namespace = Client.Namespace,
+                Namespace = Client.Options.Namespace,
                 Runtime = new(
                     new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } }),
             });

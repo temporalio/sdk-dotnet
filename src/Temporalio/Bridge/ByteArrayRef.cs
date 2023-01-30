@@ -103,9 +103,9 @@ namespace Temporalio.Bridge
         /// <returns>Converted byte array.</returns>
         public static ByteArrayRef FromMetadata(IEnumerable<KeyValuePair<string, string>> metadata)
         {
-            var stream = new MemoryStream();
-            using (var writer = new StreamWriter(stream, StrictUTF8))
+            using (var stream = new MemoryStream())
             {
+                var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true };
                 foreach (var pair in metadata)
                 {
                     // If either have a newline, we error since it would make an invalid set
@@ -124,14 +124,14 @@ namespace Temporalio.Bridge
                     writer.Write('\n');
                     writer.Write(pair.Value);
                 }
-            }
 
-            if (stream.Length == 0)
-            {
-                return Empty;
-            }
+                if (stream.Length == 0)
+                {
+                    return Empty;
+                }
 
-            return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
+                return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
+            }
         }
 
         /// <summary>
@@ -142,9 +142,9 @@ namespace Temporalio.Bridge
         /// <returns>Converted byte array.</returns>
         public static ByteArrayRef FromNewlineDelimited(IEnumerable<string> values)
         {
-            var stream = new MemoryStream();
-            using (var writer = new StreamWriter(stream, StrictUTF8))
+            using (var stream = new MemoryStream())
             {
+                var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true };
                 foreach (var value in values)
                 {
                     // If has a newline, we error since it would make an invalid set
@@ -161,14 +161,14 @@ namespace Temporalio.Bridge
 
                     writer.Write(value);
                 }
-            }
 
-            if (stream.Length == 0)
-            {
-                return Empty;
-            }
+                if (stream.Length == 0)
+                {
+                    return Empty;
+                }
 
-            return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
+                return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
+            }
         }
     }
 }

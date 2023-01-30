@@ -89,9 +89,12 @@ typedef struct RpcCallOptions {
 } RpcCallOptions;
 
 /**
- * If success or fail are not null, they must be manually freed when done.
+ * If success or failure byte arrays inside fail are not null, they must be
+ * manually freed when done. Either success or failure_message are always
+ * present. Status code may still be 0 with a failure message. Failure details
+ * represent a protobuf gRPC status message.
  */
-typedef void (*ClientRpcCallCallback)(void *user_data, const struct ByteArray *success, const struct ByteArray *fail);
+typedef void (*ClientRpcCallCallback)(void *user_data, const struct ByteArray *success, uint32_t status_code, const struct ByteArray *failure_message, const struct ByteArray *failure_details);
 
 /**
  * If fail is not null, it must be manually freed when done. Runtime is always

@@ -43,7 +43,34 @@ namespace Temporalio.Client
         /// <remarks>Does not create copies of metadata or cancellation token.</remarks>
         public virtual object Clone()
         {
-            return this.MemberwiseClone();
+            return MemberwiseClone();
+        }
+
+        /// <summary>
+        /// Return a potentially new RPC options with this cancellation token added if present.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token to add if can be cancelled.</param>
+        /// <returns>
+        /// New options or current options, and maybe a new source that has to be disposed.
+        /// </returns>
+        protected internal Tuple<RpcOptions, CancellationTokenSource?> WithAdditionalCancellationToken(
+            CancellationToken? cancellationToken)
+        {
+            if (!cancellationToken.HasValue || !cancellationToken.Value.CanBeCanceled)
+            {
+                return new(this, null);
+            }
+            var newOptions = (RpcOptions)Clone();
+            if (!CancellationToken.HasValue)
+            {
+                newOptions.CancellationToken = cancellationToken.Value;
+                return new(newOptions, null);
+            }
+            // Link the two together
+            var linked = CancellationTokenSource.CreateLinkedTokenSource(
+                CancellationToken.Value, cancellationToken.Value);
+            newOptions.CancellationToken = linked.Token;
+            return new(newOptions, linked);
         }
     }
 }

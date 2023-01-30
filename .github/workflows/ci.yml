@@ -34,6 +34,12 @@ jobs:
         with:
           toolchain: stable
 
+      # Needed for tests currently
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: stable
+
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
         with:
@@ -76,7 +82,7 @@ jobs:
         run: dotnet format --verify-no-changes
 
       - name: Test
-        run: dotnet test --logger "console;verbosity=detailed" --blame-crash
+        run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n
 
       - name: Upload test failure
         if: ${{ failure() }}

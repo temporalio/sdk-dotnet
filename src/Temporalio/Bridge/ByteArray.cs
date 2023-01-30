@@ -56,6 +56,20 @@ namespace Temporalio.Bridge
             }
         }
 
+        /// <summary>
+        /// Copy the byte array to a new byte array.
+        /// </summary>
+        /// <returns>The new byte array.</returns>
+        public byte[] ToByteArray()
+        {
+            unsafe
+            {
+                var bytes = new byte[(int)byteArray->size];
+                Marshal.Copy((IntPtr)byteArray->data, bytes, 0, (int)byteArray->size);
+                return bytes;
+            }
+        }
+
         /// <inheritdoc/>
         protected override unsafe bool ReleaseHandle()
         {

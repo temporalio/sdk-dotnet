@@ -40,6 +40,11 @@ foreach (
             testSrvProtoDir);
     }
 }
+Protoc(
+    Path.Join(projectDir, "src/Temporalio.Api.Generator/grpc_status.proto"),
+    Path.Join(projectDir, "src/Temporalio"),
+    "Temporalio",
+    Path.Join(projectDir, "src/Temporalio.Api.Generator"));
 
 // Gen RPC services
 File.WriteAllText(

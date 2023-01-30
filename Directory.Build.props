@@ -6,8 +6,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
-  <!-- Run StyleCop only on latest .NET version -->
+  <!-- Run Analyzers only on latest .NET version -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net462' And '$(TargetFramework)' != 'netstandard2.0'">
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all" />
   </ItemGroup>
 </Project>

@@ -75,16 +75,16 @@ namespace Temporalio.Bridge
         /// <param name="timeout">Timeout for the call.</param>
         /// <param name="cancellationToken">Cancellation token for the call.</param>
         /// <returns>Response proto.</returns>
-        public async Task<T> Call<T>(
+        public async Task<T> CallAsync<T>(
             Interop.RpcService service,
             string rpc,
-            Google.Protobuf.IMessage req,
-            Google.Protobuf.MessageParser<T> resp,
+            IMessage req,
+            MessageParser<T> resp,
             bool retry,
             IEnumerable<KeyValuePair<string, string>>? metadata,
             TimeSpan? timeout,
             System.Threading.CancellationToken? cancellationToken)
-            where T : Google.Protobuf.IMessage<T>
+            where T : IMessage<T>
         {
             using (var scope = new Scope())
             {
@@ -106,13 +106,36 @@ namespace Temporalio.Bridge
                             }),
                         null,
                         scope.FunctionPointer<Interop.ClientRpcCallCallback>(
-                            (userData, success, fail) =>
+                            (userData, success, statusCode, failureMessage, failureDetails) =>
                             {
-                                if (fail != null)
+                                if (failureMessage != null && statusCode > 0)
                                 {
-                                    completion.TrySetException(
-                                        new InvalidOperationException(
-                                            new ByteArray(runtime, fail).ToUTF8()));
+                                    byte[]? rawStatus = null;
+                                    if (failureDetails != null)
+                                    {
+                                        rawStatus = new ByteArray(runtime, failureDetails).ToByteArray();
+                                    }
+                                    completion.TrySetException(new Exceptions.RpcException(
+                                        (Exceptions.RpcException.StatusCode)statusCode,
+                                        new ByteArray(runtime, failureMessage).ToUTF8(),
+                                        rawStatus));
+                                }
+                                else if (failureMessage != null)
+                                {
+                                    var failureString = new ByteArray(runtime, failureMessage).ToUTF8();
+                                    // If the cancellation token caused cancel, throw that instead
+                                    if (cancellationToken.HasValue &&
+                                        cancellationToken.Value.IsCancellationRequested &&
+                                        failureString == "Cancelled")
+                                    {
+                                        completion.TrySetException(
+                                            new OperationCanceledException(cancellationToken.Value));
+                                    }
+                                    else
+                                    {
+                                        completion.TrySetException(
+                                            new InvalidOperationException(failureString));
+                                    }
                                 }
                                 else
                                 {

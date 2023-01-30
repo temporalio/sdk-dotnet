@@ -4,7 +4,7 @@ namespace Temporalio.Client
     /// Interface to a client to Temporal.
     /// </summary>
     /// <seealso cref="TemporalClient" />
-    public interface ITemporalClient : Worker.IWorkerClient
+    public partial interface ITemporalClient : Worker.IWorkerClient
     {
         /// <summary>
         /// Gets the connection associated with this client.
@@ -12,8 +12,8 @@ namespace Temporalio.Client
         ITemporalConnection Connection { get; }
 
         /// <summary>
-        /// Gets the options used to create this client.
+        /// Gets the outbound interceptor in use.
         /// </summary>
-        TemporalClientOptions Options { get; }
+        Interceptors.ClientOutboundInterceptor OutboundInterceptor { get; }
     }
 }

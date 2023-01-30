@@ -6,7 +6,7 @@ namespace Temporalio.Client
 {
     /// <summary>
     /// Options for <see cref="TemporalConnection.ConnectAsync" />.
-    /// <see cref="TemporalConnectionOptions.TargetHost" /> is required.
+    /// <see cref="TargetHost" /> is required.
     /// </summary>
     public class TemporalConnectionOptions : ICloneable
     {
@@ -27,7 +27,7 @@ namespace Temporalio.Client
         public TemporalConnectionOptions(string targetHost)
             : this()
         {
-            this.TargetHost = targetHost;
+            TargetHost = targetHost;
         }
 
         /// <summary>
@@ -65,7 +65,8 @@ namespace Temporalio.Client
         /// Gets or sets the identity for this connection.
         /// </summary>
         /// <remarks>
-        /// By default this is <c>pid@hostname</c>.
+        /// By default this is <c>pid@hostname</c>. This default may be set when the options object
+        /// is first used.
         /// </remarks>
         public string? Identity { get; set; }
 

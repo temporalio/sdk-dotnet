@@ -6,14 +6,9 @@ namespace Temporalio.Worker
     public interface IWorkerClient
     {
         /// <summary>
-        /// Gets the namespace for this client.
+        /// Gets the options used to create this client.
         /// </summary>
-        public string Namespace { get; }
-
-        /// <summary>
-        /// Gets the data converter for this client.
-        /// </summary>
-        public Converters.DataConverter DataConverter { get; }
+        Client.TemporalClientOptions Options { get; }
 
         /// <summary>
         /// Gets the bridge client provider for this client.

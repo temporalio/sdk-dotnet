@@ -4,5 +4,6 @@ bin/
 obj/
 /src/Temporalio/Bridge/target
 /tests/Temporalio.Tests/TestResults
+/tests/golangworker/golangworker
 /.vs
 /.vscode
