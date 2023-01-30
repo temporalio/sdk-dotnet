@@ -113,3 +113,4 @@ TODO:
     * Shallow-copyable via virtual clone
     * Empty constructor and constructor with required params
     * TODO(cretz): Validation? Probably don't want attributes?
+* Source generator for workflows

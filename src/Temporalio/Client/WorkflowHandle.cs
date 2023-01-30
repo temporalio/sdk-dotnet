@@ -371,7 +371,7 @@ namespace Temporalio.Client
                 Options: options));
         }
 
-    #if NETCOREAPP3_0_OR_GREATER
+#if NETCOREAPP3_0_OR_GREATER
         /// <summary>
         /// Fetcgh history for the workflow.
         /// </summary>

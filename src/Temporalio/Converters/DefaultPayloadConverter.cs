@@ -156,11 +156,23 @@ namespace Temporalio.Converters
                 // 8601 with roundtrip. We intentionally don't convert to universal or anything here
                 // because the user can send with a date time kind of UTC or Local if they want.
                 value = dateTimeValue.ToString("o");
+                // TODO(cretz): Due to https://github.com/temporalio/temporal/issues/3864 we have to
+                // trim +0 timezone here.
+                if (((string)value).EndsWith("+00:00"))
+                {
+                    value = ((string)value).Substring(0, ((string)value).Length - 6) + "Z";
+                }
             }
             else if (value is DateTimeOffset dateTimeOffsetValue)
             {
                 // 8601 with timezone
                 value = dateTimeOffsetValue.ToString("o");
+                // TODO(cretz): Due to https://github.com/temporalio/temporal/issues/3864 we have to
+                // trim +0 timezone here.
+                if (((string)value).EndsWith("+00:00"))
+                {
+                    value = ((string)value).Substring(0, ((string)value).Length - 6) + "Z";
+                }
             }
             else if (value is not IEnumerable<string> &&
                 value is not string &&
