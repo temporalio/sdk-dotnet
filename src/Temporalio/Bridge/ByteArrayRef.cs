@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Google.Protobuf;
 
 namespace Temporalio.Bridge
 {
     /// <summary>
-    /// Representation of a byte array owned by .NET.
+    /// Representation of a byte array owned by .NET. Users should usually use a
+    /// <see cref="Scope" /> instead of creating this directly.
     /// </summary>
     internal class ByteArrayRef
     {
@@ -83,16 +83,6 @@ namespace Temporalio.Bridge
             }
 
             return new ByteArrayRef(StrictUTF8.GetBytes(s));
-        }
-
-        /// <summary>
-        /// Convert a proto to a byte array.
-        /// </summary>
-        /// <param name="p">Proto to convert.</param>
-        /// <returns>Converted byte array.</returns>
-        public static ByteArrayRef FromProto(IMessage p)
-        {
-            return new ByteArrayRef(p.ToByteArray());
         }
 
         /// <summary>

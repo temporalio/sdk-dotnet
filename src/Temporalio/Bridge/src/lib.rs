@@ -11,6 +11,7 @@
 pub mod client;
 pub mod runtime;
 pub mod testing;
+pub mod worker;
 
 use std::collections::HashMap;
 

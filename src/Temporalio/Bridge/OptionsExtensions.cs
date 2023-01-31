@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace Temporalio.Bridge
 {
@@ -310,7 +311,7 @@ namespace Temporalio.Bridge
                 throw new InvalidOperationException(
                     "TargetHost can only specify empty, localhost, or 127.0.0.1 host");
             }
-            return new Interop.TestServerOptions()
+            return new()
             {
                 existing_path = scope.ByteArray(options.TestServer.ExistingPath),
                 sdk_name = SdkName.Ref,
@@ -319,6 +320,53 @@ namespace Temporalio.Bridge
                 download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                 port = (ushort)(port ?? 0),
                 extra_args = scope.NewlineDelimited(options.TestServer.ExtraArgs),
+            };
+        }
+
+        /// <summary>
+        /// Convert worker options.
+        /// </summary>
+        /// <param name="options">Options to convert.</param>
+        /// <param name="scope">Scope to use.</param>
+        /// <param name="namespace_">Namespace for the worker.</param>
+        /// <returns>Converted options.</returns>
+        public static Interop.WorkerOptions ToInteropOptions(
+            this Temporalio.Worker.TemporalWorkerOptions options,
+            Scope scope,
+            string namespace_)
+        {
+            if (options.TaskQueue == null)
+            {
+                throw new ArgumentException("Task queue must be provided in worker options");
+            }
+            var buildID = options.BuildID;
+            if (buildID == null)
+            {
+                var entryAssembly = Assembly.GetEntryAssembly() ??
+                    throw new ArgumentException("Unable to get assembly manifest ID for build ID");
+                buildID = entryAssembly.ManifestModule.ModuleVersionId.ToString();
+            }
+            return new()
+            {
+                namespace_ = scope.ByteArray(namespace_),
+                task_queue = scope.ByteArray(options.TaskQueue),
+                build_id = scope.ByteArray(buildID),
+                identity_override = scope.ByteArray(options.Identity),
+                max_cached_workflows = 1000,
+                max_outstanding_workflow_tasks = 100,
+                max_outstanding_activities = (uint)options.MaxConcurrentActivities,
+                max_outstanding_local_activities = 100,
+                max_concurrent_workflow_task_polls = 5,
+                nonsticky_to_sticky_poll_ratio = 0.2F,
+                max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
+                no_remote_activities = 0,
+                sticky_queue_schedule_to_start_timeout_millis = 10000,
+                max_heartbeat_throttle_interval_millis =
+                    (ulong)options.MaxHeartbeatThrottleInterval.TotalMilliseconds,
+                default_heartbeat_throttle_interval_millis =
+                    (ulong)options.DefaultHeartbeatThrottleInterval.TotalMilliseconds,
+                max_activities_per_second = options.MaxActivitiesPerSecond ?? 0,
+                max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
             };
         }
     }

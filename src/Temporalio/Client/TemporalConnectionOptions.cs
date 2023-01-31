@@ -23,9 +23,8 @@ namespace Temporalio.Client
         /// Create default options with a target host.
         /// </summary>
         /// <param name="targetHost">Target host to connect to.</param>
-        /// <seealso cref="TemporalConnectionOptions.TargetHost" />
+        /// <seealso cref="TargetHost" />
         public TemporalConnectionOptions(string targetHost)
-            : this()
         {
             TargetHost = targetHost;
         }

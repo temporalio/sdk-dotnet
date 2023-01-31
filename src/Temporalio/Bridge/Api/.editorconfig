@@ -1,0 +1,14 @@
+[*.cs]
+
+##### Temporal additions ######
+
+# Please keep in alphabetical order by field.
+
+# Generated docs are not formed properly because they have slashes left over
+# from Rust, see https://github.com/temporalio/sdk-core/issues/480
+dotnet_diagnostic.CS1570.severity = none
+dotnet_diagnostic.CS1587.severity = none
+
+generated_code = true
+
+###############################
