@@ -6,7 +6,7 @@
 [Temporal](https://temporal.io/) is a distributed, scalable, durable, and highly available orchestration engine used to
 execute asynchronous, long-running business logic in a scalable and resilient way.
 
-"Temporal .NET SDK" is the framework for authoring workflows and activities using the .NET programming languages.
+"Temporal .NET SDK" is the framework for authoring workflows and activities using .NET programming languages.
 
 Also see:
 
@@ -43,7 +43,7 @@ CLI:
 ### Workflow Definitions
 
 The current SDK does not yet support workflows written in .NET, but workflows from other languages can still be defined
-in .NET to be properly typed. Here is an example
+in .NET to be properly typed.
 
 ### Client
 
