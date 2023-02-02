@@ -77,11 +77,16 @@ namespace Temporalio.Worker
         /// <summary>
         /// Run this worker until failure or cancelled.
         /// </summary>
-        /// <param name="stoppingToken">
-        /// Cancellation token to stop the worker. The worker will cancel and wait for completion
-        /// for all executing activities. If an activity does not properly respond to cancellation,
-        /// this may never return.
-        /// </param>
+        /// <remarks>
+        /// This intentionally matches
+        /// <c>Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync</c>.
+        /// <para>
+        /// When shutting down, the worker will cancel and wait for completion for all executing
+        /// activities. If an activity does not properly respond to cancellation, this may never
+        /// return.
+        /// </para>
+        /// </remarks>
+        /// <param name="stoppingToken">Cancellation token to stop the worker.</param>
         /// <returns>
         /// Task that will never succeed, only fail. When the task is complete, the worker has
         /// completed shutdown.
@@ -89,18 +94,85 @@ namespace Temporalio.Worker
         /// <exception cref="InvalidOperationException">Already started.</exception>
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         /// <exception cref="Exception">Fatal worker failure.</exception>
-        public async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            return ExecuteInternalAsync(null, stoppingToken);
+        }
+
+        /// <summary>
+        /// Run this worker until failure, cancelled, or task from given function completes.
+        /// </summary>
+        /// <remarks>
+        /// When shutting down, the worker will cancel and wait for completion for all executing
+        /// activities. If an activity does not properly respond to cancellation, this may never
+        /// return.
+        /// </remarks>
+        /// <param name="untilComplete">
+        /// If the task returned from this function completes, the worker will shutdown
+        /// (propagating) exception as necessary.
+        /// </param>
+        /// <param name="stoppingToken">Cancellation token to stop the worker.</param>
+        /// <returns>
+        /// When the task is complete, the worker has completed shutdown.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already started.</exception>
+        /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
+        /// <exception cref="Exception">Fatal worker failure.</exception>
+        public Task ExecuteAsync(
+            Func<Task> untilComplete, CancellationToken stoppingToken = default)
+        {
+            return ExecuteInternalAsync(untilComplete, stoppingToken);
+        }
+
+        /// <summary>
+        /// Run this worker until failure, cancelled, or task from given function completes.
+        /// </summary>
+        /// <remarks>
+        /// When shutting down, the worker will cancel and wait for completion for all executing
+        /// activities. If an activity does not properly respond to cancellation, this may never
+        /// return.
+        /// </remarks>
+        /// <typeparam name="TResult">Result of given function's task.</typeparam>
+        /// <param name="untilComplete">
+        /// If the task returned from this function completes, the worker will shutdown
+        /// (propagating) exception as necessary.
+        /// </param>
+        /// <param name="stoppingToken">Cancellation token to stop the worker.</param>
+        /// <returns>
+        /// When the task is complete, the worker has completed shutdown.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">Already started.</exception>
+        /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
+        /// <exception cref="Exception">Fatal worker failure.</exception>
+        public async Task<TResult> ExecuteAsync<TResult>(
+            Func<Task<TResult>> untilComplete, CancellationToken stoppingToken = default)
+        {
+            TResult? ret = default;
+            await ExecuteInternalAsync(
+                async () => ret = await untilComplete.Invoke(), stoppingToken);
+            return ret!;
+        }
+
+        private async Task ExecuteInternalAsync(
+            Func<Task>? untilComplete, CancellationToken stoppingToken)
         {
             if (Interlocked.Exchange(ref started, 1) != 0)
             {
                 throw new InvalidOperationException("Already started");
             }
 
-            var tasks = new List<Task>(4)
+            var tasks = new List<Task>()
             {
                 // Create a task that will complete on cancellation
                 Task.Delay(Timeout.Infinite, stoppingToken),
             };
+
+            // If there is a user-provided task, add it
+            var userTask = untilComplete?.Invoke();
+            if (userTask != null)
+            {
+                tasks.Add(userTask);
+            }
 
             // Start workers. We intentionally don't pass cancellation tokens to the individual
             // workers because they are expected to react to polling shutdown and, in the activity
@@ -111,8 +183,7 @@ namespace Temporalio.Worker
             }
             // TODO(cretz): Workflows
 
-            // Wait until any of the tasks complete including cancellation (they can only complete
-            // with an exception at this point)
+            // Wait until any of the tasks complete including cancellation
             var task = await Task.WhenAny(tasks);
             var logger = Client.Options.LoggerFactory.CreateLogger<TemporalWorker>();
             using (logger.BeginScope(new Dictionary<string, object>
@@ -120,9 +191,13 @@ namespace Temporalio.Worker
                 ["TaskQueue"] = Options.TaskQueue!,
             }))
             {
-                if (stoppingToken.IsCancellationRequested)
+                if (task == tasks[0])
                 {
                     logger.LogInformation("Worker cancelled, shutting down");
+                }
+                else if (task == userTask)
+                {
+                    logger.LogInformation("User task completed, shutting down");
                 }
                 else if (task.Exception != null)
                 {
@@ -130,17 +205,27 @@ namespace Temporalio.Worker
                 }
             }
 
-            // Shutdown the worker
-            await BridgeWorker.ShutdownAsync();
-
             // Now wait for all of the tasks to complete. This will collect exceptions from them all
-            // and throw them as aggregate. If the token is not already cancelled, we want to
-            // remove it from the tasks to be waited on here. If there is an activity worker, we
-            // want to add a graceful shutdown task for it.
+            // and throw them as aggregate.
+
+            // If the token is not already cancelled, we want to remove that from the tasks to be
+            // waited on
             if (!tasks[0].IsCompleted)
             {
                 tasks.RemoveAt(0);
             }
+
+            // If the user task is not already completed, we want to remove that from the tasks to
+            // be waited on
+            if (userTask != null && !userTask.IsCompleted)
+            {
+                tasks.Remove(userTask);
+            }
+
+            // Start the shutdown of the worker
+            tasks.Add(Task.Run(BridgeWorker.ShutdownAsync));
+
+            // If there is an activity worker, we want to add a graceful shutdown task for it
             if (activityWorker != null)
             {
                 tasks.Add(activityWorker.GracefulShutdownAsync());

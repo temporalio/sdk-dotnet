@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -56,6 +57,7 @@ namespace Temporalio.Worker
                 while (true)
                 {
                     var task = await worker.BridgeWorker.PollActivityTaskAsync();
+                    logger.LogTrace("Received activity task: {Task}", task);
                     switch (task?.VariantCase)
                     {
                         case Bridge.Api.ActivityTask.ActivityTask.VariantOneofCase.Start:
@@ -110,7 +112,8 @@ namespace Temporalio.Worker
                 await Task.WhenAll(runningActivities.Values.Select(act =>
                 {
                     act.Cancel(ActivityCancelReason.WorkerShutdown);
-                    return act.Task;
+                    // We know task is set here
+                    return act.Task!;
                 }));
             }
         }
@@ -159,15 +162,14 @@ namespace Temporalio.Worker
             // Start task
             using (context.Logger.BeginScope(info.LoggerScope))
             {
+                // We know that the task for the running activity is accessed only on graceful
+                // shutdown which could never run until after this (and the primary execute) are
+                // done. So we don't have to worry about the dictionary having an activity without
+                // a task even though we're late-binding it here.
                 var act = new RunningActivity(context, cancelTokenSource);
+                runningActivities[tsk.TaskToken] = act;
                 act.Task = worker.Options.ActivityTaskFactory.StartNew(
                     () => ExecuteActivityAsync(act, tsk)).Unwrap();
-
-                // Put on dictionary then update task to remove itself when done
-                runningActivities[tsk.TaskToken] = act;
-                act.Task = act.Task.ContinueWith(
-                    task => { runningActivities.TryRemove(tsk.TaskToken, out _); },
-                    worker.Options.ActivityTaskFactory.Scheduler ?? TaskScheduler.Current);
             }
         }
 
@@ -204,6 +206,7 @@ namespace Temporalio.Worker
                 await act.FinishHeartbeatsAsync();
 
                 // Complete the task
+                act.Context.Logger.LogTrace("Sending activity completion: {Completion}", completion);
                 await worker.BridgeWorker.CompleteActivityTaskAsync(completion);
             }
             catch (Exception e)
@@ -212,6 +215,11 @@ namespace Temporalio.Worker
                     e,
                     "Failed completing activity task with completion {Completion}",
                     completion);
+            }
+            finally
+            {
+                // Remove from running activities
+                runningActivities.TryRemove(tsk.TaskToken, out _);
             }
         }
 
@@ -252,7 +260,7 @@ namespace Temporalio.Worker
                     !paramInfos[tsk.Start.Input.Count].HasDefaultValue)
                 {
                     throw new ApplicationFailureException(
-                        $"Activity {act.Context.Info.ActivityType} given {tsk.Start.Input.Count} parameters," +
+                        $"Activity {act.Context.Info.ActivityType} given {tsk.Start.Input.Count} parameter(s)," +
                         " but more than that are required by the signature");
                 }
                 // Zip the params and input and then decode each. It is intentional that we discard
@@ -263,7 +271,7 @@ namespace Temporalio.Worker
                     foreach (var (input, paramInfo) in tsk.Start.Input.Zip(paramInfos, (a, b) => (a, b)))
                     {
                         var paramVal = await worker.Client.Options.DataConverter.ToValueAsync(
-                            input, paramInfo.GetType());
+                            input, paramInfo.ParameterType);
                         paramVals.Add(paramVal);
                     }
                 }
@@ -271,6 +279,11 @@ namespace Temporalio.Worker
                 {
                     throw new ApplicationFailureException(
                         "Failed decoding parameters", e);
+                }
+                // Append default parameters if needed
+                for (var i = tsk.Start.Input.Count; i < paramInfos.Length; i++)
+                {
+                    paramVals.Add(paramInfos[i].DefaultValue);
                 }
 
                 // Build the interceptor impls, chaining each interceptor in reverse
@@ -351,9 +364,8 @@ namespace Temporalio.Worker
             private readonly CancellationTokenSource cancelTokenSource;
 
             // All of these fields are locked on "this". While volatile could be used for the first
-            // three since we don't have strict low-latency ordering guarantees, the lock does not
+            // two since we don't have strict low-latency ordering guarantees, the lock does not
             // impose an unreasonable penalty.
-            private Task task = Task.CompletedTask;
             private bool serverRequestedCancel;
             private Exception? heartbeatFailureException;
             private object?[]? pendingHeartbeat;
@@ -381,26 +393,10 @@ namespace Temporalio.Worker
             /// <summary>
             /// Gets or sets the task for this activity.
             /// </summary>
-            public Task Task
-            {
-                get
-                {
-                    lock (this)
-                    {
-#pragma warning disable VSTHRD003 // We can return task here
-                        return task;
-#pragma warning restore VSTHRD003
-                    }
-                }
-
-                set
-                {
-                    lock (this)
-                    {
-                        task = value;
-                    }
-                }
-            }
+            /// <remarks>
+            /// This is late-bound because of how it's used. This is not thread safe.
+            /// </remarks>
+            public Task? Task { get; set; }
 
             /// <summary>
             /// Gets a value indicating whether the server has requested cancellation.
@@ -439,6 +435,8 @@ namespace Temporalio.Worker
                 {
                     done = true;
                 }
+                // We also will cancel the token just in case someone is using it asynchronously
+                cancelTokenSource.Cancel();
             }
 
             /// <summary>
@@ -585,7 +583,7 @@ namespace Temporalio.Worker
                         else
                         {
                             Context.Logger.LogWarning(
-                                e, "Cancelling activity because failed recoding heartbeat");
+                                e, "Cancelling activity because failed recording heartbeat");
                         }
                         Cancel(ActivityCancelReason.HeartbeatRecordFailure);
                     }
@@ -609,7 +607,16 @@ namespace Temporalio.Worker
             /// <inheritdoc />
             public override async Task<object?> ExecuteActivityAsync(ExecuteActivityInput input)
             {
-                var result = input.Delegate.DynamicInvoke(input.Parameters);
+                // Have to unwrap and re-throw target invocation exception if present
+                object? result;
+                try
+                {
+                    result = input.Delegate.DynamicInvoke(input.Parameters);
+                }
+                catch (TargetInvocationException e)
+                {
+                    throw e.InnerException!;
+                }
                 // If the result is a task, we need to await on it and use that result
                 if (result is Task resultTask)
                 {

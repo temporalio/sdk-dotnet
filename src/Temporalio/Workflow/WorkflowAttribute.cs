@@ -96,7 +96,9 @@ namespace Temporalio.Workflow
 
             private static Definition CreateFromType(Type type)
             {
-                const BindingFlags bindingFlagsAny = (BindingFlags)(-1);
+                const BindingFlags bindingFlagsAny =
+                    BindingFlags.Instance | BindingFlags.Static |
+                    BindingFlags.Public | BindingFlags.NonPublic;
                 // Unwrap the type
                 type = Refs.GetUnproxiedType(type);
 
@@ -123,11 +125,11 @@ namespace Temporalio.Workflow
                     {
                         if (initConstructor != null)
                         {
-                            errs.Add($"WorkflowInit on {constructor} and {initConstructor}");
+                            errs.Add($"WorkflowInit on multiple: {constructor} and {initConstructor}");
                         }
                         else if (!constructor.IsPublic)
                         {
-                            errs.Add($"WorkflowInit on {constructor} is not public");
+                            errs.Add($"WorkflowInit on non-public {constructor}");
                         }
                         else
                         {
@@ -154,20 +156,21 @@ namespace Temporalio.Workflow
                         }
                         else if (runMethod != null)
                         {
-                            errs.Add($"WorkflowRun on {method} and {runMethod}");
+                            errs.Add($"WorkflowRun on multiple: {method} and {runMethod}");
                         }
                         else if (!method.IsPublic)
                         {
-                            errs.Add($"WorkflowRun on {method} is not public");
+                            errs.Add($"WorkflowRun on non-public {method}");
                         }
                         else if (!typeof(Task).IsAssignableFrom(method.ReturnType))
                         {
                             errs.Add($"WorkflowRun method {method} must return an instance of Task");
                         }
                         else if (initConstructor != null &&
-                            !method.GetParameters().SequenceEqual(initConstructor.GetParameters()))
+                            !method.GetParameters().Select(p => p.ParameterType).SequenceEqual(
+                                initConstructor.GetParameters().Select(p => p.ParameterType)))
                         {
-                            errs.Add($"WorkflowRun on {method} must match parameters of WorkflowInit on {initConstructor}");
+                            errs.Add($"WorkflowRun on {method} must match parameter types of WorkflowInit on {initConstructor}");
                         }
                         else
                         {
@@ -190,6 +193,10 @@ namespace Temporalio.Workflow
                             errs.Add(e.Message);
                         }
                     }
+                    else if (IsDefinedOnBase<WorkflowSignalAttribute>(method))
+                    {
+                        errs.Add($"WorkflowSignal on base definition of {method} but not override");
+                    }
                     if (method.IsDefined(typeof(WorkflowQueryAttribute), false))
                     {
                         try
@@ -205,6 +212,10 @@ namespace Temporalio.Workflow
                         {
                             errs.Add(e.Message);
                         }
+                    }
+                    else if (IsDefinedOnBase<WorkflowQueryAttribute>(method))
+                    {
+                        errs.Add($"WorkflowQuery on base definition of {method} but not override");
                     }
                 }
                 if (runMethod == null)
@@ -240,6 +251,24 @@ namespace Temporalio.Workflow
                     InitConstructor: initConstructor,
                     Signals: signals,
                     Queries: queries);
+            }
+
+            private static bool IsDefinedOnBase<T>(MethodInfo method)
+                where T : Attribute
+            {
+                while (true)
+                {
+                    var baseDef = method.GetBaseDefinition();
+                    if (baseDef == method)
+                    {
+                        return false;
+                    }
+                    else if (baseDef.IsDefined(typeof(T), false))
+                    {
+                        return true;
+                    }
+                    method = baseDef;
+                }
             }
         }
     }

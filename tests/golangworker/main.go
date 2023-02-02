@@ -197,13 +197,12 @@ func handleAction(
 			opts.RetryPolicy.MaximumAttempts = int32(action.ExecuteActivity.RetryMaxAttempts)
 		}
 		var lastErr error
-		var lastResponse string
+		var lastResponse interface{}
 		count := action.ExecuteActivity.Count
 		if count == 0 {
 			count = 1
 		}
 		sel := workflow.NewSelector(ctx)
-		sel.AddReceive(ctx.Done(), func(workflow.ReceiveChannel, bool) { lastErr = fmt.Errorf("context closed") })
 		for i := 0; i < count; i++ {
 			actCtx := workflow.WithActivityOptions(ctx, opts)
 			if action.ExecuteActivity.CancelAfterMS > 0 {

@@ -170,7 +170,7 @@ namespace Temporalio.Testing
             // If we can't connect, shutdown the server before returning
             try
             {
-                return new WorkflowEnvironment.EphemeralServerBased(
+                return new EphemeralServerBased(
                     await TemporalClient.ConnectAsync(options),
                     server);
             }

@@ -93,7 +93,7 @@ public record KSExecuteActivityAction(
     [property: JsonPropertyName("start_to_close_timeout_ms")] long? StartToCloseTimeoutMS = null,
     [property: JsonPropertyName("schedule_to_start_timeout_ms")] long? ScheduleToStartTimeoutMS = null,
     [property: JsonPropertyName("cancel_after_ms")] long? CancelAfterMS = null,
-    [property: JsonPropertyName("wait-for_cancellation")] bool WaitForCancellation = false,
+    [property: JsonPropertyName("wait_for_cancellation")] bool WaitForCancellation = false,
     [property: JsonPropertyName("heartbeat_timeout_ms")] long? HeartbeatTimeoutMS = null,
     [property: JsonPropertyName("retry_max_attempts")] int? RetryMaxAttempts = null,
     [property: JsonPropertyName("non_retryable_error_types")] IReadOnlyCollection<string>? NonRetryableErrorTypes = null);
