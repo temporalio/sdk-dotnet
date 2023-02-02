@@ -2,13 +2,20 @@
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Description>Temporal SDK for .NET</Description>
+    <EnablePackageValidation Condition="'$(TargetFramework)' == 'netcoreapp3.1'">true</EnablePackageValidation>
+    <IncludeSymbols>true</IncludeSymbols>
     <LangVersion>9.0</LangVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <TargetFrameworks>netcoreapp3.1;netstandard2.0;net462</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Castle.Core" Version="5.1.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'netstandard2.0'">
@@ -40,7 +47,7 @@
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
     <BridgeLibraryFile>libtemporal_sdk_bridge.dylib</BridgeLibraryFile>
   </PropertyGroup>
-  
+
   <Target Name="CargoBuildDebug" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Debug'">
     <Exec Command="cargo build" WorkingDirectory="Bridge" />
   </Target>
@@ -54,10 +61,10 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
     <Exec Command="cargo build --release" WorkingDirectory="Bridge" />
   </Target>
-  <Target Name="CopyBridgeDLLRelease" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release'">
+  <Target Name="CopyBridgeDLLRelease" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
     <Exec Command="cargo build --release" WorkingDirectory="Bridge" />
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
       <Content Include="Bridge/target/release/$(BridgeLibraryFile)">
@@ -68,4 +75,29 @@
     </ItemGroup>
   </Target>
 
+  <!-- Pack the README -->
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Pack the runtime if BridgeLibraryRoot property set -->
+  <Target Name="PackBridgeRuntimes" BeforeTargets="DispatchToInnerBuilds" Condition="'$(BridgeLibraryRoot)' != ''">
+    <ItemGroup>
+      <Content Include="$(BridgeLibraryRoot)/linux-x64-bridge/libtemporal_sdk_bridge.so">
+        <PackagePath>runtimes/linux-x64/native/libtemporal_sdk_bridge.so</PackagePath>
+      </Content>
+      <Content Include="$(BridgeLibraryRoot)/linux-arm64-bridge/libtemporal_sdk_bridge.so">
+        <PackagePath>runtimes/linux-arm64/native/libtemporal_sdk_bridge.so</PackagePath>
+      </Content>
+      <Content Include="$(BridgeLibraryRoot)/osx-x64-bridge/libtemporal_sdk_bridge.dylib">
+        <PackagePath>runtimes/osx-x64/native/libtemporal_sdk_bridge.dylib</PackagePath>
+      </Content>
+      <Content Include="$(BridgeLibraryRoot)/osx-arm64-bridge/libtemporal_sdk_bridge.dylib">
+        <PackagePath>runtimes/osx-arm64/native/libtemporal_sdk_bridge.dylib</PackagePath>
+      </Content>
+      <Content Include="$(BridgeLibraryRoot)/win-x64-bridge/temporal_sdk_bridge.dll">
+        <PackagePath>runtimes/win-x64/native/temporal_sdk_bridge.dll</PackagePath>
+      </Content>
+    </ItemGroup>
+  </Target>
 </Project>

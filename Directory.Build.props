@@ -1,9 +1,14 @@
 <Project>
   <PropertyGroup>
+    <Authors>Temporal</Authors>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/temporalio/sdk-dotnet</RepositoryUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>0.1.0-alpha1</Version>
   </PropertyGroup>
 
   <!-- Run Analyzers only on latest .NET version -->
