@@ -4,7 +4,7 @@
 See:
 
 * [GitHub Repository](https://github.com/temporalio/sdk-dotnet)
-* NuGet Package (TODO)
-* Application Development Guide (TODO)
+* [NuGet Package](https://www.nuget.org/packages/Temporalio)
+* [Application Development Guide](https://docs.temporal.io/application-development) (TODO: .NET docs)
 * [API Documentation](/api)
 * Samples (TODO)
