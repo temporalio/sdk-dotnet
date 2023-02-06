@@ -45,8 +45,7 @@ public class ActivityAttributeTests
     public void FromDelegate_Lambda_Succeeds()
     {
         var def = ActivityAttribute.Definition.FromDelegate(
-            [Activity("MyActivity")]
-            () => string.Empty);
+            [Activity("MyActivity")] () => string.Empty);
         Assert.Equal("MyActivity", def.Name);
     }
 
@@ -55,8 +54,7 @@ public class ActivityAttributeTests
     {
         var exc = Assert.ThrowsAny<Exception>(() =>
             ActivityAttribute.Definition.FromDelegate(
-                [Activity]
-                () => string.Empty));
+                [Activity] () => string.Empty));
         Assert.Contains("appears to be a lambda", exc.Message);
     }
 

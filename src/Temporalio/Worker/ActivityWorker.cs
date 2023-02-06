@@ -209,7 +209,7 @@ namespace Temporalio.Worker
             RunningActivity act,
             Bridge.Api.ActivityTask.ActivityTask tsk)
         {
-            // Try to build a completion, but if it fails the manually build one with the failure
+            // Try to build a completion, but if it fails then manually build one with the failure
             Bridge.Api.ActivityTaskCompletion completion;
             try
             {
@@ -234,7 +234,7 @@ namespace Temporalio.Worker
             {
                 // We have to wait on any outstanding heartbeats to finish. This will not throw. We
                 // accept that in a rare scenario, this heartbeat can fail to encode but it is too
-                // late to cancel the activity. Like other SDKs, we current drop this heartbeat.
+                // late to cancel the activity. Like other SDKs, we currently drop this heartbeat.
                 await act.FinishHeartbeatsAsync().ConfigureAwait(false);
 
                 // Complete the task
@@ -604,8 +604,8 @@ namespace Temporalio.Worker
                 {
                     using (Context.Logger.BeginScope(Context.Info.LoggerScope))
                     {
-                        // Log exception on done (nowhere to can propagate), warning and cancel if
-                        // not done
+                        // Log exception on done (nowhere to propagate), warning + cancel if not
+                        // done
                         bool done;
                         lock (mutex)
                         {

@@ -120,7 +120,7 @@ namespace Temporalio.Worker
         /// </remarks>
         /// <param name="untilComplete">
         /// If the task returned from this function completes, the worker will shutdown
-        /// (propagating) exception as necessary.
+        /// propagating exception as necessary.
         /// </param>
         /// <param name="stoppingToken">Cancellation token to stop the worker.</param>
         /// <returns>
@@ -237,9 +237,6 @@ namespace Temporalio.Worker
                 }
             }
 
-            // Now wait for all of the tasks to complete. This will collect exceptions from them all
-            // and throw them as aggregate.
-
             // If the token is not already cancelled, we want to remove that from the tasks to be
             // waited on
             if (!tasks[0].IsCompleted)
@@ -262,10 +259,14 @@ namespace Temporalio.Worker
             {
                 tasks.Add(activityWorker.GracefulShutdownAsync());
             }
+
+            // Now wait for all of the tasks to complete. This will collect exceptions from them all
+            // and throw them as aggregate.
             try
             {
-                // This is essentially guaranteed to throw since it will contain one of the tasks
-                // from the WhenAny that threw
+                // Unless the user-provided task completed successfully, this is essentially
+                // guaranteed to throw since it will contain one of the tasks from the WhenAny
+                // that threw
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             finally

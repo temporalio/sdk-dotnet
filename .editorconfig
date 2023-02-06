@@ -4,6 +4,10 @@
 
 # Please keep in alphabetical order by field.
 
+# We cannot reasonably mark ourselves CLSCompliant one way or another if
+# libraries we rely on like Microsoft.Extensions.Logging.Abstractions don't
+dotnet_diagnostic.CA1014.severity = none
+
 # We have exceptions we don't want all constructors on
 dotnet_diagnostic.CA1032.severity = none
 

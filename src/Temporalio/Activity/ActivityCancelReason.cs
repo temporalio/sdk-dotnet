@@ -27,7 +27,7 @@ namespace Temporalio.Activity
         Timeout,
 
         /// <summary>
-        /// Worker the activity is running is shutting down.
+        /// Worker the activity is running on is shutting down.
         /// </summary>
         WorkerShutdown,
 

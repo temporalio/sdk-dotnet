@@ -60,8 +60,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteActivityAsync_SimpleLambda_Succeeds()
     {
         var activity =
-            [Activity("SimpleLambda")]
-            (string param) => new List<string> { $"foo:{param}", $"bar:{param}" };
+            [Activity("SimpleLambda")] (string param) =>
+                new List<string> { $"foo:{param}", $"bar:{param}" };
         Assert.Equal(
             new List<string>() { "foo:param", "bar:param" },
             await ExecuteActivityAsync(activity, "param"));
