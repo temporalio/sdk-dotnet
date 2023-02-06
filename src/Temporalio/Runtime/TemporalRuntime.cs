@@ -12,11 +12,6 @@ namespace Temporalio.Runtime
     /// </remarks>
     public sealed class TemporalRuntime
     {
-        /// <summary>
-        /// Current version of this SDK.
-        /// </summary>
-        public const string Version = "0.1.0-alpha1";
-
         private static readonly Lazy<TemporalRuntime> LazyDefault =
             new(() => new TemporalRuntime(new TemporalRuntimeOptions()));
 

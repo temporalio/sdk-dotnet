@@ -11,7 +11,7 @@ namespace Temporalio.Bridge
     {
         private static readonly ByteArrayRef ClientName = ByteArrayRef.FromUTF8("temporal-dotnet");
         private static readonly ByteArrayRef ClientVersion = ByteArrayRef.FromUTF8(
-            Temporalio.Runtime.TemporalRuntime.Version);
+            Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "<unknown>");
 
         private static readonly ByteArrayRef SdkName = ByteArrayRef.FromUTF8("sdk-dotnet");
 
