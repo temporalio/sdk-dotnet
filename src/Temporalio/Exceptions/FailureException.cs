@@ -38,7 +38,7 @@ namespace Temporalio.Exceptions
         /// <remarks>
         /// This is non-null except for user-created exceptions.
         /// </remarks>
-        public Failure? Failure { get; protected init; } = null;
+        public Failure? Failure { get; protected init; }
 
         /// <summary>
         /// Gets the stack trace on the exception or on the failure if not on the exception.

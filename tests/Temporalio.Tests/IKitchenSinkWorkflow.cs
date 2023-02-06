@@ -6,7 +6,7 @@ using Temporalio.Workflow;
 [Workflow("kitchen_sink")]
 public interface IKitchenSinkWorkflow
 {
-    static readonly IKitchenSinkWorkflow Ref = Refs<IKitchenSinkWorkflow>.Instance;
+    static readonly IKitchenSinkWorkflow Ref = Refs.Create<IKitchenSinkWorkflow>();
 
     [WorkflowRun]
     Task<string> RunAsync(KSWorkflowParams args);
@@ -24,7 +24,7 @@ public interface IKitchenSinkWorkflow
 [Workflow("kitchen_sink")]
 public interface IKitchenSinkWorkflowWithReturnObject
 {
-    static readonly IKitchenSinkWorkflowWithReturnObject Ref = Refs<IKitchenSinkWorkflowWithReturnObject>.Instance;
+    static readonly IKitchenSinkWorkflowWithReturnObject Ref = Refs.Create<IKitchenSinkWorkflowWithReturnObject>();
 
     [WorkflowRun]
     Task<KSWorkflowResult> RunAsync(KSWorkflowParams args);
@@ -33,7 +33,7 @@ public interface IKitchenSinkWorkflowWithReturnObject
 [Workflow("kitchen_sink")]
 public interface IKitchenSinkWorkflowWithUnknownReturn
 {
-    static readonly IKitchenSinkWorkflowWithUnknownReturn Ref = Refs<IKitchenSinkWorkflowWithUnknownReturn>.Instance;
+    static readonly IKitchenSinkWorkflowWithUnknownReturn Ref = Refs.Create<IKitchenSinkWorkflowWithUnknownReturn>();
 
     [WorkflowRun]
     Task<string> RunAsync(KSWorkflowParams args);

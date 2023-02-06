@@ -90,13 +90,13 @@ namespace Temporalio.Bridge
             this Temporalio.Runtime.OpenTelemetryOptions options,
             Scope scope)
         {
-            if (string.IsNullOrEmpty(options.Url))
+            if (options.Url == null)
             {
                 throw new ArgumentException("OpenTelemetry URL is required");
             }
             return new Interop.OpenTelemetryOptions()
             {
-                url = scope.ByteArray(options.Url),
+                url = scope.ByteArray(options.Url.ToString()),
                 headers = scope.Metadata(options.Headers),
                 metric_periodicity_millis = (uint)(
                     options.MetricsExportInterval == null
@@ -306,7 +306,7 @@ namespace Temporalio.Bridge
         {
             // Use TargetHost to get IP + Port
             options.ParseTargetHost(out string? ip, out int? port);
-            if (ip != string.Empty && ip != "127.0.0.1" && ip != "localhost")
+            if (!string.IsNullOrEmpty(ip) && ip != "127.0.0.1" && ip != "localhost")
             {
                 throw new InvalidOperationException(
                     "TargetHost can only specify empty, localhost, or 127.0.0.1 host");

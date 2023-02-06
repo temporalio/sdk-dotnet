@@ -19,7 +19,7 @@ namespace Temporalio.Exceptions
             IReadOnlyCollection<object>? details = null)
             : base(message)
         {
-            Details = new OutboundFailureDetails(details ?? new object[0]);
+            Details = new OutboundFailureDetails(details ?? Array.Empty<object>());
         }
 
         /// <summary>

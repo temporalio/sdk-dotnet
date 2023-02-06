@@ -8,7 +8,10 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class CancellationToken : SafeHandle
     {
-        private CancellationToken()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CancellationToken"/> class.
+        /// </summary>
+        public CancellationToken()
             : base(IntPtr.Zero, true)
         {
             unsafe

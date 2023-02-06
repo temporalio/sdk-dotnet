@@ -329,28 +329,28 @@ pub extern "C" fn worker_finalize_shutdown(
 ) {
     let worker = unsafe { &mut *worker };
     let user_data = UserDataHandle(user_data);
-    // Take the worker out of the option and leave None. This should be the
-    // only reference remaining to the worker so try_unwrap will work.
-    let core_worker = match Arc::try_unwrap(worker.worker.take().unwrap()) {
-        Ok(core_worker) => core_worker,
-        Err(arc) => {
-            unsafe {
-                callback(
-                    user_data.into(),
-                    worker
-                        .runtime
-                        .clone()
-                        .alloc_utf8(&format!(
-                            "Cannot finalize, expected 1 reference, got {}",
-                            Arc::strong_count(&arc)
-                        ))
-                        .into_raw(),
-                );
-            }
-            return;
-        }
-    };
     worker.runtime.core.tokio_handle().spawn(async move {
+        // Take the worker out of the option and leave None. This should be the
+        // only reference remaining to the worker so try_unwrap will work.
+        let core_worker = match Arc::try_unwrap(worker.worker.take().unwrap()) {
+            Ok(core_worker) => core_worker,
+            Err(arc) => {
+                unsafe {
+                    callback(
+                        user_data.into(),
+                        worker
+                            .runtime
+                            .clone()
+                            .alloc_utf8(&format!(
+                                "Cannot finalize, expected 1 reference, got {}",
+                                Arc::strong_count(&arc)
+                            ))
+                            .into_raw(),
+                    );
+                }
+                return;
+            }
+        };
         core_worker.finalize_shutdown().await;
         unsafe {
             callback(user_data.into(), std::ptr::null());

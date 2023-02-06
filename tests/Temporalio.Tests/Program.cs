@@ -1,10 +1,10 @@
 namespace Temporalio.Tests;
 
-public class Program
+public static class Program
 {
-    internal static bool InProc { get; private set; } = false;
+    internal static bool InProc { get; private set; }
 
-    internal static bool Verbose { get; private set; } = false;
+    internal static bool Verbose { get; private set; }
 
     public static int Main(string[] args)
     {

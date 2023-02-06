@@ -65,7 +65,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                return await completion.Task;
+                return await completion.Task.ConfigureAwait(false);
             }
         }
 
@@ -150,7 +150,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                return (await completion.Task).ToProto(resp);
+                return (await completion.Task.ConfigureAwait(false)).ToProto(resp);
             }
         }
 

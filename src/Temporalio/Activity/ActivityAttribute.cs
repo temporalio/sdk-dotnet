@@ -13,13 +13,12 @@ namespace Temporalio.Activity
     /// must too.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class ActivityAttribute : Attribute
+    public sealed class ActivityAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityAttribute"/> class with the default
-        /// name.
+        /// name. See <see cref="Name" />.
         /// </summary>
-        /// <seealso cref="Name" />
         public ActivityAttribute()
         {
         }
@@ -28,18 +27,17 @@ namespace Temporalio.Activity
         /// Initializes a new instance of the <see cref="ActivityAttribute"/> class with the given
         /// name.
         /// </summary>
-        /// <param name="name">Activity type name to use.</param>
+        /// <param name="name">Activity type name to use. See <see cref="Name" />.</param>
         public ActivityAttribute(string name)
         {
             Name = name;
         }
 
         /// <summary>
-        /// Gets or sets the activity type name. If this is unset, it defaults to the unqualified
-        /// method name (with "Async" trimmed off the end if present and the return type is a
-        /// task).
+        /// Gets the activity type name. If this is unset, it defaults to the unqualified method
+        /// name (with "Async" trimmed off the end if present and the return type is a task).
         /// </summary>
-        public string? Name { get; set; }
+        public string? Name { get; }
 
         /// <summary>
         /// Internal representation of an activity definition.

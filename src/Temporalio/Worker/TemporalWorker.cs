@@ -12,10 +12,10 @@ namespace Temporalio.Worker
     /// Worker for running Temporal workflows and/or activities. This intentionally matches
     /// <c>Microsoft.Extensions.Hosting.BackgroundService</c> structure.
     /// </summary>
-    public class TemporalWorker
+    public class TemporalWorker : IDisposable
     {
         private readonly ActivityWorker? activityWorker;
-        private int started = 0;
+        private int started;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorker"/> class. The options must
@@ -55,6 +55,14 @@ namespace Temporalio.Worker
         }
 
         /// <summary>
+        /// Finalizes an instance of the <see cref="TemporalWorker"/> class.
+        /// </summary>
+        ~TemporalWorker()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
         /// Gets the options this worker was created with.
         /// </summary>
         public TemporalWorkerOptions Options { get; private init; }
@@ -65,9 +73,12 @@ namespace Temporalio.Worker
         internal IWorkerClient Client { get; private init; }
 
         /// <summary>
-        /// Gets the underlying bridge worker.
+        /// Gets or sets the underlying bridge worker.
         /// </summary>
-        internal Bridge.Worker BridgeWorker { get; private init; }
+        /// <remarks>
+        /// Setter only visible for testing.
+        /// </remarks>
+        internal Bridge.Worker BridgeWorker { get; set; }
 
         /// <summary>
         /// Gets the set of interceptors in the order they should be applied.
@@ -149,8 +160,29 @@ namespace Temporalio.Worker
         {
             TResult? ret = default;
             await ExecuteInternalAsync(
-                async () => ret = await untilComplete.Invoke(), stoppingToken);
+                async () => ret = await untilComplete.Invoke().ConfigureAwait(false),
+                stoppingToken).ConfigureAwait(false);
             return ret!;
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Dispose the worker.
+        /// </summary>
+        /// <param name="disposing">Whether disposing.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                activityWorker?.Dispose();
+                BridgeWorker.Dispose();
+            }
         }
 
         private async Task ExecuteInternalAsync(
@@ -184,7 +216,7 @@ namespace Temporalio.Worker
             // TODO(cretz): Workflows
 
             // Wait until any of the tasks complete including cancellation
-            var task = await Task.WhenAny(tasks);
+            var task = await Task.WhenAny(tasks).ConfigureAwait(false);
             var logger = Client.Options.LoggerFactory.CreateLogger<TemporalWorker>();
             using (logger.BeginScope(new Dictionary<string, object>
             {
@@ -223,7 +255,7 @@ namespace Temporalio.Worker
             }
 
             // Start the shutdown of the worker
-            tasks.Add(Task.Run(BridgeWorker.ShutdownAsync));
+            tasks.Add(Task.Run(BridgeWorker.ShutdownAsync, CancellationToken.None));
 
             // If there is an activity worker, we want to add a graceful shutdown task for it
             if (activityWorker != null)
@@ -234,18 +266,21 @@ namespace Temporalio.Worker
             {
                 // This is essentially guaranteed to throw since it will contain one of the tasks
                 // from the WhenAny that threw
-                await Task.WhenAll(tasks);
+                await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             finally
             {
+#pragma warning disable CA1031 // Intentionally swallow all exceptions to finalizing shutdown
                 try
                 {
-                    await BridgeWorker.FinalizeShutdownAsync();
+                    await BridgeWorker.FinalizeShutdownAsync().ConfigureAwait(false);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     // Ignore finalization errors, worker will be dropped Rust side anyways
+                    logger.LogDebug(e, "Worker finalization failed");
                 }
+#pragma warning restore CA1031
             }
         }
     }

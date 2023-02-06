@@ -67,16 +67,6 @@ namespace Temporalio.Converters
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class.
-        /// </summary>
-        /// <param name="encodingConverters">Encoding converters.</param>
-        /// <seealso cref="DefaultPayloadConverter(IEnumerable&lt;IEncodingConverter&gt;)" />
-        protected DefaultPayloadConverter(params IEncodingConverter[] encodingConverters)
-            : this((IEnumerable<IEncodingConverter>)encodingConverters)
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class with a
         /// set of encoding converters.
         /// </summary>
@@ -88,9 +78,9 @@ namespace Temporalio.Converters
         /// instances, so only subclasses would call this.
         /// </remarks>
         /// <seealso cref="DefaultPayloadConverter()" />
-        protected DefaultPayloadConverter(IEnumerable<IEncodingConverter> encodingConverters)
+        protected DefaultPayloadConverter(params IEncodingConverter[] encodingConverters)
         {
-            EncodingConverters = encodingConverters.ToList().AsReadOnly();
+            EncodingConverters = Array.AsReadOnly(encodingConverters);
             IndexedEncodingConverters = encodingConverters.ToDictionary(
                 x => ByteString.CopyFromUtf8(x.Encoding));
         }
@@ -155,24 +145,26 @@ namespace Temporalio.Converters
             {
                 // 8601 with roundtrip. We intentionally don't convert to universal or anything here
                 // because the user can send with a date time kind of UTC or Local if they want.
-                value = dateTimeValue.ToString("o");
+                var valueStr = dateTimeValue.ToString("o");
                 // TODO(cretz): Due to https://github.com/temporalio/temporal/issues/3864 we have to
                 // trim +0 timezone here.
-                if (((string)value).EndsWith("+00:00"))
+                if (valueStr.EndsWith("+00:00"))
                 {
-                    value = ((string)value).Substring(0, ((string)value).Length - 6) + "Z";
+                    valueStr = valueStr.Substring(0, valueStr.Length - 6) + "Z";
                 }
+                value = valueStr;
             }
             else if (value is DateTimeOffset dateTimeOffsetValue)
             {
                 // 8601 with timezone
-                value = dateTimeOffsetValue.ToString("o");
+                var valueStr = dateTimeOffsetValue.ToString("o");
                 // TODO(cretz): Due to https://github.com/temporalio/temporal/issues/3864 we have to
                 // trim +0 timezone here.
-                if (((string)value).EndsWith("+00:00"))
+                if (valueStr.EndsWith("+00:00"))
                 {
-                    value = ((string)value).Substring(0, ((string)value).Length - 6) + "Z";
+                    valueStr = valueStr.Substring(0, valueStr.Length - 6) + "Z";
                 }
+                value = valueStr;
             }
             else if (value is not IEnumerable<string> &&
                 value is not string &&

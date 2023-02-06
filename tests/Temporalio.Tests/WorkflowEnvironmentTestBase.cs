@@ -7,7 +7,7 @@ using Xunit.Abstractions;
 [Collection("Environment")]
 public abstract class WorkflowEnvironmentTestBase : TestBase
 {
-    public WorkflowEnvironmentTestBase(ITestOutputHelper output, WorkflowEnvironment env)
+    protected WorkflowEnvironmentTestBase(ITestOutputHelper output, WorkflowEnvironment env)
         : base(output)
     {
         Env = env;
@@ -19,5 +19,5 @@ public abstract class WorkflowEnvironmentTestBase : TestBase
 
     protected WorkflowEnvironment Env { get; private init; }
 
-    protected Temporalio.Client.ITemporalClient Client { get; private init; }
+    protected ITemporalClient Client { get; private init; }
 }

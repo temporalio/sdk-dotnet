@@ -36,10 +36,12 @@ namespace Temporalio.Worker
         /// </summary>
         public TaskFactory ActivityTaskFactory { get; set; } = Task.Factory;
 
+#pragma warning disable CA2227 // Intentionally allow setting of this collection w/ options pattern
         /// <summary>
         /// Gets or sets the activity delegates.
         /// </summary>
         public IList<Delegate> Activities { get; set; } = new List<Delegate>();
+#pragma warning restore CA2227
 
         /// <summary>
         /// Gets or sets the interceptors. Note this automatically includes any

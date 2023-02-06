@@ -53,7 +53,7 @@ namespace Temporalio.Client
         public static async Task<TemporalClient> ConnectAsync(TemporalClientConnectOptions options)
         {
             return new TemporalClient(
-                await TemporalConnection.ConnectAsync(options),
+                await TemporalConnection.ConnectAsync(options).ConfigureAwait(false),
                 options.ToClientOptions());
         }
 

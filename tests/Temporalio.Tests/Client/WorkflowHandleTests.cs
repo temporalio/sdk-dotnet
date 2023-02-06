@@ -70,7 +70,7 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task GetResultAsync_CancellationToken_Throws()
     {
-        var cancelSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        using var cancelSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await Client.ExecuteWorkflowAsync(
                 IKitchenSinkWorkflow.Ref.RunAsync,

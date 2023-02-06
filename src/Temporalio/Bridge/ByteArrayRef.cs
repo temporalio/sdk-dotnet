@@ -53,7 +53,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets empty byte array.
         /// </summary>
-        public static ByteArrayRef Empty { get; } = new(new byte[0]);
+        public static ByteArrayRef Empty { get; } = new(Array.Empty<byte>());
 
         /// <summary>
         /// Gets current byte array for this ref.
@@ -94,12 +94,12 @@ namespace Temporalio.Bridge
         public static ByteArrayRef FromMetadata(IEnumerable<KeyValuePair<string, string>> metadata)
         {
             using (var stream = new MemoryStream())
+            using (var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true })
             {
-                var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true };
                 foreach (var pair in metadata)
                 {
                     // If either have a newline, we error since it would make an invalid set
-                    if (pair.Key.IndexOf('\n') >= 0 || pair.Value.IndexOf('\n') >= 0)
+                    if (pair.Key.Contains("\n") || pair.Value.Contains("\n"))
                     {
                         throw new ArgumentException("Metadata keys/values cannot have newlines");
                     }
@@ -133,12 +133,12 @@ namespace Temporalio.Bridge
         public static ByteArrayRef FromNewlineDelimited(IEnumerable<string> values)
         {
             using (var stream = new MemoryStream())
+            using (var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true })
             {
-                var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true };
                 foreach (var value in values)
                 {
                     // If has a newline, we error since it would make an invalid set
-                    if (value.IndexOf('\n') >= 0)
+                    if (value.Contains("\n"))
                     {
                         throw new ArgumentException("Value cannot have newline");
                     }

@@ -40,30 +40,32 @@ namespace Temporalio.Converters
         {
             if (failure.EncodedAttributes != null)
             {
-                failure.EncodedAttributes = (
-                    await func.Invoke(new Payload[] { failure.EncodedAttributes }))
-                .First();
+                failure.EncodedAttributes = (await func.Invoke(
+                    new Payload[] { failure.EncodedAttributes }).ConfigureAwait(false)).First();
             }
             switch (failure.FailureInfoCase)
             {
                 case Failure.FailureInfoOneofCase.ApplicationFailureInfo:
-                    await ApplyPayloadsAsync(failure.ApplicationFailureInfo.Details, func);
+                    await ApplyPayloadsAsync(
+                        failure.ApplicationFailureInfo.Details, func).ConfigureAwait(false);
                     break;
                 case Failure.FailureInfoOneofCase.TimeoutFailureInfo:
-                    await ApplyPayloadsAsync(failure.TimeoutFailureInfo.LastHeartbeatDetails, func);
+                    await ApplyPayloadsAsync(
+                        failure.TimeoutFailureInfo.LastHeartbeatDetails, func).ConfigureAwait(false);
                     break;
                 case Failure.FailureInfoOneofCase.CanceledFailureInfo:
-                    await ApplyPayloadsAsync(failure.CanceledFailureInfo.Details, func);
+                    await ApplyPayloadsAsync(
+                        failure.CanceledFailureInfo.Details, func).ConfigureAwait(false);
                     break;
                 case Failure.FailureInfoOneofCase.ResetWorkflowFailureInfo:
                     await ApplyPayloadsAsync(
                         failure.ResetWorkflowFailureInfo.LastHeartbeatDetails,
-                        func);
+                        func).ConfigureAwait(false);
                     break;
             }
             if (failure.Cause != null)
             {
-                await ApplyToFailurePayloadAsync(failure.Cause, func);
+                await ApplyToFailurePayloadAsync(failure.Cause, func).ConfigureAwait(false);
             }
         }
 
@@ -74,7 +76,8 @@ namespace Temporalio.Converters
             if (payloads != null && payloads.Payloads_.Count > 0)
             {
                 // We have to convert to list just in case this is a lazy enumerable
-                var newPayloads = (await func.Invoke(payloads.Payloads_)).ToList();
+                var newPayloads = (await func.Invoke(
+                    payloads.Payloads_).ConfigureAwait(false)).ToList();
                 payloads.Payloads_.Clear();
                 payloads.Payloads_.Add(newPayloads);
             }

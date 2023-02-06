@@ -16,9 +16,9 @@ namespace Temporalio.Client
         private TemporalConnection(Bridge.Client client, TemporalConnectionOptions options)
         {
             this.client = client;
-            WorkflowService = new WorkflowService.Impl(this);
-            OperatorService = new OperatorService.Impl(this);
-            TestService = new TestService.Impl(this);
+            WorkflowService = new WorkflowService.Core(this);
+            OperatorService = new OperatorService.Core(this);
+            TestService = new TestService.Core(this);
             Options = options;
         }
 
@@ -49,7 +49,8 @@ namespace Temporalio.Client
                             + "@"
                             + System.Net.Dns.GetHostName();
             var runtime = options.Runtime ?? TemporalRuntime.Default;
-            var client = await Bridge.Client.ConnectAsync(runtime.Runtime, options);
+            var client = await Bridge.Client.ConnectAsync(
+                runtime.Runtime, options).ConfigureAwait(false);
             return new TemporalConnection(client, options);
         }
 
@@ -69,7 +70,7 @@ namespace Temporalio.Client
         /// <param name="resp">Response proto parser.</param>
         /// <param name="options">RPC options.</param>
         /// <returns>Response proto.</returns>
-        internal async Task<T> InvokeRpcAsync<T>(
+        internal Task<T> InvokeRpcAsync<T>(
             RpcService service,
             string rpc,
             IMessage req,
@@ -77,7 +78,7 @@ namespace Temporalio.Client
             RpcOptions? options = null)
             where T : IMessage<T>
         {
-            return await client.CallAsync(
+            return client.CallAsync(
                 service.Service,
                 rpc,
                 req,

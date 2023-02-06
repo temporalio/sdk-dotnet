@@ -4,6 +4,41 @@
 
 # Please keep in alphabetical order by field.
 
+# We have exceptions we don't want all constructors on
+dotnet_diagnostic.CA1032.severity = none
+
+# We allow nested classes e.g. in cases of sum types
+dotnet_diagnostic.CA1034.severity = none
+
+# We use nullable types instead of checking params are non-null, even in public
+# methods
+dotnet_diagnostic.CA1062.severity = none
+
+# We are not concerned with globalization (yet?). The below line does not work
+# in our analyzers, so we disable each one
+# dotnet_analyzer_diagnostic.category-Globalization.severity = none
+dotnet_diagnostic.CA1303.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1307.severity = none
+dotnet_diagnostic.CA1310.severity = none
+dotnet_diagnostic.CA1311.severity = none
+
+# For many of our properties like task tokens, we're ok returning byte arrays
+dotnet_diagnostic.CA1819.severity = none
+
+# ReadOnlySpan conversion errors whing using string.Concat
+dotnet_diagnostic.CA1845.severity = none
+
+# String.Contains(Char) doesn't exist in older .NET
+dotnet_diagnostic.CA1847.severity = none
+
+# We accept logging performance can improve later
+dotnet_diagnostic.CA1848.severity = none
+
+# Do not want to make all exceptions [Serializable], we don't support
+# cross-AppDomain currently
+dotnet_diagnostic.CA2237.severity = none
+
 # Warn on unused imports
 dotnet_diagnostic.IDE0005.severity = warning
 

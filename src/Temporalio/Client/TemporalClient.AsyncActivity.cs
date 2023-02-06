@@ -34,7 +34,11 @@ namespace Temporalio.Client
                 {
                     details = new()
                     {
-                        Payloads_ = { await Client.Options.DataConverter.ToPayloadsAsync(input.Options.Details) },
+                        Payloads_ =
+                        {
+                            await Client.Options.DataConverter.ToPayloadsAsync(
+                                input.Options.Details).ConfigureAwait(false),
+                        },
                     };
                 }
                 if (input.Activity is AsyncActivityHandle.IDReference idRef)
@@ -49,7 +53,7 @@ namespace Temporalio.Client
                             ActivityId = idRef.ActivityID,
                             Details = details,
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                     if (resp.CancelRequested)
                     {
                         throw new AsyncActivityCancelledException();
@@ -65,7 +69,7 @@ namespace Temporalio.Client
                             TaskToken = ByteString.CopyFrom(tokRef.TaskToken),
                             Details = details,
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                     if (resp.CancelRequested)
                     {
                         throw new AsyncActivityCancelledException();
@@ -80,7 +84,8 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task CompleteAsyncActivityAsync(CompleteAsyncActivityInput input)
             {
-                var result = await Client.Options.DataConverter.ToPayloadAsync(input.Result);
+                var result = await Client.Options.DataConverter.ToPayloadAsync(
+                    input.Result).ConfigureAwait(false);
                 if (input.Activity is AsyncActivityHandle.IDReference idRef)
                 {
                     await Client.Connection.WorkflowService.RespondActivityTaskCompletedByIdAsync(
@@ -93,7 +98,7 @@ namespace Temporalio.Client
                             ActivityId = idRef.ActivityID,
                             Result = new() { Payloads_ = { { result } } },
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 }
                 else if (input.Activity is AsyncActivityHandle.TaskTokenReference tokRef)
                 {
@@ -105,7 +110,7 @@ namespace Temporalio.Client
                             TaskToken = ByteString.CopyFrom(tokRef.TaskToken),
                             Result = new() { Payloads_ = { { result } } },
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 }
                 else
                 {
@@ -116,7 +121,8 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task FailAsyncActivityAsync(FailAsyncActivityInput input)
             {
-                var failure = await Client.Options.DataConverter.ToFailureAsync(input.Exception);
+                var failure = await Client.Options.DataConverter.ToFailureAsync(
+                    input.Exception).ConfigureAwait(false);
                 Payloads? lastHeartbeatDetails = null;
                 if (input.Options?.LastHeartbeatDetails != null &&
                     input.Options.LastHeartbeatDetails.Count > 0)
@@ -126,7 +132,7 @@ namespace Temporalio.Client
                         Payloads_ =
                         {
                             await Client.Options.DataConverter.ToPayloadsAsync(
-                                input.Options.LastHeartbeatDetails),
+                                input.Options.LastHeartbeatDetails).ConfigureAwait(false),
                         },
                     };
                 }
@@ -143,7 +149,7 @@ namespace Temporalio.Client
                             Failure = failure,
                             LastHeartbeatDetails = lastHeartbeatDetails,
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 }
                 else if (input.Activity is AsyncActivityHandle.TaskTokenReference tokRef)
                 {
@@ -156,7 +162,7 @@ namespace Temporalio.Client
                             Failure = failure,
                             LastHeartbeatDetails = lastHeartbeatDetails,
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 }
                 else
                 {
@@ -173,7 +179,11 @@ namespace Temporalio.Client
                 {
                     details = new()
                     {
-                        Payloads_ = { await Client.Options.DataConverter.ToPayloadsAsync(input.Options.Details) },
+                        Payloads_ =
+                        {
+                            await Client.Options.DataConverter.ToPayloadsAsync(
+                                input.Options.Details).ConfigureAwait(false),
+                        },
                     };
                 }
                 if (input.Activity is AsyncActivityHandle.IDReference idRef)
@@ -188,7 +198,7 @@ namespace Temporalio.Client
                             ActivityId = idRef.ActivityID,
                             Details = details,
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 }
                 else if (input.Activity is AsyncActivityHandle.TaskTokenReference tokRef)
                 {
@@ -200,7 +210,7 @@ namespace Temporalio.Client
                             TaskToken = ByteString.CopyFrom(tokRef.TaskToken),
                             Details = details,
                         },
-                        DefaultRetryOptions(input.Options?.Rpc));
+                        DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 }
                 else
                 {

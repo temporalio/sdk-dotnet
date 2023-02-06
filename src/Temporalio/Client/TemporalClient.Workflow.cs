@@ -26,7 +26,7 @@ namespace Temporalio.Client
         {
             return StartWorkflowAsync<TResult>(
                 Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
-                new object?[0],
+                Array.Empty<object?>(),
                 options);
         }
 
@@ -46,7 +46,7 @@ namespace Temporalio.Client
         {
             return StartWorkflowAsync(
                 Workflow.WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
-                new object?[0],
+                Array.Empty<object?>(),
                 options);
         }
 
@@ -64,7 +64,8 @@ namespace Temporalio.Client
         public async Task<WorkflowHandle> StartWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options)
         {
-            return await StartWorkflowAsync<ValueTuple>(workflow, args, options);
+            return await StartWorkflowAsync<ValueTuple>(
+                workflow, args, options).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -111,7 +112,7 @@ namespace Temporalio.Client
             {
                 try
                 {
-                    return await StartWorkflowInternalAsync<TResult>(input);
+                    return await StartWorkflowInternalAsync<TResult>(input).ConfigureAwait(false);
                 }
                 catch (RpcException e) when (
                     e.Code == RpcException.StatusCode.AlreadyExists)
@@ -150,8 +151,8 @@ namespace Temporalio.Client
                 if (input.Args.Count > 0)
                 {
                     req.Input = new Payloads();
-                    req.Input.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(input.Args));
+                    req.Input.Payloads_.AddRange(await Client.Options.DataConverter.ToPayloadsAsync(
+                        input.Args).ConfigureAwait(false));
                 }
                 if (input.Headers != null)
                 {
@@ -159,7 +160,7 @@ namespace Temporalio.Client
                     req.Header.Fields.Add(input.Headers);
                 }
                 await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
-                    req, DefaultRetryOptions(input.Options?.Rpc));
+                    req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -179,7 +180,8 @@ namespace Temporalio.Client
                 {
                     req.Query.QueryArgs = new Payloads();
                     req.Query.QueryArgs.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(input.Args));
+                        await Client.Options.DataConverter.ToPayloadsAsync(
+                            input.Args).ConfigureAwait(false));
                 }
                 if (input.Options?.RejectCondition != null)
                 {
@@ -200,7 +202,7 @@ namespace Temporalio.Client
                 try
                 {
                     resp = await Client.Connection.WorkflowService.QueryWorkflowAsync(
-                        req, DefaultRetryOptions(input.Options?.Rpc));
+                        req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 }
                 catch (RpcException e) when (
                     e.GrpcStatus.Value != null &&
@@ -221,7 +223,7 @@ namespace Temporalio.Client
                     throw new InvalidOperationException("No result present");
                 }
                 return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
-                    resp.QueryResult.Payloads_);
+                    resp.QueryResult.Payloads_).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -238,7 +240,7 @@ namespace Temporalio.Client
                             RunId = input.RunID ?? string.Empty,
                         },
                     },
-                    DefaultRetryOptions(input.Options?.Rpc));
+                    DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 return new(resp);
             }
 
@@ -258,7 +260,7 @@ namespace Temporalio.Client
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
                     },
-                    DefaultRetryOptions(input.Options?.Rpc));
+                    DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -280,10 +282,11 @@ namespace Temporalio.Client
                 {
                     req.Details = new Payloads();
                     req.Details.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(input.Options.Details));
+                        await Client.Options.DataConverter.ToPayloadsAsync(
+                            input.Options.Details).ConfigureAwait(false));
                 }
                 await Client.Connection.WorkflowService.TerminateWorkflowExecutionAsync(
-                    req, DefaultRetryOptions(input.Options?.Rpc));
+                    req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -309,7 +312,7 @@ namespace Temporalio.Client
                 while (true)
                 {
                     var resp = await Client.Connection.WorkflowService.GetWorkflowExecutionHistoryAsync(
-                        req, DefaultRetryOptions(input.Rpc));
+                        req, DefaultRetryOptions(input.Rpc)).ConfigureAwait(false);
                     // We don't support raw history
                     if (resp.RawHistory.Count > 0)
                     {
@@ -352,7 +355,7 @@ namespace Temporalio.Client
                     do
                     {
                         var resp = await Client.Connection.WorkflowService.ListWorkflowExecutionsAsync(
-                            req, rpcOptsAndCancelSource.Item1);
+                            req, rpcOptsAndCancelSource.Item1).ConfigureAwait(false);
                         foreach (var exec in resp.Executions)
                         {
                             yield return new(exec);
@@ -392,8 +395,8 @@ namespace Temporalio.Client
                 if (input.Args.Count > 0)
                 {
                     req.Input = new Payloads();
-                    req.Input.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(input.Args));
+                    req.Input.Payloads_.AddRange(await Client.Options.DataConverter.ToPayloadsAsync(
+                        input.Args).ConfigureAwait(false));
                 }
                 if (input.Options.ExecutionTimeout != null)
                 {
@@ -421,7 +424,7 @@ namespace Temporalio.Client
                     {
                         req.Memo.Fields.Add(
                             field.Key,
-                            await Client.Options.DataConverter.ToPayloadAsync(field.Value));
+                            await Client.Options.DataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
                     }
                 }
                 if (input.Options.SearchAttributes != null && input.Options.SearchAttributes.Count > 0)
@@ -442,7 +445,7 @@ namespace Temporalio.Client
                         throw new ArgumentException("Cannot have start signal args without start signal");
                     }
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
-                        req, DefaultRetryOptions(input.Options.Rpc));
+                        req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                     return new WorkflowHandle<TResult>(
                         Client: Client,
                         ID: req.WorkflowId,
@@ -475,10 +478,11 @@ namespace Temporalio.Client
                 {
                     signalReq.SignalInput = new Payloads();
                     signalReq.SignalInput.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(input.Options.StartSignalArgs));
+                        await Client.Options.DataConverter.ToPayloadsAsync(
+                            input.Options.StartSignalArgs).ConfigureAwait(false));
                 }
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
-                    signalReq, DefaultRetryOptions(input.Options.Rpc));
+                    signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                 // Notice we do _not_ set first execution run ID for signal with start
                 return new WorkflowHandle<TResult>(
                     Client: Client,

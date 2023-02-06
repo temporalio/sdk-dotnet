@@ -17,6 +17,6 @@ public class RefsTests
     {
         Assert.Equal(
             typeof(ISomeInterface),
-            Refs.GetUnproxiedType(Refs<ISomeInterface>.Instance.GetType()));
+            Refs.GetUnproxiedType(Refs.Create<ISomeInterface>().GetType()));
     }
 }

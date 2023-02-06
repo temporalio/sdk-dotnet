@@ -16,7 +16,7 @@ namespace Temporalio.Testing
         /// <summary>
         /// Gets or sets a value indicating whether the UI will be started with the server.
         /// </summary>
-        public bool UI { get; set; } = false;
+        public bool UI { get; set; }
 
         /// <summary>
         /// Gets or sets <b>unstable</b> Temporalite options.

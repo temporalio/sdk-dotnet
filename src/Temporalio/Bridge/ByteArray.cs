@@ -51,8 +51,10 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                return parser.ParseFrom(
-                    new UnmanagedMemoryStream(byteArray->data, (long)byteArray->size));
+                using (var stream = new UnmanagedMemoryStream(byteArray->data, (long)byteArray->size))
+                {
+                    return parser.ParseFrom(stream);
+                }
             }
         }
 

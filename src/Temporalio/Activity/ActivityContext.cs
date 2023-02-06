@@ -12,9 +12,6 @@ namespace Temporalio.Activity
     /// </summary>
     public class ActivityContext
     {
-        private readonly object cancelReasonLock = new();
-        private ActivityCancelReason cancelReason = ActivityCancelReason.Unknown;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityContext"/> class.
         /// </summary>
@@ -23,6 +20,7 @@ namespace Temporalio.Activity
         /// <param name="workerShutdownToken">Workflow shutdown token.</param>
         /// <param name="taskToken">Raw activity task token.</param>
         /// <param name="logger">Logger.</param>
+#pragma warning disable CA1068 // We don't require cancellation token as last param
         internal ActivityContext(
             ActivityInfo info,
             CancellationToken cancellationToken,
@@ -36,6 +34,7 @@ namespace Temporalio.Activity
             TaskToken = taskToken;
             Logger = logger;
         }
+#pragma warning restore CA1068
 
         /// <summary>
         /// Gets a value indicating whether the current code is running in an activity.
@@ -50,29 +49,6 @@ namespace Temporalio.Activity
             throw new InvalidOperationException("No current context");
 
         /// <summary>
-        /// Gets why the activity was cancelled. This value is inaccurate until
-        /// <see cref="CancellationToken" /> is cancelled.
-        /// </summary>
-        public ActivityCancelReason CancelReason
-        {
-            get
-            {
-                lock (cancelReasonLock)
-                {
-                    return cancelReason;
-                }
-            }
-
-            internal set
-            {
-                lock (cancelReasonLock)
-                {
-                    cancelReason = value;
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets the info for this activity.
         /// </summary>
         public ActivityInfo Info { get; private init; }
@@ -81,6 +57,12 @@ namespace Temporalio.Activity
         /// Gets the logger scoped to this activity.
         /// </summary>
         public ILogger Logger { get; private init; }
+
+        /// <summary>
+        /// Gets why the activity was cancelled. This value is inaccurate until
+        /// <see cref="CancellationToken" /> is cancelled.
+        /// </summary>
+        public ActivityCancelReason CancelReason => CancelReasonRef.CancelReason;
 
         /// <summary>
         /// Gets the cancellation token that is cancelled when the activity is cancelled.
@@ -106,6 +88,11 @@ namespace Temporalio.Activity
         /// heartbeater.
         /// </summary>
         internal Action<object?[]>? Heartbeater { get; set; }
+
+        /// <summary>
+        /// Gets a reference to the reason enum.
+        /// </summary>
+        internal ActivityCancelReasonRef CancelReasonRef { get; init; } = new();
 
         /// <summary>
         /// Gets the raw proto task token for this activity.

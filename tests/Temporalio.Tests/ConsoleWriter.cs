@@ -11,8 +11,8 @@ public class ConsoleWriter : StringWriter
         this.output = output;
     }
 
-    public override void WriteLine(string? m)
+    public override void WriteLine(string? value)
     {
-        output.WriteLine(m);
+        output.WriteLine(value);
     }
 }

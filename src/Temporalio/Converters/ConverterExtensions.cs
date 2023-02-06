@@ -26,7 +26,8 @@ namespace Temporalio.Converters
             if (converter.PayloadCodec != null)
             {
                 // TODO(cretz): Ok if I'm lazy and use Linq knowing that ToList may cost
-                payloads = await converter.PayloadCodec.EncodeAsync(payloads.ToList());
+                payloads = await converter.PayloadCodec.EncodeAsync(
+                    payloads.ToList()).ConfigureAwait(false);
             }
             return payloads;
         }
@@ -43,7 +44,8 @@ namespace Temporalio.Converters
             var payload = converter.PayloadConverter.ToPayload(value);
             if (converter.PayloadCodec != null)
             {
-                payload = (await converter.PayloadCodec.EncodeAsync(new Payload[] { payload })).First();
+                payload = (await converter.PayloadCodec.EncodeAsync(
+                    new Payload[] { payload }).ConfigureAwait(false)).First();
             }
             return payload;
         }
@@ -94,7 +96,8 @@ namespace Temporalio.Converters
         public static async Task<T> ToSingleValueAsync<T>(
             this DataConverter converter, IReadOnlyCollection<Payload> payloads)
         {
-            return (T)(await converter.ToSingleValueAsync(payloads, typeof(T)))!;
+            return (T)(await converter.ToSingleValueAsync(
+                payloads, typeof(T)).ConfigureAwait(false))!;
         }
 
         /// <summary>
@@ -111,7 +114,8 @@ namespace Temporalio.Converters
             // Decode, then expect single payload
             if (converter.PayloadCodec != null)
             {
-                payloads = (await converter.PayloadCodec.DecodeAsync(payloads)).ToList();
+                payloads = (await converter.PayloadCodec.DecodeAsync(
+                    payloads).ConfigureAwait(false)).ToList();
             }
             if (payloads.Count != 1)
             {
@@ -133,7 +137,7 @@ namespace Temporalio.Converters
             // Decode then convert
             if (converter.PayloadCodec != null)
             {
-                await converter.PayloadCodec.DecodeFailureAsync(failure);
+                await converter.PayloadCodec.DecodeFailureAsync(failure).ConfigureAwait(false);
             }
             return converter.FailureConverter.ToException(failure, converter.PayloadConverter);
         }
@@ -151,7 +155,7 @@ namespace Temporalio.Converters
             var failure = converter.FailureConverter.ToFailure(exc, converter.PayloadConverter);
             if (converter.PayloadCodec != null)
             {
-                await converter.PayloadCodec.EncodeFailureAsync(failure);
+                await converter.PayloadCodec.EncodeFailureAsync(failure).ConfigureAwait(false);
             }
             return failure;
         }

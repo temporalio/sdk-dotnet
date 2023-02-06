@@ -1,3 +1,5 @@
+#pragma warning disable CA1822 // We don't want to force workflow methods to be static
+
 namespace Temporalio.Tests.Workflow;
 
 using Temporalio.Workflow;
@@ -179,7 +181,7 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
-            public static readonly IWf1 Ref = Refs<IWf1>.Instance;
+            public static readonly IWf1 Ref = Refs.Create<IWf1>();
 
             void RunWithoutAttribute();
         }
@@ -309,7 +311,7 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
-            public static readonly IWf1 Ref = Refs<IWf1>.Instance;
+            public static readonly IWf1 Ref = Refs.Create<IWf1>();
 
             [WorkflowRun]
             Task RunAsync();

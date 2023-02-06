@@ -25,7 +25,7 @@ namespace Temporalio.Exceptions
             // Have to check ourselves here just in case no collection present
             if (index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
             return Converter.ToValue<T>(Payloads.ElementAt(index));
         }

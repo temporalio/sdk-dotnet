@@ -32,12 +32,32 @@ namespace Temporalio.Bridge
                         client.Ptr, scope.Pointer(options.ToInteropOptions(scope, namespace_)));
                     if (workerOrFail.fail != null)
                     {
-                        throw new InvalidOperationException(
-                            new ByteArray(Runtime, workerOrFail.fail).ToUTF8());
+                        string failStr;
+                        using (var byteArray = new ByteArray(Runtime, workerOrFail.fail))
+                        {
+                            failStr = byteArray.ToUTF8();
+                        }
+                        throw new InvalidOperationException(failStr);
                     }
                     Ptr = workerOrFail.worker;
                     SetHandle((IntPtr)Ptr);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Worker"/> class from another. Only for
+        /// testing.
+        /// </summary>
+        /// <param name="other">Other worker to reference.</param>
+        internal Worker(Worker other)
+            : base(IntPtr.Zero, true)
+        {
+            unsafe
+            {
+                Runtime = other.Runtime;
+                Ptr = other.Ptr;
+                SetHandle((IntPtr)Ptr);
             }
         }
 
@@ -57,8 +77,9 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Poll for the next workflow activation.
         /// </summary>
+        /// <remarks>Only virtual for testing.</remarks>
         /// <returns>The activation or null if poller is shut down.</returns>
-        public async Task<Api.WorkflowActivation.WorkflowActivation?> PollWorkflowActivationAsync()
+        public virtual async Task<Api.WorkflowActivation.WorkflowActivation?> PollWorkflowActivationAsync()
         {
             using (var scope = new Scope())
             {
@@ -86,7 +107,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                return (await completion.Task)?.ToProto(
+                return (await completion.Task.ConfigureAwait(false))?.ToProto(
                     Api.WorkflowActivation.WorkflowActivation.Parser);
             }
         }
@@ -94,8 +115,9 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Poll for the next activity task.
         /// </summary>
+        /// <remarks>Only virtual for testing.</remarks>
         /// <returns>The task or null if poller is shut down.</returns>
-        public async Task<Api.ActivityTask.ActivityTask?> PollActivityTaskAsync()
+        public virtual async Task<Api.ActivityTask.ActivityTask?> PollActivityTaskAsync()
         {
             using (var scope = new Scope())
             {
@@ -123,7 +145,8 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                return (await completion.Task)?.ToProto(Api.ActivityTask.ActivityTask.Parser);
+                return (await completion.Task.ConfigureAwait(false))?.ToProto(
+                    Api.ActivityTask.ActivityTask.Parser);
             }
         }
 
@@ -158,7 +181,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                await completion.Task;
+                await completion.Task.ConfigureAwait(false);
             }
         }
 
@@ -192,7 +215,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                await completion.Task;
+                await completion.Task.ConfigureAwait(false);
             }
         }
 
@@ -210,7 +233,12 @@ namespace Temporalio.Bridge
                         Ptr, scope.ByteArray(heartbeat.ToByteArray()));
                     if (fail != null)
                     {
-                        throw new InvalidOperationException(new ByteArray(Runtime, fail).ToUTF8());
+                        string failStr;
+                        using (var byteArray = new ByteArray(Runtime, fail))
+                        {
+                            failStr = byteArray.ToUTF8();
+                        }
+                        throw new InvalidOperationException(failStr);
                     }
                 }
             }
@@ -260,7 +288,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                await completion.Task;
+                await completion.Task.ConfigureAwait(false);
             }
         }
 
@@ -293,7 +321,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                await completion.Task;
+                await completion.Task.ConfigureAwait(false);
             }
         }
 

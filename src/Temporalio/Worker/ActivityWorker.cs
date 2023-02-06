@@ -1,3 +1,5 @@
+#pragma warning disable CA1031 // We do want to catch _all_ exceptions in this file sometimes
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -18,7 +20,7 @@ namespace Temporalio.Worker
     /// <summary>
     /// Worker for activities.
     /// </summary>
-    internal class ActivityWorker
+    internal class ActivityWorker : IDisposable
     {
         private readonly TemporalWorker worker;
         private readonly ILogger logger;
@@ -37,9 +39,18 @@ namespace Temporalio.Worker
         {
             this.worker = worker;
             logger = worker.Client.Options.LoggerFactory.CreateLogger<ActivityWorker>();
+            // This will error on duplicate activity names
             activities = worker.Options.Activities.
                 Select(ActivityAttribute.Definition.FromDelegate).
                 ToDictionary(x => x.Name, x => x);
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="ActivityWorker"/> class.
+        /// </summary>
+        ~ActivityWorker()
+        {
+            Dispose(false);
         }
 
         /// <summary>
@@ -56,7 +67,7 @@ namespace Temporalio.Worker
             {
                 while (true)
                 {
-                    var task = await worker.BridgeWorker.PollActivityTaskAsync();
+                    var task = await worker.BridgeWorker.PollActivityTaskAsync().ConfigureAwait(false);
                     logger.LogTrace("Received activity task: {Task}", task);
                     switch (task?.VariantCase)
                     {
@@ -107,14 +118,33 @@ namespace Temporalio.Worker
                     "cancelling {ActivityCount} activity instance(s)",
                     worker.Options.GracefulShutdownTimeout,
                     runningActivities.Count);
-                await Task.Delay(worker.Options.GracefulShutdownTimeout);
+                await Task.Delay(worker.Options.GracefulShutdownTimeout).ConfigureAwait(false);
                 // Issue cancel-all and wait for all running activities to complete
                 await Task.WhenAll(runningActivities.Values.Select(act =>
                 {
                     act.Cancel(ActivityCancelReason.WorkerShutdown);
                     // We know task is set here
                     return act.Task!;
-                }));
+                })).ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Dispose the worker.
+        /// </summary>
+        /// <param name="disposing">Whether disposing.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                workerShutdownTokenSource.Dispose();
             }
         }
 
@@ -168,8 +198,10 @@ namespace Temporalio.Worker
                 // a task even though we're late-binding it here.
                 var act = new RunningActivity(context, cancelTokenSource);
                 runningActivities[tsk.TaskToken] = act;
+#pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
                 act.Task = worker.Options.ActivityTaskFactory.StartNew(
                     () => ExecuteActivityAsync(act, tsk)).Unwrap();
+#pragma warning restore CA2008
             }
         }
 
@@ -181,7 +213,7 @@ namespace Temporalio.Worker
             Bridge.Api.ActivityTaskCompletion completion;
             try
             {
-                completion = await ExecuteActivityInternalAsync(act, tsk);
+                completion = await ExecuteActivityInternalAsync(act, tsk).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -203,11 +235,12 @@ namespace Temporalio.Worker
                 // We have to wait on any outstanding heartbeats to finish. This will not throw. We
                 // accept that in a rare scenario, this heartbeat can fail to encode but it is too
                 // late to cancel the activity. Like other SDKs, we current drop this heartbeat.
-                await act.FinishHeartbeatsAsync();
+                await act.FinishHeartbeatsAsync().ConfigureAwait(false);
 
                 // Complete the task
                 act.Context.Logger.LogTrace("Sending activity completion: {Completion}", completion);
-                await worker.BridgeWorker.CompleteActivityTaskAsync(completion);
+                await worker.BridgeWorker.CompleteActivityTaskAsync(
+                    completion).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -228,7 +261,7 @@ namespace Temporalio.Worker
             Bridge.Api.ActivityTask.ActivityTask tsk)
         {
             act.Context.Logger.LogDebug(
-                "Running activity {ActivityType}",
+                "Running activity {ActivityType} (Token {TaskToken})",
                 act.Context.Info.ActivityType,
                 act.Context.TaskToken);
             // Completion to be sent back at end of activity
@@ -250,7 +283,7 @@ namespace Temporalio.Worker
                     throw new ApplicationFailureException(
                         $"Activity {act.Context.Info.ActivityType} is not registered on this worker," +
                         $" available activities: {availStr}",
-                        type: "NotFoundError");
+                        errorType: "NotFoundError");
                 }
 
                 // Deserialize arguments. If the input is less than the required parameter count, we
@@ -271,7 +304,7 @@ namespace Temporalio.Worker
                     foreach (var (input, paramInfo) in tsk.Start.Input.Zip(paramInfos, (a, b) => (a, b)))
                     {
                         var paramVal = await worker.Client.Options.DataConverter.ToValueAsync(
-                            input, paramInfo.ParameterType);
+                            input, paramInfo.ParameterType).ConfigureAwait(false);
                         paramVals.Add(paramVal);
                     }
                 }
@@ -297,14 +330,15 @@ namespace Temporalio.Worker
                 var result = await inbound.ExecuteActivityAsync(new(
                     Delegate: defn.Delegate,
                     Parameters: paramVals.ToArray(),
-                    Headers: tsk.Start.HeaderFields));
+                    Headers: tsk.Start.HeaderFields)).ConfigureAwait(false);
 
                 completion.Result.Completed = new();
                 // As a special case, ValueTuple is considered "void"
                 if (result is not ValueTuple)
                 {
                     completion.Result.Completed.Result =
-                        await worker.Client.Options.DataConverter.ToPayloadAsync(result);
+                        await worker.Client.Options.DataConverter.ToPayloadAsync(
+                            result).ConfigureAwait(false);
                 }
             }
             catch (CompleteAsyncException)
@@ -322,7 +356,7 @@ namespace Temporalio.Worker
                 completion.Result.Cancelled = new()
                 {
                     Failure = await worker.Client.Options.DataConverter.ToFailureAsync(
-                        new CancelledFailureException("Cancelled")),
+                        new CancelledFailureException("Cancelled")).ConfigureAwait(false),
                 };
             }
             catch (OperationCanceledException) when (act.HeartbeatFailureException != null)
@@ -333,7 +367,7 @@ namespace Temporalio.Worker
                 completion.Result.Failed = new()
                 {
                     Failure_ = await worker.Client.Options.DataConverter.ToFailureAsync(
-                        act.HeartbeatFailureException),
+                        act.HeartbeatFailureException).ConfigureAwait(false),
                 };
             }
             catch (Exception e)
@@ -344,7 +378,8 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await worker.Client.Options.DataConverter.ToFailureAsync(e),
+                    Failure_ = await worker.Client.Options.DataConverter.ToFailureAsync(
+                        e).ConfigureAwait(false),
                 };
             }
             finally
@@ -363,7 +398,8 @@ namespace Temporalio.Worker
         {
             private readonly CancellationTokenSource cancelTokenSource;
 
-            // All of these fields are locked on "this". While volatile could be used for the first
+            private readonly object mutex = new();
+            // All of these fields are locked on "mutex". While volatile could be used for the first
             // two since we don't have strict low-latency ordering guarantees, the lock does not
             // impose an unreasonable penalty.
             private bool serverRequestedCancel;
@@ -405,7 +441,7 @@ namespace Temporalio.Worker
             {
                 get
                 {
-                    lock (this)
+                    lock (mutex)
                     {
                         return serverRequestedCancel;
                     }
@@ -419,7 +455,7 @@ namespace Temporalio.Worker
             {
                 get
                 {
-                    lock (this)
+                    lock (mutex)
                     {
                         return heartbeatFailureException;
                     }
@@ -431,7 +467,7 @@ namespace Temporalio.Worker
             /// </summary>
             public void MarkDone()
             {
-                lock (this)
+                lock (mutex)
                 {
                     done = true;
                 }
@@ -456,7 +492,7 @@ namespace Temporalio.Worker
                         "Cancelling activity {TaskToken}, reason {Reason}",
                         Context.TaskToken,
                         reason);
-                    Context.CancelReason = reason;
+                    Context.CancelReasonRef.CancelReason = reason;
                     cancelTokenSource.Cancel();
                 }
             }
@@ -467,7 +503,7 @@ namespace Temporalio.Worker
             /// <param name="reason">Cancel reason.</param>
             public void Cancel(Bridge.Api.ActivityTask.ActivityCancelReason reason)
             {
-                lock (this)
+                lock (mutex)
                 {
                     serverRequestedCancel = true;
                 }
@@ -495,11 +531,11 @@ namespace Temporalio.Worker
             public async Task FinishHeartbeatsAsync()
             {
                 Task task;
-                lock (this)
+                lock (mutex)
                 {
                     task = lastHeartbeatTask;
                 }
-                await task;
+                await task.ConfigureAwait(false);
             }
 
             /// <summary>
@@ -510,7 +546,7 @@ namespace Temporalio.Worker
             public void Heartbeat(TemporalWorker worker, object?[] details)
             {
                 // This needs to be atomic
-                lock (this)
+                lock (mutex)
                 {
                     // If done, do nothing
                     if (done)
@@ -541,7 +577,7 @@ namespace Temporalio.Worker
                     while (true)
                     {
                         object?[]? details;
-                        lock (this)
+                        lock (mutex)
                         {
                             details = currentHeartbeat;
                             if (details == null)
@@ -558,7 +594,8 @@ namespace Temporalio.Worker
                         if (details.Length > 0)
                         {
                             heartbeat.Details.AddRange(
-                                await worker.Client.Options.DataConverter.ToPayloadsAsync(details));
+                                await worker.Client.Options.DataConverter.ToPayloadsAsync(
+                                    details).ConfigureAwait(false));
                         }
                         worker.BridgeWorker.RecordActivityHeartbeat(heartbeat);
                     }
@@ -570,7 +607,7 @@ namespace Temporalio.Worker
                         // Log exception on done (nowhere to can propagate), warning and cancel if
                         // not done
                         bool done;
-                        lock (this)
+                        lock (mutex)
                         {
                             done = this.done;
                             heartbeatFailureException = e;
@@ -620,7 +657,7 @@ namespace Temporalio.Worker
                 // If the result is a task, we need to await on it and use that result
                 if (result is Task resultTask)
                 {
-                    await resultTask;
+                    await resultTask.ConfigureAwait(false);
                     // We have to use reflection to extract value if it's a Task<>
                     var resultTaskType = resultTask.GetType();
                     if (resultTaskType.IsGenericType)

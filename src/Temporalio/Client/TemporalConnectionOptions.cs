@@ -118,7 +118,7 @@ namespace Temporalio.Client
                 {
                     ip = TargetHost.Substring(0, colonIndex);
                     var portStr = TargetHost.Substring(colonIndex + 1);
-                    if (portStr != string.Empty && portStr != "0")
+                    if (!string.IsNullOrEmpty(portStr) && portStr != "0")
                     {
                         int portInt;
                         if (!int.TryParse(portStr, out portInt))

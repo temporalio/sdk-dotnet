@@ -8,15 +8,15 @@ namespace Temporalio.Client.Interceptors
         /// <summary>
         /// Create a client outbound interceptor to intercept calls.
         /// </summary>
-        /// <param name="next">The next interceptor in the chain to call.</param>
+        /// <param name="nextInterceptor">The next interceptor in the chain to call.</param>
         /// <returns>Created interceptor.</returns>
 #if NETCOREAPP3_0_OR_GREATER
-        ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor next)
+        ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor nextInterceptor)
         {
-            return next;
+            return nextInterceptor;
         }
 #else
-        ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor next);
+        ClientOutboundInterceptor InterceptClient(ClientOutboundInterceptor nextInterceptor);
 #endif
     }
 }

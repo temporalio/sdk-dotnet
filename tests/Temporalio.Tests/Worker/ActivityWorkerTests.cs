@@ -92,7 +92,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
         var appErr = Assert.IsType<ApplicationFailureException>(actErr.InnerException);
         Assert.Equal("Oh no", appErr.Message);
-        Assert.Equal("InvalidOperationException", appErr.Type);
+        Assert.Equal("InvalidOperationException", appErr.ErrorType);
     }
 
     [Fact]
@@ -100,13 +100,13 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     {
         [Activity]
         static void Throw() => throw new ApplicationFailureException(
-            "Some message", type: "SomeType", details: new string[] { "foo", "bar" });
+            "Some message", errorType: "SomeType", details: new string[] { "foo", "bar" });
         var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
             async () => await ExecuteActivityAsync(Throw));
         var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
         var appErr = Assert.IsType<ApplicationFailureException>(actErr.InnerException);
         Assert.Equal("Some message", appErr.Message);
-        Assert.Equal("SomeType", appErr.Type);
+        Assert.Equal("SomeType", appErr.ErrorType);
         Assert.Equal(2, appErr.Details.Count);
         Assert.Equal("foo", appErr.Details.ElementAt<string>(0));
         Assert.Equal("bar", appErr.Details.ElementAt<string>(1));
@@ -214,7 +214,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteActivityAsync_WorkerShutdown_ReportsFailure()
     {
-        var workerStoppingSource = new CancellationTokenSource();
+        using var workerStoppingSource = new CancellationTokenSource();
         var activityReached = new TaskCompletionSource();
         var gotCancellation = false;
         [Activity]
@@ -267,11 +267,12 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         static void Ignored() => throw new NotImplementedException();
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        await new TemporalWorker(Client, new()
+        using var worker = new TemporalWorker(Client, new()
         {
             TaskQueue = taskQueue,
             Activities = { Ignored },
-        }).ExecuteAsync(async () =>
+        });
+        await worker.ExecuteAsync(async () =>
         {
             var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
                 () => Env.Client.ExecuteWorkflowAsync(
@@ -295,12 +296,13 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
         // Only allow 5 activities but try to execute 6 and confirm schedule to start timeout fails
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        await new TemporalWorker(Client, new()
+        using var worker = new TemporalWorker(Client, new()
         {
             TaskQueue = taskQueue,
             Activities = { WaitUntilCancelledAsync },
             MaxConcurrentActivities = 5,
-        }).ExecuteAsync(async () =>
+        });
+        await worker.ExecuteAsync(async () =>
         {
             var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
                 () => Env.Client.ExecuteWorkflowAsync(
@@ -363,11 +365,12 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        await new TemporalWorker(Client, new()
+        using var worker = new TemporalWorker(Client, new()
         {
             TaskQueue = taskQueue,
             Activities = { CompleteExternal },
-        }).ExecuteAsync(async () =>
+        });
+        await worker.ExecuteAsync(async () =>
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
@@ -398,11 +401,12 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        await new TemporalWorker(Client, new()
+        using var worker = new TemporalWorker(Client, new()
         {
             TaskQueue = taskQueue,
             Activities = { CompleteExternal },
-        }).ExecuteAsync(async () =>
+        });
+        await worker.ExecuteAsync(async () =>
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
@@ -431,7 +435,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
             var appErr = Assert.IsType<ApplicationFailureException>(actErr.InnerException);
             Assert.Equal("Oh no", appErr.Message);
-            Assert.Equal("InvalidOperationException", appErr.Type);
+            Assert.Equal("InvalidOperationException", appErr.ErrorType);
         });
     }
 
@@ -447,11 +451,12 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        await new TemporalWorker(Client, new()
+        using var worker = new TemporalWorker(Client, new()
         {
             TaskQueue = taskQueue,
             Activities = { CompleteExternal },
-        }).ExecuteAsync(async () =>
+        });
+        await worker.ExecuteAsync(async () =>
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
@@ -490,14 +495,82 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public void ExecuteAsync_PollFailure_ShutsDownWorker()
+    public async Task ExecuteAsync_PollFailure_ShutsDownWorker()
     {
+        var activityWaiting = new TaskCompletionSource();
+        var workerShutdown = false;
+        [Activity]
+        async Task WaitUntilCancelledAsync()
+        {
+            activityWaiting.SetResult();
+            try
+            {
+                await Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+            }
+            catch (TaskCanceledException) when (
+                ActivityContext.Current.CancelReason == ActivityCancelReason.WorkerShutdown)
+            {
+                workerShutdown = true;
+                throw;
+            }
+        }
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        using var worker = new TemporalWorker(Client, new()
+        {
+            TaskQueue = taskQueue,
+            Activities = { WaitUntilCancelledAsync },
+        });
+        // Overwrite bridge worker with one we can inject failures on
+        var bridgeWorker = new ManualPollCompletionBridgeWorker(worker.BridgeWorker);
+        worker.BridgeWorker = bridgeWorker;
+
+        // Run the worker
+        WorkflowHandle? handle = null;
+        var wErr = await Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await worker.ExecuteAsync(async () =>
+        {
+            // Start the workflow
+            handle = await Env.Client.StartWorkflowAsync(
+                IKitchenSinkWorkflow.Ref.RunAsync,
+                new KSWorkflowParams(new KSAction(ExecuteActivity: new(
+                    Name: "WaitUntilCancelled",
+                    TaskQueue: taskQueue))),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
+
+            // Wait for activity to report waiting, then send a poll failure
+            await activityWaiting.Task;
+            bridgeWorker.PollActivityCompletion.SetException(
+                new InvalidOperationException("Oh no"));
+            await Task.Delay(Timeout.Infinite);
+        }));
+        Assert.Equal("Oh no", wErr.Message);
+
+        // Confirm workflow cancelled
+        var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
+            () => handle!.GetResultAsync());
+        var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
+        var appErr = Assert.IsType<ApplicationFailureException>(actErr.InnerException);
+        Assert.Equal("TaskCanceledException", appErr.ErrorType);
+        Assert.True(workerShutdown);
     }
 
     [Fact]
     public void New_DuplicateActivityNames_Throws()
     {
-        // TODO(cretz): Activity test framework too
+        [Activity("some-activity")]
+        static string SomeActivity1() => string.Empty;
+        [Activity("some-activity")]
+        static string SomeActivity2() => string.Empty;
+        var err = Assert.Throws<ArgumentException>(() =>
+        {
+            using var worker = new TemporalWorker(Client, new()
+            {
+                TaskQueue = $"tq-{Guid.NewGuid()}",
+                Activities = { SomeActivity1, SomeActivity2 },
+            });
+        });
+        Assert.Contains("same key has already been added", err.Message);
     }
 
     [Activity]
@@ -605,7 +678,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         return ExecuteActivityInternalAsync<TResult>(activity, arg, args);
     }
 
-    internal Task<TResult> ExecuteActivityInternalAsync<TResult>(
+    internal async Task<TResult> ExecuteActivityInternalAsync<TResult>(
         Delegate activity,
         object? arg = null,
         object?[]? args = null,
@@ -617,11 +690,12 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         args ??= new object?[] { arg };
         // Run within worker
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        return new TemporalWorker(Client, new()
+        using var worker = new TemporalWorker(Client, new()
         {
             TaskQueue = taskQueue,
             Activities = { activity },
-        }).ExecuteAsync(
+        });
+        return await worker.ExecuteAsync(
             async () =>
             {
                 var handle = await Env.Client.StartWorkflowAsync(

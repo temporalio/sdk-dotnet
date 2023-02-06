@@ -7,7 +7,7 @@ using Xunit;
 public class WorkflowEnvironment : IAsyncLifetime
 {
     private readonly Lazy<KitchenSinkWorker> kitchenSinkWorker;
-    private Testing.WorkflowEnvironment? env;
+    private Temporalio.Testing.WorkflowEnvironment? env;
 
     public WorkflowEnvironment()
     {
@@ -22,7 +22,7 @@ public class WorkflowEnvironment : IAsyncLifetime
     public async Task InitializeAsync()
     {
         // TODO(cretz): Support other environments
-        env = await Testing.WorkflowEnvironment.StartLocalAsync(new()
+        env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
         {
             Temporalite = new()
             {

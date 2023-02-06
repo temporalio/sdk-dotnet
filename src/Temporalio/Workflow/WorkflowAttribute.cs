@@ -17,13 +17,12 @@ namespace Temporalio.Workflow
     /// <see cref="WorkflowRunAttribute" />.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
-    public class WorkflowAttribute : Attribute
+    public sealed class WorkflowAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowAttribute"/> class with the default
-        /// name.
+        /// name. See <see cref="Name" />.
         /// </summary>
-        /// <seealso cref="Name" />
         public WorkflowAttribute()
         {
         }
@@ -32,18 +31,18 @@ namespace Temporalio.Workflow
         /// Initializes a new instance of the <see cref="WorkflowAttribute"/> class with the given
         /// name.
         /// </summary>
-        /// <param name="name">Workflow type name to use.</param>
+        /// <param name="name">Workflow type name to use. See <see cref="Name" />.</param>
         public WorkflowAttribute(string name)
         {
             Name = name;
         }
 
         /// <summary>
-        /// Gets or sets the workflow type name. If this is unset, it defaults to the unqualified
-        /// type name. If the type is an interface and the first character is a capital "I" followed
-        /// by another capital letter, the "I" is trimmed when creating the default name.
+        /// Gets the workflow type name. If this is unset, it defaults to the unqualified type name.
+        /// If the type is an interface and the first character is a capital "I" followed by another
+        /// capital letter, the "I" is trimmed when creating the default name.
         /// </summary>
-        public string? Name { get; set; }
+        public string? Name { get; }
 
         /// <summary>
         /// Internal representation of a workflow definition.

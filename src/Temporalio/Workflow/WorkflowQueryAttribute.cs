@@ -14,13 +14,12 @@ namespace Temporalio.Workflow
     /// value.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class WorkflowQueryAttribute : Attribute
+    public sealed class WorkflowQueryAttribute : Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowQueryAttribute"/> class with the
-        /// default name.
+        /// default name. See <see cref="Name" />.
         /// </summary>
-        /// <seealso cref="Name" />
         public WorkflowQueryAttribute()
         {
         }
@@ -29,17 +28,17 @@ namespace Temporalio.Workflow
         /// Initializes a new instance of the <see cref="WorkflowQueryAttribute"/> class with the
         /// given name.
         /// </summary>
-        /// <param name="name">Workflow query name to use.</param>
+        /// <param name="name">Workflow query name to use. See <see cref="Name" />.</param>
         public WorkflowQueryAttribute(string name)
         {
             Name = name;
         }
 
         /// <summary>
-        /// Gets or sets the workflow query name. If this is unset, it defaults to the unqualified
-        /// method name.
+        /// Gets the workflow query name. If this is unset, it defaults to the unqualified method
+        /// name.
         /// </summary>
-        public string? Name { get; set; }
+        public string? Name { get; }
 
         /// <summary>
         /// Query definition.
