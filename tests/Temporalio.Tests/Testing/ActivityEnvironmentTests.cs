@@ -10,7 +10,7 @@ public class ActivityEnvironmentTests
     public async Task RunAsync_SimpleActivity_Succeeds()
     {
         ActivityInfo? info = null;
-        var cancelReason = ActivityCancelReason.Unknown;
+        var cancelReason = ActivityCancelReason.None;
         var heartbeats = new List<object?[]>();
         var env = new ActivityEnvironment()
         {

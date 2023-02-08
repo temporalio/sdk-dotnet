@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
+using Temporalio.Converters;
 
 namespace Temporalio.Activity
 {
@@ -11,6 +15,7 @@ namespace Temporalio.Activity
     /// <param name="ActivityType">Type name for the activity.</param>
     /// <param name="Attempt">Attempt the activity is on.</param>
     /// <param name="CurrentAttemptScheduledTime">When the current attempt was scheduled.</param>
+    /// <param name="DataConverter">Data converter used for heartbeat details.</param>
     /// <param name="HeartbeatDetails">Details from the last heartbeat of the last attempt.</param>
     /// <param name="HeartbeatTimeout">Heartbeat timeout set by the caller.</param>
     /// <param name="IsLocal">Whether the activity is a local activity or not.</param>
@@ -29,6 +34,7 @@ namespace Temporalio.Activity
         string ActivityType,
         int Attempt,
         DateTime CurrentAttemptScheduledTime,
+        [property: JsonIgnore] DataConverter DataConverter,
         IReadOnlyCollection<Payload> HeartbeatDetails,
         TimeSpan? HeartbeatTimeout,
         bool IsLocal,
@@ -48,6 +54,7 @@ namespace Temporalio.Activity
         /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this activity is
         /// started.
         /// </summary>
+        [JsonIgnore]
         public IReadOnlyDictionary<string, object> LoggerScope { get; } = new Dictionary<string, object>
         {
             ["ActivityID"] = ActivityID,
@@ -58,5 +65,14 @@ namespace Temporalio.Activity
             ["WorkflowRunID"] = WorkflowRunID,
             ["WorkflowType"] = WorkflowType,
         };
+
+        /// <summary>
+        /// Convert a heartbeat detail at the given index.
+        /// </summary>
+        /// <typeparam name="T">Type of the value.</typeparam>
+        /// <param name="index">Index of the value.</param>
+        /// <returns>Converted value.</returns>
+        public Task<T> HeartbeatDetailAtAsync<T>(int index) =>
+            DataConverter.ToValueAsync<T>(HeartbeatDetails.ElementAt(index));
     }
 }

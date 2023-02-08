@@ -8,6 +8,6 @@ namespace Temporalio.Activity
         /// <summary>
         /// Gets or sets the cancel reason.
         /// </summary>
-        public ActivityCancelReason CancelReason { get; set; } = ActivityCancelReason.Unknown;
+        public ActivityCancelReason CancelReason { get; set; } = ActivityCancelReason.None;
     }
 }

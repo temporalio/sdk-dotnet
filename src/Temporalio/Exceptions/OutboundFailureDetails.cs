@@ -15,7 +15,7 @@ namespace Temporalio.Exceptions
         public int Count => Details?.Count ?? 0;
 
         /// <inheritdoc />
-        public T? ElementAt<T>(int index)
+        public T ElementAt<T>(int index)
         {
             // Have to check ourselves here just in case no collection present
             if (index >= Count)

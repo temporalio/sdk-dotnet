@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Temporalio.Activity;
 using Temporalio.Api.Common.V1;
+using Temporalio.Converters;
 
 namespace Temporalio.Testing
 {
@@ -22,6 +23,7 @@ namespace Temporalio.Testing
             ActivityType: "unknown",
             Attempt: 1,
             CurrentAttemptScheduledTime: new(1970, 1, 1, 1, 1, 1, DateTimeKind.Utc),
+            DataConverter: DataConverter.Default,
             HeartbeatDetails: Array.Empty<Payload>(),
             HeartbeatTimeout: null,
             IsLocal: false,

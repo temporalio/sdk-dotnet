@@ -209,9 +209,12 @@ namespace Temporalio.Worker
             // Start workers. We intentionally don't pass cancellation tokens to the individual
             // workers because they are expected to react to polling shutdown and, in the activity
             // worker's case, gracefully shutdown still-running tasks.
+            var pollTasks = new List<Task>();
             if (activityWorker != null)
             {
-                tasks.Add(activityWorker.ExecuteAsync());
+                var activityWorkerTask = activityWorker.ExecuteAsync();
+                tasks.Add(activityWorkerTask);
+                pollTasks.Add(activityWorkerTask);
             }
             // TODO(cretz): Workflows
 
@@ -237,6 +240,20 @@ namespace Temporalio.Worker
                 }
             }
 
+            // Start shutdown and wait for all poll tasks to be complete. We ignore the exception
+            // because the poll tasks remain in the regular task list that will be waited again
+            // below.
+            tasks.Add(Task.Run(BridgeWorker.ShutdownAsync, CancellationToken.None));
+#pragma warning disable CA1031 // Intentionally swallow all exceptions
+            try
+            {
+                await Task.WhenAll(pollTasks).ConfigureAwait(false);
+            }
+            catch
+            {
+            }
+#pragma warning restore CA1031
+
             // If the token is not already cancelled, we want to remove that from the tasks to be
             // waited on
             if (!tasks[0].IsCompleted)
@@ -250,9 +267,6 @@ namespace Temporalio.Worker
             {
                 tasks.Remove(userTask);
             }
-
-            // Start the shutdown of the worker
-            tasks.Add(Task.Run(BridgeWorker.ShutdownAsync, CancellationToken.None));
 
             // If there is an activity worker, we want to add a graceful shutdown task for it
             if (activityWorker != null)
@@ -279,7 +293,7 @@ namespace Temporalio.Worker
                 catch (Exception e)
                 {
                     // Ignore finalization errors, worker will be dropped Rust side anyways
-                    logger.LogDebug(e, "Worker finalization failed");
+                    logger.LogWarning(e, "Worker finalization failed");
                 }
 #pragma warning restore CA1031
             }

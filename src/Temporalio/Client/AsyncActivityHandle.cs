@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Async activity handle to perform activity actions for activities that will complete
-    /// asynchronously.
+    /// Handle to perform activity actions for activities that will complete asynchronously.
     /// </summary>
     /// <param name="Client">Client used for async activity handle calls.</param>
     /// <param name="Activity">Reference to the activity for this handle.</param>
@@ -83,7 +82,7 @@ namespace Temporalio.Client
         /// <param name="RunID">Run ID for the activity's workflow.</param>
         /// <param name="ActivityID">ID for the activity.</param>
         public record IDReference(
-            string WorkflowID, string RunID, string ActivityID) : Reference;
+            string WorkflowID, string? RunID, string ActivityID) : Reference;
 
         /// <summary>
         /// Reference to an activity by its task token.

@@ -108,6 +108,11 @@ namespace Temporalio.Activity
         /// asynchronously, so this will not error if the details cannot be converted. Rather any
         /// error converting heartbeat details will result in activity cancellation then activity
         /// failure.
+        /// <para>
+        /// Heartbeat calls are throttled internally based on the heartbeat timeout of the activity.
+        /// Users do not have to be concerned with burdening the server by calling this too
+        /// frequently.
+        /// </para>
         /// </remarks>
         /// <param name="details">Details to record with the heartbeat if any.</param>
         public void Heartbeat(params object?[] details)

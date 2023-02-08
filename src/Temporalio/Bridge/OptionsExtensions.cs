@@ -358,7 +358,6 @@ namespace Temporalio.Bridge
                 max_outstanding_local_activities = 100,
                 max_concurrent_workflow_task_polls = 5,
                 nonsticky_to_sticky_poll_ratio = 0.2F,
-                max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
                 no_remote_activities = 0,
                 sticky_queue_schedule_to_start_timeout_millis = 10000,
                 max_heartbeat_throttle_interval_millis =

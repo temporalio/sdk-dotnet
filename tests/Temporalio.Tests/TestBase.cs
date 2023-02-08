@@ -14,7 +14,7 @@ public abstract class TestBase : IDisposable
         {
             LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
                 builder.AddSimpleConsole().SetMinimumLevel(
-                    Program.Verbose ? LogLevel.Trace : LogLevel.Debug));
+                    Program.Verbose ? LogLevel.Trace : LogLevel.Information));
         }
         else
         {

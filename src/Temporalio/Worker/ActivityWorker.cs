@@ -39,10 +39,16 @@ namespace Temporalio.Worker
         {
             this.worker = worker;
             logger = worker.Client.Options.LoggerFactory.CreateLogger<ActivityWorker>();
-            // This will error on duplicate activity names
-            activities = worker.Options.Activities.
-                Select(ActivityAttribute.Definition.FromDelegate).
-                ToDictionary(x => x.Name, x => x);
+            activities = new(worker.Options.Activities.Count);
+            foreach (var activity in worker.Options.Activities)
+            {
+                var defn = ActivityAttribute.Definition.FromDelegate(activity);
+                if (activities.ContainsKey(defn.Name))
+                {
+                    throw new ArgumentException($"Duplicate activity named {defn.Name}");
+                }
+                activities[defn.Name] = defn;
+            }
         }
 
         /// <summary>
@@ -112,12 +118,12 @@ namespace Temporalio.Worker
                 ["TaskQueue"] = worker.Options.TaskQueue!,
             }))
             {
-                workerShutdownTokenSource.Cancel();
                 logger.LogInformation(
                     "Beginning activity worker shutdown, will wait {GracefulShutdownTimeout} before " +
                     "cancelling {ActivityCount} activity instance(s)",
                     worker.Options.GracefulShutdownTimeout,
                     runningActivities.Count);
+                workerShutdownTokenSource.Cancel();
                 await Task.Delay(worker.Options.GracefulShutdownTimeout).ConfigureAwait(false);
                 // Issue cancel-all and wait for all running activities to complete
                 await Task.WhenAll(runningActivities.Values.Select(act =>
@@ -166,6 +172,7 @@ namespace Temporalio.Worker
                 ActivityType: start.ActivityType,
                 Attempt: (int)start.Attempt,
                 CurrentAttemptScheduledTime: start.CurrentAttemptScheduledTime.ToDateTime(),
+                DataConverter: worker.Client.Options.DataConverter,
                 HeartbeatDetails: start.HeartbeatDetails,
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
@@ -301,12 +308,10 @@ namespace Temporalio.Worker
                 var paramVals = new List<object?>(tsk.Start.Input.Count);
                 try
                 {
-                    foreach (var (input, paramInfo) in tsk.Start.Input.Zip(paramInfos, (a, b) => (a, b)))
-                    {
-                        var paramVal = await worker.Client.Options.DataConverter.ToValueAsync(
-                            input, paramInfo.ParameterType).ConfigureAwait(false);
-                        paramVals.Add(paramVal);
-                    }
+                    paramVals.AddRange(await Task.WhenAll(
+                        tsk.Start.Input.Zip(paramInfos, (input, paramInfo) =>
+                            worker.Client.Options.DataConverter.ToValueAsync(
+                                input, paramInfo.ParameterType))).ConfigureAwait(false));
                 }
                 catch (Exception e)
                 {
@@ -334,7 +339,7 @@ namespace Temporalio.Worker
 
                 completion.Result.Completed = new();
                 // As a special case, ValueTuple is considered "void"
-                if (result is not ValueTuple)
+                if (result?.GetType() != typeof(ValueTuple))
                 {
                     completion.Result.Completed.Result =
                         await worker.Client.Options.DataConverter.ToPayloadAsync(
@@ -519,7 +524,7 @@ namespace Temporalio.Worker
                         Cancel(ActivityCancelReason.Timeout);
                         break;
                     default:
-                        Cancel(ActivityCancelReason.Unknown);
+                        Cancel(ActivityCancelReason.None);
                         break;
                 }
             }

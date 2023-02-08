@@ -8,7 +8,7 @@ namespace Temporalio.Activity
         /// <summary>
         /// The activity has not been cancelled or was cancelled for an unknown reason.
         /// </summary>
-        Unknown,
+        None,
 
         /// <summary>
         /// The activity no longer exists on the server (may already be completed or its workflow

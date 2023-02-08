@@ -251,7 +251,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteActivityAsync_ThrowsOperationCancelled_ReportsFailure()
     {
-        // Just to confirm there's not an issue with this exception
+        // Just to confirm that a .NET cancelled exception when cancel is not requested is properly
+        // treated as an app exception instead of marking activity cancelled
         [Activity]
         static void Throws() => throw new OperationCanceledException();
         var wfErr = await Assert.ThrowsAnyAsync<WorkflowFailedException>(
@@ -336,7 +337,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteActivityAsync_HeartbeatDetailsConversionFailure_ReportsFailure()
     {
-        var cancelReason = ActivityCancelReason.Unknown;
+        var cancelReason = ActivityCancelReason.None;
         [Activity]
         async Task BadHeartbeatDetailsAsync()
         {
@@ -351,6 +352,29 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         await Assert.ThrowsAnyAsync<WorkflowFailedException>(() => ExecuteActivityAsync(
             BadHeartbeatDetailsAsync));
         Assert.Equal(ActivityCancelReason.HeartbeatRecordFailure, cancelReason);
+    }
+
+    [Fact]
+    public async Task ExecuteActivityAsync_HeartbeatDetailsAfterFailure_ProperlyRecorded()
+    {
+        var heartbeatDetail = "<unset>";
+        [Activity]
+        async Task HeartbeatAndFailAsync()
+        {
+            ActivityContext.Current.Heartbeat($"attempt: {ActivityContext.Current.Info.Attempt}");
+            if (ActivityContext.Current.Info.HeartbeatDetails.Count > 0)
+            {
+                heartbeatDetail = await ActivityContext.Current.Info.HeartbeatDetailAtAsync<string>(0);
+            }
+            throw new InvalidOperationException("Oh no");
+        }
+        var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(() => ExecuteActivityAsync(
+            HeartbeatAndFailAsync, maxAttempts: 2));
+        var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
+        var appErr = Assert.IsType<ApplicationFailureException>(actErr.InnerException);
+        Assert.Equal("Oh no", appErr.Message);
+        // Should show the detail from the first attempt
+        Assert.Equal("attempt: 1", heartbeatDetail);
     }
 
     [Fact]
@@ -570,7 +594,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
                 Activities = { SomeActivity1, SomeActivity2 },
             });
         });
-        Assert.Contains("same key has already been added", err.Message);
+        Assert.Equal("Duplicate activity named some-activity", err.Message);
     }
 
     [Activity]
@@ -621,6 +645,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Func<WorkflowHandle, Task>? afterStarted = null,
         bool waitForCancellation = false,
         TimeSpan? heartbeatTimeout = null,
+        int? maxAttempts = null,
         CancellationToken workerStoppingToken = default)
     {
         await ExecuteActivityInternalAsync<ValueTuple>(
@@ -628,7 +653,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             afterStarted: afterStarted,
             workerStoppingToken: workerStoppingToken,
             waitForCancellation: waitForCancellation,
-            heartbeatTimeout: heartbeatTimeout);
+            heartbeatTimeout: heartbeatTimeout,
+            maxAttempts: maxAttempts);
     }
 
     internal async Task ExecuteActivityAsync<T>(
@@ -685,6 +711,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Func<WorkflowHandle, Task>? afterStarted = null,
         bool waitForCancellation = false,
         TimeSpan? heartbeatTimeout = null,
+        int? maxAttempts = null,
         CancellationToken workerStoppingToken = default)
     {
         args ??= new object?[] { arg };
@@ -705,7 +732,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
                         TaskQueue: taskQueue,
                         Args: args,
                         WaitForCancellation: waitForCancellation,
-                        HeartbeatTimeoutMS: (long?)heartbeatTimeout?.TotalMilliseconds))),
+                        HeartbeatTimeoutMS: (long?)heartbeatTimeout?.TotalMilliseconds,
+                        RetryMaxAttempts: maxAttempts))),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
                 if (afterStarted != null)
                 {

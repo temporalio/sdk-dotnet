@@ -70,12 +70,6 @@ namespace Temporalio.Worker
         public int MaxConcurrentActivities { get; set; } = 100;
 
         /// <summary>
-        /// Gets or sets the maximum number of concurrent poll activity task requests we will
-        /// perform at a time on this worker's task queue.
-        /// </summary>
-        public int MaxConcurrentActivityTaskPolls { get; set; } = 5;
-
-        /// <summary>
         /// Gets or sets the longest interval for throttling activity heartbeats.
         /// </summary>
         public TimeSpan MaxHeartbeatThrottleInterval { get; set; } = TimeSpan.FromSeconds(60);

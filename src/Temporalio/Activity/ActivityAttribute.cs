@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace Temporalio.Activity
 {
     /// <summary>
-    /// Designate a method as a workflow.
+    /// Designate a method as an activity.
     /// </summary>
     /// <remarks>
     /// This attribute is not inherited, so if a base class method has this attribute, its override
