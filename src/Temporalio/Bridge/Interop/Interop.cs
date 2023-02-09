@@ -27,6 +27,10 @@ namespace Temporalio.Bridge.Interop
     {
     }
 
+    internal partial struct Worker
+    {
+    }
+
     internal unsafe partial struct ByteArrayRef
     {
         [NativeTypeName("const uint8_t *")]
@@ -265,6 +269,69 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void EphemeralServerShutdownCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
+    internal unsafe partial struct WorkerOrFail
+    {
+        [NativeTypeName("struct Worker *")]
+        public Worker* worker;
+
+        [NativeTypeName("const struct ByteArray *")]
+        public ByteArray* fail;
+    }
+
+    internal partial struct WorkerOptions
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef namespace_;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef task_queue;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef build_id;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef identity_override;
+
+        [NativeTypeName("uint32_t")]
+        public uint max_cached_workflows;
+
+        [NativeTypeName("uint32_t")]
+        public uint max_outstanding_workflow_tasks;
+
+        [NativeTypeName("uint32_t")]
+        public uint max_outstanding_activities;
+
+        [NativeTypeName("uint32_t")]
+        public uint max_outstanding_local_activities;
+
+        [NativeTypeName("uint32_t")]
+        public uint max_concurrent_workflow_task_polls;
+
+        public float nonsticky_to_sticky_poll_ratio;
+
+        [NativeTypeName("bool")]
+        public byte no_remote_activities;
+
+        [NativeTypeName("uint64_t")]
+        public ulong sticky_queue_schedule_to_start_timeout_millis;
+
+        [NativeTypeName("uint64_t")]
+        public ulong max_heartbeat_throttle_interval_millis;
+
+        [NativeTypeName("uint64_t")]
+        public ulong default_heartbeat_throttle_interval_millis;
+
+        public double max_activities_per_second;
+
+        public double max_task_queue_activities_per_second;
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void WorkerPollCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void WorkerCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+
     internal static unsafe partial class Methods
     {
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -307,5 +374,40 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ephemeral_server_shutdown([NativeTypeName("struct EphemeralServer *")] EphemeralServer* server, void* user_data, [NativeTypeName("EphemeralServerShutdownCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct WorkerOrFail")]
+        public static extern WorkerOrFail worker_new([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct WorkerOptions *")] WorkerOptions* options);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_free([NativeTypeName("struct Worker *")] Worker* worker);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_poll_workflow_activation([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerPollCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_poll_activity_task([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerPollCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_complete_workflow_activation([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef completion, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_complete_activity_task([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef completion, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("const struct ByteArray *")]
+        public static extern ByteArray* worker_record_activity_heartbeat([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef heartbeat);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_request_workflow_eviction([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef run_id);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_shutdown([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_initiate_shutdown([NativeTypeName("struct Worker *")] Worker* worker);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_finalize_shutdown([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
     }
 }

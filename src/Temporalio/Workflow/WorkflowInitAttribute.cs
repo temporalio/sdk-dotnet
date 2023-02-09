@@ -12,7 +12,7 @@ namespace Temporalio.Workflow
     /// constructors.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Constructor, Inherited = false)]
-    public class WorkflowInitAttribute : Attribute
+    public sealed class WorkflowInitAttribute : Attribute
     {
     }
 }

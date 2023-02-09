@@ -74,6 +74,7 @@ jobs:
           dotnet tool install --global ClangSharpPInvokeGenerator
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
+          npx doctoc README.md
           git config --global core.safecrlf false
           git diff --exit-code
 

@@ -6,7 +6,7 @@ using Temporalio.Workflow;
 [Workflow("kitchen_sink")]
 public interface IKitchenSinkWorkflow
 {
-    static readonly IKitchenSinkWorkflow Ref = Refs<IKitchenSinkWorkflow>.Instance;
+    static readonly IKitchenSinkWorkflow Ref = Refs.Create<IKitchenSinkWorkflow>();
 
     [WorkflowRun]
     Task<string> RunAsync(KSWorkflowParams args);
@@ -24,7 +24,7 @@ public interface IKitchenSinkWorkflow
 [Workflow("kitchen_sink")]
 public interface IKitchenSinkWorkflowWithReturnObject
 {
-    static readonly IKitchenSinkWorkflowWithReturnObject Ref = Refs<IKitchenSinkWorkflowWithReturnObject>.Instance;
+    static readonly IKitchenSinkWorkflowWithReturnObject Ref = Refs.Create<IKitchenSinkWorkflowWithReturnObject>();
 
     [WorkflowRun]
     Task<KSWorkflowResult> RunAsync(KSWorkflowParams args);
@@ -33,7 +33,7 @@ public interface IKitchenSinkWorkflowWithReturnObject
 [Workflow("kitchen_sink")]
 public interface IKitchenSinkWorkflowWithUnknownReturn
 {
-    static readonly IKitchenSinkWorkflowWithUnknownReturn Ref = Refs<IKitchenSinkWorkflowWithUnknownReturn>.Instance;
+    static readonly IKitchenSinkWorkflowWithUnknownReturn Ref = Refs.Create<IKitchenSinkWorkflowWithUnknownReturn>();
 
     [WorkflowRun]
     Task<string> RunAsync(KSWorkflowParams args);
@@ -93,7 +93,7 @@ public record KSExecuteActivityAction(
     [property: JsonPropertyName("start_to_close_timeout_ms")] long? StartToCloseTimeoutMS = null,
     [property: JsonPropertyName("schedule_to_start_timeout_ms")] long? ScheduleToStartTimeoutMS = null,
     [property: JsonPropertyName("cancel_after_ms")] long? CancelAfterMS = null,
-    [property: JsonPropertyName("wait-for_cancellation")] bool WaitForCancellation = false,
+    [property: JsonPropertyName("wait_for_cancellation")] bool WaitForCancellation = false,
     [property: JsonPropertyName("heartbeat_timeout_ms")] long? HeartbeatTimeoutMS = null,
     [property: JsonPropertyName("retry_max_attempts")] int? RetryMaxAttempts = null,
     [property: JsonPropertyName("non_retryable_error_types")] IReadOnlyCollection<string>? NonRetryableErrorTypes = null);

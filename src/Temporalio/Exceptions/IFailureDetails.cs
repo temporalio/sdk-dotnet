@@ -28,6 +28,6 @@ namespace Temporalio.Exceptions
         /// This will fail if the index is out of range or the type is invalid for the detail item
         /// within.
         /// </remarks>
-        T? ElementAt<T>(int index);
+        T ElementAt<T>(int index);
     }
 }

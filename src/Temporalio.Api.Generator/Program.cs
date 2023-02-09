@@ -5,10 +5,13 @@ var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var testSrvProtoDir = Path.Join(protoDir, "testsrv_upstream");
+var bridgeProtoDir = Path.Join(protoDir, "local");
 
-// Remove entire api dir
+// Remove/recreate entire api dir
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).Delete(true);
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies")).Create();
+new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).Delete(true);
+new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).Create();
 
 // Gen proto
 foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
@@ -45,6 +48,16 @@ Protoc(
     Path.Join(projectDir, "src/Temporalio"),
     "Temporalio",
     Path.Join(projectDir, "src/Temporalio.Api.Generator"));
+foreach (
+    var fi in new DirectoryInfo(bridgeProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
+{
+    Protoc(
+        fi.FullName,
+        Path.Join(projectDir, "src/Temporalio/Bridge/Api"),
+        "Coresdk",
+        apiProtoDir,
+        bridgeProtoDir);
+}
 
 // Gen RPC services
 File.WriteAllText(
@@ -109,12 +122,29 @@ foreach (
     }
 }
 
+// Change "Coresdk" namespace to "Temporalio.Bridge.Api"
+foreach (
+    var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).GetFiles(
+        "*.cs",
+        SearchOption.AllDirectories))
+{
+    File.WriteAllText(
+        fi.FullName,
+        File.ReadAllText(fi.FullName).Replace("Coresdk", "Temporalio.Bridge.Api"));
+}
+
 static void Protoc(string file, string outDir, string baseNamespace, params string[] includes)
 {
     var protocArgs = new List<string> { "--csharp_out=" + outDir };
     if (baseNamespace != string.Empty)
     {
-        protocArgs.Add("--csharp_opt=base_namespace=" + baseNamespace);
+        var opt = "--csharp_opt=base_namespace=" + baseNamespace;
+        // Mark core sdk as internal
+        if (baseNamespace == "Coresdk")
+        {
+            opt += ",internal_access";
+        }
+        protocArgs.Add(opt);
     }
     foreach (var include in includes)
     {

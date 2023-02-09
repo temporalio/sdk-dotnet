@@ -57,7 +57,7 @@ namespace Temporalio.Client
         public async Task GetResultAsync(
             bool followRuns = true, RpcOptions? rpcOptions = null)
         {
-            await GetResultAsync<ValueTuple>(followRuns, rpcOptions);
+            await GetResultAsync<ValueTuple>(followRuns, rpcOptions).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Temporalio.Client
                     WaitNewEvent: true,
                     EventFilterType: HistoryEventFilterType.CloseEvent,
                     SkipArchival: true,
-                    Rpc: TemporalClient.DefaultRetryOptions(rpcOptions)));
+                    Rpc: TemporalClient.DefaultRetryOptions(rpcOptions))).ConfigureAwait(false);
                 if (page.Events.Count == 0)
                 {
                     throw new InvalidOperationException("Event set unexpectedly empty");
@@ -103,7 +103,7 @@ namespace Temporalio.Client
                     {
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionCompletedEventAttributes:
                             var compAttr = evt.WorkflowExecutionCompletedEventAttributes;
-                            if (compAttr.NewExecutionRunId != string.Empty && followRuns)
+                            if (!string.IsNullOrEmpty(compAttr.NewExecutionRunId) && followRuns)
                             {
                                 histRunID = compAttr.NewExecutionRunId;
                                 break;
@@ -119,16 +119,17 @@ namespace Temporalio.Client
                                 throw new InvalidOperationException("No result present");
                             }
                             return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
-                                compAttr.Result.Payloads_);
+                                compAttr.Result.Payloads_).ConfigureAwait(false);
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionFailedEventAttributes:
                             var failAttr = evt.WorkflowExecutionFailedEventAttributes;
-                            if (failAttr.NewExecutionRunId != string.Empty && followRuns)
+                            if (!string.IsNullOrEmpty(failAttr.NewExecutionRunId) && followRuns)
                             {
                                 histRunID = failAttr.NewExecutionRunId;
                                 break;
                             }
                             throw new WorkflowFailedException(
-                                await Client.Options.DataConverter.ToExceptionAsync(failAttr.Failure));
+                                await Client.Options.DataConverter.ToExceptionAsync(
+                                    failAttr.Failure).ConfigureAwait(false));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionCanceledEventAttributes:
                             var cancelAttr = evt.WorkflowExecutionCanceledEventAttributes;
                             throw new WorkflowFailedException(new CancelledFailureException(
@@ -141,7 +142,7 @@ namespace Temporalio.Client
                                 Client.Options.DataConverter.PayloadConverter));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionTerminatedEventAttributes:
                             var termAttr = evt.WorkflowExecutionTerminatedEventAttributes;
-                            var message = termAttr.Reason == string.Empty ?
+                            var message = string.IsNullOrEmpty(termAttr.Reason) ?
                                 "Workflow terminated" : termAttr.Reason;
                             InboundFailureDetails? details = null;
                             if (termAttr.Details != null && termAttr.Details.Payloads_.Count > 0)
@@ -156,7 +157,7 @@ namespace Temporalio.Client
                                 details));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionTimedOutEventAttributes:
                             var timeAttr = evt.WorkflowExecutionTimedOutEventAttributes;
-                            if (timeAttr.NewExecutionRunId != string.Empty && followRuns)
+                            if (!string.IsNullOrEmpty(timeAttr.NewExecutionRunId) && followRuns)
                             {
                                 histRunID = timeAttr.NewExecutionRunId;
                                 break;
@@ -174,7 +175,7 @@ namespace Temporalio.Client
                                 Client.Options.DataConverter.PayloadConverter));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionContinuedAsNewEventAttributes:
                             var contAttr = evt.WorkflowExecutionContinuedAsNewEventAttributes;
-                            if (contAttr.NewExecutionRunId == string.Empty)
+                            if (string.IsNullOrEmpty(contAttr.NewExecutionRunId))
                             {
                                 throw new InvalidOperationException("Continue as new missing new run ID");
                             }
@@ -208,7 +209,7 @@ namespace Temporalio.Client
         {
             return SignalAsync(
                 Workflow.WorkflowSignalAttribute.Definition.FromMethod(signal.Method).Name,
-                new object?[0],
+                Array.Empty<object?>(),
                 options);
         }
 
@@ -273,7 +274,7 @@ namespace Temporalio.Client
         {
             return QueryAsync<TQueryResult>(
                 Workflow.WorkflowQueryAttribute.Definition.FromMethod(query.Method).Name,
-                new object?[0],
+                Array.Empty<object?>(),
                 options);
         }
 
@@ -429,7 +430,7 @@ namespace Temporalio.Client
                         WaitNewEvent: options?.WaitNewEvent ?? false,
                         EventFilterType: options?.EventFilterType ?? HistoryEventFilterType.AllEvent,
                         SkipArchival: options?.SkipArchival ?? false,
-                        Rpc: rpcOptsAndCancelSource.Item1));
+                        Rpc: rpcOptsAndCancelSource.Item1)).ConfigureAwait(false);
                     foreach (var evt in page.Events)
                     {
                         yield return evt;

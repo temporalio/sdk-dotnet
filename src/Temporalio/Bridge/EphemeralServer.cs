@@ -60,7 +60,7 @@ namespace Temporalio.Bridge
                         null,
                         CallbackForStart(runtime, scope, true, completion));
                 }
-                return await completion.Task;
+                return await completion.Task.ConfigureAwait(false);
             }
         }
 
@@ -85,7 +85,7 @@ namespace Temporalio.Bridge
                         null,
                         CallbackForStart(runtime, scope, true, completion));
                 }
-                return await completion.Task;
+                return await completion.Task.ConfigureAwait(false);
             }
         }
 
@@ -118,7 +118,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                await completion.Task;
+                await completion.Task.ConfigureAwait(false);
             }
         }
 

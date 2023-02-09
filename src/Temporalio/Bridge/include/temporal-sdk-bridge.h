@@ -20,6 +20,8 @@ typedef struct EphemeralServer EphemeralServer;
 
 typedef struct Runtime Runtime;
 
+typedef struct Worker Worker;
+
 typedef struct ByteArrayRef {
   const uint8_t *data;
   size_t size;
@@ -190,6 +192,44 @@ typedef void (*EphemeralServerStartCallback)(void *user_data, struct EphemeralSe
 
 typedef void (*EphemeralServerShutdownCallback)(void *user_data, const struct ByteArray *fail);
 
+/**
+ * Only runtime or fail will be non-null. Whichever is must be freed when done.
+ */
+typedef struct WorkerOrFail {
+  struct Worker *worker;
+  const struct ByteArray *fail;
+} WorkerOrFail;
+
+typedef struct WorkerOptions {
+  struct ByteArrayRef namespace_;
+  struct ByteArrayRef task_queue;
+  struct ByteArrayRef build_id;
+  struct ByteArrayRef identity_override;
+  uint32_t max_cached_workflows;
+  uint32_t max_outstanding_workflow_tasks;
+  uint32_t max_outstanding_activities;
+  uint32_t max_outstanding_local_activities;
+  uint32_t max_concurrent_workflow_task_polls;
+  float nonsticky_to_sticky_poll_ratio;
+  bool no_remote_activities;
+  uint64_t sticky_queue_schedule_to_start_timeout_millis;
+  uint64_t max_heartbeat_throttle_interval_millis;
+  uint64_t default_heartbeat_throttle_interval_millis;
+  double max_activities_per_second;
+  double max_task_queue_activities_per_second;
+} WorkerOptions;
+
+/**
+ * If success or fail are present, they must be freed. They will both be null
+ * if this is a result of a poll shutdown.
+ */
+typedef void (*WorkerPollCallback)(void *user_data, const struct ByteArray *success, const struct ByteArray *fail);
+
+/**
+ * If fail is present, it must be freed.
+ */
+typedef void (*WorkerCallback)(void *user_data, const struct ByteArray *fail);
+
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
@@ -248,6 +288,40 @@ void ephemeral_server_free(struct EphemeralServer *server);
 void ephemeral_server_shutdown(struct EphemeralServer *server,
                                void *user_data,
                                EphemeralServerShutdownCallback callback);
+
+struct WorkerOrFail worker_new(struct Client *client, const struct WorkerOptions *options);
+
+void worker_free(struct Worker *worker);
+
+void worker_poll_workflow_activation(struct Worker *worker,
+                                     void *user_data,
+                                     WorkerPollCallback callback);
+
+void worker_poll_activity_task(struct Worker *worker, void *user_data, WorkerPollCallback callback);
+
+void worker_complete_workflow_activation(struct Worker *worker,
+                                         struct ByteArrayRef completion,
+                                         void *user_data,
+                                         WorkerCallback callback);
+
+void worker_complete_activity_task(struct Worker *worker,
+                                   struct ByteArrayRef completion,
+                                   void *user_data,
+                                   WorkerCallback callback);
+
+/**
+ * Returns error if any. Must be freed if returned.
+ */
+const struct ByteArray *worker_record_activity_heartbeat(struct Worker *worker,
+                                                         struct ByteArrayRef heartbeat);
+
+void worker_request_workflow_eviction(struct Worker *worker, struct ByteArrayRef run_id);
+
+void worker_shutdown(struct Worker *worker, void *user_data, WorkerCallback callback);
+
+void worker_initiate_shutdown(struct Worker *worker);
+
+void worker_finalize_shutdown(struct Worker *worker, void *user_data, WorkerCallback callback);
 
 #ifdef __cplusplus
 } // extern "C"

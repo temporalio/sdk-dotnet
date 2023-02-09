@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using Google.Protobuf;
 
 namespace Temporalio.Bridge
 {
     /// <summary>
-    /// Representation of a byte array owned by .NET.
+    /// Representation of a byte array owned by .NET. Users should usually use a
+    /// <see cref="Scope" /> instead of creating this directly.
     /// </summary>
     internal class ByteArrayRef
     {
@@ -53,7 +53,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets empty byte array.
         /// </summary>
-        public static ByteArrayRef Empty { get; } = new(new byte[0]);
+        public static ByteArrayRef Empty { get; } = new(Array.Empty<byte>());
 
         /// <summary>
         /// Gets current byte array for this ref.
@@ -86,16 +86,6 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Convert a proto to a byte array.
-        /// </summary>
-        /// <param name="p">Proto to convert.</param>
-        /// <returns>Converted byte array.</returns>
-        public static ByteArrayRef FromProto(IMessage p)
-        {
-            return new ByteArrayRef(p.ToByteArray());
-        }
-
-        /// <summary>
         /// Convert an enumerable set of metadata pairs to a byte array. No key or value may contain
         /// a newline.
         /// </summary>
@@ -104,12 +94,12 @@ namespace Temporalio.Bridge
         public static ByteArrayRef FromMetadata(IEnumerable<KeyValuePair<string, string>> metadata)
         {
             using (var stream = new MemoryStream())
+            using (var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true })
             {
-                var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true };
                 foreach (var pair in metadata)
                 {
                     // If either have a newline, we error since it would make an invalid set
-                    if (pair.Key.IndexOf('\n') >= 0 || pair.Value.IndexOf('\n') >= 0)
+                    if (pair.Key.Contains("\n") || pair.Value.Contains("\n"))
                     {
                         throw new ArgumentException("Metadata keys/values cannot have newlines");
                     }
@@ -143,12 +133,12 @@ namespace Temporalio.Bridge
         public static ByteArrayRef FromNewlineDelimited(IEnumerable<string> values)
         {
             using (var stream = new MemoryStream())
+            using (var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true })
             {
-                var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true };
                 foreach (var value in values)
                 {
                     // If has a newline, we error since it would make an invalid set
-                    if (value.IndexOf('\n') >= 0)
+                    if (value.Contains("\n"))
                     {
                         throw new ArgumentException("Value cannot have newline");
                     }

@@ -24,7 +24,7 @@ namespace Temporalio.Exceptions
             var info =
                 failure.TimeoutFailureInfo
                 ?? throw new ArgumentException("No timeout failure info");
-            LastHeartbeatDetails = new(converter, info.LastHeartbeatDetails.Payloads_);
+            LastHeartbeatDetails = new(converter, info.LastHeartbeatDetails?.Payloads_);
         }
 
         /// <summary>

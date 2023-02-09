@@ -4,8 +4,23 @@
 
 # Please keep in alphabetical order by field.
 
+# We use empty interfaces in some tests
+dotnet_diagnostic.CA1040.severity = none
+
+# Tests can have underscores in method names
+dotnet_diagnostic.CA1707.severity = none
+
+# Don't need to mark test classes sealed
+dotnet_diagnostic.CA1852.severity = none
+
+# ConfigureAwait not needed in tests
+dotnet_diagnostic.CA2007.severity = none
+
 # Do not need docs in test project
 dotnet_diagnostic.CS1591.severity = none
+
+# To test lambda attributes, lambda and attribute share line
+dotnet_diagnostic.SA1134.severity = none
 
 # Do not need docs in test project
 dotnet_diagnostic.SA1600.severity = none

@@ -10,7 +10,7 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalException"/> class.
         /// </summary>
-        public TemporalException()
+        protected TemporalException()
         {
         }
 
@@ -18,7 +18,7 @@ namespace Temporalio.Exceptions
         /// Initializes a new instance of the <see cref="TemporalException"/> class.
         /// </summary>
         /// <param name="message">Message for the exception.</param>
-        public TemporalException(string message)
+        protected TemporalException(string message)
             : base(message)
         {
         }
@@ -28,7 +28,7 @@ namespace Temporalio.Exceptions
         /// </summary>
         /// <param name="message">Message for the exception.</param>
         /// <param name="inner">Cause of the exception.</param>
-        public TemporalException(string message, Exception? inner)
+        protected TemporalException(string message, Exception? inner)
             : base(message, inner)
         {
         }

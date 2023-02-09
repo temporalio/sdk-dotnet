@@ -54,8 +54,8 @@ namespace Temporalio.Testing
             var runtime = options.Runtime ?? TemporalRuntime.Default;
             var server = await Bridge.EphemeralServer.StartTemporaliteAsync(
                 runtime.Runtime,
-                options);
-            return await StartEphemeralAsync(server, options);
+                options).ConfigureAwait(false);
+            return await StartEphemeralAsync(server, options).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -73,8 +73,8 @@ namespace Temporalio.Testing
             var runtime = options.Runtime ?? TemporalRuntime.Default;
             var server = await Bridge.EphemeralServer.StartTestServerAsync(
                 runtime.Runtime,
-                options);
-            return await StartEphemeralAsync(server, options);
+                options).ConfigureAwait(false);
+            return await StartEphemeralAsync(server, options).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Temporalio.Testing
         /// <returns>Completion task.</returns>
         public async ValueTask DisposeAsync()
         {
-            await ShutdownAsync();
+            await ShutdownAsync().ConfigureAwait(false);
             GC.SuppressFinalize(this);
         }
 #endif
@@ -170,15 +170,15 @@ namespace Temporalio.Testing
             // If we can't connect, shutdown the server before returning
             try
             {
-                return new WorkflowEnvironment.EphemeralServerBased(
-                    await TemporalClient.ConnectAsync(options),
+                return new EphemeralServerBased(
+                    await TemporalClient.ConnectAsync(options).ConfigureAwait(false),
                     server);
             }
             catch (Exception ex)
             {
                 try
                 {
-                    await server.ShutdownAsync();
+                    await server.ShutdownAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex2)
                 {
@@ -216,7 +216,7 @@ namespace Temporalio.Testing
             {
                 if (!SupportsTimeSkipping)
                 {
-                    await base.DelayAsync(delay, cancellationToken);
+                    await base.DelayAsync(delay, cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
@@ -227,7 +227,7 @@ namespace Temporalio.Testing
                     };
                     await Client.Connection.TestService.UnlockTimeSkippingWithSleepAsync(
                         req,
-                        new RpcOptions { CancellationToken = cancellationToken });
+                        new RpcOptions { CancellationToken = cancellationToken }).ConfigureAwait(false);
                 }
             }
 
@@ -236,16 +236,17 @@ namespace Temporalio.Testing
             {
                 if (!SupportsTimeSkipping)
                 {
-                    return await base.GetCurrentTimeAsync();
+                    return await base.GetCurrentTimeAsync().ConfigureAwait(false);
                 }
-                var resp = await Client.Connection.TestService.GetCurrentTimeAsync(new());
+                var resp = await Client.Connection.TestService.GetCurrentTimeAsync(
+                    new()).ConfigureAwait(false);
                 return resp.Time.ToDateTime();
             }
 
             /// <inheritdoc/>
             public async override Task ShutdownAsync()
             {
-                await server.ShutdownAsync();
+                await server.ShutdownAsync().ConfigureAwait(false);
             }
         }
     }

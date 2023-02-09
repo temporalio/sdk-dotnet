@@ -13,7 +13,7 @@ Also see:
 * [NuGet Package](https://www.nuget.org/packages/Temporalio)
 * [Application Development Guide](https://docs.temporal.io/application-development) (TODO: .NET docs)
 * [API Documentation](https://dotnet.temporal.io/api)
-* Samples (TODO)
+* [Samples](https://github.com/temporalio/samples-dotnet)
 
 ⚠️ UNDER ACTIVE DEVELOPMENT
 
@@ -22,10 +22,40 @@ until the SDK is marked stable.
 
 Notably missing from this SDK:
 
-* Activity workers
 * Workflow workers
 
-(for the previous .NET SDK repo, see https://github.com/temporalio/experiment-dotnet)
+---
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Contents**
+
+- [Quick Start](#quick-start)
+- [Installation](#installation)
+- [Implementing an Activity](#implementing-an-activity)
+- [Running a Workflow](#running-a-workflow)
+- [Usage](#usage)
+  - [Client](#client)
+  - [Data Conversion](#data-conversion)
+  - [Workers](#workers)
+  - [Workflows](#workflows)
+    - [Workflow Definition](#workflow-definition)
+  - [Activities](#activities)
+    - [Activity Definition](#activity-definition)
+    - [Activity Context](#activity-context)
+    - [Activity Heartbeating and Cancellation](#activity-heartbeating-and-cancellation)
+    - [Activity Worker Shutdown](#activity-worker-shutdown)
+    - [Activity Testing](#activity-testing)
+- [Development](#development)
+  - [Build](#build)
+  - [Code formatting](#code-formatting)
+    - [VisualStudio Code](#visualstudio-code)
+  - [Testing](#testing)
+  - [Rebuilding Rust extension and interop layer](#rebuilding-rust-extension-and-interop-layer)
+  - [Regenerating protos](#regenerating-protos)
+  - [Regenerating API docs](#regenerating-api-docs)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Quick Start
 
@@ -37,6 +67,92 @@ CLI:
     dotnet add package Temporalio --prerelease
 
 **NOTE: This README is for the current branch and not necessarily what's released on NuGet.**
+
+## Implementing an Activity
+
+Workflow implementation is not yet supported in the .NET SDK, but defining a workflow and implementing activities is.
+
+For example, if you have a `SayHelloWorkflow` workflow in another Temporal language that invokes `SayHello` activity on
+`my-activity-queue` in C#, you can have the following in a worker project's `Program.cs`:
+
+```csharp
+using Temporalio;
+using Temporalio.Activity;
+using Temporalio.Client;
+using Temporalio.Worker;
+using Temporalio.Workflow;
+
+// Create client
+var client = await TemporalClient.ConnectAsync(new ()
+{
+    TargetHost = "localhost:7233",
+    Namespace = "my-namespace",
+});
+
+// Create worker
+using var worker = new TemporalWorker(client, new ()
+{
+    TaskQueue = "my-activity-queue",
+    Activities = { SayHello },
+});
+
+// Run worker until Ctrl+C
+using var cts = new CancellationTokenSource();
+Console.CancelKeyPress += (sender, eventArgs) =>
+{
+    eventArgs.Cancel = true;
+    cts.Cancel();
+};
+await worker.ExecuteAsync(cts.Token);
+
+// Implementation of an activity in .NET
+[Activity]
+string SayHello(string name) => $"Hello, {name}!";
+
+// Definition of a workflow implemented in another language
+namespace MyNamespace
+{
+    [Workflow]
+    public interface ISayHelloWorkflow
+    {
+        static readonly ISayHelloWorkflow Ref = Refs.Create<ISayHelloWorkflow>();
+
+        [WorkflowRun]
+        Task<string> RunAsync(string name);
+    }
+}
+```
+
+Running that will start a worker.
+
+## Running a Workflow
+
+Then you can run the workflow, referencing that project in another project's `Program.cs`:
+
+```csharp
+using Temporalio.Client;
+
+// Create client
+var client = await TemporalClient.ConnectAsync(new()
+{
+    TargetHost = "localhost:7233",
+    Namespace = "my-namespace",
+});
+
+// Run workflow
+var result = await client.ExecuteWorkflowAsync(
+    MyNamespace.ISayHelloWorkflow.Ref.RunAsync,
+    "Temporal",
+    new() { ID = "my-workflow-id", TaskQueue = "my-workflow-queue" });
+
+Console.WriteLine($"Workflow result: {result}");
+```
+
+This will output:
+
+```
+Workflow result: Hello, Temporal!
+```
 
 ## Usage
 
@@ -117,11 +233,52 @@ var client = await TemporalClient.ConnectAsync(new()
 });
 ```
 
+### Workers
+
+Workers host workflows and/or activities. Workflows cannot yet be written in .NET, but activities can. Here's how to run
+an activity worker:
+
+```csharp
+using Temporalio.Client;
+using Temporalio.Worker;
+using MyNamespace;
+
+// Create client
+var client = await TemporalClient.ConnectAsync(new ()
+{
+    TargetHost = "localhost:7233",
+    Namespace = "my-namespace",
+});
+
+// Create worker
+using var worker = new TemporalWorker(client, new ()
+{
+    TaskQueue = "my-activity-queue",
+    Activities = { MyActivities.MyActivity },
+});
+
+// Run worker until Ctrl+C
+using var cts = new CancellationTokenSource();
+Console.CancelKeyPress += (sender, eventArgs) =>
+{
+    eventArgs.Cancel = true;
+    cts.Cancel();
+};
+await worker.ExecuteAsync(cts.Token);
+```
+
+Notes about the above code:
+
+* This shows how to run a worker from C# using top-level statements. Of course this can be part of a larger program and
+  `ExecuteAsync` can be used like any other task call with a cancellation token.
+* The worker uses the same client that is used for all other Temporal tasks (e.g. starting workflows).
+* Workers can have many more options not shown here (e.g. data converters and interceptors).
+
 ### Workflows
 
 Workflows cannot yet be written in .NET but they can be defined.
 
-#### Definition
+#### Workflow Definition
 
 Workflows are defined as classes or interfaces with a `[Workflow]` attribute. The entry point method for a workflow has
 the `[WorkflowRun]` attribute. Methods for signals and queries have the `[WorkflowSignal]` and `[WorkflowQuery]`
@@ -136,19 +293,19 @@ public record GreetingInfo(string Salutation = "Hello", string Name = "<unknown>
 [Workflow]
 public interface IGreetingWorkflow
 {
-    static readonly IGreetingWorkflow Ref = Refs<IGreetingWorkflow>.Instance;
+    static readonly IGreetingWorkflow Ref = Refs.Create<IGreetingWorkflow>();
 
     [WorkflowRun]
-    public Task<string> RunAsync(GreetingInfo initialInfo);
+    Task<string> RunAsync(GreetingInfo initialInfo);
 
     [WorkflowSignal]
-    public Task UpdateSalutation(string salutation);
+    Task UpdateSalutation(string salutation);
 
     [WorkflowSignal]
-    public Task CompleteWithGreeting();
+    Task CompleteWithGreeting();
 
     [WorkflowQuery]
-    public string CurrentGreeting();
+    string CurrentGreeting();
 }
 ```
 
@@ -186,7 +343,105 @@ Notes about the above code:
 
 ### Activities
 
-Activities are not implemented yet.
+#### Activity Definition
+
+Activities are methods with the `[Activity]` annotation like so:
+
+```csharp
+namespace MyNamespace;
+
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Timers;
+using Temporalio.Activity;
+
+public static class Activities
+{
+    private static readonly HttpClient client = new();
+
+    [Activity]
+    public static async Task<string> GetPageAsync(string url)
+    {
+        // Heartbeat every 2s
+        using var timer = new Timer(2000)
+        {
+            AutoReset = true,
+            Enabled = true,
+        };
+        timer.Elapsed += (sender, eventArgs) => ActivityContext.Current.Heartbeat();
+
+        // Issue our HTTP call
+        using var response = await client.GetAsync(url, ActivityContext.Current.CancellationToken);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync(ActivityContext.Current.CancellationToken);
+    }
+}
+```
+
+Notes about activity definitions:
+
+* All activities must have the `[Activity]` attribute.
+* `[Activity]` can be given a custom string name.
+  * If unset, the default is the method's unqualified name. If the method name ends with `Async` and returns a `Task`,
+    the default name will have `Async` trimmed off the end.
+* Long running activities should heartbeat to regularly to inform server the activity is still running.
+  * Heartbeats are throttled internally, so users can call this frequently without fear of calling too much.
+  * Activities must heartbeat to receive cancellation.
+* Activities can be defined on static as instance methods. They can even be lambdas or local methods, but rarely is this
+  valuable since often an activity will be referenced by a workflow.
+* Activities can be synchronous or asynchronous. If an activity returns a `Task`, that task is awaited on as part of the
+  activity.
+
+#### Activity Context
+
+During activity execution, an async-local activity context is available via `ActivityContext.Current`. This will throw
+if not currently in an activity context (which can be checked with `ActivityContext.HasCurrent`). It contains the
+following important members:
+
+* `Info` - Information about the activity.
+* `Logger` - A logger scoped to the activity.
+* `CancelReason` - If `CancellationToken` is cancelled, this will contain the reason.
+* `CancellationToken` - Token cancelled when the activity is cancelled.
+* `Hearbeat(object?...)` - Send a heartbeat from this activity.
+* `WorkerShutdownToken` - Token cancelled on worker shutdown before the grace period + `CancellationToken` cancellation.
+
+#### Activity Heartbeating and Cancellation
+
+In order for a non-local activity to be notified of cancellation requests, it must invoke `ActivityContext.Heartbeat()`.
+It is strongly recommended that all but the fastest executing activities call this function regularly.
+
+In addition to obtaining cancellation information, heartbeats also support detail data that is persisted on the server
+for retrieval during activity retry. If an activity calls `ActivityContext.Heartbeat(123)` and then fails and is
+retried, `ActivityContext.Info.HeartbeatDetails` will contain the last detail payloads. A helper can be used to convert,
+so `await ActivityContext.Info.HeartbeatDetailAtAsync<int>(0)` would give `123` on the next attempt.
+
+Heartbeating has no effect on local activities.
+
+#### Activity Worker Shutdown
+
+An activity can react to a worker shutdown specifically.
+
+Upon worker shutdown, `ActivityContext.WorkerShutdownToken` is cancelled. Then the worker will wait a grace period set
+by the `GracefulShutdownTimeout` worker option (default as 0) before issuing actual cancellation to all still-running
+activities via `ActivityContext.CancellationToken`.
+
+Worker shutdown will wait on all activities to complete, so if a long-running activity does not respect cancellation,
+the shutdown may never complete.
+
+#### Activity Testing
+
+Unit testing an activity or any code that could run in an activity is done via the
+`Temporalio.Testing.ActivityEnvironment` class. Simply instantiate the class, and any function passed to `RunAsync` will
+be invoked inside the activity context. The following important members are available on the environment to affect the
+activity context:
+
+* `Info` - Activity info, defaulted to a basic set of values.
+* `Logger` - Activity logger, defaulted to a null logger.
+* `Cancel(CancelReason)` - Helper to set the reason and cancel the source.
+* `CancelReason` - Cancel reason.
+* `CancellationTokenSource` - Token source for issuing cancellation.
+* `Heartbeater` - Callback invoked each heartbeat.
+* `WorkerShutdownTokenSource` - Token source for issuing worker shutdown.
 
 ## Development
 
@@ -241,7 +496,7 @@ To help debug native pieces and show full stdout/stderr, this is also available 
 
     dotnet run --project tests/Temporalio.Tests
 
-Extra args can be added after `--`, e.g. `-- --verbose` would show verbose logs and `-- --help` would show other
+Extra args can be added after `--`, e.g. `-- -verbose` would show verbose logs and `-- --help` would show other
 options. If the arguments are anything but `--help`, the current assembly is prepended to the args before sending to the
 xUnit runner.
 

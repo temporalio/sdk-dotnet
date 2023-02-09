@@ -23,9 +23,8 @@ namespace Temporalio.Client
         /// Create default options with a target host.
         /// </summary>
         /// <param name="targetHost">Target host to connect to.</param>
-        /// <seealso cref="TemporalConnectionOptions.TargetHost" />
+        /// <seealso cref="TargetHost" />
         public TemporalConnectionOptions(string targetHost)
-            : this()
         {
             TargetHost = targetHost;
         }
@@ -119,7 +118,7 @@ namespace Temporalio.Client
                 {
                     ip = TargetHost.Substring(0, colonIndex);
                     var portStr = TargetHost.Substring(colonIndex + 1);
-                    if (portStr != string.Empty && portStr != "0")
+                    if (!string.IsNullOrEmpty(portStr) && portStr != "0")
                     {
                         int portInt;
                         if (!int.TryParse(portStr, out portInt))

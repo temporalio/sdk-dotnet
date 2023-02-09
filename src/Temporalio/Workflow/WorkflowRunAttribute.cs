@@ -12,7 +12,7 @@ namespace Temporalio.Workflow
     /// record so that fields can be added to either in a future-proof way.
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    public class WorkflowRunAttribute : Attribute
+    public sealed class WorkflowRunAttribute : Attribute
     {
     }
 }

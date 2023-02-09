@@ -11,18 +11,25 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class Client : SafeHandle
     {
-        private readonly Runtime runtime;
-        private readonly unsafe Interop.Client* ptr;
-
         private unsafe Client(Runtime runtime, Interop.Client* ptr)
             : base((IntPtr)ptr, true)
         {
-            this.runtime = runtime;
-            this.ptr = ptr;
+            Runtime = runtime;
+            Ptr = ptr;
         }
 
         /// <inheritdoc />
         public override unsafe bool IsInvalid => false;
+
+        /// <summary>
+        /// Gets the runtime associated with this client.
+        /// </summary>
+        internal Runtime Runtime { get; private init; }
+
+        /// <summary>
+        /// Gets the pointer to the client.
+        /// </summary>
+        internal unsafe Interop.Client* Ptr { get; private init; }
 
         /// <summary>
         /// Connect to Temporal.
@@ -58,7 +65,7 @@ namespace Temporalio.Bridge
                                 }
                             }));
                 }
-                return await completion.Task;
+                return await completion.Task.ConfigureAwait(false);
             }
         }
 
@@ -92,7 +99,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.client_rpc_call(
-                        ptr,
+                        Ptr,
                         scope.Pointer(
                             new Interop.RpcCallOptions()
                             {
@@ -113,16 +120,16 @@ namespace Temporalio.Bridge
                                     byte[]? rawStatus = null;
                                     if (failureDetails != null)
                                     {
-                                        rawStatus = new ByteArray(runtime, failureDetails).ToByteArray();
+                                        rawStatus = new ByteArray(Runtime, failureDetails).ToByteArray();
                                     }
                                     completion.TrySetException(new Exceptions.RpcException(
                                         (Exceptions.RpcException.StatusCode)statusCode,
-                                        new ByteArray(runtime, failureMessage).ToUTF8(),
+                                        new ByteArray(Runtime, failureMessage).ToUTF8(),
                                         rawStatus));
                                 }
                                 else if (failureMessage != null)
                                 {
-                                    var failureString = new ByteArray(runtime, failureMessage).ToUTF8();
+                                    var failureString = new ByteArray(Runtime, failureMessage).ToUTF8();
                                     // If the cancellation token caused cancel, throw that instead
                                     if (cancellationToken.HasValue &&
                                         cancellationToken.Value.IsCancellationRequested &&
@@ -139,18 +146,18 @@ namespace Temporalio.Bridge
                                 }
                                 else
                                 {
-                                    completion.TrySetResult(new ByteArray(runtime, success));
+                                    completion.TrySetResult(new ByteArray(Runtime, success));
                                 }
                             }));
                 }
-                return (await completion.Task).ToProto(resp);
+                return (await completion.Task.ConfigureAwait(false)).ToProto(resp);
             }
         }
 
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.client_free(this.ptr);
+            Interop.Methods.client_free(Ptr);
             return true;
         }
     }

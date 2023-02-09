@@ -33,8 +33,8 @@ namespace Temporalio.Client
             Func<Task<TResult>> workflow,
             WorkflowStartOptions options)
         {
-            var handle = await client.StartWorkflowAsync(workflow, options);
-            return await handle.GetResultAsync(rpcOptions: options.Rpc);
+            var handle = await client.StartWorkflowAsync(workflow, options).ConfigureAwait(false);
+            return await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -64,8 +64,9 @@ namespace Temporalio.Client
             T arg,
             WorkflowStartOptions options)
         {
-            var handle = await client.StartWorkflowAsync(workflow, arg, options);
-            return await handle.GetResultAsync(rpcOptions: options.Rpc);
+            var handle = await client.StartWorkflowAsync(
+                workflow, arg, options).ConfigureAwait(false);
+            return await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -91,8 +92,8 @@ namespace Temporalio.Client
             Func<Task> workflow,
             WorkflowStartOptions options)
         {
-            var handle = await client.StartWorkflowAsync(workflow, options);
-            await handle.GetResultAsync(rpcOptions: options.Rpc);
+            var handle = await client.StartWorkflowAsync(workflow, options).ConfigureAwait(false);
+            await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -121,8 +122,9 @@ namespace Temporalio.Client
             T arg,
             WorkflowStartOptions options)
         {
-            var handle = await client.StartWorkflowAsync(workflow, arg, options);
-            await handle.GetResultAsync(rpcOptions: options.Rpc);
+            var handle = await client.StartWorkflowAsync(
+                workflow, arg, options).ConfigureAwait(false);
+            await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -150,8 +152,9 @@ namespace Temporalio.Client
             IReadOnlyCollection<object?> args,
             WorkflowStartOptions options)
         {
-            var handle = await client.StartWorkflowAsync(workflow, args, options);
-            await handle.GetResultAsync();
+            var handle = await client.StartWorkflowAsync(
+                workflow, args, options).ConfigureAwait(false);
+            await handle.GetResultAsync().ConfigureAwait(false);
         }
 
         /// <summary>
@@ -180,8 +183,9 @@ namespace Temporalio.Client
             IReadOnlyCollection<object?> args,
             WorkflowStartOptions options)
         {
-            var handle = await client.StartWorkflowAsync<TResult>(workflow, args, options);
-            return await handle.GetResultAsync();
+            var handle = await client.StartWorkflowAsync<TResult>(workflow, args, options).
+                ConfigureAwait(false);
+            return await handle.GetResultAsync().ConfigureAwait(false);
         }
     }
 }

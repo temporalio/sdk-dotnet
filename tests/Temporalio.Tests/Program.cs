@@ -1,12 +1,15 @@
 namespace Temporalio.Tests;
 
-public class Program
+public static class Program
 {
-    internal static bool InProc { get; private set; } = false;
+    internal static bool InProc { get; private set; }
+
+    internal static bool Verbose { get; private set; }
 
     public static int Main(string[] args)
     {
         InProc = true;
+        Verbose = args.Contains("-verbose");
         // Always put self assembly as first arg if "--help" isn't first arg
         if (args.Length != 1 || args[0] != "--help")
         {

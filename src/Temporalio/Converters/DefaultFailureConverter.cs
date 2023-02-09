@@ -83,6 +83,7 @@ namespace Temporalio.Converters
             // expected
             if (failure.EncodedAttributes != null)
             {
+#pragma warning disable CA1031 // We intentionally catch any error converting to our attrs
                 try
                 {
                     var attrs = payloadConverter.ToValue<Dictionary<string, string>>(
@@ -100,6 +101,7 @@ namespace Temporalio.Converters
                 {
                     // Do nothing
                 }
+#pragma warning restore CA1031
             }
 
             // Convert
@@ -148,7 +150,7 @@ namespace Temporalio.Converters
                             "Application exception expected to have outbound details");
                     failure.ApplicationFailureInfo = new()
                     {
-                        Type = appExc.Type ?? string.Empty,
+                        Type = appExc.ErrorType ?? string.Empty,
                         NonRetryable = appExc.NonRetryable,
                         Details =
                             appDet.Count == 0

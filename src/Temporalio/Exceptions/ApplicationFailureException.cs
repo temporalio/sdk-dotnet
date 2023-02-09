@@ -21,19 +21,19 @@ namespace Temporalio.Exceptions
         /// Initializes a new instance of the <see cref="ApplicationFailureException"/> class.
         /// </summary>
         /// <param name="message">Required message for the exception.</param>
-        /// <param name="type">Optional string type name of the exception.</param>
+        /// <param name="errorType">Optional string type name of the exception.</param>
         /// <param name="nonRetryable">If true, marks the exception as non-retryable.</param>
         /// <param name="details">Collection of details to serialize into the exception.</param>
         public ApplicationFailureException(
             string message,
-            string? type = null,
+            string? errorType = null,
             bool nonRetryable = false,
             IReadOnlyCollection<object>? details = null)
             : base(message)
         {
-            Type = type;
+            ErrorType = errorType;
             NonRetryable = nonRetryable;
-            Details = new OutboundFailureDetails(details ?? new object[0]);
+            Details = new OutboundFailureDetails(details ?? Array.Empty<object>());
         }
 
         /// <summary>
@@ -43,18 +43,18 @@ namespace Temporalio.Exceptions
         /// <param name="inner">
         /// Cause of the exception (can use other constructor if no cause).
         /// </param>
-        /// <param name="type">Optional string type name of the exception.</param>
+        /// <param name="errorType">Optional string type name of the exception.</param>
         /// <param name="nonRetryable">If true, marks the exception as non-retryable.</param>
         /// <param name="details">Collection of details to serialize into the exception.</param>
         public ApplicationFailureException(
             string message,
             Exception? inner,
-            string? type = null,
+            string? errorType = null,
             bool nonRetryable = false,
             IReadOnlyCollection<object>? details = null)
             : base(message, inner)
         {
-            Type = type;
+            ErrorType = errorType;
             NonRetryable = nonRetryable;
             Details = new OutboundFailureDetails(details);
         }
@@ -74,7 +74,7 @@ namespace Temporalio.Exceptions
             var info =
                 failure.ApplicationFailureInfo
                 ?? throw new ArgumentException("No application failure info");
-            Type = info.Type.Length == 0 ? null : info.Type;
+            ErrorType = info.Type.Length == 0 ? null : info.Type;
             NonRetryable = info.NonRetryable;
             Details = new InboundFailureDetails(converter, info.Details?.Payloads_);
         }
@@ -82,7 +82,7 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Gets the string "type" of the exception if any.
         /// </summary>
-        public string? Type { get; protected init; }
+        public string? ErrorType { get; protected init; }
 
         /// <summary>
         /// Gets a value indicating whether this exception is non-retryable.

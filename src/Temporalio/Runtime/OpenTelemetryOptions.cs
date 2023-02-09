@@ -21,6 +21,15 @@ namespace Temporalio.Runtime
         /// </summary>
         /// <param name="url"><see cref="Url" />.</param>
         public OpenTelemetryOptions(string url)
+            : this(new Uri(url))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OpenTelemetryOptions"/> class.
+        /// </summary>
+        /// <param name="url"><see cref="Url" />.</param>
+        public OpenTelemetryOptions(Uri url)
         {
             Url = url;
         }
@@ -28,7 +37,7 @@ namespace Temporalio.Runtime
         /// <summary>
         /// Gets or sets the URL for the OpenTelemetry collector.
         /// </summary>
-        public string? Url { get; set; }
+        public Uri? Url { get; set; }
 
         /// <summary>
         /// Gets or sets the headers to include in OpenTelemetry calls.

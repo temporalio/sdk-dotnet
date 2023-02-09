@@ -43,7 +43,7 @@ namespace Temporalio.Bridge
         public override unsafe bool IsInvalid => false;
 
         /// <summary>
-        /// Gets a pointer to the runtime.
+        /// Gets the pointer to the runtime.
         /// </summary>
         internal unsafe Interop.Runtime* Ptr { get; private init; }
 

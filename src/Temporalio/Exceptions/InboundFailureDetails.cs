@@ -20,12 +20,12 @@ namespace Temporalio.Exceptions
         public int Count => Payloads?.Count ?? 0;
 
         /// <inheritdoc />
-        public T? ElementAt<T>(int index)
+        public T ElementAt<T>(int index)
         {
             // Have to check ourselves here just in case no collection present
             if (index >= Count)
             {
-                throw new ArgumentOutOfRangeException("index");
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
             return Converter.ToValue<T>(Payloads.ElementAt(index));
         }
