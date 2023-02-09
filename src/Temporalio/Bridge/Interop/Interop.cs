@@ -405,6 +405,9 @@ namespace Temporalio.Bridge.Interop
         public static extern void worker_shutdown([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_initiate_shutdown([NativeTypeName("struct Worker *")] Worker* worker);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void worker_finalize_shutdown([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
     }
 }

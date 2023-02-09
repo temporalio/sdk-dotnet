@@ -1,8 +1,8 @@
 namespace Temporalio.Exceptions
 {
     /// <summary>
-    /// Exception thrown from <see cref="Client.AsyncActivityHandle.HeartbeatAsync" /> if server has
-    /// requested that an activity be cancelled.
+    /// Exception thrown from <see cref="Client.AsyncActivityHandle.HeartbeatAsync" /> if workflow
+    /// has requested that an activity be cancelled.
     /// </summary>
     public class AsyncActivityCancelledException : TemporalException
     {

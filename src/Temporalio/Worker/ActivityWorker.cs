@@ -239,15 +239,27 @@ namespace Temporalio.Worker
             // Try to finish heartbeats and send completion
             try
             {
-                // We have to wait on any outstanding heartbeats to finish. This will not throw. We
-                // accept that in a rare scenario, this heartbeat can fail to encode but it is too
-                // late to cancel the activity. Like other SDKs, we currently drop this heartbeat.
-                await act.FinishHeartbeatsAsync().ConfigureAwait(false);
-
-                // Complete the task
                 act.Context.Logger.LogTrace("Sending activity completion: {Completion}", completion);
-                await worker.BridgeWorker.CompleteActivityTaskAsync(
-                    completion).ConfigureAwait(false);
+
+                // We have to wait on any outstanding heartbeats to finish even after activity has
+                // completed. FinishHeartbeatsAsync will not throw. We accept that in a rare
+                // scenario, this heartbeat can fail to encode but it is too late to cancel/fail the
+                // activity. Like other SDKs, we currently drop this heartbeat.
+                //
+                // If the completion is a success, we can finish heartbeat afterwards. Otherwise we
+                // must finish before.
+                if (completion.Result.Completed != null)
+                {
+                    await worker.BridgeWorker.CompleteActivityTaskAsync(
+                        completion).ConfigureAwait(false);
+                    await act.FinishHeartbeatsAsync().ConfigureAwait(false);
+                }
+                else
+                {
+                    await act.FinishHeartbeatsAsync().ConfigureAwait(false);
+                    await worker.BridgeWorker.CompleteActivityTaskAsync(
+                        completion).ConfigureAwait(false);
+                }
             }
             catch (Exception e)
             {

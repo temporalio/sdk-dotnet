@@ -321,6 +321,14 @@ pub extern "C" fn worker_shutdown(
 }
 
 #[no_mangle]
+pub extern "C" fn worker_initiate_shutdown(
+    worker: *mut Worker,
+) {
+    let worker = unsafe { &*worker };
+    worker.worker.as_ref().unwrap().initiate_shutdown();
+}
+
+#[no_mangle]
 pub extern "C" fn worker_finalize_shutdown(
     worker: *mut Worker,
     user_data: *mut libc::c_void,

@@ -519,6 +519,55 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ExecuteActivityAsync_AsyncCompletionStartToCloseTimeout_ReportsCancel()
+    {
+        var taskTokenCompletion = new TaskCompletionSource<byte[]>();
+        [Activity]
+        void CompleteExternal()
+        {
+            taskTokenCompletion.SetResult(ActivityContext.Current.Info.TaskToken);
+            throw new CompleteAsyncException();
+        }
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        using var worker = new TemporalWorker(Client, new()
+        {
+            TaskQueue = taskQueue,
+            Activities = { CompleteExternal },
+        });
+        await worker.ExecuteAsync(async () =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                IKitchenSinkWorkflow.Ref.RunAsync,
+                new KSWorkflowParams(new KSAction(ExecuteActivity: new(
+                    Name: "CompleteExternal",
+                    TaskQueue: taskQueue,
+                    WaitForCancellation: true,
+                    StartToCloseTimeoutMS: 1000))),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
+
+            // Wait for task token
+            var taskToken = await taskTokenCompletion.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+            // Wait for heartbeat to show not found
+            var actHandle = Env.Client.GetAsyncActivityHandle(taskToken);
+            await AssertMore.EqualEventuallyAsync(true, async () =>
+            {
+                try
+                {
+                    await actHandle.HeartbeatAsync();
+                    return false;
+                }
+                catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+                {
+                    return true;
+                }
+            });
+        });
+    }
+
+    [Fact]
     public async Task ExecuteAsync_PollFailure_ShutsDownWorker()
     {
         var activityWaiting = new TaskCompletionSource();

@@ -261,7 +261,19 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Shutdown this worker.
+        /// Initiate shutdown this worker. This is not needed if <see cref="ShutdownAsync" /> is
+        /// used.
+        /// </summary>
+        public void InitiateShutdown()
+        {
+            unsafe
+            {
+                Interop.Methods.worker_initiate_shutdown(Ptr);
+            }
+        }
+
+        /// <summary>
+        /// Shutdown this worker. This is not needed if <see cref="InitiateShutdown" /> is used.
         /// </summary>
         /// <returns>Completion task.</returns>
         public async Task ShutdownAsync()

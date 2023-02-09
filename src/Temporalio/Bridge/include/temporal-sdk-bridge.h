@@ -319,6 +319,8 @@ void worker_request_workflow_eviction(struct Worker *worker, struct ByteArrayRef
 
 void worker_shutdown(struct Worker *worker, void *user_data, WorkerCallback callback);
 
+void worker_initiate_shutdown(struct Worker *worker);
+
 void worker_finalize_shutdown(struct Worker *worker, void *user_data, WorkerCallback callback);
 
 #ifdef __cplusplus
