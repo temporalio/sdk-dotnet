@@ -7,4 +7,4 @@ See:
 * [NuGet Package](https://www.nuget.org/packages/Temporalio)
 * [Application Development Guide](https://docs.temporal.io/application-development) (TODO: .NET docs)
 * [API Documentation](/api)
-* Samples (TODO)
+* [Samples](https://github.com/temporalio/samples-dotnet)
