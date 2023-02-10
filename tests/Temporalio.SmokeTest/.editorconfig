@@ -4,6 +4,9 @@
 
 # Please keep in alphabetical order by field.
 
+# Don't need to mark smoke test classes static
+dotnet_diagnostic.CA1812.severity = none
+
 # Don't need to mark smoke test classes sealed
 dotnet_diagnostic.CA1852.severity = none
 
