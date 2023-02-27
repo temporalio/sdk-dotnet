@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Temporalio.Workflow
+namespace Temporalio.Workflows
 {
     /// <summary>
     /// Designate a type as a workflow.

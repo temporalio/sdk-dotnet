@@ -1,6 +1,6 @@
 namespace Temporalio.Tests.Worker;
 
-using Temporalio.Activity;
+using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Converters;

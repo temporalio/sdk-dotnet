@@ -1,7 +1,7 @@
 namespace Temporalio.Tests;
 
 using System.Text.Json.Serialization;
-using Temporalio.Workflow;
+using Temporalio.Workflows;
 
 [Workflow("kitchen_sink")]
 public interface IKitchenSinkWorkflow

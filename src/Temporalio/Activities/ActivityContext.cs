@@ -3,7 +3,7 @@ using System.Threading;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 
-namespace Temporalio.Activity
+namespace Temporalio.Activities
 {
     /// <summary>
     /// Context that is available during activity executions. Use <see cref="Current" /> to get the

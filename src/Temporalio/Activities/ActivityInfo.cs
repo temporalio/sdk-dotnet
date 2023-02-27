@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 
-namespace Temporalio.Activity
+namespace Temporalio.Activities
 {
     /// <summary>
     /// Information about an activity.

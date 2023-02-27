@@ -208,7 +208,7 @@ namespace Temporalio.Client
         public Task SignalAsync(Func<Task> signal, WorkflowSignalOptions? options = null)
         {
             return SignalAsync(
-                Workflow.WorkflowSignalAttribute.Definition.FromMethod(signal.Method).Name,
+                Workflows.WorkflowSignalAttribute.Definition.FromMethod(signal.Method).Name,
                 Array.Empty<object?>(),
                 options);
         }
@@ -229,7 +229,7 @@ namespace Temporalio.Client
             Func<T, Task> signal, T arg, WorkflowSignalOptions? options = null)
         {
             return SignalAsync(
-                Workflow.WorkflowSignalAttribute.Definition.FromMethod(signal.Method).Name,
+                Workflows.WorkflowSignalAttribute.Definition.FromMethod(signal.Method).Name,
                 new object?[] { arg },
                 options);
         }
@@ -273,7 +273,7 @@ namespace Temporalio.Client
             Func<TQueryResult> query, WorkflowQueryOptions? options = null)
         {
             return QueryAsync<TQueryResult>(
-                Workflow.WorkflowQueryAttribute.Definition.FromMethod(query.Method).Name,
+                Workflows.WorkflowQueryAttribute.Definition.FromMethod(query.Method).Name,
                 Array.Empty<object?>(),
                 options);
         }
@@ -296,7 +296,7 @@ namespace Temporalio.Client
             Func<T, TQueryResult> query, T arg, WorkflowQueryOptions? options = null)
         {
             return QueryAsync<TQueryResult>(
-                Workflow.WorkflowQueryAttribute.Definition.FromMethod(query.Method).Name,
+                Workflows.WorkflowQueryAttribute.Definition.FromMethod(query.Method).Name,
                 new object?[] { arg },
                 options);
         }

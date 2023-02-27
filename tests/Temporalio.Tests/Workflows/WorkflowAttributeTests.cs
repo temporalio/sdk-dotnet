@@ -1,8 +1,8 @@
 #pragma warning disable CA1822 // We don't want to force workflow methods to be static
 
-namespace Temporalio.Tests.Workflow;
+namespace Temporalio.Tests.Workflows;
 
-using Temporalio.Workflow;
+using Temporalio.Workflows;
 using Xunit;
 
 public class WorkflowAttributeTests

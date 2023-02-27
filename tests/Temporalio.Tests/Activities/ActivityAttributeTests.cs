@@ -1,7 +1,7 @@
-namespace Temporalio.Tests.Activity;
+namespace Temporalio.Tests.Activities;
 
 using System.Threading.Tasks;
-using Temporalio.Activity;
+using Temporalio.Activities;
 using Xunit;
 
 public class ActivityAttributeTests

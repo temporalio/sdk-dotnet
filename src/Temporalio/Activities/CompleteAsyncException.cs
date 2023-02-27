@@ -1,4 +1,4 @@
-namespace Temporalio.Activity
+namespace Temporalio.Activities
 {
     /// <summary>
     /// Exception the user should throw to inform the worker that this activity will be completed
