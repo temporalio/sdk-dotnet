@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿#pragma warning disable CA1852 // Don't care that Program.cs can be sealed
+
+using System.Diagnostics;
 
 var currFile = new StackTrace(true).GetFrame(0)?.GetFileName();
 var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
@@ -10,8 +12,21 @@ var bridgeProtoDir = Path.Join(protoDir, "local");
 // Remove/recreate entire api dir
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).Delete(true);
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies")).Create();
-new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).Delete(true);
-new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).Create();
+// Do not delete the .editorconfig from Bridge/Api
+foreach (var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).GetFileSystemInfos())
+{
+    if (fi.Name != ".editorconfig")
+    {
+        if (fi is DirectoryInfo dir)
+        {
+            dir.Delete(true);
+        }
+        else
+        {
+            fi.Delete();
+        }
+    }
+}
 
 // Gen proto
 foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
@@ -136,7 +151,7 @@ foreach (
 static void Protoc(string file, string outDir, string baseNamespace, params string[] includes)
 {
     var protocArgs = new List<string> { "--csharp_out=" + outDir };
-    if (baseNamespace != string.Empty)
+    if (!string.IsNullOrEmpty(baseNamespace))
     {
         var opt = "--csharp_opt=base_namespace=" + baseNamespace;
         // Mark core sdk as internal

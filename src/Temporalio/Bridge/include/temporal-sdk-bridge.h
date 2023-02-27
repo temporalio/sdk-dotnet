@@ -209,8 +209,6 @@ typedef struct WorkerOptions {
   uint32_t max_outstanding_workflow_tasks;
   uint32_t max_outstanding_activities;
   uint32_t max_outstanding_local_activities;
-  uint32_t max_concurrent_workflow_task_polls;
-  float nonsticky_to_sticky_poll_ratio;
   bool no_remote_activities;
   uint64_t sticky_queue_schedule_to_start_timeout_millis;
   uint64_t max_heartbeat_throttle_interval_millis;

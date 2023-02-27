@@ -2,6 +2,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Castle.DynamicProxy;
 
 namespace Temporalio
@@ -16,46 +17,45 @@ namespace Temporalio
             typeof(ProxiedAttribute).GetConstructor(new Type[] { typeof(Type) }) ??
                 throw new InvalidOperationException("Missing proxied attribute constructor");
 
-#pragma warning disable CA1040 // We allow this empty marker interface because
+#pragma warning disable CA1040 // We allow this empty marker interface for GetUnderlyingType use
         /// <summary>
         /// Interface implemented by every ref proxy.
         /// </summary>
         public interface IProxy
         {
         }
+#pragma warning restore CA1040
 
         /// <summary>
-        /// Create an instance of the given type. Only interfaces and classes with 0-argument
-        /// constructors can be created. This should only be used to reference methods on, not to
-        /// make any calls on.
+        /// Create an instance of the given type. This should only be used to reference methods on,
+        /// not to make any calls on. Classes returned may not be instantiated.
         /// </summary>
         /// <typeparam name="T">Type to create an instance of.</typeparam>
         /// <returns>Instance of this type.</returns>
         public static T Create<T>()
         {
             var type = typeof(T);
-            var options = new ProxyGenerationOptions();
-            options.AdditionalAttributes.Add(
-                new(ProxiedAttributeConstructor, new object[] { type }));
             if (type.IsInterface)
             {
+                var options = new ProxyGenerationOptions();
+                options.AdditionalAttributes.Add(
+                    new(ProxiedAttributeConstructor, new object[] { type }));
                 return (T)Generator.CreateInterfaceProxyWithoutTarget(
                     type, options, AlwaysFailInterceptor.Instance);
             }
             else if (type.IsClass)
             {
-                return (T)Generator.CreateClassProxy(
-                    type, options, AlwaysFailInterceptor.Instance);
+                return (T)FormatterServices.GetUninitializedObject(type);
             }
             throw new InvalidOperationException($"{type} is not a class or interface");
         }
 
         /// <summary>
-        /// For the given type, get the underlying proxied type if any.
+        /// For the given type, get the underlying type if any.
         /// </summary>
-        /// <param name="type">Type that may be proxied.</param>
-        /// <returns>Unproxied type if proxied, otherwise just the given type.</returns>
-        internal static Type GetUnproxiedType(Type type) =>
+        /// <param name="type">Type that may have been created via Create.</param>
+        /// <returns>Underlying type if wrapped, otherwise just the given type.</returns>
+        internal static Type GetUnderlyingType(Type type) =>
             type.GetCustomAttribute<ProxiedAttribute>()?.UnderlyingType ?? type;
 
         /// <summary>
