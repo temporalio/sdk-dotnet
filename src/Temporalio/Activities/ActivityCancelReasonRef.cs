@@ -1,4 +1,4 @@
-namespace Temporalio.Activity
+namespace Temporalio.Activities
 {
     /// <summary>
     /// Boxed reference wrapper for <see cref="ActivityCancelReason" />.

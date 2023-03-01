@@ -1,6 +1,6 @@
 namespace Temporalio.Tests.Testing;
 
-using Temporalio.Activity;
+using Temporalio.Activities;
 using Temporalio.Testing;
 using Xunit;
 

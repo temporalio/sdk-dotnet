@@ -1,6 +1,6 @@
 using System;
 
-namespace Temporalio.Workflow
+namespace Temporalio.Workflows
 {
     /// <summary>
     /// Designate a method as the entry point to a workflow.

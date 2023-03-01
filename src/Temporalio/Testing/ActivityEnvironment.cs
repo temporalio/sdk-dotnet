@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Temporalio.Activity;
+using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
 

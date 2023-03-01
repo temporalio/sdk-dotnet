@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Temporalio.Workflow
+namespace Temporalio.Workflows
 {
     /// <summary>
     /// Designate a method as a signal handler.

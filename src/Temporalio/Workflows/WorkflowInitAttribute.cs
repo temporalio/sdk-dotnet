@@ -1,6 +1,6 @@
 using System;
 
-namespace Temporalio.Workflow
+namespace Temporalio.Workflows
 {
     /// <summary>
     /// Designates a constructor as receiving the same arguments as the method with

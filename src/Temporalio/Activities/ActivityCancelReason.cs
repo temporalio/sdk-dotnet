@@ -1,4 +1,4 @@
-namespace Temporalio.Activity
+namespace Temporalio.Activities
 {
     /// <summary>
     /// Reason for why an activity may be cancelled.

@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Temporalio.Activity
+namespace Temporalio.Activities
 {
     /// <summary>
     /// Designate a method as an activity.
