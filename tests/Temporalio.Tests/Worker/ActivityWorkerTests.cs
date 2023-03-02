@@ -68,6 +68,20 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ExecuteActivityAsync_SimpleGenericMethod_Succeeds()
+    {
+        var ran = false;
+        [Activity]
+        Task<T> DoThingAsync<T>(T arg)
+        {
+            ran = true;
+            return Task.FromResult(arg);
+        }
+        Assert.Equal("foo", await ExecuteActivityAsync(DoThingAsync<string>, "foo"));
+        Assert.True(ran);
+    }
+
+    [Fact]
     public async Task ExecuteActivityAsync_CheckInfo_IsAccurate()
     {
         [Activity]
@@ -375,6 +389,33 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal("Oh no", appErr.Message);
         // Should show the detail from the first attempt
         Assert.Equal("attempt: 1", heartbeatDetail);
+    }
+
+    [Fact]
+    public async Task ExecuteActivityAsync_ManualDefinition_Succeeds()
+    {
+        static string SayHello(string name) => $"Hello, {name}!";
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        using var worker = new TemporalWorker(Client, new()
+        {
+            TaskQueue = taskQueue,
+            AdditionalActivityDefinitions =
+            {
+                ActivityDefinition.CreateWithoutAttribute("my-activity", SayHello),
+            },
+        });
+        await worker.ExecuteAsync(async () =>
+        {
+            // Run workflow
+            var result = await Env.Client.ExecuteWorkflowAsync(
+                IKitchenSinkWorkflow.Ref.RunAsync,
+                new KSWorkflowParams(new KSAction(ExecuteActivity: new(
+                    Name: "my-activity",
+                    Args: new[] { "Temporal" },
+                    TaskQueue: taskQueue))),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
+            Assert.Equal("Hello, Temporal!", result);
+        });
     }
 
     [Fact]
@@ -777,7 +818,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Env.Client.StartWorkflowAsync(
                     IKitchenSinkWorkflow.Ref.RunAsync,
                     new KSWorkflowParams(new KSAction(ExecuteActivity: new(
-                        Name: ActivityAttribute.Definition.FromDelegate(activity).Name,
+                        Name: ActivityDefinition.FromDelegate(activity).Name,
                         TaskQueue: taskQueue,
                         Args: args,
                         WaitForCancellation: waitForCancellation,

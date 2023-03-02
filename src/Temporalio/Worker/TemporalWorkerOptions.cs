@@ -46,6 +46,22 @@ namespace Temporalio.Worker
         /// Gets or sets the workflow types.
         /// </summary>
         public IList<Type> Workflows { get; set; } = new List<Type>();
+
+        /// <summary>
+        /// Gets or sets additional activity definitions.
+        /// </summary>
+        /// <remarks>
+        /// Unless manual definitions are required, users should use <see cref="Activities" />.
+        /// </remarks>
+        public IList<Activities.ActivityDefinition> AdditionalActivityDefinitions { get; set; } = new List<Activities.ActivityDefinition>();
+
+        /// <summary>
+        /// Gets or sets additional workflow definitions.
+        /// </summary>
+        /// <remarks>
+        /// Unless manual definitions are required, users should use <see cref="Workflows" />.
+        /// </remarks>
+        public IList<Workflows.WorkflowDefinition> AdditionalWorkflowDefinitions { get; set; } = new List<Workflows.WorkflowDefinition>();
 #pragma warning restore CA2227
 
         /// <summary>
@@ -129,7 +145,7 @@ namespace Temporalio.Worker
         /// Gets or sets a value indicating whether the worker will only handle workflows and local
         /// activities.
         /// </summary>
-        public bool DisableRemoteActivities { get; set; }
+        public bool LocalActivityWorkerOnly { get; set; }
 
         /// <summary>
         /// Gets or sets how long a workflow task is allowed to sit on the sticky queue before it is

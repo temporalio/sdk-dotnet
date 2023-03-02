@@ -25,12 +25,26 @@ namespace Temporalio.Worker.Interceptors
         /// <param name="nextInterceptor">The next interceptor in the chain to call.</param>
         /// <returns>Created interceptor.</returns>
 #if NETCOREAPP3_0_OR_GREATER
-        ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor)
-        {
-            return nextInterceptor;
-        }
+        ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
 #else
         ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor);
 #endif
     }
+
+#if NETCOREAPP3_0_OR_GREATER
+    /// <summary>
+    /// Generic <see cref="IWorkerInterceptor" /> with workflow inbound interceptor as type
+    /// argument.
+    /// </summary>
+    /// <typeparam name="T">Workflow inbound interceptor type.</typeparam>
+    public interface IWorkerInterceptor<T> : IWorkerInterceptor
+        where T : WorkflowInboundInterceptor
+    {
+        /// <inheritdoc />
+        #pragma warning disable CA1033 // Providing default interface impl shouldn't trigger this
+        Type? IWorkerInterceptor.WorkflowInboundInterceptorType => typeof(T);
+        #pragma warning restore CA1033
+    }
+#endif
 }

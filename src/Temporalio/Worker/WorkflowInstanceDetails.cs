@@ -24,7 +24,7 @@ namespace Temporalio.Worker
     internal record WorkflowInstanceDetails(
         string Namespace,
         string TaskQueue,
-        WorkflowAttribute.Definition Definition,
+        WorkflowDefinition Definition,
         WorkflowActivation InitialActivation,
         StartWorkflow Start,
         IEnumerable<Type> InboundInterceptorTypes,

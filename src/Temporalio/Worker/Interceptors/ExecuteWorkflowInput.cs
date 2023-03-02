@@ -9,11 +9,11 @@ namespace Temporalio.Worker.Interceptors
     /// </summary>
     /// <param name="Instance">Workflow instance.</param>
     /// <param name="RunMethod">Method to invoke on the instance.</param>
-    /// <param name="Parameters">Run method parameters.</param>
+    /// <param name="Args">Run method arguments.</param>
     /// <param name="Headers">Workflow headers.</param>
     public record ExecuteWorkflowInput(
         object Instance,
         MethodInfo RunMethod,
-        object?[] Parameters,
+        object?[] Args,
         IDictionary<string, Payload>? Headers);
 }

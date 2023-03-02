@@ -8,10 +8,10 @@ namespace Temporalio.Worker.Interceptors
     /// Input for <see cref="ActivityInboundInterceptor.ExecuteActivityAsync" />.
     /// </summary>
     /// <param name="Delegate">Activity delegate.</param>
-    /// <param name="Parameters">Activity parameters.</param>
+    /// <param name="Args">Activity arguments.</param>
     /// <param name="Headers">Activity headers.</param>
     public record ExecuteActivityInput(
         Delegate Delegate,
-        object?[] Parameters,
+        object?[] Args,
         IDictionary<string, Payload>? Headers);
 }

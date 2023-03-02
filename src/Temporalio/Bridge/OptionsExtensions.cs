@@ -356,7 +356,7 @@ namespace Temporalio.Bridge
                 max_outstanding_workflow_tasks = (uint)options.MaxConcurrentWorkflowTasks,
                 max_outstanding_activities = (uint)options.MaxConcurrentActivities,
                 max_outstanding_local_activities = (uint)options.MaxConcurrentLocalActivities,
-                no_remote_activities = (byte)(options.DisableRemoteActivities ? 1 : 0),
+                no_remote_activities = (byte)(options.LocalActivityWorkerOnly ? 1 : 0),
                 sticky_queue_schedule_to_start_timeout_millis =
                     (ulong)options.StickyQueueScheduleToStartTimeout.TotalMilliseconds,
                 max_heartbeat_throttle_interval_millis =

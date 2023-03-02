@@ -341,6 +341,21 @@ Notes about the above code:
     method name.
   * This attribute is not inherited and therefore must be explicitly set on any override.
 
+#### Workflow Task Scheduling
+
+TODO(cretz): Document and try to prevent:
+
+* Users should not use `Task.Run`, `ConfigureAwait(false)` or any other task call that does not use
+  `TaskScheduler.Current`
+  * This is kinda the opposite of [CA2008](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2008)
+    but it's important not to move back on to the primary thread pool.
+  * We will try to prevent this at runtime with TPL event source capturing and at compile time with analyzers.
+* Users should not use `Task.Delay`, `Task.Wait`, or timeout-based `CancellationTokenSource` or anything that uses .NET
+  timers
+  * .NET does not allow us to intercept the timers. It forces them on a platform-specific `TimerQueue` which is
+    non-deterministic.
+  * We will try to prevent this at runtime with TPL event source capturing and at compile time with analyzers.
+
 ### Activities
 
 #### Activity Definition

@@ -36,15 +36,15 @@ namespace Temporalio.Worker
                 (Bridge.Client)client.BridgeClientProvider.BridgeClient,
                 client.Options.Namespace,
                 options);
-            if (options.Activities.Count > 0)
+            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count > 0)
             {
                 activityWorker = new(this);
             }
-            else if (options.Workflows.Count == 0)
+            else if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow and/or activity");
             }
-            if (options.Workflows.Count > 0)
+            if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count > 0)
             {
                 workflowWorker = new(this);
             }
@@ -75,7 +75,7 @@ namespace Temporalio.Worker
                 }).OfType<Type>();
 
             // Enable workflow task tracing if needed
-            workflowTaskTracingEnabled = !options.DisableWorkflowTaskTracing && options.Workflows.Count > 0;
+            workflowTaskTracingEnabled = !options.DisableWorkflowTaskTracing && workflowWorker != null;
             if (workflowTaskTracingEnabled)
             {
                 WorkflowTaskEventListener.Instance.Register();

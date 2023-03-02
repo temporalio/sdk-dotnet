@@ -4,6 +4,9 @@
 
 # Please keep in alphabetical order by field.
 
+# We use getters for queries, they cannot be properties
+dotnet_diagnostic.CA1024.severity = none
+
 # We use empty interfaces in some tests
 dotnet_diagnostic.CA1040.severity = none
 
@@ -19,6 +22,12 @@ dotnet_diagnostic.CA1852.severity = none
 # ConfigureAwait not needed in tests
 dotnet_diagnostic.CA2007.severity = none
 
+# Do not need task scheduler for workflows
+dotnet_diagnostic.CA2008.severity = none
+
+# Workflow randomness is intentionally deterministic
+dotnet_diagnostic.CA5394.severity = none
+
 # Do not need docs in test project
 dotnet_diagnostic.CS1591.severity = none
 
@@ -31,6 +40,10 @@ dotnet_diagnostic.SA1313.severity = none
 
 # Do not need docs in test project
 dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1602.severity = none
+
+# No need to avoid things using TaskScheduler.Current in workflows
+dotnet_diagnostic.VSTHRD105.severity = none
 
 # Do not need to suffix tests with "Async"
 dotnet_diagnostic.VSTHRD200.severity = none
