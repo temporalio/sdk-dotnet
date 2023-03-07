@@ -1,3 +1,5 @@
+using System;
+
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
@@ -5,6 +7,18 @@ namespace Temporalio.Worker.Interceptors
     /// </summary>
     public interface IWorkerInterceptor
     {
+        /// <summary>
+        /// Gets the optional type of <see cref="WorkflowInboundInterceptor"/> to instantiate for
+        /// interception. This type must contain a public constructor accepting a single
+        /// <see cref="WorkflowInboundInterceptor"/> parameter for the next interceptor in the
+        /// chain.
+        /// </summary>
+#if NETCOREAPP3_0_OR_GREATER
+        Type? WorkflowInboundInterceptorType => null;
+#else
+        Type? WorkflowInboundInterceptorType { get; }
+#endif
+
         /// <summary>
         /// Create an activity inbound interceptor to intercept calls.
         /// </summary>

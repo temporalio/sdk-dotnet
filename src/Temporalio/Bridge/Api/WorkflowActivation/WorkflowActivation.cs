@@ -129,14 +129,15 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
             "b3cSCwoDc2VxGAEgASgNEjEKB2ZhaWx1cmUYAiABKAsyIC50ZW1wb3JhbC5h",
             "cGkuZmFpbHVyZS52MS5GYWlsdXJlImYKJFJlc29sdmVSZXF1ZXN0Q2FuY2Vs",
             "RXh0ZXJuYWxXb3JrZmxvdxILCgNzZXEYASABKA0SMQoHZmFpbHVyZRgCIAEo",
-            "CzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUioAIKD1JlbW92",
+            "CzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUiwQIKD1JlbW92",
             "ZUZyb21DYWNoZRIPCgdtZXNzYWdlGAEgASgJEksKBnJlYXNvbhgCIAEoDjI7",
             "LmNvcmVzZGsud29ya2Zsb3dfYWN0aXZhdGlvbi5SZW1vdmVGcm9tQ2FjaGUu",
-            "RXZpY3Rpb25SZWFzb24irgEKDkV2aWN0aW9uUmVhc29uEg8KC1VOU1BFQ0lG",
+            "RXZpY3Rpb25SZWFzb24izwEKDkV2aWN0aW9uUmVhc29uEg8KC1VOU1BFQ0lG",
             "SUVEEAASDgoKQ0FDSEVfRlVMTBABEg4KCkNBQ0hFX01JU1MQAhISCg5OT05E",
             "RVRFUk1JTklTTRADEg0KCUxBTkdfRkFJTBAEEhIKDkxBTkdfUkVRVUVTVEVE",
             "EAUSEgoOVEFTS19OT1RfRk9VTkQQBhIVChFVTkhBTkRMRURfQ09NTUFORBAH",
-            "EgkKBUZBVEFMEAhiBnByb3RvMw=="));
+            "EgkKBUZBVEFMEAgSHwobUEFHSU5BVElPTl9PUl9ISVNUT1JZX0ZFVENIEAli",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.ActivityResult.ActivityResultReflection.Descriptor, global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -6222,6 +6223,10 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         /// can also happen if then network drops out while paginating. Check message string.
         /// </summary>
         [pbr::OriginalName("FATAL")] Fatal = 8,
+        /// <summary>
+        /// Something went wrong attempting to fetch more history events.
+        /// </summary>
+        [pbr::OriginalName("PAGINATION_OR_HISTORY_FETCH")] PaginationOrHistoryFetch = 9,
       }
 
     }

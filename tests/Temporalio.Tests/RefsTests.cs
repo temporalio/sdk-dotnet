@@ -13,10 +13,25 @@ public class RefsTests
     }
 
     [Fact]
-    public void GetUnproxiedType_Simple_Succeeds()
+    public void GetUnderlyingType_Interface_Succeeds()
     {
         Assert.Equal(
             typeof(ISomeInterface),
-            Refs.GetUnproxiedType(Refs.Create<ISomeInterface>().GetType()));
+            Refs.GetUnderlyingType(Refs.Create<ISomeInterface>().GetType()));
+    }
+
+    [Fact]
+    public void GetUnderlyingType_Class_Succeeds()
+    {
+        Assert.Equal(
+            typeof(SomeClass),
+            Refs.GetUnderlyingType(Refs.Create<SomeClass>().GetType()));
+    }
+
+    public class SomeClass : ISomeInterface
+    {
+        public SomeClass(string _)
+        {
+        }
     }
 }

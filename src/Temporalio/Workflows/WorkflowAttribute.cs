@@ -99,7 +99,7 @@ namespace Temporalio.Workflows
                     BindingFlags.Instance | BindingFlags.Static |
                     BindingFlags.Public | BindingFlags.NonPublic;
                 // Unwrap the type
-                type = Refs.GetUnproxiedType(type);
+                type = Refs.GetUnderlyingType(type);
 
                 // Get the main attribute, but throw immediately if it is not present
                 var attr = type.GetCustomAttribute<WorkflowAttribute>(false) ??

@@ -15,6 +15,8 @@ namespace Temporalio.Worker
     public class TemporalWorker : IDisposable
     {
         private readonly ActivityWorker? activityWorker;
+        private readonly WorkflowWorker? workflowWorker;
+        private readonly bool workflowTaskTracingEnabled;
         private int started;
 
         /// <summary>
@@ -38,10 +40,13 @@ namespace Temporalio.Worker
             {
                 activityWorker = new(this);
             }
-            else
+            else if (options.Workflows.Count == 0)
             {
-                // TODO(cretz): Remove requirement when workflows are impl'd
-                throw new ArgumentException("No activities present");
+                throw new ArgumentException("Must have at least one workflow and/or activity");
+            }
+            if (options.Workflows.Count > 0)
+            {
+                workflowWorker = new(this);
             }
 
             // Interceptors are the client interceptors that implement IWorkerInterceptor followed
@@ -51,6 +56,29 @@ namespace Temporalio.Worker
             if (Options.Interceptors != null)
             {
                 Interceptors = Interceptors.Concat(Options.Interceptors);
+            }
+            // Extract workflow interceptor constructors out
+            var expectedTypes = new Type[] { typeof(WorkflowInboundInterceptor) };
+            WorkflowInboundInterceptorTypes = Interceptors.Select(
+                i =>
+                {
+                    var type = i.WorkflowInboundInterceptorType;
+                    if (type == null)
+                    {
+                        return null;
+                    }
+                    else if (type.GetConstructor(expectedTypes) == null)
+                    {
+                        throw new InvalidOperationException($"Workflow interceptor {type} missing constructor accepting inbound");
+                    }
+                    return type;
+                }).OfType<Type>();
+
+            // Enable workflow task tracing if needed
+            workflowTaskTracingEnabled = !options.DisableWorkflowTaskTracing && options.Workflows.Count > 0;
+            if (workflowTaskTracingEnabled)
+            {
+                WorkflowTaskEventListener.Instance.Register();
             }
         }
 
@@ -84,6 +112,11 @@ namespace Temporalio.Worker
         /// Gets the set of interceptors in the order they should be applied.
         /// </summary>
         internal IEnumerable<IWorkerInterceptor> Interceptors { get; private init; }
+
+        /// <summary>
+        /// Gets the set of workflow inbound interceptor types to create for each workflow instance.
+        /// </summary>
+        internal IEnumerable<Type> WorkflowInboundInterceptorTypes { get; private init; }
 
         /// <summary>
         /// Run this worker until failure or cancelled.
@@ -182,6 +215,11 @@ namespace Temporalio.Worker
             {
                 activityWorker?.Dispose();
                 BridgeWorker.Dispose();
+                // Remove task tracing if not disabled and there are workflows present
+                if (workflowTaskTracingEnabled)
+                {
+                    WorkflowTaskEventListener.Instance.Unregister();
+                }
             }
         }
 
@@ -216,7 +254,12 @@ namespace Temporalio.Worker
                 tasks.Add(activityWorkerTask);
                 pollTasks.Add(activityWorkerTask);
             }
-            // TODO(cretz): Workflows
+            if (workflowWorker != null)
+            {
+                var workflowWorkerTask = workflowWorker.ExecuteAsync();
+                tasks.Add(workflowWorkerTask);
+                pollTasks.Add(workflowWorkerTask);
+            }
 
             // Wait until any of the tasks complete including cancellation
             var task = await Task.WhenAny(tasks).ConfigureAwait(false);

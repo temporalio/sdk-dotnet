@@ -304,11 +304,6 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint32_t")]
         public uint max_outstanding_local_activities;
 
-        [NativeTypeName("uint32_t")]
-        public uint max_concurrent_workflow_task_polls;
-
-        public float nonsticky_to_sticky_poll_ratio;
-
         [NativeTypeName("bool")]
         public byte no_remote_activities;
 

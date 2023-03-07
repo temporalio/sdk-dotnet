@@ -352,14 +352,13 @@ namespace Temporalio.Bridge
                 task_queue = scope.ByteArray(options.TaskQueue),
                 build_id = scope.ByteArray(buildID),
                 identity_override = scope.ByteArray(options.Identity),
-                max_cached_workflows = 1000,
-                max_outstanding_workflow_tasks = 100,
+                max_cached_workflows = (uint)options.MaxCachedWorkflows,
+                max_outstanding_workflow_tasks = (uint)options.MaxConcurrentWorkflowTasks,
                 max_outstanding_activities = (uint)options.MaxConcurrentActivities,
-                max_outstanding_local_activities = 100,
-                max_concurrent_workflow_task_polls = 5,
-                nonsticky_to_sticky_poll_ratio = 0.2F,
-                no_remote_activities = 0,
-                sticky_queue_schedule_to_start_timeout_millis = 10000,
+                max_outstanding_local_activities = (uint)options.MaxConcurrentLocalActivities,
+                no_remote_activities = (byte)(options.DisableRemoteActivities ? 1 : 0),
+                sticky_queue_schedule_to_start_timeout_millis =
+                    (ulong)options.StickyQueueScheduleToStartTimeout.TotalMilliseconds,
                 max_heartbeat_throttle_interval_millis =
                     (ulong)options.MaxHeartbeatThrottleInterval.TotalMilliseconds,
                 default_heartbeat_throttle_interval_millis =

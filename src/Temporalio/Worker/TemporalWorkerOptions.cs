@@ -41,6 +41,11 @@ namespace Temporalio.Worker
         /// Gets or sets the activity delegates.
         /// </summary>
         public IList<Delegate> Activities { get; set; } = new List<Delegate>();
+
+        /// <summary>
+        /// Gets or sets the workflow types.
+        /// </summary>
+        public IList<Type> Workflows { get; set; } = new List<Type>();
 #pragma warning restore CA2227
 
         /// <summary>
@@ -103,6 +108,70 @@ namespace Temporalio.Worker
         public TimeSpan GracefulShutdownTimeout { get; set; } = TimeSpan.Zero;
 
         /// <summary>
+        /// Gets or sets the number of workflows cached for sticky task queue use. If this is 0,
+        /// sticky task queues are disabled and no caching occurs.
+        /// </summary>
+        public int MaxCachedWorkflows { get; set; } = 10000;
+
+        /// <summary>
+        /// Gets or sets the maximum allowed number of workflow tasks that will ever be given to
+        /// the worker at one time.
+        /// </summary>
+        public int MaxConcurrentWorkflowTasks { get; set; } = 100;
+
+        /// <summary>
+        /// Gets or sets the maximum number of local activities that will ever be given to this
+        /// worker concurrently.
+        /// </summary>
+        public int MaxConcurrentLocalActivities { get; set; } = 100;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the worker will only handle workflows and local
+        /// activities.
+        /// </summary>
+        public bool DisableRemoteActivities { get; set; }
+
+        /// <summary>
+        /// Gets or sets how long a workflow task is allowed to sit on the sticky queue before it is
+        /// timed out and moved to the non-sticky queue where it may be picked up by any worker.
+        /// </summary>
+        public TimeSpan StickyQueueScheduleToStartTimeout { get; set; } = TimeSpan.FromSeconds(10);
+
+        /// <summary>
+        /// Gets or sets a value indicating whether deadlock detection will be disabled for all
+        /// workflows. If unset, this value defaults to true only if the <c>TEMPORAL_DEBUG</c>
+        /// environment variable is <c>true</c> or <c>1</c>.
+        /// </summary>
+        /// <remarks>
+        /// When false, the default, deadlock detection prevents workflow tasks from taking too long
+        /// before yielding back to Temporal. This is undesirable when stepping through code, so
+        /// this should be set to true in those cases.
+        /// </remarks>
+        public bool DebugMode { get; set; } =
+            string.Equals(DebugModeEnvironmentVariable, "true", StringComparison.OrdinalIgnoreCase) ||
+            DebugModeEnvironmentVariable == "1";
+
+        /// <summary>
+        /// Gets or sets a value indicating whether workflow task tracing will be disabled for all
+        /// workflows.
+        /// </summary>
+        /// <remarks>
+        /// When false, the default, a <see cref="System.Diagnostics.Tracing.EventListener" /> is
+        /// used to catch improper use of tasks outside of the built-in task scheduler.
+        /// </remarks>
+        public bool DisableWorkflowTaskTracing { get; set; }
+
+        /// <summary>
+        /// Gets or sets a function to create workflow instances.
+        /// </summary>
+        /// <remarks>
+        /// Don't expose this until there's a use case.
+        /// </remarks>
+        internal Func<WorkflowInstanceDetails, IWorkflowInstance>? WorkflowInstanceFactory { get; set; }
+
+        private static string? DebugModeEnvironmentVariable { get; } = Environment.GetEnvironmentVariable("TEMPORAL_DEBUG");
+
+        /// <summary>
         /// Add the given delegate as an activity.
         /// </summary>
         /// <param name="del">Delegate to add.</param>
@@ -110,6 +179,17 @@ namespace Temporalio.Worker
         public TemporalWorkerOptions AddActivity(Delegate del)
         {
             Activities.Add(del);
+            return this;
+        }
+
+        /// <summary>
+        /// Add the given type as a workflow.
+        /// </summary>
+        /// <param name="type">Type to add.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public TemporalWorkerOptions AddWorkflow(Type type)
+        {
+            Workflows.Add(type);
             return this;
         }
 

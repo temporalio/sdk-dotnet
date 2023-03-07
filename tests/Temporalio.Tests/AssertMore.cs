@@ -6,19 +6,18 @@ namespace Temporalio.Tests
 {
     public static class AssertMore
     {
-        public static async Task EqualEventuallyAsync<T>(
-            T expected, Func<Task<T>> func, TimeSpan? interval = null, int iterations = 15)
+        public static async Task EventuallyAsync(
+            Func<Task> func, TimeSpan? interval = null, int iterations = 15)
         {
             var tick = interval ?? TimeSpan.FromMilliseconds(300);
             for (var i = 0; ; i++)
             {
-                var actual = await func();
                 try
                 {
-                    Assert.Equal(expected, actual);
+                    await func();
                     return;
                 }
-                catch
+                catch (Xunit.Sdk.XunitException)
                 {
                     if (i >= iterations - 1)
                     {
@@ -27,6 +26,13 @@ namespace Temporalio.Tests
                 }
                 await Task.Delay(tick);
             }
+        }
+
+        public static Task EqualEventuallyAsync<T>(
+            T expected, Func<Task<T>> func, TimeSpan? interval = null, int iterations = 15)
+        {
+            return EventuallyAsync(
+                async () => Assert.Equal(expected, await func()), interval, iterations);
         }
 
         // TODO(cretz): From https://github.com/dotnet/runtime/blob/fd9f52098bba9e88269b2b147a45b8f60e4b8d0d/src/libraries/System.Text.Json/tests/Common/JsonTestHelper.cs

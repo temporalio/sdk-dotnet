@@ -54,8 +54,7 @@ namespace Temporalio.Activities
         /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this activity is
         /// started.
         /// </summary>
-        [JsonIgnore]
-        public IReadOnlyDictionary<string, object> LoggerScope { get; } = new Dictionary<string, object>
+        internal Dictionary<string, object> LoggerScope { get; } = new()
         {
             ["ActivityID"] = ActivityID,
             ["ActivityType"] = ActivityType,

@@ -54,5 +54,22 @@ namespace Temporalio
             }
             return proto;
         }
+
+        /// <summary>
+        /// Convert a protobuf retry policy to this type.
+        /// </summary>
+        /// <param name="proto">Protobuf retry policy.</param>
+        /// <returns>Retry policy.</returns>
+        public static RetryPolicy FromProto(Api.Common.V1.RetryPolicy proto)
+        {
+            return new()
+            {
+                InitialInterval = proto.InitialInterval.ToTimeSpan(),
+                BackoffCoefficient = (float)proto.BackoffCoefficient,
+                MaximumInterval = proto.MaximumInterval?.ToTimeSpan(),
+                MaximumAttempts = proto.MaximumAttempts,
+                NonRetryableErrorTypes = proto.NonRetryableErrorTypes.Count == 0 ? null : proto.NonRetryableErrorTypes,
+            };
+        }
     }
 }
