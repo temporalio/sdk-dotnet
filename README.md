@@ -40,6 +40,7 @@ Notably missing from this SDK:
   - [Workers](#workers)
   - [Workflows](#workflows)
     - [Workflow Definition](#workflow-definition)
+    - [Workflow Task Scheduling](#workflow-task-scheduling)
   - [Activities](#activities)
     - [Activity Definition](#activity-definition)
     - [Activity Context](#activity-context)
