@@ -54,7 +54,7 @@ namespace Temporalio.Activities
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("Name required for activity");
+                throw new ArgumentException("Name required for activity", nameof(name));
             }
             else if (del.Method == null)
             {

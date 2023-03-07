@@ -356,6 +356,7 @@ TODO(cretz): Document and try to prevent:
   * .NET does not allow us to intercept the timers. It forces them on a platform-specific `TimerQueue` which is
     non-deterministic.
   * We will try to prevent this at runtime with TPL event source capturing and at compile time with analyzers.
+* Users creating dataflow constructs without providing the current scheduler
 
 ### Activities
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using Temporalio.Api.Common.V1;
+using System.Linq;
+using System.Threading;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.Workflow.V1;
 using Temporalio.Converters;
@@ -10,18 +11,31 @@ namespace Temporalio.Client
     /// <summary>
     /// Representation of a workflow execution.
     /// </summary>
-    public record WorkflowExecution
+    public class WorkflowExecution
     {
-        private readonly Lazy<IDictionary<string, object>?> searchAttributes;
+        private readonly Lazy<IReadOnlyDictionary<string, IEncodedRawValue>> memo;
+        private readonly Lazy<SearchAttributeCollection> searchAttributes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowExecution"/> class.
         /// </summary>
         /// <param name="rawInfo">Raw proto info.</param>
-        public WorkflowExecution(WorkflowExecutionInfo rawInfo)
+        /// <param name="dataConverter">Data converter used for memos.</param>
+        public WorkflowExecution(WorkflowExecutionInfo rawInfo, DataConverter dataConverter)
         {
             RawInfo = rawInfo;
-            searchAttributes = new(() => RawSearchAttributes?.ToSearchAttributeValues());
+            // Search attribute conversion is cheap so it doesn't need to lock on publication. But
+            // memo conversion may use remote codec so it should only ever be created once lazily.
+            memo = new(
+                () => rawInfo.Memo == null ? new Dictionary<string, IEncodedRawValue>(0) :
+                    rawInfo.Memo.Fields.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => (IEncodedRawValue)new EncodedRawValue(dataConverter, kvp.Value)));
+            searchAttributes = new(
+                () => rawInfo.SearchAttributes == null ?
+                    SearchAttributeCollection.Empty :
+                    SearchAttributeCollection.FromProto(rawInfo.SearchAttributes),
+                LazyThreadSafetyMode.PublicationOnly);
         }
 
         /// <summary>
@@ -45,6 +59,11 @@ namespace Temporalio.Client
         public string ID => RawInfo.Execution.WorkflowId;
 
         /// <summary>
+        /// Gets the workflow memo dictionary, lazily creating when accessed.
+        /// </summary>
+        public IReadOnlyDictionary<string, IEncodedRawValue> Memo => memo.Value;
+
+        /// <summary>
         /// Gets the ID for the parent workflow if this was started as a child.
         /// </summary>
         public string? ParentID => RawInfo.ParentExecution?.WorkflowId;
@@ -57,31 +76,12 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the raw proto info.
         /// </summary>
-        public WorkflowExecutionInfo RawInfo { get; init; }
-
-        /// <summary>
-        /// Gets the workflow memo dictionary if present.
-        /// </summary>
-        public IDictionary<string, Payload>? RawMemo => RawInfo.Memo?.Fields;
-
-        /// <summary>
-        /// Gets the workflow search attribute dictionary if present.
-        /// </summary>
-        public IDictionary<string, Payload>? RawSearchAttributes =>
-            RawInfo.SearchAttributes?.IndexedFields;
+        public WorkflowExecutionInfo RawInfo { get; private init; }
 
         /// <summary>
         /// Gets the run ID for the workflow.
         /// </summary>
         public string RunID => RawInfo.Execution.RunId;
-
-        /// <summary>
-        /// Gets the search attributes on the workflow.
-        /// </summary>
-        /// <remarks>
-        /// This is lazily converted on first access.
-        /// </remarks>
-        public IDictionary<string, object>? SearchAttributes => searchAttributes.Value;
 
         /// <summary>
         /// Gets when the workflow was created.
@@ -97,6 +97,14 @@ namespace Temporalio.Client
         /// Gets the task queue for the workflow.
         /// </summary>
         public string TaskQueue => RawInfo.TaskQueue;
+
+        /// <summary>
+        /// Gets the search attributes on the workflow.
+        /// </summary>
+        /// <remarks>
+        /// This is lazily converted on first access.
+        /// </remarks>
+        public SearchAttributeCollection TypedSearchAttributes => searchAttributes.Value;
 
         /// <summary>
         /// Gets the type name of the workflow.

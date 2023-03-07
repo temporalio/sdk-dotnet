@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Temporalio.Converters;
 
 namespace Temporalio.Workflows
 {
@@ -26,6 +27,11 @@ namespace Temporalio.Workflows
         bool IsReplaying { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.Memo" />.
+        /// </summary>
+        IReadOnlyDictionary<string, IRawValue> Memo { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.Queries" />.
         /// </summary>
         IDictionary<string, WorkflowQueryDefinition> Queries { get; }
@@ -41,6 +47,11 @@ namespace Temporalio.Workflows
         IDictionary<string, WorkflowSignalDefinition> Signals { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.TypedSearchAttributes" />.
+        /// </summary>
+        SearchAttributeCollection TypedSearchAttributes { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.UtcNow" />.
         /// </summary>
         DateTime UtcNow { get; }
@@ -53,6 +64,18 @@ namespace Temporalio.Workflows
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <returns>Task for completion.</returns>
         Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken);
+
+        /// <summary>
+        /// Backing call for <see cref="Workflow.UpsertMemo" />.
+        /// </summary>
+        /// <param name="updates">Updates to perform.</param>
+        void UpsertMemo(IReadOnlyCollection<MemoUpdate> updates);
+
+        /// <summary>
+        /// Backing call for <see cref="Workflow.UpsertTypedSearchAttributes" />.
+        /// </summary>
+        /// <param name="updates">Updates to perform.</param>
+        void UpsertTypedSearchAttributes(IReadOnlyCollection<SearchAttributeUpdate> updates);
 
         /// <summary>
         /// Backing call for <see cref="Workflow.WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" />

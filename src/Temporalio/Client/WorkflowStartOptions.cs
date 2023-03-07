@@ -69,14 +69,14 @@ namespace Temporalio.Client
         public string? CronSchedule { get; set; }
 
         /// <summary>
-        /// Gets or sets the memo for the workflow.
+        /// Gets or sets the memo for the workflow. Values for the memo cannot be null.
         /// </summary>
         public IReadOnlyCollection<KeyValuePair<string, object>>? Memo { get; set; }
 
         /// <summary>
         /// Gets or sets the search attributes for the workflow.
         /// </summary>
-        public IReadOnlyCollection<KeyValuePair<string, object>>? SearchAttributes { get; set; }
+        public SearchAttributeCollection? TypedSearchAttributes { get; set; }
 
         /// <summary>
         /// Gets or sets the start signal for the workflow. If this is non-null, a signal-with-start

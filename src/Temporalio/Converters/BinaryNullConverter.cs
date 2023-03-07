@@ -35,7 +35,7 @@ namespace Temporalio.Converters
             {
                 throw new ArgumentException("Expected empty data for binary/null");
             }
-            else if (type.IsValueType)
+            else if (type.IsValueType && Nullable.GetUnderlyingType(type) == null)
             {
                 throw new ArgumentException($"Payload is null, but {type} is not nullable");
             }

@@ -187,8 +187,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Null(result.ExecutionTimeout);
             Assert.Equal(worker.Client.Options.Namespace, result.Namespace);
             Assert.Null(result.Parent);
-            Assert.Null(result.RawMemo);
-            Assert.Null(result.RawSearchAttributes);
             Assert.Null(result.RetryPolicy);
             Assert.Equal(handle.ResultRunID, result.RunID);
             Assert.Null(result.RunTimeout);
@@ -884,6 +882,191 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new() { DisableWorkflowTaskTracing = true });
     }
 
+    [Workflow]
+    public class SearchAttributesWorkflow
+    {
+        public static readonly SearchAttributesWorkflow Ref = Refs.Create<SearchAttributesWorkflow>();
+
+        public static readonly SearchAttributeCollection AttributesInitial = new SearchAttributeCollection.Builder().
+            Set(AttrBool, true).
+            Set(AttrDateTime, new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeSpan.Zero)).
+            Set(AttrDouble, 123.45).
+            Set(AttrKeyword, "SomeKeyword").
+            // TODO(cretz): Fix after Temporal dev server upgraded
+            // Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
+            Set(AttrLong, 678).
+            Set(AttrText, "SomeText").
+            ToSearchAttributeCollection();
+
+        // Update half, remove half
+        public static readonly SearchAttributeUpdate[] AttributeFirstUpdates = new SearchAttributeUpdate[]
+        {
+            AttrBool.ValueSet(false),
+            AttrDateTime.ValueSet(new DateTimeOffset(2002, 1, 1, 0, 0, 0, TimeSpan.Zero)),
+            AttrDouble.ValueSet(234.56),
+            AttrKeyword.ValueUnset(),
+            AttrLong.ValueUnset(),
+            AttrText.ValueUnset(),
+        };
+
+        public static readonly SearchAttributeCollection AttributesFirstUpdated = new SearchAttributeCollection.Builder().
+            Set(AttrBool, false).
+            Set(AttrDateTime, new DateTimeOffset(2002, 1, 1, 0, 0, 0, TimeSpan.Zero)).
+            Set(AttrDouble, 234.56).
+            ToSearchAttributeCollection();
+
+        // Update/remove other half
+        public static readonly SearchAttributeUpdate[] AttributeSecondUpdates = new SearchAttributeUpdate[]
+        {
+            AttrBool.ValueUnset(),
+            AttrDateTime.ValueUnset(),
+            AttrDouble.ValueUnset(),
+            AttrKeyword.ValueSet("AnotherKeyword"),
+            AttrLong.ValueSet(789),
+            AttrText.ValueSet("SomeOtherText"),
+        };
+
+        public static readonly SearchAttributeCollection AttributesSecondUpdated = new SearchAttributeCollection.Builder().
+            Set(AttrKeyword, "AnotherKeyword").
+            Set(AttrLong, 789).
+            Set(AttrText, "SomeOtherText").
+            ToSearchAttributeCollection();
+
+        public static void AssertAttributesEqual(
+            SearchAttributeCollection expected, SearchAttributeCollection actual) =>
+            Assert.Equal(
+                expected.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")),
+                actual.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")));
+
+        private bool proceed;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Check initial
+            AssertAttributesEqual(AttributesInitial, Workflow.TypedSearchAttributes);
+            // Wait, then update and check
+            await Workflow.WaitConditionAsync(() => proceed);
+            proceed = false;
+            Workflow.UpsertTypedSearchAttributes(AttributeFirstUpdates);
+            AssertAttributesEqual(AttributesFirstUpdated, Workflow.TypedSearchAttributes);
+            // Wait, then update and check
+            await Workflow.WaitConditionAsync(() => proceed);
+            proceed = false;
+            Workflow.UpsertTypedSearchAttributes(AttributeSecondUpdates);
+            AssertAttributesEqual(AttributesSecondUpdated, Workflow.TypedSearchAttributes);
+        }
+
+        [WorkflowSignal]
+        public async Task ProceedAsync() => proceed = true;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_SearchAttributes_ProperlyUpserted()
+    {
+        await EnsureSearchAttributesPresentAsync();
+        await ExecuteWorkerAsync<SearchAttributesWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                SearchAttributesWorkflow.Ref.RunAsync,
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                {
+                    TypedSearchAttributes = SearchAttributesWorkflow.AttributesInitial,
+                });
+            // Confirm description shows initial
+            SearchAttributesWorkflow.AssertAttributesEqual(
+                SearchAttributesWorkflow.AttributesInitial,
+                (await handle.DescribeAsync()).TypedSearchAttributes);
+            // Tell workflow to proceed and confirm next values
+            await handle.SignalAsync(SearchAttributesWorkflow.Ref.ProceedAsync);
+            await AssertMore.EventuallyAsync(async () =>
+                SearchAttributesWorkflow.AssertAttributesEqual(
+                    SearchAttributesWorkflow.AttributesFirstUpdated,
+                    (await handle.DescribeAsync()).TypedSearchAttributes));
+            // Tell workflow to proceed and confirm next values
+            await handle.SignalAsync(SearchAttributesWorkflow.Ref.ProceedAsync);
+            await AssertMore.EventuallyAsync(async () =>
+                SearchAttributesWorkflow.AssertAttributesEqual(
+                    SearchAttributesWorkflow.AttributesSecondUpdated,
+                    (await handle.DescribeAsync()).TypedSearchAttributes));
+        });
+    }
+
+    [Workflow]
+    public class MemoWorkflow
+    {
+        public static readonly MemoWorkflow Ref = Refs.Create<MemoWorkflow>();
+
+        public static readonly Dictionary<string, object> MemoInitial = new()
+        {
+            ["foo"] = "fooval",
+            ["bar"] = "barval",
+        };
+
+        public static readonly MemoUpdate[] MemoUpdates = new[]
+        {
+            MemoUpdate.ValueSet("foo", "newfooval"),
+            MemoUpdate.ValueUnset("bar"),
+            MemoUpdate.ValueSet("baz", "bazval"),
+        };
+
+        public static readonly Dictionary<string, object> MemoUpdated = new()
+        {
+            ["foo"] = "newfooval",
+            ["baz"] = "bazval",
+        };
+
+        private bool proceed;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Check initial
+            Assert.Equal(MemoInitial, Workflow.Memo.ToDictionary(
+                kvp => kvp.Key, kvp => (object)kvp.Value.ToValue<string>()));
+            // Wait, then update and check
+            await Workflow.WaitConditionAsync(() => proceed);
+            Workflow.UpsertMemo(MemoUpdates);
+            Assert.Equal(MemoUpdated, Workflow.Memo.ToDictionary(
+                kvp => kvp.Key, kvp => (object)kvp.Value.ToValue<string>()));
+        }
+
+        [WorkflowSignal]
+        public async Task ProceedAsync() => proceed = true;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Memo_ProperlyUpserted()
+    {
+        await ExecuteWorkerAsync<MemoWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                MemoWorkflow.Ref.RunAsync,
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                {
+                    Memo = MemoWorkflow.MemoInitial,
+                });
+            // Confirm description shows initial
+            async Task<Dictionary<string, object>> GetCurrentMemoAsync()
+            {
+                var desc = await handle.DescribeAsync();
+                var dict = new Dictionary<string, object>(desc.Memo.Count);
+                foreach (var kvp in desc.Memo)
+                {
+                    dict[kvp.Key] = await kvp.Value.ToValueAsync<string>();
+                }
+                return dict;
+            }
+            Assert.Equal(MemoWorkflow.MemoInitial, await GetCurrentMemoAsync());
+            // Tell workflow to proceed and confirm next values
+            await handle.SignalAsync(MemoWorkflow.Ref.ProceedAsync);
+            await AssertMore.EventuallyAsync(async () =>
+                Assert.Equal(MemoWorkflow.MemoUpdated, await GetCurrentMemoAsync()));
+        });
+    }
+
     private async Task ExecuteWorkerAsync<TWf>(
         Func<TemporalWorker, Task> action, TemporalWorkerOptions? options = null)
     {
@@ -952,6 +1135,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     // * Separate interface from impl
     // * Workflows as records with WorkflowInit
     // * Workflows as structs
+    // * TaskFactory default cancellation token (test with dataflow ReceiveAsync without explicit
+    //   cancellation token)
     // * IDisposable workflows?
     //   * Otherwise, what if I have a cancellation token source at a high level?
     // * Custom errors

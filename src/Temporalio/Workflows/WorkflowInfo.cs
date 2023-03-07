@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Workflows
 {
@@ -13,14 +12,6 @@ namespace Temporalio.Workflows
     /// <param name="ExecutionTimeout">Execution timeout for the workflow.</param>
     /// <param name="Namespace">Namespace for the workflow.</param>
     /// <param name="Parent">Parent information for the workflow if this is a child.</param>
-    /// <param name="RawMemo">
-    /// Raw memo values. Note: This may be mutated internally during workflow execution. Do not
-    /// mutate.
-    /// </param>
-    /// <param name="RawSearchAttributes">
-    /// Raw search attribute values. Note: This may be mutated internally during workflow
-    /// execution. Do not mutate.
-    /// </param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
     /// <param name="RunID">Run ID for the workflow.</param>
     /// <param name="RunTimeout">Run timeout for the workflow.</param>
@@ -36,8 +27,6 @@ namespace Temporalio.Workflows
         TimeSpan? ExecutionTimeout,
         string Namespace,
         WorkflowInfo.ParentInfo? Parent,
-        Memo? RawMemo,
-        SearchAttributes? RawSearchAttributes,
         RetryPolicy? RetryPolicy,
         string RunID,
         TimeSpan? RunTimeout,

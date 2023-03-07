@@ -161,48 +161,26 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task StartWorkflowAsync_SearchAttributesAndMemo_AreSetProperly()
     {
-        // Only add search attributes if not present
-        var resp = await Client.Connection.WorkflowService.GetSearchAttributesAsync(new());
-        if (!resp.Keys.ContainsKey("DotNetTemporalTestKeyword"))
-        {
-            await Client.Connection.OperatorService.AddSearchAttributesAsync(new()
-            {
-                SearchAttributes =
-                {
-                    new Dictionary<string, IndexedValueType>
-                    {
-                        ["DotNetTemporalTestBool"] = IndexedValueType.Bool,
-                        ["DotNetTemporalTestDateTime"] = IndexedValueType.Datetime,
-                        ["DotNetTemporalTestDouble"] = IndexedValueType.Double,
-                        ["DotNetTemporalTestInt"] = IndexedValueType.Int,
-                        ["DotNetTemporalTestKeyword"] = IndexedValueType.Keyword,
-                        ["DotNetTemporalTestText"] = IndexedValueType.Text,
-                    },
-                },
-            });
-            resp = await Client.Connection.WorkflowService.GetSearchAttributesAsync(new());
-            Assert.Contains("DotNetTemporalTestKeyword", resp.Keys.Keys);
-        }
-
+        await EnsureSearchAttributesPresentAsync();
         // Run workflow with search attributes and memo set
-        var keywords = new string[] { "SomeKeyword1", "SomeKeyword2" };
         // Use local here to confirm accurate conversion
-        var dateTime = new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Local);
+        var dateTime = new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var memoVals = new List<string> { "MemoVal1", "MemoVal2" };
         var handle = await Client.StartWorkflowAsync(
             IKitchenSinkWorkflow.Ref.RunAsync,
             new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
             {
-                SearchAttributes = new Dictionary<string, object>
-                {
-                    ["DotNetTemporalTestBool"] = true,
-                    ["DotNetTemporalTestDateTime"] = dateTime,
-                    ["DotNetTemporalTestDouble"] = 123.45,
-                    ["DotNetTemporalTestInt"] = 678,
-                    ["DotNetTemporalTestKeyword"] = keywords,
-                    ["DotNetTemporalTestText"] = "SomeText",
-                },
+                TypedSearchAttributes = new SearchAttributeCollection.Builder().
+                    Set(AttrBool, true).
+                    Set(AttrDateTime, dateTime).
+                    Set(AttrDouble, 123.45).
+                    Set(AttrKeyword, "SomeKeyword").
+                    // TODO(cretz): Fix after Temporal dev server upgraded
+                    // Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
+                    Set(AttrLong, 678).
+                    Set(AttrText, "SomeText").
+                    ToSearchAttributeCollection(),
                 Memo = new Dictionary<string, object>
                 {
                     ["MemoKey"] = memoVals,
@@ -212,15 +190,15 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
 
         // Now describe and check search attributes and memos
         var desc = await handle.DescribeAsync();
-        Assert.Equal(true, desc.SearchAttributes!["DotNetTemporalTestBool"]);
-        Assert.Equal(dateTime, desc.SearchAttributes!["DotNetTemporalTestDateTime"]);
-        Assert.Equal(123.45, desc.SearchAttributes!["DotNetTemporalTestDouble"]);
-        Assert.Equal(678L, desc.SearchAttributes!["DotNetTemporalTestInt"]);
-        Assert.Equal(keywords, desc.SearchAttributes!["DotNetTemporalTestKeyword"]);
-        Assert.Equal("SomeText", desc.SearchAttributes!["DotNetTemporalTestText"]);
-        var actualMemoVals = await Client.Options.DataConverter.ToValueAsync<List<string>>(
-            desc.RawMemo!["MemoKey"]);
-        Assert.Equal(memoVals, actualMemoVals);
+        Assert.True(desc.TypedSearchAttributes.Get(AttrBool));
+        Assert.Equal(dateTime, desc.TypedSearchAttributes.Get(AttrDateTime));
+        Assert.Equal(123.45, desc.TypedSearchAttributes.Get(AttrDouble));
+        Assert.Equal("SomeKeyword", desc.TypedSearchAttributes.Get(AttrKeyword));
+        // TODO(cretz): Fix after Temporal dev server upgraded
+        // Assert.Equal(new[] { "SomeKeyword1", "SomeKeyword2" }, desc.TypedSearchAttributes.Get(AttrKeywordList));
+        Assert.Equal(678, desc.TypedSearchAttributes.Get(AttrLong));
+        Assert.Equal("SomeText", desc.TypedSearchAttributes.Get(AttrText));
+        Assert.Equal(memoVals, await desc.Memo["MemoKey"].ToValueAsync<List<string>>());
     }
 
     [Fact]

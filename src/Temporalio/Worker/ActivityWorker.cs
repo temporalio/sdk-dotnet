@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -677,7 +678,9 @@ namespace Temporalio.Worker
                 }
                 catch (TargetInvocationException e)
                 {
-                    throw e.InnerException!;
+                    ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
+                    // Unreachable
+                    return null;
                 }
                 // If the result is a task, we need to await on it and use that result
                 if (result is Task resultTask)

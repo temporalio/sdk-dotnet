@@ -42,9 +42,9 @@ namespace Temporalio.Worker.Interceptors
         where T : WorkflowInboundInterceptor
     {
         /// <inheritdoc />
-        #pragma warning disable CA1033 // Providing default interface impl shouldn't trigger this
+#pragma warning disable CA1033 // Providing default interface impl shouldn't trigger this
         Type? IWorkerInterceptor.WorkflowInboundInterceptorType => typeof(T);
-        #pragma warning restore CA1033
+#pragma warning restore CA1033
     }
 #endif
 }

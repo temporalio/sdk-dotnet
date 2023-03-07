@@ -35,6 +35,8 @@ namespace Temporalio.Worker
         private readonly Lazy<NotifyOnSetDictionary<string, WorkflowQueryDefinition>> mutableQueries;
         // Lazily created if asked for by user
         private readonly Lazy<NotifyOnSetDictionary<string, WorkflowSignalDefinition>> mutableSignals;
+        private readonly Lazy<Dictionary<string, IRawValue>> memo;
+        private readonly Lazy<SearchAttributeCollection> typedSearchAttributes;
         private readonly LinkedList<Task> scheduledTasks = new();
         private readonly Dictionary<Task, LinkedListNode<Task>> scheduledTaskNodes = new();
         private readonly Dictionary<uint, TaskCompletionSource<object?>> timersPending = new();
@@ -80,11 +82,24 @@ namespace Temporalio.Worker
                 false);
             mutableQueries = new(() => new(defn.Queries, OnQueryDefinitionAdded), false);
             mutableSignals = new(() => new(defn.Signals, OnSignalDefinitionAdded), false);
+            var initialMemo = details.Start.Memo;
+            memo = new(
+                () => initialMemo == null ? new Dictionary<string, IRawValue>(0) :
+                    initialMemo.Fields.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => (IRawValue)new RawValue(payloadConverter, kvp.Value)),
+                false);
+            var initialSearchAttributes = details.Start.SearchAttributes;
+            typedSearchAttributes = new(
+                () => initialSearchAttributes == null ? new(new()) :
+                    SearchAttributeCollection.FromProto(initialSearchAttributes),
+                false);
             var act = details.InitialActivation;
             var start = details.Start;
             startArgs = new(
                 () => DecodeArgs(defn.RunMethod, start.Arguments, $"Workflow {start.WorkflowType}"),
                 false);
+            initialSearchAttributes = details.Start.SearchAttributes;
             WorkflowInfo.ParentInfo? parent = null;
             if (start.ParentWorkflowInfo != null)
             {
@@ -101,8 +116,6 @@ namespace Temporalio.Worker
                 ExecutionTimeout: start.WorkflowExecutionTimeout?.ToTimeSpan(),
                 Namespace: details.Namespace,
                 Parent: parent,
-                RawMemo: start.Memo,
-                RawSearchAttributes: start.SearchAttributes,
                 RetryPolicy: start.RetryPolicy == null ? null : RetryPolicy.FromProto(start.RetryPolicy),
                 RunID: act.RunId,
                 RunTimeout: start.WorkflowRunTimeout?.ToTimeSpan(),
@@ -140,6 +153,9 @@ namespace Temporalio.Worker
         public bool IsReplaying { get; private set; }
 
         /// <inheritdoc />
+        public IReadOnlyDictionary<string, IRawValue> Memo => memo.Value;
+
+        /// <inheritdoc />
         public IDictionary<string, WorkflowQueryDefinition> Queries => mutableQueries.Value;
 
         /// <inheritdoc />
@@ -147,6 +163,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public IDictionary<string, WorkflowSignalDefinition> Signals => mutableSignals.Value;
+
+        /// <inheritdoc />
+        public SearchAttributeCollection TypedSearchAttributes => typedSearchAttributes.Value;
 
         /// <inheritdoc />
         public DateTime UtcNow { get; private set; }
@@ -183,6 +202,77 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken) =>
             outbound.Value.DelayAsync(new(Delay: delay, CancellationToken: cancellationToken));
+
+        /// <inheritdoc />
+        public void UpsertMemo(IReadOnlyCollection<MemoUpdate> updates)
+        {
+            if (updates.Count == 0)
+            {
+                throw new ArgumentException("At least one update required", nameof(updates));
+            }
+            // Validate and convert, then update map and issue command
+            var upsertedMemo = new Memo();
+            foreach (var update in updates)
+            {
+                if (upsertedMemo.Fields.ContainsKey(update.UntypedKey))
+                {
+                    throw new ArgumentException($"Multiple updates seen for key {update.UntypedKey}");
+                }
+                try
+                {
+                    // Unset is null
+                    upsertedMemo.Fields[update.UntypedKey] = payloadConverter.ToPayload(
+                        update.HasValue ? update.UntypedValue : null);
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException($"Failed converting memo key {update.UntypedKey}", e);
+                }
+            }
+            // Update map. We intentionally update separately after validation/conversion.
+            foreach (var update in updates)
+            {
+                if (update.HasValue)
+                {
+                    // We set the raw payload knowing that if read again has to be converted again.
+                    // This is intentional and clearer than having a form of RawValue with the
+                    // already converted value. It can also make it clear to users that only what is
+                    // converted is available (e.g. no private, unserialized fields/properties).
+                    memo.Value[update.UntypedKey] = new RawValue(
+                        payloadConverter, upsertedMemo.Fields[update.UntypedKey]);
+                }
+                else
+                {
+                    // We intentionally don't validate that an unset was for an existing key
+                    memo.Value.Remove(update.UntypedKey);
+                }
+            }
+            AddCommand(new() { ModifyWorkflowProperties = new() { UpsertedMemo = upsertedMemo } });
+        }
+
+        /// <inheritdoc/>
+        public void UpsertTypedSearchAttributes(IReadOnlyCollection<SearchAttributeUpdate> updates)
+        {
+            if (updates.Count == 0)
+            {
+                throw new ArgumentException("At least one update required", nameof(updates));
+            }
+            // We update the map first then issue the command. We use the field to set but the
+            // property to get so it is lazily created if needed.
+            TypedSearchAttributes.ApplyUpdates(updates);
+            AddCommand(new()
+            {
+                UpsertWorkflowSearchAttributes = new()
+                {
+                    SearchAttributes =
+                    {
+                        updates.Select(u =>
+                            new KeyValuePair<string, Payload>(u.UntypedKey.Name, u.ToUpsertPayload())).
+                                ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                    },
+                },
+            });
+        }
 
         /// <inheritdoc/>
         public Task<bool> WaitConditionAsync(
