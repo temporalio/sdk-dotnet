@@ -11,10 +11,7 @@ namespace Temporalio.Worker.Interceptors
         /// Initializes a new instance of the <see cref="ActivityOutboundInterceptor"/> class.
         /// </summary>
         /// <param name="next">Next interceptor in the chain.</param>
-        protected ActivityOutboundInterceptor(ActivityOutboundInterceptor next)
-        {
-            MaybeNext = next;
-        }
+        protected ActivityOutboundInterceptor(ActivityOutboundInterceptor next) => MaybeNext = next;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityOutboundInterceptor"/> class.
@@ -38,9 +35,6 @@ namespace Temporalio.Worker.Interceptors
         /// Intercept heartbeat.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
-        public virtual void Heartbeat(HeartbeatInput input)
-        {
-            Next.Heartbeat(input);
-        }
+        public virtual void Heartbeat(HeartbeatInput input) => Next.Heartbeat(input);
     }
 }

@@ -69,6 +69,12 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void FromType_RunAttributeOnStatic_Throws()
+    {
+        AssertBad<Bad.Wf4>("WorkflowRun on static");
+    }
+
+    [Fact]
     public void FromType_RunAttributeNonReturnTask_Throws()
     {
         AssertBad<Bad.IWf4>("must return an instance of Task");
@@ -159,22 +165,29 @@ public class WorkflowAttributeTests
         AssertBad<Bad.Wf1>("SomeVirtualQuery() but not override");
     }
 
+    [Fact]
+    public void FromType_Generics_Throws()
+    {
+        // We disallow generics because it is too complicated to handle at this time
+        AssertBad<Bad.Wf5<string>>("has generic type arguments");
+        AssertBad<Bad.Wf5<string>>("with WorkflowRun contains generic parameters");
+        AssertBad<Bad.Wf5<string>>("with WorkflowSignal contains generic parameters");
+        AssertBad<Bad.Wf5<string>>("with WorkflowQuery contains generic parameters");
+    }
+
     private static void AssertBad<T>(string errContains)
     {
-        var err = Assert.ThrowsAny<Exception>(
-            () => WorkflowAttribute.Definition.FromType(typeof(T)));
+        var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.FromType(typeof(T)));
         Assert.Contains(errContains, err.Message);
     }
 
     private static void AssertBadRun(Delegate del, string errContains)
     {
-        var err = Assert.ThrowsAny<Exception>(
-            () => WorkflowAttribute.Definition.FromRunMethod(del.Method));
+        var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.FromRunMethod(del.Method));
         Assert.Contains(errContains, err.Message);
     }
 
-    private static WorkflowAttribute.Definition AssertGood<T>() =>
-        WorkflowAttribute.Definition.FromType(typeof(T));
+    private static WorkflowDefinition AssertGood<T>() => WorkflowDefinition.FromType(typeof(T));
 
     public static class Bad
     {
@@ -303,6 +316,29 @@ public class WorkflowAttributeTests
 
             [WorkflowRun]
             public Task RunAsync(int param) => Task.CompletedTask;
+        }
+
+        [Workflow]
+        public class Wf4
+        {
+            [WorkflowRun]
+            public static Task RunAsync() => Task.CompletedTask;
+
+            [WorkflowSignal]
+            public Task SomeSignalAsync() => Task.CompletedTask;
+        }
+
+        [Workflow]
+        public class Wf5<T>
+        {
+            [WorkflowRun]
+            public Task RunAsync<TLocal>(TLocal _) => Task.CompletedTask;
+
+            [WorkflowSignal]
+            public Task SomeSignalAsync<TLocal>(TLocal _) => Task.CompletedTask;
+
+            [WorkflowQuery]
+            public string SomeQuery<TLocal>(TLocal _) => string.Empty;
         }
     }
 

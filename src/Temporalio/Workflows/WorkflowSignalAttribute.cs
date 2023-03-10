@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Temporalio.Workflows
 {
@@ -39,51 +36,5 @@ namespace Temporalio.Workflows
         /// default.
         /// </summary>
         public string? Name { get; }
-
-        /// <summary>
-        /// Signal definition.
-        /// </summary>
-        /// <param name="Name">Name of the signal.</param>
-        /// <param name="Method">Method for the signal handler.</param>
-        internal record Definition(string Name, MethodInfo Method)
-        {
-            private static readonly ConcurrentDictionary<MethodInfo, Definition> Definitions = new();
-
-            /// <summary>
-            /// Get a signal definition from a method or fail. The result is cached.
-            /// </summary>
-            /// <param name="method">Signal method.</param>
-            /// <returns>Signal definition.</returns>
-            public static Definition FromMethod(MethodInfo method)
-            {
-                return Definitions.GetOrAdd(method, CreateFromMethod);
-            }
-
-            private static Definition CreateFromMethod(MethodInfo method)
-            {
-                var attr = method.GetCustomAttribute<WorkflowSignalAttribute>(false) ??
-                    throw new ArgumentException($"{method} missing WorkflowSignal attribute");
-                // Method must only return a Task (not a subclass thereof)
-                if (method.ReturnType != typeof(Task))
-                {
-                    throw new ArgumentException($"WorkflowSignal method {method} must return Task");
-                }
-                else if (!method.IsPublic)
-                {
-                    throw new ArgumentException($"WorkflowSignal method {method} must be public");
-                }
-                var name = attr.Name;
-                if (name == null)
-                {
-                    name = method.Name;
-                    // Trim trailing "Async" if that's not just the full name
-                    if (name.Length > 5 && name.EndsWith("Async"))
-                    {
-                        name = name.Substring(0, name.Length - 5);
-                    }
-                }
-                return new(name, method);
-            }
-        }
     }
 }

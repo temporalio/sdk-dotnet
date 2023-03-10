@@ -13,10 +13,7 @@ namespace Temporalio.Worker.Interceptors
         /// Initializes a new instance of the <see cref="WorkflowInboundInterceptor"/> class.
         /// </summary>
         /// <param name="next">Next interceptor in the chain.</param>
-        protected WorkflowInboundInterceptor(WorkflowInboundInterceptor next)
-        {
-            MaybeNext = next;
-        }
+        protected WorkflowInboundInterceptor(WorkflowInboundInterceptor next) => MaybeNext = next;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInboundInterceptor"/> class.
@@ -44,19 +41,30 @@ namespace Temporalio.Worker.Interceptors
         /// To add a custom outbound interceptor, wrap the given outbound before sending to the
         /// next "Init" call.
         /// </remarks>
-        public virtual void Init(WorkflowOutboundInterceptor outbound)
-        {
+        public virtual void Init(WorkflowOutboundInterceptor outbound) =>
             Next.Init(outbound);
-        }
 
         /// <summary>
         /// Intercept workflow execution.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Completed workflow result.</returns>
-        public virtual Task<object?> ExecuteWorkflowAsync(ExecuteWorkflowInput input)
-        {
-            return Next.ExecuteWorkflowAsync(input);
-        }
+        public virtual Task<object?> ExecuteWorkflowAsync(ExecuteWorkflowInput input) =>
+            Next.ExecuteWorkflowAsync(input);
+
+        /// <summary>
+        /// Intercept signal handling.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Completed signal task.</returns>
+        public virtual Task HandleSignalAsync(HandleSignalInput input) =>
+            Next.HandleSignalAsync(input);
+
+        /// <summary>
+        /// Intercept query handling.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Query result.</returns>
+        public virtual object? HandleQuery(HandleQueryInput input) => Next.HandleQuery(input);
     }
 }

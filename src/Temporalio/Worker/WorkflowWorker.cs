@@ -40,14 +40,22 @@ namespace Temporalio.Worker
             WorkflowDefinitions = new();
             foreach (var workflow in worker.Options.Workflows)
             {
-                var defn = WorkflowAttribute.Definition.FromType(workflow);
+                var defn = WorkflowDefinition.FromType(workflow);
                 if (WorkflowDefinitions.ContainsKey(defn.Name))
                 {
                     throw new ArgumentException($"Duplicate workflow named {defn.Name}");
                 }
                 WorkflowDefinitions[defn.Name] = defn;
             }
-            deadlockTimeout = worker.Options.DebugMode ? DefaultDeadlockTimeout : Timeout.InfiniteTimeSpan;
+            foreach (var defn in worker.Options.AdditionalWorkflowDefinitions)
+            {
+                if (WorkflowDefinitions.ContainsKey(defn.Name))
+                {
+                    throw new ArgumentException($"Duplicate workflow named {defn.Name}");
+                }
+                WorkflowDefinitions[defn.Name] = defn;
+            }
+            deadlockTimeout = worker.Options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
             instanceFactory = worker.Options.WorkflowInstanceFactory ??
                 (details => new WorkflowInstance(details, worker.Client.Options.LoggerFactory));
         }
@@ -60,7 +68,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets the known set of workflow definitions by name.
         /// </summary>
-        internal Dictionary<string, WorkflowAttribute.Definition> WorkflowDefinitions { get; private init; }
+        internal Dictionary<string, WorkflowDefinition> WorkflowDefinitions { get; private init; }
 
         /// <summary>
         /// Execute this worker until poller shutdown or failure.
@@ -85,9 +93,10 @@ namespace Temporalio.Worker
                     }
                     // Otherwise handle and put on task set
                     // TODO(cretz): Any reason for users to need to customize factory here?
-                    var task = Task.Run(() => HandleActivationAsync(codec, act)).
-                        ContinueWith(task => { tasks.TryRemove(task, out _); }, TaskScheduler.Current);
+                    var task = Task.Run(() => HandleActivationAsync(codec, act));
                     tasks[task] = null;
+                    _ = task.ContinueWith(
+                        task => { tasks.TryRemove(task, out _); }, TaskScheduler.Current);
                 }
                 // Wait on every task to complete (exceptions should never happen)
                 await Task.WhenAll(tasks.Keys).ConfigureAwait(false);
@@ -143,16 +152,22 @@ namespace Temporalio.Worker
                         default,
                         TaskCreationOptions.LongRunning | TaskCreationOptions.DenyChildAttach | TaskCreationOptions.PreferFairness,
                         TaskScheduler.Current);
-                    var timeoutTask = Task.Delay(deadlockTimeout);
-                    if (timeoutTask == await Task.WhenAny(workflowTask, timeoutTask).ConfigureAwait(false))
+                    using (var timeoutCancel = new CancellationTokenSource())
                     {
-                        // Hit deadlock timeout, add this to deadlocked set and have it remove
-                        // itself when it finally does finish (if ever)
-                        deadlockedWorkflows[act.RunId] = workflowTask;
-                        _ = workflowTask.ContinueWith(
-                            _ => { deadlockedWorkflows.TryRemove(act.RunId, out Task? _); },
-                            TaskScheduler.Current);
-                        throw new InvalidOperationException($"Workflow with ID {act.RunId} deadlocked after {deadlockTimeout}");
+                        // We create a delay task to catch any deadlock timeouts, and if it didn't
+                        // deadlock, cancel the task
+                        // TODO(cretz): For newer .NET, use WaitAsync which is cheaper
+                        var timeoutTask = Task.Delay(deadlockTimeout, timeoutCancel.Token);
+                        if (timeoutTask == await Task.WhenAny(workflowTask, timeoutTask).ConfigureAwait(false))
+                        {
+                            // Hit deadlock timeout, add this to deadlocked set. This is only for the
+                            // next activation which will be a remove job.
+                            deadlockedWorkflows[act.RunId] = workflowTask;
+                            throw new InvalidOperationException(
+                                $"Workflow with ID {act.RunId} deadlocked after {deadlockTimeout}");
+                        }
+                        // Cancel deadlock timeout timer since we didn't hit it
+                        timeoutCancel.Cancel();
                     }
                     comp = await workflowTask.ConfigureAwait(false);
                 }
@@ -203,6 +218,22 @@ namespace Temporalio.Worker
                     act.RunId,
                     removeJob.Message);
                 runningWorkflows.TryRemove(act.RunId, out _);
+                // If this is a deadlocked workflow task, we attach remove completion to task
+                // completion
+                if (deadlockedWorkflows.TryRemove(act.RunId, out var task))
+                {
+                    _ = task.ContinueWith(
+                        async _ =>
+                        {
+                            logger.LogDebug(
+                                "Notify core of deadlocked workflow eviction for run ID {RunId}",
+                                act.RunId);
+                            await Worker.BridgeWorker.CompleteWorkflowActivationAsync(comp).ConfigureAwait(false);
+                        },
+                        TaskScheduler.Current);
+                    // Do not send completion, workflow is deadlocked
+                    return;
+                }
             }
 
             // Send completion
@@ -214,7 +245,6 @@ namespace Temporalio.Worker
             catch (Exception e)
             {
                 logger.LogError(e, "Failed completing activation on  {RunId}", act.RunId);
-                comp.Failed = new() { Failure_ = new() { Message = $"Failed encoding completion: {e}" } };
             }
         }
 

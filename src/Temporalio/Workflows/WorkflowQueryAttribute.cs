@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Concurrent;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Temporalio.Workflows
 {
@@ -39,45 +36,5 @@ namespace Temporalio.Workflows
         /// name.
         /// </summary>
         public string? Name { get; }
-
-        /// <summary>
-        /// Query definition.
-        /// </summary>
-        /// <param name="Name">Name of the query.</param>
-        /// <param name="Method">Method for the query handler.</param>
-        internal record Definition(string Name, MethodInfo Method)
-        {
-            private static readonly ConcurrentDictionary<MethodInfo, Definition> Definitions = new();
-
-            /// <summary>
-            /// Get a query definition from a method or fail. The result is cached.
-            /// </summary>
-            /// <param name="method">Query method.</param>
-            /// <returns>Query definition.</returns>
-            public static Definition FromMethod(MethodInfo method)
-            {
-                return Definitions.GetOrAdd(method, CreateFromMethod);
-            }
-
-            private static Definition CreateFromMethod(MethodInfo method)
-            {
-                var attr = method.GetCustomAttribute<WorkflowQueryAttribute>(false) ??
-                    throw new ArgumentException($"{method} missing WorkflowQuery attribute");
-                // Method must not return void or a Task
-                if (method.ReturnType == typeof(void))
-                {
-                    throw new ArgumentException($"WorkflowQuery method {method} must return a value");
-                }
-                else if (typeof(Task).IsAssignableFrom(method.ReturnType))
-                {
-                    throw new ArgumentException($"WorkflowQuery method {method} cannot return a Task");
-                }
-                else if (!method.IsPublic)
-                {
-                    throw new ArgumentException($"WorkflowQuery method {method} must be public");
-                }
-                return new(attr.Name ?? method.Name, method);
-            }
-        }
     }
 }

@@ -12,10 +12,7 @@ namespace Temporalio.Worker.Interceptors
         /// Initializes a new instance of the <see cref="ActivityInboundInterceptor"/> class.
         /// </summary>
         /// <param name="next">Next interceptor in the chain.</param>
-        protected ActivityInboundInterceptor(ActivityInboundInterceptor next)
-        {
-            MaybeNext = next;
-        }
+        protected ActivityInboundInterceptor(ActivityInboundInterceptor next) => MaybeNext = next;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityInboundInterceptor"/> class.
@@ -43,19 +40,14 @@ namespace Temporalio.Worker.Interceptors
         /// To add a custom outbound interceptor, wrap the given outbound before sending to the
         /// next "Init" call.
         /// </remarks>
-        public virtual void Init(ActivityOutboundInterceptor outbound)
-        {
-            Next.Init(outbound);
-        }
+        public virtual void Init(ActivityOutboundInterceptor outbound) => Next.Init(outbound);
 
         /// <summary>
         /// Intercept activity execution.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Completed activity result.</returns>
-        public virtual Task<object?> ExecuteActivityAsync(ExecuteActivityInput input)
-        {
-            return Next.ExecuteActivityAsync(input);
-        }
+        public virtual Task<object?> ExecuteActivityAsync(ExecuteActivityInput input) =>
+            Next.ExecuteActivityAsync(input);
     }
 }

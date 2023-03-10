@@ -44,7 +44,7 @@ namespace Temporalio.Workflows
             Func<Task> workflow, ContinueAsNewOptions? options = null)
         {
             return new(
-                WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 Array.Empty<object?>(),
                 options);
         }
@@ -61,7 +61,7 @@ namespace Temporalio.Workflows
             Func<T, Task> workflow, T arg, ContinueAsNewOptions? options = null)
         {
             return new(
-                WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 new object?[] { arg },
                 options);
         }
@@ -77,7 +77,7 @@ namespace Temporalio.Workflows
             Func<Task<TResult>> workflow, ContinueAsNewOptions? options = null)
         {
             return new(
-                WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 Array.Empty<object?>(),
                 options);
         }
@@ -95,7 +95,7 @@ namespace Temporalio.Workflows
             Func<T, Task<TResult>> workflow, T arg, ContinueAsNewOptions? options = null)
         {
             return new(
-                WorkflowAttribute.Definition.FromRunMethod(workflow.Method).Name,
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 new object?[] { arg },
                 options);
         }

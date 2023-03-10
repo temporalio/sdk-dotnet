@@ -25,7 +25,7 @@ namespace Temporalio.Worker
         private readonly TemporalWorker worker;
         private readonly ILogger logger;
         // Keyed by name
-        private readonly Dictionary<string, ActivityAttribute.Definition> activities;
+        private readonly Dictionary<string, ActivityDefinition> activities;
         // Keyed by task token
         private readonly ConcurrentDictionary<ByteString, RunningActivity> runningActivities = new();
 
@@ -42,7 +42,15 @@ namespace Temporalio.Worker
             activities = new(worker.Options.Activities.Count);
             foreach (var activity in worker.Options.Activities)
             {
-                var defn = ActivityAttribute.Definition.FromDelegate(activity);
+                var defn = ActivityDefinition.FromDelegate(activity);
+                if (activities.ContainsKey(defn.Name))
+                {
+                    throw new ArgumentException($"Duplicate activity named {defn.Name}");
+                }
+                activities[defn.Name] = defn;
+            }
+            foreach (var defn in worker.Options.AdditionalActivityDefinitions)
+            {
                 if (activities.ContainsKey(defn.Name))
                 {
                     throw new ArgumentException($"Duplicate activity named {defn.Name}");
@@ -346,7 +354,7 @@ namespace Temporalio.Worker
                 // Execute and put result on completed
                 var result = await inbound.ExecuteActivityAsync(new(
                     Delegate: defn.Delegate,
-                    Parameters: paramVals.ToArray(),
+                    Args: paramVals.ToArray(),
                     Headers: tsk.Start.HeaderFields)).ConfigureAwait(false);
 
                 completion.Result.Completed = new();
@@ -665,7 +673,7 @@ namespace Temporalio.Worker
                 object? result;
                 try
                 {
-                    result = input.Delegate.DynamicInvoke(input.Parameters);
+                    result = input.Delegate.DynamicInvoke(input.Args);
                 }
                 catch (TargetInvocationException e)
                 {
