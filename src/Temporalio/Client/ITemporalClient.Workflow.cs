@@ -19,7 +19,7 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            Func<Task<TResult>> workflow, WorkflowStartOptions options);
+            Func<Task<TResult>> workflow, WorkflowOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -36,7 +36,7 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<T, TResult>(
-            Func<T, Task<TResult>> workflow, T arg, WorkflowStartOptions options);
+            Func<T, Task<TResult>> workflow, T arg, WorkflowOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -50,7 +50,7 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle> StartWorkflowAsync(
-            Func<Task> workflow, WorkflowStartOptions options);
+            Func<Task> workflow, WorkflowOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -66,7 +66,7 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle> StartWorkflowAsync<T>(
-            Func<T, Task> workflow, T arg, WorkflowStartOptions options);
+            Func<T, Task> workflow, T arg, WorkflowOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -81,7 +81,7 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle> StartWorkflowAsync(
-            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options);
+            string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options);
 
         /// <summary>
         /// Start a workflow with the given run method.
@@ -97,7 +97,7 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options);
+            string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options);
 
         /// <summary>
         /// Get a workflow handle for an existing workflow with unknown return type.

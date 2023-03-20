@@ -10,6 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Api.Common.V1;
+using Temporalio.Bridge.Api.ActivityResult;
+using Temporalio.Bridge.Api.ChildWorkflow;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Bridge.Api.WorkflowCommands;
 using Temporalio.Bridge.Api.WorkflowCompletion;
@@ -40,6 +42,9 @@ namespace Temporalio.Worker
         private readonly LinkedList<Task> scheduledTasks = new();
         private readonly Dictionary<Task, LinkedListNode<Task>> scheduledTaskNodes = new();
         private readonly Dictionary<uint, TaskCompletionSource<object?>> timersPending = new();
+        private readonly Dictionary<uint, TaskCompletionSource<ActivityResolution>> activitiesPending = new();
+        private readonly Dictionary<uint, TaskCompletionSource<ResolveChildWorkflowExecutionStart>> childWorkflowsPendingStart = new();
+        private readonly Dictionary<uint, TaskCompletionSource<ChildWorkflowResult>> childWorkflowsPendingCompletion = new();
         private readonly Dictionary<string, List<SignalWorkflow>> bufferedSignals = new();
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private readonly LinkedList<Tuple<Func<bool>, TaskCompletionSource<object?>>> conditions = new();
@@ -49,6 +54,8 @@ namespace Temporalio.Worker
         private object? instance;
         private Exception? currentActivationException;
         private uint timerCounter;
+        private uint activityCounter;
+        private uint childWorkflowCounter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -200,8 +207,35 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
+        public ContinueAsNewException CreateContinueAsNewException(
+            string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options) =>
+            outbound.Value.CreateContinueAsNewException(new(
+                Workflow: workflow,
+                Args: args,
+                Options: options,
+                Headers: null));
+
+        /// <inheritdoc/>
         public Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken) =>
             outbound.Value.DelayAsync(new(Delay: delay, CancellationToken: cancellationToken));
+
+        /// <inheritdoc/>
+        public Task<TResult> ExecuteActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, ActivityOptions options) =>
+            outbound.Value.ScheduleActivityAsync<TResult>(
+                new(Activity: activity, Args: args, Options: options, Headers: null));
+
+        /// <inheritdoc/>
+        public Task<TResult> ExecuteLocalActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
+            outbound.Value.ScheduleLocalActivityAsync<TResult>(
+                new(Activity: activity, Args: args, Options: options, Headers: null));
+
+        /// <inheritdoc/>
+        public Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+            string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions options) =>
+            outbound.Value.StartChildWorkflowAsync<TResult>(
+                new(Workflow: workflow, Args: args, Options: options, Headers: null));
 
         /// <inheritdoc />
         public void UpsertMemo(IReadOnlyCollection<MemoUpdate> updates)
@@ -534,17 +568,41 @@ namespace Temporalio.Worker
                 {
                     await func().ConfigureAwait(true);
                 }
-                catch (ContinueAsNewException)
+                catch (ContinueAsNewException e)
                 {
                     Logger.LogDebug("Workflow requested continue as new with run ID {RunID}", Info.RunID);
-                    // TODO(cretz): This
-                    throw new NotImplementedException();
+                    var cmd = new ContinueAsNewWorkflowExecution()
+                    {
+                        WorkflowType = e.Input.Workflow,
+                        TaskQueue = e.Input.Options?.TaskQueue ?? string.Empty,
+                        Arguments = { payloadConverter.ToPayloads(e.Input.Args) },
+                        RetryPolicy = e.Input.Options?.RetryPolicy?.ToProto(),
+                    };
+                    if (e.Input.Options?.RunTimeout is TimeSpan runTimeout)
+                    {
+                        cmd.WorkflowRunTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(runTimeout);
+                    }
+                    if (e.Input.Options?.TaskTimeout is TimeSpan taskTimeout)
+                    {
+                        cmd.WorkflowTaskTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(taskTimeout);
+                    }
+                    if (e.Input.Options?.Memo is IReadOnlyCollection<KeyValuePair<string, object>> memo)
+                    {
+                        cmd.Memo.Add(memo.ToDictionary(
+                            kvp => kvp.Key, kvp => payloadConverter.ToPayload(kvp.Value)));
+                    }
+                    if (e.Input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
+                    {
+                        cmd.SearchAttributes.Add(attrs.ToProto().IndexedFields);
+                    }
+                    if (e.Input.Headers is IDictionary<string, Payload> headers)
+                    {
+                        cmd.Headers.Add(headers);
+                    }
+                    AddCommand(new() { ContinueAsNewWorkflowExecution = cmd });
                 }
                 catch (Exception e) when (
-                    CancellationToken.IsCancellationRequested && (e is OperationCanceledException ||
-                        e is CancelledFailureException ||
-                        (e as ActivityFailureException)?.InnerException is CancelledFailureException ||
-                        (e as ChildWorkflowFailureException)?.InnerException is CancelledFailureException))
+                    CancellationToken.IsCancellationRequested && TemporalException.IsCancelledException(e))
                 {
                     // If cancel was ever requested and this is a cancellation or an activity/child
                     // cancellation, we add a cancel command. Technically this means that a
@@ -590,6 +648,15 @@ namespace Temporalio.Worker
                 case WorkflowActivationJob.VariantOneofCase.RemoveFromCache:
                     // Ignore, handled outside the instance
                     break;
+                case WorkflowActivationJob.VariantOneofCase.ResolveActivity:
+                    ApplyResolveActivity(job.ResolveActivity);
+                    break;
+                case WorkflowActivationJob.VariantOneofCase.ResolveChildWorkflowExecution:
+                    ApplyResolveChildWorkflowExecution(job.ResolveChildWorkflowExecution);
+                    break;
+                case WorkflowActivationJob.VariantOneofCase.ResolveChildWorkflowExecutionStart:
+                    ApplyResolveChildWorkflowExecutionStart(job.ResolveChildWorkflowExecutionStart);
+                    break;
                 case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
                     ApplySignalWorkflow(job.SignalWorkflow);
                     break;
@@ -604,10 +671,7 @@ namespace Temporalio.Worker
             }
         }
 
-        private void ApplyCancelWorkflow()
-        {
-            cancellationTokenSource.Cancel();
-        }
+        private void ApplyCancelWorkflow() => cancellationTokenSource.Cancel();
 
         private void ApplyFireTimer(FireTimer fireTimer)
         {
@@ -676,6 +740,37 @@ namespace Temporalio.Worker
                 }
                 return Task.CompletedTask;
             });
+        }
+
+        private void ApplyResolveActivity(ResolveActivity resolve)
+        {
+            if (!activitiesPending.TryGetValue(resolve.Seq, out var source))
+            {
+                throw new InvalidOperationException(
+                    $"Failed finding activity for sequence {resolve.Seq}");
+            }
+            source.TrySetResult(resolve.Result);
+        }
+
+        private void ApplyResolveChildWorkflowExecution(ResolveChildWorkflowExecution resolve)
+        {
+            if (!childWorkflowsPendingCompletion.TryGetValue(resolve.Seq, out var source))
+            {
+                throw new InvalidOperationException(
+                    $"Failed finding child for sequence {resolve.Seq}");
+            }
+            source.TrySetResult(resolve.Result);
+        }
+
+        private void ApplyResolveChildWorkflowExecutionStart(
+            ResolveChildWorkflowExecutionStart resolve)
+        {
+            if (!childWorkflowsPendingStart.TryGetValue(resolve.Seq, out var source))
+            {
+                throw new InvalidOperationException(
+                    $"Failed finding child for sequence {resolve.Seq}");
+            }
+            source.TrySetResult(resolve);
         }
 
         private void ApplySignalWorkflow(SignalWorkflow signal)
@@ -883,6 +978,10 @@ namespace Temporalio.Worker
             public OutboundImpl(WorkflowInstance instance) => this.instance = instance;
 
             /// <inheritdoc />
+            public override ContinueAsNewException CreateContinueAsNewException(
+                CreateContinueAsNewExceptionInput input) => new(input);
+
+            /// <inheritdoc />
             public override Task DelayAsync(DelayAsyncInput input)
             {
                 var token = input.CancellationToken ?? instance.CancellationToken;
@@ -898,7 +997,7 @@ namespace Temporalio.Worker
                 var delay = input.Delay;
                 if (delay < TimeSpan.Zero && delay != Timeout.InfiniteTimeSpan)
                 {
-                    throw new ArgumentException("Delay duration cannot be less than 0.");
+                    throw new ArgumentException("Delay duration cannot be less than 0");
                 }
                 else if (delay == TimeSpan.Zero)
                 {
@@ -924,7 +1023,7 @@ namespace Temporalio.Worker
                 {
                     using (token.Register(() =>
                     {
-                        // Try cancel, then only remove timer and send cancel if seq not 0
+                        // Try cancel, then send cancel if was able to remove
                         if (source.TrySetCanceled(token) && instance.timersPending.Remove(seq))
                         {
                             instance.AddCommand(new() { CancelTimer = new() { Seq = seq } });
@@ -935,6 +1034,403 @@ namespace Temporalio.Worker
                     }
                 });
             }
+
+            /// <inheritdoc />
+            public override Task<TResult> ScheduleActivityAsync<TResult>(
+                ScheduleActivityInput input)
+            {
+                if (input.Options.StartToCloseTimeout == null &&
+                    input.Options.ScheduleToCloseTimeout == null)
+                {
+                    throw new ArgumentException("Activity options must have StartToCloseTimeout or ScheduleToCloseTimeout");
+                }
+
+                return ExecuteActivityInternalAsync<TResult>(
+                    local: false,
+                    doBackoff =>
+                    {
+                        var seq = ++instance.activityCounter;
+                        var cmd = new ScheduleActivity()
+                        {
+                            Seq = seq,
+                            ActivityId = input.Options.ActivityID ?? seq.ToString(),
+                            ActivityType = input.Activity,
+                            TaskQueue = input.Options.TaskQueue ?? instance.Info.TaskQueue,
+                            Arguments = { instance.payloadConverter.ToPayloads(input.Args) },
+                            RetryPolicy = input.Options.RetryPolicy?.ToProto(),
+                            CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
+                        };
+                        if (input.Headers is IDictionary<string, Payload> headers)
+                        {
+                            cmd.Headers.Add(headers);
+                        }
+                        if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToClose)
+                        {
+                            cmd.ScheduleToCloseTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(schedToClose);
+                        }
+                        if (input.Options.ScheduleToStartTimeout is TimeSpan schedToStart)
+                        {
+                            cmd.ScheduleToStartTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(schedToStart);
+                        }
+                        if (input.Options.StartToCloseTimeout is TimeSpan startToClose)
+                        {
+                            cmd.StartToCloseTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(startToClose);
+                        }
+                        if (input.Options.HeartbeatTimeout is TimeSpan heartbeat)
+                        {
+                            cmd.HeartbeatTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(heartbeat);
+                        }
+                        instance.AddCommand(new() { ScheduleActivity = cmd });
+                        return seq;
+                    },
+                    input.Options.CancellationToken ?? instance.CancellationToken);
+            }
+
+            /// <inheritdoc />
+            public override Task<TResult> ScheduleLocalActivityAsync<TResult>(
+                ScheduleLocalActivityInput input)
+            {
+                if (input.Options.StartToCloseTimeout == null &&
+                    input.Options.ScheduleToCloseTimeout == null)
+                {
+                    throw new ArgumentException("Activity options must have StartToCloseTimeout or ScheduleToCloseTimeout");
+                }
+
+                return ExecuteActivityInternalAsync<TResult>(
+                    local: true,
+                    doBackoff =>
+                    {
+                        var seq = ++instance.activityCounter;
+                        var cmd = new ScheduleLocalActivity()
+                        {
+                            Seq = seq,
+                            ActivityId = input.Options.ActivityID ?? seq.ToString(),
+                            ActivityType = input.Activity,
+                            Arguments = { instance.payloadConverter.ToPayloads(input.Args) },
+                            RetryPolicy = input.Options.RetryPolicy?.ToProto(),
+                            CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
+                        };
+                        if (input.Headers is IDictionary<string, Payload> headers)
+                        {
+                            cmd.Headers.Add(headers);
+                        }
+                        if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToClose)
+                        {
+                            cmd.ScheduleToCloseTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(schedToClose);
+                        }
+                        if (input.Options.ScheduleToStartTimeout is TimeSpan schedToStart)
+                        {
+                            cmd.ScheduleToStartTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(schedToStart);
+                        }
+                        if (input.Options.StartToCloseTimeout is TimeSpan startToClose)
+                        {
+                            cmd.StartToCloseTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(startToClose);
+                        }
+                        if (input.Options.LocalRetryThreshold is TimeSpan localRetry)
+                        {
+                            cmd.LocalRetryThreshold = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(localRetry);
+                        }
+                        if (doBackoff != null)
+                        {
+                            cmd.Attempt = doBackoff.Attempt;
+                            cmd.OriginalScheduleTime = doBackoff.OriginalScheduleTime;
+                        }
+                        instance.AddCommand(new() { ScheduleLocalActivity = cmd });
+                        return seq;
+                    },
+                    input.Options.CancellationToken ?? instance.CancellationToken);
+            }
+
+            /// <inheritdoc />
+            public override Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+                StartChildWorkflowInput input)
+            {
+                var token = input.Options.CancellationToken ?? instance.CancellationToken;
+                // We do not even want to schedule if the cancellation token is already cancelled.
+                // We choose to use cancelled failure instead of wrapping in child failure which is
+                // similar to what Java and TypeScript do, with the accepted tradeoff that it makes
+                // catch clauses more difficult (hence the presence of
+                // TemporalException.IsCancelledException helper).
+                if (token.IsCancellationRequested)
+                {
+                    return Task.FromException<ChildWorkflowHandle<TResult>>(
+                        new CancelledFailureException("Child cancelled before scheduled"));
+                }
+
+                // Add the start command
+                var seq = ++instance.childWorkflowCounter;
+                var cmd = new StartChildWorkflowExecution()
+                {
+                    Seq = seq,
+                    Namespace = instance.Info.Namespace,
+                    WorkflowId = input.Options.ID ?? Workflow.NewGuid().ToString(),
+                    WorkflowType = input.Workflow,
+                    TaskQueue = input.Options.TaskQueue ?? instance.Info.TaskQueue,
+                    Input = { instance.payloadConverter.ToPayloads(input.Args) },
+                    ParentClosePolicy = (Bridge.Api.ChildWorkflow.ParentClosePolicy)input.Options.ParentClosePolicy,
+                    WorkflowIdReusePolicy = input.Options.IDReusePolicy,
+                    RetryPolicy = input.Options.RetryPolicy?.ToProto(),
+                    CronSchedule = input.Options.CronSchedule ?? string.Empty,
+                    CancellationType = (Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType)input.Options.CancellationType,
+                };
+                if (input.Options.ExecutionTimeout is TimeSpan execTimeout)
+                {
+                    cmd.WorkflowExecutionTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(execTimeout);
+                }
+                if (input.Options.RunTimeout is TimeSpan runTimeout)
+                {
+                    cmd.WorkflowRunTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(runTimeout);
+                }
+                if (input.Options.TaskTimeout is TimeSpan taskTimeout)
+                {
+                    cmd.WorkflowTaskTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(taskTimeout);
+                }
+                if (input.Options?.Memo is IReadOnlyCollection<KeyValuePair<string, object>> memo)
+                {
+                    cmd.Memo.Add(memo.ToDictionary(
+                        kvp => kvp.Key, kvp => instance.payloadConverter.ToPayload(kvp.Value)));
+                }
+                if (input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
+                {
+                    cmd.SearchAttributes.Add(attrs.ToProto().IndexedFields);
+                }
+                if (input.Headers is IDictionary<string, Payload> headers)
+                {
+                    cmd.Headers.Add(headers);
+                }
+                instance.AddCommand(new() { StartChildWorkflowExecution = cmd });
+
+                // Add start as pending and wait inside of task
+                var handleSource = new TaskCompletionSource<ChildWorkflowHandle<TResult>>();
+                var startSource = new TaskCompletionSource<ResolveChildWorkflowExecutionStart>();
+                instance.childWorkflowsPendingStart[seq] = startSource;
+
+                _ = instance.QueueNewTaskAsync(async () =>
+                {
+                    using (token.Register(() =>
+                    {
+                        // Send cancel if in either pending dict
+                        if (instance.childWorkflowsPendingStart.ContainsKey(seq) ||
+                            instance.childWorkflowsPendingCompletion.ContainsKey(seq))
+                        {
+                            instance.AddCommand(new()
+                            {
+                                CancelChildWorkflowExecution = new() { ChildWorkflowSeq = seq },
+                            });
+                        }
+                    }))
+                    {
+                        // Wait for start
+                        var startRes = await startSource.Task.ConfigureAwait(true);
+                        // Remove pending
+                        instance.childWorkflowsPendingStart.Remove(seq);
+                        // Handle the start result
+                        ChildWorkflowHandleImpl<TResult> handle;
+                        switch (startRes.StatusCase)
+                        {
+                            case ResolveChildWorkflowExecutionStart.StatusOneofCase.Succeeded:
+                                // Create handle
+                                handle = new(instance, cmd.WorkflowId, startRes.Succeeded.RunId);
+                                break;
+                            case ResolveChildWorkflowExecutionStart.StatusOneofCase.Failed:
+                                switch (startRes.Failed.Cause)
+                                {
+                                    case StartChildWorkflowExecutionFailedCause.WorkflowAlreadyExists:
+                                        handleSource.SetException(
+                                            new WorkflowAlreadyStartedException(
+                                                "Child workflow already started",
+                                                startRes.Failed.WorkflowId,
+                                                startRes.Failed.WorkflowType));
+                                        return;
+                                    default:
+                                        handleSource.SetException(new InvalidOperationException(
+                                            $"Unknown child start failed cause: {startRes.Failed.Cause}"));
+                                        return;
+                                }
+                            case ResolveChildWorkflowExecutionStart.StatusOneofCase.Cancelled:
+                                handleSource.SetException(
+                                    instance.failureConverter.ToException(
+                                        startRes.Cancelled.Failure, instance.payloadConverter));
+                                return;
+                            default:
+                                throw new InvalidOperationException("Unrecognized child start case");
+                        }
+
+                        // Create task for waiting for pending result, then resolve handle source
+                        var completionSource = new TaskCompletionSource<ChildWorkflowResult>();
+                        instance.childWorkflowsPendingCompletion[seq] = completionSource;
+                        handleSource.SetResult(handle);
+
+                        // Wait for completion
+                        var completeRes = await completionSource.Task.ConfigureAwait(true);
+                        instance.childWorkflowsPendingCompletion.Remove(seq);
+
+                        // Handle completion
+                        switch (completeRes.StatusCase)
+                        {
+                            case ChildWorkflowResult.StatusOneofCase.Completed:
+                                // We expect a single payload
+                                if (completeRes.Completed.Result == null)
+                                {
+                                    throw new InvalidOperationException("No child result present");
+                                }
+                                handle.CompletionSource.SetResult(completeRes.Completed.Result);
+                                break;
+                            case ChildWorkflowResult.StatusOneofCase.Failed:
+                                handle.CompletionSource.SetException(instance.failureConverter.ToException(
+                                    completeRes.Failed.Failure_, instance.payloadConverter));
+                                break;
+                            case ChildWorkflowResult.StatusOneofCase.Cancelled:
+                                handle.CompletionSource.SetException(instance.failureConverter.ToException(
+                                    completeRes.Cancelled.Failure, instance.payloadConverter));
+                                break;
+                            default:
+                                throw new InvalidOperationException("Unrecognized child complete case");
+                        }
+                    }
+                });
+                return handleSource.Task;
+            }
+
+            private Task<TResult> ExecuteActivityInternalAsync<TResult>(
+                bool local,
+                Func<DoBackoff?, uint> applyScheduleCommand,
+                CancellationToken cancellationToken)
+            {
+                // We do not even want to schedule if the cancellation token is already cancelled.
+                // We choose to use cancelled failure instead of wrapping in activity failure which
+                // is similar to what Java and TypeScript do, with the accepted tradeoff that it
+                // makes catch clauses more difficult (hence the presence of
+                // TemporalException.IsCancelledException helper).
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return Task.FromException<TResult>(
+                        new CancelledFailureException("Activity cancelled before scheduled"));
+                }
+
+                var seq = applyScheduleCommand(null);
+                var source = new TaskCompletionSource<ActivityResolution>();
+                instance.activitiesPending[seq] = source;
+                return instance.QueueNewTaskAsync(async () =>
+                {
+                    // In a loop for local-activity backoff
+                    while (true)
+                    {
+                        // Run or wait for cancel
+                        ActivityResolution res;
+                        using (cancellationToken.Register(() =>
+                        {
+                            // Send cancel if activity present
+                            if (instance.activitiesPending.ContainsKey(seq))
+                            {
+                                if (local)
+                                {
+                                    instance.AddCommand(
+                                        new() { RequestCancelLocalActivity = new() { Seq = seq } });
+                                }
+                                else
+                                {
+                                    instance.AddCommand(
+                                        new() { RequestCancelActivity = new() { Seq = seq } });
+                                }
+                            }
+                        }))
+                        {
+                            res = await source.Task.ConfigureAwait(true);
+                        }
+
+                        // Apply result. Only DoBackoff will cause loop to continue.
+                        instance.activitiesPending.Remove(seq);
+                        switch (res.StatusCase)
+                        {
+                            case ActivityResolution.StatusOneofCase.Completed:
+                                // Ignore result if they didn't want it
+                                if (typeof(TResult) == typeof(ValueTuple))
+                                {
+                                    return default!;
+                                }
+                                // Otherwise we expect a single payload
+                                if (res.Completed.Result == null)
+                                {
+                                    throw new InvalidOperationException("No activity result present");
+                                }
+                                return instance.payloadConverter.ToValue<TResult>(res.Completed.Result);
+                            case ActivityResolution.StatusOneofCase.Failed:
+                                throw instance.failureConverter.ToException(
+                                    res.Failed.Failure_, instance.payloadConverter);
+                            case ActivityResolution.StatusOneofCase.Cancelled:
+                                throw instance.failureConverter.ToException(
+                                    res.Cancelled.Failure, instance.payloadConverter);
+                            case ActivityResolution.StatusOneofCase.Backoff:
+                                // We have to sleep the backoff amount. Note, this can be cancelled
+                                // like any other timer.
+                                await instance.DelayAsync(
+                                    res.Backoff.BackoffDuration.ToTimeSpan(),
+                                    cancellationToken).ConfigureAwait(true);
+                                // Re-schedule with backoff info
+                                seq = applyScheduleCommand(res.Backoff);
+                                source = new TaskCompletionSource<ActivityResolution>();
+                                instance.activitiesPending[seq] = source;
+                                break;
+                            default:
+                                throw new InvalidOperationException("Activity does not have result");
+                        }
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Child workflow handle implementation.
+        /// </summary>
+        /// <typeparam name="TResult">Child workflow result.</typeparam>
+        internal class ChildWorkflowHandleImpl<TResult> : ChildWorkflowHandle<TResult>
+        {
+            private readonly WorkflowInstance instance;
+            private readonly string id;
+            private readonly string firstExecutionRunID;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ChildWorkflowHandleImpl{TResult}"/> class.
+            /// </summary>
+            /// <param name="instance">Workflow instance.</param>
+            /// <param name="id">Workflow ID.</param>
+            /// <param name="firstExecutionRunID">Workflow run ID.</param>
+            public ChildWorkflowHandleImpl(
+                WorkflowInstance instance, string id, string firstExecutionRunID)
+            {
+                this.instance = instance;
+                this.id = id;
+                this.firstExecutionRunID = firstExecutionRunID;
+            }
+
+            /// <inheritdoc />
+            public override string ID => id;
+
+            /// <inheritdoc />
+            public override string FirstExecutionRunID => firstExecutionRunID;
+
+            /// <summary>
+            /// Gets the source for the resulting payload of the child.
+            /// </summary>
+            internal TaskCompletionSource<Payload> CompletionSource { get; } = new();
+
+            /// <inheritdoc />
+            public override async Task<TLocalResult> GetResultAsync<TLocalResult>()
+            {
+                var payload = await CompletionSource.Task.ConfigureAwait(true);
+                // Ignore if they are ignoring result
+                if (typeof(TLocalResult) == typeof(ValueTuple))
+                {
+                    return default!;
+                }
+                return instance.payloadConverter.ToValue<TLocalResult>(payload);
+            }
+
+            /// <inheritdoc />
+            public override Task SignalAsync(string signal, IReadOnlyCollection<object?> args) =>
+                // TODO(cretz):
+                throw new NotImplementedException();
         }
     }
 }

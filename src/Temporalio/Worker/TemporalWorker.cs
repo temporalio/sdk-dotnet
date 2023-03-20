@@ -85,10 +85,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Finalizes an instance of the <see cref="TemporalWorker"/> class.
         /// </summary>
-        ~TemporalWorker()
-        {
-            Dispose(false);
-        }
+        ~TemporalWorker() => Dispose(false);
 
         /// <summary>
         /// Gets the options this worker was created with.
@@ -138,10 +135,8 @@ namespace Temporalio.Worker
         /// <exception cref="InvalidOperationException">Already started.</exception>
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         /// <exception cref="Exception">Fatal worker failure.</exception>
-        public Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            return ExecuteInternalAsync(null, stoppingToken);
-        }
+        public Task ExecuteAsync(CancellationToken stoppingToken) =>
+            ExecuteInternalAsync(null, stoppingToken);
 
         /// <summary>
         /// Run this worker until failure, cancelled, or task from given function completes.
@@ -163,10 +158,8 @@ namespace Temporalio.Worker
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         /// <exception cref="Exception">Fatal worker failure.</exception>
         public Task ExecuteAsync(
-            Func<Task> untilComplete, CancellationToken stoppingToken = default)
-        {
-            return ExecuteInternalAsync(untilComplete, stoppingToken);
-        }
+            Func<Task> untilComplete, CancellationToken stoppingToken = default) =>
+            ExecuteInternalAsync(untilComplete, stoppingToken);
 
         /// <summary>
         /// Run this worker until failure, cancelled, or task from given function completes.

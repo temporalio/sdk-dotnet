@@ -8,21 +8,21 @@ namespace Temporalio.Client
     /// Options for starting a workflow. <see cref="ID" /> and <see cref="TaskQueue" /> are
     /// required.
     /// </summary>
-    public class WorkflowStartOptions : ICloneable
+    public class WorkflowOptions : ICloneable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowStartOptions"/> class.
+        /// Initializes a new instance of the <see cref="WorkflowOptions"/> class.
         /// </summary>
-        public WorkflowStartOptions()
+        public WorkflowOptions()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowStartOptions"/> class.
+        /// Initializes a new instance of the <see cref="WorkflowOptions"/> class.
         /// </summary>
         /// <param name="id">Workflow ID.</param>
         /// <param name="taskQueue">Task queue to start workflow on.</param>
-        public WorkflowStartOptions(string id, string taskQueue)
+        public WorkflowOptions(string id, string taskQueue)
         {
             ID = id;
             TaskQueue = taskQueue;
@@ -54,12 +54,13 @@ namespace Temporalio.Client
         public TimeSpan? TaskTimeout { get; set; }
 
         /// <summary>
-        /// Gets or sets how already-existing IDs are treated.
+        /// Gets or sets how already-existing IDs are treated. Default is
+        /// <see cref="WorkflowIdReusePolicy.AllowDuplicate" />.
         /// </summary>
         public WorkflowIdReusePolicy IDReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
 
         /// <summary>
-        /// Gets or sets the retry policy for the workflow.
+        /// Gets or sets the retry policy for the workflow. If unset, workflow never retries.
         /// </summary>
         public RetryPolicy? RetryPolicy { get; set; }
 
@@ -102,7 +103,7 @@ namespace Temporalio.Client
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (WorkflowStartOptions)MemberwiseClone();
+            var copy = (WorkflowOptions)MemberwiseClone();
             if (Rpc != null)
             {
                 copy.Rpc = (RpcOptions)Rpc.Clone();

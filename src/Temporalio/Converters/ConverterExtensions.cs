@@ -62,10 +62,8 @@ namespace Temporalio.Converters
         /// <param name="converter">The converter to use.</param>
         /// <param name="payload">The payload to convert.</param>
         /// <returns>Decoded and converted value.</returns>
-        public static Task<T> ToValueAsync<T>(this DataConverter converter, Payload payload)
-        {
-            return converter.ToSingleValueAsync<T>(new Payload[] { payload });
-        }
+        public static Task<T> ToValueAsync<T>(this DataConverter converter, Payload payload) =>
+            converter.ToSingleValueAsync<T>(new Payload[] { payload });
 
         /// <summary>
         /// Decode and convert the given payload to a value of the given type.
@@ -80,10 +78,8 @@ namespace Temporalio.Converters
         /// <param name="type">Type to convert to.</param>
         /// <returns>Decoded and converted value.</returns>
         public static Task<object?> ToValueAsync(
-            this DataConverter converter, Payload payload, Type type)
-        {
-            return converter.ToSingleValueAsync(new Payload[] { payload }, type);
-        }
+            this DataConverter converter, Payload payload, Type type) =>
+            converter.ToSingleValueAsync(new Payload[] { payload }, type);
 
         /// <summary>
         /// Decode and convert the given payloads to a single value.
@@ -94,11 +90,8 @@ namespace Temporalio.Converters
         /// <returns>Decoded and converted value.</returns>
         /// <exception cref="ArgumentException">If there is not exactly one value.</exception>
         public static async Task<T> ToSingleValueAsync<T>(
-            this DataConverter converter, IReadOnlyCollection<Payload> payloads)
-        {
-            return (T)(await converter.ToSingleValueAsync(
-                payloads, typeof(T)).ConfigureAwait(false))!;
-        }
+            this DataConverter converter, IReadOnlyCollection<Payload> payloads) =>
+            (T)(await converter.ToSingleValueAsync(payloads, typeof(T)).ConfigureAwait(false))!;
 
         /// <summary>
         /// Decode and convert the given payloads to a single value.
@@ -159,6 +152,17 @@ namespace Temporalio.Converters
             }
             return failure;
         }
+
+        /// <summary>
+        /// Convert values to payloads only using the payload converter. Most users outside of a
+        /// workflow should instead use the data converter to convert.
+        /// </summary>
+        /// <param name="converter">Converter to use.</param>
+        /// <param name="values">Values to convert.</param>
+        /// <returns>Converted values.</returns>
+        public static IEnumerable<Payload> ToPayloads(
+            this IPayloadConverter converter, IReadOnlyCollection<object?> values) =>
+            values.Select(converter.ToPayload);
 
         /// <summary>
         /// Convert the given payload to a value of the given type.

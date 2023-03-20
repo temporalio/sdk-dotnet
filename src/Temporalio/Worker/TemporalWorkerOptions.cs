@@ -21,10 +21,7 @@ namespace Temporalio.Worker
         /// Initializes a new instance of the <see cref="TemporalWorkerOptions"/> class.
         /// </summary>
         /// <param name="taskQueue">Task queue for the worker.</param>
-        public TemporalWorkerOptions(string taskQueue)
-        {
-            TaskQueue = taskQueue;
-        }
+        public TemporalWorkerOptions(string taskQueue) => TaskQueue = taskQueue;
 
         /// <summary>
         /// Gets or sets the task queue for the worker.
@@ -86,19 +83,19 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of activities that will ever be given to this worker
-        /// concurrently.
+        /// concurrently. Default is 100.
         /// </summary>
         public int MaxConcurrentActivities { get; set; } = 100;
 
         /// <summary>
-        /// Gets or sets the longest interval for throttling activity heartbeats.
+        /// Gets or sets the longest interval for throttling activity heartbeats. Default is 60s.
         /// </summary>
         public TimeSpan MaxHeartbeatThrottleInterval { get; set; } = TimeSpan.FromSeconds(60);
 
         /// <summary>
         /// Gets or sets the default interval for throttling activity heartbeats in case
         /// per-activity heartbeat timeout is unset. Otherwise, it's the per-activity heartbeat
-        /// timeout * 0.8.
+        /// timeout * 0.8. Default is 30s.
         /// </summary>
         public TimeSpan DefaultHeartbeatThrottleInterval { get; set; } = TimeSpan.FromSeconds(30);
 
@@ -125,19 +122,19 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the number of workflows cached for sticky task queue use. If this is 0,
-        /// sticky task queues are disabled and no caching occurs.
+        /// sticky task queues are disabled and no caching occurs. Default is 10000.
         /// </summary>
         public int MaxCachedWorkflows { get; set; } = 10000;
 
         /// <summary>
         /// Gets or sets the maximum allowed number of workflow tasks that will ever be given to
-        /// the worker at one time.
+        /// the worker at one time. Default is 100.
         /// </summary>
         public int MaxConcurrentWorkflowTasks { get; set; } = 100;
 
         /// <summary>
         /// Gets or sets the maximum number of local activities that will ever be given to this
-        /// worker concurrently.
+        /// worker concurrently. Default is 100.
         /// </summary>
         public int MaxConcurrentLocalActivities { get; set; } = 100;
 
@@ -150,6 +147,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets or sets how long a workflow task is allowed to sit on the sticky queue before it is
         /// timed out and moved to the non-sticky queue where it may be picked up by any worker.
+        /// Default is 10s.
         /// </summary>
         public TimeSpan StickyQueueScheduleToStartTimeout { get; set; } = TimeSpan.FromSeconds(10);
 
@@ -213,9 +211,6 @@ namespace Temporalio.Worker
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
     }
 }

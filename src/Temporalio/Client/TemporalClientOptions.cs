@@ -17,7 +17,8 @@ namespace Temporalio.Client
         public string Namespace { get; set; } = "default";
 
         /// <summary>
-        /// Gets or sets the data converter.
+        /// Gets or sets the data converter. Default is
+        /// <see cref="Converters.DataConverter.Default" />.
         /// </summary>
         public Converters.DataConverter DataConverter { get; set; } =
             Converters.DataConverter.Default;
@@ -46,9 +47,6 @@ namespace Temporalio.Client
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
     }
 }

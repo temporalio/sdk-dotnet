@@ -10,7 +10,8 @@ namespace Temporalio.Client
     public class WorkflowHistoryFetchOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets which history events to fetch.
+        /// Gets or sets which history events to fetch.  Default
+        /// <see cref="HistoryEventFilterType.AllEvent" />.
         /// </summary>
         public HistoryEventFilterType EventFilterType { get; set; } = HistoryEventFilterType.AllEvent;
 

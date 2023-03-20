@@ -100,6 +100,82 @@ namespace Temporalio.Workflows
             TaskScheduler.Current as IWorkflowContext ?? throw new InvalidOperationException("Not in workflow");
 
         /// <summary>
+        /// Create an exception that, when thrown out of the workflow, will continue-as-new with
+        /// the given workflow.
+        /// </summary>
+        /// <param name="workflow">Workflow.</param>
+        /// <param name="options">Continue as new options.</param>
+        /// <returns>Exception for continuing as new.</returns>
+        public static ContinueAsNewException CreateContinueAsNewException(
+            Func<Task> workflow, ContinueAsNewOptions? options = null) =>
+            CreateContinueAsNewException(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Create an exception that, when thrown out of the workflow, will continue-as-new with
+        /// the given workflow.
+        /// </summary>
+        /// <typeparam name="T">Workflow argument type.</typeparam>
+        /// <param name="workflow">Workflow.</param>
+        /// <param name="arg">Workflow argument.</param>
+        /// <param name="options">Continue as new options.</param>
+        /// <returns>Exception for continuing as new.</returns>
+        public static ContinueAsNewException CreateContinueAsNewException<T>(
+            Func<T, Task> workflow, T arg, ContinueAsNewOptions? options = null) =>
+            CreateContinueAsNewException(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Create an exception that, when thrown out of the workflow, will continue-as-new with
+        /// the given workflow.
+        /// </summary>
+        /// <typeparam name="TResult">Workflow return type.</typeparam>
+        /// <param name="workflow">Workflow.</param>
+        /// <param name="options">Continue as new options.</param>
+        /// <returns>Exception for continuing as new.</returns>
+        public static ContinueAsNewException CreateContinueAsNewException<TResult>(
+            Func<Task<TResult>> workflow, ContinueAsNewOptions? options = null) =>
+            CreateContinueAsNewException(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Create an exception that, when thrown out of the workflow, will continue-as-new with
+        /// the given workflow.
+        /// </summary>
+        /// <typeparam name="T">Workflow argument type.</typeparam>
+        /// <typeparam name="TResult">Workflow return type.</typeparam>
+        /// <param name="workflow">Workflow.</param>
+        /// <param name="arg">Workflow argument.</param>
+        /// <param name="options">Continue as new options.</param>
+        /// <returns>Exception for continuing as new.</returns>
+        public static ContinueAsNewException CreateContinueAsNewException<T, TResult>(
+            Func<T, Task<TResult>> workflow, T arg, ContinueAsNewOptions? options = null) =>
+            CreateContinueAsNewException(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Create an exception that, when thrown out of the workflow, will continue-as-new with
+        /// the given workflow.
+        /// </summary>
+        /// <param name="workflow">Workflow name.</param>
+        /// <param name="args">Workflow arguments.</param>
+        /// <param name="options">Continue as new options.</param>
+        /// <returns>Exception for continuing as new.</returns>
+        public static ContinueAsNewException CreateContinueAsNewException(
+            string workflow,
+            IReadOnlyCollection<object?> args,
+            ContinueAsNewOptions? options = null) =>
+            Context.CreateContinueAsNewException(workflow, args, options);
+
+        /// <summary>
         /// Sleep in a workflow for the given time. See documentation of
         /// <see cref="DelayAsync(TimeSpan, CancellationToken?)" /> for details.
         /// </summary>
@@ -135,6 +211,636 @@ namespace Temporalio.Workflows
         /// </remarks>
         public static Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken = null) =>
             Context.DelayAsync(delay, cancellationToken);
+
+        /// <summary>
+        /// Execute an activity with a result and no arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteActivityAsync<TResult>(
+            Func<TResult> activity, ActivityOptions options) =>
+            ExecuteActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute an activity with a result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteActivityAsync<T, TResult>(
+            Func<T, TResult> activity, T arg, ActivityOptions options) =>
+            ExecuteActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute an activity with no result and no arguments.
+        /// </summary>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteActivityAsync(
+            Action activity, ActivityOptions options) =>
+            ExecuteActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute an activity with no result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteActivityAsync<T>(
+            Action<T> activity, T arg, ActivityOptions options) =>
+            ExecuteActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute an activity with a result and no arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteActivityAsync<TResult>(
+            Func<Task<TResult>> activity, ActivityOptions options) =>
+            ExecuteActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute an activity with a result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteActivityAsync<T, TResult>(
+            Func<T, Task<TResult>> activity, T arg, ActivityOptions options) =>
+            ExecuteActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute an activity with no result and no arguments.
+        /// </summary>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteActivityAsync(
+            Func<Task> activity, ActivityOptions options) =>
+            ExecuteActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute an activity with no result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteActivityAsync<T>(
+            Func<T, Task> activity, T arg, ActivityOptions options) =>
+            ExecuteActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute an activity by name with no result and any number of arguments.
+        /// </summary>
+        /// <param name="activity">Activity name to execute.</param>
+        /// <param name="args">Activity arguments.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteActivityAsync(
+            string activity, IReadOnlyCollection<object?> args, ActivityOptions options) =>
+            ExecuteActivityAsync<ValueTuple>(activity, args, options);
+
+        /// <summary>
+        /// Execute an activity by name with a result and any number of arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity name to execute.</param>
+        /// <param name="args">Activity arguments.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, ActivityOptions options) =>
+            Context.ExecuteActivityAsync<TResult>(activity, args, options);
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="StartChildWorkflowAsync{TResult}(Func{Task{TResult}}, ChildWorkflowOptions?)" />
+        /// +
+        /// <see cref="ChildWorkflowHandle{TResult}.GetResultAsync" />.
+        /// </summary>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>Task for workflow completion.</returns>
+        public static async Task<TResult> ExecuteChildWorkflowAsync<TResult>(
+            Func<Task<TResult>> workflow, ChildWorkflowOptions? options = null)
+        {
+            var handle = await StartChildWorkflowAsync(workflow, options).ConfigureAwait(true);
+            return await handle.GetResultAsync().ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="StartChildWorkflowAsync{T, TResult}(Func{T, Task{TResult}}, T, ChildWorkflowOptions?)" />
+        /// +
+        /// <see cref="ChildWorkflowHandle{TResult}.GetResultAsync" />.
+        /// </summary>
+        /// <typeparam name="T">Workflow argument type.</typeparam>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="arg">Workflow argument.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>Task for workflow completion.</returns>
+        public static async Task<TResult> ExecuteChildWorkflowAsync<T, TResult>(
+            Func<T, Task<TResult>> workflow, T arg, ChildWorkflowOptions? options = null)
+        {
+            var handle = await StartChildWorkflowAsync(
+                workflow, arg, options).ConfigureAwait(true);
+            return await handle.GetResultAsync().ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="StartChildWorkflowAsync(Func{Task}, ChildWorkflowOptions?)" />
+        /// +
+        /// <see cref="ChildWorkflowHandle.GetResultAsync" />.
+        /// </summary>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>Task for workflow completion.</returns>
+        public static async Task ExecuteChildWorkflowAsync(
+            Func<Task> workflow, ChildWorkflowOptions? options = null)
+        {
+            var handle = await StartChildWorkflowAsync(workflow, options).ConfigureAwait(true);
+            await handle.GetResultAsync().ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="StartChildWorkflowAsync{T}(Func{T, Task}, T, ChildWorkflowOptions?)" />
+        /// +
+        /// <see cref="ChildWorkflowHandle.GetResultAsync" />.
+        /// </summary>
+        /// <typeparam name="T">Workflow argument type.</typeparam>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="arg">Workflow argument.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>Task for workflow completion.</returns>
+        public static async Task ExecuteChildWorkflowAsync<T>(
+            Func<T, Task> workflow, T arg, ChildWorkflowOptions? options = null)
+        {
+            var handle = await StartChildWorkflowAsync(
+                workflow, arg, options).ConfigureAwait(true);
+            await handle.GetResultAsync().ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="StartChildWorkflowAsync(string, IReadOnlyCollection{object?}, ChildWorkflowOptions?)" />
+        /// +
+        /// <see cref="ChildWorkflowHandle.GetResultAsync" />.
+        /// </summary>
+        /// <param name="workflow">Workflow name to execute.</param>
+        /// <param name="args">Workflow arguments.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>Task for workflow completion.</returns>
+        public static async Task ExecuteChildWorkflowAsync(
+            string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null)
+        {
+            var handle = await StartChildWorkflowAsync(
+                workflow, args, options).ConfigureAwait(true);
+            await handle.GetResultAsync().ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="StartChildWorkflowAsync{TResult}(string, IReadOnlyCollection{object?}, ChildWorkflowOptions?)" />
+        /// +
+        /// <see cref="ChildWorkflowHandle{TResult}.GetResultAsync" />.
+        /// </summary>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="workflow">Workflow name to execute.</param>
+        /// <param name="args">Workflow arguments.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>Task for workflow completion.</returns>
+        public static async Task<TResult> ExecuteChildWorkflowAsync<TResult>(
+            string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null)
+        {
+            var handle = await StartChildWorkflowAsync<TResult>(
+                workflow, args, options).ConfigureAwait(true);
+            return await handle.GetResultAsync().ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Execute a local activity with a result and no arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
+            Func<TResult> activity, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute a local activity with a result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteLocalActivityAsync<T, TResult>(
+            Func<T, TResult> activity, T arg, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute a local activity with no result and no arguments.
+        /// </summary>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteLocalActivityAsync(
+            Action activity, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute a local activity with no result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteLocalActivityAsync<T>(
+            Action<T> activity, T arg, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute a local activity with a result and no arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
+            Func<Task<TResult>> activity, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute a local activity with a result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteLocalActivityAsync<T, TResult>(
+            Func<T, Task<TResult>> activity, T arg, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync<TResult>(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute a local activity with no result and no arguments.
+        /// </summary>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteLocalActivityAsync(
+            Func<Task> activity, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Execute a local activity with no result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Activity argument type.</typeparam>
+        /// <param name="activity">Activity to execute.</param>
+        /// <param name="arg">Activity argument.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteLocalActivityAsync<T>(
+            Func<T, Task> activity, T arg, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync(
+                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Execute a local activity by name with no result and any number of arguments.
+        /// </summary>
+        /// <param name="activity">Activity name to execute.</param>
+        /// <param name="args">Activity arguments.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task ExecuteLocalActivityAsync(
+            string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
+            ExecuteLocalActivityAsync<ValueTuple>(activity, args, options);
+
+        /// <summary>
+        /// Execute a local activity by name with a result and any number of arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity name to execute.</param>
+        /// <param name="args">Activity arguments.</param>
+        /// <param name="options">Activity options. This is required and either
+        /// <see cref="ActivityOptions.ScheduleToCloseTimeout" /> or
+        /// <see cref="ActivityOptions.StartToCloseTimeout" /> must be set.</param>
+        /// <returns>Task for completion with result.</returns>
+        /// <remarks>
+        /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
+        /// failure.
+        /// </remarks>
+        public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
+            Context.ExecuteLocalActivityAsync<TResult>(activity, args, options);
+
+        /// <summary>
+        /// Deterministically create a new <see cref="Guid" /> similar to
+        /// <see cref="Guid.NewGuid" /> (which cannot be used in workflows). The resulting GUID
+        /// intentionally represents a version 4 UUID.
+        /// </summary>
+        /// <returns>A new GUID.</returns>
+        public static Guid NewGuid()
+        {
+            var bytes = new byte[16];
+#pragma warning disable CA5394 // We intentionally are not wanting strong random
+            Random.NextBytes(bytes);
+#pragma warning restore CA5394
+            // Make it look like UUIDv4
+            bytes[7] = (byte)((bytes[7] & 0x0F) | 0x40);
+            bytes[8] = (byte)((bytes[8] & 0x3F) | 0x80);
+            return new(bytes);
+        }
+
+        /// <summary>
+        /// Start a child workflow with a result and no arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>The child workflow handle once started.</returns>
+        /// <remarks>
+        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
+        /// is given in the options but it is already running.
+        /// </remarks>
+        public static Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+            Func<Task<TResult>> workflow, ChildWorkflowOptions? options = null) =>
+            StartChildWorkflowAsync<TResult>(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Start a child workflow with a result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Workflow argument type.</typeparam>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="arg">Workflow argument.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>The child workflow handle once started.</returns>
+        /// <remarks>
+        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
+        /// is given in the options but it is already running.
+        /// </remarks>
+        public static Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<T, TResult>(
+            Func<T, Task<TResult>> workflow, T arg, ChildWorkflowOptions? options = null) =>
+            StartChildWorkflowAsync<TResult>(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Start a child workflow with no result and no arguments.
+        /// </summary>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>The child workflow handle once started.</returns>
+        /// <remarks>
+        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
+        /// is given in the options but it is already running.
+        /// </remarks>
+        public static Task<ChildWorkflowHandle> StartChildWorkflowAsync(
+            Func<Task> workflow, ChildWorkflowOptions? options = null) =>
+            StartChildWorkflowAsync(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                Array.Empty<object?>(),
+                options);
+
+        /// <summary>
+        /// Start a child workflow with no result and one argument.
+        /// </summary>
+        /// <typeparam name="T">Workflow argument type.</typeparam>
+        /// <param name="workflow">Workflow to execute.</param>
+        /// <param name="arg">Workflow argument.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>The child workflow handle once started.</returns>
+        /// <remarks>
+        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
+        /// is given in the options but it is already running.
+        /// </remarks>
+        public static Task<ChildWorkflowHandle> StartChildWorkflowAsync<T>(
+            Func<T, Task> workflow, T arg, ChildWorkflowOptions? options = null) =>
+            StartChildWorkflowAsync(
+                WorkflowDefinition.FromRunMethod(workflow.Method).Name,
+                new object?[] { arg },
+                options);
+
+        /// <summary>
+        /// Start a child workflow by name with no result and any number of argument.
+        /// </summary>
+        /// <param name="workflow">Workflow name to execute.</param>
+        /// <param name="args">Workflow arguments.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>The child workflow handle once started.</returns>
+        /// <remarks>
+        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
+        /// is given in the options but it is already running.
+        /// </remarks>
+        public static async Task<ChildWorkflowHandle> StartChildWorkflowAsync(
+            string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null) =>
+            await StartChildWorkflowAsync<ValueTuple>(workflow, args, options).ConfigureAwait(true);
+
+        /// <summary>
+        /// Start a child workflow by name with a result and any number of arguments.
+        /// </summary>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="workflow">Workflow name to execute.</param>
+        /// <param name="args">Workflow arguments.</param>
+        /// <param name="options">Workflow options.</param>
+        /// <returns>The child workflow handle once started.</returns>
+        /// <remarks>
+        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
+        /// is given in the options but it is already running.
+        /// </remarks>
+        public static Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+            string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null) =>
+            Context.StartChildWorkflowAsync<TResult>(workflow, args, options ?? new());
 
         /// <summary>
         /// Issue updates to the workflow memo.

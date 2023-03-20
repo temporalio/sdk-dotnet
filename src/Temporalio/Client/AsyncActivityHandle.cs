@@ -20,11 +20,9 @@ namespace Temporalio.Client
         /// If the server has requested that this activity be cancelled. Users should catch this and
         /// invoke <see cref="ReportCancellationAsync" /> for proper behavior.
         /// </exception>
-        public Task HeartbeatAsync(AsyncActivityHeartbeatOptions? options = null)
-        {
-            return Client.OutboundInterceptor.HeartbeatAsyncActivityAsync(new(
+        public Task HeartbeatAsync(AsyncActivityHeartbeatOptions? options = null) =>
+            Client.OutboundInterceptor.HeartbeatAsyncActivityAsync(new(
                 Activity: Activity, Options: options));
-        }
 
         /// <summary>
         /// Complete this activity.
@@ -33,11 +31,9 @@ namespace Temporalio.Client
         /// <param name="options">Completion options.</param>
         /// <returns>Completion task.</returns>
         public Task CompleteAsync(
-            object? result = null, AsyncActivityCompleteOptions? options = null)
-        {
-            return Client.OutboundInterceptor.CompleteAsyncActivityAsync(new(
+            object? result = null, AsyncActivityCompleteOptions? options = null) =>
+            Client.OutboundInterceptor.CompleteAsyncActivityAsync(new(
                 Activity: Activity, Result: result, Options: options));
-        }
 
         /// <summary>
         /// Fail this activity.
@@ -45,22 +41,19 @@ namespace Temporalio.Client
         /// <param name="exception">Exception for the activity.</param>
         /// <param name="options">Fail options.</param>
         /// <returns>Completion task.</returns>
-        public Task FailAsync(Exception exception, AsyncActivityFailOptions? options = null)
-        {
-            return Client.OutboundInterceptor.FailAsyncActivityAsync(new(
+        public Task FailAsync(Exception exception, AsyncActivityFailOptions? options = null) =>
+            Client.OutboundInterceptor.FailAsyncActivityAsync(new(
                 Activity: Activity, Exception: exception, Options: options));
-        }
 
         /// <summary>
         /// Report this activity as cancelled..
         /// </summary>
         /// <param name="options">Cancel options.</param>
         /// <returns>Completion task.</returns>
-        public Task ReportCancellationAsync(AsyncActivityReportCancellationOptions? options = null)
-        {
-            return Client.OutboundInterceptor.ReportCancellationAsyncActivityAsync(new(
+        public Task ReportCancellationAsync(
+            AsyncActivityReportCancellationOptions? options = null) =>
+            Client.OutboundInterceptor.ReportCancellationAsyncActivityAsync(new(
                 Activity: Activity, Options: options));
-        }
 
         /// <summary>
         /// Reference to an existing activity.

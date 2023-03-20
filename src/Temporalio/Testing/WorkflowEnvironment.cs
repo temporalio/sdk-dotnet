@@ -24,10 +24,7 @@ namespace Temporalio.Testing
         /// client that does not support time skipping.
         /// </summary>
         /// <param name="client">Client to use for this environment.</param>
-        public WorkflowEnvironment(ITemporalClient client)
-        {
-            Client = client;
-        }
+        public WorkflowEnvironment(ITemporalClient client) => Client = client;
 
         /// <summary>
         /// Gets the client for this workflow environment.
@@ -88,10 +85,9 @@ namespace Temporalio.Testing
         /// <see cref="Task.Delay(int, CancellationToken)" />, but in time-skipping environments
         /// this may simply fast forward time.
         /// </remarks>
-        public Task DelayAsync(int millisecondsDelay, CancellationToken? cancellationToken = null)
-        {
-            return DelayAsync(TimeSpan.FromMilliseconds(millisecondsDelay), cancellationToken);
-        }
+        public Task DelayAsync(
+            int millisecondsDelay, CancellationToken? cancellationToken = null) =>
+            DelayAsync(TimeSpan.FromMilliseconds(millisecondsDelay), cancellationToken);
 
         /// <summary>
         /// Sleep in this environment.
@@ -121,10 +117,7 @@ namespace Temporalio.Testing
         /// For non-time-skipping environments this is just <see cref="DateTime.Now" />, but in
         /// time-skipping environments this may be a different time.
         /// </remarks>
-        public virtual Task<DateTime> GetCurrentTimeAsync()
-        {
-            return Task.FromResult(DateTime.Now);
-        }
+        public virtual Task<DateTime> GetCurrentTimeAsync() => Task.FromResult(DateTime.Now);
 
         /// <summary>
         /// Disable automatic time skipping.
@@ -134,19 +127,14 @@ namespace Temporalio.Testing
         /// This has no effect if time skipping is already disabled (which is always the case in
         /// non-time-skipping environments).
         /// </remarks>
-        public virtual IDisposable AutoTimeSkippingDisabled()
-        {
+        public virtual IDisposable AutoTimeSkippingDisabled() =>
             throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Shutdown this server.
         /// </summary>
         /// <returns>Completion task.</returns>
-        public virtual Task ShutdownAsync()
-        {
-            return Task.CompletedTask;
-        }
+        public virtual Task ShutdownAsync() => Task.CompletedTask;
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>
@@ -201,10 +189,8 @@ namespace Temporalio.Testing
             /// <param name="client">Client for the server.</param>
             /// <param name="server">The underlying bridge server.</param>
             public EphemeralServerBased(TemporalClient client, Bridge.EphemeralServer server)
-                : base(client)
-            {
+                : base(client) =>
                 this.server = server;
-            }
 
             /// <inheritdoc/>
             public override bool SupportsTimeSkipping => server.HasTestService;
@@ -244,10 +230,7 @@ namespace Temporalio.Testing
             }
 
             /// <inheritdoc/>
-            public async override Task ShutdownAsync()
-            {
-                await server.ShutdownAsync().ConfigureAwait(false);
-            }
+            public override Task ShutdownAsync() => server.ShutdownAsync();
         }
     }
 }

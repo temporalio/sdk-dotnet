@@ -57,6 +57,17 @@ namespace Temporalio.Workflows
         DateTime UtcNow { get; }
 
         /// <summary>
+        /// Backing call for
+        /// <see cref="Workflow.CreateContinueAsNewException(string, IReadOnlyCollection{object?}, ContinueAsNewOptions?)" />.
+        /// </summary>
+        /// <param name="workflow">Workflow name.</param>
+        /// <param name="args">Workflow args.</param>
+        /// <param name="options">Options.</param>
+        /// <returns>Continue as new exception.</returns>
+        ContinueAsNewException CreateContinueAsNewException(
+            string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options);
+
+        /// <summary>
         /// Backing call for <see cref="Workflow.DelayAsync(TimeSpan, CancellationToken?)" /> and
         /// overloads.
         /// </summary>
@@ -64,6 +75,42 @@ namespace Temporalio.Workflows
         /// <param name="cancellationToken">Optional cancellation token.</param>
         /// <returns>Task for completion.</returns>
         Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken);
+
+        /// <summary>
+        /// Backing call for
+        /// <see cref="Workflow.ExecuteActivityAsync{TResult}(string, IReadOnlyCollection{object?}, ActivityOptions)" />.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity name.</param>
+        /// <param name="args">Activity args.</param>
+        /// <param name="options">Options.</param>
+        /// <returns>Activity result.</returns>
+        Task<TResult> ExecuteActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, ActivityOptions options);
+
+        /// <summary>
+        /// Backing call for
+        /// <see cref="Workflow.ExecuteLocalActivityAsync{TResult}(string, IReadOnlyCollection{object?}, LocalActivityOptions)" />.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="activity">Activity name.</param>
+        /// <param name="args">Activity args.</param>
+        /// <param name="options">Options.</param>
+        /// <returns>Activity result.</returns>
+        Task<TResult> ExecuteLocalActivityAsync<TResult>(
+            string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options);
+
+        /// <summary>
+        /// Backing call for
+        /// <see cref="Workflow.StartChildWorkflowAsync{TResult}(string, IReadOnlyCollection{object?}, ChildWorkflowOptions?)" />.
+        /// </summary>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="workflow">Workflow name.</param>
+        /// <param name="args">Workflow args.</param>
+        /// <param name="options">Options.</param>
+        /// <returns>Child workflow handle.</returns>
+        Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+            string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions options);
 
         /// <summary>
         /// Backing call for <see cref="Workflow.UpsertMemo" />.

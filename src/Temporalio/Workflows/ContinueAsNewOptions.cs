@@ -1,18 +1,53 @@
 using System;
+using System.Collections.Generic;
 
 namespace Temporalio.Workflows
 {
     /// <summary>
-    /// Options for <see cref="ContinueAsNewException" />.
+    /// Options for continue as new.
     /// </summary>
     public class ContinueAsNewOptions : ICloneable
     {
-        // TODO(cretz): Options
+        /// <summary>
+        /// Gets or sets the task queue to continue as new. If unset, defaults to current workflow's
+        /// task queue.
+        /// </summary>
+        public string? TaskQueue { get; set; }
+
+        /// <summary>
+        /// Gets or sets the run timeout for continue as new. If unset, defaults to current
+        /// workflow's run timeout.
+        /// </summary>
+        public TimeSpan? RunTimeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets the task timeout for continue as new. If unset, defaults to current
+        /// workflow's task timeout.
+        /// </summary>
+        public TimeSpan? TaskTimeout { get; set; }
+
+        /// <summary>
+        /// Gets or sets the retry policy for continue as new. If unset, defaults to the current
+        /// workflow's retry policy.
+        /// </summary>
+        public RetryPolicy? RetryPolicy { get; set; }
+
+        /// <summary>
+        /// Gets or sets the memo for continue as new. If unset, default to the current workflow's
+        /// memo.
+        /// </summary>
+        public IReadOnlyCollection<KeyValuePair<string, object>>? Memo { get; set; }
+
+        /// <summary>
+        /// Gets or sets the search attributes for continue as new. If unset, default to current
+        /// workflow's search attribute.
+        /// </summary>
+        public SearchAttributeCollection? TypedSearchAttributes { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public virtual object Clone() => (ContinueAsNewOptions)MemberwiseClone();
+        public virtual object Clone() => MemberwiseClone();
     }
 }

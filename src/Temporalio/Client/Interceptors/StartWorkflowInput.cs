@@ -13,6 +13,6 @@ namespace Temporalio.Client.Interceptors
     public record StartWorkflowInput(
         string Workflow,
         IReadOnlyCollection<object?> Args,
-        WorkflowStartOptions Options,
+        WorkflowOptions Options,
         IDictionary<string, Payload>? Headers);
 }

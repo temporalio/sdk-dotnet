@@ -122,8 +122,7 @@ namespace Temporalio.Worker
             }
         }
 
-        private static void DumpEvent(EventWrittenEventArgs evt)
-        {
+        private static void DumpEvent(EventWrittenEventArgs evt) =>
             Console.WriteLine("TPL Event: {0}", string.Join(" -- ", new List<object?>()
             {
                 evt.EventId,
@@ -134,14 +133,11 @@ namespace Temporalio.Worker
                 evt.PayloadNames == null ? "<none>" : string.Join(",", evt.PayloadNames),
                 evt.Payload == null ? "<none>" : string.Join(",", evt.Payload),
             }));
-        }
 
-        private void EnableNeededEvents(EventSource eventSource)
-        {
+        private void EnableNeededEvents(EventSource eventSource) =>
             EnableEvents(
                 eventSource,
                 EventLevel.Informational,
                 TaskTransferKeywords | AsyncCausalityOperationKeywords);
-        }
     }
 }

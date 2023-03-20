@@ -24,10 +24,7 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="targetHost">Target host to connect to.</param>
         /// <seealso cref="TargetHost" />
-        public TemporalConnectionOptions(string targetHost)
-        {
-            TargetHost = targetHost;
-        }
+        public TemporalConnectionOptions(string targetHost) => TargetHost = targetHost;
 
         /// <summary>
         /// Gets or sets the Temporal server <c>host:port</c> to connect to.

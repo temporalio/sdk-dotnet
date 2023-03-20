@@ -11,18 +11,14 @@ namespace Temporalio.Client
     public partial class TemporalClient
     {
         /// <inheritdoc />
-        public AsyncActivityHandle GetAsyncActivityHandle(byte[] taskToken)
-        {
-            return new(this, new AsyncActivityHandle.TaskTokenReference(taskToken));
-        }
+        public AsyncActivityHandle GetAsyncActivityHandle(byte[] taskToken) =>
+            new(this, new AsyncActivityHandle.TaskTokenReference(taskToken));
 
         /// <inheritdoc />
         public AsyncActivityHandle GetAsyncActivityHandle(
-            string workflowID, string runID, string activityID)
-        {
-            return new(this, new AsyncActivityHandle.IDReference(
+            string workflowID, string runID, string activityID) =>
+            new(this, new AsyncActivityHandle.IDReference(
                 WorkflowID: workflowID, RunID: runID, ActivityID: activityID));
-        }
 
         internal partial class Impl
         {

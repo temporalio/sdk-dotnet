@@ -37,10 +37,8 @@ namespace Temporalio.Activities
         /// <remarks>
         /// Activity delegates cannot have any <c>ref</c> or <c>out</c> parameters.
         /// </remarks>
-        public static ActivityDefinition FromDelegate(Delegate del)
-        {
-            return Definitions.GetOrAdd(del, CreateFromDelegate);
-        }
+        public static ActivityDefinition FromDelegate(Delegate del) =>
+            Definitions.GetOrAdd(del, CreateFromDelegate);
 
         /// <summary>
         /// Creates an activity definition from an explicit name and delegate. Most users should use

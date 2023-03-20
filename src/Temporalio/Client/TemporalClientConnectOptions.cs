@@ -35,7 +35,8 @@ namespace Temporalio.Client
         public string Namespace { get; set; } = "default";
 
         /// <summary>
-        /// Gets or sets the client data converter.
+        /// Gets or sets the client data converter. Default is
+        /// <see cref="Converters.DataConverter.Default" />.
         /// </summary>
         public Converters.DataConverter DataConverter { get; set; } =
             Converters.DataConverter.Default;
@@ -45,13 +46,11 @@ namespace Temporalio.Client
         /// <see cref="TemporalClient.TemporalClient" />.
         /// </summary>
         /// <returns>Client options.</returns>
-        public TemporalClientOptions ToClientOptions()
-        {
-            return new TemporalClientOptions()
+        public TemporalClientOptions ToClientOptions() =>
+            new()
             {
                 Namespace = Namespace,
                 DataConverter = DataConverter,
             };
-        }
     }
 }

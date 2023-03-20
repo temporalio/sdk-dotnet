@@ -18,8 +18,7 @@ namespace Temporalio.Converters
         /// <inheritdoc />
         public bool TryToPayload(object? value, out Payload? payload)
         {
-            var bytes = value as byte[];
-            if (bytes == null)
+            if (value is not byte[] bytes)
             {
                 payload = null;
                 return false;

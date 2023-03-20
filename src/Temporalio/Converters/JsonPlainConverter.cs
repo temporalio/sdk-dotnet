@@ -17,10 +17,8 @@ namespace Temporalio.Converters
         /// Initializes a new instance of the <see cref="JsonPlainConverter"/> class.
         /// </summary>
         /// <param name="serializerOptions">Serializer options.</param>
-        public JsonPlainConverter(JsonSerializerOptions serializerOptions)
-        {
+        public JsonPlainConverter(JsonSerializerOptions serializerOptions) =>
             SerializerOptions = serializerOptions;
-        }
 
         /// <inheritdoc />
         public string Encoding => "json/plain";
@@ -42,9 +40,7 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public object? ToValue(Payload payload, Type type)
-        {
-            return JsonSerializer.Deserialize(payload.Data.ToByteArray(), type, SerializerOptions);
-        }
+        public object? ToValue(Payload payload, Type type) =>
+            JsonSerializer.Deserialize(payload.Data.ToByteArray(), type, SerializerOptions);
     }
 }

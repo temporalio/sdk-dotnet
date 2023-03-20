@@ -24,20 +24,12 @@ namespace Temporalio.Client
             /// Initializes a new instance of the <see cref="Core"/> class.
             /// </summary>
             /// <param name="connection">Connection to use.</param>
-            public Core(TemporalConnection connection)
-            {
-                this.connection = connection;
-            }
+            public Core(TemporalConnection connection) => this.connection = connection;
 
             /// <inheritdoc />
             protected override Task<T> InvokeRpcAsync<T>(
-                string rpc,
-                IMessage req,
-                MessageParser<T> resp,
-                RpcOptions? options = null)
-            {
-                return connection.InvokeRpcAsync(this, rpc, req, resp, options);
-            }
+                string rpc, IMessage req, MessageParser<T> resp, RpcOptions? options = null) =>
+                connection.InvokeRpcAsync(this, rpc, req, resp, options);
         }
     }
 }

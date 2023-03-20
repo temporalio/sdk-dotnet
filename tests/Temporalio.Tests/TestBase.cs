@@ -13,8 +13,9 @@ public abstract class TestBase : IDisposable
         if (Program.InProc)
         {
             LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(builder =>
-                builder.AddSimpleConsole().SetMinimumLevel(
-                    Program.Verbose ? LogLevel.Trace : LogLevel.Information));
+                builder.
+                    AddSimpleConsole(options => options.TimestampFormat = "[HH:mm:ss] ").
+                    SetMinimumLevel(Program.Verbose ? LogLevel.Trace : LogLevel.Information));
         }
         else
         {

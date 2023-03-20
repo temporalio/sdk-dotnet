@@ -27,10 +27,8 @@ namespace Temporalio.Exceptions
         /// <param name="failure">Underlying proto failure.</param>
         /// <param name="inner">Inner exception if any.</param>
         internal protected FailureException(Failure failure, Exception? inner)
-            : base(failure.Message, inner)
-        {
+            : base(failure.Message, inner) =>
             Failure = failure;
-        }
 
         /// <summary>
         /// Gets the underlying protobuf failure object.

@@ -12,10 +12,8 @@ namespace Temporalio.Exceptions
         /// </summary>
         /// <param name="workflowStatus">Workflow status causing rejection.</param>
         public WorkflowQueryRejectedException(WorkflowExecutionStatus workflowStatus)
-            : base($"Query rejected, workflow status: {workflowStatus}")
-        {
+            : base($"Query rejected, workflow status: {workflowStatus}") =>
             WorkflowStatus = workflowStatus;
-        }
 
         /// <summary>
         /// Gets the workflow status causing this rejection.

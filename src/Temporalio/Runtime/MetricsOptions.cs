@@ -20,19 +20,13 @@ namespace Temporalio.Runtime
         /// Initializes a new instance of the <see cref="MetricsOptions"/> class.
         /// </summary>
         /// <param name="prometheus">Prometheus options.</param>
-        public MetricsOptions(PrometheusOptions prometheus)
-        {
-            Prometheus = prometheus;
-        }
+        public MetricsOptions(PrometheusOptions prometheus) => Prometheus = prometheus;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MetricsOptions"/> class.
         /// </summary>
         /// <param name="openTelemetry">OpenTelemetry options.</param>
-        public MetricsOptions(OpenTelemetryOptions openTelemetry)
-        {
-            OpenTelemetry = openTelemetry;
-        }
+        public MetricsOptions(OpenTelemetryOptions openTelemetry) => OpenTelemetry = openTelemetry;
 
         /// <summary>
         /// Gets or sets the Prometheus metrics options.

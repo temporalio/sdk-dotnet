@@ -54,11 +54,9 @@ namespace Temporalio.Client
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public async Task GetResultAsync(
-            bool followRuns = true, RpcOptions? rpcOptions = null)
-        {
-            await GetResultAsync<ValueTuple>(followRuns, rpcOptions).ConfigureAwait(false);
-        }
+        public Task GetResultAsync(
+            bool followRuns = true, RpcOptions? rpcOptions = null) =>
+            GetResultAsync<ValueTuple>(followRuns, rpcOptions);
 
         /// <summary>
         /// Get the result of a workflow, deserializing into the given return type.
@@ -205,13 +203,11 @@ namespace Temporalio.Client
         /// the workflow yet.
         /// </returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task SignalAsync(Func<Task> signal, WorkflowSignalOptions? options = null)
-        {
-            return SignalAsync(
+        public Task SignalAsync(Func<Task> signal, WorkflowSignalOptions? options = null) =>
+            SignalAsync(
                 Workflows.WorkflowSignalDefinition.FromMethod(signal.Method).Name,
                 Array.Empty<object?>(),
                 options);
-        }
 
         /// <summary>
         /// Signal a workflow with the given WorkflowSignal attributed method.
@@ -226,13 +222,11 @@ namespace Temporalio.Client
         /// </returns>
         /// <exception cref="RpcException">Server-side error.</exception>
         public Task SignalAsync<T>(
-            Func<T, Task> signal, T arg, WorkflowSignalOptions? options = null)
-        {
-            return SignalAsync(
+            Func<T, Task> signal, T arg, WorkflowSignalOptions? options = null) =>
+            SignalAsync(
                 Workflows.WorkflowSignalDefinition.FromMethod(signal.Method).Name,
                 new object?[] { arg },
                 options);
-        }
 
         /// <summary>
         /// Signal a workflow with the given signal name and args.
@@ -246,16 +240,14 @@ namespace Temporalio.Client
         /// </returns>
         /// <exception cref="RpcException">Server-side error.</exception>
         public Task SignalAsync(
-            string signal, IReadOnlyCollection<object?> args, WorkflowSignalOptions? options = null)
-        {
-            return Client.OutboundInterceptor.SignalWorkflowAsync(new(
+            string signal, IReadOnlyCollection<object?> args, WorkflowSignalOptions? options = null) =>
+            Client.OutboundInterceptor.SignalWorkflowAsync(new(
                 ID: ID,
                 RunID: RunID,
                 Signal: signal,
                 Args: args,
                 Options: options,
                 Headers: null));
-        }
 
         /// <summary>
         /// Query a workflow with the given WorkflowQuery attributed method.
@@ -270,13 +262,11 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
         public Task<TQueryResult> QueryAsync<TQueryResult>(
-            Func<TQueryResult> query, WorkflowQueryOptions? options = null)
-        {
-            return QueryAsync<TQueryResult>(
+            Func<TQueryResult> query, WorkflowQueryOptions? options = null) =>
+            QueryAsync<TQueryResult>(
                 Workflows.WorkflowQueryDefinition.FromMethod(query.Method).Name,
                 Array.Empty<object?>(),
                 options);
-        }
 
         /// <summary>
         /// Query a workflow with the given WorkflowQuery attributed method.
@@ -293,13 +283,11 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
         public Task<TQueryResult> QueryAsync<T, TQueryResult>(
-            Func<T, TQueryResult> query, T arg, WorkflowQueryOptions? options = null)
-        {
-            return QueryAsync<TQueryResult>(
+            Func<T, TQueryResult> query, T arg, WorkflowQueryOptions? options = null) =>
+            QueryAsync<TQueryResult>(
                 Workflows.WorkflowQueryDefinition.FromMethod(query.Method).Name,
                 new object?[] { arg },
                 options);
-        }
 
         /// <summary>
         /// Query a workflow with the given WorkflowQuery attributed method.
@@ -315,16 +303,14 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
         public Task<TQueryResult> QueryAsync<TQueryResult>(
-            string query, IReadOnlyCollection<object?> args, WorkflowQueryOptions? options = null)
-        {
-            return Client.OutboundInterceptor.QueryWorkflowAsync<TQueryResult>(new(
+            string query, IReadOnlyCollection<object?> args, WorkflowQueryOptions? options = null) =>
+            Client.OutboundInterceptor.QueryWorkflowAsync<TQueryResult>(new(
                 ID: ID,
                 RunID: RunID,
                 Query: query,
                 Args: args,
                 Options: options,
                 Headers: null));
-        }
 
         /// <summary>
         /// Get the current description of this workflow.
@@ -332,13 +318,11 @@ namespace Temporalio.Client
         /// <param name="options">Extra options.</param>
         /// <returns>Description for the workflow.</returns>
         public Task<WorkflowExecutionDescription> DescribeAsync(
-            WorkflowDescribeOptions? options = null)
-        {
-            return Client.OutboundInterceptor.DescribeWorkflowAsync(new(
+            WorkflowDescribeOptions? options = null) =>
+            Client.OutboundInterceptor.DescribeWorkflowAsync(new(
                 ID: ID,
                 RunID: RunID,
                 Options: options));
-        }
 
         /// <summary>
         /// Request cancellation of this workflow.
@@ -346,14 +330,12 @@ namespace Temporalio.Client
         /// <param name="options">Cancellation options.</param>
         /// <returns>Cancel accepted task.</returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task CancelAsync(WorkflowCancelOptions? options = null)
-        {
-            return Client.OutboundInterceptor.CancelWorkflowAsync(new(
+        public Task CancelAsync(WorkflowCancelOptions? options = null) =>
+            Client.OutboundInterceptor.CancelWorkflowAsync(new(
                 ID: ID,
                 RunID: RunID,
                 FirstExecutionRunID: FirstExecutionRunID,
                 Options: options));
-        }
 
         /// <summary>
         /// Terminate this workflow.
@@ -362,15 +344,14 @@ namespace Temporalio.Client
         /// <param name="options">Termination options.</param>
         /// <returns>Terminate completed task.</returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task TerminateAsync(string? reason = null, WorkflowTerminateOptions? options = null)
-        {
-            return Client.OutboundInterceptor.TerminateWorkflowAsync(new(
+        public Task TerminateAsync(
+            string? reason = null, WorkflowTerminateOptions? options = null) =>
+            Client.OutboundInterceptor.TerminateWorkflowAsync(new(
                 ID: ID,
                 RunID: RunID,
                 FirstExecutionRunID: FirstExecutionRunID,
                 Reason: reason,
                 Options: options));
-        }
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>
@@ -405,10 +386,8 @@ namespace Temporalio.Client
         /// <param name="options">History event fetch options.</param>
         /// <returns>Async enumerable to iterate events for.</returns>
         public IAsyncEnumerable<HistoryEvent> FetchHistoryEventsAsync(
-            WorkflowHistoryEventFetchOptions? options = null)
-        {
-            return FetchHistoryEventsInternalAsync(options);
-        }
+            WorkflowHistoryEventFetchOptions? options = null) =>
+            FetchHistoryEventsInternalAsync(options);
 
         private async IAsyncEnumerable<HistoryEvent> FetchHistoryEventsInternalAsync(
             WorkflowHistoryEventFetchOptions? options = null,
@@ -490,9 +469,7 @@ namespace Temporalio.Client
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>
         public new Task<TResult> GetResultAsync(
-            bool followRuns = true, RpcOptions? rpcOptions = null)
-        {
-            return GetResultAsync<TResult>(followRuns, rpcOptions);
-        }
+            bool followRuns = true, RpcOptions? rpcOptions = null) =>
+            GetResultAsync<TResult>(followRuns, rpcOptions);
     }
 }

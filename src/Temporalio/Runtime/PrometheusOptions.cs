@@ -18,10 +18,7 @@ namespace Temporalio.Runtime
         /// Initializes a new instance of the <see cref="PrometheusOptions"/> class.
         /// </summary>
         /// <param name="bindAddress"><see cref="BindAddress" />.</param>
-        public PrometheusOptions(string bindAddress)
-        {
-            BindAddress = bindAddress;
-        }
+        public PrometheusOptions(string bindAddress) => BindAddress = bindAddress;
 
         /// <summary>
         /// Gets or sets the address to expose Prometheus metrics on.
@@ -32,9 +29,6 @@ namespace Temporalio.Runtime
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
     }
 }

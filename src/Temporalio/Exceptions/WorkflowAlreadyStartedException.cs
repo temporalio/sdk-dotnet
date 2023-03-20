@@ -3,7 +3,7 @@ namespace Temporalio.Exceptions
     /// <summary>
     /// Exception thrown by client when attempting to start a workflow that was already started.
     /// </summary>
-    public class WorkflowAlreadyStartedException : TemporalException
+    public class WorkflowAlreadyStartedException : FailureException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowAlreadyStartedException"/> class.

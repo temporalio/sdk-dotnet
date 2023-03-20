@@ -17,7 +17,8 @@ namespace Temporalio.Testing
         public string? ExistingPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the version to version of the test server to download.
+        /// Gets or sets the version to version of the test server to download. Default is
+        /// "default".
         /// </summary>
         /// <remarks>
         /// By default, the best one for this SDK version is chosen. This can be a semantic version,
@@ -38,9 +39,6 @@ namespace Temporalio.Testing
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
         /// <remarks>Does not create a copy of the extra args.</remarks>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
     }
 }

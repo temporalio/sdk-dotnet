@@ -13,10 +13,8 @@ namespace Temporalio.Exceptions
         /// <param name="message">Exception message.</param>
         /// <param name="stackTraceOverride">Override of stack trace.</param>
         internal InvalidWorkflowOperationException(string message, string? stackTraceOverride)
-            : base(message)
-        {
+            : base(message) =>
             this.stackTraceOverride = stackTraceOverride;
-        }
 
         /// <inheritdoc />
         public override string? StackTrace => stackTraceOverride ?? base.StackTrace;

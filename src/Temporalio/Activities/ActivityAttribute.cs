@@ -25,10 +25,7 @@ namespace Temporalio.Activities
         /// name.
         /// </summary>
         /// <param name="name">Activity type name to use. See <see cref="Name" />.</param>
-        public ActivityAttribute(string name)
-        {
-            Name = name;
-        }
+        public ActivityAttribute(string name) => Name = name;
 
         /// <summary>
         /// Gets the activity type name. If this is unset, it defaults to the unqualified method

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Temporalio.Workflows;
 
 namespace Temporalio.Worker.Interceptors
 {
@@ -33,10 +34,46 @@ namespace Temporalio.Worker.Interceptors
         private protected WorkflowOutboundInterceptor? MaybeNext { get; init; }
 
         /// <summary>
+        /// Intercept continue as new exception creation.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Created exception.</returns>
+        public virtual ContinueAsNewException CreateContinueAsNewException(
+            CreateContinueAsNewExceptionInput input) => Next.CreateContinueAsNewException(input);
+
+        /// <summary>
         /// Intercept starting a new timer.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task for completion.</returns>
         public virtual Task DelayAsync(DelayAsyncInput input) => Next.DelayAsync(input);
+
+        /// <summary>
+        /// Intercept scheduling an activity.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Activity result.</returns>
+        public virtual Task<TResult> ScheduleActivityAsync<TResult>(
+            ScheduleActivityInput input) => Next.ScheduleActivityAsync<TResult>(input);
+
+        /// <summary>
+        /// Intercept scheduling a local activity.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Activity result.</returns>
+        public virtual Task<TResult> ScheduleLocalActivityAsync<TResult>(
+            ScheduleLocalActivityInput input) => Next.ScheduleLocalActivityAsync<TResult>(input);
+
+        /// <summary>
+        /// Intercept starting a child workflow. To intercept other child workflow calls, the handle
+        /// can be extended/customized.
+        /// </summary>
+        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Child handle.</returns>
+        public virtual Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+            StartChildWorkflowInput input) => Next.StartChildWorkflowAsync<TResult>(input);
     }
 }
