@@ -241,7 +241,7 @@ namespace Temporalio.Client
                         },
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                return new(resp);
+                return new(resp, Client.Options.DataConverter);
             }
 
             /// <inheritdoc />
@@ -358,7 +358,7 @@ namespace Temporalio.Client
                             req, rpcOptsAndCancelSource.Item1).ConfigureAwait(false);
                         foreach (var exec in resp.Executions)
                         {
-                            yield return new(exec);
+                            yield return new(exec, Client.Options.DataConverter);
                         }
                         req.NextPageToken = resp.NextPageToken;
                     }
@@ -422,14 +422,18 @@ namespace Temporalio.Client
                     req.Memo = new();
                     foreach (var field in input.Options.Memo)
                     {
+                        if (field.Value == null)
+                        {
+                            throw new ArgumentException($"Memo value for {field.Key} is null");
+                        }
                         req.Memo.Fields.Add(
                             field.Key,
                             await Client.Options.DataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
                     }
                 }
-                if (input.Options.SearchAttributes != null && input.Options.SearchAttributes.Count > 0)
+                if (input.Options.TypedSearchAttributes != null && input.Options.TypedSearchAttributes.Count > 0)
                 {
-                    req.SearchAttributes = input.Options.SearchAttributes.ToSearchAttributesProto();
+                    req.SearchAttributes = input.Options.TypedSearchAttributes.ToProto();
                 }
                 if (input.Headers != null)
                 {

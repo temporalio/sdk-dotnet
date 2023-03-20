@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Temporalio.Converters;
 
 namespace Temporalio.Workflows
 {
@@ -34,6 +35,16 @@ namespace Temporalio.Workflows
         public static bool InWorkflow => TaskScheduler.Current is IWorkflowContext;
 
         /// <summary>
+        /// Gets the workflow memo.
+        /// </summary>
+        /// <remarks>
+        /// This is read-only from the workflow author perspective. To update use
+        /// <see cref="UpsertMemo" />. This always returns the same instance. Any workflow memo
+        /// updates are immediately reflected on the returned instance, so it is not immutable.
+        /// </remarks>
+        public static IReadOnlyDictionary<string, IRawValue> Memo => Context.Memo;
+
+        /// <summary>
         /// Gets queries for this workflow.
         /// </summary>
         /// <remarks>
@@ -51,6 +62,21 @@ namespace Temporalio.Workflows
         /// other randomization inside workflow code.
         /// </remarks>
         public static Random Random => Context.Random;
+
+        // TODO(cretz): Document that this is immutable from user POV but internally is mutated on
+        // upsert
+
+        /// <summary>
+        /// Gets the workflow search attributes.
+        /// </summary>
+        /// <remarks>
+        /// This is read-only from the workflow author perspective. To update use
+        /// <see cref="UpsertTypedSearchAttributes" />. This always returns the same instance. Any
+        /// workflow search attribute updates are immediately reflected on the returned instance, so
+        /// it is not immutable.
+        /// </remarks>
+        public static SearchAttributeCollection TypedSearchAttributes =>
+            Context.TypedSearchAttributes;
 
         /// <summary>
         /// Gets signals for this workflow.
@@ -109,6 +135,24 @@ namespace Temporalio.Workflows
         /// </remarks>
         public static Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken = null) =>
             Context.DelayAsync(delay, cancellationToken);
+
+        /// <summary>
+        /// Issue updates to the workflow memo.
+        /// </summary>
+        /// <param name="updates">Updates to issue.</param>
+        /// <exception cref="ArgumentException">If no updates given, two updates are given for a
+        /// key, or an update value cannot be converted.</exception>
+        public static void UpsertMemo(params MemoUpdate[] updates) =>
+            Context.UpsertMemo(updates);
+
+        /// <summary>
+        /// Issue updates to the workflow search attributes.
+        /// </summary>
+        /// <param name="updates">Updates to issue.</param>
+        /// <exception cref="ArgumentException">If no updates given or two updates are given for a
+        /// key.</exception>
+        public static void UpsertTypedSearchAttributes(params SearchAttributeUpdate[] updates) =>
+            Context.UpsertTypedSearchAttributes(updates);
 
         /// <summary>
         /// Wait for the given function to return true. See documentation of

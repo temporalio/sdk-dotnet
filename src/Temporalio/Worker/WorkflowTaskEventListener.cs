@@ -14,8 +14,10 @@ namespace Temporalio.Worker
     internal class WorkflowTaskEventListener : EventListener
     {
         private const bool DumpEvents = false;
+        private const int TaskScheduledEventID = 7;
         private const int TraceOperationStartEventID = 14;
-        private const EventKeywords AsyncCausalityOperation = (EventKeywords)8;
+        private const EventKeywords TaskTransferKeywords = (EventKeywords)1;
+        private const EventKeywords AsyncCausalityOperationKeywords = (EventKeywords)8;
         private static readonly Lazy<WorkflowTaskEventListener> LazyInstance = new(() => new());
 
         // Locks the two fields below it only
@@ -96,19 +98,27 @@ namespace Temporalio.Worker
                 DumpEvent(eventData);
 #pragma warning restore CS0162
             }
-            if (eventData.EventId == TraceOperationStartEventID &&
-                TaskScheduler.Current is WorkflowInstance instance &&
-                instance.TaskTracingEnabled)
+            // We only care if we're the current scheduler and we're tracing
+            if (TaskScheduler.Current is not WorkflowInstance instance ||
+                !instance.TaskTracingEnabled)
             {
-                if (eventData.Payload?[1] as string == "Task.Delay")
-                {
-                    instance.SetCurrentActivationException(new InvalidWorkflowOperationException(
-                        "Task.Delay cannot be used in workflows",
-                        // We override the stack trace so it has the full value all the way back
-                        // to user code.
-                        // TODO(cretz): Trim off some of the internals?
-                        Environment.StackTrace));
-                }
+                return;
+            }
+            var error = eventData.EventId switch
+            {
+                TaskScheduledEventID when instance.Id != eventData.Payload?[0] as int? =>
+                    "Task scheduled during workflow run was not scheduled on workflow scheduler",
+                TraceOperationStartEventID when eventData.Payload?[1] as string == "Task.Delay" =>
+                    "Task.Delay cannot be used in workflows",
+                _ => null,
+            };
+            if (error != null)
+            {
+                // We override the stack trace so it has the full value all the way back
+                // to user code.
+                // TODO(cretz): Trim off some of the internals?
+                instance.SetCurrentActivationException(
+                    new InvalidWorkflowOperationException(error, Environment.StackTrace));
             }
         }
 
@@ -128,7 +138,10 @@ namespace Temporalio.Worker
 
         private void EnableNeededEvents(EventSource eventSource)
         {
-            EnableEvents(eventSource, EventLevel.Informational, AsyncCausalityOperation);
+            EnableEvents(
+                eventSource,
+                EventLevel.Informational,
+                TaskTransferKeywords | AsyncCausalityOperationKeywords);
         }
     }
 }
