@@ -11,7 +11,7 @@ namespace Temporalio.Client
     {
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{TResult}(Func{Task{TResult}}, WorkflowStartOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync{TResult}(Func{Task{TResult}}, WorkflowOptions)" />
         /// +
         /// <see cref="WorkflowHandle{TResult}.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
@@ -31,7 +31,7 @@ namespace Temporalio.Client
         public static async Task<TResult> ExecuteWorkflowAsync<TResult>(
             this ITemporalClient client,
             Func<Task<TResult>> workflow,
-            WorkflowStartOptions options)
+            WorkflowOptions options)
         {
             var handle = await client.StartWorkflowAsync(workflow, options).ConfigureAwait(false);
             return await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
@@ -39,7 +39,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{T, TResult}(Func{T, Task{TResult}}, T, WorkflowStartOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync{T, TResult}(Func{T, Task{TResult}}, T, WorkflowOptions)" />
         /// +
         /// <see cref="WorkflowHandle{TResult}.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
@@ -62,7 +62,7 @@ namespace Temporalio.Client
             this ITemporalClient client,
             Func<T, Task<TResult>> workflow,
             T arg,
-            WorkflowStartOptions options)
+            WorkflowOptions options)
         {
             var handle = await client.StartWorkflowAsync(
                 workflow, arg, options).ConfigureAwait(false);
@@ -71,7 +71,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync(Func{Task}, WorkflowStartOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync(Func{Task}, WorkflowOptions)" />
         /// +
         /// <see cref="WorkflowHandle.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
@@ -90,7 +90,7 @@ namespace Temporalio.Client
         public static async Task ExecuteWorkflowAsync(
             this ITemporalClient client,
             Func<Task> workflow,
-            WorkflowStartOptions options)
+            WorkflowOptions options)
         {
             var handle = await client.StartWorkflowAsync(workflow, options).ConfigureAwait(false);
             await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
@@ -98,7 +98,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{T}(Func{T, Task}, T, WorkflowStartOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync{T}(Func{T, Task}, T, WorkflowOptions)" />
         /// +
         /// <see cref="WorkflowHandle.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
@@ -120,7 +120,7 @@ namespace Temporalio.Client
             this ITemporalClient client,
             Func<T, Task> workflow,
             T arg,
-            WorkflowStartOptions options)
+            WorkflowOptions options)
         {
             var handle = await client.StartWorkflowAsync(
                 workflow, arg, options).ConfigureAwait(false);
@@ -129,7 +129,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync(string, IReadOnlyCollection{object?}, WorkflowStartOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync(string, IReadOnlyCollection{object?}, WorkflowOptions)" />
         /// +
         /// <see cref="WorkflowHandle.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
@@ -150,7 +150,7 @@ namespace Temporalio.Client
             this ITemporalClient client,
             string workflow,
             IReadOnlyCollection<object?> args,
-            WorkflowStartOptions options)
+            WorkflowOptions options)
         {
             var handle = await client.StartWorkflowAsync(
                 workflow, args, options).ConfigureAwait(false);
@@ -159,7 +159,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{TResult}(string, IReadOnlyCollection{object?}, WorkflowStartOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync{TResult}(string, IReadOnlyCollection{object?}, WorkflowOptions)" />
         /// +
         /// <see cref="WorkflowHandle{TResult}.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
@@ -181,7 +181,7 @@ namespace Temporalio.Client
             this ITemporalClient client,
             string workflow,
             IReadOnlyCollection<object?> args,
-            WorkflowStartOptions options)
+            WorkflowOptions options)
         {
             var handle = await client.StartWorkflowAsync<TResult>(workflow, args, options).
                 ConfigureAwait(false);

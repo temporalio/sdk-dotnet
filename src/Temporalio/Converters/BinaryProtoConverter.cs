@@ -20,8 +20,7 @@ namespace Temporalio.Converters
         /// <inheritdoc />
         public bool TryToPayload(object? value, out Payload? payload)
         {
-            var proto = value as IMessage;
-            if (proto == null)
+            if (value is not IMessage proto)
             {
                 payload = null;
                 return false;
@@ -56,10 +55,8 @@ namespace Temporalio.Converters
                 throw new ArgumentException($"Payload is protobuf message, but type is {type}");
             }
             // TODO(cretz): Can this be done better/cheaper?
-            var desc =
-                type.GetProperty("Descriptor", BindingFlags.Public | BindingFlags.Static)
-                    ?.GetValue(null) as MessageDescriptor;
-            if (desc == null)
+            if (type.GetProperty("Descriptor", BindingFlags.Public | BindingFlags.Static)
+                    ?.GetValue(null) is not MessageDescriptor desc)
             {
                 throw new ArgumentException(
                     $"Protobuf type {type} does not have expected Descriptor static field");

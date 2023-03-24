@@ -22,86 +22,65 @@ namespace Temporalio.Client
     {
         /// <inheritdoc />
         public Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            Func<Task<TResult>> workflow, WorkflowStartOptions options)
-        {
-            return StartWorkflowAsync<TResult>(
+            Func<Task<TResult>> workflow, WorkflowOptions options) =>
+            StartWorkflowAsync<TResult>(
                 Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 Array.Empty<object?>(),
                 options);
-        }
 
         /// <inheritdoc />
         public Task<WorkflowHandle<TResult>> StartWorkflowAsync<T, TResult>(
-            Func<T, Task<TResult>> workflow, T arg, WorkflowStartOptions options)
-        {
-            return StartWorkflowAsync<TResult>(
+            Func<T, Task<TResult>> workflow, T arg, WorkflowOptions options) =>
+            StartWorkflowAsync<TResult>(
                 Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 new object?[] { arg },
                 options);
-        }
 
         /// <inheritdoc />
         public Task<WorkflowHandle> StartWorkflowAsync(
-            Func<Task> workflow, WorkflowStartOptions options)
-        {
-            return StartWorkflowAsync(
+            Func<Task> workflow, WorkflowOptions options) =>
+            StartWorkflowAsync(
                 Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 Array.Empty<object?>(),
                 options);
-        }
 
         /// <inheritdoc />
         public Task<WorkflowHandle> StartWorkflowAsync<T>(
-            Func<T, Task> workflow, T arg, WorkflowStartOptions options)
-        {
-            return StartWorkflowAsync(
+            Func<T, Task> workflow, T arg, WorkflowOptions options) =>
+            StartWorkflowAsync(
                 Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
                 new object?[] { arg },
                 options);
-        }
 
         /// <inheritdoc />
         public async Task<WorkflowHandle> StartWorkflowAsync(
-            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options)
-        {
-            return await StartWorkflowAsync<ValueTuple>(
-                workflow, args, options).ConfigureAwait(false);
-        }
+            string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options) =>
+            await StartWorkflowAsync<ValueTuple>(workflow, args, options).ConfigureAwait(false);
 
         /// <inheritdoc />
         public Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            string workflow, IReadOnlyCollection<object?> args, WorkflowStartOptions options)
-        {
-            return OutboundInterceptor.StartWorkflowAsync<TResult>(new(
+            string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options) =>
+            OutboundInterceptor.StartWorkflowAsync<TResult>(new(
                 Workflow: workflow,
                 Args: args,
                 Options: options,
                 Headers: null));
-        }
 
         /// <inheritdoc />
         public WorkflowHandle GetWorkflowHandle(
-            string id, string? runID = null, string? firstExecutionRunID = null)
-        {
-            return new WorkflowHandle(
-                Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
-        }
+            string id, string? runID = null, string? firstExecutionRunID = null) =>
+            new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
 
         /// <inheritdoc />
         public WorkflowHandle<TResult> GetWorkflowHandle<TResult>(
-            string id, string? runID = null, string? firstExecutionRunID = null)
-        {
-            return new WorkflowHandle<TResult>(
-                Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
-        }
+            string id, string? runID = null, string? firstExecutionRunID = null) =>
+            new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <inheritdoc />
         public IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
-            string query, WorkflowListOptions? options = null)
-        {
-            return OutboundInterceptor.ListWorkflowsAsync(new(Query: query, Options: options));
-        }
+            string query, WorkflowListOptions? options = null) =>
+            OutboundInterceptor.ListWorkflowsAsync(new(Query: query, Options: options));
 #endif
 
         internal partial class Impl
@@ -332,10 +311,8 @@ namespace Temporalio.Client
 #if NETCOREAPP3_0_OR_GREATER
             /// <inheritdoc />
             public override IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
-                ListWorkflowsInput input)
-            {
-                return ListWorkflowsInternalAsync(input);
-            }
+                ListWorkflowsInput input) =>
+                ListWorkflowsInternalAsync(input);
 
             private async IAsyncEnumerable<WorkflowExecution> ListWorkflowsInternalAsync(
                 ListWorkflowsInput input,
@@ -410,7 +387,7 @@ namespace Temporalio.Client
                 }
                 if (input.Options.TaskTimeout != null)
                 {
-                    req.WorkflowExecutionTimeout = Duration.FromTimeSpan(
+                    req.WorkflowTaskTimeout = Duration.FromTimeSpan(
                         (TimeSpan)input.Options.TaskTimeout);
                 }
                 if (input.Options.CronSchedule != null)

@@ -10,10 +10,8 @@ namespace Temporalio.Exceptions
         /// </summary>
         /// <param name="newRunID">New run ID.</param>
         public WorkflowContinuedAsNewException(string newRunID)
-            : base("Workflow continued as new")
-        {
+            : base("Workflow continued as new") =>
             NewRunID = newRunID;
-        }
 
         /// <summary>
         /// Gets the run ID of the new run.

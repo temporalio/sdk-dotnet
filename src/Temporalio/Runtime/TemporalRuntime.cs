@@ -28,10 +28,7 @@ namespace Temporalio.Runtime
         {
         }
 
-        private TemporalRuntime(Bridge.Runtime runtime)
-        {
-            Runtime = runtime;
-        }
+        private TemporalRuntime(Bridge.Runtime runtime) => Runtime = runtime;
 
         /// <summary>
         /// Gets or creates the default runtime.

@@ -23,6 +23,7 @@ dotnet_diagnostic.CA1062.severity = none
 # dotnet_analyzer_diagnostic.category-Globalization.severity = none
 dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1305.severity = none
 dotnet_diagnostic.CA1307.severity = none
 dotnet_diagnostic.CA1310.severity = none
 dotnet_diagnostic.CA1311.severity = none
@@ -139,13 +140,15 @@ csharp_prefer_braces = true:suggestion
 #Style - expression bodied member options
 
 #prefer block bodies for accessors
-csharp_style_expression_bodied_accessors = false
+csharp_style_expression_bodied_accessors = true
 #prefer block bodies for constructors
-csharp_style_expression_bodied_constructors = false
+csharp_style_expression_bodied_constructors = true
 #prefer block bodies for methods
-csharp_style_expression_bodied_methods = false
+csharp_style_expression_bodied_methods = true
 #prefer expression-bodied members for properties
-csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_properties = true
+#prefer expression-bodied members for local functions
+csharp_style_expression_bodied_local_functions = true
 
 #Style - expression level options
 

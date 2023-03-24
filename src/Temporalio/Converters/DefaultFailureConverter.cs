@@ -27,10 +27,8 @@ namespace Temporalio.Converters
         /// This is protected because payload converters are referenced as class types, not
         /// instances, so only subclasses would call this.
         /// </remarks>
-        protected DefaultFailureConverter(DefaultFailureConverterOptions options)
-        {
+        protected DefaultFailureConverter(DefaultFailureConverterOptions options) =>
             Options = options;
-        }
 
         /// <summary>
         /// Gets the options this converter was created with.
@@ -170,6 +168,10 @@ namespace Temporalio.Converters
                                 ? null
                                 : new() { Payloads_ = { canDet.Details.Select(conv.ToPayload) } },
                     };
+                    break;
+                case WorkflowAlreadyStartedException:
+                    // We don't need to do anything special for this, but we also don't require it
+                    // already have a faiure proto
                     break;
                 default:
                     throw new ArgumentException(

@@ -50,12 +50,11 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="options">Options for connecting.</param>
         /// <returns>The connected client.</returns>
-        public static async Task<TemporalClient> ConnectAsync(TemporalClientConnectOptions options)
-        {
-            return new TemporalClient(
+        public static async Task<TemporalClient> ConnectAsync(
+            TemporalClientConnectOptions options) =>
+            new(
                 await TemporalConnection.ConnectAsync(options).ConfigureAwait(false),
                 options.ToClientOptions());
-        }
 
         /// <summary>
         /// Get a default set of retry options given the optional options. This will not mutate the
@@ -86,10 +85,7 @@ namespace Temporalio.Client
             /// Initializes a new instance of the <see cref="Impl"/> class.
             /// </summary>
             /// <param name="client">Client to use.</param>
-            public Impl(TemporalClient client)
-            {
-                Client = client;
-            }
+            public Impl(TemporalClient client) => Client = client;
 
             /// <summary>
             /// Gets the client.

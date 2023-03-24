@@ -29,10 +29,7 @@ namespace Temporalio.Runtime
         /// Initializes a new instance of the <see cref="OpenTelemetryOptions"/> class.
         /// </summary>
         /// <param name="url"><see cref="Url" />.</param>
-        public OpenTelemetryOptions(Uri url)
-        {
-            Url = url;
-        }
+        public OpenTelemetryOptions(Uri url) => Url = url;
 
         /// <summary>
         /// Gets or sets the URL for the OpenTelemetry collector.
@@ -53,9 +50,6 @@ namespace Temporalio.Runtime
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
     }
 }

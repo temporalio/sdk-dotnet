@@ -18,10 +18,7 @@ namespace Temporalio.Runtime
         /// Initializes a new instance of the <see cref="LoggingOptions"/> class.
         /// </summary>
         /// <param name="filter">Filter options to set.</param>
-        public LoggingOptions(TelemetryFilterOptions filter)
-        {
-            Filter = filter;
-        }
+        public LoggingOptions(TelemetryFilterOptions filter) => Filter = filter;
 
         /// <summary>
         /// Gets or sets the logging filter options.

@@ -22,7 +22,7 @@ namespace Temporalio.Client
         /// Gets or sets the PEM-formatted client certificate for mTLS.
         /// </summary>
         /// <remarks>
-        /// This must be combined with <see cref="TlsOptions.ClientPrivateKey" />.
+        /// This must be combined with <see cref="ClientPrivateKey" />.
         /// </remarks>
         public byte[]? ClientCert { get; set; }
 
@@ -30,7 +30,7 @@ namespace Temporalio.Client
         /// Gets or sets the PEM-formatted client private key for mTLS.
         /// </summary>
         /// <remarks>
-        /// This must be combined with <see cref="TlsOptions.ClientCert" />.
+        /// This must be combined with <see cref="ClientCert" />.
         /// </remarks>
         public byte[]? ClientPrivateKey { get; set; }
 
@@ -39,9 +39,6 @@ namespace Temporalio.Client
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
         /// <remarks>Does not create copies of byte arrays.</remarks>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
     }
 }

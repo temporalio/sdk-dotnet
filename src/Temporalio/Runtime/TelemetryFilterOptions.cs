@@ -12,10 +12,7 @@ namespace Temporalio.Runtime
         /// Initializes a new instance of the <see cref="TelemetryFilterOptions"/> class.
         /// </summary>
         /// <param name="filterString"><see cref="FilterString" />.</param>
-        public TelemetryFilterOptions(string filterString)
-        {
-            FilterString = filterString;
-        }
+        public TelemetryFilterOptions(string filterString) => FilterString = filterString;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TelemetryFilterOptions"/> class.
@@ -74,9 +71,6 @@ namespace Temporalio.Runtime
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
     }
 }

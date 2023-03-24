@@ -41,10 +41,7 @@ namespace Temporalio.Client
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
         /// <remarks>Does not create copies of metadata or cancellation token.</remarks>
-        public virtual object Clone()
-        {
-            return MemberwiseClone();
-        }
+        public virtual object Clone() => MemberwiseClone();
 
         /// <summary>
         /// Return a potentially new RPC options with this cancellation token added if present.

@@ -46,20 +46,16 @@ namespace Temporalio.Client.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>Handle for the workflow.</returns>
         public virtual Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            StartWorkflowInput input)
-        {
-            return Next.StartWorkflowAsync<TResult>(input);
-        }
+            StartWorkflowInput input) =>
+            Next.StartWorkflowAsync<TResult>(input);
 
         /// <summary>
         /// Intercept signal workflow calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task for acceptance of the signal.</returns>
-        public virtual Task SignalWorkflowAsync(SignalWorkflowInput input)
-        {
-            return Next.SignalWorkflowAsync(input);
-        }
+        public virtual Task SignalWorkflowAsync(SignalWorkflowInput input) =>
+            Next.SignalWorkflowAsync(input);
 
         /// <summary>
         /// Intercept query workflow calls.
@@ -67,10 +63,8 @@ namespace Temporalio.Client.Interceptors
         /// <typeparam name="TResult">Return type of the query.</typeparam>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Result of the query.</returns>
-        public virtual Task<TResult> QueryWorkflowAsync<TResult>(QueryWorkflowInput input)
-        {
-            return Next.QueryWorkflowAsync<TResult>(input);
-        }
+        public virtual Task<TResult> QueryWorkflowAsync<TResult>(QueryWorkflowInput input) =>
+            Next.QueryWorkflowAsync<TResult>(input);
 
         /// <summary>
         /// Intercept describe workflow calls.
@@ -78,30 +72,24 @@ namespace Temporalio.Client.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>Workflow execution description.</returns>
         public virtual Task<WorkflowExecutionDescription> DescribeWorkflowAsync(
-            DescribeWorkflowInput input)
-        {
-            return Next.DescribeWorkflowAsync(input);
-        }
+            DescribeWorkflowInput input) =>
+            Next.DescribeWorkflowAsync(input);
 
         /// <summary>
         /// Intercept cancel workflow calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task for acceptance of the cancel.</returns>
-        public virtual Task CancelWorkflowAsync(CancelWorkflowInput input)
-        {
-            return Next.CancelWorkflowAsync(input);
-        }
+        public virtual Task CancelWorkflowAsync(CancelWorkflowInput input) =>
+            Next.CancelWorkflowAsync(input);
 
         /// <summary>
         /// Intercept terminate workflow calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task for termination completion.</returns>
-        public virtual Task TerminateWorkflowAsync(TerminateWorkflowInput input)
-        {
-            return Next.TerminateWorkflowAsync(input);
-        }
+        public virtual Task TerminateWorkflowAsync(TerminateWorkflowInput input) =>
+            Next.TerminateWorkflowAsync(input);
 
         /// <summary>
         /// Intercept a history event page fetch.
@@ -111,10 +99,8 @@ namespace Temporalio.Client.Interceptors
         /// Event page. This will not return an empty event set and a next page token.
         /// </returns>
         public virtual Task<WorkflowHistoryEventPage> FetchWorkflowHistoryEventPageAsync(
-            FetchWorkflowHistoryEventPageInput input)
-        {
-            return Next.FetchWorkflowHistoryEventPageAsync(input);
-        }
+            FetchWorkflowHistoryEventPageInput input) =>
+            Next.FetchWorkflowHistoryEventPageAsync(input);
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>
@@ -123,10 +109,8 @@ namespace Temporalio.Client.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>Async enumerator for the workflows.</returns>
         public virtual IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
-            ListWorkflowsInput input)
-        {
-            return Next.ListWorkflowsAsync(input);
-        }
+            ListWorkflowsInput input) =>
+            Next.ListWorkflowsAsync(input);
 #endif
 
         /// <summary>
@@ -134,30 +118,24 @@ namespace Temporalio.Client.Interceptors
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task completion.</returns>
-        public virtual Task HeartbeatAsyncActivityAsync(HeartbeatAsyncActivityInput input)
-        {
-            return Next.HeartbeatAsyncActivityAsync(input);
-        }
+        public virtual Task HeartbeatAsyncActivityAsync(HeartbeatAsyncActivityInput input) =>
+            Next.HeartbeatAsyncActivityAsync(input);
 
         /// <summary>
         /// Intercept async activity complete calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task completion.</returns>
-        public virtual Task CompleteAsyncActivityAsync(CompleteAsyncActivityInput input)
-        {
-            return Next.CompleteAsyncActivityAsync(input);
-        }
+        public virtual Task CompleteAsyncActivityAsync(CompleteAsyncActivityInput input) =>
+            Next.CompleteAsyncActivityAsync(input);
 
         /// <summary>
         /// Intercept async activity fail calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task completion.</returns>
-        public virtual Task FailAsyncActivityAsync(FailAsyncActivityInput input)
-        {
-            return Next.FailAsyncActivityAsync(input);
-        }
+        public virtual Task FailAsyncActivityAsync(FailAsyncActivityInput input) =>
+            Next.FailAsyncActivityAsync(input);
 
         /// <summary>
         /// Intercept async activity report cancellation calls.
@@ -165,9 +143,7 @@ namespace Temporalio.Client.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>Task completion.</returns>
         public virtual Task ReportCancellationAsyncActivityAsync(
-            ReportCancellationAsyncActivityInput input)
-        {
-            return Next.ReportCancellationAsyncActivityAsync(input);
-        }
+            ReportCancellationAsyncActivityInput input) =>
+            Next.ReportCancellationAsyncActivityAsync(input);
     }
 }

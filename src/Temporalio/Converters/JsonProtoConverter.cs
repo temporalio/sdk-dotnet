@@ -47,8 +47,7 @@ namespace Temporalio.Converters
         /// <inheritdoc />
         public bool TryToPayload(object? value, out Payload? payload)
         {
-            var proto = value as IMessage;
-            if (proto == null)
+            if (value is not IMessage proto)
             {
                 payload = null;
                 return false;

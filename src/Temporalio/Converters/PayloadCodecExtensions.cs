@@ -18,10 +18,8 @@ namespace Temporalio.Converters
         /// <param name="codec">Codec to use.</param>
         /// <param name="failure">Failure to encode.</param>
         /// <returns>Task for completion.</returns>
-        public static Task EncodeFailureAsync(this IPayloadCodec codec, Failure failure)
-        {
-            return ApplyToFailurePayloadAsync(failure, codec.EncodeAsync);
-        }
+        public static Task EncodeFailureAsync(this IPayloadCodec codec, Failure failure) =>
+            ApplyToFailurePayloadAsync(failure, codec.EncodeAsync);
 
         /// <summary>
         /// Decode all payloads in the given failure in place.
@@ -29,10 +27,8 @@ namespace Temporalio.Converters
         /// <param name="codec">Codec to use.</param>
         /// <param name="failure">Failure to decode.</param>
         /// <returns>Task for completion.</returns>
-        public static Task DecodeFailureAsync(this IPayloadCodec codec, Failure failure)
-        {
-            return ApplyToFailurePayloadAsync(failure, codec.DecodeAsync);
-        }
+        public static Task DecodeFailureAsync(this IPayloadCodec codec, Failure failure) =>
+            ApplyToFailurePayloadAsync(failure, codec.DecodeAsync);
 
         private static async Task ApplyToFailurePayloadAsync(
             Failure failure,

@@ -63,10 +63,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Finalizes an instance of the <see cref="ActivityWorker"/> class.
         /// </summary>
-        ~ActivityWorker()
-        {
-            Dispose(false);
-        }
+        ~ActivityWorker() => Dispose(false);
 
         /// <summary>
         /// Execute the activity until poller shutdown or failure.
@@ -662,9 +659,17 @@ namespace Temporalio.Worker
             /// <inheritdoc />
             public override void Init(ActivityOutboundInterceptor outbound)
             {
-                // Set the context heartbeater as the outbound heartbeat
-                ActivityContext.Current.Heartbeater =
-                    details => outbound.Heartbeat(new(Details: details));
+                // Set the context heartbeater as the outbound heartbeat if we're not local,
+                // otherwise no-op
+                if (ActivityContext.Current.Info.IsLocal)
+                {
+                    ActivityContext.Current.Heartbeater = details => { };
+                }
+                else
+                {
+                    ActivityContext.Current.Heartbeater =
+                        details => outbound.Heartbeat(new(Details: details));
+                }
             }
 
             /// <inheritdoc />
@@ -712,10 +717,7 @@ namespace Temporalio.Worker
             /// Initializes a new instance of the <see cref="OutboundImpl"/> class.
             /// </summary>
             /// <param name="worker">Activity worker.</param>
-            public OutboundImpl(ActivityWorker worker)
-            {
-                this.worker = worker;
-            }
+            public OutboundImpl(ActivityWorker worker) => this.worker = worker;
 
             /// <inheritdoc />
             public override void Heartbeat(HeartbeatInput input)

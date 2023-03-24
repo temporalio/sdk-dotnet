@@ -55,10 +55,9 @@ namespace Temporalio.Client
         }
 
         /// <inheritdoc />
-        public Task<bool> CheckHealthAsync(RpcService? service = null, RpcOptions? options = null)
-        {
+        public Task<bool> CheckHealthAsync(
+            RpcService? service = null, RpcOptions? options = null) =>
             throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Invoke RPC call on this connection.
@@ -76,9 +75,8 @@ namespace Temporalio.Client
             IMessage req,
             MessageParser<T> resp,
             RpcOptions? options = null)
-            where T : IMessage<T>
-        {
-            return client.CallAsync(
+            where T : IMessage<T> =>
+            client.CallAsync(
                 service.Service,
                 rpc,
                 req,
@@ -87,6 +85,5 @@ namespace Temporalio.Client
                 options?.Metadata,
                 options?.Timeout,
                 options?.CancellationToken);
-        }
     }
 }

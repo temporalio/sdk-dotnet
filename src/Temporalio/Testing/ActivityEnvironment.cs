@@ -82,10 +82,7 @@ namespace Temporalio.Testing
         /// </summary>
         /// <param name="activity">Activity to run.</param>
         /// <returns>Task for activity completion.</returns>
-        public Task RunAsync(Action activity)
-        {
-            return RunAsync(() => new Task(activity));
-        }
+        public Task RunAsync(Action activity) => RunAsync(() => new Task(activity));
 
         /// <summary>
         /// Run the given activity with a context.
@@ -93,24 +90,19 @@ namespace Temporalio.Testing
         /// <typeparam name="T">Return type.</typeparam>
         /// <param name="activity">Activity to run.</param>
         /// <returns>Activity result.</returns>
-        public Task<T> RunAsync<T>(Func<T> activity)
-        {
-            return RunAsync(() => Task.FromResult(activity()));
-        }
+        public Task<T> RunAsync<T>(Func<T> activity) => RunAsync(() => Task.FromResult(activity()));
 
         /// <summary>
         /// Run the given activity with a context.
         /// </summary>
         /// <param name="activity">Activity to run.</param>
         /// <returns>Task for activity completion.</returns>
-        public Task RunAsync(Func<Task> activity)
-        {
-            return RunAsync<object?>(async () =>
+        public Task RunAsync(Func<Task> activity) =>
+            RunAsync<object?>(async () =>
             {
                 await activity().ConfigureAwait(false);
                 return null;
             });
-        }
 
         /// <summary>
         /// Run the given activity with a context.
