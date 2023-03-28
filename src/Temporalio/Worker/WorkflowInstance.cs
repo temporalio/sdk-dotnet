@@ -48,6 +48,8 @@ namespace Temporalio.Worker
         private readonly Dictionary<string, List<SignalWorkflow>> bufferedSignals = new();
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private readonly LinkedList<Tuple<Func<bool>, TaskCompletionSource<object?>>> conditions = new();
+        private readonly ILogger logger;
+        private readonly ReplaySafeLogger replaySafeLogger;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -131,7 +133,8 @@ namespace Temporalio.Worker
                 TaskTimeout: start.WorkflowTaskTimeout.ToTimeSpan(),
                 WorkflowID: start.WorkflowId,
                 WorkflowType: start.WorkflowType);
-            Logger = loggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
+            logger = loggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
+            replaySafeLogger = new(logger);
             // We accept overflowing for seed (uint64 -> int32)
             Random = new(unchecked((int)details.Start.RandomnessSeed));
             TaskTracingEnabled = !details.DisableTaskTracing;
@@ -160,6 +163,9 @@ namespace Temporalio.Worker
         public bool IsReplaying { get; private set; }
 
         /// <inheritdoc />
+        public ILogger Logger => replaySafeLogger;
+
+        /// <inheritdoc />
         public IReadOnlyDictionary<string, IRawValue> Memo => memo.Value;
 
         /// <inheritdoc />
@@ -176,11 +182,6 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public DateTime UtcNow { get; private set; }
-
-        /// <summary>
-        /// Gets the workflow logger.
-        /// </summary>
-        internal ILogger Logger { get; private init; }
 
         /// <summary>
         /// Gets the instance, lazily creating if needed. This should never be called outside this
@@ -363,7 +364,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public WorkflowActivationCompletion Activate(WorkflowActivation act)
         {
-            using (Logger.BeginScope(Info.LoggerScope))
+            using (logger.BeginScope(Info.LoggerScope))
             {
                 completion = new() { RunId = act.RunId, Successful = new() };
                 currentActivationException = null;
@@ -408,7 +409,7 @@ namespace Temporalio.Worker
                 }
                 catch (Exception e)
                 {
-                    Logger.LogWarning(
+                    logger.LogWarning(
                         e,
                         "Failed activation on workflow {WorkflowType} with ID {WorkflowID} and run ID {RunID}",
                         Info.WorkflowType,
@@ -423,7 +424,7 @@ namespace Temporalio.Worker
                     }
                     catch (Exception inner)
                     {
-                        Logger.LogError(
+                        logger.LogError(
                             inner,
                             "Failed converting activation exception on workflow with run ID {RunID}",
                             Info.RunID);
@@ -523,7 +524,7 @@ namespace Temporalio.Worker
                     // This should never return false
                     if (!TryExecuteTask(task))
                     {
-                        Logger.LogWarning("Task unexpectedly was unable to execute");
+                        logger.LogWarning("Task unexpectedly was unable to execute");
                     }
                     if (currentActivationException != null)
                     {
@@ -570,7 +571,7 @@ namespace Temporalio.Worker
                 }
                 catch (ContinueAsNewException e)
                 {
-                    Logger.LogDebug("Workflow requested continue as new with run ID {RunID}", Info.RunID);
+                    logger.LogDebug("Workflow requested continue as new with run ID {RunID}", Info.RunID);
                     var cmd = new ContinueAsNewWorkflowExecution()
                     {
                         WorkflowType = e.Input.Workflow,
@@ -609,7 +610,7 @@ namespace Temporalio.Worker
                     // swallowed cancel followed by, say, an activity cancel later on will show the
                     // workflow as cancelled. But this is a Temporal limitation in that cancellation
                     // is a state not an event.
-                    Logger.LogDebug(e, "Workflow raised cancel with run ID {RunID}", Info.RunID);
+                    logger.LogDebug(e, "Workflow raised cancel with run ID {RunID}", Info.RunID);
                     AddCommand(new() { CancelWorkflowExecution = new() });
                 }
                 catch (Exception e) when (e is FailureException || e is OperationCanceledException)
@@ -618,14 +619,14 @@ namespace Temporalio.Worker
                     // it cannot convert the failure. We also allow non-internally-caught
                     // cancellation exceptions fail the workflow because it's clearer when users are
                     // reusing cancellation tokens if the workflow fails.
-                    Logger.LogDebug(e, "Workflow raised failure with run ID {RunID}", Info.RunID);
+                    logger.LogDebug(e, "Workflow raised failure with run ID {RunID}", Info.RunID);
                     var failure = failureConverter.ToFailure(e, payloadConverter);
                     AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } });
                 }
             }
             catch (Exception e)
             {
-                Logger.LogDebug(e, "Workflow raised unexpected failure with run ID {RunID}", Info.RunID);
+                logger.LogDebug(e, "Workflow raised unexpected failure with run ID {RunID}", Info.RunID);
                 // All exceptions this far fail the task
                 currentActivationException = e;
             }

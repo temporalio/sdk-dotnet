@@ -39,7 +39,7 @@ namespace Temporalio.Worker
         public ActivityWorker(TemporalWorker worker)
         {
             this.worker = worker;
-            logger = worker.Client.Options.LoggerFactory.CreateLogger<ActivityWorker>();
+            logger = worker.LoggerFactory.CreateLogger<ActivityWorker>();
             activities = new(worker.Options.Activities.Count);
             foreach (var activity in worker.Options.Activities)
             {
@@ -199,8 +199,7 @@ namespace Temporalio.Worker
                 cancellationToken: cancelTokenSource.Token,
                 workerShutdownToken: workerShutdownTokenSource.Token,
                 tsk.TaskToken,
-                worker.Client.Options.LoggerFactory.CreateLogger(
-                    $"Temporalio.Activity:{info.ActivityType}"));
+                worker.LoggerFactory.CreateLogger($"Temporalio.Activity:{info.ActivityType}"));
 
             // Start task
             using (context.Logger.BeginScope(info.LoggerScope))

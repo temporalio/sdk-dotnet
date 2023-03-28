@@ -4,6 +4,7 @@
 
 namespace Temporalio.Tests.Worker;
 
+using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
@@ -830,6 +831,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [WorkflowRun]
         public async Task<string> RunAsync()
         {
+            Workflow.Logger.LogInformation("Some log {Foo}", "Bar");
             EventsForIsReplaying.Add(Workflow.Unsafe.IsReplaying);
             await Workflow.WaitConditionAsync(() => completeWorkflow != null);
             return completeWorkflow!;
@@ -857,28 +859,42 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         // Run one worker doing test
         var workflowID = string.Empty;
         var taskQueue = string.Empty;
-        await ExecuteWorkerAsync<MiscHelpersWorkflow>(async worker =>
-        {
-            // Start the workflow
-            var handle = await Env.Client.StartWorkflowAsync(
-                MiscHelpersWorkflow.Ref.RunAsync,
-                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-            workflowID = handle.ID;
-            taskQueue = worker.Options.TaskQueue!;
-            Assert.InRange(
-                await handle.QueryAsync(MiscHelpersWorkflow.Ref.CurrentTime),
-                DateTime.UtcNow - TimeSpan.FromMinutes(5),
-                DateTime.UtcNow + TimeSpan.FromMinutes(5));
-            Assert.InRange(
-                await handle.QueryAsync(MiscHelpersWorkflow.Ref.Random, 3), 0, 2);
-            // Check GUID is parseable and shows 4 as UUID version
-            var guid = await handle.QueryAsync(MiscHelpersWorkflow.Ref.NewGuid);
-            Assert.True(Guid.TryParseExact(guid, "D", out _));
-            Assert.Equal('4', guid[14]);
-            // Mark workflow complete and wait on result
-            await handle.SignalAsync(MiscHelpersWorkflow.Ref.CompleteWorkflow, "done!");
-            Assert.Equal("done!", await handle.GetResultAsync());
-        });
+        var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+        await ExecuteWorkerAsync<MiscHelpersWorkflow>(
+            async worker =>
+            {
+                // Start the workflow
+                var handle = await Env.Client.StartWorkflowAsync(
+                    MiscHelpersWorkflow.Ref.RunAsync,
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                workflowID = handle.ID;
+                taskQueue = worker.Options.TaskQueue!;
+                Assert.InRange(
+                    await handle.QueryAsync(MiscHelpersWorkflow.Ref.CurrentTime),
+                    DateTime.UtcNow - TimeSpan.FromMinutes(5),
+                    DateTime.UtcNow + TimeSpan.FromMinutes(5));
+                Assert.InRange(
+                    await handle.QueryAsync(MiscHelpersWorkflow.Ref.Random, 3), 0, 2);
+                // Check GUID is parseable and shows 4 as UUID version
+                var guid = await handle.QueryAsync(MiscHelpersWorkflow.Ref.NewGuid);
+                Assert.True(Guid.TryParseExact(guid, "D", out _));
+                Assert.Equal('4', guid[14]);
+                // Mark workflow complete and wait on result
+                await handle.SignalAsync(MiscHelpersWorkflow.Ref.CompleteWorkflow, "done!");
+                Assert.Equal("done!", await handle.GetResultAsync());
+                // Confirm log is present
+                Assert.Contains(loggerFactory.Logs, entry => entry.Formatted == "Some log Bar");
+                // Now clear and issue query and confirm log is not present
+                loggerFactory.ClearLogs();
+                Assert.InRange(
+                    await handle.QueryAsync(MiscHelpersWorkflow.Ref.Random, 3), 0, 2);
+                Assert.DoesNotContain(
+                    loggerFactory.Logs, entry => entry.Formatted == "Some log Bar");
+            },
+            new()
+            {
+                LoggerFactory = loggerFactory,
+            });
 
         // Run the worker again with a query so we can force replay
         await ExecuteWorkerAsync<MiscHelpersWorkflow>(

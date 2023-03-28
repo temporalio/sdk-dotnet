@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Temporalio.Worker
 {
@@ -174,6 +175,12 @@ namespace Temporalio.Worker
         /// used to catch improper use of tasks outside of the built-in task scheduler.
         /// </remarks>
         public bool DisableWorkflowTaskTracing { get; set; }
+
+        /// <summary>
+        /// Gets or sets the logging factory used by loggers in workers. If unset, defaults to the
+        /// client logger factory.
+        /// </summary>
+        public ILoggerFactory? LoggerFactory { get; set; }
 
         /// <summary>
         /// Gets or sets a function to create workflow instances.

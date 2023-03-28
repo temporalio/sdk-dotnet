@@ -36,7 +36,7 @@ namespace Temporalio.Worker
         public WorkflowWorker(TemporalWorker worker)
         {
             Worker = worker;
-            logger = worker.Client.Options.LoggerFactory.CreateLogger<WorkflowWorker>();
+            logger = worker.LoggerFactory.CreateLogger<WorkflowWorker>();
             WorkflowDefinitions = new();
             foreach (var workflow in worker.Options.Workflows)
             {
@@ -57,7 +57,7 @@ namespace Temporalio.Worker
             }
             deadlockTimeout = worker.Options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
             instanceFactory = worker.Options.WorkflowInstanceFactory ??
-                (details => new WorkflowInstance(details, worker.Client.Options.LoggerFactory));
+                (details => new WorkflowInstance(details, worker.LoggerFactory));
         }
 
         /// <summary>

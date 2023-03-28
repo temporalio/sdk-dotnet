@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Temporalio.Converters;
 
 namespace Temporalio.Workflows
@@ -25,6 +26,11 @@ namespace Temporalio.Workflows
         /// Gets a value indicating whether <see cref="Workflow.Unsafe.IsReplaying" /> is true.
         /// </summary>
         bool IsReplaying { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.Logger" />.
+        /// </summary>
+        ILogger Logger { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.Memo" />.

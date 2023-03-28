@@ -116,6 +116,12 @@ namespace Temporalio.Worker
         internal IEnumerable<Type> WorkflowInboundInterceptorTypes { get; private init; }
 
         /// <summary>
+        /// Gets the logger factory.
+        /// </summary>
+        internal ILoggerFactory LoggerFactory =>
+            Options.LoggerFactory ?? Client.Options.LoggerFactory;
+
+        /// <summary>
         /// Run this worker until failure or cancelled.
         /// </summary>
         /// <remarks>
@@ -256,7 +262,7 @@ namespace Temporalio.Worker
 
             // Wait until any of the tasks complete including cancellation
             var task = await Task.WhenAny(tasks).ConfigureAwait(false);
-            var logger = Client.Options.LoggerFactory.CreateLogger<TemporalWorker>();
+            var logger = LoggerFactory.CreateLogger<TemporalWorker>();
             using (logger.BeginScope(new Dictionary<string, object>
             {
                 ["TaskQueue"] = Options.TaskQueue!,

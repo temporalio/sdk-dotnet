@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Temporalio.Converters;
 
 namespace Temporalio.Workflows
@@ -33,6 +34,12 @@ namespace Temporalio.Workflows
         /// Gets a value indicating whether this code is currently running in a workflow.
         /// </summary>
         public static bool InWorkflow => TaskScheduler.Current is IWorkflowContext;
+
+        /// <summary>
+        /// Gets the logger for the workflow. This is scoped with logger information and does not
+        /// log during replay.
+        /// </summary>
+        public static ILogger Logger => Context.Logger;
 
         /// <summary>
         /// Gets the workflow memo.
