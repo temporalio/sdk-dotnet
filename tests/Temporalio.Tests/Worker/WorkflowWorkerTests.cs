@@ -1897,13 +1897,128 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new() { Workflows = { typeof(AlreadyStartedChildWorkflow.ChildWorkflow) } });
     }
 
+    [Workflow]
+    public class StackTraceWorkflow
+    {
+        [Activity]
+        public static async Task WaitCancelActivityAsync()
+        {
+            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            {
+                ActivityContext.Current.Heartbeat();
+                await Task.Delay(100);
+            }
+        }
+
+        [Workflow]
+        public class WaitForeverWorkflow
+        {
+            public static readonly WaitForeverWorkflow Ref = Refs.Create<WaitForeverWorkflow>();
+
+            [WorkflowRun]
+            public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
+        }
+
+        public static readonly StackTraceWorkflow Ref = Refs.Create<StackTraceWorkflow>();
+
+        private string status = "created";
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Start multiple tasks and wait on them all
+            await Task.WhenAll(
+                Workflow.DelayAsync(TimeSpan.FromHours(2)),
+                Workflow.ExecuteActivityAsync(
+                    WaitCancelActivityAsync,
+                    new()
+                    {
+                        ScheduleToCloseTimeout = TimeSpan.FromHours(2),
+                        HeartbeatTimeout = TimeSpan.FromSeconds(2),
+                    }),
+                Workflow.ExecuteChildWorkflowAsync(WaitForeverWorkflow.Ref.RunAsync),
+                WaitForever());
+        }
+
+        [WorkflowQuery]
+        public string Status() => status;
+
+        private async Task WaitForever()
+        {
+            status = "waiting";
+            await Workflow.WaitConditionAsync(() => false);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_StackTrace_FailsWhenDisabled()
+    {
+        await ExecuteWorkerAsync<StackTraceWorkflow>(
+            async worker =>
+            {
+                // Start and wait until "waiting"
+                var handle = await Env.Client.StartWorkflowAsync(
+                    StackTraceWorkflow.Ref.RunAsync,
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await AssertMore.EqualEventuallyAsync(
+                    "waiting", () => handle.QueryAsync(StackTraceWorkflow.Ref.Status));
+                var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => handle.QueryAsync<string>("__stack_trace", Array.Empty<object?>()));
+                Assert.Contains("stack traces are not enabled", exc.Message);
+            },
+            new()
+            {
+                Activities = { StackTraceWorkflow.WaitCancelActivityAsync },
+                Workflows = { typeof(StackTraceWorkflow.WaitForeverWorkflow) },
+            });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_StackTrace_ReportedProperlyWhenEnabled()
+    {
+        await ExecuteWorkerAsync<StackTraceWorkflow>(
+            async worker =>
+            {
+                // Start and wait until "waiting"
+                var handle = await Env.Client.StartWorkflowAsync(
+                    StackTraceWorkflow.Ref.RunAsync,
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await AssertMore.EqualEventuallyAsync(
+                    "waiting", () => handle.QueryAsync(StackTraceWorkflow.Ref.Status));
+                // Issue stack trace query
+                var trace = await handle.QueryAsync<string>("__stack_trace", Array.Empty<object?>());
+                // Confirm our four tasks are the only ones there, are in order, and are waiting at
+                // the expected spot
+                var traces = trace.Split("\n\n");
+                Assert.Equal(4, traces.Length);
+                Assert.StartsWith(
+                    "Task waiting at:\n   at Temporalio.Workflows.Workflow.DelayAsync",
+                    traces[0]);
+                Assert.StartsWith(
+                    "Task waiting at:\n   at Temporalio.Workflows.Workflow.ExecuteActivityAsync",
+                    traces[1]);
+                Assert.StartsWith(
+                    "Task waiting at:\n   at Temporalio.Workflows.Workflow.StartChildWorkflowAsync",
+                    traces[2]);
+                Assert.StartsWith(
+                    "Task waiting at:\n   at Temporalio.Workflows.Workflow.WaitConditionAsync",
+                    traces[3]);
+            },
+            new()
+            {
+                Activities = { StackTraceWorkflow.WaitCancelActivityAsync },
+                Workflows = { typeof(StackTraceWorkflow.WaitForeverWorkflow) },
+                WorkflowStackTrace = WorkflowStackTrace.Normal,
+            });
+    }
+
     private async Task ExecuteWorkerAsync<TWf>(
         Func<TemporalWorker, Task> action, TemporalWorkerOptions? options = null)
     {
         options ??= new();
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
         options.AddWorkflow(typeof(TWf));
-        options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
+        // options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
         using var worker = new TemporalWorker(Client, options);
         await worker.ExecuteAsync(() => action(worker));
     }
@@ -1962,7 +2077,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     // TODO(cretz): Tests needed:
-    // * Logging
     // * Stack trace query
     //   * Consider leveraging https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stacktracehiddenattribute in newer versions
     // * Patching

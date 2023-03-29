@@ -48,6 +48,9 @@ namespace Temporalio.Worker
         private readonly Dictionary<string, List<SignalWorkflow>> bufferedSignals = new();
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private readonly LinkedList<Tuple<Func<bool>, TaskCompletionSource<object?>>> conditions = new();
+        private readonly WorkflowStackTrace workflowStackTrace;
+        // Only non-null if stack trace is not None
+        private readonly LinkedList<System.Diagnostics.StackTrace>? pendingTaskStackTraces;
         private readonly ILogger logger;
         private readonly ReplaySafeLogger replaySafeLogger;
         private WorkflowActivationCompletion? completion;
@@ -133,6 +136,8 @@ namespace Temporalio.Worker
                 TaskTimeout: start.WorkflowTaskTimeout.ToTimeSpan(),
                 WorkflowID: start.WorkflowId,
                 WorkflowType: start.WorkflowType);
+            workflowStackTrace = details.WorkflowStackTrace;
+            pendingTaskStackTraces = workflowStackTrace == WorkflowStackTrace.None ? null : new();
             logger = loggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
             replaySafeLogger = new(logger);
             // We accept overflowing for seed (uint64 -> int32)
@@ -556,9 +561,57 @@ namespace Temporalio.Worker
         }
 
 #pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
-        private Task QueueNewTaskAsync(Func<Task> func) => taskFactory.StartNew(func).Unwrap();
+#pragma warning disable VSTHRD003 // We know it's our own task we're waiting on
+        private Task QueueNewTaskAsync(Func<Task> func)
+        {
+            // If we need a stack trace, wrap
+            if (pendingTaskStackTraces is LinkedList<System.Diagnostics.StackTrace> stackTraces)
+            {
+                // Have to eagerly capture stack trace. We are unable to find an easy way to make
+                // this lazy and still preserve the frames properly.
+                var node = stackTraces.AddLast(
+                    new System.Diagnostics.StackTrace(workflowStackTrace == WorkflowStackTrace.Normal));
+                var origFunc = func;
+                func = () =>
+                {
+                    var task = origFunc();
+                    return task.ContinueWith(
+                        _ =>
+                        {
+                            stackTraces.Remove(node);
+                            return task;
+                        },
+                        this).Unwrap();
+                };
+            }
+            return taskFactory.StartNew(func).Unwrap();
+        }
 
-        private Task<T> QueueNewTaskAsync<T>(Func<Task<T>> func) => taskFactory.StartNew(func).Unwrap();
+        private Task<T> QueueNewTaskAsync<T>(Func<Task<T>> func)
+        {
+            // If we need a stack trace, wrap
+            if (pendingTaskStackTraces is LinkedList<System.Diagnostics.StackTrace> stackTraces)
+            {
+                // Have to eagerly capture stack trace. We are unable to find an easy way to make
+                // this lazy and still preserve the frames properly.
+                var node = stackTraces.AddLast(
+                    new System.Diagnostics.StackTrace(workflowStackTrace == WorkflowStackTrace.Normal));
+                var origFunc = func;
+                func = () =>
+                {
+                    var task = origFunc();
+                    return task.ContinueWith(
+                        _ =>
+                        {
+                            stackTraces.Remove(node);
+                            return task;
+                        },
+                        this).Unwrap();
+                };
+            }
+            return taskFactory.StartNew(func).Unwrap();
+        }
+#pragma warning restore VSTHRD003
 #pragma warning restore CA2008
 
         private async Task RunTopLevelAsync(Func<Task> func)
@@ -691,25 +744,35 @@ namespace Temporalio.Worker
                 var origCmdCount = completion?.Successful?.Commands?.Count;
                 try
                 {
-                    // Find definition or fail
-                    var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : defn.Queries;
-                    if (!queries.TryGetValue(query.QueryType, out var queryDefn))
+                    WorkflowQueryDefinition? queryDefn;
+                    // If it's a stack trace query, create definition
+                    if (query.QueryType == "__stack_trace")
                     {
-                        var knownQueries = queries.Keys.OrderBy(k => k);
-                        throw new InvalidOperationException(
-                            $"Query handler for {query.QueryType} expected but not found, " +
-                            $"known queries: [{string.Join(" ", knownQueries)}]");
+                        Func<string> getter = GetStackTrace;
+                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
+                            "__stack_trace", getter);
                     }
-
+                    else
+                    {
+                        // Find definition or fail
+                        var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : defn.Queries;
+                        if (!queries.TryGetValue(query.QueryType, out queryDefn))
+                        {
+                            var knownQueries = queries.Keys.OrderBy(k => k);
+                            throw new InvalidOperationException(
+                                $"Query handler for {query.QueryType} expected but not found, " +
+                                $"known queries: [{string.Join(" ", knownQueries)}]");
+                        }
+                    }
                     var resultObj = inbound.Value.HandleQuery(new(
-                        ID: query.QueryId,
-                        Query: query.QueryType,
-                        Definition: queryDefn,
-                        Args: DecodeArgs(
-                            queryDefn.Method ?? queryDefn.Delegate!.Method,
-                            query.Arguments,
-                            $"Query {query.QueryType}"),
-                        Headers: query.Headers));
+                            ID: query.QueryId,
+                            Query: query.QueryType,
+                            Definition: queryDefn,
+                            Args: DecodeArgs(
+                                queryDefn.Method ?? queryDefn.Delegate!.Method,
+                                query.Arguments,
+                                $"Query {query.QueryType}"),
+                            Headers: query.Headers));
                     AddCommand(new()
                     {
                         RespondToQuery = new()
@@ -875,6 +938,33 @@ namespace Temporalio.Worker
                 paramVals.Add(paramInfos[i].DefaultValue);
             }
             return paramVals.ToArray();
+        }
+
+        private string GetStackTrace()
+        {
+            if (pendingTaskStackTraces is not LinkedList<System.Diagnostics.StackTrace> stackTraces)
+            {
+                throw new InvalidOperationException(
+                    "Workflow stack traces are not enabled on this worker");
+            }
+            return string.Join("\n\n", stackTraces.Select(s =>
+            {
+                IEnumerable<string> lines = s.ToString().Split(
+                    new[] { "\r", "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Trim off leading lines until first non-worker line
+                lines = lines.SkipWhile(line => line.Contains(" at Temporalio.Worker."));
+
+                // Trim off trailing lines until first non-worker,
+                // non-system-runtime/threading/reflection line
+                lines = lines.Reverse().SkipWhile(line =>
+                    line.Contains(" at System.Reflection.") ||
+                    line.Contains(" at System.Runtime.") ||
+                    line.Contains(" at System.RuntimeMethodHandle.") ||
+                    line.Contains(" at System.Threading.") ||
+                    line.Contains(" at Temporalio.Worker.")).Reverse();
+                return string.Join('\n', lines);
+            }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));
         }
 
         /// <summary>

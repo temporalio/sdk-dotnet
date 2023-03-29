@@ -183,6 +183,17 @@ namespace Temporalio.Worker
         public ILoggerFactory? LoggerFactory { get; set; }
 
         /// <summary>
+        /// Gets or sets the form of workflow stack trace queries are supported. Default is "None"
+        /// which means workflow stack trace are not supported and will fail.
+        /// </summary>
+        /// <remarks>
+        /// Currently due to internal implementation details, stack traces have to be captured
+        /// eagerly on every Temporal task creation that can be waited on. Due to this performance
+        /// cost, they are turned off by default.
+        /// </remarks>
+        public WorkflowStackTrace WorkflowStackTrace { get; set; } = WorkflowStackTrace.None;
+
+        /// <summary>
         /// Gets or sets a function to create workflow instances.
         /// </summary>
         /// <remarks>
