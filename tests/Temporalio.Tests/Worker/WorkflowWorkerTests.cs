@@ -2043,6 +2043,77 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class ExternalWorkflow
+    {
+        [Workflow]
+        public class OtherWorkflow
+        {
+            public static readonly OtherWorkflow Ref = Refs.Create<OtherWorkflow>();
+
+            private string lastSignal = "<unset>";
+
+            [WorkflowRun]
+            public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
+
+            [WorkflowSignal]
+            public async Task SignalAsync(string value) => lastSignal = value;
+
+            [WorkflowQuery]
+            public string LastSignal() => lastSignal;
+        }
+
+        public static readonly ExternalWorkflow Ref = Refs.Create<ExternalWorkflow>();
+
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
+
+        [WorkflowSignal]
+        public Task SignalExternalAsync(string otherID) =>
+            Workflow.GetExternalWorkflowHandle(otherID).SignalAsync(
+                OtherWorkflow.Ref.SignalAsync, "external signal");
+
+        [WorkflowSignal]
+        public Task CancelExternalAsync(string otherID) =>
+            Workflow.GetExternalWorkflowHandle(otherID).CancelAsync();
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_External_SignalAndCancelSucceed()
+    {
+        await ExecuteWorkerAsync<ExternalWorkflow>(
+            async worker =>
+            {
+                // Start other workflow
+                var otherHandle = await Env.Client.StartWorkflowAsync(
+                    ExternalWorkflow.OtherWorkflow.Ref.RunAsync,
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await AssertStartedEventuallyAsync(otherHandle);
+
+                // Start primary workflow
+                var handle = await Env.Client.StartWorkflowAsync(
+                    ExternalWorkflow.Ref.RunAsync,
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await AssertStartedEventuallyAsync(handle);
+
+                // Send a signal and confirm received
+                await handle.SignalAsync(ExternalWorkflow.Ref.SignalExternalAsync, otherHandle.ID);
+                await AssertMore.EqualEventuallyAsync(
+                    "external signal",
+                    () => otherHandle.QueryAsync(ExternalWorkflow.OtherWorkflow.Ref.LastSignal));
+
+                // Cancel and confirm cancelled
+                await handle.SignalAsync(ExternalWorkflow.Ref.CancelExternalAsync, otherHandle.ID);
+                await AssertMore.EventuallyAsync(async () =>
+                {
+                    var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                        otherHandle.GetResultAsync());
+                    Assert.IsType<CancelledFailureException>(exc.InnerException);
+                });
+            },
+            new() { Workflows = { typeof(ExternalWorkflow.OtherWorkflow) } });
+    }
+
+    [Workflow]
     public class StackTraceWorkflow
     {
         [Activity]
@@ -2354,18 +2425,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
-    // TODO(cretz): Tests needed:
-    // * TaskFactory default cancellation token (test with dataflow ReceiveAsync without explicit
-    //   cancellation token)
+    // TODO(cretz): Potential features:
     // * IDisposable workflows?
     //   * Otherwise, what if I have a cancellation token source at a high level?
     // * Custom errors
     // * Child workflows
     //   * Signal
-    // * External workflows
-    //   * Cancel
-    //   * Signal
-    // * Async utilities (e.g. Dataflow) that can/can't be used
     // * Custom codec
     // * Interceptor
     // * Dynamic activities

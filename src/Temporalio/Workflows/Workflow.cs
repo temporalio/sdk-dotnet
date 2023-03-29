@@ -739,6 +739,15 @@ namespace Temporalio.Workflows
             Context.ExecuteLocalActivityAsync<TResult>(activity, args, options);
 
         /// <summary>
+        /// Get a handle to an external workflow for cancelling and issuing signals.
+        /// </summary>
+        /// <param name="id">Workflow ID.</param>
+        /// <param name="runID">Optional workflow run ID.</param>
+        /// <returns>External workflow handle.</returns>
+        public static ExternalWorkflowHandle GetExternalWorkflowHandle(
+            string id, string? runID = null) => Context.GetExternalWorkflowHandle(id, runID);
+
+        /// <summary>
         /// Deterministically create a new <see cref="Guid" /> similar to
         /// <see cref="Guid.NewGuid" /> (which cannot be used in workflows). The resulting GUID
         /// intentionally represents a version 4 UUID.

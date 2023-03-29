@@ -34,6 +34,14 @@ namespace Temporalio.Worker.Interceptors
         private protected WorkflowOutboundInterceptor? MaybeNext { get; init; }
 
         /// <summary>
+        /// Intercept cancel external workflow.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for completion.</returns>
+        public virtual Task CancelExternalWorkflowAsync(
+            CancelExternalWorkflowInput input) => Next.CancelExternalWorkflowAsync(input);
+
+        /// <summary>
         /// Intercept continue as new exception creation.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
@@ -65,6 +73,14 @@ namespace Temporalio.Worker.Interceptors
         /// <returns>Activity result.</returns>
         public virtual Task<TResult> ScheduleLocalActivityAsync<TResult>(
             ScheduleLocalActivityInput input) => Next.ScheduleLocalActivityAsync<TResult>(input);
+
+        /// <summary>
+        /// Intercept sending of an external workflow signal.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for completion.</returns>
+        public virtual Task SignalExternalWorkflowAsync(
+            SignalExternalWorkflowInput input) => Next.SignalExternalWorkflowAsync(input);
 
         /// <summary>
         /// Intercept starting a child workflow. To intercept other child workflow calls, the handle

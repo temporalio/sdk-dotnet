@@ -107,6 +107,14 @@ namespace Temporalio.Workflows
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options);
 
         /// <summary>
+        /// Backing call for <see cref="Workflow.GetExternalWorkflowHandle" />.
+        /// </summary>
+        /// <param name="id">Workflow ID.</param>
+        /// <param name="runID">Optional workflow run ID.</param>
+        /// <returns>External workflow handle.</returns>
+        ExternalWorkflowHandle GetExternalWorkflowHandle(string id, string? runID = null);
+
+        /// <summary>
         /// Backing call for <see cref="Workflow.Patched" /> and
         /// <see cref="Workflow.DeprecatePatch" />.
         /// </summary>
