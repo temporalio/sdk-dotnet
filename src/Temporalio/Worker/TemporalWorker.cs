@@ -31,7 +31,9 @@ namespace Temporalio.Worker
         public TemporalWorker(IWorkerClient client, TemporalWorkerOptions options)
         {
             Client = client;
-            Options = options;
+            // Clone the options to discourage mutation (but we aren't completely disabling mutation
+            // on the Options field herein).
+            Options = (TemporalWorkerOptions)options.Clone();
             BridgeWorker = new(
                 (Bridge.Client)client.BridgeClientProvider.BridgeClient,
                 client.Options.Namespace,

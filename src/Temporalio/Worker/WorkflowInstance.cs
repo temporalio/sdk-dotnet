@@ -48,6 +48,8 @@ namespace Temporalio.Worker
         private readonly Dictionary<string, List<SignalWorkflow>> bufferedSignals = new();
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private readonly LinkedList<Tuple<Func<bool>, TaskCompletionSource<object?>>> conditions = new();
+        private readonly HashSet<string> patchesNotified = new();
+        private readonly Dictionary<string, bool> patchesMemoized = new();
         private readonly WorkflowStackTrace workflowStackTrace;
         // Only non-null if stack trace is not None
         private readonly LinkedList<System.Diagnostics.StackTrace>? pendingTaskStackTraces;
@@ -236,6 +238,27 @@ namespace Temporalio.Worker
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
             outbound.Value.ScheduleLocalActivityAsync<TResult>(
                 new(Activity: activity, Args: args, Options: options, Headers: null));
+
+        /// <inheritdoc />
+        public bool Patch(string patchID, bool deprecated)
+        {
+            // Use memoized result if present. If this is being deprecated, we can still use
+            // memoized result and skip the command.
+            if (patchesMemoized.TryGetValue(patchID, out var patched))
+            {
+                return patched;
+            }
+            patched = !IsReplaying || patchesNotified.Contains(patchID);
+            patchesMemoized[patchID] = patched;
+            if (patched)
+            {
+                AddCommand(new()
+                {
+                    SetPatchMarker = new() { PatchId = patchID, Deprecated = deprecated },
+                });
+            }
+            return patched;
+        }
 
         /// <inheritdoc/>
         public Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
@@ -696,6 +719,9 @@ namespace Temporalio.Worker
                 case WorkflowActivationJob.VariantOneofCase.FireTimer:
                     ApplyFireTimer(job.FireTimer);
                     break;
+                case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
+                    ApplyNotifyHasPatch(job.NotifyHasPatch);
+                    break;
                 case WorkflowActivationJob.VariantOneofCase.QueryWorkflow:
                     ApplyQueryWorkflow(job.QueryWorkflow);
                     break;
@@ -735,6 +761,9 @@ namespace Temporalio.Worker
                 source.TrySetResult(null);
             }
         }
+
+        private void ApplyNotifyHasPatch(NotifyHasPatch notify) =>
+            patchesNotified.Add(notify.PatchId);
 
         private void ApplyQueryWorkflow(QueryWorkflow query)
         {

@@ -220,6 +220,18 @@ namespace Temporalio.Workflows
             Context.DelayAsync(delay, cancellationToken);
 
         /// <summary>
+        /// Mark a patch as deprecated.
+        /// </summary>
+        /// <param name="patchID">Patch ID.</param>
+        /// <remarks>
+        /// This marks a workflow that had <see cref="Patched" /> in a previous version of the code
+        /// as no longer applicable because all workflows that use the old code path are done and
+        /// will never be queried again. Therefore the old code path is removed as well.
+        /// </remarks>
+        public static void DeprecatePatch(string patchID) =>
+            Context.Patch(patchID, deprecated: true);
+
+        /// <summary>
         /// Execute an activity with a result and no arguments.
         /// </summary>
         /// <typeparam name="TResult">Activity result type.</typeparam>
@@ -743,6 +755,25 @@ namespace Temporalio.Workflows
             bytes[8] = (byte)((bytes[8] & 0x3F) | 0x80);
             return new(bytes);
         }
+
+        /// <summary>
+        /// Patch a workflow.
+        /// </summary>
+        /// <param name="patchID">Patch ID.</param>
+        /// <returns>True if this should take the newer patch, false if it should take the old
+        /// path.</returns>
+        /// <remarks>
+        /// <para>
+        /// When called, this will only return true if code should take the newer path which means
+        /// this is either not replaying or is replaying and has seen this patch before. Results for
+        /// successive calls to this function for the same ID and workflow are memoized.
+        /// </para>
+        /// <para>
+        /// Use <see cref="DeprecatePatch" /> when all workflows are done and will never be queried
+        /// again. The old code path can be removed at that time too.
+        /// </para>
+        /// </remarks>
+        public static bool Patched(string patchID) => Context.Patch(patchID, deprecated: false);
 
         /// <summary>
         /// Start a child workflow with a result and no arguments.

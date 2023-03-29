@@ -228,7 +228,18 @@ namespace Temporalio.Worker
         /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
-        /// <returns>A shallow copy of these options and any transitive options fields.</returns>
-        public virtual object Clone() => MemberwiseClone();
+        /// <returns>A shallow copy of these options and any transitive options fields.
+        /// Also copies collections of activities and workflows.</returns>
+        public virtual object Clone()
+        {
+            var options = (TemporalWorkerOptions)MemberwiseClone();
+            options.Activities = new List<Delegate>(Activities);
+            options.Workflows = new List<Type>(Workflows);
+            options.AdditionalActivityDefinitions =
+                new List<Activities.ActivityDefinition>(AdditionalActivityDefinitions);
+            options.AdditionalWorkflowDefinitions =
+                new List<Workflows.WorkflowDefinition>(AdditionalWorkflowDefinitions);
+            return options;
+        }
     }
 }

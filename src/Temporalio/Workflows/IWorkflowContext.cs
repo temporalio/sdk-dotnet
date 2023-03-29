@@ -107,6 +107,15 @@ namespace Temporalio.Workflows
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options);
 
         /// <summary>
+        /// Backing call for <see cref="Workflow.Patched" /> and
+        /// <see cref="Workflow.DeprecatePatch" />.
+        /// </summary>
+        /// <param name="patchID">Patch ID.</param>
+        /// <param name="deprecated">Whether to deprecate.</param>
+        /// <returns>Whether patched.</returns>
+        bool Patch(string patchID, bool deprecated);
+
+        /// <summary>
         /// Backing call for
         /// <see cref="Workflow.StartChildWorkflowAsync{TResult}(string, IReadOnlyCollection{object?}, ChildWorkflowOptions?)" />.
         /// </summary>

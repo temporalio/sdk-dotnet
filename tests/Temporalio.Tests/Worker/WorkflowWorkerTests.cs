@@ -2012,13 +2012,146 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             });
     }
 
+    public abstract class PatchWorkflowBase
+    {
+        [Activity]
+        public static string PrePatchActivity() => "pre-patch";
+
+        [Activity]
+        public static string PostPatchActivity() => "post-patch";
+
+        public static readonly PatchWorkflow Ref = Refs.Create<PatchWorkflow>();
+
+        protected string ActivityResult { get; set; } = "<unset>";
+
+        [WorkflowQuery]
+        public string GetResult() => ActivityResult;
+
+        [Workflow("PatchWorkflow")]
+        public class PrePatchWorkflow : PatchWorkflowBase
+        {
+            [WorkflowRun]
+            public async Task RunAsync() => ActivityResult = await Workflow.ExecuteActivityAsync(
+                PrePatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+        }
+
+        [Workflow]
+        public class PatchWorkflow : PatchWorkflowBase
+        {
+            [WorkflowRun]
+            public async Task RunAsync()
+            {
+                if (Workflow.Patched("my-patch"))
+                {
+                    ActivityResult = await Workflow.ExecuteActivityAsync(
+                        PostPatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                }
+                else
+                {
+                    ActivityResult = await Workflow.ExecuteActivityAsync(
+                        PrePatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                }
+            }
+        }
+
+        [Workflow("PatchWorkflow")]
+        public class DeprecatePatchWorkflow : PatchWorkflowBase
+        {
+            [WorkflowRun]
+            public async Task RunAsync()
+            {
+                Workflow.DeprecatePatch("my-patch");
+                ActivityResult = await Workflow.ExecuteActivityAsync(
+                    PostPatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            }
+        }
+
+        [Workflow("PatchWorkflow")]
+        public class PostPatchWorkflow : PatchWorkflowBase
+        {
+            [WorkflowRun]
+            public async Task RunAsync() => ActivityResult = await Workflow.ExecuteActivityAsync(
+                PostPatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Patched_ProperlyHandled()
+    {
+        var workerOptions = new TemporalWorkerOptions()
+        {
+            TaskQueue = $"tq-{Guid.NewGuid()}",
+            Activities = { PatchWorkflowBase.PrePatchActivity, PatchWorkflowBase.PostPatchActivity },
+        };
+        async Task<string> ExecuteWorkflowAsync(string id)
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                PatchWorkflowBase.Ref.RunAsync,
+                new(id, taskQueue: workerOptions.TaskQueue!));
+            await handle.GetResultAsync();
+            return await handle.QueryAsync(PatchWorkflowBase.Ref.GetResult);
+        }
+        Task<string> QueryWorkflowAsync(string id) =>
+            Env.Client.GetWorkflowHandle(id).QueryAsync(PatchWorkflowBase.Ref.GetResult);
+
+        // Run pre-patch workflow
+        var prePatchID = $"workflow-{Guid.NewGuid()}";
+        await ExecuteWorkerAsync<PatchWorkflowBase.PrePatchWorkflow>(
+            async worker =>
+            {
+                Assert.Equal("pre-patch", await ExecuteWorkflowAsync(prePatchID));
+            },
+            workerOptions);
+
+        // Patch workflow and confirm pre-patch and patched work
+        var patchedID = $"workflow-{Guid.NewGuid()}";
+        await ExecuteWorkerAsync<PatchWorkflowBase.PatchWorkflow>(
+            async worker =>
+            {
+                Assert.Equal("post-patch", await ExecuteWorkflowAsync(patchedID));
+                Assert.Equal("pre-patch", await QueryWorkflowAsync(prePatchID));
+            },
+            workerOptions);
+
+        // Deprecate patch and confirm patched and deprecated work, but not pre-patch
+        var deprecatePatchID = $"workflow-{Guid.NewGuid()}";
+        await ExecuteWorkerAsync<PatchWorkflowBase.DeprecatePatchWorkflow>(
+            async worker =>
+            {
+                Assert.Equal("post-patch", await ExecuteWorkflowAsync(deprecatePatchID));
+                Assert.Equal("post-patch", await QueryWorkflowAsync(patchedID));
+                var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => QueryWorkflowAsync(prePatchID));
+                Assert.Contains("Nondeterminism", exc.Message);
+            },
+            workerOptions);
+
+        // Remove patch and confirm post patch and deprecated work, but not pre-patch or patched
+        var postPatchPatchID = $"workflow-{Guid.NewGuid()}";
+        await ExecuteWorkerAsync<PatchWorkflowBase.PostPatchWorkflow>(
+            async worker =>
+            {
+                Assert.Equal("post-patch", await ExecuteWorkflowAsync(postPatchPatchID));
+                Assert.Equal("post-patch", await QueryWorkflowAsync(deprecatePatchID));
+                var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => QueryWorkflowAsync(prePatchID));
+                Assert.Contains("Nondeterminism", exc.Message);
+                // TODO(cretz): This currently causes a core panic
+                // exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                //     () => QueryWorkflowAsync(patchedID));
+                // Assert.Contains("Nondeterminism", exc.Message);
+            },
+            workerOptions);
+    }
+
     private async Task ExecuteWorkerAsync<TWf>(
         Func<TemporalWorker, Task> action, TemporalWorkerOptions? options = null)
     {
         options ??= new();
+        options = (TemporalWorkerOptions)options.Clone();
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
         options.AddWorkflow(typeof(TWf));
-        // options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
+        options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
         using var worker = new TemporalWorker(Client, options);
         await worker.ExecuteAsync(() => action(worker));
     }
@@ -2077,9 +2210,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     // TODO(cretz): Tests needed:
-    // * Stack trace query
-    //   * Consider leveraging https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.stacktracehiddenattribute in newer versions
-    // * Patching
     // * Separate interface from impl
     // * Workflows as records with WorkflowInit
     // * Workflows as structs
