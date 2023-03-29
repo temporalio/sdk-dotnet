@@ -13,17 +13,25 @@ namespace Temporalio.Worker
     /// </summary>
     internal class WorkflowTaskEventListener : EventListener
     {
+        // Set to true to enable dumping of events
         private const bool DumpEvents = false;
-        private const int TaskScheduledEventID = 7;
-        private const int TraceOperationStartEventID = 14;
-        private const EventKeywords TaskTransferKeywords = (EventKeywords)1;
-        private const EventKeywords AsyncCausalityOperationKeywords = (EventKeywords)8;
+
+        private const string TplEventSourceName = "System.Threading.Tasks.TplEventSource";
+        private const int TplTaskWithSchedulerEventIDBegin = 7;
+        private const int TplTaskWithSchedulerEventIDEnd = 11;
+        private const EventKeywords TplTasksKeywords = (EventKeywords)2;
+
+        private const string FrameworkEventSourceName = "System.Diagnostics.Eventing.FrameworkEventSource";
+        private const EventKeywords FrameworkThreadTransferKeywords = (EventKeywords)0x0010;
+        private const EventTask FrameworkThreadTransferTask = (EventTask)3;
+
         private static readonly Lazy<WorkflowTaskEventListener> LazyInstance = new(() => new());
 
-        // Locks the two fields below it only
-        private readonly object tplEventSourceLock = new();
+        // Locks the fields below it only
+        private readonly object eventSourceLock = new();
         private EventSource? tplEventSource;
-        private int tplEventSourceListenerCount;
+        private EventSource? frameworkEventSource;
+        private int eventSourceListenerCount;
 
         private WorkflowTaskEventListener()
         {
@@ -41,14 +49,18 @@ namespace Temporalio.Worker
         public void Register()
         {
             // We need to enable/disable under lock which should be cheap
-            lock (tplEventSourceLock)
+            lock (eventSourceLock)
             {
                 // Enable if we're the first and there is a source
-                if (tplEventSourceListenerCount == 0 && tplEventSource != null)
+                if (eventSourceListenerCount == 0 && tplEventSource != null)
                 {
-                    EnableNeededEvents(tplEventSource);
+                    EnableNeededTplEvents(tplEventSource);
                 }
-                tplEventSourceListenerCount++;
+                if (eventSourceListenerCount == 0 && frameworkEventSource != null)
+                {
+                    EnableNeededFrameworkEvents(frameworkEventSource);
+                }
+                eventSourceListenerCount++;
             }
         }
 
@@ -57,15 +69,19 @@ namespace Temporalio.Worker
         /// </summary>
         public void Unregister()
         {
-            lock (tplEventSourceLock)
+            lock (eventSourceLock)
             {
-                tplEventSourceListenerCount--;
+                eventSourceListenerCount--;
                 // Disable if we're the last and there is a source
                 // TODO(cretz): Any perf concern with thrashing enable/disable if they are
                 // starting/stopping workers frequently?
-                if (tplEventSourceListenerCount == 0 && tplEventSource != null)
+                if (eventSourceListenerCount == 0 && tplEventSource != null)
                 {
                     DisableEvents(tplEventSource);
+                }
+                if (eventSourceListenerCount == 0 && frameworkEventSource != null)
+                {
+                    DisableEvents(frameworkEventSource);
                 }
             }
         }
@@ -74,15 +90,27 @@ namespace Temporalio.Worker
         protected override void OnEventSourceCreated(EventSource eventSource)
         {
             base.OnEventSourceCreated(eventSource);
-            if (eventSource.Name == "System.Threading.Tasks.TplEventSource")
+            if (eventSource.Name == TplEventSourceName)
             {
-                lock (tplEventSourceLock)
+                lock (eventSourceLock)
                 {
                     tplEventSource = eventSource;
                     // If there are listeners, enable now
-                    if (tplEventSourceListenerCount > 0)
+                    if (eventSourceListenerCount > 0)
                     {
-                        EnableNeededEvents(tplEventSource);
+                        EnableNeededTplEvents(eventSource);
+                    }
+                }
+            }
+            else if (eventSource.Name == FrameworkEventSourceName)
+            {
+                lock (eventSourceLock)
+                {
+                    frameworkEventSource = eventSource;
+                    // If there are listeners, enable now
+                    if (eventSourceListenerCount > 0)
+                    {
+                        EnableNeededFrameworkEvents(eventSource);
                     }
                 }
             }
@@ -98,46 +126,81 @@ namespace Temporalio.Worker
                 DumpEvent(eventData);
 #pragma warning restore CS0162
             }
-            // We only care if we're the current scheduler and we're tracing
+            // We only care if we're the current scheduler and we're tracing. It is important that
+            // this is early in this call because this will be executed on every task event. For the
+            // non-workflow use case, this is essentially just a thread-local fetch + an instance of
+            // check which is about as good as we can do performance wise.
             if (TaskScheduler.Current is not WorkflowInstance instance ||
                 !instance.TaskTracingEnabled)
             {
                 return;
             }
-            var error = eventData.EventId switch
+            if (eventData.EventSource.Guid == tplEventSource?.Guid)
             {
-                TaskScheduledEventID when instance.Id != eventData.Payload?[0] as int? =>
-                    "Task scheduled during workflow run was not scheduled on workflow scheduler",
-                TraceOperationStartEventID when eventData.Payload?[1] as string == "Task.Delay" =>
-                    "Task.Delay cannot be used in workflows",
-                _ => null,
-            };
-            if (error != null)
+                OnTplEventWritten(instance, eventData);
+            }
+            else if (eventData.EventSource.Guid == frameworkEventSource?.Guid)
             {
-                // We override the stack trace so it has the full value all the way back
-                // to user code.
-                // TODO(cretz): Trim off some of the internals?
-                instance.SetCurrentActivationException(
-                    new InvalidWorkflowOperationException(error, Environment.StackTrace));
+                OnFrameworkEventWritten(instance, eventData);
             }
         }
 
         private static void DumpEvent(EventWrittenEventArgs evt) =>
-            Console.WriteLine("TPL Event: {0}", string.Join(" -- ", new List<object?>()
+            Console.WriteLine("Event: {0}", string.Join(" -- ", new List<object?>()
             {
+                evt.EventSource.Name,
                 evt.EventId,
                 evt.EventName,
                 evt.EventSource,
                 evt.Keywords,
                 evt.Message,
+                $"Curr-Sched: {TaskScheduler.Current?.GetType()}",
                 evt.PayloadNames == null ? "<none>" : string.Join(",", evt.PayloadNames),
                 evt.Payload == null ? "<none>" : string.Join(",", evt.Payload),
             }));
 
-        private void EnableNeededEvents(EventSource eventSource) =>
+        private static void OnTplEventWritten(
+            WorkflowInstance instance, EventWrittenEventArgs eventData)
+        {
+            if (eventData.EventId >= TplTaskWithSchedulerEventIDBegin &&
+                eventData.EventId <= TplTaskWithSchedulerEventIDEnd &&
+                instance.Id != eventData.Payload?[0] as int?)
+            {
+                // We override the stack trace so it has the full value all the way back
+                // to user code. We do not need to sanitize the trace, it is ok to show that it
+                // comes all the way through this listener.
+                instance.SetCurrentActivationException(
+                    new InvalidWorkflowOperationException(
+                        "Task during workflow run was not scheduled on workflow scheduler",
+                        Environment.StackTrace));
+            }
+        }
+
+        private static void OnFrameworkEventWritten(
+            WorkflowInstance instance, EventWrittenEventArgs eventData)
+        {
+            if (eventData.Task == FrameworkThreadTransferTask)
+            {
+                instance.SetCurrentActivationException(
+                    new InvalidWorkflowOperationException(
+                        "Workflow attempted to perform a thread transfer task which is non-deterministic. " +
+                        "This can be caused by timers or other non-deterministic async calls.",
+                        Environment.StackTrace));
+            }
+        }
+
+        private void EnableNeededTplEvents(EventSource eventSource) =>
+            // EnableEvents(eventSource, EventLevel.LogAlways);
             EnableEvents(
                 eventSource,
                 EventLevel.Informational,
-                TaskTransferKeywords | AsyncCausalityOperationKeywords);
+                TplTasksKeywords);
+
+        private void EnableNeededFrameworkEvents(EventSource eventSource) =>
+            // EnableEvents(eventSource, EventLevel.LogAlways);
+            EnableEvents(
+                eventSource,
+                EventLevel.Informational,
+                FrameworkThreadTransferKeywords);
     }
 }

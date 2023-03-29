@@ -4,6 +4,7 @@
 
 namespace Temporalio.Tests.Worker;
 
+using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
@@ -80,6 +81,80 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public interface IInterfaceWorkflow
+    {
+        static readonly IInterfaceWorkflow Ref = Refs.Create<IInterfaceWorkflow>();
+
+        [WorkflowRun]
+        Task<string> RunAsync();
+
+        [Workflow("InterfaceWorkflow")]
+        public class InterfaceWorkflow : IInterfaceWorkflow
+        {
+            [WorkflowRun]
+            public Task<string> RunAsync() => Task.FromResult($"Hello, Temporal!");
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Interface_Succeeds()
+    {
+        await ExecuteWorkerAsync<IInterfaceWorkflow.InterfaceWorkflow>(async worker =>
+        {
+            var result = await Env.Client.ExecuteWorkflowAsync(
+                IInterfaceWorkflow.Ref.RunAsync,
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("Hello, Temporal!", result);
+        });
+    }
+
+    [Workflow]
+    public record RecordWorkflow
+    {
+        public static readonly RecordWorkflow Ref = Refs.Create<RecordWorkflow>();
+
+        // TODO(cretz): When https://github.com/dotnet/csharplang/issues/7047 is done, test
+        // [WorkflowInit] on record constructor
+        [WorkflowRun]
+        public Task<string> RunAsync() => Task.FromResult($"Hello, Temporal!");
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Record_Succeeds()
+    {
+        await ExecuteWorkerAsync<RecordWorkflow>(async worker =>
+        {
+            var result = await Env.Client.ExecuteWorkflowAsync(
+                RecordWorkflow.Ref.RunAsync,
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("Hello, Temporal!", result);
+        });
+    }
+
+#pragma warning disable IDE0250, CA1815, CA1815 // We don't care about struct rules here
+    [Workflow]
+    public struct StructWorkflow
+    {
+        public static readonly StructWorkflow Ref = Refs.Create<StructWorkflow>();
+
+        [WorkflowRun]
+        public Task<string> RunAsync() => Task.FromResult($"Hello, Temporal!");
+    }
+#pragma warning restore IDE0250, CA1815, CA1815
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Struct_Succeeds()
+    {
+        await ExecuteWorkerAsync<StructWorkflow>(async worker =>
+        {
+            var result = await Env.Client.ExecuteWorkflowAsync(
+                StructWorkflow.Ref.RunAsync,
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("Hello, Temporal!", result);
+        });
+    }
+
+    [Workflow]
     public class WorkflowInitWorkflow
     {
         public static readonly WorkflowInitWorkflow Ref = Refs.Create<WorkflowInitWorkflow>();
@@ -132,52 +207,122 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
-    public class InvalidTaskCallsWorkflow
+    public class StandardLibraryCallsWorkflow
     {
-        public static readonly InvalidTaskCallsWorkflow Ref = Refs.Create<InvalidTaskCallsWorkflow>();
+        public static readonly StandardLibraryCallsWorkflow Ref = Refs.Create<StandardLibraryCallsWorkflow>();
 
         [WorkflowRun]
-        public async Task RunAsync(string scenario)
+        public async Task<string> RunAsync(Scenario scenario)
         {
             switch (scenario)
             {
-                case "Task.Delay":
+                // Bad
+                case Scenario.TaskDelay:
                     await Task.Delay(5000);
-                    break;
-                default:
-                    throw new NotImplementedException(scenario);
+                    return "done";
+                case Scenario.TaskRun:
+                    return await Task.Run(async () => "done");
+                case Scenario.TaskFactoryStartNewDefaultScheduler:
+                    return await Task.Factory.StartNew(
+                        () => "done", default, default, TaskScheduler.Default);
+                case Scenario.TaskContinueWithDefaultScheduler:
+                    return await Task.CompletedTask.ContinueWith(_ => "done", TaskScheduler.Default);
+                case Scenario.TaskWaitAsync:
+                    await Workflow.DelayAsync(10000).WaitAsync(TimeSpan.FromSeconds(3));
+                    return "done";
+                case Scenario.DataflowReceiveAsync:
+                    var block = new BufferBlock<string>();
+                    await block.SendAsync("done");
+                    return await block.ReceiveAsync();
+
+                // Good
+                case Scenario.TaskFactoryStartNew:
+                    return await Task.Factory.StartNew(() =>
+                    {
+                        Assert.True(Workflow.InWorkflow);
+                        return "done";
+                    });
+                case Scenario.TaskStart:
+                    var taskStart = new Task<string>(() => "done");
+                    taskStart.Start();
+                    return await taskStart;
+                case Scenario.TaskContinueWith:
+                    return await Task.CompletedTask.ContinueWith(_ => "done");
             }
+            throw new InvalidOperationException("Unexpected completion");
+        }
+
+        public enum Scenario
+        {
+            // Bad
+            TaskDelay,
+            TaskRun,
+            TaskFactoryStartNewDefaultScheduler,
+            TaskContinueWithDefaultScheduler,
+            TaskWaitAsync,
+            // https://github.com/dotnet/runtime/issues/83159
+            DataflowReceiveAsync,
+
+            // Good
+            TaskFactoryStartNew,
+            TaskStart,
+            TaskContinueWith,
         }
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_InvalidTaskCalls_FailsTask()
+    public async Task ExecuteWorkflowAsync_StandardLibraryCalls_FailsTaskWhenInvalid()
     {
-        async Task AssertScenarioFailsTask(string scenario, string exceptionContains)
-        {
-            await ExecuteWorkerAsync<InvalidTaskCallsWorkflow>(async worker =>
+        Task AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario scenario, string exceptionContains) =>
+            ExecuteWorkerAsync<StandardLibraryCallsWorkflow>(async worker =>
             {
                 // Start the workflow
                 var handle = await Env.Client.StartWorkflowAsync(
-                    InvalidTaskCallsWorkflow.Ref.RunAsync,
+                    StandardLibraryCallsWorkflow.Ref.RunAsync,
                     scenario,
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
 
                 // Make sure task failure occurs in history eventually
                 await AssertTaskFailureContainsEventuallyAsync(handle, exceptionContains);
             });
-        }
 
-        await AssertScenarioFailsTask("Task.Delay", "Task.Delay cannot be used in workflows");
-        // TODO(cretz): Scenarios to prevent:
-        // * Task run/create/etc on different scheduler
-        //   * Note Task.Run uses default scheduler by default so we should error here
-        //   * Note, ConfigureAwait(false) uses default scheduler too!
-        // * Task wait with timeout
-        // * CancellationTokenSource.CancelAfter (and all TimerQueueTimer uses)
-        // * ThreadPool.QueueUserWorkIterm
-        // * Timers - https://learn.microsoft.com/en-us/dotnet/standard/threading/timers
-        // * IO
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.TaskDelay, "non-deterministic");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.TaskRun, "not scheduled on workflow scheduler");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.TaskFactoryStartNewDefaultScheduler,
+            "not scheduled on workflow scheduler");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.TaskContinueWithDefaultScheduler,
+            "not scheduled on workflow scheduler");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.TaskWaitAsync, "non-deterministic");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.DataflowReceiveAsync,
+            "not scheduled on workflow scheduler");
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_StandardLibraryCalls_SucceedWhenValid()
+    {
+        Task AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario scenario) =>
+            ExecuteWorkerAsync<StandardLibraryCallsWorkflow>(async worker =>
+            {
+                var result = await Env.Client.ExecuteWorkflowAsync(
+                    StandardLibraryCallsWorkflow.Ref.RunAsync,
+                    scenario,
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        RunTimeout = TimeSpan.FromSeconds(10),
+                    });
+                Assert.Equal("done", result);
+            });
+
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskFactoryStartNew);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskStart);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskContinueWith);
     }
 
     [Workflow]
@@ -2210,9 +2355,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     // TODO(cretz): Tests needed:
-    // * Separate interface from impl
-    // * Workflows as records with WorkflowInit
-    // * Workflows as structs
     // * TaskFactory default cancellation token (test with dataflow ReceiveAsync without explicit
     //   cancellation token)
     // * IDisposable workflows?

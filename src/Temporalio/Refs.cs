@@ -28,7 +28,7 @@ namespace Temporalio
 
         /// <summary>
         /// Create an instance of the given type. This should only be used to reference methods on,
-        /// not to make any calls on. Classes returned may not be instantiated.
+        /// not to make any calls on. Instances returned may not be instantiated.
         /// </summary>
         /// <typeparam name="T">Type to create an instance of.</typeparam>
         /// <returns>Instance of this type.</returns>
@@ -43,11 +43,11 @@ namespace Temporalio
                 return (T)Generator.CreateInterfaceProxyWithoutTarget(
                     type, options, AlwaysFailInterceptor.Instance);
             }
-            else if (type.IsClass)
+            else if (type.IsClass || (type.IsValueType && !type.IsPrimitive && !type.IsEnum))
             {
                 return (T)FormatterServices.GetUninitializedObject(type);
             }
-            throw new InvalidOperationException($"{type} is not a class or interface");
+            throw new InvalidOperationException($"{type} is not a class, struct, or interface");
         }
 
         /// <summary>

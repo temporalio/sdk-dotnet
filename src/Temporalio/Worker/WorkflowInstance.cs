@@ -992,7 +992,7 @@ namespace Temporalio.Worker
                     line.Contains(" at System.RuntimeMethodHandle.") ||
                     line.Contains(" at System.Threading.") ||
                     line.Contains(" at Temporalio.Worker.")).Reverse();
-                return string.Join('\n', lines);
+                return string.Join("\n", lines);
             }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));
         }
 
