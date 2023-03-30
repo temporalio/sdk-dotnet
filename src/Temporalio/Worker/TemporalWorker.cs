@@ -16,7 +16,7 @@ namespace Temporalio.Worker
     {
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
-        private readonly bool workflowTaskTracingEnabled;
+        private readonly bool workflowTracingEventListenerEnabled;
         private int started;
 
         /// <summary>
@@ -77,10 +77,11 @@ namespace Temporalio.Worker
                 }).OfType<Type>();
 
             // Enable workflow task tracing if needed
-            workflowTaskTracingEnabled = !options.DisableWorkflowTaskTracing && workflowWorker != null;
-            if (workflowTaskTracingEnabled)
+            workflowTracingEventListenerEnabled =
+                !options.DisableWorkflowTracingEventListener && workflowWorker != null;
+            if (workflowTracingEventListenerEnabled)
             {
-                WorkflowTaskEventListener.Instance.Register();
+                WorkflowTracingEventListener.Instance.Register();
             }
         }
 
@@ -217,9 +218,9 @@ namespace Temporalio.Worker
                 activityWorker?.Dispose();
                 BridgeWorker.Dispose();
                 // Remove task tracing if not disabled and there are workflows present
-                if (workflowTaskTracingEnabled)
+                if (workflowTracingEventListenerEnabled)
                 {
-                    WorkflowTaskEventListener.Instance.Unregister();
+                    WorkflowTracingEventListener.Instance.Unregister();
                 }
             }
         }

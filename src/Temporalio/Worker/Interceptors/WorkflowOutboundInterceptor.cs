@@ -75,6 +75,14 @@ namespace Temporalio.Worker.Interceptors
             ScheduleLocalActivityInput input) => Next.ScheduleLocalActivityAsync<TResult>(input);
 
         /// <summary>
+        /// Intercept sending of a child workflow signal.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Task for completion.</returns>
+        public virtual Task SignalChildWorkflowAsync(
+            SignalChildWorkflowInput input) => Next.SignalChildWorkflowAsync(input);
+
+        /// <summary>
         /// Intercept sending of an external workflow signal.
         /// </summary>
         /// <param name="input">Input details of the call.</param>

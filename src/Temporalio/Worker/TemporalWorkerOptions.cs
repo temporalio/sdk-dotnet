@@ -167,14 +167,14 @@ namespace Temporalio.Worker
             DebugModeEnvironmentVariable == "1";
 
         /// <summary>
-        /// Gets or sets a value indicating whether workflow task tracing will be disabled for all
-        /// workflows.
+        /// Gets or sets a value indicating whether workflow tracing event listener will be disabled
+        /// for all workflows.
         /// </summary>
         /// <remarks>
         /// When false, the default, a <see cref="System.Diagnostics.Tracing.EventListener" /> is
-        /// used to catch improper use of tasks outside of the built-in task scheduler.
+        /// used to catch improper calls from inside the workflow.
         /// </remarks>
-        public bool DisableWorkflowTaskTracing { get; set; }
+        public bool DisableWorkflowTracingEventListener { get; set; }
 
         /// <summary>
         /// Gets or sets the logging factory used by loggers in workers. If unset, defaults to the

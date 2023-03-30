@@ -11,7 +11,7 @@ namespace Temporalio.Worker
     /// to <see cref="Register" /> and <see cref="Unregister" /> so this can know when the count
     /// reaches 0.
     /// </summary>
-    internal class WorkflowTaskEventListener : EventListener
+    internal class WorkflowTracingEventListener : EventListener
     {
         // Set to true to enable dumping of events
         private const bool DumpEvents = false;
@@ -25,7 +25,7 @@ namespace Temporalio.Worker
         private const EventKeywords FrameworkThreadTransferKeywords = (EventKeywords)0x0010;
         private const EventTask FrameworkThreadTransferTask = (EventTask)3;
 
-        private static readonly Lazy<WorkflowTaskEventListener> LazyInstance = new(() => new());
+        private static readonly Lazy<WorkflowTracingEventListener> LazyInstance = new(() => new());
 
         // Locks the fields below it only
         private readonly object eventSourceLock = new();
@@ -33,7 +33,7 @@ namespace Temporalio.Worker
         private EventSource? frameworkEventSource;
         private int eventSourceListenerCount;
 
-        private WorkflowTaskEventListener()
+        private WorkflowTracingEventListener()
         {
         }
 
@@ -41,7 +41,7 @@ namespace Temporalio.Worker
         /// Gets a task event listener. Getting this the first time instantiates the event listener
         /// which adds it as a global listener. It should not be requested unless needed.
         /// </summary>
-        public static WorkflowTaskEventListener Instance => LazyInstance.Value;
+        public static WorkflowTracingEventListener Instance => LazyInstance.Value;
 
         /// <summary>
         /// Register this as needed by a worker.
@@ -131,7 +131,7 @@ namespace Temporalio.Worker
             // non-workflow use case, this is essentially just a thread-local fetch + an instance of
             // check which is about as good as we can do performance wise.
             if (TaskScheduler.Current is not WorkflowInstance instance ||
-                !instance.TaskTracingEnabled)
+                !instance.TracingEventsEnabled)
             {
                 return;
             }

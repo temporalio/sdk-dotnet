@@ -1167,7 +1167,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await AssertTaskFailureContainsEventuallyAsync(handle, "deadlocked");
             },
             // Disable task tracing so we can add delay in there
-            new() { DisableWorkflowTaskTracing = true });
+            new() { DisableWorkflowTracingEventListener = true });
     }
 
     [Workflow]
@@ -2002,6 +2002,78 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class SignalChildWorkflow
+    {
+        [Workflow]
+        public class ChildWorkflow
+        {
+            public static readonly ChildWorkflow Ref = Refs.Create<ChildWorkflow>();
+
+            private string lastSignal = "<unset>";
+
+            [WorkflowRun]
+            public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
+
+            [WorkflowSignal]
+            public async Task SomeSignalAsync(string value) => lastSignal = value;
+
+            [WorkflowQuery]
+            public string LastSignal() => lastSignal;
+        }
+
+        public static readonly SignalChildWorkflow Ref = Refs.Create<SignalChildWorkflow>();
+
+        private ChildWorkflowHandle? child;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            child = await Workflow.StartChildWorkflowAsync(ChildWorkflow.Ref.RunAsync);
+            await Workflow.DelayAsync(Timeout.Infinite);
+        }
+
+        [WorkflowSignal]
+        public Task SignalChildAsync(string value)
+        {
+            if (child == null)
+            {
+                throw new ApplicationFailureException("Child not started");
+            }
+            return child.SignalAsync(ChildWorkflow.Ref.SomeSignalAsync, value);
+        }
+
+        [WorkflowQuery]
+        public string? ChildID() => child?.ID;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_SignalChild_SignalsProperly()
+    {
+        await ExecuteWorkerAsync<SignalChildWorkflow>(
+            async worker =>
+            {
+                // Start and wait for child to have started
+                var handle = await Env.Client.StartWorkflowAsync(
+                    SignalChildWorkflow.Ref.RunAsync,
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                var childID = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var childID = await handle.QueryAsync(SignalChildWorkflow.Ref.ChildID);
+                    Assert.NotNull(childID);
+                    return childID!;
+                });
+
+                // Signal and wait for signal received
+                await handle.SignalAsync(SignalChildWorkflow.Ref.SignalChildAsync, "some value");
+                await AssertMore.EqualEventuallyAsync(
+                    "some value",
+                    () => Env.Client.GetWorkflowHandle(childID).
+                        QueryAsync(SignalChildWorkflow.ChildWorkflow.Ref.LastSignal));
+            },
+            new() { Workflows = { typeof(SignalChildWorkflow.ChildWorkflow) } });
+    }
+
+    [Workflow]
     public class AlreadyStartedChildWorkflow
     {
         [Workflow]
@@ -2425,12 +2497,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
-    // TODO(cretz): Potential features:
+    // TODO(cretz): Potential features/tests:
     // * IDisposable workflows?
     //   * Otherwise, what if I have a cancellation token source at a high level?
     // * Custom errors
-    // * Child workflows
-    //   * Signal
     // * Custom codec
     // * Interceptor
     // * Dynamic activities

@@ -4,9 +4,9 @@ using System.Threading;
 namespace Temporalio.Workflows
 {
     /// <summary>
-    /// Options for external workflow signalling.
+    /// Options for child workflow signalling.
     /// </summary>
-    public class ExternalWorkflowSignalOptions : ICloneable
+    public class ChildWorkflowSignalOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the cancellation token to cancel the signal request. If the signal is

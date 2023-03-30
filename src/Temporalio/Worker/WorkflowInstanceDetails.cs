@@ -17,7 +17,7 @@ namespace Temporalio.Worker
     /// <param name="InboundInterceptorTypes">Interceptor types to instantiate.</param>
     /// <param name="PayloadConverterType">Payload converter type to instantiate.</param>
     /// <param name="FailureConverterType">Failure converter type to instantiate.</param>
-    /// <param name="DisableTaskTracing">Whether task tracing is disabled.</param>
+    /// <param name="DisableTracingEvents">Whether tracing events are disabled.</param>
     /// <param name="WorkflowStackTrace">Option for workflow stack trace.</param>
     /// <remarks>
     /// This is built to be easily serializable in case we do want a sandbox one day.
@@ -31,7 +31,7 @@ namespace Temporalio.Worker
         IEnumerable<Type> InboundInterceptorTypes,
         Type PayloadConverterType,
         Type FailureConverterType,
-        bool DisableTaskTracing,
+        bool DisableTracingEvents,
         WorkflowStackTrace WorkflowStackTrace)
     {
         /// <summary>

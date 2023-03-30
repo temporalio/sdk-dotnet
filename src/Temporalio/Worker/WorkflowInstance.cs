@@ -148,7 +148,7 @@ namespace Temporalio.Worker
             replaySafeLogger = new(logger);
             // We accept overflowing for seed (uint64 -> int32)
             Random = new(unchecked((int)details.Start.RandomnessSeed));
-            TaskTracingEnabled = !details.DisableTaskTracing;
+            TracingEventsEnabled = !details.DisableTracingEvents;
         }
 
         /// <summary>
@@ -160,9 +160,9 @@ namespace Temporalio.Worker
         public override int MaximumConcurrencyLevel => 1;
 
         /// <summary>
-        /// Gets a value indicating whether this workflow works with task tracing.
+        /// Gets a value indicating whether this workflow works with tracing events.
         /// </summary>
-        public bool TaskTracingEnabled { get; private init; }
+        public bool TracingEventsEnabled { get; private init; }
 
         /// <inheritdoc />
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
@@ -1329,18 +1329,25 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc />
+            public override Task SignalChildWorkflowAsync(SignalChildWorkflowInput input)
+            {
+                var cmd = new SignalExternalWorkflowExecution()
+                {
+                    Seq = ++instance.externalSignalsCounter,
+                    ChildWorkflowId = input.ID,
+                    SignalName = input.Signal,
+                    Args = { instance.payloadConverter.ToPayloads(input.Args) },
+                };
+                if (input.Headers is IDictionary<string, Payload> headers)
+                {
+                    cmd.Headers.Add(headers);
+                }
+                return SignalExternalWorkflowInternalAsync(cmd, input.Options?.CancellationToken);
+            }
+
+            /// <inheritdoc />
             public override Task SignalExternalWorkflowAsync(SignalExternalWorkflowInput input)
             {
-                var token = input.Options?.CancellationToken ?? instance.CancellationToken;
-                // Like other cases (e.g. child workflow start), we do not even want to schedule if
-                // the cancellation token is already cancelled.
-                if (token.IsCancellationRequested)
-                {
-                    return Task.FromException(
-                        new CancelledFailureException("Signal cancelled before scheduled"));
-                }
-
-                // Add command
                 var cmd = new SignalExternalWorkflowExecution()
                 {
                     Seq = ++instance.externalSignalsCounter,
@@ -1357,35 +1364,7 @@ namespace Temporalio.Worker
                 {
                     cmd.Headers.Add(headers);
                 }
-                var source = new TaskCompletionSource<ResolveSignalExternalWorkflow>();
-                instance.externalSignalsPending[cmd.Seq] = source;
-                instance.AddCommand(new() { SignalExternalWorkflowExecution = cmd });
-
-                // Handle
-                return instance.QueueNewTaskAsync(async () =>
-                {
-                    using (token.Register(() =>
-                    {
-                        // Send cancel if still pending
-                        if (instance.externalSignalsPending.ContainsKey(cmd.Seq))
-                        {
-                            instance.AddCommand(new()
-                            {
-                                CancelSignalWorkflow = new() { Seq = cmd.Seq },
-                            });
-                        }
-                    }))
-                    {
-                        var res = await source.Task.ConfigureAwait(true);
-                        instance.externalSignalsPending.Remove(cmd.Seq);
-                        // Throw if failed
-                        if (res.Failure != null)
-                        {
-                            throw instance.failureConverter.ToException(
-                                res.Failure, instance.payloadConverter);
-                        }
-                    }
-                });
+                return SignalExternalWorkflowInternalAsync(cmd, input.Options?.CancellationToken);
             }
 
             /// <inheritdoc />
@@ -1539,6 +1518,49 @@ namespace Temporalio.Worker
                 return handleSource.Task;
             }
 
+            private Task SignalExternalWorkflowInternalAsync(
+                SignalExternalWorkflowExecution cmd, CancellationToken? inputCancelToken)
+            {
+                var token = inputCancelToken ?? instance.CancellationToken;
+                // Like other cases (e.g. child workflow start), we do not even want to schedule if
+                // the cancellation token is already cancelled.
+                if (token.IsCancellationRequested)
+                {
+                    return Task.FromException(
+                        new CancelledFailureException("Signal cancelled before scheduled"));
+                }
+
+                var source = new TaskCompletionSource<ResolveSignalExternalWorkflow>();
+                instance.externalSignalsPending[cmd.Seq] = source;
+                instance.AddCommand(new() { SignalExternalWorkflowExecution = cmd });
+
+                // Handle
+                return instance.QueueNewTaskAsync(async () =>
+                {
+                    using (token.Register(() =>
+                    {
+                        // Send cancel if still pending
+                        if (instance.externalSignalsPending.ContainsKey(cmd.Seq))
+                        {
+                            instance.AddCommand(new()
+                            {
+                                CancelSignalWorkflow = new() { Seq = cmd.Seq },
+                            });
+                        }
+                    }))
+                    {
+                        var res = await source.Task.ConfigureAwait(true);
+                        instance.externalSignalsPending.Remove(cmd.Seq);
+                        // Throw if failed
+                        if (res.Failure != null)
+                        {
+                            throw instance.failureConverter.ToException(
+                                res.Failure, instance.payloadConverter);
+                        }
+                    }
+                });
+            }
+
             private Task<TResult> ExecuteActivityInternalAsync<TResult>(
                 bool local,
                 Func<DoBackoff?, uint> applyScheduleCommand,
@@ -1675,9 +1697,16 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc />
-            public override Task SignalAsync(string signal, IReadOnlyCollection<object?> args) =>
-                // TODO(cretz):
-                throw new NotImplementedException();
+            public override Task SignalAsync(
+                string signal,
+                IReadOnlyCollection<object?> args,
+                ChildWorkflowSignalOptions? options = null) =>
+                instance.outbound.Value.SignalChildWorkflowAsync(new(
+                    ID: ID,
+                    Signal: signal,
+                    Args: args,
+                    Options: options,
+                    Headers: null));
         }
 
         /// <summary>

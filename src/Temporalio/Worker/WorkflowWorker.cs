@@ -272,7 +272,7 @@ namespace Temporalio.Worker
                     InboundInterceptorTypes: Worker.WorkflowInboundInterceptorTypes,
                     PayloadConverterType: Worker.Client.Options.DataConverter.PayloadConverterType,
                     FailureConverterType: Worker.Client.Options.DataConverter.FailureConverterType,
-                    DisableTaskTracing: Worker.Options.DisableWorkflowTaskTracing,
+                    DisableTracingEvents: Worker.Options.DisableWorkflowTracingEventListener,
                     WorkflowStackTrace: Worker.Options.WorkflowStackTrace)
                 {
                     // Eagerly set these since we're not in a sandbox so we already have the
