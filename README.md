@@ -159,7 +159,7 @@ Workflow result: Hello, Temporal!
 
 ### Client
 
-A client can be created an used to start a workflow. For example:
+A client can be created and used to start a workflow. For example:
 
 ```csharp
 using Temporalio.Client;
