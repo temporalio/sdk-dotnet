@@ -49,7 +49,7 @@
   <Target Name="CopyBridgeDLLDebug" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Debug'">
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
       <Content Include="Bridge/target/debug/$(BridgeLibraryFile)">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Link>$(BridgeLibraryFile)</Link>
         <PublishState>Included</PublishState>
       </Content>
@@ -63,7 +63,7 @@
     <Exec Command="cargo build --release" WorkingDirectory="Bridge" />
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
       <Content Include="Bridge/target/release/$(BridgeLibraryFile)">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Link>$(BridgeLibraryFile)</Link>
         <PublishState>Included</PublishState>
       </Content>
