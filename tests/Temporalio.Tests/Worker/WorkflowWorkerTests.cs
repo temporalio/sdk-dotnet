@@ -27,7 +27,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SimpleWorkflow
     {
-        public static readonly SimpleWorkflow Ref = Refs.Create<SimpleWorkflow>();
+        public static readonly SimpleWorkflow Ref = WorkflowRefs.Create<SimpleWorkflow>();
 
         [WorkflowRun]
         public Task<string> RunAsync(string name) => Task.FromResult($"Hello, {name}!");
@@ -83,7 +83,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public interface IInterfaceWorkflow
     {
-        static readonly IInterfaceWorkflow Ref = Refs.Create<IInterfaceWorkflow>();
+        static readonly IInterfaceWorkflow Ref = WorkflowRefs.Create<IInterfaceWorkflow>();
 
         [WorkflowRun]
         Task<string> RunAsync();
@@ -111,7 +111,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public record RecordWorkflow
     {
-        public static readonly RecordWorkflow Ref = Refs.Create<RecordWorkflow>();
+        public static readonly RecordWorkflow Ref = WorkflowRefs.Create<RecordWorkflow>();
 
         // TODO(cretz): When https://github.com/dotnet/csharplang/issues/7047 is done, test
         // [WorkflowInit] on record constructor
@@ -135,7 +135,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public struct StructWorkflow
     {
-        public static readonly StructWorkflow Ref = Refs.Create<StructWorkflow>();
+        public static readonly StructWorkflow Ref = WorkflowRefs.Create<StructWorkflow>();
 
         [WorkflowRun]
         public Task<string> RunAsync() => Task.FromResult($"Hello, Temporal!");
@@ -157,7 +157,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class WorkflowInitWorkflow
     {
-        public static readonly WorkflowInitWorkflow Ref = Refs.Create<WorkflowInitWorkflow>();
+        public static readonly WorkflowInitWorkflow Ref = WorkflowRefs.Create<WorkflowInitWorkflow>();
         private readonly string name;
 
         [WorkflowInit]
@@ -183,7 +183,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class WorkflowInitNoParamsWorkflow
     {
-        public static readonly WorkflowInitNoParamsWorkflow Ref = Refs.Create<WorkflowInitNoParamsWorkflow>();
+        public static readonly WorkflowInitNoParamsWorkflow Ref = WorkflowRefs.Create<WorkflowInitNoParamsWorkflow>();
 
         [WorkflowInit]
         public WorkflowInitNoParamsWorkflow()
@@ -209,7 +209,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class StandardLibraryCallsWorkflow
     {
-        public static readonly StandardLibraryCallsWorkflow Ref = Refs.Create<StandardLibraryCallsWorkflow>();
+        public static readonly StandardLibraryCallsWorkflow Ref = WorkflowRefs.Create<StandardLibraryCallsWorkflow>();
 
         [WorkflowRun]
         public async Task<string> RunAsync(Scenario scenario)
@@ -328,7 +328,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class InfoWorkflow
     {
-        public static readonly InfoWorkflow Ref = Refs.Create<InfoWorkflow>();
+        public static readonly InfoWorkflow Ref = WorkflowRefs.Create<InfoWorkflow>();
 
         [WorkflowRun]
         public Task<WorkflowInfo> RunAsync() => Task.FromResult(Workflow.Info);
@@ -367,7 +367,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class MultiParamWorkflow
     {
-        public static readonly MultiParamWorkflow Ref = Refs.Create<MultiParamWorkflow>();
+        public static readonly MultiParamWorkflow Ref = WorkflowRefs.Create<MultiParamWorkflow>();
 
         [WorkflowRun]
         public Task<string> RunAsync(string param1, string param2) => Task.FromResult($"{param1}:{param2}");
@@ -389,7 +389,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class DefaultParamWorkflow
     {
-        public static readonly DefaultParamWorkflow Ref = Refs.Create<DefaultParamWorkflow>();
+        public static readonly DefaultParamWorkflow Ref = WorkflowRefs.Create<DefaultParamWorkflow>();
 
         [WorkflowRun]
         public Task<string> RunAsync(string param1, string param2 = "default") =>
@@ -412,7 +412,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class TimerWorkflow
     {
-        public static readonly TimerWorkflow Ref = Refs.Create<TimerWorkflow>();
+        public static readonly TimerWorkflow Ref = WorkflowRefs.Create<TimerWorkflow>();
 
         [WorkflowRun]
         public async Task<string> RunAsync(Input input)
@@ -584,7 +584,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class CancelWorkflow
     {
-        public static readonly CancelWorkflow Ref = Refs.Create<CancelWorkflow>();
+        public static readonly CancelWorkflow Ref = WorkflowRefs.Create<CancelWorkflow>();
 
         public static TaskCompletionSource? ActivityStarted { get; set; }
 
@@ -603,7 +603,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class SwallowCancelChildWorkflow
         {
-            public static readonly SwallowCancelChildWorkflow Ref = Refs.Create<SwallowCancelChildWorkflow>();
+            public static readonly SwallowCancelChildWorkflow Ref = WorkflowRefs.Create<SwallowCancelChildWorkflow>();
 
             [WorkflowRun]
             public async Task<string> RunAsync()
@@ -793,7 +793,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class AssertWorkflow
     {
-        public static readonly AssertWorkflow Ref = Refs.Create<AssertWorkflow>();
+        public static readonly AssertWorkflow Ref = WorkflowRefs.Create<AssertWorkflow>();
 
         [WorkflowRun]
         public async Task RunAsync() => Assert.Fail("Oh no");
@@ -818,7 +818,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SignalWorkflow
     {
-        public static readonly SignalWorkflow Ref = Refs.Create<SignalWorkflow>();
+        public static readonly SignalWorkflow Ref = WorkflowRefs.Create<SignalWorkflow>();
         private readonly List<string> events = new();
 
         // Just wait forever
@@ -898,7 +898,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class QueryWorkflow
     {
-        public static readonly QueryWorkflow Ref = Refs.Create<QueryWorkflow>();
+        public static readonly QueryWorkflow Ref = WorkflowRefs.Create<QueryWorkflow>();
 
         // Just wait forever
         [WorkflowRun]
@@ -967,7 +967,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class MiscHelpersWorkflow
     {
-        public static readonly MiscHelpersWorkflow Ref = Refs.Create<MiscHelpersWorkflow>();
+        public static readonly MiscHelpersWorkflow Ref = WorkflowRefs.Create<MiscHelpersWorkflow>();
 
         private static readonly List<bool> EventsForIsReplaying = new();
 
@@ -1056,7 +1056,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class WaitConditionWorkflow
     {
-        public static readonly WaitConditionWorkflow Ref = Refs.Create<WaitConditionWorkflow>();
+        public static readonly WaitConditionWorkflow Ref = WorkflowRefs.Create<WaitConditionWorkflow>();
 
         private readonly CancellationTokenSource cancelSource;
         private bool shouldProceed;
@@ -1148,7 +1148,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class DeadlockWorkflow
     {
-        public static readonly DeadlockWorkflow Ref = Refs.Create<DeadlockWorkflow>();
+        public static readonly DeadlockWorkflow Ref = WorkflowRefs.Create<DeadlockWorkflow>();
 
         [WorkflowRun]
         public async Task RunAsync() => Thread.Sleep(4000);
@@ -1173,7 +1173,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SearchAttributesWorkflow
     {
-        public static readonly SearchAttributesWorkflow Ref = Refs.Create<SearchAttributesWorkflow>();
+        public static readonly SearchAttributesWorkflow Ref = WorkflowRefs.Create<SearchAttributesWorkflow>();
 
         public static readonly SearchAttributeCollection AttributesInitial = new SearchAttributeCollection.Builder().
             Set(AttrBool, true).
@@ -1284,7 +1284,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class MemoWorkflow
     {
-        public static readonly MemoWorkflow Ref = Refs.Create<MemoWorkflow>();
+        public static readonly MemoWorkflow Ref = WorkflowRefs.Create<MemoWorkflow>();
 
         public static readonly Dictionary<string, object> MemoInitial = new()
         {
@@ -1358,7 +1358,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class ContinueAsNewWorkflow
     {
-        public static readonly ContinueAsNewWorkflow Ref = Refs.Create<ContinueAsNewWorkflow>();
+        public static readonly ContinueAsNewWorkflow Ref = WorkflowRefs.Create<ContinueAsNewWorkflow>();
 
         [WorkflowRun]
         public async Task<IList<string>> RunAsync(IList<string> pastRunIDs)
@@ -1408,7 +1408,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SimpleActivityWorkflow
     {
-        public static readonly SimpleActivityWorkflow Ref = Refs.Create<SimpleActivityWorkflow>();
+        public static readonly SimpleActivityWorkflow Ref = WorkflowRefs.Create<SimpleActivityWorkflow>();
 
         [Activity]
         public static string ResultNoArgSync() => "1";
@@ -1595,7 +1595,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class TimeoutActivityWorkflow
     {
-        public static readonly TimeoutActivityWorkflow Ref = Refs.Create<TimeoutActivityWorkflow>();
+        public static readonly TimeoutActivityWorkflow Ref = WorkflowRefs.Create<TimeoutActivityWorkflow>();
 
         [Activity]
         public static Task RunUntilCancelledAsync() =>
@@ -1661,7 +1661,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class CancelActivityWorkflow
     {
-        public static readonly CancelActivityWorkflow Ref = Refs.Create<CancelActivityWorkflow>();
+        public static readonly CancelActivityWorkflow Ref = WorkflowRefs.Create<CancelActivityWorkflow>();
 
         [Activity]
         public static Task RunUntilCancelledAsync() =>
@@ -1764,7 +1764,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ResultNoArg
         {
-            public static readonly ResultNoArg Ref = Refs.Create<ResultNoArg>();
+            public static readonly ResultNoArg Ref = WorkflowRefs.Create<ResultNoArg>();
 
             [WorkflowRun]
             public async Task<string> RunAsync() => "1";
@@ -1773,7 +1773,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ResultWithArg
         {
-            public static readonly ResultWithArg Ref = Refs.Create<ResultWithArg>();
+            public static readonly ResultWithArg Ref = WorkflowRefs.Create<ResultWithArg>();
 
             [WorkflowRun]
             public async Task<string> RunAsync(string arg)
@@ -1786,7 +1786,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class NoResultNoArg
         {
-            public static readonly NoResultNoArg Ref = Refs.Create<NoResultNoArg>();
+            public static readonly NoResultNoArg Ref = WorkflowRefs.Create<NoResultNoArg>();
 
             [WorkflowRun]
             public Task RunAsync() => Task.CompletedTask;
@@ -1795,7 +1795,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class NoResultWithArg
         {
-            public static readonly NoResultWithArg Ref = Refs.Create<NoResultWithArg>();
+            public static readonly NoResultWithArg Ref = WorkflowRefs.Create<NoResultWithArg>();
 
             [WorkflowRun]
             public async Task RunAsync(string arg) => Assert.Equal("4", arg);
@@ -1804,7 +1804,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ResultMultiArg
         {
-            public static readonly ResultMultiArg Ref = Refs.Create<ResultMultiArg>();
+            public static readonly ResultMultiArg Ref = WorkflowRefs.Create<ResultMultiArg>();
 
             [WorkflowRun]
             public async Task<string> RunAsync(string arg1, string arg2)
@@ -1818,7 +1818,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class NoResultMultiArg
         {
-            public static readonly NoResultMultiArg Ref = Refs.Create<NoResultMultiArg>();
+            public static readonly NoResultMultiArg Ref = WorkflowRefs.Create<NoResultMultiArg>();
 
             [WorkflowRun]
             public async Task RunAsync(string arg1, string arg2)
@@ -1828,7 +1828,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
         }
 
-        public static readonly SimpleChildWorkflow Ref = Refs.Create<SimpleChildWorkflow>();
+        public static readonly SimpleChildWorkflow Ref = WorkflowRefs.Create<SimpleChildWorkflow>();
 
         [WorkflowRun]
         public async Task RunAsync()
@@ -1906,13 +1906,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = Refs.Create<ChildWorkflow>();
+            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
 
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
 
-        public static readonly TimeoutChildWorkflow Ref = Refs.Create<TimeoutChildWorkflow>();
+        public static readonly TimeoutChildWorkflow Ref = WorkflowRefs.Create<TimeoutChildWorkflow>();
 
         [WorkflowRun]
         public Task RunAsync() =>
@@ -1944,13 +1944,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = Refs.Create<ChildWorkflow>();
+            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
 
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
 
-        public static readonly CancelChildWorkflow Ref = Refs.Create<CancelChildWorkflow>();
+        public static readonly CancelChildWorkflow Ref = WorkflowRefs.Create<CancelChildWorkflow>();
 
         [WorkflowRun]
         public async Task RunAsync(bool beforeStart)
@@ -2007,7 +2007,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = Refs.Create<ChildWorkflow>();
+            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
 
             private string lastSignal = "<unset>";
 
@@ -2021,7 +2021,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             public string LastSignal() => lastSignal;
         }
 
-        public static readonly SignalChildWorkflow Ref = Refs.Create<SignalChildWorkflow>();
+        public static readonly SignalChildWorkflow Ref = WorkflowRefs.Create<SignalChildWorkflow>();
 
         private ChildWorkflowHandle? child;
 
@@ -2079,13 +2079,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = Refs.Create<ChildWorkflow>();
+            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
 
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
 
-        public static readonly AlreadyStartedChildWorkflow Ref = Refs.Create<AlreadyStartedChildWorkflow>();
+        public static readonly AlreadyStartedChildWorkflow Ref = WorkflowRefs.Create<AlreadyStartedChildWorkflow>();
 
         [WorkflowRun]
         public async Task RunAsync()
@@ -2120,7 +2120,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class OtherWorkflow
         {
-            public static readonly OtherWorkflow Ref = Refs.Create<OtherWorkflow>();
+            public static readonly OtherWorkflow Ref = WorkflowRefs.Create<OtherWorkflow>();
 
             private string lastSignal = "<unset>";
 
@@ -2134,7 +2134,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             public string LastSignal() => lastSignal;
         }
 
-        public static readonly ExternalWorkflow Ref = Refs.Create<ExternalWorkflow>();
+        public static readonly ExternalWorkflow Ref = WorkflowRefs.Create<ExternalWorkflow>();
 
         [WorkflowRun]
         public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
@@ -2201,13 +2201,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class WaitForeverWorkflow
         {
-            public static readonly WaitForeverWorkflow Ref = Refs.Create<WaitForeverWorkflow>();
+            public static readonly WaitForeverWorkflow Ref = WorkflowRefs.Create<WaitForeverWorkflow>();
 
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
 
-        public static readonly StackTraceWorkflow Ref = Refs.Create<StackTraceWorkflow>();
+        public static readonly StackTraceWorkflow Ref = WorkflowRefs.Create<StackTraceWorkflow>();
 
         private string status = "created";
 
@@ -2308,7 +2308,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         public static string PostPatchActivity() => "post-patch";
 
-        public static readonly PatchWorkflow Ref = Refs.Create<PatchWorkflow>();
+        public static readonly PatchWorkflow Ref = WorkflowRefs.Create<PatchWorkflow>();
 
         protected string ActivityResult { get; set; } = "<unset>";
 

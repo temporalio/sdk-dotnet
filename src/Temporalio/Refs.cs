@@ -8,7 +8,8 @@ using Castle.DynamicProxy;
 namespace Temporalio
 {
     /// <summary>
-    /// Static helper for creating an instance of a type to reference its methods.
+    /// Helpers for creating an instance of a type to reference its methods. Exposed publicly
+    /// as <see cref="Workflows.WorkflowRefs" /> and <see cref="Activities.ActivityRefs" />.
     /// </summary>
     public static class Refs
     {
@@ -32,7 +33,7 @@ namespace Temporalio
         /// </summary>
         /// <typeparam name="T">Type to create an instance of.</typeparam>
         /// <returns>Instance of this type.</returns>
-        public static T Create<T>()
+        internal static T Create<T>()
         {
             var type = typeof(T);
             if (type.IsInterface)
@@ -56,10 +57,10 @@ namespace Temporalio
         /// <param name="type">Type that may have been created via Create.</param>
         /// <returns>Underlying type if wrapped, otherwise just the given type.</returns>
         internal static Type GetUnderlyingType(Type type) =>
-            type.GetCustomAttribute<ProxiedAttribute>()?.UnderlyingType ?? type;
+            type.GetCustomAttribute<ProxiedAttribute>(false)?.UnderlyingType ?? type;
 
         /// <summary>
-        /// Attribute present on every proxied instance type.
+        /// Attribute present on every proxied instance type (i.e. interfaces).
         /// </summary>
         [AttributeUsage(AttributeTargets.Method, Inherited = false)]
         public sealed class ProxiedAttribute : Attribute
