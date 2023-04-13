@@ -145,8 +145,8 @@ public class PayloadConverterTests : TestBase
     {
         public NoJsonProtoPayloadConverter()
             : base(
-                DataConverter.Default.PayloadConverter.EncodingConverters.Where(
-                    c => c is not JsonProtoConverter).ToArray())
+                ((DefaultPayloadConverter)DataConverter.Default.PayloadConverter).
+                    EncodingConverters.Where(c => c is not JsonProtoConverter).ToArray())
         {
         }
     }
