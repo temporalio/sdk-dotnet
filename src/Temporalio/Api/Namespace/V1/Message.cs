@@ -34,7 +34,7 @@ namespace Temporalio.Api.Namespace.V1 {
             "EwoLb3duZXJfZW1haWwYBCABKAkSQAoEZGF0YRgFIAMoCzIyLnRlbXBvcmFs",
             "LmFwaS5uYW1lc3BhY2UudjEuTmFtZXNwYWNlSW5mby5EYXRhRW50cnkSCgoC",
             "aWQYBiABKAkSGgoSc3VwcG9ydHNfc2NoZWR1bGVzGGQgASgIGisKCURhdGFF",
-            "bnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIugCCg9OYW1l",
+            "bnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIqQECg9OYW1l",
             "c3BhY2VDb25maWcSSQogd29ya2Zsb3dfZXhlY3V0aW9uX3JldGVudGlvbl90",
             "dGwYASABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25CBJjfHwESPAoM",
             "YmFkX2JpbmFyaWVzGAIgASgLMiYudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52",
@@ -42,29 +42,33 @@ namespace Temporalio.Api.Namespace.V1 {
             "MiQudGVtcG9yYWwuYXBpLmVudW1zLnYxLkFyY2hpdmFsU3RhdGUSHAoUaGlz",
             "dG9yeV9hcmNoaXZhbF91cmkYBCABKAkSRwoZdmlzaWJpbGl0eV9hcmNoaXZh",
             "bF9zdGF0ZRgFIAEoDjIkLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5BcmNoaXZh",
-            "bFN0YXRlEh8KF3Zpc2liaWxpdHlfYXJjaGl2YWxfdXJpGAYgASgJIrABCgtC",
-            "YWRCaW5hcmllcxJGCghiaW5hcmllcxgBIAMoCzI0LnRlbXBvcmFsLmFwaS5u",
-            "YW1lc3BhY2UudjEuQmFkQmluYXJpZXMuQmluYXJpZXNFbnRyeRpZCg1CaW5h",
-            "cmllc0VudHJ5EgsKA2tleRgBIAEoCRI3CgV2YWx1ZRgCIAEoCzIoLnRlbXBv",
-            "cmFsLmFwaS5uYW1lc3BhY2UudjEuQmFkQmluYXJ5SW5mbzoCOAEiaAoNQmFk",
-            "QmluYXJ5SW5mbxIOCgZyZWFzb24YASABKAkSEAoIb3BlcmF0b3IYAiABKAkS",
-            "NQoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
-            "YW1wQgSQ3x8BIuoBChNVcGRhdGVOYW1lc3BhY2VJbmZvEhMKC2Rlc2NyaXB0",
-            "aW9uGAEgASgJEhMKC293bmVyX2VtYWlsGAIgASgJEkYKBGRhdGEYAyADKAsy",
-            "OC50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLlVwZGF0ZU5hbWVzcGFjZUlu",
-            "Zm8uRGF0YUVudHJ5EjQKBXN0YXRlGAQgASgOMiUudGVtcG9yYWwuYXBpLmVu",
-            "dW1zLnYxLk5hbWVzcGFjZVN0YXRlGisKCURhdGFFbnRyeRILCgNrZXkYASAB",
-            "KAkSDQoFdmFsdWUYAiABKAk6AjgBIioKD05hbWVzcGFjZUZpbHRlchIXCg9p",
-            "bmNsdWRlX2RlbGV0ZWQYASABKAhCmAEKHGlvLnRlbXBvcmFsLmFwaS5uYW1l",
-            "c3BhY2UudjFCDE1lc3NhZ2VQcm90b1ABWilnby50ZW1wb3JhbC5pby9hcGkv",
-            "bmFtZXNwYWNlL3YxO25hbWVzcGFjZaoCG1RlbXBvcmFsaW8uQXBpLk5hbWVz",
-            "cGFjZS5WMeoCHlRlbXBvcmFsaW86OkFwaTo6TmFtZXNwYWNlOjpWMWIGcHJv",
-            "dG8z"));
+            "bFN0YXRlEh8KF3Zpc2liaWxpdHlfYXJjaGl2YWxfdXJpGAYgASgJEnUKH2N1",
+            "c3RvbV9zZWFyY2hfYXR0cmlidXRlX2FsaWFzZXMYByADKAsyTC50ZW1wb3Jh",
+            "bC5hcGkubmFtZXNwYWNlLnYxLk5hbWVzcGFjZUNvbmZpZy5DdXN0b21TZWFy",
+            "Y2hBdHRyaWJ1dGVBbGlhc2VzRW50cnkaQwohQ3VzdG9tU2VhcmNoQXR0cmli",
+            "dXRlQWxpYXNlc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToC",
+            "OAEisAEKC0JhZEJpbmFyaWVzEkYKCGJpbmFyaWVzGAEgAygLMjQudGVtcG9y",
+            "YWwuYXBpLm5hbWVzcGFjZS52MS5CYWRCaW5hcmllcy5CaW5hcmllc0VudHJ5",
+            "GlkKDUJpbmFyaWVzRW50cnkSCwoDa2V5GAEgASgJEjcKBXZhbHVlGAIgASgL",
+            "MigudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5CYWRCaW5hcnlJbmZvOgI4",
+            "ASJoCg1CYWRCaW5hcnlJbmZvEg4KBnJlYXNvbhgBIAEoCRIQCghvcGVyYXRv",
+            "chgCIAEoCRI1CgtjcmVhdGVfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1",
+            "Zi5UaW1lc3RhbXBCBJDfHwEi6gEKE1VwZGF0ZU5hbWVzcGFjZUluZm8SEwoL",
+            "ZGVzY3JpcHRpb24YASABKAkSEwoLb3duZXJfZW1haWwYAiABKAkSRgoEZGF0",
+            "YRgDIAMoCzI4LnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuVXBkYXRlTmFt",
+            "ZXNwYWNlSW5mby5EYXRhRW50cnkSNAoFc3RhdGUYBCABKA4yJS50ZW1wb3Jh",
+            "bC5hcGkuZW51bXMudjEuTmFtZXNwYWNlU3RhdGUaKwoJRGF0YUVudHJ5EgsK",
+            "A2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiKgoPTmFtZXNwYWNlRmls",
+            "dGVyEhcKD2luY2x1ZGVfZGVsZXRlZBgBIAEoCEKYAQocaW8udGVtcG9yYWwu",
+            "YXBpLm5hbWVzcGFjZS52MUIMTWVzc2FnZVByb3RvUAFaKWdvLnRlbXBvcmFs",
+            "LmlvL2FwaS9uYW1lc3BhY2UvdjE7bmFtZXNwYWNlqgIbVGVtcG9yYWxpby5B",
+            "cGkuTmFtZXNwYWNlLlYx6gIeVGVtcG9yYWxpbzo6QXBpOjpOYW1lc3BhY2U6",
+            "OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Parser, new[]{ "Name", "State", "Description", "OwnerEmail", "Data", "Id", "SupportsSchedules" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceConfig), global::Temporalio.Api.Namespace.V1.NamespaceConfig.Parser, new[]{ "WorkflowExecutionRetentionTtl", "BadBinaries", "HistoryArchivalState", "HistoryArchivalUri", "VisibilityArchivalState", "VisibilityArchivalUri" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceConfig), global::Temporalio.Api.Namespace.V1.NamespaceConfig.Parser, new[]{ "WorkflowExecutionRetentionTtl", "BadBinaries", "HistoryArchivalState", "HistoryArchivalUri", "VisibilityArchivalState", "VisibilityArchivalUri", "CustomSearchAttributeAliases" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.BadBinaries), global::Temporalio.Api.Namespace.V1.BadBinaries.Parser, new[]{ "Binaries" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.BadBinaryInfo), global::Temporalio.Api.Namespace.V1.BadBinaryInfo.Parser, new[]{ "Reason", "Operator", "CreateTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.UpdateNamespaceInfo), global::Temporalio.Api.Namespace.V1.UpdateNamespaceInfo.Parser, new[]{ "Description", "OwnerEmail", "Data", "State" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
@@ -522,6 +526,7 @@ namespace Temporalio.Api.Namespace.V1 {
       historyArchivalUri_ = other.historyArchivalUri_;
       visibilityArchivalState_ = other.visibilityArchivalState_;
       visibilityArchivalUri_ = other.visibilityArchivalUri_;
+      customSearchAttributeAliases_ = other.customSearchAttributeAliases_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -609,6 +614,20 @@ namespace Temporalio.Api.Namespace.V1 {
       }
     }
 
+    /// <summary>Field number for the "custom_search_attribute_aliases" field.</summary>
+    public const int CustomSearchAttributeAliasesFieldNumber = 7;
+    private static readonly pbc::MapField<string, string>.Codec _map_customSearchAttributeAliases_codec
+        = new pbc::MapField<string, string>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForString(18, ""), 58);
+    private readonly pbc::MapField<string, string> customSearchAttributeAliases_ = new pbc::MapField<string, string>();
+    /// <summary>
+    /// Map from field name to alias.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, string> CustomSearchAttributeAliases {
+      get { return customSearchAttributeAliases_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -630,6 +649,7 @@ namespace Temporalio.Api.Namespace.V1 {
       if (HistoryArchivalUri != other.HistoryArchivalUri) return false;
       if (VisibilityArchivalState != other.VisibilityArchivalState) return false;
       if (VisibilityArchivalUri != other.VisibilityArchivalUri) return false;
+      if (!CustomSearchAttributeAliases.Equals(other.CustomSearchAttributeAliases)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -643,6 +663,7 @@ namespace Temporalio.Api.Namespace.V1 {
       if (HistoryArchivalUri.Length != 0) hash ^= HistoryArchivalUri.GetHashCode();
       if (VisibilityArchivalState != global::Temporalio.Api.Enums.V1.ArchivalState.Unspecified) hash ^= VisibilityArchivalState.GetHashCode();
       if (VisibilityArchivalUri.Length != 0) hash ^= VisibilityArchivalUri.GetHashCode();
+      hash ^= CustomSearchAttributeAliases.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -685,6 +706,7 @@ namespace Temporalio.Api.Namespace.V1 {
         output.WriteRawTag(50);
         output.WriteString(VisibilityArchivalUri);
       }
+      customSearchAttributeAliases_.WriteTo(output, _map_customSearchAttributeAliases_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -719,6 +741,7 @@ namespace Temporalio.Api.Namespace.V1 {
         output.WriteRawTag(50);
         output.WriteString(VisibilityArchivalUri);
       }
+      customSearchAttributeAliases_.WriteTo(ref output, _map_customSearchAttributeAliases_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -747,6 +770,7 @@ namespace Temporalio.Api.Namespace.V1 {
       if (VisibilityArchivalUri.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(VisibilityArchivalUri);
       }
+      size += customSearchAttributeAliases_.CalculateSize(_map_customSearchAttributeAliases_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -783,6 +807,7 @@ namespace Temporalio.Api.Namespace.V1 {
       if (other.VisibilityArchivalUri.Length != 0) {
         VisibilityArchivalUri = other.VisibilityArchivalUri;
       }
+      customSearchAttributeAliases_.Add(other.customSearchAttributeAliases_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -828,6 +853,10 @@ namespace Temporalio.Api.Namespace.V1 {
             VisibilityArchivalUri = input.ReadString();
             break;
           }
+          case 58: {
+            customSearchAttributeAliases_.AddEntriesFrom(input, _map_customSearchAttributeAliases_codec);
+            break;
+          }
         }
       }
     #endif
@@ -871,6 +900,10 @@ namespace Temporalio.Api.Namespace.V1 {
           }
           case 50: {
             VisibilityArchivalUri = input.ReadString();
+            break;
+          }
+          case 58: {
+            customSearchAttributeAliases_.AddEntriesFrom(ref input, _map_customSearchAttributeAliases_codec);
             break;
           }
         }

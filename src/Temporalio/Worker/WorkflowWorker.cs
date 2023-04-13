@@ -71,7 +71,9 @@ namespace Temporalio.Worker
         internal Dictionary<string, WorkflowDefinition> WorkflowDefinitions { get; private init; }
 
         /// <summary>
-        /// Execute this worker until poller shutdown or failure.
+        /// Execute this worker until poller shutdown or failure. If there is a failure, this may
+        /// need to be called a second time after shutdown initiated to ensure workflow activations
+        /// are drained.
         /// </summary>
         /// <returns>Task that only completes successfully on poller shutdown.</returns>
         public async Task ExecuteAsync()

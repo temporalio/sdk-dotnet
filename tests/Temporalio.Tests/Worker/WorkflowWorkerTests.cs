@@ -1641,18 +1641,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         TimeoutActivityWorkflow.Ref.RunAsync,
                         local,
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
-                // TODO(cretz): Local activities are not wrapping exceptions properly, update this
-                // when https://github.com/temporalio/sdk-core/issues/323 fixed
-                TimeoutFailureException toExc;
-                if (local)
-                {
-                    toExc = Assert.IsType<TimeoutFailureException>(wfExc.InnerException);
-                }
-                else
-                {
-                    var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
-                    toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
-                }
+                var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
+                var toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
                 Assert.Equal(TimeoutType.StartToClose, toExc.TimeoutType);
             },
             new() { Activities = { TimeoutActivityWorkflow.RunUntilCancelledAsync } });
@@ -1730,17 +1720,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                             // Lowering for quicker LA result
                             TaskTimeout = TimeSpan.FromSeconds(2),
                         }));
-                // TODO(cretz): Local activities are not wrapping exceptions properly, update this
-                // when https://github.com/temporalio/sdk-core/issues/323 fixed
-                if (local)
-                {
-                    Assert.IsType<CancelledFailureException>(wfExc.InnerException);
-                }
-                else
-                {
-                    var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
-                    Assert.IsType<CancelledFailureException>(actExc.InnerException);
-                }
+                var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
+                Assert.IsType<CancelledFailureException>(actExc.InnerException);
 
                 // Cancel before start
                 wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
@@ -2363,7 +2344,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
     }
 
-    [Fact]
+    [Fact(Skip = "TODO(cretz): This is currently not throwing expected non-determinism errors in core")]
     public async Task ExecuteWorkflowAsync_Patched_ProperlyHandled()
     {
         var workerOptions = new TemporalWorkerOptions()

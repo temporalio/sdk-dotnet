@@ -47,7 +47,8 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
             "X1dPUktGTE9XX0FMUkVBRFlfRVhJU1RTEAEqfgodQ2hpbGRXb3JrZmxvd0Nh",
             "bmNlbGxhdGlvblR5cGUSCwoHQUJBTkRPThAAEg4KClRSWV9DQU5DRUwQARIf",
             "ChtXQUlUX0NBTkNFTExBVElPTl9DT01QTEVURUQQAhIfChtXQUlUX0NBTkNF",
-            "TExBVElPTl9SRVFVRVNURUQQA2IGcHJvdG8z"));
+            "TExBVElPTl9SRVFVRVNURUQQA0Ip6gImVGVtcG9yYWxpbzo6QnJpZGdlOjpB",
+            "cGk6OkNoaWxkV29ya2Zsb3diBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ChildWorkflow.ParentClosePolicy), typeof(global::Temporalio.Bridge.Api.ChildWorkflow.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -62,31 +63,30 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
   }
   #region Enums
   /// <summary>
-  ///*
   /// Used by the service to determine the fate of a child workflow
   /// in case its parent is closed.
   /// </summary>
   internal enum ParentClosePolicy {
     /// <summary>
-    ///* Let's the server set the default. 
+    /// Let's the server set the default.
     /// </summary>
     [pbr::OriginalName("PARENT_CLOSE_POLICY_UNSPECIFIED")] Unspecified = 0,
     /// <summary>
-    ///* Terminate means terminating the child workflow. 
+    /// Terminate means terminating the child workflow.
     /// </summary>
     [pbr::OriginalName("PARENT_CLOSE_POLICY_TERMINATE")] Terminate = 1,
     /// <summary>
-    ///* Abandon means not doing anything on the child workflow. 
+    /// Abandon means not doing anything on the child workflow.
     /// </summary>
     [pbr::OriginalName("PARENT_CLOSE_POLICY_ABANDON")] Abandon = 2,
     /// <summary>
-    ///* Cancel means requesting cancellation on the child workflow. 
+    /// Cancel means requesting cancellation on the child workflow.
     /// </summary>
     [pbr::OriginalName("PARENT_CLOSE_POLICY_REQUEST_CANCEL")] RequestCancel = 3,
   }
 
   /// <summary>
-  ///* Possible causes of failure to start a child workflow 
+  /// Possible causes of failure to start a child workflow
   /// </summary>
   internal enum StartChildWorkflowExecutionFailedCause {
     [pbr::OriginalName("START_CHILD_WORKFLOW_EXECUTION_FAILED_CAUSE_UNSPECIFIED")] Unspecified = 0,
@@ -94,24 +94,23 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
   }
 
   /// <summary>
-  ///*
   /// Controls at which point to report back to lang when a child workflow is cancelled
   /// </summary>
   internal enum ChildWorkflowCancellationType {
     /// <summary>
-    ///* Do not request cancellation of the child workflow if already scheduled 
+    /// Do not request cancellation of the child workflow if already scheduled
     /// </summary>
     [pbr::OriginalName("ABANDON")] Abandon = 0,
     /// <summary>
-    ///* Initiate a cancellation request and immediately report cancellation to the parent. 
+    /// Initiate a cancellation request and immediately report cancellation to the parent.
     /// </summary>
     [pbr::OriginalName("TRY_CANCEL")] TryCancel = 1,
     /// <summary>
-    ///* Wait for child cancellation completion. 
+    /// Wait for child cancellation completion.
     /// </summary>
     [pbr::OriginalName("WAIT_CANCELLATION_COMPLETED")] WaitCancellationCompleted = 2,
     /// <summary>
-    ///* Request cancellation of the child and wait for confirmation that the request was received. 
+    /// Request cancellation of the child and wait for confirmation that the request was received.
     /// </summary>
     [pbr::OriginalName("WAIT_CANCELLATION_REQUESTED")] WaitCancellationRequested = 3,
   }
@@ -120,7 +119,6 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
 
   #region Messages
   /// <summary>
-  ///*
   /// Used by core to resolve child workflow executions.
   /// </summary>
   internal sealed partial class ChildWorkflowResult : pb::IMessage<ChildWorkflowResult>
@@ -462,7 +460,6 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
   }
 
   /// <summary>
-  ///*
   /// Used in ChildWorkflowResult to report successful completion.
   /// </summary>
   internal sealed partial class Success : pb::IMessage<Success>
@@ -664,7 +661,6 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
   }
 
   /// <summary>
-  ///*
   /// Used in ChildWorkflowResult to report non successful outcomes such as
   /// application failures, timeouts, terminations, and cancellations.
   /// </summary>
@@ -867,7 +863,6 @@ namespace Temporalio.Bridge.Api.ChildWorkflow {
   }
 
   /// <summary>
-  ///*
   /// Used in ChildWorkflowResult to report cancellation.
   /// Failure should be ChildWorkflowFailure with a CanceledFailure cause.
   /// </summary>

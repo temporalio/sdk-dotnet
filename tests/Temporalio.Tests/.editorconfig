@@ -42,6 +42,9 @@ dotnet_diagnostic.SA1313.severity = none
 dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1602.severity = none
 
+# We move tasks around and wait on them later
+dotnet_diagnostic.VSTHRD003.severity = none
+
 # No need to avoid things using TaskScheduler.Current in workflows
 dotnet_diagnostic.VSTHRD105.severity = none
 

@@ -31,6 +31,7 @@ pub struct WorkerOptions {
     default_heartbeat_throttle_interval_millis: u64,
     max_activities_per_second: f64,
     max_task_queue_activities_per_second: f64,
+    graceful_shutdown_period_millis: u64,
 }
 
 #[derive(Clone)]
@@ -302,23 +303,6 @@ pub extern "C" fn worker_request_workflow_eviction(worker: *mut Worker, run_id: 
 }
 
 #[no_mangle]
-pub extern "C" fn worker_shutdown(
-    worker: *mut Worker,
-    user_data: *mut libc::c_void,
-    callback: WorkerCallback,
-) {
-    let worker = unsafe { &*worker };
-    let user_data = UserDataHandle(user_data);
-    let core_worker = worker.worker.as_ref().unwrap().clone();
-    worker.runtime.core.tokio_handle().spawn(async move {
-        core_worker.shutdown().await;
-        unsafe {
-            callback(user_data.into(), std::ptr::null());
-        }
-    });
-}
-
-#[no_mangle]
 pub extern "C" fn worker_initiate_shutdown(
     worker: *mut Worker,
 ) {
@@ -398,6 +382,10 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
                     Some(opt.max_task_queue_activities_per_second)
                 },
             )
+            // Even though grace period is optional, if it is not set then the
+            // auto-cancel-activity behavior of shutdown will not occur, so we
+            // always set it even if 0.
+            .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
             .build()
             .map_err(|err| anyhow::anyhow!(err))
     }

@@ -1,11 +1,11 @@
 using Temporalio.Bridge.Api.ActivityTask;
-using Temporalio.Bridge.Api.WorkflowActivation;
 
 namespace Temporalio.Tests.Worker;
 
 internal class ManualPollCompletionBridgeWorker : Bridge.Worker
 {
     private readonly Bridge.Worker underlying;
+    private Task<ActivityTask?>? leftoverPollTask;
 
     public ManualPollCompletionBridgeWorker(Bridge.Worker underlying)
         : base(underlying)
@@ -13,18 +13,23 @@ internal class ManualPollCompletionBridgeWorker : Bridge.Worker
         this.underlying = underlying;
     }
 
-    public TaskCompletionSource<WorkflowActivation?> PollWorkflowCompletion { get; } = new();
+    public TaskCompletionSource<ActivityTask?> PollActivityCompletion { get; private set; } = new();
 
-    public TaskCompletionSource<ActivityTask?> PollActivityCompletion { get; } = new();
-
-    public override Task<WorkflowActivation?> PollWorkflowActivationAsync()
+    public override async Task<ActivityTask?> PollActivityTaskAsync()
     {
-        return Task.WhenAny(PollWorkflowCompletion.Task, base.PollWorkflowActivationAsync()).Unwrap();
-    }
-
-    public override Task<ActivityTask?> PollActivityTaskAsync()
-    {
-        return Task.WhenAny(PollActivityCompletion.Task, base.PollActivityTaskAsync()).Unwrap();
+        // Start a poll if one not leftover
+        leftoverPollTask ??= base.PollActivityTaskAsync();
+        var completedTask = await Task.WhenAny(PollActivityCompletion.Task, leftoverPollTask!);
+        // Remove leftover if completed task was leftover one
+        if (completedTask == leftoverPollTask)
+        {
+            leftoverPollTask = null;
+        }
+        else
+        {
+            PollActivityCompletion = new();
+        }
+        return await completedTask;
     }
 
     protected override bool ReleaseHandle()

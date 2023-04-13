@@ -103,10 +103,10 @@ pub extern "C" fn client_connect(
     };
     // Spawn async call
     let user_data = UserDataHandle(user_data);
-    let metric_meter = runtime.core.metric_meter().cloned();
+    let core = runtime.core.clone();
     runtime.core.tokio_handle().spawn(async move {
         match core_options
-            .connect_no_namespace(metric_meter.as_ref(), headers)
+            .connect_no_namespace(core.metric_meter().as_deref(), headers)
             .await
         {
             Ok(core) => {
@@ -326,7 +326,7 @@ async fn call_workflow_service(
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
         "UpdateNamespace" => rpc_call!(client, call, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
-        "UpdateWorkflow" => rpc_call!(client, call, update_workflow),
+        "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
         "UpdateWorkerBuildIdOrdering" => rpc_call!(client, call, update_worker_build_id_ordering),
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }

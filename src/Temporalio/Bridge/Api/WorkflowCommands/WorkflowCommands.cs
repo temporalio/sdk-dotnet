@@ -186,7 +186,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
             "cHNlcnRlZF9tZW1vGAEgASgLMhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5N",
             "ZW1vKlgKGEFjdGl2aXR5Q2FuY2VsbGF0aW9uVHlwZRIOCgpUUllfQ0FOQ0VM",
             "EAASHwobV0FJVF9DQU5DRUxMQVRJT05fQ09NUExFVEVEEAESCwoHQUJBTkRP",
-            "ThACYgZwcm90bzM="));
+            "ThACQizqAilUZW1wb3JhbGlvOjpCcmlkZ2U6OkFwaTo6V29ya2Zsb3dDb21t",
+            "YW5kc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.WorkflowCommands.ActivityCancellationType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -219,18 +220,18 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   #region Enums
   internal enum ActivityCancellationType {
     /// <summary>
-    //// Initiate a cancellation request and immediately report cancellation to the workflow.
+    /// Initiate a cancellation request and immediately report cancellation to the workflow.
     /// </summary>
     [pbr::OriginalName("TRY_CANCEL")] TryCancel = 0,
     /// <summary>
-    //// Wait for activity cancellation completion. Note that activity must heartbeat to receive a
-    //// cancellation notification. This can block the cancellation for a long time if activity
-    //// doesn't heartbeat or chooses to ignore the cancellation request.
+    /// Wait for activity cancellation completion. Note that activity must heartbeat to receive a
+    /// cancellation notification. This can block the cancellation for a long time if activity
+    /// doesn't heartbeat or chooses to ignore the cancellation request.
     /// </summary>
     [pbr::OriginalName("WAIT_CANCELLATION_COMPLETED")] WaitCancellationCompleted = 1,
     /// <summary>
-    //// Do not request cancellation of the activity and immediately report cancellation to the
-    //// workflow
+    /// Do not request cancellation of the activity and immediately report cancellation to the
+    /// workflow
     /// </summary>
     [pbr::OriginalName("ABANDON")] Abandon = 2,
   }
@@ -1473,7 +1474,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number, used as the operation identifier
+    /// Lang's incremental sequence number, used as the operation identifier
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1710,7 +1711,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number as passed to `StartTimer`
+    /// Lang's incremental sequence number as passed to `StartTimer`
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1914,7 +1915,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number, used as the operation identifier
+    /// Lang's incremental sequence number, used as the operation identifier
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1981,7 +1982,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = pb::FieldCodec.ForMessage(58, global::Temporalio.Api.Common.V1.Payload.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload> arguments_ = new pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Arguments/input to the activity. Called "input" upstream.
+    /// Arguments/input to the activity. Called "input" upstream.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1993,9 +1994,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int ScheduleToCloseTimeoutFieldNumber = 8;
     private global::Google.Protobuf.WellKnownTypes.Duration scheduleToCloseTimeout_;
     /// <summary>
-    //// Indicates how long the caller is willing to wait for an activity completion. Limits how long
-    //// retries will be attempted. Either this or start_to_close_timeout_seconds must be specified.
-    //// When not specified defaults to the workflow execution timeout.
+    /// Indicates how long the caller is willing to wait for an activity completion. Limits how long
+    /// retries will be attempted. Either this or start_to_close_timeout_seconds must be specified.
+    /// When not specified defaults to the workflow execution timeout.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2010,9 +2011,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int ScheduleToStartTimeoutFieldNumber = 9;
     private global::Google.Protobuf.WellKnownTypes.Duration scheduleToStartTimeout_;
     /// <summary>
-    //// Limits time an activity task can stay in a task queue before a worker picks it up. This
-    //// timeout is always non retryable as all a retry would achieve is to put it back into the same
-    //// queue. Defaults to schedule_to_close_timeout or workflow execution timeout if not specified.
+    /// Limits time an activity task can stay in a task queue before a worker picks it up. This
+    /// timeout is always non retryable as all a retry would achieve is to put it back into the same
+    /// queue. Defaults to schedule_to_close_timeout or workflow execution timeout if not specified.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2027,8 +2028,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int StartToCloseTimeoutFieldNumber = 10;
     private global::Google.Protobuf.WellKnownTypes.Duration startToCloseTimeout_;
     /// <summary>
-    //// Maximum time an activity is allowed to execute after a pick up by a worker. This timeout is
-    //// always retryable. Either this or schedule_to_close_timeout must be specified.
+    /// Maximum time an activity is allowed to execute after a pick up by a worker. This timeout is
+    /// always retryable. Either this or schedule_to_close_timeout must be specified.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2043,7 +2044,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int HeartbeatTimeoutFieldNumber = 11;
     private global::Google.Protobuf.WellKnownTypes.Duration heartbeatTimeout_;
     /// <summary>
-    //// Maximum time allowed between successful worker heartbeats.
+    /// Maximum time allowed between successful worker heartbeats.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2058,9 +2059,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int RetryPolicyFieldNumber = 12;
     private global::Temporalio.Api.Common.V1.RetryPolicy retryPolicy_;
     /// <summary>
-    //// Activities are provided by a default retry policy controlled through the service dynamic
-    //// configuration. Retries are happening up to schedule_to_close_timeout. To disable retries set
-    //// retry_policy.maximum_attempts to 1.
+    /// Activities are provided by a default retry policy controlled through the service dynamic
+    /// configuration. Retries are happening up to schedule_to_close_timeout. To disable retries set
+    /// retry_policy.maximum_attempts to 1.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2075,7 +2076,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int CancellationTypeFieldNumber = 13;
     private global::Temporalio.Bridge.Api.WorkflowCommands.ActivityCancellationType cancellationType_ = global::Temporalio.Bridge.Api.WorkflowCommands.ActivityCancellationType.TryCancel;
     /// <summary>
-    //// Defines how the workflow will wait (or not) for cancellation of the activity to be confirmed
+    /// Defines how the workflow will wait (or not) for cancellation of the activity to be confirmed
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2090,9 +2091,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int DoNotEagerlyExecuteFieldNumber = 14;
     private bool doNotEagerlyExecute_;
     /// <summary>
-    //// If set, the worker will not tell the service that it can immediately start executing this
-    //// activity. When unset/default, workers will always attempt to do so if activity execution
-    //// slots are available.
+    /// If set, the worker will not tell the service that it can immediately start executing this
+    /// activity. When unset/default, workers will always attempt to do so if activity execution
+    /// slots are available.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2609,7 +2610,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number, used as the operation identifier
+    /// Lang's incremental sequence number, used as the operation identifier
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2648,9 +2649,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int AttemptFieldNumber = 4;
     private uint attempt_;
     /// <summary>
-    //// Local activities can start with a non-1 attempt, if lang has been told to backoff using
-    //// a timer before retrying. It should pass the attempt number from a `DoBackoff` activity
-    //// resolution.
+    /// Local activities can start with a non-1 attempt, if lang has been told to backoff using
+    /// a timer before retrying. It should pass the attempt number from a `DoBackoff` activity
+    /// resolution.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2665,8 +2666,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int OriginalScheduleTimeFieldNumber = 5;
     private global::Google.Protobuf.WellKnownTypes.Timestamp originalScheduleTime_;
     /// <summary>
-    //// If this local activity is a retry (as per the attempt field) this needs to be the original
-    //// scheduling time (as provided in `DoBackoff`)
+    /// If this local activity is a retry (as per the attempt field) this needs to be the original
+    /// scheduling time (as provided in `DoBackoff`)
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2694,7 +2695,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = pb::FieldCodec.ForMessage(58, global::Temporalio.Api.Common.V1.Payload.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload> arguments_ = new pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Arguments/input to the activity.
+    /// Arguments/input to the activity.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2706,9 +2707,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int ScheduleToCloseTimeoutFieldNumber = 8;
     private global::Google.Protobuf.WellKnownTypes.Duration scheduleToCloseTimeout_;
     /// <summary>
-    //// Indicates how long the caller is willing to wait for local activity completion. Limits how
-    //// long retries will be attempted. When not specified defaults to the workflow execution
-    //// timeout (which may be unset).
+    /// Indicates how long the caller is willing to wait for local activity completion. Limits how
+    /// long retries will be attempted. When not specified defaults to the workflow execution
+    /// timeout (which may be unset).
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2723,11 +2724,11 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int ScheduleToStartTimeoutFieldNumber = 9;
     private global::Google.Protobuf.WellKnownTypes.Duration scheduleToStartTimeout_;
     /// <summary>
-    //// Limits time the local activity can idle internally before being executed. That can happen if
-    //// the worker is currently at max concurrent local activity executions. This timeout is always
-    //// non retryable as all a retry would achieve is to put it back into the same queue. Defaults
-    //// to `schedule_to_close_timeout` if not specified and that is set. Must be &lt;=
-    //// `schedule_to_close_timeout` when set, otherwise, it will be clamped down.
+    /// Limits time the local activity can idle internally before being executed. That can happen if
+    /// the worker is currently at max concurrent local activity executions. This timeout is always
+    /// non retryable as all a retry would achieve is to put it back into the same queue. Defaults
+    /// to `schedule_to_close_timeout` if not specified and that is set. Must be &lt;=
+    /// `schedule_to_close_timeout` when set, otherwise, it will be clamped down.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2742,10 +2743,10 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int StartToCloseTimeoutFieldNumber = 10;
     private global::Google.Protobuf.WellKnownTypes.Duration startToCloseTimeout_;
     /// <summary>
-    //// Maximum time the local activity is allowed to execute after the task is dispatched. This
-    //// timeout is always retryable. Either or both of `schedule_to_close_timeout` and this must be
-    //// specified. If set, this must be &lt;= `schedule_to_close_timeout`, otherwise, it will be
-    //// clamped down.
+    /// Maximum time the local activity is allowed to execute after the task is dispatched. This
+    /// timeout is always retryable. Either or both of `schedule_to_close_timeout` and this must be
+    /// specified. If set, this must be &lt;= `schedule_to_close_timeout`, otherwise, it will be
+    /// clamped down.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2760,8 +2761,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int RetryPolicyFieldNumber = 11;
     private global::Temporalio.Api.Common.V1.RetryPolicy retryPolicy_;
     /// <summary>
-    //// Specify a retry policy for the local activity. By default local activities will be retried
-    //// indefinitely.
+    /// Specify a retry policy for the local activity. By default local activities will be retried
+    /// indefinitely.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2776,9 +2777,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int LocalRetryThresholdFieldNumber = 12;
     private global::Google.Protobuf.WellKnownTypes.Duration localRetryThreshold_;
     /// <summary>
-    //// If the activity is retrying and backoff would exceed this value, lang will be told to
-    //// schedule a timer and retry the activity after. Otherwise, backoff will happen internally in
-    //// core. Defaults to 1 minute.
+    /// If the activity is retrying and backoff would exceed this value, lang will be told to
+    /// schedule a timer and retry the activity after. Otherwise, backoff will happen internally in
+    /// core. Defaults to 1 minute.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2793,9 +2794,9 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int CancellationTypeFieldNumber = 13;
     private global::Temporalio.Bridge.Api.WorkflowCommands.ActivityCancellationType cancellationType_ = global::Temporalio.Bridge.Api.WorkflowCommands.ActivityCancellationType.TryCancel;
     /// <summary>
-    //// Defines how the workflow will wait (or not) for cancellation of the activity to be
-    //// confirmed. Lang should default this to `WAIT_CANCELLATION_COMPLETED`, even though proto
-    //// will default to `TRY_CANCEL` automatically.
+    /// Defines how the workflow will wait (or not) for cancellation of the activity to be
+    /// confirmed. Lang should default this to `WAIT_CANCELLATION_COMPLETED`, even though proto
+    /// will default to `TRY_CANCEL` automatically.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3309,7 +3310,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number as passed to `ScheduleActivity`
+    /// Lang's incremental sequence number as passed to `ScheduleActivity`
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3501,7 +3502,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number as passed to `ScheduleLocalActivity`
+    /// Lang's incremental sequence number as passed to `ScheduleLocalActivity`
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3702,7 +3703,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int QueryIdFieldNumber = 1;
     private string queryId_ = "";
     /// <summary>
-    //// Corresponds to the id provided in the activation job
+    /// Corresponds to the id provided in the activation job
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -4169,7 +4170,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Issued when the workflow completes successfully
+  /// Issued when the workflow completes successfully
   /// </summary>
   internal sealed partial class CompleteWorkflowExecution : pb::IMessage<CompleteWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -4370,7 +4371,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Issued when the workflow errors out
+  /// Issued when the workflow errors out
   /// </summary>
   internal sealed partial class FailWorkflowExecution : pb::IMessage<FailWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -5073,8 +5074,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Indicate a workflow has completed as cancelled. Generally sent as a response to an activation
-  //// containing a cancellation job.
+  /// Indicate a workflow has completed as cancelled. Generally sent as a response to an activation
+  /// containing a cancellation job.
   /// </summary>
   internal sealed partial class CancelWorkflowExecution : pb::IMessage<CancelWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -5229,7 +5230,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// A request to set/check if a certain patch is present or not
+  /// A request to set/check if a certain patch is present or not
   /// </summary>
   internal sealed partial class SetPatchMarker : pb::IMessage<SetPatchMarker>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -5467,7 +5468,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Start a child workflow execution
+  /// Start a child workflow execution
   /// </summary>
   internal sealed partial class StartChildWorkflowExecution : pb::IMessage<StartChildWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -5533,7 +5534,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number, used as the operation identifier
+    /// Lang's incremental sequence number, used as the operation identifier
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5607,7 +5608,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int WorkflowExecutionTimeoutFieldNumber = 7;
     private global::Google.Protobuf.WellKnownTypes.Duration workflowExecutionTimeout_;
     /// <summary>
-    //// Total workflow execution timeout including retries and continue as new.
+    /// Total workflow execution timeout including retries and continue as new.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5622,7 +5623,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int WorkflowRunTimeoutFieldNumber = 8;
     private global::Google.Protobuf.WellKnownTypes.Duration workflowRunTimeout_;
     /// <summary>
-    //// Timeout of a single workflow run.
+    /// Timeout of a single workflow run.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5637,7 +5638,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int WorkflowTaskTimeoutFieldNumber = 9;
     private global::Google.Protobuf.WellKnownTypes.Duration workflowTaskTimeout_;
     /// <summary>
-    //// Timeout of a single workflow task.
+    /// Timeout of a single workflow task.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5652,7 +5653,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int ParentClosePolicyFieldNumber = 10;
     private global::Temporalio.Bridge.Api.ChildWorkflow.ParentClosePolicy parentClosePolicy_ = global::Temporalio.Bridge.Api.ChildWorkflow.ParentClosePolicy.Unspecified;
     /// <summary>
-    //// Default: PARENT_CLOSE_POLICY_TERMINATE.
+    /// Default: PARENT_CLOSE_POLICY_TERMINATE.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5709,7 +5710,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Common.V1.Payload.Parser), 122);
     private readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> headers_ = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Header fields
+    /// Header fields
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5723,7 +5724,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Common.V1.Payload.Parser), 130);
     private readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> memo_ = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Memo fields
+    /// Memo fields
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5737,7 +5738,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Common.V1.Payload.Parser), 138);
     private readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> searchAttributes_ = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Search attributes
+    /// Search attributes
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5749,7 +5750,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int CancellationTypeFieldNumber = 18;
     private global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType cancellationType_ = global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType.Abandon;
     /// <summary>
-    //// Defines behaviour of the underlying workflow when child workflow cancellation has been requested.
+    /// Defines behaviour of the underlying workflow when child workflow cancellation has been requested.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6274,7 +6275,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Cancel a child workflow
+  /// Cancel a child workflow
   /// </summary>
   internal sealed partial class CancelChildWorkflowExecution : pb::IMessage<CancelChildWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -6469,7 +6470,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Request cancellation of an external workflow execution (which may be a started child)
+  /// Request cancellation of an external workflow execution (which may be a started child)
   /// </summary>
   internal sealed partial class RequestCancelExternalWorkflowExecution : pb::IMessage<RequestCancelExternalWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -6528,7 +6529,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number, used as the operation identifier
+    /// Lang's incremental sequence number, used as the operation identifier
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6790,7 +6791,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Send a signal to an external or child workflow
+  /// Send a signal to an external or child workflow
   /// </summary>
   internal sealed partial class SignalExternalWorkflowExecution : pb::IMessage<SignalExternalWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -6852,7 +6853,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number, used as the operation identifier
+    /// Lang's incremental sequence number, used as the operation identifier
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6897,7 +6898,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SignalNameFieldNumber = 4;
     private string signalName_ = "";
     /// <summary>
-    //// Name of the signal handler
+    /// Name of the signal handler
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6914,7 +6915,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = pb::FieldCodec.ForMessage(42, global::Temporalio.Api.Common.V1.Payload.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload> args_ = new pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Arguments for the handler
+    /// Arguments for the handler
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6928,7 +6929,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Common.V1.Payload.Parser), 50);
     private readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> headers_ = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Headers to attach to the signal
+    /// Headers to attach to the signal
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7209,7 +7210,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
   }
 
   /// <summary>
-  //// Can be used to cancel not-already-sent `SignalExternalWorkflowExecution` commands
+  /// Can be used to cancel not-already-sent `SignalExternalWorkflowExecution` commands
   /// </summary>
   internal sealed partial class CancelSignalWorkflow : pb::IMessage<CancelSignalWorkflow>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -7259,7 +7260,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Lang's incremental sequence number as passed to `SignalExternalWorkflowExecution`
+    /// Lang's incremental sequence number as passed to `SignalExternalWorkflowExecution`
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7453,8 +7454,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Common.V1.Payload.Parser), 10);
     private readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> searchAttributes_ = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// SearchAttributes fields - equivalent to indexed_fields on api. Key = search index, Value =
-    //// value?
+    /// SearchAttributes fields - equivalent to indexed_fields on api. Key = search index, Value =
+    /// value?
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

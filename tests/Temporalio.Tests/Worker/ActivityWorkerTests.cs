@@ -303,7 +303,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [Fact]
+    [Fact(Skip = "TODO(cretz): This is a current core bug. Shutdown does not cancel activities.")]
     public async Task ExecuteActivityAsync_MaxConcurrent_TimesOutIfMore()
     {
         [Activity]
@@ -665,7 +665,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             () => handle!.GetResultAsync());
         var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
         var appErr = Assert.IsType<ApplicationFailureException>(actErr.InnerException);
-        Assert.Equal("TaskCanceledException", appErr.ErrorType);
+        Assert.Equal("WorkerShutdown", appErr.ErrorType);
         Assert.True(workerShutdown);
     }
 

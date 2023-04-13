@@ -66,7 +66,9 @@ namespace Temporalio.Worker
         ~ActivityWorker() => Dispose(false);
 
         /// <summary>
-        /// Execute the activity until poller shutdown or failure.
+        /// Execute the activity until poller shutdown or failure. If there is a failure, this may
+        /// need to be called a second time after shutdown initiated to ensure activity tasks are
+        /// drained.
         /// </summary>
         /// <returns>Task that only completes successfully on poller shutdown.</returns>
         public async Task ExecuteAsync()
@@ -110,14 +112,9 @@ namespace Temporalio.Worker
         }
 
         /// <summary>
-        /// Gracefully shutdown this worker after <see cref="ExecuteAsync" /> is complete. This must
-        /// not be called until <see cref="ExecuteAsync" /> has returned. This should never throw.
+        /// Notify all running activities a worker shutdown is happening.
         /// </summary>
-        /// <returns>
-        /// Task that completes when all activities have completed. If a running activity does not
-        /// respond to cancellation, this may never return.
-        /// </returns>
-        public async Task GracefulShutdownAsync()
+        public void NotifyShutdown()
         {
             using (logger.BeginScope(new Dictionary<string, object>()
             {
@@ -130,14 +127,6 @@ namespace Temporalio.Worker
                     worker.Options.GracefulShutdownTimeout,
                     runningActivities.Count);
                 workerShutdownTokenSource.Cancel();
-                await Task.Delay(worker.Options.GracefulShutdownTimeout).ConfigureAwait(false);
-                // Issue cancel-all and wait for all running activities to complete
-                await Task.WhenAll(runningActivities.Values.Select(act =>
-                {
-                    act.Cancel(ActivityCancelReason.WorkerShutdown);
-                    // We know task is set here
-                    return act.Task!;
-                })).ConfigureAwait(false);
             }
         }
 
@@ -539,6 +528,9 @@ namespace Temporalio.Worker
                         break;
                     case Bridge.Api.ActivityTask.ActivityCancelReason.TimedOut:
                         Cancel(ActivityCancelReason.Timeout);
+                        break;
+                    case Bridge.Api.ActivityTask.ActivityCancelReason.WorkerShutdown:
+                        Cancel(ActivityCancelReason.WorkerShutdown);
                         break;
                     default:
                         Cancel(ActivityCancelReason.None);

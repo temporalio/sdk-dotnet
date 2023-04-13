@@ -319,6 +319,9 @@ namespace Temporalio.Bridge.Interop
         public double max_activities_per_second;
 
         public double max_task_queue_activities_per_second;
+
+        [NativeTypeName("uint64_t")]
+        public ulong graceful_shutdown_period_millis;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -395,9 +398,6 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void worker_request_workflow_eviction([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef run_id);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_shutdown([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void worker_initiate_shutdown([NativeTypeName("struct Worker *")] Worker* worker);

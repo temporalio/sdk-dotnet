@@ -604,14 +604,14 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Invoke UpdateWorkflow.
+        /// Invoke UpdateWorkflowExecution.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateWorkflowResponse> UpdateWorkflowAsync(UpdateWorkflowRequest req, RpcOptions? options = null)
+        public async Task<UpdateWorkflowExecutionResponse> UpdateWorkflowExecutionAsync(UpdateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateWorkflow", req, UpdateWorkflowResponse.Parser, options);
+            return await InvokeRpcAsync("UpdateWorkflowExecution", req, UpdateWorkflowExecutionResponse.Parser, options);
         }
     }
 }

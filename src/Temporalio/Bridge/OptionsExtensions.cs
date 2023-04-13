@@ -346,6 +346,10 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildID = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
+            // We have to disable remote activities if a user asks _or_ if we are not running an
+            // activity worker at all. Otherwise shutdown will not proceed properly.
+            var noRemoteActivities = options.LocalActivityWorkerOnly ||
+                options.Activities.Count + options.AdditionalActivityDefinitions.Count == 0;
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -356,7 +360,7 @@ namespace Temporalio.Bridge
                 max_outstanding_workflow_tasks = (uint)options.MaxConcurrentWorkflowTasks,
                 max_outstanding_activities = (uint)options.MaxConcurrentActivities,
                 max_outstanding_local_activities = (uint)options.MaxConcurrentLocalActivities,
-                no_remote_activities = (byte)(options.LocalActivityWorkerOnly ? 1 : 0),
+                no_remote_activities = (byte)(noRemoteActivities ? 1 : 0),
                 sticky_queue_schedule_to_start_timeout_millis =
                     (ulong)options.StickyQueueScheduleToStartTimeout.TotalMilliseconds,
                 max_heartbeat_throttle_interval_millis =
@@ -365,6 +369,8 @@ namespace Temporalio.Bridge
                     (ulong)options.DefaultHeartbeatThrottleInterval.TotalMilliseconds,
                 max_activities_per_second = options.MaxActivitiesPerSecond ?? 0,
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
+                graceful_shutdown_period_millis =
+                    (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
             };
         }
     }

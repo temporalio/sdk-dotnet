@@ -25,28 +25,56 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiJ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvdXBkYXRlLnByb3RvEhV0ZW1wb3Jh",
-            "bC5hcGkuZW51bXMudjEqjgEKH1dvcmtmbG93VXBkYXRlUmVzdWx0QWNjZXNz",
-            "U3R5bGUSMwovV09SS0ZMT1dfVVBEQVRFX1JFU1VMVF9BQ0NFU1NfU1RZTEVf",
-            "VU5TUEVDSUZJRUQQABI2CjJXT1JLRkxPV19VUERBVEVfUkVTVUxUX0FDQ0VT",
-            "U19TVFlMRV9SRVFVSVJFX0lOTElORRABQoMBChhpby50ZW1wb3JhbC5hcGku",
-            "ZW51bXMudjFCC1VwZGF0ZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9l",
-            "bnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVt",
-            "cG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "bC5hcGkuZW51bXMudjEqiwIKJVVwZGF0ZVdvcmtmbG93RXhlY3V0aW9uTGlm",
+            "ZWN5Y2xlU3RhZ2USOQo1VVBEQVRFX1dPUktGTE9XX0VYRUNVVElPTl9MSUZF",
+            "Q1lDTEVfU1RBR0VfVU5TUEVDSUZJRUQQABI2CjJVUERBVEVfV09SS0ZMT1df",
+            "RVhFQ1VUSU9OX0xJRkVDWUNMRV9TVEFHRV9BRE1JVFRFRBABEjYKMlVQREFU",
+            "RV9XT1JLRkxPV19FWEVDVVRJT05fTElGRUNZQ0xFX1NUQUdFX0FDQ0VQVEVE",
+            "EAISNwozVVBEQVRFX1dPUktGTE9XX0VYRUNVVElPTl9MSUZFQ1lDTEVfU1RB",
+            "R0VfQ09NUExFVEVEEANCgwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIL",
+            "VXBkYXRlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2Vu",
+            "dW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpB",
+            "cGk6OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowUpdateResultAccessStyle), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.UpdateWorkflowExecutionLifecycleStage), }, null, null));
     }
     #endregion
 
   }
   #region Enums
-  public enum WorkflowUpdateResultAccessStyle {
-    [pbr::OriginalName("WORKFLOW_UPDATE_RESULT_ACCESS_STYLE_UNSPECIFIED")] Unspecified = 0,
+  /// <summary>
+  /// UpdateWorkflowExecutionLifecycleStage is specified by clients invoking
+  /// workflow execution updates and used to indicate to the server how long the
+  /// client wishes to wait for a return value from the RPC. If any value other
+  /// than UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_COMPLETED is sent by the
+  /// client then the RPC will complete before the update is finished and will
+  /// return a handle to the running update so that it can later be polled for
+  /// completion.
+  /// </summary>
+  public enum UpdateWorkflowExecutionLifecycleStage {
     /// <summary>
-    /// Indicates that the update response _must_ be included as part of the gRPC
-    /// response body
+    /// An unspecified vale for this enum.
     /// </summary>
-    [pbr::OriginalName("WORKFLOW_UPDATE_RESULT_ACCESS_STYLE_REQUIRE_INLINE")] RequireInline = 1,
+    [pbr::OriginalName("UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// The gRPC call will not return until the update request has been admitted
+    /// by the server - it may be the case that due to a considerations like load
+    /// or resource limits that an update is made to wait before the server will
+    /// indicate that it has been received and will be processed. This value
+    /// does not wait for any sort of acknowledgement from a worker.
+    /// </summary>
+    [pbr::OriginalName("UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ADMITTED")] Admitted = 1,
+    /// <summary>
+    /// The gRPC call will not return until the update has passed validation on
+    /// a worker.
+    /// </summary>
+    [pbr::OriginalName("UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_ACCEPTED")] Accepted = 2,
+    /// <summary>
+    /// The gRPC call will not return until the update has executed to completion
+    /// on a worker and has either been rejected or returned a value or an error.
+    /// </summary>
+    [pbr::OriginalName("UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_COMPLETED")] Completed = 3,
   }
 
   #endregion

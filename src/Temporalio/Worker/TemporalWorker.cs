@@ -250,15 +250,17 @@ namespace Temporalio.Worker
             // workers because they are expected to react to polling shutdown and, in the activity
             // worker's case, gracefully shutdown still-running tasks.
             var pollTasks = new List<Task>();
+            Task? activityWorkerTask = null;
             if (activityWorker != null)
             {
-                var activityWorkerTask = activityWorker.ExecuteAsync();
+                activityWorkerTask = activityWorker.ExecuteAsync();
                 tasks.Add(activityWorkerTask);
                 pollTasks.Add(activityWorkerTask);
             }
+            Task? workflowWorkerTask = null;
             if (workflowWorker != null)
             {
-                var workflowWorkerTask = workflowWorker.ExecuteAsync();
+                workflowWorkerTask = workflowWorker.ExecuteAsync();
                 tasks.Add(workflowWorkerTask);
                 pollTasks.Add(workflowWorkerTask);
             }
@@ -285,10 +287,27 @@ namespace Temporalio.Worker
                 }
             }
 
-            // Start shutdown and wait for all poll tasks to be complete. We ignore the exception
-            // because the poll tasks remain in the regular task list that will be waited again
-            // below.
-            tasks.Add(Task.Run(BridgeWorker.ShutdownAsync, CancellationToken.None));
+            // Start shutdown
+            BridgeWorker.InitiateShutdown();
+
+            // If the poll task actually completed with an exception to cause this shutdown, we need
+            // to run that poll task again after shutdown since it needs to handle post-shutdown
+            // messages. We do this my simply adding another execute to poll tasks. The regular task
+            // list will still have the original one that threw which we need later.
+            if (activityWorkerTask?.Exception != null)
+            {
+                pollTasks.Add(activityWorker!.ExecuteAsync());
+            }
+            if (workflowWorkerTask?.Exception != null)
+            {
+                pollTasks.Add(workflowWorker!.ExecuteAsync());
+            }
+
+            // Tell all activities the worker is shutting down
+            activityWorker?.NotifyShutdown();
+
+            // Wait for all poll tasks to be complete. We ignore the exception because the original
+            // poll tasks remain in the regular task list that will be waited again below.
 #pragma warning disable CA1031 // Intentionally swallow all exceptions
             try
             {
@@ -311,12 +330,6 @@ namespace Temporalio.Worker
             if (userTask != null && !userTask.IsCompleted)
             {
                 tasks.Remove(userTask);
-            }
-
-            // If there is an activity worker, we want to add a graceful shutdown task for it
-            if (activityWorker != null)
-            {
-                tasks.Add(activityWorker.GracefulShutdownAsync());
             }
 
             // Now wait for all of the tasks to complete. This will collect exceptions from them all

@@ -215,6 +215,7 @@ typedef struct WorkerOptions {
   uint64_t default_heartbeat_throttle_interval_millis;
   double max_activities_per_second;
   double max_task_queue_activities_per_second;
+  uint64_t graceful_shutdown_period_millis;
 } WorkerOptions;
 
 /**
@@ -314,8 +315,6 @@ const struct ByteArray *worker_record_activity_heartbeat(struct Worker *worker,
                                                          struct ByteArrayRef heartbeat);
 
 void worker_request_workflow_eviction(struct Worker *worker, struct ByteArrayRef run_id);
-
-void worker_shutdown(struct Worker *worker, void *user_data, WorkerCallback callback);
 
 void worker_initiate_shutdown(struct Worker *worker);
 

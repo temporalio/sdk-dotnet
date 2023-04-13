@@ -41,7 +41,8 @@ namespace Temporalio.Bridge.Api {
             "KAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQibgoWQWN0aXZp",
             "dHlUYXNrQ29tcGxldGlvbhISCgp0YXNrX3Rva2VuGAEgASgMEkAKBnJlc3Vs",
             "dBgCIAEoCzIwLmNvcmVzZGsuYWN0aXZpdHlfcmVzdWx0LkFjdGl2aXR5RXhl",
-            "Y3V0aW9uUmVzdWx0YgZwcm90bzM="));
+            "Y3V0aW9uUmVzdWx0QinqAiZUZW1wb3JhbGlvOjpCcmlkZ2U6OkFwaTo6Q29y",
+            "ZUludGVyZmFjZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.ActivityResult.ActivityResultReflection.Descriptor, global::Temporalio.Bridge.Api.ActivityTask.ActivityTaskReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, global::Temporalio.Bridge.Api.ExternalData.ExternalDataReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCommands.WorkflowCommandsReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowCompletionReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
