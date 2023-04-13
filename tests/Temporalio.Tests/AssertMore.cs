@@ -6,16 +6,20 @@ namespace Temporalio.Tests
 {
     public static class AssertMore
     {
-        public static async Task EventuallyAsync(
-            Func<Task> func, TimeSpan? interval = null, int iterations = 15)
+        public static Task EventuallyAsync(
+            Func<Task> func, TimeSpan? interval = null, int iterations = 15) =>
+            EventuallyAsync(
+                () => func().ContinueWith(_ => ValueTuple.Create()), interval, iterations);
+
+        public static async Task<T> EventuallyAsync<T>(
+            Func<Task<T>> func, TimeSpan? interval = null, int iterations = 15)
         {
             var tick = interval ?? TimeSpan.FromMilliseconds(300);
             for (var i = 0; ; i++)
             {
                 try
                 {
-                    await func();
-                    return;
+                    return await func();
                 }
                 catch (Xunit.Sdk.XunitException)
                 {

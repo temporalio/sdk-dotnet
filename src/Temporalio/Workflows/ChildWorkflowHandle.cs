@@ -43,11 +43,13 @@ namespace Temporalio.Workflows
         /// Signal a child workflow.
         /// </summary>
         /// <param name="signal">Signal to send.</param>
+        /// <param name="options">Options for the signal.</param>
         /// <returns>Task for completion of the signal send.</returns>
-        public Task SignalAsync(Func<Task> signal) =>
+        public Task SignalAsync(Func<Task> signal, ChildWorkflowSignalOptions? options = null) =>
             SignalAsync(
                 WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                Array.Empty<object?>());
+                Array.Empty<object?>(),
+                options);
 
         /// <summary>
         /// Signal a child workflow.
@@ -55,19 +57,26 @@ namespace Temporalio.Workflows
         /// <typeparam name="T">Signal arg type.</typeparam>
         /// <param name="signal">Signal to send.</param>
         /// <param name="arg">Signal argument.</param>
+        /// <param name="options">Options for the signal.</param>
         /// <returns>Task for completion of the signal send.</returns>
-        public Task SignalAsync<T>(Func<T, Task> signal, T arg) =>
+        public Task SignalAsync<T>(
+            Func<T, Task> signal, T arg, ChildWorkflowSignalOptions? options = null) =>
             SignalAsync(
                 WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                new object?[] { arg });
+                new object?[] { arg },
+                options);
 
         /// <summary>
         /// Signal a child workflow.
         /// </summary>
         /// <param name="signal">Signal to send.</param>
         /// <param name="args">Signal arguments.</param>
+        /// <param name="options">Options for the signal.</param>
         /// <returns>Task for completion of the signal send.</returns>
-        public abstract Task SignalAsync(string signal, IReadOnlyCollection<object?> args);
+        public abstract Task SignalAsync(
+            string signal,
+            IReadOnlyCollection<object?> args,
+            ChildWorkflowSignalOptions? options = null);
     }
 
     /// <inheritdoc />

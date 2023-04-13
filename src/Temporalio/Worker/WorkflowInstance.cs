@@ -45,9 +45,18 @@ namespace Temporalio.Worker
         private readonly Dictionary<uint, TaskCompletionSource<ActivityResolution>> activitiesPending = new();
         private readonly Dictionary<uint, TaskCompletionSource<ResolveChildWorkflowExecutionStart>> childWorkflowsPendingStart = new();
         private readonly Dictionary<uint, TaskCompletionSource<ChildWorkflowResult>> childWorkflowsPendingCompletion = new();
+        private readonly Dictionary<uint, TaskCompletionSource<ResolveSignalExternalWorkflow>> externalSignalsPending = new();
+        private readonly Dictionary<uint, TaskCompletionSource<ResolveRequestCancelExternalWorkflow>> externalCancelsPending = new();
         private readonly Dictionary<string, List<SignalWorkflow>> bufferedSignals = new();
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private readonly LinkedList<Tuple<Func<bool>, TaskCompletionSource<object?>>> conditions = new();
+        private readonly HashSet<string> patchesNotified = new();
+        private readonly Dictionary<string, bool> patchesMemoized = new();
+        private readonly WorkflowStackTrace workflowStackTrace;
+        // Only non-null if stack trace is not None
+        private readonly LinkedList<System.Diagnostics.StackTrace>? pendingTaskStackTraces;
+        private readonly ILogger logger;
+        private readonly ReplaySafeLogger replaySafeLogger;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -56,6 +65,8 @@ namespace Temporalio.Worker
         private uint timerCounter;
         private uint activityCounter;
         private uint childWorkflowCounter;
+        private uint externalSignalsCounter;
+        private uint externalCancelsCounter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -131,10 +142,13 @@ namespace Temporalio.Worker
                 TaskTimeout: start.WorkflowTaskTimeout.ToTimeSpan(),
                 WorkflowID: start.WorkflowId,
                 WorkflowType: start.WorkflowType);
-            Logger = loggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
+            workflowStackTrace = details.WorkflowStackTrace;
+            pendingTaskStackTraces = workflowStackTrace == WorkflowStackTrace.None ? null : new();
+            logger = loggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
+            replaySafeLogger = new(logger);
             // We accept overflowing for seed (uint64 -> int32)
             Random = new(unchecked((int)details.Start.RandomnessSeed));
-            TaskTracingEnabled = !details.DisableTaskTracing;
+            TracingEventsEnabled = !details.DisableTracingEvents;
         }
 
         /// <summary>
@@ -146,9 +160,9 @@ namespace Temporalio.Worker
         public override int MaximumConcurrencyLevel => 1;
 
         /// <summary>
-        /// Gets a value indicating whether this workflow works with task tracing.
+        /// Gets a value indicating whether this workflow works with tracing events.
         /// </summary>
-        public bool TaskTracingEnabled { get; private init; }
+        public bool TracingEventsEnabled { get; private init; }
 
         /// <inheritdoc />
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
@@ -158,6 +172,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public bool IsReplaying { get; private set; }
+
+        /// <inheritdoc />
+        public ILogger Logger => replaySafeLogger;
 
         /// <inheritdoc />
         public IReadOnlyDictionary<string, IRawValue> Memo => memo.Value;
@@ -176,11 +193,6 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public DateTime UtcNow { get; private set; }
-
-        /// <summary>
-        /// Gets the workflow logger.
-        /// </summary>
-        internal ILogger Logger { get; private init; }
 
         /// <summary>
         /// Gets the instance, lazily creating if needed. This should never be called outside this
@@ -230,6 +242,31 @@ namespace Temporalio.Worker
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
             outbound.Value.ScheduleLocalActivityAsync<TResult>(
                 new(Activity: activity, Args: args, Options: options, Headers: null));
+
+        /// <inheritdoc/>
+        public ExternalWorkflowHandle GetExternalWorkflowHandle(string id, string? runID = null) =>
+            new ExternalWorkflowHandleImpl(this, id, runID);
+
+        /// <inheritdoc />
+        public bool Patch(string patchID, bool deprecated)
+        {
+            // Use memoized result if present. If this is being deprecated, we can still use
+            // memoized result and skip the command.
+            if (patchesMemoized.TryGetValue(patchID, out var patched))
+            {
+                return patched;
+            }
+            patched = !IsReplaying || patchesNotified.Contains(patchID);
+            patchesMemoized[patchID] = patched;
+            if (patched)
+            {
+                AddCommand(new()
+                {
+                    SetPatchMarker = new() { PatchId = patchID, Deprecated = deprecated },
+                });
+            }
+            return patched;
+        }
 
         /// <inheritdoc/>
         public Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
@@ -363,7 +400,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public WorkflowActivationCompletion Activate(WorkflowActivation act)
         {
-            using (Logger.BeginScope(Info.LoggerScope))
+            using (logger.BeginScope(Info.LoggerScope))
             {
                 completion = new() { RunId = act.RunId, Successful = new() };
                 currentActivationException = null;
@@ -408,7 +445,7 @@ namespace Temporalio.Worker
                 }
                 catch (Exception e)
                 {
-                    Logger.LogWarning(
+                    logger.LogWarning(
                         e,
                         "Failed activation on workflow {WorkflowType} with ID {WorkflowID} and run ID {RunID}",
                         Info.WorkflowType,
@@ -423,7 +460,7 @@ namespace Temporalio.Worker
                     }
                     catch (Exception inner)
                     {
-                        Logger.LogError(
+                        logger.LogError(
                             inner,
                             "Failed converting activation exception on workflow with run ID {RunID}",
                             Info.RunID);
@@ -523,7 +560,7 @@ namespace Temporalio.Worker
                     // This should never return false
                     if (!TryExecuteTask(task))
                     {
-                        Logger.LogWarning("Task unexpectedly was unable to execute");
+                        logger.LogWarning("Task unexpectedly was unable to execute");
                     }
                     if (currentActivationException != null)
                     {
@@ -555,9 +592,57 @@ namespace Temporalio.Worker
         }
 
 #pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
-        private Task QueueNewTaskAsync(Func<Task> func) => taskFactory.StartNew(func).Unwrap();
+#pragma warning disable VSTHRD003 // We know it's our own task we're waiting on
+        private Task QueueNewTaskAsync(Func<Task> func)
+        {
+            // If we need a stack trace, wrap
+            if (pendingTaskStackTraces is LinkedList<System.Diagnostics.StackTrace> stackTraces)
+            {
+                // Have to eagerly capture stack trace. We are unable to find an easy way to make
+                // this lazy and still preserve the frames properly.
+                var node = stackTraces.AddLast(
+                    new System.Diagnostics.StackTrace(workflowStackTrace == WorkflowStackTrace.Normal));
+                var origFunc = func;
+                func = () =>
+                {
+                    var task = origFunc();
+                    return task.ContinueWith(
+                        _ =>
+                        {
+                            stackTraces.Remove(node);
+                            return task;
+                        },
+                        this).Unwrap();
+                };
+            }
+            return taskFactory.StartNew(func).Unwrap();
+        }
 
-        private Task<T> QueueNewTaskAsync<T>(Func<Task<T>> func) => taskFactory.StartNew(func).Unwrap();
+        private Task<T> QueueNewTaskAsync<T>(Func<Task<T>> func)
+        {
+            // If we need a stack trace, wrap
+            if (pendingTaskStackTraces is LinkedList<System.Diagnostics.StackTrace> stackTraces)
+            {
+                // Have to eagerly capture stack trace. We are unable to find an easy way to make
+                // this lazy and still preserve the frames properly.
+                var node = stackTraces.AddLast(
+                    new System.Diagnostics.StackTrace(workflowStackTrace == WorkflowStackTrace.Normal));
+                var origFunc = func;
+                func = () =>
+                {
+                    var task = origFunc();
+                    return task.ContinueWith(
+                        _ =>
+                        {
+                            stackTraces.Remove(node);
+                            return task;
+                        },
+                        this).Unwrap();
+                };
+            }
+            return taskFactory.StartNew(func).Unwrap();
+        }
+#pragma warning restore VSTHRD003
 #pragma warning restore CA2008
 
         private async Task RunTopLevelAsync(Func<Task> func)
@@ -570,7 +655,7 @@ namespace Temporalio.Worker
                 }
                 catch (ContinueAsNewException e)
                 {
-                    Logger.LogDebug("Workflow requested continue as new with run ID {RunID}", Info.RunID);
+                    logger.LogDebug("Workflow requested continue as new with run ID {RunID}", Info.RunID);
                     var cmd = new ContinueAsNewWorkflowExecution()
                     {
                         WorkflowType = e.Input.Workflow,
@@ -609,7 +694,7 @@ namespace Temporalio.Worker
                     // swallowed cancel followed by, say, an activity cancel later on will show the
                     // workflow as cancelled. But this is a Temporal limitation in that cancellation
                     // is a state not an event.
-                    Logger.LogDebug(e, "Workflow raised cancel with run ID {RunID}", Info.RunID);
+                    logger.LogDebug(e, "Workflow raised cancel with run ID {RunID}", Info.RunID);
                     AddCommand(new() { CancelWorkflowExecution = new() });
                 }
                 catch (Exception e) when (e is FailureException || e is OperationCanceledException)
@@ -618,14 +703,14 @@ namespace Temporalio.Worker
                     // it cannot convert the failure. We also allow non-internally-caught
                     // cancellation exceptions fail the workflow because it's clearer when users are
                     // reusing cancellation tokens if the workflow fails.
-                    Logger.LogDebug(e, "Workflow raised failure with run ID {RunID}", Info.RunID);
+                    logger.LogDebug(e, "Workflow raised failure with run ID {RunID}", Info.RunID);
                     var failure = failureConverter.ToFailure(e, payloadConverter);
                     AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } });
                 }
             }
             catch (Exception e)
             {
-                Logger.LogDebug(e, "Workflow raised unexpected failure with run ID {RunID}", Info.RunID);
+                logger.LogDebug(e, "Workflow raised unexpected failure with run ID {RunID}", Info.RunID);
                 // All exceptions this far fail the task
                 currentActivationException = e;
             }
@@ -642,6 +727,9 @@ namespace Temporalio.Worker
                 case WorkflowActivationJob.VariantOneofCase.FireTimer:
                     ApplyFireTimer(job.FireTimer);
                     break;
+                case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
+                    ApplyNotifyHasPatch(job.NotifyHasPatch);
+                    break;
                 case WorkflowActivationJob.VariantOneofCase.QueryWorkflow:
                     ApplyQueryWorkflow(job.QueryWorkflow);
                     break;
@@ -656,6 +744,12 @@ namespace Temporalio.Worker
                     break;
                 case WorkflowActivationJob.VariantOneofCase.ResolveChildWorkflowExecutionStart:
                     ApplyResolveChildWorkflowExecutionStart(job.ResolveChildWorkflowExecutionStart);
+                    break;
+                case WorkflowActivationJob.VariantOneofCase.ResolveRequestCancelExternalWorkflow:
+                    ApplyResolveRequestCancelExternalWorkflow(job.ResolveRequestCancelExternalWorkflow);
+                    break;
+                case WorkflowActivationJob.VariantOneofCase.ResolveSignalExternalWorkflow:
+                    ApplyResolveSignalExternalWorkflow(job.ResolveSignalExternalWorkflow);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
                     ApplySignalWorkflow(job.SignalWorkflow);
@@ -682,6 +776,9 @@ namespace Temporalio.Worker
             }
         }
 
+        private void ApplyNotifyHasPatch(NotifyHasPatch notify) =>
+            patchesNotified.Add(notify.PatchId);
+
         private void ApplyQueryWorkflow(QueryWorkflow query)
         {
             // Queue it up so it can run in workflow environment
@@ -690,25 +787,35 @@ namespace Temporalio.Worker
                 var origCmdCount = completion?.Successful?.Commands?.Count;
                 try
                 {
-                    // Find definition or fail
-                    var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : defn.Queries;
-                    if (!queries.TryGetValue(query.QueryType, out var queryDefn))
+                    WorkflowQueryDefinition? queryDefn;
+                    // If it's a stack trace query, create definition
+                    if (query.QueryType == "__stack_trace")
                     {
-                        var knownQueries = queries.Keys.OrderBy(k => k);
-                        throw new InvalidOperationException(
-                            $"Query handler for {query.QueryType} expected but not found, " +
-                            $"known queries: [{string.Join(" ", knownQueries)}]");
+                        Func<string> getter = GetStackTrace;
+                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
+                            "__stack_trace", getter);
                     }
-
+                    else
+                    {
+                        // Find definition or fail
+                        var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : defn.Queries;
+                        if (!queries.TryGetValue(query.QueryType, out queryDefn))
+                        {
+                            var knownQueries = queries.Keys.OrderBy(k => k);
+                            throw new InvalidOperationException(
+                                $"Query handler for {query.QueryType} expected but not found, " +
+                                $"known queries: [{string.Join(" ", knownQueries)}]");
+                        }
+                    }
                     var resultObj = inbound.Value.HandleQuery(new(
-                        ID: query.QueryId,
-                        Query: query.QueryType,
-                        Definition: queryDefn,
-                        Args: DecodeArgs(
-                            queryDefn.Method ?? queryDefn.Delegate!.Method,
-                            query.Arguments,
-                            $"Query {query.QueryType}"),
-                        Headers: query.Headers));
+                            ID: query.QueryId,
+                            Query: query.QueryType,
+                            Definition: queryDefn,
+                            Args: DecodeArgs(
+                                queryDefn.Method ?? queryDefn.Delegate!.Method,
+                                query.Arguments,
+                                $"Query {query.QueryType}"),
+                            Headers: query.Headers));
                     AddCommand(new()
                     {
                         RespondToQuery = new()
@@ -769,6 +876,27 @@ namespace Temporalio.Worker
             {
                 throw new InvalidOperationException(
                     $"Failed finding child for sequence {resolve.Seq}");
+            }
+            source.TrySetResult(resolve);
+        }
+
+        private void ApplyResolveRequestCancelExternalWorkflow(
+            ResolveRequestCancelExternalWorkflow resolve)
+        {
+            if (!externalCancelsPending.TryGetValue(resolve.Seq, out var source))
+            {
+                throw new InvalidOperationException(
+                    $"Failed finding external cancel for sequence {resolve.Seq}");
+            }
+            source.TrySetResult(resolve);
+        }
+
+        private void ApplyResolveSignalExternalWorkflow(ResolveSignalExternalWorkflow resolve)
+        {
+            if (!externalSignalsPending.TryGetValue(resolve.Seq, out var source))
+            {
+                throw new InvalidOperationException(
+                    $"Failed finding external signal for sequence {resolve.Seq}");
             }
             source.TrySetResult(resolve);
         }
@@ -876,6 +1004,33 @@ namespace Temporalio.Worker
             return paramVals.ToArray();
         }
 
+        private string GetStackTrace()
+        {
+            if (pendingTaskStackTraces is not LinkedList<System.Diagnostics.StackTrace> stackTraces)
+            {
+                throw new InvalidOperationException(
+                    "Workflow stack traces are not enabled on this worker");
+            }
+            return string.Join("\n\n", stackTraces.Select(s =>
+            {
+                IEnumerable<string> lines = s.ToString().Split(
+                    new[] { "\r", "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Trim off leading lines until first non-worker line
+                lines = lines.SkipWhile(line => line.Contains(" at Temporalio.Worker."));
+
+                // Trim off trailing lines until first non-worker,
+                // non-system-runtime/threading/reflection line
+                lines = lines.Reverse().SkipWhile(line =>
+                    line.Contains(" at System.Reflection.") ||
+                    line.Contains(" at System.Runtime.") ||
+                    line.Contains(" at System.RuntimeMethodHandle.") ||
+                    line.Contains(" at System.Threading.") ||
+                    line.Contains(" at Temporalio.Worker.")).Reverse();
+                return string.Join("\n", lines);
+            }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));
+        }
+
         /// <summary>
         /// Workflow inbound implementation.
         /// </summary>
@@ -976,6 +1131,38 @@ namespace Temporalio.Worker
             /// </summary>
             /// <param name="instance">Workflow instance.</param>
             public OutboundImpl(WorkflowInstance instance) => this.instance = instance;
+
+            /// <inheritdoc />
+            public override Task CancelExternalWorkflowAsync(CancelExternalWorkflowInput input)
+            {
+                // Add command
+                var cmd = new RequestCancelExternalWorkflowExecution()
+                {
+                    Seq = ++instance.externalCancelsCounter,
+                    WorkflowExecution = new()
+                    {
+                        Namespace = instance.Info.Namespace,
+                        WorkflowId = input.ID,
+                        RunId = input.RunID ?? string.Empty,
+                    },
+                };
+                var source = new TaskCompletionSource<ResolveRequestCancelExternalWorkflow>();
+                instance.externalCancelsPending[cmd.Seq] = source;
+                instance.AddCommand(new() { RequestCancelExternalWorkflowExecution = cmd });
+
+                // Handle
+                return instance.QueueNewTaskAsync(async () =>
+                {
+                    var res = await source.Task.ConfigureAwait(true);
+                    instance.externalCancelsPending.Remove(cmd.Seq);
+                    // Throw if failed
+                    if (res.Failure != null)
+                    {
+                        throw instance.failureConverter.ToException(
+                            res.Failure, instance.payloadConverter);
+                    }
+                });
+            }
 
             /// <inheritdoc />
             public override ContinueAsNewException CreateContinueAsNewException(
@@ -1142,6 +1329,45 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc />
+            public override Task SignalChildWorkflowAsync(SignalChildWorkflowInput input)
+            {
+                var cmd = new SignalExternalWorkflowExecution()
+                {
+                    Seq = ++instance.externalSignalsCounter,
+                    ChildWorkflowId = input.ID,
+                    SignalName = input.Signal,
+                    Args = { instance.payloadConverter.ToPayloads(input.Args) },
+                };
+                if (input.Headers is IDictionary<string, Payload> headers)
+                {
+                    cmd.Headers.Add(headers);
+                }
+                return SignalExternalWorkflowInternalAsync(cmd, input.Options?.CancellationToken);
+            }
+
+            /// <inheritdoc />
+            public override Task SignalExternalWorkflowAsync(SignalExternalWorkflowInput input)
+            {
+                var cmd = new SignalExternalWorkflowExecution()
+                {
+                    Seq = ++instance.externalSignalsCounter,
+                    WorkflowExecution = new()
+                    {
+                        Namespace = instance.Info.Namespace,
+                        WorkflowId = input.ID,
+                        RunId = input.RunID ?? string.Empty,
+                    },
+                    SignalName = input.Signal,
+                    Args = { instance.payloadConverter.ToPayloads(input.Args) },
+                };
+                if (input.Headers is IDictionary<string, Payload> headers)
+                {
+                    cmd.Headers.Add(headers);
+                }
+                return SignalExternalWorkflowInternalAsync(cmd, input.Options?.CancellationToken);
+            }
+
+            /// <inheritdoc />
             public override Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
                 StartChildWorkflowInput input)
             {
@@ -1292,6 +1518,49 @@ namespace Temporalio.Worker
                 return handleSource.Task;
             }
 
+            private Task SignalExternalWorkflowInternalAsync(
+                SignalExternalWorkflowExecution cmd, CancellationToken? inputCancelToken)
+            {
+                var token = inputCancelToken ?? instance.CancellationToken;
+                // Like other cases (e.g. child workflow start), we do not even want to schedule if
+                // the cancellation token is already cancelled.
+                if (token.IsCancellationRequested)
+                {
+                    return Task.FromException(
+                        new CancelledFailureException("Signal cancelled before scheduled"));
+                }
+
+                var source = new TaskCompletionSource<ResolveSignalExternalWorkflow>();
+                instance.externalSignalsPending[cmd.Seq] = source;
+                instance.AddCommand(new() { SignalExternalWorkflowExecution = cmd });
+
+                // Handle
+                return instance.QueueNewTaskAsync(async () =>
+                {
+                    using (token.Register(() =>
+                    {
+                        // Send cancel if still pending
+                        if (instance.externalSignalsPending.ContainsKey(cmd.Seq))
+                        {
+                            instance.AddCommand(new()
+                            {
+                                CancelSignalWorkflow = new() { Seq = cmd.Seq },
+                            });
+                        }
+                    }))
+                    {
+                        var res = await source.Task.ConfigureAwait(true);
+                        instance.externalSignalsPending.Remove(cmd.Seq);
+                        // Throw if failed
+                        if (res.Failure != null)
+                        {
+                            throw instance.failureConverter.ToException(
+                                res.Failure, instance.payloadConverter);
+                        }
+                    }
+                });
+            }
+
             private Task<TResult> ExecuteActivityInternalAsync<TResult>(
                 bool local,
                 Func<DoBackoff?, uint> applyScheduleCommand,
@@ -1428,9 +1697,62 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc />
-            public override Task SignalAsync(string signal, IReadOnlyCollection<object?> args) =>
-                // TODO(cretz):
-                throw new NotImplementedException();
+            public override Task SignalAsync(
+                string signal,
+                IReadOnlyCollection<object?> args,
+                ChildWorkflowSignalOptions? options = null) =>
+                instance.outbound.Value.SignalChildWorkflowAsync(new(
+                    ID: ID,
+                    Signal: signal,
+                    Args: args,
+                    Options: options,
+                    Headers: null));
+        }
+
+        /// <summary>
+        /// External workflow handle implementation.
+        /// </summary>
+        internal class ExternalWorkflowHandleImpl : ExternalWorkflowHandle
+        {
+            private readonly WorkflowInstance instance;
+            private readonly string id;
+            private readonly string? runID;
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ExternalWorkflowHandleImpl"/> class.
+            /// </summary>
+            /// <param name="instance">Workflow instance.</param>
+            /// <param name="id">Workflow ID.</param>
+            /// <param name="runID">Workflow run ID.</param>
+            public ExternalWorkflowHandleImpl(WorkflowInstance instance, string id, string? runID)
+            {
+                this.instance = instance;
+                this.id = id;
+                this.runID = runID;
+            }
+
+            /// <inheritdoc />
+            public override string ID => id;
+
+            /// <inheritdoc />
+            public override string? RunID => runID;
+
+            /// <inheritdoc />
+            public override Task SignalAsync(
+                string signal,
+                IReadOnlyCollection<object?> args,
+                ExternalWorkflowSignalOptions? options = null) =>
+                instance.outbound.Value.SignalExternalWorkflowAsync(new(
+                    ID: ID,
+                    RunID: RunID,
+                    Signal: signal,
+                    Args: args,
+                    Options: options,
+                    Headers: null));
+
+            /// <inheritdoc />
+            public override Task CancelAsync() =>
+                instance.outbound.Value.CancelExternalWorkflowAsync(new(ID: ID, RunID: RunID));
         }
     }
 }

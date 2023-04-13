@@ -36,7 +36,7 @@ namespace Temporalio.Worker
         public WorkflowWorker(TemporalWorker worker)
         {
             Worker = worker;
-            logger = worker.Client.Options.LoggerFactory.CreateLogger<WorkflowWorker>();
+            logger = worker.LoggerFactory.CreateLogger<WorkflowWorker>();
             WorkflowDefinitions = new();
             foreach (var workflow in worker.Options.Workflows)
             {
@@ -57,7 +57,7 @@ namespace Temporalio.Worker
             }
             deadlockTimeout = worker.Options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
             instanceFactory = worker.Options.WorkflowInstanceFactory ??
-                (details => new WorkflowInstance(details, worker.Client.Options.LoggerFactory));
+                (details => new WorkflowInstance(details, worker.LoggerFactory));
         }
 
         /// <summary>
@@ -272,7 +272,8 @@ namespace Temporalio.Worker
                     InboundInterceptorTypes: Worker.WorkflowInboundInterceptorTypes,
                     PayloadConverterType: Worker.Client.Options.DataConverter.PayloadConverterType,
                     FailureConverterType: Worker.Client.Options.DataConverter.FailureConverterType,
-                    DisableTaskTracing: Worker.Options.DisableWorkflowTaskTracing)
+                    DisableTracingEvents: Worker.Options.DisableWorkflowTracingEventListener,
+                    WorkflowStackTrace: Worker.Options.WorkflowStackTrace)
                 {
                     // Eagerly set these since we're not in a sandbox so we already have the
                     // instantiated forms

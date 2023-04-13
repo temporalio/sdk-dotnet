@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Temporalio.Converters;
 
 namespace Temporalio.Workflows
@@ -25,6 +26,11 @@ namespace Temporalio.Workflows
         /// Gets a value indicating whether <see cref="Workflow.Unsafe.IsReplaying" /> is true.
         /// </summary>
         bool IsReplaying { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.Logger" />.
+        /// </summary>
+        ILogger Logger { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.Memo" />.
@@ -99,6 +105,23 @@ namespace Temporalio.Workflows
         /// <returns>Activity result.</returns>
         Task<TResult> ExecuteLocalActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options);
+
+        /// <summary>
+        /// Backing call for <see cref="Workflow.GetExternalWorkflowHandle" />.
+        /// </summary>
+        /// <param name="id">Workflow ID.</param>
+        /// <param name="runID">Optional workflow run ID.</param>
+        /// <returns>External workflow handle.</returns>
+        ExternalWorkflowHandle GetExternalWorkflowHandle(string id, string? runID = null);
+
+        /// <summary>
+        /// Backing call for <see cref="Workflow.Patched" /> and
+        /// <see cref="Workflow.DeprecatePatch" />.
+        /// </summary>
+        /// <param name="patchID">Patch ID.</param>
+        /// <param name="deprecated">Whether to deprecate.</param>
+        /// <returns>Whether patched.</returns>
+        bool Patch(string patchID, bool deprecated);
 
         /// <summary>
         /// Backing call for

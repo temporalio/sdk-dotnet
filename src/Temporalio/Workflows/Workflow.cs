@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Temporalio.Converters;
 
 namespace Temporalio.Workflows
@@ -33,6 +34,12 @@ namespace Temporalio.Workflows
         /// Gets a value indicating whether this code is currently running in a workflow.
         /// </summary>
         public static bool InWorkflow => TaskScheduler.Current is IWorkflowContext;
+
+        /// <summary>
+        /// Gets the logger for the workflow. This is scoped with logger information and does not
+        /// log during replay.
+        /// </summary>
+        public static ILogger Logger => Context.Logger;
 
         /// <summary>
         /// Gets the workflow memo.
@@ -211,6 +218,18 @@ namespace Temporalio.Workflows
         /// </remarks>
         public static Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken = null) =>
             Context.DelayAsync(delay, cancellationToken);
+
+        /// <summary>
+        /// Mark a patch as deprecated.
+        /// </summary>
+        /// <param name="patchID">Patch ID.</param>
+        /// <remarks>
+        /// This marks a workflow that had <see cref="Patched" /> in a previous version of the code
+        /// as no longer applicable because all workflows that use the old code path are done and
+        /// will never be queried again. Therefore the old code path is removed as well.
+        /// </remarks>
+        public static void DeprecatePatch(string patchID) =>
+            Context.Patch(patchID, deprecated: true);
 
         /// <summary>
         /// Execute an activity with a result and no arguments.
@@ -720,6 +739,15 @@ namespace Temporalio.Workflows
             Context.ExecuteLocalActivityAsync<TResult>(activity, args, options);
 
         /// <summary>
+        /// Get a handle to an external workflow for cancelling and issuing signals.
+        /// </summary>
+        /// <param name="id">Workflow ID.</param>
+        /// <param name="runID">Optional workflow run ID.</param>
+        /// <returns>External workflow handle.</returns>
+        public static ExternalWorkflowHandle GetExternalWorkflowHandle(
+            string id, string? runID = null) => Context.GetExternalWorkflowHandle(id, runID);
+
+        /// <summary>
         /// Deterministically create a new <see cref="Guid" /> similar to
         /// <see cref="Guid.NewGuid" /> (which cannot be used in workflows). The resulting GUID
         /// intentionally represents a version 4 UUID.
@@ -736,6 +764,25 @@ namespace Temporalio.Workflows
             bytes[8] = (byte)((bytes[8] & 0x3F) | 0x80);
             return new(bytes);
         }
+
+        /// <summary>
+        /// Patch a workflow.
+        /// </summary>
+        /// <param name="patchID">Patch ID.</param>
+        /// <returns>True if this should take the newer patch, false if it should take the old
+        /// path.</returns>
+        /// <remarks>
+        /// <para>
+        /// When called, this will only return true if code should take the newer path which means
+        /// this is either not replaying or is replaying and has seen this patch before. Results for
+        /// successive calls to this function for the same ID and workflow are memoized.
+        /// </para>
+        /// <para>
+        /// Use <see cref="DeprecatePatch" /> when all workflows are done and will never be queried
+        /// again. The old code path can be removed at that time too.
+        /// </para>
+        /// </remarks>
+        public static bool Patched(string patchID) => Context.Patch(patchID, deprecated: false);
 
         /// <summary>
         /// Start a child workflow with a result and no arguments.

@@ -11,7 +11,7 @@ namespace Temporalio.Workflows
     /// constructor with <see cref="WorkflowInitAttribute" />. All workflows must have a single
     /// <see cref="WorkflowRunAttribute" />.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Struct, Inherited = false)]
     public sealed class WorkflowAttribute : Attribute
     {
         /// <summary>

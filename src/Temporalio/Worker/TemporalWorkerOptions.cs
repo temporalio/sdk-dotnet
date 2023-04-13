@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Temporalio.Worker
 {
@@ -166,14 +167,31 @@ namespace Temporalio.Worker
             DebugModeEnvironmentVariable == "1";
 
         /// <summary>
-        /// Gets or sets a value indicating whether workflow task tracing will be disabled for all
-        /// workflows.
+        /// Gets or sets a value indicating whether workflow tracing event listener will be disabled
+        /// for all workflows.
         /// </summary>
         /// <remarks>
         /// When false, the default, a <see cref="System.Diagnostics.Tracing.EventListener" /> is
-        /// used to catch improper use of tasks outside of the built-in task scheduler.
+        /// used to catch improper calls from inside the workflow.
         /// </remarks>
-        public bool DisableWorkflowTaskTracing { get; set; }
+        public bool DisableWorkflowTracingEventListener { get; set; }
+
+        /// <summary>
+        /// Gets or sets the logging factory used by loggers in workers. If unset, defaults to the
+        /// client logger factory.
+        /// </summary>
+        public ILoggerFactory? LoggerFactory { get; set; }
+
+        /// <summary>
+        /// Gets or sets the form of workflow stack trace queries are supported. Default is "None"
+        /// which means workflow stack trace are not supported and will fail.
+        /// </summary>
+        /// <remarks>
+        /// Currently due to internal implementation details, stack traces have to be captured
+        /// eagerly on every Temporal task creation that can be waited on. Due to this performance
+        /// cost, they are turned off by default.
+        /// </remarks>
+        public WorkflowStackTrace WorkflowStackTrace { get; set; } = WorkflowStackTrace.None;
 
         /// <summary>
         /// Gets or sets a function to create workflow instances.
@@ -210,7 +228,18 @@ namespace Temporalio.Worker
         /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
-        /// <returns>A shallow copy of these options and any transitive options fields.</returns>
-        public virtual object Clone() => MemberwiseClone();
+        /// <returns>A shallow copy of these options and any transitive options fields.
+        /// Also copies collections of activities and workflows.</returns>
+        public virtual object Clone()
+        {
+            var options = (TemporalWorkerOptions)MemberwiseClone();
+            options.Activities = new List<Delegate>(Activities);
+            options.Workflows = new List<Type>(Workflows);
+            options.AdditionalActivityDefinitions =
+                new List<Activities.ActivityDefinition>(AdditionalActivityDefinitions);
+            options.AdditionalWorkflowDefinitions =
+                new List<Workflows.WorkflowDefinition>(AdditionalWorkflowDefinitions);
+            return options;
+        }
     }
 }

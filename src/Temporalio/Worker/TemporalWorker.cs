@@ -16,7 +16,7 @@ namespace Temporalio.Worker
     {
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
-        private readonly bool workflowTaskTracingEnabled;
+        private readonly bool workflowTracingEventListenerEnabled;
         private int started;
 
         /// <summary>
@@ -31,7 +31,9 @@ namespace Temporalio.Worker
         public TemporalWorker(IWorkerClient client, TemporalWorkerOptions options)
         {
             Client = client;
-            Options = options;
+            // Clone the options to discourage mutation (but we aren't completely disabling mutation
+            // on the Options field herein).
+            Options = (TemporalWorkerOptions)options.Clone();
             BridgeWorker = new(
                 (Bridge.Client)client.BridgeClientProvider.BridgeClient,
                 client.Options.Namespace,
@@ -75,10 +77,11 @@ namespace Temporalio.Worker
                 }).OfType<Type>();
 
             // Enable workflow task tracing if needed
-            workflowTaskTracingEnabled = !options.DisableWorkflowTaskTracing && workflowWorker != null;
-            if (workflowTaskTracingEnabled)
+            workflowTracingEventListenerEnabled =
+                !options.DisableWorkflowTracingEventListener && workflowWorker != null;
+            if (workflowTracingEventListenerEnabled)
             {
-                WorkflowTaskEventListener.Instance.Register();
+                WorkflowTracingEventListener.Instance.Register();
             }
         }
 
@@ -114,6 +117,12 @@ namespace Temporalio.Worker
         /// Gets the set of workflow inbound interceptor types to create for each workflow instance.
         /// </summary>
         internal IEnumerable<Type> WorkflowInboundInterceptorTypes { get; private init; }
+
+        /// <summary>
+        /// Gets the logger factory.
+        /// </summary>
+        internal ILoggerFactory LoggerFactory =>
+            Options.LoggerFactory ?? Client.Options.LoggerFactory;
 
         /// <summary>
         /// Run this worker until failure or cancelled.
@@ -209,9 +218,9 @@ namespace Temporalio.Worker
                 activityWorker?.Dispose();
                 BridgeWorker.Dispose();
                 // Remove task tracing if not disabled and there are workflows present
-                if (workflowTaskTracingEnabled)
+                if (workflowTracingEventListenerEnabled)
                 {
-                    WorkflowTaskEventListener.Instance.Unregister();
+                    WorkflowTracingEventListener.Instance.Unregister();
                 }
             }
         }
@@ -256,7 +265,7 @@ namespace Temporalio.Worker
 
             // Wait until any of the tasks complete including cancellation
             var task = await Task.WhenAny(tasks).ConfigureAwait(false);
-            var logger = Client.Options.LoggerFactory.CreateLogger<TemporalWorker>();
+            var logger = LoggerFactory.CreateLogger<TemporalWorker>();
             using (logger.BeginScope(new Dictionary<string, object>
             {
                 ["TaskQueue"] = Options.TaskQueue!,
