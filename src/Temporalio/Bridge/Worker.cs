@@ -46,6 +46,20 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Worker"/> class. For use when a worker
+        /// pointer already exists (like for replayer).
+        /// </summary>
+        /// <param name="runtime">Runtime.</param>
+        /// <param name="ptr">Pointer.</param>
+        internal unsafe Worker(Runtime runtime, Interop.Worker* ptr)
+            : base(IntPtr.Zero, true)
+        {
+            Runtime = runtime;
+            Ptr = ptr;
+            SetHandle((IntPtr)ptr);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Worker"/> class from another. Only for
         /// testing.
         /// </summary>

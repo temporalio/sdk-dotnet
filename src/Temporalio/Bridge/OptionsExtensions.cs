@@ -373,5 +373,41 @@ namespace Temporalio.Bridge
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
             };
         }
+
+        /// <summary>
+        /// Convert replayer options.
+        /// </summary>
+        /// <param name="options">Options to convert.</param>
+        /// <param name="scope">Scope to use.</param>
+        /// <returns>Converted options.</returns>
+        public static Interop.WorkerOptions ToInteropOptions(
+            this Temporalio.Worker.WorkflowReplayerOptions options, Scope scope)
+        {
+            var buildID = options.BuildID;
+            if (buildID == null)
+            {
+                var entryAssembly = Assembly.GetEntryAssembly() ??
+                    throw new ArgumentException("Unable to get assembly manifest ID for build ID");
+                buildID = entryAssembly.ManifestModule.ModuleVersionId.ToString();
+            }
+            return new()
+            {
+                namespace_ = scope.ByteArray(options.Namespace),
+                task_queue = scope.ByteArray(options.TaskQueue),
+                build_id = scope.ByteArray(buildID),
+                identity_override = scope.ByteArray(options.Identity),
+                max_cached_workflows = 1,
+                max_outstanding_workflow_tasks = 1,
+                max_outstanding_activities = 1,
+                max_outstanding_local_activities = 1,
+                no_remote_activities = 1,
+                sticky_queue_schedule_to_start_timeout_millis = 1000,
+                max_heartbeat_throttle_interval_millis = 1000,
+                default_heartbeat_throttle_interval_millis = 1000,
+                max_activities_per_second = 0,
+                max_task_queue_activities_per_second = 0,
+                graceful_shutdown_period_millis = 0,
+            };
+        }
     }
 }

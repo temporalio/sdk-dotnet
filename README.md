@@ -31,15 +31,32 @@ present.
 
 - [Quick Start](#quick-start)
 - [Installation](#installation)
-- [Implementing an Activity](#implementing-an-activity)
-- [Running a Workflow](#running-a-workflow)
+- [Implementing a Workflow and Activity](#implementing-a-workflow-and-activity)
+- [Running a Worker](#running-a-worker)
+- [Executing a Workflow](#executing-a-workflow)
 - [Usage](#usage)
-  - [Client](#client)
-  - [Data Conversion](#data-conversion)
+  - [Clients](#clients)
+    - [Client via Dependency Injection](#client-via-dependency-injection)
+    - [Data Conversion](#data-conversion)
   - [Workers](#workers)
+    - [Worker as Generic Host](#worker-as-generic-host)
   - [Workflows](#workflows)
     - [Workflow Definition](#workflow-definition)
-    - [Workflow Task Scheduling](#workflow-task-scheduling)
+    - [Running Workflows](#running-workflows)
+    - [Invoking Activities](#invoking-activities)
+    - [Invoking Child Workflows](#invoking-child-workflows)
+    - [Timers and Conditions](#timers-and-conditions)
+    - [Workflow Task Scheduling and Cancellation](#workflow-task-scheduling-and-cancellation)
+    - [Workflow Utilities](#workflow-utilities)
+    - [Workflow Exceptions](#workflow-exceptions)
+    - [Workflow Logic Constraints](#workflow-logic-constraints)
+      - [.NET Task Determinism](#net-task-determinism)
+      - [Workflow .editorconfig](#workflow-editorconfig)
+    - [Workflow Testing](#workflow-testing)
+      - [Automatic Time Skipping](#automatic-time-skipping)
+      - [Manual Time Skipping](#manual-time-skipping)
+      - [Mocking Activities](#mocking-activities)
+    - [Workflow Replay](#workflow-replay)
   - [Activities](#activities)
     - [Activity Definition](#activity-definition)
     - [Activity Context](#activity-context)
@@ -918,6 +935,48 @@ public async Task SignalWorkflow_SignalTimeout_HasExpectedResult()
 When testing workflows, often you don't want to actually run the activities. Activities are just functions with the
 `[Activity]` attribute. Simply write different/empty/fake/asserting ones and pass those to the worker to have different
 activities called during the test.
+
+#### Workflow Replay
+
+Given a workflow's history, it can be replayed locally to check for things like non-determinism errors. For example,
+assuming the `history` parameter below is given a JSON string of history exported from the CLI or web UI, the following
+function will replay it:
+
+```csharp
+using Temporalio;
+using Temporalio.Worker;
+
+public static async Task ReplayFromJsonAsync(string historyJson)
+{
+    var replayer = new WorkflowReplayer(new() { Workflows = { typeof(MyWorkflow) } });
+    await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson("my-workflow-id", historyJson));
+}
+```
+
+If there is a non-determinism, this will throw an exception.
+
+Workflow history can be loaded from more than just JSON. It can be fetched individually from a workflow handle, or even
+in a list. For example, the following code will check that all workflow histories for a certain workflow type (i.e.
+workflow class) are safe with the current workflow code.
+
+```csharp
+using Temporalio;
+using Temporalio.Client;
+using Temporalio.Worker;
+
+public static async Task CheckPastHistoriesAysnc(ITemporalClient client)
+{
+    var replayer = new WorkflowReplayer(new() { Workflows = { typeof(MyWorkflow) } });
+    var listIter = client.ListWorkflowHistoriesAsync("WorkflowType = 'SayHello'");
+    await foreach (var result in replayer.ReplayWorkflowsAsync(listIter))
+    {
+        if (result.ReplayFailure != null)
+        {
+            ExceptionDispatchInfo.Throw(result.ReplayFailure);
+        }
+    }
+}
+```
 
 ### Activities
 

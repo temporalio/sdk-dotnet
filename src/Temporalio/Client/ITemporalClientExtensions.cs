@@ -187,5 +187,30 @@ namespace Temporalio.Client
                 ConfigureAwait(false);
             return await handle.GetResultAsync().ConfigureAwait(false);
         }
+
+#if NETCOREAPP3_0_OR_GREATER
+        /// <summary>
+        /// List workflow histories. This is just a helper combining
+        /// <see cref="ITemporalClient.ListWorkflowsAsync" /> and
+        /// <see cref="WorkflowHandle.FetchHistoryAsync" />.
+        /// </summary>
+        /// <param name="client">Client to use.</param>
+        /// <param name="query">List query.</param>
+        /// <param name="listOptions">Options for the list call.</param>
+        /// <param name="historyFetchOptions">Options for each history fetch call.</param>
+        /// <returns>Async enumerable of histories.</returns>
+        public static async IAsyncEnumerable<WorkflowHistory> ListWorkflowHistoriesAsync(
+            this ITemporalClient client,
+            string query,
+            WorkflowListOptions? listOptions = null,
+            WorkflowHistoryEventFetchOptions? historyFetchOptions = null)
+        {
+            await foreach (var exec in client.ListWorkflowsAsync(query, listOptions))
+            {
+                yield return await client.GetWorkflowHandle(
+                    exec.ID, exec.RunID).FetchHistoryAsync(historyFetchOptions).ConfigureAwait(false);
+            }
+        }
+#endif
     }
 }

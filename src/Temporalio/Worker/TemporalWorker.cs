@@ -38,17 +38,10 @@ namespace Temporalio.Worker
                 (Bridge.Client)client.BridgeClientProvider.BridgeClient,
                 client.Options.Namespace,
                 options);
-            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count > 0)
-            {
-                activityWorker = new(this);
-            }
-            else if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count == 0)
+            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count +
+                options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow and/or activity");
-            }
-            if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count > 0)
-            {
-                workflowWorker = new(this);
             }
 
             // Interceptors are the client interceptors that implement IWorkerInterceptor followed
@@ -61,7 +54,7 @@ namespace Temporalio.Worker
             }
             // Extract workflow interceptor constructors out
             var expectedTypes = new Type[] { typeof(WorkflowInboundInterceptor) };
-            WorkflowInboundInterceptorTypes = Interceptors.Select(
+            var workflowInboundInterceptorTypes = Interceptors.Select(
                 i =>
                 {
                     var type = i.WorkflowInboundInterceptorType;
@@ -82,6 +75,28 @@ namespace Temporalio.Worker
             if (workflowTracingEventListenerEnabled)
             {
                 WorkflowTracingEventListener.Instance.Register();
+            }
+
+            // Create workers
+            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count > 0)
+            {
+                activityWorker = new(this);
+            }
+            if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count > 0)
+            {
+                workflowWorker = new(new(
+                    BridgeWorker: BridgeWorker,
+                    Namespace: client.Options.Namespace,
+                    TaskQueue: options.TaskQueue!,
+                    Workflows: options.Workflows,
+                    AdditionalWorkflowDefinitions: options.AdditionalWorkflowDefinitions,
+                    DataConverter: client.Options.DataConverter,
+                    WorkflowInboundInterceptorTypes: workflowInboundInterceptorTypes,
+                    LoggerFactory: options.LoggerFactory ?? client.Options.LoggerFactory,
+                    WorkflowInstanceFactory: options.WorkflowInstanceFactory,
+                    DebugMode: options.DebugMode,
+                    DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
+                    WorkflowStackTrace: options.WorkflowStackTrace));
             }
         }
 
@@ -112,11 +127,6 @@ namespace Temporalio.Worker
         /// Gets the set of interceptors in the order they should be applied.
         /// </summary>
         internal IEnumerable<IWorkerInterceptor> Interceptors { get; private init; }
-
-        /// <summary>
-        /// Gets the set of workflow inbound interceptor types to create for each workflow instance.
-        /// </summary>
-        internal IEnumerable<Type> WorkflowInboundInterceptorTypes { get; private init; }
 
         /// <summary>
         /// Gets the logger factory.

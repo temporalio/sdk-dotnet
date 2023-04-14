@@ -21,6 +21,8 @@ namespace Temporalio.Worker
     {
         private static readonly TimeSpan DefaultDeadlockTimeout = TimeSpan.FromSeconds(2);
 
+        private readonly WorkflowWorkerOptions options;
+        private readonly Action<string, RemoveFromCache>? onEviction;
         private readonly ILogger logger;
         // Keyed by run ID
         private readonly ConcurrentDictionary<string, IWorkflowInstance> runningWorkflows = new();
@@ -32,13 +34,17 @@ namespace Temporalio.Worker
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowWorker"/> class.
         /// </summary>
-        /// <param name="worker">Parent worker.</param>
-        public WorkflowWorker(TemporalWorker worker)
+        /// <param name="options">Worker options.</param>
+        /// <param name="onEviction">Eviction hook.</param>
+        public WorkflowWorker(
+            WorkflowWorkerOptions options,
+            Action<string, RemoveFromCache>? onEviction = null)
         {
-            Worker = worker;
-            logger = worker.LoggerFactory.CreateLogger<WorkflowWorker>();
+            this.options = options;
+            this.onEviction = onEviction;
+            logger = options.LoggerFactory.CreateLogger<WorkflowWorker>();
             WorkflowDefinitions = new();
-            foreach (var workflow in worker.Options.Workflows)
+            foreach (var workflow in options.Workflows)
             {
                 var defn = WorkflowDefinition.FromType(workflow);
                 if (WorkflowDefinitions.ContainsKey(defn.Name))
@@ -47,7 +53,7 @@ namespace Temporalio.Worker
                 }
                 WorkflowDefinitions[defn.Name] = defn;
             }
-            foreach (var defn in worker.Options.AdditionalWorkflowDefinitions)
+            foreach (var defn in options.AdditionalWorkflowDefinitions)
             {
                 if (WorkflowDefinitions.ContainsKey(defn.Name))
                 {
@@ -55,15 +61,10 @@ namespace Temporalio.Worker
                 }
                 WorkflowDefinitions[defn.Name] = defn;
             }
-            deadlockTimeout = worker.Options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
-            instanceFactory = worker.Options.WorkflowInstanceFactory ??
-                (details => new WorkflowInstance(details, worker.LoggerFactory));
+            deadlockTimeout = options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
+            instanceFactory = options.WorkflowInstanceFactory ??
+                (details => new WorkflowInstance(details, options.LoggerFactory));
         }
-
-        /// <summary>
-        /// Gets the parent worker.
-        /// </summary>
-        internal TemporalWorker Worker { get; private init; }
 
         /// <summary>
         /// Gets the known set of workflow definitions by name.
@@ -80,14 +81,14 @@ namespace Temporalio.Worker
         {
             using (logger.BeginScope(new Dictionary<string, object>()
             {
-                ["TaskQueue"] = Worker.Options.TaskQueue!,
+                ["TaskQueue"] = options.TaskQueue,
             }))
             {
                 var tasks = new ConcurrentDictionary<Task, bool?>();
-                var codec = Worker.Client.Options.DataConverter.PayloadCodec;
+                var codec = options.DataConverter.PayloadCodec;
                 while (true)
                 {
-                    var act = await Worker.BridgeWorker.PollWorkflowActivationAsync().ConfigureAwait(false);
+                    var act = await options.BridgeWorker.PollWorkflowActivationAsync().ConfigureAwait(false);
                     // If it's null, we're done
                     if (act == null)
                     {
@@ -185,8 +186,8 @@ namespace Temporalio.Worker
                 comp = new() { Failed = new() };
                 try
                 {
-                    comp.Failed.Failure_ = Worker.Client.Options.DataConverter.FailureConverter.ToFailure(
-                        e, Worker.Client.Options.DataConverter.PayloadConverter);
+                    comp.Failed.Failure_ = options.DataConverter.FailureConverter.ToFailure(
+                        e, options.DataConverter.PayloadConverter);
                 }
                 catch (Exception inner)
                 {
@@ -220,6 +221,7 @@ namespace Temporalio.Worker
                     act.RunId,
                     removeJob.Message);
                 runningWorkflows.TryRemove(act.RunId, out _);
+                onEviction?.Invoke(act.RunId, removeJob);
                 // If this is a deadlocked workflow task, we attach remove completion to task
                 // completion
                 if (deadlockedWorkflows.TryRemove(act.RunId, out var task))
@@ -230,7 +232,7 @@ namespace Temporalio.Worker
                             logger.LogDebug(
                                 "Notify core of deadlocked workflow eviction for run ID {RunId}",
                                 act.RunId);
-                            await Worker.BridgeWorker.CompleteWorkflowActivationAsync(comp).ConfigureAwait(false);
+                            await options.BridgeWorker.CompleteWorkflowActivationAsync(comp).ConfigureAwait(false);
                         },
                         TaskScheduler.Current);
                     // Do not send completion, workflow is deadlocked
@@ -242,7 +244,7 @@ namespace Temporalio.Worker
             logger.LogTrace("Sending workflow completion: {Completion}", comp);
             try
             {
-                await Worker.BridgeWorker.CompleteWorkflowActivationAsync(comp).ConfigureAwait(false);
+                await options.BridgeWorker.CompleteWorkflowActivationAsync(comp).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -266,21 +268,21 @@ namespace Temporalio.Worker
             }
             return instanceFactory(
                 new(
-                    Namespace: Worker.Client.Options.Namespace,
-                    TaskQueue: Worker.Options.TaskQueue!,
+                    Namespace: options.Namespace,
+                    TaskQueue: options.TaskQueue,
                     Definition: defn,
                     InitialActivation: act,
                     Start: start,
-                    InboundInterceptorTypes: Worker.WorkflowInboundInterceptorTypes,
-                    PayloadConverterType: Worker.Client.Options.DataConverter.PayloadConverterType,
-                    FailureConverterType: Worker.Client.Options.DataConverter.FailureConverterType,
-                    DisableTracingEvents: Worker.Options.DisableWorkflowTracingEventListener,
-                    WorkflowStackTrace: Worker.Options.WorkflowStackTrace)
+                    InboundInterceptorTypes: options.WorkflowInboundInterceptorTypes,
+                    PayloadConverterType: options.DataConverter.PayloadConverterType,
+                    FailureConverterType: options.DataConverter.FailureConverterType,
+                    DisableTracingEvents: options.DisableWorkflowTracingEventListener,
+                    WorkflowStackTrace: options.WorkflowStackTrace)
                 {
                     // Eagerly set these since we're not in a sandbox so we already have the
                     // instantiated forms
-                    PayloadConverter = Worker.Client.Options.DataConverter.PayloadConverter,
-                    FailureConverter = Worker.Client.Options.DataConverter.FailureConverter,
+                    PayloadConverter = options.DataConverter.PayloadConverter,
+                    FailureConverter = options.DataConverter.FailureConverter,
                 });
         }
     }

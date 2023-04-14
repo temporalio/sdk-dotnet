@@ -31,6 +31,10 @@ namespace Temporalio.Bridge.Interop
     {
     }
 
+    internal partial struct WorkerReplayPusher
+    {
+    }
+
     internal unsafe partial struct ByteArrayRef
     {
         [NativeTypeName("const uint8_t *")]
@@ -330,6 +334,24 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void WorkerCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
+    internal unsafe partial struct WorkerReplayerOrFail
+    {
+        [NativeTypeName("struct Worker *")]
+        public Worker* worker;
+
+        [NativeTypeName("struct WorkerReplayPusher *")]
+        public WorkerReplayPusher* worker_replay_pusher;
+
+        [NativeTypeName("const struct ByteArray *")]
+        public ByteArray* fail;
+    }
+
+    internal unsafe partial struct WorkerReplayPushResult
+    {
+        [NativeTypeName("const struct ByteArray *")]
+        public ByteArray* fail;
+    }
+
     internal static unsafe partial class Methods
     {
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -404,5 +426,16 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void worker_finalize_shutdown([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct WorkerReplayerOrFail")]
+        public static extern WorkerReplayerOrFail worker_replayer_new([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct WorkerOptions *")] WorkerOptions* options);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_replay_pusher_free([NativeTypeName("struct WorkerReplayPusher *")] WorkerReplayPusher* worker_replay_pusher);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct WorkerReplayPushResult")]
+        public static extern WorkerReplayPushResult worker_replay_push([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct WorkerReplayPusher *")] WorkerReplayPusher* worker_replay_pusher, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef workflow_id, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef history);
     }
 }
