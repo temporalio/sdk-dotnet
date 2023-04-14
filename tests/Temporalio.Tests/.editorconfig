@@ -31,6 +31,9 @@ dotnet_diagnostic.CA5394.severity = none
 # Do not need docs in test project
 dotnet_diagnostic.CS1591.severity = none
 
+# Allow async methods to not have await in them
+dotnet_diagnostic.CS1998.severity = none
+
 # To test lambda attributes, lambda and attribute share line
 dotnet_diagnostic.SA1134.severity = none
 

@@ -730,6 +730,9 @@ Here are the rules to disable:
 * [CA5394](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca5394) - This discourages
   use of non-crypto random. But deterministic workflows, via `Workflow.Random` intentionally provide a deterministic
   non-crypto random instance.
+* `CS1998` - This discourages use of `async` on async methods that don't `await`. But workflows handlers like signals
+  are often easier to write in one-line form this way, e.g.
+  `public async Task SignalSomething(string value) => this.value = value;`.
 * [VSTHRD105](https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/VSTHRD105.md) -  This is similar to
   `CA2008` above in that use of implicit current scheduler is discouraged. That does not apply to workflows where it is
   encouraged/required.
@@ -755,6 +758,9 @@ dotnet_diagnostic.CA2008.severity = none
 # Workflow randomness is intentionally deterministic
 dotnet_diagnostic.CA5394.severity = none
 
+# Allow async methods to not have await in them
+dotnet_diagnostic.CS1998.severity = none
+
 # Don't avoid, but rather encourage things using TaskScheduler.Current in workflows
 dotnet_diagnostic.VSTHRD105.severity = none
 ```
@@ -770,7 +776,8 @@ sub-process in the background.
 
 A time-skipping `Temporalio.Testing.WorkflowEnvironment` can be started via `StartTimeSkippingAsync` which is a
 reimplementation of the Temporal server with special time skipping capabilities. This too lazily downloads the process
-to run when first called.
+to run when first called. Note, this class is not thread safe nor safe for use with independent tests. It can be reused,
+but only for one test at a time because time skipping is locked/unlocked at the environment level.
 
 ##### Automatic Time Skipping
 
@@ -807,7 +814,7 @@ using Temporalio.Worker;
 [Fact]
 public async Task WaitADayWorkflow_SimpleRun_Succeeds()
 {
-    await using var env = WorkflowEnvironment.StartTimeSkippingAsync();
+    await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
     using var worker = new TemporalWorker(env.Client, new()
     {
         TaskQueue = $"tq-{Guid.NewGuid()}",
@@ -824,8 +831,8 @@ This test will run almost instantly. This is because by calling `ExecuteWorkflow
 calling `StartWorkflowAsync` + `GetResultAsync`, and `GetResultAsync` automatically skips time as much as it can
 (basically until the end of the workflow or until an activity is run).
 
-To disable automatic time-skipping while waiting for a workflow result, run code inside a
-`using (env.AutoTimeSkippingDisabled())` block.
+To disable automatic time-skipping while waiting for a workflow result, run code as a lambda passed to
+`env.WithAutoTimeSkippingDisabled` or `env.WithAutoTimeSkippingDisabledAsync`.
 
 ##### Manual Time Skipping
 

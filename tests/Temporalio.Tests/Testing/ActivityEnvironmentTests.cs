@@ -3,9 +3,15 @@ namespace Temporalio.Tests.Testing;
 using Temporalio.Activities;
 using Temporalio.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
-public class ActivityEnvironmentTests
+public class ActivityEnvironmentTests : TestBase
 {
+    public ActivityEnvironmentTests(ITestOutputHelper output)
+        : base(output)
+    {
+    }
+
     [Fact]
     public async Task RunAsync_SimpleActivity_Succeeds()
     {

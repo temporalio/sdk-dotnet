@@ -1,5 +1,4 @@
 #pragma warning disable CA1724 // Don't care about name conflicts
-#pragma warning disable CS1998 // Sometimes I wait "async" functions with no await in them
 #pragma warning disable SA1201, SA1204 // We want to have classes near their tests
 
 namespace Temporalio.Tests.Worker;
