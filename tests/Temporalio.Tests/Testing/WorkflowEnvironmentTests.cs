@@ -121,7 +121,7 @@ public class WorkflowEnvironmentTests : TestBase
         public async Task<string> SimulateHeartbeatTimeoutAsync()
         {
             // Sleep for twice as long as heartbeat timeout
-            var heartbeatTimeout = Temporalio.Activities.ActivityContext.Current.Info.HeartbeatTimeout!.Value;
+            var heartbeatTimeout = ActivityExecutionContext.Current.Info.HeartbeatTimeout!.Value;
             await env.DelayAsync(TimeSpan.FromTicks(heartbeatTimeout.Ticks * 2));
             return "all done";
         }

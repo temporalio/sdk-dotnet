@@ -59,7 +59,7 @@ present.
     - [Workflow Replay](#workflow-replay)
   - [Activities](#activities)
     - [Activity Definition](#activity-definition)
-    - [Activity Context](#activity-context)
+    - [Activity Execution Context](#activity-execution-context)
     - [Activity Heartbeating and Cancellation](#activity-heartbeating-and-cancellation)
     - [Activity Worker Shutdown](#activity-worker-shutdown)
     - [Activity Testing](#activity-testing)
@@ -1005,12 +1005,12 @@ public static class MyActivities
             AutoReset = true,
             Enabled = true,
         };
-        timer.Elapsed += (sender, eventArgs) => ActivityContext.Current.Heartbeat();
+        timer.Elapsed += (sender, eventArgs) => ActivityExecutionContext.Current.Heartbeat();
 
         // Issue our HTTP call
-        using var response = await client.GetAsync(url, ActivityContext.Current.CancellationToken);
+        using var response = await client.GetAsync(url, ActivityExecutionContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadAsStringAsync(ActivityContext.Current.CancellationToken);
+        return await response.Content.ReadAsStringAsync(ActivityExecutionContext.Current.CancellationToken);
     }
 }
 ```
@@ -1029,11 +1029,11 @@ Notes about activity definitions:
 * Activities can be synchronous or asynchronous. If an activity returns a `Task`, that task is awaited on as part of the
   activity.
 
-#### Activity Context
+#### Activity Execution Context
 
-During activity execution, an async-local activity context is available via `ActivityContext.Current`. This will throw
-if not currently in an activity context (which can be checked with `ActivityContext.HasCurrent`). It contains the
-following important members:
+During activity execution, an async-local activity context is available via `ActivityExecutionContext.Current`. This
+will throw if not currently in an activity context (which can be checked with `ActivityExecutionContext.HasCurrent`). It
+contains the following important members:
 
 * `Info` - Information about the activity.
 * `Logger` - A logger scoped to the activity.
@@ -1044,13 +1044,15 @@ following important members:
 
 #### Activity Heartbeating and Cancellation
 
-In order for a non-local activity to be notified of cancellation requests, it must invoke `ActivityContext.Heartbeat()`.
-It is strongly recommended that all but the fastest executing activities call this function regularly.
+In order for a non-local activity to be notified of cancellation requests, it must invoke
+`ActivityExecutionContext.Current.Heartbeat()`. It is strongly recommended that all but the fastest executing activities
+call this function regularly.
 
 In addition to obtaining cancellation information, heartbeats also support detail data that is persisted on the server
-for retrieval during activity retry. If an activity calls `ActivityContext.Heartbeat(123)` and then fails and is
-retried, `ActivityContext.Info.HeartbeatDetails` will contain the last detail payloads. A helper can be used to convert,
-so `await ActivityContext.Info.HeartbeatDetailAtAsync<int>(0)` would give `123` on the next attempt.
+for retrieval during activity retry. If an activity calls `ActivityExecutionContext.Current.Heartbeat(123)` and then
+fails and is retried, `ActivityExecutionContext.Current.Info.HeartbeatDetails` will contain the last detail payloads. A
+helper can be used to convert, so `await ActivityExecutionContext.Current.Info.HeartbeatDetailAtAsync<int>(0)` would
+give `123` on the next attempt.
 
 Heartbeating has no effect on local activities.
 
@@ -1058,9 +1060,9 @@ Heartbeating has no effect on local activities.
 
 An activity can react to a worker shutdown specifically.
 
-Upon worker shutdown, `ActivityContext.WorkerShutdownToken` is cancelled. Then the worker will wait a grace period set
-by the `GracefulShutdownTimeout` worker option (default as 0) before issuing actual cancellation to all still-running
-activities via `ActivityContext.CancellationToken`.
+Upon worker shutdown, `ActivityExecutionContext.WorkerShutdownToken` is cancelled. Then the worker will wait a grace
+period set by the `GracefulShutdownTimeout` worker option (default as 0) before issuing actual cancellation to all
+still-running activities via `ActivityExecutionContext.CancellationToken`.
 
 Worker shutdown will wait on all activities to complete, so if a long-running activity does not respect cancellation,
 the shutdown may never complete.

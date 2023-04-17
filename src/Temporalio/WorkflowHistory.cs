@@ -90,19 +90,19 @@ namespace Temporalio
                 ref Utf8JsonReader reader,
                 Type typeToConvert,
                 JsonSerializerOptions options) => reader.TokenType switch
-            {
-                JsonTokenType.StartObject =>
-                    JsonSerializer.Deserialize<Dictionary<string, object?>>(ref reader, options),
-                JsonTokenType.StartArray =>
-                    JsonSerializer.Deserialize<List<object?>>(ref reader, options),
-                JsonTokenType.String => reader.GetString()!,
-                JsonTokenType.Number when reader.TryGetInt64(out long l) => l,
-                JsonTokenType.Number => reader.GetDouble(),
-                JsonTokenType.True => true,
-                JsonTokenType.False => false,
-                JsonTokenType.Null => null,
-                _ => throw new JsonException($"Unrecognized type: {reader.TokenType}"),
-            };
+                {
+                    JsonTokenType.StartObject =>
+                        JsonSerializer.Deserialize<Dictionary<string, object?>>(ref reader, options),
+                    JsonTokenType.StartArray =>
+                        JsonSerializer.Deserialize<List<object?>>(ref reader, options),
+                    JsonTokenType.String => reader.GetString()!,
+                    JsonTokenType.Number when reader.TryGetInt64(out long l) => l,
+                    JsonTokenType.Number => reader.GetDouble(),
+                    JsonTokenType.True => true,
+                    JsonTokenType.False => false,
+                    JsonTokenType.Null => null,
+                    _ => throw new JsonException($"Unrecognized type: {reader.TokenType}"),
+                };
 
             /// <inheritdoc />
             public override void Write(

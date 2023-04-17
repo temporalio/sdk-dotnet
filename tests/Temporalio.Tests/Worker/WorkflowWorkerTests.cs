@@ -591,9 +591,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public static async Task<string> SwallowCancelActivityAsync()
         {
             ActivityStarted!.SetResult();
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat();
+                ActivityExecutionContext.Current.Heartbeat();
                 await Task.Delay(100);
             }
             return "cancelled";
@@ -1598,7 +1598,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         [Activity]
         public static Task RunUntilCancelledAsync() =>
-            Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+            Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
 
         [WorkflowRun]
         public async Task RunAsync(bool local)
@@ -1654,7 +1654,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         [Activity]
         public static Task RunUntilCancelledAsync() =>
-            Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+            Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
 
         [WorkflowRun]
         public async Task RunAsync(Input input)
@@ -2171,9 +2171,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         public static async Task WaitCancelActivityAsync()
         {
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat();
+                ActivityExecutionContext.Current.Heartbeat();
                 await Task.Delay(100);
             }
         }

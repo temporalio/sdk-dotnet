@@ -254,7 +254,7 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         // Fail fast async iter
         await Assert.ThrowsAsync<InvalidWorkflowOperationException>(async () =>
         {
-            await foreach (var res in replayer.ReplayWorkflowsAsync(HistoryIterAsync(),  throwOnReplayFailure: true))
+            await foreach (var res in replayer.ReplayWorkflowsAsync(HistoryIterAsync(), throwOnReplayFailure: true))
             {
             }
         });

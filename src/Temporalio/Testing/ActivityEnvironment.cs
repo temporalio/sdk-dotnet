@@ -11,7 +11,8 @@ using Temporalio.Converters;
 namespace Temporalio.Testing
 {
     /// <summary>
-    /// Testing environment which populates the <see cref="ActivityContext" /> for test code.
+    /// Testing environment which populates the <see cref="ActivityExecutionContext" /> for test
+    /// code.
     /// </summary>
     public record ActivityEnvironment
     {
@@ -114,7 +115,7 @@ namespace Temporalio.Testing
         {
             try
             {
-                ActivityContext.AsyncLocalCurrent.Value = new(
+                ActivityExecutionContext.AsyncLocalCurrent.Value = new(
                     info: Info,
                     cancellationToken: CancellationTokenSource.Token,
                     workerShutdownToken: WorkerShutdownTokenSource.Token,
@@ -129,7 +130,7 @@ namespace Temporalio.Testing
             }
             finally
             {
-                ActivityContext.AsyncLocalCurrent.Value = null;
+                ActivityExecutionContext.AsyncLocalCurrent.Value = null;
             }
         }
 
