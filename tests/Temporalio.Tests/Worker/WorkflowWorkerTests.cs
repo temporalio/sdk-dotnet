@@ -743,7 +743,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertProperlyCancelled(
             CancelWorkflow.Scenario.LocalActivity, _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyCancelled(
-            CancelWorkflow.Scenario.ChildTryCancel, AssertChildInitiatedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildTryCancel, AssertChildStartedEventuallyAsync);
     }
 
     [Fact]
@@ -786,7 +786,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             CancelWorkflow.Scenario.ActivityWaitAndIgnore,
             _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyIgnored(
-            CancelWorkflow.Scenario.ChildWaitAndIgnore, AssertChildInitiatedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildWaitAndIgnore, AssertChildStartedEventuallyAsync);
     }
 
     [Workflow]
@@ -2456,10 +2456,21 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             handle, e => e.WorkflowExecutionStartedEventAttributes != null);
     }
 
-    private static Task AssertChildInitiatedEventuallyAsync(WorkflowHandle handle)
+    private static async Task AssertChildStartedEventuallyAsync(WorkflowHandle handle)
     {
-        return AssertHasEventEventuallyAsync(
-            handle, e => e.StartChildWorkflowExecutionInitiatedEventAttributes != null);
+        // Wait for started
+        string? childID = null;
+        await AssertHasEventEventuallyAsync(
+            handle,
+            e =>
+            {
+                childID = e.ChildWorkflowExecutionStartedEventAttributes?.WorkflowExecution?.WorkflowId;
+                return childID != null;
+            });
+        // Check that a workflow task has completed proving child has really started
+        await AssertHasEventEventuallyAsync(
+            handle.Client.GetWorkflowHandle(childID!),
+            e => e.WorkflowTaskCompletedEventAttributes != null);
     }
 
     private static Task AssertHasEventEventuallyAsync(
