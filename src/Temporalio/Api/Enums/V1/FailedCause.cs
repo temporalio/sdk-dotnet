@@ -81,22 +81,24 @@ namespace Temporalio.Api.Enums.V1 {
             "U1BFQ0lGSUVEEAASWQpVQ0FOQ0VMX0VYVEVSTkFMX1dPUktGTE9XX0VYRUNV",
             "VElPTl9GQUlMRURfQ0FVU0VfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9O",
             "X05PVF9GT1VORBABEkcKQ0NBTkNFTF9FWFRFUk5BTF9XT1JLRkxPV19FWEVD",
-            "VVRJT05fRkFJTEVEX0NBVVNFX05BTUVTUEFDRV9OT1RfRk9VTkQQAiqRAgoq",
+            "VVRJT05fRkFJTEVEX0NBVVNFX05BTUVTUEFDRV9OT1RfRk9VTkQQAiriAgoq",
             "U2lnbmFsRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZENhdXNlEj8K",
             "O1NJR05BTF9FWFRFUk5BTF9XT1JLRkxPV19FWEVDVVRJT05fRkFJTEVEX0NB",
             "VVNFX1VOU1BFQ0lGSUVEEAASWQpVU0lHTkFMX0VYVEVSTkFMX1dPUktGTE9X",
             "X0VYRUNVVElPTl9GQUlMRURfQ0FVU0VfRVhURVJOQUxfV09SS0ZMT1dfRVhF",
             "Q1VUSU9OX05PVF9GT1VORBABEkcKQ1NJR05BTF9FWFRFUk5BTF9XT1JLRkxP",
             "V19FWEVDVVRJT05fRkFJTEVEX0NBVVNFX05BTUVTUEFDRV9OT1RfRk9VTkQQ",
-            "Air5AQoWUmVzb3VyY2VFeGhhdXN0ZWRDYXVzZRIoCiRSRVNPVVJDRV9FWEhB",
-            "VVNURURfQ0FVU0VfVU5TUEVDSUZJRUQQABImCiJSRVNPVVJDRV9FWEhBVVNU",
-            "RURfQ0FVU0VfUlBTX0xJTUlUEAESLQopUkVTT1VSQ0VfRVhIQVVTVEVEX0NB",
-            "VVNFX0NPTkNVUlJFTlRfTElNSVQQAhIuCipSRVNPVVJDRV9FWEhBVVNURURf",
-            "Q0FVU0VfU1lTVEVNX09WRVJMT0FERUQQAxIuCipSRVNPVVJDRV9FWEhBVVNU",
-            "RURfQ0FVU0VfUEVSU0lTVEVOQ0VfTElNSVQQBEKIAQoYaW8udGVtcG9yYWwu",
-            "YXBpLmVudW1zLnYxQhBGYWlsZWRDYXVzZVByb3RvUAFaIWdvLnRlbXBvcmFs",
-            "LmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1z",
-            "LlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "AhJPCktTSUdOQUxfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX0ZBSUxF",
+            "RF9DQVVTRV9TSUdOQUxfQ09VTlRfTElNSVRfRVhDRUVERUQQAyr5AQoWUmVz",
+            "b3VyY2VFeGhhdXN0ZWRDYXVzZRIoCiRSRVNPVVJDRV9FWEhBVVNURURfQ0FV",
+            "U0VfVU5TUEVDSUZJRUQQABImCiJSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0Vf",
+            "UlBTX0xJTUlUEAESLQopUkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNFX0NPTkNV",
+            "UlJFTlRfTElNSVQQAhIuCipSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0VfU1lT",
+            "VEVNX09WRVJMT0FERUQQAxIuCipSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0Vf",
+            "UEVSU0lTVEVOQ0VfTElNSVQQBEKIAQoYaW8udGVtcG9yYWwuYXBpLmVudW1z",
+            "LnYxQhBGYWlsZWRDYXVzZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9l",
+            "bnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVt",
+            "cG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowTaskFailedCause), typeof(global::Temporalio.Api.Enums.V1.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedCause), }, null, null));
@@ -201,6 +203,10 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_FAILED_CAUSE_UNSPECIFIED")] Unspecified = 0,
     [pbr::OriginalName("SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_FAILED_CAUSE_EXTERNAL_WORKFLOW_EXECUTION_NOT_FOUND")] ExternalWorkflowExecutionNotFound = 1,
     [pbr::OriginalName("SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_FAILED_CAUSE_NAMESPACE_NOT_FOUND")] NamespaceNotFound = 2,
+    /// <summary>
+    /// Signal count limit is per workflow and controlled by server dynamic config "history.maximumSignalsPerExecution"
+    /// </summary>
+    [pbr::OriginalName("SIGNAL_EXTERNAL_WORKFLOW_EXECUTION_FAILED_CAUSE_SIGNAL_COUNT_LIMIT_EXCEEDED")] SignalCountLimitExceeded = 3,
   }
 
   public enum ResourceExhaustedCause {

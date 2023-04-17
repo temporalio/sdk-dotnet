@@ -9,11 +9,6 @@ var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var testSrvProtoDir = Path.Join(protoDir, "testsrv_upstream");
 var bridgeProtoDir = Path.Join(protoDir, "local");
 
-// TODO(cretz): Remove typo fix after https://github.com/temporalio/api/pull/270 in core
-var typoFilePath = Path.Join(apiProtoDir, "temporal/api/protocol/v1/message.proto");
-var prevTypoContents = File.ReadAllText(typoFilePath);
-File.WriteAllText(typoFilePath, prevTypoContents.Replace("Temporalt", "Temporalio"));
-
 // Remove/recreate entire api dir
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).Delete(true);
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies")).Create();
@@ -152,9 +147,6 @@ foreach (
         fi.FullName,
         File.ReadAllText(fi.FullName).Replace("Coresdk", "Temporalio.Bridge.Api"));
 }
-
-// TODO(cretz): Remove typo fix after https://github.com/temporalio/api/pull/270 in core
-File.WriteAllText(typoFilePath, prevTypoContents);
 
 static void Protoc(string file, string outDir, string baseNamespace, params string[] includes)
 {

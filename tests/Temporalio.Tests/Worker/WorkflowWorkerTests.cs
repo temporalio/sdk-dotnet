@@ -2404,7 +2404,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => QueryWorkflowAsync(prePatchID));
                 Assert.Contains("Nondeterminism", exc.Message);
-                // TODO(cretz): This currently causes a core panic
+                // TODO(cretz): This was causing a core panic which may now be fixed, but other
+                // issue is still causing entire test to be skipped
                 // exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                 //     () => QueryWorkflowAsync(patchedID));
                 // Assert.Contains("Nondeterminism", exc.Message);

@@ -74,8 +74,8 @@ namespace Temporalio.Api.Update.V1 {
   }
   #region Messages
   /// <summary>
-  /// Sepcifies to the gRPC server how the client wants the UpdateWorkflowExecution
-  /// call to wait before returning control to the caller.
+  /// Specifies to the gRPC server how long the client wants the an update-related
+  /// RPC call to wait before returning control to the caller.
   /// </summary>
   public sealed partial class WaitPolicy : pb::IMessage<WaitPolicy>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE

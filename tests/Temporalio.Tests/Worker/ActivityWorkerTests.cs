@@ -303,7 +303,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
-    [Fact(Skip = "TODO(cretz): This is a current core bug. Shutdown does not cancel activities.")]
+    [Fact]
     public async Task ExecuteActivityAsync_MaxConcurrent_TimesOutIfMore()
     {
         [Activity]

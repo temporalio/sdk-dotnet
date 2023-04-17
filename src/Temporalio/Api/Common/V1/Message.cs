@@ -54,10 +54,12 @@ namespace Temporalio.Api.Common.V1 {
             "YXRpb25CBJjfHwESGAoQbWF4aW11bV9hdHRlbXB0cxgEIAEoBRIhChlub25f",
             "cmV0cnlhYmxlX2Vycm9yX3R5cGVzGAUgAygJIkYKEE1ldGVyaW5nTWV0YWRh",
             "dGESMgoqbm9uZmlyc3RfbG9jYWxfYWN0aXZpdHlfZXhlY3V0aW9uX2F0dGVt",
-            "cHRzGA0gASgNQokBChlpby50ZW1wb3JhbC5hcGkuY29tbW9uLnYxQgxNZXNz",
-            "YWdlUHJvdG9QAVojZ28udGVtcG9yYWwuaW8vYXBpL2NvbW1vbi92MTtjb21t",
-            "b26qAhhUZW1wb3JhbGlvLkFwaS5Db21tb24uVjHqAhtUZW1wb3JhbGlvOjpB",
-            "cGk6OkNvbW1vbjo6VjFiBnByb3RvMw=="));
+            "cHRzGA0gASgNIjkKEldvcmtlclZlcnNpb25TdGFtcBIQCghidWlsZF9pZBgB",
+            "IAEoCRIRCglidW5kbGVfaWQYAiABKAkiLQoZV29ya2VyVmVyc2lvbkNhcGFi",
+            "aWxpdGllcxIQCghidWlsZF9pZBgBIAEoCUKJAQoZaW8udGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MUIMTWVzc2FnZVByb3RvUAFaI2dvLnRlbXBvcmFsLmlvL2Fw",
+            "aS9jb21tb24vdjE7Y29tbW9uqgIYVGVtcG9yYWxpby5BcGkuQ29tbW9uLlYx",
+            "6gIbVGVtcG9yYWxpbzo6QXBpOjpDb21tb246OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -71,7 +73,9 @@ namespace Temporalio.Api.Common.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkflowType), global::Temporalio.Api.Common.V1.WorkflowType.Parser, new[]{ "Name" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.ActivityType), global::Temporalio.Api.Common.V1.ActivityType.Parser, new[]{ "Name" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.RetryPolicy), global::Temporalio.Api.Common.V1.RetryPolicy.Parser, new[]{ "InitialInterval", "BackoffCoefficient", "MaximumInterval", "MaximumAttempts", "NonRetryableErrorTypes" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.MeteringMetadata), global::Temporalio.Api.Common.V1.MeteringMetadata.Parser, new[]{ "NonfirstLocalActivityExecutionAttempts" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.MeteringMetadata), global::Temporalio.Api.Common.V1.MeteringMetadata.Parser, new[]{ "NonfirstLocalActivityExecutionAttempts" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionStamp), global::Temporalio.Api.Common.V1.WorkerVersionStamp.Parser, new[]{ "BuildId", "BundleId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionCapabilities), global::Temporalio.Api.Common.V1.WorkerVersionCapabilities.Parser, new[]{ "BuildId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -2425,6 +2429,437 @@ namespace Temporalio.Api.Common.V1 {
             break;
           case 104: {
             NonfirstLocalActivityExecutionAttempts = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Identifies the version(s) of a worker that processed a task
+  /// </summary>
+  public sealed partial class WorkerVersionStamp : pb::IMessage<WorkerVersionStamp>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkerVersionStamp> _parser = new pb::MessageParser<WorkerVersionStamp>(() => new WorkerVersionStamp());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkerVersionStamp> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Common.V1.MessageReflection.Descriptor.MessageTypes[11]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerVersionStamp() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerVersionStamp(WorkerVersionStamp other) : this() {
+      buildId_ = other.buildId_;
+      bundleId_ = other.bundleId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerVersionStamp Clone() {
+      return new WorkerVersionStamp(this);
+    }
+
+    /// <summary>Field number for the "build_id" field.</summary>
+    public const int BuildIdFieldNumber = 1;
+    private string buildId_ = "";
+    /// <summary>
+    /// An opaque whole-worker identifier
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string BuildId {
+      get { return buildId_; }
+      set {
+        buildId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "bundle_id" field.</summary>
+    public const int BundleIdFieldNumber = 2;
+    private string bundleId_ = "";
+    /// <summary>
+    /// Set if the worker used a dynamically loadable bundle to process
+    /// the task. The bundle could be a WASM blob, JS bundle, etc.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string BundleId {
+      get { return bundleId_; }
+      set {
+        bundleId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkerVersionStamp);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkerVersionStamp other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (BuildId != other.BuildId) return false;
+      if (BundleId != other.BundleId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (BuildId.Length != 0) hash ^= BuildId.GetHashCode();
+      if (BundleId.Length != 0) hash ^= BundleId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (BuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(BuildId);
+      }
+      if (BundleId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(BundleId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (BuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(BuildId);
+      }
+      if (BundleId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(BundleId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (BuildId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BuildId);
+      }
+      if (BundleId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BundleId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkerVersionStamp other) {
+      if (other == null) {
+        return;
+      }
+      if (other.BuildId.Length != 0) {
+        BuildId = other.BuildId;
+      }
+      if (other.BundleId.Length != 0) {
+        BundleId = other.BundleId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            BuildId = input.ReadString();
+            break;
+          }
+          case 18: {
+            BundleId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            BuildId = input.ReadString();
+            break;
+          }
+          case 18: {
+            BundleId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Identifies the version(s) that a worker is compatible with when polling or identifying itself
+  /// </summary>
+  public sealed partial class WorkerVersionCapabilities : pb::IMessage<WorkerVersionCapabilities>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkerVersionCapabilities> _parser = new pb::MessageParser<WorkerVersionCapabilities>(() => new WorkerVersionCapabilities());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkerVersionCapabilities> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Common.V1.MessageReflection.Descriptor.MessageTypes[12]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerVersionCapabilities() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerVersionCapabilities(WorkerVersionCapabilities other) : this() {
+      buildId_ = other.buildId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerVersionCapabilities Clone() {
+      return new WorkerVersionCapabilities(this);
+    }
+
+    /// <summary>Field number for the "build_id" field.</summary>
+    public const int BuildIdFieldNumber = 1;
+    private string buildId_ = "";
+    /// <summary>
+    /// An opaque whole-worker identifier
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string BuildId {
+      get { return buildId_; }
+      set {
+        buildId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkerVersionCapabilities);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkerVersionCapabilities other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (BuildId != other.BuildId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (BuildId.Length != 0) hash ^= BuildId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (BuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(BuildId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (BuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(BuildId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (BuildId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BuildId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkerVersionCapabilities other) {
+      if (other == null) {
+        return;
+      }
+      if (other.BuildId.Length != 0) {
+        BuildId = other.BuildId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            BuildId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            BuildId = input.ReadString();
             break;
           }
         }

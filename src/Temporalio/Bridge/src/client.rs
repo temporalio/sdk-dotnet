@@ -273,7 +273,9 @@ async fn call_workflow_service(
         "GetClusterInfo" => rpc_call!(client, call, get_cluster_info),
         "GetSearchAttributes" => rpc_call!(client, call, get_search_attributes),
         "GetSystemInfo" => rpc_call!(client, call, get_system_info),
-        "GetWorkerBuildIdOrdering" => rpc_call!(client, call, get_worker_build_id_ordering),
+        "GetWorkerBuildIdCompatibility" => {
+            rpc_call!(client, call, get_worker_build_id_compatibility)
+        }
         "GetWorkflowExecutionHistory" => rpc_call!(client, call, get_workflow_execution_history),
         "GetWorkflowExecutionHistoryReverse" => {
             rpc_call!(client, call, get_workflow_execution_history_reverse)
@@ -290,6 +292,7 @@ async fn call_workflow_service(
         "ListWorkflowExecutions" => rpc_call!(client, call, list_workflow_executions),
         "PatchSchedule" => rpc_call!(client, call, patch_schedule),
         "PollActivityTaskQueue" => rpc_call!(client, call, poll_activity_task_queue),
+        "PollWorkflowExecutionUpdate" => rpc_call!(client, call, poll_workflow_execution_update),
         "PollWorkflowTaskQueue" => rpc_call!(client, call, poll_workflow_task_queue),
         "QueryWorkflow" => rpc_call!(client, call, query_workflow),
         "RecordActivityTaskHeartbeat" => rpc_call!(client, call, record_activity_task_heartbeat),
@@ -327,7 +330,9 @@ async fn call_workflow_service(
         "UpdateNamespace" => rpc_call!(client, call, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
         "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
-        "UpdateWorkerBuildIdOrdering" => rpc_call!(client, call, update_worker_build_id_ordering),
+        "UpdateWorkerBuildIdCompatibility" => {
+            rpc_call!(client, call, update_worker_build_id_compatibility)
+        }
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }
 }
