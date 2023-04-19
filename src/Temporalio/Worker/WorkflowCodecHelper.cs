@@ -204,10 +204,12 @@ namespace Temporalio.Worker
 
         private static async Task EncodeAsync(IPayloadCodec codec, Payload payload)
         {
-            // We are gonna require a single result here
-            var encoded = await codec.EncodeAsync(new Payload[] { payload }).ConfigureAwait(false);
+            // We are gonna require a single result here. It is important that we do Single() call
+            // before clearing out payload to merge with since underlying enumerable may be lazy.
+            var encodedList = await codec.EncodeAsync(new Payload[] { payload }).ConfigureAwait(false);
+            var encoded = encodedList.Single();
             payload.Metadata.Clear();
-            payload.MergeFrom(encoded.Single());
+            payload.MergeFrom(encoded);
         }
 
         private static async Task DecodeAsync(IPayloadCodec codec, ActivityResolution res)
