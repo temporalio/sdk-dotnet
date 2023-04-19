@@ -47,18 +47,6 @@ namespace Temporalio.Converters
         private readonly Lazy<IPayloadConverter> lazyPayloadConverter;
         private readonly Lazy<IFailureConverter> lazyFailureConverter;
 
-        // /// <summary>
-        // /// Initializes a new instance of the <see cref="DataConverter"/> class with default
-        // /// payload and failure converters.
-        // /// </summary>
-        // /// <remarks>
-        // /// Non-inheriting users should use <see cref="Default" /> instead.
-        // /// </remarks>
-        // public DataConverter()
-        //     : this(typeof(DefaultPayloadConverter), typeof(DefaultFailureConverter))
-        // {
-        // }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DataConverter"/> class.
         /// </summary>
@@ -104,7 +92,7 @@ namespace Temporalio.Converters
         /// Gets default data converter instance.
         /// </summary>
         public static DataConverter Default { get; } =
-        new DataConverter<DefaultPayloadConverter, DefaultFailureConverter>();
+            new DataConverter<DefaultPayloadConverter, DefaultFailureConverter>();
 
         /// <summary>
         /// Gets the payload converter type.

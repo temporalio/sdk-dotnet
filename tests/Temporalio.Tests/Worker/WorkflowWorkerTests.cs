@@ -2343,7 +2343,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
     }
 
-    [Fact(Skip = "TODO(cretz): This is currently not throwing expected non-determinism errors in core")]
+    [Fact(Skip = "TODO(cretz): Current local server doesn't support async metadata, fix with https://github.com/temporalio/sdk-dotnet/issues/50")]
     public async Task ExecuteWorkflowAsync_Patched_ProperlyHandled()
     {
         var workerOptions = new TemporalWorkerOptions()

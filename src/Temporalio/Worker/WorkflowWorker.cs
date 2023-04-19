@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Bridge.Api.WorkflowCompletion;
+using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Workflows;
 

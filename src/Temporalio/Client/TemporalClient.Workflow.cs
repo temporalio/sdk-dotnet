@@ -5,6 +5,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
+using Temporalio.Api.History.V1;
 using Temporalio.Api.TaskQueue.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client.Interceptors;
@@ -85,6 +86,8 @@ namespace Temporalio.Client
 
         internal partial class Impl
         {
+            private static IReadOnlyCollection<HistoryEvent> emptyEvents = new List<HistoryEvent>(0);
+
             /// <inheritdoc />
             public override async Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
                 StartWorkflowInput input)
@@ -298,10 +301,10 @@ namespace Temporalio.Client
                         throw new InvalidOperationException("Unexpected raw history returned");
                     }
                     // Complete if we got any events or if there is no next page token
-                    if (resp.History.Events.Count > 0 || resp.NextPageToken.IsEmpty)
+                    if ((resp.History != null && resp.History.Events.Count > 0) || resp.NextPageToken.IsEmpty)
                     {
                         return new WorkflowHistoryEventPage(
-                            resp.History.Events,
+                            resp.History?.Events ?? emptyEvents,
                             resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
                     }
                     req.NextPageToken = resp.NextPageToken;

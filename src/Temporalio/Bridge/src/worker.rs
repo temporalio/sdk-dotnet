@@ -488,7 +488,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
                 },
             )
             // Even though grace period is optional, if it is not set then the
-            // auto-cancel-activity behavior of shutdown will not occur, so we
+            // auto-cancel-activity behavior or shutdown will not occur, so we
             // always set it even if 0.
             .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
             .build()
