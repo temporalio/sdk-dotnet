@@ -58,7 +58,7 @@ namespace Temporalio.Bridge
                         runtime.Ptr,
                         scope.Pointer(options.ToInteropOptions(scope)),
                         null,
-                        CallbackForStart(runtime, scope, true, completion));
+                        CallbackForStart(runtime, scope, false, completion));
                 }
                 return await completion.Task.ConfigureAwait(false);
             }

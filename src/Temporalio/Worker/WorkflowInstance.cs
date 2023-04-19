@@ -406,21 +406,6 @@ namespace Temporalio.Worker
                 currentActivationException = null;
                 IsReplaying = act.IsReplaying;
                 UtcNow = act.Timestamp.ToDateTime();
-                // We need to sort jobs by notify, then signal, then non-query, then query
-                var jobs = act.Jobs.OrderBy(job =>
-                {
-                    switch (job.VariantCase)
-                    {
-                        case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
-                            return 0;
-                        case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
-                            return 1;
-                        case WorkflowActivationJob.VariantOneofCase.QueryWorkflow:
-                            return 3;
-                        default:
-                            return 2;
-                    }
-                });
 
                 // Run the event loop until yielded for each job
                 try
@@ -430,7 +415,8 @@ namespace Temporalio.Worker
                     {
                         // We must set the sync context to null so work isn't posted there
                         SynchronizationContext.SetSynchronizationContext(null);
-                        foreach (var job in jobs)
+                        // We can trust jobs are deterministically ordered by core
+                        foreach (var job in act.Jobs)
                         {
                             Apply(job);
                             // Run scheduler once. Do not check conditions when patching or querying.

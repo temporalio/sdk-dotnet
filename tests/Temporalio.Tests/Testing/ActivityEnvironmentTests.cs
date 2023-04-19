@@ -3,9 +3,15 @@ namespace Temporalio.Tests.Testing;
 using Temporalio.Activities;
 using Temporalio.Testing;
 using Xunit;
+using Xunit.Abstractions;
 
-public class ActivityEnvironmentTests
+public class ActivityEnvironmentTests : TestBase
 {
+    public ActivityEnvironmentTests(ITestOutputHelper output)
+        : base(output)
+    {
+    }
+
     [Fact]
     public async Task RunAsync_SimpleActivity_Succeeds()
     {
@@ -21,14 +27,14 @@ public class ActivityEnvironmentTests
         env.Cancel(ActivityCancelReason.Timeout);
         var ret = await env.RunAsync(async () =>
         {
-            info = ActivityContext.Current.Info;
-            ActivityContext.Current.Heartbeat("foo", "bar");
+            info = ActivityExecutionContext.Current.Info;
+            ActivityExecutionContext.Current.Heartbeat("foo", "bar");
             await Task.WhenAny(
-                Task.Delay(Timeout.Infinite, ActivityContext.Current.WorkerShutdownToken));
-            ActivityContext.Current.Heartbeat("baz", "qux");
-            cancelReason = ActivityContext.Current.CancelReason;
+                Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.WorkerShutdownToken));
+            ActivityExecutionContext.Current.Heartbeat("baz", "qux");
+            cancelReason = ActivityExecutionContext.Current.CancelReason;
             await Task.WhenAny(
-                Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken));
+                Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken));
             return "done!";
         });
         Assert.Equal("done!", ret);

@@ -5,6 +5,7 @@ using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Bridge.Api.WorkflowCompletion;
+using Temporalio.Converters;
 using Temporalio.Worker;
 using Xunit;
 using Xunit.Abstractions;

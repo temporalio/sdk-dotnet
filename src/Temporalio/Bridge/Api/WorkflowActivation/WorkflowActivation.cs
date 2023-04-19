@@ -33,115 +33,116 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
             "cm90bxo3dGVtcG9yYWwvc2RrL2NvcmUvYWN0aXZpdHlfcmVzdWx0L2FjdGl2",
             "aXR5X3Jlc3VsdC5wcm90bxo1dGVtcG9yYWwvc2RrL2NvcmUvY2hpbGRfd29y",
             "a2Zsb3cvY2hpbGRfd29ya2Zsb3cucHJvdG8aJXRlbXBvcmFsL3Nkay9jb3Jl",
-            "L2NvbW1vbi9jb21tb24ucHJvdG8iwwEKEldvcmtmbG93QWN0aXZhdGlvbhIO",
+            "L2NvbW1vbi9jb21tb24ucHJvdG8i5QEKEldvcmtmbG93QWN0aXZhdGlvbhIO",
             "CgZydW5faWQYASABKAkSLQoJdGltZXN0YW1wGAIgASgLMhouZ29vZ2xlLnBy",
             "b3RvYnVmLlRpbWVzdGFtcBIUCgxpc19yZXBsYXlpbmcYAyABKAgSFgoOaGlz",
             "dG9yeV9sZW5ndGgYBCABKA0SQAoEam9icxgFIAMoCzIyLmNvcmVzZGsud29y",
-            "a2Zsb3dfYWN0aXZhdGlvbi5Xb3JrZmxvd0FjdGl2YXRpb25Kb2Ii4QgKFVdv",
-            "cmtmbG93QWN0aXZhdGlvbkpvYhJECg5zdGFydF93b3JrZmxvdxgBIAEoCzIq",
-            "LmNvcmVzZGsud29ya2Zsb3dfYWN0aXZhdGlvbi5TdGFydFdvcmtmbG93SAAS",
-            "PAoKZmlyZV90aW1lchgCIAEoCzImLmNvcmVzZGsud29ya2Zsb3dfYWN0aXZh",
-            "dGlvbi5GaXJlVGltZXJIABJLChJ1cGRhdGVfcmFuZG9tX3NlZWQYBCABKAsy",
-            "LS5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uVXBkYXRlUmFuZG9tU2Vl",
-            "ZEgAEkQKDnF1ZXJ5X3dvcmtmbG93GAUgASgLMiouY29yZXNkay53b3JrZmxv",
-            "d19hY3RpdmF0aW9uLlF1ZXJ5V29ya2Zsb3dIABJGCg9jYW5jZWxfd29ya2Zs",
-            "b3cYBiABKAsyKy5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uQ2FuY2Vs",
-            "V29ya2Zsb3dIABJGCg9zaWduYWxfd29ya2Zsb3cYByABKAsyKy5jb3Jlc2Rr",
-            "LndvcmtmbG93X2FjdGl2YXRpb24uU2lnbmFsV29ya2Zsb3dIABJIChByZXNv",
-            "bHZlX2FjdGl2aXR5GAggASgLMiwuY29yZXNkay53b3JrZmxvd19hY3RpdmF0",
-            "aW9uLlJlc29sdmVBY3Rpdml0eUgAEkcKEG5vdGlmeV9oYXNfcGF0Y2gYCSAB",
-            "KAsyKy5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uTm90aWZ5SGFzUGF0",
-            "Y2hIABJxCiZyZXNvbHZlX2NoaWxkX3dvcmtmbG93X2V4ZWN1dGlvbl9zdGFy",
-            "dBgKIAEoCzI/LmNvcmVzZGsud29ya2Zsb3dfYWN0aXZhdGlvbi5SZXNvbHZl",
-            "Q2hpbGRXb3JrZmxvd0V4ZWN1dGlvblN0YXJ0SAASZgogcmVzb2x2ZV9jaGls",
-            "ZF93b3JrZmxvd19leGVjdXRpb24YCyABKAsyOi5jb3Jlc2RrLndvcmtmbG93",
-            "X2FjdGl2YXRpb24uUmVzb2x2ZUNoaWxkV29ya2Zsb3dFeGVjdXRpb25IABJm",
-            "CiByZXNvbHZlX3NpZ25hbF9leHRlcm5hbF93b3JrZmxvdxgMIAEoCzI6LmNv",
-            "cmVzZGsud29ya2Zsb3dfYWN0aXZhdGlvbi5SZXNvbHZlU2lnbmFsRXh0ZXJu",
-            "YWxXb3JrZmxvd0gAEnUKKHJlc29sdmVfcmVxdWVzdF9jYW5jZWxfZXh0ZXJu",
-            "YWxfd29ya2Zsb3cYDSABKAsyQS5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRp",
-            "b24uUmVzb2x2ZVJlcXVlc3RDYW5jZWxFeHRlcm5hbFdvcmtmbG93SAASSQoR",
-            "cmVtb3ZlX2Zyb21fY2FjaGUYMiABKAsyLC5jb3Jlc2RrLndvcmtmbG93X2Fj",
-            "dGl2YXRpb24uUmVtb3ZlRnJvbUNhY2hlSABCCQoHdmFyaWFudCLZCQoNU3Rh",
-            "cnRXb3JrZmxvdxIVCg13b3JrZmxvd190eXBlGAEgASgJEhMKC3dvcmtmbG93",
-            "X2lkGAIgASgJEjIKCWFyZ3VtZW50cxgDIAMoCzIfLnRlbXBvcmFsLmFwaS5j",
-            "b21tb24udjEuUGF5bG9hZBIXCg9yYW5kb21uZXNzX3NlZWQYBCABKAQSSAoH",
-            "aGVhZGVycxgFIAMoCzI3LmNvcmVzZGsud29ya2Zsb3dfYWN0aXZhdGlvbi5T",
-            "dGFydFdvcmtmbG93LkhlYWRlcnNFbnRyeRIQCghpZGVudGl0eRgGIAEoCRJJ",
-            "ChRwYXJlbnRfd29ya2Zsb3dfaW5mbxgHIAEoCzIrLmNvcmVzZGsuY29tbW9u",
-            "Lk5hbWVzcGFjZWRXb3JrZmxvd0V4ZWN1dGlvbhI9Chp3b3JrZmxvd19leGVj",
-            "dXRpb25fdGltZW91dBgIIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlv",
-            "bhI3ChR3b3JrZmxvd19ydW5fdGltZW91dBgJIAEoCzIZLmdvb2dsZS5wcm90",
-            "b2J1Zi5EdXJhdGlvbhI4ChV3b3JrZmxvd190YXNrX3RpbWVvdXQYCiABKAsy",
-            "GS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SJwofY29udGludWVkX2Zyb21f",
-            "ZXhlY3V0aW9uX3J1bl9pZBgLIAEoCRJKChNjb250aW51ZWRfaW5pdGlhdG9y",
-            "GAwgASgOMi0udGVtcG9yYWwuYXBpLmVudW1zLnYxLkNvbnRpbnVlQXNOZXdJ",
-            "bml0aWF0b3ISOwoRY29udGludWVkX2ZhaWx1cmUYDSABKAsyIC50ZW1wb3Jh",
-            "bC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEkAKFmxhc3RfY29tcGxldGlvbl9y",
-            "ZXN1bHQYDiABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRz",
-            "Eh4KFmZpcnN0X2V4ZWN1dGlvbl9ydW5faWQYDyABKAkSOQoMcmV0cnlfcG9s",
-            "aWN5GBAgASgLMiMudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5SZXRyeVBvbGlj",
-            "eRIPCgdhdHRlbXB0GBEgASgFEhUKDWNyb25fc2NoZWR1bGUYEiABKAkSRgoi",
-            "d29ya2Zsb3dfZXhlY3V0aW9uX2V4cGlyYXRpb25fdGltZRgTIAEoCzIaLmdv",
-            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASRQoiY3Jvbl9zY2hlZHVsZV90b19z",
-            "Y2hlZHVsZV9pbnRlcnZhbBgUIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJh",
-            "dGlvbhIqCgRtZW1vGBUgASgLMhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5N",
-            "ZW1vEkMKEXNlYXJjaF9hdHRyaWJ1dGVzGBYgASgLMigudGVtcG9yYWwuYXBp",
-            "LmNvbW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVzEi4KCnN0YXJ0X3RpbWUYFyAB",
-            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wGk8KDEhlYWRlcnNFbnRy",
-            "eRILCgNrZXkYASABKAkSLgoFdmFsdWUYAiABKAsyHy50ZW1wb3JhbC5hcGku",
-            "Y29tbW9uLnYxLlBheWxvYWQ6AjgBIhgKCUZpcmVUaW1lchILCgNzZXEYASAB",
-            "KA0iWwoPUmVzb2x2ZUFjdGl2aXR5EgsKA3NlcRgBIAEoDRI7CgZyZXN1bHQY",
-            "AiABKAsyKy5jb3Jlc2RrLmFjdGl2aXR5X3Jlc3VsdC5BY3Rpdml0eVJlc29s",
-            "dXRpb24i0QIKIlJlc29sdmVDaGlsZFdvcmtmbG93RXhlY3V0aW9uU3RhcnQS",
-            "CwoDc2VxGAEgASgNElsKCXN1Y2NlZWRlZBgCIAEoCzJGLmNvcmVzZGsud29y",
-            "a2Zsb3dfYWN0aXZhdGlvbi5SZXNvbHZlQ2hpbGRXb3JrZmxvd0V4ZWN1dGlv",
-            "blN0YXJ0U3VjY2Vzc0gAElgKBmZhaWxlZBgDIAEoCzJGLmNvcmVzZGsud29y",
-            "a2Zsb3dfYWN0aXZhdGlvbi5SZXNvbHZlQ2hpbGRXb3JrZmxvd0V4ZWN1dGlv",
-            "blN0YXJ0RmFpbHVyZUgAEl0KCWNhbmNlbGxlZBgEIAEoCzJILmNvcmVzZGsu",
-            "d29ya2Zsb3dfYWN0aXZhdGlvbi5SZXNvbHZlQ2hpbGRXb3JrZmxvd0V4ZWN1",
-            "dGlvblN0YXJ0Q2FuY2VsbGVkSABCCAoGc3RhdHVzIjsKKVJlc29sdmVDaGls",
-            "ZFdvcmtmbG93RXhlY3V0aW9uU3RhcnRTdWNjZXNzEg4KBnJ1bl9pZBgBIAEo",
-            "CSKmAQopUmVzb2x2ZUNoaWxkV29ya2Zsb3dFeGVjdXRpb25TdGFydEZhaWx1",
-            "cmUSEwoLd29ya2Zsb3dfaWQYASABKAkSFQoNd29ya2Zsb3dfdHlwZRgCIAEo",
-            "CRJNCgVjYXVzZRgDIAEoDjI+LmNvcmVzZGsuY2hpbGRfd29ya2Zsb3cuU3Rh",
-            "cnRDaGlsZFdvcmtmbG93RXhlY3V0aW9uRmFpbGVkQ2F1c2UiYAorUmVzb2x2",
-            "ZUNoaWxkV29ya2Zsb3dFeGVjdXRpb25TdGFydENhbmNlbGxlZBIxCgdmYWls",
-            "dXJlGAEgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZSJp",
-            "Ch1SZXNvbHZlQ2hpbGRXb3JrZmxvd0V4ZWN1dGlvbhILCgNzZXEYASABKA0S",
-            "OwoGcmVzdWx0GAIgASgLMisuY29yZXNkay5jaGlsZF93b3JrZmxvdy5DaGls",
-            "ZFdvcmtmbG93UmVzdWx0IisKEFVwZGF0ZVJhbmRvbVNlZWQSFwoPcmFuZG9t",
-            "bmVzc19zZWVkGAEgASgEIoQCCg1RdWVyeVdvcmtmbG93EhAKCHF1ZXJ5X2lk",
-            "GAEgASgJEhIKCnF1ZXJ5X3R5cGUYAiABKAkSMgoJYXJndW1lbnRzGAMgAygL",
-            "Mh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkEkgKB2hlYWRlcnMY",
-            "BSADKAsyNy5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uUXVlcnlXb3Jr",
-            "Zmxvdy5IZWFkZXJzRW50cnkaTwoMSGVhZGVyc0VudHJ5EgsKA2tleRgBIAEo",
-            "CRIuCgV2YWx1ZRgCIAEoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5",
-            "bG9hZDoCOAEiQgoOQ2FuY2VsV29ya2Zsb3cSMAoHZGV0YWlscxgBIAMoCzIf",
-            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZCKDAgoOU2lnbmFsV29y",
-            "a2Zsb3cSEwoLc2lnbmFsX25hbWUYASABKAkSLgoFaW5wdXQYAiADKAsyHy50",
-            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQSEAoIaWRlbnRpdHkYAyAB",
-            "KAkSSQoHaGVhZGVycxgFIAMoCzI4LmNvcmVzZGsud29ya2Zsb3dfYWN0aXZh",
-            "dGlvbi5TaWduYWxXb3JrZmxvdy5IZWFkZXJzRW50cnkaTwoMSGVhZGVyc0Vu",
-            "dHJ5EgsKA2tleRgBIAEoCRIuCgV2YWx1ZRgCIAEoCzIfLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuUGF5bG9hZDoCOAEiIgoOTm90aWZ5SGFzUGF0Y2gSEAoI",
-            "cGF0Y2hfaWQYASABKAkiXwodUmVzb2x2ZVNpZ25hbEV4dGVybmFsV29ya2Zs",
-            "b3cSCwoDc2VxGAEgASgNEjEKB2ZhaWx1cmUYAiABKAsyIC50ZW1wb3JhbC5h",
-            "cGkuZmFpbHVyZS52MS5GYWlsdXJlImYKJFJlc29sdmVSZXF1ZXN0Q2FuY2Vs",
-            "RXh0ZXJuYWxXb3JrZmxvdxILCgNzZXEYASABKA0SMQoHZmFpbHVyZRgCIAEo",
-            "CzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUiwQIKD1JlbW92",
-            "ZUZyb21DYWNoZRIPCgdtZXNzYWdlGAEgASgJEksKBnJlYXNvbhgCIAEoDjI7",
-            "LmNvcmVzZGsud29ya2Zsb3dfYWN0aXZhdGlvbi5SZW1vdmVGcm9tQ2FjaGUu",
-            "RXZpY3Rpb25SZWFzb24izwEKDkV2aWN0aW9uUmVhc29uEg8KC1VOU1BFQ0lG",
-            "SUVEEAASDgoKQ0FDSEVfRlVMTBABEg4KCkNBQ0hFX01JU1MQAhISCg5OT05E",
-            "RVRFUk1JTklTTRADEg0KCUxBTkdfRkFJTBAEEhIKDkxBTkdfUkVRVUVTVEVE",
-            "EAUSEgoOVEFTS19OT1RfRk9VTkQQBhIVChFVTkhBTkRMRURfQ09NTUFORBAH",
-            "EgkKBUZBVEFMEAgSHwobUEFHSU5BVElPTl9PUl9ISVNUT1JZX0ZFVENIEAli",
-            "BnByb3RvMw=="));
+            "a2Zsb3dfYWN0aXZhdGlvbi5Xb3JrZmxvd0FjdGl2YXRpb25Kb2ISIAoYYXZh",
+            "aWxhYmxlX2ludGVybmFsX2ZsYWdzGAYgAygNIuEIChVXb3JrZmxvd0FjdGl2",
+            "YXRpb25Kb2ISRAoOc3RhcnRfd29ya2Zsb3cYASABKAsyKi5jb3Jlc2RrLndv",
+            "cmtmbG93X2FjdGl2YXRpb24uU3RhcnRXb3JrZmxvd0gAEjwKCmZpcmVfdGlt",
+            "ZXIYAiABKAsyJi5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uRmlyZVRp",
+            "bWVySAASSwoSdXBkYXRlX3JhbmRvbV9zZWVkGAQgASgLMi0uY29yZXNkay53",
+            "b3JrZmxvd19hY3RpdmF0aW9uLlVwZGF0ZVJhbmRvbVNlZWRIABJECg5xdWVy",
+            "eV93b3JrZmxvdxgFIAEoCzIqLmNvcmVzZGsud29ya2Zsb3dfYWN0aXZhdGlv",
+            "bi5RdWVyeVdvcmtmbG93SAASRgoPY2FuY2VsX3dvcmtmbG93GAYgASgLMisu",
+            "Y29yZXNkay53b3JrZmxvd19hY3RpdmF0aW9uLkNhbmNlbFdvcmtmbG93SAAS",
+            "RgoPc2lnbmFsX3dvcmtmbG93GAcgASgLMisuY29yZXNkay53b3JrZmxvd19h",
+            "Y3RpdmF0aW9uLlNpZ25hbFdvcmtmbG93SAASSAoQcmVzb2x2ZV9hY3Rpdml0",
+            "eRgIIAEoCzIsLmNvcmVzZGsud29ya2Zsb3dfYWN0aXZhdGlvbi5SZXNvbHZl",
+            "QWN0aXZpdHlIABJHChBub3RpZnlfaGFzX3BhdGNoGAkgASgLMisuY29yZXNk",
+            "ay53b3JrZmxvd19hY3RpdmF0aW9uLk5vdGlmeUhhc1BhdGNoSAAScQomcmVz",
+            "b2x2ZV9jaGlsZF93b3JrZmxvd19leGVjdXRpb25fc3RhcnQYCiABKAsyPy5j",
+            "b3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uUmVzb2x2ZUNoaWxkV29ya2Zs",
+            "b3dFeGVjdXRpb25TdGFydEgAEmYKIHJlc29sdmVfY2hpbGRfd29ya2Zsb3df",
+            "ZXhlY3V0aW9uGAsgASgLMjouY29yZXNkay53b3JrZmxvd19hY3RpdmF0aW9u",
+            "LlJlc29sdmVDaGlsZFdvcmtmbG93RXhlY3V0aW9uSAASZgogcmVzb2x2ZV9z",
+            "aWduYWxfZXh0ZXJuYWxfd29ya2Zsb3cYDCABKAsyOi5jb3Jlc2RrLndvcmtm",
+            "bG93X2FjdGl2YXRpb24uUmVzb2x2ZVNpZ25hbEV4dGVybmFsV29ya2Zsb3dI",
+            "ABJ1CihyZXNvbHZlX3JlcXVlc3RfY2FuY2VsX2V4dGVybmFsX3dvcmtmbG93",
+            "GA0gASgLMkEuY29yZXNkay53b3JrZmxvd19hY3RpdmF0aW9uLlJlc29sdmVS",
+            "ZXF1ZXN0Q2FuY2VsRXh0ZXJuYWxXb3JrZmxvd0gAEkkKEXJlbW92ZV9mcm9t",
+            "X2NhY2hlGDIgASgLMiwuY29yZXNkay53b3JrZmxvd19hY3RpdmF0aW9uLlJl",
+            "bW92ZUZyb21DYWNoZUgAQgkKB3ZhcmlhbnQi2QkKDVN0YXJ0V29ya2Zsb3cS",
+            "FQoNd29ya2Zsb3dfdHlwZRgBIAEoCRITCgt3b3JrZmxvd19pZBgCIAEoCRIy",
+            "Cglhcmd1bWVudHMYAyADKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBh",
+            "eWxvYWQSFwoPcmFuZG9tbmVzc19zZWVkGAQgASgEEkgKB2hlYWRlcnMYBSAD",
+            "KAsyNy5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uU3RhcnRXb3JrZmxv",
+            "dy5IZWFkZXJzRW50cnkSEAoIaWRlbnRpdHkYBiABKAkSSQoUcGFyZW50X3dv",
+            "cmtmbG93X2luZm8YByABKAsyKy5jb3Jlc2RrLmNvbW1vbi5OYW1lc3BhY2Vk",
+            "V29ya2Zsb3dFeGVjdXRpb24SPQoad29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVv",
+            "dXQYCCABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SNwoUd29ya2Zs",
+            "b3dfcnVuX3RpbWVvdXQYCSABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRp",
+            "b24SOAoVd29ya2Zsb3dfdGFza190aW1lb3V0GAogASgLMhkuZ29vZ2xlLnBy",
+            "b3RvYnVmLkR1cmF0aW9uEicKH2NvbnRpbnVlZF9mcm9tX2V4ZWN1dGlvbl9y",
+            "dW5faWQYCyABKAkSSgoTY29udGludWVkX2luaXRpYXRvchgMIAEoDjItLnRl",
+            "bXBvcmFsLmFwaS5lbnVtcy52MS5Db250aW51ZUFzTmV3SW5pdGlhdG9yEjsK",
+            "EWNvbnRpbnVlZF9mYWlsdXJlGA0gASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1",
+            "cmUudjEuRmFpbHVyZRJAChZsYXN0X2NvbXBsZXRpb25fcmVzdWx0GA4gASgL",
+            "MiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxIeChZmaXJzdF9l",
+            "eGVjdXRpb25fcnVuX2lkGA8gASgJEjkKDHJldHJ5X3BvbGljeRgQIAEoCzIj",
+            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuUmV0cnlQb2xpY3kSDwoHYXR0ZW1w",
+            "dBgRIAEoBRIVCg1jcm9uX3NjaGVkdWxlGBIgASgJEkYKIndvcmtmbG93X2V4",
+            "ZWN1dGlvbl9leHBpcmF0aW9uX3RpbWUYEyABKAsyGi5nb29nbGUucHJvdG9i",
+            "dWYuVGltZXN0YW1wEkUKImNyb25fc2NoZWR1bGVfdG9fc2NoZWR1bGVfaW50",
+            "ZXJ2YWwYFCABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SKgoEbWVt",
+            "bxgVIAEoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24udjEuTWVtbxJDChFzZWFy",
+            "Y2hfYXR0cmlidXRlcxgWIAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "U2VhcmNoQXR0cmlidXRlcxIuCgpzdGFydF90aW1lGBcgASgLMhouZ29vZ2xl",
+            "LnByb3RvYnVmLlRpbWVzdGFtcBpPCgxIZWFkZXJzRW50cnkSCwoDa2V5GAEg",
+            "ASgJEi4KBXZhbHVlGAIgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Q",
+            "YXlsb2FkOgI4ASIYCglGaXJlVGltZXISCwoDc2VxGAEgASgNIlsKD1Jlc29s",
+            "dmVBY3Rpdml0eRILCgNzZXEYASABKA0SOwoGcmVzdWx0GAIgASgLMisuY29y",
+            "ZXNkay5hY3Rpdml0eV9yZXN1bHQuQWN0aXZpdHlSZXNvbHV0aW9uItECCiJS",
+            "ZXNvbHZlQ2hpbGRXb3JrZmxvd0V4ZWN1dGlvblN0YXJ0EgsKA3NlcRgBIAEo",
+            "DRJbCglzdWNjZWVkZWQYAiABKAsyRi5jb3Jlc2RrLndvcmtmbG93X2FjdGl2",
+            "YXRpb24uUmVzb2x2ZUNoaWxkV29ya2Zsb3dFeGVjdXRpb25TdGFydFN1Y2Nl",
+            "c3NIABJYCgZmYWlsZWQYAyABKAsyRi5jb3Jlc2RrLndvcmtmbG93X2FjdGl2",
+            "YXRpb24uUmVzb2x2ZUNoaWxkV29ya2Zsb3dFeGVjdXRpb25TdGFydEZhaWx1",
+            "cmVIABJdCgljYW5jZWxsZWQYBCABKAsySC5jb3Jlc2RrLndvcmtmbG93X2Fj",
+            "dGl2YXRpb24uUmVzb2x2ZUNoaWxkV29ya2Zsb3dFeGVjdXRpb25TdGFydENh",
+            "bmNlbGxlZEgAQggKBnN0YXR1cyI7CilSZXNvbHZlQ2hpbGRXb3JrZmxvd0V4",
+            "ZWN1dGlvblN0YXJ0U3VjY2VzcxIOCgZydW5faWQYASABKAkipgEKKVJlc29s",
+            "dmVDaGlsZFdvcmtmbG93RXhlY3V0aW9uU3RhcnRGYWlsdXJlEhMKC3dvcmtm",
+            "bG93X2lkGAEgASgJEhUKDXdvcmtmbG93X3R5cGUYAiABKAkSTQoFY2F1c2UY",
+            "AyABKA4yPi5jb3Jlc2RrLmNoaWxkX3dvcmtmbG93LlN0YXJ0Q2hpbGRXb3Jr",
+            "Zmxvd0V4ZWN1dGlvbkZhaWxlZENhdXNlImAKK1Jlc29sdmVDaGlsZFdvcmtm",
+            "bG93RXhlY3V0aW9uU3RhcnRDYW5jZWxsZWQSMQoHZmFpbHVyZRgBIAEoCzIg",
+            "LnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUiaQodUmVzb2x2ZUNo",
+            "aWxkV29ya2Zsb3dFeGVjdXRpb24SCwoDc2VxGAEgASgNEjsKBnJlc3VsdBgC",
+            "IAEoCzIrLmNvcmVzZGsuY2hpbGRfd29ya2Zsb3cuQ2hpbGRXb3JrZmxvd1Jl",
+            "c3VsdCIrChBVcGRhdGVSYW5kb21TZWVkEhcKD3JhbmRvbW5lc3Nfc2VlZBgB",
+            "IAEoBCKEAgoNUXVlcnlXb3JrZmxvdxIQCghxdWVyeV9pZBgBIAEoCRISCgpx",
+            "dWVyeV90eXBlGAIgASgJEjIKCWFyZ3VtZW50cxgDIAMoCzIfLnRlbXBvcmFs",
+            "LmFwaS5jb21tb24udjEuUGF5bG9hZBJICgdoZWFkZXJzGAUgAygLMjcuY29y",
+            "ZXNkay53b3JrZmxvd19hY3RpdmF0aW9uLlF1ZXJ5V29ya2Zsb3cuSGVhZGVy",
+            "c0VudHJ5Gk8KDEhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSLgoFdmFsdWUY",
+            "AiABKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQ6AjgBIkIK",
+            "DkNhbmNlbFdvcmtmbG93EjAKB2RldGFpbHMYASADKAsyHy50ZW1wb3JhbC5h",
+            "cGkuY29tbW9uLnYxLlBheWxvYWQigwIKDlNpZ25hbFdvcmtmbG93EhMKC3Np",
+            "Z25hbF9uYW1lGAEgASgJEi4KBWlucHV0GAIgAygLMh8udGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5QYXlsb2FkEhAKCGlkZW50aXR5GAMgASgJEkkKB2hlYWRl",
+            "cnMYBSADKAsyOC5jb3Jlc2RrLndvcmtmbG93X2FjdGl2YXRpb24uU2lnbmFs",
+            "V29ya2Zsb3cuSGVhZGVyc0VudHJ5Gk8KDEhlYWRlcnNFbnRyeRILCgNrZXkY",
+            "ASABKAkSLgoFdmFsdWUYAiABKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
+            "LlBheWxvYWQ6AjgBIiIKDk5vdGlmeUhhc1BhdGNoEhAKCHBhdGNoX2lkGAEg",
+            "ASgJIl8KHVJlc29sdmVTaWduYWxFeHRlcm5hbFdvcmtmbG93EgsKA3NlcRgB",
+            "IAEoDRIxCgdmYWlsdXJlGAIgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUu",
+            "djEuRmFpbHVyZSJmCiRSZXNvbHZlUmVxdWVzdENhbmNlbEV4dGVybmFsV29y",
+            "a2Zsb3cSCwoDc2VxGAEgASgNEjEKB2ZhaWx1cmUYAiABKAsyIC50ZW1wb3Jh",
+            "bC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlIsECCg9SZW1vdmVGcm9tQ2FjaGUS",
+            "DwoHbWVzc2FnZRgBIAEoCRJLCgZyZWFzb24YAiABKA4yOy5jb3Jlc2RrLndv",
+            "cmtmbG93X2FjdGl2YXRpb24uUmVtb3ZlRnJvbUNhY2hlLkV2aWN0aW9uUmVh",
+            "c29uIs8BCg5FdmljdGlvblJlYXNvbhIPCgtVTlNQRUNJRklFRBAAEg4KCkNB",
+            "Q0hFX0ZVTEwQARIOCgpDQUNIRV9NSVNTEAISEgoOTk9OREVURVJNSU5JU00Q",
+            "AxINCglMQU5HX0ZBSUwQBBISCg5MQU5HX1JFUVVFU1RFRBAFEhIKDlRBU0tf",
+            "Tk9UX0ZPVU5EEAYSFQoRVU5IQU5ETEVEX0NPTU1BTkQQBxIJCgVGQVRBTBAI",
+            "Eh8KG1BBR0lOQVRJT05fT1JfSElTVE9SWV9GRVRDSBAJQi7qAitUZW1wb3Jh",
+            "bGlvOjpCcmlkZ2U6OkFwaTo6V29ya2Zsb3dBY3RpdmF0aW9uYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.ActivityResult.ActivityResultReflection.Descriptor, global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivation), global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivation.Parser, new[]{ "RunId", "Timestamp", "IsReplaying", "HistoryLength", "Jobs" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivation), global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivation.Parser, new[]{ "RunId", "Timestamp", "IsReplaying", "HistoryLength", "Jobs", "AvailableInternalFlags" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationJob), global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationJob.Parser, new[]{ "StartWorkflow", "FireTimer", "UpdateRandomSeed", "QueryWorkflow", "CancelWorkflow", "SignalWorkflow", "ResolveActivity", "NotifyHasPatch", "ResolveChildWorkflowExecutionStart", "ResolveChildWorkflowExecution", "ResolveSignalExternalWorkflow", "ResolveRequestCancelExternalWorkflow", "RemoveFromCache" }, new[]{ "Variant" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.StartWorkflow), global::Temporalio.Bridge.Api.WorkflowActivation.StartWorkflow.Parser, new[]{ "WorkflowType", "WorkflowId", "Arguments", "RandomnessSeed", "Headers", "Identity", "ParentWorkflowInfo", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "ContinuedFromExecutionRunId", "ContinuedInitiator", "ContinuedFailure", "LastCompletionResult", "FirstExecutionRunId", "RetryPolicy", "Attempt", "CronSchedule", "WorkflowExecutionExpirationTime", "CronScheduleToScheduleInterval", "Memo", "SearchAttributes", "StartTime" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.FireTimer), global::Temporalio.Bridge.Api.WorkflowActivation.FireTimer.Parser, new[]{ "Seq" }, null, null, null, null),
@@ -166,8 +167,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
   #region Messages
   /// <summary>
-  //// An instruction to the lang sdk to run some workflow code, whether for the first time or from
-  //// a cached state.
+  /// An instruction to the lang sdk to run some workflow code, whether for the first time or from
+  /// a cached state.
   /// </summary>
   internal sealed partial class WorkflowActivation : pb::IMessage<WorkflowActivation>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -208,6 +209,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
       isReplaying_ = other.isReplaying_;
       historyLength_ = other.historyLength_;
       jobs_ = other.jobs_.Clone();
+      availableInternalFlags_ = other.availableInternalFlags_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -221,8 +223,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int RunIdFieldNumber = 1;
     private string runId_ = "";
     /// <summary>
-    //// The id of the currently active run of the workflow. Also used as a cache key. There may
-    //// only ever be one active workflow task (and hence activation) of a run at one time.
+    /// The id of the currently active run of the workflow. Also used as a cache key. There may
+    /// only ever be one active workflow task (and hence activation) of a run at one time.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -237,7 +239,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int TimestampFieldNumber = 2;
     private global::Google.Protobuf.WellKnownTypes.Timestamp timestamp_;
     /// <summary>
-    //// The current time as understood by the workflow, which is set by workflow task started events
+    /// The current time as understood by the workflow, which is set by workflow task started events
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -252,7 +254,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int IsReplayingFieldNumber = 3;
     private bool isReplaying_;
     /// <summary>
-    //// Whether or not the activation is replaying past events
+    /// Whether or not the activation is replaying past events
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -267,8 +269,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int HistoryLengthFieldNumber = 4;
     private uint historyLength_;
     /// <summary>
-    //// Current history length as determined by the event id of the most recently processed event.
-    //// This ensures that the number is always deterministic
+    /// Current history length as determined by the event id of the most recently processed event.
+    /// This ensures that the number is always deterministic
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -285,12 +287,28 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         = pb::FieldCodec.ForMessage(42, global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationJob.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationJob> jobs_ = new pbc::RepeatedField<global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationJob>();
     /// <summary>
-    //// The things to do upon activating the workflow
+    /// The things to do upon activating the workflow
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationJob> Jobs {
       get { return jobs_; }
+    }
+
+    /// <summary>Field number for the "available_internal_flags" field.</summary>
+    public const int AvailableInternalFlagsFieldNumber = 6;
+    private static readonly pb::FieldCodec<uint> _repeated_availableInternalFlags_codec
+        = pb::FieldCodec.ForUInt32(50);
+    private readonly pbc::RepeatedField<uint> availableInternalFlags_ = new pbc::RepeatedField<uint>();
+    /// <summary>
+    /// Internal flags which are available for use by lang. If `is_replaying` is false, all
+    /// internal flags may be used. This is not a delta - all previously used flags always
+    /// appear since this representation is cheap.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<uint> AvailableInternalFlags {
+      get { return availableInternalFlags_; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -313,6 +331,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
       if (IsReplaying != other.IsReplaying) return false;
       if (HistoryLength != other.HistoryLength) return false;
       if(!jobs_.Equals(other.jobs_)) return false;
+      if(!availableInternalFlags_.Equals(other.availableInternalFlags_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -325,6 +344,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
       if (IsReplaying != false) hash ^= IsReplaying.GetHashCode();
       if (HistoryLength != 0) hash ^= HistoryLength.GetHashCode();
       hash ^= jobs_.GetHashCode();
+      hash ^= availableInternalFlags_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -360,6 +380,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         output.WriteUInt32(HistoryLength);
       }
       jobs_.WriteTo(output, _repeated_jobs_codec);
+      availableInternalFlags_.WriteTo(output, _repeated_availableInternalFlags_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -387,6 +408,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         output.WriteUInt32(HistoryLength);
       }
       jobs_.WriteTo(ref output, _repeated_jobs_codec);
+      availableInternalFlags_.WriteTo(ref output, _repeated_availableInternalFlags_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -410,6 +432,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(HistoryLength);
       }
       size += jobs_.CalculateSize(_repeated_jobs_codec);
+      size += availableInternalFlags_.CalculateSize(_repeated_availableInternalFlags_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -438,6 +461,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         HistoryLength = other.HistoryLength;
       }
       jobs_.Add(other.jobs_);
+      availableInternalFlags_.Add(other.availableInternalFlags_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -476,6 +500,11 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
             jobs_.AddEntriesFrom(input, _repeated_jobs_codec);
             break;
           }
+          case 50:
+          case 48: {
+            availableInternalFlags_.AddEntriesFrom(input, _repeated_availableInternalFlags_codec);
+            break;
+          }
         }
       }
     #endif
@@ -512,6 +541,11 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
           }
           case 42: {
             jobs_.AddEntriesFrom(ref input, _repeated_jobs_codec);
+            break;
+          }
+          case 50:
+          case 48: {
+            availableInternalFlags_.AddEntriesFrom(ref input, _repeated_availableInternalFlags_codec);
             break;
           }
         }
@@ -609,7 +643,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "start_workflow" field.</summary>
     public const int StartWorkflowFieldNumber = 1;
     /// <summary>
-    //// Begin a workflow for the first time
+    /// Begin a workflow for the first time
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -624,7 +658,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "fire_timer" field.</summary>
     public const int FireTimerFieldNumber = 2;
     /// <summary>
-    //// A timer has fired, allowing whatever was waiting on it (if anything) to proceed
+    /// A timer has fired, allowing whatever was waiting on it (if anything) to proceed
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -639,7 +673,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "update_random_seed" field.</summary>
     public const int UpdateRandomSeedFieldNumber = 4;
     /// <summary>
-    //// Workflow was reset. The randomness seed must be updated.
+    /// Workflow was reset. The randomness seed must be updated.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -654,7 +688,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "query_workflow" field.</summary>
     public const int QueryWorkflowFieldNumber = 5;
     /// <summary>
-    //// A request to query the workflow was received.
+    /// A request to query the workflow was received.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -669,7 +703,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "cancel_workflow" field.</summary>
     public const int CancelWorkflowFieldNumber = 6;
     /// <summary>
-    //// A request to cancel the workflow was received.
+    /// A request to cancel the workflow was received.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -684,7 +718,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "signal_workflow" field.</summary>
     public const int SignalWorkflowFieldNumber = 7;
     /// <summary>
-    //// A request to signal the workflow was received.
+    /// A request to signal the workflow was received.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -699,7 +733,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "resolve_activity" field.</summary>
     public const int ResolveActivityFieldNumber = 8;
     /// <summary>
-    //// An activity was resolved, result could be completed, failed or cancelled
+    /// An activity was resolved, result could be completed, failed or cancelled
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -714,9 +748,9 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "notify_has_patch" field.</summary>
     public const int NotifyHasPatchFieldNumber = 9;
     /// <summary>
-    //// A patch marker has been detected and lang is being told that change exists. This
-    //// job is strange in that it is sent pre-emptively to lang without any corresponding
-    //// command being sent first.
+    /// A patch marker has been detected and lang is being told that change exists. This
+    /// job is strange in that it is sent pre-emptively to lang without any corresponding
+    /// command being sent first.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -731,7 +765,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "resolve_child_workflow_execution_start" field.</summary>
     public const int ResolveChildWorkflowExecutionStartFieldNumber = 10;
     /// <summary>
-    //// A child workflow execution has started or failed to start
+    /// A child workflow execution has started or failed to start
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -746,7 +780,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "resolve_child_workflow_execution" field.</summary>
     public const int ResolveChildWorkflowExecutionFieldNumber = 11;
     /// <summary>
-    //// A child workflow was resolved, result could be completed or failed
+    /// A child workflow was resolved, result could be completed or failed
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -761,7 +795,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "resolve_signal_external_workflow" field.</summary>
     public const int ResolveSignalExternalWorkflowFieldNumber = 12;
     /// <summary>
-    //// An attempt to signal an external workflow resolved
+    /// An attempt to signal an external workflow resolved
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -776,7 +810,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "resolve_request_cancel_external_workflow" field.</summary>
     public const int ResolveRequestCancelExternalWorkflowFieldNumber = 13;
     /// <summary>
-    //// An attempt to cancel an external workflow resolved
+    /// An attempt to cancel an external workflow resolved
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -791,11 +825,11 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "remove_from_cache" field.</summary>
     public const int RemoveFromCacheFieldNumber = 50;
     /// <summary>
-    //// Remove the workflow identified by the [WorkflowActivation] containing this job from the cache
-    //// after performing the activation.
-    ////
-    //// If other job variant are present in the list, this variant will be the last job in the
-    //// job list. The string value is a reason for eviction.
+    /// Remove the workflow identified by the [WorkflowActivation] containing this job from the cache
+    /// after performing the activation.
+    ///
+    /// If other job variant are present in the list, this variant will be the last job in the
+    /// job list. The string value is a reason for eviction.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2600,7 +2634,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Notify a workflow that a timer has fired
+  /// Notify a workflow that a timer has fired
   /// </summary>
   internal sealed partial class FireTimer : pb::IMessage<FireTimer>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -2650,7 +2684,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Sequence number as provided by lang in the corresponding StartTimer command
+    /// Sequence number as provided by lang in the corresponding StartTimer command
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2795,7 +2829,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Notify a workflow that an activity has been resolved
+  /// Notify a workflow that an activity has been resolved
   /// </summary>
   internal sealed partial class ResolveActivity : pb::IMessage<ResolveActivity>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -2846,7 +2880,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Sequence number as provided by lang in the corresponding ScheduleActivity command
+    /// Sequence number as provided by lang in the corresponding ScheduleActivity command
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3036,8 +3070,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Notify a workflow that a start child workflow execution request has succeeded, failed or was
-  //// cancelled.
+  /// Notify a workflow that a start child workflow execution request has succeeded, failed or was
+  /// cancelled.
   /// </summary>
   internal sealed partial class ResolveChildWorkflowExecutionStart : pb::IMessage<ResolveChildWorkflowExecutionStart>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -3099,7 +3133,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Sequence number as provided by lang in the corresponding StartChildWorkflowExecution command
+    /// Sequence number as provided by lang in the corresponding StartChildWorkflowExecution command
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3418,7 +3452,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Simply pass the run_id to lang
+  /// Simply pass the run_id to lang
   /// </summary>
   internal sealed partial class ResolveChildWorkflowExecutionStartSuccess : pb::IMessage<ResolveChildWorkflowExecutionStartSuccess>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -3610,7 +3644,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Provide lang the cause of failure
+  /// Provide lang the cause of failure
   /// </summary>
   internal sealed partial class ResolveChildWorkflowExecutionStartFailure : pb::IMessage<ResolveChildWorkflowExecutionStartFailure>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -3662,8 +3696,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int WorkflowIdFieldNumber = 1;
     private string workflowId_ = "";
     /// <summary>
-    //// Lang should have this information but it's more convenient to pass it back
-    //// for error construction on the lang side.
+    /// Lang should have this information but it's more convenient to pass it back
+    /// for error construction on the lang side.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3880,8 +3914,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// `failure` should be ChildWorkflowFailure with cause set to CancelledFailure.
-  //// The failure is constructed in core for lang's convenience.
+  /// `failure` should be ChildWorkflowFailure with cause set to CancelledFailure.
+  /// The failure is constructed in core for lang's convenience.
   /// </summary>
   internal sealed partial class ResolveChildWorkflowExecutionStartCancelled : pb::IMessage<ResolveChildWorkflowExecutionStartCancelled>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -4082,7 +4116,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Notify a workflow that a child workflow execution has been resolved
+  /// Notify a workflow that a child workflow execution has been resolved
   /// </summary>
   internal sealed partial class ResolveChildWorkflowExecution : pb::IMessage<ResolveChildWorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -4133,7 +4167,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Sequence number as provided by lang in the corresponding StartChildWorkflowExecution command
+    /// Sequence number as provided by lang in the corresponding StartChildWorkflowExecution command
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -4323,7 +4357,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Update the workflow's random seed
+  /// Update the workflow's random seed
   /// </summary>
   internal sealed partial class UpdateRandomSeed : pb::IMessage<UpdateRandomSeed>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -4515,7 +4549,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Query a workflow
+  /// Query a workflow
   /// </summary>
   internal sealed partial class QueryWorkflow : pb::IMessage<QueryWorkflow>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -4568,9 +4602,9 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int QueryIdFieldNumber = 1;
     private string queryId_ = "";
     /// <summary>
-    //// For PollWFTResp `query` field, this will be set to the special value `legacy`. For the
-    //// `queries` field, the server provides a unique identifier. If it is a `legacy` query,
-    //// lang cannot issue any commands in response other than to answer the query.
+    /// For PollWFTResp `query` field, this will be set to the special value `legacy`. For the
+    /// `queries` field, the server provides a unique identifier. If it is a `legacy` query,
+    /// lang cannot issue any commands in response other than to answer the query.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -4585,7 +4619,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int QueryTypeFieldNumber = 2;
     private string queryType_ = "";
     /// <summary>
-    //// The query's function/method/etc name
+    /// The query's function/method/etc name
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -4613,7 +4647,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Common.V1.Payload.Parser), 42);
     private readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> headers_ = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Headers attached to the query
+    /// Headers attached to the query
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -4807,7 +4841,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   }
 
   /// <summary>
-  //// Cancel a running workflow
+  /// Cancel a running workflow
   /// </summary>
   internal sealed partial class CancelWorkflow : pb::IMessage<CancelWorkflow>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -4859,7 +4893,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         = pb::FieldCodec.ForMessage(10, global::Temporalio.Api.Common.V1.Payload.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload> details_ = new pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload>();
     /// <summary>
-    //// Information from the cancellation request
+    /// Information from the cancellation request
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5519,8 +5553,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Sequence number as provided by lang in the corresponding SignalExternalWorkflowExecution
-    //// command
+    /// Sequence number as provided by lang in the corresponding SignalExternalWorkflowExecution
+    /// command
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5535,8 +5569,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int FailureFieldNumber = 2;
     private global::Temporalio.Api.Failure.V1.Failure failure_;
     /// <summary>
-    //// If populated, this signal either failed to be sent or was cancelled depending on failure
-    //// type / info.
+    /// If populated, this signal either failed to be sent or was cancelled depending on failure
+    /// type / info.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5762,8 +5796,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int SeqFieldNumber = 1;
     private uint seq_;
     /// <summary>
-    //// Sequence number as provided by lang in the corresponding
-    //// RequestCancelExternalWorkflowExecution command
+    /// Sequence number as provided by lang in the corresponding
+    /// RequestCancelExternalWorkflowExecution command
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5778,8 +5812,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public const int FailureFieldNumber = 2;
     private global::Temporalio.Api.Failure.V1.Failure failure_;
     /// <summary>
-    //// If populated, this signal either failed to be sent or was cancelled depending on failure
-    //// type / info.
+    /// If populated, this signal either failed to be sent or was cancelled depending on failure
+    /// type / info.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

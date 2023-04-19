@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Temporalio.Client;
 using Temporalio.Runtime;
 
@@ -10,8 +12,15 @@ namespace Temporalio.Testing
     /// Workflow environment for testing with Temporal.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// This class is NOT thread safe and not safe for use by concurrent tests. Time skipping is
+    /// locked/unlocked at an environment level, so while reuse is supported, independent concurrent
+    /// use can have side effects.
+    /// </para>
+    /// <para>
     /// In modern versions of .NET, this implements <c>IAsyncDisposable</c> which means it can be
     /// used in an <c>await using</c> block.
+    /// </para>
     /// </remarks>
 #if NETCOREAPP3_0_OR_GREATER
     public class WorkflowEnvironment : IAsyncDisposable
@@ -24,7 +33,11 @@ namespace Temporalio.Testing
         /// client that does not support time skipping.
         /// </summary>
         /// <param name="client">Client to use for this environment.</param>
-        public WorkflowEnvironment(ITemporalClient client) => Client = client;
+        public WorkflowEnvironment(ITemporalClient client)
+        {
+            Client = client;
+            Logger = client.Options.LoggerFactory.CreateLogger<WorkflowEnvironment>();
+        }
 
         /// <summary>
         /// Gets the client for this workflow environment.
@@ -35,6 +48,11 @@ namespace Temporalio.Testing
         /// Gets a value indicating whether this environment supports time skipping.
         /// </summary>
         public virtual bool SupportsTimeSkipping => false;
+
+        /// <summary>
+        /// Gets a logger for this environment.
+        /// </summary>
+        protected ILogger<WorkflowEnvironment> Logger { get; private init; }
 
         /// <summary>
         /// Start a local test server with full Temporal capabilities but no time skipping.
@@ -120,20 +138,70 @@ namespace Temporalio.Testing
         public virtual Task<DateTime> GetCurrentTimeAsync() => Task.FromResult(DateTime.Now);
 
         /// <summary>
-        /// Disable automatic time skipping.
+        /// Run a function with automatic time skipping disabled.
         /// </summary>
-        /// <returns>The disposable that must be disposed to re-enable auto time skipping.</returns>
+        /// <param name="func">Function to run.</param>
         /// <remarks>
         /// This has no effect if time skipping is already disabled (which is always the case in
-        /// non-time-skipping environments).
+        /// non-time-skipping environments), so the function just runs.
         /// </remarks>
-        public virtual IDisposable AutoTimeSkippingDisabled() =>
-            throw new NotImplementedException();
+        public void WithAutoTimeSkippingDisabled(Action func) =>
+            WithAutoTimeSkippingDisabled(() =>
+            {
+                func();
+                return ValueTuple.Create();
+            });
+
+        /// <summary>
+        /// Run a function with automatic time skipping disabled.
+        /// </summary>
+        /// <typeparam name="T">Type of result.</typeparam>
+        /// <param name="func">Function to run.</param>
+        /// <returns>Resulting value.</returns>
+        /// <remarks>
+        /// This has no effect if time skipping is already disabled (which is always the case in
+        /// non-time-skipping environments), so the function just runs.
+        /// </remarks>
+        public T WithAutoTimeSkippingDisabled<T>(Func<T> func) =>
+#pragma warning disable VSTHRD002 // We know we aren't deadlocking here
+            WithAutoTimeSkippingDisabledAsync(() => Task.FromResult(func())).Result;
+#pragma warning restore VSTHRD002
+
+        /// <summary>
+        /// Run a function with automatic time skipping disabled.
+        /// </summary>
+        /// <param name="func">Function to run.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>
+        /// This has no effect if time skipping is already disabled (which is always the case in
+        /// non-time-skipping environments), so the function just runs.
+        /// </remarks>
+        public Task WithAutoTimeSkippingDisabledAsync(Func<Task> func) =>
+            WithAutoTimeSkippingDisabledAsync(async () =>
+            {
+                await func().ConfigureAwait(false);
+                return ValueTuple.Create();
+            });
+
+        /// <summary>
+        /// Run a function with automatic time skipping disabled.
+        /// </summary>
+        /// <typeparam name="T">Type of result.</typeparam>
+        /// <param name="func">Function to run.</param>
+        /// <returns>Task with resulting value.</returns>
+        /// <remarks>
+        /// This has no effect if time skipping is already disabled (which is always the case in
+        /// non-time-skipping environments), so the function just runs.
+        /// </remarks>
+        public virtual Task<T> WithAutoTimeSkippingDisabledAsync<T>(Func<Task<T>> func) => func();
 
         /// <summary>
         /// Shutdown this server.
         /// </summary>
         /// <returns>Completion task.</returns>
+        /// <remarks>
+        /// This has no effect for workflow environments constructed with a simple client.
+        /// </remarks>
         public virtual Task ShutdownAsync() => Task.CompletedTask;
 
 #if NETCOREAPP3_0_OR_GREATER
@@ -182,6 +250,7 @@ namespace Temporalio.Testing
         internal class EphemeralServerBased : WorkflowEnvironment
         {
             private readonly Bridge.EphemeralServer server;
+            private bool autoTimeSkipping = true;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="EphemeralServerBased"/> class.
@@ -189,8 +258,12 @@ namespace Temporalio.Testing
             /// <param name="client">Client for the server.</param>
             /// <param name="server">The underlying bridge server.</param>
             public EphemeralServerBased(TemporalClient client, Bridge.EphemeralServer server)
-                : base(client) =>
+                : base(client)
+            {
                 this.server = server;
+                // Add time skipping interceptor
+                Client = ClientWithTimeSkippingInterceptor(this, client);
+            }
 
             /// <inheritdoc/>
             public override bool SupportsTimeSkipping => server.HasTestService;
@@ -231,6 +304,84 @@ namespace Temporalio.Testing
 
             /// <inheritdoc/>
             public override Task ShutdownAsync() => server.ShutdownAsync();
+
+            /// <inheritdoc/>
+            public override async Task<T> WithAutoTimeSkippingDisabledAsync<T>(Func<Task<T>> func)
+            {
+                var alreadyDisabled = autoTimeSkipping;
+                autoTimeSkipping = false;
+                try
+                {
+                    return await func().ConfigureAwait(false);
+                }
+                finally
+                {
+                    if (!alreadyDisabled)
+                    {
+                        autoTimeSkipping = true;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Run the given function with time-skipping unlocked.
+            /// </summary>
+            /// <typeparam name="T">Return type.</typeparam>
+            /// <param name="run">Function to run.</param>
+            /// <returns>Task with result.</returns>
+            public async Task<T> WithTimeSkippingUnlockedAsync<T>(Func<Task<T>> run)
+            {
+                // If disabled or not supported, no locking/unlocking, just run and return
+                if (!SupportsTimeSkipping || !autoTimeSkipping)
+                {
+                    return await run().ConfigureAwait(false);
+                }
+
+                // Unlock to start time skipping, lock again to stop it
+                await Client.Connection.TestService.UnlockTimeSkippingAsync(new()).ConfigureAwait(false);
+                // We want to lock after user code and we want our lock call to throw only if the
+                // user code didn't, otherwise just error
+                var userCodeSucceeded = false;
+                try
+                {
+                    var ret = await run().ConfigureAwait(false);
+                    userCodeSucceeded = true;
+                    // Attempt lock, throwing on failure
+                    await Client.Connection.TestService.LockTimeSkippingAsync(new()).ConfigureAwait(false);
+                    return ret;
+                }
+                catch (Exception) when (!userCodeSucceeded)
+                {
+                    // Attempt lock, swallowing failure
+                    try
+                    {
+                        await Client.Connection.TestService.LockTimeSkippingAsync(new()).ConfigureAwait(false);
+                    }
+#pragma warning disable CA1031 // We are ok catching all exceptions here
+                    catch (Exception e)
+#pragma warning restore CA1031
+                    {
+                        Logger.LogError(e, "Unable to re-lock time skipping");
+                    }
+                    throw;
+                }
+            }
+
+            private static TemporalClient ClientWithTimeSkippingInterceptor(
+                EphemeralServerBased env, TemporalClient orig)
+            {
+                var newInterceptors = new List<Client.Interceptors.IClientInterceptor>
+                {
+                    new TimeSkippingClientInterceptor(env),
+                };
+                if (orig.Options.Interceptors != null)
+                {
+                    newInterceptors.AddRange(orig.Options.Interceptors);
+                }
+                var newOptions = (TemporalClientOptions)orig.Options.Clone();
+                newOptions.Interceptors = newInterceptors;
+                return new(orig.Connection, newOptions);
+            }
         }
     }
 }

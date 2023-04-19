@@ -22,6 +22,8 @@ typedef struct Runtime Runtime;
 
 typedef struct Worker Worker;
 
+typedef struct WorkerReplayPusher WorkerReplayPusher;
+
 typedef struct ByteArrayRef {
   const uint8_t *data;
   size_t size;
@@ -215,6 +217,7 @@ typedef struct WorkerOptions {
   uint64_t default_heartbeat_throttle_interval_millis;
   double max_activities_per_second;
   double max_task_queue_activities_per_second;
+  uint64_t graceful_shutdown_period_millis;
 } WorkerOptions;
 
 /**
@@ -227,6 +230,16 @@ typedef void (*WorkerPollCallback)(void *user_data, const struct ByteArray *succ
  * If fail is present, it must be freed.
  */
 typedef void (*WorkerCallback)(void *user_data, const struct ByteArray *fail);
+
+typedef struct WorkerReplayerOrFail {
+  struct Worker *worker;
+  struct WorkerReplayPusher *worker_replay_pusher;
+  const struct ByteArray *fail;
+} WorkerReplayerOrFail;
+
+typedef struct WorkerReplayPushResult {
+  const struct ByteArray *fail;
+} WorkerReplayPushResult;
 
 #ifdef __cplusplus
 extern "C" {
@@ -315,11 +328,19 @@ const struct ByteArray *worker_record_activity_heartbeat(struct Worker *worker,
 
 void worker_request_workflow_eviction(struct Worker *worker, struct ByteArrayRef run_id);
 
-void worker_shutdown(struct Worker *worker, void *user_data, WorkerCallback callback);
-
 void worker_initiate_shutdown(struct Worker *worker);
 
 void worker_finalize_shutdown(struct Worker *worker, void *user_data, WorkerCallback callback);
+
+struct WorkerReplayerOrFail worker_replayer_new(struct Runtime *runtime,
+                                                const struct WorkerOptions *options);
+
+void worker_replay_pusher_free(struct WorkerReplayPusher *worker_replay_pusher);
+
+struct WorkerReplayPushResult worker_replay_push(struct Worker *worker,
+                                                 struct WorkerReplayPusher *worker_replay_pusher,
+                                                 struct ByteArrayRef workflow_id,
+                                                 struct ByteArrayRef history);
 
 #ifdef __cplusplus
 } // extern "C"

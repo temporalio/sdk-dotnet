@@ -153,14 +153,14 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Invoke GetWorkerBuildIdOrdering.
+        /// Invoke GetWorkerBuildIdCompatibility.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetWorkerBuildIdOrderingResponse> GetWorkerBuildIdOrderingAsync(GetWorkerBuildIdOrderingRequest req, RpcOptions? options = null)
+        public async Task<GetWorkerBuildIdCompatibilityResponse> GetWorkerBuildIdCompatibilityAsync(GetWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetWorkerBuildIdOrdering", req, GetWorkerBuildIdOrderingResponse.Parser, options);
+            return await InvokeRpcAsync("GetWorkerBuildIdCompatibility", req, GetWorkerBuildIdCompatibilityResponse.Parser, options);
         }
 
         /// <summary>
@@ -304,6 +304,17 @@ namespace Temporalio.Client
         public async Task<PollActivityTaskQueueResponse> PollActivityTaskQueueAsync(PollActivityTaskQueueRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("PollActivityTaskQueue", req, PollActivityTaskQueueResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke PollWorkflowExecutionUpdate.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<PollWorkflowExecutionUpdateResponse> PollWorkflowExecutionUpdateAsync(PollWorkflowExecutionUpdateRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("PollWorkflowExecutionUpdate", req, PollWorkflowExecutionUpdateResponse.Parser, options);
         }
 
         /// <summary>
@@ -593,25 +604,25 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Invoke UpdateWorkerBuildIdOrdering.
+        /// Invoke UpdateWorkerBuildIdCompatibility.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateWorkerBuildIdOrderingResponse> UpdateWorkerBuildIdOrderingAsync(UpdateWorkerBuildIdOrderingRequest req, RpcOptions? options = null)
+        public async Task<UpdateWorkerBuildIdCompatibilityResponse> UpdateWorkerBuildIdCompatibilityAsync(UpdateWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateWorkerBuildIdOrdering", req, UpdateWorkerBuildIdOrderingResponse.Parser, options);
+            return await InvokeRpcAsync("UpdateWorkerBuildIdCompatibility", req, UpdateWorkerBuildIdCompatibilityResponse.Parser, options);
         }
 
         /// <summary>
-        /// Invoke UpdateWorkflow.
+        /// Invoke UpdateWorkflowExecution.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateWorkflowResponse> UpdateWorkflowAsync(UpdateWorkflowRequest req, RpcOptions? options = null)
+        public async Task<UpdateWorkflowExecutionResponse> UpdateWorkflowExecutionAsync(UpdateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateWorkflow", req, UpdateWorkflowResponse.Parser, options);
+            return await InvokeRpcAsync("UpdateWorkflowExecution", req, UpdateWorkflowExecutionResponse.Parser, options);
         }
     }
 }

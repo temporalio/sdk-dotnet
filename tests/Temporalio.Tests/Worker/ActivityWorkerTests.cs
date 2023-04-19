@@ -85,7 +85,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteActivityAsync_CheckInfo_IsAccurate()
     {
         [Activity]
-        static ActivityInfo GetInfo() => ActivityContext.Current.Info;
+        static ActivityInfo GetInfo() => ActivityExecutionContext.Current.Info;
         var info = await ExecuteActivityAsync(GetInfo);
         // Just assert some values for now
         var beforeNow = DateTime.UtcNow.AddSeconds(-30);
@@ -176,13 +176,13 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         async Task WaitUntilCancelledAsync()
         {
             activityReached.SetResult();
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat();
+                ActivityExecutionContext.Current.Heartbeat();
                 await Task.Delay(300);
             }
             gotCancellation = true;
-            ActivityContext.Current.CancellationToken.ThrowIfCancellationRequested();
+            ActivityExecutionContext.Current.CancellationToken.ThrowIfCancellationRequested();
         }
         await Assert.ThrowsAsync<WorkflowFailedException>(() => ExecuteActivityAsync(
             WaitUntilCancelledAsync,
@@ -205,9 +205,9 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         async Task<string> CatchCancelledAsync()
         {
             activityReached.SetResult();
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat();
+                ActivityExecutionContext.Current.Heartbeat();
                 await Task.Delay(300);
             }
             return "Cancelled!";
@@ -235,13 +235,13 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         async Task WaitUntilCancelledAsync()
         {
             activityReached.SetResult();
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat();
+                ActivityExecutionContext.Current.Heartbeat();
                 await Task.Delay(300);
             }
             gotCancellation = true;
-            ActivityContext.Current.CancellationToken.ThrowIfCancellationRequested();
+            ActivityExecutionContext.Current.CancellationToken.ThrowIfCancellationRequested();
         }
         var workflowID = string.Empty;
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ExecuteActivityAsync(
@@ -308,7 +308,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     {
         [Activity]
         static Task WaitUntilCancelledAsync() =>
-            Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+            Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
         // Only allow 5 activities but try to execute 6 and confirm schedule to start timeout fails
         var taskQueue = $"tq-{Guid.NewGuid()}";
         using var worker = new TemporalWorker(Client, new()
@@ -339,7 +339,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     {
         [Activity]
         static Task WaitUntilCancelledAsync() =>
-            Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+            Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
         var wfErr = await Assert.ThrowsAnyAsync<WorkflowFailedException>(() => ExecuteActivityAsync(
             WaitUntilCancelledAsync,
             heartbeatTimeout: TimeSpan.FromSeconds(1)));
@@ -355,13 +355,13 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         async Task BadHeartbeatDetailsAsync()
         {
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat(() => "can't serialize me!");
+                ActivityExecutionContext.Current.Heartbeat(() => "can't serialize me!");
                 await Task.Delay(100);
             }
-            cancelReason = ActivityContext.Current.CancelReason;
-            ActivityContext.Current.CancellationToken.ThrowIfCancellationRequested();
+            cancelReason = ActivityExecutionContext.Current.CancelReason;
+            ActivityExecutionContext.Current.CancellationToken.ThrowIfCancellationRequested();
         }
         await Assert.ThrowsAnyAsync<WorkflowFailedException>(() => ExecuteActivityAsync(
             BadHeartbeatDetailsAsync));
@@ -375,10 +375,10 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         async Task HeartbeatAndFailAsync()
         {
-            ActivityContext.Current.Heartbeat($"attempt: {ActivityContext.Current.Info.Attempt}");
-            if (ActivityContext.Current.Info.HeartbeatDetails.Count > 0)
+            ActivityExecutionContext.Current.Heartbeat($"attempt: {ActivityExecutionContext.Current.Info.Attempt}");
+            if (ActivityExecutionContext.Current.Info.HeartbeatDetails.Count > 0)
             {
-                heartbeatDetail = await ActivityContext.Current.Info.HeartbeatDetailAtAsync<string>(0);
+                heartbeatDetail = await ActivityExecutionContext.Current.Info.HeartbeatDetailAtAsync<string>(0);
             }
             throw new InvalidOperationException("Oh no");
         }
@@ -425,7 +425,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         void CompleteExternal()
         {
-            taskTokenCompletion.SetResult(ActivityContext.Current.Info.TaskToken);
+            taskTokenCompletion.SetResult(ActivityExecutionContext.Current.Info.TaskToken);
             throw new CompleteAsyncException();
         }
 
@@ -461,7 +461,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         void CompleteExternal()
         {
-            taskTokenCompletion.SetResult(ActivityContext.Current.Info.TaskToken);
+            taskTokenCompletion.SetResult(ActivityExecutionContext.Current.Info.TaskToken);
             throw new CompleteAsyncException();
         }
 
@@ -511,7 +511,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         void CompleteExternal()
         {
-            taskTokenCompletion.SetResult(ActivityContext.Current.Info.TaskToken);
+            taskTokenCompletion.SetResult(ActivityExecutionContext.Current.Info.TaskToken);
             throw new CompleteAsyncException();
         }
 
@@ -566,7 +566,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         void CompleteExternal()
         {
-            taskTokenCompletion.SetResult(ActivityContext.Current.Info.TaskToken);
+            taskTokenCompletion.SetResult(ActivityExecutionContext.Current.Info.TaskToken);
             throw new CompleteAsyncException();
         }
 
@@ -619,10 +619,10 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             activityWaiting.SetResult();
             try
             {
-                await Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+                await Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
             }
             catch (TaskCanceledException) when (
-                ActivityContext.Current.CancelReason == ActivityCancelReason.WorkerShutdown)
+                ActivityExecutionContext.Current.CancelReason == ActivityCancelReason.WorkerShutdown)
             {
                 workerShutdown = true;
                 throw;
@@ -665,7 +665,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             () => handle!.GetResultAsync());
         var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
         var appErr = Assert.IsType<ApplicationFailureException>(actErr.InnerException);
-        Assert.Equal("TaskCanceledException", appErr.ErrorType);
+        Assert.Equal("WorkerShutdown", appErr.ErrorType);
         Assert.True(workerShutdown);
     }
 

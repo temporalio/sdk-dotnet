@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporalio.Api.Common.V1;
 
-namespace Temporalio
+namespace Temporalio.Converters
 {
     /// <summary>
     /// Payload codec for translating bytes to bytes.

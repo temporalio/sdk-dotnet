@@ -26,57 +26,58 @@ namespace Temporalio.Api.OperatorService.V1 {
           string.Concat(
             "CjZ0ZW1wb3JhbC9hcGkvb3BlcmF0b3JzZXJ2aWNlL3YxL3JlcXVlc3RfcmVz",
             "cG9uc2UucHJvdG8SH3RlbXBvcmFsLmFwaS5vcGVyYXRvcnNlcnZpY2UudjEa",
-            "InRlbXBvcmFsL2FwaS9lbnVtcy92MS9jb21tb24ucHJvdG8i7AEKGkFkZFNl",
+            "InRlbXBvcmFsL2FwaS9lbnVtcy92MS9jb21tb24ucHJvdG8i/wEKGkFkZFNl",
             "YXJjaEF0dHJpYnV0ZXNSZXF1ZXN0EmwKEXNlYXJjaF9hdHRyaWJ1dGVzGAEg",
             "AygLMlEudGVtcG9yYWwuYXBpLm9wZXJhdG9yc2VydmljZS52MS5BZGRTZWFy",
-            "Y2hBdHRyaWJ1dGVzUmVxdWVzdC5TZWFyY2hBdHRyaWJ1dGVzRW50cnkaYAoV",
-            "U2VhcmNoQXR0cmlidXRlc0VudHJ5EgsKA2tleRgBIAEoCRI2CgV2YWx1ZRgC",
-            "IAEoDjInLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5JbmRleGVkVmFsdWVUeXBl",
-            "OgI4ASIdChtBZGRTZWFyY2hBdHRyaWJ1dGVzUmVzcG9uc2UiOgodUmVtb3Zl",
-            "U2VhcmNoQXR0cmlidXRlc1JlcXVlc3QSGQoRc2VhcmNoX2F0dHJpYnV0ZXMY",
-            "ASADKAkiIAoeUmVtb3ZlU2VhcmNoQXR0cmlidXRlc1Jlc3BvbnNlIh0KG0xp",
-            "c3RTZWFyY2hBdHRyaWJ1dGVzUmVxdWVzdCLiBAocTGlzdFNlYXJjaEF0dHJp",
-            "YnV0ZXNSZXNwb25zZRJuChFjdXN0b21fYXR0cmlidXRlcxgBIAMoCzJTLnRl",
-            "bXBvcmFsLmFwaS5vcGVyYXRvcnNlcnZpY2UudjEuTGlzdFNlYXJjaEF0dHJp",
-            "YnV0ZXNSZXNwb25zZS5DdXN0b21BdHRyaWJ1dGVzRW50cnkSbgoRc3lzdGVt",
-            "X2F0dHJpYnV0ZXMYAiADKAsyUy50ZW1wb3JhbC5hcGkub3BlcmF0b3JzZXJ2",
-            "aWNlLnYxLkxpc3RTZWFyY2hBdHRyaWJ1dGVzUmVzcG9uc2UuU3lzdGVtQXR0",
-            "cmlidXRlc0VudHJ5EmgKDnN0b3JhZ2Vfc2NoZW1hGAMgAygLMlAudGVtcG9y",
-            "YWwuYXBpLm9wZXJhdG9yc2VydmljZS52MS5MaXN0U2VhcmNoQXR0cmlidXRl",
-            "c1Jlc3BvbnNlLlN0b3JhZ2VTY2hlbWFFbnRyeRpgChVDdXN0b21BdHRyaWJ1",
-            "dGVzRW50cnkSCwoDa2V5GAEgASgJEjYKBXZhbHVlGAIgASgOMicudGVtcG9y",
-            "YWwuYXBpLmVudW1zLnYxLkluZGV4ZWRWYWx1ZVR5cGU6AjgBGmAKFVN5c3Rl",
-            "bUF0dHJpYnV0ZXNFbnRyeRILCgNrZXkYASABKAkSNgoFdmFsdWUYAiABKA4y",
-            "Jy50ZW1wb3JhbC5hcGkuZW51bXMudjEuSW5kZXhlZFZhbHVlVHlwZToCOAEa",
-            "NAoSU3RvcmFnZVNjaGVtYUVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgC",
-            "IAEoCToCOAEiKwoWRGVsZXRlTmFtZXNwYWNlUmVxdWVzdBIRCgluYW1lc3Bh",
-            "Y2UYASABKAkiNAoXRGVsZXRlTmFtZXNwYWNlUmVzcG9uc2USGQoRZGVsZXRl",
-            "ZF9uYW1lc3BhY2UYASABKAkiZQofQWRkT3JVcGRhdGVSZW1vdGVDbHVzdGVy",
-            "UmVxdWVzdBIYChBmcm9udGVuZF9hZGRyZXNzGAEgASgJEigKIGVuYWJsZV9y",
-            "ZW1vdGVfY2x1c3Rlcl9jb25uZWN0aW9uGAIgASgIIiIKIEFkZE9yVXBkYXRl",
-            "UmVtb3RlQ2x1c3RlclJlc3BvbnNlIjIKGlJlbW92ZVJlbW90ZUNsdXN0ZXJS",
-            "ZXF1ZXN0EhQKDGNsdXN0ZXJfbmFtZRgBIAEoCSIdChtSZW1vdmVSZW1vdGVD",
-            "bHVzdGVyUmVzcG9uc2UiQQoTTGlzdENsdXN0ZXJzUmVxdWVzdBIRCglwYWdl",
-            "X3NpemUYASABKAUSFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgMInMKFExpc3RD",
-            "bHVzdGVyc1Jlc3BvbnNlEkIKCGNsdXN0ZXJzGAEgAygLMjAudGVtcG9yYWwu",
-            "YXBpLm9wZXJhdG9yc2VydmljZS52MS5DbHVzdGVyTWV0YWRhdGESFwoPbmV4",
-            "dF9wYWdlX3Rva2VuGAQgASgMIqoBCg9DbHVzdGVyTWV0YWRhdGESFAoMY2x1",
-            "c3Rlcl9uYW1lGAEgASgJEhIKCmNsdXN0ZXJfaWQYAiABKAkSDwoHYWRkcmVz",
-            "cxgDIAEoCRIgChhpbml0aWFsX2ZhaWxvdmVyX3ZlcnNpb24YBCABKAMSGwoT",
-            "aGlzdG9yeV9zaGFyZF9jb3VudBgFIAEoBRIdChVpc19jb25uZWN0aW9uX2Vu",
-            "YWJsZWQYBiABKAhCvgEKImlvLnRlbXBvcmFsLmFwaS5vcGVyYXRvcnNlcnZp",
-            "Y2UudjFCFFJlcXVlc3RSZXNwb25zZVByb3RvUAFaNWdvLnRlbXBvcmFsLmlv",
-            "L2FwaS9vcGVyYXRvcnNlcnZpY2UvdjE7b3BlcmF0b3JzZXJ2aWNlqgIhVGVt",
-            "cG9yYWxpby5BcGkuT3BlcmF0b3JTZXJ2aWNlLlYx6gIkVGVtcG9yYWxpbzo6",
-            "QXBpOjpPcGVyYXRvclNlcnZpY2U6OlYxYgZwcm90bzM="));
+            "Y2hBdHRyaWJ1dGVzUmVxdWVzdC5TZWFyY2hBdHRyaWJ1dGVzRW50cnkSEQoJ",
+            "bmFtZXNwYWNlGAIgASgJGmAKFVNlYXJjaEF0dHJpYnV0ZXNFbnRyeRILCgNr",
+            "ZXkYASABKAkSNgoFdmFsdWUYAiABKA4yJy50ZW1wb3JhbC5hcGkuZW51bXMu",
+            "djEuSW5kZXhlZFZhbHVlVHlwZToCOAEiHQobQWRkU2VhcmNoQXR0cmlidXRl",
+            "c1Jlc3BvbnNlIk0KHVJlbW92ZVNlYXJjaEF0dHJpYnV0ZXNSZXF1ZXN0EhkK",
+            "EXNlYXJjaF9hdHRyaWJ1dGVzGAEgAygJEhEKCW5hbWVzcGFjZRgCIAEoCSIg",
+            "Ch5SZW1vdmVTZWFyY2hBdHRyaWJ1dGVzUmVzcG9uc2UiMAobTGlzdFNlYXJj",
+            "aEF0dHJpYnV0ZXNSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCSLiBAocTGlz",
+            "dFNlYXJjaEF0dHJpYnV0ZXNSZXNwb25zZRJuChFjdXN0b21fYXR0cmlidXRl",
+            "cxgBIAMoCzJTLnRlbXBvcmFsLmFwaS5vcGVyYXRvcnNlcnZpY2UudjEuTGlz",
+            "dFNlYXJjaEF0dHJpYnV0ZXNSZXNwb25zZS5DdXN0b21BdHRyaWJ1dGVzRW50",
+            "cnkSbgoRc3lzdGVtX2F0dHJpYnV0ZXMYAiADKAsyUy50ZW1wb3JhbC5hcGku",
+            "b3BlcmF0b3JzZXJ2aWNlLnYxLkxpc3RTZWFyY2hBdHRyaWJ1dGVzUmVzcG9u",
+            "c2UuU3lzdGVtQXR0cmlidXRlc0VudHJ5EmgKDnN0b3JhZ2Vfc2NoZW1hGAMg",
+            "AygLMlAudGVtcG9yYWwuYXBpLm9wZXJhdG9yc2VydmljZS52MS5MaXN0U2Vh",
+            "cmNoQXR0cmlidXRlc1Jlc3BvbnNlLlN0b3JhZ2VTY2hlbWFFbnRyeRpgChVD",
+            "dXN0b21BdHRyaWJ1dGVzRW50cnkSCwoDa2V5GAEgASgJEjYKBXZhbHVlGAIg",
+            "ASgOMicudGVtcG9yYWwuYXBpLmVudW1zLnYxLkluZGV4ZWRWYWx1ZVR5cGU6",
+            "AjgBGmAKFVN5c3RlbUF0dHJpYnV0ZXNFbnRyeRILCgNrZXkYASABKAkSNgoF",
+            "dmFsdWUYAiABKA4yJy50ZW1wb3JhbC5hcGkuZW51bXMudjEuSW5kZXhlZFZh",
+            "bHVlVHlwZToCOAEaNAoSU3RvcmFnZVNjaGVtYUVudHJ5EgsKA2tleRgBIAEo",
+            "CRINCgV2YWx1ZRgCIAEoCToCOAEiKwoWRGVsZXRlTmFtZXNwYWNlUmVxdWVz",
+            "dBIRCgluYW1lc3BhY2UYASABKAkiNAoXRGVsZXRlTmFtZXNwYWNlUmVzcG9u",
+            "c2USGQoRZGVsZXRlZF9uYW1lc3BhY2UYASABKAkiZQofQWRkT3JVcGRhdGVS",
+            "ZW1vdGVDbHVzdGVyUmVxdWVzdBIYChBmcm9udGVuZF9hZGRyZXNzGAEgASgJ",
+            "EigKIGVuYWJsZV9yZW1vdGVfY2x1c3Rlcl9jb25uZWN0aW9uGAIgASgIIiIK",
+            "IEFkZE9yVXBkYXRlUmVtb3RlQ2x1c3RlclJlc3BvbnNlIjIKGlJlbW92ZVJl",
+            "bW90ZUNsdXN0ZXJSZXF1ZXN0EhQKDGNsdXN0ZXJfbmFtZRgBIAEoCSIdChtS",
+            "ZW1vdmVSZW1vdGVDbHVzdGVyUmVzcG9uc2UiQQoTTGlzdENsdXN0ZXJzUmVx",
+            "dWVzdBIRCglwYWdlX3NpemUYASABKAUSFwoPbmV4dF9wYWdlX3Rva2VuGAIg",
+            "ASgMInMKFExpc3RDbHVzdGVyc1Jlc3BvbnNlEkIKCGNsdXN0ZXJzGAEgAygL",
+            "MjAudGVtcG9yYWwuYXBpLm9wZXJhdG9yc2VydmljZS52MS5DbHVzdGVyTWV0",
+            "YWRhdGESFwoPbmV4dF9wYWdlX3Rva2VuGAQgASgMIqoBCg9DbHVzdGVyTWV0",
+            "YWRhdGESFAoMY2x1c3Rlcl9uYW1lGAEgASgJEhIKCmNsdXN0ZXJfaWQYAiAB",
+            "KAkSDwoHYWRkcmVzcxgDIAEoCRIgChhpbml0aWFsX2ZhaWxvdmVyX3ZlcnNp",
+            "b24YBCABKAMSGwoTaGlzdG9yeV9zaGFyZF9jb3VudBgFIAEoBRIdChVpc19j",
+            "b25uZWN0aW9uX2VuYWJsZWQYBiABKAhCvgEKImlvLnRlbXBvcmFsLmFwaS5v",
+            "cGVyYXRvcnNlcnZpY2UudjFCFFJlcXVlc3RSZXNwb25zZVByb3RvUAFaNWdv",
+            "LnRlbXBvcmFsLmlvL2FwaS9vcGVyYXRvcnNlcnZpY2UvdjE7b3BlcmF0b3Jz",
+            "ZXJ2aWNlqgIhVGVtcG9yYWxpby5BcGkuT3BlcmF0b3JTZXJ2aWNlLlYx6gIk",
+            "VGVtcG9yYWxpbzo6QXBpOjpPcGVyYXRvclNlcnZpY2U6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddSearchAttributesRequest), global::Temporalio.Api.OperatorService.V1.AddSearchAttributesRequest.Parser, new[]{ "SearchAttributes" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddSearchAttributesRequest), global::Temporalio.Api.OperatorService.V1.AddSearchAttributesRequest.Parser, new[]{ "SearchAttributes", "Namespace" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddSearchAttributesResponse), global::Temporalio.Api.OperatorService.V1.AddSearchAttributesResponse.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesRequest), global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesRequest.Parser, new[]{ "SearchAttributes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesRequest), global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesRequest.Parser, new[]{ "SearchAttributes", "Namespace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesResponse), global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesResponse.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListSearchAttributesRequest), global::Temporalio.Api.OperatorService.V1.ListSearchAttributesRequest.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListSearchAttributesRequest), global::Temporalio.Api.OperatorService.V1.ListSearchAttributesRequest.Parser, new[]{ "Namespace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListSearchAttributesResponse), global::Temporalio.Api.OperatorService.V1.ListSearchAttributesResponse.Parser, new[]{ "CustomAttributes", "SystemAttributes", "StorageSchema" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest), global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest.Parser, new[]{ "Namespace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.DeleteNamespaceResponse), global::Temporalio.Api.OperatorService.V1.DeleteNamespaceResponse.Parser, new[]{ "DeletedNamespace" }, null, null, null, null),
@@ -128,6 +129,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public AddSearchAttributesRequest(AddSearchAttributesRequest other) : this() {
       searchAttributes_ = other.searchAttributes_.Clone();
+      namespace_ = other.namespace_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -151,6 +153,18 @@ namespace Temporalio.Api.OperatorService.V1 {
       get { return searchAttributes_; }
     }
 
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 2;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -167,6 +181,7 @@ namespace Temporalio.Api.OperatorService.V1 {
         return true;
       }
       if (!SearchAttributes.Equals(other.SearchAttributes)) return false;
+      if (Namespace != other.Namespace) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -175,6 +190,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= SearchAttributes.GetHashCode();
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -194,6 +210,10 @@ namespace Temporalio.Api.OperatorService.V1 {
       output.WriteRawMessage(this);
     #else
       searchAttributes_.WriteTo(output, _map_searchAttributes_codec);
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Namespace);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -205,6 +225,10 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       searchAttributes_.WriteTo(ref output, _map_searchAttributes_codec);
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Namespace);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -216,6 +240,9 @@ namespace Temporalio.Api.OperatorService.V1 {
     public int CalculateSize() {
       int size = 0;
       size += searchAttributes_.CalculateSize(_map_searchAttributes_codec);
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -229,6 +256,9 @@ namespace Temporalio.Api.OperatorService.V1 {
         return;
       }
       searchAttributes_.Add(other.searchAttributes_);
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -248,6 +278,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             searchAttributes_.AddEntriesFrom(input, _map_searchAttributes_codec);
             break;
           }
+          case 18: {
+            Namespace = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -265,6 +299,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             break;
           case 10: {
             searchAttributes_.AddEntriesFrom(ref input, _map_searchAttributes_codec);
+            break;
+          }
+          case 18: {
+            Namespace = input.ReadString();
             break;
           }
         }
@@ -461,6 +499,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public RemoveSearchAttributesRequest(RemoveSearchAttributesRequest other) : this() {
       searchAttributes_ = other.searchAttributes_.Clone();
+      namespace_ = other.namespace_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -484,6 +523,18 @@ namespace Temporalio.Api.OperatorService.V1 {
       get { return searchAttributes_; }
     }
 
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 2;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -500,6 +551,7 @@ namespace Temporalio.Api.OperatorService.V1 {
         return true;
       }
       if(!searchAttributes_.Equals(other.searchAttributes_)) return false;
+      if (Namespace != other.Namespace) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -508,6 +560,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= searchAttributes_.GetHashCode();
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -527,6 +580,10 @@ namespace Temporalio.Api.OperatorService.V1 {
       output.WriteRawMessage(this);
     #else
       searchAttributes_.WriteTo(output, _repeated_searchAttributes_codec);
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Namespace);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -538,6 +595,10 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       searchAttributes_.WriteTo(ref output, _repeated_searchAttributes_codec);
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Namespace);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -549,6 +610,9 @@ namespace Temporalio.Api.OperatorService.V1 {
     public int CalculateSize() {
       int size = 0;
       size += searchAttributes_.CalculateSize(_repeated_searchAttributes_codec);
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -562,6 +626,9 @@ namespace Temporalio.Api.OperatorService.V1 {
         return;
       }
       searchAttributes_.Add(other.searchAttributes_);
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -581,6 +648,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             searchAttributes_.AddEntriesFrom(input, _repeated_searchAttributes_codec);
             break;
           }
+          case 18: {
+            Namespace = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -598,6 +669,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             break;
           case 10: {
             searchAttributes_.AddEntriesFrom(ref input, _repeated_searchAttributes_codec);
+            break;
+          }
+          case 18: {
+            Namespace = input.ReadString();
             break;
           }
         }
@@ -793,6 +868,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ListSearchAttributesRequest(ListSearchAttributesRequest other) : this() {
+      namespace_ = other.namespace_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -800,6 +876,18 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public ListSearchAttributesRequest Clone() {
       return new ListSearchAttributesRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -817,6 +905,7 @@ namespace Temporalio.Api.OperatorService.V1 {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Namespace != other.Namespace) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -824,6 +913,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -842,6 +932,10 @@ namespace Temporalio.Api.OperatorService.V1 {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -852,6 +946,10 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -862,6 +960,9 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -873,6 +974,9 @@ namespace Temporalio.Api.OperatorService.V1 {
     public void MergeFrom(ListSearchAttributesRequest other) {
       if (other == null) {
         return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -889,6 +993,10 @@ namespace Temporalio.Api.OperatorService.V1 {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -904,6 +1012,10 @@ namespace Temporalio.Api.OperatorService.V1 {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
         }
       }
     }

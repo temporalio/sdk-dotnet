@@ -48,7 +48,8 @@ namespace Temporalio.Bridge.Api.ActivityResult {
             "dXJlIhMKEVdpbGxDb21wbGV0ZUFzeW5jIo0BCglEb0JhY2tvZmYSDwoHYXR0",
             "ZW1wdBgBIAEoDRIzChBiYWNrb2ZmX2R1cmF0aW9uGAIgASgLMhkuZ29vZ2xl",
             "LnByb3RvYnVmLkR1cmF0aW9uEjoKFm9yaWdpbmFsX3NjaGVkdWxlX3RpbWUY",
-            "AyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wYgZwcm90bzM="));
+            "AyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQirqAidUZW1wb3Jh",
+            "bGlvOjpCcmlkZ2U6OkFwaTo6QWN0aXZpdHlSZXN1bHRiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -66,7 +67,6 @@ namespace Temporalio.Bridge.Api.ActivityResult {
   }
   #region Messages
   /// <summary>
-  ///*
   /// Used to report activity completions to core
   /// </summary>
   internal sealed partial class ActivityExecutionResult : pb::IMessage<ActivityExecutionResult>
@@ -856,7 +856,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
   }
 
   /// <summary>
-  ///* Used to report successful completion either when executing or resolving 
+  /// Used to report successful completion either when executing or resolving
   /// </summary>
   internal sealed partial class Success : pb::IMessage<Success>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1057,7 +1057,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
   }
 
   /// <summary>
-  ///* Used to report activity failure either when executing or resolving 
+  /// Used to report activity failure either when executing or resolving
   /// </summary>
   internal sealed partial class Failure : pb::IMessage<Failure>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1258,7 +1258,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
   }
 
   /// <summary>
-  ///*
+  ///
   /// Used to report cancellation from both Core and Lang.
   /// When Lang reports a cancelled activity, it must put a CancelledFailure in the failure field.
   /// When Core reports a cancelled activity, it must put an ActivityFailure with CancelledFailure
@@ -1463,7 +1463,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
   }
 
   /// <summary>
-  ///*
+  ///
   /// Used in ActivityExecutionResult to notify Core that this Activity will complete asynchronously.
   /// Core will forget about this Activity and free up resources used to track this Activity.
   /// </summary>
@@ -1620,7 +1620,7 @@ namespace Temporalio.Bridge.Api.ActivityResult {
   }
 
   /// <summary>
-  ///*
+  ///
   /// Issued when a local activity needs to retry but also wants to back off more than would be
   /// reasonable to WFT heartbeat for. Lang is expected to schedule a timer for the duration
   /// and then start a local activity of the same type &amp; same inputs with the provided attempt number

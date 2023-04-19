@@ -236,7 +236,7 @@ impl TestServerOptions {
         } else {
             ephemeral_server::EphemeralExe::CachedDownload {
                 version: match self.download_version.to_str() {
-                    "default" => ephemeral_server::EphemeralExeVersion::Default {
+                    "default" => ephemeral_server::EphemeralExeVersion::SDKDefault {
                         sdk_name: self.sdk_name.to_string(),
                         sdk_version: self.sdk_version.to_string(),
                     },

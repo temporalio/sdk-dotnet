@@ -1,5 +1,4 @@
 #pragma warning disable CA1724 // Don't care about name conflicts
-#pragma warning disable CS1998 // Sometimes I wait "async" functions with no await in them
 #pragma warning disable SA1201, SA1204 // We want to have classes near their tests
 
 namespace Temporalio.Tests.Worker;
@@ -592,9 +591,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public static async Task<string> SwallowCancelActivityAsync()
         {
             ActivityStarted!.SetResult();
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat();
+                ActivityExecutionContext.Current.Heartbeat();
                 await Task.Delay(100);
             }
             return "cancelled";
@@ -744,7 +743,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertProperlyCancelled(
             CancelWorkflow.Scenario.LocalActivity, _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyCancelled(
-            CancelWorkflow.Scenario.ChildTryCancel, AssertChildInitiatedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildTryCancel, AssertChildStartedEventuallyAsync);
     }
 
     [Fact]
@@ -787,7 +786,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             CancelWorkflow.Scenario.ActivityWaitAndIgnore,
             _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyIgnored(
-            CancelWorkflow.Scenario.ChildWaitAndIgnore, AssertChildInitiatedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildWaitAndIgnore, AssertChildStartedEventuallyAsync);
     }
 
     [Workflow]
@@ -1599,7 +1598,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         [Activity]
         public static Task RunUntilCancelledAsync() =>
-            Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+            Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
 
         [WorkflowRun]
         public async Task RunAsync(bool local)
@@ -1641,18 +1640,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         TimeoutActivityWorkflow.Ref.RunAsync,
                         local,
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
-                // TODO(cretz): Local activities are not wrapping exceptions properly, update this
-                // when https://github.com/temporalio/sdk-core/issues/323 fixed
-                TimeoutFailureException toExc;
-                if (local)
-                {
-                    toExc = Assert.IsType<TimeoutFailureException>(wfExc.InnerException);
-                }
-                else
-                {
-                    var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
-                    toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
-                }
+                var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
+                var toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
                 Assert.Equal(TimeoutType.StartToClose, toExc.TimeoutType);
             },
             new() { Activities = { TimeoutActivityWorkflow.RunUntilCancelledAsync } });
@@ -1665,7 +1654,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         [Activity]
         public static Task RunUntilCancelledAsync() =>
-            Task.Delay(Timeout.Infinite, ActivityContext.Current.CancellationToken);
+            Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
 
         [WorkflowRun]
         public async Task RunAsync(Input input)
@@ -1730,17 +1719,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                             // Lowering for quicker LA result
                             TaskTimeout = TimeSpan.FromSeconds(2),
                         }));
-                // TODO(cretz): Local activities are not wrapping exceptions properly, update this
-                // when https://github.com/temporalio/sdk-core/issues/323 fixed
-                if (local)
-                {
-                    Assert.IsType<CancelledFailureException>(wfExc.InnerException);
-                }
-                else
-                {
-                    var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
-                    Assert.IsType<CancelledFailureException>(actExc.InnerException);
-                }
+                var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
+                Assert.IsType<CancelledFailureException>(actExc.InnerException);
 
                 // Cancel before start
                 wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
@@ -2191,9 +2171,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         public static async Task WaitCancelActivityAsync()
         {
-            while (!ActivityContext.Current.CancellationToken.IsCancellationRequested)
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
-                ActivityContext.Current.Heartbeat();
+                ActivityExecutionContext.Current.Heartbeat();
                 await Task.Delay(100);
             }
         }
@@ -2363,7 +2343,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
     }
 
-    [Fact]
+    [Fact(Skip = "TODO(cretz): Current local server doesn't support async metadata, fix with https://github.com/temporalio/sdk-dotnet/issues/50")]
     public async Task ExecuteWorkflowAsync_Patched_ProperlyHandled()
     {
         var workerOptions = new TemporalWorkerOptions()
@@ -2424,7 +2404,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => QueryWorkflowAsync(prePatchID));
                 Assert.Contains("Nondeterminism", exc.Message);
-                // TODO(cretz): This currently causes a core panic
+                // TODO(cretz): This was causing a core panic which may now be fixed, but other
+                // issue is still causing entire test to be skipped
                 // exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                 //     () => QueryWorkflowAsync(patchedID));
                 // Assert.Contains("Nondeterminism", exc.Message);
@@ -2475,10 +2456,21 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             handle, e => e.WorkflowExecutionStartedEventAttributes != null);
     }
 
-    private static Task AssertChildInitiatedEventuallyAsync(WorkflowHandle handle)
+    private static async Task AssertChildStartedEventuallyAsync(WorkflowHandle handle)
     {
-        return AssertHasEventEventuallyAsync(
-            handle, e => e.StartChildWorkflowExecutionInitiatedEventAttributes != null);
+        // Wait for started
+        string? childID = null;
+        await AssertHasEventEventuallyAsync(
+            handle,
+            e =>
+            {
+                childID = e.ChildWorkflowExecutionStartedEventAttributes?.WorkflowExecution?.WorkflowId;
+                return childID != null;
+            });
+        // Check that a workflow task has completed proving child has really started
+        await AssertHasEventEventuallyAsync(
+            handle.Client.GetWorkflowHandle(childID!),
+            e => e.WorkflowTaskCompletedEventAttributes != null);
     }
 
     private static Task AssertHasEventEventuallyAsync(

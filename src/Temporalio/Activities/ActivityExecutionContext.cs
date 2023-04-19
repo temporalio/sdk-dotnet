@@ -10,10 +10,10 @@ namespace Temporalio.Activities
     /// context. Contexts are <see cref="AsyncLocal{T}" /> to activities. <see cref="HasCurrent" />
     /// can be used to check whether a context is available.
     /// </summary>
-    public class ActivityContext
+    public class ActivityExecutionContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActivityContext"/> class.
+        /// Initializes a new instance of the <see cref="ActivityExecutionContext"/> class.
         /// </summary>
         /// <param name="info">Activity info.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
@@ -21,7 +21,7 @@ namespace Temporalio.Activities
         /// <param name="taskToken">Raw activity task token.</param>
         /// <param name="logger">Logger.</param>
 #pragma warning disable CA1068 // We don't require cancellation token as last param
-        internal ActivityContext(
+        internal ActivityExecutionContext(
             ActivityInfo info,
             CancellationToken cancellationToken,
             CancellationToken workerShutdownToken,
@@ -45,7 +45,7 @@ namespace Temporalio.Activities
         /// Gets the current activity context.
         /// </summary>
         /// <exception cref="InvalidOperationException">If no context is available.</exception>
-        public static ActivityContext Current => AsyncLocalCurrent.Value ??
+        public static ActivityExecutionContext Current => AsyncLocalCurrent.Value ??
             throw new InvalidOperationException("No current context");
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Temporalio.Activities
         /// <summary>
         /// Gets the async local current value.
         /// </summary>
-        internal static AsyncLocal<ActivityContext?> AsyncLocalCurrent { get; } = new();
+        internal static AsyncLocal<ActivityExecutionContext?> AsyncLocalCurrent { get; } = new();
 
         /// <summary>
         /// Gets or sets the heartbeater. This is late-bound since interceptors that need this

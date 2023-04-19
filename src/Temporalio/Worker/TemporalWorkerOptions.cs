@@ -194,14 +194,17 @@ namespace Temporalio.Worker
         public WorkflowStackTrace WorkflowStackTrace { get; set; } = WorkflowStackTrace.None;
 
         /// <summary>
+        /// Gets the TEMPORAL_DEBUG environment variable.
+        /// </summary>
+        internal static string? DebugModeEnvironmentVariable { get; } = Environment.GetEnvironmentVariable("TEMPORAL_DEBUG");
+
+        /// <summary>
         /// Gets or sets a function to create workflow instances.
         /// </summary>
         /// <remarks>
         /// Don't expose this until there's a use case.
         /// </remarks>
         internal Func<WorkflowInstanceDetails, IWorkflowInstance>? WorkflowInstanceFactory { get; set; }
-
-        private static string? DebugModeEnvironmentVariable { get; } = Environment.GetEnvironmentVariable("TEMPORAL_DEBUG");
 
         /// <summary>
         /// Add the given delegate as an activity.

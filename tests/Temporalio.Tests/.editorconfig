@@ -31,6 +31,9 @@ dotnet_diagnostic.CA5394.severity = none
 # Do not need docs in test project
 dotnet_diagnostic.CS1591.severity = none
 
+# Allow async methods to not have await in them
+dotnet_diagnostic.CS1998.severity = none
+
 # To test lambda attributes, lambda and attribute share line
 dotnet_diagnostic.SA1134.severity = none
 
@@ -41,6 +44,9 @@ dotnet_diagnostic.SA1313.severity = none
 # Do not need docs in test project
 dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1602.severity = none
+
+# We move tasks around and wait on them later
+dotnet_diagnostic.VSTHRD003.severity = none
 
 # No need to avoid things using TaskScheduler.Current in workflows
 dotnet_diagnostic.VSTHRD105.severity = none

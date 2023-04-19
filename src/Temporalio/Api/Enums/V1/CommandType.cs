@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cih0ZW1wb3JhbC9hcGkvZW51bXMvdjEvY29tbWFuZF90eXBlLnByb3RvEhV0",
-            "ZW1wb3JhbC5hcGkuZW51bXMudjEqmgYKC0NvbW1hbmRUeXBlEhwKGENPTU1B",
+            "ZW1wb3JhbC5hcGkuZW51bXMudjEqwAUKC0NvbW1hbmRUeXBlEhwKGENPTU1B",
             "TkRfVFlQRV9VTlNQRUNJRklFRBAAEicKI0NPTU1BTkRfVFlQRV9TQ0hFRFVM",
             "RV9BQ1RJVklUWV9UQVNLEAESLQopQ09NTUFORF9UWVBFX1JFUVVFU1RfQ0FO",
             "Q0VMX0FDVElWSVRZX1RBU0sQAhIcChhDT01NQU5EX1RZUEVfU1RBUlRfVElN",
@@ -39,11 +39,9 @@ namespace Temporalio.Api.Enums.V1 {
             "CitDT01NQU5EX1RZUEVfU1RBUlRfQ0hJTERfV09SS0ZMT1dfRVhFQ1VUSU9O",
             "EAsSMwovQ09NTUFORF9UWVBFX1NJR05BTF9FWFRFUk5BTF9XT1JLRkxPV19F",
             "WEVDVVRJT04QDBIyCi5DT01NQU5EX1RZUEVfVVBTRVJUX1dPUktGTE9XX1NF",
-            "QVJDSF9BVFRSSUJVVEVTEA0SJwojQ09NTUFORF9UWVBFX0FDQ0VQVF9XT1JL",
-            "RkxPV19VUERBVEUQDhIpCiVDT01NQU5EX1RZUEVfQ09NUExFVEVfV09SS0ZM",
-            "T1dfVVBEQVRFEA8SKwonQ09NTUFORF9UWVBFX01PRElGWV9XT1JLRkxPV19Q",
-            "Uk9QRVJUSUVTEBASJwojQ09NTUFORF9UWVBFX1JFSkVDVF9XT1JLRkxPV19V",
-            "UERBVEUQEUKIAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhBDb21tYW5k",
+            "QVJDSF9BVFRSSUJVVEVTEA0SIQodQ09NTUFORF9UWVBFX1BST1RPQ09MX01F",
+            "U1NBR0UQDhIrCidDT01NQU5EX1RZUEVfTU9ESUZZX1dPUktGTE9XX1BST1BF",
+            "UlRJRVMQEEKIAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhBDb21tYW5k",
             "VHlwZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
             "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
             "OjpFbnVtczo6VjFiBnByb3RvMw=="));
@@ -73,17 +71,8 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("COMMAND_TYPE_START_CHILD_WORKFLOW_EXECUTION")] StartChildWorkflowExecution = 11,
     [pbr::OriginalName("COMMAND_TYPE_SIGNAL_EXTERNAL_WORKFLOW_EXECUTION")] SignalExternalWorkflowExecution = 12,
     [pbr::OriginalName("COMMAND_TYPE_UPSERT_WORKFLOW_SEARCH_ATTRIBUTES")] UpsertWorkflowSearchAttributes = 13,
-    /// <summary>
-    /// Indicates that an update has been accepted for processing workflow code
-    /// </summary>
-    [pbr::OriginalName("COMMAND_TYPE_ACCEPT_WORKFLOW_UPDATE")] AcceptWorkflowUpdate = 14,
-    /// <summary>
-    /// Indicates that an update has completed and carries either the success or
-    /// failure outcome of said update.
-    /// </summary>
-    [pbr::OriginalName("COMMAND_TYPE_COMPLETE_WORKFLOW_UPDATE")] CompleteWorkflowUpdate = 15,
+    [pbr::OriginalName("COMMAND_TYPE_PROTOCOL_MESSAGE")] ProtocolMessage = 14,
     [pbr::OriginalName("COMMAND_TYPE_MODIFY_WORKFLOW_PROPERTIES")] ModifyWorkflowProperties = 16,
-    [pbr::OriginalName("COMMAND_TYPE_REJECT_WORKFLOW_UPDATE")] RejectWorkflowUpdate = 17,
   }
 
   #endregion

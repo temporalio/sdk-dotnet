@@ -15,10 +15,16 @@ jobs:
           - os: ubuntu-latest
             out-file: libtemporal_sdk_bridge.so
             out-prefix: linux-x64
+            # We use the Python manylinux image for glibc compatibility
+            container: quay.io/pypa/manylinux2014_x86_64
+            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
           - os: ubuntu-arm
             out-file: libtemporal_sdk_bridge.so
             out-prefix: linux-arm64
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
+            # We use the Python manylinux image for glibc compatibility
+            container: quay.io/pypa/manylinux2014_aarch64
+            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
           - os: macos-latest
             out-file: libtemporal_sdk_bridge.dylib
             out-prefix: osx-x64
@@ -31,6 +37,7 @@ jobs:
             out-file: temporal_sdk_bridge.dll
             out-prefix: win-x64
     runs-on: ${{ matrix.runsOn || matrix.os }}
+    container: ${{ matrix.container }}
     steps:
       - name: Print build information
         run: "echo head_ref: ${{ github.head_ref }}, ref: ${{ github.ref }}, os: ${{ matrix.os }}"
@@ -55,20 +62,22 @@ jobs:
         if: ${{ matrix.alternative-target }}
         run: rustup target add ${{ matrix.alternative-target }}
 
-      - name: Install protoc (x64)
-        # Does not work on arm
-        if: ${{ matrix.os != 'ubuntu-arm' }}
+      - name: Install protoc (non-Linux)
+        # Does not work on Linux
+        if: ${{ matrix.os != 'ubuntu-latest' && matrix.os != 'ubuntu-arm' }}
         uses: arduino/setup-protoc@v1
         with:
           # TODO(cretz): Upgrade when https://github.com/arduino/setup-protoc/issues/33 fixed
           version: '3.x'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install protoc (Linux ARM)
-        if: ${{ matrix.os == 'ubuntu-arm' }}
+      - name: Install protoc (Linux)
+        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-arm' }}
         run: |
-          sudo apt update -y
-          sudo apt install -y protobuf-compiler
+          curl --location -o protobuf-compiler.zip ${{ matrix.protobuf-url }}
+          mkdir protobuf-compiler
+          unzip protobuf-compiler.zip -d protobuf-compiler
+          echo $(realpath .)/protobuf-compiler/bin >> $GITHUB_PATH
 
       - name: Build
         if: ${{ !matrix.alternative-target }}

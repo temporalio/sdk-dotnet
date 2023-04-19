@@ -74,7 +74,7 @@ namespace Temporalio.Client
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public async Task<TResult> GetResultAsync<TResult>(
+        public virtual async Task<TResult> GetResultAsync<TResult>(
             bool followRuns = true, RpcOptions? rpcOptions = null)
         {
             // Continually get pages

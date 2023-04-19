@@ -4,6 +4,7 @@ use crate::ByteArray;
 use crate::ByteArrayRef;
 use crate::UserDataHandle;
 use prost::Message;
+use temporal_sdk_core::replay::HistoryForReplay;
 use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollActivityError;
 use temporal_sdk_core_api::errors::PollWfError;
@@ -11,6 +12,9 @@ use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
 use temporal_sdk_core_protos::coresdk::ActivityTaskCompletion;
+use temporal_sdk_core_protos::temporal::api::history::v1::History;
+use tokio::sync::mpsc::{channel, Sender};
+use tokio_stream::wrappers::ReceiverStream;
 
 use std::sync::Arc;
 use std::time::Duration;
@@ -31,6 +35,7 @@ pub struct WorkerOptions {
     default_heartbeat_throttle_interval_millis: u64,
     max_activities_per_second: f64,
     max_task_queue_activities_per_second: f64,
+    graceful_shutdown_period_millis: u64,
 }
 
 #[derive(Clone)]
@@ -43,6 +48,22 @@ pub struct Worker {
 #[repr(C)]
 pub struct WorkerOrFail {
     worker: *mut Worker,
+    fail: *const ByteArray,
+}
+
+pub struct WorkerReplayPusher {
+    tx: Sender<HistoryForReplay>,
+}
+
+#[repr(C)]
+pub struct WorkerReplayerOrFail {
+    worker: *mut Worker,
+    worker_replay_pusher: *mut WorkerReplayPusher,
+    fail: *const ByteArray,
+}
+
+#[repr(C)]
+pub struct WorkerReplayPushResult {
     fail: *const ByteArray,
 }
 
@@ -302,26 +323,7 @@ pub extern "C" fn worker_request_workflow_eviction(worker: *mut Worker, run_id: 
 }
 
 #[no_mangle]
-pub extern "C" fn worker_shutdown(
-    worker: *mut Worker,
-    user_data: *mut libc::c_void,
-    callback: WorkerCallback,
-) {
-    let worker = unsafe { &*worker };
-    let user_data = UserDataHandle(user_data);
-    let core_worker = worker.worker.as_ref().unwrap().clone();
-    worker.runtime.core.tokio_handle().spawn(async move {
-        core_worker.shutdown().await;
-        unsafe {
-            callback(user_data.into(), std::ptr::null());
-        }
-    });
-}
-
-#[no_mangle]
-pub extern "C" fn worker_initiate_shutdown(
-    worker: *mut Worker,
-) {
+pub extern "C" fn worker_initiate_shutdown(worker: *mut Worker) {
     let worker = unsafe { &*worker };
     worker.worker.as_ref().unwrap().initiate_shutdown();
 }
@@ -363,6 +365,93 @@ pub extern "C" fn worker_finalize_shutdown(
     });
 }
 
+#[no_mangle]
+pub extern "C" fn worker_replayer_new(
+    runtime: *mut Runtime,
+    options: *const WorkerOptions,
+) -> WorkerReplayerOrFail {
+    let runtime = unsafe { &mut *runtime };
+    enter_sync!(runtime);
+    let options = unsafe { &*options };
+
+    let (worker, worker_replay_pusher, fail) = match options.try_into() {
+        Err(err) => (
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            runtime
+                .alloc_utf8(&format!("Invalid options: {}", err))
+                .into_raw()
+                .cast_const(),
+        ),
+        Ok(config) => {
+            let (tx, rx) = channel(1);
+            match temporal_sdk_core::init_replay_worker(config, ReceiverStream::new(rx)) {
+                Err(err) => (
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                    runtime
+                        .alloc_utf8(&format!("Worker replay init failed: {}", err))
+                        .into_raw()
+                        .cast_const(),
+                ),
+                Ok(worker) => (
+                    Box::into_raw(Box::new(Worker {
+                        worker: Some(Arc::new(worker)),
+                        runtime: runtime.clone(),
+                    })),
+                    Box::into_raw(Box::new(WorkerReplayPusher { tx: tx })),
+                    std::ptr::null(),
+                ),
+            }
+        }
+    };
+    WorkerReplayerOrFail {
+        worker,
+        worker_replay_pusher,
+        fail,
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn worker_replay_pusher_free(worker_replay_pusher: *mut WorkerReplayPusher) {
+    unsafe {
+        let _ = Box::from_raw(worker_replay_pusher);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn worker_replay_push(
+    worker: *mut Worker,
+    worker_replay_pusher: *mut WorkerReplayPusher,
+    workflow_id: ByteArrayRef,
+    history: ByteArrayRef,
+) -> WorkerReplayPushResult {
+    let worker = unsafe { &mut *worker };
+    let worker_replay_pusher = unsafe { &*worker_replay_pusher };
+    let workflow_id = workflow_id.to_string();
+    match History::decode(history.to_slice()) {
+        Err(err) => {
+            return WorkerReplayPushResult {
+                fail: worker
+                    .runtime
+                    .alloc_utf8(&format!("Worker replay init failed: {}", err))
+                    .into_raw()
+                    .cast_const(),
+            }
+        }
+        Ok(history) => worker.runtime.core.tokio_handle().spawn(async move {
+            // Intentionally ignoring error here
+            let _ = worker_replay_pusher
+                .tx
+                .send(HistoryForReplay::new(history, workflow_id))
+                .await;
+        }),
+    };
+    WorkerReplayPushResult {
+        fail: std::ptr::null(),
+    }
+}
+
 impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
     type Error = anyhow::Error;
 
@@ -398,6 +487,10 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
                     Some(opt.max_task_queue_activities_per_second)
                 },
             )
+            // Even though grace period is optional, if it is not set then the
+            // auto-cancel-activity behavior or shutdown will not occur, so we
+            // always set it even if 0.
+            .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
             .build()
             .map_err(|err| anyhow::anyhow!(err))
     }

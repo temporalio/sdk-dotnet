@@ -103,10 +103,10 @@ pub extern "C" fn client_connect(
     };
     // Spawn async call
     let user_data = UserDataHandle(user_data);
-    let metric_meter = runtime.core.metric_meter().cloned();
+    let core = runtime.core.clone();
     runtime.core.tokio_handle().spawn(async move {
         match core_options
-            .connect_no_namespace(metric_meter.as_ref(), headers)
+            .connect_no_namespace(core.metric_meter().as_deref(), headers)
             .await
         {
             Ok(core) => {
@@ -273,7 +273,9 @@ async fn call_workflow_service(
         "GetClusterInfo" => rpc_call!(client, call, get_cluster_info),
         "GetSearchAttributes" => rpc_call!(client, call, get_search_attributes),
         "GetSystemInfo" => rpc_call!(client, call, get_system_info),
-        "GetWorkerBuildIdOrdering" => rpc_call!(client, call, get_worker_build_id_ordering),
+        "GetWorkerBuildIdCompatibility" => {
+            rpc_call!(client, call, get_worker_build_id_compatibility)
+        }
         "GetWorkflowExecutionHistory" => rpc_call!(client, call, get_workflow_execution_history),
         "GetWorkflowExecutionHistoryReverse" => {
             rpc_call!(client, call, get_workflow_execution_history_reverse)
@@ -290,6 +292,7 @@ async fn call_workflow_service(
         "ListWorkflowExecutions" => rpc_call!(client, call, list_workflow_executions),
         "PatchSchedule" => rpc_call!(client, call, patch_schedule),
         "PollActivityTaskQueue" => rpc_call!(client, call, poll_activity_task_queue),
+        "PollWorkflowExecutionUpdate" => rpc_call!(client, call, poll_workflow_execution_update),
         "PollWorkflowTaskQueue" => rpc_call!(client, call, poll_workflow_task_queue),
         "QueryWorkflow" => rpc_call!(client, call, query_workflow),
         "RecordActivityTaskHeartbeat" => rpc_call!(client, call, record_activity_task_heartbeat),
@@ -326,8 +329,10 @@ async fn call_workflow_service(
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
         "UpdateNamespace" => rpc_call!(client, call, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
-        "UpdateWorkflow" => rpc_call!(client, call, update_workflow),
-        "UpdateWorkerBuildIdOrdering" => rpc_call!(client, call, update_worker_build_id_ordering),
+        "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
+        "UpdateWorkerBuildIdCompatibility" => {
+            rpc_call!(client, call, update_worker_build_id_compatibility)
+        }
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }
 }

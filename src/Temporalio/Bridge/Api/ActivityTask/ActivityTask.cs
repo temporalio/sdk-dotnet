@@ -53,8 +53,10 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             "ZHNFbnRyeRILCgNrZXkYASABKAkSLgoFdmFsdWUYAiABKAsyHy50ZW1wb3Jh",
             "bC5hcGkuY29tbW9uLnYxLlBheWxvYWQ6AjgBIkUKBkNhbmNlbBI7CgZyZWFz",
             "b24YASABKA4yKy5jb3Jlc2RrLmFjdGl2aXR5X3Rhc2suQWN0aXZpdHlDYW5j",
-            "ZWxSZWFzb24qQwoUQWN0aXZpdHlDYW5jZWxSZWFzb24SDQoJTk9UX0ZPVU5E",
-            "EAASDQoJQ0FOQ0VMTEVEEAESDQoJVElNRURfT1VUEAJiBnByb3RvMw=="));
+            "ZWxSZWFzb24qWAoUQWN0aXZpdHlDYW5jZWxSZWFzb24SDQoJTk9UX0ZPVU5E",
+            "EAASDQoJQ0FOQ0VMTEVEEAESDQoJVElNRURfT1VUEAISEwoPV09SS0VSX1NI",
+            "VVRET1dOEANCKOoCJVRlbXBvcmFsaW86OkJyaWRnZTo6QXBpOjpBY3Rpdml0",
+            "eVRhc2tiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -69,17 +71,21 @@ namespace Temporalio.Bridge.Api.ActivityTask {
   #region Enums
   internal enum ActivityCancelReason {
     /// <summary>
-    //// The activity no longer exists according to server (may be already completed)
+    /// The activity no longer exists according to server (may be already completed)
     /// </summary>
     [pbr::OriginalName("NOT_FOUND")] NotFound = 0,
     /// <summary>
-    //// Activity was explicitly cancelled
+    /// Activity was explicitly cancelled
     /// </summary>
     [pbr::OriginalName("CANCELLED")] Cancelled = 1,
     /// <summary>
-    //// Activity timed out
+    /// Activity timed out
     /// </summary>
     [pbr::OriginalName("TIMED_OUT")] TimedOut = 2,
+    /// <summary>
+    /// Core is shutting down and the graceful timeout has elapsed
+    /// </summary>
+    [pbr::OriginalName("WORKER_SHUTDOWN")] WorkerShutdown = 3,
   }
 
   #endregion
@@ -142,7 +148,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
     public const int TaskTokenFieldNumber = 1;
     private pb::ByteString taskToken_ = pb::ByteString.Empty;
     /// <summary>
-    //// A unique identifier for this task
+    /// A unique identifier for this task
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -156,7 +162,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
     /// <summary>Field number for the "start" field.</summary>
     public const int StartFieldNumber = 3;
     /// <summary>
-    //// Start activity execution.
+    /// Start activity execution.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -171,7 +177,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
     /// <summary>Field number for the "cancel" field.</summary>
     public const int CancelFieldNumber = 4;
     /// <summary>
-    //// Attempt to cancel activity execution.
+    /// Attempt to cancel activity execution.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1288,7 +1294,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
   }
 
   /// <summary>
-  //// Attempt to cancel a running activity
+  /// Attempt to cancel a running activity
   /// </summary>
   internal sealed partial class Cancel : pb::IMessage<Cancel>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE

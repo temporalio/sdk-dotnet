@@ -66,7 +66,9 @@ namespace Temporalio.Worker
         ~ActivityWorker() => Dispose(false);
 
         /// <summary>
-        /// Execute the activity until poller shutdown or failure.
+        /// Execute the activity until poller shutdown or failure. If there is a failure, this may
+        /// need to be called a second time after shutdown initiated to ensure activity tasks are
+        /// drained.
         /// </summary>
         /// <returns>Task that only completes successfully on poller shutdown.</returns>
         public async Task ExecuteAsync()
@@ -110,14 +112,9 @@ namespace Temporalio.Worker
         }
 
         /// <summary>
-        /// Gracefully shutdown this worker after <see cref="ExecuteAsync" /> is complete. This must
-        /// not be called until <see cref="ExecuteAsync" /> has returned. This should never throw.
+        /// Notify all running activities a worker shutdown is happening.
         /// </summary>
-        /// <returns>
-        /// Task that completes when all activities have completed. If a running activity does not
-        /// respond to cancellation, this may never return.
-        /// </returns>
-        public async Task GracefulShutdownAsync()
+        public void NotifyShutdown()
         {
             using (logger.BeginScope(new Dictionary<string, object>()
             {
@@ -130,14 +127,6 @@ namespace Temporalio.Worker
                     worker.Options.GracefulShutdownTimeout,
                     runningActivities.Count);
                 workerShutdownTokenSource.Cancel();
-                await Task.Delay(worker.Options.GracefulShutdownTimeout).ConfigureAwait(false);
-                // Issue cancel-all and wait for all running activities to complete
-                await Task.WhenAll(runningActivities.Values.Select(act =>
-                {
-                    act.Cancel(ActivityCancelReason.WorkerShutdown);
-                    // We know task is set here
-                    return act.Task!;
-                })).ConfigureAwait(false);
             }
         }
 
@@ -194,7 +183,7 @@ namespace Temporalio.Worker
                 WorkflowType: start.WorkflowType);
             // Create context
             var cancelTokenSource = new CancellationTokenSource();
-            var context = new ActivityContext(
+            var context = new ActivityExecutionContext(
                 info: info,
                 cancellationToken: cancelTokenSource.Token,
                 workerShutdownToken: workerShutdownTokenSource.Token,
@@ -295,7 +284,7 @@ namespace Temporalio.Worker
                 Result = new(),
             };
             // Set context
-            ActivityContext.AsyncLocalCurrent.Value = act.Context;
+            ActivityExecutionContext.AsyncLocalCurrent.Value = act.Context;
             try
             {
                 // Find activity or fail
@@ -408,7 +397,7 @@ namespace Temporalio.Worker
             {
                 act.MarkDone();
                 // Unset context just in case
-                ActivityContext.AsyncLocalCurrent.Value = null;
+                ActivityExecutionContext.AsyncLocalCurrent.Value = null;
             }
             return completion;
         }
@@ -437,7 +426,7 @@ namespace Temporalio.Worker
             /// <param name="context">Activity context.</param>
             /// <param name="cancelTokenSource">Cancel source.</param>
             public RunningActivity(
-                ActivityContext context, CancellationTokenSource cancelTokenSource)
+                ActivityExecutionContext context, CancellationTokenSource cancelTokenSource)
             {
                 Context = context;
                 this.cancelTokenSource = cancelTokenSource;
@@ -446,7 +435,7 @@ namespace Temporalio.Worker
             /// <summary>
             /// Gets the activity context for this activity.
             /// </summary>
-            public ActivityContext Context { get; private init; }
+            public ActivityExecutionContext Context { get; private init; }
 
             /// <summary>
             /// Gets or sets the task for this activity.
@@ -539,6 +528,9 @@ namespace Temporalio.Worker
                         break;
                     case Bridge.Api.ActivityTask.ActivityCancelReason.TimedOut:
                         Cancel(ActivityCancelReason.Timeout);
+                        break;
+                    case Bridge.Api.ActivityTask.ActivityCancelReason.WorkerShutdown:
+                        Cancel(ActivityCancelReason.WorkerShutdown);
                         break;
                     default:
                         Cancel(ActivityCancelReason.None);
@@ -660,13 +652,13 @@ namespace Temporalio.Worker
             {
                 // Set the context heartbeater as the outbound heartbeat if we're not local,
                 // otherwise no-op
-                if (ActivityContext.Current.Info.IsLocal)
+                if (ActivityExecutionContext.Current.Info.IsLocal)
                 {
-                    ActivityContext.Current.Heartbeater = details => { };
+                    ActivityExecutionContext.Current.Heartbeater = details => { };
                 }
                 else
                 {
-                    ActivityContext.Current.Heartbeater =
+                    ActivityExecutionContext.Current.Heartbeater =
                         details => outbound.Heartbeat(new(Details: details));
                 }
             }
@@ -722,7 +714,7 @@ namespace Temporalio.Worker
             public override void Heartbeat(HeartbeatInput input)
             {
                 if (worker.runningActivities.TryGetValue(
-                    ActivityContext.Current.TaskToken, out var act))
+                    ActivityExecutionContext.Current.TaskToken, out var act))
                 {
                     act.Heartbeat(worker.worker, input.Details);
                 }

@@ -46,6 +46,20 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Worker"/> class. For use when a worker
+        /// pointer already exists (like for replayer).
+        /// </summary>
+        /// <param name="runtime">Runtime.</param>
+        /// <param name="ptr">Pointer.</param>
+        internal unsafe Worker(Runtime runtime, Interop.Worker* ptr)
+            : base(IntPtr.Zero, true)
+        {
+            Runtime = runtime;
+            Ptr = ptr;
+            SetHandle((IntPtr)ptr);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Worker"/> class from another. Only for
         /// testing.
         /// </summary>
@@ -261,46 +275,13 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Initiate shutdown this worker. This is not needed if <see cref="ShutdownAsync" /> is
-        /// used.
+        /// Initiate shutdown for this worker.
         /// </summary>
         public void InitiateShutdown()
         {
             unsafe
             {
                 Interop.Methods.worker_initiate_shutdown(Ptr);
-            }
-        }
-
-        /// <summary>
-        /// Shutdown this worker. This is not needed if <see cref="InitiateShutdown" /> is used.
-        /// </summary>
-        /// <returns>Completion task.</returns>
-        public async Task ShutdownAsync()
-        {
-            using (var scope = new Scope())
-            {
-                var completion = new TaskCompletionSource<bool>();
-                unsafe
-                {
-                    Interop.Methods.worker_shutdown(
-                        Ptr,
-                        null,
-                        scope.FunctionPointer<Interop.WorkerCallback>(
-                            (userData, fail) =>
-                            {
-                                if (fail != null)
-                                {
-                                    completion.TrySetException(new InvalidOperationException(
-                                        new ByteArray(Runtime, fail).ToUTF8()));
-                                }
-                                else
-                                {
-                                    completion.TrySetResult(true);
-                                }
-                            }));
-                }
-                await completion.Task.ConfigureAwait(false);
             }
         }
 

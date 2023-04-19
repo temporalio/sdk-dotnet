@@ -27,8 +27,8 @@ namespace Temporalio.Bridge.Api.Common {
             "CiV0ZW1wb3JhbC9zZGsvY29yZS9jb21tb24vY29tbW9uLnByb3RvEg5jb3Jl",
             "c2RrLmNvbW1vbhoeZ29vZ2xlL3Byb3RvYnVmL2R1cmF0aW9uLnByb3RvIlUK",
             "G05hbWVzcGFjZWRXb3JrZmxvd0V4ZWN1dGlvbhIRCgluYW1lc3BhY2UYASAB",
-            "KAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJYgZwcm90",
-            "bzM="));
+            "KAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJQiLqAh9U",
+            "ZW1wb3JhbGlvOjpCcmlkZ2U6OkFwaTo6Q29tbW9uYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

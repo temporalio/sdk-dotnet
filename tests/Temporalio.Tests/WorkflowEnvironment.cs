@@ -34,6 +34,8 @@ public class WorkflowEnvironment : IAsyncLifetime
                 },
             },
         });
+        // Can uncomment this and comment out the above to use an external server
+        // env = new(await Temporalio.Client.TemporalClient.ConnectAsync(new("localhost:7233")));
     }
 
     public async Task DisposeAsync()
