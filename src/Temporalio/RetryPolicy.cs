@@ -39,7 +39,7 @@ namespace Temporalio
         /// Convert this retry policy to its protobuf equivalent.
         /// </summary>
         /// <returns>Protobuf retry policy.</returns>
-        public Api.Common.V1.RetryPolicy ToProto()
+        internal Api.Common.V1.RetryPolicy ToProto()
         {
             var proto = new Api.Common.V1.RetryPolicy()
             {
@@ -60,7 +60,7 @@ namespace Temporalio
         /// </summary>
         /// <param name="proto">Protobuf retry policy.</param>
         /// <returns>Retry policy.</returns>
-        public static RetryPolicy FromProto(Api.Common.V1.RetryPolicy proto)
+        internal static RetryPolicy FromProto(Api.Common.V1.RetryPolicy proto)
         {
             return new()
             {

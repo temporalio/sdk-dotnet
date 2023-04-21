@@ -19,6 +19,10 @@ namespace Temporalio.Converters
         /// </summary>
         /// <param name="value">The value to convert.</param>
         /// <returns>The converted payload.</returns>
+        /// <remarks>
+        /// Implementers are expected to be able just return the payload for
+        /// <see cref="IRawValue" /> and <see cref="IEncodedRawValue" />.
+        /// </remarks>
         Payload ToPayload(object? value);
 
         /// <summary>
@@ -27,6 +31,9 @@ namespace Temporalio.Converters
         /// <param name="payload">The payload to convert.</param>
         /// <param name="type">The type to convert to.</param>
         /// <returns>The converted value.</returns>
+        /// <remarks>
+        /// Implementers are expected to be able to support types of <see cref="IRawValue" />.
+        /// </remarks>
         object? ToValue(Payload payload, Type type);
     }
 }

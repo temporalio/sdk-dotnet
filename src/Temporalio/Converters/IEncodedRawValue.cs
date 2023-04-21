@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Converters
 {
@@ -8,6 +9,11 @@ namespace Temporalio.Converters
     /// </summary>
     public interface IEncodedRawValue
     {
+        /// <summary>
+        /// Gets the raw payload value.
+        /// </summary>
+        Payload Payload { get; }
+
         /// <summary>
         /// Decode and convert the raw value to the given type.
         /// </summary>

@@ -21,7 +21,7 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="rawInfo">Raw proto info.</param>
         /// <param name="dataConverter">Data converter used for memos.</param>
-        public WorkflowExecution(WorkflowExecutionInfo rawInfo, DataConverter dataConverter)
+        internal WorkflowExecution(WorkflowExecutionInfo rawInfo, DataConverter dataConverter)
         {
             RawInfo = rawInfo;
             // Search attribute conversion is cheap so it doesn't need to lock on publication. But
@@ -74,11 +74,6 @@ namespace Temporalio.Client
         public string? ParentRunID => RawInfo.ParentExecution?.RunId;
 
         /// <summary>
-        /// Gets the raw proto info.
-        /// </summary>
-        public WorkflowExecutionInfo RawInfo { get; private init; }
-
-        /// <summary>
         /// Gets the run ID for the workflow.
         /// </summary>
         public string RunID => RawInfo.Execution.RunId;
@@ -110,5 +105,10 @@ namespace Temporalio.Client
         /// Gets the type name of the workflow.
         /// </summary>
         public string WorkflowType => RawInfo.Type.Name;
+
+        /// <summary>
+        /// Gets the raw proto info.
+        /// </summary>
+        internal WorkflowExecutionInfo RawInfo { get; private init; }
     }
 }

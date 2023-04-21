@@ -1376,9 +1376,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
             throw Workflow.CreateContinueAsNewException(Ref.RunAsync, pastRunIDs, new()
             {
-                Memo = new KeyValuePair<string, object>[]
+                Memo = new Dictionary<string, object>
                 {
-                    new("PastRunIDCount", pastRunIDs.Count),
+                    ["PastRunIDCount"] = pastRunIDs.Count,
                 },
                 RetryPolicy = new() { MaximumAttempts = pastRunIDs.Count + 1000 },
             });
@@ -1395,7 +1395,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 new List<string>(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                 {
-                    Memo = new KeyValuePair<string, object>[] { new("PastRunIDCount", 0) },
+                    Memo = new Dictionary<string, object> { ["PastRunIDCount"] = 0 },
                     RetryPolicy = new() { MaximumAttempts = 1000 },
                 });
             var result = await handle.GetResultAsync();

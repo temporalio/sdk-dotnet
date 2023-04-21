@@ -49,6 +49,11 @@ public record KSWorkflowParams(
         : this(Actions: actions)
     {
     }
+
+    public KSWorkflowParams()
+        : this(Actions: null)
+    {
+    }
 }
 
 public record KSAction(
