@@ -671,15 +671,17 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                     break;
                 case Scenario.ChildTryCancel:
-                    await Workflow.ExecuteChildWorkflowAsync(
+                    var childHandle1 = await Workflow.StartChildWorkflowAsync(
                         SwallowCancelChildWorkflow.Ref.RunAsync,
                         new() { CancellationType = ChildWorkflowCancellationType.TryCancel });
+                    childWaiting = true;
+                    await childHandle1.GetResultAsync();
                     break;
                 case Scenario.ChildWaitAndIgnore:
-                    var childHandle = await Workflow.StartChildWorkflowAsync(
+                    var childHandle2 = await Workflow.StartChildWorkflowAsync(
                         SwallowCancelChildWorkflow.Ref.RunAsync);
                     childWaiting = true;
-                    var childRes = await childHandle.GetResultAsync();
+                    var childRes = await childHandle2.GetResultAsync();
                     Assert.Equal("cancelled", childRes);
                     break;
                 default:
@@ -796,7 +798,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             CancelWorkflow.Scenario.ActivityWaitAndIgnore,
             _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyIgnored(
-            CancelWorkflow.Scenario.ChildWaitAndIgnore, AssertChildStartedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildWaitAndIgnore, handle =>
+                AssertMore.EqualEventuallyAsync(
+                    true,
+                    () => handle.QueryAsync(CancelWorkflow.Ref.ChildWaiting)));
     }
 
     [Workflow]

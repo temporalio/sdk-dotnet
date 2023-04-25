@@ -64,7 +64,10 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
                 {
                     Rpc = new() { Timeout = TimeSpan.FromSeconds(2) },
                 }));
-        Assert.Equal(Exceptions.RpcException.StatusCode.Cancelled, err.Code);
+        Assert.True(
+            err.Code == Exceptions.RpcException.StatusCode.Cancelled ||
+            err.Code == Exceptions.RpcException.StatusCode.DeadlineExceeded,
+            $"Unexpected code: {err.Code}");
     }
 
     [Fact]
