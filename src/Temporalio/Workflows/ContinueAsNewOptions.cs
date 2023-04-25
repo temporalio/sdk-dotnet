@@ -36,7 +36,7 @@ namespace Temporalio.Workflows
         /// Gets or sets the memo for continue as new. If unset, default to the current workflow's
         /// memo.
         /// </summary>
-        public IReadOnlyCollection<KeyValuePair<string, object>>? Memo { get; set; }
+        public IReadOnlyDictionary<string, object>? Memo { get; set; }
 
         /// <summary>
         /// Gets or sets the search attributes for continue as new. If unset, default to current

@@ -73,7 +73,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets or sets the memo for the workflow. Values for the memo cannot be null.
         /// </summary>
-        public IReadOnlyCollection<KeyValuePair<string, object>>? Memo { get; set; }
+        public IReadOnlyDictionary<string, object>? Memo { get; set; }
 
         /// <summary>
         /// Gets or sets the search attributes for the workflow.

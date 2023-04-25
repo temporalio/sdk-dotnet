@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Temporalio.Api.Failure.V1;
 using Temporalio.Api.History.V1;
+using Temporalio.Converters;
 
 namespace Temporalio
 {
@@ -19,6 +19,9 @@ namespace Temporalio
     /// <param name="Events">Collection of events.</param>
     public record WorkflowHistory(string ID, IReadOnlyCollection<HistoryEvent> Events)
     {
+        private static readonly JsonSerializerOptions JsonSerializerOptions =
+            new() { Converters = { JsonCommonTypeConverter.Instance } };
+
         /// <summary>
         /// Interface for fixes to apply.
         /// </summary>
@@ -54,7 +57,7 @@ namespace Temporalio
         /// <returns>Created history.</returns>
         public static WorkflowHistory FromJson(string workflowID, string json)
         {
-            var historyRaw = JsonSerializer.Deserialize<object?>(json, JsonCommonTypeConverter.SerializerOptions);
+            var historyRaw = JsonSerializer.Deserialize<object?>(json, JsonSerializerOptions);
             if (historyRaw is not Dictionary<string, object?> historyObj)
             {
                 throw new ArgumentException("JSON is not expected history object");
@@ -70,48 +73,6 @@ namespace Temporalio
             var fixedJson = JsonSerializer.Serialize(historyObj);
             var history = JsonParser.Default.Parse<History>(fixedJson);
             return new(workflowID, history.Events);
-        }
-
-        /// <summary>
-        /// Converter to/from JSON from/to common types.
-        /// </summary>
-        internal class JsonCommonTypeConverter : JsonConverter<object?>
-        {
-            /// <summary>
-            /// Options that include the common type converter.
-            /// </summary>
-            public static readonly JsonSerializerOptions SerializerOptions = new()
-            {
-                Converters = { new JsonCommonTypeConverter() },
-            };
-
-            /// <inheritdoc />
-            public override object? Read(
-                ref Utf8JsonReader reader,
-                Type typeToConvert,
-                JsonSerializerOptions options) => reader.TokenType switch
-                {
-                    JsonTokenType.StartObject =>
-                        JsonSerializer.Deserialize<Dictionary<string, object?>>(ref reader, options),
-                    JsonTokenType.StartArray =>
-                        JsonSerializer.Deserialize<List<object?>>(ref reader, options),
-                    JsonTokenType.String => reader.GetString()!,
-                    JsonTokenType.Number when reader.TryGetInt64(out long l) => l,
-                    JsonTokenType.Number => reader.GetDouble(),
-                    JsonTokenType.True => true,
-                    JsonTokenType.False => false,
-                    JsonTokenType.Null => null,
-                    _ => throw new JsonException($"Unrecognized type: {reader.TokenType}"),
-                };
-
-            /// <inheritdoc />
-            public override void Write(
-                Utf8JsonWriter writer, object? objectToWrite, JsonSerializerOptions options) =>
-                JsonSerializer.Serialize(
-                    writer,
-                    objectToWrite,
-                    objectToWrite?.GetType() ?? typeof(object),
-                    options);
         }
 
         /// <summary>

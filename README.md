@@ -30,10 +30,10 @@ present.
 **Contents**
 
 - [Quick Start](#quick-start)
-- [Installation](#installation)
-- [Implementing a Workflow and Activity](#implementing-a-workflow-and-activity)
-- [Running a Worker](#running-a-worker)
-- [Executing a Workflow](#executing-a-workflow)
+  - [Installation](#installation)
+  - [Implementing a Workflow and Activity](#implementing-a-workflow-and-activity)
+  - [Running a Worker](#running-a-worker)
+  - [Executing a Workflow](#executing-a-workflow)
 - [Usage](#usage)
   - [Clients](#clients)
     - [Client via Dependency Injection](#client-via-dependency-injection)
@@ -76,7 +76,7 @@ present.
 
 ## Quick Start
 
-## Installation
+### Installation
 
 Add the `Temporalio` package from [NuGet](https://www.nuget.org/packages/Temporalio). For example, using the `dotnet`
 CLI:
@@ -85,7 +85,7 @@ CLI:
 
 **NOTE: This README is for the current branch and not necessarily what's released on NuGet.**
 
-## Implementing a Workflow and Activity
+### Implementing a Workflow and Activity
 
 Assuming the [ImplicitUsings](https://learn.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props#implicitusings) is
 enabled, create an activity by putting the following in `MyActivities.cs`:
@@ -138,7 +138,7 @@ public class SayHelloWorkflow
 
 This is a simple workflow that executes the `SayHello` activity.
 
-## Running a Worker
+### Running a Worker
 
 To run this in a worker, put the following in `Program.cs`:
 
@@ -185,7 +185,7 @@ catch (OperationCanceledException)
 
 When executed, this will listen for Temporal server requests to perform workflow and activity invocations.
 
-## Executing a Workflow
+### Executing a Workflow
 
 To start and wait on a workflow result, with the worker program running elsewhere, put the following in a different
 project's `Program.cs` that references the worker project:

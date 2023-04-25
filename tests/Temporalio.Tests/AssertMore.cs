@@ -46,6 +46,9 @@ namespace Temporalio.Tests
             Assert.InRange(actual, expected - delta, expected + delta);
         }
 
+        public static void EqualAsJson(object? expected, object? actual) =>
+            JsonEqual(JsonSerializer.Serialize(expected), JsonSerializer.Serialize(actual));
+
         // TODO(cretz): From https://github.com/dotnet/runtime/blob/fd9f52098bba9e88269b2b147a45b8f60e4b8d0d/src/libraries/System.Text.Json/tests/Common/JsonTestHelper.cs
         //  pending https://github.com/dotnet/runtime/issues/33388
         public static void JsonEqual(string expected, string actual)

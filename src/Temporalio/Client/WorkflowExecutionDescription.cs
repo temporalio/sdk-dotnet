@@ -13,13 +13,13 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="rawDescription">Raw description response.</param>
         /// <param name="dataConverter">Data converter for memos.</param>
-        public WorkflowExecutionDescription(
+        internal WorkflowExecutionDescription(
             DescribeWorkflowExecutionResponse rawDescription, DataConverter dataConverter)
             : base(rawDescription.WorkflowExecutionInfo, dataConverter) => RawDescription = rawDescription;
 
         /// <summary>
         /// Gets the raw proto info.
         /// </summary>
-        public DescribeWorkflowExecutionResponse RawDescription { get; private init; }
+        internal DescribeWorkflowExecutionResponse RawDescription { get; private init; }
     }
 }

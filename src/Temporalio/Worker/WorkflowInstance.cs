@@ -657,7 +657,7 @@ namespace Temporalio.Worker
                     {
                         cmd.WorkflowTaskTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(taskTimeout);
                     }
-                    if (e.Input.Options?.Memo is IReadOnlyCollection<KeyValuePair<string, object>> memo)
+                    if (e.Input.Options?.Memo is IReadOnlyDictionary<string, object> memo)
                     {
                         cmd.Memo.Add(memo.ToDictionary(
                             kvp => kvp.Key, kvp => payloadConverter.ToPayload(kvp.Value)));
@@ -1397,7 +1397,7 @@ namespace Temporalio.Worker
                 {
                     cmd.WorkflowTaskTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(taskTimeout);
                 }
-                if (input.Options?.Memo is IReadOnlyCollection<KeyValuePair<string, object>> memo)
+                if (input.Options?.Memo is IReadOnlyDictionary<string, object> memo)
                 {
                     cmd.Memo.Add(memo.ToDictionary(
                         kvp => kvp.Key, kvp => instance.payloadConverter.ToPayload(kvp.Value)));

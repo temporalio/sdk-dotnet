@@ -587,6 +587,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         public static TaskCompletionSource? ActivityStarted { get; set; }
 
+        private bool childWaiting;
+
         [Activity]
         public static async Task<string> SwallowCancelActivityAsync()
         {
@@ -669,13 +671,17 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                     break;
                 case Scenario.ChildTryCancel:
-                    await Workflow.ExecuteChildWorkflowAsync(
+                    var childHandle1 = await Workflow.StartChildWorkflowAsync(
                         SwallowCancelChildWorkflow.Ref.RunAsync,
                         new() { CancellationType = ChildWorkflowCancellationType.TryCancel });
+                    childWaiting = true;
+                    await childHandle1.GetResultAsync();
                     break;
                 case Scenario.ChildWaitAndIgnore:
-                    var childRes = await Workflow.ExecuteChildWorkflowAsync(
+                    var childHandle2 = await Workflow.StartChildWorkflowAsync(
                         SwallowCancelChildWorkflow.Ref.RunAsync);
+                    childWaiting = true;
+                    var childRes = await childHandle2.GetResultAsync();
                     Assert.Equal("cancelled", childRes);
                     break;
                 default:
@@ -683,6 +689,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
             return "done";
         }
+
+        [WorkflowQuery]
+        public bool ChildWaiting() => childWaiting;
 
         public enum Scenario
         {
@@ -743,7 +752,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertProperlyCancelled(
             CancelWorkflow.Scenario.LocalActivity, _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyCancelled(
-            CancelWorkflow.Scenario.ChildTryCancel, AssertChildStartedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildTryCancel, handle =>
+                AssertMore.EqualEventuallyAsync(
+                    true,
+                    () => handle.QueryAsync(CancelWorkflow.Ref.ChildWaiting)));
     }
 
     [Fact]
@@ -786,7 +798,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             CancelWorkflow.Scenario.ActivityWaitAndIgnore,
             _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyIgnored(
-            CancelWorkflow.Scenario.ChildWaitAndIgnore, AssertChildStartedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildWaitAndIgnore, handle =>
+                AssertMore.EqualEventuallyAsync(
+                    true,
+                    () => handle.QueryAsync(CancelWorkflow.Ref.ChildWaiting)));
     }
 
     [Workflow]
@@ -1376,9 +1391,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
             throw Workflow.CreateContinueAsNewException(Ref.RunAsync, pastRunIDs, new()
             {
-                Memo = new KeyValuePair<string, object>[]
+                Memo = new Dictionary<string, object>
                 {
-                    new("PastRunIDCount", pastRunIDs.Count),
+                    ["PastRunIDCount"] = pastRunIDs.Count,
                 },
                 RetryPolicy = new() { MaximumAttempts = pastRunIDs.Count + 1000 },
             });
@@ -1395,7 +1410,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 new List<string>(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                 {
-                    Memo = new KeyValuePair<string, object>[] { new("PastRunIDCount", 0) },
+                    Memo = new Dictionary<string, object> { ["PastRunIDCount"] = 0 },
                     RetryPolicy = new() { MaximumAttempts = 1000 },
                 });
             var result = await handle.GetResultAsync();

@@ -1,4 +1,5 @@
 using System;
+using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Converters
 {
@@ -7,6 +8,11 @@ namespace Temporalio.Converters
     /// </summary>
     public interface IRawValue
     {
+        /// <summary>
+        /// Gets the raw payload value.
+        /// </summary>
+        Payload Payload { get; }
+
         /// <summary>
         /// Convert the raw value to the given type.
         /// </summary>

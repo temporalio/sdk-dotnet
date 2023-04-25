@@ -105,6 +105,14 @@ namespace Temporalio.Converters
         /// <inheritdoc />
         public Payload ToPayload(object? value)
         {
+            if (value is IRawValue rawValue)
+            {
+                return rawValue.Payload;
+            }
+            if (value is IEncodedRawValue encodedRawValue)
+            {
+                return encodedRawValue.Payload;
+            }
             foreach (var enc in EncodingConverters)
             {
                 if (enc.TryToPayload(value, out var payload))
@@ -119,6 +127,10 @@ namespace Temporalio.Converters
         /// <inheritdoc />
         public object? ToValue(Payload payload, Type type)
         {
+            if (typeof(IRawValue).IsAssignableFrom(type))
+            {
+                return new RawValue(this, payload);
+            }
             var encoding = payload.Metadata["encoding"];
             if (IndexedEncodingConverters.TryGetValue(encoding, out var converter))
             {
