@@ -587,6 +587,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         public static TaskCompletionSource? ActivityStarted { get; set; }
 
+        private bool childWaiting;
+
         [Activity]
         public static async Task<string> SwallowCancelActivityAsync()
         {
@@ -674,8 +676,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         new() { CancellationType = ChildWorkflowCancellationType.TryCancel });
                     break;
                 case Scenario.ChildWaitAndIgnore:
-                    var childRes = await Workflow.ExecuteChildWorkflowAsync(
+                    var childHandle = await Workflow.StartChildWorkflowAsync(
                         SwallowCancelChildWorkflow.Ref.RunAsync);
+                    childWaiting = true;
+                    var childRes = await childHandle.GetResultAsync();
                     Assert.Equal("cancelled", childRes);
                     break;
                 default:
@@ -683,6 +687,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
             return "done";
         }
+
+        [WorkflowQuery]
+        public bool ChildWaiting() => childWaiting;
 
         public enum Scenario
         {
@@ -743,7 +750,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertProperlyCancelled(
             CancelWorkflow.Scenario.LocalActivity, _ => CancelWorkflow.ActivityStarted!.Task);
         await AssertProperlyCancelled(
-            CancelWorkflow.Scenario.ChildTryCancel, AssertChildStartedEventuallyAsync);
+            CancelWorkflow.Scenario.ChildTryCancel, handle =>
+                AssertMore.EqualEventuallyAsync(
+                    true,
+                    () => handle.QueryAsync(CancelWorkflow.Ref.ChildWaiting)));
     }
 
     [Fact]

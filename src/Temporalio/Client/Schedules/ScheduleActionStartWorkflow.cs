@@ -15,7 +15,9 @@ namespace Temporalio.Client.Schedules
     /// <param name="Workflow">Workflow type name.</param>
     /// <param name="Args">Arguments for the workflow. Note, when fetching this from the server,
     /// the every value here is an instance of <see cref="IEncodedRawValue" />.</param>
-    /// <param name="Options">Start workflow options. ID and TaskQueue are required.</param>
+    /// <param name="Options">Start workflow options. ID and TaskQueue are required. Some options
+    /// like ID reuse policy, cron schedule, and start signal cannot be set or an error will occur.
+    /// </param>
     /// <param name="Headers">Headers sent with each workflow scheduled.</param>
     public record ScheduleActionStartWorkflow(
         string Workflow,
@@ -28,7 +30,9 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <typeparam name="TResult">Result type of the workflow.</typeparam>
         /// <param name="workflow">Workflow run method.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
+        /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
+        /// will occur.</param>
         /// <returns>Start workflow action.</returns>
         public static ScheduleActionStartWorkflow Create<TResult>(
             Func<Task<TResult>> workflow, WorkflowOptions options) =>
@@ -44,7 +48,9 @@ namespace Temporalio.Client.Schedules
         /// <typeparam name="TResult">Result type of the workflow.</typeparam>
         /// <param name="workflow">Workflow run method.</param>
         /// <param name="arg">Workflow argument.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
+        /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
+        /// will occur.</param>
         /// <returns>Start workflow action.</returns>
         public static ScheduleActionStartWorkflow Create<T, TResult>(
             Func<T, Task<TResult>> workflow, T arg, WorkflowOptions options) =>
@@ -57,7 +63,9 @@ namespace Temporalio.Client.Schedules
         /// Create a scheduled action that starts a workflow.
         /// </summary>
         /// <param name="workflow">Workflow run method.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
+        /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
+        /// will occur.</param>
         /// <returns>Start workflow action.</returns>
         public static ScheduleActionStartWorkflow Create(
             Func<Task> workflow, WorkflowOptions options) =>
@@ -72,7 +80,9 @@ namespace Temporalio.Client.Schedules
         /// <typeparam name="T">Param type of the workflow.</typeparam>
         /// <param name="workflow">Workflow run method.</param>
         /// <param name="arg">Workflow argument.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
+        /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
+        /// will occur.</param>
         /// <returns>Start workflow action.</returns>
         public static ScheduleActionStartWorkflow Create<T>(
             Func<T, Task> workflow, T arg, WorkflowOptions options) =>
@@ -86,7 +96,9 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <param name="workflow">Workflow run method.</param>
         /// <param name="args">Workflow arguments.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
+        /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
+        /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
+        /// will occur.</param>
         /// <returns>Start workflow action.</returns>
         public static ScheduleActionStartWorkflow Create(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options) =>
@@ -127,6 +139,24 @@ namespace Temporalio.Client.Schedules
         internal override async Task<Api.Schedule.V1.ScheduleAction> ToProtoAsync(
             DataConverter dataConverter)
         {
+            // Disallow some options
+            if (Options.IDReusePolicy != Api.Enums.V1.WorkflowIdReusePolicy.AllowDuplicate)
+            {
+                throw new ArgumentException("ID reuse policy cannot change from default for scheduled workflow");
+            }
+            if (Options.CronSchedule != null)
+            {
+                throw new ArgumentException("Cron schedule cannot be set on scheduled workflow");
+            }
+            if (Options.StartSignal != null || Options.StartSignalArgs != null)
+            {
+                throw new ArgumentException("Start signal and/or start signal args cannot be set on scheduled workflow");
+            }
+            if (Options.Rpc != null)
+            {
+                throw new ArgumentException("RPC options cannot be set on scheduled workflow");
+            }
+
             var workflow = new Api.Workflow.V1.NewWorkflowExecutionInfo()
             {
                 WorkflowId = Options.ID ??
