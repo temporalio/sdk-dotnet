@@ -1,14 +1,7 @@
-<p align="center">
-  <img src="https://assets.temporal.io/w/dotnet.png" alt="Temporal .NET SDK" />
-</p>
-<p align="center">
-  <a href="https://www.nuget.org/packages/Temporalio">
-    <img src="https://img.shields.io/nuget/vpre/temporalio.svg?style=for-the-badge" alt="NuGet" />
-  </a>
-  <a href="https://github.com/temporalio/sdk-dotnet/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/temporalio/sdk-dotnet.svg?style=for-the-badge" alt="MIT" />
-  </a>
-</p>
+![Temporal .NET SDK](https://assets.temporal.io/w/dotnet.png)
+
+[![NuGet](https://img.shields.io/nuget/vpre/temporalio.svg?style=for-the-badge)](https://www.nuget.org/packages/Temporalio)
+[![MIT](https://img.shields.io/github/license/temporalio/sdk-dotnet.svg?style=for-the-badge)](LICENSE)
 
 [Temporal](https://temporal.io/) is a distributed, scalable, durable, and highly available orchestration engine used to
 execute asynchronous, long-running business logic in a scalable and resilient way.
