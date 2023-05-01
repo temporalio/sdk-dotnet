@@ -1,4 +1,4 @@
-![Temporal .NET SDK](https://assets.temporal.io/w/dotnet.png)
+![Temporal .NET SDK](https://raw.githubusercontent.com/temporalio/assets/main/files/w/dotnet.png)
 
 [![NuGet](https://img.shields.io/nuget/vpre/temporalio.svg?style=for-the-badge)](https://www.nuget.org/packages/Temporalio)
 [![MIT](https://img.shields.io/github/license/temporalio/sdk-dotnet.svg?style=for-the-badge)](LICENSE)
