@@ -247,7 +247,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<TResult>(
             Func<TResult> activity, ActivityOptions options) =>
             ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -269,7 +269,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<T, TResult>(
             Func<T, TResult> activity, T arg, ActivityOptions options) =>
             ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 
@@ -288,7 +288,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync(
             Action activity, ActivityOptions options) =>
             ExecuteActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -309,7 +309,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync<T>(
             Action<T> activity, T arg, ActivityOptions options) =>
             ExecuteActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 
@@ -329,7 +329,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<TResult>(
             Func<Task<TResult>> activity, ActivityOptions options) =>
             ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -351,7 +351,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<T, TResult>(
             Func<T, Task<TResult>> activity, T arg, ActivityOptions options) =>
             ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 
@@ -370,7 +370,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync(
             Func<Task> activity, ActivityOptions options) =>
             ExecuteActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -391,7 +391,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync<T>(
             Func<T, Task> activity, T arg, ActivityOptions options) =>
             ExecuteActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 
@@ -555,7 +555,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
             Func<TResult> activity, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -577,7 +577,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<T, TResult>(
             Func<T, TResult> activity, T arg, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 
@@ -596,7 +596,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync(
             Action activity, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -617,7 +617,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync<T>(
             Action<T> activity, T arg, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 
@@ -637,7 +637,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
             Func<Task<TResult>> activity, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -659,7 +659,7 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<T, TResult>(
             Func<T, Task<TResult>> activity, T arg, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 
@@ -678,7 +678,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync(
             Func<Task> activity, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 Array.Empty<object?>(),
                 options);
 
@@ -699,7 +699,7 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync<T>(
             Func<T, Task> activity, T arg, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync(
-                Activities.ActivityDefinition.FromDelegate(activity).Name,
+                Activities.ActivityDefinition.Create(activity).Name,
                 new object?[] { arg },
                 options);
 

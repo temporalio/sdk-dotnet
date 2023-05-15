@@ -26,7 +26,7 @@ namespace Temporalio.Worker
         /// <param name="options">Replayer options.</param>
         public WorkflowReplayer(WorkflowReplayerOptions options)
         {
-            if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count == 0)
+            if (options.Workflows.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow");
             }
@@ -178,7 +178,6 @@ namespace Temporalio.Worker
                             Namespace: options.Namespace,
                             TaskQueue: options.TaskQueue,
                             Workflows: options.Workflows,
-                            AdditionalWorkflowDefinitions: options.AdditionalWorkflowDefinitions,
                             DataConverter: options.DataConverter,
                             WorkflowInboundInterceptorTypes: interceptorTypes,
                             LoggerFactory: options.LoggerFactory,

@@ -202,18 +202,8 @@ namespace Temporalio.Worker
         {
             get
             {
-                if (instance == null)
-                {
-                    // If there is a constructor accepting arguments, use that
-                    if (defn.InitConstructor != null)
-                    {
-                        instance = defn.InitConstructor.Invoke(startArgs!.Value);
-                    }
-                    else
-                    {
-                        instance = Activator.CreateInstance(defn.Type)!;
-                    }
-                }
+                // We create this lazily because we want the constructor in a workflow context
+                instance ??= defn.CreateWorkflowInstance(startArgs!.Value);
                 return instance;
             }
         }

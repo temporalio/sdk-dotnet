@@ -38,8 +38,7 @@ namespace Temporalio.Worker
                 (Bridge.Client)client.BridgeClientProvider.BridgeClient,
                 client.Options.Namespace,
                 options);
-            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count +
-                options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count == 0)
+            if (options.Activities.Count == 0 && options.Workflows.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow and/or activity");
             }
@@ -78,18 +77,17 @@ namespace Temporalio.Worker
             }
 
             // Create workers
-            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count > 0)
+            if (options.Activities.Count > 0)
             {
                 activityWorker = new(this);
             }
-            if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count > 0)
+            if (options.Workflows.Count > 0)
             {
                 workflowWorker = new(new(
                     BridgeWorker: BridgeWorker,
                     Namespace: client.Options.Namespace,
                     TaskQueue: options.TaskQueue!,
                     Workflows: options.Workflows,
-                    AdditionalWorkflowDefinitions: options.AdditionalWorkflowDefinitions,
                     DataConverter: client.Options.DataConverter,
                     WorkflowInboundInterceptorTypes: workflowInboundInterceptorTypes,
                     LoggerFactory: options.LoggerFactory ?? client.Options.LoggerFactory,

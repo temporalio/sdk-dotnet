@@ -45,17 +45,12 @@ namespace Temporalio.Worker
             this.onEviction = onEviction;
             logger = options.LoggerFactory.CreateLogger<WorkflowWorker>();
             WorkflowDefinitions = new();
-            foreach (var workflow in options.Workflows)
+            foreach (var defn in options.Workflows)
             {
-                var defn = WorkflowDefinition.FromType(workflow);
-                if (WorkflowDefinitions.ContainsKey(defn.Name))
+                if (!defn.Instantiable)
                 {
-                    throw new ArgumentException($"Duplicate workflow named {defn.Name}");
+                    throw new ArgumentException($"Workflow named {defn.Name} is not instantiable");
                 }
-                WorkflowDefinitions[defn.Name] = defn;
-            }
-            foreach (var defn in options.AdditionalWorkflowDefinitions)
-            {
                 if (WorkflowDefinitions.ContainsKey(defn.Name))
                 {
                     throw new ArgumentException($"Duplicate workflow named {defn.Name}");

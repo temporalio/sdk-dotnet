@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Temporalio.Workflows;
 
 namespace Temporalio.Worker
 {
@@ -8,8 +9,7 @@ namespace Temporalio.Worker
         Bridge.Worker BridgeWorker,
         string Namespace,
         string TaskQueue,
-        IList<Type> Workflows,
-        IList<Workflows.WorkflowDefinition> AdditionalWorkflowDefinitions,
+        IList<WorkflowDefinition> Workflows,
         Converters.DataConverter DataConverter,
         IEnumerable<Type> WorkflowInboundInterceptorTypes,
         ILoggerFactory LoggerFactory,

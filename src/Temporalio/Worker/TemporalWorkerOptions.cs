@@ -2,15 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Temporalio.Activities;
+using Temporalio.Workflows;
 
 namespace Temporalio.Worker
 {
     /// <summary>
     /// Options for a <see cref="TemporalWorker" />. <see cref="TaskQueue" /> and at least one
-    /// workflow or activity are required.
+    /// workflow or activity are required. Most users will use <see cref="AddActivity(Delegate)" />
+    /// and/or <see cref="AddWorkflow{T}" /> to add activities and workflows.
     /// </summary>
     public class TemporalWorkerOptions : ICloneable
     {
+        private IList<ActivityDefinition> activities = new List<ActivityDefinition>();
+        private IList<WorkflowDefinition> workflows = new List<WorkflowDefinition>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorkerOptions"/> class.
         /// </summary>
@@ -30,37 +36,19 @@ namespace Temporalio.Worker
         public string? TaskQueue { get; set; }
 
         /// <summary>
+        /// Gets the activity definitions. Most users will use AddActivity to add to this list.
+        /// </summary>
+        public IList<ActivityDefinition> Activities => activities;
+
+        /// <summary>
+        /// Gets the workflow definitions. Most users will use AddWorkflow to add to this list.
+        /// </summary>
+        public IList<WorkflowDefinition> Workflows => workflows;
+
+        /// <summary>
         /// Gets or sets the task queue for activities. Default is <see cref="Task.Factory" />.
         /// </summary>
         public TaskFactory ActivityTaskFactory { get; set; } = Task.Factory;
-
-#pragma warning disable CA2227 // Intentionally allow setting of this collection w/ options pattern
-        /// <summary>
-        /// Gets or sets the activity delegates.
-        /// </summary>
-        public IList<Delegate> Activities { get; set; } = new List<Delegate>();
-
-        /// <summary>
-        /// Gets or sets the workflow types.
-        /// </summary>
-        public IList<Type> Workflows { get; set; } = new List<Type>();
-
-        /// <summary>
-        /// Gets or sets additional activity definitions.
-        /// </summary>
-        /// <remarks>
-        /// Unless manual definitions are required, users should use <see cref="Activities" />.
-        /// </remarks>
-        public IList<Activities.ActivityDefinition> AdditionalActivityDefinitions { get; set; } = new List<Activities.ActivityDefinition>();
-
-        /// <summary>
-        /// Gets or sets additional workflow definitions.
-        /// </summary>
-        /// <remarks>
-        /// Unless manual definitions are required, users should use <see cref="Workflows" />.
-        /// </remarks>
-        public IList<Workflows.WorkflowDefinition> AdditionalWorkflowDefinitions { get; set; } = new List<Workflows.WorkflowDefinition>();
-#pragma warning restore CA2227
 
         /// <summary>
         /// Gets or sets the interceptors. Note this automatically includes any
@@ -207,24 +195,76 @@ namespace Temporalio.Worker
         internal Func<WorkflowInstanceDetails, IWorkflowInstance>? WorkflowInstanceFactory { get; set; }
 
         /// <summary>
-        /// Add the given delegate as an activity.
+        /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is
+        /// usually a method reference.
         /// </summary>
         /// <param name="del">Delegate to add.</param>
         /// <returns>This options instance for chaining.</returns>
-        public TemporalWorkerOptions AddActivity(Delegate del)
+        public TemporalWorkerOptions AddActivity(Delegate del) =>
+            AddActivity(ActivityDefinition.Create(del));
+
+        /// <summary>
+        /// Add the given activity definition. Most users will use
+        /// <see cref="AddActivity(Delegate)" /> instead.
+        /// </summary>
+        /// <param name="definition">Definition to add.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public TemporalWorkerOptions AddActivity(ActivityDefinition definition)
         {
-            Activities.Add(del);
+            Activities.Add(definition);
+            return this;
+        }
+
+        /// <summary>
+        /// Add all methods on the given type with <see cref="ActivityAttribute" />.
+        /// </summary>
+        /// <typeparam name="T">Type to get activities from.</typeparam>
+        /// <param name="instance">Instance to use when invoking. This must be non-null if any
+        /// activities are non-static.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public TemporalWorkerOptions AddAllActivities<T>(T? instance) =>
+            AddAllActivities(typeof(T), instance);
+
+        /// <summary>
+        /// Add all methods on the given type with <see cref="ActivityAttribute" />.
+        /// </summary>
+        /// <param name="type">Type to get activities from.</param>
+        /// <param name="instance">Instance to use when invoking. This must be non-null if any
+        /// activities are non-static.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public TemporalWorkerOptions AddAllActivities(Type type, object? instance)
+        {
+            foreach (var defn in ActivityDefinition.CreateAll(type, instance))
+            {
+                AddActivity(defn);
+            }
             return this;
         }
 
         /// <summary>
         /// Add the given type as a workflow.
         /// </summary>
+        /// <typeparam name="T">Type to add.</typeparam>
+        /// <returns>This options instance for chaining.</returns>
+        public TemporalWorkerOptions AddWorkflow<T>() => AddWorkflow(typeof(T));
+
+        /// <summary>
+        /// Add the given type as a workflow.
+        /// </summary>
         /// <param name="type">Type to add.</param>
         /// <returns>This options instance for chaining.</returns>
-        public TemporalWorkerOptions AddWorkflow(Type type)
+        public TemporalWorkerOptions AddWorkflow(Type type) =>
+            AddWorkflow(WorkflowDefinition.Create(type));
+
+        /// <summary>
+        /// Add the given workflow definition. Most users will use <see cref="AddWorkflow{T}" />
+        /// instead.
+        /// </summary>
+        /// <param name="definition">Definition to add.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public TemporalWorkerOptions AddWorkflow(WorkflowDefinition definition)
         {
-            Workflows.Add(type);
+            Workflows.Add(definition);
             return this;
         }
 
@@ -236,12 +276,8 @@ namespace Temporalio.Worker
         public virtual object Clone()
         {
             var options = (TemporalWorkerOptions)MemberwiseClone();
-            options.Activities = new List<Delegate>(Activities);
-            options.Workflows = new List<Type>(Workflows);
-            options.AdditionalActivityDefinitions =
-                new List<Activities.ActivityDefinition>(AdditionalActivityDefinitions);
-            options.AdditionalWorkflowDefinitions =
-                new List<Workflows.WorkflowDefinition>(AdditionalWorkflowDefinitions);
+            options.activities = new List<ActivityDefinition>(Activities);
+            options.workflows = new List<WorkflowDefinition>(Workflows);
             return options;
         }
     }
