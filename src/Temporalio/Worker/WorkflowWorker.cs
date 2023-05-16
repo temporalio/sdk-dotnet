@@ -270,8 +270,8 @@ namespace Temporalio.Worker
                     InitialActivation: act,
                     Start: start,
                     Interceptors: options.Interceptors,
-                    PayloadConverterType: options.DataConverter.PayloadConverterType,
-                    FailureConverterType: options.DataConverter.FailureConverterType,
+                    PayloadConverter: options.DataConverter.PayloadConverter,
+                    FailureConverter: options.DataConverter.FailureConverter,
                     DisableTracingEvents: options.DisableWorkflowTracingEventListener,
                     WorkflowStackTrace: options.WorkflowStackTrace)
                 {
