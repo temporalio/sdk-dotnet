@@ -14,6 +14,12 @@ namespace Temporalio.Worker
     /// </summary>
     public class TemporalWorkerOptions : ICloneable
     {
+        /// <summary>
+        /// Default workflow instance factory.
+        /// </summary>
+        internal static readonly Func<WorkflowInstanceDetails, IWorkflowInstance> DefaultWorkflowInstanceFactory =
+            details => new WorkflowInstance(details);
+
         private IList<ActivityDefinition> activities = new List<ActivityDefinition>();
         private IList<WorkflowDefinition> workflows = new List<WorkflowDefinition>();
 
@@ -192,7 +198,8 @@ namespace Temporalio.Worker
         /// <remarks>
         /// Don't expose this until there's a use case.
         /// </remarks>
-        internal Func<WorkflowInstanceDetails, IWorkflowInstance>? WorkflowInstanceFactory { get; set; }
+        internal Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory { get; set; } =
+            DefaultWorkflowInstanceFactory;
 
         /// <summary>
         /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is

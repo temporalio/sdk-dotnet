@@ -30,7 +30,6 @@ namespace Temporalio.Worker
         // Keyed by run ID
         private readonly ConcurrentDictionary<string, Task> deadlockedWorkflows = new();
         private readonly TimeSpan deadlockTimeout;
-        private readonly Func<WorkflowInstanceDetails, IWorkflowInstance> instanceFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowWorker"/> class.
@@ -58,8 +57,6 @@ namespace Temporalio.Worker
                 WorkflowDefinitions[defn.Name] = defn;
             }
             deadlockTimeout = options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
-            instanceFactory = options.WorkflowInstanceFactory ??
-                (details => new WorkflowInstance(details, options.LoggerFactory));
         }
 
         /// <summary>
@@ -262,7 +259,7 @@ namespace Temporalio.Worker
                     $"Workflow type {start.WorkflowType} is not registered on this worker, available workflows: {names}",
                     "NotFoundError");
             }
-            return instanceFactory(
+            return options.WorkflowInstanceFactory(
                 new(
                     Namespace: options.Namespace,
                     TaskQueue: options.TaskQueue,
@@ -272,14 +269,9 @@ namespace Temporalio.Worker
                     Interceptors: options.Interceptors,
                     PayloadConverter: options.DataConverter.PayloadConverter,
                     FailureConverter: options.DataConverter.FailureConverter,
+                    LoggerFactory: options.LoggerFactory,
                     DisableTracingEvents: options.DisableWorkflowTracingEventListener,
-                    WorkflowStackTrace: options.WorkflowStackTrace)
-                {
-                    // Eagerly set these since we're not in a sandbox so we already have the
-                    // instantiated forms
-                    PayloadConverter = options.DataConverter.PayloadConverter,
-                    FailureConverter = options.DataConverter.FailureConverter,
-                });
+                    WorkflowStackTrace: options.WorkflowStackTrace));
         }
     }
 }

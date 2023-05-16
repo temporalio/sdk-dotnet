@@ -13,7 +13,7 @@ namespace Temporalio.Worker
         Converters.DataConverter DataConverter,
         IEnumerable<Interceptors.IWorkerInterceptor> Interceptors,
         ILoggerFactory LoggerFactory,
-        Func<WorkflowInstanceDetails, IWorkflowInstance>? WorkflowInstanceFactory,
+        Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory,
         bool DebugMode,
         bool DisableWorkflowTracingEventListener,
         WorkflowStackTrace WorkflowStackTrace);

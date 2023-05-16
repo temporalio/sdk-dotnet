@@ -40,7 +40,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets or sets the interceptors.
         /// </summary>
-        public IEnumerable<Interceptors.IWorkerInterceptor>? Interceptors { get; set; }
+        public IReadOnlyCollection<Interceptors.IWorkerInterceptor>? Interceptors { get; set; }
 
         /// <summary>
         /// Gets or sets the build ID. This is a unique identifier for each "build" of the worker.
@@ -99,7 +99,8 @@ namespace Temporalio.Worker
         /// <remarks>
         /// Don't expose this until there's a use case.
         /// </remarks>
-        internal Func<WorkflowInstanceDetails, IWorkflowInstance>? WorkflowInstanceFactory { get; set; }
+        internal Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory { get; set; } =
+            TemporalWorkerOptions.DefaultWorkflowInstanceFactory;
 
         /// <summary>
         /// Add the given type as a workflow.

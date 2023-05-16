@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Converters;
 using Temporalio.Workflows;
@@ -16,6 +17,7 @@ namespace Temporalio.Worker
     /// <param name="Interceptors">Interceptors.</param>
     /// <param name="PayloadConverter">Payload converter.</param>
     /// <param name="FailureConverter">Failure converter.</param>
+    /// <param name="LoggerFactory">Logger factory.</param>
     /// <param name="DisableTracingEvents">Whether tracing events are disabled.</param>
     /// <param name="WorkflowStackTrace">Option for workflow stack trace.</param>
     /// <remarks>
@@ -30,6 +32,7 @@ namespace Temporalio.Worker
         IEnumerable<Interceptors.IWorkerInterceptor> Interceptors,
         IPayloadConverter PayloadConverter,
         IFailureConverter FailureConverter,
+        ILoggerFactory LoggerFactory,
         bool DisableTracingEvents,
         WorkflowStackTrace WorkflowStackTrace);
 }

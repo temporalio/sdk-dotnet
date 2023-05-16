@@ -72,8 +72,7 @@ namespace Temporalio.Worker
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
         /// </summary>
         /// <param name="details">Immutable details about the instance.</param>
-        /// <param name="loggerFactory">Logger factory to use.</param>
-        public WorkflowInstance(WorkflowInstanceDetails details, ILoggerFactory loggerFactory)
+        public WorkflowInstance(WorkflowInstanceDetails details)
         {
             taskFactory = new(default, TaskCreationOptions.None, TaskContinuationOptions.ExecuteSynchronously, this);
             defn = details.Definition;
@@ -145,7 +144,7 @@ namespace Temporalio.Worker
                 WorkflowType: start.WorkflowType);
             workflowStackTrace = details.WorkflowStackTrace;
             pendingTaskStackTraces = workflowStackTrace == WorkflowStackTrace.None ? null : new();
-            logger = loggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
+            logger = details.LoggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
             replaySafeLogger = new(logger);
             // We accept overflowing for seed (uint64 -> int32)
             Random = new(unchecked((int)details.Start.RandomnessSeed));
