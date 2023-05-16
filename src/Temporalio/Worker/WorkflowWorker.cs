@@ -269,7 +269,7 @@ namespace Temporalio.Worker
                     Definition: defn,
                     InitialActivation: act,
                     Start: start,
-                    InboundInterceptorTypes: options.WorkflowInboundInterceptorTypes,
+                    Interceptors: options.Interceptors,
                     PayloadConverterType: options.DataConverter.PayloadConverterType,
                     FailureConverterType: options.DataConverter.FailureConverterType,
                     DisableTracingEvents: options.DisableWorkflowTracingEventListener,

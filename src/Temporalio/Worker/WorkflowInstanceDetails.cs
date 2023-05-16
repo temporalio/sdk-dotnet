@@ -14,7 +14,7 @@ namespace Temporalio.Worker
     /// <param name="Definition">Workflow definition.</param>
     /// <param name="InitialActivation">Initial activation for the workflow.</param>
     /// <param name="Start">Start attributes for the workflow.</param>
-    /// <param name="InboundInterceptorTypes">Interceptor types to instantiate.</param>
+    /// <param name="Interceptors">Interceptors.</param>
     /// <param name="PayloadConverterType">Payload converter type to instantiate.</param>
     /// <param name="FailureConverterType">Failure converter type to instantiate.</param>
     /// <param name="DisableTracingEvents">Whether tracing events are disabled.</param>
@@ -28,7 +28,7 @@ namespace Temporalio.Worker
         WorkflowDefinition Definition,
         WorkflowActivation InitialActivation,
         StartWorkflow Start,
-        IEnumerable<Type> InboundInterceptorTypes,
+        IEnumerable<Interceptors.IWorkerInterceptor> Interceptors,
         Type PayloadConverterType,
         Type FailureConverterType,
         bool DisableTracingEvents,

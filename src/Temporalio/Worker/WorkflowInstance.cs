@@ -80,12 +80,13 @@ namespace Temporalio.Worker
             payloadConverter = details.PayloadConverter;
             failureConverter = details.FailureConverter;
             var rootInbound = new InboundImpl(this);
+            // Lazy so it can have the context when instantiating
             inbound = new(
                 () =>
                 {
-                    var ret = details.InboundInterceptorTypes.Reverse().Aggregate(
+                    var ret = details.Interceptors.Reverse().Aggregate(
                         (WorkflowInboundInterceptor)rootInbound,
-                        (v, type) => (WorkflowInboundInterceptor)Activator.CreateInstance(type, v)!);
+                        (v, impl) => impl.InterceptWorkflow(v));
                     ret.Init(new OutboundImpl(this));
                     return ret;
                 },

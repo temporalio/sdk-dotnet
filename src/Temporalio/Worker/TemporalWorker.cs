@@ -51,22 +51,6 @@ namespace Temporalio.Worker
             {
                 Interceptors = Interceptors.Concat(Options.Interceptors);
             }
-            // Extract workflow interceptor constructors out
-            var expectedTypes = new Type[] { typeof(WorkflowInboundInterceptor) };
-            var workflowInboundInterceptorTypes = Interceptors.Select(
-                i =>
-                {
-                    var type = i.WorkflowInboundInterceptorType;
-                    if (type == null)
-                    {
-                        return null;
-                    }
-                    else if (type.GetConstructor(expectedTypes) == null)
-                    {
-                        throw new InvalidOperationException($"Workflow interceptor {type} missing constructor accepting inbound");
-                    }
-                    return type;
-                }).OfType<Type>();
 
             // Enable workflow task tracing if needed
             workflowTracingEventListenerEnabled =
@@ -89,7 +73,7 @@ namespace Temporalio.Worker
                     TaskQueue: options.TaskQueue!,
                     Workflows: options.Workflows,
                     DataConverter: client.Options.DataConverter,
-                    WorkflowInboundInterceptorTypes: workflowInboundInterceptorTypes,
+                    Interceptors: Interceptors,
                     LoggerFactory: options.LoggerFactory ?? client.Options.LoggerFactory,
                     WorkflowInstanceFactory: options.WorkflowInstanceFactory,
                     DebugMode: options.DebugMode,

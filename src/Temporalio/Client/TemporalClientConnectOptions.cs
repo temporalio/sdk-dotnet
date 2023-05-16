@@ -54,7 +54,7 @@ namespace Temporalio.Client
         /// implements <see cref="Worker.Interceptors.IWorkerInterceptor" />, it will automatically
         /// be used when the worker is created.
         /// </remarks>
-        public IEnumerable<Interceptors.IClientInterceptor>? Interceptors { get; set; }
+        public IReadOnlyCollection<Interceptors.IClientInterceptor>? Interceptors { get; set; }
 
         /// <summary>
         /// Gets or sets the logging factory used by loggers in Temporal.

@@ -56,7 +56,7 @@ namespace Temporalio.Worker
         /// <see cref="Interceptors.IWorkerInterceptor" /> so those should not be specified here.
         /// This set is chained after the set in the client options.
         /// </summary>
-        public IEnumerable<Interceptors.IWorkerInterceptor>? Interceptors { get; set; }
+        public IReadOnlyCollection<Interceptors.IWorkerInterceptor>? Interceptors { get; set; }
 
         /// <summary>
         /// Gets or sets the build ID. This is a unique identifier for each "build" of the worker.
