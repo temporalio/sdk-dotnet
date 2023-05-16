@@ -1,3 +1,6 @@
+---
+title: Home
+---
 
 # Temporal .NET SDK
 

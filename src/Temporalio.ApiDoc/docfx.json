@@ -13,30 +13,27 @@
           "src": ".."
         }
       ],
-      "dest": "obj/_metadata",
-      "filter": "filterConfig.yml"
+      "dest": "api",
+      "includePrivateMembers": false,
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false,
+      "noRestore": false,
+      "namespaceLayout": "nested",
+      "memberLayout": "samePage",
+      "allowCompilationErrors": false
     }
   ],
   "build": {
     "content": [
       {
         "files": [
-          "index.md"
-        ],
-        "src": "api",
-        "dest": "api"
+          "api/**.yml",
+          "api/index.md"
+        ]
       },
       {
         "files": [
-          "*.yml"
-        ],
-        "src": "obj/_metadata",
-        "dest": "api"
-      },
-      {
-        "files": [
-          "index.md",
-          "toc.yml"
+          "*.md"
         ]
       }
     ],
@@ -52,18 +49,20 @@
       "_appFaviconPath": "favicon.ico",
       "_appFooter": "<span></span>",
       "_appLogoPath": "logo.png",
+      "_appName": "Temporal .NET SDK",
       "_appTitle": "Temporal .NET SDK",
-      "_enableSearch": true,
+      "_enableSearch": false,
       "_disableContribution": true
     },
-    "markdownEngineName": "markdig",
-    "dest": "obj/_site",
-    "xrefService": [
-      "https://xref.docs.microsoft.com/query?uid={uid}"
-    ],
+    "output": "_site",
+    "globalMetadataFiles": [],
+    "fileMetadataFiles": [],
     "template": [
-      "statictoc",
-      "templates/material"
-    ]
+      "default",
+      "modern"
+    ],
+    "postProcessors": [],
+    "keepFileLink": false,
+    "disableGitFeatures": false
   }
 }
