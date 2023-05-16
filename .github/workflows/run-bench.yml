@@ -1,0 +1,56 @@
+name: Run Bench
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  run-bench:
+    runs-on: buildjet-4vcpu-ubuntu-2204
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/Temporalio/Bridge
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          # TODO(cretz): Upgrade when https://github.com/arduino/setup-protoc/issues/33 fixed
+          version: '3.x'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      # Run a bunch of bench tests. We run multiple times since results vary.
+
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 100 --max-cached-workflows 100 --max-concurrent 100
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 100 --max-cached-workflows 100 --max-concurrent 100
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 100 --max-cached-workflows 100 --max-concurrent 100
+
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 1000 --max-cached-workflows 1000 --max-concurrent 1000
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 1000 --max-cached-workflows 1000 --max-concurrent 1000
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 1000 --max-cached-workflows 1000 --max-concurrent 1000
+
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 1000 --max-cached-workflows 100 --max-concurrent 100
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 1000 --max-cached-workflows 100 --max-concurrent 100
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 1000 --max-cached-workflows 100 --max-concurrent 100
+
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 10000 --max-cached-workflows 10000 --max-concurrent 10000
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 10000 --max-cached-workflows 10000 --max-concurrent 10000
+
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 10000 --max-cached-workflows 1000 --max-concurrent 1000
+      - run: dotnet run --configuration Release --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 10000 --max-cached-workflows 1000 --max-concurrent 1000
