@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Converters;
 using Temporalio.Workflows;
@@ -14,9 +14,10 @@ namespace Temporalio.Worker
     /// <param name="Definition">Workflow definition.</param>
     /// <param name="InitialActivation">Initial activation for the workflow.</param>
     /// <param name="Start">Start attributes for the workflow.</param>
-    /// <param name="InboundInterceptorTypes">Interceptor types to instantiate.</param>
-    /// <param name="PayloadConverterType">Payload converter type to instantiate.</param>
-    /// <param name="FailureConverterType">Failure converter type to instantiate.</param>
+    /// <param name="Interceptors">Interceptors.</param>
+    /// <param name="PayloadConverter">Payload converter.</param>
+    /// <param name="FailureConverter">Failure converter.</param>
+    /// <param name="LoggerFactory">Logger factory.</param>
     /// <param name="DisableTracingEvents">Whether tracing events are disabled.</param>
     /// <param name="WorkflowStackTrace">Option for workflow stack trace.</param>
     /// <remarks>
@@ -28,28 +29,10 @@ namespace Temporalio.Worker
         WorkflowDefinition Definition,
         WorkflowActivation InitialActivation,
         StartWorkflow Start,
-        IEnumerable<Type> InboundInterceptorTypes,
-        Type PayloadConverterType,
-        Type FailureConverterType,
+        IEnumerable<Interceptors.IWorkerInterceptor> Interceptors,
+        IPayloadConverter PayloadConverter,
+        IFailureConverter FailureConverter,
+        ILoggerFactory LoggerFactory,
         bool DisableTracingEvents,
-        WorkflowStackTrace WorkflowStackTrace)
-    {
-        /// <summary>
-        /// Gets a created payload converter.
-        /// </summary>
-        /// <remarks>
-        /// Internal because it's not serializable.
-        /// </remarks>
-        internal IPayloadConverter PayloadConverter { get; init; } =
-            (IPayloadConverter)Activator.CreateInstance(PayloadConverterType)!;
-
-        /// <summary>
-        /// Gets a created failure converter.
-        /// </summary>
-        /// <remarks>
-        /// Internal because it's not serializable.
-        /// </remarks>
-        internal IFailureConverter FailureConverter { get; init; } =
-            (IFailureConverter)Activator.CreateInstance(FailureConverterType)!;
-    }
+        WorkflowStackTrace WorkflowStackTrace);
 }

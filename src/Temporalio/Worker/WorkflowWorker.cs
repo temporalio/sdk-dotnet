@@ -30,7 +30,6 @@ namespace Temporalio.Worker
         // Keyed by run ID
         private readonly ConcurrentDictionary<string, Task> deadlockedWorkflows = new();
         private readonly TimeSpan deadlockTimeout;
-        private readonly Func<WorkflowInstanceDetails, IWorkflowInstance> instanceFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowWorker"/> class.
@@ -45,17 +44,12 @@ namespace Temporalio.Worker
             this.onEviction = onEviction;
             logger = options.LoggerFactory.CreateLogger<WorkflowWorker>();
             WorkflowDefinitions = new();
-            foreach (var workflow in options.Workflows)
+            foreach (var defn in options.Workflows)
             {
-                var defn = WorkflowDefinition.FromType(workflow);
-                if (WorkflowDefinitions.ContainsKey(defn.Name))
+                if (!defn.Instantiable)
                 {
-                    throw new ArgumentException($"Duplicate workflow named {defn.Name}");
+                    throw new ArgumentException($"Workflow named {defn.Name} is not instantiable");
                 }
-                WorkflowDefinitions[defn.Name] = defn;
-            }
-            foreach (var defn in options.AdditionalWorkflowDefinitions)
-            {
                 if (WorkflowDefinitions.ContainsKey(defn.Name))
                 {
                     throw new ArgumentException($"Duplicate workflow named {defn.Name}");
@@ -63,8 +57,6 @@ namespace Temporalio.Worker
                 WorkflowDefinitions[defn.Name] = defn;
             }
             deadlockTimeout = options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
-            instanceFactory = options.WorkflowInstanceFactory ??
-                (details => new WorkflowInstance(details, options.LoggerFactory));
         }
 
         /// <summary>
@@ -267,24 +259,19 @@ namespace Temporalio.Worker
                     $"Workflow type {start.WorkflowType} is not registered on this worker, available workflows: {names}",
                     "NotFoundError");
             }
-            return instanceFactory(
+            return options.WorkflowInstanceFactory(
                 new(
                     Namespace: options.Namespace,
                     TaskQueue: options.TaskQueue,
                     Definition: defn,
                     InitialActivation: act,
                     Start: start,
-                    InboundInterceptorTypes: options.WorkflowInboundInterceptorTypes,
-                    PayloadConverterType: options.DataConverter.PayloadConverterType,
-                    FailureConverterType: options.DataConverter.FailureConverterType,
+                    Interceptors: options.Interceptors,
+                    PayloadConverter: options.DataConverter.PayloadConverter,
+                    FailureConverter: options.DataConverter.FailureConverter,
+                    LoggerFactory: options.LoggerFactory,
                     DisableTracingEvents: options.DisableWorkflowTracingEventListener,
-                    WorkflowStackTrace: options.WorkflowStackTrace)
-                {
-                    // Eagerly set these since we're not in a sandbox so we already have the
-                    // instantiated forms
-                    PayloadConverter = options.DataConverter.PayloadConverter,
-                    FailureConverter = options.DataConverter.FailureConverter,
-                });
+                    WorkflowStackTrace: options.WorkflowStackTrace));
         }
     }
 }

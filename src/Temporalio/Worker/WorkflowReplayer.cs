@@ -26,7 +26,7 @@ namespace Temporalio.Worker
         /// <param name="options">Replayer options.</param>
         public WorkflowReplayer(WorkflowReplayerOptions options)
         {
-            if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count == 0)
+            if (options.Workflows.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow");
             }
@@ -156,31 +156,14 @@ namespace Temporalio.Worker
                 try
                 {
                     // Create workflow worker
-                    var interceptorConstructorTypes = new Type[] { typeof(WorkflowInboundInterceptor) };
-                    var interceptorTypes = options.Interceptors?.Select(
-                        i =>
-                        {
-                            var type = i.WorkflowInboundInterceptorType;
-                            if (type == null)
-                            {
-                                return null;
-                            }
-                            else if (type.GetConstructor(interceptorConstructorTypes) == null)
-                            {
-                                throw new InvalidOperationException(
-                                    $"Workflow interceptor {type} missing constructor accepting inbound");
-                            }
-                            return type;
-                        })?.OfType<Type>() ?? Enumerable.Empty<Type>();
                     workflowWorker = new WorkflowWorker(
                         new(
                             BridgeWorker: bridgeReplayer.Worker,
                             Namespace: options.Namespace,
                             TaskQueue: options.TaskQueue,
                             Workflows: options.Workflows,
-                            AdditionalWorkflowDefinitions: options.AdditionalWorkflowDefinitions,
                             DataConverter: options.DataConverter,
-                            WorkflowInboundInterceptorTypes: interceptorTypes,
+                            Interceptors: options.Interceptors ?? Array.Empty<IWorkerInterceptor>(),
                             LoggerFactory: options.LoggerFactory,
                             WorkflowInstanceFactory: options.WorkflowInstanceFactory,
                             DebugMode: options.DebugMode,

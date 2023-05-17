@@ -165,11 +165,9 @@ var activities = new MyActivities();
 // Create worker with the activity and workflow registered
 using var worker = new TemporalWorker(
     client,
-    new(taskQueue: "my-task-queue")
-    {
-        Activities = { activities.SayHello },
-        Workflows = { typeof(SayHelloWorkflow) },
-    });
+    new TemporalWorkerOptions("my-task-queue").
+        AddActivity(activities.SayHello).
+        AddWorkflow<SayHelloWorkflow>());
 
 // Run worker until cancelled
 Console.WriteLine("Running worker");
@@ -314,9 +312,8 @@ converter, which supports the following types:
 * `Google.Protobuf.IMessage` instances
 * Anything that `System.Text.Json` supports
 
-Custom converters can be created for all uses. Due to potential sandboxing use, payload converters must be specified as
-types not instances. For example, to create client with a data converter that converts all C# property names to camel
-case, you would:
+Custom converters can be created for all uses. For example, to create client with a data converter that converts all C#
+property names to camel case, you would:
 
 ```csharp
 using System.Text.Json;
@@ -335,7 +332,7 @@ var client = await TemporalClient.ConnectAsync(new()
 {
     TargetHost = "localhost:7233",
     Namespace = "my-namespace",
-    DataConverter = DataConverter.Default with { PayloadConverterType = typeof(CamelCasePayloadConverter) },
+    DataConverter = DataConverter.Default with { PayloadConverter = new CamelCasePayloadConverter() },
 });
 ```
 
@@ -356,12 +353,11 @@ var client = await TemporalClient.ConnectAsync(new ()
 });
 
 // Create worker
-using var worker = new TemporalWorker(client, new ()
-{
-    TaskQueue = "my-task-queue",
-    Activities = { MyActivities.MyActivity },
-    Workflows = { typeof(MyWorkflow) },
-});
+using var worker = new TemporalWorker(
+    client,
+    new TemporalWorkerOptions("my-task-queue").
+        AddActivity(MyActivities.MyActivity).
+        AddWorkflow<MyWorkflow>());
 
 // Run worker until Ctrl+C
 using var cts = new CancellationTokenSource();
@@ -403,12 +399,9 @@ public sealed class MyWorker : BackgroundService
                 TargetHost = "localhost:7233",
                 LoggerFactory = loggerFactory,
             }),
-            new()
-            {
-                TaskQueue = "my-task-queue",
-                Activities = { MyActivities.MyActivity },
-                Workflows = { typeof(MyWorkflow) },
-            });
+            new TemporalWorkerOptions("my-task-queue").
+                AddActivity(MyActivities.MyActivity).
+                AddWorkflow<MyWorkflow>());
         await worker.ExecuteAsync(stoppingToken);
     }
 }
@@ -832,11 +825,10 @@ using Temporalio.Worker;
 public async Task WaitADayWorkflow_SimpleRun_Succeeds()
 {
     await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
-    using var worker = new TemporalWorker(env.Client, new()
-    {
-        TaskQueue = $"tq-{Guid.NewGuid()}",
-        Workflows = { typeof(WaitADayWorkflow) },
-    });
+    using var worker = new TemporalWorker(
+      env.Client,
+      new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
+          AddWorkflow<WaitADayWorkflow>());
     var result = await env.Client.ExecuteWorkflowAsync(
         WaitADayWorkflow.Ref.RunAsync,
         new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
@@ -894,11 +886,10 @@ using Temporalio.Worker;
 public async Task SignalWorkflow_SendSignal_HasExpectedResult()
 {
     await using var env = WorkflowEnvironment.StartTimeSkippingAsync();
-    using var worker = new TemporalWorker(env.Client, new()
-    {
-        TaskQueue = $"tq-{Guid.NewGuid()}",
-        Workflows = { typeof(SignalWorkflow) },
-    });
+    using var worker = new TemporalWorker(
+        env.Client,
+        new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
+            AddWorkflow<SignalWorkflow>());
     var handle = await env.Client.StartWorkflowAsync(
         SignalWorkflow.Ref.RunAsync,
         new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
@@ -917,11 +908,10 @@ using Temporalio.Worker;
 public async Task SignalWorkflow_SignalTimeout_HasExpectedResult()
 {
     await using var env = WorkflowEnvironment.StartTimeSkippingAsync();
-    using var worker = new TemporalWorker(env.Client, new()
-    {
-        TaskQueue = $"tq-{Guid.NewGuid()}",
-        Workflows = { typeof(SignalWorkflow) },
-    });
+    using var worker = new TemporalWorker(
+        env.Client,
+        new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
+            AddWorkflow<SignalWorkflow>());
     var handle = await env.Client.StartWorkflowAsync(
         SignalWorkflow.Ref.RunAsync,
         new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
@@ -948,7 +938,8 @@ using Temporalio.Worker;
 
 public static async Task ReplayFromJsonAsync(string historyJson)
 {
-    var replayer = new WorkflowReplayer(new() { Workflows = { typeof(MyWorkflow) } });
+    var replayer = new WorkflowReplayer(
+      new WorkflowReplayerOptions().AddWorkflow<MyWorkflow>());
     await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson("my-workflow-id", historyJson));
 }
 ```
@@ -966,7 +957,8 @@ using Temporalio.Worker;
 
 public static async Task CheckPastHistoriesAysnc(ITemporalClient client)
 {
-    var replayer = new WorkflowReplayer(new() { Workflows = { typeof(MyWorkflow) } });
+    var replayer = new WorkflowReplayer(
+      new WorkflowReplayerOptions().AddWorkflow<MyWorkflow>());
     var listIter = client.ListWorkflowHistoriesAsync("WorkflowType = 'SayHello'");
     await foreach (var result in replayer.ReplayWorkflowsAsync(listIter))
     {

@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
-    /// Inbound interceptor class instantiated for every workflow run to intercept workflow calls
-    /// coming from the server.
+    /// Inbound interceptor to intercept workflow calls coming from the server.
     /// </summary>
     public abstract class WorkflowInboundInterceptor
     {

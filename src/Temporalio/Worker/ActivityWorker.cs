@@ -4,8 +4,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -41,16 +39,7 @@ namespace Temporalio.Worker
             this.worker = worker;
             logger = worker.LoggerFactory.CreateLogger<ActivityWorker>();
             activities = new(worker.Options.Activities.Count);
-            foreach (var activity in worker.Options.Activities)
-            {
-                var defn = ActivityDefinition.FromDelegate(activity);
-                if (activities.ContainsKey(defn.Name))
-                {
-                    throw new ArgumentException($"Duplicate activity named {defn.Name}");
-                }
-                activities[defn.Name] = defn;
-            }
-            foreach (var defn in worker.Options.AdditionalActivityDefinitions)
+            foreach (var defn in worker.Options.Activities)
             {
                 if (activities.ContainsKey(defn.Name))
                 {
@@ -301,9 +290,7 @@ namespace Temporalio.Worker
 
                 // Deserialize arguments. If the input is less than the required parameter count, we
                 // error.
-                var paramInfos = defn.Delegate.Method.GetParameters();
-                if (tsk.Start.Input.Count < paramInfos.Length &&
-                    !paramInfos[tsk.Start.Input.Count].HasDefaultValue)
+                if (tsk.Start.Input.Count < defn.RequiredParameterCount)
                 {
                     throw new ApplicationFailureException(
                         $"Activity {act.Context.Info.ActivityType} given {tsk.Start.Input.Count} parameter(s)," +
@@ -311,23 +298,17 @@ namespace Temporalio.Worker
                 }
                 // Zip the params and input and then decode each. It is intentional that we discard
                 // extra input arguments that the signature doesn't accept.
-                var paramVals = new List<object?>(tsk.Start.Input.Count);
+                object?[] paramVals;
                 try
                 {
-                    paramVals.AddRange(await Task.WhenAll(
-                        tsk.Start.Input.Zip(paramInfos, (input, paramInfo) =>
+                    paramVals = await Task.WhenAll(
+                        tsk.Start.Input.Zip(defn.ParameterTypes, (input, paramType) =>
                             worker.Client.Options.DataConverter.ToValueAsync(
-                                input, paramInfo.ParameterType))).ConfigureAwait(false));
+                                input, paramType))).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
-                    throw new ApplicationFailureException(
-                        "Failed decoding parameters", e);
-                }
-                // Append default parameters if needed
-                for (var i = tsk.Start.Input.Count; i < paramInfos.Length; i++)
-                {
-                    paramVals.Add(paramInfos[i].DefaultValue);
+                    throw new ApplicationFailureException("Failed decoding parameters", e);
                 }
 
                 // Build the interceptor impls, chaining each interceptor in reverse
@@ -339,8 +320,8 @@ namespace Temporalio.Worker
 
                 // Execute and put result on completed
                 var result = await inbound.ExecuteActivityAsync(new(
-                    Delegate: defn.Delegate,
-                    Args: paramVals.ToArray(),
+                    Activity: defn,
+                    Args: paramVals,
                     Headers: tsk.Start.HeaderFields)).ConfigureAwait(false);
 
                 completion.Result.Completed = new();
@@ -664,37 +645,8 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc />
-            public override async Task<object?> ExecuteActivityAsync(ExecuteActivityInput input)
-            {
-                // Have to unwrap and re-throw target invocation exception if present
-                object? result;
-                try
-                {
-                    result = input.Delegate.DynamicInvoke(input.Args);
-                }
-                catch (TargetInvocationException e)
-                {
-                    ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
-                    // Unreachable
-                    return null;
-                }
-                // If the result is a task, we need to await on it and use that result
-                if (result is Task resultTask)
-                {
-                    await resultTask.ConfigureAwait(false);
-                    // We have to use reflection to extract value if it's a Task<>
-                    var resultTaskType = resultTask.GetType();
-                    if (resultTaskType.IsGenericType)
-                    {
-                        result = resultTaskType.GetProperty("Result")!.GetValue(resultTask);
-                    }
-                    else
-                    {
-                        result = ValueTuple.Create();
-                    }
-                }
-                return result;
-            }
+            public override Task<object?> ExecuteActivityAsync(ExecuteActivityInput input) =>
+                input.Activity.InvokeAsync(input.Args);
         }
 
         /// <summary>
