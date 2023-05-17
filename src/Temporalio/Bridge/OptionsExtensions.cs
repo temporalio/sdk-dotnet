@@ -348,8 +348,7 @@ namespace Temporalio.Bridge
             }
             // We have to disable remote activities if a user asks _or_ if we are not running an
             // activity worker at all. Otherwise shutdown will not proceed properly.
-            var noRemoteActivities = options.LocalActivityWorkerOnly ||
-                options.Activities.Count + options.AdditionalActivityDefinitions.Count == 0;
+            var noRemoteActivities = options.LocalActivityWorkerOnly || options.Activities.Count == 0;
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),

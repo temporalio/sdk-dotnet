@@ -8,26 +8,26 @@ using System.Threading.Tasks;
 namespace Temporalio.Workflows
 {
     /// <summary>
-    /// Definition of an workflow.
+    /// Definition of a workflow.
     /// </summary>
     public class WorkflowDefinition
     {
         private static readonly ConcurrentDictionary<Type, WorkflowDefinition> Definitions = new();
 
+        private readonly Func<object?[], object>? creator;
+
         private WorkflowDefinition(
             string name,
             Type type,
             MethodInfo runMethod,
-            bool instantiable,
-            ConstructorInfo? initConstructor,
+            Func<object?[], object>? creator,
             IReadOnlyDictionary<string, WorkflowSignalDefinition> signals,
             IReadOnlyDictionary<string, WorkflowQueryDefinition> queries)
         {
             Name = name;
             Type = type;
             RunMethod = runMethod;
-            Instantiable = instantiable;
-            InitConstructor = initConstructor;
+            this.creator = creator;
             Signals = signals;
             Queries = queries;
         }
@@ -50,12 +50,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets a value indicating whether the workflow type can be created and used in a worker.
         /// </summary>
-        public bool Instantiable { get; private init; }
-
-        /// <summary>
-        /// Gets the alternative constructor to use if not using the default.
-        /// </summary>
-        public ConstructorInfo? InitConstructor { get; private init; }
+        public bool Instantiable => creator != null;
 
         /// <summary>
         /// Gets the signals for the workflow.
@@ -68,51 +63,59 @@ namespace Temporalio.Workflows
         public IReadOnlyDictionary<string, WorkflowQueryDefinition> Queries { get; private init; }
 
         /// <summary>
-        /// Get a workflow definition for the given type or fail. The result is cached.
+        /// Create a workflow definition for the given type or fail. The result is cached by type.
+        /// </summary>
+        /// <typeparam name="T">Type to get definition for.</typeparam>
+        /// <returns>Definition for the type.</returns>
+        public static WorkflowDefinition Create<T>() => Create(typeof(T));
+
+        /// <summary>
+        /// Create a workflow definition for the given type or fail. The result is cached by type.
         /// </summary>
         /// <param name="type">Type to get definition for.</param>
         /// <returns>Definition for the type.</returns>
-        public static WorkflowDefinition FromType(Type type)
-        {
-            return Definitions.GetOrAdd(type, CreateFromType);
-        }
+        public static WorkflowDefinition Create(Type type) =>
+            Definitions.GetOrAdd(type, type => Create(type, null, null));
 
         /// <summary>
-        /// Get a workflow definition for the given workflow run method or fail. The result is
-        /// cached.
+        /// Create a workflow with a custom creator. The result is not cached. Most users will use
+        /// <see cref="Create(Type)" /> instead.
         /// </summary>
-        /// <param name="runMethod">Method with a <see cref="WorkflowRunAttribute" />.</param>
+        /// <param name="type">Type to get definition for.</param>
+        /// <param name="nameOverride">The name to use instead of what may be on the attribute.</param>
+        /// <param name="creatorOverride">If present, the method to use to create an instance of
+        /// the workflow.</param>
         /// <returns>Definition for the type.</returns>
-        public static WorkflowDefinition FromRunMethod(MethodInfo runMethod)
+        public static WorkflowDefinition Create(
+            Type type, string? nameOverride, Func<object?[], object>? creatorOverride)
         {
-            if (runMethod.GetCustomAttribute<WorkflowRunAttribute>() == null)
-            {
-                throw new ArgumentException($"{runMethod} missing WorkflowRun attribute");
-            }
-            // We intentionally use reflected type because we don't allow inheritance of run methods
-            // in any way, they must be explicitly defined on the type
-            return FromType(runMethod.ReflectedType ??
-                throw new ArgumentException($"{runMethod} has no reflected type"));
-        }
-
-        /// <summary>
-        /// Creates a workflow definition from an explicit name and type. Most users should use
-        /// <see cref="FromType" /> with attributes instead.
-        /// </summary>
-        /// <param name="name">Workflow name.</param>
-        /// <param name="type">Workflow type.</param>
-        /// <returns>Workflow definition.</returns>
-        public static WorkflowDefinition CreateWithoutAttribute(string name, Type type)
-        {
-            const BindingFlags bindingFlagsAny =
-                BindingFlags.Instance | BindingFlags.Static |
-                BindingFlags.Public | BindingFlags.NonPublic;
             // Unwrap the type
             type = Refs.GetUnderlyingType(type);
 
-            // Get the main attribute, but throw immediately if it is not present
+            // Get the main attribute or throw if not present
             var attr = type.GetCustomAttribute<WorkflowAttribute>(false) ??
                 throw new ArgumentException($"{type} missing Workflow attribute");
+
+            // Use override, or attr, or fall back to type name
+            var name = nameOverride;
+            if (name == null)
+            {
+                name = attr.Name;
+                if (name == null)
+                {
+                    name = type.Name;
+                    // If type is an interface and name has a leading I followed by another capital,
+                    // trim it off
+                    if (type.IsInterface && name.Length > 1 && name[0] == 'I' && char.IsUpper(name[1]))
+                    {
+                        name = name.Substring(1);
+                    }
+                }
+            }
+
+            const BindingFlags bindingFlagsAny =
+                BindingFlags.Instance | BindingFlags.Static |
+                BindingFlags.Public | BindingFlags.NonPublic;
 
             // We will keep track of errors and only throw an aggregate at the end
             var errs = new List<string>();
@@ -130,7 +133,7 @@ namespace Temporalio.Workflows
             var hasParameterlessConstructor = constructors.Length == 0;
             foreach (var constructor in constructors)
             {
-                if (constructor.GetParameters().Length == 0 && constructor.IsPublic)
+                if (constructor.GetParameters().Length == 0)
                 {
                     hasParameterlessConstructor = true;
                 }
@@ -151,8 +154,22 @@ namespace Temporalio.Workflows
                     }
                 }
             }
-            var instantiable = !type.IsInterface &&
-                (hasParameterlessConstructor || initConstructor == null);
+            // If an creator is provided, must not have a workflow init constructor
+            var creator = creatorOverride;
+            if (initConstructor != null)
+            {
+                if (creator != null)
+                {
+                    throw new ArgumentException(
+                        "Cannot set creator for workflow with WorkflowInit constructor",
+                        nameof(creatorOverride));
+                }
+                creator = initConstructor.Invoke;
+            }
+            else if (creator == null && hasParameterlessConstructor && !type.IsInterface)
+            {
+                creator = _ => Activator.CreateInstance(type)!;
+            }
 
             // Find and validate run, signal, and query methods. We intentionally fetch
             // non-public too to make sure attributes aren't set on them.
@@ -265,35 +282,41 @@ namespace Temporalio.Workflows
                 name: name,
                 type: type,
                 runMethod: runMethod!,
-                instantiable: instantiable,
-                initConstructor: initConstructor,
+                creator: creator,
                 signals: signals,
                 queries: queries);
         }
 
-        private static WorkflowDefinition CreateFromType(Type type)
+        /// <summary>
+        /// Get the workflow definition for the type the given run method is on. Expects the method
+        /// to have <see cref="WorkflowRunAttribute" />.
+        /// </summary>
+        /// <param name="runMethod">Workflow run method.</param>
+        /// <returns>Workflow definition for the type the run method is on.</returns>
+        public static WorkflowDefinition FromRunMethod(MethodInfo runMethod)
         {
-            // Unwrap the type
-            type = Refs.GetUnderlyingType(type);
-
-            // Get the main attribute, but throw immediately if it is not present
-            var attr = type.GetCustomAttribute<WorkflowAttribute>(false) ??
-                throw new ArgumentException($"{type} missing Workflow attribute");
-
-            // Use given name or default
-            var name = attr.Name;
-            if (name == null)
+            if (runMethod.GetCustomAttribute<WorkflowRunAttribute>() == null)
             {
-                name = type.Name;
-                // If type is an interface and name has a leading I followed by another capital, trim it
-                // off
-                if (type.IsInterface && name.Length > 1 && name[0] == 'I' && char.IsUpper(name[1]))
-                {
-                    name = name.Substring(1);
-                }
+                throw new ArgumentException($"{runMethod} missing WorkflowRun attribute");
             }
+            // We intentionally use reflected type because we don't allow inheritance of run methods
+            // in any way, they must be explicitly defined on the type
+            return Create(runMethod.ReflectedType ??
+                throw new ArgumentException($"{runMethod} has no reflected type"));
+        }
 
-            return CreateWithoutAttribute(name, type);
+        /// <summary>
+        /// Instantiate an instance of the workflow with the given run arguments.
+        /// </summary>
+        /// <param name="workflowArguments">Arguments for workflow run.</param>
+        /// <returns>The created workflow instance.</returns>
+        public object CreateWorkflowInstance(object?[] workflowArguments)
+        {
+            if (creator == null)
+            {
+                throw new InvalidOperationException($"Cannot instantiate workflow type {Type}");
+            }
+            return creator.Invoke(workflowArguments);
         }
 
         private static bool IsDefinedOnBase<T>(MethodInfo method)

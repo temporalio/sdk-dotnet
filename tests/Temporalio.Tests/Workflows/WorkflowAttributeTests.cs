@@ -8,165 +8,159 @@ using Xunit;
 public class WorkflowAttributeTests
 {
     [Fact]
-    public void FromType_RunAttributeMissing_Throws()
+    public void Create_RunAttributeMissing_Throws()
     {
         AssertBad<Bad.IWf1>("does not have a valid WorkflowRun method");
     }
 
     [Fact]
-    public void FromType_InterfaceTypeDefaultName_RemovesPrefixedI()
+    public void Create_InterfaceTypeDefaultName_RemovesPrefixedI()
     {
         var def = AssertGood<Good.IWf1>();
         Assert.Equal("Wf1", def.Name);
     }
 
     [Fact]
-    public void FromType_AdvancedOverrides_Ok()
+    public void Create_AdvancedOverrides_Ok()
     {
         AssertGood<Good.Wf2>();
     }
 
     [Fact]
-    public void FromRunMethod_NoRunAttribute_Throws()
-    {
-        AssertBadRun(Bad.IWf1.Ref.RunWithoutAttribute, "missing WorkflowRun attribute");
-    }
-
-    [Fact]
-    public void FromType_NoWorkflowAttribute_Throws()
+    public void Create_NoWorkflowAttribute_Throws()
     {
         AssertBad<Bad.IWf2>("missing Workflow attribute");
     }
 
     [Fact]
-    public void FromType_InitAttributeOnMultiple_Throws()
+    public void Create_InitAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.Wf1>("WorkflowInit on multiple");
     }
 
     [Fact]
-    public void FromType_InitAttributeOnNonPublic_Throws()
+    public void Create_InitAttributeOnNonPublic_Throws()
     {
         AssertBad<Bad.Wf2>("WorkflowInit on non-public");
     }
 
     [Fact]
-    public void FromType_RunMethodOnBaseClassOnly_Throws()
+    public void Create_RunMethodOnBaseClassOnly_Throws()
     {
         AssertBad<Bad.Wf1>("must be declared on");
     }
 
     [Fact]
-    public void FromType_RunAttributeOnMultiple_Throws()
+    public void Create_RunAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf3>("WorkflowRun on multiple");
     }
 
     [Fact]
-    public void FromType_RunAttributeOnNonPublic_Throws()
+    public void Create_RunAttributeOnNonPublic_Throws()
     {
         AssertBad<Bad.Wf2>("WorkflowRun on non-public");
     }
 
     [Fact]
-    public void FromType_RunAttributeOnStatic_Throws()
+    public void Create_RunAttributeOnStatic_Throws()
     {
         AssertBad<Bad.Wf4>("WorkflowRun on static");
     }
 
     [Fact]
-    public void FromType_RunAttributeNonReturnTask_Throws()
+    public void Create_RunAttributeNonReturnTask_Throws()
     {
         AssertBad<Bad.IWf4>("must return an instance of Task");
     }
 
     [Fact]
-    public void FromType_RunAttributeInitAttributeParamMismatch_Throws()
+    public void Create_RunAttributeInitAttributeParamMismatch_Throws()
     {
         AssertBad<Bad.Wf3>("must match parameter types of WorkflowInit");
     }
 
     [Fact]
-    public void FromType_SignalAttributeNonReturnTask_Throws()
+    public void Create_SignalAttributeNonReturnTask_Throws()
     {
         AssertBad<Bad.IWf3>("SomeSignal1() must return Task");
     }
 
     [Fact]
-    public void FromType_SignalAttributeReturnTaskWithValue_Throws()
+    public void Create_SignalAttributeReturnTaskWithValue_Throws()
     {
         AssertBad<Bad.IWf3>("SomeSignal2Async() must return Task");
     }
 
     [Fact]
-    public void FromType_SignalAttributeOnNonPublic_Throws()
+    public void Create_SignalAttributeOnNonPublic_Throws()
     {
         AssertBad<Bad.Wf1>("SomeSignalAsync() must be public");
     }
 
     [Fact]
-    public void FromType_SignalAttributeOnMultiple_Throws()
+    public void Create_SignalAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one signal named SomeSignal1");
     }
 
     [Fact]
-    public void FromType_SignalAttributeCustomNameOnMultiple_Throws()
+    public void Create_SignalAttributeCustomNameOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one signal named CustomSignal1");
     }
 
     [Fact]
-    public void FromType_SignalAttributeNotOnOverride_Throws()
+    public void Create_SignalAttributeNotOnOverride_Throws()
     {
         AssertBad<Bad.Wf1>("SomeVirtualSignalAsync() but not override");
     }
 
     [Fact]
-    public void FromType_SignalAttributeDefaultNameWithAsync_RemovesAsync()
+    public void Create_SignalAttributeDefaultNameWithAsync_RemovesAsync()
     {
         var def = AssertGood<Good.IWf1>();
         Assert.Contains("SomeSignal", def.Signals.Keys);
     }
 
     [Fact]
-    public void FromType_QueryAttributeReturnTask_Throws()
+    public void Create_QueryAttributeReturnTask_Throws()
     {
         AssertBad<Bad.IWf3>("SomeQuery1Async() cannot return a Task");
     }
 
     [Fact]
-    public void FromType_QueryAttributeVoid_Throws()
+    public void Create_QueryAttributeVoid_Throws()
     {
         AssertBad<Bad.IWf3>("SomeQuery2() must return a value");
     }
 
     [Fact]
-    public void FromType_QueryAttributeOnNonPublic_Throws()
+    public void Create_QueryAttributeOnNonPublic_Throws()
     {
         AssertBad<Bad.Wf1>("SomeQuery() must be public");
     }
 
     [Fact]
-    public void FromType_QueryAttributeOnMultiple_Throws()
+    public void Create_QueryAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one query named SomeQuery1");
     }
 
     [Fact]
-    public void FromType_QueryAttributeCustomNameOnMultiple_Throws()
+    public void Create_QueryAttributeCustomNameOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one query named CustomQuery1");
     }
 
     [Fact]
-    public void FromType_QueryAttributeNotOnOverride_Throws()
+    public void Create_QueryAttributeNotOnOverride_Throws()
     {
         AssertBad<Bad.Wf1>("SomeVirtualQuery() but not override");
     }
 
     [Fact]
-    public void FromType_Generics_Throws()
+    public void Create_Generics_Throws()
     {
         // We disallow generics because it is too complicated to handle at this time
         AssertBad<Bad.Wf5<string>>("has generic type arguments");
@@ -177,17 +171,11 @@ public class WorkflowAttributeTests
 
     private static void AssertBad<T>(string errContains)
     {
-        var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.FromType(typeof(T)));
+        var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.Create(typeof(T)));
         Assert.Contains(errContains, err.Message);
     }
 
-    private static void AssertBadRun(Delegate del, string errContains)
-    {
-        var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.FromRunMethod(del.Method));
-        Assert.Contains(errContains, err.Message);
-    }
-
-    private static WorkflowDefinition AssertGood<T>() => WorkflowDefinition.FromType(typeof(T));
+    private static WorkflowDefinition AssertGood<T>() => WorkflowDefinition.Create(typeof(T));
 
     public static class Bad
     {

@@ -1,5 +1,3 @@
-using System;
-
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
@@ -8,15 +6,15 @@ namespace Temporalio.Worker.Interceptors
     public interface IWorkerInterceptor
     {
         /// <summary>
-        /// Gets the optional type of <see cref="WorkflowInboundInterceptor"/> to instantiate for
-        /// interception. This type must contain a public constructor accepting a single
-        /// <see cref="WorkflowInboundInterceptor"/> parameter for the next interceptor in the
-        /// chain.
+        /// Create a workflow inbound interceptor to intercept calls.
         /// </summary>
+        /// <param name="nextInterceptor">The next interceptor in the chain to call.</param>
+        /// <returns>Created interceptor.</returns>
 #if NETCOREAPP3_0_OR_GREATER
-        Type? WorkflowInboundInterceptorType => null;
+        WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
 #else
-        Type? WorkflowInboundInterceptorType { get; }
+        WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor);
 #endif
 
         /// <summary>
@@ -31,20 +29,4 @@ namespace Temporalio.Worker.Interceptors
         ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor);
 #endif
     }
-
-#if NETCOREAPP3_0_OR_GREATER
-    /// <summary>
-    /// Generic <see cref="IWorkerInterceptor" /> with workflow inbound interceptor as type
-    /// argument.
-    /// </summary>
-    /// <typeparam name="T">Workflow inbound interceptor type.</typeparam>
-    public interface IWorkerInterceptor<T> : IWorkerInterceptor
-        where T : WorkflowInboundInterceptor
-    {
-        /// <inheritdoc />
-#pragma warning disable CA1033 // Providing default interface impl shouldn't trigger this
-        Type? IWorkerInterceptor.WorkflowInboundInterceptorType => typeof(T);
-#pragma warning restore CA1033
-    }
-#endif
 }

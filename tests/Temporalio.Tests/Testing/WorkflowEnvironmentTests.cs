@@ -57,11 +57,9 @@ public class WorkflowEnvironmentTests : TestBase
     public async Task StartTimeSkippingAsync_SlowWorkflowAutoSkip_ProperlySkips()
     {
         await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
-        using var worker = new TemporalWorker(env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Workflows = { typeof(ReallySlowWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<ReallySlowWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Check that timestamp is around now
@@ -82,11 +80,9 @@ public class WorkflowEnvironmentTests : TestBase
     public async Task StartTimeSkippingAsync_SlowWorkflowManualSkip_ProperlySkips()
     {
         await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
-        using var worker = new TemporalWorker(env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Workflows = { typeof(ReallySlowWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<ReallySlowWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Start workflow
@@ -151,12 +147,11 @@ public class WorkflowEnvironmentTests : TestBase
     public async Task StartTimeSkippingAsync_MissesHeartbeatTimeout_TimesOut()
     {
         await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
-        using var worker = new TemporalWorker(env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Activities = { new ActivityWaitActivities(env).SimulateHeartbeatTimeoutAsync },
-            Workflows = { typeof(ActivityWaitWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddActivity(new ActivityWaitActivities(env).SimulateHeartbeatTimeoutAsync).
+                AddWorkflow<ActivityWaitWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow and check failure
@@ -189,11 +184,9 @@ public class WorkflowEnvironmentTests : TestBase
     public async Task StartTimeSkippingAsync_AutoTimeSkippingDisabled_SleepsFullTime()
     {
         await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
-        using var worker = new TemporalWorker(env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Workflows = { typeof(ShortSleepWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<ShortSleepWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Confirm auto time skipping is within 2.5s

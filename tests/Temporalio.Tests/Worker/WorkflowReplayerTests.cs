@@ -78,12 +78,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ReplayWorkflowAsync_SimpleRun_Succeeds()
     {
-        using var worker = new TemporalWorker(Env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Activities = { SayHelloActivities.SayHello },
-            Workflows = { typeof(SayHelloWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            Env.Client, new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddActivity(SayHelloActivities.SayHello).AddWorkflow<SayHelloWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow to completion
@@ -94,8 +91,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             Assert.Equal("Hello, Temporal!", await handle.GetResultAsync());
 
             // Collect history and replay it
-            var result = await new WorkflowReplayer(new() { Workflows = { typeof(SayHelloWorkflow) } }).
-                ReplayWorkflowAsync(await handle.FetchHistoryAsync());
+            var result = await new WorkflowReplayer(
+                new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>()).
+                    ReplayWorkflowAsync(await handle.FetchHistoryAsync());
             Assert.Null(result.ReplayFailure);
         });
     }
@@ -105,20 +103,18 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
     {
         // Replay history from JSON
         var json = ReadAllFileText("test_replayer_complete_history.json");
-        var result = await new WorkflowReplayer(new() { Workflows = { typeof(SayHelloWorkflow) } }).
-            ReplayWorkflowAsync(WorkflowHistory.FromJson("some-id", json));
+        var result = await new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>()).
+                ReplayWorkflowAsync(WorkflowHistory.FromJson("some-id", json));
         Assert.Null(result.ReplayFailure);
     }
 
     [Fact]
     public async Task ReplayWorkflowAsync_IncompleteRun_Succeeds()
     {
-        using var worker = new TemporalWorker(Env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Activities = { SayHelloActivities.SayHello },
-            Workflows = { typeof(SayHelloWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            Env.Client, new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddActivity(SayHelloActivities.SayHello).AddWorkflow<SayHelloWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Start workflow
@@ -131,8 +127,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
                 async () => Assert.True(await handle.QueryAsync(SayHelloWorkflow.Ref.Waiting)));
 
             // Collect history and replay it
-            var result = await new WorkflowReplayer(new() { Workflows = { typeof(SayHelloWorkflow) } }).
-                ReplayWorkflowAsync(await handle.FetchHistoryAsync());
+            var result = await new WorkflowReplayer(
+                new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>()).
+                    ReplayWorkflowAsync(await handle.FetchHistoryAsync());
             Assert.Null(result.ReplayFailure);
         });
     }
@@ -140,12 +137,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ReplayWorkflowAsync_FailedRun_Succeeds()
     {
-        using var worker = new TemporalWorker(Env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Activities = { SayHelloActivities.SayHello },
-            Workflows = { typeof(SayHelloWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            Env.Client, new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddActivity(SayHelloActivities.SayHello).AddWorkflow<SayHelloWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow to completion
@@ -156,8 +150,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
 
             // Collect history and replay it
-            var result = await new WorkflowReplayer(new() { Workflows = { typeof(SayHelloWorkflow) } }).
-                ReplayWorkflowAsync(await handle.FetchHistoryAsync());
+            var result = await new WorkflowReplayer(
+                new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>()).
+                    ReplayWorkflowAsync(await handle.FetchHistoryAsync());
             Assert.Null(result.ReplayFailure);
         });
     }
@@ -165,12 +160,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ReplayWorkflowAsync_NonDeterministicRun_Fails()
     {
-        using var worker = new TemporalWorker(Env.Client, new()
-        {
-            TaskQueue = $"tq-{Guid.NewGuid()}",
-            Activities = { SayHelloActivities.SayHello },
-            Workflows = { typeof(SayHelloWorkflow) },
-        });
+        using var worker = new TemporalWorker(
+            Env.Client, new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                AddActivity(SayHelloActivities.SayHello).AddWorkflow<SayHelloWorkflow>());
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow to completion
@@ -182,7 +174,8 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
 
             // Collect history and replay it
             var history = await handle.FetchHistoryAsync();
-            var replayer = new WorkflowReplayer(new() { Workflows = { typeof(SayHelloWorkflow) } });
+            var replayer = new WorkflowReplayer(
+                new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>());
             var exc = await Assert.ThrowsAsync<InvalidWorkflowOperationException>(
                 async () => await replayer.ReplayWorkflowAsync(history));
             Assert.Contains("Nondeterminism", exc.Message);
@@ -200,7 +193,8 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         // Replay history from JSON
         var history = WorkflowHistory.FromJson(
             "some-id", ReadAllFileText("test_replayer_nondeterministic_history.json"));
-        var replayer = new WorkflowReplayer(new() { Workflows = { typeof(SayHelloWorkflow) } });
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>());
         var exc = await Assert.ThrowsAsync<InvalidWorkflowOperationException>(
             () => replayer.ReplayWorkflowAsync(history));
         Assert.Contains("Nondeterminism", exc.Message);
@@ -223,7 +217,8 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         }
 
         // Fail slow sync iter
-        var replayer = new WorkflowReplayer(new() { Workflows = { typeof(SayHelloWorkflow) } });
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>());
         var results = (await replayer.ReplayWorkflowsAsync(HistoryIter())).ToList();
         Assert.Equal(2, results.Count);
         Assert.Null(results[0].ReplayFailure);

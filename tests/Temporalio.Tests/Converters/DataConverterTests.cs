@@ -14,11 +14,11 @@ public class DataConverterTests : TestBase
     }
 
     [Fact]
-    public void NewDataConverter_WithPayloadConverterType_ProperlyInitializes()
+    public void NewDataConverter_WithPayloadConverter_ProperlyInitializes()
     {
         var newConverter = DataConverter.Default with
         {
-            PayloadConverterType = typeof(MyPayloadConverter),
+            PayloadConverter = new MyPayloadConverter(),
         };
         Assert.IsType<MyPayloadConverter>(newConverter.PayloadConverter);
     }

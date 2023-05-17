@@ -72,20 +72,20 @@ namespace Temporalio.Worker
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
         /// </summary>
         /// <param name="details">Immutable details about the instance.</param>
-        /// <param name="loggerFactory">Logger factory to use.</param>
-        public WorkflowInstance(WorkflowInstanceDetails details, ILoggerFactory loggerFactory)
+        public WorkflowInstance(WorkflowInstanceDetails details)
         {
             taskFactory = new(default, TaskCreationOptions.None, TaskContinuationOptions.ExecuteSynchronously, this);
             defn = details.Definition;
             payloadConverter = details.PayloadConverter;
             failureConverter = details.FailureConverter;
             var rootInbound = new InboundImpl(this);
+            // Lazy so it can have the context when instantiating
             inbound = new(
                 () =>
                 {
-                    var ret = details.InboundInterceptorTypes.Reverse().Aggregate(
+                    var ret = details.Interceptors.Reverse().Aggregate(
                         (WorkflowInboundInterceptor)rootInbound,
-                        (v, type) => (WorkflowInboundInterceptor)Activator.CreateInstance(type, v)!);
+                        (v, impl) => impl.InterceptWorkflow(v));
                     ret.Init(new OutboundImpl(this));
                     return ret;
                 },
@@ -144,7 +144,7 @@ namespace Temporalio.Worker
                 WorkflowType: start.WorkflowType);
             workflowStackTrace = details.WorkflowStackTrace;
             pendingTaskStackTraces = workflowStackTrace == WorkflowStackTrace.None ? null : new();
-            logger = loggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
+            logger = details.LoggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
             replaySafeLogger = new(logger);
             // We accept overflowing for seed (uint64 -> int32)
             Random = new(unchecked((int)details.Start.RandomnessSeed));
@@ -202,18 +202,8 @@ namespace Temporalio.Worker
         {
             get
             {
-                if (instance == null)
-                {
-                    // If there is a constructor accepting arguments, use that
-                    if (defn.InitConstructor != null)
-                    {
-                        instance = defn.InitConstructor.Invoke(startArgs!.Value);
-                    }
-                    else
-                    {
-                        instance = Activator.CreateInstance(defn.Type)!;
-                    }
-                }
+                // We create this lazily because we want the constructor in a workflow context
+                instance ??= defn.CreateWorkflowInstance(startArgs!.Value);
                 return instance;
             }
         }

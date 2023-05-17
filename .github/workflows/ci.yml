@@ -94,14 +94,14 @@ jobs:
 
       - name: Build docs
         if: ${{ matrix.docsTarget }}
-        uses: nikeee/docfx-action@v1.0.0
-        with:
-          args: src/Temporalio.ApiDoc/docfx.json
+        run: |
+            dotnet tool update -g docfx
+            docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors
 
       - name: Deploy docs
         if: ${{ github.ref == 'refs/heads/main' && matrix.docsTarget }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-        run: npx vercel deploy src/Temporalio.ApiDoc/obj/_site --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
+        run: npx vercel deploy src/Temporalio.ApiDoc/_site --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
 

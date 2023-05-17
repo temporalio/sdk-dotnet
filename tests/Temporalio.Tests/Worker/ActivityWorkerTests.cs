@@ -282,11 +282,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         static void Ignored() => throw new NotImplementedException();
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            Activities = { Ignored },
-        });
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(Ignored));
         await worker.ExecuteAsync(async () =>
         {
             var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
@@ -311,12 +308,10 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
         // Only allow 5 activities but try to execute 6 and confirm schedule to start timeout fails
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
+        using var worker = new TemporalWorker(Client, new TemporalWorkerOptions(taskQueue)
         {
-            TaskQueue = taskQueue,
-            Activities = { WaitUntilCancelledAsync },
             MaxConcurrentActivities = 5,
-        });
+        }.AddActivity(WaitUntilCancelledAsync));
         await worker.ExecuteAsync(async () =>
         {
             var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
@@ -394,16 +389,16 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteActivityAsync_ManualDefinition_Succeeds()
     {
-        static string SayHello(string name) => $"Hello, {name}!";
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            AdditionalActivityDefinitions =
-            {
-                ActivityDefinition.CreateWithoutAttribute("my-activity", SayHello),
-            },
-        });
+        var func = (string name) => $"Hello, {name}!";
+        var defn = ActivityDefinition.Create(
+            name: "my-activity",
+            typeof(string),
+            new Type[] { typeof(string) },
+            requiredParameterCount: 1,
+            func.DynamicInvoke);
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(defn));
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow
@@ -430,11 +425,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            Activities = { CompleteExternal },
-        });
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(CompleteExternal));
         await worker.ExecuteAsync(async () =>
         {
             // Start the workflow
@@ -466,11 +458,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            Activities = { CompleteExternal },
-        });
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(CompleteExternal));
         await worker.ExecuteAsync(async () =>
         {
             // Start the workflow
@@ -516,11 +505,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            Activities = { CompleteExternal },
-        });
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(CompleteExternal));
         await worker.ExecuteAsync(async () =>
         {
             // Start the workflow
@@ -571,11 +557,8 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            Activities = { CompleteExternal },
-        });
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(CompleteExternal));
         await worker.ExecuteAsync(async () =>
         {
             // Start the workflow
@@ -630,13 +613,10 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            Activities = { WaitUntilCancelledAsync },
-        });
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(WaitUntilCancelledAsync));
         // Overwrite bridge worker with one we can inject failures on
-        var bridgeWorker = new ManualPollCompletionBridgeWorker(worker.BridgeWorker);
+        using var bridgeWorker = new ManualPollCompletionBridgeWorker(worker.BridgeWorker);
         worker.BridgeWorker = bridgeWorker;
 
         // Run the worker
@@ -678,11 +658,10 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         static string SomeActivity2() => string.Empty;
         var err = Assert.Throws<ArgumentException>(() =>
         {
-            using var worker = new TemporalWorker(Client, new()
-            {
-                TaskQueue = $"tq-{Guid.NewGuid()}",
-                Activities = { SomeActivity1, SomeActivity2 },
-            });
+            using var worker = new TemporalWorker(
+                Client,
+                new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+                    AddActivity(SomeActivity1).AddActivity(SomeActivity2));
         });
         Assert.Equal("Duplicate activity named some-activity", err.Message);
     }
@@ -807,18 +786,15 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         args ??= new object?[] { arg };
         // Run within worker
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(Client, new()
-        {
-            TaskQueue = taskQueue,
-            Activities = { activity },
-        });
+        using var worker = new TemporalWorker(
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(activity));
         return await worker.ExecuteAsync(
             async () =>
             {
                 var handle = await Env.Client.StartWorkflowAsync(
                     IKitchenSinkWorkflow.Ref.RunAsync,
                     new KSWorkflowParams(new KSAction(ExecuteActivity: new(
-                        Name: ActivityDefinition.FromDelegate(activity).Name,
+                        Name: ActivityDefinition.Create(activity).Name,
                         TaskQueue: taskQueue,
                         Args: args,
                         WaitForCancellation: waitForCancellation,

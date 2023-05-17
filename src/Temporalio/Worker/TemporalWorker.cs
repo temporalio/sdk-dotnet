@@ -38,8 +38,7 @@ namespace Temporalio.Worker
                 (Bridge.Client)client.BridgeClientProvider.BridgeClient,
                 client.Options.Namespace,
                 options);
-            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count +
-                options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count == 0)
+            if (options.Activities.Count == 0 && options.Workflows.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow and/or activity");
             }
@@ -52,22 +51,6 @@ namespace Temporalio.Worker
             {
                 Interceptors = Interceptors.Concat(Options.Interceptors);
             }
-            // Extract workflow interceptor constructors out
-            var expectedTypes = new Type[] { typeof(WorkflowInboundInterceptor) };
-            var workflowInboundInterceptorTypes = Interceptors.Select(
-                i =>
-                {
-                    var type = i.WorkflowInboundInterceptorType;
-                    if (type == null)
-                    {
-                        return null;
-                    }
-                    else if (type.GetConstructor(expectedTypes) == null)
-                    {
-                        throw new InvalidOperationException($"Workflow interceptor {type} missing constructor accepting inbound");
-                    }
-                    return type;
-                }).OfType<Type>();
 
             // Enable workflow task tracing if needed
             workflowTracingEventListenerEnabled =
@@ -78,20 +61,19 @@ namespace Temporalio.Worker
             }
 
             // Create workers
-            if (options.Activities.Count + options.AdditionalActivityDefinitions.Count > 0)
+            if (options.Activities.Count > 0)
             {
                 activityWorker = new(this);
             }
-            if (options.Workflows.Count + options.AdditionalWorkflowDefinitions.Count > 0)
+            if (options.Workflows.Count > 0)
             {
                 workflowWorker = new(new(
                     BridgeWorker: BridgeWorker,
                     Namespace: client.Options.Namespace,
                     TaskQueue: options.TaskQueue!,
                     Workflows: options.Workflows,
-                    AdditionalWorkflowDefinitions: options.AdditionalWorkflowDefinitions,
                     DataConverter: client.Options.DataConverter,
-                    WorkflowInboundInterceptorTypes: workflowInboundInterceptorTypes,
+                    Interceptors: Interceptors,
                     LoggerFactory: options.LoggerFactory ?? client.Options.LoggerFactory,
                     WorkflowInstanceFactory: options.WorkflowInstanceFactory,
                     DebugMode: options.DebugMode,

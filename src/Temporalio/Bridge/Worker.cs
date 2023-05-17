@@ -86,7 +86,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets a pointer to the worker.
         /// </summary>
-        internal unsafe Interop.Worker* Ptr { get; private init; }
+        internal unsafe Interop.Worker* Ptr { get; private set; }
 
         /// <summary>
         /// Poll for the next workflow activation.
