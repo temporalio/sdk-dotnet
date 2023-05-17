@@ -1,0 +1,28 @@
+[*.cs]
+
+##### Temporal additions ######
+
+# Please keep in alphabetical order by field.
+
+# Don't need static workflow run call
+dotnet_diagnostic.CA1822.severity = none
+
+# Don't need to mark bench classes sealed
+dotnet_diagnostic.CA1852.severity = none
+
+# Don't need ConfigureAwait
+dotnet_diagnostic.CA2007.severity = none
+
+# Don't need docs
+dotnet_diagnostic.CS1591.severity = none
+
+# Can have multiple types in one file
+dotnet_diagnostic.SA1402.severity = none
+
+# Don't need docs
+dotnet_diagnostic.SA1600.severity = none
+
+# Program.cs doesn't need to match name
+dotnet_diagnostic.SA1649.severity = none
+
+###############################
