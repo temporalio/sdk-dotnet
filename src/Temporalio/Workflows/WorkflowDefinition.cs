@@ -89,9 +89,6 @@ namespace Temporalio.Workflows
         public static WorkflowDefinition Create(
             Type type, string? nameOverride, Func<object?[], object>? creatorOverride)
         {
-            // Unwrap the type
-            type = Refs.GetUnderlyingType(type);
-
             // Get the main attribute or throw if not present
             var attr = type.GetCustomAttribute<WorkflowAttribute>(false) ??
                 throw new ArgumentException($"{type} missing Workflow attribute");

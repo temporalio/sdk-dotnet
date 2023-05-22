@@ -21,9 +21,9 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         await AssertNoSchedulesAsync();
 
         // Create a schedule with a lot of stuff
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var action = ScheduleActionStartWorkflow.Create(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Result: new("some result"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
             {
                 ExecutionTimeout = TimeSpan.FromHours(1),
@@ -213,12 +213,12 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     {
         await AssertNoSchedulesAsync();
 
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
-                    IKitchenSinkWorkflow.Ref.RunAsync,
-                    new KSWorkflowParams(new KSAction(Result: new("some result"))),
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
                 Spec: new() { Calendars = new List<ScheduleCalendarSpec> { new() } })
             {
@@ -253,12 +253,12 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         await AssertNoSchedulesAsync();
 
         // Create paused schedule that triggers immediately
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
-                    IKitchenSinkWorkflow.Ref.RunAsync,
-                    new KSWorkflowParams(new KSAction(Result: new("some result"))),
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
                 Spec: new())
             {
@@ -287,12 +287,12 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         var now = DateTime.UtcNow;
         // Intervals align to the epoch boundary, so trim off seconds
         now = now.AddTicks(-(now.Ticks % TimeSpan.TicksPerMinute));
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
-                    IKitchenSinkWorkflow.Ref.RunAsync,
-                    new KSWorkflowParams(new KSAction(Result: new("some result"))),
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
                 Spec: new()
                 {

@@ -47,7 +47,7 @@ cmd.SetHandler(async ctx =>
     startWatch.Start();
     var handles = await Task.WhenAll(Enumerable.Range(0, workflowCount).Select(index =>
         env.Client.StartWorkflowAsync(
-            BenchWorkflow.Ref.RunAsync,
+            (BenchWorkflow wf) => wf.RunAsync(),
             $"user-{index}",
             new($"workflow-{index}-{Guid.NewGuid()}", taskQueue))));
     startWatch.Stop();
