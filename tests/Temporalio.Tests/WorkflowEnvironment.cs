@@ -1,7 +1,8 @@
 namespace Temporalio.Tests;
 
 using System;
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
+using Temporalio.Worker;
 using Xunit;
 
 public class WorkflowEnvironment : IAsyncLifetime
@@ -40,46 +41,57 @@ public class WorkflowEnvironment : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        if (kitchenSinkWorker.IsValueCreated)
+        try
         {
-            kitchenSinkWorker.Value.Process.Kill();
-            Assert.True(kitchenSinkWorker.Value.Process.WaitForExit(5000));
+            if (kitchenSinkWorker.IsValueCreated)
+            {
+                kitchenSinkWorker.Value.WorkerRunCompletion.SetResult();
+                await kitchenSinkWorker.Value.WorkerRunTask;
+            }
         }
-        if (env != null)
+        finally
         {
-            await env.ShutdownAsync();
+            if (kitchenSinkWorker.IsValueCreated)
+            {
+                kitchenSinkWorker.Value.Worker.Dispose();
+            }
+            if (env != null)
+            {
+                await env.ShutdownAsync();
+            }
         }
     }
 
     private KitchenSinkWorker StartKitchenSinkWorker()
     {
-        // Build
-        var workerDir = Path.Join(
-          Path.GetDirectoryName(TestUtils.CallerFilePath())!, "../golangworker");
-        var exePath = Path.Join(workerDir, "golangworker");
-        var proc = Process.Start(new ProcessStartInfo("go")
-        {
-            ArgumentList = { "build", "-o", exePath, "." },
-            WorkingDirectory = workerDir,
-        });
-        proc!.WaitForExit();
-        if (proc.ExitCode != 0)
-        {
-            throw new InvalidOperationException("Go build failed");
-        }
-
-        // Start
         var taskQueue = Guid.NewGuid().ToString();
-        proc = Process.Start(
-            exePath,
-            new string[]
+#pragma warning disable CA2000 // We dispose later
+        var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue).AddWorkflow<KitchenSinkWorkflow>());
+#pragma warning restore CA2000
+        var comp = new TaskCompletionSource();
+        var task = Task.Run(async () =>
+        {
+            try
             {
-                Client.Connection.Options.TargetHost!,
-                Client.Options.Namespace,
-                taskQueue,
-            });
-        return new(proc, taskQueue);
+                await worker.ExecuteAsync(() => comp.Task);
+            }
+#pragma warning disable CA1031 // We want to catch all
+            catch (Exception e)
+#pragma warning restore CA1031
+            {
+                Client.Options.LoggerFactory.CreateLogger<WorkflowEnvironment>().LogError(
+                    e, "Workflow run failure");
+                throw;
+            }
+        });
+        return new(taskQueue, worker, task, comp);
     }
 
-    private record KitchenSinkWorker(Process Process, string TaskQueue);
+    private record KitchenSinkWorker(
+        string TaskQueue,
+        TemporalWorker Worker,
+        Task WorkerRunTask,
+        TaskCompletionSource WorkerRunCompletion);
 }

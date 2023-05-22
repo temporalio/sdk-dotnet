@@ -9,7 +9,7 @@ namespace Temporalio.Exceptions
     /// later.
     /// </summary>
     /// <param name="Details">Collection of details to reference.</param>
-    public record OutboundFailureDetails(IReadOnlyCollection<object>? Details) : IFailureDetails
+    public record OutboundFailureDetails(IReadOnlyCollection<object?>? Details) : IFailureDetails
     {
         /// <inheritdoc />
         public int Count => Details?.Count ?? 0;
@@ -22,7 +22,7 @@ namespace Temporalio.Exceptions
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            return (T)Details.ElementAt(index);
+            return (T)Details.ElementAt(index)!;
         }
     }
 }
