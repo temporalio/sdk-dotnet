@@ -70,6 +70,21 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Update client metadata (i.e. headers).
+        /// </summary>
+        /// <param name="metadata">Metadata to set.</param>
+        public void UpdateMetadata(IEnumerable<KeyValuePair<string, string>> metadata)
+        {
+            using (var scope = new Scope())
+            {
+                unsafe
+                {
+                    Interop.Methods.client_update_metadata(Ptr, scope.Metadata(metadata));
+                }
+            }
+        }
+
+        /// <summary>
         /// Make RPC call to Temporal.
         /// </summary>
         /// <typeparam name="T">Return proto type.</typeparam>

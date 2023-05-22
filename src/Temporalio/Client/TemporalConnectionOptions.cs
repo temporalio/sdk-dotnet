@@ -54,8 +54,12 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
         /// </summary>
+        /// <remarks>
+        /// Note, this is only the initial value, updates will not be applied. Use
+        /// <see cref="ITemporalConnection.RpcMetadata" /> property setter to update.
+        /// </remarks>
         /// <seealso cref="RpcOptions.Metadata" />
-        public IEnumerable<KeyValuePair<string, string>>? RpcMetadata { get; set; }
+        public IReadOnlyCollection<KeyValuePair<string, string>>? RpcMetadata { get; set; }
 
         /// <summary>
         /// Gets or sets the identity for this connection.

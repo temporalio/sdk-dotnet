@@ -24,7 +24,7 @@ namespace Temporalio.Client
         /// Newlines are not allowed in keys or values. Keys here will override any connection-level
         /// metadata values for the same keys.
         /// </remarks>
-        public IEnumerable<KeyValuePair<string, string>>? Metadata { get; set; }
+        public IReadOnlyCollection<KeyValuePair<string, string>>? Metadata { get; set; }
 
         /// <summary>
         /// Gets or sets the timeout for the call. Default is no timeout.

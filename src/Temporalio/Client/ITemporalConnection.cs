@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Temporalio.Client
@@ -8,6 +9,13 @@ namespace Temporalio.Client
     /// <seealso cref="TemporalConnection" />
     public interface ITemporalConnection : IBridgeClientProvider
     {
+        /// <summary>
+        /// Gets or sets the current RPC metadata (i.e. the headers). This can be updated which will
+        /// apply to all future calls the client makes including inside a worker. Setting this value
+        /// is thread safe.
+        /// </summary>
+        IReadOnlyCollection<KeyValuePair<string, string>> RpcMetadata { get; set; }
+
         /// <summary>
         /// Gets the raw workflow service.
         /// </summary>
@@ -22,7 +30,7 @@ namespace Temporalio.Client
         /// Gets the raw gRPC test service.
         /// </summary>
         /// <remarks>
-        /// Only the <see cref="Temporalio.Testing.WorkflowEnvironment.StartTimeSkippingAsync" />
+        /// Only the <see cref="Testing.WorkflowEnvironment.StartTimeSkippingAsync" />
         /// environment has this service implemented.
         /// </remarks>
         public TestService TestService { get; }
