@@ -18,5 +18,13 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         // Just confirm the response has a version and capabilities
         Assert.NotEmpty(resp.ServerVersion);
         Assert.NotNull(resp.Capabilities);
+
+        // Update some headers and call again
+        // TODO(cretz): Find way to confirm this works without running our own gRPC server
+        Client.Connection.RpcMetadata = new Dictionary<string, string> { ["header"] = "value" };
+        resp = await Client.Connection.WorkflowService.GetSystemInfoAsync(
+            new Api.WorkflowService.V1.GetSystemInfoRequest());
+        Assert.NotEmpty(resp.ServerVersion);
+        Assert.NotNull(resp.Capabilities);
     }
 }

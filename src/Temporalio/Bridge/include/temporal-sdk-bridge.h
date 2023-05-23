@@ -262,6 +262,8 @@ void client_connect(struct Runtime *runtime,
 
 void client_free(struct Client *client);
 
+void client_update_metadata(struct Client *client, struct ByteArrayRef metadata);
+
 /**
  * Client, options, and user data must live through callback.
  */
