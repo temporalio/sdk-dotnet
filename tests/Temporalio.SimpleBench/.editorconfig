@@ -4,6 +4,9 @@
 
 # Please keep in alphabetical order by field.
 
+# Some versions can't tell implicit Program shouldn't need to be instantiated
+dotnet_diagnostic.CA1812.severity = none
+
 # Don't need static workflow run call
 dotnet_diagnostic.CA1822.severity = none
 

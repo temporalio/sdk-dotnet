@@ -3,7 +3,7 @@ using System;
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Options for <see cref="WorkflowHandle.SignalAsync(Func{System.Threading.Tasks.Task}, WorkflowSignalOptions?)" />
+    /// Options for <see cref="WorkflowHandle.SignalAsync{TWorkflow}(System.Linq.Expressions.Expression{Func{TWorkflow, System.Threading.Tasks.Task}}, WorkflowSignalOptions?)" />
     /// and other overloads.
     /// </summary>
     public class WorkflowSignalOptions : ICloneable

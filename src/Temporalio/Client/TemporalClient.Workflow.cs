@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -22,50 +23,37 @@ namespace Temporalio.Client
     public partial class TemporalClient
     {
         /// <inheritdoc />
-        public Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            Func<Task<TResult>> workflow, WorkflowOptions options) =>
-            StartWorkflowAsync<TResult>(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                Array.Empty<object?>(),
-                options);
+        public async Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
+            Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options)
+        {
+            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            return await OutboundInterceptor.StartWorkflowAsync<TWorkflow, TResult>(new(
+                Workflow: Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Args: args,
+                Options: options,
+                Headers: null)).ConfigureAwait(false);
+        }
 
         /// <inheritdoc />
-        public Task<WorkflowHandle<TResult>> StartWorkflowAsync<T, TResult>(
-            Func<T, Task<TResult>> workflow, T arg, WorkflowOptions options) =>
-            StartWorkflowAsync<TResult>(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                new object?[] { arg },
-                options);
-
-        /// <inheritdoc />
-        public Task<WorkflowHandle> StartWorkflowAsync(
-            Func<Task> workflow, WorkflowOptions options) =>
-            StartWorkflowAsync(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                Array.Empty<object?>(),
-                options);
-
-        /// <inheritdoc />
-        public Task<WorkflowHandle> StartWorkflowAsync<T>(
-            Func<T, Task> workflow, T arg, WorkflowOptions options) =>
-            StartWorkflowAsync(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                new object?[] { arg },
-                options);
+        public async Task<WorkflowHandle<TWorkflow>> StartWorkflowAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
+        {
+            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            return await OutboundInterceptor.StartWorkflowAsync<TWorkflow, ValueTuple>(new(
+                Workflow: Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Args: args,
+                Options: options,
+                Headers: null)).ConfigureAwait(false);
+        }
 
         /// <inheritdoc />
         public async Task<WorkflowHandle> StartWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options) =>
-            await StartWorkflowAsync<ValueTuple>(workflow, args, options).ConfigureAwait(false);
-
-        /// <inheritdoc />
-        public Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options) =>
-            OutboundInterceptor.StartWorkflowAsync<TResult>(new(
+            await OutboundInterceptor.StartWorkflowAsync<ValueTuple, ValueTuple>(new(
                 Workflow: workflow,
                 Args: args,
                 Options: options,
-                Headers: null));
+                Headers: null)).ConfigureAwait(false);
 
         /// <inheritdoc />
         public WorkflowHandle GetWorkflowHandle(
@@ -73,7 +61,12 @@ namespace Temporalio.Client
             new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
 
         /// <inheritdoc />
-        public WorkflowHandle<TResult> GetWorkflowHandle<TResult>(
+        public WorkflowHandle<TWorkflow> GetWorkflowHandle<TWorkflow>(
+            string id, string? runID = null, string? firstExecutionRunID = null) =>
+            new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
+
+        /// <inheritdoc />
+        public WorkflowHandle<TWorkflow, TResult> GetWorkflowHandle<TWorkflow, TResult>(
             string id, string? runID = null, string? firstExecutionRunID = null) =>
             new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
 
@@ -89,12 +82,13 @@ namespace Temporalio.Client
             private static IReadOnlyCollection<HistoryEvent> emptyEvents = new List<HistoryEvent>(0);
 
             /// <inheritdoc />
-            public override async Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
+            public override async Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
                 StartWorkflowInput input)
             {
                 try
                 {
-                    return await StartWorkflowInternalAsync<TResult>(input).ConfigureAwait(false);
+                    return await StartWorkflowInternalAsync<TWorkflow, TResult>(
+                        input).ConfigureAwait(false);
                 }
                 catch (RpcException e) when (
                     e.Code == RpcException.StatusCode.AlreadyExists)
@@ -351,7 +345,7 @@ namespace Temporalio.Client
             }
 #endif
 
-            private async Task<WorkflowHandle<TResult>> StartWorkflowInternalAsync<TResult>(
+            private async Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowInternalAsync<TWorkflow, TResult>(
                 StartWorkflowInput input)
             {
                 // We will build the non-signal-with-start request and convert to signal with start
@@ -430,7 +424,7 @@ namespace Temporalio.Client
                     }
                     var resp = await Client.Connection.WorkflowService.StartWorkflowExecutionAsync(
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
-                    return new WorkflowHandle<TResult>(
+                    return new WorkflowHandle<TWorkflow, TResult>(
                         Client: Client,
                         ID: req.WorkflowId,
                         ResultRunID: resp.RunId,
@@ -468,7 +462,7 @@ namespace Temporalio.Client
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                 // Notice we do _not_ set first execution run ID for signal with start
-                return new WorkflowHandle<TResult>(
+                return new WorkflowHandle<TWorkflow, TResult>(
                     Client: Client,
                     ID: req.WorkflowId,
                     ResultRunID: signalResp.RunId);

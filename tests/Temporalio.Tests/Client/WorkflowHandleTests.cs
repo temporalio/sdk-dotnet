@@ -17,10 +17,10 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task GetResultAsync_ContinueAsNew_ProperlyFollowed()
     {
         // Start with a single round of continue as new
+        var arg = new KSWorkflowParams(
+            new KSAction(ContinueAsNew: new(WhileAboveZero: 1, Result: "Some String")));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(
-                new KSAction(ContinueAsNew: new(WhileAboveZero: 1, Result: "Some String"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Check result with and without following
@@ -34,10 +34,10 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     {
         var err = await Assert.ThrowsAsync<Exceptions.WorkflowFailedException>(async () =>
         {
+            var arg = new KSWorkflowParams(new KSAction(
+                Error: new(Message: "Some Message", Details: "Some Details")));
             await Client.ExecuteWorkflowAsync(
-                IKitchenSinkWorkflow.Ref.RunAsync,
-                new KSWorkflowParams(new KSAction(
-                    Error: new(Message: "Some Message", Details: "Some Details"))),
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
         });
         var appErr = Assert.IsType<Exceptions.ApplicationFailureException>(err.InnerException);
@@ -56,10 +56,10 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task GetResultAsync_Timeout_Throws()
     {
+        var arg = new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000)));
         var err = await Assert.ThrowsAsync<Exceptions.RpcException>(async () =>
             await Client.ExecuteWorkflowAsync(
-                IKitchenSinkWorkflow.Ref.RunAsync,
-                new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000))),
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
                 {
                     Rpc = new() { Timeout = TimeSpan.FromSeconds(2) },
@@ -74,10 +74,10 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task GetResultAsync_CancellationToken_Throws()
     {
         using var cancelSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+        var arg = new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000)));
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await Client.ExecuteWorkflowAsync(
-                IKitchenSinkWorkflow.Ref.RunAsync,
-                new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000))),
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
                 {
                     Rpc = new() { CancellationToken = cancelSource.Token },
@@ -88,15 +88,14 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task SignalAsync_Simple_Succeeds()
     {
         // Start
+        var arg = new KSWorkflowParams(ActionSignal: "SomeActionSignal");
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(ActionSignal: "SomeActionSignal"),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Send signal
-        await handle.SignalAsync(
-            IKitchenSinkWorkflow.Ref.SomeActionSignalAsync,
-            new KSAction(Result: new(Value: "Some String")));
+        var signalArg = new KSAction(Result: new(Value: "Some String"));
+        await handle.SignalAsync(wf => wf.SomeActionSignalAsync(signalArg));
 
         // Confirm result
         Assert.Equal("Some String", await handle.GetResultAsync());
@@ -106,13 +105,13 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task QueryAsync_Simple_Succeeds()
     {
         // Start
+        var arg = new KSWorkflowParams(new KSAction(QueryHandler: new(Name: "SomeQuery")));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(QueryHandler: new(Name: "SomeQuery"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Issue query
-        var res = await handle.QueryAsync(IKitchenSinkWorkflow.Ref.SomeQuery, "Some String");
+        var res = await handle.QueryAsync(wf => wf.SomeQuery("Some String"));
 
         // Confirm result
         Assert.Equal("Some String", res);
@@ -122,15 +121,15 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task QueryAsync_WorkerFailure_Throws()
     {
         // Start
+        var arg = new KSWorkflowParams(
+            new KSAction(QueryHandler: new(Name: "SomeQuery", Error: "SomeError")));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(
-                new KSAction(QueryHandler: new(Name: "SomeQuery", Error: "SomeError"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Ensure proper failure
         var err = await Assert.ThrowsAsync<Exceptions.WorkflowQueryFailedException>(async () =>
-            await handle.QueryAsync(IKitchenSinkWorkflow.Ref.SomeQuery, "Some String"));
+            await handle.QueryAsync(wf => wf.SomeQuery("Some String")));
         Assert.Equal("SomeError", err.Message);
     }
 
@@ -138,18 +137,18 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task QueryAsync_Rejection_Throws()
     {
         // Start and confirm complete
+        var arg = new KSWorkflowParams(
+            new KSAction(QueryHandler: new(Name: "SomeQuery")),
+            new KSAction(Result: new(Value: "Some String")));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(
-                new KSAction(QueryHandler: new(Name: "SomeQuery")),
-                new KSAction(Result: new(Value: "Some String"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
         await handle.GetResultAsync();
 
         // Ensure proper failure if we have a reject condition
         var err = await Assert.ThrowsAsync<Exceptions.WorkflowQueryRejectedException>(async () =>
         {
-            await handle.QueryAsync(IKitchenSinkWorkflow.Ref.SomeQuery, "Some String", new()
+            await handle.QueryAsync(wf => wf.SomeQuery("Some String"), new()
             {
                 RejectCondition = QueryRejectCondition.NotOpen,
             });
@@ -161,9 +160,9 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task DescribeAsync_Simple_HasProperValues()
     {
         // Run
+        var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
         Assert.Equal("Some String", await handle.GetResultAsync());
 
@@ -189,9 +188,9 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task CancelAsync_Simple_ThrowsProperException()
     {
         // Start
+        var arg = new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000)));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Cancel
@@ -207,9 +206,9 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     public async Task TerminateAsync_Simple_ThrowsProperException()
     {
         // Start
+        var arg = new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000)));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Terminate

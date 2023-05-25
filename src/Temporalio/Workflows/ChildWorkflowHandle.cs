@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Temporalio.Workflows
@@ -40,31 +41,22 @@ namespace Temporalio.Workflows
         public abstract Task<TResult> GetResultAsync<TResult>();
 
         /// <summary>
-        /// Signal a child workflow.
+        /// Signal a child workflow via a lambda call to a WorkflowSignal attributed method.
         /// </summary>
-        /// <param name="signal">Signal to send.</param>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="signalCall">Invocation of a workflow signal method.</param>
         /// <param name="options">Options for the signal.</param>
         /// <returns>Task for completion of the signal send.</returns>
-        public Task SignalAsync(Func<Task> signal, ChildWorkflowSignalOptions? options = null) =>
-            SignalAsync(
-                WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                Array.Empty<object?>(),
+        public Task SignalAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> signalCall,
+            ChildWorkflowSignalOptions? options = null)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(signalCall);
+            return SignalAsync(
+                WorkflowSignalDefinition.FromMethod(method).Name,
+                args,
                 options);
-
-        /// <summary>
-        /// Signal a child workflow.
-        /// </summary>
-        /// <typeparam name="T">Signal arg type.</typeparam>
-        /// <param name="signal">Signal to send.</param>
-        /// <param name="arg">Signal argument.</param>
-        /// <param name="options">Options for the signal.</param>
-        /// <returns>Task for completion of the signal send.</returns>
-        public Task SignalAsync<T>(
-            Func<T, Task> signal, T arg, ChildWorkflowSignalOptions? options = null) =>
-            SignalAsync(
-                WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                new object?[] { arg },
-                options);
+        }
 
         /// <summary>
         /// Signal a child workflow.
@@ -80,7 +72,22 @@ namespace Temporalio.Workflows
     }
 
     /// <inheritdoc />
-    public abstract class ChildWorkflowHandle<TResult> : ChildWorkflowHandle
+    public abstract class ChildWorkflowHandle<TWorkflow> : ChildWorkflowHandle
+    {
+        /// <summary>
+        /// Signal a child workflow via a lambda call to a WorkflowSignal attributed method.
+        /// </summary>
+        /// <param name="signalCall">Invocation of a workflow signal method.</param>
+        /// <param name="options">Options for the signal.</param>
+        /// <returns>Task for completion of the signal send.</returns>
+        public Task SignalAsync(
+            Expression<Func<TWorkflow, Task>> signalCall,
+            ChildWorkflowSignalOptions? options = null) =>
+            SignalAsync<TWorkflow>(signalCall, options);
+    }
+
+    /// <inheritdoc />
+    public abstract class ChildWorkflowHandle<TWorkflow, TResult> : ChildWorkflowHandle<TWorkflow>
     {
         /// <summary>
         /// Get a result with the known result type.

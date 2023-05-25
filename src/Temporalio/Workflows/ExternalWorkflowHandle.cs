@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Temporalio.Workflows
@@ -22,31 +23,22 @@ namespace Temporalio.Workflows
         public abstract string? RunID { get; }
 
         /// <summary>
-        /// Signal an external workflow.
+        /// Signal an external workflow via a lambda call to a WorkflowSignal attributed method.
         /// </summary>
-        /// <param name="signal">Signal to send.</param>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="signalCall">Invocation of a workflow signal method.</param>
         /// <param name="options">Options for the signal.</param>
         /// <returns>Task for completion of the signal send.</returns>
-        public Task SignalAsync(Func<Task> signal, ExternalWorkflowSignalOptions? options = null) =>
-            SignalAsync(
-                WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                Array.Empty<object?>(),
+        public Task SignalAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> signalCall,
+            ExternalWorkflowSignalOptions? options = null)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(signalCall);
+            return SignalAsync(
+                WorkflowSignalDefinition.FromMethod(method).Name,
+                args,
                 options);
-
-        /// <summary>
-        /// Signal an external workflow.
-        /// </summary>
-        /// <typeparam name="T">Signal arg type.</typeparam>
-        /// <param name="signal">Signal to send.</param>
-        /// <param name="arg">Signal argument.</param>
-        /// <param name="options">Options for the signal.</param>
-        /// <returns>Task for completion of the signal send.</returns>
-        public Task SignalAsync<T>(
-            Func<T, Task> signal, T arg, ExternalWorkflowSignalOptions? options = null) =>
-            SignalAsync(
-                WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                new object?[] { arg },
-                options);
+        }
 
         /// <summary>
         /// Signal an external workflow.
@@ -65,5 +57,20 @@ namespace Temporalio.Workflows
         /// </summary>
         /// <returns>Task for completion of the cancellation request.</returns>
         public abstract Task CancelAsync();
+    }
+
+    /// <inheritdoc />
+    public abstract class ExternalWorkflowHandle<TWorkflow> : ExternalWorkflowHandle
+    {
+        /// <summary>
+        /// Signal an external workflow via a lambda call to a WorkflowSignal attributed method.
+        /// </summary>
+        /// <param name="signalCall">Invocation of a workflow signal method.</param>
+        /// <param name="options">Options for the signal.</param>
+        /// <returns>Task for completion of the signal send.</returns>
+        public Task SignalAsync(
+            Expression<Func<TWorkflow, Task>> signalCall,
+            ExternalWorkflowSignalOptions? options = null) =>
+            SignalAsync<TWorkflow>(signalCall, options);
     }
 }
