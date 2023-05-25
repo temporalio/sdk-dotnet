@@ -47,8 +47,7 @@ cmd.SetHandler(async ctx =>
     startWatch.Start();
     var handles = await Task.WhenAll(Enumerable.Range(0, workflowCount).Select(index =>
         env.Client.StartWorkflowAsync(
-            (BenchWorkflow wf) => wf.RunAsync(),
-            $"user-{index}",
+            (BenchWorkflow wf) => wf.RunAsync($"user-{index}"),
             new($"workflow-{index}-{Guid.NewGuid()}", taskQueue))));
     startWatch.Stop();
 
@@ -134,13 +133,12 @@ namespace Temporalio.SimpleBench
     [Workflow]
     public class BenchWorkflow
     {
-        public static readonly BenchWorkflow Ref = WorkflowRefs.Create<BenchWorkflow>();
-
         [WorkflowRun]
         public async Task<string> RunAsync(string name)
         {
             return await Workflow.ExecuteActivityAsync(
-                BenchActivities.BenchActivity, name, new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
+                () => BenchActivities.BenchActivity(name),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
         }
     }
 
