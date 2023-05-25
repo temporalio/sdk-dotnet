@@ -94,10 +94,11 @@ namespace Temporalio.Worker.Interceptors
         /// Intercept starting a child workflow. To intercept other child workflow calls, the handle
         /// can be extended/customized.
         /// </summary>
-        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <typeparam name="TWorkflow">Workflow class type. May be ValueTuple if unknown.</typeparam>
+        /// <typeparam name="TResult">Result type of the workflow. May be ValueTuple if unknown.</typeparam>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Child handle.</returns>
-        public virtual Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
-            StartChildWorkflowInput input) => Next.StartChildWorkflowAsync<TResult>(input);
+        public virtual Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
+            StartChildWorkflowInput input) => Next.StartChildWorkflowAsync<TWorkflow, TResult>(input);
     }
 }

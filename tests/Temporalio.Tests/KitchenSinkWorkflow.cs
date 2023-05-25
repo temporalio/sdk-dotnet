@@ -97,7 +97,8 @@ public class KitchenSinkWorkflow
                         },
                     },
                 });
-                throw Workflow.CreateContinueAsNewException(IKitchenSinkWorkflow.Ref.RunAsync, args);
+                throw Workflow.CreateContinueAsNewException(
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(args));
             }
             return (true, action.ContinueAsNew.Result);
         }

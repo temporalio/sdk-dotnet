@@ -182,8 +182,6 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
-            public static readonly IWf1 Ref = WorkflowRefs.Create<IWf1>();
-
             void RunWithoutAttribute();
         }
 
@@ -335,8 +333,6 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
-            public static readonly IWf1 Ref = WorkflowRefs.Create<IWf1>();
-
             [WorkflowRun]
             Task RunAsync();
 

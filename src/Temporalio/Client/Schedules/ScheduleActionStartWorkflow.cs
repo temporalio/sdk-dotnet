@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Common.V1;
@@ -26,70 +27,43 @@ namespace Temporalio.Client.Schedules
         IReadOnlyDictionary<string, Payload>? Headers = null) : ScheduleAction
     {
         /// <summary>
-        /// Create a scheduled action that starts a workflow.
+        /// Create a scheduled action that starts a workflow via lambda invoking the run method.
         /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Result type of the workflow.</typeparam>
-        /// <param name="workflow">Workflow run method.</param>
+        /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
         /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
         /// will occur.</param>
         /// <returns>Start workflow action.</returns>
-        public static ScheduleActionStartWorkflow Create<TResult>(
-            Func<Task<TResult>> workflow, WorkflowOptions options) =>
-            Create(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                Array.Empty<object?>(),
+        public static ScheduleActionStartWorkflow Create<TWorkflow, TResult>(
+            Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options)
+        {
+            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            return Create(
+                Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                args,
                 options);
+        }
 
         /// <summary>
-        /// Create a scheduled action that starts a workflow.
+        /// Create a scheduled action that starts a workflow via lambda invoking the run method.
         /// </summary>
-        /// <typeparam name="T">Param type of the workflow.</typeparam>
-        /// <typeparam name="TResult">Result type of the workflow.</typeparam>
-        /// <param name="workflow">Workflow run method.</param>
-        /// <param name="arg">Workflow argument.</param>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="workflowRunCall">Invocation of workflow run method without a result.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
         /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
         /// will occur.</param>
         /// <returns>Start workflow action.</returns>
-        public static ScheduleActionStartWorkflow Create<T, TResult>(
-            Func<T, Task<TResult>> workflow, T arg, WorkflowOptions options) =>
-            Create(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                new object?[] { arg },
+        public static ScheduleActionStartWorkflow Create<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
+        {
+            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            return Create(
+                Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                args,
                 options);
-
-        /// <summary>
-        /// Create a scheduled action that starts a workflow.
-        /// </summary>
-        /// <param name="workflow">Workflow run method.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
-        /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
-        /// will occur.</param>
-        /// <returns>Start workflow action.</returns>
-        public static ScheduleActionStartWorkflow Create(
-            Func<Task> workflow, WorkflowOptions options) =>
-            Create(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                Array.Empty<object?>(),
-                options);
-
-        /// <summary>
-        /// Create a scheduled action that starts a workflow.
-        /// </summary>
-        /// <typeparam name="T">Param type of the workflow.</typeparam>
-        /// <param name="workflow">Workflow run method.</param>
-        /// <param name="arg">Workflow argument.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required. Some
-        /// options like ID reuse policy, cron schedule, and start signal cannot be set or an error
-        /// will occur.</param>
-        /// <returns>Start workflow action.</returns>
-        public static ScheduleActionStartWorkflow Create<T>(
-            Func<T, Task> workflow, T arg, WorkflowOptions options) =>
-            Create(
-                Workflows.WorkflowDefinition.FromRunMethod(workflow.Method).Name,
-                new object?[] { arg },
-                options);
+        }
 
         /// <summary>
         /// Create a scheduled action that starts a workflow.

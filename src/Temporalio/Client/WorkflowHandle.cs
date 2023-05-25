@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
@@ -194,39 +195,25 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Signal a workflow with the given WorkflowSignal attributed method.
+        /// Signal a workflow via a lambda call to a WorkflowSignal attributed method.
         /// </summary>
-        /// <param name="signal">Workflow signal method.</param>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="signalCall">Invocation of a workflow signal method.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>
         /// Signal completion task. Means signal was accepted, but may not have been processed by
         /// the workflow yet.
         /// </returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task SignalAsync(Func<Task> signal, WorkflowSignalOptions? options = null) =>
-            SignalAsync(
-                Workflows.WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                Array.Empty<object?>(),
+        public Task SignalAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> signalCall, WorkflowSignalOptions? options = null)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(signalCall);
+            return SignalAsync(
+                Workflows.WorkflowSignalDefinition.FromMethod(method).Name,
+                args,
                 options);
-
-        /// <summary>
-        /// Signal a workflow with the given WorkflowSignal attributed method.
-        /// </summary>
-        /// <typeparam name="T">Signal argument type.</typeparam>
-        /// <param name="signal">Workflow signal method.</param>
-        /// <param name="arg">Signal argument.</param>
-        /// <param name="options">Extra options.</param>
-        /// <returns>
-        /// Signal completion task. Means signal was accepted, but may not have been processed by
-        /// the workflow yet.
-        /// </returns>
-        /// <exception cref="RpcException">Server-side error.</exception>
-        public Task SignalAsync<T>(
-            Func<T, Task> signal, T arg, WorkflowSignalOptions? options = null) =>
-            SignalAsync(
-                Workflows.WorkflowSignalDefinition.FromMethod(signal.Method).Name,
-                new object?[] { arg },
-                options);
+        }
 
         /// <summary>
         /// Signal a workflow with the given signal name and args.
@@ -250,10 +237,11 @@ namespace Temporalio.Client
                 Headers: null));
 
         /// <summary>
-        /// Query a workflow with the given WorkflowQuery attributed method.
+        /// Query a workflow via a lambda call to a WorkflowQuery attributed method.
         /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TQueryResult">Query result type.</typeparam>
-        /// <param name="query">Workflow query method.</param>
+        /// <param name="queryCall">Invocation of a workflow query method.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>Query result.</returns>
         /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
@@ -261,33 +249,16 @@ namespace Temporalio.Client
         /// Query rejected by server based on rejection condition.
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task<TQueryResult> QueryAsync<TQueryResult>(
-            Func<TQueryResult> query, WorkflowQueryOptions? options = null) =>
-            QueryAsync<TQueryResult>(
-                Workflows.WorkflowQueryDefinition.FromMethod(query.Method).Name,
-                Array.Empty<object?>(),
+        public Task<TQueryResult> QueryAsync<TWorkflow, TQueryResult>(
+            Expression<Func<TWorkflow, TQueryResult>> queryCall,
+            WorkflowQueryOptions? options = null)
+        {
+            var (method, args) = Common.ExpressionUtil.ExtractCall(queryCall);
+            return QueryAsync<TQueryResult>(
+                Workflows.WorkflowQueryDefinition.FromMethod(method).Name,
+                args,
                 options);
-
-        /// <summary>
-        /// Query a workflow with the given WorkflowQuery attributed method.
-        /// </summary>
-        /// <typeparam name="T">Query argument type.</typeparam>
-        /// <typeparam name="TQueryResult">Query result type.</typeparam>
-        /// <param name="query">Workflow query method.</param>
-        /// <param name="arg">Query argument.</param>
-        /// <param name="options">Extra options.</param>
-        /// <returns>Query result.</returns>
-        /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
-        /// <exception cref="WorkflowQueryRejectedException">
-        /// Query rejected by server based on rejection condition.
-        /// </exception>
-        /// <exception cref="RpcException">Server-side error.</exception>
-        public Task<TQueryResult> QueryAsync<T, TQueryResult>(
-            Func<T, TQueryResult> query, T arg, WorkflowQueryOptions? options = null) =>
-            QueryAsync<TQueryResult>(
-                Workflows.WorkflowQueryDefinition.FromMethod(query.Method).Name,
-                new object?[] { arg },
-                options);
+        }
 
         /// <summary>
         /// Query a workflow with the given WorkflowQuery attributed method.
@@ -427,8 +398,69 @@ namespace Temporalio.Client
     }
 
     /// <summary>
-    /// A workflow handle with a known workflow result type.
+    /// A workflow handle with a known workflow type.
     /// </summary>
+    /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+    /// <param name="Client">Client used for workflow handle calls.</param>
+    /// <param name="ID">Workflow ID.</param>
+    /// <param name="RunID">
+    /// Run ID used for signals and queries if present to ensure a very specific run to call. This
+    /// is only set when getting a workflow handle, not when starting a workflow.
+    /// </param>
+    /// <param name="ResultRunID">
+    /// Run ID used for get result calls to ensure getting a result starting from this run. This is
+    /// set the same as a run ID when getting a workflow handle. When starting a workflow, this is
+    /// set as the resulting run ID.
+    /// </param>
+    /// <param name="FirstExecutionRunID">
+    /// Run ID used for cancellation and termination to ensure they happen on a workflow starting
+    /// with this run ID. This can be set when getting a workflow handle. When starting a workflow,
+    /// this is set as the resulting run ID if no start signal was provided.
+    /// </param>
+    public record WorkflowHandle<TWorkflow>(
+        ITemporalClient Client,
+        string ID,
+        string? RunID = null,
+        string? ResultRunID = null,
+        string? FirstExecutionRunID = null) :
+            WorkflowHandle(Client, ID, RunID, ResultRunID, FirstExecutionRunID)
+    {
+        /// <summary>
+        /// Signal a workflow via a lambda call to a WorkflowSignal attributed method.
+        /// </summary>
+        /// <param name="signalCall">Invocation of a workflow signal method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>
+        /// Signal completion task. Means signal was accepted, but may not have been processed by
+        /// the workflow yet.
+        /// </returns>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        public Task SignalAsync(
+            Expression<Func<TWorkflow, Task>> signalCall, WorkflowSignalOptions? options = null) =>
+            SignalAsync<TWorkflow>(signalCall, options);
+
+        /// <summary>
+        /// Query a workflow via a lambda call to a WorkflowQuery attributed method.
+        /// </summary>
+        /// <typeparam name="TQueryResult">Query result type.</typeparam>
+        /// <param name="queryCall">Invocation of a workflow query method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Query result.</returns>
+        /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
+        /// <exception cref="WorkflowQueryRejectedException">
+        /// Query rejected by server based on rejection condition.
+        /// </exception>
+        /// <exception cref="RpcException">Server-side error.</exception>
+        public Task<TQueryResult> QueryAsync<TQueryResult>(
+            Expression<Func<TWorkflow, TQueryResult>> queryCall,
+            WorkflowQueryOptions? options = null) =>
+            QueryAsync<TWorkflow, TQueryResult>(queryCall, options);
+    }
+
+    /// <summary>
+    /// A workflow handle with a known workflow type and a known workflow result type.
+    /// </summary>
+    /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
     /// <typeparam name="TResult">Result type of the workflow.</typeparam>
     /// <param name="Client">Client used for workflow handle calls.</param>
     /// <param name="ID">Workflow ID.</param>
@@ -446,13 +478,13 @@ namespace Temporalio.Client
     /// with this run ID. This can be set when getting a workflow handle. When starting a workflow,
     /// this is set as the resulting run ID if no start signal was provided.
     /// </param>
-    public record WorkflowHandle<TResult>(
+    public record WorkflowHandle<TWorkflow, TResult>(
         ITemporalClient Client,
         string ID,
         string? RunID = null,
         string? ResultRunID = null,
         string? FirstExecutionRunID = null) :
-            WorkflowHandle(Client, ID, RunID, ResultRunID, FirstExecutionRunID)
+            WorkflowHandle<TWorkflow>(Client, ID, RunID, ResultRunID, FirstExecutionRunID)
     {
         /// <summary>
         /// Get the result of a workflow, deserializing into the known result type.

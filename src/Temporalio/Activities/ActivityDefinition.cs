@@ -116,7 +116,7 @@ namespace Temporalio.Activities
         /// <param name="cache">True if each definition should be cached.</param>
         /// <returns>Collection of activity definitions on the type.</returns>
         public static IReadOnlyCollection<ActivityDefinition> CreateAll<T>(
-            T? instance, bool cache = true) => CreateAll(typeof(T), cache);
+            T? instance, bool cache = true) => CreateAll(typeof(T), instance, cache);
 
         /// <summary>
         /// Create all applicable activity definitions for the given type. At least one activity
@@ -151,6 +151,21 @@ namespace Temporalio.Activities
                 throw new ArgumentException($"No activities found on {type}", nameof(type));
             }
             return ret;
+        }
+
+        /// <summary>
+        /// Gets the activity name from the given ActivityAttribute method.
+        /// </summary>
+        /// <param name="method">Method to get name from.</param>
+        /// <returns>Name.</returns>
+        /// <exception cref="ArgumentException">
+        /// If method does not have ActivityAttribute.
+        /// </exception>
+        public static string NameFromMethod(MethodInfo method)
+        {
+            var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
+                throw new ArgumentException($"{method} missing Activity attribute");
+            return NameFromAttributed(method, attr);
         }
 
         /// <summary>
