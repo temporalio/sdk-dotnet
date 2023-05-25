@@ -300,8 +300,21 @@ namespace Temporalio.Client
                     {
                         throw new InvalidOperationException("Unexpected raw history returned");
                     }
+                    // If there is history or no next page token, we're done
+                    var pageComplete =
+                        // Has events
+                        (resp.History != null && resp.History.Events.Count > 0) ||
+                        // Has no next page token
+                        resp.NextPageToken.IsEmpty;
+                    // In Java test server when waiting for new event and we pass the timeout, a
+                    // null history (as opposed to empty event set) is sent with no next page token
+                    // and we don't want to consider that page complete
+                    if (pageComplete && resp.History == null && input.WaitNewEvent)
+                    {
+                        pageComplete = false;
+                    }
                     // Complete if we got any events or if there is no next page token
-                    if ((resp.History != null && resp.History.Events.Count > 0) || resp.NextPageToken.IsEmpty)
+                    if (pageComplete)
                     {
                         return new WorkflowHistoryEventPage(
                             resp.History?.Events ?? emptyEvents,
