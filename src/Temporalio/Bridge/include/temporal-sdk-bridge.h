@@ -171,7 +171,7 @@ typedef struct TestServerOptions {
   struct ByteArrayRef extra_args;
 } TestServerOptions;
 
-typedef struct TemporaliteOptions {
+typedef struct DevServerOptions {
   /**
    * Must always be present
    */
@@ -185,7 +185,7 @@ typedef struct TemporaliteOptions {
   bool ui;
   struct ByteArrayRef log_format;
   struct ByteArrayRef log_level;
-} TemporaliteOptions;
+} DevServerOptions;
 
 /**
  * Anything besides user data must be freed if non-null.
@@ -282,10 +282,10 @@ void byte_array_free(struct Runtime *runtime, const struct ByteArray *bytes);
  * Runtime must live as long as server. Options and user data must live through
  * callback.
  */
-void ephemeral_server_start_temporalite(struct Runtime *runtime,
-                                        const struct TemporaliteOptions *options,
-                                        void *user_data,
-                                        EphemeralServerStartCallback callback);
+void ephemeral_server_start_dev_server(struct Runtime *runtime,
+                                       const struct DevServerOptions *options,
+                                       void *user_data,
+                                       EphemeralServerStartCallback callback);
 
 /**
  * Runtime must live as long as server. Options and user data must live through

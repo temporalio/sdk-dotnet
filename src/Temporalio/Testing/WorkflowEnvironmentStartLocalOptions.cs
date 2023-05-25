@@ -19,18 +19,18 @@ namespace Temporalio.Testing
         public bool UI { get; set; }
 
         /// <summary>
-        /// Gets or sets <b>unstable</b> Temporalite options.
+        /// Gets or sets <b>unstable</b> dev server options.
         /// </summary>
         /// <remarks>
         /// <b>WARNING: This API is subject to change/removal</b>
         /// </remarks>
-        public TemporaliteOptions Temporalite { get; set; } = new();
+        public DevServerOptions DevServerOptions { get; set; } = new();
 
         /// <inheritdoc />
         public override object Clone()
         {
             var copy = (WorkflowEnvironmentStartLocalOptions)base.Clone();
-            copy.Temporalite = (TemporaliteOptions)Temporalite.Clone();
+            copy.DevServerOptions = (DevServerOptions)DevServerOptions.Clone();
             return copy;
         }
     }

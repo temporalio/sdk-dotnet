@@ -265,32 +265,32 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.TemporaliteOptions ToInteropOptions(
+        public static unsafe Interop.DevServerOptions ToInteropOptions(
             this Testing.WorkflowEnvironmentStartLocalOptions options,
             Scope scope)
         {
             // Use TargetHost to get IP + Port
             options.ParseTargetHost(out string? ip, out int? port);
             ip ??= "127.0.0.1";
-            return new Interop.TemporaliteOptions()
+            return new Interop.DevServerOptions()
             {
                 test_server = scope.Pointer(
                     new Interop.TestServerOptions()
                     {
-                        existing_path = scope.ByteArray(options.Temporalite.ExistingPath),
+                        existing_path = scope.ByteArray(options.DevServerOptions.ExistingPath),
                         sdk_name = SdkName.Ref,
                         sdk_version = ClientVersion.Ref,
-                        download_version = scope.ByteArray(options.Temporalite.DownloadVersion),
+                        download_version = scope.ByteArray(options.DevServerOptions.DownloadVersion),
                         download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                         port = (ushort)(port ?? 0),
-                        extra_args = scope.NewlineDelimited(options.Temporalite.ExtraArgs),
+                        extra_args = scope.NewlineDelimited(options.DevServerOptions.ExtraArgs),
                     }),
                 namespace_ = scope.ByteArray(options.Namespace),
                 ip = scope.ByteArray(ip),
-                database_filename = scope.ByteArray(options.Temporalite.DatabaseFilename),
+                database_filename = scope.ByteArray(options.DevServerOptions.DatabaseFilename),
                 ui = (byte)(options.UI ? 1 : 0),
-                log_format = scope.ByteArray(options.Temporalite.LogFormat),
-                log_level = scope.ByteArray(options.Temporalite.LogLevel),
+                log_format = scope.ByteArray(options.DevServerOptions.LogFormat),
+                log_level = scope.ByteArray(options.DevServerOptions.LogLevel),
             };
         }
 

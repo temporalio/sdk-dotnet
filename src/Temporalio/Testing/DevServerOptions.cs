@@ -9,15 +9,15 @@ namespace Temporalio.Testing
     /// <remarks>
     /// <b>WARNING: This API is subject to change/removal</b>
     /// </remarks>
-    public class TemporaliteOptions : ICloneable
+    public class DevServerOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets the existing executable path for Temporalite.
+        /// Gets or sets the existing executable path for the dev server.
         /// </summary>
         public string? ExistingPath { get; set; }
 
         /// <summary>
-        /// Gets or sets the database filename for Temporalite.
+        /// Gets or sets the database filename for the dev server.
         /// </summary>
         /// <remarks>
         /// By default, an in-memory database is used.
@@ -25,17 +25,17 @@ namespace Temporalio.Testing
         public string? DatabaseFilename { get; set; }
 
         /// <summary>
-        /// Gets or sets the log format for Temporalite. Default is "pretty".
+        /// Gets or sets the log format for the dev server. Default is "pretty".
         /// </summary>
         public string LogFormat { get; set; } = "pretty";
 
         /// <summary>
-        /// Gets or sets the log level for Temporalite. Default is "warn".
+        /// Gets or sets the log level for the dev server. Default is "warn".
         /// </summary>
         public string LogLevel { get; set; } = "warn";
 
         /// <summary>
-        /// Gets or sets the version to version of Temporalite to download. Default is "default".
+        /// Gets or sets the version to version of the dev server to download. Default is "default".
         /// </summary>
         /// <remarks>
         /// By default, the best one for this SDK version is chosen. This can be a semantic version,
@@ -44,7 +44,7 @@ namespace Temporalio.Testing
         public string DownloadVersion { get; set; } = "default";
 
         /// <summary>
-        /// Gets or sets the extra arguments for Temporalite.
+        /// Gets or sets the extra arguments for the dev server.
         /// </summary>
         /// <remarks>
         /// Newlines are not allowed in values.

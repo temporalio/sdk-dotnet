@@ -11,7 +11,7 @@ pub struct EphemeralServer {
 }
 
 #[repr(C)]
-pub struct TemporaliteOptions {
+pub struct DevServerOptions {
     /// Must always be present
     test_server: *const TestServerOptions,
     namespace: ByteArrayRef,
@@ -49,16 +49,16 @@ type EphemeralServerStartCallback = unsafe extern "C" fn(
 /// Runtime must live as long as server. Options and user data must live through
 /// callback.
 #[no_mangle]
-pub extern "C" fn ephemeral_server_start_temporalite(
+pub extern "C" fn ephemeral_server_start_dev_server(
     runtime: *mut Runtime,
-    options: *const TemporaliteOptions,
+    options: *const DevServerOptions,
     user_data: *mut libc::c_void,
     callback: EphemeralServerStartCallback,
 ) {
     let runtime = unsafe { &mut *runtime };
     // Convert opts
     let options = unsafe { &*options };
-    let config: ephemeral_server::TemporaliteConfig = match options.try_into() {
+    let config: ephemeral_server::TemporalDevServerConfig = match options.try_into() {
         Ok(v) => v,
         Err(err) => {
             unsafe {
@@ -196,12 +196,12 @@ pub extern "C" fn ephemeral_server_shutdown(
     });
 }
 
-impl TryFrom<&TemporaliteOptions> for ephemeral_server::TemporaliteConfig {
+impl TryFrom<&DevServerOptions> for ephemeral_server::TemporalDevServerConfig {
     type Error = anyhow::Error;
 
-    fn try_from(options: &TemporaliteOptions) -> anyhow::Result<Self> {
+    fn try_from(options: &DevServerOptions) -> anyhow::Result<Self> {
         let test_server_options = unsafe { &*options.test_server };
-        Ok(ephemeral_server::TemporaliteConfigBuilder::default()
+        Ok(ephemeral_server::TemporalDevServerConfigBuilder::default()
             .exe(test_server_options.exe())
             .namespace(options.namespace.to_string())
             .ip(options.ip.to_string())
