@@ -197,11 +197,26 @@ namespace Temporalio.Worker
             /// <returns>Task for completion.</returns>
             public async Task RunWorkerAsync(CancellationToken token)
             {
-                using (token.Register(bridgeReplayer.Worker.InitiateShutdown))
+                try
                 {
-                    await workflowWorker.ExecuteAsync().ConfigureAwait(false);
+                    using (token.Register(bridgeReplayer.Worker.InitiateShutdown))
+                    {
+                        await workflowWorker.ExecuteAsync().ConfigureAwait(false);
+                    }
                 }
-                await bridgeReplayer.Worker.FinalizeShutdownAsync().ConfigureAwait(false);
+                finally
+                {
+#pragma warning disable CA1031 // Intentionally swallow all exceptions to finalizing shutdown
+                    try
+                    {
+                        await bridgeReplayer.Worker.FinalizeShutdownAsync().ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // Ignore finalization errors, worker will be dropped Rust side anyways
+                    }
+#pragma warning restore CA1031
+                }
             }
 
             /// <summary>

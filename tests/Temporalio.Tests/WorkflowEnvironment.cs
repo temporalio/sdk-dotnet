@@ -1,7 +1,10 @@
+#pragma warning disable CA1001 // IAsyncLifetime is substitute for IAsyncDisposable here
+
 namespace Temporalio.Tests;
 
 using System;
 using Microsoft.Extensions.Logging;
+using Temporalio.Client;
 using Temporalio.Worker;
 using Xunit;
 
@@ -15,28 +18,53 @@ public class WorkflowEnvironment : IAsyncLifetime
         kitchenSinkWorker = new(StartKitchenSinkWorker);
     }
 
-    public Temporalio.Client.ITemporalClient Client =>
+    public ITemporalClient Client =>
         env?.Client ?? throw new InvalidOperationException("Environment not created");
 
     public string KitchenSinkWorkerTaskQueue => kitchenSinkWorker.Value.TaskQueue;
 
     public async Task InitializeAsync()
     {
-        // TODO(cretz): Support other environments
-        env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
+        // If an existing target is given via environment variable, use that
+        if (Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_TARGET_HOST") is string host)
         {
-            Temporalite = new()
+            var options = new TemporalClientConnectOptions(host)
             {
-                ExtraArgs = new List<string>
+                Namespace = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_NAMESPACE") ??
+                    throw new InvalidOperationException("Missing test namespace"),
+            };
+            var clientCert = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_CERT");
+            var clientKey = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_KEY");
+            if ((clientCert == null) != (clientKey == null))
+            {
+                throw new InvalidOperationException("Must have both cert/key or neither");
+            }
+            if (clientCert != null && clientKey != null)
+            {
+                options.Tls = new()
                 {
-                    // Disable search attribute cache
-                    "--dynamic-config-value",
-                    "system.forceSearchAttributesCacheRefreshOnRead=true",
+                    ClientCert = System.Text.Encoding.ASCII.GetBytes(clientCert),
+                    ClientPrivateKey = System.Text.Encoding.ASCII.GetBytes(clientKey),
+                };
+            }
+            env = new(await Temporalio.Client.TemporalClient.ConnectAsync(options));
+        }
+        else
+        {
+            // Otherwise, local server is good
+            env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
+            {
+                Temporalite = new()
+                {
+                    ExtraArgs = new List<string>
+                    {
+                        // Disable search attribute cache
+                        "--dynamic-config-value",
+                        "system.forceSearchAttributesCacheRefreshOnRead=true",
+                    },
                 },
-            },
-        });
-        // Can uncomment this and comment out the above to use an external server
-        // env = new(await Temporalio.Client.TemporalClient.ConnectAsync(new("localhost:7233")));
+            });
+        }
     }
 
     public async Task DisposeAsync()

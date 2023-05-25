@@ -17,6 +17,7 @@ jobs:
             checkTarget: true
           - os: ubuntu-latest
             docsTarget: true
+            cloudTestTarget: true
           - os: ubuntu-arm
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
@@ -86,6 +87,16 @@ jobs:
           name: test-fail-${{ matrix.os }}
           path: tests/Temporalio.Tests/TestResults
 
+      - name: Test cloud
+        # Only supported in non-fork runs, since secrets are not available in forks
+        if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        env:
+          TEMPORAL_CLIENT_TARGET_HOST: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}.tmprl.cloud:7233
+          TEMPORAL_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
+          TEMPORAL_CLIENT_CERT: ${{ secrets.TEMPORAL_CLIENT_CERT }}
+          TEMPORAL_CLIENT_KEY: ${{ secrets.TEMPORAL_CLIENT_KEY }}
+        run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
+
       - name: Build docs
         if: ${{ matrix.docsTarget }}
         run: |
@@ -93,9 +104,9 @@ jobs:
             docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors
 
       - name: Deploy docs
+        # Only deploy on main merge, not in PRs
         if: ${{ github.ref == 'refs/heads/main' && matrix.docsTarget }}
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: npx vercel deploy src/Temporalio.ApiDoc/_site --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
-
