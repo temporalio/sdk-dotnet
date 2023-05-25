@@ -234,8 +234,9 @@ namespace Temporalio.Worker
                 new(Activity: activity, Args: args, Options: options, Headers: null));
 
         /// <inheritdoc/>
-        public ExternalWorkflowHandle GetExternalWorkflowHandle(string id, string? runID = null) =>
-            new ExternalWorkflowHandleImpl(this, id, runID);
+        public ExternalWorkflowHandle<TWorkflow> GetExternalWorkflowHandle<TWorkflow>(
+            string id, string? runID = null) =>
+            new ExternalWorkflowHandleImpl<TWorkflow>(this, id, runID);
 
         /// <inheritdoc />
         public bool Patch(string patchID, bool deprecated)
@@ -259,9 +260,9 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
-        public Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+        public Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions options) =>
-            outbound.Value.StartChildWorkflowAsync<TResult>(
+            outbound.Value.StartChildWorkflowAsync<TWorkflow, TResult>(
                 new(Workflow: workflow, Args: args, Options: options, Headers: null));
 
         /// <inheritdoc />
@@ -1344,7 +1345,7 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc />
-            public override Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+            public override Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
                 StartChildWorkflowInput input)
             {
                 var token = input.Options.CancellationToken ?? instance.CancellationToken;
@@ -1355,7 +1356,7 @@ namespace Temporalio.Worker
                 // TemporalException.IsCancelledException helper).
                 if (token.IsCancellationRequested)
                 {
-                    return Task.FromException<ChildWorkflowHandle<TResult>>(
+                    return Task.FromException<ChildWorkflowHandle<TWorkflow, TResult>>(
                         new CancelledFailureException("Child cancelled before scheduled"));
                 }
 
@@ -1403,7 +1404,7 @@ namespace Temporalio.Worker
                 instance.AddCommand(new() { StartChildWorkflowExecution = cmd });
 
                 // Add start as pending and wait inside of task
-                var handleSource = new TaskCompletionSource<ChildWorkflowHandle<TResult>>();
+                var handleSource = new TaskCompletionSource<ChildWorkflowHandle<TWorkflow, TResult>>();
                 var startSource = new TaskCompletionSource<ResolveChildWorkflowExecutionStart>();
                 instance.childWorkflowsPendingStart[seq] = startSource;
 
@@ -1427,7 +1428,7 @@ namespace Temporalio.Worker
                         // Remove pending
                         instance.childWorkflowsPendingStart.Remove(seq);
                         // Handle the start result
-                        ChildWorkflowHandleImpl<TResult> handle;
+                        ChildWorkflowHandleImpl<TWorkflow, TResult> handle;
                         switch (startRes.StatusCase)
                         {
                             case ResolveChildWorkflowExecutionStart.StatusOneofCase.Succeeded:
@@ -1628,15 +1629,16 @@ namespace Temporalio.Worker
         /// <summary>
         /// Child workflow handle implementation.
         /// </summary>
+        /// <typeparam name="TWorkflow">Child workflow type.</typeparam>
         /// <typeparam name="TResult">Child workflow result.</typeparam>
-        internal class ChildWorkflowHandleImpl<TResult> : ChildWorkflowHandle<TResult>
+        internal class ChildWorkflowHandleImpl<TWorkflow, TResult> : ChildWorkflowHandle<TWorkflow, TResult>
         {
             private readonly WorkflowInstance instance;
             private readonly string id;
             private readonly string firstExecutionRunID;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="ChildWorkflowHandleImpl{TResult}"/> class.
+            /// Initializes a new instance of the <see cref="ChildWorkflowHandleImpl{TWorkflow, TResult}"/> class.
             /// </summary>
             /// <param name="instance">Workflow instance.</param>
             /// <param name="id">Workflow ID.</param>
@@ -1688,14 +1690,16 @@ namespace Temporalio.Worker
         /// <summary>
         /// External workflow handle implementation.
         /// </summary>
-        internal class ExternalWorkflowHandleImpl : ExternalWorkflowHandle
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        internal class ExternalWorkflowHandleImpl<TWorkflow> : ExternalWorkflowHandle<TWorkflow>
         {
             private readonly WorkflowInstance instance;
             private readonly string id;
             private readonly string? runID;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="ExternalWorkflowHandleImpl"/> class.
+            /// Initializes a new instance of the <see cref="ExternalWorkflowHandleImpl{TWorkflow}"/>
+            /// class.
             /// </summary>
             /// <param name="instance">Workflow instance.</param>
             /// <param name="id">Workflow ID.</param>

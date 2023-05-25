@@ -87,6 +87,9 @@ jobs:
           name: test-fail-${{ matrix.os }}
           path: tests/Temporalio.Tests/TestResults
 
+      - name: Confirm bench works
+        run: dotnet run --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 5 --max-cached-workflows 100 --max-concurrent 100
+
       - name: Test cloud
         # Only supported in non-fork runs, since secrets are not available in forks
         if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}

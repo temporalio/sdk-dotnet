@@ -26,8 +26,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SimpleWorkflow
     {
-        public static readonly SimpleWorkflow Ref = WorkflowRefs.Create<SimpleWorkflow>();
-
         [WorkflowRun]
         public Task<string> RunAsync(string name) => Task.FromResult($"Hello, {name}!");
     }
@@ -38,8 +36,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<SimpleWorkflow>(async worker =>
         {
             var result = await Env.Client.ExecuteWorkflowAsync(
-                SimpleWorkflow.Ref.RunAsync,
-                "Temporal",
+                (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
                 new(id: $"dotnet-workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
@@ -78,8 +75,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public interface IInterfaceWorkflow
     {
-        static readonly IInterfaceWorkflow Ref = WorkflowRefs.Create<IInterfaceWorkflow>();
-
         [WorkflowRun]
         Task<string> RunAsync();
 
@@ -97,7 +92,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<IInterfaceWorkflow.InterfaceWorkflow>(async worker =>
         {
             var result = await Env.Client.ExecuteWorkflowAsync(
-                IInterfaceWorkflow.Ref.RunAsync,
+                (IInterfaceWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
@@ -106,8 +101,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public record RecordWorkflow
     {
-        public static readonly RecordWorkflow Ref = WorkflowRefs.Create<RecordWorkflow>();
-
         // TODO(cretz): When https://github.com/dotnet/csharplang/issues/7047 is done, test
         // [WorkflowInit] on record constructor
         [WorkflowRun]
@@ -120,7 +113,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<RecordWorkflow>(async worker =>
         {
             var result = await Env.Client.ExecuteWorkflowAsync(
-                RecordWorkflow.Ref.RunAsync,
+                (RecordWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
@@ -130,8 +123,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public struct StructWorkflow
     {
-        public static readonly StructWorkflow Ref = WorkflowRefs.Create<StructWorkflow>();
-
         [WorkflowRun]
         public Task<string> RunAsync() => Task.FromResult($"Hello, Temporal!");
     }
@@ -143,7 +134,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<StructWorkflow>(async worker =>
         {
             var result = await Env.Client.ExecuteWorkflowAsync(
-                StructWorkflow.Ref.RunAsync,
+                (StructWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
@@ -152,7 +143,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class WorkflowInitWorkflow
     {
-        public static readonly WorkflowInitWorkflow Ref = WorkflowRefs.Create<WorkflowInitWorkflow>();
         private readonly string name;
 
         [WorkflowInit]
@@ -168,8 +158,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<WorkflowInitWorkflow>(async worker =>
         {
             var result = await Env.Client.ExecuteWorkflowAsync(
-                WorkflowInitWorkflow.Ref.RunAsync,
-                "Temporal",
+                (WorkflowInitWorkflow wf) => wf.RunAsync("Temporal"),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
@@ -178,8 +167,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class WorkflowInitNoParamsWorkflow
     {
-        public static readonly WorkflowInitNoParamsWorkflow Ref = WorkflowRefs.Create<WorkflowInitNoParamsWorkflow>();
-
         [WorkflowInit]
         public WorkflowInitNoParamsWorkflow()
         {
@@ -195,7 +182,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<WorkflowInitNoParamsWorkflow>(async worker =>
         {
             var result = await Env.Client.ExecuteWorkflowAsync(
-                WorkflowInitNoParamsWorkflow.Ref.RunAsync,
+                (WorkflowInitNoParamsWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
@@ -204,8 +191,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class StandardLibraryCallsWorkflow
     {
-        public static readonly StandardLibraryCallsWorkflow Ref = WorkflowRefs.Create<StandardLibraryCallsWorkflow>();
-
         [WorkflowRun]
         public async Task<string> RunAsync(Scenario scenario)
         {
@@ -274,8 +259,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start the workflow
                 var handle = await Env.Client.StartWorkflowAsync(
-                    StandardLibraryCallsWorkflow.Ref.RunAsync,
-                    scenario,
+                    (StandardLibraryCallsWorkflow wf) => wf.RunAsync(scenario),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
 
                 // Make sure task failure occurs in history eventually
@@ -306,8 +290,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             ExecuteWorkerAsync<StandardLibraryCallsWorkflow>(async worker =>
             {
                 var result = await Env.Client.ExecuteWorkflowAsync(
-                    StandardLibraryCallsWorkflow.Ref.RunAsync,
-                    scenario,
+                    (StandardLibraryCallsWorkflow wf) => wf.RunAsync(scenario),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                     {
                         RunTimeout = TimeSpan.FromSeconds(10),
@@ -323,8 +306,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class InfoWorkflow
     {
-        public static readonly InfoWorkflow Ref = WorkflowRefs.Create<InfoWorkflow>();
-
         [WorkflowRun]
         public Task<WorkflowInfo> RunAsync() => Task.FromResult(Workflow.Info);
     }
@@ -335,7 +316,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<InfoWorkflow>(async worker =>
         {
             var handle = await Env.Client.StartWorkflowAsync(
-                InfoWorkflow.Ref.RunAsync,
+                (InfoWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var result = await handle.GetResultAsync();
             Assert.Equal(1, result.Attempt);
@@ -362,8 +343,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class MultiParamWorkflow
     {
-        public static readonly MultiParamWorkflow Ref = WorkflowRefs.Create<MultiParamWorkflow>();
-
         [WorkflowRun]
         public Task<string> RunAsync(string param1, string param2) => Task.FromResult($"{param1}:{param2}");
     }
@@ -384,8 +363,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class DefaultParamWorkflow
     {
-        public static readonly DefaultParamWorkflow Ref = WorkflowRefs.Create<DefaultParamWorkflow>();
-
         [WorkflowRun]
         public Task<string> RunAsync(string param1, string param2 = "default") =>
             Task.FromResult($"{param1}:{param2}");
@@ -407,8 +384,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class TimerWorkflow
     {
-        public static readonly TimerWorkflow Ref = WorkflowRefs.Create<TimerWorkflow>();
-
         [WorkflowRun]
         public async Task<string> RunAsync(Input input)
         {
@@ -443,9 +418,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
+            var arg = new TimerWorkflow.Input(DelayMS: 100);
             var handle = await Env.Client.StartWorkflowAsync(
-                TimerWorkflow.Ref.RunAsync,
-                new TimerWorkflow.Input(DelayMS: 100),
+                (TimerWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("done", await handle.GetResultAsync());
             // Check history has a timer start and a timer fire
@@ -476,9 +451,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
+            var arg = new TimerWorkflow.Input(DelayMS: 10000, CancelBefore: true);
             var handle = await Env.Client.StartWorkflowAsync(
-                TimerWorkflow.Ref.RunAsync,
-                new TimerWorkflow.Input(DelayMS: 10000, CancelBefore: true),
+                (TimerWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("cancelled", await handle.GetResultAsync());
             // Make sure no timer event in history
@@ -494,9 +469,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
+            var arg = new TimerWorkflow.Input(DelayMS: 10000, CancelAfterMS: 100);
             var handle = await Env.Client.StartWorkflowAsync(
-                TimerWorkflow.Ref.RunAsync,
-                new TimerWorkflow.Input(DelayMS: 10000, CancelAfterMS: 100),
+                (TimerWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("cancelled", await handle.GetResultAsync());
             // Make sure there is a timer cancelled in history
@@ -518,9 +493,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
+            var arg = new TimerWorkflow.Input(DelayMS: Timeout.Infinite, CancelAfterMS: 100);
             var handle = await Env.Client.StartWorkflowAsync(
-                TimerWorkflow.Ref.RunAsync,
-                new TimerWorkflow.Input(DelayMS: Timeout.Infinite, CancelAfterMS: 100),
+                (TimerWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("cancelled", await handle.GetResultAsync());
             // Only expect the one cancel timer, not the infinite one
@@ -541,9 +516,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
+            var arg = new TimerWorkflow.Input(DelayMS: -50);
             var handle = await Env.Client.StartWorkflowAsync(
-                TimerWorkflow.Ref.RunAsync,
-                new TimerWorkflow.Input(DelayMS: -50),
+                (TimerWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Confirm WFT failure
             await AssertTaskFailureContainsEventuallyAsync(handle, "duration cannot be less than 0");
@@ -555,9 +530,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
+            var arg = new TimerWorkflow.Input(DelayMS: 0);
             var handle = await Env.Client.StartWorkflowAsync(
-                TimerWorkflow.Ref.RunAsync,
-                new TimerWorkflow.Input(DelayMS: 0),
+                (TimerWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("done", await handle.GetResultAsync());
             // Make sure the timer was set to 1ms
@@ -579,8 +554,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class CancelWorkflow
     {
-        public static readonly CancelWorkflow Ref = WorkflowRefs.Create<CancelWorkflow>();
-
         public static TaskCompletionSource? ActivityStarted { get; set; }
 
         private bool childWaiting;
@@ -600,8 +573,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class SwallowCancelChildWorkflow
         {
-            public static readonly SwallowCancelChildWorkflow Ref = WorkflowRefs.Create<SwallowCancelChildWorkflow>();
-
             [WorkflowRun]
             public async Task<string> RunAsync()
             {
@@ -643,7 +614,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     break;
                 case Scenario.Activity:
                     await Workflow.ExecuteActivityAsync(
-                        SwallowCancelActivityAsync,
+                        () => SwallowCancelActivityAsync(),
                         new()
                         {
                             ScheduleToCloseTimeout = TimeSpan.FromHours(1),
@@ -652,7 +623,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     break;
                 case Scenario.ActivityWaitAndIgnore:
                     var actRes = await Workflow.ExecuteActivityAsync(
-                        SwallowCancelActivityAsync,
+                        () => SwallowCancelActivityAsync(),
                         new()
                         {
                             ScheduleToCloseTimeout = TimeSpan.FromHours(1),
@@ -663,19 +634,19 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     break;
                 case Scenario.LocalActivity:
                     await Workflow.ExecuteLocalActivityAsync(
-                        SwallowCancelActivityAsync,
+                        () => SwallowCancelActivityAsync(),
                         new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                     break;
                 case Scenario.ChildTryCancel:
                     var childHandle1 = await Workflow.StartChildWorkflowAsync(
-                        SwallowCancelChildWorkflow.Ref.RunAsync,
+                        (SwallowCancelChildWorkflow wf) => wf.RunAsync(),
                         new() { CancellationType = ChildWorkflowCancellationType.TryCancel });
                     childWaiting = true;
                     await childHandle1.GetResultAsync();
                     break;
                 case Scenario.ChildWaitAndIgnore:
                     var childHandle2 = await Workflow.StartChildWorkflowAsync(
-                        SwallowCancelChildWorkflow.Ref.RunAsync);
+                        (SwallowCancelChildWorkflow wf) => wf.RunAsync());
                     childWaiting = true;
                     var childRes = await childHandle2.GetResultAsync();
                     Assert.Equal("cancelled", childRes);
@@ -707,15 +678,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         Task AssertProperlyCancelled(
             CancelWorkflow.Scenario scenario,
-            Func<WorkflowHandle, Task>? waitFor = null,
+            Func<WorkflowHandle<CancelWorkflow>, Task>? waitFor = null,
             Action<WorkflowHandle>? additionalAssertions = null) =>
             ExecuteWorkerAsync<CancelWorkflow>(
                 async worker =>
                 {
                     CancelWorkflow.ActivityStarted = new();
                     var handle = await Env.Client.StartWorkflowAsync(
-                        CancelWorkflow.Ref.RunAsync,
-                        scenario,
+                        (CancelWorkflow wf) => wf.RunAsync(scenario),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                         {
                             // Lowering for quicker LA result
@@ -749,7 +719,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             CancelWorkflow.Scenario.ChildTryCancel, handle =>
                 AssertMore.EqualEventuallyAsync(
                     true,
-                    () => handle.QueryAsync(CancelWorkflow.Ref.ChildWaiting)));
+                    () => handle.QueryAsync(wf => wf.ChildWaiting())));
     }
 
     [Fact]
@@ -757,15 +727,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         Task AssertProperlyIgnored(
             CancelWorkflow.Scenario scenario,
-            Func<WorkflowHandle, Task>? waitFor = null,
+            Func<WorkflowHandle<CancelWorkflow>, Task>? waitFor = null,
             Action<WorkflowHandle>? additionalAssertions = null) =>
             ExecuteWorkerAsync<CancelWorkflow>(
                 async worker =>
                 {
                     CancelWorkflow.ActivityStarted = new();
                     var handle = await Env.Client.StartWorkflowAsync(
-                        CancelWorkflow.Ref.RunAsync,
-                        scenario,
+                        (CancelWorkflow wf) => wf.RunAsync(scenario),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                     if (waitFor != null)
                     {
@@ -793,14 +762,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             CancelWorkflow.Scenario.ChildWaitAndIgnore, handle =>
                 AssertMore.EqualEventuallyAsync(
                     true,
-                    () => handle.QueryAsync(CancelWorkflow.Ref.ChildWaiting)));
+                    () => handle.QueryAsync(wf => wf.ChildWaiting())));
     }
 
     [Workflow]
     public class AssertWorkflow
     {
-        public static readonly AssertWorkflow Ref = WorkflowRefs.Create<AssertWorkflow>();
-
         [WorkflowRun]
         public async Task RunAsync() => Assert.Fail("Oh no");
     }
@@ -812,7 +779,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                 Env.Client.ExecuteWorkflowAsync(
-                    AssertWorkflow.Ref.RunAsync,
+                    (AssertWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
             var exc2 = Assert.IsType<ApplicationFailureException>(exc.InnerException);
             Assert.Equal("Assertion failed", exc2.Message);
@@ -824,7 +791,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SignalWorkflow
     {
-        public static readonly SignalWorkflow Ref = WorkflowRefs.Create<SignalWorkflow>();
         private readonly List<string> events = new();
 
         // Just wait forever
@@ -863,21 +829,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow with a signal
             var handle = await Env.Client.StartWorkflowAsync(
-                SignalWorkflow.Ref.RunAsync,
+                (SignalWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                 {
                     StartSignal = "Signal1",
                     StartSignalArgs = new[] { "signalval1" },
                 });
             // Add one w/ custom name
-            await handle.SignalAsync(SignalWorkflow.Ref.SignalCustomAsync, "signalval2");
+            await handle.SignalAsync(wf => wf.SignalCustomAsync("signalval2"));
             // Add a couple more to be buffered
             await handle.SignalAsync("latesig1", new[] { "signalval3" });
             await handle.SignalAsync("latesig2", new[] { "signalval4" });
             // Add the signal handlers
             await handle.SignalAsync(
-                SignalWorkflow.Ref.AddSignalHandlersAsync,
-                new[] { "latesig1", "latesig2", "latesig3" });
+                wf => wf.AddSignalHandlersAsync(new[] { "latesig1", "latesig2", "latesig3" }));
             // Add another to a late-bound signal
             await handle.SignalAsync("latesig3", new[] { "signalval5" });
             // Confirm all events are as expected
@@ -890,10 +855,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     "AddSignalHandlers: latesig2 - signalval4",
                     "AddSignalHandlers: latesig3 - signalval5",
                 },
-                await handle.QueryAsync(SignalWorkflow.Ref.Events));
+                await handle.QueryAsync(wf => wf.Events()));
 
             // Now send a signal that fails the entire workflow
-            await handle.SignalAsync(SignalWorkflow.Ref.FailWorkflowAsync);
+            await handle.SignalAsync(wf => wf.FailWorkflowAsync());
             var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
                 () => handle.GetResultAsync());
             var exc2 = Assert.IsType<ApplicationFailureException>(exc.InnerException);
@@ -904,8 +869,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class QueryWorkflow
     {
-        public static readonly QueryWorkflow Ref = WorkflowRefs.Create<QueryWorkflow>();
-
         // Just wait forever
         [WorkflowRun]
         public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
@@ -939,15 +902,15 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
-                QueryWorkflow.Ref.RunAsync,
+                (QueryWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Basic queries
             Assert.Equal(
                 "QuerySimple: foo",
-                await handle.QueryAsync(QueryWorkflow.Ref.QuerySimple, "foo"));
+                await handle.QueryAsync(wf => wf.QuerySimple("foo")));
             Assert.Equal(
                 "QueryCustom: bar",
-                await handle.QueryAsync(QueryWorkflow.Ref.QueryCustom, "bar"));
+                await handle.QueryAsync(wf => wf.QueryCustom("bar")));
             // Non-existent query
             var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                 () => handle.QueryAsync<string>("some-query", new[] { "some-arg" }));
@@ -955,17 +918,17 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 "known queries: [custom-name QueryFail QueryMakingCommands QuerySimple]",
                 exc.Message);
             // Add that non-existent query then try again
-            await handle.SignalAsync(QueryWorkflow.Ref.AddQueryHandlerAsync, "some-query");
+            await handle.SignalAsync(wf => wf.AddQueryHandlerAsync("some-query"));
             Assert.Equal(
                 "AddQueryHandler: some-query - some-arg",
                 await handle.QueryAsync<string>("some-query", new[] { "some-arg" }));
             // Query fail
             var exc2 = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                () => handle.QueryAsync(QueryWorkflow.Ref.QueryFail));
+                () => handle.QueryAsync(wf => wf.QueryFail()));
             Assert.Equal("Query fail", exc2.Message);
             // Make commands in a query
             var exc3 = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                () => handle.QueryAsync(QueryWorkflow.Ref.QueryMakingCommands));
+                () => handle.QueryAsync(wf => wf.QueryMakingCommands()));
             Assert.Contains("created workflow commands", exc3.Message);
         });
     }
@@ -973,8 +936,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class MiscHelpersWorkflow
     {
-        public static readonly MiscHelpersWorkflow Ref = WorkflowRefs.Create<MiscHelpersWorkflow>();
-
         private static readonly List<bool> EventsForIsReplaying = new();
 
         private string? completeWorkflow;
@@ -1016,29 +977,27 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start the workflow
                 var handle = await Env.Client.StartWorkflowAsync(
-                    MiscHelpersWorkflow.Ref.RunAsync,
+                    (MiscHelpersWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 workflowID = handle.ID;
                 taskQueue = worker.Options.TaskQueue!;
                 Assert.InRange(
-                    await handle.QueryAsync(MiscHelpersWorkflow.Ref.CurrentTime),
+                    await handle.QueryAsync(wf => wf.CurrentTime()),
                     DateTime.UtcNow - TimeSpan.FromMinutes(5),
                     DateTime.UtcNow + TimeSpan.FromMinutes(5));
-                Assert.InRange(
-                    await handle.QueryAsync(MiscHelpersWorkflow.Ref.Random, 3), 0, 2);
+                Assert.InRange(await handle.QueryAsync(wf => wf.Random(3)), 0, 2);
                 // Check GUID is parseable and shows 4 as UUID version
-                var guid = await handle.QueryAsync(MiscHelpersWorkflow.Ref.NewGuid);
+                var guid = await handle.QueryAsync(wf => wf.NewGuid());
                 Assert.True(Guid.TryParseExact(guid, "D", out _));
                 Assert.Equal('4', guid[14]);
                 // Mark workflow complete and wait on result
-                await handle.SignalAsync(MiscHelpersWorkflow.Ref.CompleteWorkflow, "done!");
+                await handle.SignalAsync(wf => wf.CompleteWorkflow("done!"));
                 Assert.Equal("done!", await handle.GetResultAsync());
                 // Confirm log is present
                 Assert.Contains(loggerFactory.Logs, entry => entry.Formatted == "Some log Bar");
                 // Now clear and issue query and confirm log is not present
                 loggerFactory.ClearLogs();
-                Assert.InRange(
-                    await handle.QueryAsync(MiscHelpersWorkflow.Ref.Random, 3), 0, 2);
+                Assert.InRange(await handle.QueryAsync(wf => wf.Random(3)), 0, 2);
                 Assert.DoesNotContain(
                     loggerFactory.Logs, entry => entry.Formatted == "Some log Bar");
             },
@@ -1052,8 +1011,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             async worker =>
             {
                 // Now query after close to check that is replaying worked
-                var isReplayingValues = await Env.Client.GetWorkflowHandle(workflowID).
-                    QueryAsync(MiscHelpersWorkflow.Ref.GetEventsForIsReplaying);
+                var isReplayingValues = await Env.Client.GetWorkflowHandle<MiscHelpersWorkflow>(
+                    workflowID).QueryAsync(wf => wf.GetEventsForIsReplaying());
                 Assert.Equal(new[] { false, true }, isReplayingValues);
             },
             new(taskQueue: taskQueue));
@@ -1062,8 +1021,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class WaitConditionWorkflow
     {
-        public static readonly WaitConditionWorkflow Ref = WorkflowRefs.Create<WaitConditionWorkflow>();
-
         private readonly CancellationTokenSource cancelSource;
         private bool shouldProceed;
 
@@ -1088,11 +1045,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
-                WaitConditionWorkflow.Ref.RunAsync,
-                Timeout.Infinite,
+                (WaitConditionWorkflow wf) => wf.RunAsync(Timeout.Infinite),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Tell to proceed and confirm it does
-            await handle.SignalAsync(WaitConditionWorkflow.Ref.ProceedAsync);
+            await handle.SignalAsync(wf => wf.ProceedAsync());
             Assert.True(await handle.GetResultAsync());
         });
     }
@@ -1104,11 +1060,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
-                WaitConditionWorkflow.Ref.RunAsync,
-                Timeout.Infinite,
+                (WaitConditionWorkflow wf) => wf.RunAsync(Timeout.Infinite),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Cancel and confirm it does
-            await handle.SignalAsync(WaitConditionWorkflow.Ref.CancelWaitAsync);
+            await handle.SignalAsync(wf => wf.CancelWaitAsync());
             var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
                 () => handle.GetResultAsync());
             var exc2 = Assert.IsType<ApplicationFailureException>(exc.InnerException);
@@ -1123,8 +1078,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
-                WaitConditionWorkflow.Ref.RunAsync,
-                Timeout.Infinite,
+                (WaitConditionWorkflow wf) => wf.RunAsync(Timeout.Infinite),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Confirm query says it's running
             await AssertStartedEventuallyAsync(handle);
@@ -1143,8 +1097,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
-                WaitConditionWorkflow.Ref.RunAsync,
-                10,
+                (WaitConditionWorkflow wf) => wf.RunAsync(10),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Wait for timeout
             Assert.False(await handle.GetResultAsync());
@@ -1154,8 +1107,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class DeadlockWorkflow
     {
-        public static readonly DeadlockWorkflow Ref = WorkflowRefs.Create<DeadlockWorkflow>();
-
         [WorkflowRun]
         public async Task RunAsync() => Thread.Sleep(4000);
     }
@@ -1168,7 +1119,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start the workflow
                 var handle = await Env.Client.StartWorkflowAsync(
-                    DeadlockWorkflow.Ref.RunAsync,
+                    (DeadlockWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await AssertTaskFailureContainsEventuallyAsync(handle, "deadlocked");
             },
@@ -1179,8 +1130,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SearchAttributesWorkflow
     {
-        public static readonly SearchAttributesWorkflow Ref = WorkflowRefs.Create<SearchAttributesWorkflow>();
-
         public static readonly SearchAttributeCollection AttributesInitial = new SearchAttributeCollection.Builder().
             Set(AttrBool, true).
             Set(AttrDateTime, new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeSpan.Zero)).
@@ -1263,7 +1212,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
-                SearchAttributesWorkflow.Ref.RunAsync,
+                (SearchAttributesWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                 {
                     TypedSearchAttributes = SearchAttributesWorkflow.AttributesInitial,
@@ -1273,13 +1222,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 SearchAttributesWorkflow.AttributesInitial,
                 (await handle.DescribeAsync()).TypedSearchAttributes);
             // Tell workflow to proceed and confirm next values
-            await handle.SignalAsync(SearchAttributesWorkflow.Ref.ProceedAsync);
+            await handle.SignalAsync(wf => wf.ProceedAsync());
             await AssertMore.EventuallyAsync(async () =>
                 SearchAttributesWorkflow.AssertAttributesEqual(
                     SearchAttributesWorkflow.AttributesFirstUpdated,
                     (await handle.DescribeAsync()).TypedSearchAttributes));
             // Tell workflow to proceed and confirm next values
-            await handle.SignalAsync(SearchAttributesWorkflow.Ref.ProceedAsync);
+            await handle.SignalAsync(wf => wf.ProceedAsync());
             await AssertMore.EventuallyAsync(async () =>
                 SearchAttributesWorkflow.AssertAttributesEqual(
                     SearchAttributesWorkflow.AttributesSecondUpdated,
@@ -1290,8 +1239,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class MemoWorkflow
     {
-        public static readonly MemoWorkflow Ref = WorkflowRefs.Create<MemoWorkflow>();
-
         public static readonly Dictionary<string, object> MemoInitial = new()
         {
             ["foo"] = "fooval",
@@ -1337,7 +1284,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var handle = await Env.Client.StartWorkflowAsync(
-                MemoWorkflow.Ref.RunAsync,
+                (MemoWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                 {
                     Memo = MemoWorkflow.MemoInitial,
@@ -1355,7 +1302,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
             Assert.Equal(MemoWorkflow.MemoInitial, await GetCurrentMemoAsync());
             // Tell workflow to proceed and confirm next values
-            await handle.SignalAsync(MemoWorkflow.Ref.ProceedAsync);
+            await handle.SignalAsync(wf => wf.ProceedAsync());
             await AssertMore.EventuallyAsync(async () =>
                 Assert.Equal(MemoWorkflow.MemoUpdated, await GetCurrentMemoAsync()));
         });
@@ -1364,8 +1311,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class ContinueAsNewWorkflow
     {
-        public static readonly ContinueAsNewWorkflow Ref = WorkflowRefs.Create<ContinueAsNewWorkflow>();
-
         [WorkflowRun]
         public async Task<IList<string>> RunAsync(IList<string> pastRunIDs)
         {
@@ -1381,14 +1326,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 pastRunIDs.Add(contRunID);
             }
-            throw Workflow.CreateContinueAsNewException(Ref.RunAsync, pastRunIDs, new()
-            {
-                Memo = new Dictionary<string, object>
+            throw Workflow.CreateContinueAsNewException(
+                (ContinueAsNewWorkflow wf) => wf.RunAsync(pastRunIDs),
+                new()
                 {
-                    ["PastRunIDCount"] = pastRunIDs.Count,
-                },
-                RetryPolicy = new() { MaximumAttempts = pastRunIDs.Count + 1000 },
-            });
+                    Memo = new Dictionary<string, object>
+                    {
+                        ["PastRunIDCount"] = pastRunIDs.Count,
+                    },
+                    RetryPolicy = new() { MaximumAttempts = pastRunIDs.Count + 1000 },
+                });
         }
     }
 
@@ -1398,8 +1345,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<ContinueAsNewWorkflow>(async worker =>
         {
             var handle = await Env.Client.StartWorkflowAsync(
-                ContinueAsNewWorkflow.Ref.RunAsync,
-                new List<string>(),
+                (ContinueAsNewWorkflow wf) => wf.RunAsync(new List<string>()),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                 {
                     Memo = new Dictionary<string, object> { ["PastRunIDCount"] = 0 },
@@ -1414,8 +1360,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SimpleActivityWorkflow
     {
-        public static readonly SimpleActivityWorkflow Ref = WorkflowRefs.Create<SimpleActivityWorkflow>();
-
         [Activity]
         public static string ResultNoArgSync() => "1";
 
@@ -1472,22 +1416,31 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // Intentionally not making options var because I want to confirm new() { ... } works
             if (local)
             {
+                // Static
                 Assert.Equal("1", await Workflow.ExecuteLocalActivityAsync(
-                    ResultNoArgSync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 Assert.Equal("3", await Workflow.ExecuteLocalActivityAsync(
-                    ResultWithArgSync, "2", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultWithArgSync("2"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 await Workflow.ExecuteLocalActivityAsync(
-                    NoResultNoArgSync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 await Workflow.ExecuteLocalActivityAsync(
-                    NoResultWithArgSync, "4", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultWithArgSync("4"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 Assert.Equal("5", await Workflow.ExecuteLocalActivityAsync(
-                    ResultNoArgAsync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 Assert.Equal("7", await Workflow.ExecuteLocalActivityAsync(
-                    ResultWithArgAsync, "6", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultWithArgAsync("6"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 await Workflow.ExecuteLocalActivityAsync(
-                    NoResultNoArgAsync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 await Workflow.ExecuteLocalActivityAsync(
-                    NoResultWithArgAsync, "8", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultWithArgAsync("8"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 Assert.Equal("11", await Workflow.ExecuteLocalActivityAsync<string>(
                     ActivityDefinition.Create(ResultMultiArgSync).Name,
                     new object?[] { "9", "10" },
@@ -1496,25 +1449,60 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     ActivityDefinition.Create(NoResultMultiArgSync).Name,
                     new object?[] { "12", "13" },
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+
+                // Instance
+                Assert.Equal("1", await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                Assert.Equal("3", await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultWithArgSync("2"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultWithArgSync("4"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                Assert.Equal("5", await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                Assert.Equal("7", await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultWithArgAsync("6"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                await Workflow.ExecuteLocalActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultWithArgAsync("8"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
             }
             else
             {
+                // Static
                 Assert.Equal("1", await Workflow.ExecuteActivityAsync(
-                    ResultNoArgSync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 Assert.Equal("3", await Workflow.ExecuteActivityAsync(
-                    ResultWithArgSync, "2", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultWithArgSync("2"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 await Workflow.ExecuteActivityAsync(
-                    NoResultNoArgSync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 await Workflow.ExecuteActivityAsync(
-                    NoResultWithArgSync, "4", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultWithArgSync("4"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 Assert.Equal("5", await Workflow.ExecuteActivityAsync(
-                    ResultNoArgAsync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 Assert.Equal("7", await Workflow.ExecuteActivityAsync(
-                    ResultWithArgAsync, "6", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                    () => ResultWithArgAsync("6"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 await Workflow.ExecuteActivityAsync(
-                    NoResultNoArgAsync, new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 await Workflow.ExecuteActivityAsync(
-                    NoResultWithArgAsync, "8", new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                    () => NoResultWithArgAsync("8"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 Assert.Equal("11", await Workflow.ExecuteActivityAsync<string>(
                     ActivityDefinition.Create(ResultMultiArgSync).Name,
                     new object?[] { "9", "10" },
@@ -1523,22 +1511,85 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     ActivityDefinition.Create(NoResultMultiArgSync).Name,
                     new object?[] { "12", "13" },
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+
+                // Instance
+                Assert.Equal("1", await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                Assert.Equal("3", await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultWithArgSync("2"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultNoArgSync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultWithArgSync("4"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                Assert.Equal("5", await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                Assert.Equal("7", await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceResultWithArgAsync("6"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
+                await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultNoArgAsync(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+                await Workflow.ExecuteActivityAsync(
+                    (SimpleActivityInstance act) => act.InstanceNoResultWithArgAsync("8"),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
             }
 #pragma warning restore SA1118
         }
     }
 
+    public class SimpleActivityInstance
+    {
+        [Activity]
+        public string InstanceResultNoArgSync() => "1";
+
+        [Activity]
+        public string InstanceResultWithArgSync(string arg)
+        {
+            Assert.Equal("2", arg);
+            return "3";
+        }
+
+        [Activity]
+        public void InstanceNoResultNoArgSync()
+        {
+        }
+
+        [Activity]
+        public void InstanceNoResultWithArgSync(string arg) => Assert.Equal("4", arg);
+
+        [Activity]
+        public async Task<string> InstanceResultNoArgAsync() => "5";
+
+        [Activity]
+        public async Task<string> InstanceResultWithArgAsync(string arg)
+        {
+            Assert.Equal("6", arg);
+            return "7";
+        }
+
+        [Activity]
+        public Task InstanceNoResultNoArgAsync() => Task.CompletedTask;
+
+        [Activity]
+        public async Task InstanceNoResultWithArgAsync(string arg) => Assert.Equal("8", arg);
+    }
+
     [Theory]
-    // [InlineData(true)]
+    [InlineData(true)]
     [InlineData(false)]
     public async Task ExecuteWorkflowAsync_SimpleActivity_ExecutesProperly(bool local)
     {
+        var act = new SimpleActivityInstance();
         await ExecuteWorkerAsync<SimpleActivityWorkflow>(
             async worker =>
             {
                 var handle = await Env.Client.StartWorkflowAsync(
-                    SimpleActivityWorkflow.Ref.RunAsync,
-                    local,
+                    (SimpleActivityWorkflow wf) => wf.RunAsync(local),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await handle.GetResultAsync();
                 var activities = new List<string>();
@@ -1577,6 +1628,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         "NoResultWithArg",
                         "ResultMultiArgSync",
                         "NoResultMultiArgSync",
+                        "InstanceResultNoArgSync",
+                        "InstanceResultWithArgSync",
+                        "InstanceNoResultNoArgSync",
+                        "InstanceNoResultWithArgSync",
+                        "InstanceResultNoArg",
+                        "InstanceResultWithArg",
+                        "InstanceNoResultNoArg",
+                        "InstanceNoResultWithArg",
                     },
                     activities);
             },
@@ -1590,14 +1649,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 AddActivity(SimpleActivityWorkflow.NoResultNoArgAsync).
                 AddActivity(SimpleActivityWorkflow.NoResultWithArgAsync).
                 AddActivity(SimpleActivityWorkflow.ResultMultiArgSync).
-                AddActivity(SimpleActivityWorkflow.NoResultMultiArgSync));
+                AddActivity(SimpleActivityWorkflow.NoResultMultiArgSync).
+                AddActivity(act.InstanceResultNoArgSync).
+                AddActivity(act.InstanceResultWithArgSync).
+                AddActivity(act.InstanceNoResultNoArgSync).
+                AddActivity(act.InstanceNoResultWithArgSync).
+                AddActivity(act.InstanceResultNoArgAsync).
+                AddActivity(act.InstanceResultWithArgAsync).
+                AddActivity(act.InstanceNoResultNoArgAsync).
+                AddActivity(act.InstanceNoResultWithArgAsync));
     }
 
     [Workflow]
     public class TimeoutActivityWorkflow
     {
-        public static readonly TimeoutActivityWorkflow Ref = WorkflowRefs.Create<TimeoutActivityWorkflow>();
-
         [Activity]
         public static Task RunUntilCancelledAsync() =>
             Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
@@ -1609,7 +1674,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             if (local)
             {
                 await Workflow.ExecuteLocalActivityAsync(
-                    RunUntilCancelledAsync,
+                    () => RunUntilCancelledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMilliseconds(10),
@@ -1619,7 +1684,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             else
             {
                 await Workflow.ExecuteActivityAsync(
-                    RunUntilCancelledAsync,
+                    () => RunUntilCancelledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMilliseconds(10),
@@ -1639,8 +1704,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
-                        TimeoutActivityWorkflow.Ref.RunAsync,
-                        local,
+                        (TimeoutActivityWorkflow wf) => wf.RunAsync(local),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
                 var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
                 var toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
@@ -1652,8 +1716,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class CancelActivityWorkflow
     {
-        public static readonly CancelActivityWorkflow Ref = WorkflowRefs.Create<CancelActivityWorkflow>();
-
         [Activity]
         public static Task RunUntilCancelledAsync() =>
             Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
@@ -1672,7 +1734,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             if (input.Local)
             {
                 activity = Workflow.ExecuteLocalActivityAsync(
-                    RunUntilCancelledAsync,
+                    () => RunUntilCancelledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMinutes(10),
@@ -1683,7 +1745,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             else
             {
                 activity = Workflow.ExecuteActivityAsync(
-                    RunUntilCancelledAsync,
+                    () => RunUntilCancelledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMinutes(10),
@@ -1714,8 +1776,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Regular cancel after start
                 var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
-                        CancelActivityWorkflow.Ref.RunAsync,
-                        new CancelActivityWorkflow.Input(local, BeforeStart: false),
+                        (CancelActivityWorkflow wf) => wf.RunAsync(new(local, false)),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                         {
                             // Lowering for quicker LA result
@@ -1727,8 +1788,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Cancel before start
                 wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
-                        CancelActivityWorkflow.Ref.RunAsync,
-                        new CancelActivityWorkflow.Input(local, BeforeStart: true),
+                        (CancelActivityWorkflow wf) => wf.RunAsync(new(local, true)),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                         {
                             // Lowering for quicker LA result
@@ -1746,8 +1806,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ResultNoArg
         {
-            public static readonly ResultNoArg Ref = WorkflowRefs.Create<ResultNoArg>();
-
             [WorkflowRun]
             public async Task<string> RunAsync() => "1";
         }
@@ -1755,8 +1813,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ResultWithArg
         {
-            public static readonly ResultWithArg Ref = WorkflowRefs.Create<ResultWithArg>();
-
             [WorkflowRun]
             public async Task<string> RunAsync(string arg)
             {
@@ -1768,8 +1824,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class NoResultNoArg
         {
-            public static readonly NoResultNoArg Ref = WorkflowRefs.Create<NoResultNoArg>();
-
             [WorkflowRun]
             public Task RunAsync() => Task.CompletedTask;
         }
@@ -1777,8 +1831,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class NoResultWithArg
         {
-            public static readonly NoResultWithArg Ref = WorkflowRefs.Create<NoResultWithArg>();
-
             [WorkflowRun]
             public async Task RunAsync(string arg) => Assert.Equal("4", arg);
         }
@@ -1786,8 +1838,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ResultMultiArg
         {
-            public static readonly ResultMultiArg Ref = WorkflowRefs.Create<ResultMultiArg>();
-
             [WorkflowRun]
             public async Task<string> RunAsync(string arg1, string arg2)
             {
@@ -1800,8 +1850,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class NoResultMultiArg
         {
-            public static readonly NoResultMultiArg Ref = WorkflowRefs.Create<NoResultMultiArg>();
-
             [WorkflowRun]
             public async Task RunAsync(string arg1, string arg2)
             {
@@ -1810,21 +1858,19 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
         }
 
-        public static readonly SimpleChildWorkflow Ref = WorkflowRefs.Create<SimpleChildWorkflow>();
-
         [WorkflowRun]
         public async Task RunAsync()
         {
 #pragma warning disable SA1118 // Don't want so many lines
             // Intentionally not making options var because I want to confirm new() { ... } works
             Assert.Equal("1", await Workflow.ExecuteChildWorkflowAsync(
-                ResultNoArg.Ref.RunAsync, new() { RunTimeout = TimeSpan.FromHours(1) }));
+                (ResultNoArg wf) => wf.RunAsync(), new() { RunTimeout = TimeSpan.FromHours(1) }));
             Assert.Equal("3", await Workflow.ExecuteChildWorkflowAsync(
-                ResultWithArg.Ref.RunAsync, "2", new() { RunTimeout = TimeSpan.FromHours(1) }));
+                (ResultWithArg wf) => wf.RunAsync("2"), new() { RunTimeout = TimeSpan.FromHours(1) }));
             await Workflow.ExecuteChildWorkflowAsync(
-                NoResultNoArg.Ref.RunAsync, new() { RunTimeout = TimeSpan.FromHours(1) });
+                (NoResultNoArg wf) => wf.RunAsync(), new() { RunTimeout = TimeSpan.FromHours(1) });
             await Workflow.ExecuteChildWorkflowAsync(
-                NoResultWithArg.Ref.RunAsync, "4", new() { RunTimeout = TimeSpan.FromHours(1) });
+                (NoResultWithArg wf) => wf.RunAsync("4"), new() { RunTimeout = TimeSpan.FromHours(1) });
             Assert.Equal("7", await Workflow.ExecuteChildWorkflowAsync<string>(
                 WorkflowDefinition.Create(typeof(ResultMultiArg)).Name,
                 new object?[] { "5", "6" },
@@ -1844,7 +1890,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             async worker =>
             {
                 var handle = await Env.Client.StartWorkflowAsync(
-                    SimpleChildWorkflow.Ref.RunAsync,
+                    (SimpleChildWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await handle.GetResultAsync();
                 var children = new List<string>();
@@ -1883,19 +1929,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
-
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
-
-        public static readonly TimeoutChildWorkflow Ref = WorkflowRefs.Create<TimeoutChildWorkflow>();
 
         [WorkflowRun]
         public Task RunAsync() =>
             // Timeout after 10ms
             Workflow.ExecuteChildWorkflowAsync(
-                ChildWorkflow.Ref.RunAsync, new() { RunTimeout = TimeSpan.FromMilliseconds(10) });
+                (ChildWorkflow wf) => wf.RunAsync(),
+                new() { RunTimeout = TimeSpan.FromMilliseconds(10) });
     }
 
     [Fact]
@@ -1906,7 +1949,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
-                        TimeoutChildWorkflow.Ref.RunAsync,
+                        (TimeoutChildWorkflow wf) => wf.RunAsync(),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
                 var actExc = Assert.IsType<ChildWorkflowFailureException>(wfExc.InnerException);
                 var toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
@@ -1921,13 +1964,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
-
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
-
-        public static readonly CancelChildWorkflow Ref = WorkflowRefs.Create<CancelChildWorkflow>();
 
         [WorkflowRun]
         public async Task RunAsync(bool beforeStart)
@@ -1940,7 +1979,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 tokenSource.Cancel();
             }
             var handle = await Workflow.StartChildWorkflowAsync(
-                ChildWorkflow.Ref.RunAsync,
+                (ChildWorkflow wf) => wf.RunAsync(),
                 new() { CancellationToken = tokenSource.Token });
             // If not cancel before, cancel now
             if (!beforeStart)
@@ -1960,8 +1999,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Regular cancel after start
                 var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
-                        CancelChildWorkflow.Ref.RunAsync,
-                        false,
+                        (CancelChildWorkflow wf) => wf.RunAsync(false),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
                 var childExc = Assert.IsType<ChildWorkflowFailureException>(wfExc.InnerException);
                 Assert.IsType<CancelledFailureException>(childExc.InnerException);
@@ -1969,8 +2007,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Cancel before start
                 wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
-                        CancelChildWorkflow.Ref.RunAsync,
-                        true,
+                        (CancelChildWorkflow wf) => wf.RunAsync(true),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
                 var cancelExc = Assert.IsType<CancelledFailureException>(wfExc.InnerException);
                 Assert.Contains("cancelled before scheduled", cancelExc.Message);
@@ -1984,8 +2021,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
-
             private string lastSignal = "<unset>";
 
             [WorkflowRun]
@@ -1998,14 +2033,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             public string LastSignal() => lastSignal;
         }
 
-        public static readonly SignalChildWorkflow Ref = WorkflowRefs.Create<SignalChildWorkflow>();
-
-        private ChildWorkflowHandle? child;
+        private ChildWorkflowHandle<ChildWorkflow>? child;
 
         [WorkflowRun]
         public async Task RunAsync()
         {
-            child = await Workflow.StartChildWorkflowAsync(ChildWorkflow.Ref.RunAsync);
+            child = await Workflow.StartChildWorkflowAsync((ChildWorkflow wf) => wf.RunAsync());
             await Workflow.DelayAsync(Timeout.Infinite);
         }
 
@@ -2016,7 +2049,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 throw new ApplicationFailureException("Child not started");
             }
-            return child.SignalAsync(ChildWorkflow.Ref.SomeSignalAsync, value);
+            return child.SignalAsync(wf => wf.SomeSignalAsync(value));
         }
 
         [WorkflowQuery]
@@ -2031,21 +2064,21 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start and wait for child to have started
                 var handle = await Env.Client.StartWorkflowAsync(
-                    SignalChildWorkflow.Ref.RunAsync,
+                    (SignalChildWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 var childID = await AssertMore.EventuallyAsync(async () =>
                 {
-                    var childID = await handle.QueryAsync(SignalChildWorkflow.Ref.ChildID);
+                    var childID = await handle.QueryAsync(wf => wf.ChildID());
                     Assert.NotNull(childID);
                     return childID!;
                 });
 
                 // Signal and wait for signal received
-                await handle.SignalAsync(SignalChildWorkflow.Ref.SignalChildAsync, "some value");
+                await handle.SignalAsync(wf => wf.SignalChildAsync("some value"));
                 await AssertMore.EqualEventuallyAsync(
                     "some value",
-                    () => Env.Client.GetWorkflowHandle(childID).
-                        QueryAsync(SignalChildWorkflow.ChildWorkflow.Ref.LastSignal));
+                    () => Env.Client.GetWorkflowHandle<SignalChildWorkflow.ChildWorkflow>(childID).
+                        QueryAsync(wf => wf.LastSignal()));
             },
             new TemporalWorkerOptions().AddWorkflow<SignalChildWorkflow.ChildWorkflow>());
     }
@@ -2056,21 +2089,18 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class ChildWorkflow
         {
-            public static readonly ChildWorkflow Ref = WorkflowRefs.Create<ChildWorkflow>();
-
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
-
-        public static readonly AlreadyStartedChildWorkflow Ref = WorkflowRefs.Create<AlreadyStartedChildWorkflow>();
 
         [WorkflowRun]
         public async Task RunAsync()
         {
             // Try to start a child workflow twice with the same ID
-            var handle = await Workflow.StartChildWorkflowAsync(ChildWorkflow.Ref.RunAsync);
+            var handle = await Workflow.StartChildWorkflowAsync(
+                (ChildWorkflow wf) => wf.RunAsync());
             await Workflow.StartChildWorkflowAsync(
-                ChildWorkflow.Ref.RunAsync, new() { ID = handle.ID });
+                (ChildWorkflow wf) => wf.RunAsync(), new() { ID = handle.ID });
         }
     }
 
@@ -2083,7 +2113,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Regular cancel after start
                 var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
-                        AlreadyStartedChildWorkflow.Ref.RunAsync,
+                        (AlreadyStartedChildWorkflow wf) => wf.RunAsync(),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
                 Assert.IsType<FailureException>(wfExc.InnerException);
                 Assert.Contains("already started", wfExc.InnerException.Message);
@@ -2097,8 +2127,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class OtherWorkflow
         {
-            public static readonly OtherWorkflow Ref = WorkflowRefs.Create<OtherWorkflow>();
-
             private string lastSignal = "<unset>";
 
             [WorkflowRun]
@@ -2111,15 +2139,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             public string LastSignal() => lastSignal;
         }
 
-        public static readonly ExternalWorkflow Ref = WorkflowRefs.Create<ExternalWorkflow>();
-
         [WorkflowRun]
         public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
 
         [WorkflowSignal]
         public Task SignalExternalAsync(string otherID) =>
-            Workflow.GetExternalWorkflowHandle(otherID).SignalAsync(
-                OtherWorkflow.Ref.SignalAsync, "external signal");
+            Workflow.GetExternalWorkflowHandle<OtherWorkflow>(otherID).SignalAsync(
+                wf => wf.SignalAsync("external signal"));
 
         [WorkflowSignal]
         public Task CancelExternalAsync(string otherID) =>
@@ -2134,24 +2160,24 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start other workflow
                 var otherHandle = await Env.Client.StartWorkflowAsync(
-                    ExternalWorkflow.OtherWorkflow.Ref.RunAsync,
+                    (ExternalWorkflow.OtherWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await AssertStartedEventuallyAsync(otherHandle);
 
                 // Start primary workflow
                 var handle = await Env.Client.StartWorkflowAsync(
-                    ExternalWorkflow.Ref.RunAsync,
+                    (ExternalWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await AssertStartedEventuallyAsync(handle);
 
                 // Send a signal and confirm received
-                await handle.SignalAsync(ExternalWorkflow.Ref.SignalExternalAsync, otherHandle.ID);
+                await handle.SignalAsync(wf => wf.SignalExternalAsync(otherHandle.ID));
                 await AssertMore.EqualEventuallyAsync(
                     "external signal",
-                    () => otherHandle.QueryAsync(ExternalWorkflow.OtherWorkflow.Ref.LastSignal));
+                    () => otherHandle.QueryAsync(wf => wf.LastSignal()));
 
                 // Cancel and confirm cancelled
-                await handle.SignalAsync(ExternalWorkflow.Ref.CancelExternalAsync, otherHandle.ID);
+                await handle.SignalAsync(wf => wf.CancelExternalAsync(otherHandle.ID));
                 await AssertMore.EventuallyAsync(async () =>
                 {
                     var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
@@ -2178,13 +2204,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Workflow]
         public class WaitForeverWorkflow
         {
-            public static readonly WaitForeverWorkflow Ref = WorkflowRefs.Create<WaitForeverWorkflow>();
-
             [WorkflowRun]
             public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
         }
-
-        public static readonly StackTraceWorkflow Ref = WorkflowRefs.Create<StackTraceWorkflow>();
 
         private string status = "created";
 
@@ -2195,13 +2217,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             await Task.WhenAll(
                 Workflow.DelayAsync(TimeSpan.FromHours(2)),
                 Workflow.ExecuteActivityAsync(
-                    WaitCancelActivityAsync,
+                    () => WaitCancelActivityAsync(),
                     new()
                     {
                         ScheduleToCloseTimeout = TimeSpan.FromHours(2),
                         HeartbeatTimeout = TimeSpan.FromSeconds(2),
                     }),
-                Workflow.ExecuteChildWorkflowAsync(WaitForeverWorkflow.Ref.RunAsync),
+                Workflow.ExecuteChildWorkflowAsync((WaitForeverWorkflow wf) => wf.RunAsync()),
                 WaitForever());
         }
 
@@ -2223,10 +2245,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start and wait until "waiting"
                 var handle = await Env.Client.StartWorkflowAsync(
-                    StackTraceWorkflow.Ref.RunAsync,
+                    (StackTraceWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await AssertMore.EqualEventuallyAsync(
-                    "waiting", () => handle.QueryAsync(StackTraceWorkflow.Ref.Status));
+                    "waiting", () => handle.QueryAsync(wf => wf.Status()));
                 var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => handle.QueryAsync<string>("__stack_trace", Array.Empty<object?>()));
                 Assert.Contains("stack traces are not enabled", exc.Message);
@@ -2244,10 +2266,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start and wait until "waiting"
                 var handle = await Env.Client.StartWorkflowAsync(
-                    StackTraceWorkflow.Ref.RunAsync,
+                    (StackTraceWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await AssertMore.EqualEventuallyAsync(
-                    "waiting", () => handle.QueryAsync(StackTraceWorkflow.Ref.Status));
+                    "waiting", () => handle.QueryAsync(wf => wf.Status()));
                 // Issue stack trace query
                 var trace = await handle.QueryAsync<string>("__stack_trace", Array.Empty<object?>());
                 // Confirm our four tasks are the only ones there, are in order, and are waiting at
@@ -2280,8 +2302,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         public static string PostPatchActivity() => "post-patch";
 
-        public static readonly PatchWorkflow Ref = WorkflowRefs.Create<PatchWorkflow>();
-
         protected string ActivityResult { get; set; } = "<unset>";
 
         [WorkflowQuery]
@@ -2292,7 +2312,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             [WorkflowRun]
             public async Task RunAsync() => ActivityResult = await Workflow.ExecuteActivityAsync(
-                PrePatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                () => PrePatchActivity(),
+                new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
         }
 
         [Workflow]
@@ -2304,12 +2325,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 if (Workflow.Patched("my-patch"))
                 {
                     ActivityResult = await Workflow.ExecuteActivityAsync(
-                        PostPatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                        () => PostPatchActivity(),
+                        new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
                 }
                 else
                 {
                     ActivityResult = await Workflow.ExecuteActivityAsync(
-                        PrePatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                        () => PrePatchActivity(),
+                        new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
                 }
             }
         }
@@ -2322,7 +2345,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 Workflow.DeprecatePatch("my-patch");
                 ActivityResult = await Workflow.ExecuteActivityAsync(
-                    PostPatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                    () => PostPatchActivity(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
             }
         }
 
@@ -2331,7 +2355,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             [WorkflowRun]
             public async Task RunAsync() => ActivityResult = await Workflow.ExecuteActivityAsync(
-                PostPatchActivity, new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                () => PostPatchActivity(),
+                new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
         }
     }
 
@@ -2344,13 +2369,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         async Task<string> ExecuteWorkflowAsync(string id)
         {
             var handle = await Env.Client.StartWorkflowAsync(
-                PatchWorkflowBase.Ref.RunAsync,
+                (PatchWorkflowBase.PatchWorkflow wf) => wf.RunAsync(),
                 new(id, taskQueue: workerOptions.TaskQueue!));
             await handle.GetResultAsync();
-            return await handle.QueryAsync(PatchWorkflowBase.Ref.GetResult);
+            return await handle.QueryAsync(wf => wf.GetResult());
         }
         Task<string> QueryWorkflowAsync(string id) =>
-            Env.Client.GetWorkflowHandle(id).QueryAsync(PatchWorkflowBase.Ref.GetResult);
+            Env.Client.GetWorkflowHandle<PatchWorkflowBase>(id).QueryAsync(wf => wf.GetResult());
 
         // Run pre-patch workflow
         var prePatchID = $"workflow-{Guid.NewGuid()}";

@@ -4,7 +4,7 @@ using Temporalio.Api.Enums.V1;
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Options for <see cref="WorkflowHandle.QueryAsync{TQueryResult}(Func{TQueryResult}, WorkflowQueryOptions?)" />
+    /// Options for <see cref="WorkflowHandle.QueryAsync{TWorkflow, TQueryResult}(System.Linq.Expressions.Expression{Func{TWorkflow, TQueryResult}}, WorkflowQueryOptions?)" />
     /// and other overloads.
     /// </summary>
     public class WorkflowQueryOptions : ICloneable

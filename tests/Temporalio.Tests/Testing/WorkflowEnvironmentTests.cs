@@ -37,8 +37,6 @@ public class WorkflowEnvironmentTests : TestBase
     [Workflow]
     public class ReallySlowWorkflow
     {
-        public static readonly ReallySlowWorkflow Ref = WorkflowRefs.Create<ReallySlowWorkflow>();
-
         [WorkflowRun]
         public async Task<string> RunAsync()
         {
@@ -67,8 +65,8 @@ public class WorkflowEnvironmentTests : TestBase
 
             // Run workflow
             var result = await env.Client.ExecuteWorkflowAsync(
-                    ReallySlowWorkflow.Ref.RunAsync,
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                (ReallySlowWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("all done", result);
 
             // Check that the time is around 2 days from now
@@ -87,14 +85,14 @@ public class WorkflowEnvironmentTests : TestBase
         {
             // Start workflow
             var handle = await env.Client.StartWorkflowAsync(
-                    ReallySlowWorkflow.Ref.RunAsync,
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                (ReallySlowWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             async Task<DateTime> WorkflowCurrentTimeAsync()
             {
                 // We send signal first since query timestamp is based on last non-query-only
                 // workflow task
-                await handle!.SignalAsync(ReallySlowWorkflow.Ref.SomeSignalAsync);
-                return await handle.QueryAsync(ReallySlowWorkflow.Ref.CurrentTime);
+                await handle!.SignalAsync(wf => wf.SomeSignalAsync());
+                return await handle.QueryAsync(wf => wf.CurrentTime());
             }
 
             // Confirm query will say we're near current time
@@ -108,7 +106,6 @@ public class WorkflowEnvironmentTests : TestBase
 
     public class ActivityWaitActivities
     {
-        public static readonly ActivityWaitActivities Ref = ActivityRefs.Create<ActivityWaitActivities>();
         private readonly WorkflowEnvironment env;
 
         public ActivityWaitActivities(WorkflowEnvironment env) => this.env = env;
@@ -126,14 +123,12 @@ public class WorkflowEnvironmentTests : TestBase
     [Workflow]
     public class ActivityWaitWorkflow
     {
-        public static readonly ActivityWaitWorkflow Ref = WorkflowRefs.Create<ActivityWaitWorkflow>();
-
         [WorkflowRun]
         public async Task<string> RunAsync()
         {
             // Run activity with 20 second heartbeat
             return await Workflow.ExecuteActivityAsync(
-                ActivityWaitActivities.Ref.SimulateHeartbeatTimeoutAsync,
+                (ActivityWaitActivities act) => act.SimulateHeartbeatTimeoutAsync(),
                 new()
                 {
                     ScheduleToCloseTimeout = TimeSpan.FromSeconds(1000),
@@ -157,7 +152,7 @@ public class WorkflowEnvironmentTests : TestBase
             // Run workflow and check failure
             var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                 env.Client.ExecuteWorkflowAsync(
-                    ActivityWaitWorkflow.Ref.RunAsync,
+                    (ActivityWaitWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
             // Check causes too
             var actExc = Assert.IsType<ActivityFailureException>(exc.InnerException);
@@ -170,8 +165,6 @@ public class WorkflowEnvironmentTests : TestBase
     [Workflow]
     public class ShortSleepWorkflow
     {
-        public static readonly ShortSleepWorkflow Ref = WorkflowRefs.Create<ShortSleepWorkflow>();
-
         [WorkflowRun]
         public async Task<string> RunAsync()
         {
@@ -192,7 +185,7 @@ public class WorkflowEnvironmentTests : TestBase
             // Confirm auto time skipping is within 2.5s
             var watch = Stopwatch.StartNew();
             await env.Client.ExecuteWorkflowAsync(
-                ShortSleepWorkflow.Ref.RunAsync,
+                (ShortSleepWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.True(watch.Elapsed < TimeSpan.FromSeconds(2.5));
 
@@ -201,7 +194,7 @@ public class WorkflowEnvironmentTests : TestBase
             {
                 watch = Stopwatch.StartNew();
                 await env.Client.ExecuteWorkflowAsync(
-                    ShortSleepWorkflow.Ref.RunAsync,
+                    (ShortSleepWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 Assert.True(watch.Elapsed > TimeSpan.FromSeconds(2.5));
             });

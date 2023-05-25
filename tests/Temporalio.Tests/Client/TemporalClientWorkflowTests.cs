@@ -18,9 +18,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     public async Task StartWorkflowAsync_ManualReturnType_Succeeds()
     {
         var workflowID = $"workflow-{Guid.NewGuid()}";
+        var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflowWithUnknownReturn.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+            (IKitchenSinkWorkflowWithUnknownReturn wf) => wf.RunAsync(arg),
             new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         Assert.Equal(workflowID, handle.ID);
         Assert.NotNull(handle.ResultRunID);
@@ -30,9 +30,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task StartWorkflowAsync_ReturnObject_Succeeds()
     {
+        var arg = new KSWorkflowParams(new KSAction(Result: new(Value: new KSWorkflowResult("Some String"))));
         var result = await Client.ExecuteWorkflowAsync(
-            IKitchenSinkWorkflowWithReturnObject.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Result: new(Value: new KSWorkflowResult("Some String")))),
+            (IKitchenSinkWorkflowWithReturnObject wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
         Assert.Equal(new KSWorkflowResult("Some String"), result);
     }
@@ -42,17 +42,17 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     {
         // Start
         var workflowID = $"workflow-{Guid.NewGuid()}";
+        var arg = new KSWorkflowParams(new KSAction(Sleep: new(10000)));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Sleep: new(10000))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Try to start again
         var err = await Assert.ThrowsAsync<Exceptions.WorkflowAlreadyStartedException>(async () =>
         {
+            var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
             await Client.StartWorkflowAsync(
-                IKitchenSinkWorkflow.Ref.RunAsync,
-                new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                 new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         });
         Assert.Equal(workflowID, err.WorkflowID);
@@ -64,17 +64,17 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     {
         // Run
         var workflowID = $"workflow-{Guid.NewGuid()}";
+        var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
         await Client.ExecuteWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Try to start again w/ ID reuse policy disallowing
         await Assert.ThrowsAsync<Exceptions.WorkflowAlreadyStartedException>(async () =>
         {
+            var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
             await Client.StartWorkflowAsync(
-                IKitchenSinkWorkflow.Ref.RunAsync,
-                new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                 new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue)
                 {
                     IDReusePolicy = WorkflowIdReusePolicy.AllowDuplicateFailedOnly,
@@ -86,9 +86,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     public async Task StartWorkflowAsync_StartSignal_Succeeds()
     {
         // Run by passing result via signal
+        var arg = new KSWorkflowParams(ActionSignal: "SomeActionSignal");
         var result = await Client.ExecuteWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(ActionSignal: "SomeActionSignal"),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
             {
                 StartSignal = "SomeActionSignal",
@@ -103,9 +103,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         // Retry 3 times, erroring with the attempt number
         var err = await Assert.ThrowsAsync<Exceptions.WorkflowFailedException>(async () =>
         {
+            var arg = new KSWorkflowParams(new KSAction(Error: new(Attempt: true)));
             await Client.ExecuteWorkflowAsync(
-                IKitchenSinkWorkflow.Ref.RunAsync,
-                new KSWorkflowParams(new KSAction(Error: new(Attempt: true))),
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
                 {
                     RetryPolicy = new()
@@ -128,15 +128,15 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         var client = new TemporalClient(Client.Connection, newOptions);
 
         // Do things to trigger interceptors
+        var arg = new KSWorkflowParams(
+            new KSAction(QueryHandler: new(Name: "SomeQuery")),
+            new KSAction(Signal: new("SomeSignal")),
+            new KSAction(Result: new("Some String")));
         var handle = await client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(
-                new KSAction(QueryHandler: new(Name: "SomeQuery")),
-                new KSAction(Signal: new("SomeSignal")),
-                new KSAction(Result: new("Some String"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
-        await handle.QueryAsync(IKitchenSinkWorkflow.Ref.SomeQuery, "Some Query");
-        await handle.SignalAsync(IKitchenSinkWorkflow.Ref.SomeSignalAsync, "Some Signal");
+        await handle.QueryAsync(wf => wf.SomeQuery("Some Query"));
+        await handle.SignalAsync(wf => wf.SomeSignalAsync("Some Signal"));
         await handle.GetResultAsync();
         // Does nothing
         await handle.CancelAsync();
@@ -166,9 +166,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         // Use local here to confirm accurate conversion
         var dateTime = new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeSpan.Zero);
         var memoVals = new List<string> { "MemoVal1", "MemoVal2" };
+        var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
         var handle = await Client.StartWorkflowAsync(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Result: new(Value: "Some String"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
             {
                 TypedSearchAttributes = new SearchAttributeCollection.Builder().
@@ -212,9 +212,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         {
             var result = $"Index {i}";
             expectedResults.Add(result);
+            var arg = new KSWorkflowParams(new KSAction(Result: new(Value: result)));
             await Client.ExecuteWorkflowAsync(
-                IKitchenSinkWorkflow.Ref.RunAsync,
-                new KSWorkflowParams(new KSAction(Result: new(Value: result))),
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                 new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         }
 
@@ -254,11 +254,11 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
 
         public List<TracingEvent> Events { get; private init; }
 
-        public override Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
+        public override Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
             StartWorkflowInput input)
         {
             Events.Add(new("StartWorkflow", input));
-            return base.StartWorkflowAsync<TResult>(input);
+            return base.StartWorkflowAsync<TWorkflow, TResult>(input);
         }
 
         public override Task SignalWorkflowAsync(SignalWorkflowInput input)

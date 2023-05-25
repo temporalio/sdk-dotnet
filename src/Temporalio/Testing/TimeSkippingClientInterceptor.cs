@@ -40,24 +40,24 @@ namespace Temporalio.Testing
                 : base(next) => this.env = env;
 
             /// <inheritdoc />
-            public override async Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(StartWorkflowInput input) =>
-                new TimeSkippingWorkflowHandle<TResult>(
-                    env, await base.StartWorkflowAsync<TResult>(input).ConfigureAwait(false));
+            public override async Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
+                StartWorkflowInput input) => new TimeSkippingWorkflowHandle<TWorkflow, TResult>(
+                    env, await base.StartWorkflowAsync<TWorkflow, TResult>(input).ConfigureAwait(false));
         }
 
-        internal record TimeSkippingWorkflowHandle<TResult> : WorkflowHandle<TResult>
+        internal record TimeSkippingWorkflowHandle<TWorkflow, TResult> : WorkflowHandle<TWorkflow, TResult>
         {
             private readonly WorkflowEnvironment.EphemeralServerBased env;
 
             /// <summary>
             /// Initializes a new instance of the
-            /// <see cref="TimeSkippingWorkflowHandle{TResult}"/> class.
+            /// <see cref="TimeSkippingWorkflowHandle{TWorkflow, TResult}"/> class.
             /// </summary>
             /// <param name="env">Workflow environment.</param>
             /// <param name="underlying">Underlying handle.</param>
             public TimeSkippingWorkflowHandle(
                 WorkflowEnvironment.EphemeralServerBased env,
-                WorkflowHandle<TResult> underlying)
+                WorkflowHandle<TWorkflow, TResult> underlying)
                 : base(
                     Client: underlying.Client,
                     ID: underlying.ID,
