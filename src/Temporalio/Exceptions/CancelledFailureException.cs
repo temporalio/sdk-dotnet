@@ -16,9 +16,9 @@ namespace Temporalio.Exceptions
         /// <param name="details">Details for the exception.</param>
         internal protected CancelledFailureException(
             string message,
-            IReadOnlyCollection<object>? details = null)
+            IReadOnlyCollection<object?>? details = null)
             : base(message) =>
-            Details = new OutboundFailureDetails(details ?? Array.Empty<object>());
+            Details = new OutboundFailureDetails(details ?? Array.Empty<object?>());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CancelledFailureException"/> class.
