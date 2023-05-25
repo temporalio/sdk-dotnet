@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Bridge.Api.WorkflowActivation;
+using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;

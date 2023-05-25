@@ -1,8 +1,9 @@
-namespace Temporalio.Tests;
+namespace Temporalio.Tests.Common;
 
 using Google.Protobuf;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
+using Temporalio.Common;
 using Xunit;
 using Xunit.Abstractions;
 

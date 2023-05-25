@@ -1,4 +1,5 @@
 using System;
+using Temporalio.Common;
 
 namespace Temporalio.Worker
 {

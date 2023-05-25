@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Google.Protobuf.WellKnownTypes;
 
-namespace Temporalio
+namespace Temporalio.Common
 {
     /// <summary>
     /// Retry policy for workflows and activities.

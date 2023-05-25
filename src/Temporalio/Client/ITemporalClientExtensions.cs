@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
+#if NETCOREAPP3_0_OR_GREATER
+using Temporalio.Common;
+#endif
+
 namespace Temporalio.Client
 {
     /// <summary>

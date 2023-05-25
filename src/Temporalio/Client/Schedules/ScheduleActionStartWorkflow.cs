@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Common.V1;
+using Temporalio.Common;
 using Temporalio.Converters;
 
 namespace Temporalio.Client.Schedules
@@ -98,7 +99,7 @@ namespace Temporalio.Client.Schedules
                     ExecutionTimeout = proto.WorkflowExecutionTimeout?.ToTimeSpan(),
                     RunTimeout = proto.WorkflowRunTimeout?.ToTimeSpan(),
                     TaskTimeout = proto.WorkflowTaskTimeout?.ToTimeSpan(),
-                    RetryPolicy = proto.RetryPolicy == null ? null : RetryPolicy.FromProto(proto.RetryPolicy),
+                    RetryPolicy = proto.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(proto.RetryPolicy),
                     Memo = proto.Memo == null ? new Dictionary<string, object>(0) :
                         proto.Memo.Fields.ToDictionary(
                             kvp => kvp.Key,

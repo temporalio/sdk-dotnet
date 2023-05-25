@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Temporalio.Api.Enums.V1;
 
-namespace Temporalio
+namespace Temporalio.Common
 {
     /// <summary>
     /// A search attribute key and value type. Use one of the "Create" methods to create.
