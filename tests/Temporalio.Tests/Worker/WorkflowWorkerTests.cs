@@ -37,7 +37,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             var result = await Env.Client.ExecuteWorkflowAsync(
                 (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
-                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                new(id: $"dotnet-workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", result);
         });
     }

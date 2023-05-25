@@ -28,12 +28,12 @@ namespace Temporalio.Exceptions
             string message,
             string? errorType = null,
             bool nonRetryable = false,
-            IReadOnlyCollection<object>? details = null)
+            IReadOnlyCollection<object?>? details = null)
             : base(message)
         {
             ErrorType = errorType;
             NonRetryable = nonRetryable;
-            Details = new OutboundFailureDetails(details ?? Array.Empty<object>());
+            Details = new OutboundFailureDetails(details ?? Array.Empty<object?>());
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Temporalio.Exceptions
             Exception? inner,
             string? errorType = null,
             bool nonRetryable = false,
-            IReadOnlyCollection<object>? details = null)
+            IReadOnlyCollection<object?>? details = null)
             : base(message, inner)
         {
             ErrorType = errorType;

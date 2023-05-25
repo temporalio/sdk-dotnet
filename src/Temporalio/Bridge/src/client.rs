@@ -138,6 +138,12 @@ pub extern "C" fn client_free(client: *mut Client) {
     }
 }
 
+#[no_mangle]
+pub extern "C" fn client_update_metadata(client: *mut Client, metadata: ByteArrayRef) {
+    let client = unsafe { &*client };
+    client.core.get_client().set_headers(metadata.to_string_map_on_newlines());
+}
+
 #[repr(C)]
 pub struct RpcCallOptions {
     service: RpcService,

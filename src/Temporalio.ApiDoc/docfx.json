@@ -41,7 +41,8 @@
       {
         "files": [
           "favicon.ico",
-          "logo.png"
+          "logo.png",
+          "vercel.json"
         ]
       }
     ],

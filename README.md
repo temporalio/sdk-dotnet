@@ -1117,6 +1117,13 @@ Extra args can be added after `--`, e.g. `-- -verbose` would show verbose logs a
 options. If the arguments are anything but `--help`, the current assembly is prepended to the args before sending to the
 xUnit runner.
 
+The following environment variables can be set to override the environment:
+
+* `TEMPORAL_TEST_CLIENT_TARGET_HOST` - This must be set for any of the variables below to apply
+* `TEMPORAL_TEST_CLIENT_NAMESPACE` - Required if the above is set
+* `TEMPORAL_TEST_CLIENT_CERT` - Optional, must be present if below is
+* `TEMPORAL_TEST_CLIENT_KEY` - Optional, must be present if above is
+
 ### Rebuilding Rust extension and interop layer
 
 To regen core interop from header, install

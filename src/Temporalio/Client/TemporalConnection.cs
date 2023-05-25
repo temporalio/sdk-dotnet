@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -12,6 +13,8 @@ namespace Temporalio.Client
     public sealed class TemporalConnection : ITemporalConnection
     {
         private readonly Bridge.Client client;
+        private readonly object rpcMetadataLock = new();
+        private IReadOnlyCollection<KeyValuePair<string, string>> rpcMetadata;
 
         private TemporalConnection(Bridge.Client client, TemporalConnectionOptions options)
         {
@@ -20,6 +23,37 @@ namespace Temporalio.Client
             OperatorService = new OperatorService.Core(this);
             TestService = new TestService.Core(this);
             Options = options;
+            if (options.RpcMetadata == null)
+            {
+                rpcMetadata = Array.Empty<KeyValuePair<string, string>>();
+            }
+            else
+            {
+                rpcMetadata = new List<KeyValuePair<string, string>>(options.RpcMetadata);
+            }
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<KeyValuePair<string, string>> RpcMetadata
+        {
+            get
+            {
+                lock (rpcMetadataLock)
+                {
+                    return rpcMetadata;
+                }
+            }
+
+            set
+            {
+                lock (rpcMetadata)
+                {
+                    // Set on Rust side first to prevent errors from affecting field
+                    client.UpdateMetadata(value);
+                    // We copy this every time just to be safe
+                    rpcMetadata = new List<KeyValuePair<string, string>>(value);
+                }
+            }
         }
 
         /// <inheritdoc />

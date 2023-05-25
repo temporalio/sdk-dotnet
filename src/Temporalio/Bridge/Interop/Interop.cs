@@ -371,6 +371,9 @@ namespace Temporalio.Bridge.Interop
         public static extern void client_free([NativeTypeName("struct Client *")] Client* client);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void client_update_metadata([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef metadata);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void client_rpc_call([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options, void* user_data, [NativeTypeName("ClientRpcCallCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
