@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Temporalio.Common;
 using Temporalio.Converters;
 
 namespace Temporalio.Client.Schedules

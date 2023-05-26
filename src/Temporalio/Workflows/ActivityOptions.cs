@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Temporalio.Common;
 
 namespace Temporalio.Workflows
 {

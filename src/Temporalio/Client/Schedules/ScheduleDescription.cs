@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Temporalio.Api.WorkflowService.V1;
+using Temporalio.Common;
 using Temporalio.Converters;
 
 namespace Temporalio.Client.Schedules

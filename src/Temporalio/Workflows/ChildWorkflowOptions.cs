@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Temporalio.Api.Enums.V1;
+using Temporalio.Common;
 
 namespace Temporalio.Workflows
 {

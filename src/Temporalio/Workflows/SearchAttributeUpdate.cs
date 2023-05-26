@@ -2,6 +2,7 @@
 
 using System;
 using Temporalio.Api.Common.V1;
+using Temporalio.Common;
 
 namespace Temporalio.Workflows
 {

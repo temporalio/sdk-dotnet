@@ -8,7 +8,7 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Converters;
 
-namespace Temporalio
+namespace Temporalio.Common
 {
     /// <summary>
     /// Read-only collection of typed search attributes. Use a <see cref="Builder" /> to create this

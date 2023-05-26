@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.Workflow.V1;
+using Temporalio.Common;
 using Temporalio.Converters;
 
 namespace Temporalio.Client

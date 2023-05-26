@@ -15,6 +15,7 @@ using Temporalio.Bridge.Api.ChildWorkflow;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Bridge.Api.WorkflowCommands;
 using Temporalio.Bridge.Api.WorkflowCompletion;
+using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Worker.Interceptors;
@@ -134,7 +135,7 @@ namespace Temporalio.Worker
                 ExecutionTimeout: start.WorkflowExecutionTimeout?.ToTimeSpan(),
                 Namespace: details.Namespace,
                 Parent: parent,
-                RetryPolicy: start.RetryPolicy == null ? null : RetryPolicy.FromProto(start.RetryPolicy),
+                RetryPolicy: start.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(start.RetryPolicy),
                 RunID: act.RunId,
                 RunTimeout: start.WorkflowRunTimeout?.ToTimeSpan(),
                 StartTime: act.Timestamp.ToDateTime(),

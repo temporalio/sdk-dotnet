@@ -4,6 +4,7 @@ namespace Temporalio.Tests.Worker;
 
 using System.Runtime.CompilerServices;
 using Temporalio.Activities;
+using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Worker;
 using Temporalio.Workflows;

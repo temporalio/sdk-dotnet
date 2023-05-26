@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Temporalio.Api.Enums.V1;
+using Temporalio.Common;
 
 namespace Temporalio.Client
 {

@@ -3,6 +3,7 @@ namespace Temporalio.Tests.Client;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Client.Interceptors;
+using Temporalio.Common;
 using Temporalio.Converters;
 using Xunit;
 using Xunit.Abstractions;
