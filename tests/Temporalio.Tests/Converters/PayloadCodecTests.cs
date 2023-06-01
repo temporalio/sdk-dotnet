@@ -81,6 +81,9 @@ public class PayloadCodecTests : TestBase
             "78");
     }
 
+    [Fact]
+    public void PayloadCodec_Headers_AllEncoded() => throw new NotImplementedException();
+
     public class Base64PayloadCodec : IPayloadCodec
     {
         public Task<IEnumerable<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads)

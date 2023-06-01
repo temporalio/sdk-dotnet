@@ -10,8 +10,12 @@ namespace Temporalio.Worker.Interceptors
     /// <param name="Activity">Activity definition.</param>
     /// <param name="Args">Activity arguments.</param>
     /// <param name="Headers">Activity headers.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record ExecuteActivityInput(
         ActivityDefinition Activity,
         object?[] Args,
-        IDictionary<string, Payload>? Headers);
+        IReadOnlyDictionary<string, Payload>? Headers);
 }

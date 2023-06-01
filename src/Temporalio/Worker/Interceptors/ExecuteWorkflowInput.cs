@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Reflection;
-using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Worker.Interceptors
 {
@@ -10,10 +8,12 @@ namespace Temporalio.Worker.Interceptors
     /// <param name="Instance">Workflow instance.</param>
     /// <param name="RunMethod">Method to invoke on the instance.</param>
     /// <param name="Args">Run method arguments.</param>
-    /// <param name="Headers">Workflow headers.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record ExecuteWorkflowInput(
         object Instance,
         MethodInfo RunMethod,
-        object?[] Args,
-        IDictionary<string, Payload>? Headers);
+        object?[] Args);
 }

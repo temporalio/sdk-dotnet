@@ -29,6 +29,10 @@ namespace Temporalio.Activities
     /// <param name="WorkflowNamespace">Namespace this activity is on.</param>
     /// <param name="WorkflowRunID">Workflow run ID that started this activity.</param>
     /// <param name="WorkflowType">Workflow type name that started this activity.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record ActivityInfo(
         string ActivityID,
         string ActivityType,

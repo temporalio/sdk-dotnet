@@ -46,6 +46,29 @@ namespace Temporalio.Tests
             Assert.InRange(actual, expected - delta, expected + delta);
         }
 
+        /// <summary>
+        /// Assert every item passes at least one action.
+        /// </summary>
+        /// <typeparam name="T">Item type.</typeparam>
+        /// <param name="items">Items.</param>
+        /// <param name="actions">Actions.</param>
+        public static void Every<T>(IEnumerable<T> items, params Action<T>[] actions) =>
+            Assert.Empty(items.Where(item =>
+            {
+                foreach (var action in actions)
+                {
+                    try
+                    {
+                        action(item);
+                        return false;
+                    }
+                    catch (Xunit.Sdk.XunitException)
+                    {
+                    }
+                }
+                return true;
+            }));
+
         public static void EqualAsJson(object? expected, object? actual) =>
             JsonEqual(JsonSerializer.Serialize(expected), JsonSerializer.Serialize(actual));
 

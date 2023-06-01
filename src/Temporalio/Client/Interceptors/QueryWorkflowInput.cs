@@ -12,6 +12,10 @@ namespace Temporalio.Client.Interceptors
     /// <param name="Args">Query arguments.</param>
     /// <param name="Options">Options if any.</param>
     /// <param name="Headers">Headers if any.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record QueryWorkflowInput(
         string ID,
         string? RunID,

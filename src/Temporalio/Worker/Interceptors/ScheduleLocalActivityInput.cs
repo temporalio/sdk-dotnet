@@ -11,6 +11,10 @@ namespace Temporalio.Worker.Interceptors
     /// <param name="Args">Activity args.</param>
     /// <param name="Options">Activity options.</param>
     /// <param name="Headers">Headers.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record ScheduleLocalActivityInput(
         string Activity,
         IReadOnlyCollection<object?> Args,

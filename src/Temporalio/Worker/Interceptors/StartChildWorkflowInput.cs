@@ -11,6 +11,10 @@ namespace Temporalio.Worker.Interceptors
     /// <param name="Args">Workflow args.</param>
     /// <param name="Options">Workflow options.</param>
     /// <param name="Headers">Headers.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record StartChildWorkflowInput(
         string Workflow,
         IReadOnlyCollection<object?> Args,
