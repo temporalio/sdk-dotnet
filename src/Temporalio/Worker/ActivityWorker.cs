@@ -311,6 +311,16 @@ namespace Temporalio.Worker
                     throw new ApplicationFailureException("Failed decoding parameters", e);
                 }
 
+                // If there is a payload codec, use it to decode the headers
+                if (worker.Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                {
+                    foreach (var kvp in tsk.Start.HeaderFields)
+                    {
+                        tsk.Start.HeaderFields[kvp.Key] =
+                            await codec.DecodeSingleAsync(kvp.Value).ConfigureAwait(false);
+                    }
+                }
+
                 // Build the interceptor impls, chaining each interceptor in reverse
                 var inbound = worker.Interceptors.Reverse().Aggregate(
                     (ActivityInboundInterceptor)new InboundImpl(),

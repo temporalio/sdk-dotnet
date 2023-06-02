@@ -6,6 +6,7 @@ namespace Temporalio.Tests.Worker;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
@@ -2429,15 +2430,161 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             workerOptions);
     }
 
+    [Workflow]
+    public class HeadersWithCodecWorkflow
+    {
+        public enum Kind
+        {
+            Normal,
+            Child,
+            Continued,
+        }
+
+        private bool done;
+
+        [WorkflowRun]
+        public async Task RunAsync(Kind kind)
+        {
+            // Just continue as new
+            if (kind == Kind.Normal)
+            {
+                throw Workflow.CreateContinueAsNewException(
+                    (HeadersWithCodecWorkflow wf) => wf.RunAsync(Kind.Continued));
+            }
+            // Activity, local activity, child, signal child in both ways
+            if (kind == Kind.Continued)
+            {
+                await Workflow.ExecuteActivityAsync(
+                    () => DoThing(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                await Workflow.ExecuteLocalActivityAsync(
+                    () => DoThing(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                var handle = await Workflow.StartChildWorkflowAsync(
+                    (HeadersWithCodecWorkflow wf) => wf.RunAsync(Kind.Child));
+                await handle.SignalAsync(wf => wf.SignalAsync(false));
+                await Workflow.GetExternalWorkflowHandle<HeadersWithCodecWorkflow>(handle.ID).
+                    SignalAsync(wf => wf.SignalAsync(true));
+                await handle.GetResultAsync();
+            }
+            // Wait for done
+            await Workflow.WaitConditionAsync(() => done);
+        }
+
+        [WorkflowSignal]
+        public async Task SignalAsync(bool done) => this.done = done;
+
+        [WorkflowQuery]
+        public string Query() => string.Empty;
+
+        [Activity]
+        public static void DoThing()
+        {
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_HeadersWithCodec_EncodedProperly()
+    {
+        // Create client with interceptor and codec
+        var inOperations = new List<(string InOp, string OutOp)>();
+        var intercept = new HeaderCallbackInterceptor()
+        {
+            OnOutbound = name => new Dictionary<string, Payload>()
+            {
+                ["operation"] = DataConverter.Default.PayloadConverter.ToPayload(name),
+            },
+            OnInbound = (name, headers) => inOperations.Add(
+                (name, DataConverter.Default.PayloadConverter.ToValue<string>(headers!["operation"]))),
+        };
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Interceptors = new[] { intercept };
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Converters.Base64PayloadCodec(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        await ExecuteWorkerAsync<HeadersWithCodecWorkflow>(
+            async worker =>
+            {
+                // Start workflow, wait for child to be started, send query and signal
+                var handle = await client.StartWorkflowAsync(
+                    (HeadersWithCodecWorkflow wf) => wf.RunAsync(HeadersWithCodecWorkflow.Kind.Normal),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await AssertChildStartedEventuallyAsync(handle);
+                await handle.QueryAsync(wf => wf.Query());
+                await handle.SignalAsync(wf => wf.SignalAsync(true));
+                await handle.GetResultAsync();
+
+                // Sort the operations and confirm all the expected ones are present
+                var expectedInOperations = new List<(string InOp, string OutOp)>
+                {
+                    ("Activity:ExecuteActivity", "Workflow:ScheduleActivity"),
+                    ("Activity:ExecuteActivity", "Workflow:ScheduleLocalActivity"),
+                    ("Workflow:ExecuteWorkflow", "Client:StartWorkflow"),
+                    ("Workflow:ExecuteWorkflow", "Workflow:ContinueAsNew"),
+                    ("Workflow:ExecuteWorkflow", "Workflow:StartChildWorkflow"),
+                    ("Workflow:HandleQuery", "Client:QueryWorkflow"),
+                    ("Workflow:HandleSignal", "Client:SignalWorkflow"),
+                    ("Workflow:HandleSignal", "Workflow:SignalChildWorkflow"),
+                    ("Workflow:HandleSignal", "Workflow:SignalExternalWorkflow"),
+                };
+                inOperations.Sort();
+                expectedInOperations.Sort();
+                Assert.Equal(expectedInOperations, inOperations);
+
+                // Also confirm all headers in history are encoded
+                var decodedHeaderOperations = new List<string>();
+                async Task AddHeaders(params IDictionary<string, Payload>?[] headerSets)
+                {
+                    foreach (var headers in headerSets)
+                    {
+                        if (headers != null && headers.TryGetValue("operation", out var value))
+                        {
+                            decodedHeaderOperations!.Add(
+                                await newOptions!.DataConverter.ToValueAsync<string>(value));
+                        }
+                    }
+                }
+                // Collect continued run only
+                await foreach (var evt in handle.FetchHistoryEventsAsync())
+                {
+                    await AddHeaders(
+                        evt.ActivityTaskScheduledEventAttributes?.Header.Fields,
+                        evt.SignalExternalWorkflowExecutionInitiatedEventAttributes?.Header?.Fields,
+                        evt.StartChildWorkflowExecutionInitiatedEventAttributes?.Header?.Fields,
+                        evt.WorkflowExecutionSignaledEventAttributes?.Header?.Fields,
+                        evt.WorkflowExecutionStartedEventAttributes?.Header?.Fields);
+                }
+                var expectedDecodedHeaderOperations = new List<string>
+                {
+                    "Client:SignalWorkflow",
+                    "Workflow:ContinueAsNew",
+                    "Workflow:ScheduleActivity",
+                    "Workflow:SignalChildWorkflow",
+                    "Workflow:SignalExternalWorkflow",
+                    "Workflow:StartChildWorkflow",
+                };
+                decodedHeaderOperations.Sort();
+                expectedDecodedHeaderOperations.Sort();
+                Assert.Equal(expectedDecodedHeaderOperations, decodedHeaderOperations);
+            },
+            new TemporalWorkerOptions().AddActivity(HeadersWithCodecWorkflow.DoThing),
+            client);
+    }
+
     private async Task ExecuteWorkerAsync<TWf>(
-        Func<TemporalWorker, Task> action, TemporalWorkerOptions? options = null)
+        Func<TemporalWorker, Task> action,
+        TemporalWorkerOptions? options = null,
+        IWorkerClient? client = null)
     {
         options ??= new();
         options = (TemporalWorkerOptions)options.Clone();
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
         options.AddWorkflow<TWf>();
         options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
-        using var worker = new TemporalWorker(Client, options);
+        using var worker = new TemporalWorker(client ?? Client, options);
         await worker.ExecuteAsync(() => action(worker));
     }
 
@@ -2504,18 +2651,4 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Fail("Event not found");
         });
     }
-
-    // TODO(cretz): Potential features/tests:
-    // * IDisposable workflows?
-    //   * Otherwise, what if I have a cancellation token source at a high level?
-    // * Custom errors
-    // * Custom codec
-    // * Interceptor
-    // * Dynamic activities
-    // * Dynamic workflows
-    // * Dynamic signals/queries
-    // * Tracing
-    //   * CorrelationManager?
-    //   * EventSource?
-    // * "WorkflowRunner" abstraction for trying out sandbox techniques
 }

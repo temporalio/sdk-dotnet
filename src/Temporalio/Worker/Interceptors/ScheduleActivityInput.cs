@@ -10,7 +10,8 @@ namespace Temporalio.Worker.Interceptors
     /// <param name="Activity">Activity type name.</param>
     /// <param name="Args">Activity args.</param>
     /// <param name="Options">Activity options.</param>
-    /// <param name="Headers">Headers.</param>
+    /// <param name="Headers">Headers if any. These will be encoded using the codec before sent
+    /// to the server.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.

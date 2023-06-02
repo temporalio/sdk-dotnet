@@ -12,7 +12,8 @@ namespace Temporalio.Worker.Interceptors
     /// <param name="Signal">Signal name.</param>
     /// <param name="Args">Signal arguments.</param>
     /// <param name="Options">Options if any.</param>
-    /// <param name="Headers">Headers if any.</param>
+    /// <param name="Headers">Headers if any. These will be encoded using the codec before sent
+    /// to the server.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
