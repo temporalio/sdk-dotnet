@@ -132,6 +132,8 @@ jobs:
           path: |
             src/Temporalio/bin/Release/*.nupkg
             src/Temporalio/bin/Release/*.snupkg
+            src/Temporalio.Extensions.OpenTelemetry/bin/Release/*.nupkg
+            src/Temporalio.Extensions.OpenTelemetry/bin/Release/*.snupkg
 
   run-smoke-test:
     needs:
