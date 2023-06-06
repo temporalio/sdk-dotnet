@@ -149,10 +149,11 @@ can lead to unpredictable behavior/traces during replay (which often only surfac
 
 ### Creating Diagnostic Activities in Workflows
 
-Users can create their own diagnostic _workflow_ activities via the `ActivitySource` extension `StartWorkflowActivity`.
-This is `IDisposable` like a normal `System.Diagnostic.Activity`, but unlike that the diagnostic activity, the
-diagnostic workflow activity may not result in a real diagnostic activity during replay. Also, it is started/stopped
-immediately. It is simply placed as async-local until disposed so it can implicitly become the parent of any others.
+Users can create their own diagnostic _workflow_ activities via the `ActivitySource` extension
+`TrackWorkflowDiagnosticActivity`. This is `IDisposable` like a normal `System.Diagnostic.Activity`, but unlike that the
+diagnostic activity, the diagnostic workflow activity may not result in a real diagnostic activity during replay. Also,
+it is started/stopped immediately. It is simply placed as async-local until disposed so it can implicitly become the
+parent of any others.
 
 ### Workflow Tracing Example
 
@@ -174,7 +175,7 @@ public class MyWorkflow
         await Workflow.ExecuteActivityAsync(
             (MyActivities act) => act.DoThing1Async(),
             new() { StartToCloseTimeout = TimeSpan.FromSeconds(10) });
-        using (CustomSource.StartWorkflowActivity("MyCustomActivity"))
+        using (CustomSource.TrackWorkflowDiagnosticActivity("MyCustomActivity"))
         {
             await Workflow.ExecuteActivityAsync(
                 (MyActivities act) => act.DoThing2Async(),
