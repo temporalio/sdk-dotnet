@@ -662,7 +662,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 }
                 if (action.CreateCustomActivity != null)
                 {
-                    CustomSource.StartWorkflowActivity(action.CreateCustomActivity).Dispose();
+                    CustomSource.TrackWorkflowDiagnosticActivity(action.CreateCustomActivity).Dispose();
                 }
             }
         }
@@ -676,7 +676,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         [WorkflowSignal]
         public async Task SignalWithActivityAsync()
         {
-            using var _ = CustomSource.StartWorkflowActivity(
+            using var _ = CustomSource.TrackWorkflowDiagnosticActivity(
                 "MySignalActivity",
                 tags: new[] { KeyValuePair.Create<string, object?>("foo", "bar") });
             signalCount++;
@@ -689,7 +689,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         [WorkflowQuery]
         public string QueryWithActivity()
         {
-            using var _ = CustomSource.StartWorkflowActivity(
+            using var _ = CustomSource.TrackWorkflowDiagnosticActivity(
                 "MyQueryActivity",
                 tags: new[] { KeyValuePair.Create<string, object?>("baz", "qux") });
             return "some query";

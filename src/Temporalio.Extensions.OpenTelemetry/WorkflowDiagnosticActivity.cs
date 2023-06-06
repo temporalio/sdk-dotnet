@@ -15,17 +15,17 @@ namespace Temporalio.Extensions.OpenTelemetry
     /// the <see cref="ActivitySource" /> because there are no listeners. Callers must call
     /// <see cref="Dispose()" /> to remove the created workflow activity from current.
     /// </remarks>
-    public class WorkflowActivity : IDisposable
+    public class WorkflowDiagnosticActivity : IDisposable
     {
-        private static readonly AsyncLocal<WorkflowActivity?> CurrentLocal = new();
+        private static readonly AsyncLocal<WorkflowDiagnosticActivity?> CurrentLocal = new();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowActivity"/> class and sets as
-        /// current.
+        /// Initializes a new instance of the <see cref="WorkflowDiagnosticActivity"/> class and
+        /// sets as current.
         /// </summary>
         /// <param name="context">Context for the activity.</param>
         /// <param name="tags">Tags for the activity.</param>
-        internal WorkflowActivity(
+        internal WorkflowDiagnosticActivity(
             ActivityContext context,
             IReadOnlyCollection<KeyValuePair<string, object?>>? tags)
         {
@@ -41,12 +41,12 @@ namespace Temporalio.Extensions.OpenTelemetry
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WorkflowActivity"/> class and sets as
-        /// current.
+        /// Initializes a new instance of the <see cref="WorkflowDiagnosticActivity"/> class and
+        /// sets as current.
         /// </summary>
         /// <param name="activity">Inner activity.</param>
         /// <param name="tags">Tags for the activity.</param>
-        internal WorkflowActivity(
+        internal WorkflowDiagnosticActivity(
             Activity? activity,
             IReadOnlyCollection<KeyValuePair<string, object?>>? tags)
         {
@@ -67,13 +67,13 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// is configured (and something illegal didn't happen like leaving the async-local
         /// context).
         /// </summary>
-        public static WorkflowActivity? Current => CurrentLocal.Value;
+        public static WorkflowDiagnosticActivity? Current => CurrentLocal.Value;
 
         /// <summary>
         /// Gets the parent of this activity, i.e. the <see cref="Current" /> when this activity was
         /// created.
         /// </summary>
-        public WorkflowActivity? Parent { get; private init; }
+        public WorkflowDiagnosticActivity? Parent { get; private init; }
 
         /// <summary>
         /// Gets the diagnostic activity context for this workflow activity.
@@ -100,7 +100,7 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// <param name="context">Context for the current activity.</param>
         /// <param name="tags">Optional tags to set for the context.</param>
         /// <returns>Created workflow activity.</returns>
-        public static WorkflowActivity AttachFromContext(
+        public static WorkflowDiagnosticActivity AttachFromContext(
             ActivityContext context,
             IReadOnlyCollection<KeyValuePair<string, object?>>? tags = null) =>
             new(context, tags);

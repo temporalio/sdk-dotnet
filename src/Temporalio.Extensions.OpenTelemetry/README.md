@@ -1,5 +1,7 @@
 # OpenTelemetry Support
 
+This extension adds OpenTelemetry tracing support to the [Temporal .NET SDK](https://github.com/temporalio/sdk-dotnet).
+
 Temporal .NET SDK OpenTelemetry support consists of an interceptor that creates spans (i.e. .NET diagnostic activities)
 to trace execution. A special approach must be taken for workflows since they can be interrupted and resumed elsewhere
 while OpenTelemetry spans cannot.
@@ -131,9 +133,9 @@ a Temporal exception), a _new_ diagnostic activity is created representing that 
 representing the run of the workflow is not only already completed (as they all are) but it may not even be created
 because this could be replaying on a different worker.
 
-Outbound calls from a workflow for scheduling activity, scheduling local activity, starting a child, signalling a child,
-or signalling an external workflow will create a diagnostic activity _only when not replaying_. This is then serialized
-into the header of the outbound call to be deserialized on the worker that accepts it.
+Outbound calls from a workflow for scheduling an activity, scheduling a local activity, starting a child, signalling a
+child, or signalling an external workflow will create a diagnostic activity _only when not replaying_. This is then
+serialized into the header of the outbound call to be deserialized on the worker that accepts it.
 
 Overall, this means that with no cache eviction (i.e. runs to completion on the same process it started without
 non-Temporal exception), diagnostic activities will be properly ordered/parented. However, when a replay is needed, the

@@ -28,8 +28,8 @@ namespace Temporalio.Extensions.OpenTelemetry
     /// client and activity code. Workflows however are interruptible/resumable and therefore cannot
     /// support .NET activities (i.e. OpenTelemetry spans) that remain open across workers.
     /// Therefore, all uses of diagnostic activities inside workflows should only use
-    /// <see cref="ActivitySourceExtensions.StartWorkflowActivity" />. See the project README for
-    /// more information.
+    /// <see cref="ActivitySourceExtensions.TrackWorkflowDiagnosticActivity" />. See the project
+    /// README for more information.
     /// </remarks>
     public class TracingInterceptor : IClientInterceptor, IWorkerInterceptor
     {
@@ -256,15 +256,15 @@ namespace Temporalio.Extensions.OpenTelemetry
             public override async Task<object?> ExecuteWorkflowAsync(ExecuteWorkflowInput input)
             {
                 var prevBaggage = Baggage.Current;
-                WorkflowActivity? remoteActivity = null;
+                WorkflowDiagnosticActivity? remoteActivity = null;
                 if (root.HeadersToContext(Workflow.Info.Headers) is PropagationContext ctx)
                 {
                     Baggage.Current = ctx.Baggage;
-                    remoteActivity = WorkflowActivity.AttachFromContext(ctx.ActivityContext);
+                    remoteActivity = WorkflowDiagnosticActivity.AttachFromContext(ctx.ActivityContext);
                 }
                 try
                 {
-                    using (WorkflowsSource.StartWorkflowActivity(
+                    using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
                         name: $"RunWorkflow:{Workflow.Info.WorkflowType}",
                         kind: ActivityKind.Server,
                         tags: root.CreateInWorkflowTags(),
@@ -273,7 +273,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                         try
                         {
                             var res = await base.ExecuteWorkflowAsync(input).ConfigureAwait(true);
-                            WorkflowsSource.StartWorkflowActivity(
+                            WorkflowsSource.TrackWorkflowDiagnosticActivity(
                                 name: $"CompleteWorkflow:{Workflow.Info.WorkflowType}").
                                 Dispose();
                             return res;
@@ -295,15 +295,15 @@ namespace Temporalio.Extensions.OpenTelemetry
             public override async Task HandleSignalAsync(HandleSignalInput input)
             {
                 var prevBaggage = Baggage.Current;
-                WorkflowActivity? remoteActivity = null;
+                WorkflowDiagnosticActivity? remoteActivity = null;
                 if (root.HeadersToContext(Workflow.Info.Headers) is PropagationContext ctx)
                 {
                     Baggage.Current = ctx.Baggage;
-                    remoteActivity = WorkflowActivity.AttachFromContext(ctx.ActivityContext);
+                    remoteActivity = WorkflowDiagnosticActivity.AttachFromContext(ctx.ActivityContext);
                 }
                 try
                 {
-                    using (WorkflowsSource.StartWorkflowActivity(
+                    using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
                         name: $"HandleSignal:{input.Signal}",
                         kind: ActivityKind.Server,
                         tags: root.CreateInWorkflowTags(),
@@ -331,15 +331,15 @@ namespace Temporalio.Extensions.OpenTelemetry
             public override object? HandleQuery(HandleQueryInput input)
             {
                 var prevBaggage = Baggage.Current;
-                WorkflowActivity? remoteActivity = null;
+                WorkflowDiagnosticActivity? remoteActivity = null;
                 if (root.HeadersToContext(Workflow.Info.Headers) is PropagationContext ctx)
                 {
                     Baggage.Current = ctx.Baggage;
-                    remoteActivity = WorkflowActivity.AttachFromContext(ctx.ActivityContext);
+                    remoteActivity = WorkflowDiagnosticActivity.AttachFromContext(ctx.ActivityContext);
                 }
                 try
                 {
-                    using (var activity = WorkflowsSource.StartWorkflowActivity(
+                    using (var activity = WorkflowsSource.TrackWorkflowDiagnosticActivity(
                         name: $"HandleQuery:{input.Query}",
                         kind: ActivityKind.Server,
                         tags: root.CreateInWorkflowTags(),
@@ -377,7 +377,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 // on the existing activity because there may not be an existing activity.
                 var namePrefix = e is FailureException || e is OperationCanceledException ?
                     "CompleteWorkflow" : "WorkflowTaskFailure";
-                WorkflowsSource.StartWorkflowActivity(
+                WorkflowsSource.TrackWorkflowDiagnosticActivity(
                     name: $"{namePrefix}:{Workflow.Info.WorkflowType}",
                     updateActivity: act => act.RecordException(e)).
                     Dispose();
@@ -406,7 +406,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 // Put current context onto headers
                 var headers = root.HeadersFromContext(
                     input.Headers,
-                    new(WorkflowActivity.Current?.Context ?? default, Baggage.Current));
+                    new(WorkflowDiagnosticActivity.Current?.Context ?? default, Baggage.Current));
                 input = input with { Headers = headers };
                 return base.CreateContinueAsNewException(input);
             }
@@ -458,13 +458,13 @@ namespace Temporalio.Extensions.OpenTelemetry
             private IDictionary<string, Payload> StartWorkflowActivityOnHeaders(
                 IDictionary<string, Payload>? headers, string name)
             {
-                using (WorkflowsSource.StartWorkflowActivity(
+                using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
                     name: name,
                     kind: ActivityKind.Client))
                 {
                     return root.HeadersFromContext(
                         headers,
-                        new(WorkflowActivity.Current?.Context ?? default, Baggage.Current));
+                        new(WorkflowDiagnosticActivity.Current?.Context ?? default, Baggage.Current));
                 }
             }
         }
