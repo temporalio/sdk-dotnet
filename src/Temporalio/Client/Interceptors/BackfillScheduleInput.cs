@@ -9,6 +9,10 @@ namespace Temporalio.Client.Interceptors
     /// <param name="ID">Schedule ID.</param>
     /// <param name="Backfills">Backfills.</param>
     /// <param name="RpcOptions">RPC options.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record BackfillScheduleInput(
         string ID,
         IReadOnlyCollection<ScheduleBackfill> Backfills,

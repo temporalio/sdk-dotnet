@@ -7,6 +7,10 @@ namespace Temporalio.Client.Interceptors
     /// Input for <see cref="ClientOutboundInterceptor.ListSchedulesAsync" />.
     /// </summary>
     /// <param name="Options">List options.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record ListSchedulesInput(
         ScheduleListOptions? Options);
 }

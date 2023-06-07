@@ -15,6 +15,10 @@ Also see:
 * [API Documentation](https://dotnet.temporal.io/api)
 * [Samples](https://github.com/temporalio/samples-dotnet)
 
+Extensions:
+
+* [OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/)
+
 ⚠️ UNDER ACTIVE DEVELOPMENT
 
 This SDK is under active development and has not released a stable version yet. APIs may change in incompatible ways
@@ -63,6 +67,7 @@ present.
     - [Activity Heartbeating and Cancellation](#activity-heartbeating-and-cancellation)
     - [Activity Worker Shutdown](#activity-worker-shutdown)
     - [Activity Testing](#activity-testing)
+  - [OpenTelemetry Tracing Support](#opentelemetry-tracing-support)
 - [Development](#development)
   - [Build](#build)
   - [Code formatting](#code-formatting)
@@ -1059,6 +1064,10 @@ activity context:
 * `CancellationTokenSource` - Token source for issuing cancellation.
 * `Heartbeater` - Callback invoked each heartbeat.
 * `WorkerShutdownTokenSource` - Token source for issuing worker shutdown.
+
+### OpenTelemetry Tracing Support
+
+See the [OpenTelemetry extension](src/Temporalio.Extensions.OpenTelemetry/).
 
 ## Development
 

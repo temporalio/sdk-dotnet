@@ -133,6 +133,7 @@ namespace Temporalio.Worker
                 ContinuedRunID: NonEmptyOrNull(start.ContinuedFromExecutionRunId),
                 CronSchedule: NonEmptyOrNull(start.CronSchedule),
                 ExecutionTimeout: start.WorkflowExecutionTimeout?.ToTimeSpan(),
+                Headers: start.Headers,
                 Namespace: details.Namespace,
                 Parent: parent,
                 RetryPolicy: start.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(start.RetryPolicy),
@@ -915,8 +916,7 @@ namespace Temporalio.Worker
                 var input = new ExecuteWorkflowInput(
                     Instance: Instance,
                     RunMethod: defn.RunMethod,
-                    Args: startArgs!.Value,
-                    Headers: start.Headers);
+                    Args: startArgs!.Value);
                 // We no longer need start args after this point, so we are unsetting them
                 startArgs = null;
                 var resultObj = await inbound.Value.ExecuteWorkflowAsync(input).ConfigureAwait(true);

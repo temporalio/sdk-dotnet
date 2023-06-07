@@ -134,6 +134,15 @@ namespace Temporalio.Client
                 {
                     req.Header = new();
                     req.Header.Fields.Add(input.Headers);
+                    // If there is a payload codec, use it to encode the headers
+                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    {
+                        foreach (var kvp in req.Header.Fields)
+                        {
+                            req.Header.Fields[kvp.Key] =
+                                await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
+                        }
+                    }
                 }
                 await Client.Connection.WorkflowService.SignalWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
@@ -171,6 +180,15 @@ namespace Temporalio.Client
                 {
                     req.Query.Header = new();
                     req.Query.Header.Fields.Add(input.Headers);
+                    // If there is a payload codec, use it to encode the headers
+                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    {
+                        foreach (var kvp in req.Query.Header.Fields)
+                        {
+                            req.Query.Header.Fields[kvp.Key] =
+                                await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
+                        }
+                    }
                 }
 
                 // Invoke
@@ -426,6 +444,15 @@ namespace Temporalio.Client
                 {
                     req.Header = new();
                     req.Header.Fields.Add(input.Headers);
+                    // If there is a payload codec, use it to encode the headers
+                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    {
+                        foreach (var kvp in req.Header.Fields)
+                        {
+                            req.Header.Fields[kvp.Key] =
+                                await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
+                        }
+                    }
                 }
 
                 // If not signal with start, just run and return

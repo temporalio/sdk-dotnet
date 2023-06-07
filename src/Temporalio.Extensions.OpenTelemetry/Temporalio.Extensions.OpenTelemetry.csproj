@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Temporal SDK .NET OpenTelemetry Extension</Description>
+    <EnablePackageValidation Condition="'$(TargetFramework)' == 'netcoreapp3.1'">true</EnablePackageValidation>
+    <IncludeSymbols>true</IncludeSymbols>
+    <LangVersion>9.0</LangVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry.Api" Version="1.4.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Temporalio\Temporalio.csproj" />
+  </ItemGroup>
+
+  <!-- Pack the README -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+</Project>
