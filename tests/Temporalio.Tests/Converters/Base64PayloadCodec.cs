@@ -13,8 +13,8 @@ public class Base64PayloadCodec : IPayloadCodec
 {
     public const string EncodingName = "my-encoding";
 
-    public Task<IEnumerable<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
-        Task.FromResult<IEnumerable<Payload>>(payloads.Select(p =>
+    public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+        Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
             new Payload()
             {
                 Data = ByteString.CopyFrom(
@@ -29,9 +29,9 @@ public class Base64PayloadCodec : IPayloadCodec
                 },
             }).ToList());
 
-    public Task<IEnumerable<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
+    public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
     {
-        return Task.FromResult<IEnumerable<Payload>>(payloads.Select(p =>
+        return Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
         {
             Assert.Equal(EncodingName, p.Metadata["encoding"].ToStringUtf8());
             return Payload.Parser.ParseFrom(

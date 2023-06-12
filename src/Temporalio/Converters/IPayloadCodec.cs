@@ -19,7 +19,7 @@ namespace Temporalio.Converters
         /// <returns>
         /// Encoded payloads. This must have at least one value and cannot have more than was given.
         /// </returns>
-        Task<IEnumerable<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads);
+        Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads);
 
         /// <summary>
         /// Decode the given collection of payloads.
@@ -29,6 +29,6 @@ namespace Temporalio.Converters
         /// Decoded payloads. This must return the exact same number that was given to
         /// <see cref="EncodeAsync" />.
         /// </returns>
-        Task<IEnumerable<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads);
+        Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads);
     }
 }

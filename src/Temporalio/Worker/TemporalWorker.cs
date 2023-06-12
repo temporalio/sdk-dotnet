@@ -45,16 +45,17 @@ namespace Temporalio.Worker
 
             // Interceptors are the client interceptors that implement IWorkerInterceptor followed
             // by the explicitly provided ones in options.
-            Interceptors = Client.Options.Interceptors?.OfType<IWorkerInterceptor>() ??
+            var interceptors = Client.Options.Interceptors?.OfType<IWorkerInterceptor>() ??
                 Enumerable.Empty<IWorkerInterceptor>();
             if (Options.Interceptors != null)
             {
-                Interceptors = Interceptors.Concat(Options.Interceptors);
+                interceptors = interceptors.Concat(Options.Interceptors);
             }
+            Interceptors = interceptors.ToList();
 
             // Enable workflow task tracing if needed
             workflowTracingEventListenerEnabled =
-                !options.DisableWorkflowTracingEventListener && workflowWorker != null;
+                !options.DisableWorkflowTracingEventListener && options.Workflows.Count > 0;
             if (workflowTracingEventListenerEnabled)
             {
                 WorkflowTracingEventListener.Instance.Register();
@@ -108,7 +109,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets the set of interceptors in the order they should be applied.
         /// </summary>
-        internal IEnumerable<IWorkerInterceptor> Interceptors { get; private init; }
+        internal IReadOnlyCollection<IWorkerInterceptor> Interceptors { get; private init; }
 
         /// <summary>
         /// Gets the logger factory.

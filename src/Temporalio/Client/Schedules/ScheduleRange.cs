@@ -43,8 +43,8 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <param name="ranges">Ranges to convert.</param>
         /// <returns>Protos.</returns>
-        internal static IEnumerable<Api.Schedule.V1.Range> ToProtos(
-            IEnumerable<ScheduleRange> ranges) => ranges.Select(r => r.ToProto());
+        internal static IReadOnlyCollection<Api.Schedule.V1.Range> ToProtos(
+            IEnumerable<ScheduleRange> ranges) => ranges.Select(r => r.ToProto()).ToList();
 
         /// <summary>
         /// Convert to proto.
