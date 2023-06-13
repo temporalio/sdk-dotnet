@@ -39,7 +39,7 @@ namespace Temporalio.Runtime
         /// <summary>
         /// Gets or sets the headers to include in OpenTelemetry calls.
         /// </summary>
-        public IEnumerable<KeyValuePair<string, string>>? Headers { get; set; }
+        public IReadOnlyCollection<KeyValuePair<string, string>>? Headers { get; set; }
 
         /// <summary>
         /// Gets or sets how frequently in metrics should be exported.

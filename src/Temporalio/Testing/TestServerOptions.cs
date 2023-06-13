@@ -32,7 +32,7 @@ namespace Temporalio.Testing
         /// <remarks>
         /// Newlines are not allowed in values.
         /// </remarks>
-        public IEnumerable<string>? ExtraArgs { get; set; }
+        public IReadOnlyCollection<string>? ExtraArgs { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

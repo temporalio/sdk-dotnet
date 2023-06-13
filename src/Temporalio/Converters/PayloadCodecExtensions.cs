@@ -56,7 +56,7 @@ namespace Temporalio.Converters
 
         private static async Task ApplyToFailurePayloadAsync(
             Failure failure,
-            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func)
+            Func<IReadOnlyCollection<Payload>, Task<IReadOnlyCollection<Payload>>> func)
         {
             if (failure.EncodedAttributes != null)
             {
@@ -91,7 +91,7 @@ namespace Temporalio.Converters
 
         private static async Task ApplyPayloadsAsync(
             Payloads payloads,
-            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func)
+            Func<IReadOnlyCollection<Payload>, Task<IReadOnlyCollection<Payload>>> func)
         {
             if (payloads != null && payloads.Payloads_.Count > 0)
             {

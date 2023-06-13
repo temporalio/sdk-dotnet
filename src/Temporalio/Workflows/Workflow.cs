@@ -918,6 +918,52 @@ namespace Temporalio.Workflows
                 Context.WaitConditionAsync(conditionCheck, timeout, cancellationToken);
 
         /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAny(Task[])" />.
+        /// </summary>
+        /// <param name="tasks">Tasks to wait for first completed of.</param>
+        /// <returns>First completed task.</returns>
+        public static Task<Task> WhenAnyAsync(params Task[] tasks) =>
+            // This uses our scheduler properly
+            Task.WhenAny(tasks);
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAny(IEnumerable{Task})" />.
+        /// </summary>
+        /// <param name="tasks">Tasks to wait for first completed of.</param>
+        /// <returns>First completed task.</returns>
+        public static Task<Task> WhenAnyAsync(IEnumerable<Task> tasks) =>
+            // This uses our scheduler properly
+            Task.WhenAny(tasks);
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAny{TResult}(Task{TResult}[])" />.
+        /// </summary>
+        /// <typeparam name="TResult">Result type.</typeparam>
+        /// <param name="tasks">Tasks to wait for first completed of.</param>
+        /// <returns>First completed task.</returns>
+        public static async Task<Task<TResult>> WhenAnyAsync<TResult>(params Task<TResult>[] tasks)
+        {
+            // The .NET one does not use the scheduler properly, so we do the non-generic one and
+            // convert back
+            var task = await Task.WhenAny((Task[])tasks).ConfigureAwait(true);
+            return (Task<TResult>)task;
+        }
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAny{TResult}(IEnumerable{Task{TResult}})" />.
+        /// </summary>
+        /// <typeparam name="TResult">Result type.</typeparam>
+        /// <param name="tasks">Tasks to wait for first completed of.</param>
+        /// <returns>First completed task.</returns>
+        public static async Task<Task<TResult>> WhenAnyAsync<TResult>(IEnumerable<Task<TResult>> tasks)
+        {
+            // The .NET one does not use the scheduler properly, so we do the non-generic one and
+            // convert back
+            var task = await Task.WhenAny((IEnumerable<Task>)tasks).ConfigureAwait(true);
+            return (Task<TResult>)task;
+        }
+
+        /// <summary>
         /// Unsafe calls that can be made in a workflow.
         /// </summary>
         public static class Unsafe
