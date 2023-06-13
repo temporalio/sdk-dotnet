@@ -216,6 +216,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     var block = new BufferBlock<string>();
                     await block.SendAsync("done");
                     return await block.ReceiveAsync();
+                case Scenario.TaskWhenAnyWithResultThreeParam:
+                    return await await Task.WhenAny(
+                        Task.FromResult("done"), Task.FromResult("done"), Task.FromResult("done"));
 
                 // Good
                 case Scenario.TaskFactoryStartNew:
@@ -230,6 +233,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     return await taskStart;
                 case Scenario.TaskContinueWith:
                     return await Task.CompletedTask.ContinueWith(_ => "done");
+                case Scenario.TaskWhenAnyWithResultTwoParam:
+                    return await await Task.WhenAny(
+                        Task.FromResult("done"), Task.FromResult("done"));
+                case Scenario.WorkflowWhenAnyWithResultThreeParam:
+                    return await await Workflow.WhenAnyAsync(
+                        Task.FromResult("done"), Task.FromResult("done"), Task.FromResult("done"));
             }
             throw new InvalidOperationException("Unexpected completion");
         }
@@ -244,11 +253,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             TaskWaitAsync,
             // https://github.com/dotnet/runtime/issues/83159
             DataflowReceiveAsync,
+            // https://github.com/dotnet/runtime/issues/87481
+            TaskWhenAnyWithResultThreeParam,
 
             // Good
             TaskFactoryStartNew,
             TaskStart,
             TaskContinueWith,
+            // https://github.com/dotnet/runtime/issues/87481
+            TaskWhenAnyWithResultTwoParam,
+            WorkflowWhenAnyWithResultThreeParam,
         }
     }
 
@@ -283,6 +297,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioFailsTask(
             StandardLibraryCallsWorkflow.Scenario.DataflowReceiveAsync,
             "not scheduled on workflow scheduler");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultThreeParam,
+            "not scheduled on workflow scheduler");
     }
 
     [Fact]
@@ -303,6 +320,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskFactoryStartNew);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskStart);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskContinueWith);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultTwoParam);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAnyWithResultThreeParam);
     }
 
     [Workflow]

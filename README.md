@@ -689,10 +689,15 @@ with .NET tasks inside of workflows:
 * Do not use `Task.Delay`, `Task.Wait`, timeout-based `CancellationTokenSource`, or anything that uses .NET built-in
   timers.
   * `Workflow.DelayAsync`, `Workflow.WaitConditionAsync`, or non-timeout-based cancellation token source is suggested.
+* Do not use `Task.WhenAny`.
+  * Use `Workflow.WhenAnyAsync` instead.
+  * Technically this only applies to an enumerable set of tasks with results or more than 2 tasks with results. Other
+    uses are safe. See [this issue](https://github.com/dotnet/runtime/issues/87481).
 * Be wary of additional libraries' implicit use of the default scheduler.
   * For example, while there are articles for `Dataflow` about
-    [using a specific scheduler](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-specify-a-task-scheduler-in-a-dataflow-block), there are hidden implicit uses of `TaskScheduler.Default`. For
-    example, see [this bug](https://github.com/dotnet/runtime/issues/83159).
+    [using a specific scheduler](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-specify-a-task-scheduler-in-a-dataflow-block),
+    there are hidden implicit uses of `TaskScheduler.Default`. For example, see
+    [this bug](https://github.com/dotnet/runtime/issues/83159).
 
 In order to help catch wrong scheduler use, by default the Temporal .NET SDK adds an event source listener for
 info-level task events. While this technically receives events from all uses of tasks in the process, we make sure to
