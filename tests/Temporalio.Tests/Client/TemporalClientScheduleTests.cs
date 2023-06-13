@@ -334,30 +334,48 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
 
     private async Task DeleteAllSchedulesAsync()
     {
-        await foreach (var sched in Client.ListSchedulesAsync())
+        // We will try this 3 times
+        var tries = 0;
+        while (true)
         {
+            await foreach (var sched in Client.ListSchedulesAsync())
+            {
+                try
+                {
+                    await Client.GetScheduleHandle(sched.ID).DeleteAsync();
+                }
+                catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+                {
+                    // Ignore not-found errors
+                }
+            }
             try
             {
-                await Client.GetScheduleHandle(sched.ID).DeleteAsync();
+                await AssertNoSchedulesAsync();
+                return;
             }
-            catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+            catch
             {
-                // Ignore not-found errors
+                if (++tries >= 3)
+                {
+                    throw;
+                }
             }
         }
-        await AssertNoSchedulesAsync();
     }
 
     private async Task AssertNoSchedulesAsync()
     {
-        await AssertMore.EqualEventuallyAsync(0, async () =>
-        {
-            var count = 0;
-            await foreach (var sched in Client.ListSchedulesAsync())
+        await AssertMore.EqualEventuallyAsync(
+            0,
+            async () =>
             {
-                count++;
-            }
-            return count;
-        });
+                var count = 0;
+                await foreach (var sched in Client.ListSchedulesAsync())
+                {
+                    count++;
+                }
+                return count;
+            });
     }
 }
