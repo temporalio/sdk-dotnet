@@ -9,7 +9,13 @@ namespace Temporalio.Tests
         public static Task EventuallyAsync(
             Func<Task> func, TimeSpan? interval = null, int iterations = 15) =>
             EventuallyAsync(
-                () => func().ContinueWith(_ => ValueTuple.Create()), interval, iterations);
+                async () =>
+                {
+                    await func();
+                    return ValueTuple.Create();
+                },
+                interval,
+                iterations);
 
         public static async Task<T> EventuallyAsync<T>(
             Func<Task<T>> func, TimeSpan? interval = null, int iterations = 15)

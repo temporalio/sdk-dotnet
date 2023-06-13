@@ -20,7 +20,7 @@ namespace Temporalio.Common
     /// be mutated during workflow run so it is not strictly immutable. From a client perspective,
     /// this collection is immutable.
     /// </remarks>
-    public class SearchAttributeCollection : IEnumerable<SearchAttributeKey>
+    public class SearchAttributeCollection : IReadOnlyCollection<SearchAttributeKey>
     {
         /// <summary>
         /// An empty search attribute collection.

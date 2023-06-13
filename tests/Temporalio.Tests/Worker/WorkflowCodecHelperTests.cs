@@ -153,20 +153,20 @@ public class WorkflowCodecHelperTests : TestBase
 
     private class MarkerPayloadCodec : IPayloadCodec
     {
-        public Task<IEnumerable<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
-            Task.FromResult(payloads.Select(p =>
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
             {
                 var newP = p.Clone();
                 newP.Metadata["encoded"] = ByteString.Empty;
                 return newP;
-            }));
+            }).ToList());
 
-        public Task<IEnumerable<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads) =>
-            Task.FromResult(payloads.Select(p =>
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
             {
                 var newP = p.Clone();
                 newP.Metadata["decoded"] = ByteString.Empty;
                 return newP;
-            }));
+            }).ToList());
     }
 }

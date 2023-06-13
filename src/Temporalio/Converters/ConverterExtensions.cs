@@ -18,7 +18,7 @@ namespace Temporalio.Converters
         /// <param name="converter">Converter to use.</param>
         /// <param name="values">Values to convert and encode.</param>
         /// <returns>Converted and encoded payloads.</returns>
-        public static async Task<IEnumerable<Payload>> ToPayloadsAsync(
+        public static async Task<IReadOnlyCollection<Payload>> ToPayloadsAsync(
             this DataConverter converter, IReadOnlyCollection<object?> values)
         {
             // Convert then encode
@@ -29,7 +29,7 @@ namespace Temporalio.Converters
                 payloads = await converter.PayloadCodec.EncodeAsync(
                     payloads.ToList()).ConfigureAwait(false);
             }
-            return payloads;
+            return payloads.ToList();
         }
 
         /// <summary>
@@ -160,9 +160,9 @@ namespace Temporalio.Converters
         /// <param name="converter">Converter to use.</param>
         /// <param name="values">Values to convert.</param>
         /// <returns>Converted values.</returns>
-        public static IEnumerable<Payload> ToPayloads(
+        public static IReadOnlyCollection<Payload> ToPayloads(
             this IPayloadConverter converter, IReadOnlyCollection<object?> values) =>
-            values.Select(converter.ToPayload);
+            values.Select(converter.ToPayload).ToList();
 
         /// <summary>
         /// Convert the given payload to a value of the given type.

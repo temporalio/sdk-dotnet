@@ -11,7 +11,7 @@ namespace Temporalio.Worker
         string TaskQueue,
         IList<WorkflowDefinition> Workflows,
         Converters.DataConverter DataConverter,
-        IEnumerable<Interceptors.IWorkerInterceptor> Interceptors,
+        IReadOnlyCollection<Interceptors.IWorkerInterceptor> Interceptors,
         ILoggerFactory LoggerFactory,
         Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory,
         bool DebugMode,

@@ -29,7 +29,7 @@ namespace Temporalio.Worker
         WorkflowDefinition Definition,
         WorkflowActivation InitialActivation,
         StartWorkflow Start,
-        IEnumerable<Interceptors.IWorkerInterceptor> Interceptors,
+        IReadOnlyCollection<Interceptors.IWorkerInterceptor> Interceptors,
         IPayloadConverter PayloadConverter,
         IFailureConverter FailureConverter,
         ILoggerFactory LoggerFactory,
