@@ -99,6 +99,12 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void Create_SignalAttributeOnStatic_Throws()
+    {
+        AssertBad<Bad.Wf1>("SomeStaticSignalAsync() cannot be static");
+    }
+
+    [Fact]
     public void Create_SignalAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one signal named SomeSignal1");
@@ -139,6 +145,12 @@ public class WorkflowAttributeTests
     public void Create_QueryAttributeOnNonPublic_Throws()
     {
         AssertBad<Bad.Wf1>("SomeQuery() must be public");
+    }
+
+    [Fact]
+    public void Create_QueryAttributeOnStatic_Throws()
+    {
+        AssertBad<Bad.Wf1>("SomeStaticQuery() cannot be static");
     }
 
     [Fact]
@@ -268,6 +280,12 @@ public class WorkflowAttributeTests
             public Wf1(string name)
             {
             }
+
+            [WorkflowSignal]
+            public static Task SomeStaticSignalAsync() => Task.CompletedTask;
+
+            [WorkflowQuery]
+            public static string SomeStaticQuery() => string.Empty;
 
             public override Task SomeVirtualSignalAsync() => Task.CompletedTask;
 
