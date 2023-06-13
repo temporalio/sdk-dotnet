@@ -43,16 +43,34 @@ namespace Temporalio.Common
         /// <typeparam name="TInstance">Instance type.</typeparam>
         /// <typeparam name="TResult">Result type.</typeparam>
         /// <param name="expr">Expression.</param>
+        /// <param name="errorSaysPropertyAccepted">True if error should mention property can be
+        /// accepted.</param>
         /// <returns>Method and args.</returns>
         public static (MethodInfo Method, IReadOnlyCollection<object?> Args) ExtractCall<TInstance, TResult>(
-            Expression<Func<TInstance, TResult>> expr) => ExtractCallInternal(expr);
+            Expression<Func<TInstance, TResult>> expr, bool errorSaysPropertyAccepted = false) =>
+            ExtractCallInternal(expr, errorSaysPropertyAccepted);
+
+        /// <summary>
+        /// Extract member access or null.
+        /// </summary>
+        /// <typeparam name="TInstance">Instance type.</typeparam>
+        /// <typeparam name="TResult">Result type.</typeparam>
+        /// <param name="expr">Lambda expression.</param>
+        /// <returns>Member info if any.</returns>
+        public static MemberInfo? ExtractMemberAccess<TInstance, TResult>(
+            Expression<Func<TInstance, TResult>> expr) =>
+            (expr.Body as MemberExpression)?.Member;
 
         private static (MethodInfo Method, IReadOnlyCollection<object?> Args) ExtractCallInternal<TDelegate>(
-            Expression<TDelegate> expr)
+            Expression<TDelegate> expr, bool errorSaysPropertyAccepted = false)
         {
             // Body must be a method call
             if (expr.Body is not MethodCallExpression call)
             {
+                if (errorSaysPropertyAccepted)
+                {
+                    throw new ArgumentException("Expression must be a single method call or property access");
+                }
                 throw new ArgumentException("Expression must be a single method call");
             }
             // The LHS of the method, if non-static, must be the parameter

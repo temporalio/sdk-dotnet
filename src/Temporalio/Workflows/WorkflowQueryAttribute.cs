@@ -10,7 +10,7 @@ namespace Temporalio.Workflows
     /// method must be a public, non-async, non-static method (i.e. cannot return a Task) and must
     /// return a non-void value.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, Inherited = false)]
     public sealed class WorkflowQueryAttribute : Attribute
     {
         /// <summary>

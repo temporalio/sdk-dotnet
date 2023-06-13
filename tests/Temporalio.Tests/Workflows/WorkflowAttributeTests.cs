@@ -172,6 +172,18 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void Create_QueryAttributeOnStaticProperty_Throws()
+    {
+        AssertBad<Bad.Wf1>("StaticQueryProp cannot be static");
+    }
+
+    [Fact]
+    public void Create_QueryAttributeOnProtectedProperty_Throws()
+    {
+        AssertBad<Bad.Wf1>("ProtectedQueryProp must have public getter");
+    }
+
+    [Fact]
     public void Create_Generics_Throws()
     {
         // We disallow generics because it is too complicated to handle at this time
@@ -281,6 +293,12 @@ public class WorkflowAttributeTests
             {
             }
 
+            [WorkflowQuery]
+            public static string? StaticQueryProp { get; }
+
+            [WorkflowQuery]
+            protected string? ProtectedQueryProp { get; }
+
             [WorkflowSignal]
             public static Task SomeStaticSignalAsync() => Task.CompletedTask;
 
@@ -351,6 +369,9 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
+            [WorkflowQuery]
+            string SomeQueryProp { get; }
+
             [WorkflowRun]
             Task RunAsync();
 
@@ -389,6 +410,9 @@ public class WorkflowAttributeTests
             public Wf2(string param1, int param2 = 5)
             {
             }
+
+            [WorkflowQuery]
+            public string? SomeQueryProp { get; }
 
             [WorkflowRun]
             public override Task RunAsync(string param1, int param2 = 5) => Task.CompletedTask;
