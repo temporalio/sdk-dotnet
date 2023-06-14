@@ -7,7 +7,7 @@ namespace Temporalio.Workflows
     /// </summary>
     /// <remarks>
     /// This is not inherited, so if a method is overridden, it must also have this attribute. The
-    /// method must return a task (not a task with a type embedded).
+    /// method must be a public non-static and return a task (not a task with a type embedded).
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class WorkflowSignalAttribute : Attribute

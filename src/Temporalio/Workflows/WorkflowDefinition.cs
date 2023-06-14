@@ -267,6 +267,27 @@ namespace Temporalio.Workflows
                 errs.Add($"{type} does not have a valid WorkflowRun method");
             }
 
+            // Get query attributes on properties
+            foreach (var property in type.GetProperties(bindingFlagsAny))
+            {
+                if (property.IsDefined(typeof(WorkflowQueryAttribute), false))
+                {
+                    try
+                    {
+                        var defn = WorkflowQueryDefinition.FromProperty(property);
+                        if (queries.ContainsKey(defn.Name))
+                        {
+                            errs.Add($"{type} has more than one query named {defn.Name}");
+                        }
+                        queries[defn.Name] = defn;
+                    }
+                    catch (ArgumentException e)
+                    {
+                        errs.Add(e.Message);
+                    }
+                }
+            }
+
             // If there are any errors, throw
             if (errs.Count > 0)
             {

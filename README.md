@@ -507,7 +507,7 @@ Attributes that can be applied:
   * The attribute can have a string argument for the signal name. Otherwise the name is defaulted to the unqualified
     method name with `Async` trimmed off the end if it is present.
   * This attribute is not inherited and therefore must be explicitly set on any override.
-* `[WorkflowQuery]` attribute may be present on any public method that handles queries.
+* `[WorkflowQuery]` attribute may be present on any public method or property with public getter that handles queries.
   * Query methods must be non-`void` but cannot return a `Task` (i.e. they cannot be async).
   * The attribute can have a string argument for the query name. Otherwise the name is defaulted to the unqualified
     method name.

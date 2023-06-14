@@ -99,6 +99,12 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void Create_SignalAttributeOnStatic_Throws()
+    {
+        AssertBad<Bad.Wf1>("SomeStaticSignalAsync() cannot be static");
+    }
+
+    [Fact]
     public void Create_SignalAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one signal named SomeSignal1");
@@ -142,6 +148,12 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void Create_QueryAttributeOnStatic_Throws()
+    {
+        AssertBad<Bad.Wf1>("SomeStaticQuery() cannot be static");
+    }
+
+    [Fact]
     public void Create_QueryAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one query named SomeQuery1");
@@ -157,6 +169,18 @@ public class WorkflowAttributeTests
     public void Create_QueryAttributeNotOnOverride_Throws()
     {
         AssertBad<Bad.Wf1>("SomeVirtualQuery() but not override");
+    }
+
+    [Fact]
+    public void Create_QueryAttributeOnStaticProperty_Throws()
+    {
+        AssertBad<Bad.Wf1>("StaticQueryProp cannot be static");
+    }
+
+    [Fact]
+    public void Create_QueryAttributeOnProtectedProperty_Throws()
+    {
+        AssertBad<Bad.Wf1>("ProtectedQueryProp must have public getter");
     }
 
     [Fact]
@@ -269,6 +293,18 @@ public class WorkflowAttributeTests
             {
             }
 
+            [WorkflowQuery]
+            public static string? StaticQueryProp { get; }
+
+            [WorkflowQuery]
+            protected string? ProtectedQueryProp { get; }
+
+            [WorkflowSignal]
+            public static Task SomeStaticSignalAsync() => Task.CompletedTask;
+
+            [WorkflowQuery]
+            public static string SomeStaticQuery() => string.Empty;
+
             public override Task SomeVirtualSignalAsync() => Task.CompletedTask;
 
             public override string SomeVirtualQuery() => string.Empty;
@@ -333,6 +369,9 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
+            [WorkflowQuery]
+            string SomeQueryProp { get; }
+
             [WorkflowRun]
             Task RunAsync();
 
@@ -371,6 +410,9 @@ public class WorkflowAttributeTests
             public Wf2(string param1, int param2 = 5)
             {
             }
+
+            [WorkflowQuery]
+            public string? SomeQueryProp { get; }
 
             [WorkflowRun]
             public override Task RunAsync(string param1, int param2 = 5) => Task.CompletedTask;

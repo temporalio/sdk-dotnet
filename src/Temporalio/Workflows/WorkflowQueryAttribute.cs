@@ -7,10 +7,10 @@ namespace Temporalio.Workflows
     /// </summary>
     /// <remarks>
     /// This is not inherited, so if a method is overridden, it must also have this attribute. The
-    /// method must be a non-async method (i.e. cannot return a Task) and must return a non-void
-    /// value.
+    /// method must be a public, non-async, non-static method (i.e. cannot return a Task) and must
+    /// return a non-void value.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, Inherited = false)]
     public sealed class WorkflowQueryAttribute : Attribute
     {
         /// <summary>

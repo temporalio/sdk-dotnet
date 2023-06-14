@@ -10,7 +10,8 @@ namespace Temporalio.Workflows
     /// </summary>
     public class WorkflowQueryDefinition
     {
-        private static readonly ConcurrentDictionary<MethodInfo, WorkflowQueryDefinition> Definitions = new();
+        private static readonly ConcurrentDictionary<MethodInfo, WorkflowQueryDefinition> MethodDefinitions = new();
+        private static readonly ConcurrentDictionary<PropertyInfo, WorkflowQueryDefinition> PropertyDefinitions = new();
 
         private WorkflowQueryDefinition(string name, MethodInfo? method, Delegate? del)
         {
@@ -45,8 +46,34 @@ namespace Temporalio.Workflows
             {
                 throw new ArgumentException($"WorkflowQuery method {method} must be public");
             }
-            return Definitions.GetOrAdd(method, CreateFromMethod);
+            if (method.IsStatic)
+            {
+                throw new ArgumentException($"WorkflowQuery method {method} cannot be static");
+            }
+            return MethodDefinitions.GetOrAdd(method, CreateFromMethod);
         }
+
+        /// <summary>
+        /// Get a query definition from a property getter or fail. The result is cached.
+        /// </summary>
+        /// <param name="property">Query property.</param>
+        /// <returns>Query definition.</returns>
+        public static WorkflowQueryDefinition FromProperty(PropertyInfo property) =>
+            PropertyDefinitions.GetOrAdd(property, _ =>
+            {
+                var attr = property.GetCustomAttribute<WorkflowQueryAttribute>(false) ??
+                    throw new ArgumentException($"{property} missing WorkflowQuery attribute");
+                var method = property.GetGetMethod();
+                if (method == null)
+                {
+                    throw new ArgumentException($"WorkflowQuery property {property} must have public getter");
+                }
+                else if (method.IsStatic)
+                {
+                    throw new ArgumentException($"WorkflowQuery property {property} cannot be static");
+                }
+                return new(attr.Name ?? property.Name, method, null);
+            });
 
         /// <summary>
         /// Creates a query definition from an explicit name and method. Most users should use

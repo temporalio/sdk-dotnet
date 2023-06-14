@@ -45,6 +45,10 @@ namespace Temporalio.Workflows
             {
                 throw new ArgumentException($"WorkflowSignal method {method} must be public");
             }
+            if (method.IsStatic)
+            {
+                throw new ArgumentException($"WorkflowSignal method {method} cannot be static");
+            }
             return Definitions.GetOrAdd(method, CreateFromMethod);
         }
 

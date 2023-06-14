@@ -900,6 +900,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [WorkflowQuery("custom-name")]
         public string QueryCustom(string arg) => $"QueryCustom: {arg}";
 
+        [WorkflowQuery]
+        public string QueryProperty => "QueryProperty";
+
+        [WorkflowQuery]
+        public string QueryNoArg() => "QueryNoArg";
+
         [WorkflowSignal]
         public async Task AddQueryHandlerAsync(string name) =>
             Workflow.Queries[name] = WorkflowQueryDefinition.CreateWithoutAttribute(
@@ -932,11 +938,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Equal(
                 "QueryCustom: bar",
                 await handle.QueryAsync(wf => wf.QueryCustom("bar")));
+            Assert.Equal(
+                "QueryProperty",
+                await handle.QueryAsync(wf => wf.QueryProperty));
             // Non-existent query
             var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                 () => handle.QueryAsync<string>("some-query", new[] { "some-arg" }));
             Assert.Contains(
-                "known queries: [custom-name QueryFail QueryMakingCommands QuerySimple]",
+                "known queries: [custom-name QueryFail QueryMakingCommands QueryNoArg QueryProperty QuerySimple]",
                 exc.Message);
             // Add that non-existent query then try again
             await handle.SignalAsync(wf => wf.AddQueryHandlerAsync("some-query"));
@@ -951,6 +960,34 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             var exc3 = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                 () => handle.QueryAsync(wf => wf.QueryMakingCommands()));
             Assert.Contains("created workflow commands", exc3.Message);
+            // Access method as property
+            var exc4 = await Assert.ThrowsAsync<ArgumentException>(
+                () => handle.QueryAsync<Func<string>>(wf => wf.QueryNoArg));
+            Assert.Contains("must be a single method call or property access", exc4.Message);
+        });
+    }
+
+    [Workflow]
+    public class PropertyWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync(string value) => Value = value;
+
+        [WorkflowQuery]
+        public string Value { get; set; } = string.Empty;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Properties_ProperlySupported()
+    {
+        await ExecuteWorkerAsync<PropertyWorkflow>(async worker =>
+        {
+            // Run the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (PropertyWorkflow wf) => wf.RunAsync("some string"),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            await handle.GetResultAsync();
+            Assert.Equal("some string", await handle.QueryAsync(wf => wf.Value));
         });
     }
 

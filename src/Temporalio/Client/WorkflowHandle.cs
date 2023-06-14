@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
@@ -238,11 +239,13 @@ namespace Temporalio.Client
                 Headers: null));
 
         /// <summary>
-        /// Query a workflow via a lambda call to a WorkflowQuery attributed method.
+        /// Query a workflow via a lambda that calls a WorkflowQuery attributed method or accesses
+        /// a WorkflowQuery attributed property.
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TQueryResult">Query result type.</typeparam>
-        /// <param name="queryCall">Invocation of a workflow query method.</param>
+        /// <param name="queryCall">Invocation of a workflow query method or access of workflow
+        /// query property.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>Query result.</returns>
         /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
@@ -254,7 +257,22 @@ namespace Temporalio.Client
             Expression<Func<TWorkflow, TQueryResult>> queryCall,
             WorkflowQueryOptions? options = null)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(queryCall);
+            // Try property first
+            var member = Common.ExpressionUtil.ExtractMemberAccess(queryCall);
+            if (member != null)
+            {
+                if (member is not PropertyInfo property)
+                {
+                    throw new ArgumentException("Expression must be a single method call or property access");
+                }
+                return QueryAsync<TQueryResult>(
+                    Workflows.WorkflowQueryDefinition.FromProperty(property).Name,
+                    Array.Empty<object?>(),
+                    options);
+            }
+            // Try method
+            var (method, args) = Common.ExpressionUtil.ExtractCall(
+                queryCall, errorSaysPropertyAccepted: true);
             return QueryAsync<TQueryResult>(
                 Workflows.WorkflowQueryDefinition.FromMethod(method).Name,
                 args,
@@ -441,10 +459,12 @@ namespace Temporalio.Client
             SignalAsync<TWorkflow>(signalCall, options);
 
         /// <summary>
-        /// Query a workflow via a lambda call to a WorkflowQuery attributed method.
+        /// Query a workflow via a lambda that calls a WorkflowQuery attributed method or accesses
+        /// a WorkflowQuery attributed property.
         /// </summary>
         /// <typeparam name="TQueryResult">Query result type.</typeparam>
-        /// <param name="queryCall">Invocation of a workflow query method.</param>
+        /// <param name="queryCall">Invocation of a workflow query method or access of workflow
+        /// query property.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>Query result.</returns>
         /// <exception cref="WorkflowQueryFailedException">Query failed on worker.</exception>
