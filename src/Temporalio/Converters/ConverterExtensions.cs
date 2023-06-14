@@ -176,5 +176,24 @@ namespace Temporalio.Converters
             // We count on the payload converter to check whether the type is nullable
             return (T)converter.ToValue(payload, typeof(T))!;
         }
+
+        /// <summary>
+        /// Convert the given raw value to a value of the given type.
+        /// </summary>
+        /// <typeparam name="T">Value type.</typeparam>
+        /// <param name="converter">The converter to use.</param>
+        /// <param name="rawValue">The raw value to convert.</param>
+        /// <returns>The converted value.</returns>
+        public static T ToValue<T>(this IPayloadConverter converter, IRawValue rawValue) =>
+            converter.ToValue<T>(rawValue.Payload);
+
+        /// <summary>
+        /// Convert the given value to a raw value.
+        /// </summary>
+        /// <param name="converter">The converter to use.</param>
+        /// <param name="value">The value to convert.</param>
+        /// <returns>The converted value.</returns>
+        public static RawValue ToRawValue(this IPayloadConverter converter, object? value) =>
+            new(converter.ToPayload(value));
     }
 }

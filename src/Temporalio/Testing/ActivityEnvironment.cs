@@ -50,6 +50,11 @@ namespace Temporalio.Testing
         public ILogger Logger { get; init; } = NullLogger.Instance;
 
         /// <summary>
+        /// Gets or inits the payload converter. Default is default converter.
+        /// </summary>
+        public IPayloadConverter PayloadConverter { get; init; } = DataConverter.Default.PayloadConverter;
+
+        /// <summary>
         /// Gets or sets the cancel reason. Callers may prefer <see cref="Cancel" /> instead.
         /// </summary>
         public ActivityCancelReason CancelReason
@@ -121,7 +126,8 @@ namespace Temporalio.Testing
                     workerShutdownToken: WorkerShutdownTokenSource.Token,
                     // This task token is not used for anything in this env
                     taskToken: ByteString.Empty,
-                    logger: Logger)
+                    logger: Logger,
+                    payloadConverter: PayloadConverter)
                 {
                     Heartbeater = Heartbeater,
                     CancelReasonRef = CancelReasonRef,

@@ -176,8 +176,9 @@ namespace Temporalio.Worker
                 info: info,
                 cancellationToken: cancelTokenSource.Token,
                 workerShutdownToken: workerShutdownTokenSource.Token,
-                tsk.TaskToken,
-                worker.LoggerFactory.CreateLogger($"Temporalio.Activity:{info.ActivityType}"));
+                taskToken: tsk.TaskToken,
+                logger: worker.LoggerFactory.CreateLogger($"Temporalio.Activity:{info.ActivityType}"),
+                payloadConverter: worker.Client.Options.DataConverter.PayloadConverter);
 
             // Start task
             using (context.Logger.BeginScope(info.LoggerScope))

@@ -1323,12 +1323,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Check initial
             Assert.Equal(MemoInitial, Workflow.Memo.ToDictionary(
-                kvp => kvp.Key, kvp => (object)kvp.Value.ToValue<string>()));
+                kvp => kvp.Key,
+                kvp => (object)Workflow.PayloadConverter.ToValue<string>(kvp.Value)));
             // Wait, then update and check
             await Workflow.WaitConditionAsync(() => proceed);
             Workflow.UpsertMemo(MemoUpdates);
             Assert.Equal(MemoUpdated, Workflow.Memo.ToDictionary(
-                kvp => kvp.Key, kvp => (object)kvp.Value.ToValue<string>()));
+                kvp => kvp.Key,
+                kvp => (object)Workflow.PayloadConverter.ToValue<string>(kvp.Value)));
         }
 
         [WorkflowSignal]
@@ -1373,7 +1375,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public async Task<IList<string>> RunAsync(IList<string> pastRunIDs)
         {
             // Check memo and retry policy
-            Assert.Equal(pastRunIDs.Count, Workflow.Memo["PastRunIDCount"].ToValue<int>());
+            Assert.Equal(
+                pastRunIDs.Count,
+                Workflow.PayloadConverter.ToValue<int>(Workflow.Memo["PastRunIDCount"]));
             Assert.Equal(pastRunIDs.Count + 1000, Workflow.Info.RetryPolicy?.MaximumAttempts);
 
             if (pastRunIDs.Count == 5)
@@ -2628,6 +2632,108 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             },
             new TemporalWorkerOptions().AddActivity(HeadersWithCodecWorkflow.DoThing),
             client);
+    }
+
+    public record SimpleValue(string SomeString);
+
+    [Workflow]
+    public class RawValueWorkflow
+    {
+        [Activity]
+        public static RawValue DoActivity(IRawValue param)
+        {
+            Assert.Equal(
+                new SimpleValue("to activity"),
+                ActivityExecutionContext.Current.PayloadConverter.ToValue<SimpleValue>(param));
+            return ActivityExecutionContext.Current.PayloadConverter.ToRawValue(
+                new SimpleValue("from activity"));
+        }
+
+        private bool finish;
+
+        [WorkflowRun]
+        public async Task<RawValue> RunAsync(IRawValue param)
+        {
+            // Confirm param
+            Assert.Equal(
+                new SimpleValue("to workflow"),
+                Workflow.PayloadConverter.ToValue<SimpleValue>(param));
+
+            // Check activity with raw types
+            var rawResult = await Workflow.ExecuteActivityAsync(
+                () => DoActivity(Workflow.PayloadConverter.ToRawValue(new SimpleValue("to activity"))),
+                new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            Assert.Equal(
+                new SimpleValue("from activity"),
+                Workflow.PayloadConverter.ToValue<SimpleValue>(rawResult));
+
+            // Check activity with actual types
+            var result = await Workflow.ExecuteActivityAsync<SimpleValue>(
+                "DoActivity",
+                new[] { new SimpleValue("to activity") },
+                new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            Assert.Equal(new SimpleValue("from activity"), result);
+
+            // Wait for finish and return value
+            await Workflow.WaitConditionAsync(() => finish);
+            return Workflow.PayloadConverter.ToRawValue(new SimpleValue("from workflow"));
+        }
+
+        [WorkflowSignal]
+        public async Task SignalAsync(IRawValue param)
+        {
+            Assert.Equal(
+                new SimpleValue("to signal"),
+                Workflow.PayloadConverter.ToValue<SimpleValue>(param));
+        }
+
+        // Intentionally return IRawValue and accept RawValue to confirm they work right
+        [WorkflowQuery]
+        public IRawValue Query(RawValue param)
+        {
+            Assert.Equal(
+                new SimpleValue("to query"),
+                Workflow.PayloadConverter.ToValue<SimpleValue>(param));
+            return Workflow.PayloadConverter.ToRawValue(new SimpleValue("from query"));
+        }
+
+        [WorkflowSignal]
+        public async Task FinishAsync() => finish = true;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_RawValue_ConvertsProperly()
+    {
+        var converter = DataConverter.Default.PayloadConverter;
+        await ExecuteWorkerAsync<RawValueWorkflow>(
+            async worker =>
+            {
+                // Check workflow with raw types
+                var rawHandle = await Env.Client.StartWorkflowAsync(
+                    (RawValueWorkflow wf) => wf.RunAsync(converter.ToRawValue(new SimpleValue("to workflow"))),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await rawHandle.SignalAsync(
+                    wf => wf.SignalAsync(converter.ToRawValue(new SimpleValue("to signal"))));
+                var rawQueryResult = await rawHandle.QueryAsync(
+                    wf => wf.Query(converter.ToRawValue(new SimpleValue("to query"))));
+                Assert.Equal(new SimpleValue("from query"), converter.ToValue<SimpleValue>(rawQueryResult));
+                await rawHandle.SignalAsync(wf => wf.FinishAsync());
+                var rawResult = await rawHandle.GetResultAsync();
+                Assert.Equal(new SimpleValue("from workflow"), converter.ToValue<SimpleValue>(rawResult));
+
+                // Check workflow with actual types
+                var handle = await Env.Client.StartWorkflowAsync(
+                    "RawValueWorkflow",
+                    new[] { new SimpleValue("to workflow") },
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await handle.SignalAsync("Signal", new[] { new SimpleValue("to signal") });
+                var queryResult = await handle.QueryAsync<SimpleValue>("Query", new[] { new SimpleValue("to query") });
+                Assert.Equal(new SimpleValue("from query"), queryResult);
+                await handle.SignalAsync("Finish", Array.Empty<object?>());
+                var result = await rawHandle.GetResultAsync<SimpleValue>();
+                Assert.Equal(new SimpleValue("from workflow"), result);
+            },
+            new TemporalWorkerOptions().AddActivity(RawValueWorkflow.DoActivity));
     }
 
     private async Task ExecuteWorkerAsync<TWf>(

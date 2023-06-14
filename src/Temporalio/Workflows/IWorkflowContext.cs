@@ -39,6 +39,11 @@ namespace Temporalio.Workflows
         IReadOnlyDictionary<string, IRawValue> Memo { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.PayloadConverter" />.
+        /// </summary>
+        IPayloadConverter PayloadConverter { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.Queries" />.
         /// </summary>
         IDictionary<string, WorkflowQueryDefinition> Queries { get; }

@@ -54,6 +54,11 @@ namespace Temporalio.Workflows
         public static IReadOnlyDictionary<string, IRawValue> Memo => Context.Memo;
 
         /// <summary>
+        /// Gets the payload converter for the workflow.
+        /// </summary>
+        public static IPayloadConverter PayloadConverter => Context.PayloadConverter;
+
+        /// <summary>
         /// Gets queries for this workflow.
         /// </summary>
         /// <remarks>
