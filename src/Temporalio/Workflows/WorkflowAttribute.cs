@@ -38,5 +38,12 @@ namespace Temporalio.Workflows
         /// capital letter, the "I" is trimmed when creating the default name.
         /// </summary>
         public string? Name { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the workflow is dynamic. If a workflow is
+        /// dynamic, it cannot by given a name in this attribute and the run method must accept a
+        /// vararg parameter array of <see cref="Converters.IRawValue" />.
+        /// </summary>
+        public bool Dynamic { get; set; }
     }
 }

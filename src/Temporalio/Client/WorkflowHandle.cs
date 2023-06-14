@@ -5,13 +5,13 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
+using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 
 #if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Temporalio.Common;
 #endif
 
 namespace Temporalio.Client
@@ -210,9 +210,9 @@ namespace Temporalio.Client
         public Task SignalAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> signalCall, WorkflowSignalOptions? options = null)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(signalCall);
+            var (method, args) = ExpressionUtil.ExtractCall(signalCall);
             return SignalAsync(
-                Workflows.WorkflowSignalDefinition.FromMethod(method).Name,
+                Workflows.WorkflowSignalDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -258,7 +258,7 @@ namespace Temporalio.Client
             WorkflowQueryOptions? options = null)
         {
             // Try property first
-            var member = Common.ExpressionUtil.ExtractMemberAccess(queryCall);
+            var member = ExpressionUtil.ExtractMemberAccess(queryCall);
             if (member != null)
             {
                 if (member is not PropertyInfo property)
@@ -266,15 +266,15 @@ namespace Temporalio.Client
                     throw new ArgumentException("Expression must be a single method call or property access");
                 }
                 return QueryAsync<TQueryResult>(
-                    Workflows.WorkflowQueryDefinition.FromProperty(property).Name,
+                    Workflows.WorkflowQueryDefinition.NameFromPropertyForCall(property),
                     Array.Empty<object?>(),
                     options);
             }
             // Try method
-            var (method, args) = Common.ExpressionUtil.ExtractCall(
+            var (method, args) = ExpressionUtil.ExtractCall(
                 queryCall, errorSaysPropertyAccepted: true);
             return QueryAsync<TQueryResult>(
-                Workflows.WorkflowQueryDefinition.FromMethod(method).Name,
+                Workflows.WorkflowQueryDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }

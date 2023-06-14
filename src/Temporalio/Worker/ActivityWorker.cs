@@ -25,6 +25,7 @@ namespace Temporalio.Worker
         private readonly ILogger logger;
         // Keyed by name
         private readonly Dictionary<string, ActivityDefinition> activities;
+        private readonly ActivityDefinition? dynamicActivity;
         // Keyed by task token
         private readonly ConcurrentDictionary<ByteString, RunningActivity> runningActivities = new();
 
@@ -41,11 +42,22 @@ namespace Temporalio.Worker
             activities = new(worker.Options.Activities.Count);
             foreach (var defn in worker.Options.Activities)
             {
-                if (activities.ContainsKey(defn.Name))
+                if (defn.Name == null)
+                {
+                    if (dynamicActivity != null)
+                    {
+                        throw new ArgumentException("Multiple dynamic activities provided");
+                    }
+                    dynamicActivity = defn;
+                }
+                else if (activities.ContainsKey(defn.Name))
                 {
                     throw new ArgumentException($"Duplicate activity named {defn.Name}");
                 }
-                activities[defn.Name] = defn;
+                else
+                {
+                    activities[defn.Name] = defn;
+                }
             }
         }
 
@@ -280,32 +292,49 @@ namespace Temporalio.Worker
                 // Find activity or fail
                 if (!activities.TryGetValue(act.Context.Info.ActivityType, out var defn))
                 {
-                    var avail = activities.Keys.ToList();
-                    avail.Sort();
-                    var availStr = string.Join(", ", avail);
-                    throw new ApplicationFailureException(
-                        $"Activity {act.Context.Info.ActivityType} is not registered on this worker," +
-                        $" available activities: {availStr}",
-                        errorType: "NotFoundError");
+                    defn = dynamicActivity;
+                    if (defn == null)
+                    {
+                        var avail = activities.Keys.ToList();
+                        avail.Sort();
+                        var availStr = string.Join(", ", avail);
+                        throw new ApplicationFailureException(
+                            $"Activity {act.Context.Info.ActivityType} is not registered on this worker," +
+                            $" available activities: {availStr}",
+                            errorType: "NotFoundError");
+                    }
                 }
 
-                // Deserialize arguments. If the input is less than the required parameter count, we
-                // error.
-                if (tsk.Start.Input.Count < defn.RequiredParameterCount)
-                {
-                    throw new ApplicationFailureException(
-                        $"Activity {act.Context.Info.ActivityType} given {tsk.Start.Input.Count} parameter(s)," +
-                        " but more than that are required by the signature");
-                }
-                // Zip the params and input and then decode each. It is intentional that we discard
-                // extra input arguments that the signature doesn't accept.
                 object?[] paramVals;
                 try
                 {
-                    paramVals = await Task.WhenAll(
-                        tsk.Start.Input.Zip(defn.ParameterTypes, (input, paramType) =>
-                            worker.Client.Options.DataConverter.ToValueAsync(
-                                input, paramType))).ConfigureAwait(false);
+                    // Dynamic activities are just one param of a raw array, otherwise, deserialize
+                    if (defn.Dynamic)
+                    {
+                        paramVals = new[]
+                        {
+                            await Task.WhenAll(tsk.Start.Input.Select(p =>
+                                worker.Client.Options.DataConverter.ToValueAsync<IRawValue>(p))).
+                                ConfigureAwait(false),
+                        };
+                    }
+                    else
+                    {
+                        // Deserialize arguments. If the input is less than the required parameter
+                        // count, we error.
+                        if (tsk.Start.Input.Count < defn.RequiredParameterCount)
+                        {
+                            throw new ApplicationFailureException(
+                                $"Activity {act.Context.Info.ActivityType} given {tsk.Start.Input.Count} parameter(s)," +
+                                " but more than that are required by the signature");
+                        }
+                        // Zip the params and input and then decode each. It is intentional that we
+                        // discard extra input arguments that the signature doesn't accept.
+                        paramVals = await Task.WhenAll(
+                            tsk.Start.Input.Zip(defn.ParameterTypes, (input, paramType) =>
+                                worker.Client.Options.DataConverter.ToValueAsync(
+                                    input, paramType))).ConfigureAwait(false);
+                    }
                 }
                 catch (Exception e)
                 {

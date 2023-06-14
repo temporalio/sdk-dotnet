@@ -127,7 +127,7 @@ namespace Temporalio.Converters
         /// <inheritdoc />
         public object? ToValue(Payload payload, Type type)
         {
-            if (type.IsAssignableFrom(typeof(RawValue)))
+            if (type == typeof(IRawValue) || type == typeof(RawValue))
             {
                 return new RawValue(payload);
             }

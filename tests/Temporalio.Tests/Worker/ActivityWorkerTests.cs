@@ -792,7 +792,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             async () =>
             {
                 var arg = new KSWorkflowParams(new KSAction(ExecuteActivity: new(
-                    Name: ActivityDefinition.Create(activity).Name,
+                    Name: ActivityDefinition.Create(activity).Name!,
                     TaskQueue: taskQueue,
                     Args: args,
                     WaitForCancellation: waitForCancellation,

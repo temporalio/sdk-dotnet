@@ -1504,11 +1504,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     () => NoResultWithArgAsync("8"),
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 Assert.Equal("11", await Workflow.ExecuteLocalActivityAsync<string>(
-                    ActivityDefinition.Create(ResultMultiArgSync).Name,
+                    ActivityDefinition.Create(ResultMultiArgSync).Name!,
                     new object?[] { "9", "10" },
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 await Workflow.ExecuteLocalActivityAsync(
-                    ActivityDefinition.Create(NoResultMultiArgSync).Name,
+                    ActivityDefinition.Create(NoResultMultiArgSync).Name!,
                     new object?[] { "12", "13" },
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
 
@@ -1566,11 +1566,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     () => NoResultWithArgAsync("8"),
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
                 Assert.Equal("11", await Workflow.ExecuteActivityAsync<string>(
-                    ActivityDefinition.Create(ResultMultiArgSync).Name,
+                    ActivityDefinition.Create(ResultMultiArgSync).Name!,
                     new object?[] { "9", "10" },
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) }));
                 await Workflow.ExecuteActivityAsync(
-                    ActivityDefinition.Create(NoResultMultiArgSync).Name,
+                    ActivityDefinition.Create(NoResultMultiArgSync).Name!,
                     new object?[] { "12", "13" },
                     new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
 
@@ -1934,11 +1934,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             await Workflow.ExecuteChildWorkflowAsync(
                 (NoResultWithArg wf) => wf.RunAsync("4"), new() { RunTimeout = TimeSpan.FromHours(1) });
             Assert.Equal("7", await Workflow.ExecuteChildWorkflowAsync<string>(
-                WorkflowDefinition.Create(typeof(ResultMultiArg)).Name,
+                WorkflowDefinition.Create(typeof(ResultMultiArg)).Name!,
                 new object?[] { "5", "6" },
                 new() { RunTimeout = TimeSpan.FromHours(1) }));
             await Workflow.ExecuteChildWorkflowAsync(
-                WorkflowDefinition.Create(typeof(NoResultMultiArg)).Name,
+                WorkflowDefinition.Create(typeof(NoResultMultiArg)).Name!,
                 new object?[] { "8", "9" },
                 new() { RunTimeout = TimeSpan.FromHours(1) });
 #pragma warning restore SA1118
@@ -2734,6 +2734,103 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Equal(new SimpleValue("from workflow"), result);
             },
             new TemporalWorkerOptions().AddActivity(RawValueWorkflow.DoActivity));
+    }
+
+    [Workflow]
+    public interface INonDynamicWorkflow
+    {
+        [WorkflowQuery]
+        IList<string> Events { get; }
+
+        [WorkflowRun]
+        Task<string> RunAsync(string arg);
+
+        [WorkflowSignal]
+        Task FinishAsync();
+
+        [WorkflowSignal]
+        Task SomeSignalAsync(string arg);
+
+        [WorkflowQuery]
+        string SomeQuery(string arg);
+    }
+
+    [Workflow(Dynamic = true)]
+    public class DynamicWorkflow
+    {
+        private bool finish;
+
+        [WorkflowQuery]
+        public IList<string> Events { get; } = new List<string>();
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(params IRawValue[] args)
+        {
+            Events.Add($"workflow-{Workflow.Info.WorkflowType}: " +
+                Workflow.PayloadConverter.ToValue<string>(args.Single()));
+            Events.Add(await Workflow.ExecuteActivityAsync(
+                () => NonDynamicActivity("activity arg"),
+                new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) }));
+            await Workflow.WaitConditionAsync(() => finish);
+            return "done";
+        }
+
+        [WorkflowSignal]
+        public async Task FinishAsync() => finish = true;
+
+        [WorkflowSignal(Dynamic = true)]
+        public async Task DynamicSignalAsync(string signalName, params IRawValue[] args)
+        {
+            Events.Add($"signal-{signalName}: " +
+                Workflow.PayloadConverter.ToValue<string>(args.Single()));
+        }
+
+        [WorkflowQuery(Dynamic = true)]
+        public string DynamicQuery(string queryName, params IRawValue[] args)
+        {
+            Events.Add($"query-{queryName}: " +
+                Workflow.PayloadConverter.ToValue<string>(args.Single()));
+            return "done";
+        }
+
+        [Activity]
+        public static string NonDynamicActivity(string arg) => throw new NotImplementedException();
+
+        [Activity(Dynamic = true)]
+        public static string DynamicActivity(params IRawValue[] args)
+        {
+            var type = ActivityExecutionContext.Current.Info.ActivityType;
+            var arg = ActivityExecutionContext.Current.PayloadConverter.ToValue<string>(args.Single());
+            return $"activity-{type}: {arg}";
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Dynamic_CalledProperly()
+    {
+        await ExecuteWorkerAsync<DynamicWorkflow>(
+            async worker =>
+            {
+                // Start, send signal, send query, finish (signal), wait for complete, fetch
+                // events (signal)
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (INonDynamicWorkflow wf) => wf.RunAsync("workflow arg"),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await handle.SignalAsync(wf => wf.SomeSignalAsync("signal arg"));
+                Assert.Equal("done", await handle.QueryAsync(wf => wf.SomeQuery("query arg")));
+                await handle.SignalAsync(wf => wf.FinishAsync());
+                Assert.Equal("done", await handle.GetResultAsync());
+                Assert.Equal(
+                    new List<string>
+                    {
+                        "activity-NonDynamicActivity: activity arg",
+                        "query-SomeQuery: query arg",
+                        "signal-SomeSignal: signal arg",
+                        "workflow-NonDynamicWorkflow: workflow arg",
+                    },
+                    (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+            },
+            new TemporalWorkerOptions().AddActivity(DynamicWorkflow.DynamicActivity));
     }
 
     private async Task ExecuteWorkerAsync<TWf>(

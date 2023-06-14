@@ -82,6 +82,11 @@ namespace Temporalio.Activities
         public CancellationToken WorkerShutdownToken { get; private init; }
 
         /// <summary>
+        /// Gets the payload converter in use by this activity worker.
+        /// </summary>
+        public IPayloadConverter PayloadConverter { get; private init; }
+
+        /// <summary>
         /// Gets the async local current value.
         /// </summary>
         internal static AsyncLocal<ActivityExecutionContext?> AsyncLocalCurrent { get; } = new();
@@ -102,11 +107,6 @@ namespace Temporalio.Activities
         /// Gets the raw proto task token for this activity.
         /// </summary>
         internal ByteString TaskToken { get; private init; }
-
-        /// <summary>
-        /// Gets the payload converter in use by this activity worker.
-        /// </summary>
-        public IPayloadConverter PayloadConverter { get; private init; }
 
         /// <summary>
         /// Record a heartbeat on the activity.

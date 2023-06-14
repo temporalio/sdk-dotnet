@@ -47,7 +47,9 @@ namespace Temporalio.Worker
         private readonly Dictionary<uint, TaskCompletionSource<ChildWorkflowResult>> childWorkflowsPendingCompletion = new();
         private readonly Dictionary<uint, TaskCompletionSource<ResolveSignalExternalWorkflow>> externalSignalsPending = new();
         private readonly Dictionary<uint, TaskCompletionSource<ResolveRequestCancelExternalWorkflow>> externalCancelsPending = new();
-        private readonly Dictionary<string, List<SignalWorkflow>> bufferedSignals = new();
+        // Buffered signals have to be a list instead of a dictionary because when a dynamic signal
+        // handler is added, we need to traverse in insertion order
+        private readonly List<SignalWorkflow> bufferedSignals = new();
         private readonly CancellationTokenSource cancellationTokenSource = new();
         private readonly LinkedList<Tuple<Func<bool>, TaskCompletionSource<object?>>> conditions = new();
         private readonly HashSet<string> patchesNotified = new();
@@ -67,6 +69,8 @@ namespace Temporalio.Worker
         private uint childWorkflowCounter;
         private uint externalSignalsCounter;
         private uint externalCancelsCounter;
+        private WorkflowQueryDefinition? dynamicQuery;
+        private WorkflowSignalDefinition? dynamicSignal;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -76,6 +80,8 @@ namespace Temporalio.Worker
         {
             taskFactory = new(default, TaskCreationOptions.None, TaskContinuationOptions.ExecuteSynchronously, this);
             defn = details.Definition;
+            dynamicQuery = defn.DynamicQuery;
+            dynamicSignal = defn.DynamicSignal;
             PayloadConverter = details.PayloadConverter;
             failureConverter = details.FailureConverter;
             var rootInbound = new InboundImpl(this);
@@ -115,7 +121,11 @@ namespace Temporalio.Worker
             var act = details.InitialActivation;
             var start = details.Start;
             startArgs = new(
-                () => DecodeArgs(defn.RunMethod, start.Arguments, $"Workflow {start.WorkflowType}"),
+                () => DecodeArgs(
+                    method: defn.RunMethod,
+                    payloads: start.Arguments,
+                    itemName: $"Workflow {start.WorkflowType}",
+                    dynamic: defn.Dynamic),
                 false);
             initialSearchAttributes = details.Start.SearchAttributes;
             WorkflowInfo.ParentInfo? parent = null;
@@ -167,6 +177,42 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
+
+        /// <inheritdoc />
+        public WorkflowQueryDefinition? DynamicQuery
+        {
+            get => dynamicQuery;
+            set
+            {
+                if (value != null && !value.Dynamic)
+                {
+                    throw new ArgumentException("Query is not dynamic");
+                }
+                dynamicQuery = value;
+            }
+        }
+
+        /// <inheritdoc />
+        public WorkflowSignalDefinition? DynamicSignal
+        {
+            get => dynamicSignal;
+            set
+            {
+                if (value != null && !value.Dynamic)
+                {
+                    throw new ArgumentException("Signal is not dynamic");
+                }
+                dynamicSignal = value;
+                if (value != null)
+                {
+                    // If it's not null, send _all_ buffered signals. We will copy all from
+                    // buffered, clear buffered, and send all to apply signal
+                    var signals = bufferedSignals.ToList();
+                    bufferedSignals.Clear();
+                    signals.ForEach(ApplySignalWorkflow);
+                }
+            }
+        }
 
         /// <inheritdoc />
         public WorkflowInfo Info { get; private init; }
@@ -781,10 +827,14 @@ namespace Temporalio.Worker
                         var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : defn.Queries;
                         if (!queries.TryGetValue(query.QueryType, out queryDefn))
                         {
-                            var knownQueries = queries.Keys.OrderBy(k => k);
-                            throw new InvalidOperationException(
-                                $"Query handler for {query.QueryType} expected but not found, " +
-                                $"known queries: [{string.Join(" ", knownQueries)}]");
+                            queryDefn = DynamicQuery;
+                            if (queryDefn == null)
+                            {
+                                var knownQueries = queries.Keys.OrderBy(k => k);
+                                throw new InvalidOperationException(
+                                    $"Query handler for {query.QueryType} expected but not found, " +
+                                    $"known queries: [{string.Join(" ", knownQueries)}]");
+                            }
                         }
                     }
                     var resultObj = inbound.Value.HandleQuery(new(
@@ -792,9 +842,11 @@ namespace Temporalio.Worker
                             Query: query.QueryType,
                             Definition: queryDefn,
                             Args: DecodeArgs(
-                                queryDefn.Method ?? queryDefn.Delegate!.Method,
-                                query.Arguments,
-                                $"Query {query.QueryType}"),
+                                method: queryDefn.Method ?? queryDefn.Delegate!.Method,
+                                payloads: query.Arguments,
+                                itemName: $"Query {query.QueryType}",
+                                dynamic: queryDefn.Dynamic,
+                                dynamicArgPrepend: query.QueryType),
                             Headers: query.Headers));
                     AddCommand(new()
                     {
@@ -887,13 +939,13 @@ namespace Temporalio.Worker
             var signals = mutableSignals.IsValueCreated ? mutableSignals.Value : defn.Signals;
             if (!signals.TryGetValue(signal.SignalName, out var signalDefn))
             {
-                if (!bufferedSignals.TryGetValue(signal.SignalName, out var signalList))
+                signalDefn = DynamicSignal;
+                if (signalDefn == null)
                 {
-                    signalList = new();
-                    bufferedSignals[signal.SignalName] = signalList;
+                    // No definition found, buffer
+                    bufferedSignals.Add(signal);
+                    return;
                 }
-                signalList.Add(signal);
-                return;
             }
 
             // Run the handler as a top-level function
@@ -903,9 +955,11 @@ namespace Temporalio.Worker
                     Signal: signal.SignalName,
                     Definition: signalDefn,
                     Args: DecodeArgs(
-                        signalDefn.Method ?? signalDefn.Delegate!.Method,
-                        signal.Input,
-                        $"Signal {signal.SignalName}"),
+                        method: signalDefn.Method ?? signalDefn.Delegate!.Method,
+                        payloads: signal.Input,
+                        itemName: $"Signal {signal.SignalName}",
+                        dynamic: signalDefn.Dynamic,
+                        dynamicArgPrepend: signal.SignalName),
                     Headers: signal.Headers)).ConfigureAwait(true);
             }));
         }
@@ -931,6 +985,10 @@ namespace Temporalio.Worker
 
         private void OnQueryDefinitionAdded(string name, WorkflowQueryDefinition defn)
         {
+            if (defn.Dynamic)
+            {
+                throw new ArgumentException($"Cannot set dynamic query with other query");
+            }
             if (name != defn.Name)
             {
                 throw new ArgumentException($"Query name {name} doesn't match definition name {defn.Name}");
@@ -939,21 +997,49 @@ namespace Temporalio.Worker
 
         private void OnSignalDefinitionAdded(string name, WorkflowSignalDefinition defn)
         {
+            if (defn.Dynamic)
+            {
+                throw new ArgumentException($"Cannot set dynamic signal with other signals");
+            }
             if (name != defn.Name)
             {
                 throw new ArgumentException($"Signal name {name} doesn't match definition name {defn.Name}");
             }
-            // Send all buffered signals
-            if (bufferedSignals.TryGetValue(name, out var buffered))
+            // Send all buffered signals that apply to this one. We are going to collect these by
+            // iterating list in reverse matching predicate while removing, then iterating in
+            // reverse
+            var buffered = new List<SignalWorkflow>();
+            for (var i = bufferedSignals.Count - 1; i >= 0; i--)
             {
-                bufferedSignals.Remove(name);
-                buffered.ForEach(ApplySignalWorkflow);
+                if (bufferedSignals[i].SignalName == name)
+                {
+                    buffered.Add(bufferedSignals[i]);
+                    bufferedSignals.RemoveAt(i);
+                }
             }
+            buffered.Reverse();
+            buffered.ForEach(ApplySignalWorkflow);
         }
 
         private object?[] DecodeArgs(
-            MethodInfo method, IReadOnlyCollection<Payload> payloads, string itemName)
+            MethodInfo method,
+            IReadOnlyCollection<Payload> payloads,
+            string itemName,
+            bool dynamic,
+            string? dynamicArgPrepend = null)
         {
+            // If the method is dynamic, a single vararg IRawValue parameter is guaranteed at the
+            // end
+            if (dynamic)
+            {
+                var raw = payloads.Select(p => new RawValue(p)).ToArray();
+                if (dynamicArgPrepend != null)
+                {
+                    return new object?[] { dynamicArgPrepend, raw };
+                }
+                return new object?[] { raw };
+            }
+
             var paramInfos = method.GetParameters();
             if (payloads.Count < paramInfos.Length && !paramInfos[payloads.Count].HasDefaultValue)
             {

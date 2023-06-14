@@ -36,5 +36,12 @@ namespace Temporalio.Workflows
         /// name.
         /// </summary>
         public string? Name { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the query is dynamic. If a query is dynamic, it
+        /// cannot be given a name in this attribute and the method must accept a vararg parameter
+        /// array of <see cref="Converters.IRawValue" />.
+        /// </summary>
+        public bool Dynamic { get; set; }
     }
 }

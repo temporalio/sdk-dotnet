@@ -32,5 +32,12 @@ namespace Temporalio.Activities
         /// name (with "Async" trimmed off the end if present and the return type is a task).
         /// </summary>
         public string? Name { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the activity is dynamic. If an activity is
+        /// dynamic, it cannot by given a name in this attribute and the method must accept a vararg
+        /// parameter array of <see cref="Converters.IRawValue" />.
+        /// </summary>
+        public bool Dynamic { get; set; }
     }
 }

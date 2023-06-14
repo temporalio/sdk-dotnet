@@ -40,9 +40,9 @@ namespace Temporalio.Client.Schedules
         public static ScheduleActionStartWorkflow Create<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options)
         {
-            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (runMethod, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return Create(
-                Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 args,
                 options);
         }
@@ -59,9 +59,9 @@ namespace Temporalio.Client.Schedules
         public static ScheduleActionStartWorkflow Create<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
         {
-            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (runMethod, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return Create(
-                Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 args,
                 options);
         }

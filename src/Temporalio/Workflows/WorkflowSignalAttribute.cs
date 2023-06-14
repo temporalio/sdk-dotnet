@@ -36,5 +36,12 @@ namespace Temporalio.Workflows
         /// default.
         /// </summary>
         public string? Name { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the signal is dynamic. If a signal is dynamic,
+        /// it cannot be given a name in this attribute and the method must accept a string name and
+        /// a vararg parameter array of <see cref="Converters.IRawValue" />.
+        /// </summary>
+        public bool Dynamic { get; set; }
     }
 }

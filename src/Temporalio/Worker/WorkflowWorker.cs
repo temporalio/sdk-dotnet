@@ -30,6 +30,8 @@ namespace Temporalio.Worker
         // Keyed by run ID
         private readonly ConcurrentDictionary<string, Task> deadlockedWorkflows = new();
         private readonly TimeSpan deadlockTimeout;
+        private readonly Dictionary<string, WorkflowDefinition> workflows = new();
+        private readonly WorkflowDefinition? dynamicWorkflow;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowWorker"/> class.
@@ -43,26 +45,31 @@ namespace Temporalio.Worker
             this.options = options;
             this.onEviction = onEviction;
             logger = options.LoggerFactory.CreateLogger<WorkflowWorker>();
-            WorkflowDefinitions = new();
             foreach (var defn in options.Workflows)
             {
                 if (!defn.Instantiable)
                 {
                     throw new ArgumentException($"Workflow named {defn.Name} is not instantiable");
                 }
-                if (WorkflowDefinitions.ContainsKey(defn.Name))
+                if (defn.Name == null)
+                {
+                    if (dynamicWorkflow != null)
+                    {
+                        throw new ArgumentException("Multiple dynamic workflows provided");
+                    }
+                    dynamicWorkflow = defn;
+                }
+                else if (workflows.ContainsKey(defn.Name))
                 {
                     throw new ArgumentException($"Duplicate workflow named {defn.Name}");
                 }
-                WorkflowDefinitions[defn.Name] = defn;
+                else
+                {
+                    workflows[defn.Name] = defn;
+                }
             }
             deadlockTimeout = options.DebugMode ? Timeout.InfiniteTimeSpan : DefaultDeadlockTimeout;
         }
-
-        /// <summary>
-        /// Gets the known set of workflow definitions by name.
-        /// </summary>
-        internal Dictionary<string, WorkflowDefinition> WorkflowDefinitions { get; private init; }
 
         /// <summary>
         /// Execute this worker until poller shutdown or failure. If there is a failure, this may
@@ -247,17 +254,18 @@ namespace Temporalio.Worker
 
         private IWorkflowInstance CreateInstance(WorkflowActivation act)
         {
-            var start = act.Jobs.Select(j => j.StartWorkflow).FirstOrDefault(s => s != null);
-            if (start == null)
-            {
+            var start = act.Jobs.Select(j => j.StartWorkflow).FirstOrDefault(s => s != null) ??
                 throw new InvalidOperationException("Missing workflow start (unexpectedly evicted?)");
-            }
-            if (!WorkflowDefinitions.TryGetValue(start.WorkflowType, out var defn))
+            if (!workflows.TryGetValue(start.WorkflowType, out var defn))
             {
-                var names = string.Join(", ", WorkflowDefinitions.Keys.OrderBy(s => s));
-                throw new ApplicationFailureException(
-                    $"Workflow type {start.WorkflowType} is not registered on this worker, available workflows: {names}",
-                    "NotFoundError");
+                defn = dynamicWorkflow;
+                if (defn == null)
+                {
+                    var names = string.Join(", ", workflows.Keys.OrderBy(s => s));
+                    throw new ApplicationFailureException(
+                        $"Workflow type {start.WorkflowType} is not registered on this worker, available workflows: {names}",
+                        "NotFoundError");
+                }
             }
             return options.WorkflowInstanceFactory(
                 new(

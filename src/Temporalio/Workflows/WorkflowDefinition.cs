@@ -17,25 +17,29 @@ namespace Temporalio.Workflows
         private readonly Func<object?[], object>? creator;
 
         private WorkflowDefinition(
-            string name,
+            string? name,
             Type type,
             MethodInfo runMethod,
             Func<object?[], object>? creator,
             IReadOnlyDictionary<string, WorkflowSignalDefinition> signals,
-            IReadOnlyDictionary<string, WorkflowQueryDefinition> queries)
+            WorkflowSignalDefinition? dynamicSignal,
+            IReadOnlyDictionary<string, WorkflowQueryDefinition> queries,
+            WorkflowQueryDefinition? dynamicQuery)
         {
             Name = name;
             Type = type;
             RunMethod = runMethod;
             this.creator = creator;
             Signals = signals;
+            DynamicSignal = dynamicSignal;
             Queries = queries;
+            DynamicQuery = dynamicQuery;
         }
 
         /// <summary>
-        /// Gets the workflow name.
+        /// Gets the workflow name or null if workflow is dynamic.
         /// </summary>
-        public string Name { get; private init; }
+        public string? Name { get; private init; }
 
         /// <summary>
         /// Gets the workflow type.
@@ -58,9 +62,24 @@ namespace Temporalio.Workflows
         public IReadOnlyDictionary<string, WorkflowSignalDefinition> Signals { get; private init; }
 
         /// <summary>
+        /// Gets the dynamic signal for the workflow.
+        /// </summary>
+        public WorkflowSignalDefinition? DynamicSignal { get; private init; }
+
+        /// <summary>
         /// Gets the queries for the workflow.
         /// </summary>
         public IReadOnlyDictionary<string, WorkflowQueryDefinition> Queries { get; private init; }
+
+        /// <summary>
+        /// Gets the dynamic query for the workflow.
+        /// </summary>
+        public WorkflowQueryDefinition? DynamicQuery { get; private init; }
+
+        /// <summary>
+        /// Gets a value indicating whether the workflow is dynamic.
+        /// </summary>
+        public bool Dynamic => Name == null;
 
         /// <summary>
         /// Create a workflow definition for the given type or fail. The result is cached by type.
@@ -89,33 +108,33 @@ namespace Temporalio.Workflows
         public static WorkflowDefinition Create(
             Type type, string? nameOverride, Func<object?[], object>? creatorOverride)
         {
+            // We will keep track of errors and only throw an aggregate at the end
+            var errs = new List<string>();
+
             // Get the main attribute or throw if not present
             var attr = type.GetCustomAttribute<WorkflowAttribute>(false) ??
                 throw new ArgumentException($"{type} missing Workflow attribute");
 
-            // Use override, or attr, or fall back to type name
-            var name = nameOverride;
-            if (name == null)
+            // Use override or attr name or fall back to type name (cannot have name with dynamic)
+            var name = nameOverride ?? attr.Name;
+            if (!attr.Dynamic && name == null)
             {
-                name = attr.Name;
-                if (name == null)
+                name = type.Name;
+                // If type is an interface and name has a leading I followed by another capital,
+                // trim it off
+                if (type.IsInterface && name.Length > 1 && name[0] == 'I' && char.IsUpper(name[1]))
                 {
-                    name = type.Name;
-                    // If type is an interface and name has a leading I followed by another capital,
-                    // trim it off
-                    if (type.IsInterface && name.Length > 1 && name[0] == 'I' && char.IsUpper(name[1]))
-                    {
-                        name = name.Substring(1);
-                    }
+                    name = name.Substring(1);
                 }
+            }
+            else if (attr.Dynamic && name != null)
+            {
+                errs.Add("Cannot have custom name for dynamic workflow");
             }
 
             const BindingFlags bindingFlagsAny =
                 BindingFlags.Instance | BindingFlags.Static |
                 BindingFlags.Public | BindingFlags.NonPublic;
-
-            // We will keep track of errors and only throw an aggregate at the end
-            var errs = new List<string>();
 
             // No generics allowed currently
             if (type.GenericTypeArguments.Length > 0)
@@ -172,7 +191,9 @@ namespace Temporalio.Workflows
             // non-public too to make sure attributes aren't set on them.
             MethodInfo? runMethod = null;
             var signals = new Dictionary<string, WorkflowSignalDefinition>();
+            WorkflowSignalDefinition? dynamicSignal = null;
             var queries = new Dictionary<string, WorkflowQueryDefinition>();
+            WorkflowQueryDefinition? dynamicQuery = null;
             foreach (var method in type.GetMethods(bindingFlagsAny))
             {
                 var runAttr = method.GetCustomAttribute<WorkflowRunAttribute>(false);
@@ -208,6 +229,10 @@ namespace Temporalio.Workflows
                     {
                         errs.Add($"WorkflowRun on {method} must match parameter types of WorkflowInit on {initConstructor}");
                     }
+                    else if (attr.Dynamic && !HasValidDynamicParameters(method, requireNameFirst: false))
+                    {
+                        errs.Add($"WorkflowRun on {method} for dynamic workflow must accept vararg parameter array of IRawValue");
+                    }
                     else
                     {
                         runMethod = method;
@@ -218,7 +243,15 @@ namespace Temporalio.Workflows
                     try
                     {
                         var defn = WorkflowSignalDefinition.FromMethod(method);
-                        if (signals.ContainsKey(defn.Name))
+                        if (defn.Name == null)
+                        {
+                            if (dynamicSignal != null)
+                            {
+                                errs.Add($"{type} has more than one dynamic signal");
+                            }
+                            dynamicSignal = defn;
+                        }
+                        else if (signals.ContainsKey(defn.Name))
                         {
                             errs.Add($"{type} has more than one signal named {defn.Name}");
                         }
@@ -226,7 +259,10 @@ namespace Temporalio.Workflows
                         {
                             errs.Add($"{method} with WorkflowSignal contains generic parameters");
                         }
-                        signals[defn.Name] = defn;
+                        else
+                        {
+                            signals[defn.Name] = defn;
+                        }
                     }
                     catch (ArgumentException e)
                     {
@@ -242,7 +278,15 @@ namespace Temporalio.Workflows
                     try
                     {
                         var defn = WorkflowQueryDefinition.FromMethod(method);
-                        if (queries.ContainsKey(defn.Name))
+                        if (defn.Name == null)
+                        {
+                            if (dynamicQuery != null)
+                            {
+                                errs.Add($"{type} has more than one dynamic query");
+                            }
+                            dynamicQuery = defn;
+                        }
+                        else if (queries.ContainsKey(defn.Name))
                         {
                             errs.Add($"{type} has more than one query named {defn.Name}");
                         }
@@ -250,7 +294,10 @@ namespace Temporalio.Workflows
                         {
                             errs.Add($"{method} with WorkflowQuery contains generic parameters");
                         }
-                        queries[defn.Name] = defn;
+                        else
+                        {
+                            queries[defn.Name] = defn;
+                        }
                     }
                     catch (ArgumentException e)
                     {
@@ -275,11 +322,11 @@ namespace Temporalio.Workflows
                     try
                     {
                         var defn = WorkflowQueryDefinition.FromProperty(property);
-                        if (queries.ContainsKey(defn.Name))
+                        if (queries.ContainsKey(defn.Name!))
                         {
                             errs.Add($"{type} has more than one query named {defn.Name}");
                         }
-                        queries[defn.Name] = defn;
+                        queries[defn.Name!] = defn;
                     }
                     catch (ArgumentException e)
                     {
@@ -302,25 +349,9 @@ namespace Temporalio.Workflows
                 runMethod: runMethod!,
                 creator: creator,
                 signals: signals,
-                queries: queries);
-        }
-
-        /// <summary>
-        /// Get the workflow definition for the type the given run method is on. Expects the method
-        /// to have <see cref="WorkflowRunAttribute" />.
-        /// </summary>
-        /// <param name="runMethod">Workflow run method.</param>
-        /// <returns>Workflow definition for the type the run method is on.</returns>
-        public static WorkflowDefinition FromRunMethod(MethodInfo runMethod)
-        {
-            if (runMethod.GetCustomAttribute<WorkflowRunAttribute>() == null)
-            {
-                throw new ArgumentException($"{runMethod} missing WorkflowRun attribute");
-            }
-            // We intentionally use reflected type because we don't allow inheritance of run methods
-            // in any way, they must be explicitly defined on the type
-            return Create(runMethod.ReflectedType ??
-                throw new ArgumentException($"{runMethod} has no reflected type"));
+                dynamicSignal: dynamicSignal,
+                queries: queries,
+                dynamicQuery: dynamicQuery);
         }
 
         /// <summary>
@@ -335,6 +366,54 @@ namespace Temporalio.Workflows
                 throw new InvalidOperationException($"Cannot instantiate workflow type {Type}");
             }
             return creator.Invoke(workflowArguments);
+        }
+
+        /// <summary>
+        /// Gets the workflow name for calling or fail if no attribute or if dynamic.
+        /// </summary>
+        /// <param name="runMethod">Run method to get name from.</param>
+        /// <returns>Name.</returns>
+        internal static string NameFromRunMethodForCall(MethodInfo runMethod)
+        {
+            if (runMethod.GetCustomAttribute<WorkflowRunAttribute>() == null)
+            {
+                throw new ArgumentException($"{runMethod} missing WorkflowRun attribute");
+            }
+            // We intentionally use reflected type because we don't allow inheritance of run methods
+            // in any way, they must be explicitly defined on the type
+            var defn = Create(runMethod.ReflectedType ??
+                throw new ArgumentException($"{runMethod} has no reflected type"));
+            if (defn.Name == null)
+            {
+                throw new ArgumentException(
+                    $"{runMethod} cannot be used directly since it is a dynamic workflow");
+            }
+            return defn.Name;
+        }
+
+        /// <summary>
+        /// Get whether the given method's parameters are valid for dynamic call.
+        /// </summary>
+        /// <param name="method">Method to check.</param>
+        /// <param name="requireNameFirst">Whether a string param must be first.</param>
+        /// <returns>True if valid, false otherwise.</returns>
+        internal static bool HasValidDynamicParameters(MethodInfo method, bool requireNameFirst)
+        {
+            var parms = method.GetParameters();
+            if (requireNameFirst)
+            {
+                if (parms.Length != 2 || parms.First().ParameterType != typeof(string))
+                {
+                    return false;
+                }
+            }
+            else if (parms.Length != 1)
+            {
+                return false;
+            }
+            var last = parms.Last();
+            return last.ParameterType == typeof(Converters.IRawValue[]) &&
+                last.IsDefined(typeof(ParamArrayAttribute));
         }
 
         private static bool IsDefinedOnBase<T>(MethodInfo method)
