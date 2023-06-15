@@ -309,6 +309,7 @@ converter, which supports the following types:
 * `byte[]`
 * `Google.Protobuf.IMessage` instances
 * Anything that `System.Text.Json` supports
+* `IRawValue` as unconverted raw payloads
 
 Custom converters can be created for all uses. For example, to create client with a data converter that converts all C#
 property names to camel case, you would:
@@ -493,6 +494,9 @@ Attributes that can be applied:
 * `[Workflow]` attribute must be present on the workflow type.
   * The attribute can have a string argument for the workflow type name. Otherwise the name is defaulted to the
     unqualified type name (with the `I` prefix removed if on an interface and has a capital letter following).
+  * `Dynamic = true` can be set for the workflow which makes the workflow a dynamic workflow meaning it will be called
+    when no other workflows match. The run call must accept a single parameter of `Temporalio.Converters.IRawValue[]`
+    for the arguments. Only one dynamic workflow may be registered on a worker.
 * `[WorkflowRun]` attribute must be present on one and only one public method.
   * The workflow run method must return a `Task` or `Task<>`.
   * The workflow run method _should_ accept a single parameter and return a single type. Records are encouraged because
@@ -507,11 +511,17 @@ Attributes that can be applied:
   * The attribute can have a string argument for the signal name. Otherwise the name is defaulted to the unqualified
     method name with `Async` trimmed off the end if it is present.
   * This attribute is not inherited and therefore must be explicitly set on any override.
+  * `Dynamic = true` can be set for the signal which makes the signal a dynamic signal meaning it will be called when
+    no other signals match. The call must accept a `string` for the signal name and `Temporalio.Converters.IRawValue[]`
+    for the arguments. Only one dynamic signal may be present on a workflow.
 * `[WorkflowQuery]` attribute may be present on any public method or property with public getter that handles queries.
   * Query methods must be non-`void` but cannot return a `Task` (i.e. they cannot be async).
   * The attribute can have a string argument for the query name. Otherwise the name is defaulted to the unqualified
     method name.
   * This attribute is not inherited and therefore must be explicitly set on any override.
+  * `Dynamic = true` can be set for the query which makes the query a dynamic query meaning it will be called when
+    no other queries match. The call must accept a `string` for the query name and `Temporalio.Converters.IRawValue[]`
+    for the arguments. Only one dynamic query may be present on a workflow.
 
 #### Running Workflows
 
@@ -627,6 +637,7 @@ can be used from workflows including:
   * `Logger` - Scoped replay-aware logger for use inside a workflow. Normal loggers should not be used because they may
     log duplicate values during replay.
   * `Memo` - Read-only current memo values.
+  * `PayloadConverter` - Can be used if `IRawValue` is used for input or output.
   * `Queries` - Mutable set of query definitions for the workflow. Technically this can be mutated to add query
     definitions at runtime, but methods with the `[WorkflowQuery]` attribute are strongly preferred.
   * `Random` - Deterministically seeded random instance for use inside workflows.
@@ -1016,6 +1027,9 @@ Notes about activity definitions:
   valuable since often an activity will be referenced by a workflow.
 * Activities can be synchronous or asynchronous. If an activity returns a `Task`, that task is awaited on as part of the
   activity.
+* `[Activity(Dynamic = true)` represents a dynamic activity meaning it will be called when no other activities match.
+  The call must accept a single parameter of `Temporalio.Converters.IRawValue[]` for the arguments. Only one dynamic
+  activity may be registered on a worker.
 
 #### Activity Execution Context
 
@@ -1029,6 +1043,7 @@ contains the following important members:
 * `CancellationToken` - Token cancelled when the activity is cancelled.
 * `Heartbeat(object?...)` - Send a heartbeat from this activity.
 * `WorkerShutdownToken` - Token cancelled on worker shutdown before the grace period + `CancellationToken` cancellation.
+* `PayloadConverter` - Can be used if `IRawValue` is used for input or output.
 
 #### Activity Heartbeating and Cancellation
 
@@ -1069,6 +1084,7 @@ activity context:
 * `CancellationTokenSource` - Token source for issuing cancellation.
 * `Heartbeater` - Callback invoked each heartbeat.
 * `WorkerShutdownTokenSource` - Token source for issuing worker shutdown.
+* `PayloadConverter` - Defaulted to default payload converter.
 
 ### OpenTelemetry Tracing Support
 

@@ -21,7 +21,7 @@ namespace Temporalio.Converters
         /// <returns>The converted payload.</returns>
         /// <remarks>
         /// Implementers are expected to be able just return the payload for
-        /// <see cref="IRawValue" /> and <see cref="IEncodedRawValue" />.
+        /// <see cref="IRawValue" />.
         /// </remarks>
         Payload ToPayload(object? value);
 

@@ -101,7 +101,7 @@ namespace Temporalio.Activities
                 parameterTypes.SingleOrDefault() != typeof(Converters.IRawValue[])))
             {
                 throw new ArgumentException(
-                    $"Dynamic activity must accept required vararg parameter array of IRawValue");
+                    $"Dynamic activity must accept a required array of IRawValue");
             }
 
             if (requiredParameterCount > parameterTypes.Count)
@@ -233,13 +233,6 @@ namespace Temporalio.Activities
             var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
                 throw new ArgumentException($"{method} missing Activity attribute");
             var parms = method.GetParameters();
-            // Check that param is vararg for dynamic (Create will check the arity)
-            if (attr.Dynamic &&
-                parms.SingleOrDefault()?.IsDefined(typeof(ParamArrayAttribute)) == false)
-            {
-                throw new ArgumentException(
-                    $"Dynamic activity must accept required vararg parameter array of IRawValue");
-            }
             return Create(
                 NameFromAttributed(method, attr),
                 method.ReturnType,

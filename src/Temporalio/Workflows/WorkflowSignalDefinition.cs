@@ -92,7 +92,7 @@ namespace Temporalio.Workflows
             var name = attr.Name;
             if (attr.Dynamic && name != null)
             {
-                throw new ArgumentException($"WorkflowSignal method {method} cannot by dynamic with custom name");
+                throw new ArgumentException($"WorkflowSignal method {method} cannot be dynamic with custom name");
             }
             else if (!attr.Dynamic && name == null)
             {
@@ -113,11 +113,11 @@ namespace Temporalio.Workflows
             {
                 throw new ArgumentException($"WorkflowSignal method {method} must return Task");
             }
-            // If it's dynamic, must have IRawValue parameter array
+            // If it's dynamic, must have specific signature
             if (dynamic && !WorkflowDefinition.HasValidDynamicParameters(method, requireNameFirst: true))
             {
                 throw new ArgumentException(
-                    $"WorkflowSignal method {method} must accept string then vararg parameter array of IRawValue");
+                    $"WorkflowSignal method {method} must accept string and an array of IRawValue");
             }
         }
     }

@@ -2,9 +2,10 @@ namespace Temporalio.Tests.Activities;
 
 using System.Threading.Tasks;
 using Temporalio.Activities;
+using Temporalio.Converters;
 using Xunit;
 
-public class ActivityAttributeTests
+public class ActivityDefinitionTests
 {
     [Fact]
     public void Create_MissingAttribute_Throws()
@@ -27,11 +28,21 @@ public class ActivityAttributeTests
     }
 
     [Fact]
-    public void Create_DefaultNameOnGeneric_ProperlyNamed()
+    public void Create_NameOnDynamic_Throws()
     {
-        [Activity]
-        static Task<T> DoThingAsync<T>(T arg) => throw new NotImplementedException();
-        Assert.Equal("DoThing", ActivityDefinition.Create(DoThingAsync<string>).Name);
+        [Activity("CustomName", Dynamic = true)]
+        static Task DoThingAsync(IRawValue[] args) => throw new NotImplementedException();
+        var exc = Assert.ThrowsAny<Exception>(() => ActivityDefinition.Create(DoThingAsync));
+        Assert.Contains("cannot be dynamic and have custom name", exc.Message);
+    }
+
+    [Fact]
+    public void Create_DynamicInvalidArgs_Throws()
+    {
+        [Activity(Dynamic = true)]
+        static Task DoThingAsync(string arg) => throw new NotImplementedException();
+        var exc = Assert.ThrowsAny<Exception>(() => ActivityDefinition.Create(DoThingAsync));
+        Assert.Contains("must accept a required array of IRawValue", exc.Message);
     }
 
     [Fact]
@@ -60,6 +71,14 @@ public class ActivityAttributeTests
         var exc = Assert.ThrowsAny<Exception>(() =>
             ActivityDefinition.Create([Activity] () => string.Empty));
         Assert.Contains("appears to be a lambda", exc.Message);
+    }
+
+    [Fact]
+    public void Create_DefaultNameOnGeneric_ProperlyNamed()
+    {
+        [Activity]
+        static Task<T> DoThingAsync<T>(T arg) => throw new NotImplementedException();
+        Assert.Equal("DoThing", ActivityDefinition.Create(DoThingAsync<string>).Name);
     }
 
     [Fact]

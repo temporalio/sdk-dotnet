@@ -231,7 +231,7 @@ namespace Temporalio.Workflows
                     }
                     else if (attr.Dynamic && !HasValidDynamicParameters(method, requireNameFirst: false))
                     {
-                        errs.Add($"WorkflowRun on {method} for dynamic workflow must accept vararg parameter array of IRawValue");
+                        errs.Add($"WorkflowRun on {method} for dynamic workflow must accept an array of IRawValue");
                     }
                     else
                     {
@@ -411,9 +411,7 @@ namespace Temporalio.Workflows
             {
                 return false;
             }
-            var last = parms.Last();
-            return last.ParameterType == typeof(Converters.IRawValue[]) &&
-                last.IsDefined(typeof(ParamArrayAttribute));
+            return parms.Last().ParameterType == typeof(Converters.IRawValue[]);
         }
 
         private static bool IsDefinedOnBase<T>(MethodInfo method)

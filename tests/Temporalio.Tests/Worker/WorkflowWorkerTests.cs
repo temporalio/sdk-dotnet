@@ -2764,7 +2764,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public IList<string> Events { get; } = new List<string>();
 
         [WorkflowRun]
-        public async Task<string> RunAsync(params IRawValue[] args)
+        public async Task<string> RunAsync(IRawValue[] args)
         {
             Events.Add($"workflow-{Workflow.Info.WorkflowType}: " +
                 Workflow.PayloadConverter.ToValue<string>(args.Single()));
@@ -2779,14 +2779,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public async Task FinishAsync() => finish = true;
 
         [WorkflowSignal(Dynamic = true)]
-        public async Task DynamicSignalAsync(string signalName, params IRawValue[] args)
+        public async Task DynamicSignalAsync(string signalName, IRawValue[] args)
         {
             Events.Add($"signal-{signalName}: " +
                 Workflow.PayloadConverter.ToValue<string>(args.Single()));
         }
 
         [WorkflowQuery(Dynamic = true)]
-        public string DynamicQuery(string queryName, params IRawValue[] args)
+        public string DynamicQuery(string queryName, IRawValue[] args)
         {
             Events.Add($"query-{queryName}: " +
                 Workflow.PayloadConverter.ToValue<string>(args.Single()));
@@ -2797,7 +2797,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public static string NonDynamicActivity(string arg) => throw new NotImplementedException();
 
         [Activity(Dynamic = true)]
-        public static string DynamicActivity(params IRawValue[] args)
+        public static string DynamicActivity(IRawValue[] args)
         {
             var type = ActivityExecutionContext.Current.Info.ActivityType;
             var arg = ActivityExecutionContext.Current.PayloadConverter.ToValue<string>(args.Single());
@@ -2831,6 +2831,87 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
             },
             new TemporalWorkerOptions().AddActivity(DynamicWorkflow.DynamicActivity));
+    }
+
+    [Workflow]
+    public class DynamicHandlersWorkflow
+    {
+        [WorkflowQuery]
+        public IList<string> Events { get; } = new List<string>();
+
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowSignal]
+        public async Task SetHandlersAsync()
+        {
+            Workflow.DynamicSignal = WorkflowSignalDefinition.CreateWithoutAttribute(
+                null, async (string signalName, IRawValue[] args) =>
+                {
+                    Events.Add($"signal-{signalName}: " +
+                        Workflow.PayloadConverter.ToValue<string>(args.Single()));
+                });
+            Workflow.DynamicQuery = WorkflowQueryDefinition.CreateWithoutAttribute(
+                null, (string queryName, IRawValue[] args) =>
+                {
+                    Events.Add($"query-{queryName}: " +
+                        Workflow.PayloadConverter.ToValue<string>(args.Single()));
+                    return "done";
+                });
+        }
+
+        [WorkflowSignal]
+        public async Task UnsetHandlersAsync()
+        {
+            Workflow.DynamicSignal = null;
+            Workflow.DynamicQuery = null;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_DynamicHandlers_AddedRemovedProperly()
+    {
+        await ExecuteWorkerAsync<DynamicHandlersWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (DynamicHandlersWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Confirm signal/query unhandled
+                await handle.SignalAsync("SomeSignal1", new[] { "signal arg 1" });
+                var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => handle.QueryAsync<string>("SomeQuery1", new[] { "query arg 1" }));
+                Assert.Contains("not found", exc.Message);
+                Assert.Empty(await handle.QueryAsync(wf => wf.Events));
+
+                // Add signal handlers, and confirm all signals are drained to it and it handles
+                // queries
+                await handle.SignalAsync(wf => wf.SetHandlersAsync());
+                await handle.SignalAsync("SomeSignal2", new[] { "signal arg 2" });
+                Assert.Equal(
+                    "done", await handle.QueryAsync<string>("SomeQuery2", new[] { "query arg 2" }));
+                var expectedEvents = new List<string>
+                {
+                    "query-SomeQuery2: query arg 2",
+                    "signal-SomeSignal1: signal arg 1",
+                    "signal-SomeSignal2: signal arg 2",
+                };
+                Assert.Equal(
+                    expectedEvents,
+                    (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+
+                // Remove handlers and confirm things go back to unhandled
+                await handle.SignalAsync(wf => wf.UnsetHandlersAsync());
+                await handle.SignalAsync("SomeSignal3", new[] { "signal arg 3" });
+                exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => handle.QueryAsync<string>("SomeQuery3", new[] { "query arg 3" }));
+                Assert.Contains("not found", exc.Message);
+                Assert.Equal(
+                    expectedEvents,
+                    (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+            });
     }
 
     private async Task ExecuteWorkerAsync<TWf>(
