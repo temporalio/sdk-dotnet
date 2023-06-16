@@ -28,6 +28,27 @@ namespace Temporalio.Workflows
         public static CancellationToken CancellationToken => Context.CancellationToken;
 
         /// <summary>
+        /// Gets or sets the current dynamic query handler. This can be null for no dynamic query
+        /// handling.
+        /// </summary>
+        public static WorkflowQueryDefinition? DynamicQuery
+        {
+            get => Context.DynamicQuery;
+            set => Context.DynamicQuery = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the current dynamic signal handler. This can be null for no dynamic signal
+        /// handling. If this is set to a value where none was there before, all buffered signals
+        /// will be immediately delivered to it.
+        /// </summary>
+        public static WorkflowSignalDefinition? DynamicSignal
+        {
+            get => Context.DynamicSignal;
+            set => Context.DynamicSignal = value;
+        }
+
+        /// <summary>
         /// Gets information about the workflow.
         /// </summary>
         public static WorkflowInfo Info => Context.Info;
@@ -52,6 +73,11 @@ namespace Temporalio.Workflows
         /// updates are immediately reflected on the returned instance, so it is not immutable.
         /// </remarks>
         public static IReadOnlyDictionary<string, IRawValue> Memo => Context.Memo;
+
+        /// <summary>
+        /// Gets the payload converter for the workflow.
+        /// </summary>
+        public static IPayloadConverter PayloadConverter => Context.PayloadConverter;
 
         /// <summary>
         /// Gets queries for this workflow.
@@ -92,7 +118,9 @@ namespace Temporalio.Workflows
         /// </summary>
         /// <remarks>
         /// This dictionary can be mutated during workflow run. However, users are strongly
-        /// encouraged to use fixed methods with the <c>[WorkflowSignal]</c> attribute.
+        /// encouraged to use fixed methods with the <c>[WorkflowSignal]</c> attribute. If a new
+        /// signal handler is added for a signal name where one wasn't present before, all buffered
+        /// signals are sent to the handler immediately.
         /// </remarks>
         public static IDictionary<string, WorkflowSignalDefinition> Signals => Context.Signals;
 
@@ -121,9 +149,9 @@ namespace Temporalio.Workflows
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
             ContinueAsNewOptions? options = null)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (method, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return CreateContinueAsNewException(
-                WorkflowDefinition.FromRunMethod(method).Name,
+                WorkflowDefinition.NameFromRunMethodForCall(method),
                 args,
                 options);
         }
@@ -140,9 +168,9 @@ namespace Temporalio.Workflows
             Expression<Func<TWorkflow, Task>> workflowRunCall,
             ContinueAsNewOptions? options = null)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (method, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return CreateContinueAsNewException(
-                WorkflowDefinition.FromRunMethod(method).Name,
+                WorkflowDefinition.NameFromRunMethodForCall(method),
                 args,
                 options);
         }
@@ -226,9 +254,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<TResult>(
             Expression<Func<TResult>> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -248,9 +276,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync(
             Expression<Action> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -272,9 +300,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, TResult>> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -295,9 +323,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync<TActivityInstance>(
             Expression<Action<TActivityInstance>> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -318,9 +346,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<TResult>(
             Expression<Func<Task<TResult>>> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -340,9 +368,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync(
             Expression<Func<Task>> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -364,9 +392,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, Task<TResult>>> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -387,9 +415,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteActivityAsync<TActivityInstance>(
             Expression<Func<TActivityInstance, Task>> activityCall, ActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -519,9 +547,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
             Expression<Func<TResult>> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -541,9 +569,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync(
             Expression<Action> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -565,9 +593,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, TResult>> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -588,9 +616,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync<TActivityInstance>(
             Expression<Action<TActivityInstance>> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -611,9 +639,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
             Expression<Func<Task<TResult>>> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -633,9 +661,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync(
             Expression<Func<Task>> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -657,9 +685,9 @@ namespace Temporalio.Workflows
         public static Task<TResult> ExecuteLocalActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, Task<TResult>>> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<TResult>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -680,9 +708,9 @@ namespace Temporalio.Workflows
         public static Task ExecuteLocalActivityAsync<TActivityInstance>(
             Expression<Func<TActivityInstance, Task>> activityCall, LocalActivityOptions options)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(activityCall);
+            var (method, args) = ExpressionUtil.ExtractCall(activityCall);
             return ExecuteLocalActivityAsync<ValueTuple>(
-                Activities.ActivityDefinition.NameFromMethod(method),
+                Activities.ActivityDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }
@@ -795,9 +823,9 @@ namespace Temporalio.Workflows
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
             ChildWorkflowOptions? options = null)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (method, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return Context.StartChildWorkflowAsync<TWorkflow, TResult>(
-                WorkflowDefinition.FromRunMethod(method).Name, args, options ?? new());
+                WorkflowDefinition.NameFromRunMethodForCall(method), args, options ?? new());
         }
 
         /// <summary>
@@ -814,9 +842,9 @@ namespace Temporalio.Workflows
         public static async Task<ChildWorkflowHandle<TWorkflow>> StartChildWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, ChildWorkflowOptions? options = null)
         {
-            var (method, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (method, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return await Context.StartChildWorkflowAsync<TWorkflow, ValueTuple>(
-                WorkflowDefinition.FromRunMethod(method).Name, args, options ?? new()).
+                WorkflowDefinition.NameFromRunMethodForCall(method), args, options ?? new()).
                 ConfigureAwait(true);
         }
 

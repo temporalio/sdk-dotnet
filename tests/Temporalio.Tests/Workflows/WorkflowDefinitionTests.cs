@@ -2,10 +2,11 @@
 
 namespace Temporalio.Tests.Workflows;
 
+using Temporalio.Converters;
 using Temporalio.Workflows;
 using Xunit;
 
-public class WorkflowAttributeTests
+public class WorkflowDefinitionTests
 {
     [Fact]
     public void Create_RunAttributeMissing_Throws()
@@ -193,6 +194,23 @@ public class WorkflowAttributeTests
         AssertBad<Bad.Wf5<string>>("with WorkflowQuery contains generic parameters");
     }
 
+    [Fact]
+    public void Create_BadDynamic_Throws()
+    {
+        AssertBad<Bad.Wf6>("custom name for dynamic workflow");
+        AssertBad<Bad.Wf6>("dynamic workflow must accept an array of IRawValue");
+        AssertBad<Bad.Wf6>("more than one dynamic signal");
+        AssertBad<Bad.Wf6>("DynamicSignal3Async(System.String, Temporalio.Converters.IRawValue[])" +
+            " cannot be dynamic with custom name");
+        AssertBad<Bad.Wf6>("DynamicSignal4Async(Temporalio.Converters.IRawValue[])" +
+            " must accept string and an array of IRawValue");
+        AssertBad<Bad.Wf6>("more than one dynamic query");
+        AssertBad<Bad.Wf6>("DynamicQuery3(System.String, Temporalio.Converters.IRawValue[])" +
+            " cannot be dynamic with custom name");
+        AssertBad<Bad.Wf6>("DynamicQuery4(Temporalio.Converters.IRawValue[])" +
+            " must accept string and an array of IRawValue");
+    }
+
     private static void AssertBad<T>(string errContains)
     {
         var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.Create(typeof(T)));
@@ -361,6 +379,37 @@ public class WorkflowAttributeTests
 
             [WorkflowQuery]
             public string SomeQuery<TLocal>(TLocal _) => string.Empty;
+        }
+
+        [Workflow("CustomName", Dynamic = true)]
+        public class Wf6
+        {
+            [WorkflowRun]
+            public Task RunAsync(int param) => Task.CompletedTask;
+
+            [WorkflowSignal(Dynamic = true)]
+            public Task DynamicSignal1Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowSignal(Dynamic = true)]
+            public Task DynamicSignal2Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowSignal("CustomName", Dynamic = true)]
+            public Task DynamicSignal3Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowSignal(Dynamic = true)]
+            public Task DynamicSignal4Async(IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowQuery(Dynamic = true)]
+            public string DynamicQuery1(string signalName, IRawValue[] args) => string.Empty;
+
+            [WorkflowQuery(Dynamic = true)]
+            public string DynamicQuery2(string signalName, IRawValue[] args) => string.Empty;
+
+            [WorkflowQuery("CustomName", Dynamic = true)]
+            public string DynamicQuery3(string signalName, IRawValue[] args) => string.Empty;
+
+            [WorkflowQuery(Dynamic = true)]
+            public string DynamicQuery4(IRawValue[] args) => string.Empty;
         }
     }
 

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
-using Temporalio.Api.Common.V1;
 using Temporalio.Common;
 using Temporalio.Converters;
 
@@ -25,7 +24,7 @@ namespace Temporalio.Client.Schedules
         string Workflow,
         IReadOnlyCollection<object?> Args,
         WorkflowOptions Options,
-        IReadOnlyDictionary<string, Payload>? Headers = null) : ScheduleAction
+        IReadOnlyDictionary<string, IEncodedRawValue>? Headers = null) : ScheduleAction
     {
         /// <summary>
         /// Create a scheduled action that starts a workflow via lambda invoking the run method.
@@ -40,9 +39,9 @@ namespace Temporalio.Client.Schedules
         public static ScheduleActionStartWorkflow Create<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options)
         {
-            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (runMethod, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return Create(
-                Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 args,
                 options);
         }
@@ -59,9 +58,9 @@ namespace Temporalio.Client.Schedules
         public static ScheduleActionStartWorkflow Create<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
         {
-            var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
+            var (runMethod, args) = ExpressionUtil.ExtractCall(workflowRunCall);
             return Create(
-                Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 args,
                 options);
         }
@@ -91,6 +90,9 @@ namespace Temporalio.Client.Schedules
             IReadOnlyCollection<object?> args = proto.Input == null ?
                 Array.Empty<object?>() :
                 proto.Input.Payloads_.Select(p => new EncodedRawValue(dataConverter, p)).ToList();
+            var headers = proto.Header?.Fields?.ToDictionary(
+                kvp => kvp.Key,
+                kvp => (IEncodedRawValue)new EncodedRawValue(dataConverter, kvp.Value));
             return new(
                 Workflow: proto.WorkflowType.Name,
                 Args: args,
@@ -107,7 +109,8 @@ namespace Temporalio.Client.Schedules
                     TypedSearchAttributes = proto.SearchAttributes == null ?
                         SearchAttributeCollection.Empty :
                         SearchAttributeCollection.FromProto(proto.SearchAttributes),
-                });
+                },
+                Headers: headers);
         }
 
         /// <inheritdoc />
@@ -132,6 +135,17 @@ namespace Temporalio.Client.Schedules
                 throw new ArgumentException("RPC options cannot be set on scheduled workflow");
             }
 
+            // Build input. We have to go one payload at a time here because half could be encoded
+            // and half not (e.g. they just changed the second parameter).
+            var input = await Task.WhenAll(Args.Select(arg =>
+            {
+                if (arg is IEncodedRawValue raw)
+                {
+                    return Task.FromResult(raw.Payload);
+                }
+                return dataConverter.ToPayloadAsync(arg);
+            }).ToList()).ConfigureAwait(false);
+
             var workflow = new Api.Workflow.V1.NewWorkflowExecutionInfo()
             {
                 WorkflowId = Options.ID ??
@@ -142,10 +156,7 @@ namespace Temporalio.Client.Schedules
                     Name = Options.TaskQueue ??
                         throw new ArgumentException("Task queue required on workflow action"),
                 },
-                Input = Args.Count == 0 ? null : new()
-                {
-                    Payloads_ = { await dataConverter.ToPayloadsAsync(Args).ConfigureAwait(false) },
-                },
+                Input = Args.Count == 0 ? null : new() { Payloads_ = { input } },
                 WorkflowExecutionTimeout = Options.ExecutionTimeout is TimeSpan execTimeout ?
                     Duration.FromTimeSpan(execTimeout) : null,
                 WorkflowRunTimeout = Options.RunTimeout is TimeSpan runTimeout ?
@@ -163,9 +174,9 @@ namespace Temporalio.Client.Schedules
                     {
                         throw new ArgumentException($"Memo value for {field.Key} is null");
                     }
-                    workflow.Memo.Fields.Add(
-                        field.Key,
-                        await dataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
+                    var value = field.Value is IEncodedRawValue raw ? raw.Payload :
+                        await dataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false);
+                    workflow.Memo.Fields.Add(field.Key, value);
                 }
             }
             if (Options.TypedSearchAttributes != null && Options.TypedSearchAttributes.Count > 0)
@@ -177,7 +188,7 @@ namespace Temporalio.Client.Schedules
                 workflow.Header = new();
                 foreach (var pair in Headers)
                 {
-                    workflow.Header.Fields.Add(pair.Key, pair.Value);
+                    workflow.Header.Fields.Add(pair.Key, pair.Value.Payload);
                 }
             }
 

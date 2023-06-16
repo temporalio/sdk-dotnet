@@ -53,7 +53,7 @@ namespace Temporalio.Workflows
         {
             var (method, args) = Common.ExpressionUtil.ExtractCall(signalCall);
             return SignalAsync(
-                WorkflowSignalDefinition.FromMethod(method).Name,
+                WorkflowSignalDefinition.NameFromMethodForCall(method),
                 args,
                 options);
         }

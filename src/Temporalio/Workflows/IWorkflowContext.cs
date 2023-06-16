@@ -19,6 +19,16 @@ namespace Temporalio.Workflows
         CancellationToken CancellationToken { get; }
 
         /// <summary>
+        /// Gets or sets value for <see cref="Workflow.DynamicQuery" />.
+        /// </summary>
+        WorkflowQueryDefinition? DynamicQuery { get; set; }
+
+        /// <summary>
+        /// Gets or sets value for <see cref="Workflow.DynamicSignal" />.
+        /// </summary>
+        WorkflowSignalDefinition? DynamicSignal { get; set; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.Info" />.
         /// </summary>
         WorkflowInfo Info { get; }
@@ -37,6 +47,11 @@ namespace Temporalio.Workflows
         /// Gets value for <see cref="Workflow.Memo" />.
         /// </summary>
         IReadOnlyDictionary<string, IRawValue> Memo { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.PayloadConverter" />.
+        /// </summary>
+        IPayloadConverter PayloadConverter { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.Queries" />.

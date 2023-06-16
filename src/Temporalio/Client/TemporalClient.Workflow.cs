@@ -28,7 +28,7 @@ namespace Temporalio.Client
         {
             var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
             return await OutboundInterceptor.StartWorkflowAsync<TWorkflow, TResult>(new(
-                Workflow: Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Workflow: Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 Args: args,
                 Options: options,
                 Headers: null)).ConfigureAwait(false);
@@ -40,7 +40,7 @@ namespace Temporalio.Client
         {
             var (runMethod, args) = Common.ExpressionUtil.ExtractCall(workflowRunCall);
             return await OutboundInterceptor.StartWorkflowAsync<TWorkflow, ValueTuple>(new(
-                Workflow: Workflows.WorkflowDefinition.FromRunMethod(runMethod).Name,
+                Workflow: Workflows.WorkflowDefinition.NameFromRunMethodForCall(runMethod),
                 Args: args,
                 Options: options,
                 Headers: null)).ConfigureAwait(false);
