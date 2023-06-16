@@ -63,6 +63,7 @@ present.
     - [Workflow Replay](#workflow-replay)
   - [Activities](#activities)
     - [Activity Definition](#activity-definition)
+    - [Activity Dependency Injection](#activity-dependency-injection)
     - [Activity Execution Context](#activity-execution-context)
     - [Activity Heartbeating and Cancellation](#activity-heartbeating-and-cancellation)
     - [Activity Worker Shutdown](#activity-worker-shutdown)
@@ -295,6 +296,9 @@ var host = Host.CreateDefaultBuilder(args)
 
 This can be wrapped in a client "provider" or other similar async task wrapper if needed.
 
+To use worker services or activities with dependency injection, see the
+[Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/) project.
+
 #### Data Conversion
 
 Data converters are used to convert raw Temporal payloads to/from actual .NET types. A custom data converter can be set
@@ -377,43 +381,8 @@ Notes about the above code:
 
 #### Worker as Generic Host
 
-It is not a coincidence that one of the overloads of `ExecuteAsync` has the same signature as
-`Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync`. So to implement `BackgroundService`, you can do:
-
-```csharp
-using Temporalio.Client;
-using Temporalio.Worker;
-
-public sealed class MyWorker : BackgroundService
-{
-    private readonly ILoggerFactory loggerFactory;
-
-    public Worker(ILoggerFactory loggerFactory) => this.loggerFactory = loggerFactory;
-
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        using var worker = new TemporalWorker(
-            await TemporalClient.ConnectAsync(new()
-            {
-                TargetHost = "localhost:7233",
-                LoggerFactory = loggerFactory,
-            }),
-            new TemporalWorkerOptions("my-task-queue").
-                AddActivity(MyActivities.MyActivity).
-                AddWorkflow<MyWorkflow>());
-        await worker.ExecuteAsync(stoppingToken);
-    }
-}
-```
-
-Then you can configure it like:
-
-```csharp
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(svcs => svcs.AddHostedService<MyWorker>())
-    .Build();
-host.Run();
-```
+See the [Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/) project for support for worker services and
+activity dependency injection.
 
 ### Workflows
 
@@ -1030,6 +999,12 @@ Notes about activity definitions:
 * `[Activity(Dynamic = true)` represents a dynamic activity meaning it will be called when no other activities match.
   The call must accept a single parameter of `Temporalio.Converters.IRawValue[]` for the arguments. Only one dynamic
   activity may be registered on a worker.
+
+#### Activity Dependency Injection
+
+To have activity classes instantiated via a DI container to support dependency injection, see the
+[Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/) project which supports worker services in addition
+to activity dependency injection.
 
 #### Activity Execution Context
 
