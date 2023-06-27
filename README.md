@@ -15,6 +15,10 @@ Also see:
 * [API Documentation](https://dotnet.temporal.io/api)
 * [Samples](https://github.com/temporalio/samples-dotnet)
 
+Extensions:
+
+* [OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/)
+
 ⚠️ UNDER ACTIVE DEVELOPMENT
 
 This SDK is under active development and has not released a stable version yet. APIs may change in incompatible ways
@@ -63,6 +67,7 @@ present.
     - [Activity Heartbeating and Cancellation](#activity-heartbeating-and-cancellation)
     - [Activity Worker Shutdown](#activity-worker-shutdown)
     - [Activity Testing](#activity-testing)
+  - [OpenTelemetry Tracing Support](#opentelemetry-tracing-support)
 - [Development](#development)
   - [Build](#build)
   - [Code formatting](#code-formatting)
@@ -97,9 +102,6 @@ using Temporalio.Activities;
 
 public class MyActivities
 {
-    // We need a "ref" so we can reference instance methods from workflows in a type-safe way
-    public static readonly MyActivities Ref = ActivityRefs.Create<MyActivities>();
-
     // Activities can be async and/or static too! We just demonstrate instance
     // methods since many will use them that way.
     [Activity]
@@ -117,10 +119,6 @@ using Temporalio.Workflows;
 [Workflow]
 public class SayHelloWorkflow
 {
-    // A "ref" is needed to access methods on this class in a type-safe way from
-    // the client without instantiating the class
-    public static readonly SayHelloWorkflow Ref = WorkflowRefs.Create<SayHelloWorkflow>();
-
     [WorkflowRun]
     public async Task<string> RunAsync(string name)
     {
@@ -128,9 +126,9 @@ public class SayHelloWorkflow
         // StartActivityAsync could be used to just start and there are many
         // other things that you can do inside a workflow.
         return await Workflow.ExecuteActivityAsync(
-            // If the activity is static, we don't need Ref
-            MyActivities.Ref.SayHello,
-            name,
+            // This is a lambda expression where the instance is typed. If this
+            // were static, you wouldn't need a parameter.
+            (MyActivities act) => act.SayHello(name),
             new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
     }
 }
@@ -197,8 +195,7 @@ var client = await TemporalClient.ConnectAsync(new("localhost:7233"));
 
 // Run workflow
 var result = await client.ExecuteWorkflowAsync(
-    SayHelloWorkflow.Ref.RunAsync,
-    "Temporal",
+    (SayHelloWorkflow wf) => wf.RunAsync("Temporal"),
     new(id: "my-workflow-id", taskQueue: "my-task-queue"));
 
 Console.WriteLine("Workflow result: {0}", result);
@@ -227,8 +224,7 @@ var client = await TemporalClient.ConnectAsync(new()
 
 // Start a workflow
 var handle = await client.StartWorkflowAsync(
-    MyWorkflow.Ref.RunAsync,
-    "some workflow argument",
+    (MyWorkflow wf) => wf.RunAsync("some workflow argument"),
     new() { ID = "my-workflow-id", TaskQueue = "my-task-queue" });
 
 // Wait for a result
@@ -242,7 +238,9 @@ Notes about the above code:
 * To enable TLS, the `Tls` option can be set to a non-null `TlsOptions` instance.
 * Instead of `StartWorkflowAsync` + `GetResultAsync` above, there is an `ExecuteWorkflowAsync` extension method that is
   clearer if the handle is not needed.
-* Non-typesafe forms of `StartWorkflowAsync` and `ExecuteWorkflowAsync` exist when there is no workflow definition or
+* The type-safe forms of `StartWorkflowAsync` and `ExecuteWorkflowAsync` accept a lambda expression that take the
+  workflow as the first parameter and must only call the run method in the lambda.
+* Non-type-safe forms of `StartWorkflowAsync` and `ExecuteWorkflowAsync` exist when there is no workflow definition or
   the workflow may take more than one argument or some other dynamic need. These simply take string workflow type names
   and an object array for arguments.
 * The `handle` above represents a `WorkflowHandle` which has specific workflow operations on it. For existing workflows,
@@ -274,7 +272,7 @@ app.MapGet("/", async (Task<TemporalClient> clientTask) =>
 {
     var client = await clientTask;
     return await client.ExecuteWorkflowAsync(
-        MyWorkflow.Ref.RunAsync,
+        (MyWorkflow wf) => wf.RunAsync(),
         new(id: "my-workflow-id", taskQueue: "my-task-queue"));
 });
 app.Run();
@@ -311,6 +309,7 @@ converter, which supports the following types:
 * `byte[]`
 * `Google.Protobuf.IMessage` instances
 * Anything that `System.Text.Json` supports
+* `IRawValue` as unconverted raw payloads
 
 Custom converters can be created for all uses. For example, to create client with a data converter that converts all C#
 property names to camel case, you would:
@@ -338,7 +337,7 @@ var client = await TemporalClient.ConnectAsync(new()
 
 ### Workers
 
-Workers host workflows and/or activites. Here's how to run a worker::
+Workers host workflows and/or activities. Here's how to run a worker:
 
 ```csharp
 using MyNamespace;
@@ -433,8 +432,6 @@ public record GreetingParams(string Salutation = "Hello", string Name = "<unknow
 [Workflow]
 public class GreetingWorkflow
 {
-    public static readonly GreetingWorkflow Ref = WorkflowRefs.Create<GreetingWorkflow>();
-
     private string? currentGreeting;
     private GreetingParams? greetingParamsUpdate;
     private bool complete;
@@ -447,8 +444,9 @@ public class GreetingWorkflow
         {
             // Call activity to create greeting and store as field
             currentGreeting = await Workflow.ExecuteActivityAsync(
-                GreetingActivities.CreateGreeting,
-                greetingParams,
+                // This is a static activity method. If it were an instance
+                // method, a typed parameter can be accepted in the lambda call.
+                () => GreetingActivities.CreateGreeting(greetingParams),
                 new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
             Workflow.Logger.LogDebug("Greeting set to {Greeting}", currentGreeting);
 
@@ -482,26 +480,23 @@ public class GreetingWorkflow
 
 Notes about the above code:
 
-* The workflow client needs the ability to reference these instance methods, but C# doesn't allow referencing instance
-  methods without an instance. Therefore we add a readonly `Ref` instance which is a proxy instance just for method
-  references.
-  * This is backed by either `GetUninitializedObject` for classes or a dynamic proxy generator for interfaces, but
-    method invocations should never be made on it. It is only for referencing methods.
-  * This is technically not needed. Any way that the method can be referenced for a client is acceptable.
-  * Source generators will provide an additional, alternative way to use workflows in a typed way in the future.
 * Interfaces and abstract methods can have these attributes. This is helpful for defining a workflow implemented
   elsewhere. But if/when implemented, all pieces of the implementation should have the attributes too.
 * This workflow continually updates the greeting params when signalled and can complete with the greeting when given a
   different signal
 * Workflow code must be deterministic. See the "Workflow Logic Constraints" section below.
-* `Workflow.ExecuteActivityAsync` is strongly typed, so if the parameter was not a `GreetingParams` instance,
-  compilation would fail.
+* `Workflow.ExecuteActivityAsync` is strongly typed and accepts a lambda expression. This activity call can be a sync or
+  async function, return a value or not, and invoked statically or on an instance (which would require accepting the
+  instance as the only lambda parameter).
 
 Attributes that can be applied:
 
 * `[Workflow]` attribute must be present on the workflow type.
   * The attribute can have a string argument for the workflow type name. Otherwise the name is defaulted to the
     unqualified type name (with the `I` prefix removed if on an interface and has a capital letter following).
+  * `Dynamic = true` can be set for the workflow which makes the workflow a dynamic workflow meaning it will be called
+    when no other workflows match. The run call must accept a single parameter of `Temporalio.Converters.IRawValue[]`
+    for the arguments. Only one dynamic workflow may be registered on a worker.
 * `[WorkflowRun]` attribute must be present on one and only one public method.
   * The workflow run method must return a `Task` or `Task<>`.
   * The workflow run method _should_ accept a single parameter and return a single type. Records are encouraged because
@@ -516,32 +511,38 @@ Attributes that can be applied:
   * The attribute can have a string argument for the signal name. Otherwise the name is defaulted to the unqualified
     method name with `Async` trimmed off the end if it is present.
   * This attribute is not inherited and therefore must be explicitly set on any override.
-* `[WorkflowQuery]` attribute may be present on any public method that handles queries.
+  * `Dynamic = true` can be set for the signal which makes the signal a dynamic signal meaning it will be called when
+    no other signals match. The call must accept a `string` for the signal name and `Temporalio.Converters.IRawValue[]`
+    for the arguments. Only one dynamic signal may be present on a workflow.
+* `[WorkflowQuery]` attribute may be present on any public method or property with public getter that handles queries.
   * Query methods must be non-`void` but cannot return a `Task` (i.e. they cannot be async).
   * The attribute can have a string argument for the query name. Otherwise the name is defaulted to the unqualified
     method name.
   * This attribute is not inherited and therefore must be explicitly set on any override.
+  * `Dynamic = true` can be set for the query which makes the query a dynamic query meaning it will be called when
+    no other queries match. The call must accept a `string` for the query name and `Temporalio.Converters.IRawValue[]`
+    for the arguments. Only one dynamic query may be present on a workflow.
 
 #### Running Workflows
 
-To start a workflow from a client, you can `StartWorkflowAsync` and then use the resulting handle:
+To start a workflow from a client, you can `StartWorkflowAsync` with a lambda expression and then use the resulting
+handle:
 
 ```csharp
 // Start the workflow
+var arg = new GreetingParams(Name: "Temporal");
 var handle = await client.StartWorkflowAsync(
-    GreetingWorkflow.Ref.RunAsync,
-    new GreetingParams(Name: "Temporal"),
+    (GreetingWorkflow wf) => wf.RunAsync(arg),
     new(id: "my-workflow-id", taskQueue: "my-task-queue"));
 // Check current greeting via query
 Console.WriteLine(
     "Current greeting: {0}",
-    await handle.QueryWorkflowAsync(GreetingWorkflow.Ref.CurrentGreeting));
+    await handle.QueryWorkflowAsync(wf => wf.CurrentGreeting()));
 // Change the params via signal
-await handle.SignalWorkflowAsync(
-    GreetingWorkflow.Ref.UpdateGreetingParamsAsync,
-    new GreetingParams(Salutation: "Aloha", Name: "John"));
+var signalArg = new GreetingParams(Salutation: "Aloha", Name: "John");
+await handle.SignalWorkflowAsync(wf => wf.UpdateGreetingParamsAsync(signalArg));
 // Tell it to complete via signal
-await handle.SignalWorkflowAsync(GreetingWorkflow.Ref.CompleteWithGreetingAsync);
+await handle.SignalWorkflowAsync(wf => wf.CompleteWithGreetingAsync());
 // Wait for workflow result
 Console.WriteLine(
     "Final greeting: {0}",
@@ -560,9 +561,11 @@ Some things to note about the above code:
 
 #### Invoking Activities
 
-* Activities are executed with `Workflow.ExecuteActivityAsync` which accepts an activity method delegate + argument if
-  required, or a string name + object array of arguments.
-* Activity options are a simple class set after any activity and its argument(s).
+* Activities are executed with `Workflow.ExecuteActivityAsync` which accepts a lambda expression that invokes the
+  activity with its arguments. The activity method can be sync or async, return a result or not, and be static or an
+  instance method (which would require the parameter of the lambda to be the instance type).
+* A non-type-safe form of `ExecuteActivityAsync` exists that just accepts a string activity name.
+* Activity options are a simple class set after the lambda expression or name.
   * These options must be present and either `ScheduleToCloseTimeout` or `StartToCloseTimeout` must be present.
   * Retry policy, cancellation type, etc can also be set on the options.
   * Cancellation token is defaulted as the workflow cancellation token, but an alternative can be given in options.
@@ -573,9 +576,10 @@ Some things to note about the above code:
 
 #### Invoking Child Workflows
 
-* Child workflows are started with `Workflow.StartChildWorkflowAsync` which accepts a workflow run method delegate +
-  argument if required, or a string name + object array of arguments.
-* Child workflow options are a simple class set after any child workflow run method and its argument(s).
+* Child workflows are started with `Workflow.StartChildWorkflowAsync` which accepts a lambda expression whose parameter
+  is the child workflow to call and the expression is a call to its run method with arguments.
+* A non-type-safe form of `StartChildWorkflowAsync` exists that just accepts a string workflow name.
+* Child workflow options are a simple class set after after the lambda expression or name.
   * These options are optional.
   * Retry policy, ID, etc can also be set on the options.
   * Cancellation token is defaulted as the workflow cancellation token, but an alternative can be given in options.
@@ -633,6 +637,7 @@ can be used from workflows including:
   * `Logger` - Scoped replay-aware logger for use inside a workflow. Normal loggers should not be used because they may
     log duplicate values during replay.
   * `Memo` - Read-only current memo values.
+  * `PayloadConverter` - Can be used if `IRawValue` is used for input or output.
   * `Queries` - Mutable set of query definitions for the workflow. Technically this can be mutated to add query
     definitions at runtime, but methods with the `[WorkflowQuery]` attribute are strongly preferred.
   * `Random` - Deterministically seeded random instance for use inside workflows.
@@ -641,7 +646,8 @@ can be used from workflows including:
   * `Unsafe.IsReplaying` - For advanced users to know whether the workflow is replaying. This is rarely needed.
 * Methods:
   * `CreateContinueAsNewException` - Create exception that can be thrown to perform a continue-as-new on the workflow.
-    There are several overloads to properly type workflow arguments similar to start/execute workflow calls elsewhere.
+    There are several overloads to properly accept a lambda expression for the workflow similar to start/execute
+    workflow calls elsewhere.
   * `GetExternalWorkflowHandle` - Get a handle to an external workflow to issue cancellation requests and signals.
   * `NewGuid` - Create a deterministically random UUIDv4 GUID.
   * `Patched` and `DeprecatePatch` - Support for patch-based versioning inside the workflow.
@@ -694,10 +700,15 @@ with .NET tasks inside of workflows:
 * Do not use `Task.Delay`, `Task.Wait`, timeout-based `CancellationTokenSource`, or anything that uses .NET built-in
   timers.
   * `Workflow.DelayAsync`, `Workflow.WaitConditionAsync`, or non-timeout-based cancellation token source is suggested.
+* Do not use `Task.WhenAny`.
+  * Use `Workflow.WhenAnyAsync` instead.
+  * Technically this only applies to an enumerable set of tasks with results or more than 2 tasks with results. Other
+    uses are safe. See [this issue](https://github.com/dotnet/runtime/issues/87481).
 * Be wary of additional libraries' implicit use of the default scheduler.
   * For example, while there are articles for `Dataflow` about
-    [using a specific scheduler](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-specify-a-task-scheduler-in-a-dataflow-block), there are hidden implicit uses of `TaskScheduler.Default`. For
-    example, see [this bug](https://github.com/dotnet/runtime/issues/83159).
+    [using a specific scheduler](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-specify-a-task-scheduler-in-a-dataflow-block),
+    there are hidden implicit uses of `TaskScheduler.Default`. For example, see
+    [this bug](https://github.com/dotnet/runtime/issues/83159).
 
 In order to help catch wrong scheduler use, by default the Temporal .NET SDK adds an event source listener for
 info-level task events. While this technically receives events from all uses of tasks in the process, we make sure to
@@ -803,8 +814,6 @@ using Temporalio.Workflows;
 [Workflow]
 public class WaitADayWorkflow
 {
-    public static readonly WaitADayWorkflow Ref = WorkflowRefs.Create<WaitADayWorkflow>();
-
     [WorkflowRun]
     public async Task<string> RunAsync()
     {
@@ -830,7 +839,7 @@ public async Task WaitADayWorkflow_SimpleRun_Succeeds()
       new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
           AddWorkflow<WaitADayWorkflow>());
     var result = await env.Client.ExecuteWorkflowAsync(
-        WaitADayWorkflow.Ref.RunAsync,
+        (WaitADayWorkflow wf) => wf.RunAsync(),
         new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
     Assert.Equal("all done", result);
 }
@@ -856,8 +865,6 @@ using Temporalio.Workflows;
 [Workflow]
 public class SignalWorkflow
 {
-    public static readonly SignalWorkflow Ref = WorkflowRefs.Create<SignalWorkflow>();
-
     private bool signalReceived = false;
 
     [WorkflowRun]
@@ -891,9 +898,9 @@ public async Task SignalWorkflow_SendSignal_HasExpectedResult()
         new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
             AddWorkflow<SignalWorkflow>());
     var handle = await env.Client.StartWorkflowAsync(
-        SignalWorkflow.Ref.RunAsync,
+        (SignalWorkflow wf) => wf.RunAsync(),
         new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-    await handle.SignalAsync(SignalWorkflow.Ref.SomeSignalAsync);
+    await handle.SignalAsync(wf => wf.SomeSignalAsync());
     Assert.Equal("got signal", await handle.GetResultAsync());
 }
 ```
@@ -913,7 +920,7 @@ public async Task SignalWorkflow_SignalTimeout_HasExpectedResult()
         new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
             AddWorkflow<SignalWorkflow>());
     var handle = await env.Client.StartWorkflowAsync(
-        SignalWorkflow.Ref.RunAsync,
+        (SignalWorkflow wf) => wf.RunAsync(),
         new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
     await env.DelayAsync(TimeSpan.FromSeconds(50));
     Assert.Equal("got timeout", await handle.GetResultAsync());
@@ -1020,6 +1027,9 @@ Notes about activity definitions:
   valuable since often an activity will be referenced by a workflow.
 * Activities can be synchronous or asynchronous. If an activity returns a `Task`, that task is awaited on as part of the
   activity.
+* `[Activity(Dynamic = true)` represents a dynamic activity meaning it will be called when no other activities match.
+  The call must accept a single parameter of `Temporalio.Converters.IRawValue[]` for the arguments. Only one dynamic
+  activity may be registered on a worker.
 
 #### Activity Execution Context
 
@@ -1033,6 +1043,7 @@ contains the following important members:
 * `CancellationToken` - Token cancelled when the activity is cancelled.
 * `Heartbeat(object?...)` - Send a heartbeat from this activity.
 * `WorkerShutdownToken` - Token cancelled on worker shutdown before the grace period + `CancellationToken` cancellation.
+* `PayloadConverter` - Can be used if `IRawValue` is used for input or output.
 
 #### Activity Heartbeating and Cancellation
 
@@ -1073,6 +1084,11 @@ activity context:
 * `CancellationTokenSource` - Token source for issuing cancellation.
 * `Heartbeater` - Callback invoked each heartbeat.
 * `WorkerShutdownTokenSource` - Token source for issuing worker shutdown.
+* `PayloadConverter` - Defaulted to default payload converter.
+
+### OpenTelemetry Tracing Support
+
+See the [OpenTelemetry extension](src/Temporalio.Extensions.OpenTelemetry/).
 
 ## Development
 

@@ -7,7 +7,7 @@ namespace Temporalio.Workflows
     /// </summary>
     /// <remarks>
     /// This is not inherited, so if a method is overridden, it must also have this attribute. The
-    /// method must return a task (not a task with a type embedded).
+    /// method must be a public non-static and return a task (not a task with a type embedded).
     /// </remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class WorkflowSignalAttribute : Attribute
@@ -36,5 +36,12 @@ namespace Temporalio.Workflows
         /// default.
         /// </summary>
         public string? Name { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the signal is dynamic. If a signal is dynamic,
+        /// it cannot be given a name in this attribute and the method must accept a string name and
+        /// an array of <see cref="Converters.IRawValue" />.
+        /// </summary>
+        public bool Dynamic { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Temporalio.Common;
 
 namespace Temporalio.Workflows
 {
@@ -10,6 +11,7 @@ namespace Temporalio.Workflows
     /// <param name="ContinuedRunID">Run ID if this was continued.</param>
     /// <param name="CronSchedule">Cron schedule if applicable.</param>
     /// <param name="ExecutionTimeout">Execution timeout for the workflow.</param>
+    /// <param name="Headers">Headers from when the workflow was started.</param>
     /// <param name="Namespace">Namespace for the workflow.</param>
     /// <param name="Parent">Parent information for the workflow if this is a child.</param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
@@ -20,11 +22,16 @@ namespace Temporalio.Workflows
     /// <param name="TaskTimeout">Task timeout for the workflow.</param>
     /// <param name="WorkflowID">ID for the workflow.</param>
     /// <param name="WorkflowType">Workflow type name.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record WorkflowInfo(
         int Attempt,
         string? ContinuedRunID,
         string? CronSchedule,
         TimeSpan? ExecutionTimeout,
+        IReadOnlyDictionary<string, Api.Common.V1.Payload>? Headers,
         string Namespace,
         WorkflowInfo.ParentInfo? Parent,
         RetryPolicy? RetryPolicy,

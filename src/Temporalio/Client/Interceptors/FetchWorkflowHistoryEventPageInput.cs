@@ -13,6 +13,10 @@ namespace Temporalio.Client.Interceptors
     /// <param name="EventFilterType">Type of events to return.</param>
     /// <param name="SkipArchival">If true, skips archival when fetching.</param>
     /// <param name="Rpc">RPC options.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record FetchWorkflowHistoryEventPageInput(
         string ID,
         string? RunID,

@@ -12,7 +12,7 @@ namespace Temporalio.Workflows
     {
         private static readonly ConcurrentDictionary<MethodInfo, WorkflowSignalDefinition> Definitions = new();
 
-        private WorkflowSignalDefinition(string name, MethodInfo? method, Delegate? del)
+        private WorkflowSignalDefinition(string? name, MethodInfo? method, Delegate? del)
         {
             Name = name;
             Method = method;
@@ -20,9 +20,14 @@ namespace Temporalio.Workflows
         }
 
         /// <summary>
-        /// Gets the signal name.
+        /// Gets the signal name. This is null if the signal is dynamic.
         /// </summary>
-        public string Name { get; private init; }
+        public string? Name { get; private init; }
+
+        /// <summary>
+        /// Gets a value indicating whether the signal is dynamic.
+        /// </summary>
+        public bool Dynamic => Name == null;
 
         /// <summary>
         /// Gets the signal method if done with attribute.
@@ -45,6 +50,10 @@ namespace Temporalio.Workflows
             {
                 throw new ArgumentException($"WorkflowSignal method {method} must be public");
             }
+            if (method.IsStatic)
+            {
+                throw new ArgumentException($"WorkflowSignal method {method} cannot be static");
+            }
             return Definitions.GetOrAdd(method, CreateFromMethod);
         }
 
@@ -52,22 +61,40 @@ namespace Temporalio.Workflows
         /// Creates a signal definition from an explicit name and method. Most users should use
         /// <see cref="FromMethod" /> with attributes instead.
         /// </summary>
-        /// <param name="name">Signal name.</param>
+        /// <param name="name">Signal name. Null for dynamic signal.</param>
         /// <param name="del">Signal delegate.</param>
         /// <returns>Signal definition.</returns>
-        public static WorkflowSignalDefinition CreateWithoutAttribute(string name, Delegate del)
+        public static WorkflowSignalDefinition CreateWithoutAttribute(
+            string? name, Delegate del)
         {
-            AssertValid(del.Method);
+            AssertValid(del.Method, dynamic: name == null);
             return new(name, null, del);
+        }
+
+        /// <summary>
+        /// Gets the signal name for calling or fail if no attribute or if dynamic.
+        /// </summary>
+        /// <param name="method">Method to get name from.</param>
+        /// <returns>Name.</returns>
+        internal static string NameFromMethodForCall(MethodInfo method)
+        {
+            var defn = FromMethod(method);
+            return defn.Name ??
+                throw new ArgumentException(
+                    $"{method} cannot be used directly since it is a dynamic signal");
         }
 
         private static WorkflowSignalDefinition CreateFromMethod(MethodInfo method)
         {
-            AssertValid(method);
             var attr = method.GetCustomAttribute<WorkflowSignalAttribute>(false) ??
                 throw new ArgumentException($"{method} missing WorkflowSignal attribute");
+            AssertValid(method, attr.Dynamic);
             var name = attr.Name;
-            if (name == null)
+            if (attr.Dynamic && name != null)
+            {
+                throw new ArgumentException($"WorkflowSignal method {method} cannot be dynamic with custom name");
+            }
+            else if (!attr.Dynamic && name == null)
             {
                 name = method.Name;
                 // Trim trailing "Async" if that's not just the full name
@@ -79,12 +106,18 @@ namespace Temporalio.Workflows
             return new(name, method, null);
         }
 
-        private static void AssertValid(MethodInfo method)
+        private static void AssertValid(MethodInfo method, bool dynamic)
         {
             // Method must only return a Task (not a subclass thereof)
             if (method.ReturnType != typeof(Task))
             {
                 throw new ArgumentException($"WorkflowSignal method {method} must return Task");
+            }
+            // If it's dynamic, must have specific signature
+            if (dynamic && !WorkflowDefinition.HasValidDynamicParameters(method, requireNameFirst: true))
+            {
+                throw new ArgumentException(
+                    $"WorkflowSignal method {method} must accept string and an array of IRawValue");
             }
         }
     }

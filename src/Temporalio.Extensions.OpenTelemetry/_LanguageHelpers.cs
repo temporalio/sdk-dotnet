@@ -3,7 +3,7 @@
 namespace System.Runtime.CompilerServices
 {
     /// <summary>
-    /// Needed for records to work on older .NET versions.
+    /// Needed for init-only properties to work on older .NET versions.
     /// </summary>
     internal static class IsExternalInit
     {

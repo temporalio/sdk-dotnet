@@ -21,9 +21,9 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         await AssertNoSchedulesAsync();
 
         // Create a schedule with a lot of stuff
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var action = ScheduleActionStartWorkflow.Create(
-            IKitchenSinkWorkflow.Ref.RunAsync,
-            new KSWorkflowParams(new KSAction(Result: new("some result"))),
+            (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
             {
                 ExecutionTimeout = TimeSpan.FromHours(1),
@@ -213,12 +213,12 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     {
         await AssertNoSchedulesAsync();
 
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
-                    IKitchenSinkWorkflow.Ref.RunAsync,
-                    new KSWorkflowParams(new KSAction(Result: new("some result"))),
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
                 Spec: new() { Calendars = new List<ScheduleCalendarSpec> { new() } })
             {
@@ -253,12 +253,12 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         await AssertNoSchedulesAsync();
 
         // Create paused schedule that triggers immediately
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
-                    IKitchenSinkWorkflow.Ref.RunAsync,
-                    new KSWorkflowParams(new KSAction(Result: new("some result"))),
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
                 Spec: new())
             {
@@ -287,12 +287,12 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         var now = DateTime.UtcNow;
         // Intervals align to the epoch boundary, so trim off seconds
         now = now.AddTicks(-(now.Ticks % TimeSpan.TicksPerMinute));
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
-                    IKitchenSinkWorkflow.Ref.RunAsync,
-                    new KSWorkflowParams(new KSAction(Result: new("some result"))),
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
                 Spec: new()
                 {
@@ -334,30 +334,48 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
 
     private async Task DeleteAllSchedulesAsync()
     {
-        await foreach (var sched in Client.ListSchedulesAsync())
+        // We will try this 3 times
+        var tries = 0;
+        while (true)
         {
+            await foreach (var sched in Client.ListSchedulesAsync())
+            {
+                try
+                {
+                    await Client.GetScheduleHandle(sched.ID).DeleteAsync();
+                }
+                catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+                {
+                    // Ignore not-found errors
+                }
+            }
             try
             {
-                await Client.GetScheduleHandle(sched.ID).DeleteAsync();
+                await AssertNoSchedulesAsync();
+                return;
             }
-            catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+            catch
             {
-                // Ignore not-found errors
+                if (++tries >= 3)
+                {
+                    throw;
+                }
             }
         }
-        await AssertNoSchedulesAsync();
     }
 
     private async Task AssertNoSchedulesAsync()
     {
-        await AssertMore.EqualEventuallyAsync(0, async () =>
-        {
-            var count = 0;
-            await foreach (var sched in Client.ListSchedulesAsync())
+        await AssertMore.EqualEventuallyAsync(
+            0,
+            async () =>
             {
-                count++;
-            }
-            return count;
-        });
+                var count = 0;
+                await foreach (var sched in Client.ListSchedulesAsync())
+                {
+                    count++;
+                }
+                return count;
+            });
     }
 }

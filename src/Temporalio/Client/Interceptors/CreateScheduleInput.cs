@@ -8,6 +8,10 @@ namespace Temporalio.Client.Interceptors
     /// <param name="ID">Schedule ID.</param>
     /// <param name="Schedule">Schedule.</param>
     /// <param name="Options">Schedule options.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record CreateScheduleInput(
         string ID,
         Schedule Schedule,

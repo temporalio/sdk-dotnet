@@ -12,10 +12,14 @@ namespace Temporalio.Worker.Interceptors
     /// <param name="Definition">Query definition.</param>
     /// <param name="Args">Query arguments.</param>
     /// <param name="Headers">Query headers.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record HandleQueryInput(
         string ID,
         string Query,
         WorkflowQueryDefinition Definition,
         object?[] Args,
-        IDictionary<string, Payload>? Headers);
+        IReadOnlyDictionary<string, Payload>? Headers);
 }

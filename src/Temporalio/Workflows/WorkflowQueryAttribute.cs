@@ -7,10 +7,10 @@ namespace Temporalio.Workflows
     /// </summary>
     /// <remarks>
     /// This is not inherited, so if a method is overridden, it must also have this attribute. The
-    /// method must be a non-async method (i.e. cannot return a Task) and must return a non-void
-    /// value.
+    /// method must be a public, non-async, non-static method (i.e. cannot return a Task) and must
+    /// return a non-void value.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, Inherited = false)]
     public sealed class WorkflowQueryAttribute : Attribute
     {
         /// <summary>
@@ -36,5 +36,12 @@ namespace Temporalio.Workflows
         /// name.
         /// </summary>
         public string? Name { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the query is dynamic. If a query is dynamic, it
+        /// cannot be given a name in this attribute and the method must accept a string name and
+        /// an array of <see cref="Converters.IRawValue" />.
+        /// </summary>
+        public bool Dynamic { get; set; }
     }
 }

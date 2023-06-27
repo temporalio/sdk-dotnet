@@ -2,10 +2,11 @@
 
 namespace Temporalio.Tests.Workflows;
 
+using Temporalio.Converters;
 using Temporalio.Workflows;
 using Xunit;
 
-public class WorkflowAttributeTests
+public class WorkflowDefinitionTests
 {
     [Fact]
     public void Create_RunAttributeMissing_Throws()
@@ -99,6 +100,12 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void Create_SignalAttributeOnStatic_Throws()
+    {
+        AssertBad<Bad.Wf1>("SomeStaticSignalAsync() cannot be static");
+    }
+
+    [Fact]
     public void Create_SignalAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one signal named SomeSignal1");
@@ -142,6 +149,12 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void Create_QueryAttributeOnStatic_Throws()
+    {
+        AssertBad<Bad.Wf1>("SomeStaticQuery() cannot be static");
+    }
+
+    [Fact]
     public void Create_QueryAttributeOnMultiple_Throws()
     {
         AssertBad<Bad.IWf4>("has more than one query named SomeQuery1");
@@ -160,6 +173,18 @@ public class WorkflowAttributeTests
     }
 
     [Fact]
+    public void Create_QueryAttributeOnStaticProperty_Throws()
+    {
+        AssertBad<Bad.Wf1>("StaticQueryProp cannot be static");
+    }
+
+    [Fact]
+    public void Create_QueryAttributeOnProtectedProperty_Throws()
+    {
+        AssertBad<Bad.Wf1>("ProtectedQueryProp must have public getter");
+    }
+
+    [Fact]
     public void Create_Generics_Throws()
     {
         // We disallow generics because it is too complicated to handle at this time
@@ -167,6 +192,23 @@ public class WorkflowAttributeTests
         AssertBad<Bad.Wf5<string>>("with WorkflowRun contains generic parameters");
         AssertBad<Bad.Wf5<string>>("with WorkflowSignal contains generic parameters");
         AssertBad<Bad.Wf5<string>>("with WorkflowQuery contains generic parameters");
+    }
+
+    [Fact]
+    public void Create_BadDynamic_Throws()
+    {
+        AssertBad<Bad.Wf6>("custom name for dynamic workflow");
+        AssertBad<Bad.Wf6>("dynamic workflow must accept an array of IRawValue");
+        AssertBad<Bad.Wf6>("more than one dynamic signal");
+        AssertBad<Bad.Wf6>("DynamicSignal3Async(System.String, Temporalio.Converters.IRawValue[])" +
+            " cannot be dynamic with custom name");
+        AssertBad<Bad.Wf6>("DynamicSignal4Async(Temporalio.Converters.IRawValue[])" +
+            " must accept string and an array of IRawValue");
+        AssertBad<Bad.Wf6>("more than one dynamic query");
+        AssertBad<Bad.Wf6>("DynamicQuery3(System.String, Temporalio.Converters.IRawValue[])" +
+            " cannot be dynamic with custom name");
+        AssertBad<Bad.Wf6>("DynamicQuery4(Temporalio.Converters.IRawValue[])" +
+            " must accept string and an array of IRawValue");
     }
 
     private static void AssertBad<T>(string errContains)
@@ -182,8 +224,6 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
-            public static readonly IWf1 Ref = WorkflowRefs.Create<IWf1>();
-
             void RunWithoutAttribute();
         }
 
@@ -271,6 +311,18 @@ public class WorkflowAttributeTests
             {
             }
 
+            [WorkflowQuery]
+            public static string? StaticQueryProp { get; }
+
+            [WorkflowQuery]
+            protected string? ProtectedQueryProp { get; }
+
+            [WorkflowSignal]
+            public static Task SomeStaticSignalAsync() => Task.CompletedTask;
+
+            [WorkflowQuery]
+            public static string SomeStaticQuery() => string.Empty;
+
             public override Task SomeVirtualSignalAsync() => Task.CompletedTask;
 
             public override string SomeVirtualQuery() => string.Empty;
@@ -328,6 +380,37 @@ public class WorkflowAttributeTests
             [WorkflowQuery]
             public string SomeQuery<TLocal>(TLocal _) => string.Empty;
         }
+
+        [Workflow("CustomName", Dynamic = true)]
+        public class Wf6
+        {
+            [WorkflowRun]
+            public Task RunAsync(int param) => Task.CompletedTask;
+
+            [WorkflowSignal(Dynamic = true)]
+            public Task DynamicSignal1Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowSignal(Dynamic = true)]
+            public Task DynamicSignal2Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowSignal("CustomName", Dynamic = true)]
+            public Task DynamicSignal3Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowSignal(Dynamic = true)]
+            public Task DynamicSignal4Async(IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowQuery(Dynamic = true)]
+            public string DynamicQuery1(string signalName, IRawValue[] args) => string.Empty;
+
+            [WorkflowQuery(Dynamic = true)]
+            public string DynamicQuery2(string signalName, IRawValue[] args) => string.Empty;
+
+            [WorkflowQuery("CustomName", Dynamic = true)]
+            public string DynamicQuery3(string signalName, IRawValue[] args) => string.Empty;
+
+            [WorkflowQuery(Dynamic = true)]
+            public string DynamicQuery4(IRawValue[] args) => string.Empty;
+        }
     }
 
     public static class Good
@@ -335,7 +418,8 @@ public class WorkflowAttributeTests
         [Workflow]
         public interface IWf1
         {
-            public static readonly IWf1 Ref = WorkflowRefs.Create<IWf1>();
+            [WorkflowQuery]
+            string SomeQueryProp { get; }
 
             [WorkflowRun]
             Task RunAsync();
@@ -375,6 +459,9 @@ public class WorkflowAttributeTests
             public Wf2(string param1, int param2 = 5)
             {
             }
+
+            [WorkflowQuery]
+            public string? SomeQueryProp { get; }
 
             [WorkflowRun]
             public override Task RunAsync(string param1, int param2 = 5) => Task.CompletedTask;

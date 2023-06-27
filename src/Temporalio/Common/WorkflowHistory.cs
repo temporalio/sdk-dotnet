@@ -10,7 +10,7 @@ using Temporalio.Api.Failure.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Converters;
 
-namespace Temporalio
+namespace Temporalio.Common
 {
     /// <summary>
     /// History for a workflow.

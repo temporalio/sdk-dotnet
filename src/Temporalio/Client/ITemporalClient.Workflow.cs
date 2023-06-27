@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Temporalio.Client
@@ -7,69 +8,38 @@ namespace Temporalio.Client
     public partial interface ITemporalClient
     {
         /// <summary>
-        /// Start a workflow with the given run method.
+        /// Start a workflow via lambda invoking the run method.
         /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Workflow result type.</typeparam>
-        /// <param name="workflow">Workflow run method with a result but no argument.</param>
+        /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
-            Func<Task<TResult>> workflow, WorkflowOptions options);
+        Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
+            Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options);
 
         /// <summary>
-        /// Start a workflow with the given run method.
+        /// Start a workflow via lambda invoking the run method.
         /// </summary>
-        /// <typeparam name="T">Workflow argument type.</typeparam>
-        /// <typeparam name="TResult">Workflow result type.</typeparam>
-        /// <param name="workflow">Workflow run method with a result and argument.</param>
-        /// <param name="arg">Workflow argument.</param>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="workflowRunCall">Invocation of workflow run method with no result.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow handle for the started workflow.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        Task<WorkflowHandle<TResult>> StartWorkflowAsync<T, TResult>(
-            Func<T, Task<TResult>> workflow, T arg, WorkflowOptions options);
+        Task<WorkflowHandle<TWorkflow>> StartWorkflowAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options);
 
         /// <summary>
-        /// Start a workflow with the given run method.
-        /// </summary>
-        /// <param name="workflow">Workflow run method with no result or argument.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
-        /// <returns>Workflow handle for the started workflow.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
-        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
-        /// Workflow was already started according to ID reuse policy.
-        /// </exception>
-        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        Task<WorkflowHandle> StartWorkflowAsync(
-            Func<Task> workflow, WorkflowOptions options);
-
-        /// <summary>
-        /// Start a workflow with the given run method.
-        /// </summary>
-        /// <typeparam name="T">Workflow argument type.</typeparam>
-        /// <param name="workflow">Workflow run method with an argument but no result.</param>
-        /// <param name="arg">Workflow argument.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
-        /// <returns>Workflow handle for the started workflow.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
-        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
-        /// Workflow was already started according to ID reuse policy.
-        /// </exception>
-        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        Task<WorkflowHandle> StartWorkflowAsync<T>(
-            Func<T, Task> workflow, T arg, WorkflowOptions options);
-
-        /// <summary>
-        /// Start a workflow with the given run method.
+        /// Start a workflow by name.
         /// </summary>
         /// <param name="workflow">Workflow type name.</param>
         /// <param name="args">Arguments for the workflow.</param>
@@ -81,22 +51,6 @@ namespace Temporalio.Client
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
         Task<WorkflowHandle> StartWorkflowAsync(
-            string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options);
-
-        /// <summary>
-        /// Start a workflow with the given run method.
-        /// </summary>
-        /// <typeparam name="TResult">Result type that will be set on the handle.</typeparam>
-        /// <param name="workflow">Workflow type name.</param>
-        /// <param name="args">Arguments for the workflow.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
-        /// <returns>Workflow handle for the started workflow.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
-        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
-        /// Workflow was already started according to ID reuse policy.
-        /// </exception>
-        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options);
 
         /// <summary>
@@ -112,8 +66,22 @@ namespace Temporalio.Client
             string id, string? runID = null, string? firstExecutionRunID = null);
 
         /// <summary>
-        /// Get a workflow handle for an existing workflow with known return type.
+        /// Get a workflow handle for an existing workflow with known type.
         /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="id">ID of the workflow.</param>
+        /// <param name="runID">Run ID of the workflow or null for latest.</param>
+        /// <param name="firstExecutionRunID">
+        /// Optional first execution ID used for cancellation and termination.
+        /// </param>
+        /// <returns>Created workflow handle.</returns>
+        WorkflowHandle<TWorkflow> GetWorkflowHandle<TWorkflow>(
+            string id, string? runID = null, string? firstExecutionRunID = null);
+
+        /// <summary>
+        /// Get a workflow handle for an existing workflow with known type and return type.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Result type of the workflow.</typeparam>
         /// <param name="id">ID of the workflow.</param>
         /// <param name="runID">Run ID of the workflow or null for latest.</param>
@@ -121,7 +89,7 @@ namespace Temporalio.Client
         /// Optional first execution ID used for cancellation and termination.
         /// </param>
         /// <returns>Created workflow handle.</returns>
-        WorkflowHandle<TResult> GetWorkflowHandle<TResult>(
+        WorkflowHandle<TWorkflow, TResult> GetWorkflowHandle<TWorkflow, TResult>(
             string id, string? runID = null, string? firstExecutionRunID = null);
 
 #if NETCOREAPP3_0_OR_GREATER

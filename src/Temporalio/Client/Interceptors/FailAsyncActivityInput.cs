@@ -8,6 +8,10 @@ namespace Temporalio.Client.Interceptors
     /// <param name="Activity">Activity to fail.</param>
     /// <param name="Exception">Exception.</param>
     /// <param name="Options">Options passed in to fail.</param>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
     public record FailAsyncActivityInput(
         AsyncActivityHandle.Reference Activity,
         Exception Exception,

@@ -8,7 +8,7 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Converters;
 
-namespace Temporalio
+namespace Temporalio.Common
 {
     /// <summary>
     /// Read-only collection of typed search attributes. Use a <see cref="Builder" /> to create this
@@ -20,7 +20,7 @@ namespace Temporalio
     /// be mutated during workflow run so it is not strictly immutable. From a client perspective,
     /// this collection is immutable.
     /// </remarks>
-    public class SearchAttributeCollection : IEnumerable<SearchAttributeKey>
+    public class SearchAttributeCollection : IReadOnlyCollection<SearchAttributeKey>
     {
         /// <summary>
         /// An empty search attribute collection.

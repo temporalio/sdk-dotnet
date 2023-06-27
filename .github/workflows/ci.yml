@@ -22,9 +22,6 @@ jobs:
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
-      - name: Print build information
-        run: "echo head_ref: ${{ github.head_ref }}, ref: ${{ github.ref }}, os: ${{ matrix.os }}"
-
       - name: Checkout repository
         uses: actions/checkout@v2
         with:
@@ -86,6 +83,9 @@ jobs:
         with:
           name: test-fail-${{ matrix.os }}
           path: tests/Temporalio.Tests/TestResults
+
+      - name: Confirm bench works
+        run: dotnet run --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 5 --max-cached-workflows 100 --max-concurrent 100
 
       - name: Test cloud
         # Only supported in non-fork runs, since secrets are not available in forks

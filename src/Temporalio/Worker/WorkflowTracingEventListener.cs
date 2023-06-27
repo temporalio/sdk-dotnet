@@ -1,6 +1,10 @@
+#pragma warning disable CS0162 // We intentionally have dead code in this file
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Temporalio.Exceptions;
 
@@ -13,8 +17,11 @@ namespace Temporalio.Worker
     /// </summary>
     internal class WorkflowTracingEventListener : EventListener
     {
-        // Set to true to enable dumping of events
+        // Set to true to enable dumping of events (slow perf!)
         private const bool DumpEvents = false;
+
+        // Set to true to enable tracking of task events (slow perf!)
+        private const bool TrackTaskEvents = false;
 
         private const string TplEventSourceName = "System.Threading.Tasks.TplEventSource";
         private const int TplTaskWithSchedulerEventIDBegin = 7;
@@ -27,6 +34,9 @@ namespace Temporalio.Worker
 
         private static readonly Lazy<WorkflowTracingEventListener> LazyInstance = new(() => new());
 
+        // Only non-null when TrackTaskEvents is true
+        private readonly Dictionary<int, List<TaskEvent>>? taskEvents;
+
         // Locks the fields below it only
         private readonly object eventSourceLock = new();
         private EventSource? tplEventSource;
@@ -35,6 +45,10 @@ namespace Temporalio.Worker
 
         private WorkflowTracingEventListener()
         {
+            if (TrackTaskEvents)
+            {
+                taskEvents = new();
+            }
         }
 
         /// <summary>
@@ -117,15 +131,14 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc />
-        protected override void OnEventWritten(EventWrittenEventArgs eventData)
+        protected override void OnEventWritten(EventWrittenEventArgs evt)
         {
             // No need to invoke base class
             if (DumpEvents)
             {
-#pragma warning disable CS0162 // Can be dead code, it's for development purposes only
-                DumpEvent(eventData);
-#pragma warning restore CS0162
+                Console.WriteLine(EventToString(evt));
             }
+
             // We only care if we're the current scheduler and we're tracing. It is important that
             // this is early in this call because this will be executed on every task event. For the
             // non-workflow use case, this is essentially just a thread-local fetch + an instance of
@@ -135,37 +148,93 @@ namespace Temporalio.Worker
             {
                 return;
             }
-            if (eventData.EventSource.Guid == tplEventSource?.Guid)
+            if (evt.EventSource.Guid == tplEventSource?.Guid)
             {
-                OnTplEventWritten(instance, eventData);
+                OnTplEventWritten(instance, evt);
             }
-            else if (eventData.EventSource.Guid == frameworkEventSource?.Guid)
+            else if (evt.EventSource.Guid == frameworkEventSource?.Guid)
             {
-                OnFrameworkEventWritten(instance, eventData);
+                OnFrameworkEventWritten(instance, evt);
             }
         }
 
-        private static void DumpEvent(EventWrittenEventArgs evt) =>
-            Console.WriteLine("Event: {0}", string.Join(" -- ", new List<object?>()
-            {
-                evt.EventSource.Name,
-                evt.EventId,
-                evt.EventName,
-                evt.EventSource,
-                evt.Keywords,
-                evt.Message,
-                $"Curr-Sched: {TaskScheduler.Current?.GetType()}",
-                evt.PayloadNames == null ? "<none>" : string.Join(",", evt.PayloadNames),
-                evt.Payload == null ? "<none>" : string.Join(",", evt.Payload),
-            }));
-
-        private static void OnTplEventWritten(
-            WorkflowInstance instance, EventWrittenEventArgs eventData)
+        private static string EventToString(EventWrittenEventArgs evt, string prefix = "Event: ")
         {
-            if (eventData.EventId >= TplTaskWithSchedulerEventIDBegin &&
-                eventData.EventId <= TplTaskWithSchedulerEventIDEnd &&
-                instance.Id != eventData.Payload?[0] as int?)
+            var values = new List<KeyValuePair<string, object?>>
             {
+                new("EventSource", evt.EventSource.Name),
+                new("EventName", evt.EventName),
+                new("EventId", evt.EventId),
+                new("CurrSched", TaskScheduler.Current?.GetType()),
+            };
+            if (evt.PayloadNames != null && evt.Payload != null)
+            {
+                for (var i = 0; i < evt.PayloadNames.Count; i++)
+                {
+                    values.Add(new(evt.PayloadNames[i], evt.Payload[i]));
+                }
+            }
+            var bld = new StringBuilder(prefix).
+                AppendFormat("EventSource = {0}, ", evt.EventSource.Name).
+                AppendFormat("EventName = {0}, ", evt.EventName).
+                AppendFormat("EventId = {0}, ", evt.EventId).
+                AppendFormat("CurrSched = {0}", TaskScheduler.Current?.GetType());
+            if (evt.PayloadNames != null && evt.Payload != null)
+            {
+                for (var i = 0; i < evt.PayloadNames.Count; i++)
+                {
+                    bld.AppendFormat(", {0} = {1}", evt.PayloadNames[i], evt.Payload[i]);
+                }
+            }
+            return bld.ToString();
+        }
+
+        private static void OnFrameworkEventWritten(
+            WorkflowInstance instance, EventWrittenEventArgs evt)
+        {
+            if (evt.Task == FrameworkThreadTransferTask)
+            {
+                instance.SetCurrentActivationException(
+                    new InvalidWorkflowOperationException(
+                        "Workflow attempted to perform a thread transfer task which is non-deterministic. " +
+                        "This can be caused by timers or other non-deterministic async calls.",
+                        Environment.StackTrace));
+            }
+        }
+
+        private static int TaskIDOfEvent(EventWrittenEventArgs evt)
+        {
+            if (PayloadOfEvent(evt, "TaskID") is int taskID)
+            {
+                return taskID;
+            }
+            return -1;
+        }
+
+        private static object? PayloadOfEvent(EventWrittenEventArgs evt, string name)
+        {
+            var index = evt.PayloadNames?.IndexOf(name) ?? -1;
+            return index < 0 ? null : evt.Payload?.ElementAtOrDefault(index);
+        }
+
+        private void OnTplEventWritten(
+            WorkflowInstance instance, EventWrittenEventArgs evt)
+        {
+            // Track event if wanted
+            if (TrackTaskEvents)
+            {
+                TrackTaskEvent(evt);
+            }
+
+            if (evt.EventId >= TplTaskWithSchedulerEventIDBegin &&
+                evt.EventId <= TplTaskWithSchedulerEventIDEnd &&
+                instance.Id != evt.Payload?[0] as int?)
+            {
+                // Dump failure event
+                if (TrackTaskEvents)
+                {
+                    Console.WriteLine(FailureEventToString(evt));
+                }
                 // We override the stack trace so it has the full value all the way back
                 // to user code. We do not need to sanitize the trace, it is ok to show that it
                 // comes all the way through this listener.
@@ -176,31 +245,78 @@ namespace Temporalio.Worker
             }
         }
 
-        private static void OnFrameworkEventWritten(
-            WorkflowInstance instance, EventWrittenEventArgs eventData)
+        private void EnableNeededTplEvents(EventSource eventSource)
         {
-            if (eventData.Task == FrameworkThreadTransferTask)
+            // Get all events if tracking task events
+            if (TrackTaskEvents)
             {
-                instance.SetCurrentActivationException(
-                    new InvalidWorkflowOperationException(
-                        "Workflow attempted to perform a thread transfer task which is non-deterministic. " +
-                        "This can be caused by timers or other non-deterministic async calls.",
-                        Environment.StackTrace));
+                EnableEvents(eventSource, EventLevel.LogAlways);
+            }
+            else
+            {
+                EnableEvents(
+                    eventSource,
+                    EventLevel.Informational,
+                    TplTasksKeywords);
             }
         }
 
-        private void EnableNeededTplEvents(EventSource eventSource) =>
-            // EnableEvents(eventSource, EventLevel.LogAlways);
-            EnableEvents(
-                eventSource,
-                EventLevel.Informational,
-                TplTasksKeywords);
-
         private void EnableNeededFrameworkEvents(EventSource eventSource) =>
-            // EnableEvents(eventSource, EventLevel.LogAlways);
             EnableEvents(
                 eventSource,
                 EventLevel.Informational,
                 FrameworkThreadTransferKeywords);
+
+        private void TrackTaskEvent(EventWrittenEventArgs evt)
+        {
+            var taskID = TaskIDOfEvent(evt);
+            if (taskID < 0)
+            {
+                return;
+            }
+            lock (taskEvents!)
+            {
+                if (!taskEvents!.TryGetValue(taskID, out var eventList))
+                {
+                    eventList = new();
+                    taskEvents![taskID] = eventList;
+                }
+                eventList.Add(new(evt));
+            }
+        }
+
+        private string FailureEventToString(
+            EventWrittenEventArgs evt,
+            string prefix = "Task that failed: ",
+            string indent = "")
+        {
+            var taskID = TaskIDOfEvent(evt);
+            if (taskID < 0)
+            {
+                return $"{prefix}: <unknown>";
+            }
+            var bld = new StringBuilder(indent).
+                Append(prefix).Append(taskID).Append(", events:").AppendLine();
+            lock (taskEvents!)
+            {
+                if (taskEvents!.TryGetValue(taskID, out var eventList))
+                {
+                    foreach (var taskEvent in eventList)
+                    {
+                        bld.Append(indent).Append("  ").Append(EventToString(taskEvent.Event)).
+                            Append(", Stack =").AppendLine().Append(taskEvent.Stack).AppendLine();
+                    }
+                }
+            }
+            return bld.ToString();
+        }
+
+        private record TaskEvent(int TaskID, EventWrittenEventArgs Event, string Stack)
+        {
+            internal TaskEvent(EventWrittenEventArgs evt)
+                : this(TaskIDOfEvent(evt), evt, new System.Diagnostics.StackTrace().ToString())
+            {
+            }
+        }
     }
 }

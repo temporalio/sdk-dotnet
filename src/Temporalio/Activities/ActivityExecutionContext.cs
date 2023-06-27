@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
+using Temporalio.Converters;
 
 namespace Temporalio.Activities
 {
@@ -20,19 +21,22 @@ namespace Temporalio.Activities
         /// <param name="workerShutdownToken">Workflow shutdown token.</param>
         /// <param name="taskToken">Raw activity task token.</param>
         /// <param name="logger">Logger.</param>
+        /// <param name="payloadConverter">Payload converter.</param>
 #pragma warning disable CA1068 // We don't require cancellation token as last param
         internal ActivityExecutionContext(
             ActivityInfo info,
             CancellationToken cancellationToken,
             CancellationToken workerShutdownToken,
             ByteString taskToken,
-            ILogger logger)
+            ILogger logger,
+            IPayloadConverter payloadConverter)
         {
             Info = info;
             CancellationToken = cancellationToken;
             WorkerShutdownToken = workerShutdownToken;
             TaskToken = taskToken;
             Logger = logger;
+            PayloadConverter = payloadConverter;
         }
 #pragma warning restore CA1068
 
@@ -76,6 +80,11 @@ namespace Temporalio.Activities
         /// <see cref="CancellationToken" /> will ultimately be cancelled.
         /// </summary>
         public CancellationToken WorkerShutdownToken { get; private init; }
+
+        /// <summary>
+        /// Gets the payload converter in use by this activity worker.
+        /// </summary>
+        public IPayloadConverter PayloadConverter { get; private init; }
 
         /// <summary>
         /// Gets the async local current value.

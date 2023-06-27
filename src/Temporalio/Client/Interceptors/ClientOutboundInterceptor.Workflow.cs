@@ -11,12 +11,13 @@ namespace Temporalio.Client.Interceptors
         /// <summary>
         /// Intercept start workflow calls.
         /// </summary>
-        /// <typeparam name="TResult">Result type of the workflow.</typeparam>
+        /// <typeparam name="TWorkflow">Workflow class type. May be ValueTuple if unknown.</typeparam>
+        /// <typeparam name="TResult">Result type of the workflow. May be ValueTuple if unknown.</typeparam>
         /// <param name="input">Input details of the call.</param>
         /// <returns>Handle for the workflow.</returns>
-        public virtual Task<WorkflowHandle<TResult>> StartWorkflowAsync<TResult>(
+        public virtual Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
             StartWorkflowInput input) =>
-            Next.StartWorkflowAsync<TResult>(input);
+            Next.StartWorkflowAsync<TWorkflow, TResult>(input);
 
         /// <summary>
         /// Intercept signal workflow calls.

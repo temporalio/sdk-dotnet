@@ -1,6 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+
+#if NETCOREAPP3_0_OR_GREATER
+using Temporalio.Common;
+#endif
 
 namespace Temporalio.Client
 {
@@ -11,16 +16,17 @@ namespace Temporalio.Client
     {
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{TResult}(Func{Task{TResult}}, WorkflowOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync{T, TResult}(Expression{Func{T, Task{TResult}}}, WorkflowOptions)" />
         /// +
-        /// <see cref="WorkflowHandle{TResult}.GetResultAsync(bool, RpcOptions?)" />.
+        /// <see cref="WorkflowHandle{TWorkflow, TResult}.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Workflow result type.</typeparam>
         /// <param name="client">Client to use.</param>
-        /// <param name="workflow">Workflow run method with a result but no argument.</param>
+        /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow result.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
@@ -28,29 +34,27 @@ namespace Temporalio.Client
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        public static async Task<TResult> ExecuteWorkflowAsync<TResult>(
+        public static async Task<TResult> ExecuteWorkflowAsync<TWorkflow, TResult>(
             this ITemporalClient client,
-            Func<Task<TResult>> workflow,
+            Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
             WorkflowOptions options)
         {
-            var handle = await client.StartWorkflowAsync(workflow, options).ConfigureAwait(false);
+            var handle = await client.StartWorkflowAsync(workflowRunCall, options).ConfigureAwait(false);
             return await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{T, TResult}(Func{T, Task{TResult}}, T, WorkflowOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync{T}(Expression{Func{T, Task}}, WorkflowOptions)" />
         /// +
-        /// <see cref="WorkflowHandle{TResult}.GetResultAsync(bool, RpcOptions?)" />.
+        /// <see cref="WorkflowHandle.GetResultAsync(bool, RpcOptions?)" />.
         /// </summary>
-        /// <typeparam name="T">Workflow argument type.</typeparam>
-        /// <typeparam name="TResult">Workflow result type.</typeparam>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="client">Client to use.</param>
-        /// <param name="workflow">Workflow run method with a result and argument.</param>
-        /// <param name="arg">Workflow argument.</param>
+        /// <param name="workflowRunCall">Invocation of workflow run method without a result.</param>
         /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
         /// <returns>Workflow result.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
         /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
         /// Workflow was already started according to ID reuse policy.
         /// </exception>
@@ -58,72 +62,13 @@ namespace Temporalio.Client
         /// Workflow did not complete successfully.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        public static async Task<TResult> ExecuteWorkflowAsync<T, TResult>(
+        public static async Task ExecuteWorkflowAsync<TWorkflow>(
             this ITemporalClient client,
-            Func<T, Task<TResult>> workflow,
-            T arg,
+            Expression<Func<TWorkflow, Task>> workflowRunCall,
             WorkflowOptions options)
         {
             var handle = await client.StartWorkflowAsync(
-                workflow, arg, options).ConfigureAwait(false);
-            return await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync(Func{Task}, WorkflowOptions)" />
-        /// +
-        /// <see cref="WorkflowHandle.GetResultAsync(bool, RpcOptions?)" />.
-        /// </summary>
-        /// <param name="client">Client to use.</param>
-        /// <param name="workflow">Workflow run method with no result or argument.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
-        /// <returns>Workflow completion task.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
-        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
-        /// Workflow was already started according to ID reuse policy.
-        /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailedException">
-        /// Workflow did not complete successfully.
-        /// </exception>
-        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        public static async Task ExecuteWorkflowAsync(
-            this ITemporalClient client,
-            Func<Task> workflow,
-            WorkflowOptions options)
-        {
-            var handle = await client.StartWorkflowAsync(workflow, options).ConfigureAwait(false);
-            await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{T}(Func{T, Task}, T, WorkflowOptions)" />
-        /// +
-        /// <see cref="WorkflowHandle.GetResultAsync(bool, RpcOptions?)" />.
-        /// </summary>
-        /// <typeparam name="T">Workflow argument type.</typeparam>
-        /// <param name="client">Client to use.</param>
-        /// <param name="workflow">Workflow run method with an argument but no result.</param>
-        /// <param name="arg">Workflow argument.</param>
-        /// <param name="options">Start workflow options. ID and TaskQueue are required.</param>
-        /// <returns>Workflow completion task.</returns>
-        /// <exception cref="ArgumentException">Invalid options.</exception>
-        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
-        /// Workflow was already started according to ID reuse policy.
-        /// </exception>
-        /// <exception cref="Exceptions.WorkflowFailedException">
-        /// Workflow did not complete successfully.
-        /// </exception>
-        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        public static async Task ExecuteWorkflowAsync<T>(
-            this ITemporalClient client,
-            Func<T, Task> workflow,
-            T arg,
-            WorkflowOptions options)
-        {
-            var handle = await client.StartWorkflowAsync(
-                workflow, arg, options).ConfigureAwait(false);
+                workflowRunCall, options).ConfigureAwait(false);
             await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
         }
 
@@ -159,9 +104,9 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="ITemporalClient.StartWorkflowAsync{TResult}(string, IReadOnlyCollection{object?}, WorkflowOptions)" />
+        /// <see cref="ITemporalClient.StartWorkflowAsync(string, IReadOnlyCollection{object?}, WorkflowOptions)" />
         /// +
-        /// <see cref="WorkflowHandle{TResult}.GetResultAsync(bool, RpcOptions?)" />.
+        /// <see cref="WorkflowHandle.GetResultAsync{TResult}(bool, RpcOptions?)" />.
         /// </summary>
         /// <typeparam name="TResult">Result type that will be set on the handle.</typeparam>
         /// <param name="client">Client to use.</param>
@@ -183,9 +128,9 @@ namespace Temporalio.Client
             IReadOnlyCollection<object?> args,
             WorkflowOptions options)
         {
-            var handle = await client.StartWorkflowAsync<TResult>(workflow, args, options).
+            var handle = await client.StartWorkflowAsync(workflow, args, options).
                 ConfigureAwait(false);
-            return await handle.GetResultAsync().ConfigureAwait(false);
+            return await handle.GetResultAsync<TResult>().ConfigureAwait(false);
         }
 
 #if NETCOREAPP3_0_OR_GREATER

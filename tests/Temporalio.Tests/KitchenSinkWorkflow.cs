@@ -97,7 +97,8 @@ public class KitchenSinkWorkflow
                         },
                     },
                 });
-                throw Workflow.CreateContinueAsNewException(IKitchenSinkWorkflow.Ref.RunAsync, args);
+                throw Workflow.CreateContinueAsNewException(
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(args));
             }
             return (true, action.ContinueAsNew.Result);
         }
@@ -206,12 +207,12 @@ public class KitchenSinkWorkflow
             }).ToList();
             tasks.AddRange(activityTasks);
             // Wait for any including cancel
-            await Task.WhenAny(tasks);
+            await Workflow.WhenAnyAsync(tasks);
             // Wait for every activity, return last result
             object? lastResult = null;
             while (activityTasks.Count > 0)
             {
-                var task = await Task.WhenAny(activityTasks);
+                var task = await Workflow.WhenAnyAsync(activityTasks);
                 activityTasks.Remove(task);
                 lastResult = await task;
             }

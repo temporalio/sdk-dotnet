@@ -13,6 +13,30 @@ namespace Temporalio.Converters
     public static class PayloadCodecExtensions
     {
         /// <summary>
+        /// Single-value form of <see cref="IPayloadCodec.EncodeAsync" />. The multi-value form
+        /// should be used in multi-value situations since the output arity can change compared to
+        /// input. This is only for cases where there is only ever one payload.
+        /// </summary>
+        /// <param name="codec">Codec to use.</param>
+        /// <param name="payload">Payload to encode.</param>
+        /// <returns>Encoded payload.</returns>
+        public static async Task<Payload> EncodeSingleAsync(
+            this IPayloadCodec codec, Payload payload) =>
+            (await codec.EncodeAsync(new[] { payload }).ConfigureAwait(false)).Single();
+
+        /// <summary>
+        /// Single-value form of <see cref="IPayloadCodec.DecodeAsync" />. The multi-value form
+        /// should be used in multi-value situations since the output arity can change compared to
+        /// input. This is only for cases where there is only ever one payload.
+        /// </summary>
+        /// <param name="codec">Codec to use.</param>
+        /// <param name="payload">Payload to decode.</param>
+        /// <returns>Decoded payload.</returns>
+        public static async Task<Payload> DecodeSingleAsync(
+            this IPayloadCodec codec, Payload payload) =>
+            (await codec.DecodeAsync(new[] { payload }).ConfigureAwait(false)).Single();
+
+        /// <summary>
         /// Encode all payloads in the given failure in place.
         /// </summary>
         /// <param name="codec">Codec to use.</param>
@@ -32,7 +56,7 @@ namespace Temporalio.Converters
 
         private static async Task ApplyToFailurePayloadAsync(
             Failure failure,
-            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func)
+            Func<IReadOnlyCollection<Payload>, Task<IReadOnlyCollection<Payload>>> func)
         {
             if (failure.EncodedAttributes != null)
             {
@@ -67,7 +91,7 @@ namespace Temporalio.Converters
 
         private static async Task ApplyPayloadsAsync(
             Payloads payloads,
-            Func<IReadOnlyCollection<Payload>, Task<IEnumerable<Payload>>> func)
+            Func<IReadOnlyCollection<Payload>, Task<IReadOnlyCollection<Payload>>> func)
         {
             if (payloads != null && payloads.Payloads_.Count > 0)
             {

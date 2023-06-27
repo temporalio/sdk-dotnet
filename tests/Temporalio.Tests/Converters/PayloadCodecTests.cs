@@ -1,10 +1,7 @@
 namespace Temporalio.Tests.Converters;
 
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Failure.V1;
 using Temporalio.Converters;
@@ -79,39 +76,5 @@ public class PayloadCodecTests : TestBase
             decoded.Cause.TimeoutFailureInfo.LastHeartbeatDetails.Payloads_.First(),
             "json/plain",
             "78");
-    }
-
-    public class Base64PayloadCodec : IPayloadCodec
-    {
-        public Task<IEnumerable<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads)
-        {
-            return Task.FromResult(
-                payloads.Select(
-                    p =>
-                        new Payload()
-                        {
-                            Data = ByteString.CopyFrom(
-                                Convert.ToBase64String(p.ToByteArray()),
-                                Encoding.ASCII),
-                            Metadata =
-                            {
-                                new Dictionary<string, ByteString>
-                                {
-                                    ["encoding"] = ByteString.CopyFromUtf8("my-encoding"),
-                                },
-                            },
-                        }));
-        }
-
-        public Task<IEnumerable<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
-        {
-            return Task.FromResult(
-                payloads.Select(p =>
-                {
-                    Assert.Equal("my-encoding", p.Metadata["encoding"].ToStringUtf8());
-                    return Payload.Parser.ParseFrom(
-                        Convert.FromBase64String(p.Data.ToString(Encoding.ASCII)));
-                }));
-        }
     }
 }

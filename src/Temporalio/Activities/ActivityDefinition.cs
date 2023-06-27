@@ -18,7 +18,7 @@ namespace Temporalio.Activities
         private readonly Func<object?[], object?> invoker;
 
         private ActivityDefinition(
-            string name,
+            string? name,
             Type returnType,
             IReadOnlyCollection<Type> parameterTypes,
             int requiredParameterCount,
@@ -32,9 +32,9 @@ namespace Temporalio.Activities
         }
 
         /// <summary>
-        /// Gets the activity name.
+        /// Gets the activity name or null if workflow is dynamic.
         /// </summary>
-        public string Name { get; private init; }
+        public string? Name { get; private init; }
 
         /// <summary>
         /// Gets the return type for the definition. This may be a Task for async activities. This
@@ -53,6 +53,11 @@ namespace Temporalio.Activities
         /// Activity invocation will fail if fewer are given.
         /// </summary>
         public int RequiredParameterCount { get; private init; }
+
+        /// <summary>
+        /// Gets a value indicating whether the activity is dynamic.
+        /// </summary>
+        public bool Dynamic => Name == null;
 
         /// <summary>
         /// Create an activity definition from a delegate. <see cref="Delegate.DynamicInvoke" /> is
@@ -75,7 +80,7 @@ namespace Temporalio.Activities
         /// <summary>
         /// Create an activity definition manually from the given values.
         /// </summary>
-        /// <param name="name">Name to use for the activity.</param>
+        /// <param name="name">Name to use for the activity or null for dynamic.</param>
         /// <param name="returnType">Return type of the activity. This is currently unused.</param>
         /// <param name="parameterTypes">Parameter types for the invoker.</param>
         /// <param name="requiredParameterCount">Minimum number of parameters that must be provided
@@ -83,12 +88,22 @@ namespace Temporalio.Activities
         /// <param name="invoker">Function to call on activity invocation.</param>
         /// <returns>Definition built from the given pieces.</returns>
         public static ActivityDefinition Create(
-            string name,
+            string? name,
             Type returnType,
             IReadOnlyCollection<Type> parameterTypes,
             int requiredParameterCount,
             Func<object?[], object?> invoker)
         {
+            // If there is a null name, which means dynamic, there must only be one parameter type
+            // and it must be varargs IRawValue
+            if (name == null && (
+                requiredParameterCount != 1 ||
+                parameterTypes.SingleOrDefault() != typeof(Converters.IRawValue[])))
+            {
+                throw new ArgumentException(
+                    $"Dynamic activity must accept a required array of IRawValue");
+            }
+
             if (requiredParameterCount > parameterTypes.Count)
             {
                 throw new ArgumentException(
@@ -116,7 +131,7 @@ namespace Temporalio.Activities
         /// <param name="cache">True if each definition should be cached.</param>
         /// <returns>Collection of activity definitions on the type.</returns>
         public static IReadOnlyCollection<ActivityDefinition> CreateAll<T>(
-            T? instance, bool cache = true) => CreateAll(typeof(T), cache);
+            T? instance, bool cache = true) => CreateAll(typeof(T), instance, cache);
 
         /// <summary>
         /// Create all applicable activity definitions for the given type. At least one activity
@@ -194,6 +209,20 @@ namespace Temporalio.Activities
             return result;
         }
 
+        /// <summary>
+        /// Gets the activity name for calling or fail if no attribute or if dynamic.
+        /// </summary>
+        /// <param name="method">Method to get name from.</param>
+        /// <returns>Name.</returns>
+        internal static string NameFromMethodForCall(MethodInfo method)
+        {
+            var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
+                throw new ArgumentException($"{method} missing Activity attribute");
+            return NameFromAttributed(method, attr) ??
+                throw new ArgumentException(
+                    $"{method} cannot be used directly since it is a dynamic activity");
+        }
+
         private static ActivityDefinition Create(
             MethodInfo method, bool cache, Func<object?[], object?> invoker)
         {
@@ -228,8 +257,18 @@ namespace Temporalio.Activities
             return ret.ToArray();
         }
 
-        private static string NameFromAttributed(MethodInfo method, ActivityAttribute attr)
+        private static string? NameFromAttributed(MethodInfo method, ActivityAttribute attr)
         {
+            // Dynamic doesn't have name
+            if (attr.Dynamic)
+            {
+                if (attr.Name != null)
+                {
+                    throw new ArgumentException(
+                        "Activity ${method} cannot be dynamic and have custom name");
+                }
+                return null;
+            }
             var name = attr.Name;
             if (name != null)
             {

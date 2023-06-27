@@ -2,6 +2,7 @@ namespace Temporalio.Tests;
 
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
+using Temporalio.Common;
 using Xunit;
 using Xunit.Abstractions;
 

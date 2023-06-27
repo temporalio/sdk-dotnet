@@ -4,6 +4,7 @@ namespace Temporalio.Tests.Worker;
 
 using System.Runtime.CompilerServices;
 using Temporalio.Activities;
+using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Worker;
 using Temporalio.Workflows;
@@ -32,8 +33,6 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class SayHelloWorkflow
     {
-        public static readonly SayHelloWorkflow Ref = WorkflowRefs.Create<SayHelloWorkflow>();
-
         private bool waiting;
         private bool finish;
 
@@ -41,8 +40,7 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         public async Task<string> RunAsync(SayHelloParams parms)
         {
             var result = await Workflow.ExecuteActivityAsync(
-                SayHelloActivities.SayHello,
-                parms.Name,
+                () => SayHelloActivities.SayHello(parms.Name),
                 new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(1) });
 
             // Wait if requested
@@ -84,9 +82,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow to completion
+            var arg = new SayHelloParams("Temporal");
             var handle = await Env.Client.StartWorkflowAsync(
-                SayHelloWorkflow.Ref.RunAsync,
-                new SayHelloParams("Temporal"),
+                (SayHelloWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", await handle.GetResultAsync());
 
@@ -118,13 +116,13 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         await worker.ExecuteAsync(async () =>
         {
             // Start workflow
+            var arg = new SayHelloParams("Temporal", ShouldWait: true);
             var handle = await Env.Client.StartWorkflowAsync(
-                SayHelloWorkflow.Ref.RunAsync,
-                new SayHelloParams("Temporal", ShouldWait: true),
+                (SayHelloWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Wait until waiting
             await AssertMore.EventuallyAsync(
-                async () => Assert.True(await handle.QueryAsync(SayHelloWorkflow.Ref.Waiting)));
+                async () => Assert.True(await handle.QueryAsync(wf => wf.Waiting())));
 
             // Collect history and replay it
             var result = await new WorkflowReplayer(
@@ -143,9 +141,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow to completion
+            var arg = new SayHelloParams("Temporal", ShouldError: true);
             var handle = await Env.Client.StartWorkflowAsync(
-                SayHelloWorkflow.Ref.RunAsync,
-                new SayHelloParams("Temporal", ShouldError: true),
+                (SayHelloWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
 
@@ -166,9 +164,9 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         await worker.ExecuteAsync(async () =>
         {
             // Run workflow to completion
+            var arg = new SayHelloParams("Temporal", ShouldCauseNonDeterminism: true);
             var handle = await Env.Client.StartWorkflowAsync(
-                SayHelloWorkflow.Ref.RunAsync,
-                new SayHelloParams("Temporal", ShouldCauseNonDeterminism: true),
+                (SayHelloWorkflow wf) => wf.RunAsync(arg),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             Assert.Equal("Hello, Temporal!", await handle.GetResultAsync());
 

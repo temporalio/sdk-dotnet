@@ -3,9 +3,9 @@
 
 Commonly used namespaces:
 
-* [Temporalio](/api/Temporalio.html) - General purpose types
 * [Temporalio.Activities](/api/Temporalio.Activities.html) - Types for developing activities
 * [Temporalio.Client](/api/Temporalio.Client.html) - Client for accessing Temporal
+* [Temporalio.Common](/api/Temporalio.Common.html) - Common types used in other namespaces
 * [Temporalio.Converters](/api/Temporalio.Converters.html) - Data converters including support for custom conversion
 * [Temporalio.Exceptions](/api/Temporalio.Exceptions.html) - Well-known exceptions for clients, activities, and workflows
 * [Temporalio.Runtime](/api/Temporalio.Runtime.html) - Overarching runtime that can have telemetry configured

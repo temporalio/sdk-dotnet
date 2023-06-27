@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Temporalio.Common;
 using Temporalio.Converters;
 
 namespace Temporalio.Workflows
@@ -16,6 +17,16 @@ namespace Temporalio.Workflows
         /// Gets value for <see cref="Workflow.CancellationToken" />.
         /// </summary>
         CancellationToken CancellationToken { get; }
+
+        /// <summary>
+        /// Gets or sets value for <see cref="Workflow.DynamicQuery" />.
+        /// </summary>
+        WorkflowQueryDefinition? DynamicQuery { get; set; }
+
+        /// <summary>
+        /// Gets or sets value for <see cref="Workflow.DynamicSignal" />.
+        /// </summary>
+        WorkflowSignalDefinition? DynamicSignal { get; set; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.Info" />.
@@ -36,6 +47,11 @@ namespace Temporalio.Workflows
         /// Gets value for <see cref="Workflow.Memo" />.
         /// </summary>
         IReadOnlyDictionary<string, IRawValue> Memo { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.PayloadConverter" />.
+        /// </summary>
+        IPayloadConverter PayloadConverter { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.Queries" />.
@@ -107,12 +123,14 @@ namespace Temporalio.Workflows
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options);
 
         /// <summary>
-        /// Backing call for <see cref="Workflow.GetExternalWorkflowHandle" />.
+        /// Backing call for <see cref="Workflow.GetExternalWorkflowHandle{TWorkflow}(string, string?)" />.
         /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="id">Workflow ID.</param>
         /// <param name="runID">Optional workflow run ID.</param>
         /// <returns>External workflow handle.</returns>
-        ExternalWorkflowHandle GetExternalWorkflowHandle(string id, string? runID = null);
+        ExternalWorkflowHandle<TWorkflow> GetExternalWorkflowHandle<TWorkflow>(
+            string id, string? runID = null);
 
         /// <summary>
         /// Backing call for <see cref="Workflow.Patched" /> and
@@ -125,14 +143,16 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Backing call for
-        /// <see cref="Workflow.StartChildWorkflowAsync{TResult}(string, IReadOnlyCollection{object?}, ChildWorkflowOptions?)" />.
+        /// <see cref="Workflow.StartChildWorkflowAsync(string, IReadOnlyCollection{object?}, ChildWorkflowOptions?)" />
+        /// and overloads.
         /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Workflow result type.</typeparam>
         /// <param name="workflow">Workflow name.</param>
         /// <param name="args">Workflow args.</param>
         /// <param name="options">Options.</param>
         /// <returns>Child workflow handle.</returns>
-        Task<ChildWorkflowHandle<TResult>> StartChildWorkflowAsync<TResult>(
+        Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions options);
 
         /// <summary>
