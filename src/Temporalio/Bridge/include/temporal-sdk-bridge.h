@@ -18,6 +18,8 @@ typedef struct Client Client;
 
 typedef struct EphemeralServer EphemeralServer;
 
+typedef struct Random Random;
+
 typedef struct Runtime Runtime;
 
 typedef struct Worker Worker;
@@ -271,6 +273,16 @@ void client_rpc_call(struct Client *client,
                      const struct RpcCallOptions *options,
                      void *user_data,
                      ClientRpcCallCallback callback);
+
+struct Random *random_new(uint64_t seed);
+
+void random_free(struct Random *random);
+
+int32_t random_int32_range(struct Random *random, int32_t min, int32_t max, bool max_inclusive);
+
+double random_double_range(struct Random *random, double min, double max, bool max_inclusive);
+
+void random_fill_bytes(struct Random *random, struct ByteArrayRef bytes);
 
 struct RuntimeOrFail runtime_new(const struct RuntimeOptions *options);
 
