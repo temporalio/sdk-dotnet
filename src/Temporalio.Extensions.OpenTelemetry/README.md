@@ -17,8 +17,8 @@ until the SDK is marked stable.
 
 ## Quick Start
 
-Add the `Temporalio.Extensions.OpenTelemetry` package from [NuGet](https://www.nuget.org/packages/Temporalio). For
-example, using the `dotnet` CLI:
+Add the `Temporalio.Extensions.OpenTelemetry` package from
+[NuGet](https://www.nuget.org/packages/Temporalio.Extensions.OpenTelemetry). For example, using the `dotnet` CLI:
 
     dotnet add package Temporalio.Extensions.OpenTelemetry --prerelease
 

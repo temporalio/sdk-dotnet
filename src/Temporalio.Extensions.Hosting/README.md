@@ -12,8 +12,8 @@ until the SDK is marked stable.
 
 ## Quick Start
 
-Add the `Temporalio.Extensions.Hosting` package from [NuGet](https://www.nuget.org/packages/Temporalio). For example,
-using the `dotnet` CLI:
+Add the `Temporalio.Extensions.Hosting` package from
+[NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Hosting). For example, using the `dotnet` CLI:
 
     dotnet add package Temporalio.Extensions.Hosting --prerelease
 
@@ -28,7 +28,7 @@ builder.Services.
     AddHostedTemporalWorker(
         "my-temporal-host:7233",
         "my-namespace",
-        "my-task-queue).
+        "my-task-queue").
     AddScopedActivities<MyActivityClass>().
     AddWorkflow<MyWorkflow>();
 
@@ -39,8 +39,8 @@ host.Run();
 
 This creates a hosted Temporal worker which returns a builder. Then `MyActivityClass` is added to the service collection
 as scoped (via
-`TryAddScoped`(https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.extensions.servicecollectiondescriptorextensions.tryaddscoped)) and registered on the worker. Also `MyWorkflow` is registered as a
-workflow on the worker.
+[`TryAddScoped`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.extensions.servicecollectiondescriptorextensions.tryaddscoped))
+and registered on the worker. Also `MyWorkflow` is registered as a workflow on the worker.
 
 This means that for every activity invocation, a new scope is created and the the activity is obtained via the service
 provider. So if it is registered as scoped the activity is created each time but if it registered as singleton it is
