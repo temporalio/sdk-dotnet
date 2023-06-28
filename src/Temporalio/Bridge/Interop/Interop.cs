@@ -23,6 +23,10 @@ namespace Temporalio.Bridge.Interop
     {
     }
 
+    internal partial struct Random
+    {
+    }
+
     internal partial struct Runtime
     {
     }
@@ -375,6 +379,23 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void client_rpc_call([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options, void* user_data, [NativeTypeName("ClientRpcCallCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct Random *")]
+        public static extern Random* random_new([NativeTypeName("uint64_t")] ulong seed);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void random_free([NativeTypeName("struct Random *")] Random* random);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("int32_t")]
+        public static extern int random_int32_range([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("int32_t")] int min, [NativeTypeName("int32_t")] int max, [NativeTypeName("bool")] byte max_inclusive);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern double random_double_range([NativeTypeName("struct Random *")] Random* random, double min, double max, [NativeTypeName("bool")] byte max_inclusive);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void random_fill_bytes([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef bytes);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct RuntimeOrFail")]

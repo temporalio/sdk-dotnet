@@ -96,10 +96,7 @@ namespace Temporalio.Workflows
         /// recreated with a different seed in special cases (e.g. workflow reset). Do not use any
         /// other randomization inside workflow code.
         /// </remarks>
-        public static Random Random => Context.Random;
-
-        // TODO(cretz): Document that this is immutable from user POV but internally is mutated on
-        // upsert
+        public static DeterministicRandom Random => Context.Random;
 
         /// <summary>
         /// Gets the workflow search attributes.

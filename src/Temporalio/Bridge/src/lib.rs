@@ -9,6 +9,7 @@
 )]
 
 pub mod client;
+pub mod random;
 pub mod runtime;
 pub mod testing;
 pub mod worker;
@@ -24,6 +25,10 @@ pub struct ByteArrayRef {
 impl ByteArrayRef {
     fn to_slice(&self) -> &[u8] {
         unsafe { std::slice::from_raw_parts(self.data, self.size) }
+    }
+
+    fn to_slice_mut(&self) -> &mut [u8] {
+        unsafe { std::slice::from_raw_parts_mut(self.data as *mut u8, self.size) }
     }
 
     fn to_vec(&self) -> Vec<u8> {
