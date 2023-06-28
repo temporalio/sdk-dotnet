@@ -54,7 +54,7 @@ public class WorkflowEnvironment : IAsyncLifetime
             // Otherwise, local server is good
             env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
             {
-                Temporalite = new()
+                DevServerOptions = new()
                 {
                     ExtraArgs = new List<string>
                     {

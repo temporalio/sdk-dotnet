@@ -37,10 +37,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
                 {
                     new()
                     {
-                        // Intentionally set step 1 though 0 and 1 are the same to prove that step
-                        // comes back as sent not as defaulted (other 0 values for step don't come
-                        // back as 1)
-                        Second = new List<ScheduleRange> { new(1, Step: 1) },
+                        Second = new List<ScheduleRange> { new(1) },
                         Minute = new List<ScheduleRange> { new(2, 3) },
                         Hour = new List<ScheduleRange> { new(4, 5, 6) },
                         DayOfMonth = new List<ScheduleRange> { new(7) },

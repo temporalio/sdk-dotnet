@@ -247,7 +247,7 @@ namespace Temporalio.Bridge.Interop
         public ByteArrayRef extra_args;
     }
 
-    internal unsafe partial struct TemporaliteOptions
+    internal unsafe partial struct DevServerOptions
     {
         [NativeTypeName("const struct TestServerOptions *")]
         public TestServerOptions* test_server;
@@ -408,7 +408,7 @@ namespace Temporalio.Bridge.Interop
         public static extern void byte_array_free([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ByteArray *")] ByteArray* bytes);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ephemeral_server_start_temporalite([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct TemporaliteOptions *")] TemporaliteOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);
+        public static extern void ephemeral_server_start_dev_server([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct DevServerOptions *")] DevServerOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ephemeral_server_start_test_server([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct TestServerOptions *")] TestServerOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);

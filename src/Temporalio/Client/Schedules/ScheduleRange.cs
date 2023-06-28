@@ -7,18 +7,35 @@ namespace Temporalio.Client.Schedules
     /// Inclusive range for a schedule match value.
     /// </summary>
     /// <param name="Start">Inclusive start of the range.</param>
-    /// <param name="End">Inclusive end of the range. If unset or less than start, defaults to
-    /// start.</param>
-    /// <param name="Step">Step to take between each value. Unset or 0 defaults as 1.</param>
-    public record ScheduleRange(
-        int Start,
-        int End = 0,
-        int Step = 0)
+    /// <param name="End">Inclusive end of the range.</param>
+    /// <param name="Step">Step to take between each value.</param>
+    public record ScheduleRange(int Start, int End, int Step)
     {
         /// <summary>
         /// Zero range.
         /// </summary>
         public static readonly ScheduleRange Zero = new(0);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScheduleRange" /> class. Defaults end to
+        /// the same as start and step as 1.
+        /// </summary>
+        /// <param name="start">Start of the range.</param>
+        public ScheduleRange(int start)
+            : this(start, start, 1)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScheduleRange" /> class. Defaults step to
+        /// 1.
+        /// </summary>
+        /// <param name="start">Start of the range.</param>
+        /// <param name="end">End of the range.</param>
+        public ScheduleRange(int start, int end)
+            : this(start, end, 1)
+        {
+        }
 
         /// <summary>
         /// Convert from proto.

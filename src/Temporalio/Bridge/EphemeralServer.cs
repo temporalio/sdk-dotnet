@@ -54,7 +54,7 @@ namespace Temporalio.Bridge
                 var completion = new TaskCompletionSource<EphemeralServer>();
                 unsafe
                 {
-                    Interop.Methods.ephemeral_server_start_temporalite(
+                    Interop.Methods.ephemeral_server_start_dev_server(
                         runtime.Ptr,
                         scope.Pointer(options.ToInteropOptions(scope)),
                         null,
