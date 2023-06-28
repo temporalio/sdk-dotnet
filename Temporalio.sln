@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Tests", "tests\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.OpenTelemetry", "src\Temporalio.Extensions.OpenTelemetry\Temporalio.Extensions.OpenTelemetry.csproj", "{D4AC2E2B-1C24-491D-9175-874D448D30FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Temporalio.Extensions.Hosting", "src\Temporalio.Extensions.Hosting\Temporalio.Extensions.Hosting.csproj", "{E8D1975A-5AF7-4375-BAD0-3C256DCB7F87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,10 +36,15 @@ Global
 		{D4AC2E2B-1C24-491D-9175-874D448D30FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4AC2E2B-1C24-491D-9175-874D448D30FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4AC2E2B-1C24-491D-9175-874D448D30FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8D1975A-5AF7-4375-BAD0-3C256DCB7F87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8D1975A-5AF7-4375-BAD0-3C256DCB7F87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8D1975A-5AF7-4375-BAD0-3C256DCB7F87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8D1975A-5AF7-4375-BAD0-3C256DCB7F87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AE1422A-0937-40D7-9A62-431DD0E2F6D5} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 		{D5F245E2-73A2-49C6-8C52-FBE892E87169} = {F2683DAA-F157-448E-96C8-DF7BB019886D}
 		{D4AC2E2B-1C24-491D-9175-874D448D30FE} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
+		{E8D1975A-5AF7-4375-BAD0-3C256DCB7F87} = {758B61E2-9AB6-46BF-B53C-16BD140BF56B}
 	EndGlobalSection
 EndGlobal

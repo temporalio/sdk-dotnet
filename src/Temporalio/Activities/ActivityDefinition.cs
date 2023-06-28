@@ -122,6 +122,25 @@ namespace Temporalio.Activities
         }
 
         /// <summary>
+        /// Create an activity definition with an attributed method and a custom invoker.
+        /// </summary>
+        /// <param name="method">Activity method.</param>
+        /// <param name="invoker">Invoker.</param>
+        /// <returns>Definition for the activity.</returns>
+        public static ActivityDefinition Create(MethodInfo method, Func<object?[], object?> invoker)
+        {
+            var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
+                throw new ArgumentException($"{method} missing Activity attribute");
+            var parms = method.GetParameters();
+            return Create(
+                NameFromAttributed(method, attr),
+                method.ReturnType,
+                parms.Select(p => p.ParameterType).ToArray(),
+                parms.Count(p => !p.HasDefaultValue),
+                parameters => invoker.Invoke(ParametersWithDefaults(parms, parameters)));
+        }
+
+        /// <summary>
         /// Create all applicable activity definitions for the given type. At least one activity
         /// definition must exist.
         /// </summary>
@@ -230,15 +249,7 @@ namespace Temporalio.Activities
             {
                 return CachedDefinitions.GetOrAdd(method, method => Create(method, false, invoker));
             }
-            var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
-                throw new ArgumentException($"{method} missing Activity attribute");
-            var parms = method.GetParameters();
-            return Create(
-                NameFromAttributed(method, attr),
-                method.ReturnType,
-                parms.Select(p => p.ParameterType).ToArray(),
-                parms.Count(p => !p.HasDefaultValue),
-                parameters => invoker.Invoke(ParametersWithDefaults(parms, parameters)));
+            return Create(method, invoker);
         }
 
         private static object?[] ParametersWithDefaults(
