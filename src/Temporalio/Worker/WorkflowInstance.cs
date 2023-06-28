@@ -157,8 +157,7 @@ namespace Temporalio.Worker
             pendingTaskStackTraces = workflowStackTrace == WorkflowStackTrace.None ? null : new();
             logger = details.LoggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
             replaySafeLogger = new(logger);
-            // We accept overflowing for seed (uint64 -> int32)
-            Random = new(unchecked((int)details.Start.RandomnessSeed));
+            Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
         }
 
@@ -233,7 +232,7 @@ namespace Temporalio.Worker
         public IDictionary<string, WorkflowQueryDefinition> Queries => mutableQueries.Value;
 
         /// <inheritdoc />
-        public Random Random { get; private set; }
+        public DeterministicRandom Random { get; private set; }
 
         /// <inheritdoc />
         public IDictionary<string, WorkflowSignalDefinition> Signals => mutableSignals.Value;
@@ -981,7 +980,7 @@ namespace Temporalio.Worker
         }
 
         private void ApplyUpdateRandomSeed(UpdateRandomSeed update) =>
-            Random = new(unchecked((int)update.RandomnessSeed));
+            Random = new(update.RandomnessSeed);
 
         private void OnQueryDefinitionAdded(string name, WorkflowQueryDefinition defn)
         {

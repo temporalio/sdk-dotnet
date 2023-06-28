@@ -61,7 +61,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets value for <see cref="Workflow.Random" />.
         /// </summary>
-        Random Random { get; }
+        DeterministicRandom Random { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.Signals" />.
