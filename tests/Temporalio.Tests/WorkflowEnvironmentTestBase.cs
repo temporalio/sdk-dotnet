@@ -47,13 +47,15 @@ public abstract class WorkflowEnvironmentTestBase : TestBase
     protected async Task EnsureSearchAttributesPresentAsync()
     {
         // Only add search attributes if not present
-        var resp = await Client.Connection.WorkflowService.GetSearchAttributesAsync(new());
-        if (resp.Keys.ContainsKey(AttrBool.Name))
+        var resp = await Client.Connection.OperatorService.ListSearchAttributesAsync(
+            new() { Namespace = Client.Options.Namespace });
+        if (resp.CustomAttributes.ContainsKey(AttrBool.Name))
         {
             return;
         }
         await Client.Connection.OperatorService.AddSearchAttributesAsync(new()
         {
+            Namespace = Client.Options.Namespace,
             SearchAttributes =
             {
                 new Dictionary<string, IndexedValueType>
@@ -69,7 +71,8 @@ public abstract class WorkflowEnvironmentTestBase : TestBase
                 },
             },
         });
-        resp = await Client.Connection.WorkflowService.GetSearchAttributesAsync(new());
-        Assert.Contains(AttrBool.Name, resp.Keys.Keys);
+        resp = await Client.Connection.OperatorService.ListSearchAttributesAsync(
+            new() { Namespace = Client.Options.Namespace });
+        Assert.Contains(AttrBool.Name, resp.CustomAttributes.Keys);
     }
 }

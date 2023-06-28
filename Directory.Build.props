@@ -14,7 +14,25 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/temporalio/sdk-dotnet</RepositoryUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Version>0.1.0-alpha5</Version>
+    <!--
+      .NET does not allow the above version format for AssemblyVersion, and this
+      is the version used in gRPC headers. The format is
+      "major.minor[.build[.revision]]" and they all must be integers, see
+      https://learn.microsoft.com/en-us/dotnet/api/system.version. So we will
+      always set major.minor.build to match above.
+
+      We will only set revision if it is a prerelease version or the final
+      release after a prerelease version. The revision must start at one. For
+      each prerelease version, just keep incrementing the value. For example,
+      0.2.0-alpha1 is 0.2.0.1, 0.2.0-alpha2 is 0.2.0.3, 0.2.0-beta1 is 0.2.0.4,
+      and 0.2.0 then is 0.2.0.5. But if there is no prerelease version, just
+      leave revision off.
+    -->
+    <AssemblyVersion>0.1.0.5</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
