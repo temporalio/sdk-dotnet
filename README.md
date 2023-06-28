@@ -17,7 +17,8 @@ Also see:
 
 Extensions:
 
-* [OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/)
+* [Hosting](src/Temporalio.Extensions.Hosting/) - Activity dependency injection and worker generic host support
+* [OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/) - OpenTelemetry tracing support
 
 ⚠️ UNDER ACTIVE DEVELOPMENT
 

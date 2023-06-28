@@ -4,7 +4,9 @@
       "src": [
         {
           "files": [
-            "Temporalio/*.csproj"
+            "Temporalio/*.csproj",
+            "Temporalio.Extensions.Hosting/*.csproj",
+            "Temporalio.Extensions.OpenTelemetry/*.csproj"
           ],
           "exclude": [
             "**/bin/**",

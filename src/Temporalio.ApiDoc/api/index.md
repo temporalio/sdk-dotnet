@@ -12,3 +12,8 @@ Commonly used namespaces:
 * [Temporalio.Testing](/api/Temporalio.Testing.html) - Testing environments and utilities
 * [Temporalio.Worker](/api/Temporalio.Worker.html) - Worker for running workflows and/or activities
 * [Temporalio.Workflows](/api/Temporalio.Workflows.html) - Types for developing workflows
+
+Extensions:
+
+* [Temporalio.Extensions.Hosting](/api/Temporalio.Extensions.Hosting.html)
+* [Temporalio.Extensions.OpenTelemetry](/api/Temporalio.Extensions.OpenTelemetry.html)
