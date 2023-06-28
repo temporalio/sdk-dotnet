@@ -2422,7 +2422,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
     }
 
-    [Fact(Skip = "TODO(cretz): Current local server doesn't support async metadata, fix with https://github.com/temporalio/sdk-dotnet/issues/50")]
+    [Fact]
     public async Task ExecuteWorkflowAsync_Patched_ProperlyHandled()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
@@ -2481,11 +2481,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => QueryWorkflowAsync(prePatchID));
                 Assert.Contains("Nondeterminism", exc.Message);
-                // TODO(cretz): This was causing a core panic which may now be fixed, but other
-                // issue is still causing entire test to be skipped
-                // exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                //     () => QueryWorkflowAsync(patchedID));
-                // Assert.Contains("Nondeterminism", exc.Message);
+                exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                    () => QueryWorkflowAsync(patchedID));
+                Assert.Contains("Nondeterminism", exc.Message);
             },
             workerOptions);
     }
