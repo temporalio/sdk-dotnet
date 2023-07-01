@@ -19,6 +19,7 @@ namespace Temporalio.Extensions.Hosting
         private readonly TemporalClientConnectOptions? newClientOptions;
         private readonly ITemporalClient? existingClient;
         private readonly TemporalWorkerOptions workerOptions;
+        private readonly ITemporalClientProvider? clientProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorkerService"/> class using
@@ -76,6 +77,8 @@ namespace Temporalio.Extensions.Hosting
         /// </param>
         /// <param name="existingClient">Existing client to use if the options don't specify
         /// client connection options.</param>
+        /// <param name="clientProvider">A provider to fall back on if an existing client
+        /// isn't present before attempting to construct one via options</param>
         /// <param name="loggerFactory">Logger factory to use if there is no logger factory on the
         /// existing client, or the client connect options, or the worker options.</param>
         [ActivatorUtilitiesConstructor]
@@ -83,8 +86,10 @@ namespace Temporalio.Extensions.Hosting
             string taskQueue,
             IOptionsMonitor<TemporalWorkerServiceOptions> optionsMonitor,
             ITemporalClient? existingClient = null,
+            ITemporalClientProvider? clientProvider = null,
             ILoggerFactory? loggerFactory = null)
         {
+            this.clientProvider = clientProvider;
             var options = (TemporalWorkerServiceOptions)optionsMonitor.Get(taskQueue).Clone();
             newClientOptions = options.ClientOptions;
             if (newClientOptions == null)
@@ -93,7 +98,7 @@ namespace Temporalio.Extensions.Hosting
                 if (existingClient == null)
                 {
                     throw new InvalidOperationException(
-                        "Cannot start worker service with no client and no client connect options");
+                        "Must start worker with either a client, client provider, or client connect options");
                 }
             }
 
@@ -112,7 +117,22 @@ namespace Temporalio.Extensions.Hosting
         /// <inheritdoc />
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var client = existingClient ?? await TemporalClient.ConnectAsync(newClientOptions!).ConfigureAwait(false);
+            var client = existingClient;
+
+            if(
+                client == null
+                && clientProvider != null
+            ) {
+                client = await clientProvider.GetClient().ConfigureAwait(false);
+            }
+
+            if(
+                client == null
+                && newClientOptions != null
+            ) {
+                client = await TemporalClient.ConnectAsync(newClientOptions!).ConfigureAwait(false);
+            }
+   
             using var worker = new TemporalWorker(client, workerOptions);
             await worker.ExecuteAsync(stoppingToken).ConfigureAwait(false);
         }
