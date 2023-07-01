@@ -57,8 +57,9 @@ When this extension is depended upon, two overloads for `AddHostedTemporalWorker
 
 One overload of `AddHostedTemporalWorker`, used in the quick start sample above, accepts the client target host, the
 client namespace, and the worker task queue. This form will connect to a client for the worker. The other overload of
-`AddHostedTemporalWorker` only accepts the worker task queue. In the latter, an `ITemporalClient` can either be set on
-the services container and therefore reused across workers, or the resulting builder can have client options set.
+`AddHostedTemporalWorker` only accepts the worker task queue. In the latter, an `ITemporalClient` or
+`ITemporalClientProvider` can be set on the services container and therefore reused across workers, or the resulting
+builder can have client options set.
 
 When called, these register a `TemporalWorkerServiceOptions` options class with the container and return a
 `ITemporalWorkerServiceOptionsBuilder` for configuring the worker service options.
