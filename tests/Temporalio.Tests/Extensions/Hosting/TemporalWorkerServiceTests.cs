@@ -59,14 +59,20 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     public async Task TemporalWorkerService_ExecuteAsync_SimpleWorker()
     {
         var taskQueue = $"tq-{Guid.NewGuid()}";
-        var host = Host.CreateDefaultBuilder().
-            ConfigureServices(services => services.
-                AddSingleton(Client).
+        var host = Host.CreateDefaultBuilder().ConfigureServices(services =>
+        {
+            // Configure a client
+            services.AddTemporalClient(
+                clientTargetHost: Client.Connection.Options.TargetHost,
+                clientNamespace: Client.Options.Namespace);
+
+            // Add the rest of the services
+            services.
                 AddScoped<DatabaseClient>().
                 AddHostedTemporalWorker(taskQueue).
                 AddScopedActivities<DatabaseActivities>().
-                AddWorkflow<DatabaseWorkflow>()).
-            Build();
+                AddWorkflow<DatabaseWorkflow>();
+        }).Build();
 
         // Start the host
         using var tokenSource = new CancellationTokenSource();

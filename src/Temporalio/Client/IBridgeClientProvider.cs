@@ -12,8 +12,9 @@ namespace Temporalio.Client
     public interface IBridgeClientProvider
     {
         /// <summary>
-        /// Gets the handle to the connected bridge.
+        /// Gets the handle to the connected bridge or null if the connection is not present. This
+        /// is for internal use only.
         /// </summary>
-        public SafeHandle BridgeClient { get; }
+        SafeHandle? BridgeClient { get; }
     }
 }
