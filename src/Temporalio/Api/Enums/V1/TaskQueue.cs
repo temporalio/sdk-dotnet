@@ -30,13 +30,18 @@ namespace Temporalio.Api.Enums.V1 {
             "Uk1BTBABEhoKFlRBU0tfUVVFVUVfS0lORF9TVElDS1kQAipsCg1UYXNrUXVl",
             "dWVUeXBlEh8KG1RBU0tfUVVFVUVfVFlQRV9VTlNQRUNJRklFRBAAEhwKGFRB",
             "U0tfUVVFVUVfVFlQRV9XT1JLRkxPVxABEhwKGFRBU0tfUVVFVUVfVFlQRV9B",
-            "Q1RJVklUWRACQoYBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCDlRhc2tR",
-            "dWV1ZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
-            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
-            "OjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "Q1RJVklUWRACKtIBChBUYXNrUmVhY2hhYmlsaXR5EiEKHVRBU0tfUkVBQ0hB",
+            "QklMSVRZX1VOU1BFQ0lGSUVEEAASIwofVEFTS19SRUFDSEFCSUxJVFlfTkVX",
+            "X1dPUktGTE9XUxABEigKJFRBU0tfUkVBQ0hBQklMSVRZX0VYSVNUSU5HX1dP",
+            "UktGTE9XUxACEiQKIFRBU0tfUkVBQ0hBQklMSVRZX09QRU5fV09SS0ZMT1dT",
+            "EAMSJgoiVEFTS19SRUFDSEFCSUxJVFlfQ0xPU0VEX1dPUktGTE9XUxAEQoYB",
+            "Chhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCDlRhc2tRdWV1ZVByb3RvUAFa",
+            "IWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFs",
+            "aW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFi",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), }, null, null));
     }
     #endregion
 
@@ -75,6 +80,34 @@ namespace Temporalio.Api.Enums.V1 {
     /// Activity type of task queue.
     /// </summary>
     [pbr::OriginalName("TASK_QUEUE_TYPE_ACTIVITY")] Activity = 2,
+  }
+
+  /// <summary>
+  /// Specifies which category of tasks may reach a worker on a versioned task queue.
+  /// Used both in a reachability query and its response.
+  /// </summary>
+  public enum TaskReachability {
+    [pbr::OriginalName("TASK_REACHABILITY_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// There's a possiblity for a worker to receive new workflow tasks. Workers should *not* be retired.
+    /// </summary>
+    [pbr::OriginalName("TASK_REACHABILITY_NEW_WORKFLOWS")] NewWorkflows = 1,
+    /// <summary>
+    /// There's a possiblity for a worker to receive existing workflow and activity tasks from existing workflows. Workers
+    /// should *not* be retired.
+    /// This enum value does not distinguish between open and closed workflows.
+    /// </summary>
+    [pbr::OriginalName("TASK_REACHABILITY_EXISTING_WORKFLOWS")] ExistingWorkflows = 2,
+    /// <summary>
+    /// There's a possiblity for a worker to receive existing workflow and activity tasks from open workflows. Workers
+    /// should *not* be retired.
+    /// </summary>
+    [pbr::OriginalName("TASK_REACHABILITY_OPEN_WORKFLOWS")] OpenWorkflows = 3,
+    /// <summary>
+    /// There's a possiblity for a worker to receive existing workflow tasks from closed workflows. Workers may be
+    /// retired dependending on application requirements. For example, if there's no need to query closed workflows.
+    /// </summary>
+    [pbr::OriginalName("TASK_REACHABILITY_CLOSED_WORKFLOWS")] ClosedWorkflows = 4,
   }
 
   #endregion
