@@ -461,6 +461,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())
             .worker_build_id(opt.build_id.to_str())
+            .use_worker_versioning(opt.use_worker_versioning)
             .client_identity_override(opt.identity_override.to_option_string())
             .max_cached_workflows(opt.max_cached_workflows as usize)
             .max_outstanding_workflow_tasks(opt.max_outstanding_workflow_tasks as usize)

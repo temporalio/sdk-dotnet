@@ -374,6 +374,7 @@ namespace Temporalio.Bridge
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
+                use_worker_versioning = (byte)((options.UseWorkerVersioning ?? false) ? 1 : 0),
             };
         }
 
