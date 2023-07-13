@@ -36,6 +36,7 @@ pub struct WorkerOptions {
     max_activities_per_second: f64,
     max_task_queue_activities_per_second: f64,
     graceful_shutdown_period_millis: u64,
+    use_worker_versioning: bool,
 }
 
 #[derive(Clone)]

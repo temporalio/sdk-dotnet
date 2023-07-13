@@ -342,6 +342,10 @@ namespace Temporalio.Bridge
             var buildID = options.BuildID;
             if (buildID == null)
             {
+                if (options.UseWorkerVersioning ?? false)
+                {
+                    throw new ArgumentException("BuildID must be explicitly set when UseWorkerVersioning is true");
+                }
                 var entryAssembly = Assembly.GetEntryAssembly() ??
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildID = entryAssembly.ManifestModule.ModuleVersionId.ToString();

@@ -220,6 +220,7 @@ typedef struct WorkerOptions {
   double max_activities_per_second;
   double max_task_queue_activities_per_second;
   uint64_t graceful_shutdown_period_millis;
+  bool use_worker_versioning;
 } WorkerOptions;
 
 /**
