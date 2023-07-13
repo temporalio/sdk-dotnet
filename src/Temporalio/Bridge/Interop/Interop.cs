@@ -330,6 +330,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("uint64_t")]
         public ulong graceful_shutdown_period_millis;
+
+        [NativeTypeName("bool")]
+        public byte use_worker_versioning;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
