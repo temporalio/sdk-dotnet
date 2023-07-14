@@ -221,6 +221,7 @@ typedef struct WorkerOptions {
   double max_task_queue_activities_per_second;
   uint64_t graceful_shutdown_period_millis;
   bool use_worker_versioning;
+  uint32_t max_concurrent_wft_polls;
 } WorkerOptions;
 
 /**

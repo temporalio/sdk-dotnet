@@ -375,6 +375,8 @@ namespace Temporalio.Bridge
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
                 use_worker_versioning = (byte)(options.UseWorkerVersioning ? 1 : 0),
+                // TODO: Expose to user
+                max_concurrent_wft_polls = 5,
             };
         }
 
@@ -400,8 +402,9 @@ namespace Temporalio.Bridge
                 task_queue = scope.ByteArray(options.TaskQueue),
                 build_id = scope.ByteArray(buildID),
                 identity_override = scope.ByteArray(options.Identity),
-                max_cached_workflows = 1,
-                max_outstanding_workflow_tasks = 1,
+                max_cached_workflows = 2,
+                max_outstanding_workflow_tasks = 2,
+                max_concurrent_wft_polls = 1,
                 max_outstanding_activities = 1,
                 max_outstanding_local_activities = 1,
                 no_remote_activities = 1,
