@@ -25,10 +25,10 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="taskQueue">The Task Queue to target.</param>
         /// <param name="maxSets">The maximum number of sets to return. If not specified, all sets will be
-        /// returned.</param>
+        ///     returned.</param>
         /// <param name="rpcOptions">RPC options.</param>
-        /// <returns>The sets.</returns>
-        Task<WorkerBuildIdVersionSets> GetWorkerBuildIdCompatibilityAsync(
+        /// <returns>The sets, if the Task Queue is versioned, otherwise null.</returns>
+        Task<WorkerBuildIdVersionSets?> GetWorkerBuildIdCompatibilityAsync(
             string taskQueue,
             int maxSets = 0,
             RpcOptions? rpcOptions = null);
@@ -52,7 +52,7 @@ namespace Temporalio.Client
         Task<WorkerTaskReachability> GetWorkerTaskReachabilityAsync(
             IReadOnlyCollection<string> buildIds,
             IReadOnlyCollection<string> taskQueues,
-            TaskReachabilityType? reachabilityType,
+            TaskReachabilityType? reachabilityType = null,
             RpcOptions? rpcOptions = null);
     }
 }

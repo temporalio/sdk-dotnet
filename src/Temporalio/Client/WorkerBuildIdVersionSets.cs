@@ -11,33 +11,32 @@ namespace Temporalio.Client
     public record WorkerBuildIdVersionSets(IReadOnlyCollection<BuildIdVersionSet> VersionSets)
     {
         /// <summary>
-        /// Get the default Build ID for this Task Queue.
+        /// Gets the default Build ID for this Task Queue.
         /// </summary>
         /// <returns>That Build ID.</returns>
-        public string DefaultBuildId()
-        {
-            return this.VersionSets.Last().Default();
-        }
+        public string DefaultBuildId => DefaultSet.Default;
 
         /// <summary>
-        /// Get the default compatible set for this Task Queue.
+        /// Gets the default compatible set for this Task Queue.
         /// </summary>
         /// <returns>That set.</returns>
-        public BuildIdVersionSet DefaultSet()
-        {
-            return this.VersionSets.Last();
-        }
+        public BuildIdVersionSet DefaultSet => this.VersionSets.Last();
 
         /// <summary>
         /// Convert from proto.
         /// </summary>
         /// <param name="proto">Proto.</param>
-        /// <returns>Converted value.</returns>
-        internal static WorkerBuildIdVersionSets FromProto(
+        /// <returns>Converted value, if there are any sets, otherwise null.</returns>
+        internal static WorkerBuildIdVersionSets? FromProto(
             Api.WorkflowService.V1.GetWorkerBuildIdCompatibilityResponse proto)
         {
             var sets = proto.MajorVersionSets.Select(vs => new BuildIdVersionSet(vs.BuildIds)).ToList();
-            return new WorkerBuildIdVersionSets(sets);
+            if (sets.Count == 0)
+            {
+                return null;
+            }
+
+            return new(sets);
         }
     }
 
@@ -47,11 +46,8 @@ namespace Temporalio.Client
     /// <param name="BuildIds">The Build IDs.</param>
     public record BuildIdVersionSet(IReadOnlyCollection<string> BuildIds)
     {
-        /// <summary>Get the default Build ID for this set.</summary>
+        /// <summary>Gets the default Build ID for this set.</summary>
         /// <returns>That Build ID.</returns>
-        public string Default()
-        {
-            return this.BuildIds.Last();
-        }
+        public string Default => this.BuildIds.Last();
     }
 }

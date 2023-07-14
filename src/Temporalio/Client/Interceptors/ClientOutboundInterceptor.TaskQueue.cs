@@ -17,8 +17,8 @@ namespace Temporalio.Client.Interceptors
         /// Intercept get worker build id compatability calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
-        /// <returns>Completion task.</returns>
-        public virtual Task<WorkerBuildIdVersionSets> GetWorkerBuildIdCompatibilityAsync(
+        /// <returns>The sets, if the Task Queue is versioned, otherwise null.</returns>
+        public virtual Task<WorkerBuildIdVersionSets?> GetWorkerBuildIdCompatibilityAsync(
             GetWorkerBuildIdCompatibilityInput input) =>
             Next.GetWorkerBuildIdCompatibilityAsync(input);
 
@@ -26,7 +26,7 @@ namespace Temporalio.Client.Interceptors
         /// Intercept get worker build id compatability calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
-        /// <returns>Completion task.</returns>
+        /// <returns>The reachability information.</returns>
         public virtual Task<WorkerTaskReachability> GetWorkerTaskReachabilityAsync(
             GetWorkerTaskReachabilityInput input) =>
             Next.GetWorkerTaskReachabilityAsync(input);

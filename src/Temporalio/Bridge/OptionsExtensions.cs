@@ -342,7 +342,7 @@ namespace Temporalio.Bridge
             var buildID = options.BuildID;
             if (buildID == null)
             {
-                if (options.UseWorkerVersioning ?? false)
+                if (options.UseWorkerVersioning)
                 {
                     throw new ArgumentException("BuildID must be explicitly set when UseWorkerVersioning is true");
                 }
@@ -374,7 +374,7 @@ namespace Temporalio.Bridge
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
-                use_worker_versioning = (byte)((options.UseWorkerVersioning ?? false) ? 1 : 0),
+                use_worker_versioning = (byte)(options.UseWorkerVersioning ? 1 : 0),
             };
         }
 
