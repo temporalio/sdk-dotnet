@@ -11,9 +11,10 @@ public class TemporalClientTaskQueueTests : WorkflowEnvironmentTestBase
     {
     }
 
-    [Fact]
+    [SkippableFact]
     public async Task BasicSeriesOfUpdates_Succeeds()
     {
+        Skip.IfNot(await ServerSupportsWorkerVersioning());
         var taskQueue = Guid.NewGuid().ToString();
 
         await Client.UpdateWorkerBuildIdCompatibilityAsync(taskQueue, new BuildIdOp.AddNewDefault("1.0"));

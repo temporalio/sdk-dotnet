@@ -34,9 +34,11 @@ public class WorkerVersioningTests : WorkflowEnvironmentTestBase
         public string LastSignal() => lastSignal ?? string.Empty;
     }
 
-    [Fact]
+    [SkippableFact]
     public async Task TestVersionedWorkers_Succeed()
     {
+        Skip.IfNot(await ServerSupportsWorkerVersioning());
+
         await ExecuteWorkerAsync<WaitForFinishSignal>(
             async worker =>
             {
