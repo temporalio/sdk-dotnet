@@ -48,7 +48,8 @@ namespace Temporalio.Client
             {
                 var req = new UpdateWorkerBuildIdCompatibilityRequest
                 {
-                    Namespace = Client.Options.Namespace, TaskQueue = input.TaskQueue,
+                    Namespace = Client.Options.Namespace,
+                    TaskQueue = input.TaskQueue,
                 };
                 switch (input.BuildIdOp)
                 {
@@ -73,7 +74,8 @@ namespace Temporalio.Client
                     case BuildIdOp.MergeSets op:
                         req.MergeSets = new UpdateWorkerBuildIdCompatibilityRequest.Types.MergeSets
                         {
-                            PrimarySetBuildId = op.PrimaryBuildId, SecondarySetBuildId = op.SecondaryBuildId,
+                            PrimarySetBuildId = op.PrimaryBuildId,
+                            SecondarySetBuildId = op.SecondaryBuildId,
                         };
                         break;
                 }
@@ -89,7 +91,9 @@ namespace Temporalio.Client
             {
                 var req = new GetWorkerBuildIdCompatibilityRequest
                 {
-                    Namespace = Client.Options.Namespace, TaskQueue = input.TaskQueue, MaxSets = input.MaxSets,
+                    Namespace = Client.Options.Namespace,
+                    TaskQueue = input.TaskQueue,
+                    MaxSets = input.MaxSets,
                 };
                 var resp = await Client.Connection.WorkflowService
                     .GetWorkerBuildIdCompatibilityAsync(req, DefaultRetryOptions(input.RpcOptions))

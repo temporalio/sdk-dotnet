@@ -335,7 +335,7 @@ namespace Temporalio.Bridge.Interop
         public byte use_worker_versioning;
 
         [NativeTypeName("uint32_t")]
-        public int max_concurrent_wft_polls;
+        public uint max_concurrent_wft_polls;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
