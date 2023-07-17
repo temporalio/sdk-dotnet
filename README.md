@@ -89,6 +89,9 @@ CLI:
 
     dotnet add package Temporalio --prerelease
 
+If you are using .NET framework, you have to explicitly set the platform to `x64` or `arm64`, `AnyCPU` will not choose
+the proper library.
+
 **NOTE: This README is for the current branch and not necessarily what's released on NuGet.**
 
 ### Implementing a Workflow and Activity
