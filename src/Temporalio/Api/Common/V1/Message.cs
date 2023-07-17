@@ -54,12 +54,13 @@ namespace Temporalio.Api.Common.V1 {
             "YXRpb25CBJjfHwESGAoQbWF4aW11bV9hdHRlbXB0cxgEIAEoBRIhChlub25f",
             "cmV0cnlhYmxlX2Vycm9yX3R5cGVzGAUgAygJIkYKEE1ldGVyaW5nTWV0YWRh",
             "dGESMgoqbm9uZmlyc3RfbG9jYWxfYWN0aXZpdHlfZXhlY3V0aW9uX2F0dGVt",
-            "cHRzGA0gASgNIjkKEldvcmtlclZlcnNpb25TdGFtcBIQCghidWlsZF9pZBgB",
-            "IAEoCRIRCglidW5kbGVfaWQYAiABKAkiLQoZV29ya2VyVmVyc2lvbkNhcGFi",
-            "aWxpdGllcxIQCghidWlsZF9pZBgBIAEoCUKJAQoZaW8udGVtcG9yYWwuYXBp",
-            "LmNvbW1vbi52MUIMTWVzc2FnZVByb3RvUAFaI2dvLnRlbXBvcmFsLmlvL2Fw",
-            "aS9jb21tb24vdjE7Y29tbW9uqgIYVGVtcG9yYWxpby5BcGkuQ29tbW9uLlYx",
-            "6gIbVGVtcG9yYWxpbzo6QXBpOjpDb21tb246OlYxYgZwcm90bzM="));
+            "cHRzGA0gASgNIlEKEldvcmtlclZlcnNpb25TdGFtcBIQCghidWlsZF9pZBgB",
+            "IAEoCRIRCglidW5kbGVfaWQYAiABKAkSFgoOdXNlX3ZlcnNpb25pbmcYAyAB",
+            "KAgiRQoZV29ya2VyVmVyc2lvbkNhcGFiaWxpdGllcxIQCghidWlsZF9pZBgB",
+            "IAEoCRIWCg51c2VfdmVyc2lvbmluZxgCIAEoCEKJAQoZaW8udGVtcG9yYWwu",
+            "YXBpLmNvbW1vbi52MUIMTWVzc2FnZVByb3RvUAFaI2dvLnRlbXBvcmFsLmlv",
+            "L2FwaS9jb21tb24vdjE7Y29tbW9uqgIYVGVtcG9yYWxpby5BcGkuQ29tbW9u",
+            "LlYx6gIbVGVtcG9yYWxpbzo6QXBpOjpDb21tb246OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -74,8 +75,8 @@ namespace Temporalio.Api.Common.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.ActivityType), global::Temporalio.Api.Common.V1.ActivityType.Parser, new[]{ "Name" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.RetryPolicy), global::Temporalio.Api.Common.V1.RetryPolicy.Parser, new[]{ "InitialInterval", "BackoffCoefficient", "MaximumInterval", "MaximumAttempts", "NonRetryableErrorTypes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.MeteringMetadata), global::Temporalio.Api.Common.V1.MeteringMetadata.Parser, new[]{ "NonfirstLocalActivityExecutionAttempts" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionStamp), global::Temporalio.Api.Common.V1.WorkerVersionStamp.Parser, new[]{ "BuildId", "BundleId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionCapabilities), global::Temporalio.Api.Common.V1.WorkerVersionCapabilities.Parser, new[]{ "BuildId" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionStamp), global::Temporalio.Api.Common.V1.WorkerVersionStamp.Parser, new[]{ "BuildId", "BundleId", "UseVersioning" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionCapabilities), global::Temporalio.Api.Common.V1.WorkerVersionCapabilities.Parser, new[]{ "BuildId", "UseVersioning" }, null, null, null, null)
           }));
     }
     #endregion
@@ -2477,6 +2478,7 @@ namespace Temporalio.Api.Common.V1 {
     public WorkerVersionStamp(WorkerVersionStamp other) : this() {
       buildId_ = other.buildId_;
       bundleId_ = other.bundleId_;
+      useVersioning_ = other.useVersioning_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2490,7 +2492,8 @@ namespace Temporalio.Api.Common.V1 {
     public const int BuildIdFieldNumber = 1;
     private string buildId_ = "";
     /// <summary>
-    /// An opaque whole-worker identifier
+    /// An opaque whole-worker identifier. Replaces the deprecated `binary_checksum` field when this
+    /// message is included in requests which previously used that.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2517,6 +2520,22 @@ namespace Temporalio.Api.Common.V1 {
       }
     }
 
+    /// <summary>Field number for the "use_versioning" field.</summary>
+    public const int UseVersioningFieldNumber = 3;
+    private bool useVersioning_;
+    /// <summary>
+    /// If set, the worker is opting in to worker versioning. Otherwise, this is used only as a
+    /// marker for workflow reset points and the BuildIDs search attribute.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool UseVersioning {
+      get { return useVersioning_; }
+      set {
+        useVersioning_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -2534,6 +2553,7 @@ namespace Temporalio.Api.Common.V1 {
       }
       if (BuildId != other.BuildId) return false;
       if (BundleId != other.BundleId) return false;
+      if (UseVersioning != other.UseVersioning) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2543,6 +2563,7 @@ namespace Temporalio.Api.Common.V1 {
       int hash = 1;
       if (BuildId.Length != 0) hash ^= BuildId.GetHashCode();
       if (BundleId.Length != 0) hash ^= BundleId.GetHashCode();
+      if (UseVersioning != false) hash ^= UseVersioning.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2569,6 +2590,10 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(18);
         output.WriteString(BundleId);
       }
+      if (UseVersioning != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(UseVersioning);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2587,6 +2612,10 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(18);
         output.WriteString(BundleId);
       }
+      if (UseVersioning != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(UseVersioning);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2602,6 +2631,9 @@ namespace Temporalio.Api.Common.V1 {
       }
       if (BundleId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(BundleId);
+      }
+      if (UseVersioning != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2620,6 +2652,9 @@ namespace Temporalio.Api.Common.V1 {
       }
       if (other.BundleId.Length != 0) {
         BundleId = other.BundleId;
+      }
+      if (other.UseVersioning != false) {
+        UseVersioning = other.UseVersioning;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2642,6 +2677,10 @@ namespace Temporalio.Api.Common.V1 {
           }
           case 18: {
             BundleId = input.ReadString();
+            break;
+          }
+          case 24: {
+            UseVersioning = input.ReadBool();
             break;
           }
         }
@@ -2667,6 +2706,10 @@ namespace Temporalio.Api.Common.V1 {
             BundleId = input.ReadString();
             break;
           }
+          case 24: {
+            UseVersioning = input.ReadBool();
+            break;
+          }
         }
       }
     }
@@ -2675,7 +2718,9 @@ namespace Temporalio.Api.Common.V1 {
   }
 
   /// <summary>
-  /// Identifies the version(s) that a worker is compatible with when polling or identifying itself
+  /// Identifies the version(s) that a worker is compatible with when polling or identifying itself,
+  /// and whether or not this worker is opting into the build-id based versioning feature. This is
+  /// used by matching to determine which workers ought to receive what tasks.
   /// </summary>
   public sealed partial class WorkerVersionCapabilities : pb::IMessage<WorkerVersionCapabilities>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -2712,6 +2757,7 @@ namespace Temporalio.Api.Common.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public WorkerVersionCapabilities(WorkerVersionCapabilities other) : this() {
       buildId_ = other.buildId_;
+      useVersioning_ = other.useVersioning_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2736,6 +2782,22 @@ namespace Temporalio.Api.Common.V1 {
       }
     }
 
+    /// <summary>Field number for the "use_versioning" field.</summary>
+    public const int UseVersioningFieldNumber = 2;
+    private bool useVersioning_;
+    /// <summary>
+    /// If set, the worker is opting in to worker versioning, and wishes to only receive appropriate
+    /// tasks.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool UseVersioning {
+      get { return useVersioning_; }
+      set {
+        useVersioning_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -2752,6 +2814,7 @@ namespace Temporalio.Api.Common.V1 {
         return true;
       }
       if (BuildId != other.BuildId) return false;
+      if (UseVersioning != other.UseVersioning) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2760,6 +2823,7 @@ namespace Temporalio.Api.Common.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (BuildId.Length != 0) hash ^= BuildId.GetHashCode();
+      if (UseVersioning != false) hash ^= UseVersioning.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2782,6 +2846,10 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(10);
         output.WriteString(BuildId);
       }
+      if (UseVersioning != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(UseVersioning);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2796,6 +2864,10 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(10);
         output.WriteString(BuildId);
       }
+      if (UseVersioning != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(UseVersioning);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2808,6 +2880,9 @@ namespace Temporalio.Api.Common.V1 {
       int size = 0;
       if (BuildId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(BuildId);
+      }
+      if (UseVersioning != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2823,6 +2898,9 @@ namespace Temporalio.Api.Common.V1 {
       }
       if (other.BuildId.Length != 0) {
         BuildId = other.BuildId;
+      }
+      if (other.UseVersioning != false) {
+        UseVersioning = other.UseVersioning;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2843,6 +2921,10 @@ namespace Temporalio.Api.Common.V1 {
             BuildId = input.ReadString();
             break;
           }
+          case 16: {
+            UseVersioning = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -2860,6 +2942,10 @@ namespace Temporalio.Api.Common.V1 {
             break;
           case 10: {
             BuildId = input.ReadString();
+            break;
+          }
+          case 16: {
+            UseVersioning = input.ReadBool();
             break;
           }
         }

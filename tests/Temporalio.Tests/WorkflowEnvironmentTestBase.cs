@@ -1,3 +1,5 @@
+using Temporalio.Exceptions;
+
 namespace Temporalio.Tests;
 
 using Temporalio.Api.Enums.V1;
@@ -43,6 +45,24 @@ public abstract class WorkflowEnvironmentTestBase : TestBase
     protected WorkflowEnvironment Env { get; private init; }
 
     protected ITemporalClient Client { get; private init; }
+
+    /// <summary>Check for Worker Versioning feature support.</summary>
+    /// <returns>True if the server supports it.</returns>
+    protected async Task<bool> ServerSupportsWorkerVersioning()
+    {
+        var tq = $"tq-test-worker-ver-{Guid.NewGuid()}";
+        try
+        {
+            await Client.UpdateWorkerBuildIdCompatibilityAsync(tq, new BuildIdOp.AddNewDefault("yoyoyo"));
+        }
+        catch (RpcException e) when (e.Code == RpcException.StatusCode.PermissionDenied ||
+                                     e.Code == RpcException.StatusCode.Unimplemented)
+        {
+            return false;
+        }
+
+        return true;
+    }
 
     protected async Task EnsureSearchAttributesPresentAsync()
     {

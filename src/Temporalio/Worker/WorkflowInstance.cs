@@ -709,6 +709,10 @@ namespace Temporalio.Worker
                     {
                         cmd.Headers.Add(headers);
                     }
+                    if (e.Input.Options?.VersioningIntent is { } vi)
+                    {
+                        cmd.VersioningIntent = vi.ToProto();
+                    }
                     AddCommand(new() { ContinueAsNewWorkflowExecution = cmd });
                 }
                 catch (Exception e) when (
@@ -1331,6 +1335,10 @@ namespace Temporalio.Worker
                         {
                             cmd.HeartbeatTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(heartbeat);
                         }
+                        if (input.Options.VersioningIntent is { } vi)
+                        {
+                            cmd.VersioningIntent = vi.ToProto();
+                        }
                         instance.AddCommand(new() { ScheduleActivity = cmd });
                         return seq;
                     },
@@ -1487,6 +1495,10 @@ namespace Temporalio.Worker
                 if (input.Headers is IDictionary<string, Payload> headers)
                 {
                     cmd.Headers.Add(headers);
+                }
+                if (input.Options?.VersioningIntent is { } vi)
+                {
+                    cmd.VersioningIntent = vi.ToProto();
                 }
                 instance.AddCommand(new() { StartChildWorkflowExecution = cmd });
 

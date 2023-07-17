@@ -2896,6 +2896,10 @@ namespace Temporalio.Api.Workflow.V1 {
     /// <summary>Field number for the "binary_checksum" field.</summary>
     public const int BinaryChecksumFieldNumber = 1;
     private string binaryChecksum_ = "";
+    /// <summary>
+    /// A worker binary version identifier, will be deprecated and superseded by a newer concept of
+    /// build_id.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string BinaryChecksum {
@@ -2908,6 +2912,9 @@ namespace Temporalio.Api.Workflow.V1 {
     /// <summary>Field number for the "run_id" field.</summary>
     public const int RunIdFieldNumber = 2;
     private string runId_ = "";
+    /// <summary>
+    /// The first run ID in the execution chain that was touched by this worker build.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string RunId {
@@ -2920,6 +2927,9 @@ namespace Temporalio.Api.Workflow.V1 {
     /// <summary>Field number for the "first_workflow_task_completed_id" field.</summary>
     public const int FirstWorkflowTaskCompletedIdFieldNumber = 3;
     private long firstWorkflowTaskCompletedId_;
+    /// <summary>
+    /// Event ID of the first WorkflowTaskCompleted event processed by this worker build.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public long FirstWorkflowTaskCompletedId {
