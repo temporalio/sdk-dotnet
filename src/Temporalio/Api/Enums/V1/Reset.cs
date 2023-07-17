@@ -27,13 +27,16 @@ namespace Temporalio.Api.Enums.V1 {
             "CiF0ZW1wb3JhbC9hcGkvZW51bXMvdjEvcmVzZXQucHJvdG8SFXRlbXBvcmFs",
             "LmFwaS5lbnVtcy52MSpyChBSZXNldFJlYXBwbHlUeXBlEiIKHlJFU0VUX1JF",
             "QVBQTFlfVFlQRV9VTlNQRUNJRklFRBAAEh0KGVJFU0VUX1JFQVBQTFlfVFlQ",
-            "RV9TSUdOQUwQARIbChdSRVNFVF9SRUFQUExZX1RZUEVfTk9ORRACQoIBChhp",
-            "by50ZW1wb3JhbC5hcGkuZW51bXMudjFCClJlc2V0UHJvdG9QAVohZ28udGVt",
-            "cG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGku",
-            "RW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "RV9TSUdOQUwQARIbChdSRVNFVF9SRUFQUExZX1RZUEVfTk9ORRACKm4KCVJl",
+            "c2V0VHlwZRIaChZSRVNFVF9UWVBFX1VOU1BFQ0lGSUVEEAASIgoeUkVTRVRf",
+            "VFlQRV9GSVJTVF9XT1JLRkxPV19UQVNLEAESIQodUkVTRVRfVFlQRV9MQVNU",
+            "X1dPUktGTE9XX1RBU0sQAkKCAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYx",
+            "QgpSZXNldFByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtl",
+            "bnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6",
+            "QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.ResetReapplyType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.ResetReapplyType), typeof(global::Temporalio.Api.Enums.V1.ResetType), }, null, null));
     }
     #endregion
 
@@ -48,6 +51,21 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("RESET_REAPPLY_TYPE_UNSPECIFIED")] Unspecified = 0,
     [pbr::OriginalName("RESET_REAPPLY_TYPE_SIGNAL")] Signal = 1,
     [pbr::OriginalName("RESET_REAPPLY_TYPE_NONE")] None = 2,
+  }
+
+  /// <summary>
+  /// Reset type options
+  /// </summary>
+  public enum ResetType {
+    [pbr::OriginalName("RESET_TYPE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Resets to event of the first workflow task completed, or if it does not exist, the event after task scheduled.
+    /// </summary>
+    [pbr::OriginalName("RESET_TYPE_FIRST_WORKFLOW_TASK")] FirstWorkflowTask = 1,
+    /// <summary>
+    /// Resets to event of the last workflow task completed, or if it does not exist, the event after task scheduled.
+    /// </summary>
+    [pbr::OriginalName("RESET_TYPE_LAST_WORKFLOW_TASK")] LastWorkflowTask = 2,
   }
 
   #endregion

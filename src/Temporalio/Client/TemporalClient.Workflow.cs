@@ -335,7 +335,6 @@ namespace Temporalio.Client
                     req.NextPageToken = resp.NextPageToken;
                 }
             }
-
 #if NETCOREAPP3_0_OR_GREATER
             /// <inheritdoc />
             public override IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(

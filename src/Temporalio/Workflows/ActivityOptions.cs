@@ -80,6 +80,12 @@ namespace Temporalio.Workflows
         public string? ActivityID { get; set; }
 
         /// <summary>
+        /// Gets or sets whether this Activity should run on a worker with a compatible Build Id or not when using the
+        /// Worker Versioning feature.
+        /// </summary>
+        public VersioningIntent? VersioningIntent { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

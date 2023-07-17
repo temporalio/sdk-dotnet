@@ -27,17 +27,46 @@ namespace Temporalio.Bridge.Api.Common {
             "CiV0ZW1wb3JhbC9zZGsvY29yZS9jb21tb24vY29tbW9uLnByb3RvEg5jb3Jl",
             "c2RrLmNvbW1vbhoeZ29vZ2xlL3Byb3RvYnVmL2R1cmF0aW9uLnByb3RvIlUK",
             "G05hbWVzcGFjZWRXb3JrZmxvd0V4ZWN1dGlvbhIRCgluYW1lc3BhY2UYASAB",
-            "KAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJQiLqAh9U",
-            "ZW1wb3JhbGlvOjpCcmlkZ2U6OkFwaTo6Q29tbW9uYgZwcm90bzM="));
+            "KAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJKkAKEFZl",
+            "cnNpb25pbmdJbnRlbnQSDwoLVU5TUEVDSUZJRUQQABIOCgpDT01QQVRJQkxF",
+            "EAESCwoHREVGQVVMVBACQiLqAh9UZW1wb3JhbGlvOjpCcmlkZ2U6OkFwaTo6",
+            "Q29tbW9uYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.Common.VersioningIntent), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Common.NamespacedWorkflowExecution), global::Temporalio.Bridge.Api.Common.NamespacedWorkflowExecution.Parser, new[]{ "Namespace", "WorkflowId", "RunId" }, null, null, null, null)
           }));
     }
     #endregion
 
   }
+  #region Enums
+  /// <summary>
+  /// An indication of user's intent concerning what Build ID versioning approach should be used for
+  /// a specific command
+  /// </summary>
+  internal enum VersioningIntent {
+    /// <summary>
+    /// Indicates that core should choose the most sensible default behavior for the type of
+    /// command, accounting for whether the command will be run on the same task queue as the current
+    /// worker.
+    /// </summary>
+    [pbr::OriginalName("UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Indicates that the command should run on a worker with compatible version if possible. It may
+    /// not be possible if the target task queue does not also have knowledge of the current worker's
+    /// build ID.
+    /// </summary>
+    [pbr::OriginalName("COMPATIBLE")] Compatible = 1,
+    /// <summary>
+    /// Indicates that the command should run on the target task queue's current overall-default
+    /// build ID.
+    /// </summary>
+    [pbr::OriginalName("DEFAULT")] Default = 2,
+  }
+
+  #endregion
+
   #region Messages
   /// <summary>
   /// Identifying information about a particular workflow execution, including namespace
