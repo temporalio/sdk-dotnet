@@ -36,6 +36,8 @@ pub struct WorkerOptions {
     max_activities_per_second: f64,
     max_task_queue_activities_per_second: f64,
     graceful_shutdown_period_millis: u64,
+    use_worker_versioning: bool,
+    max_concurrent_wft_polls: u32,
 }
 
 #[derive(Clone)]
@@ -460,6 +462,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())
             .worker_build_id(opt.build_id.to_str())
+            .use_worker_versioning(opt.use_worker_versioning)
             .client_identity_override(opt.identity_override.to_option_string())
             .max_cached_workflows(opt.max_cached_workflows as usize)
             .max_outstanding_workflow_tasks(opt.max_outstanding_workflow_tasks as usize)
@@ -491,6 +494,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             // auto-cancel-activity behavior or shutdown will not occur, so we
             // always set it even if 0.
             .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
+            .max_concurrent_wft_polls(opt.max_concurrent_wft_polls as usize)
             .build()
             .map_err(|err| anyhow::anyhow!(err))
     }
