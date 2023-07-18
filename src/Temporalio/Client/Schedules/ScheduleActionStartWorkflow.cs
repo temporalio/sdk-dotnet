@@ -118,7 +118,7 @@ namespace Temporalio.Client.Schedules
             DataConverter dataConverter)
         {
             // Disallow some options
-            if (Options.IDReusePolicy != Api.Enums.V1.WorkflowIdReusePolicy.AllowDuplicate)
+            if (Options.IdReusePolicy != Api.Enums.V1.WorkflowIdReusePolicy.AllowDuplicate)
             {
                 throw new ArgumentException("ID reuse policy cannot change from default for scheduled workflow");
             }
@@ -148,7 +148,7 @@ namespace Temporalio.Client.Schedules
 
             var workflow = new Api.Workflow.V1.NewWorkflowExecutionInfo()
             {
-                WorkflowId = Options.ID ??
+                WorkflowId = Options.Id ??
                     throw new ArgumentException("ID required on workflow action"),
                 WorkflowType = new() { Name = Workflow },
                 TaskQueue = new()

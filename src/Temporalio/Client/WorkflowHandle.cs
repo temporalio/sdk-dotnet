@@ -20,27 +20,27 @@ namespace Temporalio.Client
     /// Workflow handle to perform actions on an individual workflow.
     /// </summary>
     /// <param name="Client">Client used for workflow handle calls.</param>
-    /// <param name="ID">Workflow ID.</param>
-    /// <param name="RunID">
+    /// <param name="Id">Workflow ID.</param>
+    /// <param name="RunId">
     /// Run ID used for signals and queries if present to ensure a very specific run to call. This
     /// is only set when getting a workflow handle, not when starting a workflow.
     /// </param>
-    /// <param name="ResultRunID">
+    /// <param name="ResultRunId">
     /// Run ID used for get result calls to ensure getting a result starting from this run. This is
     /// set the same as a run ID when getting a workflow handle. When starting a workflow, this is
     /// set as the resulting run ID.
     /// </param>
-    /// <param name="FirstExecutionRunID">
+    /// <param name="FirstExecutionRunId">
     /// Run ID used for cancellation and termination to ensure they happen on a workflow starting
     /// with this run ID. This can be set when getting a workflow handle. When starting a workflow,
     /// this is set as the resulting run ID if no start signal was provided.
     /// </param>
     public record WorkflowHandle(
         ITemporalClient Client,
-        string ID,
-        string? RunID = null,
-        string? ResultRunID = null,
-        string? FirstExecutionRunID = null)
+        string Id,
+        string? RunId = null,
+        string? ResultRunId = null,
+        string? FirstExecutionRunId = null)
     {
         /// <summary>
         /// Get the result of a workflow disregarding its return (or not having a return type).
@@ -81,12 +81,12 @@ namespace Temporalio.Client
             bool followRuns = true, RpcOptions? rpcOptions = null)
         {
             // Continually get pages
-            var histRunID = ResultRunID;
+            var histRunId = ResultRunId;
             while (true)
             {
                 var page = await Client.OutboundInterceptor.FetchWorkflowHistoryEventPageAsync(new(
-                    ID: ID,
-                    RunID: histRunID,
+                    Id: Id,
+                    RunId: histRunId,
                     PageSize: 0,
                     NextPageToken: null,
                     WaitNewEvent: true,
@@ -97,7 +97,7 @@ namespace Temporalio.Client
                 {
                     throw new InvalidOperationException("Event set unexpectedly empty");
                 }
-                histRunID = null;
+                histRunId = null;
                 foreach (var evt in page.Events)
                 {
                     switch (evt.AttributesCase)
@@ -106,7 +106,7 @@ namespace Temporalio.Client
                             var compAttr = evt.WorkflowExecutionCompletedEventAttributes;
                             if (!string.IsNullOrEmpty(compAttr.NewExecutionRunId) && followRuns)
                             {
-                                histRunID = compAttr.NewExecutionRunId;
+                                histRunId = compAttr.NewExecutionRunId;
                                 break;
                             }
                             // Ignore return if they didn't want it
@@ -125,7 +125,7 @@ namespace Temporalio.Client
                             var failAttr = evt.WorkflowExecutionFailedEventAttributes;
                             if (!string.IsNullOrEmpty(failAttr.NewExecutionRunId) && followRuns)
                             {
-                                histRunID = failAttr.NewExecutionRunId;
+                                histRunId = failAttr.NewExecutionRunId;
                                 break;
                             }
                             throw new WorkflowFailedException(
@@ -160,7 +160,7 @@ namespace Temporalio.Client
                             var timeAttr = evt.WorkflowExecutionTimedOutEventAttributes;
                             if (!string.IsNullOrEmpty(timeAttr.NewExecutionRunId) && followRuns)
                             {
-                                histRunID = timeAttr.NewExecutionRunId;
+                                histRunId = timeAttr.NewExecutionRunId;
                                 break;
                             }
                             throw new WorkflowFailedException(new TimeoutFailureException(
@@ -182,14 +182,14 @@ namespace Temporalio.Client
                             }
                             else if (followRuns)
                             {
-                                histRunID = contAttr.NewExecutionRunId;
+                                histRunId = contAttr.NewExecutionRunId;
                                 break;
                             }
                             throw new WorkflowContinuedAsNewException(contAttr.NewExecutionRunId);
                     }
                 }
                 // If we didn't get a new ID to follow, we didn't get a completion event
-                if (histRunID == null)
+                if (histRunId == null)
                 {
                     throw new InvalidOperationException("No completion event found");
                 }
@@ -231,8 +231,8 @@ namespace Temporalio.Client
         public Task SignalAsync(
             string signal, IReadOnlyCollection<object?> args, WorkflowSignalOptions? options = null) =>
             Client.OutboundInterceptor.SignalWorkflowAsync(new(
-                ID: ID,
-                RunID: RunID,
+                Id: Id,
+                RunId: RunId,
                 Signal: signal,
                 Args: args,
                 Options: options,
@@ -295,8 +295,8 @@ namespace Temporalio.Client
         public Task<TQueryResult> QueryAsync<TQueryResult>(
             string query, IReadOnlyCollection<object?> args, WorkflowQueryOptions? options = null) =>
             Client.OutboundInterceptor.QueryWorkflowAsync<TQueryResult>(new(
-                ID: ID,
-                RunID: RunID,
+                Id: Id,
+                RunId: RunId,
                 Query: query,
                 Args: args,
                 Options: options,
@@ -310,8 +310,8 @@ namespace Temporalio.Client
         public Task<WorkflowExecutionDescription> DescribeAsync(
             WorkflowDescribeOptions? options = null) =>
             Client.OutboundInterceptor.DescribeWorkflowAsync(new(
-                ID: ID,
-                RunID: RunID,
+                Id: Id,
+                RunId: RunId,
                 Options: options));
 
         /// <summary>
@@ -322,9 +322,9 @@ namespace Temporalio.Client
         /// <exception cref="RpcException">Server-side error.</exception>
         public Task CancelAsync(WorkflowCancelOptions? options = null) =>
             Client.OutboundInterceptor.CancelWorkflowAsync(new(
-                ID: ID,
-                RunID: RunID,
-                FirstExecutionRunID: FirstExecutionRunID,
+                Id: Id,
+                RunId: RunId,
+                FirstExecutionRunId: FirstExecutionRunId,
                 Options: options));
 
         /// <summary>
@@ -337,9 +337,9 @@ namespace Temporalio.Client
         public Task TerminateAsync(
             string? reason = null, WorkflowTerminateOptions? options = null) =>
             Client.OutboundInterceptor.TerminateWorkflowAsync(new(
-                ID: ID,
-                RunID: RunID,
-                FirstExecutionRunID: FirstExecutionRunID,
+                Id: Id,
+                RunId: RunId,
+                FirstExecutionRunId: FirstExecutionRunId,
                 Reason: reason,
                 Options: options));
 
@@ -367,7 +367,7 @@ namespace Temporalio.Client
             {
                 events.Add(evt);
             }
-            return new(ID, events);
+            return new(Id, events);
         }
 
         /// <summary>
@@ -392,8 +392,8 @@ namespace Temporalio.Client
                 do
                 {
                     var page = await Client.OutboundInterceptor.FetchWorkflowHistoryEventPageAsync(new(
-                        ID: ID,
-                        RunID: RunID,
+                        Id: Id,
+                        RunId: RunId,
                         PageSize: 0,
                         NextPageToken: nextPageToken,
                         WaitNewEvent: options?.WaitNewEvent ?? false,
@@ -421,28 +421,28 @@ namespace Temporalio.Client
     /// </summary>
     /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
     /// <param name="Client">Client used for workflow handle calls.</param>
-    /// <param name="ID">Workflow ID.</param>
-    /// <param name="RunID">
+    /// <param name="Id">Workflow ID.</param>
+    /// <param name="RunId">
     /// Run ID used for signals and queries if present to ensure a very specific run to call. This
     /// is only set when getting a workflow handle, not when starting a workflow.
     /// </param>
-    /// <param name="ResultRunID">
+    /// <param name="ResultRunId">
     /// Run ID used for get result calls to ensure getting a result starting from this run. This is
     /// set the same as a run ID when getting a workflow handle. When starting a workflow, this is
     /// set as the resulting run ID.
     /// </param>
-    /// <param name="FirstExecutionRunID">
+    /// <param name="FirstExecutionRunId">
     /// Run ID used for cancellation and termination to ensure they happen on a workflow starting
     /// with this run ID. This can be set when getting a workflow handle. When starting a workflow,
     /// this is set as the resulting run ID if no start signal was provided.
     /// </param>
     public record WorkflowHandle<TWorkflow>(
         ITemporalClient Client,
-        string ID,
-        string? RunID = null,
-        string? ResultRunID = null,
-        string? FirstExecutionRunID = null) :
-            WorkflowHandle(Client, ID, RunID, ResultRunID, FirstExecutionRunID)
+        string Id,
+        string? RunId = null,
+        string? ResultRunId = null,
+        string? FirstExecutionRunId = null) :
+            WorkflowHandle(Client, Id, RunId, ResultRunId, FirstExecutionRunId)
     {
         /// <summary>
         /// Signal a workflow via a lambda call to a WorkflowSignal attributed method.
@@ -484,28 +484,28 @@ namespace Temporalio.Client
     /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
     /// <typeparam name="TResult">Result type of the workflow.</typeparam>
     /// <param name="Client">Client used for workflow handle calls.</param>
-    /// <param name="ID">Workflow ID.</param>
-    /// <param name="RunID">
+    /// <param name="Id">Workflow ID.</param>
+    /// <param name="RunId">
     /// Run ID used for signals and queries if present to ensure a very specific run to call. This
     /// is only set when getting a workflow handle, not when starting a workflow.
     /// </param>
-    /// <param name="ResultRunID">
+    /// <param name="ResultRunId">
     /// Run ID used for get result calls to ensure getting a result starting from this run. This is
     /// set the same as a run ID when getting a workflow handle. When starting a workflow, this is
     /// set as the resulting run ID.
     /// </param>
-    /// <param name="FirstExecutionRunID">
+    /// <param name="FirstExecutionRunId">
     /// Run ID used for cancellation and termination to ensure they happen on a workflow starting
     /// with this run ID. This can be set when getting a workflow handle. When starting a workflow,
     /// this is set as the resulting run ID if no start signal was provided.
     /// </param>
     public record WorkflowHandle<TWorkflow, TResult>(
         ITemporalClient Client,
-        string ID,
-        string? RunID = null,
-        string? ResultRunID = null,
-        string? FirstExecutionRunID = null) :
-            WorkflowHandle<TWorkflow>(Client, ID, RunID, ResultRunID, FirstExecutionRunID)
+        string Id,
+        string? RunId = null,
+        string? ResultRunId = null,
+        string? FirstExecutionRunId = null) :
+            WorkflowHandle<TWorkflow>(Client, Id, RunId, ResultRunId, FirstExecutionRunId)
     {
         /// <summary>
         /// Get the result of a workflow, deserializing into the known result type.

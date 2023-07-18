@@ -15,9 +15,9 @@ namespace Temporalio.Common
     /// <summary>
     /// History for a workflow.
     /// </summary>
-    /// <param name="ID">ID of the workflow.</param>
+    /// <param name="Id">ID of the workflow.</param>
     /// <param name="Events">Collection of events.</param>
-    public record WorkflowHistory(string ID, IReadOnlyCollection<HistoryEvent> Events)
+    public record WorkflowHistory(string Id, IReadOnlyCollection<HistoryEvent> Events)
     {
         private static readonly JsonSerializerOptions JsonSerializerOptions =
             new() { Converters = { JsonCommonTypeConverter.Instance } };
@@ -52,27 +52,27 @@ namespace Temporalio.Common
         /// Create workflow history from the given JSON. While this works with "ToJson" from this
         /// class, it also works with CLI and UI exported JSON.
         /// </summary>
-        /// <param name="workflowID">Workflow ID.</param>
+        /// <param name="workflowId">Workflow ID.</param>
         /// <param name="json">JSON to create history from.</param>
         /// <returns>Created history.</returns>
-        public static WorkflowHistory FromJson(string workflowID, string json)
+        public static WorkflowHistory FromJson(string workflowId, string json)
         {
             var historyRaw = JsonSerializer.Deserialize<object?>(json, JsonSerializerOptions);
             if (historyRaw is not Dictionary<string, object?> historyObj)
             {
                 throw new ArgumentException("JSON is not expected history object");
             }
-            return FromJson(workflowID, historyObj);
+            return FromJson(workflowId, historyObj);
         }
 
-        private static WorkflowHistory FromJson(string workflowID, Dictionary<string, object?> historyObj)
+        private static WorkflowHistory FromJson(string workflowId, Dictionary<string, object?> historyObj)
         {
             // Unfortunately due to enum incorrectness in UI/tctl/Go, we have to parse, alter,
             // serialize the altered, then deserialize again using Proto JSON
             HistoryJsonFixer.Fix(historyObj);
             var fixedJson = JsonSerializer.Serialize(historyObj);
             var history = JsonParser.Default.Parse<History>(fixedJson);
-            return new(workflowID, history.Events);
+            return new(workflowId, history.Events);
         }
 
         /// <summary>

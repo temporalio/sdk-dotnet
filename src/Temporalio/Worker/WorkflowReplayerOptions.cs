@@ -47,7 +47,7 @@ namespace Temporalio.Worker
         /// If unset, the default is
         /// <c>Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId</c>.
         /// </summary>
-        public string? BuildID { get; set; }
+        public string? BuildId { get; set; }
 
         /// <summary>
         /// Gets or sets the identity for this worker.

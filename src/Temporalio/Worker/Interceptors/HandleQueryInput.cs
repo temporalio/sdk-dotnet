@@ -7,7 +7,7 @@ namespace Temporalio.Worker.Interceptors
     /// <summary>
     /// Input for <see cref="WorkflowInboundInterceptor.HandleQuery" />.
     /// </summary>
-    /// <param name="ID">Query ID.</param>
+    /// <param name="Id">Query ID.</param>
     /// <param name="Query">Query name.</param>
     /// <param name="Definition">Query definition.</param>
     /// <param name="Args">Query arguments.</param>
@@ -17,7 +17,7 @@ namespace Temporalio.Worker.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record HandleQueryInput(
-        string ID,
+        string Id,
         string Query,
         WorkflowQueryDefinition Definition,
         object?[] Args,

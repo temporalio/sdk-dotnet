@@ -339,16 +339,16 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("Task queue must be provided in worker options");
             }
-            var buildID = options.BuildID;
-            if (buildID == null)
+            var buildId = options.BuildId;
+            if (buildId == null)
             {
                 if (options.UseWorkerVersioning)
                 {
-                    throw new ArgumentException("BuildID must be explicitly set when UseWorkerVersioning is true");
+                    throw new ArgumentException("BuildId must be explicitly set when UseWorkerVersioning is true");
                 }
                 var entryAssembly = Assembly.GetEntryAssembly() ??
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
-                buildID = entryAssembly.ManifestModule.ModuleVersionId.ToString();
+                buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
             // We have to disable remote activities if a user asks _or_ if we are not running an
             // activity worker at all. Otherwise shutdown will not proceed properly.
@@ -357,7 +357,7 @@ namespace Temporalio.Bridge
             {
                 namespace_ = scope.ByteArray(namespace_),
                 task_queue = scope.ByteArray(options.TaskQueue),
-                build_id = scope.ByteArray(buildID),
+                build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = (uint)options.MaxCachedWorkflows,
                 max_outstanding_workflow_tasks = (uint)options.MaxConcurrentWorkflowTasks,
@@ -389,18 +389,18 @@ namespace Temporalio.Bridge
         public static Interop.WorkerOptions ToInteropOptions(
             this Temporalio.Worker.WorkflowReplayerOptions options, Scope scope)
         {
-            var buildID = options.BuildID;
-            if (buildID == null)
+            var buildId = options.BuildId;
+            if (buildId == null)
             {
                 var entryAssembly = Assembly.GetEntryAssembly() ??
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
-                buildID = entryAssembly.ManifestModule.ModuleVersionId.ToString();
+                buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),
                 task_queue = scope.ByteArray(options.TaskQueue),
-                build_id = scope.ByteArray(buildID),
+                build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
                 max_outstanding_workflow_tasks = 2,

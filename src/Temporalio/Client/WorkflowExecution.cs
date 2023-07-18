@@ -57,7 +57,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the ID for the workflow.
         /// </summary>
-        public string ID => RawInfo.Execution.WorkflowId;
+        public string Id => RawInfo.Execution.WorkflowId;
 
         /// <summary>
         /// Gets the workflow memo dictionary, lazily creating when accessed.
@@ -67,17 +67,17 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the ID for the parent workflow if this was started as a child.
         /// </summary>
-        public string? ParentID => RawInfo.ParentExecution?.WorkflowId;
+        public string? ParentId => RawInfo.ParentExecution?.WorkflowId;
 
         /// <summary>
         /// Gets the run ID for the parent workflow if this was started as a child.
         /// </summary>
-        public string? ParentRunID => RawInfo.ParentExecution?.RunId;
+        public string? ParentRunId => RawInfo.ParentExecution?.RunId;
 
         /// <summary>
         /// Gets the run ID for the workflow.
         /// </summary>
-        public string RunID => RawInfo.Execution.RunId;
+        public string RunId => RawInfo.Execution.RunId;
 
         /// <summary>
         /// Gets when the workflow was created.

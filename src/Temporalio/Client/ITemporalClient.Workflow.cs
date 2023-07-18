@@ -57,26 +57,26 @@ namespace Temporalio.Client
         /// Get a workflow handle for an existing workflow with unknown return type.
         /// </summary>
         /// <param name="id">ID of the workflow.</param>
-        /// <param name="runID">Run ID of the workflow or null for latest.</param>
-        /// <param name="firstExecutionRunID">
+        /// <param name="runId">Run ID of the workflow or null for latest.</param>
+        /// <param name="firstExecutionRunId">
         /// Optional first execution ID used for cancellation and termination.
         /// </param>
         /// <returns>Created workflow handle.</returns>
         WorkflowHandle GetWorkflowHandle(
-            string id, string? runID = null, string? firstExecutionRunID = null);
+            string id, string? runId = null, string? firstExecutionRunId = null);
 
         /// <summary>
         /// Get a workflow handle for an existing workflow with known type.
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="id">ID of the workflow.</param>
-        /// <param name="runID">Run ID of the workflow or null for latest.</param>
-        /// <param name="firstExecutionRunID">
+        /// <param name="runId">Run ID of the workflow or null for latest.</param>
+        /// <param name="firstExecutionRunId">
         /// Optional first execution ID used for cancellation and termination.
         /// </param>
         /// <returns>Created workflow handle.</returns>
         WorkflowHandle<TWorkflow> GetWorkflowHandle<TWorkflow>(
-            string id, string? runID = null, string? firstExecutionRunID = null);
+            string id, string? runId = null, string? firstExecutionRunId = null);
 
         /// <summary>
         /// Get a workflow handle for an existing workflow with known type and return type.
@@ -84,13 +84,13 @@ namespace Temporalio.Client
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TResult">Result type of the workflow.</typeparam>
         /// <param name="id">ID of the workflow.</param>
-        /// <param name="runID">Run ID of the workflow or null for latest.</param>
-        /// <param name="firstExecutionRunID">
+        /// <param name="runId">Run ID of the workflow or null for latest.</param>
+        /// <param name="firstExecutionRunId">
         /// Optional first execution ID used for cancellation and termination.
         /// </param>
         /// <returns>Created workflow handle.</returns>
         WorkflowHandle<TWorkflow, TResult> GetWorkflowHandle<TWorkflow, TResult>(
-            string id, string? runID = null, string? firstExecutionRunID = null);
+            string id, string? runId = null, string? firstExecutionRunId = null);
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>

@@ -63,9 +63,9 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Push history to the replayer.
         /// </summary>
-        /// <param name="workflowID">ID of the workflow.</param>
+        /// <param name="workflowId">ID of the workflow.</param>
         /// <param name="history">History proto for the workflow.</param>
-        public void PushHistory(string workflowID, History history)
+        public void PushHistory(string workflowId, History history)
         {
             using (var scope = new Scope())
             {
@@ -74,7 +74,7 @@ namespace Temporalio.Bridge
                     Interop.Methods.worker_replay_push(
                         Worker.Ptr,
                         Ptr,
-                        scope.ByteArray(workflowID),
+                        scope.ByteArray(workflowId),
                         scope.ByteArray(history.ToByteArray()));
                 }
             }

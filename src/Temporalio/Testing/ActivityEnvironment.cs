@@ -20,7 +20,7 @@ namespace Temporalio.Testing
         /// Default activity info.
         /// </summary>
         public static readonly ActivityInfo DefaultInfo = new(
-            ActivityID: "test",
+            ActivityId: "test",
             ActivityType: "unknown",
             Attempt: 1,
             CurrentAttemptScheduledTime: new(1970, 1, 1, 1, 1, 1, DateTimeKind.Utc),
@@ -34,9 +34,9 @@ namespace Temporalio.Testing
             StartedTime: new(1970, 1, 1, 1, 1, 1, DateTimeKind.Utc),
             TaskQueue: "test",
             TaskToken: System.Text.Encoding.ASCII.GetBytes("test"),
-            WorkflowID: "test",
+            WorkflowId: "test",
             WorkflowNamespace: "default",
-            WorkflowRunID: "test-run",
+            WorkflowRunId: "test-run",
             WorkflowType: "test");
 
         /// <summary>

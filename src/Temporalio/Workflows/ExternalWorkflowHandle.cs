@@ -15,12 +15,12 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets the ID of the external workflow.
         /// </summary>
-        public abstract string ID { get; }
+        public abstract string Id { get; }
 
         /// <summary>
         /// Gets the initial run ID of the child workflow.
         /// </summary>
-        public abstract string? RunID { get; }
+        public abstract string? RunId { get; }
 
         /// <summary>
         /// Signal an external workflow via a lambda call to a WorkflowSignal attributed method.

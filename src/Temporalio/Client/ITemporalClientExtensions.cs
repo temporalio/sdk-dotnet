@@ -153,7 +153,7 @@ namespace Temporalio.Client
             await foreach (var exec in client.ListWorkflowsAsync(query, listOptions))
             {
                 yield return await client.GetWorkflowHandle(
-                    exec.ID, exec.RunID).FetchHistoryAsync(historyFetchOptions).ConfigureAwait(false);
+                    exec.Id, exec.RunId).FetchHistoryAsync(historyFetchOptions).ConfigureAwait(false);
             }
         }
 #endif

@@ -261,15 +261,15 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Request workflow eviction.
         /// </summary>
-        /// <param name="runID">Run ID of the workflow to evict.</param>
-        public void RequestWorkflowEviction(string runID)
+        /// <param name="runId">Run ID of the workflow to evict.</param>
+        public void RequestWorkflowEviction(string runId)
         {
             using (var scope = new Scope())
             {
                 unsafe
                 {
                     Interop.Methods.worker_request_workflow_eviction(
-                        Ptr, scope.ByteArray(runID));
+                        Ptr, scope.ByteArray(runId));
                 }
             }
         }

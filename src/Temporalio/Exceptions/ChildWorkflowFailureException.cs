@@ -36,13 +36,13 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Gets the ID of the failed child workflow.
         /// </summary>
-        public string WorkflowID =>
+        public string WorkflowId =>
             Failure!.ChildWorkflowExecutionFailureInfo.WorkflowExecution.WorkflowId;
 
         /// <summary>
         /// Gets the run ID of the failed child workflow.
         /// </summary>
-        public string RunID => Failure!.ChildWorkflowExecutionFailureInfo.WorkflowExecution.RunId;
+        public string RunId => Failure!.ChildWorkflowExecutionFailureInfo.WorkflowExecution.RunId;
 
         /// <summary>
         /// Gets the child workflow name or "type" that failed.

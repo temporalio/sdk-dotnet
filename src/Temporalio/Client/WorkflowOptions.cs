@@ -6,7 +6,7 @@ using Temporalio.Common;
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Options for starting a workflow. <see cref="ID" /> and <see cref="TaskQueue" /> are
+    /// Options for starting a workflow. <see cref="Id" /> and <see cref="TaskQueue" /> are
     /// required.
     /// </summary>
     public class WorkflowOptions : ICloneable
@@ -25,14 +25,14 @@ namespace Temporalio.Client
         /// <param name="taskQueue">Task queue to start workflow on.</param>
         public WorkflowOptions(string id, string taskQueue)
         {
-            ID = id;
+            Id = id;
             TaskQueue = taskQueue;
         }
 
         /// <summary>
         /// Gets or sets the unique workflow identifier. This is required.
         /// </summary>
-        public string? ID { get; set; }
+        public string? Id { get; set; }
 
         /// <summary>
         /// Gets or sets the task queue to run the workflow on. This is required.
@@ -58,7 +58,7 @@ namespace Temporalio.Client
         /// Gets or sets how already-existing IDs are treated. Default is
         /// <see cref="WorkflowIdReusePolicy.AllowDuplicate" />.
         /// </summary>
-        public WorkflowIdReusePolicy IDReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
+        public WorkflowIdReusePolicy IdReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
 
         /// <summary>
         /// Gets or sets the retry policy for the workflow. If unset, workflow never retries.

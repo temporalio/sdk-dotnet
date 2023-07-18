@@ -78,15 +78,15 @@ public class WorkerVersioningTests : WorkflowEnvironmentTestBase
                         await handle2.GetResultAsync();
 
                         // Confirm task completion events have correct IDs
-                        await ConfirmTaskCompletionBuildIDs(handle, "1.0");
-                        await ConfirmTaskCompletionBuildIDs(handle2, "2.0");
+                        await ConfirmTaskCompletionBuildIds(handle, "1.0");
+                        await ConfirmTaskCompletionBuildIds(handle2, "2.0");
                     },
-                    new(taskQueue: taskQueue) { BuildID = "2.0", UseWorkerVersioning = true });
+                    new(taskQueue: taskQueue) { BuildId = "2.0", UseWorkerVersioning = true });
             },
-            new() { BuildID = "1.0", UseWorkerVersioning = true });
+            new() { BuildId = "1.0", UseWorkerVersioning = true });
     }
 
-    private static async Task ConfirmTaskCompletionBuildIDs(WorkflowHandle handle, string expectedBuildId)
+    private static async Task ConfirmTaskCompletionBuildIds(WorkflowHandle handle, string expectedBuildId)
     {
         await foreach (var evt in handle.FetchHistoryEventsAsync())
         {

@@ -164,7 +164,7 @@ namespace Temporalio.Worker
             // Create info
             var start = tsk.Start;
             var info = new ActivityInfo(
-                ActivityID: start.ActivityId,
+                ActivityId: start.ActivityId,
                 ActivityType: start.ActivityType,
                 Attempt: (int)start.Attempt,
                 CurrentAttemptScheduledTime: start.CurrentAttemptScheduledTime.ToDateTime(),
@@ -178,9 +178,9 @@ namespace Temporalio.Worker
                 StartedTime: start.StartedTime.ToDateTime(),
                 TaskQueue: worker.Options.TaskQueue!,
                 TaskToken: tsk.TaskToken.ToByteArray(),
-                WorkflowID: start.WorkflowExecution.WorkflowId,
+                WorkflowId: start.WorkflowExecution.WorkflowId,
                 WorkflowNamespace: start.WorkflowNamespace,
-                WorkflowRunID: start.WorkflowExecution.RunId,
+                WorkflowRunId: start.WorkflowExecution.RunId,
                 WorkflowType: start.WorkflowType);
             // Create context
             var cancelTokenSource = new CancellationTokenSource();

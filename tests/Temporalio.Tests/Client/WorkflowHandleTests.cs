@@ -175,9 +175,9 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
         var temp = desc.CloseTime!.Value;
         Assert.InRange(desc.CloseTime!.Value, beforeNow, afterNow);
         Assert.InRange(desc.ExecutionTime!.Value, beforeNow, afterNow);
-        Assert.Null(desc.ParentID);
-        Assert.Null(desc.ParentRunID);
-        Assert.Equal(handle.FirstExecutionRunID, desc.RunID);
+        Assert.Null(desc.ParentId);
+        Assert.Null(desc.ParentRunId);
+        Assert.Equal(handle.FirstExecutionRunId, desc.RunId);
         Assert.InRange(desc.StartTime, beforeNow, afterNow);
         Assert.Equal(WorkflowExecutionStatus.Completed, desc.Status);
         Assert.Equal(Env.KitchenSinkWorkerTaskQueue, desc.TaskQueue);

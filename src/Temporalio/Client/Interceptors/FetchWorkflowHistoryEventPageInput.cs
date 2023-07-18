@@ -5,8 +5,8 @@ namespace Temporalio.Client.Interceptors
     /// <summary>
     /// Input for <see cref="ClientOutboundInterceptor.FetchWorkflowHistoryEventPageAsync" />.
     /// </summary>
-    /// <param name="ID">ID of the workflow.</param>
-    /// <param name="RunID">Optional run ID of the workflow.</param>
+    /// <param name="Id">ID of the workflow.</param>
+    /// <param name="RunId">Optional run ID of the workflow.</param>
     /// <param name="PageSize">Optional page size.</param>
     /// <param name="NextPageToken">Next page token if any to continue pagination.</param>
     /// <param name="WaitNewEvent">If true, wait for new events before returning.</param>
@@ -18,8 +18,8 @@ namespace Temporalio.Client.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record FetchWorkflowHistoryEventPageInput(
-        string ID,
-        string? RunID,
+        string Id,
+        string? RunId,
         int? PageSize,
         byte[]? NextPageToken,
         bool WaitNewEvent,

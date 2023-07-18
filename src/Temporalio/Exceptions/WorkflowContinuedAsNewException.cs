@@ -8,14 +8,14 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowContinuedAsNewException"/> class.
         /// </summary>
-        /// <param name="newRunID">New run ID.</param>
-        public WorkflowContinuedAsNewException(string newRunID)
+        /// <param name="newRunId">New run ID.</param>
+        public WorkflowContinuedAsNewException(string newRunId)
             : base("Workflow continued as new") =>
-            NewRunID = newRunID;
+            NewRunId = newRunId;
 
         /// <summary>
         /// Gets the run ID of the new run.
         /// </summary>
-        public string NewRunID { get; private init; }
+        public string NewRunId { get; private init; }
     }
 }

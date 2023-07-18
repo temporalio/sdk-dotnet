@@ -15,7 +15,7 @@ namespace Temporalio.Workflows
         /// Gets or sets the workflow ID. If unset, default will be a deterministic-random
         /// identifier.
         /// </summary>
-        public string? ID { get; set; }
+        public string? Id { get; set; }
 
         /// <summary>
         /// Gets or sets the task queue. If unset, default will be the parent workflow task queue.
@@ -64,7 +64,7 @@ namespace Temporalio.Workflows
         /// Gets or sets how already-existing IDs are treated. Default is
         /// <see cref="WorkflowIdReusePolicy.AllowDuplicate" />.
         /// </summary>
-        public WorkflowIdReusePolicy IDReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
+        public WorkflowIdReusePolicy IdReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
 
         /// <summary>
         /// Gets or sets the cron schedule for the workflow.

@@ -7,7 +7,7 @@ namespace Temporalio.Client.Interceptors
     /// <summary>
     /// Input for <see cref="ClientOutboundInterceptor.UpdateScheduleAsync" />.
     /// </summary>
-    /// <param name="ID">Schedule ID.</param>
+    /// <param name="Id">Schedule ID.</param>
     /// <param name="Updater">Updater.</param>
     /// <param name="RpcOptions">RPC options.</param>
     /// <remarks>
@@ -15,7 +15,7 @@ namespace Temporalio.Client.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record UpdateScheduleInput(
-        string ID,
+        string Id,
         Func<ScheduleUpdateInput, Task<ScheduleUpdate?>> Updater,
         RpcOptions? RpcOptions);
 }

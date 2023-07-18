@@ -8,10 +8,10 @@ namespace Temporalio.Client.Schedules
     /// Handle for interacting with a schedule.
     /// </summary>
     /// <param name="Client">Client used for schedule handle calls.</param>
-    /// <param name="ID">Schedule ID.</param>
+    /// <param name="Id">Schedule ID.</param>
     public record ScheduleHandle(
         ITemporalClient Client,
-        string ID)
+        string Id)
     {
         /// <summary>
         /// Backfill this schedule by going through the specified time periods as if they passed
@@ -28,7 +28,7 @@ namespace Temporalio.Client.Schedules
                 throw new ArgumentException("At least one backfill required");
             }
             return Client.OutboundInterceptor.BackfillScheduleAsync(new(
-                ID: ID, Backfills: backfills, RpcOptions: rpcOptions));
+                Id: Id, Backfills: backfills, RpcOptions: rpcOptions));
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Temporalio.Client.Schedules
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Task for completion.</returns>
         public Task DeleteAsync(RpcOptions? rpcOptions = null) =>
-            Client.OutboundInterceptor.DeleteScheduleAsync(new(ID: ID, RpcOptions: rpcOptions));
+            Client.OutboundInterceptor.DeleteScheduleAsync(new(Id: Id, RpcOptions: rpcOptions));
 
         /// <summary>
         /// Fetch this schedule's description.
@@ -45,7 +45,7 @@ namespace Temporalio.Client.Schedules
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Schedule description.</returns>
         public Task<ScheduleDescription> DescribeAsync(RpcOptions? rpcOptions = null) =>
-            Client.OutboundInterceptor.DescribeScheduleAsync(new(ID: ID, RpcOptions: rpcOptions));
+            Client.OutboundInterceptor.DescribeScheduleAsync(new(Id: Id, RpcOptions: rpcOptions));
 
         /// <summary>
         /// Pause this schedule.
@@ -55,7 +55,7 @@ namespace Temporalio.Client.Schedules
         /// <returns>Task for completion.</returns>
         public Task PauseAsync(string? note = null, RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.PauseScheduleAsync(
-                new(ID: ID, Note: note, RpcOptions: rpcOptions));
+                new(Id: Id, Note: note, RpcOptions: rpcOptions));
 
         /// <summary>
         /// Trigger an action on this schedule to happen immediately.
@@ -63,7 +63,7 @@ namespace Temporalio.Client.Schedules
         /// <param name="options">Options for triggering.</param>
         /// <returns>Task for completion.</returns>
         public Task TriggerAsync(ScheduleTriggerOptions? options = null) =>
-            Client.OutboundInterceptor.TriggerScheduleAsync(new(ID: ID, Options: options));
+            Client.OutboundInterceptor.TriggerScheduleAsync(new(Id: Id, Options: options));
 
         /// <summary>
         /// Unpause this schedule.
@@ -73,7 +73,7 @@ namespace Temporalio.Client.Schedules
         /// <returns>Task for completion.</returns>
         public Task UnpauseAsync(string? note = null, RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.UnpauseScheduleAsync(
-                new(ID: ID, Note: note, RpcOptions: rpcOptions));
+                new(Id: Id, Note: note, RpcOptions: rpcOptions));
 
         /// <summary>
         /// Update this schedule. This is done via a callback which can be called multiple times in
@@ -102,6 +102,6 @@ namespace Temporalio.Client.Schedules
             Func<ScheduleUpdateInput, Task<ScheduleUpdate?>> updater,
             RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.UpdateScheduleAsync(
-                new(ID: ID, Updater: updater, RpcOptions: rpcOptions));
+                new(Id: Id, Updater: updater, RpcOptions: rpcOptions));
     }
 }

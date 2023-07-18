@@ -64,20 +64,20 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             });
 
         // Check activities
-        var workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID) };
+        var workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
         var workflowRunTags = workflowTags.Append(
-            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunID!)).ToArray();
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
         var workflowChildRunTags = new[]
         {
-            ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID + "_child"),
-            ActivityAssertion.TagNotEqual("temporalRunID", handle.ResultRunID!),
+            ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id + "_child"),
+            ActivityAssertion.TagNotEqual("temporalRunID", handle.ResultRunId!),
         };
         var activityRunTags = workflowRunTags.Append(
             ActivityAssertion.TagEqual("temporalActivityID", "1")).ToArray();
         var activityChildRunTags = workflowChildRunTags.Append(
             ActivityAssertion.TagEqual("temporalActivityID", "1")).ToArray();
         var workflowContinueRunTags = workflowTags.Append(
-            ActivityAssertion.TagNotEqual("temporalRunID", handle.ResultRunID!)).ToArray();
+            ActivityAssertion.TagNotEqual("temporalRunID", handle.ResultRunId!)).ToArray();
         var activityContinueRunTags = workflowContinueRunTags.Append(
             ActivityAssertion.TagEqual("temporalActivityID", "1")).ToArray();
         AssertActivities(
@@ -220,9 +220,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         // Simple workflow task failure
         var (handle, activities) = await ExecuteTracingWorkflowAsync(
             new(new TracingWorkflowAction[] { new(FailOnNonReplay: "fail1") }));
-        var workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID) };
+        var workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
         var workflowRunTags = workflowTags.Append(
-            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunID!)).ToArray();
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
         AssertActivities(
             activities,
             // Client start
@@ -259,15 +259,15 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 Param: new(Array.Empty<TracingWorkflowAction>()),
                 FailOnNonReplayBeforeComplete: "fail4")),
         }));
-        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID) };
+        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
         workflowRunTags = workflowTags.Append(
-            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunID!)).ToArray();
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
         var activityRunTags = workflowRunTags.Append(
             ActivityAssertion.TagEqual("temporalActivityID", "1")).ToArray();
         var workflowChildRunTags = new[]
         {
-            ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID + "_child"),
-            ActivityAssertion.TagNotEqual("temporalRunID", handle.ResultRunID!),
+            ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id + "_child"),
+            ActivityAssertion.TagNotEqual("temporalRunID", handle.ResultRunId!),
         };
         AssertActivities(
             activities,
@@ -343,9 +343,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         var (handle, activities) = await ExecuteTracingWorkflowAsync(
             new(new TracingWorkflowAction[] { new(AppFail: "fail1") }),
             expectFail: true);
-        var workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID) };
+        var workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
         var workflowRunTags = workflowTags.Append(
-            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunID!)).ToArray();
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
         AssertActivities(
             activities,
             // Client start
@@ -370,9 +370,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             new(new TracingWorkflowAction[] { new(WaitUntilSignalCount: 1) }),
             afterStart: handle => handle.SignalAsync(wf => wf.SignalFailureAsync("fail2")),
             expectFail: true);
-        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID) };
+        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
         workflowRunTags = workflowTags.Append(
-            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunID!)).ToArray();
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
         AssertActivities(
             activities,
             // Client start
@@ -410,9 +410,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             new(Array.Empty<TracingWorkflowAction>()),
             afterStart: handle => Assert.ThrowsAsync<WorkflowQueryFailedException>(() =>
                 handle.QueryAsync(wf => wf.QueryFailure("fail3"))));
-        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.ID) };
+        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
         workflowRunTags = workflowTags.Append(
-            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunID!)).ToArray();
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
         AssertActivities(
             activities,
             // Client start
@@ -455,9 +455,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
 
     private static IEnumerable<string> DumpActivities(
         IReadOnlyCollection<Activity> activities,
-        ActivitySpanId ParentID = default,
+        ActivitySpanId ParentId = default,
         int IndentDepth = 0) =>
-        activities.Where(a => a.ParentSpanId == ParentID).SelectMany(activity =>
+        activities.Where(a => a.ParentSpanId == ParentId).SelectMany(activity =>
             Enumerable.Concat(
                 new[] { DumpActivity(activity, IndentDepth) },
                 DumpActivities(activities, activity.SpanId, IndentDepth + 1)));
@@ -604,7 +604,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 {
                     var handle = await Workflow.StartChildWorkflowAsync(
                         (TracingWorkflow wf) => wf.RunAsync(action.ChildWorkflow.Param),
-                        new() { ID = Workflow.Info.WorkflowID + action.ChildWorkflow.IDSuffix });
+                        new() { Id = Workflow.Info.WorkflowId + action.ChildWorkflow.IdSuffix });
                     if (action.ChildWorkflow.FailOnNonReplayBeforeComplete != null)
                     {
                         await RaiseOnNonReplayAsync(action.ChildWorkflow.FailOnNonReplayBeforeComplete);
@@ -615,7 +615,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                     }
                     if (action.ChildWorkflow.ExternalSignal)
                     {
-                        var externalHandle = Workflow.GetExternalWorkflowHandle<TracingWorkflow>(handle.ID);
+                        var externalHandle = Workflow.GetExternalWorkflowHandle<TracingWorkflow>(handle.Id);
                         await externalHandle.SignalAsync(wf => wf.Signal2Async());
                     }
                     await handle.GetResultAsync();
@@ -741,7 +741,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
 
     public record TracingWorkflowActionChildWorkflow(
         TracingWorkflowParam Param,
-        string IDSuffix = "_child",
+        string IdSuffix = "_child",
         bool Signal = false,
         bool ExternalSignal = false,
         string? FailOnNonReplayBeforeComplete = null);

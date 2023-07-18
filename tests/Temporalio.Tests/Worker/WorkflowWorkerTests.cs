@@ -341,13 +341,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var result = await handle.GetResultAsync();
             Assert.Equal(1, result.Attempt);
-            Assert.Null(result.ContinuedRunID);
+            Assert.Null(result.ContinuedRunId);
             Assert.Null(result.CronSchedule);
             Assert.Null(result.ExecutionTimeout);
             Assert.Equal(worker.Client.Options.Namespace, result.Namespace);
             Assert.Null(result.Parent);
             Assert.Null(result.RetryPolicy);
-            Assert.Equal(handle.ResultRunID, result.RunID);
+            Assert.Equal(handle.ResultRunId, result.RunId);
             Assert.Null(result.RunTimeout);
             Assert.InRange(
                 result.StartTime,
@@ -356,7 +356,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Equal(worker.Options.TaskQueue, result.TaskQueue);
             // TODO(cretz): Can assume default 10 in all test servers?
             Assert.Equal(TimeSpan.FromSeconds(10), result.TaskTimeout);
-            Assert.Equal(handle.ID, result.WorkflowID);
+            Assert.Equal(handle.Id, result.WorkflowId);
             Assert.Equal("InfoWorkflow", result.WorkflowType);
         });
     }
@@ -1027,7 +1027,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteWorkflowAsync_MiscHelpers_Succeed()
     {
         // Run one worker doing test
-        var workflowID = string.Empty;
+        var workflowId = string.Empty;
         var taskQueue = string.Empty;
         var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
         await ExecuteWorkerAsync<MiscHelpersWorkflow>(
@@ -1037,7 +1037,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Env.Client.StartWorkflowAsync(
                     (MiscHelpersWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                workflowID = handle.ID;
+                workflowId = handle.Id;
                 taskQueue = worker.Options.TaskQueue!;
                 Assert.InRange(
                     await handle.QueryAsync(wf => wf.CurrentTime()),
@@ -1070,7 +1070,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Now query after close to check that is replaying worked
                 var isReplayingValues = await Env.Client.GetWorkflowHandle<MiscHelpersWorkflow>(
-                    workflowID).QueryAsync(wf => wf.GetEventsForIsReplaying());
+                    workflowId).QueryAsync(wf => wf.GetEventsForIsReplaying());
                 Assert.Equal(new[] { false, true }, isReplayingValues);
             },
             new(taskQueue: taskQueue));
@@ -1372,31 +1372,31 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public class ContinueAsNewWorkflow
     {
         [WorkflowRun]
-        public async Task<IList<string>> RunAsync(IList<string> pastRunIDs)
+        public async Task<IList<string>> RunAsync(IList<string> pastRunIds)
         {
             // Check memo and retry policy
             Assert.Equal(
-                pastRunIDs.Count,
-                Workflow.PayloadConverter.ToValue<int>(Workflow.Memo["PastRunIDCount"]));
-            Assert.Equal(pastRunIDs.Count + 1000, Workflow.Info.RetryPolicy?.MaximumAttempts);
+                pastRunIds.Count,
+                Workflow.PayloadConverter.ToValue<int>(Workflow.Memo["PastRunIdCount"]));
+            Assert.Equal(pastRunIds.Count + 1000, Workflow.Info.RetryPolicy?.MaximumAttempts);
 
-            if (pastRunIDs.Count == 5)
+            if (pastRunIds.Count == 5)
             {
-                return pastRunIDs;
+                return pastRunIds;
             }
-            if (Workflow.Info.ContinuedRunID is string contRunID)
+            if (Workflow.Info.ContinuedRunId is string contRunId)
             {
-                pastRunIDs.Add(contRunID);
+                pastRunIds.Add(contRunId);
             }
             throw Workflow.CreateContinueAsNewException(
-                (ContinueAsNewWorkflow wf) => wf.RunAsync(pastRunIDs),
+                (ContinueAsNewWorkflow wf) => wf.RunAsync(pastRunIds),
                 new()
                 {
                     Memo = new Dictionary<string, object>
                     {
-                        ["PastRunIDCount"] = pastRunIDs.Count,
+                        ["PastRunIdCount"] = pastRunIds.Count,
                     },
-                    RetryPolicy = new() { MaximumAttempts = pastRunIDs.Count + 1000 },
+                    RetryPolicy = new() { MaximumAttempts = pastRunIds.Count + 1000 },
                 });
         }
     }
@@ -1410,12 +1410,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (ContinueAsNewWorkflow wf) => wf.RunAsync(new List<string>()),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                 {
-                    Memo = new Dictionary<string, object> { ["PastRunIDCount"] = 0 },
+                    Memo = new Dictionary<string, object> { ["PastRunIdCount"] = 0 },
                     RetryPolicy = new() { MaximumAttempts = 1000 },
                 });
             var result = await handle.GetResultAsync();
             Assert.Equal(5, result.Count);
-            Assert.Equal(handle.FirstExecutionRunID, result[0]);
+            Assert.Equal(handle.FirstExecutionRunId, result[0]);
         });
     }
 
@@ -2115,7 +2115,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
 
         [WorkflowQuery]
-        public string? ChildID() => child?.ID;
+        public string? ChildId() => child?.Id;
     }
 
     [Fact]
@@ -2128,18 +2128,18 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Env.Client.StartWorkflowAsync(
                     (SignalChildWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                var childID = await AssertMore.EventuallyAsync(async () =>
+                var childId = await AssertMore.EventuallyAsync(async () =>
                 {
-                    var childID = await handle.QueryAsync(wf => wf.ChildID());
-                    Assert.NotNull(childID);
-                    return childID!;
+                    var childId = await handle.QueryAsync(wf => wf.ChildId());
+                    Assert.NotNull(childId);
+                    return childId!;
                 });
 
                 // Signal and wait for signal received
                 await handle.SignalAsync(wf => wf.SignalChildAsync("some value"));
                 await AssertMore.EqualEventuallyAsync(
                     "some value",
-                    () => Env.Client.GetWorkflowHandle<SignalChildWorkflow.ChildWorkflow>(childID).
+                    () => Env.Client.GetWorkflowHandle<SignalChildWorkflow.ChildWorkflow>(childId).
                         QueryAsync(wf => wf.LastSignal()));
             },
             new TemporalWorkerOptions().AddWorkflow<SignalChildWorkflow.ChildWorkflow>());
@@ -2162,7 +2162,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             var handle = await Workflow.StartChildWorkflowAsync(
                 (ChildWorkflow wf) => wf.RunAsync());
             await Workflow.StartChildWorkflowAsync(
-                (ChildWorkflow wf) => wf.RunAsync(), new() { ID = handle.ID });
+                (ChildWorkflow wf) => wf.RunAsync(), new() { Id = handle.Id });
         }
     }
 
@@ -2205,13 +2205,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
 
         [WorkflowSignal]
-        public Task SignalExternalAsync(string otherID) =>
-            Workflow.GetExternalWorkflowHandle<OtherWorkflow>(otherID).SignalAsync(
+        public Task SignalExternalAsync(string otherId) =>
+            Workflow.GetExternalWorkflowHandle<OtherWorkflow>(otherId).SignalAsync(
                 wf => wf.SignalAsync("external signal"));
 
         [WorkflowSignal]
-        public Task CancelExternalAsync(string otherID) =>
-            Workflow.GetExternalWorkflowHandle(otherID).CancelAsync();
+        public Task CancelExternalAsync(string otherId) =>
+            Workflow.GetExternalWorkflowHandle(otherId).CancelAsync();
     }
 
     [Fact]
@@ -2233,13 +2233,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await AssertStartedEventuallyAsync(handle);
 
                 // Send a signal and confirm received
-                await handle.SignalAsync(wf => wf.SignalExternalAsync(otherHandle.ID));
+                await handle.SignalAsync(wf => wf.SignalExternalAsync(otherHandle.Id));
                 await AssertMore.EqualEventuallyAsync(
                     "external signal",
                     () => otherHandle.QueryAsync(wf => wf.LastSignal()));
 
                 // Cancel and confirm cancelled
-                await handle.SignalAsync(wf => wf.CancelExternalAsync(otherHandle.ID));
+                await handle.SignalAsync(wf => wf.CancelExternalAsync(otherHandle.Id));
                 await AssertMore.EventuallyAsync(async () =>
                 {
                     var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
@@ -2440,49 +2440,49 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Env.Client.GetWorkflowHandle<PatchWorkflowBase>(id).QueryAsync(wf => wf.GetResult());
 
         // Run pre-patch workflow
-        var prePatchID = $"workflow-{Guid.NewGuid()}";
+        var prePatchId = $"workflow-{Guid.NewGuid()}";
         await ExecuteWorkerAsync<PatchWorkflowBase.PrePatchWorkflow>(
             async worker =>
             {
-                Assert.Equal("pre-patch", await ExecuteWorkflowAsync(prePatchID));
+                Assert.Equal("pre-patch", await ExecuteWorkflowAsync(prePatchId));
             },
             workerOptions);
 
         // Patch workflow and confirm pre-patch and patched work
-        var patchedID = $"workflow-{Guid.NewGuid()}";
+        var patchedId = $"workflow-{Guid.NewGuid()}";
         await ExecuteWorkerAsync<PatchWorkflowBase.PatchWorkflow>(
             async worker =>
             {
-                Assert.Equal("post-patch", await ExecuteWorkflowAsync(patchedID));
-                Assert.Equal("pre-patch", await QueryWorkflowAsync(prePatchID));
+                Assert.Equal("post-patch", await ExecuteWorkflowAsync(patchedId));
+                Assert.Equal("pre-patch", await QueryWorkflowAsync(prePatchId));
             },
             workerOptions);
 
         // Deprecate patch and confirm patched and deprecated work, but not pre-patch
-        var deprecatePatchID = $"workflow-{Guid.NewGuid()}";
+        var deprecatePatchId = $"workflow-{Guid.NewGuid()}";
         await ExecuteWorkerAsync<PatchWorkflowBase.DeprecatePatchWorkflow>(
             async worker =>
             {
-                Assert.Equal("post-patch", await ExecuteWorkflowAsync(deprecatePatchID));
-                Assert.Equal("post-patch", await QueryWorkflowAsync(patchedID));
+                Assert.Equal("post-patch", await ExecuteWorkflowAsync(deprecatePatchId));
+                Assert.Equal("post-patch", await QueryWorkflowAsync(patchedId));
                 var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                    () => QueryWorkflowAsync(prePatchID));
+                    () => QueryWorkflowAsync(prePatchId));
                 Assert.Contains("Nondeterminism", exc.Message);
             },
             workerOptions);
 
         // Remove patch and confirm post patch and deprecated work, but not pre-patch or patched
-        var postPatchPatchID = $"workflow-{Guid.NewGuid()}";
+        var postPatchPatchId = $"workflow-{Guid.NewGuid()}";
         await ExecuteWorkerAsync<PatchWorkflowBase.PostPatchWorkflow>(
             async worker =>
             {
-                Assert.Equal("post-patch", await ExecuteWorkflowAsync(postPatchPatchID));
-                Assert.Equal("post-patch", await QueryWorkflowAsync(deprecatePatchID));
+                Assert.Equal("post-patch", await ExecuteWorkflowAsync(postPatchPatchId));
+                Assert.Equal("post-patch", await QueryWorkflowAsync(deprecatePatchId));
                 var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                    () => QueryWorkflowAsync(prePatchID));
+                    () => QueryWorkflowAsync(prePatchId));
                 Assert.Contains("Nondeterminism", exc.Message);
                 exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                    () => QueryWorkflowAsync(patchedID));
+                    () => QueryWorkflowAsync(patchedId));
                 Assert.Contains("Nondeterminism", exc.Message);
             },
             workerOptions);
@@ -2521,7 +2521,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Workflow.StartChildWorkflowAsync(
                     (HeadersWithCodecWorkflow wf) => wf.RunAsync(Kind.Child));
                 await handle.SignalAsync(wf => wf.SignalAsync(false));
-                await Workflow.GetExternalWorkflowHandle<HeadersWithCodecWorkflow>(handle.ID).
+                await Workflow.GetExternalWorkflowHandle<HeadersWithCodecWorkflow>(handle.Id).
                     SignalAsync(wf => wf.SignalAsync(true));
                 await handle.GetResultAsync();
             }
@@ -2960,17 +2960,17 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     private static async Task AssertChildStartedEventuallyAsync(WorkflowHandle handle)
     {
         // Wait for started
-        string? childID = null;
+        string? childId = null;
         await AssertHasEventEventuallyAsync(
             handle,
             e =>
             {
-                childID = e.ChildWorkflowExecutionStartedEventAttributes?.WorkflowExecution?.WorkflowId;
-                return childID != null;
+                childId = e.ChildWorkflowExecutionStartedEventAttributes?.WorkflowExecution?.WorkflowId;
+                return childId != null;
             });
         // Check that a workflow task has completed proving child has really started
         await AssertHasEventEventuallyAsync(
-            handle.Client.GetWorkflowHandle(childID!),
+            handle.Client.GetWorkflowHandle(childId!),
             e => e.WorkflowTaskCompletedEventAttributes != null);
     }
 

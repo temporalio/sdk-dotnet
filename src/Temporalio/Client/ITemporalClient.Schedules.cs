@@ -12,7 +12,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Create a schedule and return its handle.
         /// </summary>
-        /// <param name="scheduleID">Unique ID for the schedule.</param>
+        /// <param name="scheduleId">Unique ID for the schedule.</param>
         /// <param name="schedule">Schedule to create.</param>
         /// <param name="options">Options for creating the schedule.</param>
         /// <returns>Handle to the created schedule.</returns>
@@ -21,14 +21,14 @@ namespace Temporalio.Client
         /// already exists.
         /// </remarks>
         Task<ScheduleHandle> CreateScheduleAsync(
-            string scheduleID, Schedule schedule, ScheduleOptions? options = null);
+            string scheduleId, Schedule schedule, ScheduleOptions? options = null);
 
         /// <summary>
         /// Gets the schedule handle for the given ID.
         /// </summary>
-        /// <param name="scheduleID">Schedule ID to get the handle for.</param>
+        /// <param name="scheduleId">Schedule ID to get the handle for.</param>
         /// <returns>Schedule handle.</returns>
-        ScheduleHandle GetScheduleHandle(string scheduleID);
+        ScheduleHandle GetScheduleHandle(string scheduleId);
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>

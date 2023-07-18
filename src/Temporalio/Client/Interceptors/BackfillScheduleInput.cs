@@ -6,7 +6,7 @@ namespace Temporalio.Client.Interceptors
     /// <summary>
     /// Input for <see cref="ClientOutboundInterceptor.BackfillScheduleAsync" />.
     /// </summary>
-    /// <param name="ID">Schedule ID.</param>
+    /// <param name="Id">Schedule ID.</param>
     /// <param name="Backfills">Backfills.</param>
     /// <param name="RpcOptions">RPC options.</param>
     /// <remarks>
@@ -14,7 +14,7 @@ namespace Temporalio.Client.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record BackfillScheduleInput(
-        string ID,
+        string Id,
         IReadOnlyCollection<ScheduleBackfill> Backfills,
         RpcOptions? RpcOptions);
 }

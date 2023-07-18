@@ -170,7 +170,7 @@ namespace Temporalio.Worker
                             DebugMode: options.DebugMode,
                             DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
                             WorkflowStackTrace: WorkflowStackTrace.None),
-                        (runID, removeFromCache) => SetResult(removeFromCache));
+                        (runId, removeFromCache) => SetResult(removeFromCache));
                 }
                 catch
                 {
@@ -229,7 +229,7 @@ namespace Temporalio.Worker
             {
                 lastHistory = history;
                 pendingResult = new();
-                bridgeReplayer.PushHistory(history.ID, new() { Events = { history.Events } });
+                bridgeReplayer.PushHistory(history.Id, new() { Events = { history.Events } });
                 return pendingResult.Task;
             }
 

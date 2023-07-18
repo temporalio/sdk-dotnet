@@ -60,10 +60,10 @@ namespace Temporalio.Testing
                 WorkflowHandle<TWorkflow, TResult> underlying)
                 : base(
                     Client: underlying.Client,
-                    ID: underlying.ID,
-                    RunID: underlying.RunID,
-                    ResultRunID: underlying.ResultRunID,
-                    FirstExecutionRunID: underlying.FirstExecutionRunID) => this.env = env;
+                    Id: underlying.Id,
+                    RunId: underlying.RunId,
+                    ResultRunId: underlying.ResultRunId,
+                    FirstExecutionRunId: underlying.FirstExecutionRunId) => this.env = env;
 
             /// <inheritdoc />
             public override Task<TLocalResult> GetResultAsync<TLocalResult>(
