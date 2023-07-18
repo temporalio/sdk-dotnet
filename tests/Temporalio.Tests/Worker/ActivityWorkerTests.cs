@@ -243,13 +243,13 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             gotCancellation = true;
             ActivityExecutionContext.Current.CancellationToken.ThrowIfCancellationRequested();
         }
-        var workflowID = string.Empty;
+        var workflowId = string.Empty;
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ExecuteActivityAsync(
             WaitUntilCancelledAsync,
             workerStoppingToken: workerStoppingSource.Token,
             afterStarted: async handle =>
             {
-                workflowID = handle.ID;
+                workflowId = handle.Id;
                 // Wait for activity to be reached, then stop the worker
                 await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
                 workerStoppingSource.Cancel();
@@ -257,7 +257,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Assert.True(gotCancellation);
         // Check the workflow error
         var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
-            () => Client.GetWorkflowHandle(workflowID).GetResultAsync());
+            () => Client.GetWorkflowHandle(workflowId).GetResultAsync());
         var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
         Assert.IsType<ApplicationFailureException>(actErr.InnerException);
     }

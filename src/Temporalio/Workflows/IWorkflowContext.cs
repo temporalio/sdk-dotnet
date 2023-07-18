@@ -127,19 +127,19 @@ namespace Temporalio.Workflows
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="id">Workflow ID.</param>
-        /// <param name="runID">Optional workflow run ID.</param>
+        /// <param name="runId">Optional workflow run ID.</param>
         /// <returns>External workflow handle.</returns>
         ExternalWorkflowHandle<TWorkflow> GetExternalWorkflowHandle<TWorkflow>(
-            string id, string? runID = null);
+            string id, string? runId = null);
 
         /// <summary>
         /// Backing call for <see cref="Workflow.Patched" /> and
         /// <see cref="Workflow.DeprecatePatch" />.
         /// </summary>
-        /// <param name="patchID">Patch ID.</param>
+        /// <param name="patchId">Patch ID.</param>
         /// <param name="deprecated">Whether to deprecate.</param>
         /// <returns>Whether patched.</returns>
-        bool Patch(string patchID, bool deprecated);
+        bool Patch(string patchId, bool deprecated);
 
         /// <summary>
         /// Backing call for

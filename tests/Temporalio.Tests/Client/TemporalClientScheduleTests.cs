@@ -80,7 +80,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
 
         // Describe it and check values
         var desc = await handle.DescribeAsync();
-        Assert.Equal(handle.ID, desc.ID);
+        Assert.Equal(handle.Id, desc.Id);
         var descAction = Assert.IsType<ScheduleActionStartWorkflow>(desc.Schedule.Action);
         Assert.Equal(action.Workflow, descAction.Workflow);
         var descParams = await Assert.IsType<EncodedRawValue>(descAction.Args.Single()).ToValueAsync<KSWorkflowParams>();
@@ -141,7 +141,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         Assert.NotEqual(expectedUpdateTime, desc.Info.LastUpdatedAt);
         // Try to create a duplicate
         await Assert.ThrowsAsync<ScheduleAlreadyRunningException>(
-            () => Client.CreateScheduleAsync(handle.ID, newSched));
+            () => Client.CreateScheduleAsync(handle.Id, newSched));
 
         // Confirm paused
         Assert.True(desc.Schedule.State.Paused);
@@ -179,26 +179,26 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         var exec = Assert.IsType<ScheduleActionExecutionStartWorkflow>(desc.Info.RecentActions.Single().Action);
         Assert.Equal(
             "some result",
-            await Client.GetWorkflowHandle(exec.WorkflowID, exec.FirstExecutionRunID).GetResultAsync<string>());
+            await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
 
         // Create 4 more schedules of the same type and confirm they are in the list eventually
-        var expectedIDs = new List<string>
+        var expectedIds = new List<string>
         {
-            handle.ID,
-            (await Client.CreateScheduleAsync($"{handle.ID}-1", newSched)).ID,
-            (await Client.CreateScheduleAsync($"{handle.ID}-2", newSched)).ID,
-            (await Client.CreateScheduleAsync($"{handle.ID}-3", newSched)).ID,
-            (await Client.CreateScheduleAsync($"{handle.ID}-4", newSched)).ID,
+            handle.Id,
+            (await Client.CreateScheduleAsync($"{handle.Id}-1", newSched)).Id,
+            (await Client.CreateScheduleAsync($"{handle.Id}-2", newSched)).Id,
+            (await Client.CreateScheduleAsync($"{handle.Id}-3", newSched)).Id,
+            (await Client.CreateScheduleAsync($"{handle.Id}-4", newSched)).Id,
         };
-        await AssertMore.EqualEventuallyAsync(expectedIDs, async () =>
+        await AssertMore.EqualEventuallyAsync(expectedIds, async () =>
         {
-            var actualIDs = new List<string>();
+            var actualIds = new List<string>();
             await foreach (var sched in Client.ListSchedulesAsync())
             {
-                actualIDs.Add(sched.ID);
+                actualIds.Add(sched.Id);
             }
-            actualIDs.Sort();
-            return actualIDs;
+            actualIds.Sort();
+            return actualIds;
         });
 
         // Delete when done
@@ -269,7 +269,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         var exec = Assert.IsType<ScheduleActionExecutionStartWorkflow>(desc.Info.RecentActions.Single().Action);
         Assert.Equal(
             "some result",
-            await Client.GetWorkflowHandle(exec.WorkflowID, exec.FirstExecutionRunID).GetResultAsync<string>());
+            await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
 
         // Delete when done
         await DeleteAllSchedulesAsync();
@@ -339,7 +339,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             {
                 try
                 {
-                    await Client.GetScheduleHandle(sched.ID).DeleteAsync();
+                    await Client.GetScheduleHandle(sched.Id).DeleteAsync();
                 }
                 catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
                 {

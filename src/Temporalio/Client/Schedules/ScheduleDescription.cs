@@ -25,7 +25,7 @@ namespace Temporalio.Client.Schedules
         internal ScheduleDescription(
             string id, DescribeScheduleResponse rawDescription, DataConverter dataConverter)
         {
-            ID = id;
+            Id = id;
             RawDescription = rawDescription;
             // Search attribute conversion is cheap so it doesn't need to lock on publication. But
             // memo conversion may use remote codec so it should only ever be created once lazily.
@@ -46,7 +46,7 @@ namespace Temporalio.Client.Schedules
         /// <summary>
         /// Gets the ID of the schedule.
         /// </summary>
-        public string ID { get; private init; }
+        public string Id { get; private init; }
 
         /// <summary>
         /// Gets information about the schedule.

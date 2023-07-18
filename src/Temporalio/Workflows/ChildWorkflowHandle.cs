@@ -15,12 +15,12 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets the ID of the child workflow.
         /// </summary>
-        public abstract string ID { get; }
+        public abstract string Id { get; }
 
         /// <summary>
         /// Gets the initial run ID of the child workflow.
         /// </summary>
-        public abstract string FirstExecutionRunID { get; }
+        public abstract string FirstExecutionRunId { get; }
 
         /// <summary>
         /// Wait for result of the child workflow, ignoring the return value.

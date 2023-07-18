@@ -16,9 +16,9 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public AsyncActivityHandle GetAsyncActivityHandle(
-            string workflowID, string runID, string activityID) =>
-            new(this, new AsyncActivityHandle.IDReference(
-                WorkflowID: workflowID, RunID: runID, ActivityID: activityID));
+            string workflowId, string runId, string activityId) =>
+            new(this, new AsyncActivityHandle.IdReference(
+                WorkflowId: workflowId, RunId: runId, ActivityId: activityId));
 
         internal partial class Impl
         {
@@ -37,16 +37,16 @@ namespace Temporalio.Client
                         },
                     };
                 }
-                if (input.Activity is AsyncActivityHandle.IDReference idRef)
+                if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
                     var resp = await Client.Connection.WorkflowService.RecordActivityTaskHeartbeatByIdAsync(
                         new()
                         {
                             Namespace = Client.Options.Namespace,
                             Identity = Client.Connection.Options.Identity,
-                            WorkflowId = idRef.WorkflowID,
-                            RunId = idRef.RunID ?? string.Empty,
-                            ActivityId = idRef.ActivityID,
+                            WorkflowId = idRef.WorkflowId,
+                            RunId = idRef.RunId ?? string.Empty,
+                            ActivityId = idRef.ActivityId,
                             Details = details,
                         },
                         DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
@@ -82,16 +82,16 @@ namespace Temporalio.Client
             {
                 var result = await Client.Options.DataConverter.ToPayloadAsync(
                     input.Result).ConfigureAwait(false);
-                if (input.Activity is AsyncActivityHandle.IDReference idRef)
+                if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
                     await Client.Connection.WorkflowService.RespondActivityTaskCompletedByIdAsync(
                         new()
                         {
                             Namespace = Client.Options.Namespace,
                             Identity = Client.Connection.Options.Identity,
-                            WorkflowId = idRef.WorkflowID,
-                            RunId = idRef.RunID ?? string.Empty,
-                            ActivityId = idRef.ActivityID,
+                            WorkflowId = idRef.WorkflowId,
+                            RunId = idRef.RunId ?? string.Empty,
+                            ActivityId = idRef.ActivityId,
                             Result = new() { Payloads_ = { { result } } },
                         },
                         DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
@@ -132,16 +132,16 @@ namespace Temporalio.Client
                         },
                     };
                 }
-                if (input.Activity is AsyncActivityHandle.IDReference idRef)
+                if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
                     await Client.Connection.WorkflowService.RespondActivityTaskFailedByIdAsync(
                         new()
                         {
                             Namespace = Client.Options.Namespace,
                             Identity = Client.Connection.Options.Identity,
-                            WorkflowId = idRef.WorkflowID,
-                            RunId = idRef.RunID ?? string.Empty,
-                            ActivityId = idRef.ActivityID,
+                            WorkflowId = idRef.WorkflowId,
+                            RunId = idRef.RunId ?? string.Empty,
+                            ActivityId = idRef.ActivityId,
                             Failure = failure,
                             LastHeartbeatDetails = lastHeartbeatDetails,
                         },
@@ -182,16 +182,16 @@ namespace Temporalio.Client
                         },
                     };
                 }
-                if (input.Activity is AsyncActivityHandle.IDReference idRef)
+                if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
                     await Client.Connection.WorkflowService.RespondActivityTaskCanceledByIdAsync(
                         new()
                         {
                             Namespace = Client.Options.Namespace,
                             Identity = Client.Connection.Options.Identity,
-                            WorkflowId = idRef.WorkflowID,
-                            RunId = idRef.RunID ?? string.Empty,
-                            ActivityId = idRef.ActivityID,
+                            WorkflowId = idRef.WorkflowId,
+                            RunId = idRef.RunId ?? string.Empty,
+                            ActivityId = idRef.ActivityId,
                             Details = details,
                         },
                         DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);

@@ -11,7 +11,7 @@ namespace Temporalio.Activities
     /// <summary>
     /// Information about an activity.
     /// </summary>
-    /// <param name="ActivityID">ID for the activity.</param>
+    /// <param name="ActivityId">ID for the activity.</param>
     /// <param name="ActivityType">Type name for the activity.</param>
     /// <param name="Attempt">Attempt the activity is on.</param>
     /// <param name="CurrentAttemptScheduledTime">When the current attempt was scheduled.</param>
@@ -25,16 +25,16 @@ namespace Temporalio.Activities
     /// <param name="StartedTime">When the activity started.</param>
     /// <param name="TaskQueue">Task queue this activity is on.</param>
     /// <param name="TaskToken">Task token uniquely identifying this activity.</param>
-    /// <param name="WorkflowID">Workflow ID that started this activity.</param>
+    /// <param name="WorkflowId">Workflow ID that started this activity.</param>
     /// <param name="WorkflowNamespace">Namespace this activity is on.</param>
-    /// <param name="WorkflowRunID">Workflow run ID that started this activity.</param>
+    /// <param name="WorkflowRunId">Workflow run ID that started this activity.</param>
     /// <param name="WorkflowType">Workflow type name that started this activity.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record ActivityInfo(
-        string ActivityID,
+        string ActivityId,
         string ActivityType,
         int Attempt,
         DateTime CurrentAttemptScheduledTime,
@@ -48,9 +48,9 @@ namespace Temporalio.Activities
         DateTime StartedTime,
         string TaskQueue,
         byte[] TaskToken,
-        string WorkflowID,
+        string WorkflowId,
         string WorkflowNamespace,
-        string WorkflowRunID,
+        string WorkflowRunId,
         string WorkflowType)
     {
         /// <summary>
@@ -60,12 +60,12 @@ namespace Temporalio.Activities
         /// </summary>
         internal Dictionary<string, object> LoggerScope { get; } = new()
         {
-            ["ActivityID"] = ActivityID,
+            ["ActivityId"] = ActivityId,
             ["ActivityType"] = ActivityType,
             ["Attempt"] = Attempt,
             ["WorkflowNamespace"] = WorkflowNamespace,
-            ["WorkflowID"] = WorkflowID,
-            ["WorkflowRunID"] = WorkflowRunID,
+            ["WorkflowId"] = WorkflowId,
+            ["WorkflowRunId"] = WorkflowRunId,
             ["WorkflowType"] = WorkflowType,
         };
 

@@ -69,12 +69,12 @@ namespace Temporalio.Worker
         /// If unset, the default is
         /// <c>Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId</c>.
         /// </summary>
-        public string? BuildID { get; set; }
+        public string? BuildId { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether this worker opts into the worker versioning feature. This ensures it
         /// only receives workflow tasks for workflows which it claims to be compatible with. The
-        /// <see cref="BuildID"/> field is used as this worker's version when enabled, and must be set.
+        /// <see cref="BuildId"/> field is used as this worker's version when enabled, and must be set.
         /// </summary>
         public bool UseWorkerVersioning { get; set; }
 

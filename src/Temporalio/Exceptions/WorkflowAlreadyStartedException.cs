@@ -9,23 +9,23 @@ namespace Temporalio.Exceptions
         /// Initializes a new instance of the <see cref="WorkflowAlreadyStartedException"/> class.
         /// </summary>
         /// <param name="message">Error message.</param>
-        /// <param name="workflowID">Already started workflow ID.</param>
-        /// <param name="runID">Already started run ID.</param>
-        public WorkflowAlreadyStartedException(string message, string workflowID, string runID)
+        /// <param name="workflowId">Already started workflow ID.</param>
+        /// <param name="runId">Already started run ID.</param>
+        public WorkflowAlreadyStartedException(string message, string workflowId, string runId)
             : base(message)
         {
-            WorkflowID = workflowID;
-            RunID = runID;
+            WorkflowId = workflowId;
+            RunId = runId;
         }
 
         /// <summary>
         /// Gets the workflow ID that was already started.
         /// </summary>
-        public string WorkflowID { get; private init; }
+        public string WorkflowId { get; private init; }
 
         /// <summary>
         /// Gets the run ID that was already started.
         /// </summary>
-        public string RunID { get; private init; }
+        public string RunId { get; private init; }
     }
 }

@@ -3,7 +3,7 @@ namespace Temporalio.Client.Interceptors
     /// <summary>
     /// Input for <see cref="ClientOutboundInterceptor.PauseScheduleAsync" />.
     /// </summary>
-    /// <param name="ID">Schedule ID.</param>
+    /// <param name="Id">Schedule ID.</param>
     /// <param name="Note">Pause note.</param>
     /// <param name="RpcOptions">RPC options.</param>
     /// <remarks>
@@ -11,7 +11,7 @@ namespace Temporalio.Client.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record PauseScheduleInput(
-        string ID,
+        string Id,
         string? Note,
         RpcOptions? RpcOptions);
 }

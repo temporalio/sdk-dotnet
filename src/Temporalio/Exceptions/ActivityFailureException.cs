@@ -48,7 +48,7 @@ namespace Temporalio.Exceptions
         /// <summary>
         /// Gets the identifier of the activity that failed.
         /// </summary>
-        public string ActivityID => Failure!.ActivityFailureInfo.ActivityId;
+        public string ActivityId => Failure!.ActivityFailureInfo.ActivityId;
 
         /// <summary>
         /// Gets the retry state for the failure.

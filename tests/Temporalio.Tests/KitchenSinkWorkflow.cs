@@ -58,9 +58,9 @@ public class KitchenSinkWorkflow
     {
         if (action.Result != null)
         {
-            if (action.Result.RunID)
+            if (action.Result.RunId)
             {
-                return (true, Workflow.Info.RunID);
+                return (true, Workflow.Info.RunId);
             }
             return (true, action.Result.Value);
         }

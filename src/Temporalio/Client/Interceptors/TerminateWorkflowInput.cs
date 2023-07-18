@@ -3,9 +3,9 @@ namespace Temporalio.Client.Interceptors
     /// <summary>
     /// Input for <see cref="ClientOutboundInterceptor.TerminateWorkflowAsync" />.
     /// </summary>
-    /// <param name="ID">Workflow ID.</param>
-    /// <param name="RunID">Workflow run ID if any.</param>
-    /// <param name="FirstExecutionRunID">Run that started the workflow chain to terminate.</param>
+    /// <param name="Id">Workflow ID.</param>
+    /// <param name="RunId">Workflow run ID if any.</param>
+    /// <param name="FirstExecutionRunId">Run that started the workflow chain to terminate.</param>
     /// <param name="Reason">Reason for termination.</param>
     /// <param name="Options">Options passed in to terminate.</param>
     /// <remarks>
@@ -13,9 +13,9 @@ namespace Temporalio.Client.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record TerminateWorkflowInput(
-        string ID,
-        string? RunID,
-        string? FirstExecutionRunID,
+        string Id,
+        string? RunId,
+        string? FirstExecutionRunId,
         string? Reason,
         WorkflowTerminateOptions? Options);
 }

@@ -14,7 +14,7 @@ public static class TestUtils
 
     public record LogEntry(
         LogLevel Level,
-        EventId EventID,
+        EventId EventId,
         object? State,
         Exception? Exception,
         string Formatted);

@@ -61,7 +61,7 @@ public record KSAction(
 
 public record KSResultAction(
     [property: JsonPropertyName("value")] object? Value = null,
-    [property: JsonPropertyName("run_id")] bool RunID = false);
+    [property: JsonPropertyName("run_id")] bool RunId = false);
 
 public record KSErrorAction(
     [property: JsonPropertyName("message")] string? Message = null,

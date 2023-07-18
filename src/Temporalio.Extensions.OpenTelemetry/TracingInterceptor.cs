@@ -112,14 +112,14 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// <summary>
         /// Create tag collection for the given workflow ID.
         /// </summary>
-        /// <param name="workflowID">Workflow ID.</param>
+        /// <param name="workflowId">Workflow ID.</param>
         /// <returns>Tags.</returns>
         protected virtual IEnumerable<KeyValuePair<string, object?>> CreateWorkflowTags(
-            string workflowID)
+            string workflowId)
         {
-            if (Options.TagNameWorkflowID is string name)
+            if (Options.TagNameWorkflowId is string name)
             {
-                return new KeyValuePair<string, object?>[] { new(name, workflowID) };
+                return new KeyValuePair<string, object?>[] { new(name, workflowId) };
             }
             return Enumerable.Empty<KeyValuePair<string, object?>>();
         }
@@ -134,13 +134,13 @@ namespace Temporalio.Extensions.OpenTelemetry
             var info = Workflow.Info;
             // Can't just append to other enumerable, Append is >= 4.7.1 only
             var ret = new List<KeyValuePair<string, object?>>(2);
-            if (Options.TagNameWorkflowID is string wfName)
+            if (Options.TagNameWorkflowId is string wfName)
             {
-                ret.Add(new(wfName, info.WorkflowID));
+                ret.Add(new(wfName, info.WorkflowId));
             }
-            if (Options.TagNameRunID is string runName)
+            if (Options.TagNameRunId is string runName)
             {
-                ret.Add(new(runName, info.RunID));
+                ret.Add(new(runName, info.RunId));
             }
             return ret;
         }
@@ -154,17 +154,17 @@ namespace Temporalio.Extensions.OpenTelemetry
         {
             var info = ActivityExecutionContext.Current.Info;
             var ret = new List<KeyValuePair<string, object?>>(3);
-            if (Options.TagNameWorkflowID is string wfName)
+            if (Options.TagNameWorkflowId is string wfName)
             {
-                ret.Add(new(wfName, info.WorkflowID));
+                ret.Add(new(wfName, info.WorkflowId));
             }
-            if (Options.TagNameRunID is string runName)
+            if (Options.TagNameRunId is string runName)
             {
-                ret.Add(new(runName, info.WorkflowRunID));
+                ret.Add(new(runName, info.WorkflowRunId));
             }
-            if (Options.TagNameActivityID is string actName)
+            if (Options.TagNameActivityId is string actName)
             {
-                ret.Add(new(actName, info.ActivityID));
+                ret.Add(new(actName, info.ActivityId));
             }
             return ret;
         }
@@ -184,7 +184,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                     $"{namePrefix}:{input.Workflow}",
                     kind: ActivityKind.Client,
                     parentContext: default,
-                    tags: root.CreateWorkflowTags(input.Options.ID!)))
+                    tags: root.CreateWorkflowTags(input.Options.Id!)))
                 {
                     if (HeadersFromContext(input.Headers) is Dictionary<string, Payload> headers)
                     {
@@ -200,7 +200,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                     $"SignalWorkflow:{input.Signal}",
                     kind: ActivityKind.Client,
                     parentContext: default,
-                    tags: root.CreateWorkflowTags(input.ID)))
+                    tags: root.CreateWorkflowTags(input.Id)))
                 {
                     if (HeadersFromContext(input.Headers) is Dictionary<string, Payload> headers)
                     {
@@ -216,7 +216,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                     $"QueryWorkflow:{input.Query}",
                     kind: ActivityKind.Client,
                     parentContext: default,
-                    tags: root.CreateWorkflowTags(input.ID)))
+                    tags: root.CreateWorkflowTags(input.Id)))
                 {
                     if (HeadersFromContext(input.Headers) is Dictionary<string, Payload> headers)
                     {

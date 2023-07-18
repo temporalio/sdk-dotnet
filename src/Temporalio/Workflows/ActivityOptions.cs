@@ -77,7 +77,7 @@ namespace Temporalio.Workflows
         /// users have a strong understanding of the system. Contact Temporal support to discuss the
         /// use case before setting this value.
         /// </summary>
-        public string? ActivityID { get; set; }
+        public string? ActivityId { get; set; }
 
         /// <summary>
         /// Gets or sets whether this Activity should run on a worker with a compatible Build Id or not when using the

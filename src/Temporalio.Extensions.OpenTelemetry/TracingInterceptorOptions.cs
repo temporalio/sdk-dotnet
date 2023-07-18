@@ -21,17 +21,17 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// <summary>
         /// Gets or sets the tag name for workflow IDs. If null, no tag is created.
         /// </summary>
-        public string? TagNameWorkflowID { get; set; } = "temporalWorkflowID";
+        public string? TagNameWorkflowId { get; set; } = "temporalWorkflowID";
 
         /// <summary>
         /// Gets or sets the tag name for run IDs. If null, no tag is created.
         /// </summary>
-        public string? TagNameRunID { get; set; } = "temporalRunID";
+        public string? TagNameRunId { get; set; } = "temporalRunID";
 
         /// <summary>
         /// Gets or sets the tag name for activity IDs. If null, no tag is created.
         /// </summary>
-        public string? TagNameActivityID { get; set; } = "temporalActivityID";
+        public string? TagNameActivityId { get; set; } = "temporalActivityID";
 
         /// <summary>
         /// Create a shallow copy of these options.

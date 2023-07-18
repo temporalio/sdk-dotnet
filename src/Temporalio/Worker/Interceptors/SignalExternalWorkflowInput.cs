@@ -7,8 +7,8 @@ namespace Temporalio.Worker.Interceptors
     /// <summary>
     /// Input for <see cref="WorkflowOutboundInterceptor.SignalExternalWorkflowAsync" />.
     /// </summary>
-    /// <param name="ID">Workflow ID.</param>
-    /// <param name="RunID">Workflow run ID if any.</param>
+    /// <param name="Id">Workflow ID.</param>
+    /// <param name="RunId">Workflow run ID if any.</param>
     /// <param name="Signal">Signal name.</param>
     /// <param name="Args">Signal arguments.</param>
     /// <param name="Options">Options if any.</param>
@@ -19,8 +19,8 @@ namespace Temporalio.Worker.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record SignalExternalWorkflowInput(
-        string ID,
-        string? RunID,
+        string Id,
+        string? RunId,
         string Signal,
         IReadOnlyCollection<object?> Args,
         ExternalWorkflowSignalOptions? Options,

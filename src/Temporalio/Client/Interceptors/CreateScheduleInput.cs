@@ -5,7 +5,7 @@ namespace Temporalio.Client.Interceptors
     /// <summary>
     /// Input for <see cref="ClientOutboundInterceptor.CreateScheduleAsync" />.
     /// </summary>
-    /// <param name="ID">Schedule ID.</param>
+    /// <param name="Id">Schedule ID.</param>
     /// <param name="Schedule">Schedule.</param>
     /// <param name="Options">Schedule options.</param>
     /// <remarks>
@@ -13,7 +13,7 @@ namespace Temporalio.Client.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     public record CreateScheduleInput(
-        string ID,
+        string Id,
         Schedule Schedule,
         ScheduleOptions? Options);
 }

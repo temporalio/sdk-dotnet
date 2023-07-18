@@ -24,8 +24,8 @@ namespace Temporalio.Worker
         private const bool TrackTaskEvents = false;
 
         private const string TplEventSourceName = "System.Threading.Tasks.TplEventSource";
-        private const int TplTaskWithSchedulerEventIDBegin = 7;
-        private const int TplTaskWithSchedulerEventIDEnd = 11;
+        private const int TplTaskWithSchedulerEventIdBegin = 7;
+        private const int TplTaskWithSchedulerEventIdEnd = 11;
         private const EventKeywords TplTasksKeywords = (EventKeywords)2;
 
         private const string FrameworkEventSourceName = "System.Diagnostics.Eventing.FrameworkEventSource";
@@ -202,11 +202,11 @@ namespace Temporalio.Worker
             }
         }
 
-        private static int TaskIDOfEvent(EventWrittenEventArgs evt)
+        private static int TaskIdOfEvent(EventWrittenEventArgs evt)
         {
-            if (PayloadOfEvent(evt, "TaskID") is int taskID)
+            if (PayloadOfEvent(evt, "TaskId") is int taskId)
             {
-                return taskID;
+                return taskId;
             }
             return -1;
         }
@@ -226,8 +226,8 @@ namespace Temporalio.Worker
                 TrackTaskEvent(evt);
             }
 
-            if (evt.EventId >= TplTaskWithSchedulerEventIDBegin &&
-                evt.EventId <= TplTaskWithSchedulerEventIDEnd &&
+            if (evt.EventId >= TplTaskWithSchedulerEventIdBegin &&
+                evt.EventId <= TplTaskWithSchedulerEventIdEnd &&
                 instance.Id != evt.Payload?[0] as int?)
             {
                 // Dump failure event
@@ -269,17 +269,17 @@ namespace Temporalio.Worker
 
         private void TrackTaskEvent(EventWrittenEventArgs evt)
         {
-            var taskID = TaskIDOfEvent(evt);
-            if (taskID < 0)
+            var taskId = TaskIdOfEvent(evt);
+            if (taskId < 0)
             {
                 return;
             }
             lock (taskEvents!)
             {
-                if (!taskEvents!.TryGetValue(taskID, out var eventList))
+                if (!taskEvents!.TryGetValue(taskId, out var eventList))
                 {
                     eventList = new();
-                    taskEvents![taskID] = eventList;
+                    taskEvents![taskId] = eventList;
                 }
                 eventList.Add(new(evt));
             }
@@ -290,16 +290,16 @@ namespace Temporalio.Worker
             string prefix = "Task that failed: ",
             string indent = "")
         {
-            var taskID = TaskIDOfEvent(evt);
-            if (taskID < 0)
+            var taskId = TaskIdOfEvent(evt);
+            if (taskId < 0)
             {
                 return $"{prefix}: <unknown>";
             }
             var bld = new StringBuilder(indent).
-                Append(prefix).Append(taskID).Append(", events:").AppendLine();
+                Append(prefix).Append(taskId).Append(", events:").AppendLine();
             lock (taskEvents!)
             {
-                if (taskEvents!.TryGetValue(taskID, out var eventList))
+                if (taskEvents!.TryGetValue(taskId, out var eventList))
                 {
                     foreach (var taskEvent in eventList)
                     {
@@ -311,10 +311,10 @@ namespace Temporalio.Worker
             return bld.ToString();
         }
 
-        private record TaskEvent(int TaskID, EventWrittenEventArgs Event, string Stack)
+        private record TaskEvent(int TaskId, EventWrittenEventArgs Event, string Stack)
         {
             internal TaskEvent(EventWrittenEventArgs evt)
-                : this(TaskIDOfEvent(evt), evt, new System.Diagnostics.StackTrace().ToString())
+                : this(TaskIdOfEvent(evt), evt, new System.Diagnostics.StackTrace().ToString())
             {
             }
         }

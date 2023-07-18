@@ -71,11 +71,11 @@ namespace Temporalio.Client
         /// <summary>
         /// Reference to an activity by its workflow ID, workflow run ID, and activity ID.
         /// </summary>
-        /// <param name="WorkflowID">ID for the activity's workflow.</param>
-        /// <param name="RunID">Run ID for the activity's workflow.</param>
-        /// <param name="ActivityID">ID for the activity.</param>
-        public record IDReference(
-            string WorkflowID, string? RunID, string ActivityID) : Reference;
+        /// <param name="WorkflowId">ID for the activity's workflow.</param>
+        /// <param name="RunId">Run ID for the activity's workflow.</param>
+        /// <param name="ActivityId">ID for the activity.</param>
+        public record IdReference(
+            string WorkflowId, string? RunId, string ActivityId) : Reference;
 
         /// <summary>
         /// Reference to an activity by its task token.

@@ -12,11 +12,11 @@ namespace Temporalio.Client
         /// <summary>
         /// Get a handle to complete an activity asynchronously using its qualified identifiers.
         /// </summary>
-        /// <param name="workflowID">ID for the activity's workflow.</param>
-        /// <param name="runID">Run ID for the activity's workflow.</param>
-        /// <param name="activityID">ID for the activity.</param>
+        /// <param name="workflowId">ID for the activity's workflow.</param>
+        /// <param name="runId">Run ID for the activity's workflow.</param>
+        /// <param name="activityId">ID for the activity.</param>
         /// <returns>Async activity handle.</returns>
         public AsyncActivityHandle GetAsyncActivityHandle(
-            string workflowID, string runID, string activityID);
+            string workflowId, string runId, string activityId);
     }
 }

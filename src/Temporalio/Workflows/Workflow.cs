@@ -226,14 +226,14 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Mark a patch as deprecated.
         /// </summary>
-        /// <param name="patchID">Patch ID.</param>
+        /// <param name="patchId">Patch ID.</param>
         /// <remarks>
         /// This marks a workflow that had <see cref="Patched" /> in a previous version of the code
         /// as no longer applicable because all workflows that use the old code path are done and
         /// will never be queried again. Therefore the old code path is removed as well.
         /// </remarks>
-        public static void DeprecatePatch(string patchID) =>
-            Context.Patch(patchID, deprecated: true);
+        public static void DeprecatePatch(string patchId) =>
+            Context.Patch(patchId, deprecated: true);
 
         /// <summary>
         /// Execute a static non-async activity with result via lambda.
@@ -751,21 +751,21 @@ namespace Temporalio.Workflows
         /// Get a handle to an external workflow for cancelling and issuing signals.
         /// </summary>
         /// <param name="id">Workflow ID.</param>
-        /// <param name="runID">Optional workflow run ID.</param>
+        /// <param name="runId">Optional workflow run ID.</param>
         /// <returns>External workflow handle.</returns>
         public static ExternalWorkflowHandle GetExternalWorkflowHandle(
-            string id, string? runID = null) => GetExternalWorkflowHandle<ValueTuple>(id, runID);
+            string id, string? runId = null) => GetExternalWorkflowHandle<ValueTuple>(id, runId);
 
         /// <summary>
         /// Get a handle to an external workflow for cancelling and issuing signals.
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="id">Workflow ID.</param>
-        /// <param name="runID">Optional workflow run ID.</param>
+        /// <param name="runId">Optional workflow run ID.</param>
         /// <returns>External workflow handle.</returns>
         public static ExternalWorkflowHandle<TWorkflow> GetExternalWorkflowHandle<TWorkflow>(
-            string id, string? runID = null) =>
-            Context.GetExternalWorkflowHandle<TWorkflow>(id, runID);
+            string id, string? runId = null) =>
+            Context.GetExternalWorkflowHandle<TWorkflow>(id, runId);
 
         /// <summary>
         /// Deterministically create a new <see cref="Guid" /> similar to
@@ -788,7 +788,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Patch a workflow.
         /// </summary>
-        /// <param name="patchID">Patch ID.</param>
+        /// <param name="patchId">Patch ID.</param>
         /// <returns>True if this should take the newer patch, false if it should take the old
         /// path.</returns>
         /// <remarks>
@@ -802,7 +802,7 @@ namespace Temporalio.Workflows
         /// again. The old code path can be removed at that time too.
         /// </para>
         /// </remarks>
-        public static bool Patched(string patchID) => Context.Patch(patchID, deprecated: false);
+        public static bool Patched(string patchId) => Context.Patch(patchId, deprecated: false);
 
         /// <summary>
         /// Start a child workflow via lambda invoking the run method.

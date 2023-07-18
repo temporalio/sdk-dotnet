@@ -18,13 +18,13 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task StartWorkflowAsync_ManualReturnType_Succeeds()
     {
-        var workflowID = $"workflow-{Guid.NewGuid()}";
+        var workflowId = $"workflow-{Guid.NewGuid()}";
         var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
         var handle = await Client.StartWorkflowAsync(
             (IKitchenSinkWorkflowWithUnknownReturn wf) => wf.RunAsync(arg),
-            new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
-        Assert.Equal(workflowID, handle.ID);
-        Assert.NotNull(handle.ResultRunID);
+            new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        Assert.Equal(workflowId, handle.Id);
+        Assert.NotNull(handle.ResultRunId);
         Assert.Equal("Some String", await handle.GetResultAsync<string>());
     }
 
@@ -42,11 +42,11 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     public async Task StartWorkflowAsync_AlreadyExists_Throws()
     {
         // Start
-        var workflowID = $"workflow-{Guid.NewGuid()}";
+        var workflowId = $"workflow-{Guid.NewGuid()}";
         var arg = new KSWorkflowParams(new KSAction(Sleep: new(10000)));
         var handle = await Client.StartWorkflowAsync(
             (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-            new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+            new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Try to start again
         var err = await Assert.ThrowsAsync<Exceptions.WorkflowAlreadyStartedException>(async () =>
@@ -54,21 +54,21 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
             var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
             await Client.StartWorkflowAsync(
                 (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-                new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+                new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         });
-        Assert.Equal(workflowID, err.WorkflowID);
-        Assert.Equal(handle.ResultRunID, err.RunID);
+        Assert.Equal(workflowId, err.WorkflowId);
+        Assert.Equal(handle.ResultRunId, err.RunId);
     }
 
     [Fact]
-    public async Task StartWorkflowAsync_AlreadyExistsCompletedIDReusePolicy_Throws()
+    public async Task StartWorkflowAsync_AlreadyExistsCompletedIdReusePolicy_Throws()
     {
         // Run
-        var workflowID = $"workflow-{Guid.NewGuid()}";
+        var workflowId = $"workflow-{Guid.NewGuid()}";
         var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
         await Client.ExecuteWorkflowAsync(
             (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-            new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+            new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Try to start again w/ ID reuse policy disallowing
         await Assert.ThrowsAsync<Exceptions.WorkflowAlreadyStartedException>(async () =>
@@ -76,9 +76,9 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
             var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
             await Client.StartWorkflowAsync(
                 (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-                new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue)
+                new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue)
                 {
-                    IDReusePolicy = WorkflowIdReusePolicy.AllowDuplicateFailedOnly,
+                    IdReusePolicy = WorkflowIdReusePolicy.AllowDuplicateFailedOnly,
                 });
         });
     }
@@ -155,8 +155,8 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         AssertEvent<StartWorkflowInput>(0, "StartWorkflow", "kitchen_sink", i => i.Workflow);
         AssertEvent<QueryWorkflowInput>(1, "QueryWorkflow", "SomeQuery", i => i.Query);
         AssertEvent<SignalWorkflowInput>(2, "SignalWorkflow", "SomeSignal", i => i.Signal);
-        AssertEvent<CancelWorkflowInput>(3, "CancelWorkflow", handle.ID, i => i.ID);
-        AssertEvent<TerminateWorkflowInput>(4, "TerminateWorkflow", handle.ID, i => i.ID);
+        AssertEvent<CancelWorkflowInput>(3, "CancelWorkflow", handle.Id, i => i.Id);
+        AssertEvent<TerminateWorkflowInput>(4, "TerminateWorkflow", handle.Id, i => i.Id);
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     {
         // Run 5 workflows. Use the same workflow ID over and over to make sure we don't clash with
         // other tests.
-        var workflowID = $"workflow-{Guid.NewGuid()}";
+        var workflowId = $"workflow-{Guid.NewGuid()}";
         var expectedResults = new HashSet<string>();
         for (var i = 0; i < 5; i++)
         {
@@ -216,14 +216,14 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
             var arg = new KSWorkflowParams(new KSAction(Result: new(Value: result)));
             await Client.ExecuteWorkflowAsync(
                 (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-                new(id: workflowID, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+                new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         }
 
         // Now do a list and collect the actual params
         var actualResults = new HashSet<string>();
-        await foreach (var wf in Client.ListWorkflowsAsync($"WorkflowId = '{workflowID}'"))
+        await foreach (var wf in Client.ListWorkflowsAsync($"WorkflowId = '{workflowId}'"))
         {
-            var hist = await Client.GetWorkflowHandle(wf.ID, runID: wf.RunID).FetchHistoryAsync();
+            var hist = await Client.GetWorkflowHandle(wf.Id, runId: wf.RunId).FetchHistoryAsync();
             var completeEvent = hist.Events.Single(evt => evt.WorkflowExecutionCompletedEventAttributes != null);
             var result = await Client.Options.DataConverter.ToSingleValueAsync<string>(
                 completeEvent.WorkflowExecutionCompletedEventAttributes.Result.Payloads_);

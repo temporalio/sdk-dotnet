@@ -20,14 +20,14 @@ namespace Temporalio.Client
     {
         /// <inheritdoc />
         public Task<ScheduleHandle> CreateScheduleAsync(
-            string scheduleID, Schedule schedule, ScheduleOptions? options = null) =>
+            string scheduleId, Schedule schedule, ScheduleOptions? options = null) =>
             OutboundInterceptor.CreateScheduleAsync(new(
-                ID: scheduleID,
+                Id: scheduleId,
                 Schedule: schedule,
                 Options: options));
 
         /// <inheritdoc />
-        public ScheduleHandle GetScheduleHandle(string scheduleID) => new(this, scheduleID);
+        public ScheduleHandle GetScheduleHandle(string scheduleId) => new(this, scheduleId);
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <inheritdoc />
@@ -44,7 +44,7 @@ namespace Temporalio.Client
                 var req = new CreateScheduleRequest()
                 {
                     Namespace = Client.Options.Namespace,
-                    ScheduleId = input.ID,
+                    ScheduleId = input.Id,
                     Schedule = await input.Schedule.ToProtoAsync(Client.Options.DataConverter).ConfigureAwait(false),
                     Identity = Client.Connection.Options.Identity,
                     RequestId = Guid.NewGuid().ToString(),
@@ -90,7 +90,7 @@ namespace Temporalio.Client
                 {
                     await Client.Connection.WorkflowService.CreateScheduleAsync(
                         req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                    return new(Client, input.ID);
+                    return new(Client, input.Id);
                 }
                 catch (RpcException e) when (e.Code == RpcException.StatusCode.AlreadyExists)
                 {
@@ -104,7 +104,7 @@ namespace Temporalio.Client
                     new()
                     {
                         Namespace = Client.Options.Namespace,
-                        ScheduleId = input.ID,
+                        ScheduleId = input.Id,
                         Patch = new()
                         {
                             BackfillRequest = { input.Backfills.Select(b => b.ToProto()) },
@@ -120,7 +120,7 @@ namespace Temporalio.Client
                     new()
                     {
                         Namespace = Client.Options.Namespace,
-                        ScheduleId = input.ID,
+                        ScheduleId = input.Id,
                         Identity = Client.Connection.Options.Identity,
                     },
                     DefaultRetryOptions(input.RpcOptions));
@@ -133,10 +133,10 @@ namespace Temporalio.Client
                     new()
                     {
                         Namespace = Client.Options.Namespace,
-                        ScheduleId = input.ID,
+                        ScheduleId = input.Id,
                     },
                     DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
-                return new(input.ID, desc, Client.Options.DataConverter);
+                return new(input.Id, desc, Client.Options.DataConverter);
             }
 
             /// <inheritdoc />
@@ -145,7 +145,7 @@ namespace Temporalio.Client
                     new()
                     {
                         Namespace = Client.Options.Namespace,
-                        ScheduleId = input.ID,
+                        ScheduleId = input.Id,
                         Patch = new() { Pause = input.Note ?? "Paused via .NET SDK" },
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
@@ -158,7 +158,7 @@ namespace Temporalio.Client
                     new()
                     {
                         Namespace = Client.Options.Namespace,
-                        ScheduleId = input.ID,
+                        ScheduleId = input.Id,
                         Patch = new()
                         {
                             TriggerImmediately = new()
@@ -177,7 +177,7 @@ namespace Temporalio.Client
                     new()
                     {
                         Namespace = Client.Options.Namespace,
-                        ScheduleId = input.ID,
+                        ScheduleId = input.Id,
                         Patch = new() { Unpause = input.Note ?? "Unpaused via .NET SDK" },
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
@@ -189,7 +189,7 @@ namespace Temporalio.Client
             {
                 // TODO(cretz): This is supposed to be a retry-conflict loop, but we do not yet have
                 // a way to know update failure is due to conflict token mismatch
-                var desc = await DescribeScheduleAsync(new(input.ID, input.RpcOptions)).ConfigureAwait(false);
+                var desc = await DescribeScheduleAsync(new(input.Id, input.RpcOptions)).ConfigureAwait(false);
                 var update = await input.Updater(new(Description: desc)).ConfigureAwait(false);
                 if (update == null)
                 {
@@ -199,7 +199,7 @@ namespace Temporalio.Client
                     new()
                     {
                         Namespace = Client.Options.Namespace,
-                        ScheduleId = input.ID,
+                        ScheduleId = input.Id,
                         Schedule = await update.Schedule.ToProtoAsync(Client.Options.DataConverter).ConfigureAwait(false),
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),

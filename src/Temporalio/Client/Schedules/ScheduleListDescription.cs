@@ -46,7 +46,7 @@ namespace Temporalio.Client.Schedules
         /// <summary>
         /// Gets the schedule ID.
         /// </summary>
-        public string ID => RawEntry.ScheduleId;
+        public string Id => RawEntry.ScheduleId;
 
         /// <summary>
         /// Gets the schedule.

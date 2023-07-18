@@ -57,18 +57,18 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public WorkflowHandle GetWorkflowHandle(
-            string id, string? runID = null, string? firstExecutionRunID = null) =>
-            new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
+            string id, string? runId = null, string? firstExecutionRunId = null) =>
+            new(Client: this, Id: id, RunId: runId, FirstExecutionRunId: firstExecutionRunId);
 
         /// <inheritdoc />
         public WorkflowHandle<TWorkflow> GetWorkflowHandle<TWorkflow>(
-            string id, string? runID = null, string? firstExecutionRunID = null) =>
-            new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
+            string id, string? runId = null, string? firstExecutionRunId = null) =>
+            new(Client: this, Id: id, RunId: runId, FirstExecutionRunId: firstExecutionRunId);
 
         /// <inheritdoc />
         public WorkflowHandle<TWorkflow, TResult> GetWorkflowHandle<TWorkflow, TResult>(
-            string id, string? runID = null, string? firstExecutionRunID = null) =>
-            new(Client: this, ID: id, RunID: runID, FirstExecutionRunID: firstExecutionRunID);
+            string id, string? runId = null, string? firstExecutionRunId = null) =>
+            new(Client: this, Id: id, RunId: runId, FirstExecutionRunId: firstExecutionRunId);
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <inheritdoc />
@@ -101,7 +101,7 @@ namespace Temporalio.Client
                         {
                             throw new WorkflowAlreadyStartedException(
                                 e.Message,
-                                input.Options.ID!,
+                                input.Options.Id!,
                                 failure.RunId);
                         }
                     }
@@ -117,8 +117,8 @@ namespace Temporalio.Client
                     Namespace = Client.Options.Namespace,
                     WorkflowExecution = new()
                     {
-                        WorkflowId = input.ID,
-                        RunId = input.RunID ?? string.Empty,
+                        WorkflowId = input.Id,
+                        RunId = input.RunId ?? string.Empty,
                     },
                     SignalName = input.Signal,
                     Identity = Client.Connection.Options.Identity,
@@ -156,8 +156,8 @@ namespace Temporalio.Client
                     Namespace = Client.Options.Namespace,
                     Execution = new()
                     {
-                        WorkflowId = input.ID,
-                        RunId = input.RunID ?? string.Empty,
+                        WorkflowId = input.Id,
+                        RunId = input.RunId ?? string.Empty,
                     },
                     Query = new() { QueryType = input.Query },
                 };
@@ -230,8 +230,8 @@ namespace Temporalio.Client
                         Namespace = Client.Options.Namespace,
                         Execution = new()
                         {
-                            WorkflowId = input.ID,
-                            RunId = input.RunID ?? string.Empty,
+                            WorkflowId = input.Id,
+                            RunId = input.RunId ?? string.Empty,
                         },
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
@@ -247,10 +247,10 @@ namespace Temporalio.Client
                         Namespace = Client.Options.Namespace,
                         WorkflowExecution = new()
                         {
-                            WorkflowId = input.ID,
-                            RunId = input.RunID ?? string.Empty,
+                            WorkflowId = input.Id,
+                            RunId = input.RunId ?? string.Empty,
                         },
-                        FirstExecutionRunId = input.FirstExecutionRunID ?? string.Empty,
+                        FirstExecutionRunId = input.FirstExecutionRunId ?? string.Empty,
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
                     },
@@ -265,11 +265,11 @@ namespace Temporalio.Client
                     Namespace = Client.Options.Namespace,
                     WorkflowExecution = new()
                     {
-                        WorkflowId = input.ID,
-                        RunId = input.RunID ?? string.Empty,
+                        WorkflowId = input.Id,
+                        RunId = input.RunId ?? string.Empty,
                     },
                     Reason = input.Reason ?? string.Empty,
-                    FirstExecutionRunId = input.FirstExecutionRunID ?? string.Empty,
+                    FirstExecutionRunId = input.FirstExecutionRunId ?? string.Empty,
                     Identity = Client.Connection.Options.Identity,
                 };
                 if (input.Options?.Details != null && input.Options?.Details.Count > 0)
@@ -292,8 +292,8 @@ namespace Temporalio.Client
                     Namespace = Client.Options.Namespace,
                     Execution = new()
                     {
-                        WorkflowId = input.ID,
-                        RunId = input.RunID ?? string.Empty,
+                        WorkflowId = input.Id,
+                        RunId = input.RunId ?? string.Empty,
                     },
                     MaximumPageSize = input.PageSize ?? 0,
                     NextPageToken = input.NextPageToken == null ?
@@ -383,7 +383,7 @@ namespace Temporalio.Client
                 var req = new StartWorkflowExecutionRequest()
                 {
                     Namespace = Client.Options.Namespace,
-                    WorkflowId = input.Options.ID ??
+                    WorkflowId = input.Options.Id ??
                         throw new ArgumentException("ID required to start workflow"),
                     WorkflowType = new WorkflowType() { Name = input.Workflow },
                     TaskQueue = new TaskQueue()
@@ -393,7 +393,7 @@ namespace Temporalio.Client
                     },
                     Identity = Client.Connection.Options.Identity,
                     RequestId = Guid.NewGuid().ToString(),
-                    WorkflowIdReusePolicy = input.Options.IDReusePolicy,
+                    WorkflowIdReusePolicy = input.Options.IdReusePolicy,
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                 };
                 if (input.Args.Count > 0)
@@ -465,9 +465,9 @@ namespace Temporalio.Client
                         req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
                     return new WorkflowHandle<TWorkflow, TResult>(
                         Client: Client,
-                        ID: req.WorkflowId,
-                        ResultRunID: resp.RunId,
-                        FirstExecutionRunID: resp.RunId);
+                        Id: req.WorkflowId,
+                        ResultRunId: resp.RunId,
+                        FirstExecutionRunId: resp.RunId);
                 }
 
                 // Since it's signal with start, convert and run
@@ -503,8 +503,8 @@ namespace Temporalio.Client
                 // Notice we do _not_ set first execution run ID for signal with start
                 return new WorkflowHandle<TWorkflow, TResult>(
                     Client: Client,
-                    ID: req.WorkflowId,
-                    ResultRunID: signalResp.RunId);
+                    Id: req.WorkflowId,
+                    ResultRunId: signalResp.RunId);
             }
         }
     }
