@@ -57,6 +57,16 @@ namespace Temporalio.Client
                 options.ToClientOptions());
 
         /// <summary>
+        /// Create a client to a Temporal namespace that does not connect until first call.
+        /// Unconnected lazy clients cannot be used by workers. If an initial client connection
+        /// fails, it will be retried next time it is needed.
+        /// </summary>
+        /// <param name="options">Options for connecting.</param>
+        /// <returns>The not-yet-connected client.</returns>
+        public static TemporalClient CreateLazy(TemporalClientConnectOptions options) =>
+            new(TemporalConnection.CreateLazy(options), options.ToClientOptions());
+
+        /// <summary>
         /// Get a default set of retry options given the optional options. This will not mutate the
         /// given options. This only sets retry if original options are not present or they have not
         /// already set a retry.

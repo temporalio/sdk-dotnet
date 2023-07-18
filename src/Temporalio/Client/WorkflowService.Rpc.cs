@@ -164,6 +164,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetWorkerTaskReachability.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<GetWorkerTaskReachabilityResponse> GetWorkerTaskReachabilityAsync(GetWorkerTaskReachabilityRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("GetWorkerTaskReachability", req, GetWorkerTaskReachabilityResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetWorkflowExecutionHistory.
         /// </summary>
         /// <param name="req">Request for the call.</param>

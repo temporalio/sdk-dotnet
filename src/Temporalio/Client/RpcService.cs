@@ -14,6 +14,11 @@ namespace Temporalio.Client
         internal abstract Bridge.Interop.RpcService Service { get; }
 
         /// <summary>
+        /// Gets the full name of the gRPC service.
+        /// </summary>
+        internal abstract string FullName { get; }
+
+        /// <summary>
         /// Invoke an RPC method.
         /// </summary>
         /// <typeparam name="T">Resulting protobuf message type.</typeparam>

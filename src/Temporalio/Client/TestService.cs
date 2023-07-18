@@ -13,6 +13,9 @@ namespace Temporalio.Client
         /// <inheritdoc/>
         internal override Bridge.Interop.RpcService Service => Bridge.Interop.RpcService.Test;
 
+        /// <inheritdoc/>
+        internal override string FullName => "temporal.api.testservice.v1.TestService";
+
         /// <summary>
         /// Implementation of the test service.
         /// </summary>

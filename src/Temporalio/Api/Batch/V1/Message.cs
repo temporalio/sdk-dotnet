@@ -28,31 +28,36 @@ namespace Temporalio.Api.Batch.V1 {
             "YWwuYXBpLmJhdGNoLnYxGiFkZXBlbmRlbmNpZXMvZ29nb3Byb3RvL2dvZ28u",
             "cHJvdG8aH2dvb2dsZS9wcm90b2J1Zi90aW1lc3RhbXAucHJvdG8aJHRlbXBv",
             "cmFsL2FwaS9jb21tb24vdjEvbWVzc2FnZS5wcm90bxordGVtcG9yYWwvYXBp",
-            "L2VudW1zL3YxL2JhdGNoX29wZXJhdGlvbi5wcm90byLLAQoSQmF0Y2hPcGVy",
-            "YXRpb25JbmZvEg4KBmpvYl9pZBgBIAEoCRI5CgVzdGF0ZRgCIAEoDjIqLnRl",
-            "bXBvcmFsLmFwaS5lbnVtcy52MS5CYXRjaE9wZXJhdGlvblN0YXRlEjQKCnN0",
-            "YXJ0X3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQgSQ",
-            "3x8BEjQKCmNsb3NlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGlt",
-            "ZXN0YW1wQgSQ3x8BImAKGUJhdGNoT3BlcmF0aW9uVGVybWluYXRpb24SMQoH",
-            "ZGV0YWlscxgBIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9h",
-            "ZHMSEAoIaWRlbnRpdHkYAiABKAkimQEKFEJhdGNoT3BlcmF0aW9uU2lnbmFs",
-            "Eg4KBnNpZ25hbBgBIAEoCRIvCgVpbnB1dBgCIAEoCzIgLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuUGF5bG9hZHMSLgoGaGVhZGVyGAMgASgLMh4udGVtcG9y",
-            "YWwuYXBpLmNvbW1vbi52MS5IZWFkZXISEAoIaWRlbnRpdHkYBCABKAkiLgoa",
-            "QmF0Y2hPcGVyYXRpb25DYW5jZWxsYXRpb24SEAoIaWRlbnRpdHkYASABKAki",
-            "KgoWQmF0Y2hPcGVyYXRpb25EZWxldGlvbhIQCghpZGVudGl0eRgBIAEoCUKE",
-            "AQoYaW8udGVtcG9yYWwuYXBpLmJhdGNoLnYxQgxNZXNzYWdlUHJvdG9QAVoh",
-            "Z28udGVtcG9yYWwuaW8vYXBpL2JhdGNoL3YxO2JhdGNoqgIXVGVtcG9yYWxp",
-            "by5BcGkuQmF0Y2guVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkJhdGNoOjpWMWIG",
-            "cHJvdG8z"));
+            "L2VudW1zL3YxL2JhdGNoX29wZXJhdGlvbi5wcm90bxohdGVtcG9yYWwvYXBp",
+            "L2VudW1zL3YxL3Jlc2V0LnByb3RvIssBChJCYXRjaE9wZXJhdGlvbkluZm8S",
+            "DgoGam9iX2lkGAEgASgJEjkKBXN0YXRlGAIgASgOMioudGVtcG9yYWwuYXBp",
+            "LmVudW1zLnYxLkJhdGNoT3BlcmF0aW9uU3RhdGUSNAoKc3RhcnRfdGltZRgD",
+            "IAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCBJDfHwESNAoKY2xv",
+            "c2VfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCBJDf",
+            "HwEiYAoZQmF0Y2hPcGVyYXRpb25UZXJtaW5hdGlvbhIxCgdkZXRhaWxzGAEg",
+            "ASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxIQCghpZGVu",
+            "dGl0eRgCIAEoCSKZAQoUQmF0Y2hPcGVyYXRpb25TaWduYWwSDgoGc2lnbmFs",
+            "GAEgASgJEi8KBWlucHV0GAIgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52",
+            "MS5QYXlsb2FkcxIuCgZoZWFkZXIYAyABKAsyHi50ZW1wb3JhbC5hcGkuY29t",
+            "bW9uLnYxLkhlYWRlchIQCghpZGVudGl0eRgEIAEoCSIuChpCYXRjaE9wZXJh",
+            "dGlvbkNhbmNlbGxhdGlvbhIQCghpZGVudGl0eRgBIAEoCSIqChZCYXRjaE9w",
+            "ZXJhdGlvbkRlbGV0aW9uEhAKCGlkZW50aXR5GAEgASgJIqIBChNCYXRjaE9w",
+            "ZXJhdGlvblJlc2V0EjQKCnJlc2V0X3R5cGUYASABKA4yIC50ZW1wb3JhbC5h",
+            "cGkuZW51bXMudjEuUmVzZXRUeXBlEkMKEnJlc2V0X3JlYXBwbHlfdHlwZRgC",
+            "IAEoDjInLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5SZXNldFJlYXBwbHlUeXBl",
+            "EhAKCGlkZW50aXR5GAMgASgJQoQBChhpby50ZW1wb3JhbC5hcGkuYmF0Y2gu",
+            "djFCDE1lc3NhZ2VQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvYmF0Y2gv",
+            "djE7YmF0Y2iqAhdUZW1wb3JhbGlvLkFwaS5CYXRjaC5WMeoCGlRlbXBvcmFs",
+            "aW86OkFwaTo6QmF0Y2g6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Dependencies.Gogoproto.GogoReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationInfo), global::Temporalio.Api.Batch.V1.BatchOperationInfo.Parser, new[]{ "JobId", "State", "StartTime", "CloseTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationTermination), global::Temporalio.Api.Batch.V1.BatchOperationTermination.Parser, new[]{ "Details", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationSignal), global::Temporalio.Api.Batch.V1.BatchOperationSignal.Parser, new[]{ "Signal", "Input", "Header", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationCancellation), global::Temporalio.Api.Batch.V1.BatchOperationCancellation.Parser, new[]{ "Identity" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationDeletion), global::Temporalio.Api.Batch.V1.BatchOperationDeletion.Parser, new[]{ "Identity" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationDeletion), global::Temporalio.Api.Batch.V1.BatchOperationDeletion.Parser, new[]{ "Identity" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationReset), global::Temporalio.Api.Batch.V1.BatchOperationReset.Parser, new[]{ "ResetType", "ResetReapplyType", "Identity" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1353,6 +1358,282 @@ namespace Temporalio.Api.Batch.V1 {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// BatchOperationReset sends reset requests to batch workflows.
+  /// Keep the parameter in sync with temporal.api.workflowservice.v1.ResetWorkflowExecutionRequest.
+  /// </summary>
+  public sealed partial class BatchOperationReset : pb::IMessage<BatchOperationReset>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<BatchOperationReset> _parser = new pb::MessageParser<BatchOperationReset>(() => new BatchOperationReset());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<BatchOperationReset> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Batch.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationReset() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationReset(BatchOperationReset other) : this() {
+      resetType_ = other.resetType_;
+      resetReapplyType_ = other.resetReapplyType_;
+      identity_ = other.identity_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationReset Clone() {
+      return new BatchOperationReset(this);
+    }
+
+    /// <summary>Field number for the "reset_type" field.</summary>
+    public const int ResetTypeFieldNumber = 1;
+    private global::Temporalio.Api.Enums.V1.ResetType resetType_ = global::Temporalio.Api.Enums.V1.ResetType.Unspecified;
+    /// <summary>
+    /// Reset type.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.ResetType ResetType {
+      get { return resetType_; }
+      set {
+        resetType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "reset_reapply_type" field.</summary>
+    public const int ResetReapplyTypeFieldNumber = 2;
+    private global::Temporalio.Api.Enums.V1.ResetReapplyType resetReapplyType_ = global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified;
+    /// <summary>
+    /// History event reapply options.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.ResetReapplyType ResetReapplyType {
+      get { return resetReapplyType_; }
+      set {
+        resetReapplyType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 3;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the worker/client.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as BatchOperationReset);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(BatchOperationReset other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ResetType != other.ResetType) return false;
+      if (ResetReapplyType != other.ResetReapplyType) return false;
+      if (Identity != other.Identity) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ResetType != global::Temporalio.Api.Enums.V1.ResetType.Unspecified) hash ^= ResetType.GetHashCode();
+      if (ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) hash ^= ResetReapplyType.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ResetType != global::Temporalio.Api.Enums.V1.ResetType.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) ResetType);
+      }
+      if (ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) ResetReapplyType);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ResetType != global::Temporalio.Api.Enums.V1.ResetType.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) ResetType);
+      }
+      if (ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) ResetReapplyType);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ResetType != global::Temporalio.Api.Enums.V1.ResetType.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) ResetType);
+      }
+      if (ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) ResetReapplyType);
+      }
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(BatchOperationReset other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ResetType != global::Temporalio.Api.Enums.V1.ResetType.Unspecified) {
+        ResetType = other.ResetType;
+      }
+      if (other.ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) {
+        ResetReapplyType = other.ResetReapplyType;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            ResetType = (global::Temporalio.Api.Enums.V1.ResetType) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            ResetReapplyType = (global::Temporalio.Api.Enums.V1.ResetReapplyType) input.ReadEnum();
+            break;
+          }
+          case 26: {
+            Identity = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            ResetType = (global::Temporalio.Api.Enums.V1.ResetType) input.ReadEnum();
+            break;
+          }
+          case 16: {
+            ResetReapplyType = (global::Temporalio.Api.Enums.V1.ResetReapplyType) input.ReadEnum();
+            break;
+          }
+          case 26: {
             Identity = input.ReadString();
             break;
           }

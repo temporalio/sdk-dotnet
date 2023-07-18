@@ -13,6 +13,9 @@ namespace Temporalio.Client
         /// <inheritdoc/>
         internal override Bridge.Interop.RpcService Service => Bridge.Interop.RpcService.Workflow;
 
+        /// <inheritdoc/>
+        internal override string FullName => "temporal.api.workflowservice.v1.WorkflowService";
+
         /// <summary>
         /// Implementation of the workflow service.
         /// </summary>

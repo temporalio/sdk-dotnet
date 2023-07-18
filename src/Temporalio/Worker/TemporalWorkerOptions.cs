@@ -72,6 +72,13 @@ namespace Temporalio.Worker
         public string? BuildID { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether this worker opts into the worker versioning feature. This ensures it
+        /// only receives workflow tasks for workflows which it claims to be compatible with. The
+        /// <see cref="BuildID"/> field is used as this worker's version when enabled, and must be set.
+        /// </summary>
+        public bool UseWorkerVersioning { get; set; }
+
+        /// <summary>
         /// Gets or sets the identity for this worker. If unset, defaults to the client's identity.
         /// </summary>
         public string? Identity { get; set; }

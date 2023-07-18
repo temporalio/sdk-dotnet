@@ -157,8 +157,18 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
 
-      - name: Add dependency on local package
-        run: dotnet add tests/Temporalio.SmokeTest package Temporalio -s "${{ github.workspace }}/nuget-package;https://api.nuget.org/v3/index.json" --prerelease
-
       - name: Run smoke test
-        run: dotnet run --project tests/Temporalio.SmokeTest
+        run: |
+          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "${{ github.workspace }}/nuget-package;https://api.nuget.org/v3/index.json" --prerelease
+          dotnet run --project tests/Temporalio.SmokeTest
+
+      - name: Setup msbuild (Windows only)
+        if: ${{ matrix.os == 'windows-latest' }}
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Run .NET framework smoke test (Windows only)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio -s "${{ github.workspace }}/nuget-package;https://api.nuget.org/v3/index.json" --prerelease
+          msbuild tests/Temporalio.SmokeTestDotNetFramework -t:restore,build -p:Platform=x64
+          tests/Temporalio.SmokeTestDotNetFramework/bin/x64/Debug/Temporalio.SmokeTestDotNetFramework.exe

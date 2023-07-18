@@ -47,7 +47,7 @@ public class WorkflowEnvironment : IAsyncLifetime
                     ClientPrivateKey = System.Text.Encoding.ASCII.GetBytes(clientKey),
                 };
             }
-            env = new(await Temporalio.Client.TemporalClient.ConnectAsync(options));
+            env = new(await TemporalClient.ConnectAsync(options));
         }
         else
         {
