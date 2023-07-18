@@ -468,7 +468,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_TimerCancelBefore_ProperlyCancelled()
+    public async Task ExecuteWorkflowAsync_TimerCancelBefore_ProperlyCanceled()
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
@@ -486,7 +486,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_TimerCancelAfter_ProperlyCancelled()
+    public async Task ExecuteWorkflowAsync_TimerCancelAfter_ProperlyCanceled()
     {
         await ExecuteWorkerAsync<TimerWorkflow>(async worker =>
         {
@@ -695,9 +695,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_Cancel_ProperlyCancelled()
+    public async Task ExecuteWorkflowAsync_Cancel_ProperlyCanceled()
     {
-        Task AssertProperlyCancelled(
+        Task AssertProperlyCanceled(
             CancelWorkflow.Scenario scenario,
             Func<WorkflowHandle<CancelWorkflow>, Task>? waitFor = null,
             Action<WorkflowHandle>? additionalAssertions = null) =>
@@ -723,7 +723,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     await handle.CancelAsync();
                     var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
                         () => handle.GetResultAsync());
-                    Assert.IsType<CancelledFailureException>(exc.InnerException);
+                    Assert.IsType<CanceledFailureException>(exc.InnerException);
                     additionalAssertions?.Invoke(handle);
                 },
                 new TemporalWorkerOptions().
@@ -731,12 +731,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     AddWorkflow<CancelWorkflow.SwallowCancelChildWorkflow>());
 
         // TODO(cretz): wait condition, external signal, etc
-        await AssertProperlyCancelled(CancelWorkflow.Scenario.Timer);
-        await AssertProperlyCancelled(
+        await AssertProperlyCanceled(CancelWorkflow.Scenario.Timer);
+        await AssertProperlyCanceled(
             CancelWorkflow.Scenario.Activity, _ => CancelWorkflow.ActivityStarted!.Task);
-        await AssertProperlyCancelled(
+        await AssertProperlyCanceled(
             CancelWorkflow.Scenario.LocalActivity, _ => CancelWorkflow.ActivityStarted!.Task);
-        await AssertProperlyCancelled(
+        await AssertProperlyCanceled(
             CancelWorkflow.Scenario.ChildTryCancel, handle =>
                 AssertMore.EqualEventuallyAsync(
                     true,
@@ -1144,7 +1144,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             await handle.CancelAsync();
             var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
                 () => handle.GetResultAsync());
-            Assert.IsType<CancelledFailureException>(exc.InnerException);
+            Assert.IsType<CanceledFailureException>(exc.InnerException);
         });
     }
 
@@ -1726,7 +1726,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public class TimeoutActivityWorkflow
     {
         [Activity]
-        public static Task RunUntilCancelledAsync() =>
+        public static Task RunUntilCanceledAsync() =>
             Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
 
         [WorkflowRun]
@@ -1736,7 +1736,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             if (local)
             {
                 await Workflow.ExecuteLocalActivityAsync(
-                    () => RunUntilCancelledAsync(),
+                    () => RunUntilCanceledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMilliseconds(10),
@@ -1746,7 +1746,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             else
             {
                 await Workflow.ExecuteActivityAsync(
-                    () => RunUntilCancelledAsync(),
+                    () => RunUntilCanceledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMilliseconds(10),
@@ -1772,14 +1772,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
                 Assert.Equal(TimeoutType.StartToClose, toExc.TimeoutType);
             },
-            new TemporalWorkerOptions().AddActivity(TimeoutActivityWorkflow.RunUntilCancelledAsync));
+            new TemporalWorkerOptions().AddActivity(TimeoutActivityWorkflow.RunUntilCanceledAsync));
     }
 
     [Workflow]
     public class CancelActivityWorkflow
     {
         [Activity]
-        public static Task RunUntilCancelledAsync() =>
+        public static Task RunUntilCanceledAsync() =>
             Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
 
         [WorkflowRun]
@@ -1796,7 +1796,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             if (input.Local)
             {
                 activity = Workflow.ExecuteLocalActivityAsync(
-                    () => RunUntilCancelledAsync(),
+                    () => RunUntilCanceledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMinutes(10),
@@ -1807,7 +1807,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             else
             {
                 activity = Workflow.ExecuteActivityAsync(
-                    () => RunUntilCancelledAsync(),
+                    () => RunUntilCanceledAsync(),
                     new()
                     {
                         StartToCloseTimeout = TimeSpan.FromMinutes(10),
@@ -1845,7 +1845,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                             TaskTimeout = TimeSpan.FromSeconds(2),
                         }));
                 var actExc = Assert.IsType<ActivityFailureException>(wfExc.InnerException);
-                Assert.IsType<CancelledFailureException>(actExc.InnerException);
+                Assert.IsType<CanceledFailureException>(actExc.InnerException);
 
                 // Cancel before start
                 wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
@@ -1856,10 +1856,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                             // Lowering for quicker LA result
                             TaskTimeout = TimeSpan.FromSeconds(2),
                         }));
-                var cancelExc = Assert.IsType<CancelledFailureException>(wfExc.InnerException);
+                var cancelExc = Assert.IsType<CanceledFailureException>(wfExc.InnerException);
                 Assert.Contains("cancelled before scheduled", cancelExc.Message);
             },
-            new TemporalWorkerOptions().AddActivity(CancelActivityWorkflow.RunUntilCancelledAsync));
+            new TemporalWorkerOptions().AddActivity(CancelActivityWorkflow.RunUntilCanceledAsync));
     }
 
     [Workflow]
@@ -2064,14 +2064,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         (CancelChildWorkflow wf) => wf.RunAsync(false),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
                 var childExc = Assert.IsType<ChildWorkflowFailureException>(wfExc.InnerException);
-                Assert.IsType<CancelledFailureException>(childExc.InnerException);
+                Assert.IsType<CanceledFailureException>(childExc.InnerException);
 
                 // Cancel before start
                 wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                     Env.Client.ExecuteWorkflowAsync(
                         (CancelChildWorkflow wf) => wf.RunAsync(true),
                         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
-                var cancelExc = Assert.IsType<CancelledFailureException>(wfExc.InnerException);
+                var cancelExc = Assert.IsType<CanceledFailureException>(wfExc.InnerException);
                 Assert.Contains("cancelled before scheduled", cancelExc.Message);
             },
             new TemporalWorkerOptions().AddWorkflow<CancelChildWorkflow.ChildWorkflow>());
@@ -2244,7 +2244,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 {
                     var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
                         otherHandle.GetResultAsync());
-                    Assert.IsType<CancelledFailureException>(exc.InnerException);
+                    Assert.IsType<CanceledFailureException>(exc.InnerException);
                 });
             },
             new TemporalWorkerOptions().AddWorkflow<ExternalWorkflow.OtherWorkflow>());

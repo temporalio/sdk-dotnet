@@ -716,7 +716,7 @@ namespace Temporalio.Worker
                     AddCommand(new() { ContinueAsNewWorkflowExecution = cmd });
                 }
                 catch (Exception e) when (
-                    CancellationToken.IsCancellationRequested && TemporalException.IsCancelledException(e))
+                    CancellationToken.IsCancellationRequested && TemporalException.IsCanceledException(e))
                 {
                     // If cancel was ever requested and this is a cancellation or an activity/child
                     // cancellation, we add a cancel command. Technically this means that a
@@ -1448,11 +1448,11 @@ namespace Temporalio.Worker
                 // We choose to use cancelled failure instead of wrapping in child failure which is
                 // similar to what Java and TypeScript do, with the accepted tradeoff that it makes
                 // catch clauses more difficult (hence the presence of
-                // TemporalException.IsCancelledException helper).
+                // TemporalException.IsCanceledException helper).
                 if (token.IsCancellationRequested)
                 {
                     return Task.FromException<ChildWorkflowHandle<TWorkflow, TResult>>(
-                        new CancelledFailureException("Child cancelled before scheduled"));
+                        new CanceledFailureException("Child cancelled before scheduled"));
                 }
 
                 // Add the start command
@@ -1603,7 +1603,7 @@ namespace Temporalio.Worker
                 if (token.IsCancellationRequested)
                 {
                     return Task.FromException(
-                        new CancelledFailureException("Signal cancelled before scheduled"));
+                        new CanceledFailureException("Signal cancelled before scheduled"));
                 }
 
                 var source = new TaskCompletionSource<ResolveSignalExternalWorkflow>();
@@ -1646,11 +1646,11 @@ namespace Temporalio.Worker
                 // We choose to use cancelled failure instead of wrapping in activity failure which
                 // is similar to what Java and TypeScript do, with the accepted tradeoff that it
                 // makes catch clauses more difficult (hence the presence of
-                // TemporalException.IsCancelledException helper).
+                // TemporalException.IsCanceledException helper).
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return Task.FromException<TResult>(
-                        new CancelledFailureException("Activity cancelled before scheduled"));
+                        new CanceledFailureException("Activity cancelled before scheduled"));
                 }
 
                 var seq = applyScheduleCommand(null);

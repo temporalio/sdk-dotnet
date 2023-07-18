@@ -52,7 +52,7 @@ namespace Temporalio.Client
         /// <returns>Untyped task for waiting on result.</returns>
         /// <exception cref="WorkflowFailedException">
         /// Exception thrown for unsuccessful workflow result. The cause can be
-        /// <see cref="CancelledFailureException" />, <see cref="TerminatedFailureException" />,
+        /// <see cref="CanceledFailureException" />, <see cref="TerminatedFailureException" />,
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>
@@ -72,7 +72,7 @@ namespace Temporalio.Client
         /// <returns>Result of the workflow.</returns>
         /// <exception cref="WorkflowFailedException">
         /// Exception thrown for unsuccessful workflow result. The cause can be
-        /// <see cref="CancelledFailureException" />, <see cref="TerminatedFailureException" />,
+        /// <see cref="CanceledFailureException" />, <see cref="TerminatedFailureException" />,
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>
@@ -133,10 +133,10 @@ namespace Temporalio.Client
                                     failAttr.Failure).ConfigureAwait(false));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionCanceledEventAttributes:
                             var cancelAttr = evt.WorkflowExecutionCanceledEventAttributes;
-                            throw new WorkflowFailedException(new CancelledFailureException(
+                            throw new WorkflowFailedException(new CanceledFailureException(
                                 new()
                                 {
-                                    Message = "Workflow cancelled",
+                                    Message = "Workflow canceled",
                                     CanceledFailureInfo = new() { Details = cancelAttr.Details },
                                 },
                                 null,
@@ -517,7 +517,7 @@ namespace Temporalio.Client
         /// <returns>Result of the workflow.</returns>
         /// <exception cref="WorkflowFailedException">
         /// Exception thrown for unsuccessful workflow result. The cause can be
-        /// <see cref="CancelledFailureException" />, <see cref="TerminatedFailureException" />,
+        /// <see cref="CanceledFailureException" />, <see cref="TerminatedFailureException" />,
         /// <see cref="TimeoutFailureException" />, or any exception deserialized that was thrown in
         /// the workflow (usually an <see cref="ApplicationFailureException" />).
         /// </exception>

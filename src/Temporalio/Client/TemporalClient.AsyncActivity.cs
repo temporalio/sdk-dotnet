@@ -52,7 +52,7 @@ namespace Temporalio.Client
                         DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                     if (resp.CancelRequested)
                     {
-                        throw new AsyncActivityCancelledException();
+                        throw new AsyncActivityCanceledException();
                     }
                 }
                 else if (input.Activity is AsyncActivityHandle.TaskTokenReference tokRef)
@@ -68,7 +68,7 @@ namespace Temporalio.Client
                         DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                     if (resp.CancelRequested)
                     {
-                        throw new AsyncActivityCancelledException();
+                        throw new AsyncActivityCanceledException();
                     }
                 }
                 else

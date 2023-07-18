@@ -49,6 +49,7 @@ present.
     - [Worker as Generic Host](#worker-as-generic-host)
   - [Workflows](#workflows)
     - [Workflow Definition](#workflow-definition)
+      - [Workflow Inheritance](#workflow-inheritance)
     - [Running Workflows](#running-workflows)
     - [Invoking Activities](#invoking-activities)
     - [Invoking Child Workflows](#invoking-child-workflows)
@@ -72,6 +73,7 @@ present.
     - [Activity Worker Shutdown](#activity-worker-shutdown)
     - [Activity Testing](#activity-testing)
   - [OpenTelemetry Tracing Support](#opentelemetry-tracing-support)
+  - [Built-in Native Shared Library](#built-in-native-shared-library)
 - [Development](#development)
   - [Build](#build)
   - [Code formatting](#code-formatting)
@@ -92,8 +94,8 @@ CLI:
 
     dotnet add package Temporalio --prerelease
 
-If you are using .NET framework, you have to explicitly set the platform to `x64` or `arm64`, `AnyCPU` will not choose
-the proper library.
+If you are using .NET Framework or a non-standard target platform, see the
+[Built-in Native Shared Library](#built-in-native-shared-library) section later for additional information.
 
 **NOTE: This README is for the current branch and not necessarily what's released on NuGet.**
 
@@ -498,6 +500,24 @@ Attributes that can be applied:
   * `Dynamic = true` can be set for the query which makes the query a dynamic query meaning it will be called when
     no other queries match. The call must accept a `string` for the query name and `Temporalio.Converters.IRawValue[]`
     for the arguments. Only one dynamic query may be present on a workflow.
+
+##### Workflow Inheritance
+
+Workflows can inherit from interfaces and base classes. Callers can use these interfaces to make calls for a workflow
+without the implementation present. This can be valuable in separating logic, but there are some details that should be
+noted.
+
+`[Workflow]` and `[WorkflowRun]` attributes are never inherited and must be defined on item that is actually registered
+with the worker. This means even if an interface or base class has these, they must also be present on the final
+implementing class. So if a base class has a full `[WorkflowRun]` implementation, the subclass must override that
+method, set `[WorkflowRun]` on the override, and then it can delegate to the base class. This explicit non-inheritance
+strategy was intentionally done to avoid diamond problems with workflows and to let readers clearly know whether a class
+is a workflow (including the name defaulted) and what its entry point is. A workflow can only have one `[WorkflowRun]`
+method.
+
+`[WorkflowSignal]` and `[WorkflowQuery]` methods can be inherited from base classes/interfaces if the method is not
+overridden. However, if the method is declared in the subclass, it must also have these attributes. The attributes
+themselves are not inherited.
 
 #### Running Workflows
 
@@ -1071,6 +1091,22 @@ activity context:
 ### OpenTelemetry Tracing Support
 
 See the [OpenTelemetry extension](src/Temporalio.Extensions.OpenTelemetry/).
+
+### Built-in Native Shared Library
+
+This SDK requires a built-in unmanaged, native shared library built in Rust. It is named `temporal_sdk_bridge.dll` on
+Windows, `libtemporal_sdk_bridge.so` on Linux, and `libtemporal_sdk_bridge.dylib` on macOS. This is automatically
+included when using modern versions of .NET on a common platform. If you are using .NET framework, you may have to
+explicitly set the platform to `x64` or `arm64` because `AnyCPU` will not choose the proper library.
+
+Currently we only support [RIDs](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog) `linux-arm64`,
+`linux-x64`, `osx-arm64`, `osx-x64`, and `win-x64`. Any other platforms needed (e.g. `linux-musl-x64` on Alpine) will
+require a custom build.
+
+The native shared library on Windows does require a Visual C++ runtime. Some containers, such as Windows Nano Server, do
+not include this runtime. If not available, users may have to manually copy this runtime (usually just
+`vcruntime140.dll`), depend on a NuGet package that has it, or install the Visual C++ runtime (often via Visual C++
+Redistributable installation).
 
 ## Development
 
