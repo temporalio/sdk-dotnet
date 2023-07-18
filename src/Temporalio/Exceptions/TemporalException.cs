@@ -44,13 +44,13 @@ namespace Temporalio.Exceptions
         /// cancellation. Temporal wraps exceptions or reuses .NET cancellation exceptions, so a
         /// simple type check is not enough to be sure.
         /// </remarks>
-        public static bool IsCancelledException(Exception e) =>
+        public static bool IsCanceledException(Exception e) =>
             // It is important that the .NET cancelled exception is included because it is natural
             // for users to see that as a cancelled exception and it is sometimes thrown from
             // workflow situations like cancelled timers.
             e is OperationCanceledException ||
-            e is CancelledFailureException ||
-            (e as ActivityFailureException)?.InnerException is CancelledFailureException ||
-            (e as ChildWorkflowFailureException)?.InnerException is CancelledFailureException;
+            e is CanceledFailureException ||
+            (e as ActivityFailureException)?.InnerException is CanceledFailureException ||
+            (e as ChildWorkflowFailureException)?.InnerException is CanceledFailureException;
     }
 }

@@ -7,26 +7,26 @@ namespace Temporalio.Exceptions
     /// <summary>
     /// Exception representing a cancellation.
     /// </summary>
-    public class CancelledFailureException : FailureException
+    public class CanceledFailureException : FailureException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CancelledFailureException"/> class.
+        /// Initializes a new instance of the <see cref="CanceledFailureException"/> class.
         /// </summary>
         /// <param name="message">Message for the exception.</param>
         /// <param name="details">Details for the exception.</param>
-        internal protected CancelledFailureException(
+        internal protected CanceledFailureException(
             string message,
             IReadOnlyCollection<object?>? details = null)
             : base(message) =>
             Details = new OutboundFailureDetails(details ?? Array.Empty<object?>());
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CancelledFailureException"/> class.
+        /// Initializes a new instance of the <see cref="CanceledFailureException"/> class.
         /// </summary>
         /// <param name="failure">Underlying proto failure.</param>
         /// <param name="inner">Inner exception if any.</param>
         /// <param name="converter">Converter used for converting details.</param>
-        internal protected CancelledFailureException(
+        internal protected CanceledFailureException(
             Failure failure,
             Exception? inner,
             Converters.IPayloadConverter converter)

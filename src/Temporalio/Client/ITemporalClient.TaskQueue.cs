@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Temporalio.Api.Enums.V1;
 
 namespace Temporalio.Client
 {
@@ -46,13 +47,13 @@ namespace Temporalio.Client
         /// information could not be retrieved for will be marked with a `NotFetched` entry in
         /// <see cref="BuildIdReachability.TaskQueueReachability"/>. The caller may issue another call
         /// to get the reachability for those task queues.</param>
-        /// <param name="reachabilityType">The kind of reachability this request is concerned with.</param>
+        /// <param name="reachability">The kind of reachability this request is concerned with.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>The reachability information.</returns>
         Task<WorkerTaskReachability> GetWorkerTaskReachabilityAsync(
             IReadOnlyCollection<string> buildIds,
             IReadOnlyCollection<string> taskQueues,
-            TaskReachabilityType? reachabilityType = null,
+            TaskReachability? reachability = null,
             RpcOptions? rpcOptions = null);
     }
 }

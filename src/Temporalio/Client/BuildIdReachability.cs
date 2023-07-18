@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using Temporalio.Api.Enums.V1;
 
 namespace Temporalio.Client
 {
@@ -12,7 +12,7 @@ namespace Temporalio.Client
     /// <param name="UnretrievedTaskQueues">If any Task Queues could not be retrieved because the server limits the
     /// number that can be queried at once, they will be listed here.</param>
     public record BuildIdReachability(
-        IReadOnlyDictionary<string, ReadOnlyCollection<TaskReachabilityType>> TaskQueueReachability,
+        IReadOnlyDictionary<string, IReadOnlyCollection<TaskReachability>> TaskQueueReachability,
         IReadOnlyCollection<string> UnretrievedTaskQueues)
     {
         /// <summary>
@@ -27,7 +27,7 @@ namespace Temporalio.Client
                 .SkipWhile(tqr =>
                 {
                     if (tqr.Reachability.Count == 1 &&
-                        tqr.Reachability[0] == Api.Enums.V1.TaskReachability.Unspecified)
+                        tqr.Reachability[0] == TaskReachability.Unspecified)
                     {
                         unretrieved.Add(tqr.TaskQueue);
                         return true;
@@ -37,8 +37,7 @@ namespace Temporalio.Client
                 })
                 .ToDictionary(
                     tqr => tqr.TaskQueue,
-                    tqr =>
-                        tqr.Reachability.Select(r => TaskReachabilityType.FromProto(r)).ToList().AsReadOnly());
+                    tqr => (IReadOnlyCollection<TaskReachability>)tqr.Reachability);
             return new BuildIdReachability(tqrDict, unretrieved.AsReadOnly());
         }
     }

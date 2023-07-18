@@ -199,7 +199,7 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
         // Wait for result
         var exc = await Assert.ThrowsAsync<Exceptions.WorkflowFailedException>(
             async () => await handle.GetResultAsync());
-        Assert.IsType<Exceptions.CancelledFailureException>(exc.InnerException);
+        Assert.IsType<Exceptions.CanceledFailureException>(exc.InnerException);
     }
 
     [Fact]

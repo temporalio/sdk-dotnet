@@ -111,7 +111,7 @@ namespace Temporalio.Converters
                 case Failure.FailureInfoOneofCase.TimeoutFailureInfo:
                     return new TimeoutFailureException(failure, inner, payloadConverter);
                 case Failure.FailureInfoOneofCase.CanceledFailureInfo:
-                    return new CancelledFailureException(failure, inner, payloadConverter);
+                    return new CanceledFailureException(failure, inner, payloadConverter);
                 case Failure.FailureInfoOneofCase.TerminatedFailureInfo:
                     return new TerminatedFailureException(failure, inner, null);
                 case Failure.FailureInfoOneofCase.ActivityFailureInfo:
@@ -156,11 +156,11 @@ namespace Temporalio.Converters
                                 : new() { Payloads_ = { appDet.Details.Select(conv.ToPayload) } },
                     };
                     break;
-                case CancelledFailureException canExc:
+                case CanceledFailureException canExc:
                     var canDet =
                         canExc.Details as OutboundFailureDetails
                         ?? throw new ArgumentException(
-                            "Cancelled exception expected to have outbound details");
+                            "Canceled exception expected to have outbound details");
                     failure.CanceledFailureInfo = new()
                     {
                         Details =
