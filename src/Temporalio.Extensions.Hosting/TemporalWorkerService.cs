@@ -55,7 +55,8 @@ namespace Temporalio.Extensions.Hosting
         /// Initializes a new instance of the <see cref="TemporalWorkerService"/> class using
         /// an existing client and worker options.
         /// </summary>
-        /// <param name="client">Client to use.</param>
+        /// <param name="client">Client to use. If this client is lazy and not connected, it will be
+        /// connected when this service is run.</param>
         /// <param name="workerOptions">Options for the worker.</param>
         public TemporalWorkerService(
             ITemporalClient client,
@@ -75,7 +76,7 @@ namespace Temporalio.Extensions.Hosting
         /// <param name="optionsMonitor">Used to lookup the options to build the worker with.
         /// </param>
         /// <param name="existingClient">Existing client to use if the options don't specify
-        /// client connection options.</param>
+        /// client connection options (connected when run if lazy and not connected).</param>
         /// <param name="loggerFactory">Logger factory to use if there is no logger factory on the
         /// existing client, or the client connect options, or the worker options.</param>
         [ActivatorUtilitiesConstructor]
@@ -113,6 +114,8 @@ namespace Temporalio.Extensions.Hosting
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var client = existingClient ?? await TemporalClient.ConnectAsync(newClientOptions!).ConfigureAwait(false);
+            // Call connect just in case it was a lazy client (no-op if already connected)
+            await client.Connection.ConnectAsync().ConfigureAwait(false);
             using var worker = new TemporalWorker(client, workerOptions);
             await worker.ExecuteAsync(stoppingToken).ConfigureAwait(false);
         }

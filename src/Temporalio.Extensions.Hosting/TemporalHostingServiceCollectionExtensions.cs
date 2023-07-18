@@ -1,4 +1,8 @@
+using System;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Temporalio.Client;
 using Temporalio.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -11,7 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Add a hosted Temporal worker service as a <see cref="IHostedService" /> that contains
         /// its own client that connects with the given target and namespace. To use an injected
-        /// <see cref="Temporalio.Client.ITemporalClient" />, use
+        /// <see cref="ITemporalClient" />, use
         /// <see cref="AddHostedTemporalWorker(IServiceCollection, string)" />. The worker service
         /// will be registered as a singleton. The result is an options builder that can be used to
         /// configure the service.
@@ -33,7 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// Add a hosted Temporal worker service as a <see cref="IHostedService" /> that expects
-        /// an injected <see cref="Temporalio.Client.ITemporalClient" /> (or the returned builder
+        /// an injected <see cref="ITemporalClient" /> (or the returned builder
         /// can have client options populated). Use
         /// <see cref="AddHostedTemporalWorker(IServiceCollection, string, string, string)" /> to
         /// not expect an injected instance and instead connect to a client on worker start. The
@@ -53,6 +57,64 @@ namespace Microsoft.Extensions.DependencyInjection
                 ActivatorUtilities.CreateInstance<TemporalWorkerService>(provider, taskQueue));
             return new TemporalWorkerServiceOptionsBuilder(taskQueue, services).ConfigureOptions(
                 options => options.TaskQueue = taskQueue);
+        }
+
+        /// <summary>
+        /// Adds a singleton <see cref="ITemporalClient" /> via
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection, Func{IServiceProvider, TService})" />
+        /// using a lazy client created with <see cref="TemporalClient.CreateLazy" />. The resulting
+        /// builder can be used to configure the client as can any options approach that alters
+        /// <see cref="TemporalClientConnectOptions" />.
+        /// </summary>
+        /// <param name="services">Service collection to add Temporal client to.</param>
+        /// <param name="clientTargetHost">If set, the host to connect to.</param>
+        /// <param name="clientNamespace">If set, the namespace for the client.</param>
+        /// <returns>Options builder for setting client options.</returns>
+        /// <remarks>
+        /// This client can be used with <see cref="TemporalWorkerService" /> from
+        /// <c>AddHostedTemporalWorker</c> but not <see cref="Temporalio.Worker.TemporalWorker" />
+        /// directly because lazy unconnected clients can't be used directly with those workers.
+        /// </remarks>
+        public static OptionsBuilder<TemporalClientConnectOptions> AddTemporalClient(
+            this IServiceCollection services,
+            string? clientTargetHost = null,
+            string? clientNamespace = null)
+        {
+            services.TryAddSingleton<ITemporalClient>(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<TemporalClientConnectOptions>>();
+                return TemporalClient.CreateLazy(options.Value);
+            });
+            var builder = services.AddOptions<TemporalClientConnectOptions>();
+            if (clientTargetHost != null || clientNamespace != null)
+            {
+                builder.Configure(options =>
+                {
+                    options.TargetHost = clientTargetHost;
+                    if (clientNamespace != null)
+                    {
+                        options.Namespace = clientNamespace;
+                    }
+                });
+            }
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds a singleton <see cref="ITemporalClient" /> via
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection, Func{IServiceProvider, TService})" />
+        /// using a lazy client created with <see cref="TemporalClient.CreateLazy" />. The action
+        /// can be used to configure the client as can any options approach that alters
+        /// <see cref="TemporalClientConnectOptions" />.
+        /// </summary>
+        /// <param name="services">Service collection to add Temporal client to.</param>
+        /// <param name="configureClient">Action to configure client options.</param>
+        /// <returns>The given service collection for chaining.</returns>
+        public static IServiceCollection AddTemporalClient(
+            this IServiceCollection services, Action<TemporalClientConnectOptions> configureClient)
+        {
+            services.AddTemporalClient().Configure(configureClient);
+            return services;
         }
     }
 }

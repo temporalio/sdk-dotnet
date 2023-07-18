@@ -42,13 +42,24 @@ as scoped (via
 [`TryAddScoped`](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.dependencyinjection.extensions.servicecollectiondescriptorextensions.tryaddscoped))
 and registered on the worker. Also `MyWorkflow` is registered as a workflow on the worker.
 
-This means that for every activity invocation, a new scope is created and the the activity is obtained via the service
+Since we gave client parameters to the worker, the client connection is made as part of the worker. If desired,
+`ITemporalClient` can be created via the `AddTemporalClient` extension and it will be available as a singleton that can
+be used by other dependencies including the hosted worker service.
+
+On the worker for every activity invocation, a new scope is created and the the activity is obtained via the service
 provider. So if it is registered as scoped the activity is created each time but if it registered as singleton it is
 created only once and reused. The activity's constructor can be used to accept injected dependencies.
 
 Workflows are inherently self-contained, deterministic units of work and therefore should never call anything external.
 Therefore, there is no such thing as dependency injection for workflows, their construction and lifetime is managed by
 Temporal.
+
+## Clients
+
+When this extension is depended upon, two overloads for `AddTemporalClient` are added as extension methods on
+`IServiceCollection` in the `Microsoft.Extensions.DependencyInjection` namespace which add `ITemporalClient` as a
+singleton if not already present. One overload accepts an optional client target/namespace and returns an option
+builder, and the other accepts an action to configure the options.
 
 ## Worker Services
 

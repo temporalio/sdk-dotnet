@@ -34,8 +34,10 @@ namespace Temporalio.Worker
             // Clone the options to discourage mutation (but we aren't completely disabling mutation
             // on the Options field herein).
             Options = (TemporalWorkerOptions)options.Clone();
+            var bridgeClient = client.BridgeClientProvider.BridgeClient ??
+                throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
             BridgeWorker = new(
-                (Bridge.Client)client.BridgeClientProvider.BridgeClient,
+                (Bridge.Client)bridgeClient,
                 client.Options.Namespace,
                 options);
             if (options.Activities.Count == 0 && options.Workflows.Count == 0)

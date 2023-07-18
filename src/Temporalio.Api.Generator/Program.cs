@@ -73,6 +73,11 @@ foreach (
         apiProtoDir,
         bridgeProtoDir);
 }
+Protoc(
+    Path.Join(projectDir, "src/Temporalio.Api.Generator/grpc_health.proto"),
+    Path.Join(projectDir, "src/Temporalio/Bridge/Api"),
+    "Coresdk",
+    Path.Join(projectDir, "src/Temporalio.Api.Generator"));
 
 // Gen RPC services
 File.WriteAllText(

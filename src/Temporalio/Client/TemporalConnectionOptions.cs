@@ -5,7 +5,7 @@ using Temporalio.Runtime;
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Options for <see cref="TemporalConnection.ConnectAsync" />.
+    /// Options for <see cref="TemporalConnection.ConnectAsync(TemporalConnectionOptions)" />.
     /// <see cref="TargetHost" /> is required.
     /// </summary>
     public class TemporalConnectionOptions : ICloneable
