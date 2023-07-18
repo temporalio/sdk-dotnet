@@ -49,7 +49,7 @@ namespace Temporalio.Workflows
         /// Gets or sets whether the continued Workflow should run on a worker with a compatible Build Id or not when
         /// using the Worker Versioning feature.
         /// </summary>
-        public VersioningIntent? VersioningIntent { get; set; }
+        public VersioningIntent VersioningIntent { get; set; } = VersioningIntent.Unspecified;
 
         /// <summary>
         /// Create a shallow copy of these options.

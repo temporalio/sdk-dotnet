@@ -711,7 +711,7 @@ namespace Temporalio.Worker
                     }
                     if (e.Input.Options?.VersioningIntent is { } vi)
                     {
-                        cmd.VersioningIntent = vi.ToProto();
+                        cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                     }
                     AddCommand(new() { ContinueAsNewWorkflowExecution = cmd });
                 }
@@ -1337,7 +1337,7 @@ namespace Temporalio.Worker
                         }
                         if (input.Options.VersioningIntent is { } vi)
                         {
-                            cmd.VersioningIntent = vi.ToProto();
+                            cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                         }
                         instance.AddCommand(new() { ScheduleActivity = cmd });
                         return seq;
@@ -1498,7 +1498,7 @@ namespace Temporalio.Worker
                 }
                 if (input.Options?.VersioningIntent is { } vi)
                 {
-                    cmd.VersioningIntent = vi.ToProto();
+                    cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                 }
                 instance.AddCommand(new() { StartChildWorkflowExecution = cmd });
 
