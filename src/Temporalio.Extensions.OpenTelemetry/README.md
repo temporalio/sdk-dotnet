@@ -109,10 +109,10 @@ To recap, here are the traditional problems with using simple .NET/OpenTelemetry
 In order to have an implicit parent context without creating a diagnostic activity, and have it be somewhat resumable,
 a wrapper for diagnostic activity context + diagnostic activity called `WorkflowActivity` has been created. This can be
 just a context or the actual diagnostic activity. To create a diagnostic workflow activity, the `ActivitySource`
-extension `StartWorkflowActivity` can be used. This will use the underlying diagnostic activity source, but will
-immediately starts and stops the .NET diagnostic activity it wraps. This is because a diagnostic activity cannot
+extension `TrackWorkflowDiagnosticActivity` can be used. This will use the underlying diagnostic activity source, but
+will immediately start and stop the .NET diagnostic activity it wraps. This is because a diagnostic activity cannot
 represent the time taken for the code within it due to the fact that it may complete in another process which .NET does
-not allow. So the diagnostic activities time range in workflows is immediate and does not matter. However, parentage is
+not allow. So the diagnostic activity's time range in workflows is immediate and does not matter. However, parentage is
 still mostly supported.
 
 ### How Workflow Tracing Works
@@ -150,7 +150,7 @@ can lead to unpredictable behavior/traces during replay (which often only surfac
 ### Creating Diagnostic Activities in Workflows
 
 Users can create their own diagnostic _workflow_ activities via the `ActivitySource` extension
-`TrackWorkflowDiagnosticActivity`. This is `IDisposable` like a normal `System.Diagnostic.Activity`, but unlike that the
+`TrackWorkflowDiagnosticActivity`. This is `IDisposable` like a normal `System.Diagnostic.Activity`, but unlike the
 diagnostic activity, the diagnostic workflow activity may not result in a real diagnostic activity during replay. Also,
 it is started/stopped immediately. It is simply placed as async-local until disposed so it can implicitly become the
 parent of any others.

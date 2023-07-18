@@ -17,7 +17,10 @@ Also see:
 
 Extensions:
 
-* [OpenTelemetry](src/Temporalio.Extensions.OpenTelemetry/)
+* [Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting) -
+  Activity dependency injection and worker generic host support
+* [Temporalio.Extensions.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.OpenTelemetry) -
+  OpenTelemetry tracing support
 
 ⚠️ UNDER ACTIVE DEVELOPMENT
 
@@ -300,7 +303,8 @@ var host = Host.CreateDefaultBuilder(args)
 This can be wrapped in a client "provider" or other similar async task wrapper if needed.
 
 To use worker services or activities with dependency injection, see the
-[Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/) project.
+[Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting)
+project.
 
 #### Data Conversion
 
