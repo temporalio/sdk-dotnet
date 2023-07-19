@@ -29,7 +29,6 @@ namespace Temporalio.Worker
     internal class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext
     {
         private readonly TaskFactory taskFactory;
-        private readonly WorkflowDefinition defn;
         private readonly IFailureConverter failureConverter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
@@ -59,6 +58,8 @@ namespace Temporalio.Worker
         private readonly LinkedList<System.Diagnostics.StackTrace>? pendingTaskStackTraces;
         private readonly ILogger logger;
         private readonly ReplaySafeLogger replaySafeLogger;
+        private readonly Action<WorkflowInstance> onTaskStarting;
+        private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -79,9 +80,9 @@ namespace Temporalio.Worker
         public WorkflowInstance(WorkflowInstanceDetails details)
         {
             taskFactory = new(default, TaskCreationOptions.None, TaskContinuationOptions.ExecuteSynchronously, this);
-            defn = details.Definition;
-            dynamicQuery = defn.DynamicQuery;
-            dynamicSignal = defn.DynamicSignal;
+            Definition = details.Definition;
+            dynamicQuery = Definition.DynamicQuery;
+            dynamicSignal = Definition.DynamicSignal;
             PayloadConverter = details.PayloadConverter;
             failureConverter = details.FailureConverter;
             var rootInbound = new InboundImpl(this);
@@ -104,8 +105,8 @@ namespace Temporalio.Worker
                     return rootInbound.Outbound!;
                 },
                 false);
-            mutableQueries = new(() => new(defn.Queries, OnQueryDefinitionAdded), false);
-            mutableSignals = new(() => new(defn.Signals, OnSignalDefinitionAdded), false);
+            mutableQueries = new(() => new(Definition.Queries, OnQueryDefinitionAdded), false);
+            mutableSignals = new(() => new(Definition.Signals, OnSignalDefinitionAdded), false);
             var initialMemo = details.Start.Memo;
             memo = new(
                 () => initialMemo == null ? new Dictionary<string, IRawValue>(0) :
@@ -122,10 +123,10 @@ namespace Temporalio.Worker
             var start = details.Start;
             startArgs = new(
                 () => DecodeArgs(
-                    method: defn.RunMethod,
+                    method: Definition.RunMethod,
                     payloads: start.Arguments,
                     itemName: $"Workflow {start.WorkflowType}",
-                    dynamic: defn.Dynamic),
+                    dynamic: Definition.Dynamic),
                 false);
             initialSearchAttributes = details.Start.SearchAttributes;
             WorkflowInfo.ParentInfo? parent = null;
@@ -157,6 +158,8 @@ namespace Temporalio.Worker
             pendingTaskStackTraces = workflowStackTrace == WorkflowStackTrace.None ? null : new();
             logger = details.LoggerFactory.CreateLogger($"Temporalio.Workflow:{start.WorkflowType}");
             replaySafeLogger = new(logger);
+            onTaskStarting = details.OnTaskStarting;
+            onTaskCompleted = details.OnTaskCompleted;
             Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
         }
@@ -244,6 +247,11 @@ namespace Temporalio.Worker
         public DateTime UtcNow { get; private set; }
 
         /// <summary>
+        /// Gets the workflow definition.
+        /// </summary>
+        internal WorkflowDefinition Definition { get; private init; }
+
+        /// <summary>
         /// Gets the instance, lazily creating if needed. This should never be called outside this
         /// scheduler.
         /// </summary>
@@ -252,7 +260,7 @@ namespace Temporalio.Worker
             get
             {
                 // We create this lazily because we want the constructor in a workflow context
-                instance ??= defn.CreateWorkflowInstance(startArgs!.Value);
+                instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
                 return instance;
             }
         }
@@ -446,7 +454,11 @@ namespace Temporalio.Worker
                 IsReplaying = act.IsReplaying;
                 UtcNow = act.Timestamp.ToDateTime();
 
+                // Starting callback
+                onTaskStarting(this);
+
                 // Run the event loop until yielded for each job
+                Exception? failureException = null;
                 try
                 {
                     var previousContext = SynchronizationContext.Current;
@@ -470,6 +482,7 @@ namespace Temporalio.Worker
                 }
                 catch (Exception e)
                 {
+                    failureException = e;
                     logger.LogWarning(
                         e,
                         "Failed activation on workflow {WorkflowType} with ID {WorkflowId} and run ID {RunId}",
@@ -521,6 +534,9 @@ namespace Temporalio.Worker
                 // Unset the completion
                 var toReturn = completion;
                 completion = null;
+
+                // Completed callback
+                onTaskCompleted(this, failureException);
                 return toReturn;
             }
         }
@@ -827,7 +843,7 @@ namespace Temporalio.Worker
                     else
                     {
                         // Find definition or fail
-                        var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : defn.Queries;
+                        var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : Definition.Queries;
                         if (!queries.TryGetValue(query.QueryType, out queryDefn))
                         {
                             queryDefn = DynamicQuery;
@@ -939,7 +955,7 @@ namespace Temporalio.Worker
         private void ApplySignalWorkflow(SignalWorkflow signal)
         {
             // Find applicable definition or buffer
-            var signals = mutableSignals.IsValueCreated ? mutableSignals.Value : defn.Signals;
+            var signals = mutableSignals.IsValueCreated ? mutableSignals.Value : Definition.Signals;
             if (!signals.TryGetValue(signal.SignalName, out var signalDefn))
             {
                 signalDefn = DynamicSignal;
@@ -973,7 +989,7 @@ namespace Temporalio.Worker
             {
                 var input = new ExecuteWorkflowInput(
                     Instance: Instance,
-                    RunMethod: defn.RunMethod,
+                    RunMethod: Definition.RunMethod,
                     Args: startArgs!.Value);
                 // We no longer need start args after this point, so we are unsetting them
                 startArgs = null;

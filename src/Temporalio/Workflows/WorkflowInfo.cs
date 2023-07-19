@@ -5,7 +5,7 @@ using Temporalio.Common;
 namespace Temporalio.Workflows
 {
     /// <summary>
-    /// Information about the running workflow.
+    /// Information about the running workflow. This is immutable for the life of the workflow run.
     /// </summary>
     /// <param name="Attempt">Current workflow attempt.</param>
     /// <param name="ContinuedRunId">Run ID if this was continued.</param>
@@ -45,7 +45,7 @@ namespace Temporalio.Workflows
     {
         /// <summary>
         /// Gets the value that is set on
-        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this activity is
+        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this workflow is
         /// started.
         /// </summary>
         internal Dictionary<string, object> LoggerScope { get; } = new()

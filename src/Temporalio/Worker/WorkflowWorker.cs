@@ -279,7 +279,9 @@ namespace Temporalio.Worker
                     FailureConverter: options.DataConverter.FailureConverter,
                     LoggerFactory: options.LoggerFactory,
                     DisableTracingEvents: options.DisableWorkflowTracingEventListener,
-                    WorkflowStackTrace: options.WorkflowStackTrace));
+                    WorkflowStackTrace: options.WorkflowStackTrace,
+                    OnTaskStarting: options.OnTaskStarting,
+                    OnTaskCompleted: options.OnTaskCompleted));
         }
     }
 }

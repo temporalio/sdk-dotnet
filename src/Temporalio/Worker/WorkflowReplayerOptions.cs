@@ -15,6 +15,26 @@ namespace Temporalio.Worker
         private IList<WorkflowDefinition> workflows = new List<WorkflowDefinition>();
 
         /// <summary>
+        /// Event for when a workflow task is starting. This should only be used for very advanced
+        /// scenarios.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This is experimental and there are many caveats about its use. It is important
+        /// to read the documentation on <see cref="TemporalWorkerOptions.WorkflowTaskStarting" />.
+        /// </remarks>
+        public event EventHandler<WorkflowTaskStartingEventArgs>? WorkflowTaskStarting;
+
+        /// <summary>
+        /// Event for when a workflow task has completed but not yet sent back to the server. This
+        /// should only be used for very advanced scenarios.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This is experimental and there are many caveats about its use. It is important
+        /// to read the documentation on <see cref="TemporalWorkerOptions.WorkflowTaskStarting" />.
+        /// </remarks>
+        public event EventHandler<WorkflowTaskCompletedEventArgs>? WorkflowTaskCompleted;
+
+        /// <summary>
         /// Gets the workflow definitions.
         /// </summary>
         public IList<WorkflowDefinition> Workflows => workflows;
@@ -139,6 +159,31 @@ namespace Temporalio.Worker
             var options = (WorkflowReplayerOptions)MemberwiseClone();
             options.workflows = new List<WorkflowDefinition>(Workflows);
             return options;
+        }
+
+        /// <summary>
+        /// Callback for task starting.
+        /// </summary>
+        /// <param name="instance">Workflow instance.</param>
+        internal void OnTaskStarting(WorkflowInstance instance)
+        {
+            if (WorkflowTaskStarting is { } handler)
+            {
+                handler(instance, new(instance));
+            }
+        }
+
+        /// <summary>
+        /// Callback for task completed.
+        /// </summary>
+        /// <param name="instance">Workflow instance.</param>
+        /// <param name="failureException">Task failure exception.</param>
+        internal void OnTaskCompleted(WorkflowInstance instance, Exception? failureException)
+        {
+            if (WorkflowTaskCompleted is { } handler)
+            {
+                handler(instance, new(instance, failureException));
+            }
         }
     }
 }
