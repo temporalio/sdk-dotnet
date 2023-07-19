@@ -888,6 +888,38 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class BadSignalArgsDroppedWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
+
+        [WorkflowSignal]
+        public async Task SomeSignalAsync(string arg) => SignalArgs.Add(arg);
+
+        [WorkflowQuery]
+        public IList<string> SignalArgs { get; } = new List<string>();
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_BadSignalArgs_ProperlyDropped()
+    {
+        await ExecuteWorkerAsync<BadSignalArgsDroppedWorkflow>(async worker =>
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                (BadSignalArgsDroppedWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // Send 4 signals, the first and third being bad
+            await handle.SignalAsync("SomeSignal", new object?[] { 123 });
+            await handle.SignalAsync("SomeSignal", new object?[] { "value1" });
+            await handle.SignalAsync("SomeSignal", new object?[] { false });
+            await handle.SignalAsync("SomeSignal", new object?[] { "value2" });
+            Assert.Equal(
+                new List<string> { "value1", "value2" },
+                await handle.QueryAsync(wf => wf.SignalArgs));
+        });
+    }
+
+    [Workflow]
     public class QueryWorkflow
     {
         // Just wait forever
