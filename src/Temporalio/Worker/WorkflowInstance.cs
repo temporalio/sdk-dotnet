@@ -954,15 +954,30 @@ namespace Temporalio.Worker
             // Run the handler as a top-level function
             _ = QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
             {
-                await inbound.Value.HandleSignalAsync(new(
-                    Signal: signal.SignalName,
-                    Definition: signalDefn,
-                    Args: DecodeArgs(
+                // Drop the signal if we cannot decode the arguments
+                object?[] args;
+                try
+                {
+                    args = DecodeArgs(
                         method: signalDefn.Method ?? signalDefn.Delegate!.Method,
                         payloads: signal.Input,
                         itemName: $"Signal {signal.SignalName}",
                         dynamic: signalDefn.Dynamic,
-                        dynamicArgPrepend: signal.SignalName),
+                        dynamicArgPrepend: signal.SignalName);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(
+                        e,
+                        "Failed decoding signal args for {SignalName}, dropping the signal",
+                        signal.SignalName);
+                    return;
+                }
+
+                await inbound.Value.HandleSignalAsync(new(
+                    Signal: signal.SignalName,
+                    Definition: signalDefn,
+                    Args: args,
                     Headers: signal.Headers)).ConfigureAwait(true);
             }));
         }
