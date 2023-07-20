@@ -16,7 +16,7 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="options">Heartbeat options.</param>
         /// <returns>Completion task.</returns>
-        /// <exception cref="Exceptions.AsyncActivityCancelledException">
+        /// <exception cref="Exceptions.AsyncActivityCanceledException">
         /// If the server has requested that this activity be cancelled. Users should catch this and
         /// invoke <see cref="ReportCancellationAsync" /> for proper behavior.
         /// </exception>
@@ -46,7 +46,7 @@ namespace Temporalio.Client
                 Activity: Activity, Exception: exception, Options: options));
 
         /// <summary>
-        /// Report this activity as cancelled..
+        /// Report this activity as cancelled.
         /// </summary>
         /// <param name="options">Cancel options.</param>
         /// <returns>Completion task.</returns>

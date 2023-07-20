@@ -12,7 +12,7 @@ namespace Temporalio.Client
         public Task UpdateWorkerBuildIdCompatibilityAsync(
             string taskQueue,
             BuildIdOp buildIdOp,
-            RpcOptions? rpcOptions) =>
+            RpcOptions? rpcOptions = null) =>
             OutboundInterceptor.UpdateWorkerBuildIdCompatibilityAsync(new(
                 TaskQueue: taskQueue,
                 BuildIdOp: buildIdOp,
@@ -32,12 +32,12 @@ namespace Temporalio.Client
         public Task<WorkerTaskReachability> GetWorkerTaskReachabilityAsync(
             IReadOnlyCollection<string> buildIds,
             IReadOnlyCollection<string> taskQueues,
-            TaskReachabilityType? reachabilityType,
-            RpcOptions? rpcOptions) =>
+            TaskReachability? reachability = null,
+            RpcOptions? rpcOptions = null) =>
             OutboundInterceptor.GetWorkerTaskReachabilityAsync(new(
                 BuildIds: buildIds,
                 TaskQueues: taskQueues,
-                ReachabilityType: reachabilityType,
+                Reachability: reachability,
                 RpcOptions: rpcOptions));
 
         internal partial class Impl
@@ -108,7 +108,7 @@ namespace Temporalio.Client
                 var req = new GetWorkerTaskReachabilityRequest
                 {
                     Namespace = Client.Options.Namespace,
-                    Reachability = input.ReachabilityType?.ToProto() ?? TaskReachability.Unspecified,
+                    Reachability = input.Reachability ?? TaskReachability.Unspecified,
                 };
                 req.BuildIds.AddRange(input.BuildIds);
                 req.TaskQueues.AddRange(input.TaskQueues);

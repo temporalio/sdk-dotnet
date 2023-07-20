@@ -727,12 +727,12 @@ namespace Temporalio.Worker
                     }
                     if (e.Input.Options?.VersioningIntent is { } vi)
                     {
-                        cmd.VersioningIntent = vi.ToProto();
+                        cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                     }
                     AddCommand(new() { ContinueAsNewWorkflowExecution = cmd });
                 }
                 catch (Exception e) when (
-                    CancellationToken.IsCancellationRequested && TemporalException.IsCancelledException(e))
+                    CancellationToken.IsCancellationRequested && TemporalException.IsCanceledException(e))
                 {
                     // If cancel was ever requested and this is a cancellation or an activity/child
                     // cancellation, we add a cancel command. Technically this means that a
@@ -970,15 +970,30 @@ namespace Temporalio.Worker
             // Run the handler as a top-level function
             _ = QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
             {
-                await inbound.Value.HandleSignalAsync(new(
-                    Signal: signal.SignalName,
-                    Definition: signalDefn,
-                    Args: DecodeArgs(
+                // Drop the signal if we cannot decode the arguments
+                object?[] args;
+                try
+                {
+                    args = DecodeArgs(
                         method: signalDefn.Method ?? signalDefn.Delegate!.Method,
                         payloads: signal.Input,
                         itemName: $"Signal {signal.SignalName}",
                         dynamic: signalDefn.Dynamic,
-                        dynamicArgPrepend: signal.SignalName),
+                        dynamicArgPrepend: signal.SignalName);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(
+                        e,
+                        "Failed decoding signal args for {SignalName}, dropping the signal",
+                        signal.SignalName);
+                    return;
+                }
+
+                await inbound.Value.HandleSignalAsync(new(
+                    Signal: signal.SignalName,
+                    Definition: signalDefn,
+                    Args: args,
                     Headers: signal.Headers)).ConfigureAwait(true);
             }));
         }
@@ -1353,7 +1368,7 @@ namespace Temporalio.Worker
                         }
                         if (input.Options.VersioningIntent is { } vi)
                         {
-                            cmd.VersioningIntent = vi.ToProto();
+                            cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                         }
                         instance.AddCommand(new() { ScheduleActivity = cmd });
                         return seq;
@@ -1464,11 +1479,11 @@ namespace Temporalio.Worker
                 // We choose to use cancelled failure instead of wrapping in child failure which is
                 // similar to what Java and TypeScript do, with the accepted tradeoff that it makes
                 // catch clauses more difficult (hence the presence of
-                // TemporalException.IsCancelledException helper).
+                // TemporalException.IsCanceledException helper).
                 if (token.IsCancellationRequested)
                 {
                     return Task.FromException<ChildWorkflowHandle<TWorkflow, TResult>>(
-                        new CancelledFailureException("Child cancelled before scheduled"));
+                        new CanceledFailureException("Child cancelled before scheduled"));
                 }
 
                 // Add the start command
@@ -1514,7 +1529,7 @@ namespace Temporalio.Worker
                 }
                 if (input.Options?.VersioningIntent is { } vi)
                 {
-                    cmd.VersioningIntent = vi.ToProto();
+                    cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                 }
                 instance.AddCommand(new() { StartChildWorkflowExecution = cmd });
 
@@ -1619,7 +1634,7 @@ namespace Temporalio.Worker
                 if (token.IsCancellationRequested)
                 {
                     return Task.FromException(
-                        new CancelledFailureException("Signal cancelled before scheduled"));
+                        new CanceledFailureException("Signal cancelled before scheduled"));
                 }
 
                 var source = new TaskCompletionSource<ResolveSignalExternalWorkflow>();
@@ -1662,11 +1677,11 @@ namespace Temporalio.Worker
                 // We choose to use cancelled failure instead of wrapping in activity failure which
                 // is similar to what Java and TypeScript do, with the accepted tradeoff that it
                 // makes catch clauses more difficult (hence the presence of
-                // TemporalException.IsCancelledException helper).
+                // TemporalException.IsCanceledException helper).
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return Task.FromException<TResult>(
-                        new CancelledFailureException("Activity cancelled before scheduled"));
+                        new CanceledFailureException("Activity cancelled before scheduled"));
                 }
 
                 var seq = applyScheduleCommand(null);

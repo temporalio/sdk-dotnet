@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Temporalio.Api.Enums.V1;
 
 namespace Temporalio.Client.Interceptors
 {
@@ -14,7 +15,7 @@ namespace Temporalio.Client.Interceptors
     /// information could not be retrieved for will be marked with a `NotFetched` entry in
     /// <see cref="BuildIdReachability.TaskQueueReachability"/>. The caller may issue another call
     /// to get the reachability for those task queues.</param>
-    /// <param name="ReachabilityType">The kind of reachability this request is concerned with.</param>
+    /// <param name="Reachability">The kind of reachability this request is concerned with.</param>
     /// <param name="RpcOptions">RPC options.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
@@ -23,6 +24,6 @@ namespace Temporalio.Client.Interceptors
     public record GetWorkerTaskReachabilityInput(
         IReadOnlyCollection<string> BuildIds,
         IReadOnlyCollection<string> TaskQueues,
-        TaskReachabilityType? ReachabilityType,
+        TaskReachability? Reachability,
         RpcOptions? RpcOptions);
 }

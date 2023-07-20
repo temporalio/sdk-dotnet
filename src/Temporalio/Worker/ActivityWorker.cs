@@ -388,7 +388,7 @@ namespace Temporalio.Worker
                 completion.Result.Cancelled = new()
                 {
                     Failure = await worker.Client.Options.DataConverter.ToFailureAsync(
-                        new CancelledFailureException("Cancelled")).ConfigureAwait(false),
+                        new CanceledFailureException("Cancelled")).ConfigureAwait(false),
                 };
             }
             catch (OperationCanceledException) when (act.HeartbeatFailureException != null)

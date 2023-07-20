@@ -173,7 +173,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         var activityReached = new TaskCompletionSource();
         var gotCancellation = false;
         [Activity]
-        async Task WaitUntilCancelledAsync()
+        async Task WaitUntilCanceledAsync()
         {
             activityReached.SetResult();
             while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
@@ -185,7 +185,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             ActivityExecutionContext.Current.CancellationToken.ThrowIfCancellationRequested();
         }
         await Assert.ThrowsAsync<WorkflowFailedException>(() => ExecuteActivityAsync(
-            WaitUntilCancelledAsync,
+            WaitUntilCanceledAsync,
             waitForCancellation: true,
             heartbeatTimeout: TimeSpan.FromSeconds(1),
             afterStarted: async handle =>
@@ -202,7 +202,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     {
         var activityReached = new TaskCompletionSource();
         [Activity]
-        async Task<string> CatchCancelledAsync()
+        async Task<string> CatchCanceledAsync()
         {
             activityReached.SetResult();
             while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
@@ -213,7 +213,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             return "Cancelled!";
         }
         var res = await ExecuteActivityAsync(
-            CatchCancelledAsync,
+            CatchCanceledAsync,
             waitForCancellation: true,
             heartbeatTimeout: TimeSpan.FromSeconds(1),
             afterStarted: async handle =>
@@ -232,7 +232,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         var activityReached = new TaskCompletionSource();
         var gotCancellation = false;
         [Activity]
-        async Task WaitUntilCancelledAsync()
+        async Task WaitUntilCanceledAsync()
         {
             activityReached.SetResult();
             while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
@@ -245,7 +245,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         }
         var workflowId = string.Empty;
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => ExecuteActivityAsync(
-            WaitUntilCancelledAsync,
+            WaitUntilCanceledAsync,
             workerStoppingToken: workerStoppingSource.Token,
             afterStarted: async handle =>
             {
@@ -263,7 +263,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteActivityAsync_ThrowsOperationCancelled_ReportsFailure()
+    public async Task ExecuteActivityAsync_ThrowsOperationCanceled_ReportsFailure()
     {
         // Just to confirm that a .NET cancelled exception when cancel is not requested is properly
         // treated as an app exception instead of marking activity cancelled
@@ -304,18 +304,18 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteActivityAsync_MaxConcurrent_TimesOutIfMore()
     {
         [Activity]
-        static Task WaitUntilCancelledAsync() =>
+        static Task WaitUntilCanceledAsync() =>
             Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
         // Only allow 5 activities but try to execute 6 and confirm schedule to start timeout fails
         var taskQueue = $"tq-{Guid.NewGuid()}";
         using var worker = new TemporalWorker(Client, new TemporalWorkerOptions(taskQueue)
         {
             MaxConcurrentActivities = 5,
-        }.AddActivity(WaitUntilCancelledAsync));
+        }.AddActivity(WaitUntilCanceledAsync));
         await worker.ExecuteAsync(async () =>
         {
             var arg = new KSWorkflowParams(new KSAction(ExecuteActivity: new(
-                Name: "WaitUntilCancelled",
+                Name: "WaitUntilCanceled",
                 TaskQueue: taskQueue,
                 Count: 6,
                 ScheduleToStartTimeoutMS: 1000)));
@@ -333,10 +333,10 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteActivityAsync_HeartbeatTimeout_ReportsFailure()
     {
         [Activity]
-        static Task WaitUntilCancelledAsync() =>
+        static Task WaitUntilCanceledAsync() =>
             Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
         var wfErr = await Assert.ThrowsAnyAsync<WorkflowFailedException>(() => ExecuteActivityAsync(
-            WaitUntilCancelledAsync,
+            WaitUntilCanceledAsync,
             heartbeatTimeout: TimeSpan.FromSeconds(1)));
         var actErr = Assert.IsType<ActivityFailureException>(wfErr.InnerException);
         var toErr = Assert.IsType<TimeoutFailureException>(actErr.InnerException);
@@ -531,7 +531,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
                     await actHandle.HeartbeatAsync();
                     return false;
                 }
-                catch (AsyncActivityCancelledException)
+                catch (AsyncActivityCanceledException)
                 {
                     return true;
                 }
@@ -541,7 +541,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             await actHandle.ReportCancellationAsync();
             var wfErr = await Assert.ThrowsAsync<WorkflowFailedException>(
                 async () => await handle.GetResultAsync());
-            Assert.IsType<CancelledFailureException>(wfErr.InnerException);
+            Assert.IsType<CanceledFailureException>(wfErr.InnerException);
         });
     }
 
@@ -597,7 +597,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         var activityWaiting = new TaskCompletionSource();
         var workerShutdown = false;
         [Activity]
-        async Task WaitUntilCancelledAsync()
+        async Task WaitUntilCanceledAsync()
         {
             activityWaiting.SetResult();
             try
@@ -614,7 +614,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
 
         var taskQueue = $"tq-{Guid.NewGuid()}";
         using var worker = new TemporalWorker(
-            Client, new TemporalWorkerOptions(taskQueue).AddActivity(WaitUntilCancelledAsync));
+            Client, new TemporalWorkerOptions(taskQueue).AddActivity(WaitUntilCanceledAsync));
         // Overwrite bridge worker with one we can inject failures on
         using var bridgeWorker = new ManualPollCompletionBridgeWorker(worker.BridgeWorker);
         worker.BridgeWorker = bridgeWorker;
@@ -626,7 +626,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         {
             // Start the workflow
             var arg = new KSWorkflowParams(new KSAction(ExecuteActivity: new(
-                Name: "WaitUntilCancelled",
+                Name: "WaitUntilCanceled",
                 TaskQueue: taskQueue)));
             handle = await Env.Client.StartWorkflowAsync(
                 (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),

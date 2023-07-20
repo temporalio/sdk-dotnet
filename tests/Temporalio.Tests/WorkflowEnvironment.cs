@@ -61,6 +61,13 @@ public class WorkflowEnvironment : IAsyncLifetime
                         // Disable search attribute cache
                         "--dynamic-config-value",
                         "system.forceSearchAttributesCacheRefreshOnRead=true",
+                        // Enable versioning
+                        "--dynamic-config-value",
+                        "frontend.workerVersioningDataAPIs=true",
+                        "--dynamic-config-value",
+                        "frontend.workerVersioningWorkflowAPIs=true",
+                        "--dynamic-config-value",
+                        "worker.buildIdScavengerEnabled=true",
                     },
                 },
             });
