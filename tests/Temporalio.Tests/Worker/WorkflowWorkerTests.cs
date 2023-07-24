@@ -3,6 +3,7 @@
 
 namespace Temporalio.Tests.Worker;
 
+using System.Collections.Concurrent;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
@@ -2942,6 +2943,73 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     expectedEvents,
                     (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
             });
+    }
+
+    [Workflow]
+    public class TaskEventsWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Wait for cancel, then throw a task failure
+            try
+            {
+                await Workflow.DelayAsync(TimeSpan.FromDays(5));
+            }
+            catch (TaskCanceledException)
+            {
+                throw new InvalidOperationException("Intentional task failure");
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_TaskEvents_AreRecordedProperly()
+    {
+        // Track events
+        var workerOptions = new TemporalWorkerOptions();
+        var startingEvents = new ConcurrentQueue<WorkflowTaskStartingEventArgs>();
+        var completedEvents = new ConcurrentQueue<WorkflowTaskCompletedEventArgs>();
+        EventHandler<WorkflowTaskStartingEventArgs> startingHandler = (_, e) => startingEvents.Enqueue(e);
+        EventHandler<WorkflowTaskCompletedEventArgs> completedHandler = (_, e) => completedEvents.Enqueue(e);
+        workerOptions.WorkflowTaskStarting += startingHandler;
+        workerOptions.WorkflowTaskCompleted += completedHandler;
+
+        // Run worker
+        await ExecuteWorkerAsync<TaskEventsWorkflow>(
+            async worker =>
+            {
+                // Remove the handlers to prove that altering event takes no effect after start
+                workerOptions.WorkflowTaskStarting -= startingHandler;
+                workerOptions.WorkflowTaskCompleted -= completedHandler;
+
+                // Start
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (TaskEventsWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Wait for timer start to appear in history
+                await AssertHasEventEventuallyAsync(handle, e => e.TimerStartedEventAttributes != null);
+
+                // Confirm events
+                Assert.Single(startingEvents);
+                Assert.Equal("TaskEventsWorkflow", startingEvents.Single().WorkflowDefinition.Name);
+                Assert.Equal(handle.Id, startingEvents.Single().WorkflowInfo.WorkflowId);
+                Assert.Equal(handle.ResultRunId, startingEvents.Single().WorkflowInfo.RunId);
+                Assert.Single(completedEvents);
+                Assert.Equal(handle.Id, completedEvents.Single().WorkflowInfo.WorkflowId);
+                Assert.Null(completedEvents.Single().TaskFailureException);
+
+                // Now cancel, wait for task failure in history, and confirm task failure appears in
+                // events
+                await handle.CancelAsync();
+                await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional task failure");
+                Assert.True(startingEvents.Count >= 2);
+                Assert.True(completedEvents.Count >= 2);
+                var exc = Assert.IsType<InvalidOperationException>(completedEvents.ElementAt(1).TaskFailureException);
+                Assert.Equal("Intentional task failure", exc.Message);
+            },
+            workerOptions);
     }
 
     private async Task ExecuteWorkerAsync<TWf>(

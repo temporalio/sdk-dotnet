@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Api.WorkflowActivation;
@@ -20,9 +21,8 @@ namespace Temporalio.Worker
     /// <param name="LoggerFactory">Logger factory.</param>
     /// <param name="DisableTracingEvents">Whether tracing events are disabled.</param>
     /// <param name="WorkflowStackTrace">Option for workflow stack trace.</param>
-    /// <remarks>
-    /// This is built to be easily serializable in case we do want a sandbox one day.
-    /// </remarks>
+    /// <param name="OnTaskStarting">Callback for every instance task start.</param>
+    /// <param name="OnTaskCompleted">Callback for every instance task complete.</param>
     internal record WorkflowInstanceDetails(
         string Namespace,
         string TaskQueue,
@@ -34,5 +34,7 @@ namespace Temporalio.Worker
         IFailureConverter FailureConverter,
         ILoggerFactory LoggerFactory,
         bool DisableTracingEvents,
-        WorkflowStackTrace WorkflowStackTrace);
+        WorkflowStackTrace WorkflowStackTrace,
+        Action<WorkflowInstance> OnTaskStarting,
+        Action<WorkflowInstance, Exception?> OnTaskCompleted);
 }

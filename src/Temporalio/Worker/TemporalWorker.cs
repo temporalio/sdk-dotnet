@@ -81,7 +81,9 @@ namespace Temporalio.Worker
                     WorkflowInstanceFactory: options.WorkflowInstanceFactory,
                     DebugMode: options.DebugMode,
                     DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
-                    WorkflowStackTrace: options.WorkflowStackTrace));
+                    WorkflowStackTrace: options.WorkflowStackTrace,
+                    OnTaskStarting: options.OnTaskStarting,
+                    OnTaskCompleted: options.OnTaskCompleted));
             }
         }
 

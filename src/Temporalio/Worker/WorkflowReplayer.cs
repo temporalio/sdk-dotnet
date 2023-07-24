@@ -169,7 +169,9 @@ namespace Temporalio.Worker
                             WorkflowInstanceFactory: options.WorkflowInstanceFactory,
                             DebugMode: options.DebugMode,
                             DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
-                            WorkflowStackTrace: WorkflowStackTrace.None),
+                            WorkflowStackTrace: WorkflowStackTrace.None,
+                            OnTaskStarting: options.OnTaskStarting,
+                            OnTaskCompleted: options.OnTaskCompleted),
                         (runId, removeFromCache) => SetResult(removeFromCache));
                 }
                 catch
