@@ -16,5 +16,7 @@ namespace Temporalio.Worker
         Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory,
         bool DebugMode,
         bool DisableWorkflowTracingEventListener,
-        WorkflowStackTrace WorkflowStackTrace);
+        WorkflowStackTrace WorkflowStackTrace,
+        Action<WorkflowInstance> OnTaskStarting,
+        Action<WorkflowInstance, Exception?> OnTaskCompleted);
 }

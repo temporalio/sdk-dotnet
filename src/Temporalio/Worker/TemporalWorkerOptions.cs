@@ -37,6 +37,44 @@ namespace Temporalio.Worker
         public TemporalWorkerOptions(string taskQueue) => TaskQueue = taskQueue;
 
         /// <summary>
+        /// Event for when a workflow task is starting. This should only be used for very advanced
+        /// scenarios.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This is experimental and may change in the future.
+        /// </remarks>
+        /// <remarks>
+        /// WARNING: As currently implemented, this does not currently represent workflow tasks as
+        /// Temporal server defines them. Rather this is SDK "activations" of which there may be
+        /// multiple in a single task if a user, for example, uses local activities. This may change
+        /// in the future.
+        /// </remarks>
+        /// <remarks>
+        /// WARNING: If a task fails (not a workflow failure, but a non-Temporal exception from a
+        /// task causing task failure), the task will continually retry causing new task events.
+        /// </remarks>
+        /// <remarks>
+        /// WARNING: In the case of a deadlock (i.e. task taking longer than 2 seconds), a
+        /// <see cref="WorkflowTaskCompleted" /> event may not occur.
+        /// </remarks>
+        /// <remarks>
+        /// WARNING: Adding/removing to/from this event or <see cref="WorkflowTaskCompleted" /> must
+        /// be done before constructing the worker. Since the worker clones these options on
+        /// construction, any alterations after construction will not apply.
+        /// </remarks>
+        public event EventHandler<WorkflowTaskStartingEventArgs>? WorkflowTaskStarting;
+
+        /// <summary>
+        /// Event for when a workflow task has completed but not yet sent back to the server. This
+        /// should only be used for very advanced scenarios.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This is experimental and there are many caveats about its use. It is important
+        /// to read the documentation on <see cref="WorkflowTaskStarting" />.
+        /// </remarks>
+        public event EventHandler<WorkflowTaskCompletedEventArgs>? WorkflowTaskCompleted;
+
+        /// <summary>
         /// Gets or sets the task queue for the worker.
         /// </summary>
         public string? TaskQueue { get; set; }
@@ -293,6 +331,31 @@ namespace Temporalio.Worker
             options.activities = new List<ActivityDefinition>(Activities);
             options.workflows = new List<WorkflowDefinition>(Workflows);
             return options;
+        }
+
+        /// <summary>
+        /// Callback for task starting.
+        /// </summary>
+        /// <param name="instance">Workflow instance.</param>
+        internal void OnTaskStarting(WorkflowInstance instance)
+        {
+            if (WorkflowTaskStarting is { } handler)
+            {
+                handler(instance, new(instance));
+            }
+        }
+
+        /// <summary>
+        /// Callback for task completed.
+        /// </summary>
+        /// <param name="instance">Workflow instance.</param>
+        /// <param name="failureException">Task failure exception.</param>
+        internal void OnTaskCompleted(WorkflowInstance instance, Exception? failureException)
+        {
+            if (WorkflowTaskCompleted is { } handler)
+            {
+                handler(instance, new(instance, failureException));
+            }
         }
     }
 }
