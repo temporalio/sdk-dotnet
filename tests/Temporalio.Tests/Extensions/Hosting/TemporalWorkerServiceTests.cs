@@ -3,6 +3,8 @@ namespace Temporalio.Tests.Extensions.Hosting;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Temporalio.Activities;
 using Temporalio.Client;
 using Temporalio.Extensions.Hosting;
@@ -45,6 +47,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         [WorkflowRun]
         public async Task<List<string>> RunAsync()
         {
+            Workflow.Logger.LogInformation("Running database workflow");
             var list = await Workflow.ExecuteActivityAsync(
                 (DatabaseActivities act) => act.DoThingsAsync(),
                 new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) });
@@ -58,6 +61,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task TemporalWorkerService_ExecuteAsync_SimpleWorker()
     {
+        using var loggerFactory = new TestUtils.LogCaptureFactory(NullLoggerFactory.Instance);
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var host = Host.CreateDefaultBuilder().ConfigureServices(services =>
         {
@@ -68,6 +72,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
 
             // Add the rest of the services
             services.
+                AddSingleton<ILoggerFactory>(loggerFactory).
                 AddScoped<DatabaseClient>().
                 AddHostedTemporalWorker(taskQueue).
                 AddScopedActivities<DatabaseActivities>().
@@ -86,6 +91,8 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         Assert.Equal(
             new List<string> { "something-6", "something-7", "something-6", "something-7" },
             result);
+        // Confirm the log appeared
+        Assert.Contains(loggerFactory.Logs, e => e.Formatted == "Running database workflow");
     }
 
     public class SingletonCounter
