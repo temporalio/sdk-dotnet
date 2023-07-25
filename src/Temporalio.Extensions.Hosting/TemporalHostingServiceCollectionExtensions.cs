@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Temporalio.Client;
 using Temporalio.Extensions.Hosting;
@@ -64,7 +65,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection, Func{IServiceProvider, TService})" />
         /// using a lazy client created with <see cref="TemporalClient.CreateLazy" />. The resulting
         /// builder can be used to configure the client as can any options approach that alters
-        /// <see cref="TemporalClientConnectOptions" />.
+        /// <see cref="TemporalClientConnectOptions" />. If a logging factory is on the container,
+        /// it will be set on the client.
         /// </summary>
         /// <param name="services">Service collection to add Temporal client to.</param>
         /// <param name="clientTargetHost">If set, the host to connect to.</param>
@@ -97,6 +99,13 @@ namespace Microsoft.Extensions.DependencyInjection
                     }
                 });
             }
+            builder.Configure<IServiceProvider>((options, provider) =>
+            {
+                if (provider.GetService<ILoggerFactory>() is { } loggerFactory)
+                {
+                    options.LoggerFactory = loggerFactory;
+                }
+            });
             return builder;
         }
 
@@ -105,7 +114,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection, Func{IServiceProvider, TService})" />
         /// using a lazy client created with <see cref="TemporalClient.CreateLazy" />. The action
         /// can be used to configure the client as can any options approach that alters
-        /// <see cref="TemporalClientConnectOptions" />.
+        /// <see cref="TemporalClientConnectOptions" />. If a logging factory is on the container,
+        /// it will be set on the client.
         /// </summary>
         /// <param name="services">Service collection to add Temporal client to.</param>
         /// <param name="configureClient">Action to configure client options.</param>

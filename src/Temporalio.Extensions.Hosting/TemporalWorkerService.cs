@@ -77,8 +77,9 @@ namespace Temporalio.Extensions.Hosting
         /// </param>
         /// <param name="existingClient">Existing client to use if the options don't specify
         /// client connection options (connected when run if lazy and not connected).</param>
-        /// <param name="loggerFactory">Logger factory to use if there is no logger factory on the
-        /// existing client, or the client connect options, or the worker options.</param>
+        /// <param name="loggerFactory">Logger factory to use if not already on the worker options.
+        /// The worker options logger factory or this one will be also be used for the client if an
+        /// existing client does not exist (regardless of client options' logger factory).</param>
         [ActivatorUtilitiesConstructor]
         public TemporalWorkerService(
             string taskQueue,
@@ -99,14 +100,13 @@ namespace Temporalio.Extensions.Hosting
             }
 
             workerOptions = options;
-            // If a logging factory is provided and it is not on the client options already or
-            // worker options already, set it on the worker options
-            if (loggerFactory != null &&
-                workerOptions.LoggerFactory == null &&
-                newClientOptions?.LoggerFactory == null &&
-                existingClient?.Options?.LoggerFactory == null)
+
+            // Set logger factory on worker options if not already there
+            workerOptions.LoggerFactory ??= loggerFactory;
+            // Put logger factory, if present, on client options
+            if (newClientOptions != null && workerOptions.LoggerFactory != null)
             {
-                options.LoggerFactory = loggerFactory;
+                newClientOptions.LoggerFactory = workerOptions.LoggerFactory;
             }
         }
 
