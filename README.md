@@ -18,7 +18,7 @@ Also see:
 Extensions:
 
 * [Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting) -
-  Activity dependency injection and worker generic host support
+  Client dependency injection, activity dependency injection, and worker generic host support
 * [Temporalio.Extensions.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.OpenTelemetry) -
   OpenTelemetry tracing support
 
@@ -43,7 +43,7 @@ present.
   - [Executing a Workflow](#executing-a-workflow)
 - [Usage](#usage)
   - [Clients](#clients)
-    - [Client via Dependency Injection](#client-via-dependency-injection)
+    - [Client Dependency Injection](#client-dependency-injection)
     - [Data Conversion](#data-conversion)
   - [Workers](#workers)
     - [Worker as Generic Host](#worker-as-generic-host)
@@ -255,58 +255,22 @@ Notes about the above code:
 * The `handle` above represents a `WorkflowHandle` which has specific workflow operations on it. For existing workflows,
   handles can be obtained via `client.GetWorkflowHandle`.
 
-#### Client via Dependency Injection
+#### Client Dependency Injection
 
-Currently dependency injection for clients is done like any other async dependency. There are not yet any helpers to
-make this easier. There is a [known issue](https://github.com/temporalio/sdk-dotnet/issues/44) where creating the client
-outside of the dependency injection container causes it to not be usable via dependency injection so it must be created
-within the container.
+To create clients for use with dependency injection, see the
+[Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting/)
+project which has extension methods for creating singleton clients lazily on service collections.
 
-The current suggestion is just to make the `Task<TemporalClient>` a singleton. For example, in an ASP.NET application:
+For manually creating clients for dependency injection, users may prefer `TemporalClient.CreateLazy` which is a
+synchronous method which creates a client that does not attempt to connect until the first call is made on it. This can
+be helpful for dependency injection but beware that deferring connection until later can make it hard to see issues with
+connection parameters as early as may be expected. However, connection must be made before a worker is created with it.
 
-```csharp
-using Temporalio.Client;
-
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSingleton(ctx =>
-    TemporalClient.ConnectAsync(new()
-    {
-        TargetHost = "localhost:7233",
-        LoggerFactory = ctx.GetRequiredService<ILoggerFactory>(),
-    }));
-
-// Can then be used in handlers
-var app = builder.Build();
-app.MapGet("/", async (Task<TemporalClient> clientTask) =>
-{
-    var client = await clientTask;
-    return await client.ExecuteWorkflowAsync(
-        (MyWorkflow wf) => wf.RunAsync(),
-        new(id: "my-workflow-id", taskQueue: "my-task-queue"));
-});
-app.Run();
-```
-
-Or from a generic host application:
-
-```csharp
-using Temporalio.Client;
-
-var host = Host.CreateDefaultBuilder(args)
-    .ConfigureServices(svcs =>
-        svcs.AddSingleton(ctx => TemporalClient.ConnectAsync(new()
-        {
-            TargetHost = "localhost:7233",
-            LoggerFactory = ctx.GetRequiredService<ILoggerFactory>(),
-        })))
-    .Build();
-```
-
-This can be wrapped in a client "provider" or other similar async task wrapper if needed.
-
-To use worker services or activities with dependency injection, see the
-[Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting)
-project.
+Note, there is a [known issue](https://github.com/temporalio/sdk-dotnet/issues/44) where creating the connected client
+outside of the dependency injection container may cause it to not be usable via dependency injection because it was not
+created in the container. Users should use lazy dependency injection abouve, however if the client must be created and
+connected externally and non-lazily, the current suggestion is to put the connect `Task` as a singleton and resolve it
+for each use similar to how other async DI utilities are used.
 
 #### Data Conversion
 
@@ -390,8 +354,9 @@ Notes about the above code:
 
 #### Worker as Generic Host
 
-See the [Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/) project for support for worker services and
-activity dependency injection.
+See the
+[Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting/)
+project for support for worker services and client/activity dependency injection.
 
 ### Workflows
 
@@ -1030,8 +995,8 @@ Notes about activity definitions:
 #### Activity Dependency Injection
 
 To have activity classes instantiated via a DI container to support dependency injection, see the
-[Temporalio.Extensions.Hosting](src/Temporalio.Extensions.Hosting/) project which supports worker services in addition
-to activity dependency injection.
+[Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting/)
+project which supports worker services in addition to activity dependency injection.
 
 #### Activity Execution Context
 
@@ -1090,7 +1055,8 @@ activity context:
 
 ### OpenTelemetry Tracing Support
 
-See the [OpenTelemetry extension](src/Temporalio.Extensions.OpenTelemetry/).
+See the
+[OpenTelemetry extension](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.OpenTelemetry/).
 
 ### Built-in Native Shared Library
 
