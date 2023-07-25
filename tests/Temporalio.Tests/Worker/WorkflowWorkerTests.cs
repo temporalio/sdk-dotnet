@@ -3012,6 +3012,62 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             workerOptions);
     }
 
+    public class DuplicateActivities
+    {
+        private readonly string returnValue;
+
+        public DuplicateActivities(string returnValue) => this.returnValue = returnValue;
+
+        [Activity]
+        public string DoThing() => returnValue;
+    }
+
+    [Workflow]
+    public class DuplicateActivityWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string[]> RunAsync(string taskQueue1, string taskQueue2)
+        {
+            return new[]
+            {
+                await Workflow.ExecuteActivityAsync(
+                    (DuplicateActivities act) => act.DoThing(),
+                    new()
+                    {
+                        TaskQueue = taskQueue1,
+                        ScheduleToCloseTimeout = TimeSpan.FromHours(1),
+                    }),
+                await Workflow.ExecuteActivityAsync(
+                    (DuplicateActivities act) => act.DoThing(),
+                    new()
+                    {
+                        TaskQueue = taskQueue2,
+                        ScheduleToCloseTimeout = TimeSpan.FromHours(1),
+                    }),
+            };
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_DuplicateActivity_DoesNotCacheInstance()
+    {
+        await ExecuteWorkerAsync<DuplicateActivityWorkflow>(
+            async worker1 =>
+            {
+                await ExecuteWorkerAsync<DuplicateActivityWorkflow>(
+                    async worker2 =>
+                    {
+                        var ret = await Env.Client.ExecuteWorkflowAsync(
+                            (DuplicateActivityWorkflow wf) =>
+                                wf.RunAsync(worker1.Options.TaskQueue!, worker2.Options.TaskQueue!),
+                            new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker1.Options.TaskQueue!));
+                        Assert.Equal(new[] { "instance1", "instance2" }, ret);
+                    },
+                    new TemporalWorkerOptions().AddAllActivities(new DuplicateActivities("instance2")));
+            },
+            new TemporalWorkerOptions().AddAllActivities(new DuplicateActivities("instance1")));
+    }
+
     private async Task ExecuteWorkerAsync<TWf>(
         Func<TemporalWorker, Task> action,
         TemporalWorkerOptions? options = null,

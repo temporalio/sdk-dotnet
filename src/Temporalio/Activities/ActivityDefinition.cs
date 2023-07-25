@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,8 +12,6 @@ namespace Temporalio.Activities
     /// </summary>
     public class ActivityDefinition
     {
-        private static readonly ConcurrentDictionary<MethodInfo, ActivityDefinition> CachedDefinitions = new();
-
         private readonly Func<object?[], object?> invoker;
 
         private ActivityDefinition(
@@ -65,16 +62,14 @@ namespace Temporalio.Activities
         /// must have <see cref="ActivityAttribute" /> set on it.
         /// </summary>
         /// <param name="del">Delegate to create definition from.</param>
-        /// <param name="cache">True if this should cache the result making successive invocations
-        /// for the same method quicker.</param>
         /// <returns>Definition built from the delegate.</returns>
-        public static ActivityDefinition Create(Delegate del, bool cache = true)
+        public static ActivityDefinition Create(Delegate del)
         {
             if (del.Method == null)
             {
                 throw new ArgumentException("Activities must have accessible methods");
             }
-            return Create(del.Method, cache, del.DynamicInvoke);
+            return Create(del.Method, del.DynamicInvoke);
         }
 
         /// <summary>
@@ -147,10 +142,9 @@ namespace Temporalio.Activities
         /// <typeparam name="T">Type with activity definitions.</typeparam>
         /// <param name="instance">Instance to invoke the activity definitions on. Must be non-null
         /// if any activities are non-static.</param>
-        /// <param name="cache">True if each definition should be cached.</param>
         /// <returns>Collection of activity definitions on the type.</returns>
-        public static IReadOnlyCollection<ActivityDefinition> CreateAll<T>(
-            T? instance, bool cache = true) => CreateAll(typeof(T), instance, cache);
+        public static IReadOnlyCollection<ActivityDefinition> CreateAll<T>(T? instance) =>
+            CreateAll(typeof(T), instance);
 
         /// <summary>
         /// Create all applicable activity definitions for the given type. At least one activity
@@ -159,10 +153,8 @@ namespace Temporalio.Activities
         /// <param name="type">Type with activity definitions.</param>
         /// <param name="instance">Instance to invoke the activity definitions on. Must be non-null
         /// if any activities are non-static.</param>
-        /// <param name="cache">True if each definition should be cached.</param>
         /// <returns>Collection of activity definitions on the type.</returns>
-        public static IReadOnlyCollection<ActivityDefinition> CreateAll(
-            Type type, object? instance, bool cache = true)
+        public static IReadOnlyCollection<ActivityDefinition> CreateAll(Type type, object? instance)
         {
             var ret = new List<ActivityDefinition>();
             foreach (var method in type.GetMethods(
@@ -178,7 +170,7 @@ namespace Temporalio.Activities
                     throw new InvalidOperationException(
                         $"Instance not provided, but activity method {method} is non-static");
                 }
-                ret.Add(Create(method, cache, parameters => method.Invoke(instance, parameters)));
+                ret.Add(Create(method, parameters => method.Invoke(instance, parameters)));
             }
             if (ret.Count == 0)
             {
@@ -240,16 +232,6 @@ namespace Temporalio.Activities
             return NameFromAttributed(method, attr) ??
                 throw new ArgumentException(
                     $"{method} cannot be used directly since it is a dynamic activity");
-        }
-
-        private static ActivityDefinition Create(
-            MethodInfo method, bool cache, Func<object?[], object?> invoker)
-        {
-            if (cache)
-            {
-                return CachedDefinitions.GetOrAdd(method, method => Create(method, false, invoker));
-            }
-            return Create(method, invoker);
         }
 
         private static object?[] ParametersWithDefaults(
