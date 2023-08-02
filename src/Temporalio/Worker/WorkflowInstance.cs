@@ -181,6 +181,15 @@ namespace Temporalio.Worker
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
 
         /// <inheritdoc />
+        public bool ContinueAsNewSuggested { get; private set; }
+
+        /// <inheritdoc />
+        public int CurrentHistoryLength { get; private set; }
+
+        /// <inheritdoc />
+        public int CurrentHistorySize { get; private set; }
+
+        /// <inheritdoc />
         public WorkflowQueryDefinition? DynamicQuery
         {
             get => dynamicQuery;
@@ -451,6 +460,9 @@ namespace Temporalio.Worker
             {
                 completion = new() { RunId = act.RunId, Successful = new() };
                 currentActivationException = null;
+                ContinueAsNewSuggested = act.ContinueAsNewSuggested;
+                CurrentHistoryLength = checked((int)act.HistoryLength);
+                CurrentHistorySize = checked((int)act.HistorySizeBytes);
                 IsReplaying = act.IsReplaying;
                 UtcNow = act.Timestamp.ToDateTime();
 
