@@ -362,6 +362,61 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    public record HistoryInfo(int HistoryLength, int HistorySize, bool ContinueAsNewSuggested);
+
+    [Workflow]
+    public class HistoryInfoWorkflow
+    {
+        // Just wait forever
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowSignal]
+        public async Task BunchOfEventsAsync(int count)
+        {
+            // Create a lot of one-day timers
+            for (var i = 0; i < count; i++)
+            {
+                _ = Workflow.DelayAsync(TimeSpan.FromDays(1));
+            }
+        }
+
+        [WorkflowQuery]
+        public HistoryInfo HistoryInfo => new(
+            HistoryLength: Workflow.CurrentHistoryLength,
+            HistorySize: Workflow.CurrentHistorySize,
+            ContinueAsNewSuggested: Workflow.ContinueAsNewSuggested);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_HistoryInfo_IsAccurate()
+    {
+        await ExecuteWorkerAsync<HistoryInfoWorkflow>(async worker =>
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                (HistoryInfoWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // Issue query before anything else, which should mean only a history size of 3, at
+            // least 100 bytes of history, and no continue as new suggestion
+            var origInfo = await handle.QueryAsync(wf => wf.HistoryInfo);
+            Assert.Equal(3, origInfo.HistoryLength);
+            Assert.True(origInfo.HistorySize > 100);
+            Assert.False(origInfo.ContinueAsNewSuggested);
+
+            // Now send a lot of events
+            await handle.SignalAsync(wf =>
+                wf.BunchOfEventsAsync(WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount));
+            // Send one more event to trigger the WFT update. We have to do this because just a
+            // query will have a stale representation of history counts, but signal forces a new
+            // WFT.
+            await handle.SignalAsync(wf => wf.BunchOfEventsAsync(1));
+            var newInfo = await handle.QueryAsync(wf => wf.HistoryInfo);
+            Assert.True(newInfo.HistoryLength > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount);
+            Assert.True(newInfo.HistorySize > origInfo.HistorySize);
+            Assert.True(newInfo.ContinueAsNewSuggested);
+        });
+    }
+
     [Workflow]
     public class MultiParamWorkflow
     {
