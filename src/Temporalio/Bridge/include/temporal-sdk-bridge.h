@@ -79,7 +79,9 @@ typedef struct ByteArray {
 /**
  * If success or fail are not null, they must be manually freed when done.
  */
-typedef void (*ClientConnectCallback)(void *user_data, struct Client *success, const struct ByteArray *fail);
+typedef void (*ClientConnectCallback)(void *user_data,
+                                      struct Client *success,
+                                      const struct ByteArray *fail);
 
 typedef struct RpcCallOptions {
   enum RpcService service;
@@ -100,7 +102,11 @@ typedef struct RpcCallOptions {
  * present. Status code may still be 0 with a failure message. Failure details
  * represent a protobuf gRPC status message.
  */
-typedef void (*ClientRpcCallCallback)(void *user_data, const struct ByteArray *success, uint32_t status_code, const struct ByteArray *failure_message, const struct ByteArray *failure_details);
+typedef void (*ClientRpcCallCallback)(void *user_data,
+                                      const struct ByteArray *success,
+                                      uint32_t status_code,
+                                      const struct ByteArray *failure_message,
+                                      const struct ByteArray *failure_details);
 
 /**
  * If fail is not null, it must be manually freed when done. Runtime is always
@@ -192,7 +198,10 @@ typedef struct DevServerOptions {
 /**
  * Anything besides user data must be freed if non-null.
  */
-typedef void (*EphemeralServerStartCallback)(void *user_data, struct EphemeralServer *success, const struct ByteArray *success_target, const struct ByteArray *fail);
+typedef void (*EphemeralServerStartCallback)(void *user_data,
+                                             struct EphemeralServer *success,
+                                             const struct ByteArray *success_target,
+                                             const struct ByteArray *fail);
 
 typedef void (*EphemeralServerShutdownCallback)(void *user_data, const struct ByteArray *fail);
 
@@ -228,7 +237,9 @@ typedef struct WorkerOptions {
  * If success or fail are present, they must be freed. They will both be null
  * if this is a result of a poll shutdown.
  */
-typedef void (*WorkerPollCallback)(void *user_data, const struct ByteArray *success, const struct ByteArray *fail);
+typedef void (*WorkerPollCallback)(void *user_data,
+                                   const struct ByteArray *success,
+                                   const struct ByteArray *fail);
 
 /**
  * If fail is present, it must be freed.
