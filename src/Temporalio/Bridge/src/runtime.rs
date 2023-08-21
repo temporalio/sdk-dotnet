@@ -5,9 +5,12 @@ use std::net::SocketAddr;
 use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
+use temporal_sdk_core::telemetry::{build_otlp_metric_exporter, start_prometheus_metric_exporter};
 use temporal_sdk_core::CoreRuntime;
+use temporal_sdk_core_api::telemetry::metrics::CoreMeter;
 use temporal_sdk_core_api::telemetry::{
-    Logger, MetricsExporter, OtelCollectorOptions, TelemetryOptions as CoreTelemetryOptions,
+    Logger, OtelCollectorOptions, OtelCollectorOptionsBuilder, PrometheusExporterOptions,
+    PrometheusExporterOptionsBuilder, TelemetryOptions as CoreTelemetryOptions,
     TelemetryOptionsBuilder, TraceExportConfig, TraceExporter,
 };
 use url::Url;
@@ -130,16 +133,24 @@ pub extern "C" fn byte_array_free(runtime: *mut Runtime, bytes: *const ByteArray
 
 impl Runtime {
     fn new(options: &RuntimeOptions) -> anyhow::Result<Runtime> {
+        let mut core = CoreRuntime::new(
+            if let Some(v) = unsafe { options.telemetry.as_ref() } {
+                v.try_into()?
+            } else {
+                CoreTelemetryOptions::default()
+            },
+            tokio::runtime::Builder::new_multi_thread(),
+        )?;
+        // We late-bind the metrics after core runtime is created since it needs
+        // the Tokio handle
+        if let Some(v) = unsafe { options.telemetry.as_ref() } {
+            if let Some(v) = unsafe { v.metrics.as_ref() } {
+                let _guard = core.tokio_handle().enter();
+                core.attach_late_init_metrics(v.try_into()?);
+            }
+        }
         Ok(Runtime {
-            // TODO(cretz): Options to configure thread pool?
-            core: Arc::new(CoreRuntime::new(
-                if let Some(v) = unsafe { options.telemetry.as_ref() } {
-                    v.try_into()?
-                } else {
-                    CoreTelemetryOptions::default()
-                },
-                tokio::runtime::Builder::new_multi_thread(),
-            )?),
+            core: Arc::new(core),
         })
     }
 
@@ -184,23 +195,30 @@ impl TryFrom<&TelemetryOptions> for CoreTelemetryOptions {
                 }
             });
         }
-        if let Some(v) = unsafe { options.metrics.as_ref() } {
-            build.metrics(if let Some(t) = unsafe { v.opentelemetry.as_ref() } {
-                if !v.prometheus.is_null() {
-                    return Err(anyhow::anyhow!(
-                        "Cannot have OpenTelemetry and Prometheus metrics"
-                    ));
-                }
-                MetricsExporter::Otel(t.try_into()?)
-            } else if let Some(t) = unsafe { v.prometheus.as_ref() } {
-                MetricsExporter::Prometheus(SocketAddr::from_str(t.bind_address.to_str())?)
-            } else {
-                return Err(anyhow::anyhow!(
-                    "Either OpenTelemetry or Prometheus config must be provided"
-                ));
-            });
-        }
+        // Note, metrics are late-bound in Runtime::new
         Ok(build.build()?)
+    }
+}
+
+impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
+    type Error = anyhow::Error;
+
+    fn try_from(options: &MetricsOptions) -> anyhow::Result<Self> {
+        if let Some(t) = unsafe { options.opentelemetry.as_ref() } {
+            if !options.prometheus.is_null() {
+                Err(anyhow::anyhow!(
+                    "Cannot have OpenTelemetry and Prometheus metrics"
+                ))
+            } else {
+                Ok(Arc::new(build_otlp_metric_exporter(t.try_into()?)?))
+            }
+        } else if let Some(t) = unsafe { options.prometheus.as_ref() } {
+            Ok(start_prometheus_metric_exporter(t.try_into()?)?.meter)
+        } else {
+            Err(anyhow::anyhow!(
+                "Either OpenTelemetry or Prometheus config must be provided"
+            ))
+        }
     }
 }
 
@@ -208,16 +226,25 @@ impl TryFrom<&OpenTelemetryOptions> for OtelCollectorOptions {
     type Error = anyhow::Error;
 
     fn try_from(options: &OpenTelemetryOptions) -> anyhow::Result<Self> {
-        Ok(OtelCollectorOptions {
-            url: Url::parse(&options.url.to_str())?,
-            headers: options.headers.to_string_map_on_newlines(),
-            metric_periodicity: if options.metric_periodicity_millis == 0 {
-                None
-            } else {
-                Some(Duration::from_millis(
-                    options.metric_periodicity_millis.into(),
-                ))
-            },
-        })
+        let mut build = OtelCollectorOptionsBuilder::default();
+        build
+            .url(Url::parse(&options.url.to_str())?)
+            .headers(options.headers.to_string_map_on_newlines());
+        if options.metric_periodicity_millis > 0 {
+            build.metric_periodicity(Duration::from_millis(
+                options.metric_periodicity_millis.into(),
+            ));
+        }
+        Ok(build.build()?)
+    }
+}
+
+impl TryFrom<&PrometheusOptions> for PrometheusExporterOptions {
+    type Error = anyhow::Error;
+
+    fn try_from(options: &PrometheusOptions) -> anyhow::Result<Self> {
+        Ok(PrometheusExporterOptionsBuilder::default()
+            .socket_addr(SocketAddr::from_str(options.bind_address.to_str())?)
+            .build()?)
     }
 }
