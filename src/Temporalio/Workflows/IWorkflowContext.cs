@@ -19,6 +19,21 @@ namespace Temporalio.Workflows
         CancellationToken CancellationToken { get; }
 
         /// <summary>
+        /// Gets a value indicating whether <see cref="Workflow.ContinueAsNewSuggested" /> is true.
+        /// </summary>
+        bool ContinueAsNewSuggested { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.CurrentHistoryLength" />.
+        /// </summary>
+        int CurrentHistoryLength { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.CurrentHistorySize" />.
+        /// </summary>
+        int CurrentHistorySize { get; }
+
+        /// <summary>
         /// Gets or sets value for <see cref="Workflow.DynamicQuery" />.
         /// </summary>
         WorkflowQueryDefinition? DynamicQuery { get; set; }

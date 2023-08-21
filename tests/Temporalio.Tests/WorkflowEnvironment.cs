@@ -10,6 +10,8 @@ using Xunit;
 
 public class WorkflowEnvironment : IAsyncLifetime
 {
+    public const int ContinueAsNewSuggestedHistoryCount = 50;
+
     private readonly Lazy<KitchenSinkWorker> kitchenSinkWorker;
     private Temporalio.Testing.WorkflowEnvironment? env;
 
@@ -68,6 +70,8 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "frontend.workerVersioningWorkflowAPIs=true",
                         "--dynamic-config-value",
                         "worker.buildIdScavengerEnabled=true",
+                        "--dynamic-config-value",
+                        $"limit.historyCount.suggestContinueAsNew={ContinueAsNewSuggestedHistoryCount}",
                     },
                 },
             });

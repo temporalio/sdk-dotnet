@@ -28,6 +28,34 @@ namespace Temporalio.Workflows
         public static CancellationToken CancellationToken => Context.CancellationToken;
 
         /// <summary>
+        /// Gets a value indicating whether continue as new is suggested.
+        /// </summary>
+        /// <remarks>
+        /// This value is the current continue-as-new suggestion up until the current task. Note,
+        /// this value may not be up to date when accessed in a query. When continue as new is
+        /// suggested is based on server-side configuration.
+        /// </remarks>
+        public static bool ContinueAsNewSuggested => Context.ContinueAsNewSuggested;
+
+        /// <summary>
+        /// Gets the current number of events in history.
+        /// </summary>
+        /// <remarks>
+        /// This value is the current history event count up until the current task. Note, this
+        /// value may not be up to date when accessed in a query.
+        /// </remarks>
+        public static int CurrentHistoryLength => Context.CurrentHistoryLength;
+
+        /// <summary>
+        /// Gets the current history size in bytes.
+        /// </summary>
+        /// <remarks>
+        /// This value is the current history size up until the current task. Note, this value may
+        /// not be up to date when accessed in a query.
+        /// </remarks>
+        public static int CurrentHistorySize => Context.CurrentHistorySize;
+
+        /// <summary>
         /// Gets or sets the current dynamic query handler. This can be null for no dynamic query
         /// handling.
         /// </summary>
