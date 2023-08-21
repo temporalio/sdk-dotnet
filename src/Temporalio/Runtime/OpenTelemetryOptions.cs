@@ -47,6 +47,11 @@ namespace Temporalio.Runtime
         public TimeSpan? MetricsExportInterval { get; set; }
 
         /// <summary>
+        /// Gets or sets the metric temporality.
+        /// </summary>
+        public OpenTelemetryMetricTemporality MetricTemporality { get; set; } = OpenTelemetryMetricTemporality.Cumulative;
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

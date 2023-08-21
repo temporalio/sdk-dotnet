@@ -1,5 +1,6 @@
 use crate::ByteArray;
 use crate::ByteArrayRef;
+use crate::MetadataRef;
 
 use std::net::SocketAddr;
 use std::str::FromStr;
@@ -8,10 +9,10 @@ use std::time::Duration;
 use temporal_sdk_core::telemetry::{build_otlp_metric_exporter, start_prometheus_metric_exporter};
 use temporal_sdk_core::CoreRuntime;
 use temporal_sdk_core_api::telemetry::metrics::CoreMeter;
+use temporal_sdk_core_api::telemetry::MetricTemporality;
 use temporal_sdk_core_api::telemetry::{
-    Logger, OtelCollectorOptions, OtelCollectorOptionsBuilder, PrometheusExporterOptions,
-    PrometheusExporterOptionsBuilder, TelemetryOptions as CoreTelemetryOptions,
-    TelemetryOptionsBuilder, TraceExportConfig, TraceExporter,
+    Logger, OtelCollectorOptionsBuilder, PrometheusExporterOptionsBuilder,
+    TelemetryOptions as CoreTelemetryOptions, TelemetryOptionsBuilder,
 };
 use url::Url;
 
@@ -22,15 +23,8 @@ pub struct RuntimeOptions {
 
 #[repr(C)]
 pub struct TelemetryOptions {
-    tracing: *const TracingOptions,
     logging: *const LoggingOptions,
     metrics: *const MetricsOptions,
-}
-
-#[repr(C)]
-pub struct TracingOptions {
-    filter: ByteArrayRef,
-    opentelemetry: OpenTelemetryOptions,
 }
 
 #[repr(C)]
@@ -43,20 +37,30 @@ pub struct LoggingOptions {
 pub struct MetricsOptions {
     opentelemetry: *const OpenTelemetryOptions,
     prometheus: *const PrometheusOptions,
+    attach_service_name: bool,
+    global_tags: MetadataRef,
+    metric_prefix: ByteArrayRef,
 }
 
 #[repr(C)]
 pub struct OpenTelemetryOptions {
     url: ByteArrayRef,
-    /// Headers are <key1>\n<value1>\n<key2>\n<value2>. Header keys or values
-    /// cannot contain a newline within.
-    headers: ByteArrayRef,
+    headers: MetadataRef,
     metric_periodicity_millis: u32,
+    metric_temporality: OpenTelemetryMetricTemporality,
+}
+
+#[repr(C)]
+pub enum OpenTelemetryMetricTemporality {
+    Cumulative = 1,
+    Delta,
 }
 
 #[repr(C)]
 pub struct PrometheusOptions {
     bind_address: ByteArrayRef,
+    counters_total_suffix: bool,
+    unit_suffix: bool,
 }
 
 #[derive(Clone)]
@@ -178,11 +182,8 @@ impl TryFrom<&TelemetryOptions> for CoreTelemetryOptions {
 
     fn try_from(options: &TelemetryOptions) -> anyhow::Result<Self> {
         let mut build = TelemetryOptionsBuilder::default();
-        if let Some(v) = unsafe { options.tracing.as_ref() } {
-            build.tracing(TraceExportConfig {
-                filter: v.filter.to_string(),
-                exporter: TraceExporter::Otel((&v.opentelemetry).try_into()?),
-            });
+        if let Some(v) = unsafe { options.metrics.as_ref() } {
+            build.attach_service_name(v.attach_service_name);
         }
         if let Some(v) = unsafe { options.logging.as_ref() } {
             build.logging(if v.forward {
@@ -204,47 +205,49 @@ impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
     type Error = anyhow::Error;
 
     fn try_from(options: &MetricsOptions) -> anyhow::Result<Self> {
-        if let Some(t) = unsafe { options.opentelemetry.as_ref() } {
+        if let Some(otel_options) = unsafe { options.opentelemetry.as_ref() } {
             if !options.prometheus.is_null() {
-                Err(anyhow::anyhow!(
+                return Err(anyhow::anyhow!(
                     "Cannot have OpenTelemetry and Prometheus metrics"
-                ))
-            } else {
-                Ok(Arc::new(build_otlp_metric_exporter(t.try_into()?)?))
+                ));
             }
-        } else if let Some(t) = unsafe { options.prometheus.as_ref() } {
-            Ok(start_prometheus_metric_exporter(t.try_into()?)?.meter)
+            // Build OTel exporter
+            let mut build = OtelCollectorOptionsBuilder::default();
+            build
+                .url(Url::parse(&otel_options.url.to_str())?)
+                .headers(otel_options.headers.to_string_map_on_newlines())
+                .metric_temporality(match otel_options.metric_temporality {
+                    OpenTelemetryMetricTemporality::Cumulative => MetricTemporality::Cumulative,
+                    OpenTelemetryMetricTemporality::Delta => MetricTemporality::Delta,
+                })
+                .global_tags(options.global_tags.to_string_map_on_newlines());
+            if otel_options.metric_periodicity_millis > 0 {
+                build.metric_periodicity(Duration::from_millis(
+                    otel_options.metric_periodicity_millis.into(),
+                ));
+            }
+            // TODO(cretz): Not supported as user-defined currently
+            // if let Some(prefix) = options.metric_prefix.to_option_string() {
+            //     build.metric_prefix(&prefix);
+            // }
+            Ok(Arc::new(build_otlp_metric_exporter(build.build()?)?))
+        } else if let Some(prom_options) = unsafe { options.prometheus.as_ref() } {
+            // Start prom exporter
+            let mut build = PrometheusExporterOptionsBuilder::default();
+            build
+                .socket_addr(SocketAddr::from_str(prom_options.bind_address.to_str())?)
+                .global_tags(options.global_tags.to_string_map_on_newlines())
+                .counters_total_suffix(prom_options.counters_total_suffix)
+                .unit_suffix(prom_options.unit_suffix);
+            // TODO(cretz): Not supported as user-defined currently
+            // if let Some(metric_prefix) = options.metric_prefix.to_option_string() {
+            //     build.metric_prefix(&metric_prefix);
+            // }
+            Ok(start_prometheus_metric_exporter(build.build()?)?.meter)
         } else {
             Err(anyhow::anyhow!(
                 "Either OpenTelemetry or Prometheus config must be provided"
             ))
         }
-    }
-}
-
-impl TryFrom<&OpenTelemetryOptions> for OtelCollectorOptions {
-    type Error = anyhow::Error;
-
-    fn try_from(options: &OpenTelemetryOptions) -> anyhow::Result<Self> {
-        let mut build = OtelCollectorOptionsBuilder::default();
-        build
-            .url(Url::parse(&options.url.to_str())?)
-            .headers(options.headers.to_string_map_on_newlines());
-        if options.metric_periodicity_millis > 0 {
-            build.metric_periodicity(Duration::from_millis(
-                options.metric_periodicity_millis.into(),
-            ));
-        }
-        Ok(build.build()?)
-    }
-}
-
-impl TryFrom<&PrometheusOptions> for PrometheusExporterOptions {
-    type Error = anyhow::Error;
-
-    fn try_from(options: &PrometheusOptions) -> anyhow::Result<Self> {
-        Ok(PrometheusExporterOptionsBuilder::default()
-            .socket_addr(SocketAddr::from_str(options.bind_address.to_str())?)
-            .build()?)
     }
 }

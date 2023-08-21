@@ -1,8 +1,6 @@
 namespace Temporalio.Tests.Runtime;
 
-using System.Net;
 using System.Net.Http;
-using System.Net.Sockets;
 using Temporalio.Client;
 using Xunit;
 using Xunit.Abstractions;
@@ -18,7 +16,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
     public async Task Runtime_Separate_BothUsed()
     {
         // Create two clients in separate runtimes with Prometheus endpoints and make calls on them
-        var promAddr1 = $"127.0.0.1:{FreePort()}";
+        var promAddr1 = $"127.0.0.1:{TestUtils.FreePort()}";
         var client1 = await TemporalClient.ConnectAsync(
             new()
             {
@@ -28,7 +26,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
                     new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } }),
             });
         await client1.Connection.WorkflowService.GetSystemInfoAsync(new());
-        var promAddr2 = $"127.0.0.1:{FreePort()}";
+        var promAddr2 = $"127.0.0.1:{TestUtils.FreePort()}";
         var client2 = await TemporalClient.ConnectAsync(
             new()
             {
@@ -45,14 +43,5 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         Assert.Contains("request{", await resp1.Content.ReadAsStringAsync());
         var resp2 = await httpClient.GetAsync(new Uri($"http://{promAddr2}/metrics"));
         Assert.Contains("request{", await resp1.Content.ReadAsStringAsync());
-    }
-
-    private static int FreePort()
-    {
-        var l = new TcpListener(IPAddress.Loopback, 0);
-        l.Start();
-        int port = ((IPEndPoint)l.LocalEndpoint).Port;
-        l.Stop();
-        return port;
     }
 }

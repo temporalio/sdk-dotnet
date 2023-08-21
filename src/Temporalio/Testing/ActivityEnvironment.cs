@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
+using Temporalio.Common;
 using Temporalio.Converters;
 
 namespace Temporalio.Testing
@@ -53,6 +54,11 @@ namespace Temporalio.Testing
         /// Gets or inits the payload converter. Default is default converter.
         /// </summary>
         public IPayloadConverter PayloadConverter { get; init; } = DataConverter.Default.PayloadConverter;
+
+        /// <summary>
+        /// Gets or inits the metric meter for this activity. If unset, a noop meter is used.
+        /// </summary>
+        public IMetricMeter? MetricMeter { get; init; }
 
         /// <summary>
         /// Gets or sets the cancel reason. Callers may prefer <see cref="Cancel" /> instead.
@@ -127,7 +133,8 @@ namespace Temporalio.Testing
                     // This task token is not used for anything in this env
                     taskToken: ByteString.Empty,
                     logger: Logger,
-                    payloadConverter: PayloadConverter)
+                    payloadConverter: PayloadConverter,
+                    runtimeMetricMeter: new(() => MetricMeter ?? NoopMetricMeter.Instance))
                 {
                     Heartbeater = Heartbeater,
                     CancelReasonRef = CancelReasonRef,

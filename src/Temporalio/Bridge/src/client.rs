@@ -2,6 +2,7 @@ use crate::runtime::Runtime;
 use crate::ByteArray;
 use crate::ByteArrayRef;
 use crate::CancellationToken;
+use crate::MetadataRef;
 use crate::UserDataHandle;
 
 use parking_lot::RwLock;
@@ -15,10 +16,6 @@ use temporal_client::{
 };
 use tonic::metadata::MetadataKey;
 use url::Url;
-
-/// Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
-/// values cannot contain a newline within.
-type MetadataRef = ByteArrayRef;
 
 #[repr(C)]
 pub struct ClientOptions {

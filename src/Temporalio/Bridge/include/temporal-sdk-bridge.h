@@ -5,6 +5,24 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+typedef enum MetricAttributeValueType {
+  String = 1,
+  Int,
+  Float,
+  Bool,
+} MetricAttributeValueType;
+
+typedef enum MetricIntegerKind {
+  Counter = 1,
+  Histogram,
+  Gauge,
+} MetricIntegerKind;
+
+typedef enum OpenTelemetryMetricTemporality {
+  Cumulative = 1,
+  Delta,
+} OpenTelemetryMetricTemporality;
+
 typedef enum RpcService {
   Workflow = 1,
   Operator,
@@ -17,6 +35,12 @@ typedef struct CancellationToken CancellationToken;
 typedef struct Client Client;
 
 typedef struct EphemeralServer EphemeralServer;
+
+typedef struct MetricAttributes MetricAttributes;
+
+typedef struct MetricInteger MetricInteger;
+
+typedef struct MetricMeter MetricMeter;
 
 typedef struct Random Random;
 
@@ -108,6 +132,26 @@ typedef void (*ClientRpcCallCallback)(void *user_data,
                                       const struct ByteArray *failure_message,
                                       const struct ByteArray *failure_details);
 
+typedef union MetricAttributeValue {
+  struct ByteArrayRef string_value;
+  int64_t int_value;
+  double float_value;
+  bool bool_value;
+} MetricAttributeValue;
+
+typedef struct MetricAttribute {
+  struct ByteArrayRef key;
+  union MetricAttributeValue value;
+  enum MetricAttributeValueType value_type;
+} MetricAttribute;
+
+typedef struct MetricIntegerOptions {
+  struct ByteArrayRef name;
+  struct ByteArrayRef description;
+  struct ByteArrayRef unit;
+  enum MetricIntegerKind kind;
+} MetricIntegerOptions;
+
 /**
  * If fail is not null, it must be manually freed when done. Runtime is always
  * present, but it should never be used if fail is present, only freed after
@@ -118,37 +162,33 @@ typedef struct RuntimeOrFail {
   const struct ByteArray *fail;
 } RuntimeOrFail;
 
-typedef struct OpenTelemetryOptions {
-  struct ByteArrayRef url;
-  /**
-   * Headers are <key1>\n<value1>\n<key2>\n<value2>. Header keys or values
-   * cannot contain a newline within.
-   */
-  struct ByteArrayRef headers;
-  uint32_t metric_periodicity_millis;
-} OpenTelemetryOptions;
-
-typedef struct TracingOptions {
-  struct ByteArrayRef filter;
-  struct OpenTelemetryOptions opentelemetry;
-} TracingOptions;
-
 typedef struct LoggingOptions {
   struct ByteArrayRef filter;
   bool forward;
 } LoggingOptions;
 
+typedef struct OpenTelemetryOptions {
+  struct ByteArrayRef url;
+  MetadataRef headers;
+  uint32_t metric_periodicity_millis;
+  enum OpenTelemetryMetricTemporality metric_temporality;
+} OpenTelemetryOptions;
+
 typedef struct PrometheusOptions {
   struct ByteArrayRef bind_address;
+  bool counters_total_suffix;
+  bool unit_suffix;
 } PrometheusOptions;
 
 typedef struct MetricsOptions {
   const struct OpenTelemetryOptions *opentelemetry;
   const struct PrometheusOptions *prometheus;
+  bool attach_service_name;
+  MetadataRef global_tags;
+  struct ByteArrayRef metric_prefix;
 } MetricsOptions;
 
 typedef struct TelemetryOptions {
-  const struct TracingOptions *tracing;
   const struct LoggingOptions *logging;
   const struct MetricsOptions *metrics;
 } TelemetryOptions;
@@ -286,6 +326,29 @@ void client_rpc_call(struct Client *client,
                      const struct RpcCallOptions *options,
                      void *user_data,
                      ClientRpcCallCallback callback);
+
+struct MetricMeter *metric_meter_new(struct Runtime *runtime);
+
+void metric_meter_free(struct MetricMeter *meter);
+
+struct MetricAttributes *metric_attributes_new(const struct MetricMeter *meter,
+                                               const struct MetricAttribute *attrs,
+                                               size_t size);
+
+struct MetricAttributes *metric_attributes_new_append(const struct MetricAttributes *orig,
+                                                      const struct MetricAttribute *attrs,
+                                                      size_t size);
+
+void metric_attributes_free(struct MetricAttributes *attrs);
+
+struct MetricInteger *metric_integer_new(const struct MetricMeter *meter,
+                                         const struct MetricIntegerOptions *options);
+
+void metric_integer_free(struct MetricInteger *metric);
+
+void metric_integer_record(const struct MetricInteger *metric,
+                           uint64_t value,
+                           const struct MetricAttributes *attrs);
 
 struct Random *random_new(uint64_t seed);
 
