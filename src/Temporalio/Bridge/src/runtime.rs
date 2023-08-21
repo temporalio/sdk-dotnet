@@ -133,16 +133,24 @@ pub extern "C" fn byte_array_free(runtime: *mut Runtime, bytes: *const ByteArray
 
 impl Runtime {
     fn new(options: &RuntimeOptions) -> anyhow::Result<Runtime> {
+        let mut core = CoreRuntime::new(
+            if let Some(v) = unsafe { options.telemetry.as_ref() } {
+                v.try_into()?
+            } else {
+                CoreTelemetryOptions::default()
+            },
+            tokio::runtime::Builder::new_multi_thread(),
+        )?;
+        // We late-bind the metrics after core runtime is created since it needs
+        // the Tokio handle
+        if let Some(v) = unsafe { options.telemetry.as_ref() } {
+            if let Some(v) = unsafe { v.metrics.as_ref() } {
+                let _guard = core.tokio_handle().enter();
+                core.attach_late_init_metrics(v.try_into()?);
+            }
+        }
         Ok(Runtime {
-            // TODO(cretz): Options to configure thread pool?
-            core: Arc::new(CoreRuntime::new(
-                if let Some(v) = unsafe { options.telemetry.as_ref() } {
-                    v.try_into()?
-                } else {
-                    CoreTelemetryOptions::default()
-                },
-                tokio::runtime::Builder::new_multi_thread(),
-            )?),
+            core: Arc::new(core),
         })
     }
 
@@ -187,25 +195,30 @@ impl TryFrom<&TelemetryOptions> for CoreTelemetryOptions {
                 }
             });
         }
-        if let Some(v) = unsafe { options.metrics.as_ref() } {
-            let core_meter: Arc<dyn CoreMeter> =
-                if let Some(t) = unsafe { v.opentelemetry.as_ref() } {
-                    if !v.prometheus.is_null() {
-                        return Err(anyhow::anyhow!(
-                            "Cannot have OpenTelemetry and Prometheus metrics"
-                        ));
-                    }
-                    Arc::new(build_otlp_metric_exporter(t.try_into()?)?)
-                } else if let Some(t) = unsafe { v.prometheus.as_ref() } {
-                    start_prometheus_metric_exporter(t.try_into()?)?.meter
-                } else {
-                    return Err(anyhow::anyhow!(
-                        "Either OpenTelemetry or Prometheus config must be provided"
-                    ));
-                };
-            build.metrics(core_meter);
-        }
+        // Note, metrics are late-bound in Runtime::new
         Ok(build.build()?)
+    }
+}
+
+impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
+    type Error = anyhow::Error;
+
+    fn try_from(options: &MetricsOptions) -> anyhow::Result<Self> {
+        if let Some(t) = unsafe { options.opentelemetry.as_ref() } {
+            if !options.prometheus.is_null() {
+                Err(anyhow::anyhow!(
+                    "Cannot have OpenTelemetry and Prometheus metrics"
+                ))
+            } else {
+                Ok(Arc::new(build_otlp_metric_exporter(t.try_into()?)?))
+            }
+        } else if let Some(t) = unsafe { options.prometheus.as_ref() } {
+            Ok(start_prometheus_metric_exporter(t.try_into()?)?.meter)
+        } else {
+            Err(anyhow::anyhow!(
+                "Either OpenTelemetry or Prometheus config must be provided"
+            ))
+        }
     }
 }
 
