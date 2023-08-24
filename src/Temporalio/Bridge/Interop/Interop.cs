@@ -184,6 +184,52 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void ClientRpcCallCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_message, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_details);
 
+    [StructLayout(LayoutKind.Explicit)]
+    internal partial struct MetricAttributeValue
+    {
+        [FieldOffset(0)]
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef string_value;
+
+        [FieldOffset(0)]
+        [NativeTypeName("int64_t")]
+        public long int_value;
+
+        [FieldOffset(0)]
+        public double float_value;
+
+        [FieldOffset(0)]
+        [NativeTypeName("bool")]
+        public byte bool_value;
+    }
+
+    internal partial struct MetricAttribute
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef key;
+
+        [NativeTypeName("union MetricAttributeValue")]
+        public MetricAttributeValue value;
+
+        [NativeTypeName("enum MetricAttributeValueType")]
+        public MetricAttributeValueType value_type;
+    }
+
+    internal partial struct MetricIntegerOptions
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef name;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef description;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef unit;
+
+        [NativeTypeName("enum MetricIntegerKind")]
+        public MetricIntegerKind kind;
+    }
+
     internal unsafe partial struct RuntimeOrFail
     {
         [NativeTypeName("struct Runtime *")]
@@ -260,52 +306,6 @@ namespace Temporalio.Bridge.Interop
     {
         [NativeTypeName("const struct TelemetryOptions *")]
         public TelemetryOptions* telemetry;
-    }
-
-    [StructLayout(LayoutKind.Explicit)]
-    internal partial struct MetricAttributeValue
-    {
-        [FieldOffset(0)]
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef string_value;
-
-        [FieldOffset(0)]
-        [NativeTypeName("int64_t")]
-        public long int_value;
-
-        [FieldOffset(0)]
-        public double float_value;
-
-        [FieldOffset(0)]
-        [NativeTypeName("bool")]
-        public byte bool_value;
-    }
-
-    internal partial struct MetricAttribute
-    {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef key;
-
-        [NativeTypeName("union MetricAttributeValue")]
-        public MetricAttributeValue value;
-
-        [NativeTypeName("enum MetricAttributeValueType")]
-        public MetricAttributeValueType value_type;
-    }
-
-    internal partial struct MetricIntegerOptions
-    {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef name;
-
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef description;
-
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef unit;
-
-        [NativeTypeName("enum MetricIntegerKind")]
-        public MetricIntegerKind kind;
     }
 
     internal partial struct TestServerOptions
@@ -472,33 +472,6 @@ namespace Temporalio.Bridge.Interop
         public static extern void client_rpc_call([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options, void* user_data, [NativeTypeName("ClientRpcCallCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct Random *")]
-        public static extern Random* random_new([NativeTypeName("uint64_t")] ulong seed);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void random_free([NativeTypeName("struct Random *")] Random* random);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("int32_t")]
-        public static extern int random_int32_range([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("int32_t")] int min, [NativeTypeName("int32_t")] int max, [NativeTypeName("bool")] byte max_inclusive);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern double random_double_range([NativeTypeName("struct Random *")] Random* random, double min, double max, [NativeTypeName("bool")] byte max_inclusive);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void random_fill_bytes([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef bytes);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct RuntimeOrFail")]
-        public static extern RuntimeOrFail runtime_new([NativeTypeName("const struct RuntimeOptions *")] RuntimeOptions* options);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void runtime_free([NativeTypeName("struct Runtime *")] Runtime* runtime);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void byte_array_free([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ByteArray *")] ByteArray* bytes);
-
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct MetricMeter *")]
         public static extern MetricMeter* metric_meter_new([NativeTypeName("struct Runtime *")] Runtime* runtime);
 
@@ -525,6 +498,33 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void metric_integer_record([NativeTypeName("const struct MetricInteger *")] MetricInteger* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct Random *")]
+        public static extern Random* random_new([NativeTypeName("uint64_t")] ulong seed);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void random_free([NativeTypeName("struct Random *")] Random* random);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("int32_t")]
+        public static extern int random_int32_range([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("int32_t")] int min, [NativeTypeName("int32_t")] int max, [NativeTypeName("bool")] byte max_inclusive);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern double random_double_range([NativeTypeName("struct Random *")] Random* random, double min, double max, [NativeTypeName("bool")] byte max_inclusive);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void random_fill_bytes([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef bytes);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct RuntimeOrFail")]
+        public static extern RuntimeOrFail runtime_new([NativeTypeName("const struct RuntimeOptions *")] RuntimeOptions* options);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void runtime_free([NativeTypeName("struct Runtime *")] Runtime* runtime);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void byte_array_free([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ByteArray *")] ByteArray* bytes);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ephemeral_server_start_dev_server([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct DevServerOptions *")] DevServerOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);

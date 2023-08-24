@@ -3164,8 +3164,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         // Create a new runtime with a Prometheus server
         var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
-        var runtime = new TemporalRuntime(
-            new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr) } } });
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                // We'll also test the metric prefix
+                Metrics = new() { Prometheus = new(promAddr), MetricPrefix = "foo_" },
+            },
+        });
         var client = await TemporalClient.ConnectAsync(
             new()
             {
@@ -3218,9 +3224,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     Assert.Contains($"# HELP {name} {description}", bodyLines);
 
                 // Check some metrics are as we expect
-                AssertMetricDescriptionExists("temporal_my_runtime_gauge", "my-runtime-description");
+                AssertMetricDescriptionExists("my_runtime_gauge", "my-runtime-description");
                 AssertMetricExists(
-                    "temporal_my_runtime_gauge",
+                    "my_runtime_gauge",
                     new Dictionary<string, string>()
                     {
                         { "my_runtime_extra_tag", "true" },
@@ -3229,25 +3235,31 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     },
                     90);
                 AssertMetricDescriptionExists(
-                    "temporal_my_workflow_histogram", "my-workflow-description");
+                    "my_workflow_histogram", "my-workflow-description");
                 AssertMetricExists(
-                    "temporal_my_workflow_histogram_sum",
+                    "my_workflow_histogram_sum",
                     new Dictionary<string, string>(),
                     56);
                 AssertMetricExists(
-                    "temporal_my_workflow_histogram_sum",
+                    "my_workflow_histogram_sum",
                     new Dictionary<string, string>() { { "my_workflow_extra_tag", "1234" } },
                     78);
                 AssertMetricDescriptionExists(
-                    "temporal_my_activity_counter", "my-activity-description");
+                    "my_activity_counter", "my-activity-description");
                 AssertMetricExists(
-                    "temporal_my_activity_counter",
+                    "my_activity_counter",
                     new Dictionary<string, string>(),
                     12);
                 AssertMetricExists(
-                    "temporal_my_activity_counter",
+                    "my_activity_counter",
                     new Dictionary<string, string>() { { "my_activity_extra_tag", "12.34" } },
                     34);
+
+                // Also check a Temporal metric got its prefix
+                AssertMetricExists(
+                    "foo_workflow_completed",
+                    new Dictionary<string, string>() { { "workflow_type", "CustomMetricsWorkflow" } },
+                    1);
             },
             new TemporalWorkerOptions().AddActivity(CustomMetricsActivities.DoActivity),
             client);

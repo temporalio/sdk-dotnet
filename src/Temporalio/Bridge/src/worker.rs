@@ -72,7 +72,7 @@ pub struct WorkerReplayPushResult {
 macro_rules! enter_sync {
     ($runtime:expr) => {
         temporal_sdk_core::telemetry::set_trace_subscriber_for_current_thread(
-            $runtime.core.trace_subscriber(),
+            $runtime.core.telemetry().trace_subscriber(),
         );
         let _guard = $runtime.core.tokio_handle().enter();
     };

@@ -11,7 +11,7 @@ pub struct MetricMeter {
 #[no_mangle]
 pub extern "C" fn metric_meter_new(runtime: *mut Runtime) -> *mut MetricMeter {
     let runtime = unsafe { &mut *runtime };
-    if let Some(core) = runtime.core.metric_meter() {
+    if let Some(core) = runtime.core.telemetry().get_metric_meter() {
         Box::into_raw(Box::new(MetricMeter { core }))
     } else {
         std::ptr::null_mut()

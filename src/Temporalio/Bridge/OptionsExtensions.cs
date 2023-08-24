@@ -179,8 +179,7 @@ namespace Temporalio.Bridge
                 opentelemetry = openTelemetry,
                 attach_service_name = (byte)(options.AttachServiceName ? 1 : 0),
                 global_tags = scope.Metadata(options.GlobalTags),
-                // TODO(cretz): Update when supported
-                metric_prefix = scope.ByteArray(string.Empty),
+                metric_prefix = scope.ByteArray(options.MetricPrefix),
             };
         }
 

@@ -150,7 +150,7 @@ impl Runtime {
         if let Some(v) = unsafe { options.telemetry.as_ref() } {
             if let Some(v) = unsafe { v.metrics.as_ref() } {
                 let _guard = core.tokio_handle().enter();
-                core.attach_late_init_metrics(v.try_into()?);
+                core.telemetry_mut().attach_late_init_metrics(v.try_into()?);
             }
         }
         Ok(Runtime {
@@ -184,6 +184,9 @@ impl TryFrom<&TelemetryOptions> for CoreTelemetryOptions {
         let mut build = TelemetryOptionsBuilder::default();
         if let Some(v) = unsafe { options.metrics.as_ref() } {
             build.attach_service_name(v.attach_service_name);
+            if let Some(metric_prefix) = v.metric_prefix.to_option_string() {
+                build.metric_prefix(metric_prefix);
+            }
         }
         if let Some(v) = unsafe { options.logging.as_ref() } {
             build.logging(if v.forward {
@@ -226,10 +229,6 @@ impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
                     otel_options.metric_periodicity_millis.into(),
                 ));
             }
-            // TODO(cretz): Not supported as user-defined currently
-            // if let Some(prefix) = options.metric_prefix.to_option_string() {
-            //     build.metric_prefix(&prefix);
-            // }
             Ok(Arc::new(build_otlp_metric_exporter(build.build()?)?))
         } else if let Some(prom_options) = unsafe { options.prometheus.as_ref() } {
             // Start prom exporter
@@ -239,10 +238,6 @@ impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
                 .global_tags(options.global_tags.to_string_map_on_newlines())
                 .counters_total_suffix(prom_options.counters_total_suffix)
                 .unit_suffix(prom_options.unit_suffix);
-            // TODO(cretz): Not supported as user-defined currently
-            // if let Some(metric_prefix) = options.metric_prefix.to_option_string() {
-            //     build.metric_prefix(&metric_prefix);
-            // }
             Ok(start_prometheus_metric_exporter(build.build()?)?.meter)
         } else {
             Err(anyhow::anyhow!(

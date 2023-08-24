@@ -40,8 +40,8 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         // Check that Prometheus on each runtime is reporting metrics
         using var httpClient = new HttpClient();
         var resp1 = await httpClient.GetAsync(new Uri($"http://{promAddr1}/metrics"));
-        Assert.Contains("request{", await resp1.Content.ReadAsStringAsync());
+        Assert.Contains("temporal_request{", await resp1.Content.ReadAsStringAsync());
         var resp2 = await httpClient.GetAsync(new Uri($"http://{promAddr2}/metrics"));
-        Assert.Contains("request{", await resp1.Content.ReadAsStringAsync());
+        Assert.Contains("temporal_request{", await resp1.Content.ReadAsStringAsync());
     }
 }

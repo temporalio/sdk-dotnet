@@ -103,7 +103,7 @@ pub extern "C" fn client_connect(
     let core = runtime.core.clone();
     runtime.core.tokio_handle().spawn(async move {
         match core_options
-            .connect_no_namespace(core.metric_meter(), headers)
+            .connect_no_namespace(core.telemetry().get_temporal_metric_meter(), headers)
             .await
         {
             Ok(core) => {

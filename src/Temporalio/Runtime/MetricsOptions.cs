@@ -51,6 +51,12 @@ namespace Temporalio.Runtime
         public IReadOnlyCollection<KeyValuePair<string, string>>? GlobalTags { get; set; }
 
         /// <summary>
+        /// Gets or sets the metric prefix for internal Temporal metrics. If unset, the default is
+        /// "temporal_".
+        /// </summary>
+        public string? MetricPrefix { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
