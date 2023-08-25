@@ -3,6 +3,27 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge.Interop
 {
+    internal enum MetricAttributeValueType
+    {
+        String = 1,
+        Int,
+        Float,
+        Bool,
+    }
+
+    internal enum MetricIntegerKind
+    {
+        Counter = 1,
+        Histogram,
+        Gauge,
+    }
+
+    internal enum OpenTelemetryMetricTemporality
+    {
+        Cumulative = 1,
+        Delta,
+    }
+
     internal enum RpcService
     {
         Workflow = 1,
@@ -20,6 +41,18 @@ namespace Temporalio.Bridge.Interop
     }
 
     internal partial struct EphemeralServer
+    {
+    }
+
+    internal partial struct MetricAttributes
+    {
+    }
+
+    internal partial struct MetricInteger
+    {
+    }
+
+    internal partial struct MetricMeter
     {
     }
 
@@ -151,6 +184,52 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void ClientRpcCallCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_message, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_details);
 
+    [StructLayout(LayoutKind.Explicit)]
+    internal partial struct MetricAttributeValue
+    {
+        [FieldOffset(0)]
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef string_value;
+
+        [FieldOffset(0)]
+        [NativeTypeName("int64_t")]
+        public long int_value;
+
+        [FieldOffset(0)]
+        public double float_value;
+
+        [FieldOffset(0)]
+        [NativeTypeName("bool")]
+        public byte bool_value;
+    }
+
+    internal partial struct MetricAttribute
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef key;
+
+        [NativeTypeName("union MetricAttributeValue")]
+        public MetricAttributeValue value;
+
+        [NativeTypeName("enum MetricAttributeValueType")]
+        public MetricAttributeValueType value_type;
+    }
+
+    internal partial struct MetricIntegerOptions
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef name;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef description;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef unit;
+
+        [NativeTypeName("enum MetricIntegerKind")]
+        public MetricIntegerKind kind;
+    }
+
     internal unsafe partial struct RuntimeOrFail
     {
         [NativeTypeName("struct Runtime *")]
@@ -158,27 +237,6 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("const struct ByteArray *")]
         public ByteArray* fail;
-    }
-
-    internal partial struct OpenTelemetryOptions
-    {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef url;
-
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef headers;
-
-        [NativeTypeName("uint32_t")]
-        public uint metric_periodicity_millis;
-    }
-
-    internal partial struct TracingOptions
-    {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef filter;
-
-        [NativeTypeName("struct OpenTelemetryOptions")]
-        public OpenTelemetryOptions opentelemetry;
     }
 
     internal partial struct LoggingOptions
@@ -190,10 +248,31 @@ namespace Temporalio.Bridge.Interop
         public byte forward;
     }
 
+    internal partial struct OpenTelemetryOptions
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef url;
+
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef headers;
+
+        [NativeTypeName("uint32_t")]
+        public uint metric_periodicity_millis;
+
+        [NativeTypeName("enum OpenTelemetryMetricTemporality")]
+        public OpenTelemetryMetricTemporality metric_temporality;
+    }
+
     internal partial struct PrometheusOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef bind_address;
+
+        [NativeTypeName("bool")]
+        public byte counters_total_suffix;
+
+        [NativeTypeName("bool")]
+        public byte unit_suffix;
     }
 
     internal unsafe partial struct MetricsOptions
@@ -203,13 +282,19 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("const struct PrometheusOptions *")]
         public PrometheusOptions* prometheus;
+
+        [NativeTypeName("bool")]
+        public byte attach_service_name;
+
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef global_tags;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef metric_prefix;
     }
 
     internal unsafe partial struct TelemetryOptions
     {
-        [NativeTypeName("const struct TracingOptions *")]
-        public TracingOptions* tracing;
-
         [NativeTypeName("const struct LoggingOptions *")]
         public LoggingOptions* logging;
 
@@ -385,6 +470,34 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void client_rpc_call([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options, void* user_data, [NativeTypeName("ClientRpcCallCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct MetricMeter *")]
+        public static extern MetricMeter* metric_meter_new([NativeTypeName("struct Runtime *")] Runtime* runtime);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void metric_meter_free([NativeTypeName("struct MetricMeter *")] MetricMeter* meter);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct MetricAttributes *")]
+        public static extern MetricAttributes* metric_attributes_new([NativeTypeName("const struct MetricMeter *")] MetricMeter* meter, [NativeTypeName("const struct MetricAttribute *")] MetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct MetricAttributes *")]
+        public static extern MetricAttributes* metric_attributes_new_append([NativeTypeName("const struct MetricAttributes *")] MetricAttributes* orig, [NativeTypeName("const struct MetricAttribute *")] MetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void metric_attributes_free([NativeTypeName("struct MetricAttributes *")] MetricAttributes* attrs);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct MetricInteger *")]
+        public static extern MetricInteger* metric_integer_new([NativeTypeName("const struct MetricMeter *")] MetricMeter* meter, [NativeTypeName("const struct MetricIntegerOptions *")] MetricIntegerOptions* options);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void metric_integer_free([NativeTypeName("struct MetricInteger *")] MetricInteger* metric);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void metric_integer_record([NativeTypeName("const struct MetricInteger *")] MetricInteger* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct Random *")]

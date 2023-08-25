@@ -37,6 +37,7 @@ namespace Temporalio.Bridge
                     SetHandle((IntPtr)Ptr);
                 }
             }
+            MetricMeter = new(() => new(this));
         }
 
         /// <inheritdoc />
@@ -46,6 +47,11 @@ namespace Temporalio.Bridge
         /// Gets the pointer to the runtime.
         /// </summary>
         internal unsafe Interop.Runtime* Ptr { get; private init; }
+
+        /// <summary>
+        /// Gets the lazy metric meter for this runtime.
+        /// </summary>
+        internal Lazy<MetricMeter> MetricMeter { get; private init; }
 
         /// <summary>
         /// Free a byte array.

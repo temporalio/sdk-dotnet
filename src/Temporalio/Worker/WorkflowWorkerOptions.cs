@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using Temporalio.Common;
 using Temporalio.Workflows;
 
 namespace Temporalio.Worker
@@ -18,5 +19,6 @@ namespace Temporalio.Worker
         bool DisableWorkflowTracingEventListener,
         WorkflowStackTrace WorkflowStackTrace,
         Action<WorkflowInstance> OnTaskStarting,
-        Action<WorkflowInstance, Exception?> OnTaskCompleted);
+        Action<WorkflowInstance, Exception?> OnTaskCompleted,
+        Lazy<IMetricMeter> RuntimeMetricMeter);
 }

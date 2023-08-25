@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Api.WorkflowActivation;
+using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Workflows;
 
@@ -23,6 +24,7 @@ namespace Temporalio.Worker
     /// <param name="WorkflowStackTrace">Option for workflow stack trace.</param>
     /// <param name="OnTaskStarting">Callback for every instance task start.</param>
     /// <param name="OnTaskCompleted">Callback for every instance task complete.</param>
+    /// <param name="RuntimeMetricMeter">Lazy runtime-level metric meter.</param>
     internal record WorkflowInstanceDetails(
         string Namespace,
         string TaskQueue,
@@ -36,5 +38,6 @@ namespace Temporalio.Worker
         bool DisableTracingEvents,
         WorkflowStackTrace WorkflowStackTrace,
         Action<WorkflowInstance> OnTaskStarting,
-        Action<WorkflowInstance, Exception?> OnTaskCompleted);
+        Action<WorkflowInstance, Exception?> OnTaskCompleted,
+        Lazy<IMetricMeter> RuntimeMetricMeter);
 }

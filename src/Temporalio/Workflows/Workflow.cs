@@ -103,6 +103,13 @@ namespace Temporalio.Workflows
         public static IReadOnlyDictionary<string, IRawValue> Memo => Context.Memo;
 
         /// <summary>
+        /// Gets the metric meter with per-workflow tags already set. Metrics can be set on this
+        /// meter and they will be properly ignored during replay. This meter is different for each
+        /// workflow execution.
+        /// </summary>
+        public static IMetricMeter MetricMeter => Context.MetricMeter;
+
+        /// <summary>
         /// Gets the payload converter for the workflow.
         /// </summary>
         public static IPayloadConverter PayloadConverter => Context.PayloadConverter;

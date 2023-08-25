@@ -171,7 +171,8 @@ namespace Temporalio.Worker
                             DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
                             WorkflowStackTrace: WorkflowStackTrace.None,
                             OnTaskStarting: options.OnTaskStarting,
-                            OnTaskCompleted: options.OnTaskCompleted),
+                            OnTaskCompleted: options.OnTaskCompleted,
+                            RuntimeMetricMeter: new(() => runtime.MetricMeter)),
                         (runId, removeFromCache) => SetResult(removeFromCache));
                 }
                 catch

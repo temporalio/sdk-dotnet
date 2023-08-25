@@ -1,4 +1,5 @@
 using System;
+using Temporalio.Common;
 
 namespace Temporalio.Runtime
 {
@@ -15,6 +16,8 @@ namespace Temporalio.Runtime
         private static readonly Lazy<TemporalRuntime> LazyDefault =
             new(() => new TemporalRuntime(new TemporalRuntimeOptions()));
 
+        private readonly Lazy<IMetricMeter> metricMeter;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalRuntime"/> class.
         /// </summary>
@@ -28,7 +31,11 @@ namespace Temporalio.Runtime
         {
         }
 
-        private TemporalRuntime(Bridge.Runtime runtime) => Runtime = runtime;
+        private TemporalRuntime(Bridge.Runtime runtime)
+        {
+            Runtime = runtime;
+            metricMeter = Common.MetricMeter.LazyFromRuntime(runtime);
+        }
 
         /// <summary>
         /// Gets or creates the default runtime.
@@ -38,6 +45,11 @@ namespace Temporalio.Runtime
         /// runtime is not explicitly provided to a connection/client.
         /// </remarks>
         public static TemporalRuntime Default => LazyDefault.Value;
+
+        /// <summary>
+        /// Gets the metric meter associated with this runtime.
+        /// </summary>
+        public IMetricMeter MetricMeter => metricMeter.Value;
 
         /// <summary>
         /// Gets the runtime.

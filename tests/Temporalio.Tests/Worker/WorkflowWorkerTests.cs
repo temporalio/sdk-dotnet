@@ -14,6 +14,7 @@ using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Runtime;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -3121,6 +3122,147 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     new TemporalWorkerOptions().AddAllActivities(new DuplicateActivities("instance2")));
             },
             new TemporalWorkerOptions().AddAllActivities(new DuplicateActivities("instance1")));
+    }
+
+    public static class CustomMetricsActivities
+    {
+        [Activity]
+        public static void DoActivity()
+        {
+            var counter = ActivityExecutionContext.Current.MetricMeter.CreateCounter(
+                "my-activity-counter",
+                "my-activity-unit",
+                "my-activity-description");
+            counter.Add(12);
+            counter.Add(34, new Dictionary<string, object>() { { "my-activity-extra-tag", 12.34 } });
+        }
+    }
+
+    [Workflow]
+    public class CustomMetricsWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            await Workflow.ExecuteActivityAsync(
+                () => CustomMetricsActivities.DoActivity(),
+                new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+
+            var histogram = Workflow.MetricMeter.CreateHistogram(
+                "my-workflow-histogram",
+                "my-workflow-unit",
+                "my-workflow-description");
+            histogram.Record(56);
+            histogram.
+                WithTags(new Dictionary<string, object>() { { "my-workflow-extra-tag", 1234 } }).
+                Record(78);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_CustomMetrics_WorksWithPrometheus()
+    {
+        // Create a new runtime with a Prometheus server
+        var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                // We'll also test the metric prefix
+                Metrics = new() { Prometheus = new(promAddr), MetricPrefix = "foo_" },
+            },
+        });
+        var client = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = runtime,
+            });
+
+        await ExecuteWorkerAsync<CustomMetricsWorkflow>(
+            async worker =>
+            {
+                // Let's record a gauge at the runtime level
+                var gauge = runtime.MetricMeter.
+                    WithTags(new Dictionary<string, object>() { { "my-runtime-extra-tag", true } }).
+                    CreateGauge("my-runtime-gauge", description: "my-runtime-description");
+                gauge.Set(90);
+
+                // Run workflow
+                await client.ExecuteWorkflowAsync(
+                    (CustomMetricsWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Get Prometheus dump
+                using var httpClient = new HttpClient();
+                var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
+                var body = await resp.Content.ReadAsStringAsync();
+                var bodyLines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                // Intentionally naive metric checker
+                void AssertMetricExists(
+                    string name,
+                    IEnumerable<KeyValuePair<string, string>> atLeastLabels,
+                    int value) => Assert.Contains(bodyLines, line =>
+                {
+                    // Must have metric name
+                    if (!line.StartsWith(name + "{"))
+                    {
+                        return false;
+                    }
+                    // Must have labels (which we don't escape in this test)
+                    foreach (var pair in atLeastLabels)
+                    {
+                        if (!line.Contains($"{pair.Key}=\"{pair.Value}\""))
+                        {
+                            return false;
+                        }
+                    }
+                    return line.EndsWith($" {value}");
+                });
+                void AssertMetricDescriptionExists(string name, string description) =>
+                    Assert.Contains($"# HELP {name} {description}", bodyLines);
+
+                // Check some metrics are as we expect
+                AssertMetricDescriptionExists("my_runtime_gauge", "my-runtime-description");
+                AssertMetricExists(
+                    "my_runtime_gauge",
+                    new Dictionary<string, string>()
+                    {
+                        { "my_runtime_extra_tag", "true" },
+                        // Let's also check the global service name label
+                        { "service_name", "temporal-core-sdk" },
+                    },
+                    90);
+                AssertMetricDescriptionExists(
+                    "my_workflow_histogram", "my-workflow-description");
+                AssertMetricExists(
+                    "my_workflow_histogram_sum",
+                    new Dictionary<string, string>(),
+                    56);
+                AssertMetricExists(
+                    "my_workflow_histogram_sum",
+                    new Dictionary<string, string>() { { "my_workflow_extra_tag", "1234" } },
+                    78);
+                AssertMetricDescriptionExists(
+                    "my_activity_counter", "my-activity-description");
+                AssertMetricExists(
+                    "my_activity_counter",
+                    new Dictionary<string, string>(),
+                    12);
+                AssertMetricExists(
+                    "my_activity_counter",
+                    new Dictionary<string, string>() { { "my_activity_extra_tag", "12.34" } },
+                    34);
+
+                // Also check a Temporal metric got its prefix
+                AssertMetricExists(
+                    "foo_workflow_completed",
+                    new Dictionary<string, string>() { { "workflow_type", "CustomMetricsWorkflow" } },
+                    1);
+            },
+            new TemporalWorkerOptions().AddActivity(CustomMetricsActivities.DoActivity),
+            client);
     }
 
     private async Task ExecuteWorkerAsync<TWf>(

@@ -281,7 +281,8 @@ namespace Temporalio.Worker
                     DisableTracingEvents: options.DisableWorkflowTracingEventListener,
                     WorkflowStackTrace: options.WorkflowStackTrace,
                     OnTaskStarting: options.OnTaskStarting,
-                    OnTaskCompleted: options.OnTaskCompleted));
+                    OnTaskCompleted: options.OnTaskCompleted,
+                    RuntimeMetricMeter: options.RuntimeMetricMeter));
         }
     }
 }

@@ -43,10 +43,6 @@ namespace Temporalio.Bridge
         {
             return new Interop.TelemetryOptions()
             {
-                tracing =
-                    options.Tracing == null
-                        ? null
-                        : scope.Pointer(options.Tracing.ToInteropOptions(scope)),
                 logging =
                     options.Logging == null
                         ? null
@@ -55,28 +51,6 @@ namespace Temporalio.Bridge
                     options.Metrics == null
                         ? null
                         : scope.Pointer(options.Metrics.ToInteropOptions(scope)),
-            };
-        }
-
-        /// <summary>
-        /// Convert tracing options.
-        /// </summary>
-        /// <param name="options">Options to convert.</param>
-        /// <param name="scope">Scope to use.</param>
-        /// <returns>Converted options.</returns>
-        public static unsafe Interop.TracingOptions ToInteropOptions(
-            this Temporalio.Runtime.TracingOptions options,
-            Scope scope)
-        {
-            if (string.IsNullOrEmpty(options.Filter.FilterString))
-            {
-                throw new ArgumentException("Tracing filter string is required");
-            }
-
-            return new Interop.TracingOptions()
-            {
-                filter = scope.ByteArray(options.Filter.FilterString),
-                opentelemetry = options.OpenTelemetry.ToInteropOptions(scope),
             };
         }
 
@@ -94,6 +68,18 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("OpenTelemetry URL is required");
             }
+            Interop.OpenTelemetryMetricTemporality temporality;
+            switch (options.MetricTemporality)
+            {
+                case Temporalio.Runtime.OpenTelemetryMetricTemporality.Cumulative:
+                    temporality = Interop.OpenTelemetryMetricTemporality.Cumulative;
+                    break;
+                case Temporalio.Runtime.OpenTelemetryMetricTemporality.Delta:
+                    temporality = Interop.OpenTelemetryMetricTemporality.Delta;
+                    break;
+                default:
+                    throw new ArgumentException("Unrecognized temporality");
+            }
             return new Interop.OpenTelemetryOptions()
             {
                 url = scope.ByteArray(options.Url.ToString()),
@@ -102,6 +88,29 @@ namespace Temporalio.Bridge
                     options.MetricsExportInterval == null
                         ? 0
                         : options.MetricsExportInterval.Value.TotalMilliseconds),
+                metric_temporality = temporality,
+            };
+        }
+
+        /// <summary>
+        /// Convert Prometheus options.
+        /// </summary>
+        /// <param name="options">Options to convert.</param>
+        /// <param name="scope">Scope to use.</param>
+        /// <returns>Converted options.</returns>
+        public static unsafe Interop.PrometheusOptions ToInteropOptions(
+            this Temporalio.Runtime.PrometheusOptions options,
+            Scope scope)
+        {
+            if (string.IsNullOrEmpty(options.BindAddress))
+            {
+                throw new ArgumentException("Prometheus options must have bind address");
+            }
+            return new Interop.PrometheusOptions()
+            {
+                bind_address = scope.ByteArray(options.BindAddress),
+                counters_total_suffix = (byte)(options.HasCounterTotalSuffix ? 1 : 0),
+                unit_suffix = (byte)(options.HasUnitSuffix ? 1 : 0),
             };
         }
 
@@ -168,6 +177,9 @@ namespace Temporalio.Bridge
             {
                 prometheus = prometheus,
                 opentelemetry = openTelemetry,
+                attach_service_name = (byte)(options.AttachServiceName ? 1 : 0),
+                global_tags = scope.Metadata(options.GlobalTags),
+                metric_prefix = scope.ByteArray(options.MetricPrefix),
             };
         }
 

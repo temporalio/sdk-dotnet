@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Temporalio.Runtime
 {
@@ -37,6 +38,23 @@ namespace Temporalio.Runtime
         /// Gets or sets the OpenTelemetry metrics options.
         /// </summary>
         public OpenTelemetryOptions? OpenTelemetry { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the service name is set on metrics.
+        /// </summary>
+        public bool AttachServiceName { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets the tags to be put on every metric. Neither keys nor values may have
+        /// newlines.
+        /// </summary>
+        public IReadOnlyCollection<KeyValuePair<string, string>>? GlobalTags { get; set; }
+
+        /// <summary>
+        /// Gets or sets the metric prefix for internal Temporal metrics. If unset, the default is
+        /// "temporal_".
+        /// </summary>
+        public string? MetricPrefix { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

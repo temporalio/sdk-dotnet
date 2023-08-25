@@ -107,6 +107,20 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Create a stable pointer to an object.
+        /// </summary>
+        /// <typeparam name="T">Type of the object.</typeparam>
+        /// <param name="value">Object to get create pointer for.</param>
+        /// <returns>Created pointer.</returns>
+        public unsafe T* ArrayPointer<T>(T[] value)
+            where T : unmanaged
+        {
+            var handle = GCHandle.Alloc(value, GCHandleType.Pinned);
+            toKeepAlive.Add(handle);
+            return (T*)handle.AddrOfPinnedObject();
+        }
+
+        /// <summary>
         /// Create function pointer for delegate.
         /// </summary>
         /// <typeparam name="T">Delegate type.</typeparam>

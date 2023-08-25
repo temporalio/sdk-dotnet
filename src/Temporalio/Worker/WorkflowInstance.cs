@@ -30,6 +30,7 @@ namespace Temporalio.Worker
     {
         private readonly TaskFactory taskFactory;
         private readonly IFailureConverter failureConverter;
+        private readonly Lazy<IMetricMeter> metricMeter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
         // Lazily created if asked for by user
@@ -128,6 +129,14 @@ namespace Temporalio.Worker
                     itemName: $"Workflow {start.WorkflowType}",
                     dynamic: Definition.Dynamic),
                 false);
+            metricMeter = new(() =>
+                new ReplaySafeMetricMeter(
+                    details.RuntimeMetricMeter.Value.WithTags(new Dictionary<string, object>()
+                    {
+                        { "namespace", details.Namespace },
+                        { "task_queue", details.TaskQueue },
+                        { "workflow_type", start.WorkflowType },
+                    })));
             initialSearchAttributes = details.Start.SearchAttributes;
             WorkflowInfo.ParentInfo? parent = null;
             if (start.ParentWorkflowInfo != null)
@@ -236,6 +245,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public IReadOnlyDictionary<string, IRawValue> Memo => memo.Value;
+
+        /// <inheritdoc />
+        public IMetricMeter MetricMeter => metricMeter.Value;
 
         /// <inheritdoc />
         public IPayloadConverter PayloadConverter { get; private init; }

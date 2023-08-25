@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Temporalio.Common;
 using Temporalio.Worker.Interceptors;
 
 namespace Temporalio.Worker
@@ -44,6 +45,7 @@ namespace Temporalio.Worker
             {
                 throw new ArgumentException("Must have at least one workflow and/or activity");
             }
+            MetricMeter = Common.MetricMeter.LazyFromRuntime(BridgeWorker.Runtime);
 
             // Interceptors are the client interceptors that implement IWorkerInterceptor followed
             // by the explicitly provided ones in options.
@@ -83,7 +85,8 @@ namespace Temporalio.Worker
                     DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
                     WorkflowStackTrace: options.WorkflowStackTrace,
                     OnTaskStarting: options.OnTaskStarting,
-                    OnTaskCompleted: options.OnTaskCompleted));
+                    OnTaskCompleted: options.OnTaskCompleted,
+                    RuntimeMetricMeter: MetricMeter));
             }
         }
 
@@ -120,6 +123,11 @@ namespace Temporalio.Worker
         /// </summary>
         internal ILoggerFactory LoggerFactory =>
             Options.LoggerFactory ?? Client.Options.LoggerFactory;
+
+        /// <summary>
+        /// Gets the lazy metric meter.
+        /// </summary>
+        internal Lazy<IMetricMeter> MetricMeter { get; private init; }
 
         /// <summary>
         /// Run this worker until failure or cancelled.

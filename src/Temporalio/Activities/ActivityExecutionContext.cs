@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
+using Temporalio.Common;
 using Temporalio.Converters;
 
 namespace Temporalio.Activities
@@ -13,6 +15,8 @@ namespace Temporalio.Activities
     /// </summary>
     public class ActivityExecutionContext
     {
+        private readonly Lazy<IMetricMeter> metricMeter;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityExecutionContext"/> class.
         /// </summary>
@@ -22,6 +26,7 @@ namespace Temporalio.Activities
         /// <param name="taskToken">Raw activity task token.</param>
         /// <param name="logger">Logger.</param>
         /// <param name="payloadConverter">Payload converter.</param>
+        /// <param name="runtimeMetricMeter">Runtime-level metric meter.</param>
 #pragma warning disable CA1068 // We don't require cancellation token as last param
         internal ActivityExecutionContext(
             ActivityInfo info,
@@ -29,7 +34,8 @@ namespace Temporalio.Activities
             CancellationToken workerShutdownToken,
             ByteString taskToken,
             ILogger logger,
-            IPayloadConverter payloadConverter)
+            IPayloadConverter payloadConverter,
+            Lazy<IMetricMeter> runtimeMetricMeter)
         {
             Info = info;
             CancellationToken = cancellationToken;
@@ -37,6 +43,15 @@ namespace Temporalio.Activities
             TaskToken = taskToken;
             Logger = logger;
             PayloadConverter = payloadConverter;
+            metricMeter = new(() =>
+            {
+                return runtimeMetricMeter.Value.WithTags(new Dictionary<string, object>()
+                {
+                    { "namespace", info.WorkflowNamespace },
+                    { "task_queue", info.TaskQueue },
+                    { "activity_type", info.ActivityType },
+                });
+            });
         }
 #pragma warning restore CA1068
 
@@ -85,6 +100,12 @@ namespace Temporalio.Activities
         /// Gets the payload converter in use by this activity worker.
         /// </summary>
         public IPayloadConverter PayloadConverter { get; private init; }
+
+        /// <summary>
+        /// Gets the metric meter for this activity with activity-specific tags. Note, this is
+        /// lazily created for each activity execution.
+        /// </summary>
+        public IMetricMeter MetricMeter => metricMeter.Value;
 
         /// <summary>
         /// Gets the async local current value.

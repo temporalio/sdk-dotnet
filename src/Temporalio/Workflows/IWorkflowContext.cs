@@ -64,6 +64,11 @@ namespace Temporalio.Workflows
         IReadOnlyDictionary<string, IRawValue> Memo { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.MetricMeter" />.
+        /// </summary>
+        IMetricMeter MetricMeter { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.PayloadConverter" />.
         /// </summary>
         IPayloadConverter PayloadConverter { get; }

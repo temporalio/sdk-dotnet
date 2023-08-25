@@ -26,6 +26,16 @@ namespace Temporalio.Runtime
         public string? BindAddress { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether counters will have a "_total" suffix.
+        /// </summary>
+        public bool HasCounterTotalSuffix { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether metrics will have a unit suffix.
+        /// </summary>
+        public bool HasUnitSuffix { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

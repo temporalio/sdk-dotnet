@@ -9,6 +9,7 @@
 )]
 
 pub mod client;
+pub mod metric;
 pub mod random;
 pub mod runtime;
 pub mod testing;
@@ -89,6 +90,10 @@ impl ByteArrayRef {
             .collect()
     }
 }
+
+/// Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
+/// values cannot contain a newline within.
+type MetadataRef = ByteArrayRef;
 
 #[repr(C)]
 pub struct ByteArray {

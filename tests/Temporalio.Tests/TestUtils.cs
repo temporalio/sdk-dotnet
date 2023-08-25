@@ -2,6 +2,8 @@ namespace Temporalio.Tests;
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 
 public static class TestUtils
@@ -10,6 +12,15 @@ public static class TestUtils
         [System.Runtime.CompilerServices.CallerFilePath] string? callerPath = null)
     {
         return callerPath ?? throw new ArgumentException("Unable to find caller path");
+    }
+
+    public static int FreePort()
+    {
+        var l = new TcpListener(IPAddress.Loopback, 0);
+        l.Start();
+        int port = ((IPEndPoint)l.LocalEndpoint).Port;
+        l.Stop();
+        return port;
     }
 
     public record LogEntry(
