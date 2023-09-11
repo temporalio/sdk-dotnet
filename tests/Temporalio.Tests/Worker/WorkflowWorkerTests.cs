@@ -3265,6 +3265,38 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             client);
     }
 
+    [Workflow]
+    public class LastFailureWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // First attempt fail, second attempt confirm failure is present
+            if (Workflow.Info.Attempt == 1)
+            {
+                throw new ApplicationFailureException(
+                    "Intentional failure", details: new[] { "some detail" });
+            }
+            var err = Assert.IsType<ApplicationFailureException>(Workflow.Info.LastFailure);
+            Assert.Equal("Intentional failure", err.Message);
+            Assert.Equal("some detail", err.Details.ElementAt<string>(0));
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LastFailure_ProperlyPresent()
+    {
+        await ExecuteWorkerAsync<LastFailureWorkflow>(async worker =>
+        {
+            await Env.Client.ExecuteWorkflowAsync(
+                (LastFailureWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                {
+                    RetryPolicy = new() { MaximumAttempts = 2 },
+                });
+        });
+    }
+
     private async Task ExecuteWorkerAsync<TWf>(
         Func<TemporalWorker, Task> action,
         TemporalWorkerOptions? options = null,
