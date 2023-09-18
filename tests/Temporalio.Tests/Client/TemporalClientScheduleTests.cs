@@ -18,7 +18,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task CreateScheduleAsync_Basics_Succeeds()
     {
-        await AssertNoSchedulesAsync();
+        await TestUtils.AssertNoSchedulesAsync(Client);
 
         // Create a schedule with a lot of stuff
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
@@ -202,13 +202,13 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         });
 
         // Delete when done
-        await DeleteAllSchedulesAsync();
+        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Fact]
     public async Task CreateScheduleAsync_CalendarSpecDefaults_AreProper()
     {
-        await AssertNoSchedulesAsync();
+        await TestUtils.AssertNoSchedulesAsync(Client);
 
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
@@ -241,13 +241,13 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         }
 
         // Delete when done
-        await DeleteAllSchedulesAsync();
+        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Fact]
     public async Task CreateScheduleAsync_TriggerImmediately_Succeeds()
     {
-        await AssertNoSchedulesAsync();
+        await TestUtils.AssertNoSchedulesAsync(Client);
 
         // Create paused schedule that triggers immediately
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
@@ -272,13 +272,13 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
 
         // Delete when done
-        await DeleteAllSchedulesAsync();
+        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     [Fact]
     public async Task CreateScheduleAsync_Backfill_CreatesProperActions()
     {
-        await AssertNoSchedulesAsync();
+        await TestUtils.AssertNoSchedulesAsync(Client);
 
         // Create paused schedule that runs every minute and has two backfills
         var now = DateTime.UtcNow;
@@ -326,53 +326,6 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         Assert.Equal(6, (await handle.DescribeAsync()).Info.NumActions);
 
         // Delete when done
-        await DeleteAllSchedulesAsync();
-    }
-
-    private async Task DeleteAllSchedulesAsync()
-    {
-        // We will try this 3 times
-        var tries = 0;
-        while (true)
-        {
-            await foreach (var sched in Client.ListSchedulesAsync())
-            {
-                try
-                {
-                    await Client.GetScheduleHandle(sched.Id).DeleteAsync();
-                }
-                catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
-                {
-                    // Ignore not-found errors
-                }
-            }
-            try
-            {
-                await AssertNoSchedulesAsync();
-                return;
-            }
-            catch
-            {
-                if (++tries >= 3)
-                {
-                    throw;
-                }
-            }
-        }
-    }
-
-    private async Task AssertNoSchedulesAsync()
-    {
-        await AssertMore.EqualEventuallyAsync(
-            0,
-            async () =>
-            {
-                var count = 0;
-                await foreach (var sched in Client.ListSchedulesAsync())
-                {
-                    count++;
-                }
-                return count;
-            });
+        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 }

@@ -11,6 +11,7 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
+using Temporalio.Client.Schedules;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
@@ -3295,6 +3296,63 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     RetryPolicy = new() { MaximumAttempts = 2 },
                 });
         });
+    }
+
+    [Workflow]
+    public class LastResultWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            var maybeLastResult = Workflow.Info.LastResult?.SingleOrDefault();
+            if (maybeLastResult is { } lastResult)
+            {
+                var lastResultStr = Workflow.PayloadConverter.ToValue<string>(lastResult);
+                return $"last result: {lastResultStr}";
+            }
+            return "no result";
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LastResult_ProperlyPresent()
+    {
+        await TestUtils.AssertNoSchedulesAsync(Client);
+
+        await ExecuteWorkerAsync<LastResultWorkflow>(async worker =>
+        {
+            // Create schedule, trigger twice, confirm second got result of first
+            var schedAction = ScheduleActionStartWorkflow.Create(
+                (LastResultWorkflow wf) => wf.RunAsync(),
+                new WorkflowOptions(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            var sched = await Client.CreateScheduleAsync(
+                "sched-id",
+                new(schedAction, new ScheduleSpec()) { State = new() { Paused = true } });
+            async Task<string[]> AllResultsAsync()
+            {
+                var desc = await sched.DescribeAsync();
+                return await Task.WhenAll(desc.Info.RecentActions.Select(async res =>
+                {
+                    var action = res.Action as ScheduleActionExecutionStartWorkflow;
+                    var handle = Client.GetWorkflowHandle(
+                        action!.WorkflowId) with
+                    { ResultRunId = action.FirstExecutionRunId };
+                    return await handle.GetResultAsync<string>();
+                }));
+            }
+
+            // Check first result
+            await sched.TriggerAsync();
+            await AssertMore.EqualEventuallyAsync(new string[] { "no result" }, AllResultsAsync);
+
+            // Check both results
+            await sched.TriggerAsync();
+            await AssertMore.EqualEventuallyAsync(
+                new string[] { "no result", "last result: no result" },
+                AllResultsAsync);
+        });
+
+        await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
     private async Task ExecuteWorkerAsync<TWf>(
