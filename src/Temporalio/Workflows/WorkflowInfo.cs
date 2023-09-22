@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Temporalio.Common;
+using Temporalio.Converters;
 
 namespace Temporalio.Workflows
 {
@@ -12,6 +13,8 @@ namespace Temporalio.Workflows
     /// <param name="CronSchedule">Cron schedule if applicable.</param>
     /// <param name="ExecutionTimeout">Execution timeout for the workflow.</param>
     /// <param name="Headers">Headers from when the workflow was started.</param>
+    /// <param name="LastFailure">Failure if this workflow run is a continuation of a failure.</param>
+    /// <param name="LastResult">Successful result if this workflow is a continuation of a success.</param>
     /// <param name="Namespace">Namespace for the workflow.</param>
     /// <param name="Parent">Parent information for the workflow if this is a child.</param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
@@ -32,6 +35,8 @@ namespace Temporalio.Workflows
         string? CronSchedule,
         TimeSpan? ExecutionTimeout,
         IReadOnlyDictionary<string, Api.Common.V1.Payload>? Headers,
+        Exception? LastFailure,
+        IReadOnlyCollection<IRawValue>? LastResult,
         string Namespace,
         WorkflowInfo.ParentInfo? Parent,
         RetryPolicy? RetryPolicy,

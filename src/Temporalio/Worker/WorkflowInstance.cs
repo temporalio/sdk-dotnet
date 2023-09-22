@@ -146,6 +146,9 @@ namespace Temporalio.Worker
                     RunId: start.ParentWorkflowInfo.RunId,
                     WorkflowId: start.ParentWorkflowInfo.WorkflowId);
             }
+            var lastFailure = start.ContinuedFailure == null ?
+                null : failureConverter.ToException(start.ContinuedFailure, PayloadConverter);
+            var lastResult = start.LastCompletionResult?.Payloads_.Select(v => new RawValue(v)).ToArray();
             static string? NonEmptyOrNull(string s) => string.IsNullOrEmpty(s) ? null : s;
             Info = new(
                 Attempt: start.Attempt,
@@ -153,6 +156,8 @@ namespace Temporalio.Worker
                 CronSchedule: NonEmptyOrNull(start.CronSchedule),
                 ExecutionTimeout: start.WorkflowExecutionTimeout?.ToTimeSpan(),
                 Headers: start.Headers,
+                LastFailure: lastFailure,
+                LastResult: lastResult,
                 Namespace: details.Namespace,
                 Parent: parent,
                 RetryPolicy: start.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(start.RetryPolicy),
