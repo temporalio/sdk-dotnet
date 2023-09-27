@@ -147,12 +147,13 @@ namespace Temporalio.Bridge
         {
             Interop.PrometheusOptions* prometheus = null;
             Interop.OpenTelemetryOptions* openTelemetry = null;
+            Interop.CustomMetricMeter* customMeter = null;
             if (options.Prometheus != null)
             {
-                if (options.OpenTelemetry != null)
+                if (options.OpenTelemetry != null || options.CustomMetricMeter != null)
                 {
                     throw new ArgumentException(
-                        "Cannot have Prometheus and OpenTelemetry metrics options");
+                        "Cannot have Prometheus and OpenTelemetry/CustomMetricMeter metrics options");
                 }
                 if (string.IsNullOrEmpty(options.Prometheus.BindAddress))
                 {
@@ -166,17 +167,30 @@ namespace Temporalio.Bridge
             }
             else if (options.OpenTelemetry != null)
             {
+                if (options.CustomMetricMeter != null)
+                {
+                    throw new ArgumentException(
+                        "Cannot have OpenTelemetry and CustomMetricMeter metrics options");
+                }
                 openTelemetry = scope.Pointer(options.OpenTelemetry.ToInteropOptions(scope));
+            }
+            else if (options.CustomMetricMeter != null)
+            {
+                // This object pins itself in memory and is only freed on the Rust side
+                customMeter = new CustomMetricMeter(options.CustomMetricMeter).Ptr;
             }
             else
             {
                 throw new ArgumentException(
                     "Must have either Prometheus or OpenTelemetry metrics options");
             }
+            // WARNING: It is important that nothing after this point throws, because we have
+            // allocated a pointer for the custom meter which can only be freed on the Rust side
             return new Interop.MetricsOptions()
             {
                 prometheus = prometheus,
                 opentelemetry = openTelemetry,
+                custom_meter = customMeter,
                 attach_service_name = (byte)(options.AttachServiceName ? 1 : 0),
                 global_tags = scope.Metadata(options.GlobalTags),
                 metric_prefix = scope.ByteArray(options.MetricPrefix),

@@ -180,9 +180,68 @@ typedef struct PrometheusOptions {
   bool unit_suffix;
 } PrometheusOptions;
 
+typedef const void *(*CustomMetricMeterMetricIntegerNewCallback)(struct ByteArrayRef name,
+                                                                 struct ByteArrayRef description,
+                                                                 struct ByteArrayRef unit,
+                                                                 enum MetricIntegerKind kind);
+
+typedef void (*CustomMetricMeterMetricIntegerFreeCallback)(const void *metric);
+
+typedef void (*CustomMetricMeterMetricIntegerUpdateCallback)(const void *metric,
+                                                             uint64_t value,
+                                                             const void *attributes);
+
+typedef struct CustomMetricAttributeValueString {
+  const uint8_t *data;
+  size_t size;
+} CustomMetricAttributeValueString;
+
+typedef union CustomMetricAttributeValue {
+  struct CustomMetricAttributeValueString string_value;
+  int64_t int_value;
+  double float_value;
+  bool bool_value;
+} CustomMetricAttributeValue;
+
+typedef struct CustomMetricAttribute {
+  struct ByteArrayRef key;
+  union CustomMetricAttributeValue value;
+  enum MetricAttributeValueType value_type;
+} CustomMetricAttribute;
+
+typedef const void *(*CustomMetricMeterAttributesNewCallback)(const void *append_from,
+                                                              const struct CustomMetricAttribute *attributes,
+                                                              size_t attributes_size);
+
+typedef void (*CustomMetricMeterAttributesFreeCallback)(const void *attributes);
+
+typedef void (*CustomMetricMeterMeterFreeCallback)(const struct CustomMetricMeter *meter);
+
+/**
+ * No parameters in the callbacks below should be assumed to live beyond the
+ * callbacks unless they are pointers to things that were created lang-side
+ * originally. There are no guarantees on which thread these calls may be
+ * invoked on.
+ */
+typedef struct CustomMetricMeter {
+  CustomMetricMeterMetricIntegerNewCallback metric_integer_new;
+  CustomMetricMeterMetricIntegerFreeCallback metric_integer_free;
+  CustomMetricMeterMetricIntegerUpdateCallback metric_integer_update;
+  CustomMetricMeterAttributesNewCallback attributes_new;
+  CustomMetricMeterAttributesFreeCallback attributes_free;
+  CustomMetricMeterMeterFreeCallback meter_free;
+} CustomMetricMeter;
+
+/**
+ * Only one of opentelemetry, prometheus, or custom_meter can be present.
+ */
 typedef struct MetricsOptions {
   const struct OpenTelemetryOptions *opentelemetry;
   const struct PrometheusOptions *prometheus;
+  /**
+   * If present, this is freed by a callback within itself
+   */
+  const struct CustomMetricMeter *custom_meter;
   bool attach_service_name;
   MetadataRef global_tags;
   struct ByteArrayRef metric_prefix;
@@ -335,7 +394,8 @@ struct MetricAttributes *metric_attributes_new(const struct MetricMeter *meter,
                                                const struct MetricAttribute *attrs,
                                                size_t size);
 
-struct MetricAttributes *metric_attributes_new_append(const struct MetricAttributes *orig,
+struct MetricAttributes *metric_attributes_new_append(const struct MetricMeter *meter,
+                                                      const struct MetricAttributes *orig,
                                                       const struct MetricAttribute *attrs,
                                                       size_t size);
 

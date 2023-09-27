@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 namespace Temporalio.Common
 {
+    // TODO(cretz): Make metrics generic and remove the interface (abstract classes only)
+
     /// <summary>
     /// Base interface for all metrics.
     /// </summary>

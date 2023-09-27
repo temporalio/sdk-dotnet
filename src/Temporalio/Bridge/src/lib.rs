@@ -24,6 +24,20 @@ pub struct ByteArrayRef {
 }
 
 impl ByteArrayRef {
+    fn from_str(s: &str) -> ByteArrayRef {
+        ByteArrayRef {
+            data: s.as_ptr(),
+            size: s.len(),
+        }
+    }
+
+    fn from_string(s: &String) -> ByteArrayRef {
+        ByteArrayRef {
+            data: s.as_ptr(),
+            size: s.len(),
+        }
+    }
+
     fn to_slice(&self) -> &[u8] {
         unsafe { std::slice::from_raw_parts(self.data, self.size) }
     }

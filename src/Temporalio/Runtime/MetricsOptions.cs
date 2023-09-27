@@ -5,8 +5,8 @@ namespace Temporalio.Runtime
 {
     /// <summary>
     /// Metrics options for a runtime.
-    /// <see cref="Prometheus" /> or <see cref="OpenTelemetry" />
-    /// is required (but not both).
+    /// <see cref="Prometheus" /> or <see cref="OpenTelemetry" /> or
+    /// <see cref="CustomMetricMeter" /> is required (but only one).
     /// </summary>
     public class MetricsOptions : ICloneable
     {
@@ -38,6 +38,8 @@ namespace Temporalio.Runtime
         /// Gets or sets the OpenTelemetry metrics options.
         /// </summary>
         public OpenTelemetryOptions? OpenTelemetry { get; set; }
+
+        public ICustomMetricMeter? CustomMetricMeter { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the service name is set on metrics.

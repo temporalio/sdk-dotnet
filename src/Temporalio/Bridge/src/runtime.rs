@@ -1,3 +1,5 @@
+use crate::metric::CustomMetricMeter;
+use crate::metric::CustomMetricMeterRef;
 use crate::ByteArray;
 use crate::ByteArrayRef;
 use crate::MetadataRef;
@@ -33,10 +35,14 @@ pub struct LoggingOptions {
     forward: bool,
 }
 
+/// Only one of opentelemetry, prometheus, or custom_meter can be present.
 #[repr(C)]
 pub struct MetricsOptions {
     opentelemetry: *const OpenTelemetryOptions,
     prometheus: *const PrometheusOptions,
+    /// If present, this is freed by a callback within itself
+    custom_meter: *const CustomMetricMeter,
+
     attach_service_name: bool,
     global_tags: MetadataRef,
     metric_prefix: ByteArrayRef,
@@ -137,6 +143,21 @@ pub extern "C" fn byte_array_free(runtime: *mut Runtime, bytes: *const ByteArray
 
 impl Runtime {
     fn new(options: &RuntimeOptions) -> anyhow::Result<Runtime> {
+        // We collect the metric meter first so if there is an error later, its
+        // Drop is run which frees it
+        let metric_meter: Option<Arc<dyn CoreMeter>> = if let Some(metric_options) = unsafe {
+            options
+                .telemetry
+                .as_ref()
+                .map(|v| v.metrics.as_ref())
+                .flatten()
+        } {
+            Some(metric_options.try_into()?)
+        } else {
+            None
+        };
+
+        // Build runtime
         let mut core = CoreRuntime::new(
             if let Some(v) = unsafe { options.telemetry.as_ref() } {
                 v.try_into()?
@@ -147,11 +168,9 @@ impl Runtime {
         )?;
         // We late-bind the metrics after core runtime is created since it needs
         // the Tokio handle
-        if let Some(v) = unsafe { options.telemetry.as_ref() } {
-            if let Some(v) = unsafe { v.metrics.as_ref() } {
-                let _guard = core.tokio_handle().enter();
-                core.telemetry_mut().attach_late_init_metrics(v.try_into()?);
-            }
+        if let Some(metric_meter) = metric_meter {
+            let _guard = core.tokio_handle().enter();
+            core.telemetry_mut().attach_late_init_metrics(metric_meter);
         }
         Ok(Runtime {
             core: Arc::new(core),
@@ -208,10 +227,18 @@ impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
     type Error = anyhow::Error;
 
     fn try_from(options: &MetricsOptions) -> anyhow::Result<Self> {
+        // Create custom meter no matter what so it will be dropped on error
+        let custom_meter = if options.custom_meter.is_null() {
+            None
+        } else {
+            Some(CustomMetricMeterRef::new(options.custom_meter))
+        };
+
+        // OTel, Prom, or custom
         if let Some(otel_options) = unsafe { options.opentelemetry.as_ref() } {
-            if !options.prometheus.is_null() {
+            if !options.prometheus.is_null() || custom_meter.is_some() {
                 return Err(anyhow::anyhow!(
-                    "Cannot have OpenTelemetry and Prometheus metrics"
+                    "Cannot have OpenTelemetry and Prometheus metrics or custom meter"
                 ));
             }
             // Build OTel exporter
@@ -231,6 +258,11 @@ impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
             }
             Ok(Arc::new(build_otlp_metric_exporter(build.build()?)?))
         } else if let Some(prom_options) = unsafe { options.prometheus.as_ref() } {
+            if custom_meter.is_some() {
+                return Err(anyhow::anyhow!(
+                    "Cannot have Prometheus metrics and custom meter"
+                ));
+            }
             // Start prom exporter
             let mut build = PrometheusExporterOptionsBuilder::default();
             build
@@ -239,9 +271,11 @@ impl TryFrom<&MetricsOptions> for Arc<dyn CoreMeter> {
                 .counters_total_suffix(prom_options.counters_total_suffix)
                 .unit_suffix(prom_options.unit_suffix);
             Ok(start_prometheus_metric_exporter(build.build()?)?.meter)
+        } else if let Some(custom_meter) = custom_meter {
+            Ok(Arc::new(custom_meter))
         } else {
             Err(anyhow::anyhow!(
-                "Either OpenTelemetry or Prometheus config must be provided"
+                "Either OpenTelemetry config, Prometheus config, or custom meter must be provided"
             ))
         }
     }
