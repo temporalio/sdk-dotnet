@@ -39,6 +39,9 @@ namespace Temporalio.Runtime
         /// </summary>
         public OpenTelemetryOptions? OpenTelemetry { get; set; }
 
+        /// <summary>
+        /// Gets or sets the custom metric meter to send metrics to.
+        /// </summary>
         public ICustomMetricMeter? CustomMetricMeter { get; set; }
 
         /// <summary>

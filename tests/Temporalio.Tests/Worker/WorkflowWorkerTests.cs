@@ -3130,7 +3130,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         public static void DoActivity()
         {
-            var counter = ActivityExecutionContext.Current.MetricMeter.CreateCounter(
+            var counter = ActivityExecutionContext.Current.MetricMeter.CreateCounter<int>(
                 "my-activity-counter",
                 "my-activity-unit",
                 "my-activity-description");
@@ -3149,7 +3149,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 () => CustomMetricsActivities.DoActivity(),
                 new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
 
-            var histogram = Workflow.MetricMeter.CreateHistogram(
+            var histogram = Workflow.MetricMeter.CreateHistogram<int>(
                 "my-workflow-histogram",
                 "my-workflow-unit",
                 "my-workflow-description");
@@ -3187,7 +3187,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Let's record a gauge at the runtime level
                 var gauge = runtime.MetricMeter.
                     WithTags(new Dictionary<string, object>() { { "my-runtime-extra-tag", true } }).
-                    CreateGauge("my-runtime-gauge", description: "my-runtime-description");
+                    CreateGauge<int>("my-runtime-gauge", description: "my-runtime-description");
                 gauge.Set(90);
 
                 // Run workflow

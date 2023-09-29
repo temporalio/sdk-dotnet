@@ -131,20 +131,20 @@ public static class TestUtils
     {
         public ConcurrentQueue<CaptureMetric> Metrics { get; } = new();
 
-        public ICustomMetric<T>.ICounter CreateCounter<T>(
+        public ICustomMetricCounter<T> CreateCounter<T>(
             string name, string? unit, string? description)
             where T : struct =>
-            CreateMetric<long, ICustomMetric<T>.ICounter>(name, unit, description);
+            CreateMetric<long, ICustomMetricCounter<T>>(name, unit, description);
 
-        public ICustomMetric<T>.IHistogram CreateHistogram<T>(
+        public ICustomMetricHistogram<T> CreateHistogram<T>(
             string name, string? unit, string? description)
             where T : struct =>
-            CreateMetric<long, ICustomMetric<T>.IHistogram>(name, unit, description);
+            CreateMetric<long, ICustomMetricHistogram<T>>(name, unit, description);
 
-        public ICustomMetric<T>.IGauge CreateGauge<T>(
+        public ICustomMetricGauge<T> CreateGauge<T>(
             string name, string? unit, string? description)
             where T : struct =>
-            CreateMetric<long, ICustomMetric<T>.IGauge>(name, unit, description);
+            CreateMetric<long, ICustomMetricGauge<T>>(name, unit, description);
 
         public object CreateTags(
             object? appendFrom, IReadOnlyCollection<KeyValuePair<string, object>> tags)
@@ -172,7 +172,7 @@ public static class TestUtils
     }
 
     public record CaptureMetric(string Name, string? Unit, string? Description)
-        : ICustomMetric<long>.ICounter, ICustomMetric<long>.IHistogram, ICustomMetric<long>.IGauge
+        : ICustomMetricCounter<long>, ICustomMetricHistogram<long>, ICustomMetricGauge<long>
     {
         public ConcurrentQueue<(long Value, Dictionary<string, object> Tags)> Values { get; } = new();
 

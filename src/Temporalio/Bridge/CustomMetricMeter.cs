@@ -4,11 +4,18 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge
 {
+    /// <summary>
+    /// Core wrapper for a custom metric meter implementation.
+    /// </summary>
     internal class CustomMetricMeter
     {
         private readonly Temporalio.Runtime.ICustomMetricMeter meter;
         private readonly List<GCHandle> handles = new();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CustomMetricMeter" /> class.
+        /// </summary>
+        /// <param name="meter">Meter implementation.</param>
         public unsafe CustomMetricMeter(Temporalio.Runtime.ICustomMetricMeter meter)
         {
             this.meter = meter;
@@ -33,7 +40,19 @@ namespace Temporalio.Bridge
             handles.Add(GCHandle.Alloc(this));
         }
 
+        /// <summary>
+        /// Gets the pointer to the native metric meter.
+        /// </summary>
         internal unsafe Interop.CustomMetricMeter* Ptr { get; private init; }
+
+        private static unsafe string? GetStringOrNull(Interop.ByteArrayRef bytes) =>
+            (int)bytes.size == 0 ? null : GetString(bytes);
+
+        private static unsafe string GetString(Interop.ByteArrayRef bytes) =>
+            GetString(bytes.data, bytes.size);
+
+        private static unsafe string GetString(byte* bytes, UIntPtr size) =>
+            (int)size == 0 ? string.Empty : ByteArrayRef.StrictUTF8.GetString(bytes, (int)size);
 
         private unsafe void* CreateMetric(
             Interop.ByteArrayRef name,
@@ -73,13 +92,13 @@ namespace Temporalio.Bridge
             var metricValue = unchecked((long)value);
             switch (metricObject)
             {
-                case Temporalio.Runtime.ICustomMetric<long>.ICounter counter:
+                case Temporalio.Runtime.ICustomMetricCounter<long> counter:
                     counter.Add(metricValue, tags);
                     break;
-                case Temporalio.Runtime.ICustomMetric<long>.IHistogram histogram:
+                case Temporalio.Runtime.ICustomMetricHistogram<long> histogram:
                     histogram.Record(metricValue, tags);
                     break;
-                case Temporalio.Runtime.ICustomMetric<long>.IGauge gauge:
+                case Temporalio.Runtime.ICustomMetricGauge<long> gauge:
                     gauge.Set(metricValue, tags);
                     break;
             }
@@ -129,20 +148,12 @@ namespace Temporalio.Bridge
         }
 
             // Similar to Scope.FunctionPointer
-        private IntPtr FunctionPointer<T>(T func) where T : Delegate
+        private IntPtr FunctionPointer<T>(T func)
+            where T : Delegate
         {
             var handle = GCHandle.Alloc(func);
             handles.Add(handle);
             return Marshal.GetFunctionPointerForDelegate(handle.Target!);
         }
-
-        private static unsafe string? GetStringOrNull(Interop.ByteArrayRef bytes) =>
-            (int)bytes.size == 0 ? null : GetString(bytes);
-
-        private static unsafe string GetString(Interop.ByteArrayRef bytes) =>
-            GetString(bytes.data, bytes.size);
-
-        private static unsafe string GetString(byte* bytes, UIntPtr size) =>
-            (int)size == 0 ? string.Empty : ByteArrayRef.StrictUTF8.GetString(bytes, (int)size);
     }
 }

@@ -57,7 +57,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         });
 
         // Create counter metrics w/ different attribute setups
-        var counter1 = runtime.MetricMeter.CreateCounter("counter1", "counter1-unit", "counter1-desc");
+        var counter1 = runtime.MetricMeter.CreateCounter<int>("counter1", "counter1-unit", "counter1-desc");
         counter1.Add(123);
         counter1.Add(234);
         var counter1WithTags = counter1.WithTags(new Dictionary<string, object>()
@@ -74,22 +74,13 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             { "another-int-tag", 300 },
         });
         // Make another counter and record to confirm it's now on a different metric
-        runtime.MetricMeter.CreateCounter("counter1", "counter1-unit", "counter1-desc2").Add(567);
+        runtime.MetricMeter.CreateCounter<int>("counter1", "counter1-unit", "counter1-desc2").Add(567);
 
         // Check histograms and gauges too
-        runtime.MetricMeter.CreateHistogram("hist1", null, "hist1-desc").
+        runtime.MetricMeter.CreateHistogram<int>("hist1", null, "hist1-desc").
             Record(678, new Dictionary<string, object>() { { "string-tag", "histval" } });
-        runtime.MetricMeter.CreateGauge("gauge1", "gauge1-unit", null).
+        runtime.MetricMeter.CreateGauge<int>("gauge1", "gauge1-unit", null).
             Set(789, new Dictionary<string, object>() { { "string-tag", "gaugeval" } });
-
-        foreach (var metric in meter.Metrics)
-        {
-            Console.WriteLine("!!! METRIC: {0} - {1} - {2}", metric.Name, metric.Unit, metric.Description);
-            foreach (var (value, tags) in metric.Values)
-            {
-                Console.WriteLine("    !!! VALUE: {0} - {1}", value, string.Join(", ", tags.Select(kv => $"{kv.Key}: {kv.Value}")));
-            }
-        }
 
         // Check metrics...
         var metrics = meter.Metrics.ToList();

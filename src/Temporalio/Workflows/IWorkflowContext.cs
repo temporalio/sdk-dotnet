@@ -66,7 +66,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets value for <see cref="Workflow.MetricMeter" />.
         /// </summary>
-        IMetricMeter MetricMeter { get; }
+        MetricMeter MetricMeter { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.PayloadConverter" />.

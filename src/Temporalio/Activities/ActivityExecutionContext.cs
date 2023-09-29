@@ -15,7 +15,7 @@ namespace Temporalio.Activities
     /// </summary>
     public class ActivityExecutionContext
     {
-        private readonly Lazy<IMetricMeter> metricMeter;
+        private readonly Lazy<MetricMeter> metricMeter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActivityExecutionContext"/> class.
@@ -35,7 +35,7 @@ namespace Temporalio.Activities
             ByteString taskToken,
             ILogger logger,
             IPayloadConverter payloadConverter,
-            Lazy<IMetricMeter> runtimeMetricMeter)
+            Lazy<MetricMeter> runtimeMetricMeter)
         {
             Info = info;
             CancellationToken = cancellationToken;
@@ -105,7 +105,7 @@ namespace Temporalio.Activities
         /// Gets the metric meter for this activity with activity-specific tags. Note, this is
         /// lazily created for each activity execution.
         /// </summary>
-        public IMetricMeter MetricMeter => metricMeter.Value;
+        public MetricMeter MetricMeter => metricMeter.Value;
 
         /// <summary>
         /// Gets the async local current value.

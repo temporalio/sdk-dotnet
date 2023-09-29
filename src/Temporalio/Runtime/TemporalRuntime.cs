@@ -16,7 +16,7 @@ namespace Temporalio.Runtime
         private static readonly Lazy<TemporalRuntime> LazyDefault =
             new(() => new TemporalRuntime(new TemporalRuntimeOptions()));
 
-        private readonly Lazy<IMetricMeter> metricMeter;
+        private readonly Lazy<MetricMeter> metricMeter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalRuntime"/> class.
@@ -34,7 +34,7 @@ namespace Temporalio.Runtime
         private TemporalRuntime(Bridge.Runtime runtime)
         {
             Runtime = runtime;
-            metricMeter = Common.MetricMeter.LazyFromRuntime(runtime);
+            metricMeter = MetricMeterBridge.LazyFromRuntime(runtime);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Temporalio.Runtime
         /// <summary>
         /// Gets the metric meter associated with this runtime.
         /// </summary>
-        public IMetricMeter MetricMeter => metricMeter.Value;
+        public MetricMeter MetricMeter => metricMeter.Value;
 
         /// <summary>
         /// Gets the runtime.

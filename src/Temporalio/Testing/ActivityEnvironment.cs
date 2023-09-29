@@ -58,7 +58,7 @@ namespace Temporalio.Testing
         /// <summary>
         /// Gets or inits the metric meter for this activity. If unset, a noop meter is used.
         /// </summary>
-        public IMetricMeter? MetricMeter { get; init; }
+        public MetricMeter? MetricMeter { get; init; }
 
         /// <summary>
         /// Gets or sets the cancel reason. Callers may prefer <see cref="Cancel" /> instead.
@@ -134,7 +134,7 @@ namespace Temporalio.Testing
                     taskToken: ByteString.Empty,
                     logger: Logger,
                     payloadConverter: PayloadConverter,
-                    runtimeMetricMeter: new(() => MetricMeter ?? NoopMetricMeter.Instance))
+                    runtimeMetricMeter: new(() => MetricMeter ?? MetricMeterNoop.Instance))
                 {
                     Heartbeater = Heartbeater,
                     CancelReasonRef = CancelReasonRef,
