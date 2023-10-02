@@ -73,7 +73,7 @@ namespace Temporalio.Bridge
                     metric = meter.CreateHistogram<long>(nameStr, unitStr, descStr);
                     break;
                 case Interop.MetricIntegerKind.Gauge:
-                    metric = meter.CreateCounter<long>(nameStr, unitStr, descStr);
+                    metric = meter.CreateGauge<long>(nameStr, unitStr, descStr);
                     break;
                 default:
                     throw new InvalidOperationException($"Unknown kind: {kind}");
@@ -147,7 +147,7 @@ namespace Temporalio.Bridge
             }
         }
 
-            // Similar to Scope.FunctionPointer
+        // Similar to Scope.FunctionPointer
         private IntPtr FunctionPointer<T>(T func)
             where T : Delegate
         {

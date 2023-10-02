@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Temporalio\Temporalio.csproj" />
+    <ProjectReference Include="..\..\src\Temporalio.Extensions.DiagnosticSource\Temporalio.Extensions.DiagnosticSource.csproj" />
     <ProjectReference Include="..\..\src\Temporalio.Extensions.Hosting\Temporalio.Extensions.Hosting.csproj" />
     <ProjectReference Include="..\..\src\Temporalio.Extensions.OpenTelemetry\Temporalio.Extensions.OpenTelemetry.csproj" />
   </ItemGroup>
