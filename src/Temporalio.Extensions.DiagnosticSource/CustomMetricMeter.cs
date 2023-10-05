@@ -118,6 +118,7 @@ namespace Temporalio.Extensions.DiagnosticSource
                 }
             }
 
+            // Used as callback for ObservableGauge
             public List<Measurement<T>> Snapshot()
             {
                 pendingLock.EnterWriteLock();

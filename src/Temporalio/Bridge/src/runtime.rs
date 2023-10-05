@@ -149,8 +149,7 @@ impl Runtime {
             options
                 .telemetry
                 .as_ref()
-                .map(|v| v.metrics.as_ref())
-                .flatten()
+                .and_then(|v| v.metrics.as_ref())
                 .map(|v| v.custom_meter)
                 .filter(|v| !v.is_null())
                 .map(|v| CustomMetricMeterRef::new(v))

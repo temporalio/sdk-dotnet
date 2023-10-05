@@ -310,7 +310,7 @@ impl CustomMetricMeterRef {
                     v.clone()
                         .as_any()
                         .downcast::<CustomMetricAttributes>()
-                        .unwrap()
+                        .expect("Attributes not CustomMetricAttributes as expected")
                         .attributes
                 }
                 _ => std::ptr::null(),
@@ -473,7 +473,7 @@ fn raw_custom_metric_attributes(attributes: &metrics::MetricAttributes) -> *cons
         v.clone()
             .as_any()
             .downcast::<CustomMetricAttributes>()
-            .unwrap()
+            .expect("Attributes not CustomMetricAttributes as expected")
             .attributes
     } else {
         panic!("Unexpected attribute type")
