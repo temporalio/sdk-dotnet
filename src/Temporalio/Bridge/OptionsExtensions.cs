@@ -233,6 +233,10 @@ namespace Temporalio.Bridge
                     options.RpcRetry == null
                         ? null
                         : scope.Pointer(options.RpcRetry.ToInteropOptions()),
+                keep_alive_options =
+                    options.KeepAlive == null
+                        ? null
+                        : scope.Pointer(options.KeepAlive.ToInteropOptions()),
             };
         }
 
@@ -284,6 +288,19 @@ namespace Temporalio.Bridge
                 max_retries = (UIntPtr)options.MaxRetries,
             };
         }
+
+        /// <summary>
+        /// Convert keep alive options.
+        /// </summary>
+        /// <param name="options">Options to convert.</param>
+        /// <returns>Converted options.</returns>
+        public static Interop.ClientKeepAliveOptions ToInteropOptions(
+            this Temporalio.Client.KeepAliveOptions options) =>
+            new()
+            {
+                interval_millis = (ulong)options.Interval.TotalMilliseconds,
+                timeout_millis = (ulong)options.Timeout.TotalMilliseconds,
+            };
 
         /// <summary>
         /// Convert start local options options.
