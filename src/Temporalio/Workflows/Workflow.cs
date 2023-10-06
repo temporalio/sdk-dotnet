@@ -107,7 +107,7 @@ namespace Temporalio.Workflows
         /// meter and they will be properly ignored during replay. This meter is different for each
         /// workflow execution.
         /// </summary>
-        public static IMetricMeter MetricMeter => Context.MetricMeter;
+        public static MetricMeter MetricMeter => Context.MetricMeter;
 
         /// <summary>
         /// Gets the payload converter for the workflow.

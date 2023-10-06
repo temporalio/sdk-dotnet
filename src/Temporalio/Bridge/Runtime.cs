@@ -20,8 +20,11 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    var res = Interop.Methods.runtime_new(
-                        scope.Pointer(options.ToInteropOptions(scope)));
+                    // WARNING: It is important that this options is immediately passed to new
+                    // because we have allocated a pointer for the custom meter which can only be
+                    // freed on the Rust side on error
+                    var runtimeOptions = scope.Pointer(options.ToInteropOptions(scope));
+                    var res = Interop.Methods.runtime_new(runtimeOptions);
                     // If it failed, copy byte array, free runtime and byte array. Otherwise just
                     // return runtime.
                     if (res.fail != null)

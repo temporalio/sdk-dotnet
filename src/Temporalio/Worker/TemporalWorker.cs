@@ -45,7 +45,7 @@ namespace Temporalio.Worker
             {
                 throw new ArgumentException("Must have at least one workflow and/or activity");
             }
-            MetricMeter = Common.MetricMeter.LazyFromRuntime(BridgeWorker.Runtime);
+            MetricMeter = MetricMeterBridge.LazyFromRuntime(BridgeWorker.Runtime);
 
             // Interceptors are the client interceptors that implement IWorkerInterceptor followed
             // by the explicitly provided ones in options.
@@ -127,7 +127,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets the lazy metric meter.
         /// </summary>
-        internal Lazy<IMetricMeter> MetricMeter { get; private init; }
+        internal Lazy<MetricMeter> MetricMeter { get; private init; }
 
         /// <summary>
         /// Run this worker until failure or cancelled.

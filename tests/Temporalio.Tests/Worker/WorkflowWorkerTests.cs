@@ -3130,7 +3130,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [Activity]
         public static void DoActivity()
         {
-            var counter = ActivityExecutionContext.Current.MetricMeter.CreateCounter(
+            var counter = ActivityExecutionContext.Current.MetricMeter.CreateCounter<int>(
                 "my-activity-counter",
                 "my-activity-unit",
                 "my-activity-description");
@@ -3149,7 +3149,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 () => CustomMetricsActivities.DoActivity(),
                 new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
 
-            var histogram = Workflow.MetricMeter.CreateHistogram(
+            var histogram = Workflow.MetricMeter.CreateHistogram<int>(
                 "my-workflow-histogram",
                 "my-workflow-unit",
                 "my-workflow-description");
@@ -3187,7 +3187,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Let's record a gauge at the runtime level
                 var gauge = runtime.MetricMeter.
                     WithTags(new Dictionary<string, object>() { { "my-runtime-extra-tag", true } }).
-                    CreateGauge("my-runtime-gauge", description: "my-runtime-description");
+                    CreateGauge<int>("my-runtime-gauge", description: "my-runtime-description");
                 gauge.Set(90);
 
                 // Run workflow
@@ -3264,6 +3264,73 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             },
             new TemporalWorkerOptions().AddActivity(CustomMetricsActivities.DoActivity),
             client);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_CustomMetrics_WorksWithCustomMeter()
+    {
+        // Create runtime/client with capturing meter
+        var meter = new TestUtils.CaptureMetricMeter();
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                Metrics = new() { CustomMetricMeter = meter, MetricPrefix = "some-prefix_" },
+            },
+        });
+        var client = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = runtime,
+            });
+
+        // Run workflow
+        var taskQueue = string.Empty;
+        await ExecuteWorkerAsync<CustomMetricsWorkflow>(
+            async worker =>
+            {
+                taskQueue = worker.Options.TaskQueue!;
+                await client.ExecuteWorkflowAsync(
+                    (CustomMetricsWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            },
+            new TemporalWorkerOptions().AddActivity(CustomMetricsActivities.DoActivity),
+            client);
+        // Workflow histogram with some extra sanity checks
+        var metric = Assert.Single(meter.Metrics, m =>
+            m.Name == "my-workflow-histogram" &&
+            m.Unit == "my-workflow-unit" &&
+            m.Description == "my-workflow-description");
+        Assert.Single(metric.Values, v =>
+            v.Tags.Contains(new("namespace", client.Options.Namespace)) &&
+            v.Tags.Contains(new("task_queue", taskQueue)) &&
+            v.Tags.Contains(new("workflow_type", "CustomMetricsWorkflow")) &&
+            !v.Tags.ContainsKey("my-workflow-extra-tag") &&
+            v.Value == 56);
+        Assert.Single(metric.Values, v =>
+            v.Tags.Contains(new("my-workflow-extra-tag", 1234L)) &&
+            v.Value == 78);
+        // Activity counter
+        metric = Assert.Single(meter.Metrics, m =>
+            m.Name == "my-activity-counter" &&
+            m.Unit == "my-activity-unit" &&
+            m.Description == "my-activity-description");
+        Assert.Single(metric.Values, v =>
+            v.Tags.Contains(new("namespace", client.Options.Namespace)) &&
+            v.Tags.Contains(new("task_queue", taskQueue)) &&
+            v.Tags.Contains(new("activity_type", "DoActivity")) &&
+            !v.Tags.ContainsKey("my-activity-extra-tag") &&
+            v.Value == 12);
+        Assert.Single(metric.Values, v =>
+            v.Tags.Contains(new("my-activity-extra-tag", 12.34D)) &&
+            v.Value == 34);
+        // Check Temporal metric
+        metric = Assert.Single(meter.Metrics, m => m.Name == "some-prefix_workflow_completed");
+        Assert.Single(metric.Values, v =>
+            v.Tags.Contains(new("workflow_type", "CustomMetricsWorkflow")) &&
+            v.Value == 1);
     }
 
     [Workflow]

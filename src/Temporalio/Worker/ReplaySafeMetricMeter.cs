@@ -6,48 +6,45 @@ namespace Temporalio.Worker
     /// <summary>
     /// Metric meter that does not record during replay.
     /// </summary>
-    internal class ReplaySafeMetricMeter : IMetricMeter
+    internal class ReplaySafeMetricMeter : MetricMeter
     {
-        private readonly IMetricMeter underlying;
+        private readonly MetricMeter underlying;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReplaySafeMetricMeter" /> class.
         /// </summary>
         /// <param name="underlying">Meter meter to delegate to.</param>
-        public ReplaySafeMetricMeter(IMetricMeter underlying) => this.underlying = underlying;
+        public ReplaySafeMetricMeter(MetricMeter underlying) => this.underlying = underlying;
 
         /// <inheritdoc />
-        public IMetric.ICounter CreateCounter(
-            string name, string? unit = null, string? description = null) =>
-            new Counter(underlying.CreateCounter(name, unit, description));
+        public override MetricCounter<T> CreateCounter<T>(
+            string name, string? unit = null, string? description = null)
+            where T : struct => new Counter<T>(underlying.CreateCounter<T>(name, unit, description));
 
         /// <inheritdoc />
-        public IMetric.IGauge CreateGauge(
-            string name, string? unit = null, string? description = null) =>
-            new Gauge(underlying.CreateGauge(name, unit, description));
+        public override MetricHistogram<T> CreateHistogram<T>(
+            string name, string? unit = null, string? description = null)
+            where T : struct => new Histogram<T>(underlying.CreateHistogram<T>(name, unit, description));
 
         /// <inheritdoc />
-        public IMetric.IHistogram CreateHistogram(
-            string name, string? unit = null, string? description = null) =>
-            new Histogram(underlying.CreateHistogram(name, unit, description));
+        public override MetricGauge<T> CreateGauge<T>(
+            string name, string? unit = null, string? description = null)
+            where T : struct => new Gauge<T>(underlying.CreateGauge<T>(name, unit, description));
 
         /// <inheritdoc />
-        public IMetricMeter WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
+        public override MetricMeter WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
             new ReplaySafeMetricMeter(underlying.WithTags(tags));
 
-        private class Counter : IMetric.ICounter
+        private class Counter<T> : MetricCounter<T>
+            where T : struct
         {
-            private readonly IMetric.ICounter underlying;
+            private readonly MetricCounter<T> underlying;
 
-            internal Counter(IMetric.ICounter underlying) => this.underlying = underlying;
+            internal Counter(MetricCounter<T> underlying)
+                : base(underlying.Details) => this.underlying = underlying;
 
-            public string Name => underlying.Name;
-
-            public string? Unit => underlying.Unit;
-
-            public string? Description => underlying.Description;
-
-            public void Add(ulong value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
+            public override void Add(
+                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
             {
                 if (!Workflows.Workflow.Unsafe.IsReplaying)
                 {
@@ -55,23 +52,21 @@ namespace Temporalio.Worker
                 }
             }
 
-            public IMetric.ICounter WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
-                new Counter(underlying.WithTags(tags));
+            public override MetricCounter<T> WithTags(
+                IEnumerable<KeyValuePair<string, object>> tags) =>
+                new Counter<T>(underlying.WithTags(tags));
         }
 
-        private class Histogram : IMetric.IHistogram
+        private class Histogram<T> : MetricHistogram<T>
+            where T : struct
         {
-            private readonly IMetric.IHistogram underlying;
+            private readonly MetricHistogram<T> underlying;
 
-            internal Histogram(IMetric.IHistogram underlying) => this.underlying = underlying;
+            internal Histogram(MetricHistogram<T> underlying)
+                : base(underlying.Details) => this.underlying = underlying;
 
-            public string Name => underlying.Name;
-
-            public string? Unit => underlying.Unit;
-
-            public string? Description => underlying.Description;
-
-            public void Record(ulong value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
+            public override void Record(
+                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
             {
                 if (!Workflows.Workflow.Unsafe.IsReplaying)
                 {
@@ -79,23 +74,21 @@ namespace Temporalio.Worker
                 }
             }
 
-            public IMetric.IHistogram WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
-                new Histogram(underlying.WithTags(tags));
+            public override MetricHistogram<T> WithTags(
+                IEnumerable<KeyValuePair<string, object>> tags) =>
+                new Histogram<T>(underlying.WithTags(tags));
         }
 
-        private class Gauge : IMetric.IGauge
+        private class Gauge<T> : MetricGauge<T>
+            where T : struct
         {
-            private readonly IMetric.IGauge underlying;
+            private readonly MetricGauge<T> underlying;
 
-            internal Gauge(IMetric.IGauge underlying) => this.underlying = underlying;
+            internal Gauge(MetricGauge<T> underlying)
+                : base(underlying.Details) => this.underlying = underlying;
 
-            public string Name => underlying.Name;
-
-            public string? Unit => underlying.Unit;
-
-            public string? Description => underlying.Description;
-
-            public void Set(ulong value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
+            public override void Set(
+                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
             {
                 if (!Workflows.Workflow.Unsafe.IsReplaying)
                 {
@@ -103,8 +96,9 @@ namespace Temporalio.Worker
                 }
             }
 
-            public IMetric.IGauge WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
-                new Gauge(underlying.WithTags(tags));
+            public override MetricGauge<T> WithTags(
+                IEnumerable<KeyValuePair<string, object>> tags) =>
+                new Gauge<T>(underlying.WithTags(tags));
         }
     }
 }

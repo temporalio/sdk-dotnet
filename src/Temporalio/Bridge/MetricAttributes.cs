@@ -10,6 +10,8 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class MetricAttributes : SafeHandle
     {
+        private readonly MetricMeter meter;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MetricAttributes"/> class.
         /// </summary>
@@ -18,6 +20,7 @@ namespace Temporalio.Bridge
         public MetricAttributes(MetricMeter meter, IEnumerable<KeyValuePair<string, object>> attributes)
             : base(IntPtr.Zero, true)
         {
+            this.meter = meter;
             using (var scope = new Scope())
             {
                 unsafe
@@ -30,9 +33,10 @@ namespace Temporalio.Bridge
             }
         }
 
-        private unsafe MetricAttributes(Interop.MetricAttributes* ptr)
+        private unsafe MetricAttributes(MetricMeter meter, Interop.MetricAttributes* ptr)
             : base((IntPtr)ptr, true)
         {
+            this.meter = meter;
             unsafe
             {
                 Ptr = ptr;
@@ -59,8 +63,9 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     var attrs = ConvertKeyValuePairs(scope, attributes);
-                    return new(Interop.Methods.metric_attributes_new_append(
-                        Ptr, scope.ArrayPointer(attrs), (UIntPtr)attrs.Length));
+                    var newAttrs = Interop.Methods.metric_attributes_new_append(
+                        meter.Ptr, Ptr, scope.ArrayPointer(attrs), (UIntPtr)attrs.Length);
+                    return new(meter, newAttrs);
                 }
             }
         }

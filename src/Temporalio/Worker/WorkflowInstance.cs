@@ -30,7 +30,7 @@ namespace Temporalio.Worker
     {
         private readonly TaskFactory taskFactory;
         private readonly IFailureConverter failureConverter;
-        private readonly Lazy<IMetricMeter> metricMeter;
+        private readonly Lazy<MetricMeter> metricMeter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
         // Lazily created if asked for by user
@@ -252,7 +252,7 @@ namespace Temporalio.Worker
         public IReadOnlyDictionary<string, IRawValue> Memo => memo.Value;
 
         /// <inheritdoc />
-        public IMetricMeter MetricMeter => metricMeter.Value;
+        public MetricMeter MetricMeter => metricMeter.Value;
 
         /// <inheritdoc />
         public IPayloadConverter PayloadConverter { get; private init; }

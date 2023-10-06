@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
 using Temporalio.Exceptions;
+using Temporalio.Runtime;
 
 public static class TestUtils
 {
@@ -124,5 +125,61 @@ public static class TestUtils
             logs.Enqueue(new(logLevel, eventId, state, exception, formatter.Invoke(state, exception)));
             underlying.Log(logLevel, eventId, state, exception, formatter);
         }
+    }
+
+    public class CaptureMetricMeter : ICustomMetricMeter
+    {
+        public ConcurrentQueue<CaptureMetric> Metrics { get; } = new();
+
+        public ICustomMetricCounter<T> CreateCounter<T>(
+            string name, string? unit, string? description)
+            where T : struct =>
+            CreateMetric<long, ICustomMetricCounter<T>>(name, unit, description);
+
+        public ICustomMetricHistogram<T> CreateHistogram<T>(
+            string name, string? unit, string? description)
+            where T : struct =>
+            CreateMetric<long, ICustomMetricHistogram<T>>(name, unit, description);
+
+        public ICustomMetricGauge<T> CreateGauge<T>(
+            string name, string? unit, string? description)
+            where T : struct =>
+            CreateMetric<long, ICustomMetricGauge<T>>(name, unit, description);
+
+        public object CreateTags(
+            object? appendFrom, IReadOnlyCollection<KeyValuePair<string, object>> tags)
+        {
+            var dict = appendFrom == null ?
+                new Dictionary<string, object>(tags.Count) :
+                new Dictionary<string, object>((Dictionary<string, object>)appendFrom);
+            foreach (var kv in tags)
+            {
+                dict[kv.Key] = kv.Value;
+            }
+            return dict;
+        }
+
+        private TMetric CreateMetric<TValue, TMetric>(string name, string? unit, string? description)
+        {
+            if (typeof(TValue) != typeof(long))
+            {
+                throw new InvalidOperationException($"Expected long type, got {typeof(TValue)}");
+            }
+            var metric = new CaptureMetric(name, unit, description);
+            Metrics.Enqueue(metric);
+            return (TMetric)(object)metric;
+        }
+    }
+
+    public record CaptureMetric(string Name, string? Unit, string? Description)
+        : ICustomMetricCounter<long>, ICustomMetricHistogram<long>, ICustomMetricGauge<long>
+    {
+        public ConcurrentQueue<(long Value, Dictionary<string, object> Tags)> Values { get; } = new();
+
+        public void Add(long value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
+
+        public void Record(long value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
+
+        public void Set(long value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
     }
 }

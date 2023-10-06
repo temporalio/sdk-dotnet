@@ -17,6 +17,8 @@ Also see:
 
 Extensions:
 
+* [Temporalio.Extensions.DiagnosticSource](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.DiagnosticSource) -
+  `System.Diagnostics.Metrics` support for SDK metrics
 * [Temporalio.Extensions.Hosting](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.Hosting) -
   Client dependency injection, activity dependency injection, and worker generic host support
 * [Temporalio.Extensions.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.OpenTelemetry) -
