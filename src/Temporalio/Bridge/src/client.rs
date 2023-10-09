@@ -10,9 +10,9 @@ use std::str::FromStr;
 use std::sync::Arc;
 use std::time::Duration;
 use temporal_client::{
-    ClientOptions as CoreClientOptions, ClientOptionsBuilder, ClientTlsConfig, ConfiguredClient,
-    HealthService, OperatorService, RetryClient, RetryConfig, TemporalServiceClientWithMetrics,
-    TestService, TlsConfig, WorkflowService,
+    ClientKeepAliveConfig, ClientOptions as CoreClientOptions, ClientOptionsBuilder,
+    ClientTlsConfig, ConfiguredClient, HealthService, OperatorService, RetryClient, RetryConfig,
+    TemporalServiceClientWithMetrics, TestService, TlsConfig, WorkflowService,
 };
 use tonic::metadata::MetadataKey;
 use url::Url;
@@ -26,6 +26,7 @@ pub struct ClientOptions {
     identity: ByteArrayRef,
     tls_options: *const ClientTlsOptions,
     retry_options: *const ClientRetryOptions,
+    keep_alive_options: *const ClientKeepAliveOptions,
 }
 
 #[repr(C)]
@@ -44,6 +45,12 @@ pub struct ClientRetryOptions {
     pub max_interval_millis: u64,
     pub max_elapsed_time_millis: u64,
     pub max_retries: usize,
+}
+
+#[repr(C)]
+pub struct ClientKeepAliveOptions {
+    pub interval_millis: u64,
+    pub timeout_millis: u64,
 }
 
 type CoreClient = RetryClient<ConfiguredClient<TemporalServiceClientWithMetrics>>;
@@ -425,7 +432,8 @@ impl TryFrom<&ClientOptions> for CoreClientOptions {
             .identity(opts.identity.to_string())
             .retry_config(
                 unsafe { opts.retry_options.as_ref() }.map_or(RetryConfig::default(), |c| c.into()),
-            );
+            )
+            .keep_alive(unsafe { opts.keep_alive_options.as_ref() }.map(Into::into));
         if let Some(tls_config) = unsafe { opts.tls_options.as_ref() } {
             opts_builder.tls_cfg(tls_config.try_into()?);
         }
@@ -472,6 +480,15 @@ impl From<&ClientRetryOptions> for RetryConfig {
                 Some(Duration::from_millis(opts.max_elapsed_time_millis))
             },
             max_retries: opts.max_retries,
+        }
+    }
+}
+
+impl From<&ClientKeepAliveOptions> for ClientKeepAliveConfig {
+    fn from(opts: &ClientKeepAliveOptions) -> Self {
+        ClientKeepAliveConfig {
+            interval: Duration::from_millis(opts.interval_millis),
+            timeout: Duration::from_millis(opts.timeout_millis),
         }
     }
 }

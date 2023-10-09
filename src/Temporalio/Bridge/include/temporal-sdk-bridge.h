@@ -77,6 +77,11 @@ typedef struct ClientRetryOptions {
   uintptr_t max_retries;
 } ClientRetryOptions;
 
+typedef struct ClientKeepAliveOptions {
+  uint64_t interval_millis;
+  uint64_t timeout_millis;
+} ClientKeepAliveOptions;
+
 typedef struct ClientOptions {
   struct ByteArrayRef target_url;
   struct ByteArrayRef client_name;
@@ -85,6 +90,7 @@ typedef struct ClientOptions {
   struct ByteArrayRef identity;
   const struct ClientTlsOptions *tls_options;
   const struct ClientRetryOptions *retry_options;
+  const struct ClientKeepAliveOptions *keep_alive_options;
 } ClientOptions;
 
 typedef struct ByteArray {

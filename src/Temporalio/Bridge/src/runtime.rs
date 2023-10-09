@@ -169,7 +169,8 @@ impl Runtime {
         if let Some(v) = unsafe { options.telemetry.as_ref() } {
             if let Some(v) = unsafe { v.metrics.as_ref() } {
                 let _guard = core.tokio_handle().enter();
-                core.telemetry_mut().attach_late_init_metrics(create_meter(v, custom_meter)?);
+                core.telemetry_mut()
+                    .attach_late_init_metrics(create_meter(v, custom_meter)?);
             }
         }
         Ok(Runtime {
@@ -223,7 +224,10 @@ impl TryFrom<&TelemetryOptions> for CoreTelemetryOptions {
     }
 }
 
-fn create_meter(options: &MetricsOptions, custom_meter: Option<CustomMetricMeterRef>) -> anyhow::Result<Arc<dyn CoreMeter>> {
+fn create_meter(
+    options: &MetricsOptions,
+    custom_meter: Option<CustomMetricMeterRef>,
+) -> anyhow::Result<Arc<dyn CoreMeter>> {
     // OTel, Prom, or custom
     if let Some(otel_options) = unsafe { options.opentelemetry.as_ref() } {
         if !options.prometheus.is_null() || custom_meter.is_some() {

@@ -115,6 +115,15 @@ namespace Temporalio.Bridge.Interop
         public UIntPtr max_retries;
     }
 
+    internal partial struct ClientKeepAliveOptions
+    {
+        [NativeTypeName("uint64_t")]
+        public ulong interval_millis;
+
+        [NativeTypeName("uint64_t")]
+        public ulong timeout_millis;
+    }
+
     internal unsafe partial struct ClientOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
@@ -137,6 +146,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("const struct ClientRetryOptions *")]
         public ClientRetryOptions* retry_options;
+
+        [NativeTypeName("const struct ClientKeepAliveOptions *")]
+        public ClientKeepAliveOptions* keep_alive_options;
     }
 
     internal unsafe partial struct ByteArray

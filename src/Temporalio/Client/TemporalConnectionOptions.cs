@@ -52,6 +52,14 @@ namespace Temporalio.Client
         public RpcRetryOptions? RpcRetry { get; set; }
 
         /// <summary>
+        /// Gets or sets keep alive options for this connection.
+        /// </summary>
+        /// <remarks>
+        /// Default enabled, set to null to disable.
+        /// </remarks>
+        public KeepAliveOptions? KeepAlive { get; set; } = new();
+
+        /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
         /// </summary>
         /// <remarks>
@@ -94,6 +102,10 @@ namespace Temporalio.Client
             if (RpcRetry != null)
             {
                 copy.RpcRetry = (RpcRetryOptions)RpcRetry.Clone();
+            }
+            if (KeepAlive != null)
+            {
+                copy.KeepAlive = (KeepAliveOptions)KeepAlive.Clone();
             }
             return copy;
         }
