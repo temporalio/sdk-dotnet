@@ -58,22 +58,26 @@ namespace Temporalio.Tests
         /// <typeparam name="T">Item type.</typeparam>
         /// <param name="items">Items.</param>
         /// <param name="actions">Actions.</param>
-        public static void Every<T>(IEnumerable<T> items, params Action<T>[] actions) =>
-            Assert.Empty(items.Where(item =>
+        public static void Every<T>(IEnumerable<T> items, params Action<T>[] actions)
+        {
+            foreach (var item in items)
             {
+                var found = false;
                 foreach (var action in actions)
                 {
                     try
                     {
                         action(item);
-                        return false;
+                        found = true;
+                        break;
                     }
                     catch (Xunit.Sdk.XunitException)
                     {
                     }
                 }
-                return true;
-            }));
+                Assert.True(found, $"Item {item} had no match");
+            }
+        }
 
         public static void EqualAsJson(object? expected, object? actual) =>
             JsonEqual(JsonSerializer.Serialize(expected), JsonSerializer.Serialize(actual));

@@ -12,6 +12,7 @@ using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Extensions.OpenTelemetry;
+using Temporalio.Tests.Worker;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -58,8 +59,9 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             }),
             async handle =>
             {
-                // Send query, then signal to move it along
+                // Send query, then update, then signal to move it along
                 Assert.Equal("some query", await handle.QueryAsync(wf => wf.QueryWithActivity()));
+                Assert.Equal("some update", await handle.ExecuteUpdateAsync(wf => wf.UpdateWithActivityAsync()));
                 await handle.SignalAsync(wf => wf.SignalWithActivityAsync());
             });
 
@@ -192,6 +194,28 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "MyQueryActivity",
                 Parent: "HandleQuery:QueryWithActivity",
                 Tags: workflowRunTags.Append(ActivityAssertion.TagEqual("baz", "qux")).ToArray()),
+            // Send update
+            new(
+                "UpdateWorkflow:UpdateWithActivity",
+                Parent: null,
+                Tags: workflowTags),
+            // Validate update
+            new(
+                "ValidateUpdate:UpdateWithActivity",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                Links: new[] { ActivityAssertion.LinkTo(activities, "UpdateWorkflow:UpdateWithActivity") }),
+            // Handle update
+            new(
+                "HandleUpdate:UpdateWithActivity",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                Links: new[] { ActivityAssertion.LinkTo(activities, "UpdateWorkflow:UpdateWithActivity") }),
+            // Custom update activity
+            new(
+                "MyUpdateActivity",
+                Parent: "HandleUpdate:UpdateWithActivity",
+                Tags: workflowRunTags.Append(ActivityAssertion.TagEqual("qux", "quux")).ToArray()),
             // Continue as new workflow
             new(
                 "RunWorkflow:TracingWorkflow",
@@ -334,6 +358,62 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 // Parent is start-workflow because task failure
                 Parent: "StartWorkflow:TracingWorkflow",
                 Tags: workflowRunTags));
+
+        // TODO(cretz): Fix when https://github.com/temporalio/sdk-core/issues/615 fixed
+        // Fail task inside update
+        (handle, activities) = await ExecuteTracingWorkflowAsync(
+            new(new TracingWorkflowAction[] { new(WaitUntilSignalCount: 1) }),
+            async handle =>
+            {
+                // Send update that fails task in background and confirm task fail
+                _ = Task.Run(() =>
+                    handle.ExecuteUpdateAsync(wf => wf.UpdateTaskFailureAsync("some message")));
+                await WorkflowWorkerTests.AssertTaskFailureContainsEventuallyAsync(
+                    handle, "some message");
+            },
+            expectFail: true,
+            terminate: true);
+        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
+        workflowRunTags = workflowTags.Append(
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
+        // Remove duplicate activities since task failure causes retry
+        var dedupedActivities = activities.GroupBy(a => a.OperationName).Select(g => g.First()).ToList();
+        logger.LogDebug(
+            "Activities2:\n{Activities}",
+            string.Join("\n", DumpActivities(dedupedActivities)));
+        AssertActivities(
+            dedupedActivities,
+            // Client start
+            new(
+                "StartWorkflow:TracingWorkflow",
+                Parent: null,
+                Tags: workflowTags),
+            // Run workflow
+            new(
+                "RunWorkflow:TracingWorkflow",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags),
+            // Validate update
+            new(
+                "ValidateUpdate:UpdateTaskFailure",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                // Ignore link because client-side send update not captured since it didn't complete
+                // TODO(cretz): This may need to change when server bug that doesn't finish update
+                // poll on workflow terminate is complete.
+                IgnoreLinks: true),
+            // Handle update
+            new(
+                "HandleUpdate:UpdateTaskFailure",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                IgnoreLinks: true),
+            // Update
+            new(
+                "WorkflowTaskFailure:UpdateTaskFailure",
+                Parent: "HandleUpdate:UpdateTaskFailure",
+                Tags: workflowRunTags,
+                Events: new[] { ActivityAssertion.ExceptionEvent("some message") }));
     }
 
     [Fact]
@@ -443,6 +523,127 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "CompleteWorkflow:TracingWorkflow",
                 Parent: "RunWorkflow:TracingWorkflow",
                 Tags: workflowRunTags));
+
+        // Update failure
+        (handle, activities) = await ExecuteTracingWorkflowAsync(
+            new(new TracingWorkflowAction[] { new(WaitUntilSignalCount: 1) }),
+            async handle =>
+            {
+                // Send update that fails then send finish signal
+                await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                    handle.ExecuteUpdateAsync(wf => wf.UpdateFailureAsync("fail4")));
+                await handle.SignalAsync(wf => wf.Signal1Async());
+            });
+        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
+        workflowRunTags = workflowTags.Append(
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
+        AssertActivities(
+            activities,
+            // Client start
+            new(
+                "StartWorkflow:TracingWorkflow",
+                Parent: null,
+                Tags: workflowTags),
+            // Run workflow
+            new(
+                "RunWorkflow:TracingWorkflow",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags),
+            // Send update
+            new(
+                "UpdateWorkflow:UpdateFailure",
+                Parent: null,
+                Tags: workflowTags),
+            // Validate update
+            new(
+                "ValidateUpdate:UpdateFailure",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                Links: new[] { ActivityAssertion.LinkTo(activities, "UpdateWorkflow:UpdateFailure") }),
+            // Handle update
+            new(
+                "HandleUpdate:UpdateFailure",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                Links: new[] { ActivityAssertion.LinkTo(activities, "UpdateWorkflow:UpdateFailure") }),
+            // Update failure as separate span
+            new(
+                "CompleteUpdate:UpdateFailure",
+                Parent: "HandleUpdate:UpdateFailure",
+                Tags: workflowRunTags,
+                // Failure is its own event for update handlers
+                Events: new[] { ActivityAssertion.ExceptionEvent("fail4") }),
+            // Send signal
+            new(
+                "SignalWorkflow:Signal1",
+                Parent: null,
+                Tags: workflowTags),
+            // Handle signal
+            new(
+                "HandleSignal:Signal1",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                Links: new[] { ActivityAssertion.LinkTo(activities, "SignalWorkflow:Signal1") }),
+            // Complete
+            new(
+                "CompleteWorkflow:TracingWorkflow",
+                Parent: "RunWorkflow:TracingWorkflow",
+                Tags: workflowRunTags));
+
+        // Update validator failure
+        (handle, activities) = await ExecuteTracingWorkflowAsync(
+            new(new TracingWorkflowAction[] { new(WaitUntilSignalCount: 1) }),
+            async handle =>
+            {
+                // Send update that fails validator then send finish signal
+                await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                    handle.ExecuteUpdateAsync(wf => wf.UpdateValidatorFailureAsync("fail5")));
+                await handle.SignalAsync(wf => wf.Signal1Async());
+            });
+        workflowTags = new[] { ActivityAssertion.TagEqual("temporalWorkflowID", handle.Id) };
+        workflowRunTags = workflowTags.Append(
+            ActivityAssertion.TagEqual("temporalRunID", handle.ResultRunId!)).ToArray();
+        AssertActivities(
+            activities,
+            // Client start
+            new(
+                "StartWorkflow:TracingWorkflow",
+                Parent: null,
+                Tags: workflowTags),
+            // Run workflow
+            new(
+                "RunWorkflow:TracingWorkflow",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags),
+            // Send update
+            new(
+                "UpdateWorkflow:UpdateValidatorFailure",
+                Parent: null,
+                Tags: workflowTags),
+            // Validate update
+            new(
+                "ValidateUpdate:UpdateValidatorFailure",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                // Failure is on the validator span
+                Events: new[] { ActivityAssertion.ExceptionEvent("fail5") },
+                Links: new[] { ActivityAssertion.LinkTo(activities, "UpdateWorkflow:UpdateValidatorFailure") }),
+            // Send signal
+            new(
+                "SignalWorkflow:Signal1",
+                Parent: null,
+                Tags: workflowTags),
+            // Handle signal
+            new(
+                "HandleSignal:Signal1",
+                Parent: "StartWorkflow:TracingWorkflow",
+                Tags: workflowRunTags,
+                Links: new[] { ActivityAssertion.LinkTo(activities, "SignalWorkflow:Signal1") }),
+            // Complete
+            new(
+                "CompleteWorkflow:TracingWorkflow",
+                Parent: "RunWorkflow:TracingWorkflow",
+                Tags: workflowRunTags));
     }
 
     private static void AssertActivities(
@@ -493,7 +694,8 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
     private async Task<(WorkflowHandle<TracingWorkflow> Handle, IReadOnlyCollection<Activity> Activities)> ExecuteTracingWorkflowAsync(
         TracingWorkflowParam param,
         Func<WorkflowHandle<TracingWorkflow>, Task>? afterStart = null,
-        bool expectFail = false)
+        bool expectFail = false,
+        bool terminate = false)
     {
         var activities = new List<Activity>();
 
@@ -529,6 +731,10 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             {
                 await afterStart.Invoke(handle);
             }
+            if (terminate)
+            {
+                await handle.TerminateAsync();
+            }
             if (expectFail)
             {
                 await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
@@ -549,7 +755,8 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         string? Parent,
         Action<KeyValuePair<string, string?>>[]? Tags = null,
         Action<ActivityEvent>[]? Events = null,
-        Action<ActivityLink>[]? Links = null)
+        Action<ActivityLink>[]? Links = null,
+        bool IgnoreLinks = false)
     {
         public void AssertActivity(IReadOnlyCollection<Activity> activities, Activity activity)
         {
@@ -558,7 +765,10 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             Assert.Equal(Parent, parent?.OperationName);
             AssertMore.Every(activity.Tags, Tags ?? Array.Empty<Action<KeyValuePair<string, string?>>>());
             AssertMore.Every(activity.Events, Events ?? Array.Empty<Action<ActivityEvent>>());
-            AssertMore.Every(activity.Links, Links ?? Array.Empty<Action<ActivityLink>>());
+            if (!IgnoreLinks)
+            {
+                AssertMore.Every(activity.Links, Links ?? Array.Empty<Action<ActivityLink>>());
+            }
         }
 
         public static Action<KeyValuePair<string, string?>> TagEqual(string key, string? value) =>
@@ -697,6 +907,31 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
 
         [WorkflowQuery]
         public string QueryFailure(string msg) =>
+            throw new ApplicationFailureException(msg);
+
+        [WorkflowUpdate]
+        public async Task<string> UpdateWithActivityAsync()
+        {
+            using var _ = CustomSource.TrackWorkflowDiagnosticActivity(
+                "MyUpdateActivity",
+                tags: new[] { KeyValuePair.Create<string, object?>("qux", "quux") });
+            return "some update";
+        }
+
+        [WorkflowUpdate]
+        public async Task<string> UpdateFailureAsync(string msg) =>
+            throw new ApplicationFailureException(msg);
+
+        [WorkflowUpdate]
+        public async Task UpdateTaskFailureAsync(string msg) =>
+            throw new InvalidOperationException(msg);
+
+        [WorkflowUpdate]
+        public async Task<string> UpdateValidatorFailureAsync(string msg) =>
+            throw new NotImplementedException();
+
+        [WorkflowUpdateValidator(nameof(UpdateValidatorFailureAsync))]
+        public void ValidateUpdateValidatorFailure(string msg) =>
             throw new ApplicationFailureException(msg);
 
         private static async Task RaiseOnNonReplayAsync(string msg)

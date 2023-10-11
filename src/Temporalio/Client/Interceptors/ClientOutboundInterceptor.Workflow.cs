@@ -37,6 +37,28 @@ namespace Temporalio.Client.Interceptors
             Next.QueryWorkflowAsync<TResult>(input);
 
         /// <summary>
+        /// Intercept start workflow update calls.
+        /// </summary>
+        /// <typeparam name="TResult">Return type of the update. This may be ValueTuple if user
+        /// is discarding result.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Handle for the update.</returns>
+        public virtual Task<WorkflowUpdateHandle<TResult>> StartWorkflowUpdateAsync<TResult>(
+            StartWorkflowUpdateInput input) =>
+            Next.StartWorkflowUpdateAsync<TResult>(input);
+
+        /// <summary>
+        /// Intercept poll workflow update calls.
+        /// </summary>
+        /// <typeparam name="TResult">Return type of the update. This may be ValueTuple if user
+        /// is discarding result.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Result for the update.</returns>
+        public virtual Task<TResult> PollWorkflowUpdateAsync<TResult>(
+            PollWorkflowUpdateInput input) =>
+            Next.PollWorkflowUpdateAsync<TResult>(input);
+
+        /// <summary>
         /// Intercept describe workflow calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>

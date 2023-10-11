@@ -226,6 +226,23 @@ namespace Temporalio.Extensions.OpenTelemetry
                 }
             }
 
+            public override async Task<WorkflowUpdateHandle<TResult>> StartWorkflowUpdateAsync<TResult>(
+                StartWorkflowUpdateInput input)
+            {
+                using (var activity = ClientSource.StartActivity(
+                    $"UpdateWorkflow:{input.Update}",
+                    kind: ActivityKind.Client,
+                    parentContext: default,
+                    tags: root.CreateWorkflowTags(input.Id)))
+                {
+                    if (HeadersFromContext(input.Headers) is Dictionary<string, Payload> headers)
+                    {
+                        input = input with { Headers = headers };
+                    }
+                    return await base.StartWorkflowUpdateAsync<TResult>(input).ConfigureAwait(false);
+                }
+            }
+
             /// <summary>
             /// Serialize current context to headers if one exists.
             /// </summary>
@@ -354,6 +371,84 @@ namespace Temporalio.Extensions.OpenTelemetry
                         catch (Exception e)
                         {
                             activity.Activity?.RecordException(e);
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    remoteActivity?.Dispose();
+                    Baggage.Current = prevBaggage;
+                }
+            }
+
+            public override void ValidateUpdate(HandleUpdateInput input)
+            {
+                var prevBaggage = Baggage.Current;
+                WorkflowDiagnosticActivity? remoteActivity = null;
+                if (root.HeadersToContext(Workflow.Info.Headers) is PropagationContext ctx)
+                {
+                    Baggage.Current = ctx.Baggage;
+                    remoteActivity = WorkflowDiagnosticActivity.AttachFromContext(ctx.ActivityContext);
+                }
+                try
+                {
+                    using (var activity = WorkflowsSource.TrackWorkflowDiagnosticActivity(
+                        name: $"ValidateUpdate:{input.Update}",
+                        kind: ActivityKind.Server,
+                        tags: root.CreateInWorkflowTags(),
+                        links: LinksFromHeaders(input.Headers),
+                        inheritParentTags: false))
+                    {
+                        try
+                        {
+                            base.ValidateUpdate(input);
+                        }
+                        catch (Exception e)
+                        {
+                            activity.Activity?.RecordException(e);
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    remoteActivity?.Dispose();
+                    Baggage.Current = prevBaggage;
+                }
+            }
+
+            public override async Task<object?> HandleUpdateAsync(HandleUpdateInput input)
+            {
+                var prevBaggage = Baggage.Current;
+                WorkflowDiagnosticActivity? remoteActivity = null;
+                if (root.HeadersToContext(Workflow.Info.Headers) is PropagationContext ctx)
+                {
+                    Baggage.Current = ctx.Baggage;
+                    remoteActivity = WorkflowDiagnosticActivity.AttachFromContext(ctx.ActivityContext);
+                }
+                try
+                {
+                    using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
+                        name: $"HandleUpdate:{input.Update}",
+                        kind: ActivityKind.Server,
+                        tags: root.CreateInWorkflowTags(),
+                        links: LinksFromHeaders(input.Headers),
+                        inheritParentTags: false))
+                    {
+                        try
+                        {
+                            return await base.HandleUpdateAsync(input).ConfigureAwait(true);
+                        }
+                        catch (Exception e)
+                        {
+                            // We make a new span for failure same as signal/workflow handlers do
+                            var namePrefix = e is FailureException || e is OperationCanceledException ?
+                                "CompleteUpdate" : "WorkflowTaskFailure";
+                            WorkflowsSource.TrackWorkflowDiagnosticActivity(
+                                name: $"{namePrefix}:{input.Update}",
+                                updateActivity: act => act.RecordException(e)).
+                                Dispose();
                             throw;
                         }
                     }

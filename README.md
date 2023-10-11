@@ -411,7 +411,8 @@ public class GreetingWorkflow
         }
     }
 
-    [WorkflowSignal]
+    // WARNING: Workflow updates are experimental
+    [WorkflowUpdate]
     public async Task UpdateGreetingParamsAsync(GreetingParams greetingParams) =>
       this.greetingParamsUpdate = greetingParams;
 
@@ -467,6 +468,17 @@ Attributes that can be applied:
   * `Dynamic = true` can be set for the query which makes the query a dynamic query meaning it will be called when
     no other queries match. The call must accept a `string` for the query name and `Temporalio.Converters.IRawValue[]`
     for the arguments. Only one dynamic query may be present on a workflow.
+* `[WorkflowUpdate]` attribute may be present on any public method that handles updates.
+  * Update methods must return a `Task` (can be a `Task<Result>`).
+  * The attribute can have a string argument for the update name. Otherwise the name is defaulted to the unqualified
+    method name with `Async` trimmed off the end if it is present.
+  * This attribute is not inherited and therefore must be explicitly set on any override.
+  * `Dynamic = true` can be set for the update which makes the update a dynamic update meaning it will be called when
+    no other updates match. The call must accept a `string` for the update name and `Temporalio.Converters.IRawValue[]`
+    for the arguments. Only one dynamic update may be present on a workflow.
+  * A validator method can be created that is marked with the `[WorkflowUpdateValidator(nameof(MyUpdateMethod))]`
+    attribute. It must be `void` but accept the exact same parameters as the update method. This must be a read-only
+    method and if an exception is thrown, the update is failed without being stored in history.
 
 ##### Workflow Inheritance
 
@@ -482,9 +494,9 @@ strategy was intentionally done to avoid diamond problems with workflows and to 
 is a workflow (including the name defaulted) and what its entry point is. A workflow can only have one `[WorkflowRun]`
 method.
 
-`[WorkflowSignal]` and `[WorkflowQuery]` methods can be inherited from base classes/interfaces if the method is not
-overridden. However, if the method is declared in the subclass, it must also have these attributes. The attributes
-themselves are not inherited.
+`[WorkflowSignal]`, `[WorkflowQuery]`, and `[WorkflowUpdate]` methods can be inherited from base classes/interfaces if
+the method is not overridden. However, if the method is declared in the subclass, it must also have these attributes.
+The attributes themselves are not inherited.
 
 #### Running Workflows
 
@@ -501,9 +513,9 @@ var handle = await client.StartWorkflowAsync(
 Console.WriteLine(
     "Current greeting: {0}",
     await handle.QueryWorkflowAsync(wf => wf.CurrentGreeting()));
-// Change the params via signal
-var signalArg = new GreetingParams(Salutation: "Aloha", Name: "John");
-await handle.SignalWorkflowAsync(wf => wf.UpdateGreetingParamsAsync(signalArg));
+// Change the params via update
+var updateArg = new GreetingParams(Salutation: "Aloha", Name: "John");
+await handle.ExecuteUpdateAsync(wf => wf.UpdateGreetingParamsAsync(updateArg));
 // Tell it to complete via signal
 await handle.SignalWorkflowAsync(wf => wf.CompleteWithGreetingAsync());
 // Wait for workflow result
@@ -703,8 +715,8 @@ Here are the rules to disable:
     ```
 
 * [CA1822](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1822) - This encourages
-  static methods when methods don't access instance state. Workflows however often use instance methods for run,
-  signals, or queries even if they could be static.
+  static methods when methods don't access instance state. Workflows however use instance methods for run, signals,
+  queries, or updates even if they could be static.
 * [CA2007](https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2007) - This encourages
   users to use `ConfigureAwait` instead of directly waiting on a task. But in workflows, there is no benefit to this and
   it just adds noise (and if used, needs to be `ConfigureAwait(true)` not `ConfigureAwait(false)`).
@@ -716,7 +728,7 @@ Here are the rules to disable:
   non-crypto random instance.
 * `CS1998` - This discourages use of `async` on async methods that don't `await`. But workflows handlers like signals
   are often easier to write in one-line form this way, e.g.
-  `public async Task SignalSomething(string value) => this.value = value;`.
+  `public async Task SignalSomethingAsync(string value) => this.value = value;`.
 * [VSTHRD105](https://github.com/microsoft/vs-threading/blob/main/doc/analyzers/VSTHRD105.md) -  This is similar to
   `CA2008` above in that use of implicit current scheduler is discouraged. That does not apply to workflows where it is
   encouraged/required.

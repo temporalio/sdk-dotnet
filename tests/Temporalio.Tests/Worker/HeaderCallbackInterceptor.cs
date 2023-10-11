@@ -52,6 +52,13 @@ public class HeaderCallbackInterceptor : IClientInterceptor, IWorkerInterceptor
             input = input with { Headers = root.OnOutbound?.Invoke("Client:QueryWorkflow") };
             return base.QueryWorkflowAsync<TResult>(input);
         }
+
+        public override Task<WorkflowUpdateHandle<TResult>> StartWorkflowUpdateAsync<TResult>(
+            StartWorkflowUpdateInput input)
+        {
+            input = input with { Headers = root.OnOutbound?.Invoke("Client:StartWorkflowUpdate") };
+            return base.StartWorkflowUpdateAsync<TResult>(input);
+        }
     }
 
     private sealed class WorkflowInbound : WorkflowInboundInterceptor
@@ -80,6 +87,18 @@ public class HeaderCallbackInterceptor : IClientInterceptor, IWorkerInterceptor
         {
             root.OnInbound?.Invoke("Workflow:HandleQuery", input.Headers);
             return base.HandleQuery(input);
+        }
+
+        public override void ValidateUpdate(HandleUpdateInput input)
+        {
+            root.OnInbound?.Invoke("Workflow:ValidateUpdate", input.Headers);
+            base.ValidateUpdate(input);
+        }
+
+        public override Task<object?> HandleUpdateAsync(HandleUpdateInput input)
+        {
+            root.OnInbound?.Invoke("Workflow:HandleUpdate", input.Headers);
+            return base.HandleUpdateAsync(input);
         }
     }
 
