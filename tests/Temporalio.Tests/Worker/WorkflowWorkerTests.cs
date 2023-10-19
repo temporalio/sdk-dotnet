@@ -3510,10 +3510,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
 
         [WorkflowUpdate]
-        public async Task DoUpdateWaitABitAsync()
+        public async Task DoUpdateLongWaitAsync()
         {
             Waiting = true;
-            await Workflow.DelayAsync(10000);
+            await Workflow.DelayAsync(TimeSpan.FromHours(1));
         }
 
         [WorkflowQuery]
@@ -3675,8 +3675,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
             // Update invalid operation after accepted - fails workflow task
             await handle.StartUpdateAsync(
-                wf => wf.DoUpdateOneParamNoResponseAsync("update-invalid-operation-new-task"),
-                new() { WaitForStage = UpdateWorkflowExecutionLifecycleStage.Accepted });
+                wf => wf.DoUpdateOneParamNoResponseAsync("update-invalid-operation-new-task"));
             await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional update invalid operation");
             // Terminate the handle so it doesn't keep failing
             await handle.TerminateAsync();
@@ -3698,8 +3697,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (UpdateWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             await handle.StartUpdateAsync(
-                wf => wf.DoUpdateOneParamNoResponseAsync("update-continue-as-new"),
-                new() { WaitForStage = UpdateWorkflowExecutionLifecycleStage.Accepted });
+                wf => wf.DoUpdateOneParamNoResponseAsync("update-continue-as-new"));
             await AssertTaskFailureContainsEventuallyAsync(handle, "Continue as new");
             await handle.TerminateAsync();
 
@@ -3752,9 +3750,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             var handle = await Env.Client.StartWorkflowAsync(
                 (UpdateWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-            var updateHandle = await handle.StartUpdateAsync(
-                wf => wf.DoUpdateWaitABitAsync(),
-                new() { WaitForStage = UpdateWorkflowExecutionLifecycleStage.Accepted });
+            var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateLongWaitAsync());
             // Ask for the result but only for 1 second
             await Assert.ThrowsAsync<OperationCanceledException>(() =>
                 updateHandle.GetResultAsync(TimeSpan.FromSeconds(1)));
@@ -3789,9 +3785,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         //         (UpdateWorkflow wf) => wf.RunAsync(),
         //         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
         //     // Start update and wait until waiting
-        //     var updateHandle = await handle.StartUpdateAsync(
-        //         wf => wf.DoUpdateWaitABitAsync(),
-        //         new() { WaitForStage = UpdateWorkflowExecutionLifecycleStage.Accepted });
+        //     var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateWaitABitAsync());
         //     await AssertMore.EqualEventuallyAsync(true, () => handle.QueryAsync(wf => wf.Waiting));
         //     // Cancel the workflow and wait for update complete
         //     await handle.CancelAsync();
@@ -3812,9 +3806,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         //         (UpdateWorkflow wf) => wf.RunAsync(),
         //         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
         //     // Start update and wait until waiting
-        //     var updateHandle = await handle.StartUpdateAsync(
-        //         wf => wf.DoUpdateWaitABitAsync(),
-        //         new() { WaitForStage = UpdateWorkflowExecutionLifecycleStage.Accepted });
+        //     var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateWaitABitAsync());
         //     await AssertMore.EqualEventuallyAsync(true, () => handle.QueryAsync(wf => wf.Waiting));
         //     // Cancel the workflow and wait for update complete
         //     await handle.TerminateAsync();

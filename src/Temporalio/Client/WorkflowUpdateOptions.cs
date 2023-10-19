@@ -19,7 +19,17 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets or sets the stage to wait for before returning from starting an update.
         /// </summary>
-        public UpdateWorkflowExecutionLifecycleStage WaitForStage { get; set; } = UpdateWorkflowExecutionLifecycleStage.Completed;
+        /// <remarks>
+        /// This is only for <c>StartUpdateAsync</c> where it defaults to
+        /// <see cref="UpdateWorkflowExecutionLifecycleStage.Accepted" />. The
+        /// <c>ExecuteUpdateAsync</c> call ignores this value and assumes
+        /// <see cref="UpdateWorkflowExecutionLifecycleStage.Completed" />.
+        /// </remarks>
+        /// <remarks>
+        /// Older Temporal servers may not support
+        /// <see cref="UpdateWorkflowExecutionLifecycleStage.Admitted" />.
+        /// </remarks>
+        public UpdateWorkflowExecutionLifecycleStage WaitForStage { get; set; }
 
         /// <summary>
         /// Gets or sets the the run ID expected to identify the first run in the workflow execution

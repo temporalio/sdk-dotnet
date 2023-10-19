@@ -243,6 +243,11 @@ namespace Temporalio.Client
                         },
                         Input = new() { Name = input.Update },
                     },
+                    WaitPolicy = new()
+                    {
+                        // Default is Accepted, but may be overridden later
+                        LifecycleStage = UpdateWorkflowExecutionLifecycleStage.Accepted,
+                    },
                 };
                 if (input.Options is { } options)
                 {
@@ -252,7 +257,7 @@ namespace Temporalio.Client
                     }
                     if (options.WaitForStage != UpdateWorkflowExecutionLifecycleStage.Unspecified)
                     {
-                        req.WaitPolicy = new() { LifecycleStage = options.WaitForStage };
+                        req.WaitPolicy.LifecycleStage = options.WaitForStage;
                     }
                 }
                 if (input.Args.Count > 0)
