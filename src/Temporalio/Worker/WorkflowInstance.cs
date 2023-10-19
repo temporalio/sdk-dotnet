@@ -951,9 +951,10 @@ namespace Temporalio.Worker
                     return task.ContinueWith(
                         _ =>
                         {
-                            // Trap Temporal failure, otherwise return success if success + return
-                            // same task (so task failure can bubble out)
-                            if (task.Exception?.InnerExceptions?.SingleOrDefault() is FailureException exc)
+                            // If Temporal failure or cancel, it's an update failure. If it's some
+                            // other exception, it's a task failure. Otherwise it's a success.
+                            var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
+                            if (exc is FailureException || exc is OperationCanceledException)
                             {
                                 AddCommand(new()
                                 {

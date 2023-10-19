@@ -367,6 +367,7 @@ namespace Temporalio.Client
             Client.OutboundInterceptor.StartWorkflowUpdateAsync<TUpdateResult>(new(
                 Id: Id,
                 RunId: RunId,
+                FirstExecutionRunId: FirstExecutionRunId,
                 Update: update,
                 Args: args,
                 Options: options,

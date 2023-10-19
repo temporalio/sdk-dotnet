@@ -8,6 +8,7 @@ namespace Temporalio.Client.Interceptors
     /// </summary>
     /// <param name="Id">Workflow ID.</param>
     /// <param name="RunId">Workflow run ID if any.</param>
+    /// <param name="FirstExecutionRunId">Workflow first execution run ID if any.</param>
     /// <param name="Update">Update name.</param>
     /// <param name="Args">Update arguments.</param>
     /// <param name="Options">Options if any.</param>
@@ -20,6 +21,7 @@ namespace Temporalio.Client.Interceptors
     public record StartWorkflowUpdateInput(
         string Id,
         string? RunId,
+        string? FirstExecutionRunId,
         string Update,
         IReadOnlyCollection<object?> Args,
         WorkflowUpdateOptions? Options,

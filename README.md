@@ -469,11 +469,11 @@ Attributes that can be applied:
     no other queries match. The call must accept a `string` for the query name and `Temporalio.Converters.IRawValue[]`
     for the arguments. Only one dynamic query may be present on a workflow.
 * `[WorkflowUpdate]` attribute may be present on any public method that handles updates.
-  * Update methods must return a `Task` (can be a `Task<Result>`).
+  * Update methods must return a `Task` (can be a `Task<TResult>`).
   * The attribute can have a string argument for the update name. Otherwise the name is defaulted to the unqualified
     method name with `Async` trimmed off the end if it is present.
   * This attribute is not inherited and therefore must be explicitly set on any override.
-  * `Dynamic = true` can be set for the update which makes the update a dynamic update meaning it will be called when
+  * `Dynamic = true` can be set for the update which makes the update a dynamic update, meaning it will be called when
     no other updates match. The call must accept a `string` for the update name and `Temporalio.Converters.IRawValue[]`
     for the arguments. Only one dynamic update may be present on a workflow.
   * A validator method can be created that is marked with the `[WorkflowUpdateValidator(nameof(MyUpdateMethod))]`

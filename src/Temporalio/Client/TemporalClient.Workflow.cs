@@ -248,17 +248,12 @@ namespace Temporalio.Client
                         // Default is Accepted, but may be overridden later
                         LifecycleStage = UpdateWorkflowExecutionLifecycleStage.Accepted,
                     },
+                    FirstExecutionRunId = input.FirstExecutionRunId ?? string.Empty,
                 };
-                if (input.Options is { } options)
+                if (input.Options is { } options &&
+                    options.WaitForStage != UpdateWorkflowExecutionLifecycleStage.Unspecified)
                 {
-                    if (options.FirstExecutionRunId is { } firstExecutionRunId)
-                    {
-                        req.FirstExecutionRunId = firstExecutionRunId;
-                    }
-                    if (options.WaitForStage != UpdateWorkflowExecutionLifecycleStage.Unspecified)
-                    {
-                        req.WaitPolicy.LifecycleStage = options.WaitForStage;
-                    }
+                    req.WaitPolicy.LifecycleStage = options.WaitForStage;
                 }
                 if (input.Args.Count > 0)
                 {
