@@ -88,7 +88,6 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         {
             // Add expected call sans Async suffix
             var call = method.Name.Substring(0, method.Name.Length - 5);
-            Console.WriteLine("!!! CALL: " + call);
             if (skip.Contains(call))
             {
                 continue;
