@@ -278,7 +278,9 @@ async fn call_workflow_service(
         "CountWorkflowExecutions" => rpc_call!(client, call, count_workflow_executions),
         "CreateSchedule" => rpc_call!(client, call, create_schedule),
         "DeleteSchedule" => rpc_call!(client, call, delete_schedule),
+        "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
         "DeprecateNamespace" => rpc_call!(client, call, deprecate_namespace),
+        "DescribeBatchOperation" => rpc_call!(client, call, describe_batch_operation),
         "DescribeNamespace" => rpc_call!(client, call, describe_namespace),
         "DescribeSchedule" => rpc_call!(client, call, describe_schedule),
         "DescribeTaskQueue" => rpc_call!(client, call, describe_task_queue),
@@ -289,6 +291,9 @@ async fn call_workflow_service(
         "GetWorkerBuildIdCompatibility" => {
             rpc_call!(client, call, get_worker_build_id_compatibility)
         }
+        "GetWorkerTaskReachability" => {
+            rpc_call!(client, call, get_worker_task_reachability)
+        }
         "GetWorkflowExecutionHistory" => rpc_call!(client, call, get_workflow_execution_history),
         "GetWorkflowExecutionHistoryReverse" => {
             rpc_call!(client, call, get_workflow_execution_history_reverse)
@@ -296,6 +301,7 @@ async fn call_workflow_service(
         "ListArchivedWorkflowExecutions" => {
             rpc_call!(client, call, list_archived_workflow_executions)
         }
+        "ListBatchOperations" => rpc_call!(client, call, list_batch_operations),
         "ListClosedWorkflowExecutions" => rpc_call!(client, call, list_closed_workflow_executions),
         "ListNamespaces" => rpc_call!(client, call, list_namespaces),
         "ListOpenWorkflowExecutions" => rpc_call!(client, call, list_open_workflow_executions),
@@ -339,6 +345,8 @@ async fn call_workflow_service(
         }
         "SignalWorkflowExecution" => rpc_call!(client, call, signal_workflow_execution),
         "StartWorkflowExecution" => rpc_call!(client, call, start_workflow_execution),
+        "StartBatchOperation" => rpc_call!(client, call, start_batch_operation),
+        "StopBatchOperation" => rpc_call!(client, call, stop_batch_operation),
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
         "UpdateNamespace" => rpc_call!(client, call, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),

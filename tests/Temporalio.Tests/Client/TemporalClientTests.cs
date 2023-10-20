@@ -1,7 +1,11 @@
 namespace Temporalio.Tests.Client;
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Reflection;
 using Temporalio.Client;
+using Temporalio.Runtime;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -47,5 +51,124 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         Assert.True(await client.Connection.CheckHealthAsync());
         Assert.True(client.Connection.IsConnected);
         client.Connection.RpcMetadata = new Dictionary<string, string>();
+    }
+
+    [Fact]
+    public async Task ConnectAsync_Connection_AllGrpcCallsSupported()
+    {
+        // The approach we'll take here is to just start the dev server and reflectively make each
+        // call in workflow service and operator service and check metrics to confirm that every
+        // call got that far into core. This catches cases where we didn't add all string call names
+        // in Rust for our C# methods.
+        var captureMeter = new CaptureRpcCallsMeter();
+        await using var env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
+        {
+            Runtime = new(new()
+            {
+                Telemetry = new() { Metrics = new() { CustomMetricMeter = captureMeter } },
+            }),
+        });
+
+        // Check workflow service and operator service
+        await AssertAllRpcsAsync(captureMeter.Calls, env.Client.Connection.WorkflowService);
+        await AssertAllRpcsAsync(captureMeter.Calls, env.Client.Connection.OperatorService, skip: "AddOrUpdateRemoteCluster");
+    }
+
+    private static async Task AssertAllRpcsAsync<T>(
+        ConcurrentQueue<string> actualCalls, T service, params string[] skip)
+        where T : RpcService
+    {
+        // Clear actual calls
+        actualCalls.Clear();
+
+        // Make calls and populate expected calls
+        var expectedCalls = new List<string>();
+        foreach (var method in typeof(T).GetMethods(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly))
+        {
+            // Add expected call sans Async suffix
+            var call = method.Name.Substring(0, method.Name.Length - 5);
+            if (skip.Contains(call))
+            {
+                continue;
+            }
+            expectedCalls.Add(call);
+            // Make call
+            var task = (Task)method.Invoke(
+                service,
+                new object?[] { Activator.CreateInstance(method.GetParameters()[0].ParameterType), null })!;
+#pragma warning disable CA1031 // We're ok swallowing exceptions here
+            try
+            {
+                await task;
+            }
+            catch
+            {
+            }
+#pragma warning restore CA1031
+        }
+
+        // Remove skip from actual calls too and then sort both and compare
+        var sortedActualCalls = actualCalls.Where(c => !skip.Contains(c)).ToList();
+        sortedActualCalls.Sort();
+        expectedCalls.Sort();
+        Assert.Equal(expectedCalls, actualCalls);
+    }
+
+    private class CaptureRpcCallsMeter : ICustomMetricMeter
+    {
+        public ConcurrentQueue<string> Calls { get; } = new();
+
+        public ICustomMetricCounter<T> CreateCounter<T>(string name, string? unit, string? description)
+            where T : struct => new CaptureRpcCallsMetric<T>(name, Calls);
+
+        public ICustomMetricGauge<T> CreateGauge<T>(string name, string? unit, string? description)
+            where T : struct => new CaptureRpcCallsMetric<T>(name, Calls);
+
+        public ICustomMetricHistogram<T> CreateHistogram<T>(string name, string? unit, string? description)
+            where T : struct => new CaptureRpcCallsMetric<T>(name, Calls);
+
+        public object CreateTags(
+            object? appendFrom, IReadOnlyCollection<KeyValuePair<string, object>> tags)
+        {
+            var dict = new Dictionary<string, object>();
+            if (appendFrom is Dictionary<string, object> appendFromDict)
+            {
+                foreach (var kv in appendFromDict)
+                {
+                    dict[kv.Key] = kv.Value;
+                }
+            }
+            foreach (var kv in tags)
+            {
+                dict[kv.Key] = kv.Value;
+            }
+            return dict;
+        }
+    }
+
+    private record CaptureRpcCallsMetric<T>(string Name, ConcurrentQueue<string> Calls) :
+        ICustomMetricCounter<T>, ICustomMetricHistogram<T>, ICustomMetricGauge<T>
+        where T : struct
+    {
+        public void Add(T value, object tags)
+        {
+            if (Name == "temporal_request" || Name == "temporal_long_request")
+            {
+                var call = (string)((Dictionary<string, object>)tags)["operation"];
+                if (!Calls.Contains(call))
+                {
+                    Calls.Enqueue(call);
+                }
+            }
+        }
+
+        public void Record(T value, object tags)
+        {
+        }
+
+        public void Set(T value, object tags)
+        {
+        }
     }
 }
