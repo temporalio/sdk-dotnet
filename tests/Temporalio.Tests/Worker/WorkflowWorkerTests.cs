@@ -2628,6 +2628,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [WorkflowUpdate]
         public async Task<string> UpdateAsync(string param) => param;
 
+        [WorkflowUpdateValidator(nameof(UpdateAsync))]
+        public void ValidateUpdate(string param)
+        {
+        }
+
         [Activity]
         public static void DoThing()
         {
@@ -3814,6 +3819,32 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         //         () => handle.GetResultAsync())).InnerException);
         //     await updateHandle.GetResultAsync();
         // });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_RejectsWithNoValidatorOnBadArgument()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // Send untyped update with an int instead of string
+            var exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                handle.ExecuteUpdateAsync("some-update-name", new object?[] { 123 }));
+            Assert.Contains("failure decoding parameters", exc.InnerException?.Message);
+            // Send untyped update with no arguments when one is expected
+            exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                handle.ExecuteUpdateAsync("some-update-name", Array.Empty<object?>()));
+            Assert.Contains("given 0 parameter(s)", exc.InnerException?.Message);
+
+            // Check history and confirm no update was accepted
+            await foreach (var evt in handle.FetchHistoryEventsAsync())
+            {
+                Assert.Null(evt.WorkflowExecutionUpdateAcceptedEventAttributes);
+            }
+        });
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(

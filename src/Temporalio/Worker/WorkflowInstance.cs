@@ -871,53 +871,76 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
-                HandleUpdateInput updateInput;
+                // Find update definition or reject
+                var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
+                if (!updates.TryGetValue(update.Name, out var updateDefn))
+                {
+                    updateDefn = DynamicUpdate;
+                    if (updateDefn == null)
+                    {
+                        var knownUpdates = updates.Keys.OrderBy(k => k);
+                        var failure = new InvalidOperationException(
+                            $"Update handler for {update.Name} expected but not found, " +
+                            $"known updates: [{string.Join(" ", knownUpdates)}]");
+                        AddCommand(new()
+                        {
+                            UpdateResponse = new()
+                            {
+                                ProtocolInstanceId = update.ProtocolInstanceId,
+                                Rejected = failureConverter.ToFailure(failure, PayloadConverter),
+                            },
+                        });
+                        return Task.CompletedTask;
+                    }
+                }
 
-                // Get query, convert args, do validation
+                // May be loaded inside validate after validator, maybe not
+                object?[]? argsForUpdate = null;
+                // We define this up here because there are multiple places it's called below
+                object?[] DecodeUpdateArgs() => DecodeArgs(
+                    method: updateDefn.Method ?? updateDefn.Delegate!.Method,
+                    payloads: update.Input,
+                    itemName: $"Update {update.Name}",
+                    dynamic: updateDefn.Dynamic,
+                    dynamicArgPrepend: update.Name);
+
+                // Do validation. Whether or not this runs a validator, this should accept/reject.
                 try
                 {
-                    // Try to find the update definition
-                    var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
-                    if (!updates.TryGetValue(update.Name, out var updateDefn))
-                    {
-                        updateDefn = DynamicUpdate;
-                        if (updateDefn == null)
-                        {
-                            var knownUpdates = updates.Keys.OrderBy(k => k);
-                            throw new InvalidOperationException(
-                                $"Update handler for {update.Name} expected but not found, " +
-                                $"known updates: [{string.Join(" ", knownUpdates)}]");
-                        }
-                    }
-                    // Build update input
-                    updateInput = new(
-                        Id: update.Id,
-                        Update: update.Name,
-                        Definition: updateDefn,
-                        Args: DecodeArgs(
-                            method: updateDefn.Method ?? updateDefn.Delegate!.Method,
-                            payloads: update.Input,
-                            itemName: $"Update {update.Name}",
-                            dynamic: updateDefn.Dynamic,
-                            dynamicArgPrepend: update.Name),
-                        Headers: update.Headers);
-                    // If validation is requested, perform it inline. We call the interceptor
-                    // regardless of whether a validator is defined. An interceptor can validate
-                    // even if there is no validator method.
                     if (update.RunValidator)
                     {
-                        // Capture command count so we can ensure it is not altered during validation
-                        var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
-                        inbound.Value.ValidateUpdate(updateInput);
-                        // If the command count changed, we need to issue a task failure
-                        var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
-                        if (origCmdCount != newCmdCount)
+                        // We only call the validation interceptor if a validator is present. We are
+                        // not allowed to share the arguments. We do not share the arguments (i.e.
+                        // we re-convert) to prevent a user from mistakenly mutating an argument in
+                        // the validator. We call the interceptor only if a validator is present to
+                        // match other SDKs where doubly converting arguments here unnecessarily
+                        // (because of the no-reuse-argument rule above) causes performance issues
+                        // for them (even if they don't much for us).
+                        if (updateDefn.ValidatorMethod != null || updateDefn.ValidatorDelegate != null)
                         {
-                            currentActivationException = new InvalidOperationException(
-                                $"Update validator for {update.Name} created workflow commands");
-                            return Task.CompletedTask;
+                            // Capture command count so we can ensure it is unchanged after call
+                            var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                            inbound.Value.ValidateUpdate(new(
+                                Id: update.Id,
+                                Update: update.Name,
+                                Definition: updateDefn,
+                                Args: DecodeUpdateArgs(),
+                                Headers: update.Headers));
+                            // If the command count changed, we need to issue a task failure
+                            var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                            if (origCmdCount != newCmdCount)
+                            {
+                                currentActivationException = new InvalidOperationException(
+                                    $"Update validator for {update.Name} created workflow commands");
+                                return Task.CompletedTask;
+                            }
                         }
+
+                        // We want to try to decode args here _inside_ the validator rejection
+                        // try/catch so we can prevent acceptance on invalid args
+                        argsForUpdate = DecodeUpdateArgs();
                     }
+
                     // Send accepted
                     AddCommand(new()
                     {
@@ -947,7 +970,16 @@ namespace Temporalio.Worker
                 // to reject in both cases.
                 try
                 {
-                    var task = inbound.Value.HandleUpdateAsync(updateInput);
+                    // If the args were not already decoded because we didn't run the validation
+                    // step, decode them here
+                    argsForUpdate ??= DecodeUpdateArgs();
+
+                    var task = inbound.Value.HandleUpdateAsync(new(
+                        Id: update.Id,
+                        Update: update.Name,
+                        Definition: updateDefn,
+                        Args: argsForUpdate,
+                        Headers: update.Headers));
                     return task.ContinueWith(
                         _ =>
                         {

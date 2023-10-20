@@ -374,7 +374,7 @@ namespace Temporalio.Client
                 Headers: null));
 
         /// <summary>
-        /// Shortcut for
+        /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TWorkflow}(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
@@ -397,7 +397,7 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Shortcut for
+        /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TWorkflow, TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(TimeSpan?, RpcOptions?)" />.
@@ -420,7 +420,7 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Shortcut for
+        /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
@@ -443,7 +443,7 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Shortcut for
+        /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TUpdateResult}(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
@@ -699,7 +699,7 @@ namespace Temporalio.Client
             StartUpdateAsync<TWorkflow, TUpdateResult>(updateCall, options);
 
         /// <summary>
-        /// Shortcut for
+        /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
@@ -720,7 +720,7 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Shortcut for
+        /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(TimeSpan?, RpcOptions?)" />.
