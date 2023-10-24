@@ -439,6 +439,10 @@ namespace Temporalio.Client
                 {
                     req.SearchAttributes = input.Options.TypedSearchAttributes.ToProto();
                 }
+                if (input.Options.StartDelay is { } startDelay)
+                {
+                    req.WorkflowStartDelay = Duration.FromTimeSpan(startDelay);
+                }
                 if (input.Headers != null)
                 {
                     req.Header = new();
