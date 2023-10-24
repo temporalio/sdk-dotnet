@@ -493,6 +493,7 @@ namespace Temporalio.Client
                     Memo = req.Memo,
                     SearchAttributes = req.SearchAttributes,
                     Header = req.Header,
+                    WorkflowStartDelay = req.WorkflowStartDelay,
                     SignalName = input.Options.StartSignal,
                 };
                 if (input.Options.StartSignalArgs != null && input.Options.StartSignalArgs.Count > 0)

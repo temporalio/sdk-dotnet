@@ -103,6 +103,26 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task StartWorkflowAsync_SignalWithStartDelay_WaitsProperly()
+    {
+        var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "Some String")));
+        var handle = await Client.StartWorkflowAsync(
+            (IKitchenSinkWorkflowWithUnknownReturn wf) => wf.RunAsync(arg),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)
+            {
+                StartDelay = TimeSpan.FromMinutes(45),
+                StartSignal = "some-signal",
+            });
+        // Check that first event has start delay
+        await using var enumerator = handle.FetchHistoryEventsAsync().GetAsyncEnumerator();
+        Assert.True(await enumerator.MoveNextAsync());
+        var attrs = enumerator.Current.WorkflowExecutionStartedEventAttributes;
+        Assert.Equal(
+            TimeSpan.FromMinutes(45),
+            enumerator.Current.WorkflowExecutionStartedEventAttributes.FirstWorkflowTaskBackoff.ToTimeSpan());
+    }
+
+    [Fact]
     public async Task StartWorkflowAsync_StartSignal_Succeeds()
     {
         // Run by passing result via signal
