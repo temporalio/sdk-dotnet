@@ -156,9 +156,8 @@ public class WorkflowEnvironmentTests : TestBase
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
             // Check causes too
             var actExc = Assert.IsType<ActivityFailureException>(exc.InnerException);
-            var toExc1 = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
-            var toExc2 = Assert.IsType<TimeoutFailureException>(toExc1.InnerException);
-            Assert.Equal(TimeoutType.Heartbeat, toExc2.TimeoutType);
+            var toExc = Assert.IsType<TimeoutFailureException>(actExc.InnerException);
+            Assert.Equal(TimeoutType.Heartbeat, toExc.TimeoutType);
         });
     }
 
