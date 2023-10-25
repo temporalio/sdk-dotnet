@@ -81,6 +81,13 @@ namespace Temporalio.Client
         public SearchAttributeCollection? TypedSearchAttributes { get; set; }
 
         /// <summary>
+        /// Gets or sets the amount of time to wait before starting the workflow.
+        /// </summary>
+        /// <remarks>Start delay does not work with <see cref="CronSchedule" />.</remarks>
+        /// <remarks>WARNING: Start delay is experimental.</remarks>
+        public TimeSpan? StartDelay { get; set; }
+
+        /// <summary>
         /// Gets or sets the start signal for the workflow. If this is non-null, a signal-with-start
         /// is used instead of a traditional workflow start. This means the workflow will only be
         /// created if it does not already exist, then a signal will be sent.
