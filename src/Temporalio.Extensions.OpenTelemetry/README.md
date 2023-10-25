@@ -117,21 +117,22 @@ still mostly supported.
 
 ### How Workflow Tracing Works
 
-On workflow inbound calls for executing a workflow, handling a signal, or handling a query, a new diagnostic activity is
-created _only when not replaying_ (query is never considered "replaying" in this case) but a new diagnostic workflow
-activity wrapper is always created with the context from the Temporal header (i.e. the diagnostic activity created on
-client workflow start). Although the diagnostic activity is started-then-stopped immediately, it becomes the parent for
-diagnostic activities in that same-worker-process cached workflow instance. Workflows are removed from cache (and
-therefore replayed from beginning on next run) when they throw an exception or are forced out of the cache for LRU
-reasons.
+On workflow inbound calls for executing a workflow, handling a signal, handling a query, or handling an update, a new
+diagnostic activity is created _only when not replaying_ (query is never considered "replaying" in this case) but a new
+diagnostic workflow activity wrapper is always created with the context from the Temporal header (i.e. the diagnostic
+activity created on client workflow start). Although the diagnostic activity is started-then-stopped immediately, it
+becomes the parent for diagnostic activities in that same-worker-process cached workflow instance. Workflows are removed
+from cache (and therefore replayed from beginning on next run) when they throw an exception or are forced out of the
+cache for LRU reasons.
 
-Diagnostic activities created for signals and queries are parented to the client-outbound diagnostic activity that
-started the workflow, and only _linked_ to the client-outbound diagnostic activity that invoked the signal/query.
+Diagnostic activities created for signals, queries, and updates are parented to the client-outbound diagnostic activity
+that started the workflow, and only _linked_ to the client-outbound diagnostic activity that invoked the
+signal/query/update.
 
-If a workflow fails or if a workflow task fails (i.e. workflow suspension due to workflow/signal exception that was not
-a Temporal exception), a _new_ diagnostic activity is created representing that failure. The diagnostic activity
-representing the run of the workflow is not only already completed (as they all are) but it may not even be created
-because this could be replaying on a different worker.
+If a workflow/update fails or if a workflow task fails (i.e. workflow suspension due to workflow/signal/update exception
+that was not a Temporal exception), a _new_ diagnostic activity is created representing that failure. The diagnostic
+activity representing the run of the workflow is not only already completed (as they all are) but it may not even be
+created because this could be replaying on a different worker.
 
 Outbound calls from a workflow for scheduling an activity, scheduling a local activity, starting a child, signalling a
 child, or signalling an external workflow will create a diagnostic activity _only when not replaying_. This is then

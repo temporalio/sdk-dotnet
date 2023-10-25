@@ -6,6 +6,7 @@ use crate::UserDataHandle;
 use prost::Message;
 use temporal_sdk_core::replay::HistoryForReplay;
 use temporal_sdk_core::WorkerConfigBuilder;
+use temporal_sdk_core::replay::ReplayWorkerInput;
 use temporal_sdk_core_api::errors::PollActivityError;
 use temporal_sdk_core_api::errors::PollWfError;
 use temporal_sdk_core_api::Worker as CoreWorker;
@@ -387,7 +388,7 @@ pub extern "C" fn worker_replayer_new(
         ),
         Ok(config) => {
             let (tx, rx) = channel(1);
-            match temporal_sdk_core::init_replay_worker(config, ReceiverStream::new(rx)) {
+            match temporal_sdk_core::init_replay_worker(ReplayWorkerInput::new(config, ReceiverStream::new(rx))) {
                 Err(err) => (
                     std::ptr::null_mut(),
                     std::ptr::null_mut(),

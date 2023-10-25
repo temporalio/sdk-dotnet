@@ -77,6 +77,16 @@ namespace Temporalio.Workflows
         }
 
         /// <summary>
+        /// Gets or sets the current dynamic update handler. This can be null for no dynamic update
+        /// handling.
+        /// </summary>
+        public static WorkflowUpdateDefinition? DynamicUpdate
+        {
+            get => Context.DynamicUpdate;
+            set => Context.DynamicUpdate = value;
+        }
+
+        /// <summary>
         /// Gets information about the workflow.
         /// </summary>
         public static WorkflowInfo Info => Context.Info;
@@ -155,6 +165,15 @@ namespace Temporalio.Workflows
         /// signals are sent to the handler immediately.
         /// </remarks>
         public static IDictionary<string, WorkflowSignalDefinition> Signals => Context.Signals;
+
+        /// <summary>
+        /// Gets updates for this workflow.
+        /// </summary>
+        /// <remarks>
+        /// This dictionary can be mutated during workflow run. However, users are strongly
+        /// encouraged to use fixed methods with the <c>[WorkflowUpdate]</c> attribute.
+        /// </remarks>
+        public static IDictionary<string, WorkflowUpdateDefinition> Updates => Context.Updates;
 
         /// <summary>
         /// Gets the current timestamp for this workflow.

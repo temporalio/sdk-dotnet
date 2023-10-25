@@ -211,6 +211,29 @@ public class WorkflowDefinitionTests
             " must accept string and an array of IRawValue");
     }
 
+    [Fact]
+    public void Create_BadUpdates_Throws()
+    {
+        AssertBad<Bad.WfUpdate>("has more than one update validator for update method Update1Async");
+        AssertBad<Bad.WfUpdate>("has more than one update named Update2");
+        AssertBad<Bad.WfUpdate>("Update3Async() must be public");
+        AssertBad<Bad.WfUpdate>("Update4Async() cannot be static");
+        AssertBad<Bad.WfUpdate>("ValidateUpdate5() must be public");
+        AssertBad<Bad.WfUpdate>("ValidateUpdate6() cannot be static");
+        AssertBad<Bad.WfUpdate>("Update7() must return Task");
+        AssertBad<Bad.WfUpdate>("ValidateUpdate8() must be void");
+        AssertBad<Bad.WfUpdate>("ValidateUpdate9(Int32, System.String) must have the same " +
+            "parameters as System.Threading.Tasks.Task Update9Async(System.String, Int32)");
+        AssertBad<Bad.WfUpdate>("Cannot find update method named not-here for WorkflowUpdateValidator");
+        AssertBad<Bad.WfUpdate>("more than one dynamic update");
+        AssertBad<Bad.WfUpdate>("DynamicUpdate3Async(System.String, Temporalio.Converters.IRawValue[])" +
+            " cannot be dynamic with custom name");
+        AssertBad<Bad.WfUpdate>("DynamicUpdate4Async(Temporalio.Converters.IRawValue[])" +
+            " must accept string and an array of IRawValue");
+        AssertBad<Bad.WfUpdate>("GenericUpdateAsync[TLocal](TLocal) with WorkflowUpdate contains generic parameters");
+        AssertBad<Bad.WfUpdate>("ValidateGenericUpdate[TLocal](TLocal) with WorkflowUpdateValidator contains generic parameters");
+    }
+
     private static void AssertBad<T>(string errContains)
     {
         var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.Create(typeof(T)));
@@ -410,6 +433,96 @@ public class WorkflowDefinitionTests
 
             [WorkflowQuery(Dynamic = true)]
             public string DynamicQuery4(IRawValue[] args) => string.Empty;
+        }
+
+        [Workflow]
+        public class WfUpdate
+        {
+            [WorkflowUpdate]
+            public static Task Update4Async() => Task.CompletedTask;
+
+            [WorkflowUpdateValidator(nameof(Update6Async))]
+            public static void ValidateUpdate6()
+            {
+            }
+
+            [WorkflowRun]
+            public Task RunAsync() => Task.CompletedTask;
+
+            [WorkflowUpdate]
+            public Task Update1Async() => Task.CompletedTask;
+
+            [WorkflowUpdateValidator(nameof(Update1Async))]
+            public void ValidateUpdate1()
+            {
+            }
+
+            [WorkflowUpdateValidator(nameof(Update1Async))]
+            public void AlsoValidateUpdate1()
+            {
+            }
+
+            [WorkflowUpdate]
+            public Task Update2Async() => Task.CompletedTask;
+
+            [WorkflowUpdate("Update2")]
+            public Task AlsoUpdate2Async() => Task.CompletedTask;
+
+            [WorkflowUpdate]
+            public Task Update5Async() => Task.CompletedTask;
+
+            [WorkflowUpdate]
+            public Task Update6Async() => Task.CompletedTask;
+
+            [WorkflowUpdate]
+            public string Update7() => string.Empty;
+
+            [WorkflowUpdate]
+            public Task Update8Async() => Task.CompletedTask;
+
+            [WorkflowUpdateValidator(nameof(Update8Async))]
+            public string ValidateUpdate8() => string.Empty;
+
+            [WorkflowUpdate]
+            public Task Update9Async(string foo, int bar) => Task.CompletedTask;
+
+            [WorkflowUpdateValidator(nameof(Update9Async))]
+            public void ValidateUpdate9(int foo, string bar)
+            {
+            }
+
+            [WorkflowUpdateValidator("not-here")]
+            public void ValidateUpdate10()
+            {
+            }
+
+            [WorkflowUpdate(Dynamic = true)]
+            public Task DynamicUpdate1Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowUpdate(Dynamic = true)]
+            public Task DynamicUpdate2Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowUpdate("CustomName", Dynamic = true)]
+            public Task DynamicUpdate3Async(string signalName, IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowUpdate(Dynamic = true)]
+            public Task DynamicUpdate4Async(IRawValue[] args) => Task.CompletedTask;
+
+            [WorkflowUpdate]
+            public Task GenericUpdateAsync<TLocal>(TLocal _) => Task.CompletedTask;
+
+            [WorkflowUpdateValidator(nameof(GenericUpdateAsync))]
+            public void ValidateGenericUpdate<TLocal>(TLocal _)
+            {
+            }
+
+            [WorkflowUpdate]
+            protected Task Update3Async() => Task.CompletedTask;
+
+            [WorkflowUpdateValidator(nameof(Update5Async))]
+            protected void ValidateUpdate5()
+            {
+            }
         }
     }
 

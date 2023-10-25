@@ -2625,6 +2625,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         [WorkflowQuery]
         public string Query() => string.Empty;
 
+        [WorkflowUpdate]
+        public async Task<string> UpdateAsync(string param) => param;
+
+        [WorkflowUpdateValidator(nameof(UpdateAsync))]
+        public void ValidateUpdate(string param)
+        {
+        }
+
         [Activity]
         public static void DoThing()
         {
@@ -2662,6 +2670,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await AssertChildStartedEventuallyAsync(handle);
                 await handle.QueryAsync(wf => wf.Query());
+                await handle.ExecuteUpdateAsync(wf => wf.UpdateAsync("foo"));
                 await handle.SignalAsync(wf => wf.SignalAsync(true));
                 await handle.GetResultAsync();
 
@@ -2674,6 +2683,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     ("Workflow:ExecuteWorkflow", "Workflow:ContinueAsNew"),
                     ("Workflow:ExecuteWorkflow", "Workflow:StartChildWorkflow"),
                     ("Workflow:HandleQuery", "Client:QueryWorkflow"),
+                    ("Workflow:ValidateUpdate", "Client:StartWorkflowUpdate"),
+                    ("Workflow:HandleUpdate", "Client:StartWorkflowUpdate"),
                     ("Workflow:HandleSignal", "Client:SignalWorkflow"),
                     ("Workflow:HandleSignal", "Workflow:SignalChildWorkflow"),
                     ("Workflow:HandleSignal", "Workflow:SignalExternalWorkflow"),
@@ -2841,6 +2852,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         [WorkflowQuery]
         string SomeQuery(string arg);
+
+        [WorkflowUpdate]
+        Task<string> SomeUpdateAsync(string arg);
     }
 
     [Workflow(Dynamic = true)]
@@ -2881,6 +2895,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             return "done";
         }
 
+        [WorkflowUpdate(Dynamic = true)]
+        public async Task<string> DynamicUpdateAsync(string updateName, IRawValue[] args)
+        {
+            Events.Add($"update-{updateName}: " +
+                Workflow.PayloadConverter.ToValue<string>(args.Single()));
+            return "done";
+        }
+
         [Activity]
         public static string NonDynamicActivity(string arg) => throw new NotImplementedException();
 
@@ -2906,6 +2928,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 await handle.SignalAsync(wf => wf.SomeSignalAsync("signal arg"));
                 Assert.Equal("done", await handle.QueryAsync(wf => wf.SomeQuery("query arg")));
+                Assert.Equal("done", await handle.ExecuteUpdateAsync(wf => wf.SomeUpdateAsync("update arg")));
                 await handle.SignalAsync(wf => wf.FinishAsync());
                 Assert.Equal("done", await handle.GetResultAsync());
                 Assert.Equal(
@@ -2914,6 +2937,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         "activity-NonDynamicActivity: activity arg",
                         "query-SomeQuery: query arg",
                         "signal-SomeSignal: signal arg",
+                        "update-SomeUpdate: update arg",
                         "workflow-NonDynamicWorkflow: workflow arg",
                     },
                     (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
@@ -2946,6 +2970,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         Workflow.PayloadConverter.ToValue<string>(args.Single()));
                     return "done";
                 });
+            Workflow.DynamicUpdate = WorkflowUpdateDefinition.CreateWithoutAttribute(
+                null, async (string updateName, IRawValue[] args) =>
+                {
+                    Events.Add($"update-{updateName}: " +
+                        Workflow.PayloadConverter.ToValue<string>(args.Single()));
+                    return "done";
+                });
         }
 
         [WorkflowSignal]
@@ -2953,6 +2984,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             Workflow.DynamicSignal = null;
             Workflow.DynamicQuery = null;
+            Workflow.DynamicUpdate = null;
         }
     }
 
@@ -2969,22 +3001,28 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
                 // Confirm signal/query unhandled
                 await handle.SignalAsync("SomeSignal1", new[] { "signal arg 1" });
-                var exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                var queryExc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => handle.QueryAsync<string>("SomeQuery1", new[] { "query arg 1" }));
-                Assert.Contains("not found", exc.Message);
+                Assert.Contains("not found", queryExc.Message);
+                var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                    () => handle.ExecuteUpdateAsync<string>("SomeUpdate1", new[] { "update arg 1" }));
+                Assert.Contains("not found", updateExc.InnerException?.Message);
                 Assert.Empty(await handle.QueryAsync(wf => wf.Events));
 
-                // Add signal handlers, and confirm all signals are drained to it and it handles
-                // queries
+                // Add handlers, and confirm all signals are drained to it and it handles
+                // queries/updates
                 await handle.SignalAsync(wf => wf.SetHandlersAsync());
                 await handle.SignalAsync("SomeSignal2", new[] { "signal arg 2" });
                 Assert.Equal(
                     "done", await handle.QueryAsync<string>("SomeQuery2", new[] { "query arg 2" }));
+                Assert.Equal(
+                    "done", await handle.ExecuteUpdateAsync<string>("SomeUpdate1", new[] { "update arg 1" }));
                 var expectedEvents = new List<string>
                 {
                     "query-SomeQuery2: query arg 2",
                     "signal-SomeSignal1: signal arg 1",
                     "signal-SomeSignal2: signal arg 2",
+                    "update-SomeUpdate1: update arg 1",
                 };
                 Assert.Equal(
                     expectedEvents,
@@ -2993,9 +3031,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Remove handlers and confirm things go back to unhandled
                 await handle.SignalAsync(wf => wf.UnsetHandlersAsync());
                 await handle.SignalAsync("SomeSignal3", new[] { "signal arg 3" });
-                exc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
+                queryExc = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
                     () => handle.QueryAsync<string>("SomeQuery3", new[] { "query arg 3" }));
-                Assert.Contains("not found", exc.Message);
+                Assert.Contains("not found", queryExc.Message);
+                updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                    () => handle.ExecuteUpdateAsync<string>("SomeUpdate1", new[] { "update arg 1" }));
+                Assert.Contains("not found", updateExc.InnerException?.Message);
                 Assert.Equal(
                     expectedEvents,
                     (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
@@ -3422,6 +3463,397 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await TestUtils.DeleteAllSchedulesAsync(Client);
     }
 
+    [Workflow]
+    public class UpdateWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
+
+        [WorkflowUpdate]
+        public Task DoUpdateNoParamNoResponseAsync() => Task.CompletedTask;
+
+        [WorkflowUpdate]
+        public async Task<string> DoUpdateNoParamResponseAsync() =>
+            $"no-param-response: {Workflow.Info.WorkflowId}";
+
+        [WorkflowUpdate("some-update-name")]
+        public async Task DoUpdateOneParamNoResponseAsync(string param)
+        {
+            switch (param)
+            {
+                case "update-application-failure":
+                    throw new ApplicationFailureException("Intentional update application failure");
+                case "update-invalid-operation-new-task":
+                    // We have to have a sleep to roll the task over, or this update will never even
+                    // be in history
+                    await Workflow.DelayAsync(1);
+                    throw new InvalidOperationException("Intentional update invalid operation");
+                case "update-invalid-operation-same-task":
+                    throw new InvalidOperationException("Intentional update invalid operation");
+                case "update-continue-as-new":
+                    await Workflow.DelayAsync(1);
+                    throw Workflow.CreateContinueAsNewException((UpdateWorkflow wf) => wf.RunAsync());
+            }
+        }
+
+        [WorkflowUpdate]
+        public async Task<string> DoUpdateOneParamResponseAsync(string param) =>
+            $"one-param-response: {param}";
+
+        [WorkflowUpdateValidator(nameof(DoUpdateOneParamNoResponseAsync))]
+        public void ValidateDoUpdateOneParamNoResponse(string param)
+        {
+            switch (param)
+            {
+                case "validate-application-failure":
+                    throw new ApplicationFailureException("Intentional validator application failure");
+                case "validate-invalid-operation":
+                    throw new InvalidOperationException("Intentional validator invalid operation");
+                case "validate-continue-as-new":
+                    throw Workflow.CreateContinueAsNewException((UpdateWorkflow wf) => wf.RunAsync());
+            }
+        }
+
+        [WorkflowUpdate]
+        public async Task DoUpdateLongWaitAsync()
+        {
+            Waiting = true;
+            await Workflow.DelayAsync(TimeSpan.FromHours(1));
+        }
+
+        [WorkflowQuery]
+        public bool Waiting { get; private set; }
+
+        [WorkflowUpdate]
+        public async Task DoUpdateValidatorCommandsAsync() => throw new InvalidOperationException();
+
+        [WorkflowUpdateValidator(nameof(DoUpdateValidatorCommandsAsync))]
+        public void ValidateDoUpdateValidatorCommands() => _ = Workflow.DelayAsync(5000);
+
+        [WorkflowUpdate]
+        public Task DoUpdateFailOutsideAsync() =>
+            throw new InvalidOperationException("Intentional update invalid operation");
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_AllOverloadsWork()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            // Make all possible overload calls via start then get response
+            await (await ((WorkflowHandle)handle).StartUpdateAsync(
+                (UpdateWorkflow wf) => wf.DoUpdateNoParamNoResponseAsync())).GetResultAsync();
+            Assert.Equal(
+                $"no-param-response: {handle.Id}",
+                await (await ((WorkflowHandle)handle).StartUpdateAsync(
+                    (UpdateWorkflow wf) => wf.DoUpdateNoParamResponseAsync())).GetResultAsync());
+            await (await ((WorkflowHandle)handle).StartUpdateAsync(
+                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"))).GetResultAsync();
+            await (await ((WorkflowHandle)handle).StartUpdateAsync(
+                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"))).GetResultAsync();
+            Assert.Equal(
+                "one-param-response: some-param",
+                await (await ((WorkflowHandle)handle).StartUpdateAsync(
+                    (UpdateWorkflow wf) => wf.DoUpdateOneParamResponseAsync("some-param"))).GetResultAsync());
+            await (await handle.StartUpdateAsync(
+                "some-update-name", new[] { "some-param" })).GetResultAsync();
+            Assert.Equal(
+                "one-param-response: some-param",
+                await (await handle.StartUpdateAsync<string>(
+                    "DoUpdateOneParamResponse", new[] { "some-param" })).GetResultAsync());
+            await (await handle.StartUpdateAsync(
+                wf => wf.DoUpdateNoParamNoResponseAsync())).GetResultAsync();
+            Assert.Equal(
+                $"no-param-response: {handle.Id}",
+                await (await handle.StartUpdateAsync(
+                    wf => wf.DoUpdateNoParamResponseAsync())).GetResultAsync());
+
+            // Make all possible overload calls via execute
+            await ((WorkflowHandle)handle).ExecuteUpdateAsync(
+                (UpdateWorkflow wf) => wf.DoUpdateNoParamNoResponseAsync());
+            Assert.Equal(
+                $"no-param-response: {handle.Id}",
+                await ((WorkflowHandle)handle).ExecuteUpdateAsync(
+                    (UpdateWorkflow wf) => wf.DoUpdateNoParamResponseAsync()));
+            await ((WorkflowHandle)handle).ExecuteUpdateAsync(
+                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"));
+            await ((WorkflowHandle)handle).ExecuteUpdateAsync(
+                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"));
+            Assert.Equal(
+                "one-param-response: some-param",
+                await ((WorkflowHandle)handle).ExecuteUpdateAsync(
+                    (UpdateWorkflow wf) => wf.DoUpdateOneParamResponseAsync("some-param")));
+            await handle.ExecuteUpdateAsync(
+                "some-update-name", new[] { "some-param" });
+            Assert.Equal(
+                "one-param-response: some-param",
+                await handle.ExecuteUpdateAsync<string>(
+                    "DoUpdateOneParamResponse", new[] { "some-param" }));
+            await handle.ExecuteUpdateAsync(
+                wf => wf.DoUpdateNoParamNoResponseAsync());
+            Assert.Equal(
+                $"no-param-response: {handle.Id}",
+                await handle.ExecuteUpdateAsync(
+                    wf => wf.DoUpdateNoParamResponseAsync()));
+
+            // Make updates, then get handles manually, then get response
+            await handle.GetUpdateHandle((await handle.StartUpdateAsync(
+                wf => wf.DoUpdateNoParamNoResponseAsync())).Id).GetResultAsync();
+            Assert.Equal(
+                $"no-param-response: {handle.Id}",
+                await handle.GetUpdateHandle<string>((await handle.StartUpdateAsync(
+                    wf => wf.DoUpdateNoParamResponseAsync())).Id).GetResultAsync());
+            Assert.Equal(
+                $"no-param-response: {handle.Id}",
+                await handle.GetUpdateHandle((await handle.StartUpdateAsync(
+                    wf => wf.DoUpdateNoParamResponseAsync())).Id).GetResultAsync<string>());
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_ExceptionsHandledProperly()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            // Validator app exception
+            var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => handle.ExecuteUpdateAsync(wf =>
+                    wf.DoUpdateOneParamNoResponseAsync("validate-application-failure")));
+            var appExc = Assert.IsType<ApplicationFailureException>(updateExc.InnerException);
+            Assert.Equal("Intentional validator application failure", appExc.Message);
+
+            // Validator non-Temporal exception
+            updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => handle.ExecuteUpdateAsync(wf =>
+                    wf.DoUpdateOneParamNoResponseAsync("validate-invalid-operation")));
+            appExc = Assert.IsType<ApplicationFailureException>(updateExc.InnerException);
+            Assert.Equal("Intentional validator invalid operation", appExc.Message);
+            Assert.Equal("InvalidOperationException", appExc.ErrorType);
+
+            // Validator continue as new exception treated like non-Temporal exception
+            updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => handle.ExecuteUpdateAsync(wf =>
+                    wf.DoUpdateOneParamNoResponseAsync("validate-continue-as-new")));
+            appExc = Assert.IsType<ApplicationFailureException>(updateExc.InnerException);
+            Assert.Equal("ContinueAsNewException", appExc.ErrorType);
+
+            // Check history and confirm none of those validator exceptions made it to history
+            await foreach (var evt in handle.FetchHistoryEventsAsync())
+            {
+                Assert.Null(evt.WorkflowExecutionUpdateAcceptedEventAttributes);
+            }
+
+            // Update app exception
+            updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                () => handle.ExecuteUpdateAsync(wf =>
+                    wf.DoUpdateOneParamNoResponseAsync("update-application-failure")));
+            appExc = Assert.IsType<ApplicationFailureException>(updateExc.InnerException);
+            Assert.Equal("Intentional update application failure", appExc.Message);
+
+            // Check history and confirm there is an update accepted and failed
+            var foundUpdateAccepted = false;
+            var foundUpdateFailed = false;
+            await foreach (var evt in handle.FetchHistoryEventsAsync())
+            {
+                if (evt.WorkflowExecutionUpdateAcceptedEventAttributes is { } accepted)
+                {
+                    foundUpdateAccepted = true;
+                }
+                if (evt.WorkflowExecutionUpdateCompletedEventAttributes is { } completed)
+                {
+                    Assert.Equal("Intentional update application failure", completed.Outcome?.Failure?.Message);
+                    foundUpdateFailed = true;
+                }
+            }
+            Assert.True(foundUpdateAccepted);
+            Assert.True(foundUpdateFailed);
+
+            // Update invalid operation after accepted - fails workflow task
+            await handle.StartUpdateAsync(
+                wf => wf.DoUpdateOneParamNoResponseAsync("update-invalid-operation-new-task"));
+            await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional update invalid operation");
+            // Terminate the handle so it doesn't keep failing
+            await handle.TerminateAsync();
+
+            // Update invalid operation same task as accepted - fails workflow task
+            handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // Run in background and check task
+            _ = Task.Run(() => handle.ExecuteUpdateAsync(wf =>
+                wf.DoUpdateOneParamNoResponseAsync("update-invalid-operation-same-task")));
+            await AssertTaskFailureContainsEventuallyAsync(
+                handle, "Intentional update invalid operation");
+            // Terminate the handle so it doesn't keep failing
+            await handle.TerminateAsync();
+
+            // Update continue as new
+            handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            await handle.StartUpdateAsync(
+                wf => wf.DoUpdateOneParamNoResponseAsync("update-continue-as-new"));
+            await AssertTaskFailureContainsEventuallyAsync(handle, "Continue as new");
+            await handle.TerminateAsync();
+
+            // Fail update outside of "async" task part
+            handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // Run in background and check task
+            _ = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.DoUpdateFailOutsideAsync()));
+            await AssertTaskFailureContainsEventuallyAsync(
+                handle, "Intentional update invalid operation");
+            // Terminate the handle so it doesn't keep failing
+            await handle.TerminateAsync();
+
+            // TODO(cretz): Test admitted wait stage when implemented server side (waiting on
+            // https://github.com/temporalio/temporal/issues/4979)
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_DuplicateMemoized()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            // Run an update with an ID
+            var result1 = await handle.ExecuteUpdateAsync(
+                wf => wf.DoUpdateOneParamResponseAsync("first-param"),
+                new() { UpdateID = "my-update-id" });
+            var result2 = await handle.ExecuteUpdateAsync(
+                wf => wf.DoUpdateOneParamResponseAsync("second-param"),
+                new() { UpdateID = "my-update-id" });
+            // Confirm that the first result is the same as the second without running (i.e. doesn't
+            // return second-param)
+            Assert.Equal("one-param-response: first-param", result1);
+            Assert.Equal(result1, result2);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_GetResultTimeout()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateLongWaitAsync());
+            // Ask for the result but only for 1 second
+            await Assert.ThrowsAsync<OperationCanceledException>(() =>
+                updateHandle.GetResultAsync(TimeSpan.FromSeconds(1)));
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_ValidatorCreatesCommands()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // Do an update in the background
+            _ = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.DoUpdateValidatorCommandsAsync()));
+            // Confirm task fails
+            await AssertTaskFailureContainsEventuallyAsync(
+                handle, "Update validator for DoUpdateValidatorCommands created workflow commands");
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_CancelWhileUpdating()
+    {
+        // TODO(cretz): This is a known server issue that poll does not stop when workflow does
+        // await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        // {
+        //     // Start the workflow
+        //     var handle = await Env.Client.StartWorkflowAsync(
+        //         (UpdateWorkflow wf) => wf.RunAsync(),
+        //         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        //     // Start update and wait until waiting
+        //     var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateWaitABitAsync());
+        //     await AssertMore.EqualEventuallyAsync(true, () => handle.QueryAsync(wf => wf.Waiting));
+        //     // Cancel the workflow and wait for update complete
+        //     await handle.CancelAsync();
+        //     Assert.IsType<CanceledFailureException>((await Assert.ThrowsAsync<WorkflowFailedException>(
+        //         () => handle.GetResultAsync())).InnerException);
+        //     await updateHandle.GetResultAsync();
+        // });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_TerminateWhileUpdating()
+    {
+        // TODO(cretz): This is a known server issue that poll does not stop when workflow does
+        // await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        // {
+        //     // Start the workflow
+        //     var handle = await Env.Client.StartWorkflowAsync(
+        //         (UpdateWorkflow wf) => wf.RunAsync(),
+        //         new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        //     // Start update and wait until waiting
+        //     var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateWaitABitAsync());
+        //     await AssertMore.EqualEventuallyAsync(true, () => handle.QueryAsync(wf => wf.Waiting));
+        //     // Cancel the workflow and wait for update complete
+        //     await handle.TerminateAsync();
+        //     Assert.IsType<TerminatedFailureException>((await Assert.ThrowsAsync<WorkflowFailedException>(
+        //         () => handle.GetResultAsync())).InnerException);
+        //     await updateHandle.GetResultAsync();
+        // });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_RejectsWithNoValidatorOnBadArgument()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            // Start the workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // Send untyped update with an int instead of string
+            var exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                handle.ExecuteUpdateAsync("some-update-name", new object?[] { 123 }));
+            Assert.Contains("failure decoding parameters", exc.InnerException?.Message);
+            // Send untyped update with no arguments when one is expected
+            exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                handle.ExecuteUpdateAsync("some-update-name", Array.Empty<object?>()));
+            Assert.Contains("given 0 parameter(s)", exc.InnerException?.Message);
+
+            // Check history and confirm no update was accepted
+            await foreach (var evt in handle.FetchHistoryEventsAsync())
+            {
+                Assert.Null(evt.WorkflowExecutionUpdateAcceptedEventAttributes);
+            }
+        });
+    }
+
+    internal static Task AssertTaskFailureContainsEventuallyAsync(
+        WorkflowHandle handle, string messageContains)
+    {
+        return AssertTaskFailureEventuallyAsync(
+            handle, attrs => Assert.Contains(messageContains, attrs.Failure?.Message));
+    }
+
     private async Task ExecuteWorkerAsync<TWf>(
         Func<TemporalWorker, Task> action,
         TemporalWorkerOptions? options = null,
@@ -3434,13 +3866,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
         using var worker = new TemporalWorker(client ?? Client, options);
         await worker.ExecuteAsync(() => action(worker));
-    }
-
-    private static Task AssertTaskFailureContainsEventuallyAsync(
-        WorkflowHandle handle, string messageContains)
-    {
-        return AssertTaskFailureEventuallyAsync(
-            handle, attrs => Assert.Contains(messageContains, attrs.Failure?.Message));
     }
 
     private static Task AssertTaskFailureEventuallyAsync(

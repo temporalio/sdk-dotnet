@@ -22,8 +22,8 @@ namespace Temporalio.Client
     /// <param name="Client">Client used for workflow handle calls.</param>
     /// <param name="Id">Workflow ID.</param>
     /// <param name="RunId">
-    /// Run ID used for signals and queries if present to ensure a very specific run to call. This
-    /// is only set when getting a workflow handle, not when starting a workflow.
+    /// Run ID used for signals, queries, and updates if present to ensure a very specific run to
+    /// call. This is only set when getting a workflow handle, not when starting a workflow.
     /// </param>
     /// <param name="ResultRunId">
     /// Run ID used for get result calls to ensure getting a result starting from this run. This is
@@ -303,6 +303,189 @@ namespace Temporalio.Client
                 Headers: null));
 
         /// <summary>
+        /// Start a workflow update via a call to a WorkflowUpdate attributed method.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public Task<WorkflowUpdateHandle> StartUpdateAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateOptions? options = null)
+        {
+            var (method, args) = ExpressionUtil.ExtractCall(updateCall);
+            return StartUpdateAsync(
+                Workflows.WorkflowUpdateDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <summary>
+        /// Start a workflow update via a call to a WorkflowUpdate attributed method.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TWorkflow, TUpdateResult>(
+            Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
+            WorkflowUpdateOptions? options = null)
+        {
+            var (method, args) = ExpressionUtil.ExtractCall(updateCall);
+            return StartUpdateAsync<TUpdateResult>(
+                Workflows.WorkflowUpdateDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <summary>
+        /// Start a workflow update using its name.
+        /// </summary>
+        /// <param name="update">Name of the update.</param>
+        /// <param name="args">Arguments for the update.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public Task<WorkflowUpdateHandle> StartUpdateAsync(
+            string update, IReadOnlyCollection<object?> args, WorkflowUpdateOptions? options = null) =>
+            StartUpdateAsync<ValueTuple>(update, args, options).ContinueWith<WorkflowUpdateHandle>(
+                t => t.Result, TaskScheduler.Current);
+
+        /// <summary>
+        /// Start a workflow update using its name.
+        /// </summary>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="update">Name of the update.</param>
+        /// <param name="args">Arguments for the update.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
+            string update, IReadOnlyCollection<object?> args, WorkflowUpdateOptions? options = null) =>
+            Client.OutboundInterceptor.StartWorkflowUpdateAsync<TUpdateResult>(new(
+                Id: Id,
+                RunId: RunId,
+                FirstExecutionRunId: FirstExecutionRunId,
+                Update: update,
+                Args: args,
+                Options: options,
+                Headers: null));
+
+        /// <summary>
+        /// Start an update and wait for it to complete. This is a shortcut for
+        /// <see cref="StartUpdateAsync{TWorkflow}(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
+        /// +
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// </summary>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
+        /// API will timeout on long update requests instead of properly polling for their
+        /// completion.</remarks>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Completed update task.</returns>
+        public async Task ExecuteUpdateAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> updateCall,
+            WorkflowUpdateOptions? options = null)
+        {
+            // TODO(cretz): Support timeout for the life of the call when polling works
+            var handle = await StartUpdateAsync(
+                updateCall, UpdateOptionsWithDefaultsForExecute(options)).ConfigureAwait(false);
+            await handle.GetResultAsync(rpcOptions: options?.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Start an update and wait for it to complete. This is a shortcut for
+        /// <see cref="StartUpdateAsync{TWorkflow, TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
+        /// +
+        /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// </summary>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
+        /// API will timeout on long update requests instead of properly polling for their
+        /// completion.</remarks>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Completed update task.</returns>
+        public async Task<TUpdateResult> ExecuteUpdateAsync<TWorkflow, TUpdateResult>(
+            Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
+            WorkflowUpdateOptions? options = null)
+        {
+            var handle = await StartUpdateAsync(
+                updateCall, UpdateOptionsWithDefaultsForExecute(options)).ConfigureAwait(false);
+            return await handle.GetResultAsync(rpcOptions: options?.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Start an update and wait for it to complete. This is a shortcut for
+        /// <see cref="StartUpdateAsync(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
+        /// +
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// </summary>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
+        /// API will timeout on long update requests instead of properly polling for their
+        /// completion.</remarks>
+        /// <param name="update">Update name.</param>
+        /// <param name="args">Update args.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Completed update task.</returns>
+        public async Task ExecuteUpdateAsync(
+            string update,
+            IReadOnlyCollection<object?> args,
+            WorkflowUpdateOptions? options = null)
+        {
+            var handle = await StartUpdateAsync(
+                update, args, UpdateOptionsWithDefaultsForExecute(options)).ConfigureAwait(false);
+            await handle.GetResultAsync(rpcOptions: options?.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Start an update and wait for it to complete. This is a shortcut for
+        /// <see cref="StartUpdateAsync{TUpdateResult}(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
+        /// +
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// </summary>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
+        /// API will timeout on long update requests instead of properly polling for their
+        /// completion.</remarks>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="update">Update name.</param>
+        /// <param name="args">Update args.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Completed update task.</returns>
+        public async Task<TUpdateResult> ExecuteUpdateAsync<TUpdateResult>(
+            string update,
+            IReadOnlyCollection<object?> args,
+            WorkflowUpdateOptions? options = null)
+        {
+            var handle = await StartUpdateAsync<TUpdateResult>(
+                update, args, UpdateOptionsWithDefaultsForExecute(options)).ConfigureAwait(false);
+            return await handle.GetResultAsync(rpcOptions: options?.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get a workflow update handle for the given update ID on this workflow.
+        /// </summary>
+        /// <param name="id">ID of the update.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public WorkflowUpdateHandle GetUpdateHandle(string id) =>
+            new(Client: Client, Id: id, WorkflowId: Id, WorkflowRunId: RunId);
+
+        /// <summary>
+        /// Get a workflow update handle for the given update ID on this workflow.
+        /// </summary>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="id">ID of the update.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public WorkflowUpdateHandle<TUpdateResult> GetUpdateHandle<TUpdateResult>(string id) =>
+            new(Client: Client, Id: id, WorkflowId: Id, WorkflowRunId: RunId);
+
+        /// <summary>
         /// Get the current description of this workflow.
         /// </summary>
         /// <param name="options">Extra options.</param>
@@ -414,6 +597,20 @@ namespace Temporalio.Client
             }
         }
 #endif
+
+        /// <summary>
+        /// Create options with defaults automatically set for ExecuteUpdateAsync.
+        /// </summary>
+        /// <param name="options">Options to use as base.</param>
+        /// <returns>New options.</returns>
+        private protected static WorkflowUpdateOptions UpdateOptionsWithDefaultsForExecute(
+            WorkflowUpdateOptions? options)
+        {
+            var newOptions = options == null ? new() : (WorkflowUpdateOptions)options.Clone();
+            // Force override the wait for stage to completed
+            newOptions.WaitForStage = UpdateWorkflowExecutionLifecycleStage.Completed;
+            return newOptions;
+        }
     }
 
     /// <summary>
@@ -476,6 +673,73 @@ namespace Temporalio.Client
             Expression<Func<TWorkflow, TQueryResult>> queryCall,
             WorkflowQueryOptions? options = null) =>
             QueryAsync<TWorkflow, TQueryResult>(queryCall, options);
+
+        /// <summary>
+        /// Start a workflow update via a call to a WorkflowUpdate attributed method.
+        /// </summary>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public Task<WorkflowUpdateHandle> StartUpdateAsync(
+            Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateOptions? options = null) =>
+            StartUpdateAsync<TWorkflow>(updateCall, options);
+
+        /// <summary>
+        /// Start a workflow update via a call to a WorkflowUpdate attributed method.
+        /// </summary>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
+            Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
+            WorkflowUpdateOptions? options = null) =>
+            StartUpdateAsync<TWorkflow, TUpdateResult>(updateCall, options);
+
+        /// <summary>
+        /// Start an update and wait for it to complete. This is a shortcut for
+        /// <see cref="StartUpdateAsync(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
+        /// +
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// </summary>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
+        /// API will timeout on long update requests instead of properly polling for their
+        /// completion.</remarks>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Completed update task.</returns>
+        public async Task ExecuteUpdateAsync(
+            Expression<Func<TWorkflow, Task>> updateCall,
+            WorkflowUpdateOptions? options = null)
+        {
+            var handle = await StartUpdateAsync(
+                updateCall, UpdateOptionsWithDefaultsForExecute(options)).ConfigureAwait(false);
+            await handle.GetResultAsync(rpcOptions: options?.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Start an update and wait for it to complete. This is a shortcut for
+        /// <see cref="StartUpdateAsync{TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
+        /// +
+        /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// </summary>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
+        /// API will timeout on long update requests instead of properly polling for their
+        /// completion.</remarks>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Extra options.</param>
+        /// <returns>Completed update task.</returns>
+        public async Task<TUpdateResult> ExecuteUpdateAsync<TUpdateResult>(
+            Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
+            WorkflowUpdateOptions? options = null)
+        {
+            var handle = await StartUpdateAsync(
+                updateCall, UpdateOptionsWithDefaultsForExecute(options)).ConfigureAwait(false);
+            return await handle.GetResultAsync(rpcOptions: options?.Rpc).ConfigureAwait(false);
+        }
     }
 
     /// <summary>
@@ -486,8 +750,8 @@ namespace Temporalio.Client
     /// <param name="Client">Client used for workflow handle calls.</param>
     /// <param name="Id">Workflow ID.</param>
     /// <param name="RunId">
-    /// Run ID used for signals and queries if present to ensure a very specific run to call. This
-    /// is only set when getting a workflow handle, not when starting a workflow.
+    /// Run ID used for signals, queries, and updates if present to ensure a very specific run to
+    /// call. This is only set when getting a workflow handle, not when starting a workflow.
     /// </param>
     /// <param name="ResultRunId">
     /// Run ID used for get result calls to ensure getting a result starting from this run. This is

@@ -44,6 +44,11 @@ namespace Temporalio.Workflows
         WorkflowSignalDefinition? DynamicSignal { get; set; }
 
         /// <summary>
+        /// Gets or sets value for <see cref="Workflow.DynamicUpdate" />.
+        /// </summary>
+        WorkflowUpdateDefinition? DynamicUpdate { get; set; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.Info" />.
         /// </summary>
         WorkflowInfo Info { get; }
@@ -92,6 +97,11 @@ namespace Temporalio.Workflows
         /// Gets value for <see cref="Workflow.TypedSearchAttributes" />.
         /// </summary>
         SearchAttributeCollection TypedSearchAttributes { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.Updates" />.
+        /// </summary>
+        IDictionary<string, WorkflowUpdateDefinition> Updates { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.UtcNow" />.

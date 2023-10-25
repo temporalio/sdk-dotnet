@@ -37,6 +37,8 @@ namespace Temporalio.Worker
         private readonly Lazy<NotifyOnSetDictionary<string, WorkflowQueryDefinition>> mutableQueries;
         // Lazily created if asked for by user
         private readonly Lazy<NotifyOnSetDictionary<string, WorkflowSignalDefinition>> mutableSignals;
+        // Lazily created if asked for by user
+        private readonly Lazy<NotifyOnSetDictionary<string, WorkflowUpdateDefinition>> mutableUpdates;
         private readonly Lazy<Dictionary<string, IRawValue>> memo;
         private readonly Lazy<SearchAttributeCollection> typedSearchAttributes;
         private readonly LinkedList<Task> scheduledTasks = new();
@@ -73,6 +75,7 @@ namespace Temporalio.Worker
         private uint externalCancelsCounter;
         private WorkflowQueryDefinition? dynamicQuery;
         private WorkflowSignalDefinition? dynamicSignal;
+        private WorkflowUpdateDefinition? dynamicUpdate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -84,6 +87,7 @@ namespace Temporalio.Worker
             Definition = details.Definition;
             dynamicQuery = Definition.DynamicQuery;
             dynamicSignal = Definition.DynamicSignal;
+            dynamicUpdate = Definition.DynamicUpdate;
             PayloadConverter = details.PayloadConverter;
             failureConverter = details.FailureConverter;
             var rootInbound = new InboundImpl(this);
@@ -108,6 +112,7 @@ namespace Temporalio.Worker
                 false);
             mutableQueries = new(() => new(Definition.Queries, OnQueryDefinitionAdded), false);
             mutableSignals = new(() => new(Definition.Signals, OnSignalDefinitionAdded), false);
+            mutableUpdates = new(() => new(Definition.Updates, OnUpdateDefinitionAdded), false);
             var initialMemo = details.Start.Memo;
             memo = new(
                 () => initialMemo == null ? new Dictionary<string, IRawValue>(0) :
@@ -240,6 +245,20 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc />
+        public WorkflowUpdateDefinition? DynamicUpdate
+        {
+            get => dynamicUpdate;
+            set
+            {
+                if (value != null && !value.Dynamic)
+                {
+                    throw new ArgumentException("Update is not dynamic");
+                }
+                dynamicUpdate = value;
+            }
+        }
+
+        /// <inheritdoc />
         public WorkflowInfo Info { get; private init; }
 
         /// <inheritdoc />
@@ -268,6 +287,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public SearchAttributeCollection TypedSearchAttributes => typedSearchAttributes.Value;
+
+        /// <inheritdoc />
+        public IDictionary<string, WorkflowUpdateDefinition> Updates => mutableUpdates.Value;
 
         /// <inheritdoc />
         public DateTime UtcNow { get; private set; }
@@ -798,6 +820,9 @@ namespace Temporalio.Worker
                     // TODO(cretz): Do we care about "details" on the object?
                     ApplyCancelWorkflow();
                     break;
+                case WorkflowActivationJob.VariantOneofCase.DoUpdate:
+                    ApplyDoUpdate(job.DoUpdate);
+                    break;
                 case WorkflowActivationJob.VariantOneofCase.FireTimer:
                     ApplyFireTimer(job.FireTimer);
                     break;
@@ -840,6 +865,177 @@ namespace Temporalio.Worker
         }
 
         private void ApplyCancelWorkflow() => cancellationTokenSource.Cancel();
+
+        private void ApplyDoUpdate(DoUpdate update)
+        {
+            // Queue it up so it can run in workflow environment
+            _ = QueueNewTaskAsync(() =>
+            {
+                // Find update definition or reject
+                var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
+                if (!updates.TryGetValue(update.Name, out var updateDefn))
+                {
+                    updateDefn = DynamicUpdate;
+                    if (updateDefn == null)
+                    {
+                        var knownUpdates = updates.Keys.OrderBy(k => k);
+                        var failure = new InvalidOperationException(
+                            $"Update handler for {update.Name} expected but not found, " +
+                            $"known updates: [{string.Join(" ", knownUpdates)}]");
+                        AddCommand(new()
+                        {
+                            UpdateResponse = new()
+                            {
+                                ProtocolInstanceId = update.ProtocolInstanceId,
+                                Rejected = failureConverter.ToFailure(failure, PayloadConverter),
+                            },
+                        });
+                        return Task.CompletedTask;
+                    }
+                }
+
+                // May be loaded inside validate after validator, maybe not
+                object?[]? argsForUpdate = null;
+                // We define this up here because there are multiple places it's called below
+                object?[] DecodeUpdateArgs() => DecodeArgs(
+                    method: updateDefn.Method ?? updateDefn.Delegate!.Method,
+                    payloads: update.Input,
+                    itemName: $"Update {update.Name}",
+                    dynamic: updateDefn.Dynamic,
+                    dynamicArgPrepend: update.Name);
+
+                // Do validation. Whether or not this runs a validator, this should accept/reject.
+                try
+                {
+                    if (update.RunValidator)
+                    {
+                        // We only call the validation interceptor if a validator is present. We are
+                        // not allowed to share the arguments. We do not share the arguments (i.e.
+                        // we re-convert) to prevent a user from mistakenly mutating an argument in
+                        // the validator. We call the interceptor only if a validator is present to
+                        // match other SDKs where doubly converting arguments here unnecessarily
+                        // (because of the no-reuse-argument rule above) causes performance issues
+                        // for them (even if they don't much for us).
+                        if (updateDefn.ValidatorMethod != null || updateDefn.ValidatorDelegate != null)
+                        {
+                            // Capture command count so we can ensure it is unchanged after call
+                            var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                            inbound.Value.ValidateUpdate(new(
+                                Id: update.Id,
+                                Update: update.Name,
+                                Definition: updateDefn,
+                                Args: DecodeUpdateArgs(),
+                                Headers: update.Headers));
+                            // If the command count changed, we need to issue a task failure
+                            var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                            if (origCmdCount != newCmdCount)
+                            {
+                                currentActivationException = new InvalidOperationException(
+                                    $"Update validator for {update.Name} created workflow commands");
+                                return Task.CompletedTask;
+                            }
+                        }
+
+                        // We want to try to decode args here _inside_ the validator rejection
+                        // try/catch so we can prevent acceptance on invalid args
+                        argsForUpdate = DecodeUpdateArgs();
+                    }
+
+                    // Send accepted
+                    AddCommand(new()
+                    {
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Accepted = new(),
+                        },
+                    });
+                }
+                catch (Exception e)
+                {
+                    // Send rejected
+                    AddCommand(new()
+                    {
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                        },
+                    });
+                    return Task.CompletedTask;
+                }
+
+                // Issue actual update. We are using ContinueWith instead of await here so that user
+                // code can run immediately. But the user code _or_ the task could fail so we need
+                // to reject in both cases.
+                try
+                {
+                    // If the args were not already decoded because we didn't run the validation
+                    // step, decode them here
+                    argsForUpdate ??= DecodeUpdateArgs();
+
+                    var task = inbound.Value.HandleUpdateAsync(new(
+                        Id: update.Id,
+                        Update: update.Name,
+                        Definition: updateDefn,
+                        Args: argsForUpdate,
+                        Headers: update.Headers));
+                    return task.ContinueWith(
+                        _ =>
+                        {
+                            // If Temporal failure or cancel, it's an update failure. If it's some
+                            // other exception, it's a task failure. Otherwise it's a success.
+                            var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
+                            if (exc is FailureException || exc is OperationCanceledException)
+                            {
+                                AddCommand(new()
+                                {
+                                    UpdateResponse = new()
+                                    {
+                                        ProtocolInstanceId = update.ProtocolInstanceId,
+                                        Rejected = failureConverter.ToFailure(exc, PayloadConverter),
+                                    },
+                                });
+                            }
+                            else if (task.Exception is { } taskExc)
+                            {
+                                // Fails the task
+                                currentActivationException =
+                                    taskExc.InnerExceptions.SingleOrDefault() ?? taskExc;
+                            }
+                            else
+                            {
+                                // Success, have to use reflection to extract value if it's a Task<>
+                                var taskType = task.GetType();
+                                var result = taskType.IsGenericType ?
+                                    taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
+                                AddCommand(new()
+                                {
+                                    UpdateResponse = new()
+                                    {
+                                        ProtocolInstanceId = update.ProtocolInstanceId,
+                                        Completed = PayloadConverter.ToPayload(result),
+                                    },
+                                });
+                            }
+                            return Task.CompletedTask;
+                        },
+                        this).Unwrap();
+                }
+                catch (FailureException e)
+                {
+                    AddCommand(new()
+                    {
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                        },
+                    });
+                    return Task.CompletedTask;
+                }
+            });
+        }
 
         private void ApplyFireTimer(FireTimer fireTimer)
         {
@@ -1050,7 +1246,7 @@ namespace Temporalio.Worker
         {
             if (defn.Dynamic)
             {
-                throw new ArgumentException($"Cannot set dynamic query with other query");
+                throw new ArgumentException($"Cannot set dynamic query with other queries");
             }
             if (name != defn.Name)
             {
@@ -1082,6 +1278,18 @@ namespace Temporalio.Worker
             }
             buffered.Reverse();
             buffered.ForEach(ApplySignalWorkflow);
+        }
+
+        private void OnUpdateDefinitionAdded(string name, WorkflowUpdateDefinition defn)
+        {
+            if (defn.Dynamic)
+            {
+                throw new ArgumentException($"Cannot set dynamic update with other updates");
+            }
+            if (name != defn.Name)
+            {
+                throw new ArgumentException($"Update name {name} doesn't match definition name {defn.Name}");
+            }
         }
 
         private object?[] DecodeArgs(
@@ -1244,6 +1452,58 @@ namespace Temporalio.Worker
                     // Unreachable
                     return null;
                 }
+            }
+
+            /// <inheritdoc />
+            public override void ValidateUpdate(HandleUpdateInput input)
+            {
+                try
+                {
+                    if (input.Definition.ValidatorMethod is MethodInfo method)
+                    {
+                        method.Invoke(instance.Instance, input.Args);
+                    }
+                    else if (input.Definition.ValidatorDelegate is Delegate del)
+                    {
+                        del.DynamicInvoke(input.Args);
+                    }
+                }
+                catch (TargetInvocationException e)
+                {
+                    ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
+                }
+            }
+
+            /// <inheritdoc />
+            public override async Task<object?> HandleUpdateAsync(HandleUpdateInput input)
+            {
+                // Have to unwrap and re-throw target invocation exception if present
+                Task resultTask;
+                try
+                {
+                    if (input.Definition.Method is MethodInfo method)
+                    {
+                        resultTask = (Task)method.Invoke(instance.Instance, input.Args)!;
+                    }
+                    else
+                    {
+                        resultTask = (Task)input.Definition.Delegate!.DynamicInvoke(input.Args)!;
+                    }
+                    await resultTask.ConfigureAwait(true);
+                }
+                catch (TargetInvocationException e)
+                {
+                    ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
+                    // Unreachable
+                    return null;
+                }
+                var resultTaskType = resultTask.GetType();
+                // We have to use reflection to extract value if it's a Task<>
+                if (resultTaskType.IsGenericType)
+                {
+                    return resultTaskType.GetProperty("Result")!.GetValue(resultTask);
+                }
+                return null;
             }
         }
 

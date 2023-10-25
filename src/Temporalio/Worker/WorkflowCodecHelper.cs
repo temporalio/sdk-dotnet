@@ -57,6 +57,10 @@ namespace Temporalio.Worker
                     case WorkflowActivationJob.VariantOneofCase.CancelWorkflow:
                         await DecodeAsync(codec, job.CancelWorkflow.Details).ConfigureAwait(false);
                         break;
+                    case WorkflowActivationJob.VariantOneofCase.DoUpdate:
+                        await DecodeAsync(codec, job.DoUpdate.Headers).ConfigureAwait(false);
+                        await DecodeAsync(codec, job.DoUpdate.Input).ConfigureAwait(false);
+                        break;
                     case WorkflowActivationJob.VariantOneofCase.QueryWorkflow:
                         await DecodeAsync(codec, job.QueryWorkflow.Arguments).ConfigureAwait(false);
                         await DecodeAsync(codec, job.QueryWorkflow.Headers).ConfigureAwait(false);
@@ -172,6 +176,16 @@ namespace Temporalio.Worker
                         codec, cmd.StartChildWorkflowExecution.Memo).ConfigureAwait(false);
                     await EncodeAsync(
                         codec, cmd.StartChildWorkflowExecution.Headers).ConfigureAwait(false);
+                    break;
+                case WorkflowCommand.VariantOneofCase.UpdateResponse:
+                    if (cmd.UpdateResponse.Completed is { } updateCompleted)
+                    {
+                        await EncodeAsync(codec, updateCompleted).ConfigureAwait(false);
+                    }
+                    else if (cmd.UpdateResponse.Rejected is { } updateRejected)
+                    {
+                        await codec.EncodeFailureAsync(updateRejected).ConfigureAwait(false);
+                    }
                     break;
             }
         }

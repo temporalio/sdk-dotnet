@@ -24,7 +24,9 @@ namespace Temporalio.Workflows
             IReadOnlyDictionary<string, WorkflowSignalDefinition> signals,
             WorkflowSignalDefinition? dynamicSignal,
             IReadOnlyDictionary<string, WorkflowQueryDefinition> queries,
-            WorkflowQueryDefinition? dynamicQuery)
+            WorkflowQueryDefinition? dynamicQuery,
+            IReadOnlyDictionary<string, WorkflowUpdateDefinition> updates,
+            WorkflowUpdateDefinition? dynamicUpdate)
         {
             Name = name;
             Type = type;
@@ -34,6 +36,8 @@ namespace Temporalio.Workflows
             DynamicSignal = dynamicSignal;
             Queries = queries;
             DynamicQuery = dynamicQuery;
+            Updates = updates;
+            DynamicUpdate = dynamicUpdate;
         }
 
         /// <summary>
@@ -75,6 +79,16 @@ namespace Temporalio.Workflows
         /// Gets the dynamic query for the workflow.
         /// </summary>
         public WorkflowQueryDefinition? DynamicQuery { get; private init; }
+
+        /// <summary>
+        /// Gets the updates for the workflow.
+        /// </summary>
+        public IReadOnlyDictionary<string, WorkflowUpdateDefinition> Updates { get; private init; }
+
+        /// <summary>
+        /// Gets the dynamic update for the workflow.
+        /// </summary>
+        public WorkflowUpdateDefinition? DynamicUpdate { get; private init; }
 
         /// <summary>
         /// Gets a value indicating whether the workflow is dynamic.
@@ -187,13 +201,38 @@ namespace Temporalio.Workflows
                 creator = _ => Activator.CreateInstance(type)!;
             }
 
-            // Find and validate run, signal, and query methods. We intentionally fetch
+            // We need to pre-collect the workflow update validators so they can be popped off later
+            var updateValidators = new Dictionary<string, MethodInfo>();
+            foreach (var method in type.GetMethods(bindingFlagsAny))
+            {
+                var validatorAttr = method.GetCustomAttribute<WorkflowUpdateValidatorAttribute>();
+                if (validatorAttr == null)
+                {
+                    continue;
+                }
+                else if (updateValidators.ContainsKey(validatorAttr.UpdateMethod))
+                {
+                    errs.Add($"{type} has more than one update validator for update method {validatorAttr.UpdateMethod}");
+                }
+                else if (method.ContainsGenericParameters)
+                {
+                    errs.Add($"{method} with WorkflowUpdateValidator contains generic parameters");
+                }
+                else
+                {
+                    updateValidators[validatorAttr.UpdateMethod] = method;
+                }
+            }
+
+            // Find and validate run, signal, query, and update methods. We intentionally fetch
             // non-public too to make sure attributes aren't set on them.
             MethodInfo? runMethod = null;
             var signals = new Dictionary<string, WorkflowSignalDefinition>();
             WorkflowSignalDefinition? dynamicSignal = null;
             var queries = new Dictionary<string, WorkflowQueryDefinition>();
             WorkflowQueryDefinition? dynamicQuery = null;
+            var updates = new Dictionary<string, WorkflowUpdateDefinition>();
+            WorkflowUpdateDefinition? dynamicUpdate = null;
             foreach (var method in type.GetMethods(bindingFlagsAny))
             {
                 var runAttr = method.GetCustomAttribute<WorkflowRunAttribute>(false);
@@ -308,10 +347,55 @@ namespace Temporalio.Workflows
                 {
                     errs.Add($"WorkflowQuery on base definition of {method} but not override");
                 }
+                if (method.IsDefined(typeof(WorkflowUpdateAttribute), false))
+                {
+                    try
+                    {
+                        if (updateValidators.TryGetValue(method.Name, out var updateValidatorMethod))
+                        {
+                            updateValidators.Remove(method.Name);
+                        }
+                        var defn = WorkflowUpdateDefinition.FromMethod(method, updateValidatorMethod);
+                        if (defn.Name == null)
+                        {
+                            if (dynamicUpdate != null)
+                            {
+                                errs.Add($"{type} has more than one dynamic update");
+                            }
+                            dynamicUpdate = defn;
+                        }
+                        else if (updates.ContainsKey(defn.Name))
+                        {
+                            errs.Add($"{type} has more than one update named {defn.Name}");
+                        }
+                        else if (method.ContainsGenericParameters)
+                        {
+                            errs.Add($"{method} with WorkflowUpdate contains generic parameters");
+                        }
+                        else
+                        {
+                            updates[defn.Name] = defn;
+                        }
+                    }
+                    catch (ArgumentException e)
+                    {
+                        errs.Add(e.Message);
+                    }
+                }
+                else if (IsDefinedOnBase<WorkflowUpdateAttribute>(method))
+                {
+                    errs.Add($"WorkflowUpdate on base definition of {method} but not override");
+                }
             }
             if (runMethod == null)
             {
                 errs.Add($"{type} does not have a valid WorkflowRun method");
+            }
+
+            // Each update validator that remains is a failure to assign to update method
+            foreach (var kv in updateValidators)
+            {
+                errs.Add($"Cannot find update method named {kv.Key} for WorkflowUpdateValidator on {kv.Value} method");
             }
 
             // Get query attributes on properties
@@ -338,8 +422,6 @@ namespace Temporalio.Workflows
             // If there are any errors, throw
             if (errs.Count > 0)
             {
-                // TODO(cretz): Ok to use aggregate exception here or should I just
-                // comma-delimit into a single message or something?
                 throw new AggregateException(errs.Select(err => new ArgumentException(err)));
             }
 
@@ -351,7 +433,9 @@ namespace Temporalio.Workflows
                 signals: signals,
                 dynamicSignal: dynamicSignal,
                 queries: queries,
-                dynamicQuery: dynamicQuery);
+                dynamicQuery: dynamicQuery,
+                updates: updates,
+                dynamicUpdate: dynamicUpdate);
         }
 
         /// <summary>

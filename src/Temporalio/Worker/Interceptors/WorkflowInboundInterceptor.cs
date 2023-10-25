@@ -65,5 +65,20 @@ namespace Temporalio.Worker.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>Query result.</returns>
         public virtual object? HandleQuery(HandleQueryInput input) => Next.HandleQuery(input);
+
+        /// <summary>
+        /// Intercept update validation. This is invoked every time validation is needed regardless
+        /// of whether a validator was defined.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        public virtual void ValidateUpdate(HandleUpdateInput input) => Next.ValidateUpdate(input);
+
+        /// <summary>
+        /// Intercept update handling.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Update result.</returns>
+        public virtual Task<object?> HandleUpdateAsync(HandleUpdateInput input) =>
+            Next.HandleUpdateAsync(input);
     }
 }
