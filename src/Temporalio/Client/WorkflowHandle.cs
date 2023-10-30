@@ -377,7 +377,7 @@ namespace Temporalio.Client
         /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TWorkflow}(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
         /// +
-        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
         /// API will timeout on long update requests instead of properly polling for their
@@ -400,7 +400,7 @@ namespace Temporalio.Client
         /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TWorkflow, TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
         /// +
-        /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
         /// API will timeout on long update requests instead of properly polling for their
@@ -423,7 +423,7 @@ namespace Temporalio.Client
         /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
         /// +
-        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
         /// API will timeout on long update requests instead of properly polling for their
@@ -446,7 +446,7 @@ namespace Temporalio.Client
         /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TUpdateResult}(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
         /// +
-        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
         /// API will timeout on long update requests instead of properly polling for their
@@ -702,7 +702,7 @@ namespace Temporalio.Client
         /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
         /// +
-        /// <see cref="WorkflowUpdateHandle.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
         /// API will timeout on long update requests instead of properly polling for their
@@ -723,7 +723,7 @@ namespace Temporalio.Client
         /// Start an update and wait for it to complete. This is a shortcut for
         /// <see cref="StartUpdateAsync{TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
         /// +
-        /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(TimeSpan?, RpcOptions?)" />.
+        /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
         /// API will timeout on long update requests instead of properly polling for their
