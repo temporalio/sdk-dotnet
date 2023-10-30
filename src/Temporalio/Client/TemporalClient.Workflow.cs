@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
@@ -9,7 +8,6 @@ using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Api.TaskQueue.V1;
-using Temporalio.Api.Update.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client.Interceptors;
 using Temporalio.Converters;
@@ -17,6 +15,7 @@ using Temporalio.Exceptions;
 
 #if NETCOREAPP3_0_OR_GREATER
 using System.Runtime.CompilerServices;
+using System.Threading;
 #endif
 
 namespace Temporalio.Client
@@ -288,62 +287,6 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
-            public override async Task<TResult> PollWorkflowUpdateAsync<TResult>(
-                PollWorkflowUpdateInput input)
-            {
-                var req = new PollWorkflowExecutionUpdateRequest()
-                {
-                    Namespace = Client.Options.Namespace,
-                    UpdateRef = new()
-                    {
-                        WorkflowExecution = new()
-                        {
-                            WorkflowId = input.WorkflowId,
-                            RunId = input.WorkflowRunId ?? string.Empty,
-                        },
-                        UpdateId = input.Id,
-                    },
-                    Identity = Client.Connection.Options.Identity,
-                    WaitPolicy = new() { LifecycleStage = UpdateWorkflowExecutionLifecycleStage.Completed },
-                };
-                // Create cancellation token based on timeout. This is a different timeout than RPC
-                // timeout because RPC timeout is _per call_ timeout, this is overall.
-                using (var tokenSource = CancellationTokenSource.CreateLinkedTokenSource(
-                    input.RpcOptions?.CancellationToken ?? default))
-                {
-                    if (input.Timeout != Timeout.InfiniteTimeSpan)
-                    {
-                        tokenSource.CancelAfter(input.Timeout);
-                    }
-                    // Alter the RPC options to include cancellation token
-                    var rpcOptions = (RpcOptions)DefaultRetryOptions(input.RpcOptions).Clone();
-                    rpcOptions.CancellationToken = tokenSource.Token;
-
-                    // Continually retry to poll while we either get empty response or we get a gRPC
-                    // deadline exceeded but our source isn't done.
-                    while (true)
-                    {
-                        try
-                        {
-                            var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(
-                                req, rpcOptions).ConfigureAwait(false);
-                            // Only return if there's an outcome
-                            if (resp.Outcome is { } outcome)
-                            {
-                                return await ConvertWorkflowUpdateOutcomeToTaskAsync<TResult>(
-                                    Client, outcome).ConfigureAwait(false);
-                            }
-                        }
-                        catch (RpcException e) when (
-                            e.Code == RpcException.StatusCode.DeadlineExceeded && !tokenSource.IsCancellationRequested)
-                        {
-                            // Do nothing, continue
-                        }
-                    }
-                }
-            }
-
-            /// <inheritdoc />
             public override async Task<WorkflowExecutionDescription> DescribeWorkflowAsync(
                 DescribeWorkflowInput input)
             {
@@ -464,37 +407,7 @@ namespace Temporalio.Client
             public override IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
                 ListWorkflowsInput input) =>
                 ListWorkflowsInternalAsync(input);
-#endif
 
-            /// <summary>
-            /// Convert update outcome to a task with result.
-            /// </summary>
-            /// <typeparam name="TResult">Result type.</typeparam>
-            /// <param name="client">Client with data converter.</param>
-            /// <param name="outcome">Update outcome.</param>
-            /// <returns>Task with result or failure.</returns>
-            internal static async Task<TResult> ConvertWorkflowUpdateOutcomeToTaskAsync<TResult>(
-                ITemporalClient client, Outcome outcome)
-            {
-                if (outcome.Failure is { } failure)
-                {
-                    throw new WorkflowUpdateFailedException(
-                        await client.Options.DataConverter.ToExceptionAsync(failure).ConfigureAwait(false));
-                }
-                else if (outcome.Success is { } success)
-                {
-                    // Ignore return if they didn't want it
-                    if (typeof(TResult) == typeof(ValueTuple))
-                    {
-                        return default!;
-                    }
-                    return await client.Options.DataConverter.ToSingleValueAsync<TResult>(
-                        success.Payloads_).ConfigureAwait(false);
-                }
-                throw new InvalidOperationException($"Unrecognized outcome case: {outcome.ValueCase}");
-            }
-
-#if NETCOREAPP3_0_OR_GREATER
             private async IAsyncEnumerable<WorkflowExecution> ListWorkflowsInternalAsync(
                 ListWorkflowsInput input,
                 [EnumeratorCancellation] CancellationToken cancellationToken = default)

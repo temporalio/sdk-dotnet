@@ -1,6 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Api.Update.V1;
+using Temporalio.Api.WorkflowService.V1;
+using Temporalio.Converters;
+using Temporalio.Exceptions;
 
 namespace Temporalio.Client
 {
@@ -26,38 +30,81 @@ namespace Temporalio.Client
         /// <summary>
         /// Wait for an update result disregarding any return value.
         /// </summary>
-        /// <param name="timeout">Optional timeout. Defaults to 1 minute, but can be set to
-        /// <see cref="System.Threading.Timeout.InfiniteTimeSpan" /> but probably shouldn't. A
-        /// timeout will throw a <see cref="OperationCanceledException" />.</param>
         /// <param name="rpcOptions">Extra RPC options.</param>
         /// <returns>Completed update task.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
-        public Task GetResultAsync(TimeSpan? timeout = null, RpcOptions? rpcOptions = null) =>
-            GetResultAsync<ValueTuple>(timeout, rpcOptions);
+        public Task GetResultAsync(RpcOptions? rpcOptions = null) =>
+            GetResultAsync<ValueTuple>(rpcOptions);
 
         /// <summary>
         /// Wait for an update result.
         /// </summary>
         /// <typeparam name="TResult">Update result type.</typeparam>
-        /// <param name="timeout">Optional timeout. Defaults to 1 minute, but can be set to
-        /// <see cref="System.Threading.Timeout.InfiniteTimeSpan" /> but probably shouldn't. A
-        /// timeout will throw a <see cref="OperationCanceledException" />.</param>
         /// <param name="rpcOptions">Extra RPC options.</param>
         /// <returns>Completed update result.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
-        public virtual Task<TResult> GetResultAsync<TResult>(
-            TimeSpan? timeout = null, RpcOptions? rpcOptions = null) =>
-            // If there is a known outcome, use that, otherwise poll. We intentionally are not
-            // memoizing the poll result, so each call to GetResultAsync when a known outcome is not
+        public virtual async Task<TResult> GetResultAsync<TResult>(RpcOptions? rpcOptions = null)
+        {
+            // If there is not a known outcome, we must poll for one. We intentionally do not
+            // memoize poll result, so each call to this function when a known outcome is not
             // present results in a poll call.
-            KnownOutcome is { } knownOutcome ?
-                TemporalClient.Impl.ConvertWorkflowUpdateOutcomeToTaskAsync<TResult>(Client, knownOutcome) :
-                Client.OutboundInterceptor.PollWorkflowUpdateAsync<TResult>(new(
-                    Id: Id,
-                    WorkflowId: WorkflowId,
-                    WorkflowRunId: WorkflowRunId,
-                    Timeout: timeout ?? TimeSpan.FromMinutes(1),
-                    RpcOptions: rpcOptions));
+            var outcome = KnownOutcome;
+            if (outcome == null)
+            {
+                // No known outcome means poll
+                var req = new PollWorkflowExecutionUpdateRequest()
+                {
+                    Namespace = Client.Options.Namespace,
+                    UpdateRef = new()
+                    {
+                        WorkflowExecution = new()
+                        {
+                            WorkflowId = WorkflowId,
+                            RunId = WorkflowRunId ?? string.Empty,
+                        },
+                        UpdateId = Id,
+                    },
+                    Identity = Client.Connection.Options.Identity,
+                    WaitPolicy = new() { LifecycleStage = UpdateWorkflowExecutionLifecycleStage.Completed },
+                };
+                // Continually retry to poll while we either get empty response or while we get a gRPC
+                // deadline exceeded but our cancellation token isn't complete.
+                while (outcome == null)
+                {
+                    try
+                    {
+                        var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(
+                            req, rpcOptions).ConfigureAwait(false);
+                        outcome = resp.Outcome;
+                    }
+                    catch (RpcException e) when (
+                        e.Code == RpcException.StatusCode.DeadlineExceeded &&
+                        rpcOptions?.CancellationToken?.IsCancellationRequested != true)
+                    {
+                        // Do nothing, our cancellation token wasn't done, continue
+                        // TODO(cretz): Remove when server stops using gRPC status to signal not done yet
+                    }
+                }
+            }
+
+            // Convert outcome to result
+            if (outcome.Failure is { } failure)
+            {
+                throw new WorkflowUpdateFailedException(
+                    await Client.Options.DataConverter.ToExceptionAsync(failure).ConfigureAwait(false));
+            }
+            else if (outcome.Success is { } success)
+            {
+                // Ignore return if they didn't want it
+                if (typeof(TResult) == typeof(ValueTuple))
+                {
+                    return default!;
+                }
+                return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
+                    success.Payloads_).ConfigureAwait(false);
+            }
+            throw new InvalidOperationException($"Unrecognized outcome case: {outcome.ValueCase}");
+        }
     }
 
     /// <summary>
@@ -79,14 +126,10 @@ namespace Temporalio.Client
         /// <summary>
         /// Wait for an update result.
         /// </summary>
-        /// <param name="timeout">Optional timeout. Defaults to 1 minute, but can be set to
-        /// <see cref="System.Threading.Timeout.InfiniteTimeSpan" /> but probably shouldn't. A
-        /// timeout will throw a <see cref="OperationCanceledException" />.</param>
         /// <param name="rpcOptions">Extra RPC options.</param>
         /// <returns>Completed update result.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
-        public new Task<TResult> GetResultAsync(
-            TimeSpan? timeout = null, RpcOptions? rpcOptions = null) =>
-            GetResultAsync<TResult>(timeout, rpcOptions);
+        public new Task<TResult> GetResultAsync(RpcOptions? rpcOptions = null) =>
+            GetResultAsync<TResult>(rpcOptions);
     }
 }

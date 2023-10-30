@@ -3747,7 +3747,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_Updates_GetResultTimeout()
+    public async Task ExecuteWorkflowAsync_Updates_GetResultCancellation()
     {
         await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
         {
@@ -3757,8 +3757,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateLongWaitAsync());
             // Ask for the result but only for 1 second
+            using var tokenSource = new CancellationTokenSource();
+            tokenSource.CancelAfter(TimeSpan.FromSeconds(1));
             await Assert.ThrowsAsync<OperationCanceledException>(() =>
-                updateHandle.GetResultAsync(TimeSpan.FromSeconds(1)));
+                updateHandle.GetResultAsync(new() { CancellationToken = tokenSource.Token }));
         });
     }
 
