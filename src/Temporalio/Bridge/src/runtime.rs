@@ -4,18 +4,25 @@ use crate::ByteArray;
 use crate::ByteArrayRef;
 use crate::MetadataRef;
 
+use serde_json::json;
+use std::fmt;
 use std::net::SocketAddr;
 use std::str::FromStr;
-use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::Ordering;
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
+use std::time::UNIX_EPOCH;
 use temporal_sdk_core::telemetry::{build_otlp_metric_exporter, start_prometheus_metric_exporter};
 use temporal_sdk_core::CoreRuntime;
 use temporal_sdk_core_api::telemetry::metrics::CoreMeter;
 use temporal_sdk_core_api::telemetry::MetricTemporality;
+use temporal_sdk_core_api::telemetry::{CoreLog, CoreLogConsumer};
 use temporal_sdk_core_api::telemetry::{
     Logger, OtelCollectorOptionsBuilder, PrometheusExporterOptionsBuilder,
     TelemetryOptions as CoreTelemetryOptions, TelemetryOptionsBuilder,
 };
+use tracing::Level;
 use url::Url;
 
 #[repr(C)]
@@ -32,7 +39,36 @@ pub struct TelemetryOptions {
 #[repr(C)]
 pub struct LoggingOptions {
     filter: ByteArrayRef,
-    forward: bool,
+    /// This callback is expected to work for the life of the runtime.
+    forward_to: ForwardedLogCallback,
+}
+
+// This has to be Option here because of https://github.com/mozilla/cbindgen/issues/326
+/// Operations on the log can only occur within the callback, it is freed
+/// immediately thereafter.
+type ForwardedLogCallback =
+    Option<unsafe extern "C" fn(level: ForwardedLogLevel, log: *const ForwardedLog)>;
+
+pub struct ForwardedLog {
+    core: CoreLog,
+    fields_json: Arc<Mutex<Option<String>>>,
+}
+
+#[repr(C)]
+pub struct ForwardedLogDetails {
+    target: ByteArray,
+    message: ByteArray,
+    timestamp_millis: u64,
+    fields_json: ByteArray,
+}
+
+#[repr(C)]
+pub enum ForwardedLogLevel {
+    Trace = 0,
+    Debug,
+    Info,
+    Warn,
+    Error,
 }
 
 /// Only one of opentelemetry, prometheus, or custom_meter can be present.
@@ -72,6 +108,7 @@ pub struct PrometheusOptions {
 #[derive(Clone)]
 pub struct Runtime {
     pub(crate) core: Arc<CoreRuntime>,
+    log_forwarder: Option<Arc<LogForwarder>>,
 }
 
 /// If fail is not null, it must be manually freed when done. Runtime is always
@@ -101,6 +138,7 @@ pub extern "C" fn runtime_new(options: *const RuntimeOptions) -> RuntimeOrFail {
                     )
                     .unwrap(),
                 ),
+                log_forwarder: None,
             };
             let fail = runtime.alloc_utf8(&format!("Invalid options: {}", err));
             RuntimeOrFail {
@@ -155,15 +193,48 @@ impl Runtime {
                 .map(|v| CustomMetricMeterRef::new(v))
         };
 
-        // Build runtime
+        // Build telemetry options
+        let mut log_forwarder = None;
+        let telemetry_options = if let Some(v) = unsafe { options.telemetry.as_ref() } {
+            let mut build = TelemetryOptionsBuilder::default();
+
+            // Metrics options (note, metrics meter is late-bound later)
+            if let Some(v) = unsafe { v.metrics.as_ref() } {
+                build.attach_service_name(v.attach_service_name);
+                if let Some(metric_prefix) = v.metric_prefix.to_option_string() {
+                    build.metric_prefix(metric_prefix);
+                }
+            }
+
+            // Logging options
+            if let Some(v) = unsafe { v.logging.as_ref() } {
+                build.logging(if let Some(callback) = v.forward_to {
+                    let consumer = Arc::new(LogForwarder {
+                        callback,
+                        active: AtomicBool::new(false),
+                    });
+                    log_forwarder = Some(consumer.clone());
+                    Logger::Push {
+                        filter: v.filter.to_string(),
+                        consumer,
+                    }
+                } else {
+                    Logger::Console {
+                        filter: v.filter.to_string(),
+                    }
+                });
+            }
+            build.build()?
+        } else {
+            CoreTelemetryOptions::default()
+        };
+
+        // Build core runtime
         let mut core = CoreRuntime::new(
-            if let Some(v) = unsafe { options.telemetry.as_ref() } {
-                v.try_into()?
-            } else {
-                CoreTelemetryOptions::default()
-            },
+            telemetry_options,
             tokio::runtime::Builder::new_multi_thread(),
         )?;
+
         // We late-bind the metrics after core runtime is created since it needs
         // the Tokio handle
         if let Some(v) = unsafe { options.telemetry.as_ref() } {
@@ -173,9 +244,20 @@ impl Runtime {
                     .attach_late_init_metrics(create_meter(v, custom_meter)?);
             }
         }
-        Ok(Runtime {
+
+        // Create runtime
+        let runtime = Runtime {
             core: Arc::new(core),
-        })
+            log_forwarder,
+        };
+
+        // Set log forwarder to active. We do this later so logs don't get
+        // inadvertently sent if this errors above.
+        if let Some(log_forwarder) = runtime.log_forwarder.as_ref() {
+            log_forwarder.active.store(true, Ordering::Release);
+        }
+
+        Ok(runtime)
     }
 
     fn borrow_buf(&mut self) -> Vec<u8> {
@@ -197,31 +279,83 @@ impl Runtime {
     }
 }
 
-impl TryFrom<&TelemetryOptions> for CoreTelemetryOptions {
-    type Error = anyhow::Error;
-
-    fn try_from(options: &TelemetryOptions) -> anyhow::Result<Self> {
-        let mut build = TelemetryOptionsBuilder::default();
-        if let Some(v) = unsafe { options.metrics.as_ref() } {
-            build.attach_service_name(v.attach_service_name);
-            if let Some(metric_prefix) = v.metric_prefix.to_option_string() {
-                build.metric_prefix(metric_prefix);
-            }
+impl Drop for Runtime {
+    fn drop(&mut self) {
+        if let Some(log_forwarder) = self.log_forwarder.as_ref() {
+            // Need strong guarantees to ensure the callback is not called again
+            // after this drop completes
+            log_forwarder.active.store(false, Ordering::Release);
         }
-        if let Some(v) = unsafe { options.logging.as_ref() } {
-            build.logging(if v.forward {
-                Logger::Forward {
-                    filter: v.filter.to_string(),
-                }
-            } else {
-                Logger::Console {
-                    filter: v.filter.to_string(),
-                }
-            });
-        }
-        // Note, metrics are late-bound in Runtime::new
-        Ok(build.build()?)
     }
+}
+
+struct LogForwarder {
+    callback: unsafe extern "C" fn(level: ForwardedLogLevel, log: *const ForwardedLog),
+    active: AtomicBool,
+}
+
+impl CoreLogConsumer for LogForwarder {
+    fn on_log(&self, log: CoreLog) {
+        // Check whether active w/ strong consistency
+        if self.active.load(Ordering::Acquire) {
+            let level = match log.level {
+                Level::TRACE => ForwardedLogLevel::Trace,
+                Level::DEBUG => ForwardedLogLevel::Debug,
+                Level::INFO => ForwardedLogLevel::Info,
+                Level::WARN => ForwardedLogLevel::Warn,
+                Level::ERROR => ForwardedLogLevel::Error,
+            };
+            // Create log here to live the life of the callback
+            let log = ForwardedLog {
+                core: log,
+                fields_json: Arc::new(Mutex::new(None)),
+            };
+            unsafe { (self.callback)(level, &log) };
+        }
+    }
+}
+
+impl fmt::Debug for LogForwarder {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("<log forwarder>")
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn forwarded_log_target(log: *const ForwardedLog) -> ByteArrayRef {
+    let log = unsafe { &*log };
+    ByteArrayRef::from_string(&log.core.target)
+}
+
+#[no_mangle]
+pub extern "C" fn forwarded_log_message(log: *const ForwardedLog) -> ByteArrayRef {
+    let log = unsafe { &*log };
+    ByteArrayRef::from_string(&log.core.message)
+}
+
+#[no_mangle]
+pub extern "C" fn forwarded_log_timestamp_millis(log: *const ForwardedLog) -> u64 {
+    let log = unsafe { &*log };
+    log.core
+        .timestamp
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_millis()
+        .try_into()
+        .unwrap()
+}
+
+#[no_mangle]
+pub extern "C" fn forwarded_log_fields_json(log: *const ForwardedLog) -> ByteArrayRef {
+    let log = unsafe { &*log };
+    // If not set, we convert to JSON under lock then set
+    let fields_json = log.fields_json.clone();
+    let mut fields_json = fields_json.lock().unwrap();
+    if fields_json.is_none() {
+        let json_val = json!(&log.core.fields);
+        *fields_json = Some(json_val.to_string());
+    }
+    ByteArrayRef::from_str(&*fields_json.as_ref().unwrap())
 }
 
 fn create_meter(

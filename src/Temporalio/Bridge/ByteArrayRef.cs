@@ -86,6 +86,14 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Copy a byte array ref contents to a UTF8 string.
+        /// </summary>
+        /// <param name="byteArray">Byte array ref.</param>
+        /// <returns>String.</returns>
+        public static unsafe string ToUtf8(Interop.ByteArrayRef byteArray) =>
+            StrictUTF8.GetString(byteArray.data, (int)byteArray.size);
+
+        /// <summary>
         /// Convert an enumerable set of metadata pairs to a byte array. No key or value may contain
         /// a newline.
         /// </summary>

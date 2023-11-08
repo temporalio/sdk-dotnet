@@ -96,7 +96,10 @@ public static class TestUtils
         public ILogger CreateLogger(string categoryName) =>
             new LogCaptureLogger(underlying.CreateLogger(categoryName), logs);
 
-        public void Dispose() => underlying.Dispose();
+        public void Dispose()
+        {
+            // Do not dispose underlying log factory, it was created externally
+        }
     }
 
     public class LogCaptureLogger : ILogger

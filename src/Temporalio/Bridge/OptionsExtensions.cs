@@ -131,7 +131,8 @@ namespace Temporalio.Bridge
             return new Interop.LoggingOptions()
             {
                 filter = scope.ByteArray(options.Filter.FilterString),
-                forward = (byte)0,
+                // Forward callback is set in the Runtime constructor
+                // forward_to = ???
             };
         }
 

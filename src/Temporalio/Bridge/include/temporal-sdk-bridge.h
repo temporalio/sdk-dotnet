@@ -5,6 +5,14 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+typedef enum ForwardedLogLevel {
+  Trace = 0,
+  Debug,
+  Info,
+  Warn,
+  Error,
+} ForwardedLogLevel;
+
 typedef enum MetricAttributeValueType {
   String = 1,
   Int,
@@ -35,6 +43,8 @@ typedef struct CancellationToken CancellationToken;
 typedef struct Client Client;
 
 typedef struct EphemeralServer EphemeralServer;
+
+typedef struct ForwardedLog ForwardedLog;
 
 typedef struct MetricAttributes MetricAttributes;
 
@@ -168,9 +178,18 @@ typedef struct RuntimeOrFail {
   const struct ByteArray *fail;
 } RuntimeOrFail;
 
+/**
+ * Operations on the log can only occur within the callback, it is freed
+ * immediately thereafter.
+ */
+typedef void (*ForwardedLogCallback)(enum ForwardedLogLevel level, const struct ForwardedLog *log);
+
 typedef struct LoggingOptions {
   struct ByteArrayRef filter;
-  bool forward;
+  /**
+   * This callback is expected to work for the life of the runtime.
+   */
+  ForwardedLogCallback forward_to;
 } LoggingOptions;
 
 typedef struct OpenTelemetryOptions {
@@ -431,6 +450,14 @@ struct RuntimeOrFail runtime_new(const struct RuntimeOptions *options);
 void runtime_free(struct Runtime *runtime);
 
 void byte_array_free(struct Runtime *runtime, const struct ByteArray *bytes);
+
+struct ByteArrayRef forwarded_log_target(const struct ForwardedLog *log);
+
+struct ByteArrayRef forwarded_log_message(const struct ForwardedLog *log);
+
+uint64_t forwarded_log_timestamp_millis(const struct ForwardedLog *log);
+
+struct ByteArrayRef forwarded_log_fields_json(const struct ForwardedLog *log);
 
 /**
  * Runtime must live as long as server. Options and user data must live through
