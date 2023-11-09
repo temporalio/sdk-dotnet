@@ -412,8 +412,19 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // query will have a stale representation of history counts, but signal forces a new
             // WFT.
             await handle.SignalAsync(wf => wf.BunchOfEventsAsync(1));
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var eventCount = (await handle.FetchHistoryAsync()).Events.Count;
+                Assert.True(
+                    eventCount > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount,
+                    $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
+                    $"history length said it was only {eventCount}");
+            });
             var newInfo = await handle.QueryAsync(wf => wf.HistoryInfo);
-            Assert.True(newInfo.HistoryLength > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount);
+            Assert.True(
+                newInfo.HistoryLength > WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount,
+                $"We sent at least {WorkflowEnvironment.ContinueAsNewSuggestedHistoryCount} events but " +
+                $"history length said it was only {newInfo.HistoryLength}");
             Assert.True(newInfo.HistorySize > origInfo.HistorySize);
             Assert.True(newInfo.ContinueAsNewSuggested);
         });

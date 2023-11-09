@@ -14,8 +14,9 @@ namespace Temporalio.Bridge
         private static readonly Func<ForwardedLog, Exception?, string> ForwardLogMessageFormatter =
             LogMessageFormatter;
 
-        private readonly ILogger? forwardToLogger;
         private readonly bool forwardLoggerIncludeFields;
+        private readonly GCHandle? forwardLoggerCallback;
+        private ILogger? forwardLogger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Runtime"/> class.
@@ -30,16 +31,14 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     // Setup forwarding logger
-                    IntPtr? forwardingLogCallback = null;
                     if (options.Telemetry.Logging?.Forwarding is { } forwarding)
                     {
                         if (forwarding.Logger == null)
                         {
                             throw new ArgumentException("Must have logger on forwarding options");
                         }
-                        forwardToLogger = forwarding.Logger;
+                        forwardLogger = forwarding.Logger;
                         forwardLoggerIncludeFields = forwarding.IncludeFields;
-                        forwardingLogCallback = scope.FunctionPointer<Interop.ForwardedLogCallback>(OnLog);
                     }
 
                     // WARNING: It is important that this options is immediately passed to new
@@ -47,9 +46,11 @@ namespace Temporalio.Bridge
                     // freed on the Rust side on error
                     var runtimeOptions = options.ToInteropOptions(scope);
                     // Set log forwarding if enabled
-                    if (forwardingLogCallback != null)
+                    if (forwardLogger != null)
                     {
-                        runtimeOptions.telemetry->logging->forward_to = forwardingLogCallback.Value;
+                        forwardLoggerCallback = GCHandle.Alloc(new Interop.ForwardedLogCallback(OnLog));
+                        runtimeOptions.telemetry->logging->forward_to =
+                            Marshal.GetFunctionPointerForDelegate(forwardLoggerCallback.Value.Target!);
                     }
                     var res = Interop.Methods.runtime_new(scope.Pointer(runtimeOptions));
                     // If it failed, copy byte array, free runtime and byte array. Otherwise just
@@ -95,6 +96,8 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
+            forwardLogger = null;
+            forwardLoggerCallback?.Free();
             Interop.Methods.runtime_free(Ptr);
             return true;
         }
@@ -104,7 +107,7 @@ namespace Temporalio.Bridge
 
         private unsafe void OnLog(Interop.ForwardedLogLevel coreLevel, Interop.ForwardedLog* coreLog)
         {
-            if (forwardToLogger is not { } logger)
+            if (forwardLogger is not { } logger)
             {
                 return;
             }
