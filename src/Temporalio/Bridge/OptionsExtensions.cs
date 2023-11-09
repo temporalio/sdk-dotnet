@@ -132,7 +132,7 @@ namespace Temporalio.Bridge
             {
                 filter = scope.ByteArray(options.Filter.FilterString),
                 // Forward callback is set in the Runtime constructor
-                // forward_to = ???
+                // forward_to = <set-elsewhere>
             };
         }
 
