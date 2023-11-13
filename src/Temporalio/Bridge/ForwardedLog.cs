@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace Temporalio.Bridge
@@ -14,13 +13,14 @@ namespace Temporalio.Bridge
     /// <param name="Target">Log target.</param>
     /// <param name="Message">Log message.</param>
     /// <param name="TimestampMilliseconds">Ms since Unix epoch.</param>
-    /// <param name="Fields">JSON fields, or null to not include.</param>
+    /// <param name="JsonFields">JSON fields, or null to not include. The keys are the field names
+    /// and the values are raw JSON strings.</param>
     internal record ForwardedLog(
         LogLevel Level,
         string Target,
         string Message,
         ulong TimestampMilliseconds,
-        IDictionary<string, JsonElement>? Fields) : IReadOnlyList<KeyValuePair<string, object?>>
+        IReadOnlyDictionary<string, string>? JsonFields) : IReadOnlyList<KeyValuePair<string, object?>>
     {
         // Unfortunately DateTime.UnixEpoch not in standard library in all versions we need
         private static readonly DateTime UnixEpoch = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -49,7 +49,7 @@ namespace Temporalio.Bridge
                     case 3:
                         return new("Timestamp", Timestamp);
                     case 4:
-                        return new("Fields", Fields);
+                        return new("JsonFields", JsonFields);
                     default:
 #pragma warning disable CA2201 // We intentionally use this usually-internal-use-only exception
                         throw new IndexOutOfRangeException(nameof(index));
@@ -71,9 +71,9 @@ namespace Temporalio.Bridge
         public override string ToString()
         {
             var message = $"[sdk_core::{Target}] {Message}";
-            if (Fields is { } fields)
+            if (JsonFields is { } jsonFields)
             {
-                message += " " + string.Join(", ", fields.Select(kv => $"{kv.Key}={kv.Value}"));
+                message += " " + string.Join(", ", jsonFields.Select(kv => $"{kv.Key}={kv.Value}"));
             }
             return message;
         }

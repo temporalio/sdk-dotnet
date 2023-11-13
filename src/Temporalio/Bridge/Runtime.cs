@@ -85,6 +85,45 @@ namespace Temporalio.Bridge
         internal Lazy<MetricMeter> MetricMeter { get; private init; }
 
         /// <summary>
+        /// Read a JSON object into string keys and raw JSON values.
+        /// </summary>
+        /// <param name="bytes">Byte span.</param>
+        /// <returns>Keys and raw values or null.</returns>
+        internal static unsafe IReadOnlyDictionary<string, string>? ReadJsonObjectToRawValues(
+            ReadOnlySpan<byte> bytes)
+        {
+            var reader = new Utf8JsonReader(bytes);
+            // Expect start object
+            if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject)
+            {
+                return null;
+            }
+            // Property names one at a time
+            var ret = new Dictionary<string, string>();
+            fixed (byte* ptr = bytes)
+            {
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+                {
+                    if (reader.TokenType != JsonTokenType.PropertyName)
+                    {
+                        return null;
+                    }
+                    var propertyName = reader.GetString()!;
+                    // Read and skip and capture
+                    if (!reader.Read())
+                    {
+                        return null;
+                    }
+                    var beginIndex = (int)reader.TokenStartIndex;
+                    reader.Skip();
+                    ret[propertyName] = ByteArrayRef.StrictUTF8.GetString(
+                        ptr + beginIndex, (int)reader.BytesConsumed - beginIndex);
+                }
+            }
+            return ret;
+        }
+
+        /// <summary>
         /// Free a byte array.
         /// </summary>
         /// <param name="byteArray">Byte array to free.</param>
@@ -119,24 +158,26 @@ namespace Temporalio.Bridge
                 return;
             }
             // If the fields are requested, we will try to convert from JSON
-            IDictionary<string, JsonElement>? fields = null;
+            IReadOnlyDictionary<string, string>? jsonFields = null;
             if (forwardLoggerIncludeFields)
             {
-                var fieldsJson = ByteArrayRef.ToUtf8(Interop.Methods.forwarded_log_fields_json(coreLog));
                 try
                 {
-                    fields = JsonSerializer.Deserialize<SortedDictionary<string, JsonElement>?>(fieldsJson);
+                    var fieldBytes = Interop.Methods.forwarded_log_fields_json(coreLog);
+                    jsonFields = ReadJsonObjectToRawValues(new(fieldBytes.data, (int)fieldBytes.size));
                 }
-                catch (JsonException)
+#pragma warning disable CA1031 // We are ok swallowing all exceptions
+                catch
                 {
                 }
+#pragma warning restore CA1031
             }
             var log = new ForwardedLog(
                 Level: level,
                 Target: ByteArrayRef.ToUtf8(Interop.Methods.forwarded_log_target(coreLog)),
                 Message: ByteArrayRef.ToUtf8(Interop.Methods.forwarded_log_message(coreLog)),
                 TimestampMilliseconds: Interop.Methods.forwarded_log_timestamp_millis(coreLog),
-                Fields: fields);
+                JsonFields: jsonFields);
             logger.Log(level, 0, log, null, ForwardLogMessageFormatter);
         }
     }

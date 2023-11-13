@@ -1,7 +1,7 @@
 namespace Temporalio.Tests.Runtime;
 
 using System.Net.Http;
-using System.Text.Json;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge;
 using Temporalio.Client;
@@ -162,6 +162,34 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public void Runtime_ReadJsonObjectToRawValues_ParsesProperly()
+    {
+        var dict = Runtime.ReadJsonObjectToRawValues(new(Encoding.UTF8.GetBytes(
+            @"{
+                ""foo"": ""bar"",
+                ""baz"": [1, true, [{
+                    ""foo"": { ""bar"": 123, ""baz"": null }
+                }]],
+                ""qux"": 123,
+                ""quux"": null
+            }")))!;
+        Assert.Equal(
+            new Dictionary<string, string>
+            {
+                { "foo", "\"bar\"" },
+                {
+                    "baz",
+                    @"[1, true, [{
+                    ""foo"": { ""bar"": 123, ""baz"": null }
+                }]]"
+                },
+                { "qux", "123" },
+                { "quux", "null" },
+            },
+            dict);
+    }
+
+    [Fact]
     public async Task Runtime_LogForwarding_ForwardsProperly()
     {
         // Helper to grab log
@@ -206,7 +234,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         var entry = await RunWorkerUntilFailLogAsync(new());
         Assert.Equal(LogLevel.Warning, entry.Level);
         Assert.StartsWith("[sdk_core::temporal_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
-        Assert.Contains("\"Intentional error\"", entry.Formatted);
+        Assert.Contains("Intentional error", entry.Formatted);
         Assert.IsType<ForwardedLog>(entry.State);
         var state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
         var dict = new Dictionary<string, object?>(state);
@@ -215,16 +243,16 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         Assert.Equal("temporal_sdk_core::worker::workflow", dict["Target"]);
         Assert.Equal("Failing workflow task", dict["Message"]);
         Assert.True(DateTime.UtcNow.Subtract((DateTime)dict["Timestamp"]!).Duration() < TimeSpan.FromMinutes(5));
-        var fields = Assert.IsAssignableFrom<IDictionary<string, JsonElement>>(dict["Fields"]);
-        Assert.Contains("Intentional error", fields["failure"].GetString());
-        Assert.Equal(lastRunID, fields["run_id"].GetString());
+        var fields = Assert.IsAssignableFrom<IReadOnlyDictionary<string, string>>(dict["JsonFields"]);
+        Assert.Contains("Intentional error", fields["failure"]);
+        Assert.Equal($"\"{lastRunID}\"", fields["run_id"]);
 
         // Now without fields included
         entry = await RunWorkerUntilFailLogAsync(new() { IncludeFields = false });
         Assert.Equal("[sdk_core::temporal_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
         state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
         dict = new Dictionary<string, object?>(state);
-        Assert.Null(dict["Fields"]);
+        Assert.Null(dict["JsonFields"]);
     }
 
     [Workflow]
