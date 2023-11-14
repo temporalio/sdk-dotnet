@@ -2317,6 +2317,7 @@ dependencies = [
  "opentelemetry",
  "parking_lot",
  "prost-types",
+ "slotmap",
  "temporal-sdk-core-api",
  "temporal-sdk-core-protos",
  "thiserror",
@@ -2342,6 +2343,7 @@ dependencies = [
  "prost-types",
  "rand",
  "rand_pcg",
+ "serde_json",
  "temporal-client",
  "temporal-sdk-core",
  "temporal-sdk-core-api",
@@ -2350,6 +2352,7 @@ dependencies = [
  "tokio-stream",
  "tokio-util",
  "tonic",
+ "tracing",
  "url",
 ]
 

@@ -26,6 +26,11 @@ namespace Temporalio.Runtime
         public TelemetryFilterOptions Filter { get; set; } = new();
 
         /// <summary>
+        /// Gets or sets log forwarding options. If not set, logs are not forwarded.
+        /// </summary>
+        public LogForwardingOptions? Forwarding { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
@@ -33,6 +38,10 @@ namespace Temporalio.Runtime
         {
             var copy = (LoggingOptions)MemberwiseClone();
             copy.Filter = (TelemetryFilterOptions)Filter.Clone();
+            if (copy.Forwarding is { } forwarding)
+            {
+                copy.Forwarding = (LogForwardingOptions)forwarding.Clone();
+            }
             return copy;
         }
     }
