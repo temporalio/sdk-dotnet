@@ -268,12 +268,6 @@ synchronous method which creates a client that does not attempt to connect until
 be helpful for dependency injection but beware that deferring connection until later can make it hard to see issues with
 connection parameters as early as may be expected. However, connection must be made before a worker is created with it.
 
-Note, there is a [known issue](https://github.com/temporalio/sdk-dotnet/issues/44) where creating the connected client
-outside of the dependency injection container may cause it to not be usable via dependency injection because it was not
-created in the container. Users should use lazy dependency injection abouve, however if the client must be created and
-connected externally and non-lazily, the current suggestion is to put the connect `Task` as a singleton and resolve it
-for each use similar to how other async DI utilities are used.
-
 #### Data Conversion
 
 Data converters are used to convert raw Temporal payloads to/from actual .NET types. A custom data converter can be set
