@@ -53,6 +53,40 @@ var client = await TemporalClient.ConnectAsync(new("localhost:7233")
 // Now client and worker calls are traced...
 ```
 
+If you are using dependency injection with `Temporalio.Extensions.Hosting`, you have several options depending on
+how you choose to set up your client and worker.
+
+Option 1. A client and worker where the worker reuses the client: 
+
+```csharp
+// In Program.cs
+// NOTE: Remember to setup the tracer provider like in the earlier example.
+var builder = WebApplication.CreateBuilder(args);
+builder.Services
+    .AddTemporalClient(opts =>
+        {
+            opts.TargetHost = "localhost:7233";
+            opts.Namespace = "default";
+            opts.Interceptors = new[] { new TracingInterceptor() };
+        })
+    .AddHostedTemporalWorker("my-task-queue")
+```
+
+Option 2. A worker with no client: 
+
+```csharp
+// In Program.cs
+// NOTE: Remember to setup the tracer provider like in the earlier example.
+var builder = WebApplication.CreateBuilder(args);
+builder.Services
+    .AddHostedTemporalWorker("localhost:7233", "default", "my-task-queue")
+    .ConfigureOptions(opts =>
+      {
+          opts.Interceptors = new[] { new TracingInterceptor() };
+          opts.AddWorkflow<MyWorkflow>();
+      });
+```
+
 ## How it Works
 
 The tracing interceptor uses OpenTelemetry context propagation to serialize the currently active diagnostic activity as
