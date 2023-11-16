@@ -1,8 +1,13 @@
 namespace Temporalio.Tests.Runtime;
 
 using System.Net.Http;
+using System.Text;
+using Microsoft.Extensions.Logging;
+using Temporalio.Bridge;
 using Temporalio.Client;
 using Temporalio.Runtime;
+using Temporalio.Worker;
+using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -154,5 +159,106 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             new Dictionary<string, object>()
                 { { "service_name", "temporal-core-sdk" }, { "string-tag", "gaugeval" } },
             metricValues[0].Tags);
+    }
+
+    [Fact]
+    public void Runtime_ReadJsonObjectToRawValues_ParsesProperly()
+    {
+        var dict = Runtime.ReadJsonObjectToRawValues(new(Encoding.UTF8.GetBytes(
+            @"{
+                ""foo"": ""bar"",
+                ""baz"": [1, true, [{
+                    ""foo"": { ""bar"": 123, ""baz"": null }
+                }]],
+                ""qux"": 123,
+                ""quux"": null
+            }")))!;
+        Assert.Equal(
+            new Dictionary<string, string>
+            {
+                { "foo", "\"bar\"" },
+                {
+                    "baz",
+                    @"[1, true, [{
+                    ""foo"": { ""bar"": 123, ""baz"": null }
+                }]]"
+                },
+                { "qux", "123" },
+                { "quux", "null" },
+            },
+            dict);
+    }
+
+    [Fact]
+    public async Task Runtime_LogForwarding_ForwardsProperly()
+    {
+        // Helper to grab log
+        string? lastRunID = null;
+        async Task<TestUtils.LogEntry> RunWorkerUntilFailLogAsync(LogForwardingOptions options)
+        {
+            // Create runtime with custom logger that captures entries
+            using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+            options.Logger = loggerFactory.CreateLogger("my-logger");
+            var runtime = new TemporalRuntime(new()
+            {
+                Telemetry = new() { Logging = new() { Forwarding = options } },
+            });
+
+            // Connect client with different runtime
+            var client = await TemporalClient.ConnectAsync(new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = runtime,
+            });
+
+            // Start failing workflow and wait for log
+            var workerOpts = new TemporalWorkerOptions($"ts-{Guid.NewGuid()}").
+                AddWorkflow<TaskFailWorkflow>();
+            using var worker = new TemporalWorker(client, workerOpts);
+            return await worker.ExecuteAsync(async () =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (TaskFailWorkflow wf) => wf.RunAsync(),
+                    new($"wf-{Guid.NewGuid()}", workerOpts.TaskQueue!));
+                lastRunID = handle.ResultRunId;
+                return await AssertMore.EventuallyAsync(async () =>
+                {
+                    Assert.NotEmpty(loggerFactory.Logs);
+                    return loggerFactory.Logs.First();
+                });
+            });
+        }
+
+        // Try with fields included
+        var entry = await RunWorkerUntilFailLogAsync(new());
+        Assert.Equal(LogLevel.Warning, entry.Level);
+        Assert.StartsWith("[sdk_core::temporal_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
+        Assert.Contains("Intentional error", entry.Formatted);
+        Assert.IsType<ForwardedLog>(entry.State);
+        var state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
+        var dict = new Dictionary<string, object?>(state);
+        Assert.Equal(5, dict.Count);
+        Assert.Equal(LogLevel.Warning, dict["Level"]);
+        Assert.Equal("temporal_sdk_core::worker::workflow", dict["Target"]);
+        Assert.Equal("Failing workflow task", dict["Message"]);
+        Assert.True(DateTime.UtcNow.Subtract((DateTime)dict["Timestamp"]!).Duration() < TimeSpan.FromMinutes(5));
+        var fields = Assert.IsAssignableFrom<IReadOnlyDictionary<string, string>>(dict["JsonFields"]);
+        Assert.Contains("Intentional error", fields["failure"]);
+        Assert.Equal($"\"{lastRunID}\"", fields["run_id"]);
+
+        // Now without fields included
+        entry = await RunWorkerUntilFailLogAsync(new() { IncludeFields = false });
+        Assert.Equal("[sdk_core::temporal_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
+        state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
+        dict = new Dictionary<string, object?>(state);
+        Assert.Null(dict["JsonFields"]);
+    }
+
+    [Workflow]
+    public class TaskFailWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync() => throw new InvalidOperationException("Intentional error");
     }
 }

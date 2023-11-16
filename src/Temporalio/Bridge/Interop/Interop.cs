@@ -3,6 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge.Interop
 {
+    internal enum ForwardedLogLevel
+    {
+        Trace = 0,
+        Debug,
+        Info,
+        Warn,
+        Error,
+    }
+
     internal enum MetricAttributeValueType
     {
         String = 1,
@@ -41,6 +50,10 @@ namespace Temporalio.Bridge.Interop
     }
 
     internal partial struct EphemeralServer
+    {
+    }
+
+    internal partial struct ForwardedLog
     {
     }
 
@@ -251,13 +264,16 @@ namespace Temporalio.Bridge.Interop
         public ByteArray* fail;
     }
 
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void ForwardedLogCallback([NativeTypeName("enum ForwardedLogLevel")] ForwardedLogLevel level, [NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+
     internal partial struct LoggingOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef filter;
 
-        [NativeTypeName("bool")]
-        public byte forward;
+        [NativeTypeName("ForwardedLogCallback")]
+        public IntPtr forward_to;
     }
 
     internal partial struct OpenTelemetryOptions
@@ -621,6 +637,22 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void byte_array_free([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ByteArray *")] ByteArray* bytes);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct ByteArrayRef")]
+        public static extern ByteArrayRef forwarded_log_target([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct ByteArrayRef")]
+        public static extern ByteArrayRef forwarded_log_message([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("uint64_t")]
+        public static extern ulong forwarded_log_timestamp_millis([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct ByteArrayRef")]
+        public static extern ByteArrayRef forwarded_log_fields_json([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void ephemeral_server_start_dev_server([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct DevServerOptions *")] DevServerOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);
