@@ -3,7 +3,6 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <Authors>Temporal</Authors>
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <!--
     TODO(cretz): Reenable when https://github.com/dotnet/format/issues/1800 fixed
