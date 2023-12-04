@@ -232,7 +232,9 @@ static IEnumerable<string> ServiceCalls(string protoFile)
         .Select(v =>
         {
             v = v[(v.IndexOf("rpc") + 3)..].TrimStart();
+#pragma warning disable CA1861 // We don't mind the perf cost here of new array each time
             return v[..v.IndexOfAny(new[] { ' ', '(' })];
+#pragma warning restore CA1861
         })
         .OrderBy(v => v);
 }
