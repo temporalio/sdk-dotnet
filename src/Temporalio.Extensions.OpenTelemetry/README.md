@@ -10,17 +10,12 @@ Although generic .NET `System.Diagnostic` activities are used, this extension is
 propagation capabilities in use for serializing spans across processes/SDKs. For users needing generic tracing or other
 similar features, this code can be used as a guide for how to write an interceptor.
 
-⚠️ UNDER ACTIVE DEVELOPMENT
-
-This SDK is under active development and has not released a stable version yet. APIs may change in incompatible ways
-until the SDK is marked stable.
-
 ## Quick Start
 
 Add the `Temporalio.Extensions.OpenTelemetry` package from
 [NuGet](https://www.nuget.org/packages/Temporalio.Extensions.OpenTelemetry). For example, using the `dotnet` CLI:
 
-    dotnet add package Temporalio.Extensions.OpenTelemetry --prerelease
+    dotnet add package Temporalio.Extensions.OpenTelemetry
 
 In addition to configuring the OpenTelemetry tracer provider with the proper sources, the
 `Temporalio.Extensions.OpenTelemetry.TracingInterceptor` class must be set as the interceptor when creating a client.

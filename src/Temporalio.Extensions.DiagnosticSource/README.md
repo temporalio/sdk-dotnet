@@ -3,17 +3,12 @@
 This extension adds an implementation of `Temporalio.Runtime.ICustomMetricMeter` for `System.Diagnostics.Metrics.Meter`
 so internal SDK metrics can be forwarded as regular .NET metrics.
 
-⚠️ UNDER ACTIVE DEVELOPMENT
-
-This SDK is under active development and has not released a stable version yet. APIs may change in incompatible ways
-until the SDK is marked stable.
-
 ## Quick Start
 
 Add the `Temporalio.Extensions.DiagnosticSource` package from
 [NuGet](https://www.nuget.org/packages/Temporalio.Extensions.DiagnosticSource). For example, using the `dotnet` CLI:
 
-    dotnet add package Temporalio.Extensions.DiagnosticSource --prerelease
+    dotnet add package Temporalio.Extensions.DiagnosticSource
 
 Now a `Temporalio.Runtime.TemporalRuntime` can be created with a .NET meter and a client can be created from that:
 
