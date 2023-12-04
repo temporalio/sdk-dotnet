@@ -28,6 +28,8 @@ namespace Temporalio.Worker
     /// </summary>
     internal class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext
     {
+        private static readonly string[] Newlines = new[] { "\r", "\n", "\r\n" };
+
         private readonly TaskFactory taskFactory;
         private readonly IFailureConverter failureConverter;
         private readonly Lazy<MetricMeter> metricMeter;
@@ -640,9 +642,9 @@ namespace Temporalio.Worker
         {
             // Run as long as we have scheduled tasks
             // TODO(cretz): Fix to run as long as any tasks not yielded on Temporal
-            while (scheduledTasks.Any())
+            while (scheduledTasks.Count > 0)
             {
-                while (scheduledTasks.Any())
+                while (scheduledTasks.Count > 0)
                 {
                     // Pop last
                     var task = scheduledTasks.Last!.Value;
@@ -1350,7 +1352,7 @@ namespace Temporalio.Worker
             return string.Join("\n\n", stackTraces.Select(s =>
             {
                 IEnumerable<string> lines = s.ToString().Split(
-                    new[] { "\r", "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    Newlines, StringSplitOptions.RemoveEmptyEntries);
 
                 // Trim off leading lines until first non-worker line
                 lines = lines.SkipWhile(line => line.Contains(" at Temporalio.Worker."));
