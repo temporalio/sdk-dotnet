@@ -24,14 +24,6 @@ Extensions:
 * [Temporalio.Extensions.OpenTelemetry](https://github.com/temporalio/sdk-dotnet/tree/main/src/Temporalio.Extensions.OpenTelemetry) -
   OpenTelemetry tracing support
 
-⚠️ UNDER ACTIVE DEVELOPMENT
-
-This SDK is under active development and has not released a stable version yet. APIs may change in incompatible ways
-until the SDK is marked stable.
-
-All features are present in this SDK, but some future features like static analyzers and source generation are not yet
-present.
-
 ---
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -94,7 +86,7 @@ present.
 Add the `Temporalio` package from [NuGet](https://www.nuget.org/packages/Temporalio). For example, using the `dotnet`
 CLI:
 
-    dotnet add package Temporalio --prerelease
+    dotnet add package Temporalio
 
 If you are using .NET Framework or a non-standard target platform, see the
 [Built-in Native Shared Library](#built-in-native-shared-library) section later for additional information.
