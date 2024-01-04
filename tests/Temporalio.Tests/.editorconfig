@@ -19,7 +19,7 @@ dotnet_diagnostic.CA1822.severity = none
 # Don't need to mark test classes sealed
 dotnet_diagnostic.CA1852.severity = none
 
-# We're ok w/ constant arrays in tests
+# Don't need to make array params static readonly for test performance
 dotnet_diagnostic.CA1861.severity = none
 
 # ConfigureAwait not needed in tests

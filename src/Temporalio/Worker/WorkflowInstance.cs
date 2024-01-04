@@ -1351,7 +1351,8 @@ namespace Temporalio.Worker
             }
             return string.Join("\n\n", stackTraces.Select(s =>
             {
-                IEnumerable<string> lines = s.ToString().Split(Newlines, StringSplitOptions.RemoveEmptyEntries);
+                IEnumerable<string> lines = s.ToString().Split(
+                    Newlines, StringSplitOptions.RemoveEmptyEntries);
 
                 // Trim off leading lines until first non-worker line
                 lines = lines.SkipWhile(line => line.Contains(" at Temporalio.Worker."));

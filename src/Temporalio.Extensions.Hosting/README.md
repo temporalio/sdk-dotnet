@@ -5,17 +5,12 @@ This extension adds support for worker
 [Dependency Injection](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection) to the
 [Temporal .NET SDK](https://github.com/temporalio/sdk-dotnet).
 
-⚠️ UNDER ACTIVE DEVELOPMENT
-
-This SDK is under active development and has not released a stable version yet. APIs may change in incompatible ways
-until the SDK is marked stable.
-
 ## Quick Start
 
 Add the `Temporalio.Extensions.Hosting` package from
 [NuGet](https://www.nuget.org/packages/Temporalio.Extensions.Hosting). For example, using the `dotnet` CLI:
 
-    dotnet add package Temporalio.Extensions.Hosting --prerelease
+    dotnet add package Temporalio.Extensions.Hosting
 
 To create a worker service, you can do the following:
 
