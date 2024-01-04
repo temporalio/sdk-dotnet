@@ -1266,7 +1266,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class DeadlockWorkflow
     {
-#pragma warning disable CA1849 // We are intentionally blocking here
         [WorkflowRun]
 #pragma warning disable CA1849 // We are using Thread.Sleep on purpose
         public async Task RunAsync() => Thread.Sleep(4000);
