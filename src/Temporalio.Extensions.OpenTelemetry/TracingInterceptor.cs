@@ -478,8 +478,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                     Dispose();
             }
 
-            private IEnumerable<ActivityLink>? LinksFromHeaders(
-                IReadOnlyDictionary<string, Payload>? headers)
+            private ActivityLink[]? LinksFromHeaders(IReadOnlyDictionary<string, Payload>? headers)
             {
                 if (root.HeadersToContext(headers) is PropagationContext ctx)
                 {

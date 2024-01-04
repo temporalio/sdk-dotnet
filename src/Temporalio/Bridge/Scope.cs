@@ -9,7 +9,7 @@ namespace Temporalio.Bridge
     /// </summary>
     internal sealed class Scope : IDisposable
     {
-        private readonly IList<object> toKeepAlive = new List<object>();
+        private readonly List<object> toKeepAlive = new List<object>();
 
         /// <summary>
         /// Create a byte array ref.
