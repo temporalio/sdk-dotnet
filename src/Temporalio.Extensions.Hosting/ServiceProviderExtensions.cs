@@ -60,27 +60,15 @@ namespace Temporalio.Extensions.Hosting
             // Invoker can be async (i.e. returns Task<object?>)
             Func<object?[], Task<object>> invoker = async args =>
             {
-                // If static, just invoke and unwrap exception
-                if (method.IsStatic)
-                {
-                    try
-                    {
-                        return method.Invoke(null, args);
-                    }
-                    catch (TargetInvocationException e)
-                    {
-                        ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
-                        // Unreachable
-                        throw new InvalidOperationException("Unreachable");
-                    }
-                }
-                // Wrap in a scope
+                // Wrap in a scope (even for statics to keep logic simple)
                 using (var scope = provider.CreateScope())
                 {
                     object? result;
                     try
                     {
-                        result = method.Invoke(scope.ServiceProvider.GetRequiredService(instanceType), args);
+                        // Invoke static or non-static
+                        var instance = method.IsStatic ? null : scope.ServiceProvider.GetRequiredService(instanceType);
+                        result = method.Invoke(instance, args);
                     }
                     catch (TargetInvocationException e)
                     {

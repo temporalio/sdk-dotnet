@@ -39,6 +39,9 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             await databaseClient.SelectSomethingAsync(),
             await databaseClient.SelectSomethingAsync(),
         };
+
+        [Activity]
+        public static async Task<string> DoStaticThingsAsync() => "something-static";
     }
 
     [Workflow]
@@ -53,6 +56,9 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
                 new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) });
             list.AddRange(await Workflow.ExecuteActivityAsync(
                 (DatabaseActivities act) => act.DoThingsAsync(),
+                new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) }));
+            list.Add(await Workflow.ExecuteActivityAsync(
+                () => DatabaseActivities.DoStaticThingsAsync(),
                 new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) }));
             return list;
         }
@@ -89,7 +95,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             new($"wf-{Guid.NewGuid()}", taskQueue));
         // Single activity calls use the same client but different calls use different clients
         Assert.Equal(
-            new List<string> { "something-6", "something-7", "something-6", "something-7" },
+            new List<string> { "something-6", "something-7", "something-6", "something-7", "something-static" },
             result);
         // Confirm the log appeared
         Assert.Contains(loggerFactory.Logs, e => e.Formatted == "Running database workflow");
