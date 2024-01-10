@@ -22,6 +22,9 @@ namespace Temporalio.Common
         private static readonly JsonSerializerOptions JsonSerializerOptions =
             new() { Converters = { JsonCommonTypeConverter.Instance } };
 
+        private static readonly JsonParser ProtoJsonParser = new(
+            JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
+
         /// <summary>
         /// Interface for fixes to apply.
         /// </summary>
@@ -71,7 +74,7 @@ namespace Temporalio.Common
             // serialize the altered, then deserialize again using Proto JSON
             HistoryJsonFixer.Fix(historyObj);
             var fixedJson = JsonSerializer.Serialize(historyObj);
-            var history = JsonParser.Default.Parse<History>(fixedJson);
+            var history = ProtoJsonParser.Parse<History>(fixedJson);
             return new(workflowId, history.Events);
         }
 

@@ -97,4 +97,46 @@ public class WorkflowHistoryTests : TestBase
         // But that our history parser succeeds
         var newHistory = AssertHistoryJson();
     }
+
+    [Fact]
+    public void FromJson_UnknownField()
+    {
+        // Format some JSON history, then sneak in a new field on an event, then
+        // try to parse
+        var history = new History();
+        history.Events.Add(new HistoryEvent()
+        {
+            EventType = EventType.RequestCancelExternalWorkflowExecutionFailed,
+            RequestCancelExternalWorkflowExecutionFailedEventAttributes = new()
+            {
+                Cause = CancelExternalWorkflowExecutionFailedCause.ExternalWorkflowExecutionNotFound,
+            },
+        });
+        history.Events.Add(new HistoryEvent()
+        {
+            WorkflowExecutionStartedEventAttributes = new()
+            {
+                TaskQueue = new() { Kind = TaskQueueKind.Sticky },
+            },
+        });
+        var historyJson = JsonFormatter.Default.Format(history);
+
+        // Alter the first event to have an extra field
+        var eventStart = "\"events\": [ { ";
+        var eventStartIndex = historyJson.IndexOf(eventStart);
+        Assert.True(eventStartIndex > 0);
+        historyJson = historyJson.Substring(0, eventStartIndex + eventStart.Length) +
+            "\"someField\": \"someValue\", " +
+            historyJson.Substring(eventStartIndex + eventStart.Length);
+
+        // Confirm parse failure
+        var exc = Assert.Throws<InvalidProtocolBufferException>(
+            () => JsonParser.Default.Parse<History>(historyJson));
+        Assert.Contains("Unknown field: someField", exc.Message);
+
+        // But confirm history JSON parsing ignores
+        var workflowHistory = WorkflowHistory.FromJson("workflow-id", historyJson);
+        Assert.True(workflowHistory.Events.Count == 2);
+        Assert.Equal(EventType.RequestCancelExternalWorkflowExecutionFailed, workflowHistory.Events.First().EventType);
+    }
 }
