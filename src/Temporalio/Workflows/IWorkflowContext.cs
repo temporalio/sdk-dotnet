@@ -24,6 +24,11 @@ namespace Temporalio.Workflows
         bool ContinueAsNewSuggested { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.CurrentBuildId" />.
+        /// </summary>
+        string CurrentBuildId { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.CurrentHistoryLength" />.
         /// </summary>
         int CurrentHistoryLength { get; }

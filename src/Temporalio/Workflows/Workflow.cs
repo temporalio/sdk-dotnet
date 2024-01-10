@@ -38,6 +38,18 @@ namespace Temporalio.Workflows
         public static bool ContinueAsNewSuggested => Context.ContinueAsNewSuggested;
 
         /// <summary>
+        /// Gets the current build id.
+        /// </summary>
+        /// <remarks>
+        /// This is the Build ID of the worker which executed the current Workflow Task. It may be
+        /// empty if the task was completed by a worker without a Build ID. If this worker is
+        /// the one executing this task for the first time and has a Build ID set, then its ID will
+        /// be used. This value may change over the lifetime of the workflow run, but is
+        /// deterministic and safe to use for branching.
+        /// </remarks>
+        public static string CurrentBuildId => Context.CurrentBuildId;
+
+        /// <summary>
         /// Gets the current number of events in history.
         /// </summary>
         /// <remarks>

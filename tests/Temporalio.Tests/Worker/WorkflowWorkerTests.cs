@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+
 #pragma warning disable CA1724 // Don't care about name conflicts
 #pragma warning disable SA1201, SA1204 // We want to have classes near their tests
 
@@ -3862,6 +3864,70 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class CurrentBuildIdWorkflow
+    {
+        [Activity]
+        public static string SayHi() => "hi";
+
+        private bool doFinish;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            await Workflow.DelayAsync(1);
+            if (Workflow.CurrentBuildId == "1.0")
+            {
+                await Workflow.ExecuteActivityAsync(
+                    () => SayHi(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+            }
+            await Workflow.WaitConditionAsync(() => doFinish);
+        }
+
+        [WorkflowSignal]
+        public async Task Finish() => doFinish = true;
+
+        [WorkflowQuery]
+        public string GetBuildId() => Workflow.CurrentBuildId;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_CurrentBuildId_SetProperly()
+    {
+        var tq = $"tq-{Guid.NewGuid()}";
+        var handle =
+            await ExecuteWorkerAsyncReturning<CurrentBuildIdWorkflow,
+                WorkflowHandle<CurrentBuildIdWorkflow>>(
+            async worker =>
+            {
+                // Start the workflow
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (CurrentBuildIdWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                Assert.Equal("1.0", await handle.QueryAsync(wf => wf.GetBuildId()));
+                return handle;
+            },
+            new(tq) { BuildId = "1.0" });
+
+        await Env.Client.Connection.WorkflowService.ResetStickyTaskQueueAsync(new()
+        {
+            Namespace = Env.Client.Options.Namespace, Execution = new() { WorkflowId = handle.Id },
+        });
+
+        await ExecuteWorkerAsync<CurrentBuildIdWorkflow>(
+            async worker =>
+            {
+                Assert.NotNull(handle);
+                Assert.Equal("1.0", await handle.QueryAsync(wf => wf.GetBuildId()));
+                await handle.SignalAsync(wf => wf.Finish());
+                Assert.Equal("1.1", await handle.QueryAsync(wf => wf.GetBuildId()));
+                await handle.GetResultAsync();
+                Assert.Equal("1.1", await handle.QueryAsync(wf => wf.GetBuildId()));
+            },
+            new(tq) { BuildId = "1.1" });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
@@ -3874,13 +3940,27 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         TemporalWorkerOptions? options = null,
         IWorkerClient? client = null)
     {
+        await ExecuteWorkerAsyncReturning<TWf, bool>(
+            (w) =>
+            {
+                return action(w).ContinueWith(t => true);
+            },
+            options,
+            client);
+    }
+
+    private async Task<TArt> ExecuteWorkerAsyncReturning<TWf, TArt>(
+        Func<TemporalWorker, Task<TArt>> action,
+        TemporalWorkerOptions? options = null,
+        IWorkerClient? client = null)
+    {
         options ??= new();
         options = (TemporalWorkerOptions)options.Clone();
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
         options.AddWorkflow<TWf>();
         options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
         using var worker = new TemporalWorker(client ?? Client, options);
-        await worker.ExecuteAsync(() => action(worker));
+        return await worker.ExecuteAsync(() => action(worker));
     }
 
     private static Task AssertTaskFailureEventuallyAsync(
