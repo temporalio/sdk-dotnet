@@ -31,7 +31,7 @@ foreach (var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridg
 // Gen proto
 foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
 {
-    if (fi.FullName.Contains("google/api"))
+    if (fi.FullName.Contains($"google{Path.DirectorySeparatorChar}api"))
     {
         Protoc(
             fi.FullName,
@@ -39,7 +39,7 @@ foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOpti
             string.Empty,
             apiProtoDir);
     }
-    else if (!fi.FullName.Contains("google/protobuf"))
+    else if (!fi.FullName.Contains($"google{Path.DirectorySeparatorChar}protobuf"))
     {
         Protoc(fi.FullName, Path.Join(projectDir, "src/Temporalio"), "Temporalio", apiProtoDir);
     }
