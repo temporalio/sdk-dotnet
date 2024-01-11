@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-
 #pragma warning disable CA1724 // Don't care about name conflicts
 #pragma warning disable SA1201, SA1204 // We want to have classes near their tests
 
@@ -3941,10 +3939,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         IWorkerClient? client = null)
     {
         await ExecuteWorkerAsyncReturning<TWf, bool>(
-            (w) =>
-            {
-                return action(w).ContinueWith(t => true);
-            },
+            (w) => action(w).ContinueWith(t => true),
             options,
             client);
     }
