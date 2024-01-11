@@ -43,7 +43,7 @@ namespace Temporalio.Api.Enums.V1 {
   }
   #region Enums
   /// <summary>
-  /// Reset reapplay(replay) options
+  /// Reset reapply (replay) options
   /// * RESET_REAPPLY_TYPE_SIGNAL (default) - Signals are reapplied when workflow is reset
   /// * RESET_REAPPLY_TYPE_NONE - nothing is reapplied
   /// </summary>
@@ -54,7 +54,7 @@ namespace Temporalio.Api.Enums.V1 {
   }
 
   /// <summary>
-  /// Reset type options
+  /// Reset type options. Deprecated, see temporal.api.common.v1.ResetOptions.
   /// </summary>
   public enum ResetType {
     [pbr::OriginalName("RESET_TYPE_UNSPECIFIED")] Unspecified = 0,

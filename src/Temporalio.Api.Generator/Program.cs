@@ -4,14 +4,14 @@ using System.Diagnostics;
 
 var currFile = new StackTrace(true).GetFrame(0)?.GetFileName();
 var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
-var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/protos");
+var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/sdk-core-protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var testSrvProtoDir = Path.Join(protoDir, "testsrv_upstream");
 var bridgeProtoDir = Path.Join(protoDir, "local");
 
 // Remove/recreate entire api dir
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).Delete(true);
-new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies")).Create();
+new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies/Google")).Create();
 // Do not delete the .editorconfig from Bridge/Api
 foreach (var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).GetFileSystemInfos())
 {
@@ -31,15 +31,15 @@ foreach (var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridg
 // Gen proto
 foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
 {
-    if (fi.FullName.Contains("gogo"))
+    if (fi.FullName.Contains("google/api"))
     {
         Protoc(
             fi.FullName,
-            Path.Join(projectDir, "src/Temporalio/Api/Dependencies"),
+            Path.Join(projectDir, "src/Temporalio/Api/Dependencies/Google"),
             string.Empty,
             apiProtoDir);
     }
-    else
+    else if (!fi.FullName.Contains("google/protobuf"))
     {
         Protoc(fi.FullName, Path.Join(projectDir, "src/Temporalio"), "Temporalio", apiProtoDir);
     }
@@ -112,7 +112,7 @@ File.WriteAllText(
             ["UnlockTimeSkippingWithSleep"] = "SleepResponse",
         }));
 
-// Change Gogoproto namespace to Temporalio.Api.Dependencies.Gogoproto
+// Change Google namespace to Temporalio.Api.Dependencies.Google
 foreach (
     var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).GetFiles(
         "*.cs",
@@ -123,18 +123,18 @@ foreach (
         continue;
     }
     string contents = File.ReadAllText(fi.FullName);
-    if (fi.Name == "Gogo.cs")
+    if (fi.FullName.Contains("Google"))
     {
-        // Just change the namespace field;
-        File.WriteAllText(
-            fi.FullName,
-            contents.Replace(
-                "namespace Gogoproto ",
-                "namespace Temporalio.Api.Dependencies.Gogoproto "));
+        // change the namespace field
+        var newContents = contents.Replace(
+            "namespace Google.Api ",
+            "namespace Temporalio.Api.Dependencies.Google.Api ");
+        newContents = newContents.Replace("Google.Api.", "Temporalio.Api.Dependencies.Google.Api.");
+        File.WriteAllText(fi.FullName, newContents);
     }
     else
     {
-        var newContents = contents.Replace("Gogoproto.", "Temporalio.Api.Dependencies.Gogoproto.");
+        var newContents = contents.Replace("Google.Api.", "Temporalio.Api.Dependencies.Google.Api.");
         if (contents != newContents)
         {
             File.WriteAllText(fi.FullName, newContents);

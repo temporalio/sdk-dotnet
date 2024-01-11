@@ -50,26 +50,27 @@ namespace Temporalio.Api.OperatorService.V1 {
             "AjgBGmAKFVN5c3RlbUF0dHJpYnV0ZXNFbnRyeRILCgNrZXkYASABKAkSNgoF",
             "dmFsdWUYAiABKA4yJy50ZW1wb3JhbC5hcGkuZW51bXMudjEuSW5kZXhlZFZh",
             "bHVlVHlwZToCOAEaNAoSU3RvcmFnZVNjaGVtYUVudHJ5EgsKA2tleRgBIAEo",
-            "CRINCgV2YWx1ZRgCIAEoCToCOAEiKwoWRGVsZXRlTmFtZXNwYWNlUmVxdWVz",
-            "dBIRCgluYW1lc3BhY2UYASABKAkiNAoXRGVsZXRlTmFtZXNwYWNlUmVzcG9u",
-            "c2USGQoRZGVsZXRlZF9uYW1lc3BhY2UYASABKAkiZQofQWRkT3JVcGRhdGVS",
-            "ZW1vdGVDbHVzdGVyUmVxdWVzdBIYChBmcm9udGVuZF9hZGRyZXNzGAEgASgJ",
-            "EigKIGVuYWJsZV9yZW1vdGVfY2x1c3Rlcl9jb25uZWN0aW9uGAIgASgIIiIK",
-            "IEFkZE9yVXBkYXRlUmVtb3RlQ2x1c3RlclJlc3BvbnNlIjIKGlJlbW92ZVJl",
-            "bW90ZUNsdXN0ZXJSZXF1ZXN0EhQKDGNsdXN0ZXJfbmFtZRgBIAEoCSIdChtS",
-            "ZW1vdmVSZW1vdGVDbHVzdGVyUmVzcG9uc2UiQQoTTGlzdENsdXN0ZXJzUmVx",
-            "dWVzdBIRCglwYWdlX3NpemUYASABKAUSFwoPbmV4dF9wYWdlX3Rva2VuGAIg",
-            "ASgMInMKFExpc3RDbHVzdGVyc1Jlc3BvbnNlEkIKCGNsdXN0ZXJzGAEgAygL",
-            "MjAudGVtcG9yYWwuYXBpLm9wZXJhdG9yc2VydmljZS52MS5DbHVzdGVyTWV0",
-            "YWRhdGESFwoPbmV4dF9wYWdlX3Rva2VuGAQgASgMIqoBCg9DbHVzdGVyTWV0",
-            "YWRhdGESFAoMY2x1c3Rlcl9uYW1lGAEgASgJEhIKCmNsdXN0ZXJfaWQYAiAB",
-            "KAkSDwoHYWRkcmVzcxgDIAEoCRIgChhpbml0aWFsX2ZhaWxvdmVyX3ZlcnNp",
-            "b24YBCABKAMSGwoTaGlzdG9yeV9zaGFyZF9jb3VudBgFIAEoBRIdChVpc19j",
-            "b25uZWN0aW9uX2VuYWJsZWQYBiABKAhCvgEKImlvLnRlbXBvcmFsLmFwaS5v",
-            "cGVyYXRvcnNlcnZpY2UudjFCFFJlcXVlc3RSZXNwb25zZVByb3RvUAFaNWdv",
-            "LnRlbXBvcmFsLmlvL2FwaS9vcGVyYXRvcnNlcnZpY2UvdjE7b3BlcmF0b3Jz",
-            "ZXJ2aWNlqgIhVGVtcG9yYWxpby5BcGkuT3BlcmF0b3JTZXJ2aWNlLlYx6gIk",
-            "VGVtcG9yYWxpbzo6QXBpOjpPcGVyYXRvclNlcnZpY2U6OlYxYgZwcm90bzM="));
+            "CRINCgV2YWx1ZRgCIAEoCToCOAEiQQoWRGVsZXRlTmFtZXNwYWNlUmVxdWVz",
+            "dBIRCgluYW1lc3BhY2UYASABKAkSFAoMbmFtZXNwYWNlX2lkGAIgASgJIjQK",
+            "F0RlbGV0ZU5hbWVzcGFjZVJlc3BvbnNlEhkKEWRlbGV0ZWRfbmFtZXNwYWNl",
+            "GAEgASgJImUKH0FkZE9yVXBkYXRlUmVtb3RlQ2x1c3RlclJlcXVlc3QSGAoQ",
+            "ZnJvbnRlbmRfYWRkcmVzcxgBIAEoCRIoCiBlbmFibGVfcmVtb3RlX2NsdXN0",
+            "ZXJfY29ubmVjdGlvbhgCIAEoCCIiCiBBZGRPclVwZGF0ZVJlbW90ZUNsdXN0",
+            "ZXJSZXNwb25zZSIyChpSZW1vdmVSZW1vdGVDbHVzdGVyUmVxdWVzdBIUCgxj",
+            "bHVzdGVyX25hbWUYASABKAkiHQobUmVtb3ZlUmVtb3RlQ2x1c3RlclJlc3Bv",
+            "bnNlIkEKE0xpc3RDbHVzdGVyc1JlcXVlc3QSEQoJcGFnZV9zaXplGAEgASgF",
+            "EhcKD25leHRfcGFnZV90b2tlbhgCIAEoDCJzChRMaXN0Q2x1c3RlcnNSZXNw",
+            "b25zZRJCCghjbHVzdGVycxgBIAMoCzIwLnRlbXBvcmFsLmFwaS5vcGVyYXRv",
+            "cnNlcnZpY2UudjEuQ2x1c3Rlck1ldGFkYXRhEhcKD25leHRfcGFnZV90b2tl",
+            "bhgEIAEoDCKqAQoPQ2x1c3Rlck1ldGFkYXRhEhQKDGNsdXN0ZXJfbmFtZRgB",
+            "IAEoCRISCgpjbHVzdGVyX2lkGAIgASgJEg8KB2FkZHJlc3MYAyABKAkSIAoY",
+            "aW5pdGlhbF9mYWlsb3Zlcl92ZXJzaW9uGAQgASgDEhsKE2hpc3Rvcnlfc2hh",
+            "cmRfY291bnQYBSABKAUSHQoVaXNfY29ubmVjdGlvbl9lbmFibGVkGAYgASgI",
+            "Qr4BCiJpby50ZW1wb3JhbC5hcGkub3BlcmF0b3JzZXJ2aWNlLnYxQhRSZXF1",
+            "ZXN0UmVzcG9uc2VQcm90b1ABWjVnby50ZW1wb3JhbC5pby9hcGkvb3BlcmF0",
+            "b3JzZXJ2aWNlL3YxO29wZXJhdG9yc2VydmljZaoCIVRlbXBvcmFsaW8uQXBp",
+            "Lk9wZXJhdG9yU2VydmljZS5WMeoCJFRlbXBvcmFsaW86OkFwaTo6T3BlcmF0",
+            "b3JTZXJ2aWNlOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -79,7 +80,7 @@ namespace Temporalio.Api.OperatorService.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesResponse), global::Temporalio.Api.OperatorService.V1.RemoveSearchAttributesResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListSearchAttributesRequest), global::Temporalio.Api.OperatorService.V1.ListSearchAttributesRequest.Parser, new[]{ "Namespace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListSearchAttributesResponse), global::Temporalio.Api.OperatorService.V1.ListSearchAttributesResponse.Parser, new[]{ "CustomAttributes", "SystemAttributes", "StorageSchema" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest), global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest.Parser, new[]{ "Namespace" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest), global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest.Parser, new[]{ "Namespace", "NamespaceId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.DeleteNamespaceResponse), global::Temporalio.Api.OperatorService.V1.DeleteNamespaceResponse.Parser, new[]{ "DeletedNamespace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest), global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest.Parser, new[]{ "FrontendAddress", "EnableRemoteClusterConnection" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse), global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse.Parser, null, null, null, null, null),
@@ -1303,6 +1304,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public DeleteNamespaceRequest(DeleteNamespaceRequest other) : this() {
       namespace_ = other.namespace_;
+      namespaceId_ = other.namespaceId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1315,12 +1317,27 @@ namespace Temporalio.Api.OperatorService.V1 {
     /// <summary>Field number for the "namespace" field.</summary>
     public const int NamespaceFieldNumber = 1;
     private string namespace_ = "";
+    /// <summary>
+    /// Only one of namespace or namespace_id must be specified to identify namespace.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string Namespace {
       get { return namespace_; }
       set {
         namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "namespace_id" field.</summary>
+    public const int NamespaceIdFieldNumber = 2;
+    private string namespaceId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string NamespaceId {
+      get { return namespaceId_; }
+      set {
+        namespaceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -1340,6 +1357,7 @@ namespace Temporalio.Api.OperatorService.V1 {
         return true;
       }
       if (Namespace != other.Namespace) return false;
+      if (NamespaceId != other.NamespaceId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1348,6 +1366,7 @@ namespace Temporalio.Api.OperatorService.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (NamespaceId.Length != 0) hash ^= NamespaceId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1370,6 +1389,10 @@ namespace Temporalio.Api.OperatorService.V1 {
         output.WriteRawTag(10);
         output.WriteString(Namespace);
       }
+      if (NamespaceId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(NamespaceId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1384,6 +1407,10 @@ namespace Temporalio.Api.OperatorService.V1 {
         output.WriteRawTag(10);
         output.WriteString(Namespace);
       }
+      if (NamespaceId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(NamespaceId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1396,6 +1423,9 @@ namespace Temporalio.Api.OperatorService.V1 {
       int size = 0;
       if (Namespace.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (NamespaceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NamespaceId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1411,6 +1441,9 @@ namespace Temporalio.Api.OperatorService.V1 {
       }
       if (other.Namespace.Length != 0) {
         Namespace = other.Namespace;
+      }
+      if (other.NamespaceId.Length != 0) {
+        NamespaceId = other.NamespaceId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1431,6 +1464,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             Namespace = input.ReadString();
             break;
           }
+          case 18: {
+            NamespaceId = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1448,6 +1485,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             break;
           case 10: {
             Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            NamespaceId = input.ReadString();
             break;
           }
         }

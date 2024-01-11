@@ -89,17 +89,18 @@ namespace Temporalio.Api.Enums.V1 {
             "Q1VUSU9OX05PVF9GT1VORBABEkcKQ1NJR05BTF9FWFRFUk5BTF9XT1JLRkxP",
             "V19FWEVDVVRJT05fRkFJTEVEX0NBVVNFX05BTUVTUEFDRV9OT1RfRk9VTkQQ",
             "AhJPCktTSUdOQUxfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX0ZBSUxF",
-            "RF9DQVVTRV9TSUdOQUxfQ09VTlRfTElNSVRfRVhDRUVERUQQAyqlAgoWUmVz",
+            "RF9DQVVTRV9TSUdOQUxfQ09VTlRfTElNSVRfRVhDRUVERUQQAyrNAgoWUmVz",
             "b3VyY2VFeGhhdXN0ZWRDYXVzZRIoCiRSRVNPVVJDRV9FWEhBVVNURURfQ0FV",
             "U0VfVU5TUEVDSUZJRUQQABImCiJSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0Vf",
             "UlBTX0xJTUlUEAESLQopUkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNFX0NPTkNV",
             "UlJFTlRfTElNSVQQAhIuCipSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0VfU1lT",
             "VEVNX09WRVJMT0FERUQQAxIuCipSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0Vf",
             "UEVSU0lTVEVOQ0VfTElNSVQQBBIqCiZSRVNPVVJDRV9FWEhBVVNURURfQ0FV",
-            "U0VfQlVTWV9XT1JLRkxPVxAFQogBChhpby50ZW1wb3JhbC5hcGkuZW51bXMu",
-            "djFCEEZhaWxlZENhdXNlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2Vu",
-            "dW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1w",
-            "b3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "U0VfQlVTWV9XT1JLRkxPVxAFEiYKIlJFU09VUkNFX0VYSEFVU1RFRF9DQVVT",
+            "RV9BUFNfTElNSVQQBkKIAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhBG",
+            "YWlsZWRDYXVzZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92",
+            "MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxp",
+            "bzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowTaskFailedCause), typeof(global::Temporalio.Api.Enums.V1.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedCause), }, null, null));
@@ -232,6 +233,10 @@ namespace Temporalio.Api.Enums.V1 {
     /// Workflow is busy
     /// </summary>
     [pbr::OriginalName("RESOURCE_EXHAUSTED_CAUSE_BUSY_WORKFLOW")] BusyWorkflow = 5,
+    /// <summary>
+    /// Caller exceeds action per second limit.
+    /// </summary>
+    [pbr::OriginalName("RESOURCE_EXHAUSTED_CAUSE_APS_LIMIT")] ApsLimit = 6,
   }
 
   #endregion

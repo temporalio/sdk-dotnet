@@ -25,16 +25,17 @@ namespace Temporalio.Api.Sdk.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CjB0ZW1wb3JhbC9hcGkvc2RrL3YxL3Rhc2tfY29tcGxldGVfbWV0YWRhdGEu",
-            "cHJvdG8SE3RlbXBvcmFsLmFwaS5zZGsudjEiUQodV29ya2Zsb3dUYXNrQ29t",
+            "cHJvdG8SE3RlbXBvcmFsLmFwaS5zZGsudjEieAodV29ya2Zsb3dUYXNrQ29t",
             "cGxldGVkTWV0YWRhdGESFwoPY29yZV91c2VkX2ZsYWdzGAEgAygNEhcKD2xh",
-            "bmdfdXNlZF9mbGFncxgCIAMoDUKHAQoWaW8udGVtcG9yYWwuYXBpLnNkay52",
-            "MUIZVGFza0NvbXBsZXRlTWV0YWRhdGFQcm90b1ABWh1nby50ZW1wb3JhbC5p",
-            "by9hcGkvc2RrL3YxO3Nka6oCFVRlbXBvcmFsaW8uQXBpLlNkay5WMeoCGFRl",
-            "bXBvcmFsaW86OkFwaTo6U2RrOjpWMWIGcHJvdG8z"));
+            "bmdfdXNlZF9mbGFncxgCIAMoDRIQCghzZGtfbmFtZRgDIAEoCRITCgtzZGtf",
+            "dmVyc2lvbhgEIAEoCUKHAQoWaW8udGVtcG9yYWwuYXBpLnNkay52MUIZVGFz",
+            "a0NvbXBsZXRlTWV0YWRhdGFQcm90b1ABWh1nby50ZW1wb3JhbC5pby9hcGkv",
+            "c2RrL3YxO3Nka6oCFVRlbXBvcmFsaW8uQXBpLlNkay5WMeoCGFRlbXBvcmFs",
+            "aW86OkFwaTo6U2RrOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Sdk.V1.WorkflowTaskCompletedMetadata), global::Temporalio.Api.Sdk.V1.WorkflowTaskCompletedMetadata.Parser, new[]{ "CoreUsedFlags", "LangUsedFlags" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Sdk.V1.WorkflowTaskCompletedMetadata), global::Temporalio.Api.Sdk.V1.WorkflowTaskCompletedMetadata.Parser, new[]{ "CoreUsedFlags", "LangUsedFlags", "SdkName", "SdkVersion" }, null, null, null, null)
           }));
     }
     #endregion
@@ -77,6 +78,8 @@ namespace Temporalio.Api.Sdk.V1 {
     public WorkflowTaskCompletedMetadata(WorkflowTaskCompletedMetadata other) : this() {
       coreUsedFlags_ = other.coreUsedFlags_.Clone();
       langUsedFlags_ = other.langUsedFlags_.Clone();
+      sdkName_ = other.sdkName_;
+      sdkVersion_ = other.sdkVersion_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -137,6 +140,43 @@ namespace Temporalio.Api.Sdk.V1 {
       get { return langUsedFlags_; }
     }
 
+    /// <summary>Field number for the "sdk_name" field.</summary>
+    public const int SdkNameFieldNumber = 3;
+    private string sdkName_ = "";
+    /// <summary>
+    /// Name of the SDK that processed the task. This is usually something like "temporal-go" and is
+    /// usually the same as client-name gRPC header. This should only be set if its value changed
+    /// since the last time recorded on the workflow (or be set on the first task).
+    ///
+    /// (-- api-linter: core::0122::name-suffix=disabled
+    ///     aip.dev/not-precedent: We're ok with a name suffix here. --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string SdkName {
+      get { return sdkName_; }
+      set {
+        sdkName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "sdk_version" field.</summary>
+    public const int SdkVersionFieldNumber = 4;
+    private string sdkVersion_ = "";
+    /// <summary>
+    /// Version of the SDK that processed the task. This is usually something like "1.20.0" and is
+    /// usually the same as client-version gRPC header. This should only be set if its value changed
+    /// since the last time recorded on the workflow (or be set on the first task).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string SdkVersion {
+      get { return sdkVersion_; }
+      set {
+        sdkVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -154,6 +194,8 @@ namespace Temporalio.Api.Sdk.V1 {
       }
       if(!coreUsedFlags_.Equals(other.coreUsedFlags_)) return false;
       if(!langUsedFlags_.Equals(other.langUsedFlags_)) return false;
+      if (SdkName != other.SdkName) return false;
+      if (SdkVersion != other.SdkVersion) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -163,6 +205,8 @@ namespace Temporalio.Api.Sdk.V1 {
       int hash = 1;
       hash ^= coreUsedFlags_.GetHashCode();
       hash ^= langUsedFlags_.GetHashCode();
+      if (SdkName.Length != 0) hash ^= SdkName.GetHashCode();
+      if (SdkVersion.Length != 0) hash ^= SdkVersion.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -183,6 +227,14 @@ namespace Temporalio.Api.Sdk.V1 {
     #else
       coreUsedFlags_.WriteTo(output, _repeated_coreUsedFlags_codec);
       langUsedFlags_.WriteTo(output, _repeated_langUsedFlags_codec);
+      if (SdkName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(SdkName);
+      }
+      if (SdkVersion.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(SdkVersion);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -195,6 +247,14 @@ namespace Temporalio.Api.Sdk.V1 {
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       coreUsedFlags_.WriteTo(ref output, _repeated_coreUsedFlags_codec);
       langUsedFlags_.WriteTo(ref output, _repeated_langUsedFlags_codec);
+      if (SdkName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(SdkName);
+      }
+      if (SdkVersion.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(SdkVersion);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -207,6 +267,12 @@ namespace Temporalio.Api.Sdk.V1 {
       int size = 0;
       size += coreUsedFlags_.CalculateSize(_repeated_coreUsedFlags_codec);
       size += langUsedFlags_.CalculateSize(_repeated_langUsedFlags_codec);
+      if (SdkName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SdkName);
+      }
+      if (SdkVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SdkVersion);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -221,6 +287,12 @@ namespace Temporalio.Api.Sdk.V1 {
       }
       coreUsedFlags_.Add(other.coreUsedFlags_);
       langUsedFlags_.Add(other.langUsedFlags_);
+      if (other.SdkName.Length != 0) {
+        SdkName = other.SdkName;
+      }
+      if (other.SdkVersion.Length != 0) {
+        SdkVersion = other.SdkVersion;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -246,6 +318,14 @@ namespace Temporalio.Api.Sdk.V1 {
             langUsedFlags_.AddEntriesFrom(input, _repeated_langUsedFlags_codec);
             break;
           }
+          case 26: {
+            SdkName = input.ReadString();
+            break;
+          }
+          case 34: {
+            SdkVersion = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -269,6 +349,14 @@ namespace Temporalio.Api.Sdk.V1 {
           case 18:
           case 16: {
             langUsedFlags_.AddEntriesFrom(ref input, _repeated_langUsedFlags_codec);
+            break;
+          }
+          case 26: {
+            SdkName = input.ReadString();
+            break;
+          }
+          case 34: {
+            SdkVersion = input.ReadString();
             break;
           }
         }
