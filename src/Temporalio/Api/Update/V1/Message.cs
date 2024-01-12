@@ -271,7 +271,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// The data needed by a client to refer to an previously invoked workflow
+  /// The data needed by a client to refer to a previously invoked workflow
   /// execution update process.
   /// </summary>
   public sealed partial class UpdateRef : pb::IMessage<UpdateRef>

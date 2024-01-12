@@ -128,6 +128,7 @@ namespace Temporalio.Worker
                     SearchAttributeCollection.FromProto(initialSearchAttributes),
                 false);
             var act = details.InitialActivation;
+            CurrentBuildId = act.BuildIdForCurrentTask;
             var start = details.Start;
             startArgs = new(
                 () => DecodeArgs(
@@ -203,6 +204,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public bool ContinueAsNewSuggested { get; private set; }
+
+        /// <inheritdoc />
+        public string CurrentBuildId { get; private set; }
 
         /// <inheritdoc />
         public int CurrentHistoryLength { get; private set; }
@@ -504,6 +508,7 @@ namespace Temporalio.Worker
                 ContinueAsNewSuggested = act.ContinueAsNewSuggested;
                 CurrentHistoryLength = checked((int)act.HistoryLength);
                 CurrentHistorySize = checked((int)act.HistorySizeBytes);
+                CurrentBuildId = act.BuildIdForCurrentTask;
                 IsReplaying = act.IsReplaying;
                 UtcNow = act.Timestamp.ToDateTime();
 
