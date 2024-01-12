@@ -3910,7 +3910,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         await Env.Client.Connection.WorkflowService.ResetStickyTaskQueueAsync(new()
         {
-            Namespace = Env.Client.Options.Namespace, Execution = new() { WorkflowId = handle.Id },
+            Namespace = Env.Client.Options.Namespace,
+            Execution = new() { WorkflowId = handle.Id },
         });
 
         await ExecuteWorkerAsync<CurrentBuildIdWorkflow>(
