@@ -6,6 +6,9 @@ namespace Temporalio.Client
     /// <summary>
     /// Interface to a connection to Temporal.
     /// </summary>
+    /// <remarks>
+    /// Connections are thread-safe and are encouraged to be reused.
+    /// </remarks>
     /// <seealso cref="TemporalConnection" />
     public interface ITemporalConnection : IBridgeClientProvider
     {
