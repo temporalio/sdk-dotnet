@@ -314,6 +314,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteActivityAsync<TResult>(
             Expression<Func<TResult>> activityCall, ActivityOptions options)
         {
@@ -335,6 +340,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteActivityAsync(
             Expression<Action> activityCall, ActivityOptions options)
@@ -360,6 +370,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, TResult>> activityCall, ActivityOptions options)
         {
@@ -382,6 +397,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteActivityAsync<TActivityInstance>(
             Expression<Action<TActivityInstance>> activityCall, ActivityOptions options)
@@ -406,6 +426,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteActivityAsync<TResult>(
             Expression<Func<Task<TResult>>> activityCall, ActivityOptions options)
         {
@@ -427,6 +452,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteActivityAsync(
             Expression<Func<Task>> activityCall, ActivityOptions options)
@@ -452,6 +482,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, Task<TResult>>> activityCall, ActivityOptions options)
         {
@@ -474,6 +509,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteActivityAsync<TActivityInstance>(
             Expression<Func<TActivityInstance, Task>> activityCall, ActivityOptions options)
@@ -498,6 +538,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task ExecuteActivityAsync(
             string activity, IReadOnlyCollection<object?> args, ActivityOptions options) =>
             ExecuteActivityAsync<ValueTuple>(activity, args, options);
@@ -516,6 +561,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, ActivityOptions options) =>
             Context.ExecuteActivityAsync<TResult>(activity, args, options);
@@ -531,6 +581,11 @@ namespace Temporalio.Workflows
         /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
         /// <param name="options">Workflow options.</param>
         /// <returns>Task for workflow completion.</returns>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static async Task<TResult> ExecuteChildWorkflowAsync<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
             ChildWorkflowOptions? options = null)
@@ -549,6 +604,11 @@ namespace Temporalio.Workflows
         /// <param name="workflowRunCall">Invocation of workflow run method with a result.</param>
         /// <param name="options">Workflow options.</param>
         /// <returns>Task for workflow completion.</returns>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static async Task ExecuteChildWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall,
             ChildWorkflowOptions? options = null)
@@ -567,6 +627,11 @@ namespace Temporalio.Workflows
         /// <param name="args">Workflow arguments.</param>
         /// <param name="options">Workflow options.</param>
         /// <returns>Task for workflow completion.</returns>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static async Task ExecuteChildWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null)
         {
@@ -586,6 +651,11 @@ namespace Temporalio.Workflows
         /// <param name="args">Workflow arguments.</param>
         /// <param name="options">Workflow options.</param>
         /// <returns>Task for workflow completion.</returns>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static async Task<TResult> ExecuteChildWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null)
         {
@@ -606,6 +676,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
             Expression<Func<TResult>> activityCall, LocalActivityOptions options)
@@ -628,6 +703,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteLocalActivityAsync(
             Expression<Action> activityCall, LocalActivityOptions options)
@@ -653,6 +733,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteLocalActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, TResult>> activityCall, LocalActivityOptions options)
         {
@@ -675,6 +760,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteLocalActivityAsync<TActivityInstance>(
             Expression<Action<TActivityInstance>> activityCall, LocalActivityOptions options)
@@ -699,6 +789,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
             Expression<Func<Task<TResult>>> activityCall, LocalActivityOptions options)
         {
@@ -720,6 +815,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteLocalActivityAsync(
             Expression<Func<Task>> activityCall, LocalActivityOptions options)
@@ -745,6 +845,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<TResult> ExecuteLocalActivityAsync<TActivityInstance, TResult>(
             Expression<Func<TActivityInstance, Task<TResult>>> activityCall, LocalActivityOptions options)
         {
@@ -767,6 +872,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task ExecuteLocalActivityAsync<TActivityInstance>(
             Expression<Func<TActivityInstance, Task>> activityCall, LocalActivityOptions options)
@@ -791,6 +901,11 @@ namespace Temporalio.Workflows
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task ExecuteLocalActivityAsync(
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
             ExecuteLocalActivityAsync<ValueTuple>(activity, args, options);
@@ -808,6 +923,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task will throw an <see cref="Exceptions.ActivityFailureException" /> on activity
         /// failure.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static Task<TResult> ExecuteLocalActivityAsync<TResult>(
             string activity, IReadOnlyCollection<object?> args, LocalActivityOptions options) =>
@@ -882,6 +1002,11 @@ namespace Temporalio.Workflows
         /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
         /// is given in the options but it is already running.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
             ChildWorkflowOptions? options = null)
@@ -902,6 +1027,11 @@ namespace Temporalio.Workflows
         /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
         /// is given in the options but it is already running.
         /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
+        /// </remarks>
         public static async Task<ChildWorkflowHandle<TWorkflow>> StartChildWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, ChildWorkflowOptions? options = null)
         {
@@ -921,6 +1051,11 @@ namespace Temporalio.Workflows
         /// <remarks>
         /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
         /// is given in the options but it is already running.
+        /// </remarks>
+        /// <remarks>
+        /// Using an already-cancelled token may give a different exception than cancelling after
+        /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
+        /// to check if it's a cancellation either way.
         /// </remarks>
         public static async Task<ChildWorkflowHandle> StartChildWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null) =>

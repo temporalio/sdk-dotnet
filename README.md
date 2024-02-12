@@ -799,10 +799,13 @@ public async Task WaitADayWorkflow_SimpleRun_Succeeds()
       env.Client,
       new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
           AddWorkflow<WaitADayWorkflow>());
-    var result = await env.Client.ExecuteWorkflowAsync(
-        (WaitADayWorkflow wf) => wf.RunAsync(),
-        new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-    Assert.Equal("all done", result);
+    await worker.ExecuteAsync(async () =>
+    {
+        var result = await env.Client.ExecuteWorkflowAsync(
+            (WaitADayWorkflow wf) => wf.RunAsync(),
+            new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        Assert.Equal("all done", result);
+    });
 }
 ```
 
@@ -858,11 +861,14 @@ public async Task SignalWorkflow_SendSignal_HasExpectedResult()
         env.Client,
         new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
             AddWorkflow<SignalWorkflow>());
-    var handle = await env.Client.StartWorkflowAsync(
-        (SignalWorkflow wf) => wf.RunAsync(),
-        new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-    await handle.SignalAsync(wf => wf.SomeSignalAsync());
-    Assert.Equal("got signal", await handle.GetResultAsync());
+    await worker.ExecuteAsync(async () =>
+    {
+        var handle = await env.Client.StartWorkflowAsync(
+            (SignalWorkflow wf) => wf.RunAsync(),
+            new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        await handle.SignalAsync(wf => wf.SomeSignalAsync());
+        Assert.Equal("got signal", await handle.GetResultAsync());
+    });
 }
 ```
 
@@ -880,11 +886,14 @@ public async Task SignalWorkflow_SignalTimeout_HasExpectedResult()
         env.Client,
         new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
             AddWorkflow<SignalWorkflow>());
-    var handle = await env.Client.StartWorkflowAsync(
-        (SignalWorkflow wf) => wf.RunAsync(),
-        new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-    await env.DelayAsync(TimeSpan.FromSeconds(50));
-    Assert.Equal("got timeout", await handle.GetResultAsync());
+    await worker.ExecuteAsync(async () =>
+    {
+        var handle = await env.Client.StartWorkflowAsync(
+            (SignalWorkflow wf) => wf.RunAsync(),
+            new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        await env.DelayAsync(TimeSpan.FromSeconds(50));
+        Assert.Equal("got timeout", await handle.GetResultAsync());
+    });
 }
 ```
 
@@ -1073,6 +1082,13 @@ The native shared library on Windows does require a Visual C++ runtime. Some con
 not include this runtime. If not available, users may have to manually copy this runtime (usually just
 `vcruntime140.dll`), depend on a NuGet package that has it, or install the Visual C++ runtime (often via Visual C++
 Redistributable installation).
+
+If the native shared library is not loading for whatever reason, the following error may appear:
+
+> System.DllNotFoundException: Unable to load DLL 'temporal_sdk_bridge' or one of its dependencies: The specified module
+could not be found.
+
+See the earlier part of this section for details on what environments are supported.
 
 ## Development
 

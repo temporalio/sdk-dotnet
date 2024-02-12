@@ -7,6 +7,10 @@ namespace Temporalio.Client
     /// <summary>
     /// Client for a Temporal namespace.
     /// </summary>
+    /// <remarks>
+    /// Clients are thread-safe and are encouraged to be reused to properly reuse the underlying
+    /// connection.
+    /// </remarks>
     public partial class TemporalClient : ITemporalClient
     {
         /// <summary>

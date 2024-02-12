@@ -15,6 +15,9 @@ namespace Temporalio.Client
     /// <summary>
     /// Connection to Temporal.
     /// </summary>
+    /// <remarks>
+    /// Connections are thread-safe and are encouraged to be reused.
+    /// </remarks>
     public sealed class TemporalConnection : ITemporalConnection
     {
         // Not set if not lazy

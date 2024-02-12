@@ -3,6 +3,10 @@ namespace Temporalio.Client
     /// <summary>
     /// Interface to a client to Temporal.
     /// </summary>
+    /// <remarks>
+    /// Clients are thread-safe and are encouraged to be reused to properly reuse the underlying
+    /// connection.
+    /// </remarks>
     /// <seealso cref="TemporalClient" />
     public partial interface ITemporalClient : Worker.IWorkerClient
     {
