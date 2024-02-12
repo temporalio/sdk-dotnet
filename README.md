@@ -1074,6 +1074,13 @@ not include this runtime. If not available, users may have to manually copy this
 `vcruntime140.dll`), depend on a NuGet package that has it, or install the Visual C++ runtime (often via Visual C++
 Redistributable installation).
 
+If the native shared library is not loading for whatever reason, the following error may appear:
+
+> System.DllNotFoundException: Unable to load DLL 'temporal_sdk_bridge' or one of its dependencies: The specified module
+could not be found.
+
+See the earlier part of this section for details on what environments are supported.
+
 ## Development
 
 ### Build
