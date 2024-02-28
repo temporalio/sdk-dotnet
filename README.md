@@ -519,6 +519,8 @@ Some things to note about the above code:
   `StartWorkflowAsync` would be a compile-time failure.
 * The `handle` is also typed with the workflow result, so `GetResultAsync()` returns a `string` as expected.
 * A shortcut extension `ExecuteWorkflowAsync` is available that is just `StartWorkflowAsync` + `GetResultAsync`.
+* `SignalWithStart` method is present on the workflow options to make the workflow call a signal-with-start call which
+  means it will only start the workflow if it's not running, but send a signal to it regardless.
 
 #### Invoking Activities
 

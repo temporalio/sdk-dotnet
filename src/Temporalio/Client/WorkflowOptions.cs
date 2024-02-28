@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Common;
 
@@ -104,6 +106,32 @@ namespace Temporalio.Client
         /// Gets or sets RPC options for starting the workflow.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
+
+        /// <summary>
+        /// Perform a signal-with-start which will only start the workflow if it's not already
+        /// running, but send a signal to it regardless. This is just sugar for manually setting
+        /// <see cref="StartSignal" /> and <see cref="StartSignalArgs" /> directly.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="signalCall">Invocation or a workflow signal method.</param>
+        public void SignalWithStart<TWorkflow>(Expression<Func<TWorkflow, Task>> signalCall)
+        {
+            var (method, args) = ExpressionUtil.ExtractCall(signalCall);
+            SignalWithStart(Workflows.WorkflowSignalDefinition.NameFromMethodForCall(method), args);
+        }
+
+        /// <summary>
+        /// Perform a signal-with-start which will only start the workflow if it's not already
+        /// running, but send a signal to it regardless. This is just sugar for manually setting
+        /// <see cref="StartSignal" /> and <see cref="StartSignalArgs" /> directly.
+        /// </summary>
+        /// <param name="signal">Signal name.</param>
+        /// <param name="args">Signal args.</param>
+        public void SignalWithStart(string signal, IReadOnlyCollection<object?> args)
+        {
+            StartSignal = signal;
+            StartSignalArgs = args;
+        }
 
         /// <summary>
         /// Create a shallow copy of these options.

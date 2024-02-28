@@ -956,6 +956,43 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Signals_SignalWithStart()
+    {
+        await ExecuteWorkerAsync<SignalWorkflow>(async worker =>
+        {
+            // Start the workflow with a signal
+            var options = new WorkflowOptions(
+                id: $"workflow-{Guid.NewGuid()}",
+                taskQueue: worker.Options.TaskQueue!);
+            options.SignalWithStart((SignalWorkflow wf) => wf.Signal1Async("signalval1"));
+            var handle = await Env.Client.StartWorkflowAsync(
+                (SignalWorkflow wf) => wf.RunAsync(),
+                options);
+            // Confirm signal received
+            Assert.Equal(
+                new List<string>
+                {
+                    "Signal1: signalval1",
+                },
+                await handle.QueryAsync(wf => wf.Events()));
+            // Do it again, confirm signal received on same workflow
+            options.SignalWithStart((SignalWorkflow wf) => wf.Signal1Async("signalval2"));
+            var newHandle = await Env.Client.StartWorkflowAsync(
+                (SignalWorkflow wf) => wf.RunAsync(),
+                options);
+            Assert.Equal(handle.ResultRunId, newHandle.ResultRunId);
+            // Confirm signal received
+            Assert.Equal(
+                new List<string>
+                {
+                    "Signal1: signalval1",
+                    "Signal1: signalval2",
+                },
+                await handle.QueryAsync(wf => wf.Events()));
+        });
+    }
+
     [Workflow]
     public class BadSignalArgsDroppedWorkflow
     {
@@ -3939,8 +3976,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         TemporalWorkerOptions? options = null,
         IWorkerClient? client = null)
     {
-        await ExecuteWorkerAsyncReturning<TWf, bool>(
-            (w) => action(w).ContinueWith(t => true),
+        await ExecuteWorkerAsyncReturning<TWf, ValueTuple>(
+            async (w) =>
+            {
+                await action(w);
+                return ValueTuple.Create();
+            },
             options,
             client);
     }
