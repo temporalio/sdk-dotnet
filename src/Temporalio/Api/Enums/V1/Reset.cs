@@ -25,32 +25,61 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiF0ZW1wb3JhbC9hcGkvZW51bXMvdjEvcmVzZXQucHJvdG8SFXRlbXBvcmFs",
-            "LmFwaS5lbnVtcy52MSpyChBSZXNldFJlYXBwbHlUeXBlEiIKHlJFU0VUX1JF",
-            "QVBQTFlfVFlQRV9VTlNQRUNJRklFRBAAEh0KGVJFU0VUX1JFQVBQTFlfVFlQ",
-            "RV9TSUdOQUwQARIbChdSRVNFVF9SRUFQUExZX1RZUEVfTk9ORRACKm4KCVJl",
-            "c2V0VHlwZRIaChZSRVNFVF9UWVBFX1VOU1BFQ0lGSUVEEAASIgoeUkVTRVRf",
-            "VFlQRV9GSVJTVF9XT1JLRkxPV19UQVNLEAESIQodUkVTRVRfVFlQRV9MQVNU",
-            "X1dPUktGTE9XX1RBU0sQAkKCAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYx",
-            "QgpSZXNldFByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtl",
-            "bnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6",
-            "QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "LmFwaS5lbnVtcy52MSqTAQoXUmVzZXRSZWFwcGx5RXhjbHVkZVR5cGUSKgom",
+            "UkVTRVRfUkVBUFBMWV9FWENMVURFX1RZUEVfVU5TUEVDSUZJRUQQABIlCiFS",
+            "RVNFVF9SRUFQUExZX0VYQ0xVREVfVFlQRV9TSUdOQUwQARIlCiFSRVNFVF9S",
+            "RUFQUExZX0VYQ0xVREVfVFlQRV9VUERBVEUQAiqXAQoQUmVzZXRSZWFwcGx5",
+            "VHlwZRIiCh5SRVNFVF9SRUFQUExZX1RZUEVfVU5TUEVDSUZJRUQQABIdChlS",
+            "RVNFVF9SRUFQUExZX1RZUEVfU0lHTkFMEAESGwoXUkVTRVRfUkVBUFBMWV9U",
+            "WVBFX05PTkUQAhIjCh9SRVNFVF9SRUFQUExZX1RZUEVfQUxMX0VMSUdJQkxF",
+            "EAMqbgoJUmVzZXRUeXBlEhoKFlJFU0VUX1RZUEVfVU5TUEVDSUZJRUQQABIi",
+            "Ch5SRVNFVF9UWVBFX0ZJUlNUX1dPUktGTE9XX1RBU0sQARIhCh1SRVNFVF9U",
+            "WVBFX0xBU1RfV09SS0ZMT1dfVEFTSxACQoIBChhpby50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjFCClJlc2V0UHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2Vu",
+            "dW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1w",
+            "b3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.ResetReapplyType), typeof(global::Temporalio.Api.Enums.V1.ResetType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.ResetReapplyExcludeType), typeof(global::Temporalio.Api.Enums.V1.ResetReapplyType), typeof(global::Temporalio.Api.Enums.V1.ResetType), }, null, null));
     }
     #endregion
 
   }
   #region Enums
   /// <summary>
-  /// Reset reapply (replay) options
-  /// * RESET_REAPPLY_TYPE_SIGNAL (default) - Signals are reapplied when workflow is reset
-  /// * RESET_REAPPLY_TYPE_NONE - nothing is reapplied
+  /// Event types to exclude when reapplying events.
+  /// </summary>
+  public enum ResetReapplyExcludeType {
+    [pbr::OriginalName("RESET_REAPPLY_EXCLUDE_TYPE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Exclude signals when reapplying events.
+    /// </summary>
+    [pbr::OriginalName("RESET_REAPPLY_EXCLUDE_TYPE_SIGNAL")] Signal = 1,
+    /// <summary>
+    /// Exclude updates when reapplying events.
+    /// </summary>
+    [pbr::OriginalName("RESET_REAPPLY_EXCLUDE_TYPE_UPDATE")] Update = 2,
+  }
+
+  /// <summary>
+  /// Event types to include when reapplying events. Deprecated: applications
+  /// should use ResetReapplyExcludeType to specify exclusions from this set, and
+  /// new event types should be added to ResetReapplyExcludeType instead of here.
   /// </summary>
   public enum ResetReapplyType {
     [pbr::OriginalName("RESET_REAPPLY_TYPE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Signals are reapplied when workflow is reset.
+    /// </summary>
     [pbr::OriginalName("RESET_REAPPLY_TYPE_SIGNAL")] Signal = 1,
+    /// <summary>
+    /// No events are reapplied when workflow is reset.
+    /// </summary>
     [pbr::OriginalName("RESET_REAPPLY_TYPE_NONE")] None = 2,
+    /// <summary>
+    /// All eligible events are reapplied when workflow is reset.
+    /// </summary>
+    [pbr::OriginalName("RESET_REAPPLY_TYPE_ALL_ELIGIBLE")] AllEligible = 3,
   }
 
   /// <summary>

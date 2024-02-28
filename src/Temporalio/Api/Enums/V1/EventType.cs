@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZXZlbnRfdHlwZS5wcm90bxIVdGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxKo4RCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
+            "cG9yYWwuYXBpLmVudW1zLnYxKsIRCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
             "RV9VTlNQRUNJRklFRBAAEikKJUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VU",
             "SU9OX1NUQVJURUQQARIrCidFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
             "Tl9DT01QTEVURUQQAhIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
@@ -74,10 +74,11 @@ namespace Temporalio.Api.Enums.V1 {
             "T1JLRkxPV19QUk9QRVJUSUVTX01PRElGSUVEX0VYVEVSTkFMTFkQLBI2CjJF",
             "VkVOVF9UWVBFX0FDVElWSVRZX1BST1BFUlRJRVNfTU9ESUZJRURfRVhURVJO",
             "QUxMWRAtEisKJ0VWRU5UX1RZUEVfV09SS0ZMT1dfUFJPUEVSVElFU19NT0RJ",
-            "RklFRBAuQoYBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCDkV2ZW50VHlw",
-            "ZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oC",
-            "F1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpF",
-            "bnVtczo6VjFiBnByb3RvMw=="));
+            "RklFRBAuEjIKLkVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VUSU9OX1VQREFU",
+            "RV9SRVFVRVNURUQQL0KGAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQg5F",
+            "dmVudFR5cGVQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7",
+            "ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86",
+            "OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EventType), }, null, null));
@@ -318,6 +319,12 @@ namespace Temporalio.Api.Enums.V1 {
     /// Workflow properties modified by user workflow code
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_WORKFLOW_PROPERTIES_MODIFIED")] WorkflowPropertiesModified = 46,
+    /// <summary>
+    /// An update was requested. Note that not all update requests result in this
+    /// event. See UpdateRequestedEventOrigin for situations in which this event
+    /// is created.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_REQUESTED")] WorkflowExecutionUpdateRequested = 47,
   }
 
   #endregion

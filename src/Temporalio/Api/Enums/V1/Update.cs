@@ -31,13 +31,16 @@ namespace Temporalio.Api.Enums.V1 {
             "RVhFQ1VUSU9OX0xJRkVDWUNMRV9TVEFHRV9BRE1JVFRFRBABEjYKMlVQREFU",
             "RV9XT1JLRkxPV19FWEVDVVRJT05fTElGRUNZQ0xFX1NUQUdFX0FDQ0VQVEVE",
             "EAISNwozVVBEQVRFX1dPUktGTE9XX0VYRUNVVElPTl9MSUZFQ1lDTEVfU1RB",
-            "R0VfQ09NUExFVEVEEANCgwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIL",
-            "VXBkYXRlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2Vu",
-            "dW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpB",
-            "cGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "R0VfQ09NUExFVEVEEAMqdgoaVXBkYXRlUmVxdWVzdGVkRXZlbnRPcmlnaW4S",
+            "LQopVVBEQVRFX1JFUVVFU1RFRF9FVkVOVF9PUklHSU5fVU5TUEVDSUZJRUQQ",
+            "ABIpCiVVUERBVEVfUkVRVUVTVEVEX0VWRU5UX09SSUdJTl9SRUFQUExZEAFC",
+            "gwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUILVXBkYXRlUHJvdG9QAVoh",
+            "Z28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxp",
+            "by5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.UpdateWorkflowExecutionLifecycleStage), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.UpdateWorkflowExecutionLifecycleStage), typeof(global::Temporalio.Api.Enums.V1.UpdateRequestedEventOrigin), }, null, null));
     }
     #endregion
 
@@ -75,6 +78,21 @@ namespace Temporalio.Api.Enums.V1 {
     /// on a worker and has either been rejected or returned a value or an error.
     /// </summary>
     [pbr::OriginalName("UPDATE_WORKFLOW_EXECUTION_LIFECYCLE_STAGE_COMPLETED")] Completed = 3,
+  }
+
+  /// <summary>
+  /// UpdateRequestedEventOrigin records why an
+  /// WorkflowExecutionUpdateRequestedEvent was written to history. Note that not
+  /// all update requests result in a WorkflowExecutionUpdateRequestedEvent.
+  /// </summary>
+  public enum UpdateRequestedEventOrigin {
+    [pbr::OriginalName("UPDATE_REQUESTED_EVENT_ORIGIN_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// The UpdateRequested event was created when reapplying events during reset
+    /// or replication. I.e. an accepted update on one branch of workflow history
+    /// was converted into a requested update on a different branch.
+    /// </summary>
+    [pbr::OriginalName("UPDATE_REQUESTED_EVENT_ORIGIN_REAPPLY")] Reapply = 1,
   }
 
   #endregion
