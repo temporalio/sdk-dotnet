@@ -462,6 +462,7 @@ namespace Temporalio.Client
                     RequestId = Guid.NewGuid().ToString(),
                     WorkflowIdReusePolicy = input.Options.IdReusePolicy,
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
+                    RequestEagerExecution = input.Options.RequestEagerStart,
                 };
                 if (input.Args.Count > 0)
                 {
