@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
@@ -193,7 +194,8 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets a value indicating whether deadlock detection will be disabled for all
-        /// workflows. If unset, this value defaults to true only if the <c>TEMPORAL_DEBUG</c>
+        /// workflows. If unset, this value defaults to true only if
+        /// <see cref="Debugger.IsAttached" /> is <c>true</c> or the <c>TEMPORAL_DEBUG</c>
         /// environment variable is <c>true</c> or <c>1</c>.
         /// </summary>
         /// <remarks>
@@ -203,7 +205,8 @@ namespace Temporalio.Worker
         /// </remarks>
         public bool DebugMode { get; set; } =
             string.Equals(DebugModeEnvironmentVariable, "true", StringComparison.OrdinalIgnoreCase) ||
-            DebugModeEnvironmentVariable == "1";
+            DebugModeEnvironmentVariable == "1" ||
+            Debugger.IsAttached;
 
         /// <summary>
         /// Gets or sets a value indicating whether workflow tracing event listener will be disabled
