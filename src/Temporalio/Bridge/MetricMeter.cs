@@ -10,18 +10,11 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class MetricMeter : SafeHandle
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MetricMeter"/> class.
-        /// </summary>
-        /// <param name="runtime">Runtime.</param>
-        public MetricMeter(Runtime runtime)
+        private unsafe MetricMeter(Interop.MetricMeter* ptr)
             : base(IntPtr.Zero, true)
         {
-            unsafe
-            {
-                Ptr = Interop.Methods.metric_meter_new(runtime.Ptr);
-                SetHandle((IntPtr)Ptr);
-            }
+            Ptr = ptr;
+            SetHandle((IntPtr)Ptr);
             DefaultAttributes = new(this, Enumerable.Empty<KeyValuePair<string, object>>());
         }
 
@@ -37,6 +30,24 @@ namespace Temporalio.Bridge
         /// Gets the pointer to the meter.
         /// </summary>
         internal unsafe Interop.MetricMeter* Ptr { get; private init; }
+
+        /// <summary>
+        /// Create a new metric meter from runtime if any configured.
+        /// </summary>
+        /// <param name="runtime">Runtime.</param>
+        /// <returns>Meter or null if none configured.</returns>
+        public static MetricMeter? CreateFromRuntime(Runtime runtime)
+        {
+            unsafe
+            {
+                var ptr = Interop.Methods.metric_meter_new(runtime.Ptr);
+                if (ptr == null)
+                {
+                    return null;
+                }
+                return new(ptr);
+            }
+        }
 
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
