@@ -68,7 +68,7 @@ namespace Temporalio.Bridge
                     SetHandle((IntPtr)Ptr);
                 }
             }
-            MetricMeter = new(() => new(this));
+            MetricMeter = new(() => Bridge.MetricMeter.CreateFromRuntime(this));
         }
 
         /// <inheritdoc />
@@ -80,9 +80,9 @@ namespace Temporalio.Bridge
         internal unsafe Interop.Runtime* Ptr { get; private init; }
 
         /// <summary>
-        /// Gets the lazy metric meter for this runtime.
+        /// Gets the lazy metric meter for this runtime. Can be null.
         /// </summary>
-        internal Lazy<MetricMeter> MetricMeter { get; private init; }
+        internal Lazy<MetricMeter?> MetricMeter { get; private init; }
 
         /// <summary>
         /// Read a JSON object into string keys and raw JSON values.

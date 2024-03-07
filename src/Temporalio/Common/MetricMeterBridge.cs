@@ -66,7 +66,14 @@ namespace Temporalio.Common
         /// <param name="runtime">Runtime to base on.</param>
         /// <returns>Lazy meter.</returns>
         internal static Lazy<MetricMeter> LazyFromRuntime(Bridge.Runtime runtime) => new(() =>
-            new MetricMeterBridge(runtime.MetricMeter.Value, runtime.MetricMeter.Value.DefaultAttributes));
+        {
+            // If there is not one on the bridge runtime, use a noop
+            if (runtime.MetricMeter.Value is { } bridgeMeter)
+            {
+                return new MetricMeterBridge(bridgeMeter, bridgeMeter.DefaultAttributes);
+            }
+            return MetricMeterNoop.Instance;
+        });
 
         private static void AssertValidMetricType<T>()
         {

@@ -419,8 +419,9 @@ namespace Temporalio.Bridge
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
                 use_worker_versioning = (byte)(options.UseWorkerVersioning ? 1 : 0),
-                // TODO: Expose to user
-                max_concurrent_wft_polls = 5,
+                max_concurrent_workflow_task_polls = (uint)options.MaxConcurrentWorkflowTaskPolls,
+                nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
+                max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
             };
         }
 
@@ -448,7 +449,6 @@ namespace Temporalio.Bridge
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
                 max_outstanding_workflow_tasks = 2,
-                max_concurrent_wft_polls = 1,
                 max_outstanding_activities = 1,
                 max_outstanding_local_activities = 1,
                 no_remote_activities = 1,
@@ -458,6 +458,9 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
+                max_concurrent_workflow_task_polls = 1,
+                nonsticky_to_sticky_poll_ratio = 1,
+                max_concurrent_activity_task_polls = 1,
             };
         }
     }

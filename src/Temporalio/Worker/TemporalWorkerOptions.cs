@@ -193,6 +193,28 @@ namespace Temporalio.Worker
         public TimeSpan StickyQueueScheduleToStartTimeout { get; set; } = TimeSpan.FromSeconds(10);
 
         /// <summary>
+        /// Gets or sets the maximum number of concurrent poll workflow task requests we will
+        /// perform at a time on this worker's task queue. Default is 5.
+        /// </summary>
+        public int MaxConcurrentWorkflowTaskPolls { get; set; } = 5;
+
+        /// <summary>
+        /// Gets or sets the sticky poll ratio. <see cref="MaxConcurrentWorkflowTaskPolls" /> times
+        /// this value will be the number of max pollers that will be allowed for the non-sticky
+        /// queue when sticky tasks are enabled. If both defaults are used, the sticky queue will
+        /// allow 4 max pollers while the non-sticky queue will allow 1. The minimum for either
+        /// poller is 1, so if <see cref="MaxConcurrentWorkflowTaskPolls" /> is 1 and sticky queues
+        /// are enabled, there will be 2 concurrent polls. Default is 0.2.
+        /// </summary>
+        public float NonStickyToStickyPollRatio { get; set; } = 0.2F;
+
+        /// <summary>
+        /// Gets or sets the maximum number of concurrent poll activity task requests we will
+        /// perform at a time on this worker's task queue. Default is 5.
+        /// </summary>
+        public int MaxConcurrentActivityTaskPolls { get; set; } = 5;
+
+        /// <summary>
         /// Gets or sets a value indicating whether deadlock detection will be disabled for all
         /// workflows. If unset, this value defaults to true only if
         /// <see cref="Debugger.IsAttached" /> is <c>true</c> or the <c>TEMPORAL_DEBUG</c>
