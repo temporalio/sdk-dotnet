@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge;
 using Temporalio.Client;
+using Temporalio.Common;
 using Temporalio.Runtime;
 using Temporalio.Worker;
 using Temporalio.Workflows;
@@ -159,6 +160,17 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             new Dictionary<string, object>()
                 { { "service_name", "temporal-core-sdk" }, { "string-tag", "gaugeval" } },
             metricValues[0].Tags);
+    }
+
+    [Fact]
+    public async Task Runtime_NoMetricMeter_WorksProperly()
+    {
+        // Create runtime with no telemetry
+        var runtime = new TemporalRuntime(new());
+
+        // Try to record a counter just to ensure it doesn't fail
+        runtime.MetricMeter.CreateCounter<int>("counter1").Add(123);
+        Assert.IsType<MetricMeterNoop>(runtime.MetricMeter);
     }
 
     [Fact]
