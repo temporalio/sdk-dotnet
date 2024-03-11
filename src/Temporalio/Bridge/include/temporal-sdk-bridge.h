@@ -97,6 +97,7 @@ typedef struct ClientOptions {
   struct ByteArrayRef client_name;
   struct ByteArrayRef client_version;
   MetadataRef metadata;
+  struct ByteArrayRef api_key;
   struct ByteArrayRef identity;
   const struct ClientTlsOptions *tls_options;
   const struct ClientRetryOptions *retry_options;
@@ -404,6 +405,8 @@ void client_connect(struct Runtime *runtime,
 void client_free(struct Client *client);
 
 void client_update_metadata(struct Client *client, struct ByteArrayRef metadata);
+
+void client_update_api_key(struct Client *client, struct ByteArrayRef api_key);
 
 /**
  * Client, options, and user data must live through callback.
