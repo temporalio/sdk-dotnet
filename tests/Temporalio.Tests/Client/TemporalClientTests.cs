@@ -28,6 +28,7 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         // Update some headers and call again
         // TODO(cretz): Find way to confirm this works without running our own gRPC server
         Client.Connection.RpcMetadata = new Dictionary<string, string> { ["header"] = "value" };
+        Client.Connection.ApiKey = "my-api-key";
         resp = await Client.Connection.WorkflowService.GetSystemInfoAsync(
             new Api.WorkflowService.V1.GetSystemInfoRequest());
         Assert.NotEmpty(resp.ServerVersion);

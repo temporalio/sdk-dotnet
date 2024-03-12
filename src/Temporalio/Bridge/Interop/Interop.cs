@@ -152,6 +152,9 @@ namespace Temporalio.Bridge.Interop
         public ByteArrayRef metadata;
 
         [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef api_key;
+
+        [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef identity;
 
         [NativeTypeName("const struct ClientTlsOptions *")]
@@ -584,6 +587,9 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void client_update_metadata([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef metadata);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void client_update_api_key([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef api_key);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void client_rpc_call([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options, void* user_data, [NativeTypeName("ClientRpcCallCallback")] IntPtr callback);

@@ -13,14 +13,30 @@ namespace Temporalio.Client
     public interface ITemporalConnection : IBridgeClientProvider
     {
         /// <summary>
-        /// Gets or sets the current RPC metadata (i.e. the headers). This can be updated which will
-        /// apply to all future calls the client makes including inside a worker. Setting this value
-        /// is thread safe. When setting, this will error if the client is not already connected
-        /// (e.g. a lazy client has not made a call).
+        /// Gets or sets the current RPC metadata (i.e. the headers).
         /// </summary>
+        /// <remarks>
+        /// This can be updated which will apply to all future calls the client makes including
+        /// inside a worker. Setting this value is thread safe. When setting, this will error if the
+        /// client is not already connected (e.g. a lazy client has not made a call).
+        /// </remarks>
         /// <exception cref="System.InvalidOperationException">Client is not already
         /// connected.</exception>
         IReadOnlyCollection<KeyValuePair<string, string>> RpcMetadata { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current API key.
+        /// </summary>
+        /// <remarks>
+        /// This is the "Authorization" HTTP header for every call, with "Bearer " prepended. This
+        /// is only set if the RPC metadata doesn't already have an "Authorization" key. This can be
+        /// updated which will apply to all future calls the client makes including inside a worker.
+        /// Setting this value is thread safe. When setting, this will error if the client is not
+        /// already connected (e.g. a lazy client has not made a call).
+        /// </remarks>
+        /// <exception cref="System.InvalidOperationException">Client is not already
+        /// connected.</exception>
+        string? ApiKey { get; set; }
 
         /// <summary>
         /// Gets the raw workflow service.

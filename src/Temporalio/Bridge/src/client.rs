@@ -5,9 +5,7 @@ use crate::CancellationToken;
 use crate::MetadataRef;
 use crate::UserDataHandle;
 
-use parking_lot::RwLock;
 use std::str::FromStr;
-use std::sync::Arc;
 use std::time::Duration;
 use temporal_client::{
     ClientKeepAliveConfig, ClientOptions as CoreClientOptions, ClientOptionsBuilder,
@@ -23,6 +21,7 @@ pub struct ClientOptions {
     client_name: ByteArrayRef,
     client_version: ByteArrayRef,
     metadata: MetadataRef,
+    api_key: ByteArrayRef,
     identity: ByteArrayRef,
     tls_options: *const ClientTlsOptions,
     retry_options: *const ClientRetryOptions,
@@ -83,13 +82,6 @@ pub extern "C" fn client_connect(
     let runtime = unsafe { &mut *runtime };
     // Convert opts
     let options = unsafe { &*options };
-    let headers = if options.metadata.size == 0 {
-        None
-    } else {
-        Some(Arc::new(RwLock::new(
-            options.metadata.to_string_map_on_newlines(),
-        )))
-    };
     let core_options: CoreClientOptions = match options.try_into() {
         Ok(v) => v,
         Err(err) => {
@@ -110,7 +102,7 @@ pub extern "C" fn client_connect(
     let core = runtime.core.clone();
     runtime.core.tokio_handle().spawn(async move {
         match core_options
-            .connect_no_namespace(core.telemetry().get_temporal_metric_meter(), headers)
+            .connect_no_namespace(core.telemetry().get_temporal_metric_meter())
             .await
         {
             Ok(core) => {
@@ -149,6 +141,15 @@ pub extern "C" fn client_update_metadata(client: *mut Client, metadata: ByteArra
         .core
         .get_client()
         .set_headers(metadata.to_string_map_on_newlines());
+}
+
+#[no_mangle]
+pub extern "C" fn client_update_api_key(client: *mut Client, api_key: ByteArrayRef) {
+    let client = unsafe { &*client };
+    client
+        .core
+        .get_client()
+        .set_api_key(api_key.to_option_string());
 }
 
 #[repr(C)]
@@ -441,7 +442,13 @@ impl TryFrom<&ClientOptions> for CoreClientOptions {
             .retry_config(
                 unsafe { opts.retry_options.as_ref() }.map_or(RetryConfig::default(), |c| c.into()),
             )
-            .keep_alive(unsafe { opts.keep_alive_options.as_ref() }.map(Into::into));
+            .keep_alive(unsafe { opts.keep_alive_options.as_ref() }.map(Into::into))
+            .headers(if opts.metadata.size == 0 {
+                None
+            } else {
+                Some(opts.metadata.to_string_map_on_newlines())
+            })
+            .api_key(opts.api_key.to_option_string());
         if let Some(tls_config) = unsafe { opts.tls_options.as_ref() } {
             opts_builder.tls_cfg(tls_config.try_into()?);
         }

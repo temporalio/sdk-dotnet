@@ -227,6 +227,7 @@ namespace Temporalio.Bridge
                 client_name = ClientName.Ref,
                 client_version = ClientVersion.Ref,
                 metadata = scope.Metadata(options.RpcMetadata),
+                api_key = scope.ByteArray(options.ApiKey),
                 identity = scope.ByteArray(options.Identity),
                 tls_options =
                     options.Tls == null ? null : scope.Pointer(options.Tls.ToInteropOptions(scope)),

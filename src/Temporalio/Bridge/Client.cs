@@ -85,6 +85,21 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Update client API key.
+        /// </summary>
+        /// <param name="apiKey">API key to set.</param>
+        public void UpdateApiKey(string? apiKey)
+        {
+            using (var scope = new Scope())
+            {
+                unsafe
+                {
+                    Interop.Methods.client_update_api_key(Ptr, scope.ByteArray(apiKey));
+                }
+            }
+        }
+
+        /// <summary>
         /// Make RPC call to Temporal.
         /// </summary>
         /// <typeparam name="T">Return proto type.</typeparam>

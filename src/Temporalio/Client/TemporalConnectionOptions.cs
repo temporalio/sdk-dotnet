@@ -70,6 +70,17 @@ namespace Temporalio.Client
         public IReadOnlyCollection<KeyValuePair<string, string>>? RpcMetadata { get; set; }
 
         /// <summary>
+        /// Gets or sets the API key for all calls.
+        /// </summary>
+        /// <remarks>
+        /// This is the "Authorization" HTTP header for every call, with "Bearer " prepended. This
+        /// is only set if the RPC metadata doesn't already have an "Authorization" key. Note, this
+        /// is only the initial value, updates will not be applied. Use
+        /// <see cref="ITemporalConnection.ApiKey" /> property setter to update.
+        /// </remarks>
+        public string? ApiKey { get; set; }
+
+        /// <summary>
         /// Gets or sets the identity for this connection.
         /// </summary>
         /// <remarks>

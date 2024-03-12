@@ -23,8 +23,10 @@ namespace Temporalio.Client
         // Not set if not lazy
         private readonly SemaphoreSlim? semaphoreForLazyClient;
         private readonly object rpcMetadataLock = new();
+        private readonly object apiKeyLock = new();
         private Bridge.Client? client;
         private IReadOnlyCollection<KeyValuePair<string, string>> rpcMetadata;
+        private string? apiKey;
 
         private TemporalConnection(TemporalConnectionOptions options, bool lazy)
         {
@@ -40,6 +42,7 @@ namespace Temporalio.Client
             {
                 rpcMetadata = new List<KeyValuePair<string, string>>(options.RpcMetadata);
             }
+            apiKey = options.ApiKey;
             // Set default identity if unset
             options.Identity ??= System.Diagnostics.Process.GetCurrentProcess().Id
                             + "@"
@@ -78,7 +81,7 @@ namespace Temporalio.Client
                 {
                     throw new InvalidOperationException("Cannot set RPC metadata if client never connected");
                 }
-                lock (rpcMetadata)
+                lock (rpcMetadataLock)
                 {
                     // Set on Rust side first to prevent errors from affecting field
 #pragma warning disable VSTHRD002 // We know it's completed
@@ -86,6 +89,35 @@ namespace Temporalio.Client
 #pragma warning restore VSTHRD002
                     // We copy this every time just to be safe
                     rpcMetadata = new List<KeyValuePair<string, string>>(value);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public string? ApiKey
+        {
+            get
+            {
+                lock (apiKeyLock)
+                {
+                    return apiKey;
+                }
+            }
+
+            set
+            {
+                var client = this.client;
+                if (client == null)
+                {
+                    throw new InvalidOperationException("Cannot set API key if client never connected");
+                }
+                lock (apiKeyLock)
+                {
+                    // Set on Rust side first to prevent errors from affecting field
+#pragma warning disable VSTHRD002 // We know it's completed
+                    client.UpdateApiKey(value);
+#pragma warning restore VSTHRD002
+                    apiKey = value;
                 }
             }
         }
