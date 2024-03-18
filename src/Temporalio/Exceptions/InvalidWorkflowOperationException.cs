@@ -5,18 +5,13 @@ namespace Temporalio.Exceptions
     /// </summary>
     public class InvalidWorkflowOperationException : TemporalException
     {
-        private readonly string? stackTraceOverride;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidWorkflowOperationException"/> class.
         /// </summary>
         /// <param name="message">Exception message.</param>
-        /// <param name="stackTraceOverride">Override of stack trace.</param>
-        internal InvalidWorkflowOperationException(string message, string? stackTraceOverride = null)
-            : base(message) =>
-            this.stackTraceOverride = stackTraceOverride;
-
-        /// <inheritdoc />
-        public override string? StackTrace => stackTraceOverride ?? base.StackTrace;
+        internal InvalidWorkflowOperationException(string message)
+            : base(message)
+        {
+        }
     }
 }

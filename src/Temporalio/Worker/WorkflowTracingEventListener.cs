@@ -195,7 +195,7 @@ namespace Temporalio.Worker
             if (evt.Task == FrameworkThreadTransferTask)
             {
                 instance.SetCurrentActivationException(
-                    new InvalidWorkflowOperationException(
+                    new InvalidWorkflowSchedulerException(
                         "Workflow attempted to perform a thread transfer task which is non-deterministic. " +
                         "This can be caused by timers or other non-deterministic async calls.",
                         Environment.StackTrace));
@@ -239,7 +239,7 @@ namespace Temporalio.Worker
                 // to user code. We do not need to sanitize the trace, it is ok to show that it
                 // comes all the way through this listener.
                 instance.SetCurrentActivationException(
-                    new InvalidWorkflowOperationException(
+                    new InvalidWorkflowSchedulerException(
                         "Task during workflow run was not scheduled on workflow scheduler",
                         Environment.StackTrace));
             }

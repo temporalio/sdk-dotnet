@@ -86,7 +86,8 @@ namespace Temporalio.Worker
                     WorkflowStackTrace: options.WorkflowStackTrace,
                     OnTaskStarting: options.OnTaskStarting,
                     OnTaskCompleted: options.OnTaskCompleted,
-                    RuntimeMetricMeter: MetricMeter));
+                    RuntimeMetricMeter: MetricMeter,
+                    WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes));
             }
         }
 

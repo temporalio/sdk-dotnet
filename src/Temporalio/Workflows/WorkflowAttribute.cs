@@ -45,5 +45,21 @@ namespace Temporalio.Workflows
         /// <see cref="Converters.IRawValue" />.
         /// </summary>
         public bool Dynamic { get; set; }
+
+        /// <summary>
+        /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will
+        /// cause the workflow/update to fail instead of suspending the workflow via task failure.
+        /// These are applied in addition to
+        /// <see cref="Worker.TemporalWorkerOptions.WorkflowFailureExceptionTypes" /> for the
+        /// overall worker. If <c>typeof(Exception)</c> is set, it effectively will fail a
+        /// workflow/update in all user exception cases.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This property is experimental and may change in the future. If unset
+        /// (i.e. left null), currently the default is to only fail the workflow/update on
+        /// <see cref="Exceptions.FailureException" /> + cancellation and suspend via task failure
+        /// all others. But this default may change in the future.
+        /// </remarks>
+        public Type[]? FailureExceptionTypes { get; set; }
     }
 }

@@ -9,6 +9,7 @@ use temporal_sdk_core::replay::ReplayWorkerInput;
 use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollActivityError;
 use temporal_sdk_core_api::errors::PollWfError;
+use temporal_sdk_core_api::errors::WorkflowErrorType;
 use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
@@ -17,6 +18,8 @@ use temporal_sdk_core_protos::temporal::api::history::v1::History;
 use tokio::sync::mpsc::{channel, Sender};
 use tokio_stream::wrappers::ReceiverStream;
 
+use std::collections::HashMap;
+use std::collections::HashSet;
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -41,6 +44,9 @@ pub struct WorkerOptions {
     max_concurrent_workflow_task_polls: u32,
     nonsticky_to_sticky_poll_ratio: f32,
     max_concurrent_activity_task_polls: u32,
+    nondeterminism_as_workflow_fail: bool,
+    /// This is expected to be a newline-delimited list
+    nondeterminism_as_workflow_fail_for_types: ByteArrayRef,
 }
 
 #[derive(Clone)]
@@ -503,6 +509,26 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             .max_concurrent_wft_polls(opt.max_concurrent_workflow_task_polls as usize)
             .nonsticky_to_sticky_poll_ratio(opt.nonsticky_to_sticky_poll_ratio)
             .max_concurrent_at_polls(opt.max_concurrent_activity_task_polls as usize)
+            .workflow_failure_errors(if opt.nondeterminism_as_workflow_fail {
+                HashSet::from([WorkflowErrorType::Nondeterminism])
+            } else {
+                HashSet::new()
+            })
+            .workflow_types_to_failure_errors(
+                opt.nondeterminism_as_workflow_fail_for_types
+                    .to_option_str()
+                    .map(|s| {
+                        s.split('\n')
+                            .map(|v| {
+                                (
+                                    v.to_owned(),
+                                    HashSet::from([WorkflowErrorType::Nondeterminism]),
+                                )
+                            })
+                            .collect::<HashMap<String, HashSet<WorkflowErrorType>>>()
+                    })
+                    .unwrap_or_default(),
+            )
             .build()
             .map_err(|err| anyhow::anyhow!(err))
     }

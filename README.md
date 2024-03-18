@@ -619,16 +619,31 @@ can be used from workflows including:
 
 #### Workflow Exceptions
 
-* Workflows can throw exceptions to fail the workflow or the "workflow task" (i.e. suspend the workflow, retrying until
-  code update allows it to continue).
-* Exceptions that are instances of `Temporalio.Exceptions.FailureException` will fail the workflow with that exception.
-  * For failing the workflow explicitly with a user exception, explicitly throw
+* Workflows can throw exceptions to fail the workflow/update or the "workflow task" (i.e. suspend the workflow, retrying
+  until code update allows it to continue).
+* By default, exceptions that are instances of `Temporalio.Exceptions.FailureException` will fail the workflow/update
+  with that exception.
+  * For failing the workflow/update explicitly with a user exception, explicitly throw
     `Temporalio.Exceptions.ApplicationFailureException`. This can be marked non-retryable or include details as needed.
   * Other exceptions that come from activity execution, child execution, cancellation, etc are already instances of
-    `FailureException` (or `TaskCanceledException`) and will fail the workflow if uncaught.
-* All other exceptions fail the "workflow task" which means the workflow will continually retry until the workflow is
-  fixed. This is helpful for bad code or other non-predictable exceptions. To actually fail the workflow, use an
-  `ApplicationFailureException` as mentioned above.
+    `FailureException` (or `TaskCanceledException`) and will fail the workflow/update if uncaught.
+* By default, all other exceptions fail the "workflow task" which means the workflow/update will continually retry until
+  the code is fixed. This is helpful for bad code or other non-predictable exceptions. To actually fail the
+  workflow/update, use an `ApplicationFailureException` as mentioned above.
+* By default, all non-deterministic exceptions that are detected internally fail the "workflow task".
+
+The default behavior can be customized at the worker level for all workflows via the
+`TemporalWorkerOptions.WorkflowFailureExceptionTypes` property or per workflow via the `FailureExceptionTypes` property
+on the `WorkflowAttribute`. When a workflow encounters a "workflow task" fail (i.e. suspend), it will first check either
+of these collections to see if the exception is an instance of any of the types and if so, will turn into a
+workflow/update failure. As a special case, when a non-deterministic exception occurs and
+`Temporalio.Exceptions.WorkflowNondeterminismException` is assignable to any of the types in the collection, that too
+will turn into a workflow/update failure. However non-deterministic exceptions that match during update handlers become
+workflow failures not update failures like other exceptions because a non-deterministic exception is an
+entire-workflow-failure situation.
+
+⚠️ WARNING: Customizing the default behavior is currently experimental and the default behavior may change in the
+future.
 
 #### Workflow Logic Constraints
 

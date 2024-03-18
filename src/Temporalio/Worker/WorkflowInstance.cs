@@ -65,6 +65,7 @@ namespace Temporalio.Worker
         private readonly ReplaySafeLogger replaySafeLogger;
         private readonly Action<WorkflowInstance> onTaskStarting;
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
+        private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -184,6 +185,7 @@ namespace Temporalio.Worker
             onTaskCompleted = details.OnTaskCompleted;
             Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
+            workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
         }
 
         /// <summary>
@@ -800,12 +802,9 @@ namespace Temporalio.Worker
                     logger.LogDebug(e, "Workflow raised cancel with run ID {RunId}", Info.RunId);
                     AddCommand(new() { CancelWorkflowExecution = new() });
                 }
-                catch (Exception e) when (e is FailureException || e is OperationCanceledException)
+                catch (Exception e) when (IsWorkflowFailureException(e))
                 {
-                    // Failure exceptions fail the workflow. We let this failure conversion throw if
-                    // it cannot convert the failure. We also allow non-internally-caught
-                    // cancellation exceptions fail the workflow because it's clearer when users are
-                    // reusing cancellation tokens if the workflow fails.
+                    // We let this failure conversion throw if it cannot convert the failure
                     logger.LogDebug(e, "Workflow raised failure with run ID {RunId}", Info.RunId);
                     var failure = failureConverter.ToFailure(e, PayloadConverter);
                     AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } });
@@ -818,6 +817,15 @@ namespace Temporalio.Worker
                 currentActivationException = e;
             }
         }
+
+        private bool IsWorkflowFailureException(Exception e) =>
+            // Failure exceptions fail the workflow. We also allow non-internally-caught
+            // cancellation exceptions fail the workflow because it's clearer when users are
+            // reusing cancellation tokens if the workflow fails.
+            e is FailureException ||
+                e is OperationCanceledException ||
+                Definition.FailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
+                workerLevelFailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true;
 
         private void Apply(WorkflowActivationJob job)
         {
@@ -990,10 +998,10 @@ namespace Temporalio.Worker
                     return task.ContinueWith(
                         _ =>
                         {
-                            // If Temporal failure or cancel, it's an update failure. If it's some
+                            // If workflow failure exception, it's an update failure. If it's some
                             // other exception, it's a task failure. Otherwise it's a success.
                             var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
-                            if (exc is FailureException || exc is OperationCanceledException)
+                            if (exc != null && IsWorkflowFailureException(exc))
                             {
                                 AddCommand(new()
                                 {

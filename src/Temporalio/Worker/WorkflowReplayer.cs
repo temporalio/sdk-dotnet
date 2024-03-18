@@ -172,7 +172,8 @@ namespace Temporalio.Worker
                             WorkflowStackTrace: WorkflowStackTrace.None,
                             OnTaskStarting: options.OnTaskStarting,
                             OnTaskCompleted: options.OnTaskCompleted,
-                            RuntimeMetricMeter: new(() => runtime.MetricMeter)),
+                            RuntimeMetricMeter: new(() => runtime.MetricMeter),
+                            WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes),
                         (runId, removeFromCache) => SetResult(removeFromCache));
                 }
                 catch
@@ -252,7 +253,12 @@ namespace Temporalio.Worker
             private void SetResult(RemoveFromCache removeFromCache)
             {
                 Exception? failure = null;
-                if (removeFromCache.Reason != RemoveFromCache.Types.EvictionReason.CacheFull &&
+                if (removeFromCache.Reason == RemoveFromCache.Types.EvictionReason.Nondeterminism)
+                {
+                    failure = new WorkflowNondeterminismException(
+                        $"{removeFromCache.Reason}: {removeFromCache.Message}");
+                }
+                else if (removeFromCache.Reason != RemoveFromCache.Types.EvictionReason.CacheFull &&
                     removeFromCache.Reason != RemoveFromCache.Types.EvictionReason.LangRequested)
                 {
                     failure = new InvalidWorkflowOperationException(

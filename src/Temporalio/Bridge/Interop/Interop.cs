@@ -541,6 +541,12 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("uint32_t")]
         public uint max_concurrent_activity_task_polls;
+
+        [NativeTypeName("bool")]
+        public byte nondeterminism_as_workflow_fail;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef nondeterminism_as_workflow_fail_for_types;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using Temporalio.Exceptions;
 
 namespace Temporalio.Bridge
 {
@@ -395,6 +397,15 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
+            // At a worker level, set non-determinism-is-fail if any worker level types would match
+            // the non-determinism exception. At a workflow level it's the same but the list is
+            // newline delimited. Note, these same options are on the replayer elsewhere.
+            var nonDetWorkflowFail = options.WorkflowFailureExceptionTypes?.Any(
+                t => t.IsAssignableFrom(typeof(WorkflowNondeterminismException))) ?? false;
+            var nonDetWorkflowFailForTypes = string.Join("\n", options.Workflows.Where(
+                w => w.FailureExceptionTypes?.Any(
+                    t => t.IsAssignableFrom(typeof(WorkflowNondeterminismException))) ?? false).
+                Select(w => w.Name));
             // We have to disable remote activities if a user asks _or_ if we are not running an
             // activity worker at all. Otherwise shutdown will not proceed properly.
             var noRemoteActivities = options.LocalActivityWorkerOnly || options.Activities.Count == 0;
@@ -423,6 +434,8 @@ namespace Temporalio.Bridge
                 max_concurrent_workflow_task_polls = (uint)options.MaxConcurrentWorkflowTaskPolls,
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
                 max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
+                nondeterminism_as_workflow_fail = (byte)(nonDetWorkflowFail ? 1 : 0),
+                nondeterminism_as_workflow_fail_for_types = scope.ByteArray(nonDetWorkflowFailForTypes),
             };
         }
 
@@ -442,6 +455,13 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
+            // Same logic for worker options on failure exception types.
+            var nonDetWorkflowFail = options.WorkflowFailureExceptionTypes?.Any(
+                t => t.IsAssignableFrom(typeof(WorkflowNondeterminismException))) ?? false;
+            var nonDetWorkflowFailForTypes = string.Join("\n", options.Workflows.Where(
+                w => w.FailureExceptionTypes?.Any(
+                    t => t.IsAssignableFrom(typeof(WorkflowNondeterminismException))) ?? false).
+                Select(w => w.Name));
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),
@@ -462,6 +482,8 @@ namespace Temporalio.Bridge
                 max_concurrent_workflow_task_polls = 1,
                 nonsticky_to_sticky_poll_ratio = 1,
                 max_concurrent_activity_task_polls = 1,
+                nondeterminism_as_workflow_fail = (byte)(nonDetWorkflowFail ? 1 : 0),
+                nondeterminism_as_workflow_fail_for_types = scope.ByteArray(nonDetWorkflowFailForTypes),
             };
         }
     }
