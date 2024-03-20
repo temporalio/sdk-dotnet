@@ -338,6 +338,11 @@ typedef struct WorkerOrFail {
   const struct ByteArray *fail;
 } WorkerOrFail;
 
+typedef struct ByteArrayRefArray {
+  const struct ByteArrayRef *data;
+  size_t size;
+} ByteArrayRefArray;
+
 typedef struct WorkerOptions {
   struct ByteArrayRef namespace_;
   struct ByteArrayRef task_queue;
@@ -359,10 +364,7 @@ typedef struct WorkerOptions {
   float nonsticky_to_sticky_poll_ratio;
   uint32_t max_concurrent_activity_task_polls;
   bool nondeterminism_as_workflow_fail;
-  /**
-   * This is expected to be a newline-delimited list
-   */
-  struct ByteArrayRef nondeterminism_as_workflow_fail_for_types;
+  struct ByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
 } WorkerOptions;
 
 /**

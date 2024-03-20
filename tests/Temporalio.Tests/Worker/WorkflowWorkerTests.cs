@@ -4052,7 +4052,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             async worker =>
             {
                 // Start workflow
-                var handle = await Env.Client.StartWorkflowAsync<T>(
+                var handle = await Client.StartWorkflowAsync<T>(
                     wf => wf.RunAsync(workflowScenario ?? FailureTypesWorkflow.Scenario.WaitForever),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
                 if (signalScenario is { } signalScenarioNotNull)
@@ -4165,6 +4165,52 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         [WorkflowRun]
         public Task RunAsync(string param) => Task.CompletedTask;
+    }
+
+    [Workflow("FailureTypeWorkflow\nWithNewline1", FailureExceptionTypes = new[] { typeof(WorkflowNondeterminismException) })]
+    public class FailureTypeWorkflowWithNewline1 : FailureTypesWorkflow
+    {
+        [WorkflowRun]
+        public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
+    }
+
+    [Workflow("FailureTypeWorkflow\nWithNewline2", FailureExceptionTypes = new[] { typeof(WorkflowNondeterminismException) })]
+    public class FailureTypeWorkflowWithNewline2 : FailureTypesWorkflow
+    {
+        [WorkflowRun]
+        public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_FailureTypes_MultipleNonDetWithNewlines()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+        {
+            // Disable cache to force replay and non-determinism
+            MaxCachedWorkflows = 0,
+        };
+        workerOptions.AddWorkflow<FailureTypeWorkflowWithNewline1>();
+        workerOptions.AddWorkflow<FailureTypeWorkflowWithNewline2>();
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                Client.ExecuteWorkflowAsync(
+                    (FailureTypeWorkflowWithNewline1 wf) =>
+                        wf.RunAsync(FailureTypesWorkflow.Scenario.CauseNonDeterminism),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+            Assert.Contains(
+                "Nondeterminism",
+                Assert.IsType<ApplicationFailureException>(wfExc.InnerException).Message);
+            wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                Client.ExecuteWorkflowAsync(
+                    (FailureTypeWorkflowWithNewline2 wf) =>
+                        wf.RunAsync(FailureTypesWorkflow.Scenario.CauseNonDeterminism),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+            Assert.Contains(
+                "Nondeterminism",
+                Assert.IsType<ApplicationFailureException>(wfExc.InnerException).Message);
+        });
     }
 
     [Fact]

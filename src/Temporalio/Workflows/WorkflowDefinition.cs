@@ -153,10 +153,6 @@ namespace Temporalio.Workflows
             {
                 errs.Add("Cannot have custom name for dynamic workflow");
             }
-            if (name != null && name.Contains('\n'))
-            {
-                errs.Add("Workflow name cannot have a newline");
-            }
 
             const BindingFlags bindingFlagsAny =
                 BindingFlags.Instance | BindingFlags.Static |
