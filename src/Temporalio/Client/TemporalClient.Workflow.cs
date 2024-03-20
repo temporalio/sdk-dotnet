@@ -77,6 +77,11 @@ namespace Temporalio.Client
             OutboundInterceptor.ListWorkflowsAsync(new(Query: query, Options: options));
 #endif
 
+        /// <inheritdoc />
+        public Task<WorkflowExecutionCount> CountWorkflowsAsync(
+            string query, WorkflowCountOptions? options = null) =>
+            OutboundInterceptor.CountWorkflowsAsync(new(Query: query, Options: options));
+
         internal partial class Impl
         {
             private static IReadOnlyCollection<HistoryEvent> emptyEvents = new List<HistoryEvent>(0);
@@ -407,7 +412,19 @@ namespace Temporalio.Client
             public override IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
                 ListWorkflowsInput input) =>
                 ListWorkflowsInternalAsync(input);
+#endif
 
+            /// <inheritdoc />
+            public override async Task<WorkflowExecutionCount> CountWorkflowsAsync(
+                CountWorkflowsInput input)
+            {
+                var resp = await Client.Connection.WorkflowService.CountWorkflowExecutionsAsync(
+                    new() { Namespace = Client.Options.Namespace, Query = input.Query },
+                    DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+                return new(resp);
+            }
+
+#if NETCOREAPP3_0_OR_GREATER
             private async IAsyncEnumerable<WorkflowExecution> ListWorkflowsInternalAsync(
                 ListWorkflowsInput input,
                 [EnumeratorCancellation] CancellationToken cancellationToken = default)

@@ -271,6 +271,40 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(expectedResults, actualResults);
     }
 
+    [Fact]
+    public async Task CountWorkflowsAsync_SimpleCount_IsAccurate()
+    {
+        // Start 3 workflows to complete and 2 on another that don't complete
+        for (var i = 0; i < 3; i++)
+        {
+            var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "result")));
+            await Client.ExecuteWorkflowAsync(
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
+                new(id: $"wf-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        }
+        for (var i = 0; i < 2; i++)
+        {
+            var arg = new KSWorkflowParams(ActionSignal: "wait-forever");
+            await Client.StartWorkflowAsync(
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
+                new(id: $"wf-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        }
+
+        // Normal count
+        var resp = await Client.CountWorkflowsAsync(
+            $"TaskQueue = '{Env.KitchenSinkWorkerTaskQueue}'");
+        Assert.Equal(5, resp.Count);
+        Assert.Empty(resp.Groups);
+
+        // Grouped based on status
+        resp = await Client.CountWorkflowsAsync(
+            $"TaskQueue = '{Env.KitchenSinkWorkerTaskQueue}' GROUP BY ExecutionStatus");
+        Assert.Equal(5, resp.Count);
+        Assert.Equal(2, resp.Groups.Count);
+        Assert.Equal(3, resp.Groups.Single(v => v.GroupValues.SequenceEqual(new[] { "Completed" })).Count);
+        Assert.Equal(2, resp.Groups.Single(v => v.GroupValues.SequenceEqual(new[] { "Running" })).Count);
+    }
+
     internal record TracingEvent(string Name, object Input);
 
     internal class TracingClientInterceptor : IClientInterceptor

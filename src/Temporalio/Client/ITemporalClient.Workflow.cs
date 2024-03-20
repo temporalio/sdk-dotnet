@@ -102,5 +102,14 @@ namespace Temporalio.Client
         public IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
             string query, WorkflowListOptions? options = null);
 #endif
+
+        /// <summary>
+        /// Count workflows with the given query.
+        /// </summary>
+        /// <param name="query">Query to use for counting.</param>
+        /// <param name="options">Options for the count call.</param>
+        /// <returns>Count information for the workflows.</returns>
+        public Task<WorkflowExecutionCount> CountWorkflowsAsync(
+            string query, WorkflowCountOptions? options = null);
     }
 }
