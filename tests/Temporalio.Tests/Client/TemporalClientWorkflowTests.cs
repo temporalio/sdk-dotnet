@@ -1,3 +1,4 @@
+#pragma warning disable SA1201, SA1204 // We want to have classes near their tests
 namespace Temporalio.Tests.Client;
 
 using Temporalio.Api.Enums.V1;
@@ -5,6 +6,8 @@ using Temporalio.Client;
 using Temporalio.Client.Interceptors;
 using Temporalio.Common;
 using Temporalio.Converters;
+using Temporalio.Worker;
+using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -271,38 +274,52 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(expectedResults, actualResults);
     }
 
+    [Workflow]
+    public class CountableWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync(bool waitForever) => Workflow.WaitConditionAsync(() => !waitForever);
+    }
+
     [Fact]
     public async Task CountWorkflowsAsync_SimpleCount_IsAccurate()
     {
         // Start 3 workflows to complete and 2 on another that don't complete
-        for (var i = 0; i < 3; i++)
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<CountableWorkflow>());
+        await worker.ExecuteAsync(async () =>
         {
-            var arg = new KSWorkflowParams(new KSAction(Result: new(Value: "result")));
-            await Client.ExecuteWorkflowAsync(
-                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-                new(id: $"wf-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
-        }
-        for (var i = 0; i < 2; i++)
+            for (var i = 0; i < 3; i++)
+            {
+                await Client.ExecuteWorkflowAsync(
+                    (CountableWorkflow wf) => wf.RunAsync(false),
+                    new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            }
+            for (var i = 0; i < 2; i++)
+            {
+                await Client.StartWorkflowAsync(
+                    (CountableWorkflow wf) => wf.RunAsync(true),
+                    new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            }
+        });
+
+        await AssertMore.EventuallyAsync(async () =>
         {
-            var arg = new KSWorkflowParams(ActionSignal: "wait-forever");
-            await Client.StartWorkflowAsync(
-                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-                new(id: $"wf-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
-        }
+            // Normal count
+            var resp = await Client.CountWorkflowsAsync(
+                $"TaskQueue = '{worker.Options.TaskQueue}'");
+            Assert.Equal(5, resp.Count);
+            Assert.Empty(resp.Groups);
 
-        // Normal count
-        var resp = await Client.CountWorkflowsAsync(
-            $"TaskQueue = '{Env.KitchenSinkWorkerTaskQueue}'");
-        Assert.Equal(5, resp.Count);
-        Assert.Empty(resp.Groups);
-
-        // Grouped based on status
-        resp = await Client.CountWorkflowsAsync(
-            $"TaskQueue = '{Env.KitchenSinkWorkerTaskQueue}' GROUP BY ExecutionStatus");
-        Assert.Equal(5, resp.Count);
-        Assert.Equal(2, resp.Groups.Count);
-        Assert.Equal(3, resp.Groups.Single(v => v.GroupValues.SequenceEqual(new[] { "Completed" })).Count);
-        Assert.Equal(2, resp.Groups.Single(v => v.GroupValues.SequenceEqual(new[] { "Running" })).Count);
+            // Grouped based on status
+            resp = await Client.CountWorkflowsAsync(
+                $"TaskQueue = '{worker.Options.TaskQueue}' GROUP BY ExecutionStatus");
+            Assert.Equal(5, resp.Count);
+            Assert.Equal(2, resp.Groups.Count);
+            Assert.Equal(3, resp.Groups.Single(v => v.GroupValues.SequenceEqual(new[] { "Completed" })).Count);
+            Assert.Equal(2, resp.Groups.Single(v => v.GroupValues.SequenceEqual(new[] { "Running" })).Count);
+        });
     }
 
     internal record TracingEvent(string Name, object Input);
