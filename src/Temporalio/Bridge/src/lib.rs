@@ -105,6 +105,23 @@ impl ByteArrayRef {
     }
 }
 
+#[repr(C)]
+pub struct ByteArrayRefArray {
+    data: *const ByteArrayRef,
+    size: libc::size_t,
+}
+
+impl ByteArrayRefArray {
+    fn to_str_vec(&self) -> Vec<&str> {
+        if self.size == 0 {
+            vec![]
+        } else {
+            let raw = unsafe { std::slice::from_raw_parts(self.data, self.size) };
+            raw.iter().map(ByteArrayRef::to_str).collect()
+        }
+    }
+}
+
 /// Metadata is <key1>\n<value1>\n<key2>\n<value2>. Metadata keys or
 /// values cannot contain a newline within.
 type MetadataRef = ByteArrayRef;

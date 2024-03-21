@@ -3964,6 +3964,271 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new(tq) { BuildId = "1.1" });
     }
 
+    public abstract class FailureTypesWorkflow
+    {
+        public abstract Task RunAsync(Scenario scenario);
+
+        [WorkflowSignal]
+        public Task SignalAsync(Scenario scenario) => ApplyScenario(scenario);
+
+        [WorkflowUpdate]
+        public async Task UpdateAsync(Scenario scenario)
+        {
+            // We have to rollover the task so the task failure isn't treated as
+            // non-acceptance
+            await Workflow.DelayAsync(1);
+            await ApplyScenario(scenario);
+        }
+
+        protected static async Task ApplyScenario(Scenario scenario)
+        {
+            switch (scenario)
+            {
+                case Scenario.ThrowMyException:
+                    throw new MyException();
+                case Scenario.CauseNonDeterminism:
+                    // Only sleep if not replaying
+                    if (!Workflow.Unsafe.IsReplaying)
+                    {
+                        await Workflow.DelayAsync(1);
+                    }
+                    break;
+                case Scenario.WaitForever:
+                    await Workflow.WaitConditionAsync(() => false);
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public enum Scenario
+        {
+            ThrowMyException,
+            CauseNonDeterminism,
+            WaitForever,
+        }
+
+        public class MyException : Exception
+        {
+            public MyException()
+                : base("Intentional exception")
+            {
+            }
+        }
+    }
+
+    [Workflow]
+    public class FailureTypesUnconfiguredWorkflow : FailureTypesWorkflow
+    {
+        [WorkflowRun]
+        public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
+    }
+
+    [Workflow(FailureExceptionTypes = new[] { typeof(MyException), typeof(WorkflowNondeterminismException) })]
+    public class FailureTypesConfiguredExplicitlyWorkflow : FailureTypesWorkflow
+    {
+        [WorkflowRun]
+        public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
+    }
+
+    [Workflow(FailureExceptionTypes = new[] { typeof(Exception) })]
+    public class FailureTypesConfiguredInheritedWorkflow : FailureTypesWorkflow
+    {
+        [WorkflowRun]
+        public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_FailureTypes_Configured()
+    {
+        Task AssertScenario<T>(
+            bool expectTaskFail,
+            string failMessageContains,
+            Type? workerLevelFailureExceptionType,
+            FailureTypesWorkflow.Scenario? workflowScenario = null,
+            FailureTypesWorkflow.Scenario? signalScenario = null,
+            FailureTypesWorkflow.Scenario? updateScenario = null)
+            where T : FailureTypesWorkflow => ExecuteWorkerAsync<T>(
+            async worker =>
+            {
+                // Start workflow
+                var handle = await Client.StartWorkflowAsync<T>(
+                    wf => wf.RunAsync(workflowScenario ?? FailureTypesWorkflow.Scenario.WaitForever),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                if (signalScenario is { } signalScenarioNotNull)
+                {
+                    await handle.SignalAsync(wf => wf.SignalAsync(signalScenarioNotNull));
+                }
+                if (updateScenario is { } updateScenarioNotNull)
+                {
+                    // Don't care about handle, we'll re-attach later
+                    await handle.StartUpdateAsync(
+                        wf => wf.UpdateAsync(updateScenarioNotNull),
+                        new() { UpdateID = "my-update-1" });
+                }
+
+                // Expect a task or exception fail
+                if (expectTaskFail)
+                {
+                    await AssertTaskFailureContainsEventuallyAsync(handle, failMessageContains);
+                }
+                else
+                {
+                    // Update does not throw on non-determinism, the workflow does instead
+                    var outerExc = await Assert.ThrowsAnyAsync<TemporalException>(
+                        () => updateScenario == FailureTypesWorkflow.Scenario.ThrowMyException ?
+                            handle.GetUpdateHandle("my-update-1").GetResultAsync() :
+                            handle.GetResultAsync());
+                    var appExc = Assert.IsType<ApplicationFailureException>(outerExc.InnerException);
+                    Assert.Contains(failMessageContains, appExc.Message);
+                }
+            },
+            options: new()
+            {
+                // Disable cache so non-determinism can happen in same worker
+                MaxCachedWorkflows = 0,
+                WorkflowFailureExceptionTypes = workerLevelFailureExceptionType == null ?
+                    null : new[] { workerLevelFailureExceptionType },
+            });
+
+        async Task RunScenario<T>(
+            FailureTypesWorkflow.Scenario scenario,
+            bool expectTaskFail = false,
+            Type? workerLevelFailureExceptionType = null)
+            where T : FailureTypesWorkflow
+        {
+            var failMessageContains = scenario == FailureTypesWorkflow.Scenario.ThrowMyException ?
+                "Intentional exception" : "Nondeterminism";
+
+            // Run for workflow, signal, and update
+            await AssertScenario<T>(
+                expectTaskFail,
+                failMessageContains,
+                workerLevelFailureExceptionType,
+                workflowScenario: scenario);
+            await AssertScenario<T>(
+                expectTaskFail,
+                failMessageContains,
+                workerLevelFailureExceptionType,
+                signalScenario: scenario);
+            await AssertScenario<T>(
+                expectTaskFail,
+                failMessageContains,
+                workerLevelFailureExceptionType,
+                updateScenario: scenario);
+        }
+
+        // Run all tasks concurrently
+        var tasks = new[]
+        {
+            // When unconfigured completely, confirm task fails for all three interactions
+            RunScenario<FailureTypesUnconfiguredWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.ThrowMyException,
+                expectTaskFail: true),
+            RunScenario<FailureTypesUnconfiguredWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.CauseNonDeterminism,
+                expectTaskFail: true),
+
+            // When configured at the worker level explicitly
+            RunScenario<FailureTypesUnconfiguredWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.ThrowMyException,
+                workerLevelFailureExceptionType: typeof(FailureTypesWorkflow.MyException)),
+            RunScenario<FailureTypesUnconfiguredWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.CauseNonDeterminism,
+                workerLevelFailureExceptionType: typeof(WorkflowNondeterminismException)),
+
+            // When configured at the worker level inherited
+            RunScenario<FailureTypesUnconfiguredWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.ThrowMyException,
+                workerLevelFailureExceptionType: typeof(Exception)),
+            RunScenario<FailureTypesUnconfiguredWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.CauseNonDeterminism,
+                workerLevelFailureExceptionType: typeof(Exception)),
+
+            // When configured at the workflow level explicitly
+            RunScenario<FailureTypesConfiguredExplicitlyWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.ThrowMyException),
+            RunScenario<FailureTypesConfiguredExplicitlyWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.CauseNonDeterminism),
+
+            // When configured at the workflow level inherited
+            RunScenario<FailureTypesConfiguredInheritedWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.ThrowMyException),
+            RunScenario<FailureTypesConfiguredInheritedWorkflow>(
+                scenario: FailureTypesWorkflow.Scenario.CauseNonDeterminism),
+        };
+        await Task.WhenAll(tasks);
+    }
+
+    [Workflow(FailureExceptionTypes = new[] { typeof(Exception) })]
+    public class FailOnBadInputWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync(string param) => Task.CompletedTask;
+    }
+
+    [Workflow("FailureTypeWorkflow\nWithNewline1", FailureExceptionTypes = new[] { typeof(WorkflowNondeterminismException) })]
+    public class FailureTypeWorkflowWithNewline1 : FailureTypesWorkflow
+    {
+        [WorkflowRun]
+        public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
+    }
+
+    [Workflow("FailureTypeWorkflow\nWithNewline2", FailureExceptionTypes = new[] { typeof(WorkflowNondeterminismException) })]
+    public class FailureTypeWorkflowWithNewline2 : FailureTypesWorkflow
+    {
+        [WorkflowRun]
+        public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_FailureTypes_MultipleNonDetWithNewlines()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+        {
+            // Disable cache to force replay and non-determinism
+            MaxCachedWorkflows = 0,
+        };
+        workerOptions.AddWorkflow<FailureTypeWorkflowWithNewline1>();
+        workerOptions.AddWorkflow<FailureTypeWorkflowWithNewline2>();
+        using var worker = new TemporalWorker(Client, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                Client.ExecuteWorkflowAsync(
+                    (FailureTypeWorkflowWithNewline1 wf) =>
+                        wf.RunAsync(FailureTypesWorkflow.Scenario.CauseNonDeterminism),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+            Assert.Contains(
+                "Nondeterminism",
+                Assert.IsType<ApplicationFailureException>(wfExc.InnerException).Message);
+            wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                Client.ExecuteWorkflowAsync(
+                    (FailureTypeWorkflowWithNewline2 wf) =>
+                        wf.RunAsync(FailureTypesWorkflow.Scenario.CauseNonDeterminism),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+            Assert.Contains(
+                "Nondeterminism",
+                Assert.IsType<ApplicationFailureException>(wfExc.InnerException).Message);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_BadInput_CanFailWorkflow()
+    {
+        await ExecuteWorkerAsync<FailOnBadInputWorkflow>(async worker =>
+        {
+            var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                Client.ExecuteWorkflowAsync(
+                    "FailOnBadInputWorkflow",
+                    new object?[] { 1234 },
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+            Assert.Contains(
+                "failure decoding parameters",
+                Assert.IsType<ApplicationFailureException>(wfExc.InnerException).Message);
+        });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

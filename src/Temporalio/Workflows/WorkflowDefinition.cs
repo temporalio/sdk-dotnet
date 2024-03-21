@@ -21,6 +21,7 @@ namespace Temporalio.Workflows
             Type type,
             MethodInfo runMethod,
             Func<object?[], object>? creator,
+            Type[]? failureExceptionTypes,
             IReadOnlyDictionary<string, WorkflowSignalDefinition> signals,
             WorkflowSignalDefinition? dynamicSignal,
             IReadOnlyDictionary<string, WorkflowQueryDefinition> queries,
@@ -32,6 +33,7 @@ namespace Temporalio.Workflows
             Type = type;
             RunMethod = runMethod;
             this.creator = creator;
+            FailureExceptionTypes = failureExceptionTypes;
             Signals = signals;
             DynamicSignal = dynamicSignal;
             Queries = queries;
@@ -94,6 +96,12 @@ namespace Temporalio.Workflows
         /// Gets a value indicating whether the workflow is dynamic.
         /// </summary>
         public bool Dynamic => Name == null;
+
+        /// <summary>
+        /// Gets the failure exception types. See
+        /// <see cref="WorkflowAttribute.FailureExceptionTypes" /> for more details.
+        /// </summary>
+        public Type[]? FailureExceptionTypes { get; private init; }
 
         /// <summary>
         /// Create a workflow definition for the given type or fail. The result is cached by type.
@@ -430,6 +438,7 @@ namespace Temporalio.Workflows
                 type: type,
                 runMethod: runMethod!,
                 creator: creator,
+                failureExceptionTypes: attr.FailureExceptionTypes,
                 signals: signals,
                 dynamicSignal: dynamicSignal,
                 queries: queries,

@@ -174,13 +174,13 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             var history = await handle.FetchHistoryAsync();
             var replayer = new WorkflowReplayer(
                 new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>());
-            var exc = await Assert.ThrowsAsync<InvalidWorkflowOperationException>(
+            var exc = await Assert.ThrowsAsync<WorkflowNondeterminismException>(
                 async () => await replayer.ReplayWorkflowAsync(history));
             Assert.Contains("Nondeterminism", exc.Message);
 
             // Also confirm we can ask it not to throw
             var result = await replayer.ReplayWorkflowAsync(history, throwOnReplayFailure: false);
-            exc = Assert.IsType<InvalidWorkflowOperationException>(result.ReplayFailure);
+            exc = Assert.IsType<WorkflowNondeterminismException>(result.ReplayFailure);
             Assert.Contains("Nondeterminism", exc.Message);
         });
     }
@@ -193,13 +193,13 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             "some-id", ReadAllFileText("test_replayer_nondeterministic_history.json"));
         var replayer = new WorkflowReplayer(
             new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>());
-        var exc = await Assert.ThrowsAsync<InvalidWorkflowOperationException>(
+        var exc = await Assert.ThrowsAsync<WorkflowNondeterminismException>(
             () => replayer.ReplayWorkflowAsync(history));
         Assert.Contains("Nondeterminism", exc.Message);
 
         // Also confirm we can ask it not to throw
         var result = await replayer.ReplayWorkflowAsync(history, throwOnReplayFailure: false);
-        exc = Assert.IsType<InvalidWorkflowOperationException>(result.ReplayFailure);
+        exc = Assert.IsType<WorkflowNondeterminismException>(result.ReplayFailure);
         Assert.Contains("Nondeterminism", exc.Message);
     }
 
@@ -220,10 +220,10 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         var results = (await replayer.ReplayWorkflowsAsync(HistoryIter())).ToList();
         Assert.Equal(2, results.Count);
         Assert.Null(results[0].ReplayFailure);
-        Assert.IsType<InvalidWorkflowOperationException>(results[1].ReplayFailure);
+        Assert.IsType<WorkflowNondeterminismException>(results[1].ReplayFailure);
 
         // Fail fast sync iter
-        await Assert.ThrowsAsync<InvalidWorkflowOperationException>(
+        await Assert.ThrowsAsync<WorkflowNondeterminismException>(
             () => replayer.ReplayWorkflowsAsync(HistoryIter(), throwOnReplayFailure: true));
 
         static async IAsyncEnumerable<WorkflowHistory> HistoryIterAsync()
@@ -242,10 +242,10 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         }
         Assert.Equal(2, resultList.Count);
         Assert.Null(resultList[0].ReplayFailure);
-        Assert.IsType<InvalidWorkflowOperationException>(resultList[1].ReplayFailure);
+        Assert.IsType<WorkflowNondeterminismException>(resultList[1].ReplayFailure);
 
         // Fail fast async iter
-        await Assert.ThrowsAsync<InvalidWorkflowOperationException>(async () =>
+        await Assert.ThrowsAsync<WorkflowNondeterminismException>(async () =>
         {
             await foreach (var res in replayer.ReplayWorkflowsAsync(HistoryIterAsync(), throwOnReplayFailure: true))
             {

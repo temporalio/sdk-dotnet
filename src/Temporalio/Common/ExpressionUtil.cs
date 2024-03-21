@@ -78,6 +78,7 @@ namespace Temporalio.Common
             {
                 throw new ArgumentException("Static call expression must not have a lambda parameter");
             }
+            var method = call.Method;
             if (call.Object != null)
             {
                 if (expr.Parameters.Count != 1 ||
@@ -87,6 +88,18 @@ namespace Temporalio.Common
                 {
                     throw new ArgumentException(
                         "Instance call expression must have a single lambda parameter used for the call");
+                }
+                // In .NET method.ReflectedType will not properly be the call.Object type, but
+                // instead its declaration type. We need it to be the most-specific method in the
+                // hierarchy.
+                if (method.ReflectedType != call.Object.Type)
+                {
+                    method = call.Object.Type.GetMethod(
+                        method.Name,
+                        BindingFlags.Public | BindingFlags.Instance,
+                        null,
+                        method.GetParameters().Select(p => p.ParameterType).ToArray(),
+                        null) ?? throw new ArgumentException("Failed finding more-specific resolved method");
                 }
             }
             // Extract all arguments. If they are constant expressions we'll optimize and just pull
@@ -107,7 +120,7 @@ namespace Temporalio.Common
                 return expr.Compile()();
 #endif
             });
-            return (call.Method, args.ToArray());
+            return (method, args.ToArray());
         }
     }
 }

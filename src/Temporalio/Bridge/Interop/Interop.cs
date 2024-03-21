@@ -486,6 +486,15 @@ namespace Temporalio.Bridge.Interop
         public ByteArray* fail;
     }
 
+    internal unsafe partial struct ByteArrayRefArray
+    {
+        [NativeTypeName("const struct ByteArrayRef *")]
+        public ByteArrayRef* data;
+
+        [NativeTypeName("size_t")]
+        public UIntPtr size;
+    }
+
     internal partial struct WorkerOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
@@ -541,6 +550,12 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("uint32_t")]
         public uint max_concurrent_activity_task_polls;
+
+        [NativeTypeName("bool")]
+        public byte nondeterminism_as_workflow_fail;
+
+        [NativeTypeName("struct ByteArrayRefArray")]
+        public ByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
