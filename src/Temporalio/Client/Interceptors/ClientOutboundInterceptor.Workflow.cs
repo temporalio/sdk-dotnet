@@ -93,5 +93,14 @@ namespace Temporalio.Client.Interceptors
             ListWorkflowsInput input) =>
             Next.ListWorkflowsAsync(input);
 #endif
+
+        /// <summary>
+        /// Intercept counting workflows.
+        /// </summary>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Count information for the workflows.</returns>
+        public virtual Task<WorkflowExecutionCount> CountWorkflowsAsync(
+            CountWorkflowsInput input) =>
+            Next.CountWorkflowsAsync(input);
     }
 }

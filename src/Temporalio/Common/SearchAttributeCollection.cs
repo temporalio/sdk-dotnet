@@ -63,46 +63,14 @@ namespace Temporalio.Common
         /// <returns>Search attribute collection.</returns>
         public static SearchAttributeCollection FromProto(SearchAttributes searchAttributes)
         {
-            // We intentionally don't shortcut an empty set of search attributes as Empty here
-            // because _technically_ the internal value may be mutated
-            static object JsonElementToObject(JsonElement elem, IndexedValueType valueType) => elem.ValueKind switch
-            {
-                JsonValueKind.Array =>
-                    elem.EnumerateArray().Select(j => JsonElementToObject(j, valueType)).ToList(),
-                JsonValueKind.False or JsonValueKind.True =>
-                    elem.GetBoolean(),
-                JsonValueKind.Number when valueType == IndexedValueType.Int =>
-                    elem.GetInt64(),
-                JsonValueKind.Number =>
-                    elem.GetDouble(),
-                JsonValueKind.String when valueType == IndexedValueType.Datetime =>
-                    elem.TryGetDateTimeOffset(out var d) ? d : elem.GetString()!,
-                JsonValueKind.String =>
-                    elem.GetString()!,
-                _ =>
-                    throw new ArgumentException($"Unexpected search attribute kind {elem.ValueKind}"),
-            };
             var dict = new SortedDictionary<SearchAttributeKey, object>();
             foreach (var kvp in searchAttributes.IndexedFields)
             {
-                if (!kvp.Value.Metadata.TryGetValue("type", out var typeName))
+                // Old servers may have null elements, which we ignore
+                if (PayloadToObject(kvp.Value) is { } value)
                 {
-                    throw new ArgumentException("Metadata type missing");
+                    dict[new(kvp.Key, value.Type)] = value.Value;
                 }
-                if (!NameToIndexType.TryGetValue(typeName, out var valueType))
-                {
-                    throw new ArgumentException($"Unrecognized metadata type {typeName.ToStringUtf8()}");
-                }
-                // Convert to JSON element
-                if (DataConverter.Default.PayloadConverter.ToValue<JsonElement?>(kvp.Value) is not JsonElement elem ||
-                    elem.ValueKind == JsonValueKind.Null)
-                {
-                    // Old servers may have null elements, which we ignore
-                    continue;
-                }
-                // Just convert the element and don't over-validate because old servers have
-                // stranger data
-                dict[new(kvp.Key, valueType)] = JsonElementToObject(elem, valueType);
             }
             return new(dict);
         }
@@ -202,6 +170,52 @@ namespace Temporalio.Common
                     }),
             },
         };
+
+        /// <summary>
+        /// Convert a search attribute payload to an object.
+        /// </summary>
+        /// <param name="payload">Payload to convert.</param>
+        /// <returns>
+        /// Object or null if the payload came from an older server which supported null search
+        /// attribute payloads.
+        /// </returns>
+        internal static (object Value, IndexedValueType Type)? PayloadToObject(Payload payload)
+        {
+            if (!payload.Metadata.TryGetValue("type", out var typeName))
+            {
+                throw new ArgumentException("Metadata type missing");
+            }
+            if (!NameToIndexType.TryGetValue(typeName, out var valueType))
+            {
+                throw new ArgumentException($"Unrecognized metadata type {typeName.ToStringUtf8()}");
+            }
+            // Convert to JSON element
+            if (DataConverter.Default.PayloadConverter.ToValue<JsonElement?>(payload) is not JsonElement elem ||
+                elem.ValueKind == JsonValueKind.Null)
+            {
+                // Old servers may have null elements, which we ignore
+                return null;
+            }
+            // Convert element
+            static object JsonElementToObject(JsonElement elem, IndexedValueType valueType) => elem.ValueKind switch
+            {
+                JsonValueKind.Array =>
+                    elem.EnumerateArray().Select(j => JsonElementToObject(j, valueType)).ToList(),
+                JsonValueKind.False or JsonValueKind.True =>
+                    elem.GetBoolean(),
+                JsonValueKind.Number when valueType == IndexedValueType.Int =>
+                    elem.GetInt64(),
+                JsonValueKind.Number =>
+                    elem.GetDouble(),
+                JsonValueKind.String when valueType == IndexedValueType.Datetime =>
+                    elem.TryGetDateTimeOffset(out var d) ? d : elem.GetString()!,
+                JsonValueKind.String =>
+                    elem.GetString()!,
+                _ =>
+                    throw new ArgumentException($"Unexpected search attribute kind {elem.ValueKind}"),
+            };
+            return (JsonElementToObject(elem, valueType), valueType);
+        }
 
         /// <summary>
         /// Convert the key and value to a proto payload.
