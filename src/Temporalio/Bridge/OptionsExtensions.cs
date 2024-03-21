@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Temporalio.Exceptions;
 
 namespace Temporalio.Bridge
 {
@@ -423,6 +426,10 @@ namespace Temporalio.Bridge
                 max_concurrent_workflow_task_polls = (uint)options.MaxConcurrentWorkflowTaskPolls,
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
                 max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
+                nondeterminism_as_workflow_fail =
+                    (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
+                nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
+                    AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
             };
         }
 
@@ -442,6 +449,10 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
+            var nonDetWorkflowFailForTypes = options.Workflows.Where(
+                w => w.FailureExceptionTypes?.Any(
+                    t => t.IsAssignableFrom(typeof(WorkflowNondeterminismException))) ?? false).
+                Select(w => w.Name).ToArray();
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),
@@ -462,7 +473,23 @@ namespace Temporalio.Bridge
                 max_concurrent_workflow_task_polls = 1,
                 nonsticky_to_sticky_poll_ratio = 1,
                 max_concurrent_activity_task_polls = 1,
+                nondeterminism_as_workflow_fail =
+                    (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
+                nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
+                    AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
             };
         }
+
+        private static bool AnyNonDeterminismFailureTypes(
+            IReadOnlyCollection<Type>? types) =>
+            types?.Any(t => t.IsAssignableFrom(typeof(WorkflowNondeterminismException))) ?? false;
+
+        private static string[] AllNonDeterminismFailureTypeWorkflows(
+            IList<Workflows.WorkflowDefinition> workflows) =>
+            workflows.
+                Where(w => AnyNonDeterminismFailureTypes(w.FailureExceptionTypes)).
+                Select(w =>
+                    w.Name ?? throw new ArgumentException("Dynamic workflows cannot trap non-determinism")).
+                ToArray();
     }
 }

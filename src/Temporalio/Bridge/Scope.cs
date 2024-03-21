@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge
@@ -73,6 +74,24 @@ namespace Temporalio.Bridge
             var val = ByteArrayRef.FromNewlineDelimited(values);
             toKeepAlive.Add(val);
             return val.Ref;
+        }
+
+        /// <summary>
+        /// Create an array of byte arrays from an collection of strings.
+        /// </summary>
+        /// <param name="strings">Strings.</param>
+        /// <returns>Created byte array array.</returns>
+        public Interop.ByteArrayRefArray ByteArrayArray(IEnumerable<string> strings)
+        {
+            var arr = strings.Select(ByteArray).ToArray();
+            unsafe
+            {
+                return new()
+                {
+                    data = ArrayPointer(arr),
+                    size = (UIntPtr)arr.Length,
+                };
+            }
         }
 
         /// <summary>

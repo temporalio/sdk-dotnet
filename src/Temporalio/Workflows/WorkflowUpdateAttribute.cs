@@ -9,6 +9,12 @@ namespace Temporalio.Workflows
     /// This is not inherited, so if a method is overridden, it must also have this attribute. The
     /// method must be public, non-static, and return a task (can be a task with result).
     /// </remarks>
+    /// <remarks>
+    /// Update failure/suspend behavior is the same as workflows, based on failure exception types.
+    /// See <see cref="WorkflowAttribute.FailureExceptionTypes" /> or
+    /// <see cref="Worker.TemporalWorkerOptions.WorkflowFailureExceptionTypes"/> to change the
+    /// default behavior.
+    /// </remarks>
     /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class WorkflowUpdateAttribute : Attribute

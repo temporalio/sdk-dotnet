@@ -114,6 +114,12 @@ namespace Temporalio.Worker
         public TemporalRuntime? Runtime { get; set; }
 
         /// <summary>
+        /// Gets or sets workflow failure exception types. See
+        /// <see cref="TemporalWorkerOptions.WorkflowFailureExceptionTypes" />.
+        /// </summary>
+        public IReadOnlyCollection<Type>? WorkflowFailureExceptionTypes { get; set; }
+
+        /// <summary>
         /// Gets or sets a function to create workflow instances.
         /// </summary>
         /// <remarks>
