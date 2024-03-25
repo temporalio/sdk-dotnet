@@ -64,9 +64,7 @@ namespace Temporalio.Extensions.Hosting
             {
                 // Wrap in a scope (even for statics to keep logic simple)
 #if NET6_0_OR_GREATER
-#pragma warning disable CA2007 // Invalid for AsyncServiceScope, ServiceProvider is not accessible via ConfiguredAsyncDisposable object type.
                 var scope = provider.CreateAsyncScope();
-#pragma warning restore CA2007
 #else
                 var scope = provider.CreateScope();
 #endif
