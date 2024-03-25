@@ -1,4 +1,4 @@
-using System;
+fusing System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -86,7 +86,6 @@ namespace Temporalio.Client
         /// Gets or sets the amount of time to wait before starting the workflow.
         /// </summary>
         /// <remarks>Start delay does not work with <see cref="CronSchedule" />.</remarks>
-        /// <remarks>WARNING: Start delay is experimental.</remarks>
         public TimeSpan? StartDelay { get; set; }
 
         /// <summary>
