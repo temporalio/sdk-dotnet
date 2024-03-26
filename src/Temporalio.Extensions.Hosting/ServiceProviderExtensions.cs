@@ -55,27 +55,42 @@ namespace Temporalio.Extensions.Hosting
         /// <param name="method">Method to create activity definition from.</param>
         /// <returns>Created definition.</returns>
         public static ActivityDefinition CreateTemporalActivityDefinition(
-            this IServiceProvider provider, Type instanceType, MethodInfo method)
+            this IServiceProvider provider,
+            Type instanceType,
+            MethodInfo method)
         {
             // Invoker can be async (i.e. returns Task<object?>)
-            Func<object?[], Task<object>> invoker = async args =>
+            async Task<object?> Invoker(object?[] args)
             {
                 // Wrap in a scope (even for statics to keep logic simple)
-                using (var scope = provider.CreateScope())
+#if NET6_0_OR_GREATER
+                var scope = provider.CreateAsyncScope();
+#else
+                var scope = provider.CreateScope();
+#endif
+                try
                 {
                     object? result;
                     try
                     {
                         // Invoke static or non-static
-                        var instance = method.IsStatic ? null : scope.ServiceProvider.GetRequiredService(instanceType);
+                        var instance = method.IsStatic
+                            ? null
+                            : scope.ServiceProvider.GetRequiredService(instanceType);
+
                         result = method.Invoke(instance, args);
                     }
                     catch (TargetInvocationException e)
                     {
+#if NET6_0_OR_GREATER
                         ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
+#else
+                        ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+#endif
                         // Unreachable
                         throw new InvalidOperationException("Unreachable");
                     }
+
                     // In order to make sure the scope lasts the life of the activity, we need to
                     // wait on the task if it's a task
                     if (result is Task resultTask)
@@ -94,8 +109,16 @@ namespace Temporalio.Extensions.Hosting
                     }
                     return result;
                 }
-            };
-            return ActivityDefinition.Create(method, invoker);
+                finally
+                {
+#if NET6_0_OR_GREATER
+                    await scope.DisposeAsync().ConfigureAwait(false);
+#else
+                    scope.Dispose();
+#endif
+                }
+            }
+            return ActivityDefinition.Create(method, Invoker);
         }
     }
 }
