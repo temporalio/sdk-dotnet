@@ -70,7 +70,7 @@ namespace Temporalio.Extensions.Hosting
 #endif
                 try
                 {
-                    object? result = null;
+                    object? result;
                     try
                     {
                         // Invoke static or non-static
@@ -86,9 +86,9 @@ namespace Temporalio.Extensions.Hosting
                         ExceptionDispatchInfo.Capture(e.InnerException!).Throw();
 #else
                         ExceptionDispatchInfo.Capture(e.InnerException).Throw();
+#endif
                         // Unreachable
                         throw new InvalidOperationException("Unreachable");
-#endif
                     }
 
                     // In order to make sure the scope lasts the life of the activity, we need to
