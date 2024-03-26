@@ -107,7 +107,7 @@ namespace Temporalio.Extensions.Hosting
                             result = ValueTuple.Create();
                         }
                     }
-                    return result!;
+                    return result;
                 }
                 finally
                 {
