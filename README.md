@@ -498,12 +498,12 @@ var handle = await client.StartWorkflowAsync(
 // Check current greeting via query
 Console.WriteLine(
     "Current greeting: {0}",
-    await handle.QueryWorkflowAsync(wf => wf.CurrentGreeting()));
+    await handle.QueryAsync(wf => wf.CurrentGreeting()));
 // Change the params via update
 var updateArg = new GreetingParams(Salutation: "Aloha", Name: "John");
 await handle.ExecuteUpdateAsync(wf => wf.UpdateGreetingParamsAsync(updateArg));
 // Tell it to complete via signal
-await handle.SignalWorkflowAsync(wf => wf.CompleteWithGreetingAsync());
+await handle.SignalAsync(wf => wf.CompleteWithGreetingAsync());
 // Wait for workflow result
 Console.WriteLine(
     "Final greeting: {0}",
