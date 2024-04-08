@@ -68,11 +68,11 @@ namespace Temporalio.Extensions.Hosting
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorkerService"/> class using
-        /// options and possibly an existing client. This constructor is mostly used by DI
-        /// containers. The task queue is used as the name on the options monitor to lookup the
-        /// options for the worker service.
+        /// options and possibly an existing client. This constructor was used by DI
+        /// containers and is now DEPRECATED.
         /// </summary>
-        /// <param name="taskQueue">Task queue which is the options name.</param>
+        /// <param name="taskQueue">Task queue which is included in the options name.</param>
+        /// <param name="buildId">Build ID which is included in the options name.</param>
         /// <param name="optionsMonitor">Used to lookup the options to build the worker with.
         /// </param>
         /// <param name="existingClient">Existing client to use if the options don't specify
@@ -80,14 +80,63 @@ namespace Temporalio.Extensions.Hosting
         /// <param name="loggerFactory">Logger factory to use if not already on the worker options.
         /// The worker options logger factory or this one will be also be used for the client if an
         /// existing client does not exist (regardless of client options' logger factory).</param>
-        [ActivatorUtilitiesConstructor]
+        [Obsolete("Deprecated older form of DI constructor, task queue + build ID tuple one is used instead.")]
         public TemporalWorkerService(
             string taskQueue,
+            string? buildId,
+            IOptionsMonitor<TemporalWorkerServiceOptions> optionsMonitor,
+            ITemporalClient? existingClient = null,
+            ILoggerFactory? loggerFactory = null)
+            : this((taskQueue, buildId), optionsMonitor, existingClient, loggerFactory)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalWorkerService"/> class using
+        /// options and possibly an existing client. This constructor is only for use by DI
+        /// containers. The task queue and build ID are used as the name for the options monitor to
+        /// lookup the options for the worker service.
+        /// </summary>
+        /// <param name="taskQueueAndBuildId">Task queue and build ID for the options name.</param>
+        /// <param name="optionsMonitor">Used to lookup the options to build the worker with.
+        /// </param>
+        /// <param name="existingClient">Existing client to use if the options don't specify
+        /// client connection options (connected when run if lazy and not connected).</param>
+        /// <param name="loggerFactory">Logger factory to use if not already on the worker options.
+        /// The worker options logger factory or this one will be also be used for the client if an
+        /// existing client does not exist (regardless of client options' logger factory).</param>
+        /// <remarks>
+        /// WARNING: Do not rely on the signature of this constructor, it is for DI container use
+        /// only and may change in incompatible ways.
+        /// </remarks>
+        [ActivatorUtilitiesConstructor]
+        public TemporalWorkerService(
+            (string TaskQueue, string? BuildId) taskQueueAndBuildId,
             IOptionsMonitor<TemporalWorkerServiceOptions> optionsMonitor,
             ITemporalClient? existingClient = null,
             ILoggerFactory? loggerFactory = null)
         {
-            var options = (TemporalWorkerServiceOptions)optionsMonitor.Get(taskQueue).Clone();
+            var options = (TemporalWorkerServiceOptions)optionsMonitor.Get(
+                TemporalWorkerServiceOptions.GetUniqueOptionsName(
+                    taskQueueAndBuildId.TaskQueue, taskQueueAndBuildId.BuildId)).Clone();
+
+            // Make sure options values match the ones given in constructor
+            if (options.TaskQueue != taskQueueAndBuildId.TaskQueue)
+            {
+                throw new InvalidOperationException(
+                    $"Task queue '{taskQueueAndBuildId.TaskQueue}' on constructor different than '{options.TaskQueue}' on options");
+            }
+            if (options.BuildId != taskQueueAndBuildId.BuildId)
+            {
+                throw new InvalidOperationException(
+                    $"Build ID '{taskQueueAndBuildId.BuildId ?? "<unset>"}' on constructor different than '{options.BuildId ?? "<unset>"}' on options");
+            }
+            if (options.UseWorkerVersioning != (taskQueueAndBuildId.BuildId != null))
+            {
+                throw new InvalidOperationException(
+                    $"Use versioning option is {options.UseWorkerVersioning}, but constructor expects different");
+            }
+
             newClientOptions = options.ClientOptions;
             if (newClientOptions == null)
             {

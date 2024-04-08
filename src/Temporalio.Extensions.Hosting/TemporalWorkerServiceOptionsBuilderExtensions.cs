@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -167,22 +168,45 @@ namespace Temporalio.Extensions.Hosting
         /// Get an options builder to configure worker service options.
         /// </summary>
         /// <param name="builder">Builder to use.</param>
+        /// <param name="disallowDuplicates">If true, will fail if options already registered for
+        /// this builder's task queue and build ID.</param>
         /// <returns>Options builder.</returns>
         public static OptionsBuilder<TemporalWorkerServiceOptions> ConfigureOptions(
-            this ITemporalWorkerServiceOptionsBuilder builder) =>
-            builder.Services.AddOptions<TemporalWorkerServiceOptions>(builder.TaskQueue);
+            this ITemporalWorkerServiceOptionsBuilder builder,
+            bool disallowDuplicates = false)
+        {
+            // To ensure the user isn't accidentally double, we can disallow duplicates
+            var optionsName = TemporalWorkerServiceOptions.GetUniqueOptionsName(
+                    builder.TaskQueue, builder.BuildId);
+            if (disallowDuplicates)
+            {
+                var any = builder.Services.Any(s =>
+                    s.ImplementationInstance is ConfigureNamedOptions<TemporalWorkerServiceOptions> instance &&
+                    instance.Name == optionsName);
+                if (any)
+                {
+                    throw new InvalidOperationException(
+                        $"Worker service for task queue '{builder.TaskQueue}' and build ID '{builder.BuildId ?? "<unset>"}' already on collection");
+                }
+            }
+
+            return builder.Services.AddOptions<TemporalWorkerServiceOptions>(optionsName);
+        }
 
         /// <summary>
         /// Configure worker service options using an action.
         /// </summary>
         /// <param name="builder">Builder to use.</param>
         /// <param name="configure">Configuration action.</param>
+        /// <param name="disallowDuplicates">If true, will fail if options already registered for
+        /// this builder's task queue and build ID.</param>
         /// <returns>Same builder instance.</returns>
         public static ITemporalWorkerServiceOptionsBuilder ConfigureOptions(
             this ITemporalWorkerServiceOptionsBuilder builder,
-            Action<TemporalWorkerServiceOptions> configure)
+            Action<TemporalWorkerServiceOptions> configure,
+            bool disallowDuplicates = false)
         {
-            builder.ConfigureOptions().Configure(configure);
+            builder.ConfigureOptions(disallowDuplicates).Configure(configure);
             return builder;
         }
 
