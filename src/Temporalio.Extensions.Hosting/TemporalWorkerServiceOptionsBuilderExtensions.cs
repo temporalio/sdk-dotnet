@@ -175,7 +175,8 @@ namespace Temporalio.Extensions.Hosting
             this ITemporalWorkerServiceOptionsBuilder builder,
             bool disallowDuplicates = false)
         {
-            // To ensure the user isn't accidentally double, we can disallow duplicates
+            // To ensure the user isn't accidentally registering a duplicate task queue + build ID
+            // worker, we check here that there aren't duplicate options
             var optionsName = TemporalWorkerServiceOptions.GetUniqueOptionsName(
                     builder.TaskQueue, builder.BuildId);
             if (disallowDuplicates)
