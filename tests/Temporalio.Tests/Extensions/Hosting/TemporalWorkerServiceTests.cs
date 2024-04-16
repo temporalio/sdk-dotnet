@@ -202,4 +202,72 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             },
             result);
     }
+
+    [Workflow("Workflow")]
+    public class WorkflowV1
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync() => "done-v1";
+    }
+
+    [Workflow("Workflow")]
+    public class WorkflowV2
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync() => "done-v2";
+    }
+
+    [Fact]
+    public async Task TemporalWorkerService_ExecuteAsync_MultipleVersionsSameQueue()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        // Build with two workers on same queue but different versions
+        var bld = Host.CreateApplicationBuilder();
+        bld.Services.AddSingleton(Client);
+        bld.Services.
+            AddHostedTemporalWorker(taskQueue, "1.0").
+            AddWorkflow<WorkflowV1>();
+        bld.Services.
+            AddHostedTemporalWorker(taskQueue, "2.0").
+            AddWorkflow<WorkflowV2>();
+
+        // Start the host
+        using var tokenSource = new CancellationTokenSource();
+        using var host = bld.Build();
+        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
+
+        // Set 1.0 as default and run
+        await Env.Client.UpdateWorkerBuildIdCompatibilityAsync(
+            taskQueue, new BuildIdOp.AddNewDefault("1.0"));
+        var res = await Client.ExecuteWorkflowAsync(
+            (WorkflowV1 wf) => wf.RunAsync(),
+            new($"wf-{Guid.NewGuid()}", taskQueue));
+        Assert.Equal("done-v1", res);
+
+        // Update default and run again
+        await Env.Client.UpdateWorkerBuildIdCompatibilityAsync(
+            taskQueue, new BuildIdOp.AddNewDefault("2.0"));
+        res = await Client.ExecuteWorkflowAsync(
+            (WorkflowV1 wf) => wf.RunAsync(),
+            new($"wf-{Guid.NewGuid()}", taskQueue));
+        Assert.Equal("done-v2", res);
+    }
+
+    [Fact]
+    public async Task TemporalWorkerService_ExecuteAsync_DuplicateQueue()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        // Build with two workers on same queue but different versions
+        var bld = Host.CreateApplicationBuilder();
+        bld.Services.AddSingleton(Client);
+        bld.Services.
+            AddHostedTemporalWorker(taskQueue).
+            AddWorkflow<WorkflowV1>();
+        var exc = Assert.Throws<InvalidOperationException>(() =>
+            bld.Services.
+                AddHostedTemporalWorker(taskQueue).
+                AddWorkflow<WorkflowV2>());
+        Assert.StartsWith("Worker service", exc.Message);
+        Assert.EndsWith("already on collection", exc.Message);
+    }
 }
