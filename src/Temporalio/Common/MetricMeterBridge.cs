@@ -25,10 +25,14 @@ namespace Temporalio.Common
             string name, string? unit = null, string? description = null)
             where T : struct
         {
-            AssertValidMetricType<T>();
+            if (!IsInteger<T>())
+            {
+                throw new ArgumentException($"Invalid metric type of {typeof(T)}, must be integer");
+            }
             return new Counter<T>(
                 new(name, unit, description),
-                new(meter, Bridge.Interop.MetricIntegerKind.Counter, name, unit, description),
+                new(meter, Bridge.Interop.MetricKind.CounterInteger, name, unit, description),
+                Bridge.Interop.MetricKind.CounterInteger,
                 attributes);
         }
 
@@ -37,10 +41,27 @@ namespace Temporalio.Common
             string name, string? unit = null, string? description = null)
             where T : struct
         {
-            AssertValidMetricType<T>();
+            Bridge.Interop.MetricKind kind;
+            if (IsInteger<T>())
+            {
+                kind = Bridge.Interop.MetricKind.HistogramInteger;
+            }
+            else if (IsFloat<T>())
+            {
+                kind = Bridge.Interop.MetricKind.HistogramFloat;
+            }
+            else if (typeof(T) == typeof(TimeSpan))
+            {
+                kind = Bridge.Interop.MetricKind.HistogramDuration;
+            }
+            else
+            {
+                throw new ArgumentException($"Invalid metric type of {typeof(T)}, must be integer, float, or TimeSpan");
+            }
             return new Histogram<T>(
                 new(name, unit, description),
-                new(meter, Bridge.Interop.MetricIntegerKind.Histogram, name, unit, description),
+                new(meter, kind, name, unit, description),
+                kind,
                 attributes);
         }
 
@@ -49,10 +70,23 @@ namespace Temporalio.Common
             string name, string? unit = null, string? description = null)
             where T : struct
         {
-            AssertValidMetricType<T>();
+            Bridge.Interop.MetricKind kind;
+            if (IsInteger<T>())
+            {
+                kind = Bridge.Interop.MetricKind.GaugeInteger;
+            }
+            else if (IsFloat<T>())
+            {
+                kind = Bridge.Interop.MetricKind.GaugeFloat;
+            }
+            else
+            {
+                throw new ArgumentException($"Invalid metric type of {typeof(T)}, must be integer or float");
+            }
             return new Gauge<T>(
                 new(name, unit, description),
-                new(meter, Bridge.Interop.MetricIntegerKind.Gauge, name, unit, description),
+                new(meter, kind, name, unit, description),
+                kind,
                 attributes);
         }
 
@@ -75,7 +109,7 @@ namespace Temporalio.Common
             return MetricMeterNoop.Instance;
         });
 
-        private static void AssertValidMetricType<T>()
+        private static bool IsInteger<T>()
         {
             switch (Type.GetTypeCode(typeof(T)))
             {
@@ -87,12 +121,12 @@ namespace Temporalio.Common
                 case TypeCode.UInt16:
                 case TypeCode.UInt32:
                 case TypeCode.UInt64:
-                    return;
+                    return true;
             }
-            throw new ArgumentException($"Metric type must be an integer numeric, got: {typeof(T)}");
+            return false;
         }
 
-        private static ulong GetMetricValue<T>(T value)
+        private static ulong GetIntegerValue<T>(T value)
             where T : struct
         {
             switch (value)
@@ -134,99 +168,220 @@ namespace Temporalio.Common
             }
         }
 
-        private static void RecordMetric<T>(
-            Bridge.MetricInteger metric,
+        private static void RecordInteger<T>(
+            Bridge.Metric metric,
             Bridge.MetricAttributes attributes,
             T value,
             IEnumerable<KeyValuePair<string, object>>? extraTags)
             where T : struct
         {
-            var ulongValue = GetMetricValue(value);
+            var ulongValue = GetIntegerValue(value);
             if (extraTags is { } extraAttrs)
             {
                 using (var withExtras = attributes.Append(extraAttrs))
                 {
-                    metric.Record(ulongValue, withExtras);
+                    metric.RecordInteger(ulongValue, withExtras);
                 }
             }
             else
             {
-                metric.Record(ulongValue, attributes);
+                metric.RecordInteger(ulongValue, attributes);
+            }
+        }
+
+        private static bool IsFloat<T>()
+        {
+            switch (Type.GetTypeCode(typeof(T)))
+            {
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                    return true;
+            }
+            return false;
+        }
+
+        private static double GetFloatValue<T>(T value)
+            where T : struct
+        {
+            switch (value)
+            {
+                case float v:
+                    if (v < 0)
+                    {
+                        throw new ArgumentException("Value cannot be negative");
+                    }
+                    return (double)v;
+                case double v:
+                    if (v < 0)
+                    {
+                        throw new ArgumentException("Value cannot be negative");
+                    }
+                    return (double)v;
+                case decimal v:
+                    if (v < 0)
+                    {
+                        throw new ArgumentException("Value cannot be negative");
+                    }
+                    return decimal.ToDouble(v);
+                default:
+                    throw new ArgumentException($"Only float metric types supported, but got {value.GetType()}");
+            }
+        }
+
+        private static void RecordFloat<T>(
+            Bridge.Metric metric,
+            Bridge.MetricAttributes attributes,
+            T value,
+            IEnumerable<KeyValuePair<string, object>>? extraTags)
+            where T : struct
+        {
+            var floatValue = GetFloatValue(value);
+            if (extraTags is { } extraAttrs)
+            {
+                using (var withExtras = attributes.Append(extraAttrs))
+                {
+                    metric.RecordFloat(floatValue, withExtras);
+                }
+            }
+            else
+            {
+                metric.RecordFloat(floatValue, attributes);
+            }
+        }
+
+        private static void RecordDuration<T>(
+            Bridge.Metric metric,
+            Bridge.MetricAttributes attributes,
+            T value,
+            IEnumerable<KeyValuePair<string, object>>? extraTags)
+            where T : struct
+        {
+            var ms = value is TimeSpan v ? v.TotalMilliseconds :
+                throw new ArgumentException($"Only TimeSpan types supported, but got {value.GetType()}");
+            if (ms < 0)
+            {
+                throw new ArgumentException("Value cannot be negative");
+            }
+            if (extraTags is { } extraAttrs)
+            {
+                using (var withExtras = attributes.Append(extraAttrs))
+                {
+                    metric.RecordDuration((ulong)ms, withExtras);
+                }
+            }
+            else
+            {
+                metric.RecordDuration((ulong)ms, attributes);
             }
         }
 
         private class Counter<T> : MetricCounter<T>
             where T : struct
         {
-            private readonly Bridge.MetricInteger metric;
+            private readonly Bridge.Metric metric;
+            private readonly Bridge.Interop.MetricKind kind;
             private readonly Bridge.MetricAttributes attributes;
 
             internal Counter(
                 MetricDetails details,
-                Bridge.MetricInteger metric,
+                Bridge.Metric metric,
+                Bridge.Interop.MetricKind kind,
                 Bridge.MetricAttributes attributes)
                 : base(details)
             {
                 this.metric = metric;
+                this.kind = kind;
                 this.attributes = attributes;
             }
 
             public override void Add(
-                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null) =>
-                RecordMetric(metric, attributes, value, extraTags);
+                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
+            {
+                RecordInteger(metric, attributes, value, extraTags);
+            }
 
             public override MetricCounter<T> WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
-                new Counter<T>(Details, metric, attributes.Append(tags));
+                new Counter<T>(Details, metric, kind, attributes.Append(tags));
         }
 
         private class Histogram<T> : MetricHistogram<T>
             where T : struct
         {
-            private readonly Bridge.MetricInteger metric;
+            private readonly Bridge.Metric metric;
+            private readonly Bridge.Interop.MetricKind kind;
             private readonly Bridge.MetricAttributes attributes;
 
             internal Histogram(
                 MetricDetails details,
-                Bridge.MetricInteger metric,
+                Bridge.Metric metric,
+                Bridge.Interop.MetricKind kind,
                 Bridge.MetricAttributes attributes)
                 : base(details)
             {
                 this.metric = metric;
+                this.kind = kind;
                 this.attributes = attributes;
             }
 
             public override void Record(
-                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null) =>
-                RecordMetric(metric, attributes, value, extraTags);
+                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
+            {
+                switch (kind)
+                {
+                    case Bridge.Interop.MetricKind.HistogramInteger:
+                        RecordInteger(metric, attributes, value, extraTags);
+                        break;
+                    case Bridge.Interop.MetricKind.HistogramFloat:
+                        RecordFloat(metric, attributes, value, extraTags);
+                        break;
+                    case Bridge.Interop.MetricKind.HistogramDuration:
+                        RecordDuration(metric, attributes, value, extraTags);
+                        break;
+                }
+            }
 
             public override MetricHistogram<T> WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
-                new Histogram<T>(Details, metric, attributes.Append(tags));
+                new Histogram<T>(Details, metric, kind, attributes.Append(tags));
         }
 
         private class Gauge<T> : MetricGauge<T>
             where T : struct
         {
-            private readonly Bridge.MetricInteger metric;
+            private readonly Bridge.Metric metric;
+            private readonly Bridge.Interop.MetricKind kind;
             private readonly Bridge.MetricAttributes attributes;
 
             internal Gauge(
                 MetricDetails details,
-                Bridge.MetricInteger metric,
+                Bridge.Metric metric,
+                Bridge.Interop.MetricKind kind,
                 Bridge.MetricAttributes attributes)
                 : base(details)
             {
                 this.metric = metric;
+                this.kind = kind;
                 this.attributes = attributes;
             }
 
 #pragma warning disable CA1716 // We are ok with using the "Set" name even though "set" is in lang
             public override void Set(
-                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null) =>
-                RecordMetric(metric, attributes, value, extraTags);
+                T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
+            {
+                switch (kind)
+                {
+                    case Bridge.Interop.MetricKind.GaugeInteger:
+                        RecordInteger(metric, attributes, value, extraTags);
+                        break;
+                    case Bridge.Interop.MetricKind.GaugeFloat:
+                        RecordFloat(metric, attributes, value, extraTags);
+                        break;
+                }
+            }
 #pragma warning restore CA1716
 
             public override MetricGauge<T> WithTags(IEnumerable<KeyValuePair<string, object>> tags) =>
-                new Gauge<T>(Details, metric, attributes.Append(tags));
+                new Gauge<T>(Details, metric, kind, attributes.Append(tags));
         }
     }
 }

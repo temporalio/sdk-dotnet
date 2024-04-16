@@ -10,22 +10,29 @@ namespace Temporalio.Bridge
     internal class CustomMetricMeter
     {
         private readonly Temporalio.Runtime.ICustomMetricMeter meter;
+        private readonly Temporalio.Runtime.CustomMetricMeterOptions options;
         private readonly List<GCHandle> handles = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomMetricMeter" /> class.
         /// </summary>
         /// <param name="meter">Meter implementation.</param>
-        public unsafe CustomMetricMeter(Temporalio.Runtime.ICustomMetricMeter meter)
+        /// <param name="options">Options.</param>
+        public unsafe CustomMetricMeter(
+            Temporalio.Runtime.ICustomMetricMeter meter,
+            Temporalio.Runtime.CustomMetricMeterOptions options)
         {
             this.meter = meter;
+            this.options = options;
 
             // Create metric meter struct
             var interopMeter = new Interop.CustomMetricMeter()
             {
-                metric_integer_new = FunctionPointer<Interop.CustomMetricMeterMetricIntegerNewCallback>(CreateMetric),
-                metric_integer_free = FunctionPointer<Interop.CustomMetricMeterMetricIntegerFreeCallback>(FreeMetric),
-                metric_integer_update = FunctionPointer<Interop.CustomMetricMeterMetricIntegerUpdateCallback>(UpdateMetric),
+                metric_new = FunctionPointer<Interop.CustomMetricMeterMetricNewCallback>(CreateMetric),
+                metric_free = FunctionPointer<Interop.CustomMetricMeterMetricFreeCallback>(FreeMetric),
+                metric_record_integer = FunctionPointer<Interop.CustomMetricMeterMetricRecordIntegerCallback>(RecordMetricInteger),
+                metric_record_float = FunctionPointer<Interop.CustomMetricMeterMetricRecordFloatCallback>(RecordMetricFloat),
+                metric_record_duration = FunctionPointer<Interop.CustomMetricMeterMetricRecordDurationCallback>(RecordMetricDuration),
                 attributes_new = FunctionPointer<Interop.CustomMetricMeterAttributesNewCallback>(CreateAttributes),
                 attributes_free = FunctionPointer<Interop.CustomMetricMeterAttributesFreeCallback>(FreeAttributes),
                 meter_free = FunctionPointer<Interop.CustomMetricMeterMeterFreeCallback>(Free),
@@ -58,38 +65,69 @@ namespace Temporalio.Bridge
             Interop.ByteArrayRef name,
             Interop.ByteArrayRef description,
             Interop.ByteArrayRef unit,
-            Interop.MetricIntegerKind kind)
+            Interop.MetricKind kind)
         {
-            Temporalio.Runtime.ICustomMetric<long> metric;
+            GCHandle metric;
             var nameStr = GetString(name);
             var unitStr = GetStringOrNull(unit);
             var descStr = GetStringOrNull(description);
             switch (kind)
             {
-                case Interop.MetricIntegerKind.Counter:
-                    metric = meter.CreateCounter<long>(nameStr, unitStr, descStr);
+                case Interop.MetricKind.CounterInteger:
+                    metric = GCHandle.Alloc(meter.CreateCounter<long>(nameStr, unitStr, descStr));
                     break;
-                case Interop.MetricIntegerKind.Histogram:
-                    metric = meter.CreateHistogram<long>(nameStr, unitStr, descStr);
+                case Interop.MetricKind.HistogramInteger:
+                    metric = GCHandle.Alloc(meter.CreateHistogram<long>(nameStr, unitStr, descStr));
                     break;
-                case Interop.MetricIntegerKind.Gauge:
-                    metric = meter.CreateGauge<long>(nameStr, unitStr, descStr);
+                case Interop.MetricKind.HistogramFloat:
+                    metric = GCHandle.Alloc(meter.CreateHistogram<double>(nameStr, unitStr, descStr));
+                    break;
+                case Interop.MetricKind.HistogramDuration:
+                    switch (options.HistogramDurationFormat)
+                    {
+                        case Temporalio.Runtime.CustomMetricMeterOptions.DurationFormat.IntegerMilliseconds:
+                            // Change unit from "duration" to "ms" since we're converting to ms
+                            if (unitStr == "duration")
+                            {
+                                unitStr = "ms";
+                            }
+                            metric = GCHandle.Alloc(meter.CreateHistogram<long>(nameStr, unitStr, descStr));
+                            break;
+                        case Temporalio.Runtime.CustomMetricMeterOptions.DurationFormat.FloatSeconds:
+                            // Change unit from "duration" to "s" since we're converting to s
+                            if (unitStr == "duration")
+                            {
+                                unitStr = "s";
+                            }
+                            metric = GCHandle.Alloc(meter.CreateHistogram<double>(nameStr, unitStr, descStr));
+                            break;
+                        case Temporalio.Runtime.CustomMetricMeterOptions.DurationFormat.TimeSpan:
+                            metric = GCHandle.Alloc(meter.CreateHistogram<TimeSpan>(nameStr, unitStr, descStr));
+                            break;
+                        default:
+                            throw new InvalidOperationException($"Unknown format: {options.HistogramDurationFormat}");
+                    }
+                    break;
+                case Interop.MetricKind.GaugeInteger:
+                    metric = GCHandle.Alloc(meter.CreateGauge<long>(nameStr, unitStr, descStr));
+                    break;
+                case Interop.MetricKind.GaugeFloat:
+                    metric = GCHandle.Alloc(meter.CreateGauge<double>(nameStr, unitStr, descStr));
                     break;
                 default:
                     throw new InvalidOperationException($"Unknown kind: {kind}");
             }
             // Return pointer
-            return GCHandle.ToIntPtr(GCHandle.Alloc(metric)).ToPointer();
+            return GCHandle.ToIntPtr(metric).ToPointer();
         }
 
         private unsafe void FreeMetric(void* metric) => GCHandle.FromIntPtr(new(metric)).Free();
 
-        private unsafe void UpdateMetric(void* metric, ulong value, void* attributes)
+        private unsafe void RecordMetricInteger(void* metric, ulong value, void* attributes)
         {
             var metricObject = (Temporalio.Runtime.ICustomMetric<long>)GCHandle.FromIntPtr(new(metric)).Target!;
             var tags = GCHandle.FromIntPtr(new(attributes)).Target!;
-            // We trust that value will never be over Int64.MaxValue
-            var metricValue = unchecked((long)value);
+            var metricValue = value > long.MaxValue ? long.MaxValue : unchecked((long)value);
             switch (metricObject)
             {
                 case Temporalio.Runtime.ICustomMetricCounter<long> counter:
@@ -100,6 +138,51 @@ namespace Temporalio.Bridge
                     break;
                 case Temporalio.Runtime.ICustomMetricGauge<long> gauge:
                     gauge.Set(metricValue, tags);
+                    break;
+            }
+        }
+
+        private unsafe void RecordMetricFloat(void* metric, double value, void* attributes)
+        {
+            var metricObject = (Temporalio.Runtime.ICustomMetric<double>)GCHandle.FromIntPtr(new(metric)).Target!;
+            var tags = GCHandle.FromIntPtr(new(attributes)).Target!;
+            switch (metricObject)
+            {
+                case Temporalio.Runtime.ICustomMetricHistogram<double> histogram:
+                    histogram.Record(value, tags);
+                    break;
+                case Temporalio.Runtime.ICustomMetricGauge<double> gauge:
+                    gauge.Set(value, tags);
+                    break;
+            }
+        }
+
+        private unsafe void RecordMetricDuration(void* metric, ulong valueMs, void* attributes)
+        {
+            var metricObject = GCHandle.FromIntPtr(new(metric)).Target!;
+            var tags = GCHandle.FromIntPtr(new(attributes)).Target!;
+            var metricValue = valueMs > long.MaxValue ? long.MaxValue : unchecked((long)valueMs);
+            // We don't want to throw out of here, so we just fall through if anything doesn't match
+            // expected types (which should never happen since we controlled creation)
+            switch (options.HistogramDurationFormat)
+            {
+                case Temporalio.Runtime.CustomMetricMeterOptions.DurationFormat.IntegerMilliseconds:
+                    if (metricObject is Temporalio.Runtime.ICustomMetricHistogram<long> histLong)
+                    {
+                        histLong.Record(metricValue, tags);
+                    }
+                    break;
+                case Temporalio.Runtime.CustomMetricMeterOptions.DurationFormat.FloatSeconds:
+                    if (metricObject is Temporalio.Runtime.ICustomMetricHistogram<double> histDouble)
+                    {
+                        histDouble.Record(metricValue / 1000.0, tags);
+                    }
+                    break;
+                case Temporalio.Runtime.CustomMetricMeterOptions.DurationFormat.TimeSpan:
+                    if (metricObject is Temporalio.Runtime.ICustomMetricHistogram<TimeSpan> histTimeSpan)
+                    {
+                        histTimeSpan.Record(TimeSpan.FromMilliseconds(metricValue), tags);
+                    }
                     break;
             }
         }

@@ -45,6 +45,12 @@ namespace Temporalio.Runtime
         public ICustomMetricMeter? CustomMetricMeter { get; set; }
 
         /// <summary>
+        /// Gets or sets the custom metric meter options. Only applies if
+        /// <see cref="CustomMetricMeter"/> is not null.
+        /// </summary>
+        public CustomMetricMeterOptions? CustomMetricMeterOptions { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the service name is set on metrics.
         /// </summary>
         public bool AttachServiceName { get; set; } = true;

@@ -1,4 +1,4 @@
-use std::{any::Any, sync::Arc};
+use std::{any::Any, sync::Arc, time::Duration};
 
 use temporal_sdk_core_api::telemetry::metrics;
 
@@ -126,68 +126,103 @@ fn metric_attribute_to_key_value(attr: &MetricAttribute) -> metrics::MetricKeyVa
 }
 
 #[repr(C)]
-pub struct MetricIntegerOptions {
+pub struct MetricOptions {
     name: ByteArrayRef,
     description: ByteArrayRef,
     unit: ByteArrayRef,
-    kind: MetricIntegerKind,
+    kind: MetricKind,
 }
 
 #[repr(C)]
-pub enum MetricIntegerKind {
-    Counter = 1,
-    Histogram,
-    Gauge,
+pub enum MetricKind {
+    CounterInteger = 1,
+    HistogramInteger,
+    HistogramFloat,
+    HistogramDuration,
+    GaugeInteger,
+    GaugeFloat
 }
 
-pub enum MetricInteger {
-    Counter(Arc<dyn metrics::Counter>),
-    Histogram(Arc<dyn metrics::Histogram>),
-    Gauge(Arc<dyn metrics::Gauge>),
+pub enum Metric {
+    CounterInteger(Arc<dyn metrics::Counter>),
+    HistogramInteger(Arc<dyn metrics::Histogram>),
+    HistogramFloat(Arc<dyn metrics::HistogramF64>),
+    HistogramDuration(Arc<dyn metrics::HistogramDuration>),
+    GaugeInteger(Arc<dyn metrics::Gauge>),
+    GaugeFloat(Arc<dyn metrics::GaugeF64>)
 }
 
 #[no_mangle]
-pub extern "C" fn metric_integer_new(
+pub extern "C" fn metric_new(
     meter: *const MetricMeter,
-    options: *const MetricIntegerOptions,
-) -> *mut MetricInteger {
+    options: *const MetricOptions,
+) -> *mut Metric {
     let meter = unsafe { &*meter };
     let options = unsafe { &*options };
     Box::into_raw(Box::new(match options.kind {
-        MetricIntegerKind::Counter => {
-            MetricInteger::Counter(meter.core.inner.counter(options.into()))
-        }
-        MetricIntegerKind::Histogram => {
-            MetricInteger::Histogram(meter.core.inner.histogram(options.into()))
-        }
-        MetricIntegerKind::Gauge => MetricInteger::Gauge(meter.core.inner.gauge(options.into())),
+        MetricKind::CounterInteger => Metric::CounterInteger(meter.core.inner.counter(options.into())),
+        MetricKind::HistogramInteger => Metric::HistogramInteger(meter.core.inner.histogram(options.into())),
+        MetricKind::HistogramFloat => Metric::HistogramFloat(meter.core.inner.histogram_f64(options.into())),
+        MetricKind::HistogramDuration =>Metric::HistogramDuration(meter.core.inner.histogram_duration(options.into())),
+        MetricKind::GaugeInteger => Metric::GaugeInteger(meter.core.inner.gauge(options.into())),
+        MetricKind::GaugeFloat => Metric::GaugeFloat(meter.core.inner.gauge_f64(options.into())),
     }))
 }
 
 #[no_mangle]
-pub extern "C" fn metric_integer_free(metric: *mut MetricInteger) {
+pub extern "C" fn metric_free(metric: *mut Metric) {
     unsafe {
         let _ = Box::from_raw(metric);
     }
 }
 
 #[no_mangle]
-pub extern "C" fn metric_integer_record(
-    metric: *const MetricInteger,
+pub extern "C" fn metric_record_integer(
+    metric: *const Metric,
     value: u64,
     attrs: *const MetricAttributes,
 ) {
     let metric = unsafe { &*metric };
     let attrs = unsafe { &*attrs };
     match metric {
-        MetricInteger::Counter(counter) => counter.add(value, &attrs.core),
-        MetricInteger::Histogram(histogram) => histogram.record(value, &attrs.core),
-        MetricInteger::Gauge(gauge) => gauge.record(value, &attrs.core),
+        Metric::CounterInteger(counter) => counter.add(value, &attrs.core),
+        Metric::HistogramInteger(histogram) => histogram.record(value, &attrs.core),
+        Metric::GaugeInteger(gauge) => gauge.record(value, &attrs.core),
+        _ => panic!("Not an integer type"),
     }
 }
 
-impl From<&MetricIntegerOptions> for metrics::MetricParameters {
-    fn from(options: &MetricIntegerOptions) -> Self {
+#[no_mangle]
+pub extern "C" fn metric_record_float(
+    metric: *const Metric,
+    value: f64,
+    attrs: *const MetricAttributes,
+) {
+    let metric = unsafe { &*metric };
+    let attrs = unsafe { &*attrs };
+    match metric {
+        Metric::HistogramFloat(histogram) => histogram.record(value, &attrs.core),
+        Metric::GaugeFloat(gauge) => gauge.record(value, &attrs.core),
+        _ => panic!("Not a float type"),
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn metric_record_duration(
+    metric: *const Metric,
+    value_ms: u64,
+    attrs: *const MetricAttributes,
+) {
+    let metric = unsafe { &*metric };
+    let attrs = unsafe { &*attrs };
+    match metric {
+        Metric::HistogramDuration(histogram) => histogram.record(Duration::from_millis(value_ms), &attrs.core),
+        _ => panic!("Not a duration type"),
+    }
+}
+
+impl From<&MetricOptions> for metrics::MetricParameters {
+    fn from(options: &MetricOptions) -> Self {
         metrics::MetricParametersBuilder::default()
             .name(options.name.to_string())
             .description(options.description.to_string())
@@ -197,17 +232,23 @@ impl From<&MetricIntegerOptions> for metrics::MetricParameters {
     }
 }
 
-type CustomMetricMeterMetricIntegerNewCallback = unsafe extern "C" fn(
+type CustomMetricMeterMetricNewCallback = unsafe extern "C" fn(
     name: ByteArrayRef,
     description: ByteArrayRef,
     unit: ByteArrayRef,
-    kind: MetricIntegerKind,
+    kind: MetricKind,
 ) -> *const libc::c_void;
 
-type CustomMetricMeterMetricIntegerFreeCallback = unsafe extern "C" fn(metric: *const libc::c_void);
+type CustomMetricMeterMetricFreeCallback = unsafe extern "C" fn(metric: *const libc::c_void);
 
-type CustomMetricMeterMetricIntegerUpdateCallback =
+type CustomMetricMeterMetricRecordIntegerCallback =
     unsafe extern "C" fn(metric: *const libc::c_void, value: u64, attributes: *const libc::c_void);
+
+type CustomMetricMeterMetricRecordFloatCallback =
+    unsafe extern "C" fn(metric: *const libc::c_void, value: f64, attributes: *const libc::c_void);
+
+type CustomMetricMeterMetricRecordDurationCallback =
+    unsafe extern "C" fn(metric: *const libc::c_void, value_ms: u64, attributes: *const libc::c_void);
 
 type CustomMetricMeterAttributesNewCallback = unsafe extern "C" fn(
     append_from: *const libc::c_void,
@@ -226,9 +267,11 @@ type CustomMetricMeterMeterFreeCallback = unsafe extern "C" fn(meter: *const Cus
 /// invoked on.
 #[repr(C)]
 pub struct CustomMetricMeter {
-    pub metric_integer_new: CustomMetricMeterMetricIntegerNewCallback,
-    pub metric_integer_free: CustomMetricMeterMetricIntegerFreeCallback,
-    pub metric_integer_update: CustomMetricMeterMetricIntegerUpdateCallback,
+    pub metric_new: CustomMetricMeterMetricNewCallback,
+    pub metric_free: CustomMetricMeterMetricFreeCallback,
+    pub metric_record_integer: CustomMetricMeterMetricRecordIntegerCallback,
+    pub metric_record_float: CustomMetricMeterMetricRecordFloatCallback,
+    pub metric_record_duration: CustomMetricMeterMetricRecordDurationCallback,
     pub attributes_new: CustomMetricMeterAttributesNewCallback,
     pub attributes_free: CustomMetricMeterAttributesFreeCallback,
     pub meter_free: CustomMetricMeterMeterFreeCallback,
@@ -279,15 +322,27 @@ impl metrics::CoreMeter for CustomMetricMeterRef {
     }
 
     fn counter(&self, params: metrics::MetricParameters) -> Arc<dyn metrics::Counter> {
-        Arc::new(self.new_metric_integer(params, MetricIntegerKind::Counter))
+        Arc::new(self.new_metric(params, MetricKind::CounterInteger))
     }
 
     fn histogram(&self, params: metrics::MetricParameters) -> Arc<dyn metrics::Histogram> {
-        Arc::new(self.new_metric_integer(params, MetricIntegerKind::Histogram))
+        Arc::new(self.new_metric(params, MetricKind::HistogramInteger))
+    }
+
+    fn histogram_f64(&self, params: metrics::MetricParameters) -> Arc<dyn metrics::HistogramF64> {
+        Arc::new(self.new_metric(params, MetricKind::HistogramFloat))
+    }
+
+    fn histogram_duration(&self, params: metrics::MetricParameters) -> Arc<dyn metrics::HistogramDuration> {
+        Arc::new(self.new_metric(params, MetricKind::HistogramDuration))
     }
 
     fn gauge(&self, params: metrics::MetricParameters) -> Arc<dyn metrics::Gauge> {
-        Arc::new(self.new_metric_integer(params, MetricIntegerKind::Gauge))
+        Arc::new(self.new_metric(params, MetricKind::GaugeInteger))
+    }
+
+    fn gauge_f64(&self, params: metrics::MetricParameters) -> Arc<dyn metrics::GaugeF64> {
+        Arc::new(self.new_metric(params, MetricKind::GaugeFloat))
     }
 }
 
@@ -363,20 +418,20 @@ impl CustomMetricMeterRef {
         }
     }
 
-    fn new_metric_integer(
+    fn new_metric(
         &self,
         params: metrics::MetricParameters,
-        kind: MetricIntegerKind,
-    ) -> CustomMetricInteger {
+        kind: MetricKind,
+    ) -> CustomMetric {
         unsafe {
             let meter = &*(self.meter_impl.0);
-            let metric = (meter.metric_integer_new)(
+            let metric = (meter.metric_new)(
                 ByteArrayRef::from_str(&params.name),
                 ByteArrayRef::from_str(&params.description),
                 ByteArrayRef::from_str(&params.unit),
                 kind,
             );
-            CustomMetricInteger {
+            CustomMetric {
                 meter_impl: self.meter_impl.clone(),
                 metric,
             }
@@ -421,19 +476,19 @@ impl Drop for CustomMetricAttributes {
     }
 }
 
-struct CustomMetricInteger {
+struct CustomMetric {
     meter_impl: Arc<CustomMetricMeterImpl>,
     metric: *const libc::c_void,
 }
 
-unsafe impl Send for CustomMetricInteger {}
-unsafe impl Sync for CustomMetricInteger {}
+unsafe impl Send for CustomMetric {}
+unsafe impl Sync for CustomMetric {}
 
-impl metrics::Counter for CustomMetricInteger {
+impl metrics::Counter for CustomMetric {
     fn add(&self, value: u64, attributes: &metrics::MetricAttributes) {
         unsafe {
             let meter = &*(self.meter_impl.0);
-            (meter.metric_integer_update)(
+            (meter.metric_record_integer)(
                 self.metric,
                 value,
                 raw_custom_metric_attributes(attributes),
@@ -442,11 +497,11 @@ impl metrics::Counter for CustomMetricInteger {
     }
 }
 
-impl metrics::Histogram for CustomMetricInteger {
+impl metrics::Histogram for CustomMetric {
     fn record(&self, value: u64, attributes: &metrics::MetricAttributes) {
         unsafe {
             let meter = &*(self.meter_impl.0);
-            (meter.metric_integer_update)(
+            (meter.metric_record_integer)(
                 self.metric,
                 value,
                 raw_custom_metric_attributes(attributes),
@@ -455,11 +510,50 @@ impl metrics::Histogram for CustomMetricInteger {
     }
 }
 
-impl metrics::Gauge for CustomMetricInteger {
+impl metrics::HistogramF64 for CustomMetric {
+    fn record(&self, value: f64, attributes: &metrics::MetricAttributes) {
+        unsafe {
+            let meter = &*(self.meter_impl.0);
+            (meter.metric_record_float)(
+                self.metric,
+                value,
+                raw_custom_metric_attributes(attributes),
+            );
+        }
+    }
+}
+
+impl metrics::HistogramDuration for CustomMetric {
+    fn record(&self, value: Duration, attributes: &metrics::MetricAttributes) {
+        unsafe {
+            let meter = &*(self.meter_impl.0);
+            (meter.metric_record_duration)(
+                self.metric,
+                value.as_millis().try_into().unwrap_or(u64::MAX),
+                raw_custom_metric_attributes(attributes),
+            );
+        }
+    }
+}
+
+impl metrics::Gauge for CustomMetric {
     fn record(&self, value: u64, attributes: &metrics::MetricAttributes) {
         unsafe {
             let meter = &*(self.meter_impl.0);
-            (meter.metric_integer_update)(
+            (meter.metric_record_integer)(
+                self.metric,
+                value,
+                raw_custom_metric_attributes(attributes),
+            );
+        }
+    }
+}
+
+impl metrics::GaugeF64 for CustomMetric {
+    fn record(&self, value: f64, attributes: &metrics::MetricAttributes) {
+        unsafe {
+            let meter = &*(self.meter_impl.0);
+            (meter.metric_record_float)(
                 self.metric,
                 value,
                 raw_custom_metric_attributes(attributes),
@@ -480,11 +574,11 @@ fn raw_custom_metric_attributes(attributes: &metrics::MetricAttributes) -> *cons
     }
 }
 
-impl Drop for CustomMetricInteger {
+impl Drop for CustomMetric {
     fn drop(&mut self) {
         unsafe {
             let meter = &*(self.meter_impl.0);
-            (meter.metric_integer_free)(self.metric);
+            (meter.metric_free)(self.metric);
         }
     }
 }

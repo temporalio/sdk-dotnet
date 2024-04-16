@@ -52,6 +52,12 @@ namespace Temporalio.Runtime
         public OpenTelemetryMetricTemporality MetricTemporality { get; set; } = OpenTelemetryMetricTemporality.Cumulative;
 
         /// <summary>
+        /// Gets or sets a value indicating whether duration values will be emitted as float
+        /// seconds. If false, it is integer milliseconds.
+        /// </summary>
+        public bool UseSecondsForDuration { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
