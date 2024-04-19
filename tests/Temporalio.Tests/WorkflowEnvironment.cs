@@ -73,6 +73,7 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "--dynamic-config-value",
                         $"limit.historyCount.suggestContinueAsNew={ContinueAsNewSuggestedHistoryCount}",
                     },
+                    DownloadVersion = "v0.12.0-rc.3",
                 },
             });
         }
