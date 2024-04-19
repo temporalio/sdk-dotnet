@@ -3399,10 +3399,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             v.Tags.Contains(new("task_queue", taskQueue)) &&
             v.Tags.Contains(new("workflow_type", "CustomMetricsWorkflow")) &&
             !v.Tags.ContainsKey("my-workflow-extra-tag") &&
-            v.Value == 56);
+            (long)v.Value == 56);
         Assert.Single(metric.Values, v =>
             v.Tags.Contains(new("my-workflow-extra-tag", 1234L)) &&
-            v.Value == 78);
+            (long)v.Value == 78);
         // Activity counter
         metric = Assert.Single(meter.Metrics, m =>
             m.Name == "my-activity-counter" &&
@@ -3413,15 +3413,96 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             v.Tags.Contains(new("task_queue", taskQueue)) &&
             v.Tags.Contains(new("activity_type", "DoActivity")) &&
             !v.Tags.ContainsKey("my-activity-extra-tag") &&
-            v.Value == 12);
+            (long)v.Value == 12);
         Assert.Single(metric.Values, v =>
             v.Tags.Contains(new("my-activity-extra-tag", 12.34D)) &&
-            v.Value == 34);
+            (long)v.Value == 34);
         // Check Temporal metric
         metric = Assert.Single(meter.Metrics, m => m.Name == "some-prefix_workflow_completed");
         Assert.Single(metric.Values, v =>
             v.Tags.Contains(new("workflow_type", "CustomMetricsWorkflow")) &&
-            v.Value == 1);
+            (long)v.Value == 1);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_CustomMetrics_FloatsAndDurations()
+    {
+        var timeSpan = new TimeSpan(2, 0, 0, 3, 4);
+        async Task<TestUtils.CaptureMetricMeter> DoStuffAsync(CustomMetricMeterOptions.DurationFormat durationFormat)
+        {
+            var meter = new TestUtils.CaptureMetricMeter();
+            var runtime = new TemporalRuntime(new()
+            {
+                Telemetry = new()
+                {
+                    Metrics = new()
+                    {
+                        CustomMetricMeter = meter,
+                        CustomMetricMeterOptions = new() { HistogramDurationFormat = durationFormat },
+                    },
+                },
+            });
+            var client = await TemporalClient.ConnectAsync(
+                new()
+                {
+                    TargetHost = Client.Connection.Options.TargetHost,
+                    Namespace = Client.Options.Namespace,
+                    Runtime = runtime,
+                });
+            var taskQueue = string.Empty;
+            await ExecuteWorkerAsync<SimpleWorkflow>(
+                async worker =>
+                {
+                    taskQueue = worker.Options.TaskQueue!;
+                    await client.ExecuteWorkflowAsync(
+                        (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
+                        new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
+                },
+                client: client);
+            // Also, add some manual types beyond the defaults tested in other tests
+            runtime.MetricMeter.CreateHistogram<double>("my-histogram-float").Record(1.23);
+            runtime.MetricMeter.CreateHistogram<TimeSpan>("my-histogram-duration").Record(timeSpan);
+            runtime.MetricMeter.CreateGauge<double>("my-gauge-float").Set(4.56);
+            return meter;
+        }
+
+        // Do stuff with ms duration format, check metrics
+        var meter = await DoStuffAsync(CustomMetricMeterOptions.DurationFormat.IntegerMilliseconds);
+        Assert.Single(
+            Assert.Single(meter.Metrics, v =>
+                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "ms").Values,
+            v => v.Value is long val);
+        Assert.Single(
+            Assert.Single(meter.Metrics, v => v.Name == "my-histogram-float").Values,
+            v => v.Value is double val && val == 1.23);
+        Assert.Single(
+            Assert.Single(meter.Metrics, v => v.Name == "my-histogram-duration").Values,
+            v => v.Value is long val && val == (long)timeSpan.TotalMilliseconds);
+        Assert.Single(
+            Assert.Single(meter.Metrics, v => v.Name == "my-gauge-float").Values,
+            v => v.Value is double val && val == 4.56);
+
+        // Do it again with seconds
+        meter = await DoStuffAsync(CustomMetricMeterOptions.DurationFormat.FloatSeconds);
+        // Took less than 5s
+        Assert.Single(
+            Assert.Single(meter.Metrics, v =>
+                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "s").Values,
+            v => v.Value is double val && val < 5);
+        Assert.Single(
+            Assert.Single(meter.Metrics, v => v.Name == "my-histogram-duration").Values,
+            v => v.Value is double val && val == timeSpan.TotalSeconds);
+
+        // Do it again with TimeSpan
+        meter = await DoStuffAsync(CustomMetricMeterOptions.DurationFormat.TimeSpan);
+        // Took less than 5s
+        Assert.Single(
+            Assert.Single(meter.Metrics, v =>
+                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "duration").Values,
+            v => v.Value is TimeSpan val && val < TimeSpan.FromSeconds(5));
+        Assert.Single(
+            Assert.Single(meter.Metrics, v => v.Name == "my-histogram-duration").Values,
+            v => v.Value is TimeSpan val && val == timeSpan);
     }
 
     [Workflow]

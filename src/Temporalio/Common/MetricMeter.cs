@@ -25,7 +25,8 @@ namespace Temporalio.Common
         /// Create a new histogram. Performance is better if this histogram is reused instead of
         /// recreating it.
         /// </summary>
-        /// <typeparam name="T">Type of value for the metric. Currently this must be an integer
+        /// <typeparam name="T">Type of value for the metric. Currently this must be an integer,
+        /// float, or <see cref="System.TimeSpan"/> type.
         /// type.</typeparam>
         /// <param name="name">Name for the histogram.</param>
         /// <param name="unit">Unit for the histogram if any.</param>
@@ -39,8 +40,8 @@ namespace Temporalio.Common
         /// Create a new gauge. Performance is better if this gauge is reused instead of recreating
         /// it.
         /// </summary>
-        /// <typeparam name="T">Type of value for the metric. Currently this must be an integer
-        /// type.</typeparam>
+        /// <typeparam name="T">Type of value for the metric. Currently this must be an integer or
+        /// float type.</typeparam>
         /// <param name="name">Name for the gauge.</param>
         /// <param name="unit">Unit for the gauge if any.</param>
         /// <param name="description">Description for the gauge if any.</param>

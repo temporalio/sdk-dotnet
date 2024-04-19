@@ -90,6 +90,7 @@ pub struct OpenTelemetryOptions {
     headers: MetadataRef,
     metric_periodicity_millis: u32,
     metric_temporality: OpenTelemetryMetricTemporality,
+    durations_as_seconds: bool,
 }
 
 #[repr(C)]
@@ -103,6 +104,7 @@ pub struct PrometheusOptions {
     bind_address: ByteArrayRef,
     counters_total_suffix: bool,
     unit_suffix: bool,
+    durations_as_seconds: bool,
 }
 
 #[derive(Clone)]
@@ -378,7 +380,8 @@ fn create_meter(
                 OpenTelemetryMetricTemporality::Cumulative => MetricTemporality::Cumulative,
                 OpenTelemetryMetricTemporality::Delta => MetricTemporality::Delta,
             })
-            .global_tags(options.global_tags.to_string_map_on_newlines());
+            .global_tags(options.global_tags.to_string_map_on_newlines())
+            .use_seconds_for_durations(otel_options.durations_as_seconds);
         if otel_options.metric_periodicity_millis > 0 {
             build.metric_periodicity(Duration::from_millis(
                 otel_options.metric_periodicity_millis.into(),
@@ -397,7 +400,8 @@ fn create_meter(
             .socket_addr(SocketAddr::from_str(prom_options.bind_address.to_str())?)
             .global_tags(options.global_tags.to_string_map_on_newlines())
             .counters_total_suffix(prom_options.counters_total_suffix)
-            .unit_suffix(prom_options.unit_suffix);
+            .unit_suffix(prom_options.unit_suffix)
+            .use_seconds_for_durations(prom_options.durations_as_seconds);
         Ok(start_prometheus_metric_exporter(build.build()?)?.meter)
     } else if let Some(custom_meter) = custom_meter {
         Ok(Arc::new(custom_meter))

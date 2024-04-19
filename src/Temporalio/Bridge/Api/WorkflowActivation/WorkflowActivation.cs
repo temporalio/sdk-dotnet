@@ -193,6 +193,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   /// * Signal and update handlers should be invoked before workflow routines are iterated. That is to
   ///   say before the users' main workflow function and anything spawned by it is allowed to continue.
   /// * Queries always go last (and, in fact, always come in their own activation)
+  /// * Evictions also always come in their own activation
   ///
   /// The downside of this reordering is that a signal or update handler may not observe that some
   /// other event had already happened (ex: an activity completed) when it is first invoked, though it
@@ -204,11 +205,9 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
   ///
   /// ## Evictions
   ///
-  /// Activations that contain only a `remove_from_cache` job should not cause the workflow code
-  /// to be invoked and may be responded to with an empty command list. Eviction jobs may also
-  /// appear with other jobs, but will always appear last in the job list. In this case it is
-  /// expected that the workflow code will be invoked, and the response produced as normal, but
-  /// the caller should evict the run after doing so.
+  /// Evictions appear as an activations that contains only a `remove_from_cache` job. Such activations
+  /// should not cause the workflow code to be invoked and may be responded to with an empty command
+  /// list.
   /// </summary>
   internal sealed partial class WorkflowActivation : pb::IMessage<WorkflowActivation>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -853,7 +852,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "query_workflow" field.</summary>
     public const int QueryWorkflowFieldNumber = 5;
     /// <summary>
-    /// A request to query the workflow was received.
+    /// A request to query the workflow was received. It is guaranteed that queries (one or more)
+    /// always come in their own activation after other mutating jobs.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1005,11 +1005,9 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Field number for the "remove_from_cache" field.</summary>
     public const int RemoveFromCacheFieldNumber = 50;
     /// <summary>
-    /// Remove the workflow identified by the [WorkflowActivation] containing this job from the cache
-    /// after performing the activation.
-    ///
-    /// If other job variant are present in the list, this variant will be the last job in the
-    /// job list. The string value is a reason for eviction.
+    /// Remove the workflow identified by the [WorkflowActivation] containing this job from the
+    /// cache after performing the activation. It is guaranteed that this will be the only job
+    /// in the activation if present.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

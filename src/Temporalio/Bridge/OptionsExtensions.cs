@@ -92,6 +92,7 @@ namespace Temporalio.Bridge
                         ? 0
                         : options.MetricsExportInterval.Value.TotalMilliseconds),
                 metric_temporality = temporality,
+                durations_as_seconds = (byte)(options.UseSecondsForDuration ? 1 : 0),
             };
         }
 
@@ -114,6 +115,7 @@ namespace Temporalio.Bridge
                 bind_address = scope.ByteArray(options.BindAddress),
                 counters_total_suffix = (byte)(options.HasCounterTotalSuffix ? 1 : 0),
                 unit_suffix = (byte)(options.HasUnitSuffix ? 1 : 0),
+                durations_as_seconds = (byte)(options.UseSecondsForDuration ? 1 : 0),
             };
         }
 
@@ -181,7 +183,8 @@ namespace Temporalio.Bridge
             else if (options.CustomMetricMeter != null)
             {
                 // This object pins itself in memory and is only freed on the Rust side
-                customMeter = new CustomMetricMeter(options.CustomMetricMeter).Ptr;
+                customMeter = new CustomMetricMeter(
+                    options.CustomMetricMeter, options.CustomMetricMeterOptions ?? new()).Ptr;
             }
             else
             {

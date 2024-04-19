@@ -20,11 +20,14 @@ namespace Temporalio.Bridge.Interop
         Bool,
     }
 
-    internal enum MetricIntegerKind
+    internal enum MetricKind
     {
-        Counter = 1,
-        Histogram,
-        Gauge,
+        CounterInteger = 1,
+        HistogramInteger,
+        HistogramFloat,
+        HistogramDuration,
+        GaugeInteger,
+        GaugeFloat,
     }
 
     internal enum OpenTelemetryMetricTemporality
@@ -57,11 +60,11 @@ namespace Temporalio.Bridge.Interop
     {
     }
 
-    internal partial struct MetricAttributes
+    internal partial struct Metric
     {
     }
 
-    internal partial struct MetricInteger
+    internal partial struct MetricAttributes
     {
     }
 
@@ -243,7 +246,7 @@ namespace Temporalio.Bridge.Interop
         public MetricAttributeValueType value_type;
     }
 
-    internal partial struct MetricIntegerOptions
+    internal partial struct MetricOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef name;
@@ -254,8 +257,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef unit;
 
-        [NativeTypeName("enum MetricIntegerKind")]
-        public MetricIntegerKind kind;
+        [NativeTypeName("enum MetricKind")]
+        public MetricKind kind;
     }
 
     internal unsafe partial struct RuntimeOrFail
@@ -292,6 +295,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("enum OpenTelemetryMetricTemporality")]
         public OpenTelemetryMetricTemporality metric_temporality;
+
+        [NativeTypeName("bool")]
+        public byte durations_as_seconds;
     }
 
     internal partial struct PrometheusOptions
@@ -304,17 +310,26 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("bool")]
         public byte unit_suffix;
+
+        [NativeTypeName("bool")]
+        public byte durations_as_seconds;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("const void *")]
-    internal unsafe delegate void* CustomMetricMeterMetricIntegerNewCallback([NativeTypeName("struct ByteArrayRef")] ByteArrayRef name, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef description, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef unit, [NativeTypeName("enum MetricIntegerKind")] MetricIntegerKind kind);
+    internal unsafe delegate void* CustomMetricMeterMetricNewCallback([NativeTypeName("struct ByteArrayRef")] ByteArrayRef name, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef description, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef unit, [NativeTypeName("enum MetricKind")] MetricKind kind);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricIntegerFreeCallback([NativeTypeName("const void *")] void* metric);
+    internal unsafe delegate void CustomMetricMeterMetricFreeCallback([NativeTypeName("const void *")] void* metric);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricIntegerUpdateCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void CustomMetricMeterMetricRecordIntegerCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const void *")] void* attributes);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomMetricMeterMetricRecordFloatCallback([NativeTypeName("const void *")] void* metric, double value, [NativeTypeName("const void *")] void* attributes);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomMetricMeterMetricRecordDurationCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const void *")] void* attributes);
 
     internal unsafe partial struct CustomMetricAttributeValueString
     {
@@ -368,14 +383,20 @@ namespace Temporalio.Bridge.Interop
 
     internal partial struct CustomMetricMeter
     {
-        [NativeTypeName("CustomMetricMeterMetricIntegerNewCallback")]
-        public IntPtr metric_integer_new;
+        [NativeTypeName("CustomMetricMeterMetricNewCallback")]
+        public IntPtr metric_new;
 
-        [NativeTypeName("CustomMetricMeterMetricIntegerFreeCallback")]
-        public IntPtr metric_integer_free;
+        [NativeTypeName("CustomMetricMeterMetricFreeCallback")]
+        public IntPtr metric_free;
 
-        [NativeTypeName("CustomMetricMeterMetricIntegerUpdateCallback")]
-        public IntPtr metric_integer_update;
+        [NativeTypeName("CustomMetricMeterMetricRecordIntegerCallback")]
+        public IntPtr metric_record_integer;
+
+        [NativeTypeName("CustomMetricMeterMetricRecordFloatCallback")]
+        public IntPtr metric_record_float;
+
+        [NativeTypeName("CustomMetricMeterMetricRecordDurationCallback")]
+        public IntPtr metric_record_duration;
 
         [NativeTypeName("CustomMetricMeterAttributesNewCallback")]
         public IntPtr attributes_new;
@@ -628,14 +649,20 @@ namespace Temporalio.Bridge.Interop
         public static extern void metric_attributes_free([NativeTypeName("struct MetricAttributes *")] MetricAttributes* attrs);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct MetricInteger *")]
-        public static extern MetricInteger* metric_integer_new([NativeTypeName("const struct MetricMeter *")] MetricMeter* meter, [NativeTypeName("const struct MetricIntegerOptions *")] MetricIntegerOptions* options);
+        [return: NativeTypeName("struct Metric *")]
+        public static extern Metric* metric_new([NativeTypeName("const struct MetricMeter *")] MetricMeter* meter, [NativeTypeName("const struct MetricOptions *")] MetricOptions* options);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_integer_free([NativeTypeName("struct MetricInteger *")] MetricInteger* metric);
+        public static extern void metric_free([NativeTypeName("struct Metric *")] Metric* metric);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_integer_record([NativeTypeName("const struct MetricInteger *")] MetricInteger* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
+        public static extern void metric_record_integer([NativeTypeName("const struct Metric *")] Metric* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void metric_record_float([NativeTypeName("const struct Metric *")] Metric* metric, double value, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void metric_record_duration([NativeTypeName("const struct Metric *")] Metric* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct Random *")]

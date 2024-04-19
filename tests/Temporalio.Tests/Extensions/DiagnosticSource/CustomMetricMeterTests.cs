@@ -257,4 +257,101 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
             m.Value == 100 &&
             m.Tags["worker_type"].Equals("LocalActivityWorker"));
     }
+
+    [Workflow]
+    public class FloatsAndDurationsMetricsWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            Workflow.MetricMeter.CreateHistogram<double>("histogram-float").Record(1.23);
+            Workflow.MetricMeter.CreateHistogram<TimeSpan>("histogram-duration").Record(
+                new TimeSpan(0, 0, 4, 5, 6));
+            Workflow.MetricMeter.CreateGauge<double>("gauge-float").Set(7.89);
+        }
+    }
+
+    [Theory]
+    [InlineData(CustomMetricMeterOptions.DurationFormat.IntegerMilliseconds)]
+    [InlineData(CustomMetricMeterOptions.DurationFormat.FloatSeconds)]
+    [InlineData(CustomMetricMeterOptions.DurationFormat.TimeSpan)]
+    public async Task CustomMetricMeter_Workflow_FloatsAndDurations(
+        CustomMetricMeterOptions.DurationFormat durationFormat)
+    {
+        // Create meter
+        using var meter = new Meter("test-meter");
+
+        // Create/start listener
+        using var meterListener = new MeterListener();
+        meterListener.InstrumentPublished = (instrument, listener) =>
+        {
+            if (instrument.Meter.Name == "test-meter")
+            {
+                listener.EnableMeasurementEvents(instrument);
+            }
+        };
+        var metrics = new ConcurrentQueue<(Instrument Instrument, object Value, Dictionary<string, object> Tags)>();
+        meterListener.SetMeasurementEventCallback<long>((inst, value, tags, state) =>
+            metrics.Enqueue((inst, value, new(tags.ToArray().Select(
+                kv => KeyValuePair.Create(kv.Key, kv.Value!))))));
+        meterListener.SetMeasurementEventCallback<double>((inst, value, tags, state) =>
+            metrics.Enqueue((inst, value, new(tags.ToArray().Select(
+                kv => KeyValuePair.Create(kv.Key, kv.Value!))))));
+        meterListener.Start();
+
+        // Create runtime/client with meter
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                Metrics = new()
+                {
+                    CustomMetricMeter = new CustomMetricMeter(meter),
+                    CustomMetricMeterOptions = new() { HistogramDurationFormat = durationFormat },
+                },
+            },
+        });
+        var client = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = runtime,
+            });
+
+        // Run workflow
+        using var worker = new TemporalWorker(
+            client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            { Interceptors = new[] { new XunitExceptionInterceptor() } }.
+            AddWorkflow<FloatsAndDurationsMetricsWorkflow>());
+        await worker.ExecuteAsync(() =>
+            client.ExecuteWorkflowAsync(
+                (FloatsAndDurationsMetricsWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+
+        // Record and wait until the three metrics show up
+        meterListener.RecordObservableInstruments();
+        var (histFloat, histDur, gaugeFloat) = await AssertMore.EventuallyAsync(async () =>
+            (Assert.Single(metrics, m => m.Instrument.Name == "histogram-float"),
+                Assert.Single(metrics, m => m.Instrument.Name == "histogram-duration"),
+                Assert.Single(metrics, m => m.Instrument.Name == "gauge-float")));
+
+        Assert.Equal(1.23, histFloat.Value);
+        if (durationFormat == CustomMetricMeterOptions.DurationFormat.FloatSeconds)
+        {
+            Assert.Single(metrics, m =>
+                m.Instrument.Name == "temporal_workflow_task_execution_latency" &&
+                m.Instrument.Unit == "s");
+            Assert.Equal(new TimeSpan(0, 0, 4, 5, 6).TotalSeconds, histDur.Value);
+        }
+        else
+        {
+            Assert.Single(metrics, m =>
+                m.Instrument.Name == "temporal_workflow_task_execution_latency" &&
+                m.Instrument.Unit == "ms");
+            Assert.Equal((long)new TimeSpan(0, 0, 4, 5, 6).TotalMilliseconds, histDur.Value);
+        }
+        Assert.Equal(7.89, gaugeFloat.Value);
+    }
 }

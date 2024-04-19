@@ -20,11 +20,14 @@ typedef enum MetricAttributeValueType {
   Bool,
 } MetricAttributeValueType;
 
-typedef enum MetricIntegerKind {
-  Counter = 1,
-  Histogram,
-  Gauge,
-} MetricIntegerKind;
+typedef enum MetricKind {
+  CounterInteger = 1,
+  HistogramInteger,
+  HistogramFloat,
+  HistogramDuration,
+  GaugeInteger,
+  GaugeFloat,
+} MetricKind;
 
 typedef enum OpenTelemetryMetricTemporality {
   Cumulative = 1,
@@ -46,9 +49,9 @@ typedef struct EphemeralServer EphemeralServer;
 
 typedef struct ForwardedLog ForwardedLog;
 
-typedef struct MetricAttributes MetricAttributes;
+typedef struct Metric Metric;
 
-typedef struct MetricInteger MetricInteger;
+typedef struct MetricAttributes MetricAttributes;
 
 typedef struct MetricMeter MetricMeter;
 
@@ -162,12 +165,12 @@ typedef struct MetricAttribute {
   enum MetricAttributeValueType value_type;
 } MetricAttribute;
 
-typedef struct MetricIntegerOptions {
+typedef struct MetricOptions {
   struct ByteArrayRef name;
   struct ByteArrayRef description;
   struct ByteArrayRef unit;
-  enum MetricIntegerKind kind;
-} MetricIntegerOptions;
+  enum MetricKind kind;
+} MetricOptions;
 
 /**
  * If fail is not null, it must be manually freed when done. Runtime is always
@@ -198,24 +201,34 @@ typedef struct OpenTelemetryOptions {
   MetadataRef headers;
   uint32_t metric_periodicity_millis;
   enum OpenTelemetryMetricTemporality metric_temporality;
+  bool durations_as_seconds;
 } OpenTelemetryOptions;
 
 typedef struct PrometheusOptions {
   struct ByteArrayRef bind_address;
   bool counters_total_suffix;
   bool unit_suffix;
+  bool durations_as_seconds;
 } PrometheusOptions;
 
-typedef const void *(*CustomMetricMeterMetricIntegerNewCallback)(struct ByteArrayRef name,
-                                                                 struct ByteArrayRef description,
-                                                                 struct ByteArrayRef unit,
-                                                                 enum MetricIntegerKind kind);
+typedef const void *(*CustomMetricMeterMetricNewCallback)(struct ByteArrayRef name,
+                                                          struct ByteArrayRef description,
+                                                          struct ByteArrayRef unit,
+                                                          enum MetricKind kind);
 
-typedef void (*CustomMetricMeterMetricIntegerFreeCallback)(const void *metric);
+typedef void (*CustomMetricMeterMetricFreeCallback)(const void *metric);
 
-typedef void (*CustomMetricMeterMetricIntegerUpdateCallback)(const void *metric,
+typedef void (*CustomMetricMeterMetricRecordIntegerCallback)(const void *metric,
                                                              uint64_t value,
                                                              const void *attributes);
+
+typedef void (*CustomMetricMeterMetricRecordFloatCallback)(const void *metric,
+                                                           double value,
+                                                           const void *attributes);
+
+typedef void (*CustomMetricMeterMetricRecordDurationCallback)(const void *metric,
+                                                              uint64_t value_ms,
+                                                              const void *attributes);
 
 typedef struct CustomMetricAttributeValueString {
   const uint8_t *data;
@@ -250,9 +263,11 @@ typedef void (*CustomMetricMeterMeterFreeCallback)(const struct CustomMetricMete
  * invoked on.
  */
 typedef struct CustomMetricMeter {
-  CustomMetricMeterMetricIntegerNewCallback metric_integer_new;
-  CustomMetricMeterMetricIntegerFreeCallback metric_integer_free;
-  CustomMetricMeterMetricIntegerUpdateCallback metric_integer_update;
+  CustomMetricMeterMetricNewCallback metric_new;
+  CustomMetricMeterMetricFreeCallback metric_free;
+  CustomMetricMeterMetricRecordIntegerCallback metric_record_integer;
+  CustomMetricMeterMetricRecordFloatCallback metric_record_float;
+  CustomMetricMeterMetricRecordDurationCallback metric_record_duration;
   CustomMetricMeterAttributesNewCallback attributes_new;
   CustomMetricMeterAttributesFreeCallback attributes_free;
   CustomMetricMeterMeterFreeCallback meter_free;
@@ -438,14 +453,21 @@ struct MetricAttributes *metric_attributes_new_append(const struct MetricMeter *
 
 void metric_attributes_free(struct MetricAttributes *attrs);
 
-struct MetricInteger *metric_integer_new(const struct MetricMeter *meter,
-                                         const struct MetricIntegerOptions *options);
+struct Metric *metric_new(const struct MetricMeter *meter, const struct MetricOptions *options);
 
-void metric_integer_free(struct MetricInteger *metric);
+void metric_free(struct Metric *metric);
 
-void metric_integer_record(const struct MetricInteger *metric,
+void metric_record_integer(const struct Metric *metric,
                            uint64_t value,
                            const struct MetricAttributes *attrs);
+
+void metric_record_float(const struct Metric *metric,
+                         double value,
+                         const struct MetricAttributes *attrs);
+
+void metric_record_duration(const struct Metric *metric,
+                            uint64_t value_ms,
+                            const struct MetricAttributes *attrs);
 
 struct Random *random_new(uint64_t seed);
 

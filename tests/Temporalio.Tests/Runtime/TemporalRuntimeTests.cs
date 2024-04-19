@@ -97,15 +97,15 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             (metrics[0].Name, metrics[0].Unit, metrics[0].Description));
         var metricValues = metrics[0].Values.ToList();
         Assert.Equal(4, metricValues.Count);
-        Assert.Equal(123, metricValues[0].Value);
+        Assert.Equal(123L, metricValues[0].Value);
         Assert.Equal(
             new Dictionary<string, object>() { { "service_name", "temporal-core-sdk" } },
             metricValues[0].Tags);
-        Assert.Equal(234, metricValues[1].Value);
+        Assert.Equal(234L, metricValues[1].Value);
         Assert.Equal(
             new Dictionary<string, object>() { { "service_name", "temporal-core-sdk" } },
             metricValues[1].Tags);
-        Assert.Equal(345, metricValues[2].Value);
+        Assert.Equal(345L, metricValues[2].Value);
         Assert.Equal(
             new Dictionary<string, object>()
             {
@@ -116,7 +116,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
                 { "bool-tag", false },
             },
             metricValues[2].Tags);
-        Assert.Equal(456, metricValues[3].Value);
+        Assert.Equal(456L, metricValues[3].Value);
         Assert.Equal(
             new Dictionary<string, object>()
             {
@@ -134,7 +134,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             (metrics[1].Name, metrics[1].Unit, metrics[1].Description));
         metricValues = metrics[1].Values.ToList();
         Assert.Single(metricValues);
-        Assert.Equal(567, metricValues[0].Value);
+        Assert.Equal(567L, metricValues[0].Value);
         Assert.Equal(
             new Dictionary<string, object>() { { "service_name", "temporal-core-sdk" } },
             metricValues[0].Tags);
@@ -144,7 +144,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             (metrics[2].Name, metrics[2].Unit, metrics[2].Description));
         metricValues = metrics[2].Values.ToList();
         Assert.Single(metricValues);
-        Assert.Equal(678, metricValues[0].Value);
+        Assert.Equal(678L, metricValues[0].Value);
         Assert.Equal(
             new Dictionary<string, object>()
                 { { "service_name", "temporal-core-sdk" }, { "string-tag", "histval" } },
@@ -155,7 +155,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             (metrics[3].Name, metrics[3].Unit, metrics[3].Description));
         metricValues = metrics[3].Values.ToList();
         Assert.Single(metricValues);
-        Assert.Equal(789, metricValues[0].Value);
+        Assert.Equal(789L, metricValues[0].Value);
         Assert.Equal(
             new Dictionary<string, object>()
                 { { "service_name", "temporal-core-sdk" }, { "string-tag", "gaugeval" } },

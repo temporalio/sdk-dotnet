@@ -137,17 +137,17 @@ public static class TestUtils
         public ICustomMetricCounter<T> CreateCounter<T>(
             string name, string? unit, string? description)
             where T : struct =>
-            CreateMetric<long, ICustomMetricCounter<T>>(name, unit, description);
+            CreateMetric<T, ICustomMetricCounter<T>>(name, unit, description);
 
         public ICustomMetricHistogram<T> CreateHistogram<T>(
             string name, string? unit, string? description)
             where T : struct =>
-            CreateMetric<long, ICustomMetricHistogram<T>>(name, unit, description);
+            CreateMetric<T, ICustomMetricHistogram<T>>(name, unit, description);
 
         public ICustomMetricGauge<T> CreateGauge<T>(
             string name, string? unit, string? description)
             where T : struct =>
-            CreateMetric<long, ICustomMetricGauge<T>>(name, unit, description);
+            CreateMetric<T, ICustomMetricGauge<T>>(name, unit, description);
 
         public object CreateTags(
             object? appendFrom, IReadOnlyCollection<KeyValuePair<string, object>> tags)
@@ -163,26 +163,27 @@ public static class TestUtils
         }
 
         private TMetric CreateMetric<TValue, TMetric>(string name, string? unit, string? description)
+            where TValue : struct
         {
-            if (typeof(TValue) != typeof(long))
-            {
-                throw new InvalidOperationException($"Expected long type, got {typeof(TValue)}");
-            }
-            var metric = new CaptureMetric(name, unit, description);
+            var metric = new CaptureMetric<TValue>(name, unit, description);
             Metrics.Enqueue(metric);
             return (TMetric)(object)metric;
         }
     }
 
-    public record CaptureMetric(string Name, string? Unit, string? Description)
-        : ICustomMetricCounter<long>, ICustomMetricHistogram<long>, ICustomMetricGauge<long>
+    public abstract record CaptureMetric(string Name, string? Unit, string? Description)
     {
-        public ConcurrentQueue<(long Value, Dictionary<string, object> Tags)> Values { get; } = new();
+        public ConcurrentQueue<(object Value, Dictionary<string, object> Tags)> Values { get; } = new();
+    }
 
-        public void Add(long value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
+    public record CaptureMetric<T>(string Name, string? Unit, string? Description)
+        : CaptureMetric(Name, Unit, Description), ICustomMetricCounter<T>, ICustomMetricHistogram<T>, ICustomMetricGauge<T>
+        where T : struct
+    {
+        public void Add(T value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
 
-        public void Record(long value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
+        public void Record(T value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
 
-        public void Set(long value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
+        public void Set(T value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
     }
 }

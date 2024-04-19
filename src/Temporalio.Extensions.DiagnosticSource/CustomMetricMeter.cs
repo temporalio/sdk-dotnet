@@ -13,6 +13,12 @@ namespace Temporalio.Extensions.DiagnosticSource
     /// Implementation of <see cref="ICustomMetricMeter" /> for a <see cref="Meter" /> that can be
     /// set on <see cref="MetricsOptions.CustomMetricMeter" /> to record metrics to the meter.
     /// </summary>
+    /// <remarks>
+    /// By default all histograms are set as a <c>long</c> of milliseconds unless
+    /// <see cref="MetricsOptions.CustomMetricMeterOptions"/> is set to <c>FloatSeconds</c>.
+    /// Similarly, if the unit for a histogram is "duration", it is changed to "ms" unless that same
+    /// setting is set, at which point the unit is changed to "s".
+    /// </remarks>
     public class CustomMetricMeter : ICustomMetricMeter
     {
         /// <summary>
@@ -35,8 +41,22 @@ namespace Temporalio.Extensions.DiagnosticSource
         /// <inheritdoc />
         public ICustomMetricHistogram<T> CreateHistogram<T>(
             string name, string? unit, string? description)
-            where T : struct =>
-            new CustomMetricHistogram<T>(Meter.CreateHistogram<T>(name, unit, description));
+            where T : struct
+        {
+            // Have to convert TimeSpan to something .NET meter can work with. For this to even
+            // happen, a user would have had to set custom options to report as time span.
+            if (typeof(T) == typeof(TimeSpan))
+            {
+                // If unit is "duration", change to "ms since we're converting here
+                if (unit == "duration")
+                {
+                    unit = "ms";
+                }
+                return (new CustomMetricHistogramTimeSpan(
+                    Meter.CreateHistogram<long>(name, unit, description)) as ICustomMetricHistogram<T>)!;
+            }
+            return new CustomMetricHistogram<T>(Meter.CreateHistogram<T>(name, unit, description));
+        }
 
         /// <inheritdoc />
         public ICustomMetricGauge<T> CreateGauge<T>(
@@ -73,6 +93,17 @@ namespace Temporalio.Extensions.DiagnosticSource
 
             public void Record(T value, object tags) =>
                 underlying.Record(value, ((Tags)tags).TagList);
+        }
+
+        private sealed class CustomMetricHistogramTimeSpan : ICustomMetricHistogram<TimeSpan>
+        {
+            private readonly Histogram<long> underlying;
+
+            internal CustomMetricHistogramTimeSpan(Histogram<long> underlying) =>
+                this.underlying = underlying;
+
+            public void Record(TimeSpan value, object tags) =>
+                underlying.Record((long)value.TotalMilliseconds, ((Tags)tags).TagList);
         }
 
 #pragma warning disable CA1001 // We are disposing the lock on destruction since this can't be disposable
