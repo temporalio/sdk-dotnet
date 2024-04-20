@@ -56,7 +56,7 @@ namespace Temporalio.Converters
         /// instances, so only subclasses would call this.
         /// </remarks>
         /// <seealso cref="DefaultPayloadConverter()" />
-        protected DefaultPayloadConverter(JsonSerializerOptions jsonSerializerOptions)
+        public DefaultPayloadConverter(JsonSerializerOptions jsonSerializerOptions)
             : this(
                 new BinaryNullConverter(),
                 new BinaryPlainConverter(),
