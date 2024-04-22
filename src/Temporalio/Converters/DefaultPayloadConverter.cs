@@ -79,6 +79,7 @@ namespace Temporalio.Converters
 
         // KeyedCollection not worth it and OrderedDictionary not generic. So we'll expose the
         // collection and maintain an internal dictionary.
+
         /// <summary>
         /// Gets the encoding converters tried, in order, when converting to payload.
         /// </summary>
