@@ -51,12 +51,8 @@ namespace Temporalio.Converters
         /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class.
         /// </summary>
         /// <param name="jsonSerializerOptions">Custom serializer options.</param>
-        /// <remarks>
-        /// This is protected because payload converters are referenced as class types, not
-        /// instances, so only subclasses would call this.
-        /// </remarks>
         /// <seealso cref="DefaultPayloadConverter()" />
-        protected DefaultPayloadConverter(JsonSerializerOptions jsonSerializerOptions)
+        public DefaultPayloadConverter(JsonSerializerOptions jsonSerializerOptions)
             : this(
                 new BinaryNullConverter(),
                 new BinaryPlainConverter(),
@@ -73,12 +69,8 @@ namespace Temporalio.Converters
         /// <param name="encodingConverters">
         /// Encoding converters to use. Duplicate encodings not allowed.
         /// </param>
-        /// <remarks>
-        /// This is protected because payload converters are referenced as class types, not
-        /// instances, so only subclasses would call this.
-        /// </remarks>
         /// <seealso cref="DefaultPayloadConverter()" />
-        protected DefaultPayloadConverter(params IEncodingConverter[] encodingConverters)
+        public DefaultPayloadConverter(params IEncodingConverter[] encodingConverters)
         {
             EncodingConverters = Array.AsReadOnly(encodingConverters);
             IndexedEncodingConverters = encodingConverters.ToDictionary(
