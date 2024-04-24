@@ -27,9 +27,9 @@ builder.Services.
     AddScopedActivities<MyActivityClass>().
     AddWorkflow<MyWorkflow>();
 
-// Run
 var host = builder.Build();
-host.Run();
+// Make sure you use RunAsync and not Run, see https://github.com/temporalio/sdk-dotnet/issues/220
+await host.RunAsync();
 ```
 
 This creates a hosted Temporal worker which returns a builder. Then `MyActivityClass` is added to the service collection
@@ -90,6 +90,9 @@ parameters, this returns an `OptionsBuilder<TemporalWorkerServiceOptions>` to us
 are available as parameters that can be configured. `TemporalWorkerServiceOptions` simply extends
 `TemporalWorkerOptions` with an added property for optional client options that can be set to connect a client on worker
 start instead of expecting a `ITemporalClient` to be present on the service collection.
+
+⚠️WARNING: Make sure you use host `RunAsync()` and not `Run()` (see
+[this](https://github.com/temporalio/sdk-dotnet/issues/220) issue)
 
 ## Activity Dependency Injection without Worker Services
 
