@@ -37,6 +37,7 @@ Extensions:
   - [Executing a Workflow](#executing-a-workflow)
 - [Usage](#usage)
   - [Clients](#clients)
+    - [Cloud Client Using MTLS](#cloud-client-using-mtls)
     - [Client Dependency Injection](#client-dependency-injection)
     - [Data Conversion](#data-conversion)
   - [Workers](#workers)
@@ -248,6 +249,25 @@ Notes about the above code:
   and an object array for arguments.
 * The `handle` above represents a `WorkflowHandle` which has specific workflow operations on it. For existing workflows,
   handles can be obtained via `client.GetWorkflowHandle`.
+
+#### Cloud Client Using MTLS
+
+Assuming a client certificate is present at `my-cert.pem` and a client key is present at `my-key.pem`, this is how to
+connect to Temporal Cloud:
+
+```csharp
+using Temporalio.Client;
+
+var client = await TemporalClient.ConnectAsync(new("my-namespace.a1b2c.tmprl.cloud:7233")
+{
+    Namespace = "my-namespace.a1b2c",
+    Tls = new()
+    {
+        ClientCert = await File.ReadAllBytesAsync("my-cert.pem"),
+        ClientPrivateKey = await File.ReadAllBytesAsync("my-key.pem"),
+    },
+});
+```
 
 #### Client Dependency Injection
 
