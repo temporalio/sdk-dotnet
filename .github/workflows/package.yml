@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, macos-latest, macos-arm, windows-latest]
+        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
         include:
           - os: ubuntu-latest
             out-file: libtemporal_sdk_bridge.so
@@ -25,14 +25,14 @@ jobs:
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_aarch64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
-          - os: macos-latest
+          - os: macos-intel
             out-file: libtemporal_sdk_bridge.dylib
             out-prefix: osx-x64
+            runsOn: macos-12
           - os: macos-arm
             out-file: libtemporal_sdk_bridge.dylib
             out-prefix: osx-arm64
-            alternative-target: aarch64-apple-darwin
-            runsOn: macos-latest
+            runsOn: macos-14
           - os: windows-latest
             out-file: temporal_sdk_bridge.dll
             out-prefix: win-x64
@@ -56,17 +56,11 @@ jobs:
           workspaces: src/Temporalio/Bridge
           key: ${{ matrix.os }}
 
-      - name: Add alternative Rust target
-        if: ${{ matrix.alternative-target }}
-        run: rustup target add ${{ matrix.alternative-target }}
-
       - name: Install protoc (non-Linux)
-        # Does not work on Linux
         if: ${{ matrix.os != 'ubuntu-latest' && matrix.os != 'ubuntu-arm' }}
-        uses: arduino/setup-protoc@v1
+        uses: arduino/setup-protoc@v3
         with:
-          # TODO(cretz): Upgrade when https://github.com/arduino/setup-protoc/issues/33 fixed
-          version: '3.x'
+          version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install protoc (Linux)
@@ -78,26 +72,13 @@ jobs:
           echo $(realpath .)/protobuf-compiler/bin >> $GITHUB_PATH
 
       - name: Build
-        if: ${{ !matrix.alternative-target }}
         run: cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release
 
-      - name: Build alternative target
-        if: ${{ matrix.alternative-target != '' }}
-        run: cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release --target ${{ matrix.alternative-target }}
-
       - name: Upload bridge library
-        if: ${{ !matrix.alternative-target }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.out-prefix }}-bridge
           path: src/Temporalio/Bridge/target/release/${{ matrix.out-file }}
-
-      - name: Upload bridge library alternative target
-        if: ${{ matrix.alternative-target != '' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.out-prefix }}-bridge
-          path: src/Temporalio/Bridge/target/${{ matrix.alternative-target }}/release/${{ matrix.out-file }}
 
   build-nuget-package:
     needs:
@@ -115,7 +96,7 @@ jobs:
           path: bridge-libraries
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
 
       - name: Build package
         run: dotnet pack -c Release /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
@@ -140,10 +121,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, macos-latest, windows-latest]
+        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
         include:
           - os: ubuntu-arm
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
+          - os: macos-intel
+            runsOn: macos-12
+          - os: macos-arm
+            runsOn: macos-14
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
@@ -158,7 +143,11 @@ jobs:
           path: nuget-package
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
+        with:
+          # Specific .NET version required because GitHub macos ARM image has
+          # bad pre-installed .NET version
+          dotnet-version: 6.x
 
       - name: Run smoke test
         run: |

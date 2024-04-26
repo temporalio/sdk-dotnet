@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, macos-12, windows-latest, ubuntu-arm]
+        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
         include:
           - os: windows-latest
             checkTarget: true
@@ -20,6 +20,10 @@ jobs:
             cloudTestTarget: true
           - os: ubuntu-arm
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
+          - os: macos-intel
+            runsOn: macos-12
+          - os: macos-arm
+            runsOn: macos-14
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
@@ -38,22 +42,18 @@ jobs:
           workspaces: src/Temporalio/Bridge
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-
-      - name: Install protoc (x64)
-        # Does not work on arm
-        if: ${{ matrix.os != 'ubuntu-arm' }}
-        uses: arduino/setup-protoc@v1
+        uses: actions/setup-dotnet@v4
         with:
-          # TODO(cretz): Upgrade when https://github.com/arduino/setup-protoc/issues/33 fixed
-          version: '3.x'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # Specific .NET version required because GitHub macos ARM image has
+          # bad pre-installed .NET version
+          dotnet-version: 6.x
 
-      - name: Install protoc (Linux ARM)
-        if: ${{ matrix.os == 'ubuntu-arm' }}
-        run: |
-          sudo apt update -y
-          sudo apt install -y protobuf-compiler
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          # TODO(cretz): Can upgrade proto when https://github.com/arduino/setup-protoc/issues/99 fixed
+          version: "23.x"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
         # We intentionally just build debug mode in this CI. We build before

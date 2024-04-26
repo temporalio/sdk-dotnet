@@ -1207,10 +1207,9 @@ DLL.
 
 ### Regenerating protos
 
-Must have `protoc` on the `PATH`. Note, for now you must use `protoc` 3.x until
-[our GH action downloader](https://github.com/arduino/setup-protoc/issues/33) is fixed or we change how we download
-protoc and check protos (since protobuf
-[changed some C# source](https://github.com/protocolbuffers/protobuf/pull/9981)).
+Must have `protoc` on the `PATH`. Note, for now users should use `protoc` 23.x until
+[our GH action downloader](https://github.com/arduino/setup-protoc/issues/99) can support later versions.
+[Here](https://github.com/protocolbuffers/protobuf/releases/tag/v23.4) is the latest 23.x release as of this writing.
 
 Then:
 
