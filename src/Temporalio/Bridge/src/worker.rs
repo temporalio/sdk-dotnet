@@ -134,6 +134,14 @@ pub extern "C" fn worker_free(worker: *mut Worker) {
     }
 }
 
+#[no_mangle]
+pub extern "C" fn worker_replace_client(worker: *mut Worker, new_client: *mut Client) {
+    let worker = unsafe { &*worker };
+    let core_worker = worker.worker.as_ref().expect("missing worker").clone();
+    let client = unsafe { &*new_client };
+    core_worker.replace_client(client.core.get_client().clone());
+}
+
 /// If success or fail are present, they must be freed. They will both be null
 /// if this is a result of a poll shutdown.
 type WorkerPollCallback = unsafe extern "C" fn(

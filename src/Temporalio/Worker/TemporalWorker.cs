@@ -15,9 +15,11 @@ namespace Temporalio.Worker
     /// </summary>
     public class TemporalWorker : IDisposable
     {
+        private readonly object clientLock = new();
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
         private readonly bool workflowTracingEventListenerEnabled;
+        private IWorkerClient client;
         private int started;
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace Temporalio.Worker
         /// <param name="options">Options for the worker.</param>
         public TemporalWorker(IWorkerClient client, TemporalWorkerOptions options)
         {
-            Client = client;
+            this.client = client;
             // Clone the options to discourage mutation (but we aren't completely disabling mutation
             // on the Options field herein).
             Options = (TemporalWorkerOptions)options.Clone();
@@ -49,7 +51,7 @@ namespace Temporalio.Worker
 
             // Interceptors are the client interceptors that implement IWorkerInterceptor followed
             // by the explicitly provided ones in options.
-            var interceptors = Client.Options.Interceptors?.OfType<IWorkerInterceptor>() ??
+            var interceptors = client.Options.Interceptors?.OfType<IWorkerInterceptor>() ??
                 Enumerable.Empty<IWorkerInterceptor>();
             if (Options.Interceptors != null)
             {
@@ -102,9 +104,39 @@ namespace Temporalio.Worker
         public TemporalWorkerOptions Options { get; private init; }
 
         /// <summary>
-        /// Gets the client this worker was created with.
+        /// Gets or sets the client for this worker.
         /// </summary>
-        internal IWorkerClient Client { get; private init; }
+        /// <remarks>
+        /// When this property is set, it actually replaces the underlying client that is being used
+        /// by the worker. This means the next calls by the worker to Temporal (e.g. responding
+        /// task completion, activity heartbeat, etc) will be on this new client, but outstanding
+        /// calls will not be immediately interrupted.
+        /// </remarks>
+        /// <remarks>
+        /// When setting this value, the previous client will no longer apply for eager workflow
+        /// start. This new client will now be registered with this worker for eager workflow start.
+        /// </remarks>
+        public IWorkerClient Client
+        {
+            get
+            {
+                lock (clientLock)
+                {
+                    return client;
+                }
+            }
+
+            set
+            {
+                var bridgeClient = value.BridgeClientProvider.BridgeClient ??
+                    throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
+                lock (clientLock)
+                {
+                    BridgeWorker.ReplaceClient((Bridge.Client)bridgeClient);
+                    client = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the underlying bridge worker.

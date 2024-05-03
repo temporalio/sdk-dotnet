@@ -521,6 +521,8 @@ struct WorkerOrFail worker_new(struct Client *client, const struct WorkerOptions
 
 void worker_free(struct Worker *worker);
 
+void worker_replace_client(struct Worker *worker, struct Client *new_client);
+
 void worker_poll_workflow_activation(struct Worker *worker,
                                      void *user_data,
                                      WorkerPollCallback callback);
