@@ -89,6 +89,18 @@ namespace Temporalio.Bridge
         internal unsafe Interop.Worker* Ptr { get; private set; }
 
         /// <summary>
+        /// Replace the client.
+        /// </summary>
+        /// <param name="client">New client.</param>
+        public void ReplaceClient(Client client)
+        {
+            unsafe
+            {
+                Interop.Methods.worker_replace_client(Ptr, client.Ptr);
+            }
+        }
+
+        /// <summary>
         /// Poll for the next workflow activation.
         /// </summary>
         /// <remarks>Only virtual for testing.</remarks>
