@@ -23,11 +23,21 @@ namespace Temporalio.Exceptions
         public T ElementAt<T>(int index)
         {
             // Have to check ourselves here just in case no collection present
+#if NET8_0_OR_GREATER
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count);
+
+            ArgumentNullException.ThrowIfNull(Converter);
+            ArgumentNullException.ThrowIfNull(Payloads);
+
+            return Converter.ToValue<T>(Payloads.ElementAt(index) ?? throw new ArgumentOutOfRangeException(nameof(index)));
+#else
             if (index >= Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
+
             return Converter.ToValue<T>(Payloads.ElementAt(index));
+#endif
         }
     }
 }

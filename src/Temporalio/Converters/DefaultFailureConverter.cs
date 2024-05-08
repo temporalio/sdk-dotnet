@@ -153,7 +153,7 @@ namespace Temporalio.Converters
                         Details =
                             appDet.Count == 0
                                 ? null
-                                : new() { Payloads_ = { appDet.Details.Select(conv.ToPayload) } },
+                                : new() { Payloads_ = { appDet.Details?.Select(conv.ToPayload) } },
                     };
                     break;
                 case CanceledFailureException canExc:
@@ -166,12 +166,12 @@ namespace Temporalio.Converters
                         Details =
                             canDet.Count == 0
                                 ? null
-                                : new() { Payloads_ = { canDet.Details.Select(conv.ToPayload) } },
+                                : new() { Payloads_ = { canDet.Details?.Select(conv.ToPayload) } },
                     };
                     break;
                 case WorkflowAlreadyStartedException:
                     // We don't need to do anything special for this, but we also don't require it
-                    // already have a faiure proto
+                    // already have a failure proto
                     break;
                 default:
                     throw new ArgumentException(

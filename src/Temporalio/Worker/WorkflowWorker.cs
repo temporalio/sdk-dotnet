@@ -99,7 +99,7 @@ namespace Temporalio.Worker
                     var task = Task.Run(() => HandleActivationAsync(codec, act));
                     tasks[task] = null;
                     _ = task.ContinueWith(
-                        task => { tasks.TryRemove(task, out _); }, TaskScheduler.Current);
+                        task => tasks.TryRemove(task, out _), TaskScheduler.Current);
                 }
                 // Wait on every task to complete (exceptions should never happen)
                 await Task.WhenAll(tasks.Keys).ConfigureAwait(false);
@@ -170,7 +170,11 @@ namespace Temporalio.Worker
                                 $"[TMPRL1101] Workflow with ID {act.RunId} deadlocked after {deadlockTimeout}");
                         }
                         // Cancel deadlock timeout timer since we didn't hit it
+#if NET8_0_OR_GREATER
+                        await timeoutCancel.CancelAsync().ConfigureAwait(false);
+#else
                         timeoutCancel.Cancel();
+#endif
                     }
                     comp = await workflowTask.ConfigureAwait(false);
                 }

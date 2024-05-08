@@ -82,7 +82,11 @@ namespace Temporalio.Worker
                 finally
                 {
                     // Cancel and wait on complete
+#if NET8_0_OR_GREATER
+                    await cts.CancelAsync().ConfigureAwait(false);
+#else
                     cts.Cancel();
+#endif
                     await workerTask.ConfigureAwait(false);
                 }
             }
@@ -126,7 +130,11 @@ namespace Temporalio.Worker
                 finally
                 {
                     // Cancel and wait on complete
+#if NET8_0_OR_GREATER
+                    await shutdownTokenSource.CancelAsync().ConfigureAwait(false);
+#else
                     shutdownTokenSource.Cancel();
+#endif
                     await workerTask.ConfigureAwait(false);
                 }
             }

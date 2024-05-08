@@ -18,11 +18,15 @@ namespace Temporalio.Exceptions
         public T ElementAt<T>(int index)
         {
             // Have to check ourselves here just in case no collection present
+#if NET8_0_OR_GREATER
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count);
+#else
             if (index >= Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            return (T)Details.ElementAt(index)!;
+#endif
+            return (T)Details?.ElementAt(index)!;
         }
     }
 }

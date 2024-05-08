@@ -485,7 +485,11 @@ namespace Temporalio.Worker
                                 finally
                                 {
                                     // Cancel delay timer
+#if NET8_0_OR_GREATER
+                                    await delayCancelSource.CancelAsync().ConfigureAwait(false);
+#else
                                     delayCancelSource.Cancel();
+#endif
                                 }
                             }
                             // Timed out

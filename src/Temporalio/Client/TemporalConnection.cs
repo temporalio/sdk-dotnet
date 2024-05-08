@@ -44,9 +44,15 @@ namespace Temporalio.Client
             }
             apiKey = options.ApiKey;
             // Set default identity if unset
+#if NET8_0_OR_GREATER
+            options.Identity ??= Environment.ProcessId
+                            + "@"
+                            + System.Net.Dns.GetHostName();
+#else
             options.Identity ??= System.Diagnostics.Process.GetCurrentProcess().Id
                             + "@"
                             + System.Net.Dns.GetHostName();
+#endif
             // Only set semaphore if lazy
             if (lazy)
             {
@@ -76,11 +82,7 @@ namespace Temporalio.Client
 
             set
             {
-                var client = this.client;
-                if (client == null)
-                {
-                    throw new InvalidOperationException("Cannot set RPC metadata if client never connected");
-                }
+                var client = this.client ?? throw new InvalidOperationException("Cannot set RPC metadata if client never connected");
                 lock (rpcMetadataLock)
                 {
                     // Set on Rust side first to prevent errors from affecting field
@@ -106,11 +108,7 @@ namespace Temporalio.Client
 
             set
             {
-                var client = this.client;
-                if (client == null)
-                {
-                    throw new InvalidOperationException("Cannot set API key if client never connected");
-                }
+                var client = this.client ?? throw new InvalidOperationException("Cannot set API key if client never connected");
                 lock (apiKeyLock)
                 {
                     // Set on Rust side first to prevent errors from affecting field

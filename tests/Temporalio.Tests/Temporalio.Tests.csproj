@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -6,13 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' != 'NET8_0_OR_GREATER'">
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
     <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.3.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.4.0" />
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="7.0.0" />
@@ -22,7 +22,19 @@
     <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFrameworkIdentifier)' == 'NET8_0_OR_GREATER'">
+    <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="MartinCostello.Logging.XUnit" Version="0.3.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
+    <PackageReference Include="OpenTelemetry.Exporter.InMemory" Version="1.4.0" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="7.0.0" />
+    <PackageReference Include="xunit" Version="2.4.2" />
+    <PackageReference Include="xunit.console" Version="2.4.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
+    <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
+  </ItemGroup>
+
+	<ItemGroup>
     <ProjectReference Include="..\..\src\Temporalio\Temporalio.csproj" />
     <ProjectReference Include="..\..\src\Temporalio.Extensions.DiagnosticSource\Temporalio.Extensions.DiagnosticSource.csproj" />
     <ProjectReference Include="..\..\src\Temporalio.Extensions.Hosting\Temporalio.Extensions.Hosting.csproj" />
