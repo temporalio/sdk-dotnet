@@ -80,6 +80,11 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             services.
                 AddSingleton<ILoggerFactory>(loggerFactory).
                 AddScoped<DatabaseClient>().
+                // We are also adding the DB client as a keyed service to demonstrate keyed service
+                // support for our DI logic. This used to break because newer DI library versions
+                // disallowed accessing certain properties on keyed services which we access
+                // internally for dupe checks.
+                AddKeyedScoped<DatabaseClient>("client-keyed").
                 AddHostedTemporalWorker(taskQueue).
                 AddScopedActivities<DatabaseActivities>().
                 AddWorkflow<DatabaseWorkflow>();
