@@ -270,4 +270,21 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         Assert.StartsWith("Worker service", exc.Message);
         Assert.EndsWith("already on collection", exc.Message);
     }
+
+#if NET8_0_OR_GREATER
+    [Fact]
+    public void TemporalWorkerService_CanEnumerateServiceCollectionsWithKeyedServices()
+    {
+        var services = new ServiceCollection();
+
+        // Add a keyed service.
+        services.AddKeyedSingleton<TemporalWorkerServiceTests>("test", this);
+
+        // This should not throw.
+        services.AddHostedTemporalWorker("does-not-matter");
+
+        // Verify the number of services added by AddTokenAcquisition (ignoring the service we added here).
+        Assert.Equal(10, services.Count(t => t.ServiceType != typeof(TemporalWorkerServiceTests)));
+    }
+#endif
 }
