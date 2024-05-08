@@ -4373,6 +4373,45 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class CallWorkflowInWaitConditionWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync() => await Workflow.WaitConditionAsync(
+            () => !string.IsNullOrEmpty(Workflow.Info.WorkflowId));
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_WaitConditionCallingWorkflow_WorksProperly()
+    {
+        await ExecuteWorkerAsync<CallWorkflowInWaitConditionWorkflow>(async worker =>
+        {
+            await Client.ExecuteWorkflowAsync(
+                (CallWorkflowInWaitConditionWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        });
+    }
+
+    [Workflow]
+    public class WaitConditionExceptionWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync() => await Workflow.WaitConditionAsync(
+            () => throw new ApplicationFailureException("Intentional error"));
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_WaitConditionExceptionWorkflow_WorksProperly()
+    {
+        await ExecuteWorkerAsync<WaitConditionExceptionWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (WaitConditionExceptionWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional error");
+        });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

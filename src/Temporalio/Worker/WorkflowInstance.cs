@@ -648,38 +648,58 @@ namespace Temporalio.Worker
         private void RunOnce(bool checkConditions)
         {
             // Run as long as we have scheduled tasks
-            // TODO(cretz): Fix to run as long as any tasks not yielded on Temporal
             while (scheduledTasks.Count > 0)
             {
-                while (scheduledTasks.Count > 0)
-                {
-                    // Pop last
-                    var task = scheduledTasks.Last!.Value;
-                    scheduledTasks.RemoveLast();
-                    scheduledTaskNodes.Remove(task);
+                // Run all tasks until empty
+                RunAllTasks();
 
-                    // This should never return false
-                    if (!TryExecuteTask(task))
-                    {
-                        logger.LogWarning("Task unexpectedly was unable to execute");
-                    }
-                    if (currentActivationException != null)
-                    {
-                        ExceptionDispatchInfo.Capture(currentActivationException).Throw();
-                    }
-                }
-
-                // Collect all condition sources to mark complete and then complete them. This
-                // avoids modify-during-iterate issues.
-                if (checkConditions)
+                // If there are any conditions, schedule a new condition-check task and the run all
+                // tasks again. This is a scheduled task instead of just run inline because it needs
+                // to be in the workflow context (i.e. current task scheduler) so the `Workflow`
+                // methods work properly.
+                if (checkConditions && conditions.Count > 0)
                 {
-                    var completeConditions = conditions.Where(tuple => tuple.Item1());
-                    foreach (var source in conditions.Where(t => t.Item1()).Select(t => t.Item2))
-                    {
-                        source.TrySetResult(null);
-                    }
+                    _ = QueueNewTaskAsync(CheckConditionsAsync);
+                    RunAllTasks();
                 }
             }
+        }
+
+        private void RunAllTasks()
+        {
+            while (scheduledTasks.Count > 0)
+            {
+                // Pop last
+                var task = scheduledTasks.Last!.Value;
+                scheduledTasks.RemoveLast();
+                scheduledTaskNodes.Remove(task);
+
+                // This should never return false
+                if (!TryExecuteTask(task))
+                {
+                    logger.LogWarning("Task unexpectedly was unable to execute");
+                }
+                if (currentActivationException != null)
+                {
+                    ExceptionDispatchInfo.Capture(currentActivationException).Throw();
+                }
+            }
+        }
+
+        private Task CheckConditionsAsync()
+        {
+            try
+            {
+                foreach (var source in conditions.Where(t => t.Item1()).Select(t => t.Item2))
+                {
+                    source.TrySetResult(null);
+                }
+            }
+            catch (Exception e)
+            {
+                currentActivationException = e;
+            }
+            return Task.CompletedTask;
         }
 
         private void AddCommand(WorkflowCommand cmd)
