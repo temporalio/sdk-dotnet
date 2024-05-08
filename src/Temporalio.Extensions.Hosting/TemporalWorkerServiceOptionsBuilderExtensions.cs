@@ -182,8 +182,23 @@ namespace Temporalio.Extensions.Hosting
             if (disallowDuplicates)
             {
                 var any = builder.Services.Any(s =>
-                    s.ImplementationInstance is ConfigureNamedOptions<TemporalWorkerServiceOptions> instance &&
-                    instance.Name == optionsName);
+                {
+                    // Since https://github.com/dotnet/runtime/pull/87183 in 8.0.0+ of
+                    // Microsoft.Extensions.DependencyInjection.Abstractions, simply accessing this
+                    // property on a service can throw an exception if the service is "keyed".
+                    // Knowing whether a service is keyed is only exposed programmatically in that
+                    // newer version and we don't want to depend on that newer version. And we know
+                    // that we never make our options keyed, so we can just swallow the exception.
+                    try
+                    {
+                        return s.ImplementationInstance is ConfigureNamedOptions<TemporalWorkerServiceOptions> instance &&
+                            instance.Name == optionsName;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        return false;
+                    }
+                });
                 if (any)
                 {
                     throw new InvalidOperationException(
