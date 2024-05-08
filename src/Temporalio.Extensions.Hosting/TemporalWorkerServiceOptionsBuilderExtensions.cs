@@ -182,6 +182,9 @@ namespace Temporalio.Extensions.Hosting
             if (disallowDuplicates)
             {
                 var any = builder.Services.Any(s =>
+#if NET8_0_OR_GREATER
+                s.ServiceKey is null &&
+#endif
                     s.ImplementationInstance is ConfigureNamedOptions<TemporalWorkerServiceOptions> instance &&
                     instance.Name == optionsName);
                 if (any)
