@@ -3678,31 +3678,42 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
             // Make all possible overload calls via start then get response
             await (await ((WorkflowHandle)handle).StartUpdateAsync(
-                (UpdateWorkflow wf) => wf.DoUpdateNoParamNoResponseAsync())).GetResultAsync();
+                (UpdateWorkflow wf) => wf.DoUpdateNoParamNoResponseAsync(),
+                new(WorkflowUpdateStage.Accepted))).GetResultAsync();
             Assert.Equal(
                 $"no-param-response: {handle.Id}",
                 await (await ((WorkflowHandle)handle).StartUpdateAsync(
-                    (UpdateWorkflow wf) => wf.DoUpdateNoParamResponseAsync())).GetResultAsync());
+                    (UpdateWorkflow wf) => wf.DoUpdateNoParamResponseAsync(),
+                    new(WorkflowUpdateStage.Accepted))).GetResultAsync());
             await (await ((WorkflowHandle)handle).StartUpdateAsync(
-                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"))).GetResultAsync();
+                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"),
+                new(WorkflowUpdateStage.Accepted))).GetResultAsync();
             await (await ((WorkflowHandle)handle).StartUpdateAsync(
-                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"))).GetResultAsync();
+                (UpdateWorkflow wf) => wf.DoUpdateOneParamNoResponseAsync("some-param"),
+                new(WorkflowUpdateStage.Accepted))).GetResultAsync();
             Assert.Equal(
                 "one-param-response: some-param",
                 await (await ((WorkflowHandle)handle).StartUpdateAsync(
-                    (UpdateWorkflow wf) => wf.DoUpdateOneParamResponseAsync("some-param"))).GetResultAsync());
+                    (UpdateWorkflow wf) => wf.DoUpdateOneParamResponseAsync("some-param"),
+                    new(WorkflowUpdateStage.Accepted))).GetResultAsync());
             await (await handle.StartUpdateAsync(
-                "some-update-name", new[] { "some-param" })).GetResultAsync();
+                "some-update-name",
+                new[] { "some-param" },
+                new(WorkflowUpdateStage.Accepted))).GetResultAsync();
             Assert.Equal(
                 "one-param-response: some-param",
                 await (await handle.StartUpdateAsync<string>(
-                    "DoUpdateOneParamResponse", new[] { "some-param" })).GetResultAsync());
+                    "DoUpdateOneParamResponse",
+                    new[] { "some-param" },
+                    new(WorkflowUpdateStage.Accepted))).GetResultAsync());
             await (await handle.StartUpdateAsync(
-                wf => wf.DoUpdateNoParamNoResponseAsync())).GetResultAsync();
+                wf => wf.DoUpdateNoParamNoResponseAsync(),
+                new(WorkflowUpdateStage.Accepted))).GetResultAsync();
             Assert.Equal(
                 $"no-param-response: {handle.Id}",
                 await (await handle.StartUpdateAsync(
-                    wf => wf.DoUpdateNoParamResponseAsync())).GetResultAsync());
+                    wf => wf.DoUpdateNoParamResponseAsync(),
+                    new(WorkflowUpdateStage.Accepted))).GetResultAsync());
 
             // Make all possible overload calls via execute
             await ((WorkflowHandle)handle).ExecuteUpdateAsync(
@@ -3734,15 +3745,18 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
             // Make updates, then get handles manually, then get response
             await handle.GetUpdateHandle((await handle.StartUpdateAsync(
-                wf => wf.DoUpdateNoParamNoResponseAsync())).Id).GetResultAsync();
+                wf => wf.DoUpdateNoParamNoResponseAsync(),
+                new(WorkflowUpdateStage.Accepted))).Id).GetResultAsync();
             Assert.Equal(
                 $"no-param-response: {handle.Id}",
                 await handle.GetUpdateHandle<string>((await handle.StartUpdateAsync(
-                    wf => wf.DoUpdateNoParamResponseAsync())).Id).GetResultAsync());
+                    wf => wf.DoUpdateNoParamResponseAsync(),
+                    new(WorkflowUpdateStage.Accepted))).Id).GetResultAsync());
             Assert.Equal(
                 $"no-param-response: {handle.Id}",
                 await handle.GetUpdateHandle((await handle.StartUpdateAsync(
-                    wf => wf.DoUpdateNoParamResponseAsync())).Id).GetResultAsync<string>());
+                    wf => wf.DoUpdateNoParamResponseAsync(),
+                    new(WorkflowUpdateStage.Accepted))).Id).GetResultAsync<string>());
         });
     }
 
@@ -3811,7 +3825,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
             // Update invalid operation after accepted - fails workflow task
             await handle.StartUpdateAsync(
-                wf => wf.DoUpdateOneParamNoResponseAsync("update-invalid-operation-new-task"));
+                wf => wf.DoUpdateOneParamNoResponseAsync("update-invalid-operation-new-task"),
+                new(WorkflowUpdateStage.Accepted));
             await AssertTaskFailureContainsEventuallyAsync(handle, "Intentional update invalid operation");
             // Terminate the handle so it doesn't keep failing
             await handle.TerminateAsync();
@@ -3833,7 +3848,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (UpdateWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             await handle.StartUpdateAsync(
-                wf => wf.DoUpdateOneParamNoResponseAsync("update-continue-as-new"));
+                wf => wf.DoUpdateOneParamNoResponseAsync("update-continue-as-new"),
+                new(WorkflowUpdateStage.Accepted));
             await AssertTaskFailureContainsEventuallyAsync(handle, "Continue as new");
             await handle.TerminateAsync();
 
@@ -3865,11 +3881,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
             // Run an update with an ID
             var result1 = await handle.ExecuteUpdateAsync(
-                wf => wf.DoUpdateOneParamResponseAsync("first-param"),
-                new() { UpdateID = "my-update-id" });
+                wf => wf.DoUpdateOneParamResponseAsync("first-param"), new(id: "my-update-id"));
             var result2 = await handle.ExecuteUpdateAsync(
-                wf => wf.DoUpdateOneParamResponseAsync("second-param"),
-                new() { UpdateID = "my-update-id" });
+                wf => wf.DoUpdateOneParamResponseAsync("second-param"), new(id: "my-update-id"));
             // Confirm that the first result is the same as the second without running (i.e. doesn't
             // return second-param)
             Assert.Equal("one-param-response: first-param", result1);
@@ -3886,7 +3900,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             var handle = await Env.Client.StartWorkflowAsync(
                 (UpdateWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-            var updateHandle = await handle.StartUpdateAsync(wf => wf.DoUpdateLongWaitAsync());
+            var updateHandle = await handle.StartUpdateAsync(
+                wf => wf.DoUpdateLongWaitAsync(), new(WorkflowUpdateStage.Accepted));
             // Ask for the result but only for 1 second
             using var tokenSource = new CancellationTokenSource();
             tokenSource.CancelAfter(TimeSpan.FromSeconds(1));
@@ -3978,6 +3993,54 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Null(evt.WorkflowExecutionUpdateAcceptedEventAttributes);
             }
         });
+    }
+
+    [Workflow]
+    public class ImmediatelyCompleteUpdateAndWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync() => "workflow-done";
+
+        [WorkflowQuery]
+        public string GotUpdate { get; set; } = "no";
+
+        [WorkflowUpdate]
+        public async Task<string> UpdateAsync()
+        {
+            GotUpdate = "yes";
+            return "update-done";
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_BeforeWorkflowStart()
+    {
+        // In order to confirm that all started workflows get updates before the
+        // workflow completes, this test will start a workflow and start an
+        // update. Only then will it start the worker to process both in the
+        // task. The workflow and update should both succeed properly. This also
+        // invokes a query to confirm update mutation. We do this with the cache
+        // off to confirm replay behavior.
+
+        // Start workflow
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var handle = await Client.StartWorkflowAsync(
+            (ImmediatelyCompleteUpdateAndWorkflow wf) => wf.RunAsync(),
+            new(id: $"wf-{Guid.NewGuid()}", taskQueue));
+
+        // Execute update in the background
+        var updateTask = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.UpdateAsync()));
+
+        // Start no-cache worker on the task queue
+        await ExecuteWorkerAsync<ImmediatelyCompleteUpdateAndWorkflow>(
+            async worker =>
+            {
+                // Confirm things completed as expected
+                Assert.Equal("workflow-done", await handle.GetResultAsync());
+                Assert.Equal("update-done", await updateTask);
+                Assert.Equal("yes", await handle.QueryAsync(wf => wf.GotUpdate));
+            },
+            new(taskQueue) { MaxCachedWorkflows = 0 });
     }
 
     [Workflow]
@@ -4145,7 +4208,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     // Don't care about handle, we'll re-attach later
                     await handle.StartUpdateAsync(
                         wf => wf.UpdateAsync(updateScenarioNotNull),
-                        new() { UpdateID = "my-update-1" });
+                        new(id: "my-update-1", waitForStage: WorkflowUpdateStage.Accepted));
                 }
 
                 // Expect a task or exception fail

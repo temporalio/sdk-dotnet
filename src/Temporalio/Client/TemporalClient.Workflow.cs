@@ -229,6 +229,15 @@ namespace Temporalio.Client
             public async override Task<WorkflowUpdateHandle<TResult>> StartWorkflowUpdateAsync<TResult>(
                 StartWorkflowUpdateInput input)
             {
+                if (input.Options.WaitForStage == WorkflowUpdateStage.None)
+                {
+                    throw new ArgumentException("WaitForStage is required to start workflow update");
+                }
+                else if (input.Options.WaitForStage == WorkflowUpdateStage.Admitted)
+                {
+                    throw new ArgumentException(
+                        "Admitted is not an allowed wait stage to start workflow update");
+                }
                 // Build request
                 var req = new UpdateWorkflowExecutionRequest()
                 {
@@ -242,23 +251,17 @@ namespace Temporalio.Client
                     {
                         Meta = new()
                         {
-                            UpdateId = input.Options?.UpdateID ?? Guid.NewGuid().ToString(),
+                            UpdateId = input.Options.Id ?? Guid.NewGuid().ToString(),
                             Identity = Client.Connection.Options.Identity,
                         },
                         Input = new() { Name = input.Update },
                     },
                     WaitPolicy = new()
                     {
-                        // Default is Accepted, but may be overridden later
-                        LifecycleStage = UpdateWorkflowExecutionLifecycleStage.Accepted,
+                        LifecycleStage = (UpdateWorkflowExecutionLifecycleStage)input.Options.WaitForStage,
                     },
                     FirstExecutionRunId = input.FirstExecutionRunId ?? string.Empty,
                 };
-                if (input.Options is { } options &&
-                    options.WaitForStage != UpdateWorkflowExecutionLifecycleStage.Unspecified)
-                {
-                    req.WaitPolicy.LifecycleStage = options.WaitForStage;
-                }
                 if (input.Args.Count > 0)
                 {
                     req.Request.Input.Args = new Payloads();
@@ -280,15 +283,28 @@ namespace Temporalio.Client
                         }
                     }
                 }
-                // Invoke
-                var resp = await Client.Connection.WorkflowService.UpdateWorkflowExecutionAsync(
-                    req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                // Build handle for result
-                return new(Client, req.Request.Meta.UpdateId, input.Id, input.RunId)
+
+                // Continually try to start until the user-asked stage is reached or the stage is
+                // accepted
+                UpdateWorkflowExecutionResponse resp;
+                do
                 {
-                    // Put outcome on the handle (may be null)
-                    KnownOutcome = resp.Outcome,
-                };
+                    resp = await Client.Connection.WorkflowService.UpdateWorkflowExecutionAsync(
+                        req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                }
+                while (resp.Stage < req.WaitPolicy.LifecycleStage &&
+                    resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
+
+                // If the requested stage is completed, wait for result, but discard the update
+                // exception, that will come when _they_ call get result
+                var handle = new WorkflowUpdateHandle<TResult>(
+                    Client, req.Request.Meta.UpdateId, input.Id, input.RunId)
+                { KnownOutcome = resp.Outcome };
+                if (input.Options.WaitForStage == WorkflowUpdateStage.Completed)
+                {
+                    await handle.PollUntilOutcomeAsync(input.Options.Rpc).ConfigureAwait(false);
+                }
+                return handle;
             }
 
             /// <inheritdoc />
