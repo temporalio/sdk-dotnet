@@ -23,9 +23,9 @@ namespace Temporalio.Client
         string? WorkflowRunId = null)
     {
         /// <summary>
-        /// Gets the known outcome.
+        /// Gets or sets the known outcome.
         /// </summary>
-        internal Outcome? KnownOutcome { private get; init; }
+        internal Outcome? KnownOutcome { get; set; }
 
         /// <summary>
         /// Wait for an update result disregarding any return value.
@@ -45,55 +45,15 @@ namespace Temporalio.Client
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public virtual async Task<TResult> GetResultAsync<TResult>(RpcOptions? rpcOptions = null)
         {
-            // If there is not a known outcome, we must poll for one. We intentionally do not
-            // memoize poll result, so each call to this function when a known outcome is not
-            // present results in a poll call.
-            var outcome = KnownOutcome;
-            if (outcome == null)
-            {
-                // No known outcome means poll
-                var req = new PollWorkflowExecutionUpdateRequest()
-                {
-                    Namespace = Client.Options.Namespace,
-                    UpdateRef = new()
-                    {
-                        WorkflowExecution = new()
-                        {
-                            WorkflowId = WorkflowId,
-                            RunId = WorkflowRunId ?? string.Empty,
-                        },
-                        UpdateId = Id,
-                    },
-                    Identity = Client.Connection.Options.Identity,
-                    WaitPolicy = new() { LifecycleStage = UpdateWorkflowExecutionLifecycleStage.Completed },
-                };
-                // Continually retry to poll while we either get empty response or while we get a gRPC
-                // deadline exceeded but our cancellation token isn't complete.
-                while (outcome == null)
-                {
-                    try
-                    {
-                        var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(
-                            req, rpcOptions).ConfigureAwait(false);
-                        outcome = resp.Outcome;
-                    }
-                    catch (RpcException e) when (
-                        e.Code == RpcException.StatusCode.DeadlineExceeded &&
-                        rpcOptions?.CancellationToken?.IsCancellationRequested != true)
-                    {
-                        // Do nothing, our cancellation token wasn't done, continue
-                        // TODO(cretz): Remove when server stops using gRPC status to signal not done yet
-                    }
-                }
-            }
+            await PollUntilOutcomeAsync(rpcOptions).ConfigureAwait(false);
 
             // Convert outcome to result
-            if (outcome.Failure is { } failure)
+            if (KnownOutcome!.Failure is { } failure)
             {
                 throw new WorkflowUpdateFailedException(
                     await Client.Options.DataConverter.ToExceptionAsync(failure).ConfigureAwait(false));
             }
-            else if (outcome.Success is { } success)
+            else if (KnownOutcome.Success is { } success)
             {
                 // Ignore return if they didn't want it
                 if (typeof(TResult) == typeof(ValueTuple))
@@ -103,7 +63,53 @@ namespace Temporalio.Client
                 return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
                     success.Payloads_).ConfigureAwait(false);
             }
-            throw new InvalidOperationException($"Unrecognized outcome case: {outcome.ValueCase}");
+            throw new InvalidOperationException($"Unrecognized outcome case: {KnownOutcome.ValueCase}");
+        }
+
+        /// <summary>
+        /// Poll until a memoized outcome is set on this handle.
+        /// </summary>
+        /// <param name="rpcOptions">RPC options.</param>
+        /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
+        internal async Task PollUntilOutcomeAsync(RpcOptions? rpcOptions = null)
+        {
+            // If there is not a known outcome, we must poll for one. We intentionally do not lock
+            // while obtaining the outcome. In the case of concurrent get-result calls, they will
+            // poll independently and first one can set the known outcome (setting properties in
+            // .NET is thread safe).
+            if (KnownOutcome != null)
+            {
+                return;
+            }
+            // No known outcome means poll
+            var req = new PollWorkflowExecutionUpdateRequest()
+            {
+                Namespace = Client.Options.Namespace,
+                UpdateRef = new()
+                {
+                    WorkflowExecution = new()
+                    {
+                        WorkflowId = WorkflowId,
+                        RunId = WorkflowRunId ?? string.Empty,
+                    },
+                    UpdateId = Id,
+                },
+                Identity = Client.Connection.Options.Identity,
+                WaitPolicy = new() { LifecycleStage = UpdateWorkflowExecutionLifecycleStage.Completed },
+            };
+            // Continually retry to poll while we get an empty response
+            while (KnownOutcome == null)
+            {
+                var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(
+                    req, rpcOptions).ConfigureAwait(false);
+#pragma warning disable CA1508
+                // .NET incorrectly assumes KnownOutcome cannot be null here because they assume a
+                // single thread. We accept there is technically a race condition here since this is
+                // not an atomic CAS operation, but outcome is the same server side for the same
+                // update.
+                KnownOutcome ??= resp.Outcome;
+#pragma warning restore CA1508
+            }
         }
     }
 

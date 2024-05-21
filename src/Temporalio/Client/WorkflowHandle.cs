@@ -307,11 +307,11 @@ namespace Temporalio.Client
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="updateCall">Invocation of workflow update method.</param>
-        /// <param name="options">Extra options.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle> StartUpdateAsync<TWorkflow>(
-            Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateOptions? options = null)
+            Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateStartOptions options)
         {
             var (method, args) = ExpressionUtil.ExtractCall(updateCall);
             return StartUpdateAsync(
@@ -326,12 +326,12 @@ namespace Temporalio.Client
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>
         /// <param name="updateCall">Invocation of workflow update method.</param>
-        /// <param name="options">Extra options.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TWorkflow, TUpdateResult>(
             Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
-            WorkflowUpdateOptions? options = null)
+            WorkflowUpdateStartOptions options)
         {
             var (method, args) = ExpressionUtil.ExtractCall(updateCall);
             return StartUpdateAsync<TUpdateResult>(
@@ -345,11 +345,11 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="update">Name of the update.</param>
         /// <param name="args">Arguments for the update.</param>
-        /// <param name="options">Extra options.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle> StartUpdateAsync(
-            string update, IReadOnlyCollection<object?> args, WorkflowUpdateOptions? options = null) =>
+            string update, IReadOnlyCollection<object?> args, WorkflowUpdateStartOptions options) =>
             StartUpdateAsync<ValueTuple>(update, args, options).ContinueWith<WorkflowUpdateHandle>(
                 t => t.Result, TaskScheduler.Current);
 
@@ -359,11 +359,11 @@ namespace Temporalio.Client
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>
         /// <param name="update">Name of the update.</param>
         /// <param name="args">Arguments for the update.</param>
-        /// <param name="options">Extra options.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
-            string update, IReadOnlyCollection<object?> args, WorkflowUpdateOptions? options = null) =>
+            string update, IReadOnlyCollection<object?> args, WorkflowUpdateStartOptions options) =>
             Client.OutboundInterceptor.StartWorkflowUpdateAsync<TUpdateResult>(new(
                 Id: Id,
                 RunId: RunId,
@@ -375,7 +375,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync{TWorkflow}(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
+        /// <see cref="StartUpdateAsync{TWorkflow}(Expression{Func{TWorkflow, Task}}, WorkflowUpdateStartOptions)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
@@ -398,7 +398,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync{TWorkflow, TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
+        /// <see cref="StartUpdateAsync{TWorkflow, TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateStartOptions)" />
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>
@@ -421,7 +421,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
+        /// <see cref="StartUpdateAsync(string, IReadOnlyCollection{object?}, WorkflowUpdateStartOptions)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
@@ -444,7 +444,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync{TUpdateResult}(string, IReadOnlyCollection{object?}, WorkflowUpdateOptions?)" />
+        /// <see cref="StartUpdateAsync{TUpdateResult}(string, IReadOnlyCollection{object?}, WorkflowUpdateStartOptions)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
@@ -603,14 +603,14 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="options">Options to use as base.</param>
         /// <returns>New options.</returns>
-        private protected static WorkflowUpdateOptions UpdateOptionsWithDefaultsForExecute(
-            WorkflowUpdateOptions? options)
-        {
-            var newOptions = options == null ? new() : (WorkflowUpdateOptions)options.Clone();
-            // Force override the wait for stage to completed
-            newOptions.WaitForStage = UpdateWorkflowExecutionLifecycleStage.Completed;
-            return newOptions;
-        }
+        private protected static WorkflowUpdateStartOptions UpdateOptionsWithDefaultsForExecute(
+            WorkflowUpdateOptions? options) =>
+            (WorkflowUpdateStartOptions)new WorkflowUpdateStartOptions()
+            {
+                Id = options?.Id,
+                Rpc = options?.Rpc,
+                WaitForStage = WorkflowUpdateStage.Completed,
+            }.Clone();
     }
 
     /// <summary>
@@ -678,11 +678,11 @@ namespace Temporalio.Client
         /// Start a workflow update via a call to a WorkflowUpdate attributed method.
         /// </summary>
         /// <param name="updateCall">Invocation of workflow update method.</param>
-        /// <param name="options">Extra options.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle> StartUpdateAsync(
-            Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateOptions? options = null) =>
+            Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateStartOptions options) =>
             StartUpdateAsync<TWorkflow>(updateCall, options);
 
         /// <summary>
@@ -690,17 +690,17 @@ namespace Temporalio.Client
         /// </summary>
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>
         /// <param name="updateCall">Invocation of workflow update method.</param>
-        /// <param name="options">Extra options.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
             Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
-            WorkflowUpdateOptions? options = null) =>
+            WorkflowUpdateStartOptions options) =>
             StartUpdateAsync<TWorkflow, TUpdateResult>(updateCall, options);
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync(Expression{Func{TWorkflow, Task}}, WorkflowUpdateOptions?)" />
+        /// <see cref="StartUpdateAsync(Expression{Func{TWorkflow, Task}}, WorkflowUpdateStartOptions)" />
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
@@ -721,7 +721,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync{TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateOptions?)" />
+        /// <see cref="StartUpdateAsync{TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateStartOptions)" />
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>

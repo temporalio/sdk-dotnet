@@ -11,7 +11,7 @@ namespace Temporalio.Client.Interceptors
     /// <param name="FirstExecutionRunId">Workflow first execution run ID if any.</param>
     /// <param name="Update">Update name.</param>
     /// <param name="Args">Update arguments.</param>
-    /// <param name="Options">Options if any.</param>
+    /// <param name="Options">Options.</param>
     /// <param name="Headers">Headers if any. These will be encoded using the codec before sent
     /// to the server.</param>
     /// <remarks>
@@ -24,6 +24,6 @@ namespace Temporalio.Client.Interceptors
         string? FirstExecutionRunId,
         string Update,
         IReadOnlyCollection<object?> Args,
-        WorkflowUpdateOptions? Options,
+        WorkflowUpdateStartOptions Options,
         IDictionary<string, Payload>? Headers);
 }

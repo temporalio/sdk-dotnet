@@ -1,30 +1,37 @@
 using System;
-using Temporalio.Api.Enums.V1;
 
 namespace Temporalio.Client
 {
     /// <summary>
-    /// Options for starting an update on a <see cref="WorkflowHandle" />.
+    /// Options for executing an update on a <see cref="WorkflowHandle" />.
     /// </summary>
     /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public class WorkflowUpdateOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets the unique identifier for the update. This is optional and is defaulted to
-        /// a GUID if not set. This must be unique within the scope of a workflow execution (i.e.
-        /// namespace + workflow ID + run ID).
+        /// Initializes a new instance of the <see cref="WorkflowUpdateOptions"/> class.
         /// </summary>
-        public string? UpdateID { get; set; }
+        public WorkflowUpdateOptions()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowUpdateOptions"/> class.
+        /// </summary>
+        /// <param name="id">Update ID.</param>
+        public WorkflowUpdateOptions(string id) => Id = id;
+
+        /// <summary>
+        /// Gets or sets the unique update identifier. If not set, this is defaulted to a GUID.
+        /// This must be unique within the scope of a workflow execution (i.e. namespace +
+        /// workflow ID + run ID).
+        /// </summary>
+        public string? Id { get; set; }
 
         /// <summary>
         /// Gets or sets RPC options for starting the workflow.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
-
-        /// <summary>
-        /// Gets or sets the stage to wait for on start. Internal only.
-        /// </summary>
-        internal UpdateWorkflowExecutionLifecycleStage WaitForStage { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.
