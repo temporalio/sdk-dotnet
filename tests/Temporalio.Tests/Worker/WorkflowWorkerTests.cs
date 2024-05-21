@@ -4029,7 +4029,33 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new(id: $"wf-{Guid.NewGuid()}", taskQueue));
 
         // Execute update in the background
-        var updateTask = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.UpdateAsync()));
+        var updateId = $"upd-{Guid.NewGuid()}";
+        var updateTask = Task.Run(() =>
+            handle.ExecuteUpdateAsync(wf => wf.UpdateAsync(), new(updateId)));
+
+        // Wait until server says it is admitted
+        await AssertMore.EventuallyAsync(async () =>
+        {
+            try
+            {
+                var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(new()
+                {
+                    Identity = Client.Connection.Options.Identity,
+                    Namespace = Client.Options.Namespace,
+                    UpdateRef = new()
+                    {
+                        UpdateId = updateId,
+                        WorkflowExecution = new() { WorkflowId = handle.Id },
+                    },
+                });
+                Assert.Equal(UpdateWorkflowExecutionLifecycleStage.Admitted, resp.Stage);
+            }
+            catch (Exception e)
+            {
+                // Throw XUnit exception so it doesn't fail this eventually call
+                throw new Xunit.Sdk.XunitException("Failed polling", e);
+            }
+        });
 
         // Start no-cache worker on the task queue
         await ExecuteWorkerAsync<ImmediatelyCompleteUpdateAndWorkflow>(
