@@ -21,7 +21,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Accepted stage. This stage is reached when a workflow has received the update and either
-        /// accepted or rejected it.
+        /// accepted (i.e. it has passed validation) or rejected it.
         /// </summary>
         Accepted = UpdateWorkflowExecutionLifecycleStage.Accepted,
 

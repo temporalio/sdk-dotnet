@@ -22,7 +22,7 @@ namespace Temporalio.Client
         public WorkflowUpdateOptions(string id) => Id = id;
 
         /// <summary>
-        /// Gets or sets the unique workflow identifier. If not set, this is defaulted to a GUID.
+        /// Gets or sets the unique update identifier. If not set, this is defaulted to a GUID.
         /// This must be unique within the scope of a workflow execution (i.e. namespace +
         /// workflow ID + run ID).
         /// </summary>
