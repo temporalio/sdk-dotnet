@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Google.Protobuf.WellKnownTypes;
+using Temporalio.Exceptions;
 
 namespace Temporalio.Common
 {
@@ -33,6 +34,7 @@ namespace Temporalio.Common
         /// <summary>
         /// Gets or sets the collection of error types that are not retryable.
         /// </summary>
+        /// <remarks>Refers to the <see cref="ApplicationFailureException.ErrorType"/> property.</remarks>
         public IReadOnlyCollection<string>? NonRetryableErrorTypes { get; set; }
 
         /// <summary>
