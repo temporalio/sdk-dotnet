@@ -33,36 +33,62 @@ namespace Temporalio.Api.TaskQueue.V1 {
             "EjIKBGtpbmQYAiABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFza1F1",
             "ZXVlS2luZBITCgtub3JtYWxfbmFtZRgDIAEoCSJPChFUYXNrUXVldWVNZXRh",
             "ZGF0YRI6ChRtYXhfdGFza3NfcGVyX3NlY29uZBgBIAEoCzIcLmdvb2dsZS5w",
-            "cm90b2J1Zi5Eb3VibGVWYWx1ZSKsAQoPVGFza1F1ZXVlU3RhdHVzEhoKEmJh",
-            "Y2tsb2dfY291bnRfaGludBgBIAEoAxISCgpyZWFkX2xldmVsGAIgASgDEhEK",
-            "CWFja19sZXZlbBgDIAEoAxIXCg9yYXRlX3Blcl9zZWNvbmQYBCABKAESPQoN",
-            "dGFza19pZF9ibG9jaxgFIAEoCzImLnRlbXBvcmFsLmFwaS50YXNrcXVldWUu",
-            "djEuVGFza0lkQmxvY2siLwoLVGFza0lkQmxvY2sSEAoIc3RhcnRfaWQYASAB",
-            "KAMSDgoGZW5kX2lkGAIgASgDIkIKGlRhc2tRdWV1ZVBhcnRpdGlvbk1ldGFk",
-            "YXRhEgsKA2tleRgBIAEoCRIXCg9vd25lcl9ob3N0X25hbWUYAiABKAkixQEK",
-            "ClBvbGxlckluZm8SNAoQbGFzdF9hY2Nlc3NfdGltZRgBIAEoCzIaLmdvb2ds",
-            "ZS5wcm90b2J1Zi5UaW1lc3RhbXASEAoIaWRlbnRpdHkYAiABKAkSFwoPcmF0",
-            "ZV9wZXJfc2Vjb25kGAMgASgBElYKG3dvcmtlcl92ZXJzaW9uX2NhcGFiaWxp",
-            "dGllcxgEIAEoCzIxLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyVmVy",
-            "c2lvbkNhcGFiaWxpdGllcyKaAQoZU3RpY2t5RXhlY3V0aW9uQXR0cmlidXRl",
-            "cxI/ChF3b3JrZXJfdGFza19xdWV1ZRgBIAEoCzIkLnRlbXBvcmFsLmFwaS50",
-            "YXNrcXVldWUudjEuVGFza1F1ZXVlEjwKGXNjaGVkdWxlX3RvX3N0YXJ0X3Rp",
-            "bWVvdXQYAiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24iKQoUQ29t",
-            "cGF0aWJsZVZlcnNpb25TZXQSEQoJYnVpbGRfaWRzGAEgAygJImoKFVRhc2tR",
-            "dWV1ZVJlYWNoYWJpbGl0eRISCgp0YXNrX3F1ZXVlGAEgASgJEj0KDHJlYWNo",
-            "YWJpbGl0eRgCIAMoDjInLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5UYXNrUmVh",
-            "Y2hhYmlsaXR5InoKE0J1aWxkSWRSZWFjaGFiaWxpdHkSEAoIYnVpbGRfaWQY",
-            "ASABKAkSUQoXdGFza19xdWV1ZV9yZWFjaGFiaWxpdHkYAiADKAsyMC50ZW1w",
-            "b3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZVJlYWNoYWJpbGl0eUKY",
-            "AQocaW8udGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MUIMTWVzc2FnZVByb3Rv",
-            "UAFaKWdvLnRlbXBvcmFsLmlvL2FwaS90YXNrcXVldWUvdjE7dGFza3F1ZXVl",
-            "qgIbVGVtcG9yYWxpby5BcGkuVGFza1F1ZXVlLlYx6gIeVGVtcG9yYWxpbzo6",
-            "QXBpOjpUYXNrUXVldWU6OlYxYgZwcm90bzM="));
+            "cm90b2J1Zi5Eb3VibGVWYWx1ZSJXChlUYXNrUXVldWVWZXJzaW9uU2VsZWN0",
+            "aW9uEhEKCWJ1aWxkX2lkcxgBIAMoCRITCgt1bnZlcnNpb25lZBgCIAEoCBIS",
+            "CgphbGxfYWN0aXZlGAMgASgIIpUCChRUYXNrUXVldWVWZXJzaW9uSW5mbxJS",
+            "Cgp0eXBlc19pbmZvGAEgAygLMj4udGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52",
+            "MS5UYXNrUXVldWVWZXJzaW9uSW5mby5UeXBlc0luZm9FbnRyeRJJChF0YXNr",
+            "X3JlYWNoYWJpbGl0eRgCIAEoDjIuLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5C",
+            "dWlsZElkVGFza1JlYWNoYWJpbGl0eRpeCg5UeXBlc0luZm9FbnRyeRILCgNr",
+            "ZXkYASABKAUSOwoFdmFsdWUYAiABKAsyLC50ZW1wb3JhbC5hcGkudGFza3F1",
+            "ZXVlLnYxLlRhc2tRdWV1ZVR5cGVJbmZvOgI4ASJLChFUYXNrUXVldWVUeXBl",
+            "SW5mbxI2Cgdwb2xsZXJzGAEgAygLMiUudGVtcG9yYWwuYXBpLnRhc2txdWV1",
+            "ZS52MS5Qb2xsZXJJbmZvIqwBCg9UYXNrUXVldWVTdGF0dXMSGgoSYmFja2xv",
+            "Z19jb3VudF9oaW50GAEgASgDEhIKCnJlYWRfbGV2ZWwYAiABKAMSEQoJYWNr",
+            "X2xldmVsGAMgASgDEhcKD3JhdGVfcGVyX3NlY29uZBgEIAEoARI9Cg10YXNr",
+            "X2lkX2Jsb2NrGAUgASgLMiYudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5U",
+            "YXNrSWRCbG9jayIvCgtUYXNrSWRCbG9jaxIQCghzdGFydF9pZBgBIAEoAxIO",
+            "CgZlbmRfaWQYAiABKAMiQgoaVGFza1F1ZXVlUGFydGl0aW9uTWV0YWRhdGES",
+            "CwoDa2V5GAEgASgJEhcKD293bmVyX2hvc3RfbmFtZRgCIAEoCSLFAQoKUG9s",
+            "bGVySW5mbxI0ChBsYXN0X2FjY2Vzc190aW1lGAEgASgLMhouZ29vZ2xlLnBy",
+            "b3RvYnVmLlRpbWVzdGFtcBIQCghpZGVudGl0eRgCIAEoCRIXCg9yYXRlX3Bl",
+            "cl9zZWNvbmQYAyABKAESVgobd29ya2VyX3ZlcnNpb25fY2FwYWJpbGl0aWVz",
+            "GAQgASgLMjEudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9u",
+            "Q2FwYWJpbGl0aWVzIpoBChlTdGlja3lFeGVjdXRpb25BdHRyaWJ1dGVzEj8K",
+            "EXdvcmtlcl90YXNrX3F1ZXVlGAEgASgLMiQudGVtcG9yYWwuYXBpLnRhc2tx",
+            "dWV1ZS52MS5UYXNrUXVldWUSPAoZc2NoZWR1bGVfdG9fc3RhcnRfdGltZW91",
+            "dBgCIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbiIpChRDb21wYXRp",
+            "YmxlVmVyc2lvblNldBIRCglidWlsZF9pZHMYASADKAkiagoVVGFza1F1ZXVl",
+            "UmVhY2hhYmlsaXR5EhIKCnRhc2tfcXVldWUYASABKAkSPQoMcmVhY2hhYmls",
+            "aXR5GAIgAygOMicudGVtcG9yYWwuYXBpLmVudW1zLnYxLlRhc2tSZWFjaGFi",
+            "aWxpdHkiegoTQnVpbGRJZFJlYWNoYWJpbGl0eRIQCghidWlsZF9pZBgBIAEo",
+            "CRJRChd0YXNrX3F1ZXVlX3JlYWNoYWJpbGl0eRgCIAMoCzIwLnRlbXBvcmFs",
+            "LmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlUmVhY2hhYmlsaXR5IisKEFJh",
+            "bXBCeVBlcmNlbnRhZ2USFwoPcmFtcF9wZXJjZW50YWdlGAEgASgCIoABChVC",
+            "dWlsZElkQXNzaWdubWVudFJ1bGUSFwoPdGFyZ2V0X2J1aWxkX2lkGAEgASgJ",
+            "EkYKD3BlcmNlbnRhZ2VfcmFtcBgDIAEoCzIrLnRlbXBvcmFsLmFwaS50YXNr",
+            "cXVldWUudjEuUmFtcEJ5UGVyY2VudGFnZUgAQgYKBHJhbXAiUQodQ29tcGF0",
+            "aWJsZUJ1aWxkSWRSZWRpcmVjdFJ1bGUSFwoPc291cmNlX2J1aWxkX2lkGAEg",
+            "ASgJEhcKD3RhcmdldF9idWlsZF9pZBgCIAEoCSKTAQogVGltZXN0YW1wZWRC",
+            "dWlsZElkQXNzaWdubWVudFJ1bGUSPgoEcnVsZRgBIAEoCzIwLnRlbXBvcmFs",
+            "LmFwaS50YXNrcXVldWUudjEuQnVpbGRJZEFzc2lnbm1lbnRSdWxlEi8KC2Ny",
+            "ZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKj",
+            "AQooVGltZXN0YW1wZWRDb21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRJG",
+            "CgRydWxlGAEgASgLMjgudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Db21w",
+            "YXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRIvCgtjcmVhdGVfdGltZRgCIAEo",
+            "CzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCmAEKHGlvLnRlbXBvcmFs",
+            "LmFwaS50YXNrcXVldWUudjFCDE1lc3NhZ2VQcm90b1ABWilnby50ZW1wb3Jh",
+            "bC5pby9hcGkvdGFza3F1ZXVlL3YxO3Rhc2txdWV1ZaoCG1RlbXBvcmFsaW8u",
+            "QXBpLlRhc2tRdWV1ZS5WMeoCHlRlbXBvcmFsaW86OkFwaTo6VGFza1F1ZXVl",
+            "OjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueue), global::Temporalio.Api.TaskQueue.V1.TaskQueue.Parser, new[]{ "Name", "Kind", "NormalName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueMetadata), global::Temporalio.Api.TaskQueue.V1.TaskQueueMetadata.Parser, new[]{ "MaxTasksPerSecond" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection.Parser, new[]{ "BuildIds", "Unversioned", "AllActive" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo.Parser, new[]{ "TypesInfo", "TaskReachability" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo.Parser, new[]{ "Pollers" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueStatus), global::Temporalio.Api.TaskQueue.V1.TaskQueueStatus.Parser, new[]{ "BacklogCountHint", "ReadLevel", "AckLevel", "RatePerSecond", "TaskIdBlock" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskIdBlock), global::Temporalio.Api.TaskQueue.V1.TaskIdBlock.Parser, new[]{ "StartId", "EndId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueuePartitionMetadata), global::Temporalio.Api.TaskQueue.V1.TaskQueuePartitionMetadata.Parser, new[]{ "Key", "OwnerHostName" }, null, null, null, null),
@@ -70,7 +96,12 @@ namespace Temporalio.Api.TaskQueue.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.StickyExecutionAttributes), global::Temporalio.Api.TaskQueue.V1.StickyExecutionAttributes.Parser, new[]{ "WorkerTaskQueue", "ScheduleToStartTimeout" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.CompatibleVersionSet), global::Temporalio.Api.TaskQueue.V1.CompatibleVersionSet.Parser, new[]{ "BuildIds" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueReachability), global::Temporalio.Api.TaskQueue.V1.TaskQueueReachability.Parser, new[]{ "TaskQueue", "Reachability" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.BuildIdReachability), global::Temporalio.Api.TaskQueue.V1.BuildIdReachability.Parser, new[]{ "BuildId", "TaskQueueReachability" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.BuildIdReachability), global::Temporalio.Api.TaskQueue.V1.BuildIdReachability.Parser, new[]{ "BuildId", "TaskQueueReachability" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.RampByPercentage), global::Temporalio.Api.TaskQueue.V1.RampByPercentage.Parser, new[]{ "RampPercentage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.BuildIdAssignmentRule), global::Temporalio.Api.TaskQueue.V1.BuildIdAssignmentRule.Parser, new[]{ "TargetBuildId", "PercentageRamp" }, new[]{ "Ramp" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.CompatibleBuildIdRedirectRule), global::Temporalio.Api.TaskQueue.V1.CompatibleBuildIdRedirectRule.Parser, new[]{ "SourceBuildId", "TargetBuildId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TimestampedBuildIdAssignmentRule), global::Temporalio.Api.TaskQueue.V1.TimestampedBuildIdAssignmentRule.Parser, new[]{ "Rule", "CreateTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TimestampedCompatibleBuildIdRedirectRule), global::Temporalio.Api.TaskQueue.V1.TimestampedCompatibleBuildIdRedirectRule.Parser, new[]{ "Rule", "CreateTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -553,6 +584,673 @@ namespace Temporalio.Api.TaskQueue.V1 {
 
   }
 
+  /// <summary>
+  /// Used for specifying versions the caller is interested in.
+  /// </summary>
+  public sealed partial class TaskQueueVersionSelection : pb::IMessage<TaskQueueVersionSelection>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TaskQueueVersionSelection> _parser = new pb::MessageParser<TaskQueueVersionSelection>(() => new TaskQueueVersionSelection());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TaskQueueVersionSelection> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueVersionSelection() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueVersionSelection(TaskQueueVersionSelection other) : this() {
+      buildIds_ = other.buildIds_.Clone();
+      unversioned_ = other.unversioned_;
+      allActive_ = other.allActive_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueVersionSelection Clone() {
+      return new TaskQueueVersionSelection(this);
+    }
+
+    /// <summary>Field number for the "build_ids" field.</summary>
+    public const int BuildIdsFieldNumber = 1;
+    private static readonly pb::FieldCodec<string> _repeated_buildIds_codec
+        = pb::FieldCodec.ForString(10);
+    private readonly pbc::RepeatedField<string> buildIds_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// Include specific Build IDs.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> BuildIds {
+      get { return buildIds_; }
+    }
+
+    /// <summary>Field number for the "unversioned" field.</summary>
+    public const int UnversionedFieldNumber = 2;
+    private bool unversioned_;
+    /// <summary>
+    /// Include the unversioned queue.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Unversioned {
+      get { return unversioned_; }
+      set {
+        unversioned_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "all_active" field.</summary>
+    public const int AllActiveFieldNumber = 3;
+    private bool allActive_;
+    /// <summary>
+    /// Include all active versions. A version is considered active if it has had new
+    /// tasks or polls recently.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool AllActive {
+      get { return allActive_; }
+      set {
+        allActive_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TaskQueueVersionSelection);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TaskQueueVersionSelection other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!buildIds_.Equals(other.buildIds_)) return false;
+      if (Unversioned != other.Unversioned) return false;
+      if (AllActive != other.AllActive) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= buildIds_.GetHashCode();
+      if (Unversioned != false) hash ^= Unversioned.GetHashCode();
+      if (AllActive != false) hash ^= AllActive.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      buildIds_.WriteTo(output, _repeated_buildIds_codec);
+      if (Unversioned != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(Unversioned);
+      }
+      if (AllActive != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(AllActive);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      buildIds_.WriteTo(ref output, _repeated_buildIds_codec);
+      if (Unversioned != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(Unversioned);
+      }
+      if (AllActive != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(AllActive);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += buildIds_.CalculateSize(_repeated_buildIds_codec);
+      if (Unversioned != false) {
+        size += 1 + 1;
+      }
+      if (AllActive != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TaskQueueVersionSelection other) {
+      if (other == null) {
+        return;
+      }
+      buildIds_.Add(other.buildIds_);
+      if (other.Unversioned != false) {
+        Unversioned = other.Unversioned;
+      }
+      if (other.AllActive != false) {
+        AllActive = other.AllActive;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            buildIds_.AddEntriesFrom(input, _repeated_buildIds_codec);
+            break;
+          }
+          case 16: {
+            Unversioned = input.ReadBool();
+            break;
+          }
+          case 24: {
+            AllActive = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            buildIds_.AddEntriesFrom(ref input, _repeated_buildIds_codec);
+            break;
+          }
+          case 16: {
+            Unversioned = input.ReadBool();
+            break;
+          }
+          case 24: {
+            AllActive = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class TaskQueueVersionInfo : pb::IMessage<TaskQueueVersionInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TaskQueueVersionInfo> _parser = new pb::MessageParser<TaskQueueVersionInfo>(() => new TaskQueueVersionInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TaskQueueVersionInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueVersionInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueVersionInfo(TaskQueueVersionInfo other) : this() {
+      typesInfo_ = other.typesInfo_.Clone();
+      taskReachability_ = other.taskReachability_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueVersionInfo Clone() {
+      return new TaskQueueVersionInfo(this);
+    }
+
+    /// <summary>Field number for the "types_info" field.</summary>
+    public const int TypesInfoFieldNumber = 1;
+    private static readonly pbc::MapField<int, global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo>.Codec _map_typesInfo_codec
+        = new pbc::MapField<int, global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo>.Codec(pb::FieldCodec.ForInt32(8, 0), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo.Parser), 10);
+    private readonly pbc::MapField<int, global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo> typesInfo_ = new pbc::MapField<int, global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo>();
+    /// <summary>
+    /// Task Queue info per Task Type. Key is the numerical value of the temporal.api.enums.v1.TaskQueueType enum.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<int, global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo> TypesInfo {
+      get { return typesInfo_; }
+    }
+
+    /// <summary>Field number for the "task_reachability" field.</summary>
+    public const int TaskReachabilityFieldNumber = 2;
+    private global::Temporalio.Api.Enums.V1.BuildIdTaskReachability taskReachability_ = global::Temporalio.Api.Enums.V1.BuildIdTaskReachability.Unspecified;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.BuildIdTaskReachability TaskReachability {
+      get { return taskReachability_; }
+      set {
+        taskReachability_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TaskQueueVersionInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TaskQueueVersionInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!TypesInfo.Equals(other.TypesInfo)) return false;
+      if (TaskReachability != other.TaskReachability) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= TypesInfo.GetHashCode();
+      if (TaskReachability != global::Temporalio.Api.Enums.V1.BuildIdTaskReachability.Unspecified) hash ^= TaskReachability.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      typesInfo_.WriteTo(output, _map_typesInfo_codec);
+      if (TaskReachability != global::Temporalio.Api.Enums.V1.BuildIdTaskReachability.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) TaskReachability);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      typesInfo_.WriteTo(ref output, _map_typesInfo_codec);
+      if (TaskReachability != global::Temporalio.Api.Enums.V1.BuildIdTaskReachability.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) TaskReachability);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += typesInfo_.CalculateSize(_map_typesInfo_codec);
+      if (TaskReachability != global::Temporalio.Api.Enums.V1.BuildIdTaskReachability.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) TaskReachability);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TaskQueueVersionInfo other) {
+      if (other == null) {
+        return;
+      }
+      typesInfo_.MergeFrom(other.typesInfo_);
+      if (other.TaskReachability != global::Temporalio.Api.Enums.V1.BuildIdTaskReachability.Unspecified) {
+        TaskReachability = other.TaskReachability;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            typesInfo_.AddEntriesFrom(input, _map_typesInfo_codec);
+            break;
+          }
+          case 16: {
+            TaskReachability = (global::Temporalio.Api.Enums.V1.BuildIdTaskReachability) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            typesInfo_.AddEntriesFrom(ref input, _map_typesInfo_codec);
+            break;
+          }
+          case 16: {
+            TaskReachability = (global::Temporalio.Api.Enums.V1.BuildIdTaskReachability) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class TaskQueueTypeInfo : pb::IMessage<TaskQueueTypeInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TaskQueueTypeInfo> _parser = new pb::MessageParser<TaskQueueTypeInfo>(() => new TaskQueueTypeInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TaskQueueTypeInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueTypeInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueTypeInfo(TaskQueueTypeInfo other) : this() {
+      pollers_ = other.pollers_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueTypeInfo Clone() {
+      return new TaskQueueTypeInfo(this);
+    }
+
+    /// <summary>Field number for the "pollers" field.</summary>
+    public const int PollersFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.TaskQueue.V1.PollerInfo> _repeated_pollers_codec
+        = pb::FieldCodec.ForMessage(10, global::Temporalio.Api.TaskQueue.V1.PollerInfo.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.TaskQueue.V1.PollerInfo> pollers_ = new pbc::RepeatedField<global::Temporalio.Api.TaskQueue.V1.PollerInfo>();
+    /// <summary>
+    /// Unversioned workers (with `useVersioning=false`) are reported in unversioned result even if they set a Build ID.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.TaskQueue.V1.PollerInfo> Pollers {
+      get { return pollers_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TaskQueueTypeInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TaskQueueTypeInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!pollers_.Equals(other.pollers_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= pollers_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      pollers_.WriteTo(output, _repeated_pollers_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      pollers_.WriteTo(ref output, _repeated_pollers_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += pollers_.CalculateSize(_repeated_pollers_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TaskQueueTypeInfo other) {
+      if (other == null) {
+        return;
+      }
+      pollers_.Add(other.pollers_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            pollers_.AddEntriesFrom(input, _repeated_pollers_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            pollers_.AddEntriesFrom(ref input, _repeated_pollers_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Deprecated. Use `InternalTaskQueueStatus`. This is kept until `DescribeTaskQueue` supports legacy behavior.
+  /// </summary>
   public sealed partial class TaskQueueStatus : pb::IMessage<TaskQueueStatus>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -567,7 +1265,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -913,7 +1611,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1139,7 +1837,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1365,7 +2063,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1687,7 +2385,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1939,7 +2637,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2123,7 +2821,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2348,7 +3046,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2546,6 +3244,1248 @@ namespace Temporalio.Api.TaskQueue.V1 {
           }
           case 18: {
             taskQueueReachability_.AddEntriesFrom(ref input, _repeated_taskQueueReachability_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class RampByPercentage : pb::IMessage<RampByPercentage>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RampByPercentage> _parser = new pb::MessageParser<RampByPercentage>(() => new RampByPercentage());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RampByPercentage> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[13]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RampByPercentage() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RampByPercentage(RampByPercentage other) : this() {
+      rampPercentage_ = other.rampPercentage_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RampByPercentage Clone() {
+      return new RampByPercentage(this);
+    }
+
+    /// <summary>Field number for the "ramp_percentage" field.</summary>
+    public const int RampPercentageFieldNumber = 1;
+    private float rampPercentage_;
+    /// <summary>
+    /// Acceptable range is [0,100).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float RampPercentage {
+      get { return rampPercentage_; }
+      set {
+        rampPercentage_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RampByPercentage);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RampByPercentage other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RampPercentage, other.RampPercentage)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RampPercentage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RampPercentage);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RampPercentage != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(RampPercentage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RampPercentage != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(RampPercentage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RampPercentage != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RampByPercentage other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RampPercentage != 0F) {
+        RampPercentage = other.RampPercentage;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 13: {
+            RampPercentage = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 13: {
+            RampPercentage = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// These rules assign a Build ID to Unassigned Workflow Executions and
+  /// Activities.
+  ///
+  /// Specifically, assignment rules are applied to the following Executions or
+  /// Activities when they are scheduled in a Task Queue:
+  ///    - Generally, any new Workflow Execution, except:
+  ///      - When A Child Workflow or a Continue-As-New Execution inherits the
+  ///        Build ID from its parent/previous execution by setting the
+  ///        `inherit_build_id` flag.
+  ///      - Workflow Executions started Eagerly are assigned to the Build ID of
+  ///        the Starter.
+  ///    - An Activity that is scheduled on a Task Queue different from the one
+  ///      their Workflow runs on, unless the `use_workflow_build_id` flag is set.
+  ///
+  /// In absence of (applicable) redirect rules (`CompatibleBuildIdRedirectRule`s)
+  /// the task will be dispatched to Workers of the Build ID determined by the
+  /// assignment rules. Otherwise, the final Build ID will be determined by the
+  /// redirect rules.
+  ///
+  /// When using Worker Versioning, in the steady state, for a given Task Queue,
+  /// there should typically be exactly one assignment rule to send all Unassigned
+  /// tasks to the latest Build ID. Existence of at least one such "unconditional"
+  /// rule at all times is enforce by the system, unless the `force` flag is used
+  /// by the user when replacing/deleting these rules (for exceptional cases).
+  ///
+  /// During a deployment, one or more additional rules can be added to assign a
+  /// subset of the tasks to a new Build ID based on a "ramp percentage".
+  ///
+  /// When there are multiple assignment rules for a Task Queue, the rules are
+  /// evaluated in order, starting from index 0. The first applicable rule will be
+  /// applied and the rest will be ignored.
+  ///
+  /// In the event that no assignment rule is applicable on a task (or the Task
+  /// Queue is simply not versioned), the tasks will be sent to unversioned
+  /// workers, if available. Otherwise, they remain Unassigned, and will be
+  /// retried for assignment, or dispatch to unversioned workers, at a later time
+  /// depending on the availability of workers.
+  /// </summary>
+  public sealed partial class BuildIdAssignmentRule : pb::IMessage<BuildIdAssignmentRule>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<BuildIdAssignmentRule> _parser = new pb::MessageParser<BuildIdAssignmentRule>(() => new BuildIdAssignmentRule());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<BuildIdAssignmentRule> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[14]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BuildIdAssignmentRule() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BuildIdAssignmentRule(BuildIdAssignmentRule other) : this() {
+      targetBuildId_ = other.targetBuildId_;
+      switch (other.RampCase) {
+        case RampOneofCase.PercentageRamp:
+          PercentageRamp = other.PercentageRamp.Clone();
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BuildIdAssignmentRule Clone() {
+      return new BuildIdAssignmentRule(this);
+    }
+
+    /// <summary>Field number for the "target_build_id" field.</summary>
+    public const int TargetBuildIdFieldNumber = 1;
+    private string targetBuildId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TargetBuildId {
+      get { return targetBuildId_; }
+      set {
+        targetBuildId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "percentage_ramp" field.</summary>
+    public const int PercentageRampFieldNumber = 3;
+    /// <summary>
+    /// This ramp is useful for gradual Blue/Green deployments (and similar)
+    /// where you want to send a certain portion of the traffic to the target
+    /// Build ID.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.TaskQueue.V1.RampByPercentage PercentageRamp {
+      get { return rampCase_ == RampOneofCase.PercentageRamp ? (global::Temporalio.Api.TaskQueue.V1.RampByPercentage) ramp_ : null; }
+      set {
+        ramp_ = value;
+        rampCase_ = value == null ? RampOneofCase.None : RampOneofCase.PercentageRamp;
+      }
+    }
+
+    private object ramp_;
+    /// <summary>Enum of possible cases for the "ramp" oneof.</summary>
+    public enum RampOneofCase {
+      None = 0,
+      PercentageRamp = 3,
+    }
+    private RampOneofCase rampCase_ = RampOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RampOneofCase RampCase {
+      get { return rampCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearRamp() {
+      rampCase_ = RampOneofCase.None;
+      ramp_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as BuildIdAssignmentRule);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(BuildIdAssignmentRule other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (TargetBuildId != other.TargetBuildId) return false;
+      if (!object.Equals(PercentageRamp, other.PercentageRamp)) return false;
+      if (RampCase != other.RampCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (TargetBuildId.Length != 0) hash ^= TargetBuildId.GetHashCode();
+      if (rampCase_ == RampOneofCase.PercentageRamp) hash ^= PercentageRamp.GetHashCode();
+      hash ^= (int) rampCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (TargetBuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(TargetBuildId);
+      }
+      if (rampCase_ == RampOneofCase.PercentageRamp) {
+        output.WriteRawTag(26);
+        output.WriteMessage(PercentageRamp);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (TargetBuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(TargetBuildId);
+      }
+      if (rampCase_ == RampOneofCase.PercentageRamp) {
+        output.WriteRawTag(26);
+        output.WriteMessage(PercentageRamp);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (TargetBuildId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TargetBuildId);
+      }
+      if (rampCase_ == RampOneofCase.PercentageRamp) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PercentageRamp);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(BuildIdAssignmentRule other) {
+      if (other == null) {
+        return;
+      }
+      if (other.TargetBuildId.Length != 0) {
+        TargetBuildId = other.TargetBuildId;
+      }
+      switch (other.RampCase) {
+        case RampOneofCase.PercentageRamp:
+          if (PercentageRamp == null) {
+            PercentageRamp = new global::Temporalio.Api.TaskQueue.V1.RampByPercentage();
+          }
+          PercentageRamp.MergeFrom(other.PercentageRamp);
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            TargetBuildId = input.ReadString();
+            break;
+          }
+          case 26: {
+            global::Temporalio.Api.TaskQueue.V1.RampByPercentage subBuilder = new global::Temporalio.Api.TaskQueue.V1.RampByPercentage();
+            if (rampCase_ == RampOneofCase.PercentageRamp) {
+              subBuilder.MergeFrom(PercentageRamp);
+            }
+            input.ReadMessage(subBuilder);
+            PercentageRamp = subBuilder;
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            TargetBuildId = input.ReadString();
+            break;
+          }
+          case 26: {
+            global::Temporalio.Api.TaskQueue.V1.RampByPercentage subBuilder = new global::Temporalio.Api.TaskQueue.V1.RampByPercentage();
+            if (rampCase_ == RampOneofCase.PercentageRamp) {
+              subBuilder.MergeFrom(PercentageRamp);
+            }
+            input.ReadMessage(subBuilder);
+            PercentageRamp = subBuilder;
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// These rules apply to tasks assigned to a particular Build ID
+  /// (`source_build_id`) to redirect them to another *compatible* Build ID
+  /// (`target_build_id`).
+  ///
+  /// It is user's responsibility to ensure that the target Build ID is compatible
+  /// with the source Build ID (e.g. by using the Patching API).
+  ///
+  /// Most deployments are not expected to need these rules, however following
+  /// situations can greatly benefit from redirects:
+  ///  - Need to move long-running Workflow Executions from an old Build ID to a
+  ///    newer one.
+  ///  - Need to hotfix some broken or stuck Workflow Executions.
+  ///
+  /// In steady state, redirect rules are beneficial when dealing with old
+  /// Executions ran on now-decommissioned Build IDs:
+  ///  - To redirecting the Workflow Queries to the current (compatible) Build ID.
+  ///  - To be able to Reset an old Execution so it can run on the current
+  ///    (compatible) Build ID.
+  ///
+  /// Redirect rules can be chained, but only the last rule in the chain can have
+  /// a ramp.
+  /// </summary>
+  public sealed partial class CompatibleBuildIdRedirectRule : pb::IMessage<CompatibleBuildIdRedirectRule>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CompatibleBuildIdRedirectRule> _parser = new pb::MessageParser<CompatibleBuildIdRedirectRule>(() => new CompatibleBuildIdRedirectRule());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CompatibleBuildIdRedirectRule> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[15]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CompatibleBuildIdRedirectRule() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CompatibleBuildIdRedirectRule(CompatibleBuildIdRedirectRule other) : this() {
+      sourceBuildId_ = other.sourceBuildId_;
+      targetBuildId_ = other.targetBuildId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CompatibleBuildIdRedirectRule Clone() {
+      return new CompatibleBuildIdRedirectRule(this);
+    }
+
+    /// <summary>Field number for the "source_build_id" field.</summary>
+    public const int SourceBuildIdFieldNumber = 1;
+    private string sourceBuildId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string SourceBuildId {
+      get { return sourceBuildId_; }
+      set {
+        sourceBuildId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "target_build_id" field.</summary>
+    public const int TargetBuildIdFieldNumber = 2;
+    private string targetBuildId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TargetBuildId {
+      get { return targetBuildId_; }
+      set {
+        targetBuildId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CompatibleBuildIdRedirectRule);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CompatibleBuildIdRedirectRule other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (SourceBuildId != other.SourceBuildId) return false;
+      if (TargetBuildId != other.TargetBuildId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (SourceBuildId.Length != 0) hash ^= SourceBuildId.GetHashCode();
+      if (TargetBuildId.Length != 0) hash ^= TargetBuildId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (SourceBuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(SourceBuildId);
+      }
+      if (TargetBuildId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(TargetBuildId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (SourceBuildId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(SourceBuildId);
+      }
+      if (TargetBuildId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(TargetBuildId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (SourceBuildId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SourceBuildId);
+      }
+      if (TargetBuildId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TargetBuildId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CompatibleBuildIdRedirectRule other) {
+      if (other == null) {
+        return;
+      }
+      if (other.SourceBuildId.Length != 0) {
+        SourceBuildId = other.SourceBuildId;
+      }
+      if (other.TargetBuildId.Length != 0) {
+        TargetBuildId = other.TargetBuildId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            SourceBuildId = input.ReadString();
+            break;
+          }
+          case 18: {
+            TargetBuildId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            SourceBuildId = input.ReadString();
+            break;
+          }
+          case 18: {
+            TargetBuildId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class TimestampedBuildIdAssignmentRule : pb::IMessage<TimestampedBuildIdAssignmentRule>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TimestampedBuildIdAssignmentRule> _parser = new pb::MessageParser<TimestampedBuildIdAssignmentRule>(() => new TimestampedBuildIdAssignmentRule());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TimestampedBuildIdAssignmentRule> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[16]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimestampedBuildIdAssignmentRule() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimestampedBuildIdAssignmentRule(TimestampedBuildIdAssignmentRule other) : this() {
+      rule_ = other.rule_ != null ? other.rule_.Clone() : null;
+      createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimestampedBuildIdAssignmentRule Clone() {
+      return new TimestampedBuildIdAssignmentRule(this);
+    }
+
+    /// <summary>Field number for the "rule" field.</summary>
+    public const int RuleFieldNumber = 1;
+    private global::Temporalio.Api.TaskQueue.V1.BuildIdAssignmentRule rule_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.TaskQueue.V1.BuildIdAssignmentRule Rule {
+      get { return rule_; }
+      set {
+        rule_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "create_time" field.</summary>
+    public const int CreateTimeFieldNumber = 2;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp createTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp CreateTime {
+      get { return createTime_; }
+      set {
+        createTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TimestampedBuildIdAssignmentRule);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TimestampedBuildIdAssignmentRule other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Rule, other.Rule)) return false;
+      if (!object.Equals(CreateTime, other.CreateTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (rule_ != null) hash ^= Rule.GetHashCode();
+      if (createTime_ != null) hash ^= CreateTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (rule_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Rule);
+      }
+      if (createTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(CreateTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (rule_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Rule);
+      }
+      if (createTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(CreateTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (rule_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Rule);
+      }
+      if (createTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TimestampedBuildIdAssignmentRule other) {
+      if (other == null) {
+        return;
+      }
+      if (other.rule_ != null) {
+        if (rule_ == null) {
+          Rule = new global::Temporalio.Api.TaskQueue.V1.BuildIdAssignmentRule();
+        }
+        Rule.MergeFrom(other.Rule);
+      }
+      if (other.createTime_ != null) {
+        if (createTime_ == null) {
+          CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        CreateTime.MergeFrom(other.CreateTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (rule_ == null) {
+              Rule = new global::Temporalio.Api.TaskQueue.V1.BuildIdAssignmentRule();
+            }
+            input.ReadMessage(Rule);
+            break;
+          }
+          case 18: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (rule_ == null) {
+              Rule = new global::Temporalio.Api.TaskQueue.V1.BuildIdAssignmentRule();
+            }
+            input.ReadMessage(Rule);
+            break;
+          }
+          case 18: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class TimestampedCompatibleBuildIdRedirectRule : pb::IMessage<TimestampedCompatibleBuildIdRedirectRule>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TimestampedCompatibleBuildIdRedirectRule> _parser = new pb::MessageParser<TimestampedCompatibleBuildIdRedirectRule>(() => new TimestampedCompatibleBuildIdRedirectRule());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TimestampedCompatibleBuildIdRedirectRule> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[17]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimestampedCompatibleBuildIdRedirectRule() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimestampedCompatibleBuildIdRedirectRule(TimestampedCompatibleBuildIdRedirectRule other) : this() {
+      rule_ = other.rule_ != null ? other.rule_.Clone() : null;
+      createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimestampedCompatibleBuildIdRedirectRule Clone() {
+      return new TimestampedCompatibleBuildIdRedirectRule(this);
+    }
+
+    /// <summary>Field number for the "rule" field.</summary>
+    public const int RuleFieldNumber = 1;
+    private global::Temporalio.Api.TaskQueue.V1.CompatibleBuildIdRedirectRule rule_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.TaskQueue.V1.CompatibleBuildIdRedirectRule Rule {
+      get { return rule_; }
+      set {
+        rule_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "create_time" field.</summary>
+    public const int CreateTimeFieldNumber = 2;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp createTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp CreateTime {
+      get { return createTime_; }
+      set {
+        createTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TimestampedCompatibleBuildIdRedirectRule);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TimestampedCompatibleBuildIdRedirectRule other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Rule, other.Rule)) return false;
+      if (!object.Equals(CreateTime, other.CreateTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (rule_ != null) hash ^= Rule.GetHashCode();
+      if (createTime_ != null) hash ^= CreateTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (rule_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Rule);
+      }
+      if (createTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(CreateTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (rule_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Rule);
+      }
+      if (createTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(CreateTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (rule_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Rule);
+      }
+      if (createTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TimestampedCompatibleBuildIdRedirectRule other) {
+      if (other == null) {
+        return;
+      }
+      if (other.rule_ != null) {
+        if (rule_ == null) {
+          Rule = new global::Temporalio.Api.TaskQueue.V1.CompatibleBuildIdRedirectRule();
+        }
+        Rule.MergeFrom(other.Rule);
+      }
+      if (other.createTime_ != null) {
+        if (createTime_ == null) {
+          CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        CreateTime.MergeFrom(other.CreateTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (rule_ == null) {
+              Rule = new global::Temporalio.Api.TaskQueue.V1.CompatibleBuildIdRedirectRule();
+            }
+            input.ReadMessage(Rule);
+            break;
+          }
+          case 18: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (rule_ == null) {
+              Rule = new global::Temporalio.Api.TaskQueue.V1.CompatibleBuildIdRedirectRule();
+            }
+            input.ReadMessage(Rule);
+            break;
+          }
+          case 18: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
             break;
           }
         }

@@ -31,16 +31,16 @@ namespace Temporalio.Api.Enums.V1 {
             "RVhFQ1VUSU9OX0xJRkVDWUNMRV9TVEFHRV9BRE1JVFRFRBABEjYKMlVQREFU",
             "RV9XT1JLRkxPV19FWEVDVVRJT05fTElGRUNZQ0xFX1NUQUdFX0FDQ0VQVEVE",
             "EAISNwozVVBEQVRFX1dPUktGTE9XX0VYRUNVVElPTl9MSUZFQ1lDTEVfU1RB",
-            "R0VfQ09NUExFVEVEEAMqdgoaVXBkYXRlUmVxdWVzdGVkRXZlbnRPcmlnaW4S",
-            "LQopVVBEQVRFX1JFUVVFU1RFRF9FVkVOVF9PUklHSU5fVU5TUEVDSUZJRUQQ",
-            "ABIpCiVVUERBVEVfUkVRVUVTVEVEX0VWRU5UX09SSUdJTl9SRUFQUExZEAFC",
-            "gwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUILVXBkYXRlUHJvdG9QAVoh",
-            "Z28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxp",
-            "by5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIG",
-            "cHJvdG8z"));
+            "R0VfQ09NUExFVEVEEAMqcwoZVXBkYXRlQWRtaXR0ZWRFdmVudE9yaWdpbhIs",
+            "CihVUERBVEVfQURNSVRURURfRVZFTlRfT1JJR0lOX1VOU1BFQ0lGSUVEEAAS",
+            "KAokVVBEQVRFX0FETUlUVEVEX0VWRU5UX09SSUdJTl9SRUFQUExZEAFCgwEK",
+            "GGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUILVXBkYXRlUHJvdG9QAVohZ28u",
+            "dGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5B",
+            "cGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.UpdateWorkflowExecutionLifecycleStage), typeof(global::Temporalio.Api.Enums.V1.UpdateRequestedEventOrigin), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.UpdateWorkflowExecutionLifecycleStage), typeof(global::Temporalio.Api.Enums.V1.UpdateAdmittedEventOrigin), }, null, null));
     }
     #endregion
 
@@ -81,18 +81,17 @@ namespace Temporalio.Api.Enums.V1 {
   }
 
   /// <summary>
-  /// UpdateRequestedEventOrigin records why an
-  /// WorkflowExecutionUpdateRequestedEvent was written to history. Note that not
-  /// all update requests result in a WorkflowExecutionUpdateRequestedEvent.
+  /// Records why a WorkflowExecutionUpdateAdmittedEvent was written to history.
+  /// Note that not all admitted updates result in this event.
   /// </summary>
-  public enum UpdateRequestedEventOrigin {
-    [pbr::OriginalName("UPDATE_REQUESTED_EVENT_ORIGIN_UNSPECIFIED")] Unspecified = 0,
+  public enum UpdateAdmittedEventOrigin {
+    [pbr::OriginalName("UPDATE_ADMITTED_EVENT_ORIGIN_UNSPECIFIED")] Unspecified = 0,
     /// <summary>
-    /// The UpdateRequested event was created when reapplying events during reset
+    /// The UpdateAdmitted event was created when reapplying events during reset
     /// or replication. I.e. an accepted update on one branch of workflow history
-    /// was converted into a requested update on a different branch.
+    /// was converted into an admitted update on a different branch.
     /// </summary>
-    [pbr::OriginalName("UPDATE_REQUESTED_EVENT_ORIGIN_REAPPLY")] Reapply = 1,
+    [pbr::OriginalName("UPDATE_ADMITTED_EVENT_ORIGIN_REAPPLY")] Reapply = 1,
   }
 
   #endregion

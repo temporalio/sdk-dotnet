@@ -120,6 +120,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke ExecuteMultiOperation.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<ExecuteMultiOperationResponse> ExecuteMultiOperationAsync(ExecuteMultiOperationRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("ExecuteMultiOperation", req, ExecuteMultiOperationResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetClusterInfo.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -172,6 +183,17 @@ namespace Temporalio.Client
         public async Task<GetWorkerTaskReachabilityResponse> GetWorkerTaskReachabilityAsync(GetWorkerTaskReachabilityRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("GetWorkerTaskReachability", req, GetWorkerTaskReachabilityResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetWorkerVersioningRules.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<GetWorkerVersioningRulesResponse> GetWorkerVersioningRulesAsync(GetWorkerVersioningRulesRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("GetWorkerVersioningRules", req, GetWorkerVersioningRulesResponse.Parser, options);
         }
 
         /// <summary>
@@ -315,6 +337,17 @@ namespace Temporalio.Client
         public async Task<PollActivityTaskQueueResponse> PollActivityTaskQueueAsync(PollActivityTaskQueueRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("PollActivityTaskQueue", req, PollActivityTaskQueueResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke PollNexusTaskQueue.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<PollNexusTaskQueueResponse> PollNexusTaskQueueAsync(PollNexusTaskQueueRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("PollNexusTaskQueue", req, PollNexusTaskQueueResponse.Parser, options);
         }
 
         /// <summary>
@@ -483,6 +516,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke RespondNexusTaskCompleted.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<RespondNexusTaskCompletedResponse> RespondNexusTaskCompletedAsync(RespondNexusTaskCompletedRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("RespondNexusTaskCompleted", req, RespondNexusTaskCompletedResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke RespondNexusTaskFailed.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<RespondNexusTaskFailedResponse> RespondNexusTaskFailedAsync(RespondNexusTaskFailedRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("RespondNexusTaskFailed", req, RespondNexusTaskFailedResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke RespondQueryTaskCompleted.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -623,6 +678,17 @@ namespace Temporalio.Client
         public async Task<UpdateWorkerBuildIdCompatibilityResponse> UpdateWorkerBuildIdCompatibilityAsync(UpdateWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("UpdateWorkerBuildIdCompatibility", req, UpdateWorkerBuildIdCompatibilityResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateWorkerVersioningRules.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<UpdateWorkerVersioningRulesResponse> UpdateWorkerVersioningRulesAsync(UpdateWorkerVersioningRulesRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("UpdateWorkerVersioningRules", req, UpdateWorkerVersioningRulesResponse.Parser, options);
         }
 
         /// <summary>

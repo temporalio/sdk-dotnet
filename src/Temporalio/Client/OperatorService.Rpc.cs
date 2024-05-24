@@ -32,6 +32,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<CreateNexusEndpointResponse> CreateNexusEndpointAsync(CreateNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("CreateNexusEndpoint", req, CreateNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke DeleteNamespace.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -43,6 +54,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke DeleteNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<DeleteNexusEndpointResponse> DeleteNexusEndpointAsync(DeleteNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("DeleteNexusEndpoint", req, DeleteNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<GetNexusEndpointResponse> GetNexusEndpointAsync(GetNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("GetNexusEndpoint", req, GetNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke ListClusters.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -51,6 +84,17 @@ namespace Temporalio.Client
         public async Task<ListClustersResponse> ListClustersAsync(ListClustersRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("ListClusters", req, ListClustersResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke ListNexusEndpoints.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<ListNexusEndpointsResponse> ListNexusEndpointsAsync(ListNexusEndpointsRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("ListNexusEndpoints", req, ListNexusEndpointsResponse.Parser, options);
         }
 
         /// <summary>
@@ -84,6 +128,17 @@ namespace Temporalio.Client
         public async Task<RemoveSearchAttributesResponse> RemoveSearchAttributesAsync(RemoveSearchAttributesRequest req, RpcOptions? options = null)
         {
             return await InvokeRpcAsync("RemoveSearchAttributes", req, RemoveSearchAttributesResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public async Task<UpdateNexusEndpointResponse> UpdateNexusEndpointAsync(UpdateNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return await InvokeRpcAsync("UpdateNexusEndpoint", req, UpdateNexusEndpointResponse.Parser, options);
         }
     }
 }

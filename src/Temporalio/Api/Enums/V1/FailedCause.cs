@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cih0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZmFpbGVkX2NhdXNlLnByb3RvEhV0",
-            "ZW1wb3JhbC5hcGkuZW51bXMudjEq3w8KF1dvcmtmbG93VGFza0ZhaWxlZENh",
+            "ZW1wb3JhbC5hcGkuZW51bXMudjEq7hEKF1dvcmtmbG93VGFza0ZhaWxlZENh",
             "dXNlEioKJldPUktGTE9XX1RBU0tfRkFJTEVEX0NBVVNFX1VOU1BFQ0lGSUVE",
             "EAASMAosV09SS0ZMT1dfVEFTS19GQUlMRURfQ0FVU0VfVU5IQU5ETEVEX0NP",
             "TU1BTkQQARI/CjtXT1JLRkxPV19UQVNLX0ZBSUxFRF9DQVVTRV9CQURfU0NI",
@@ -70,40 +70,49 @@ namespace Temporalio.Api.Enums.V1 {
             "UVVFU1RfQ0FOQ0VMX0xJTUlUX0VYQ0VFREVEEB0SRApAV09SS0ZMT1dfVEFT",
             "S19GQUlMRURfQ0FVU0VfQkFEX1VQREFURV9XT1JLRkxPV19FWEVDVVRJT05f",
             "TUVTU0FHRRAeEi8KK1dPUktGTE9XX1RBU0tfRkFJTEVEX0NBVVNFX1VOSEFO",
-            "RExFRF9VUERBVEUQHyrzAQomU3RhcnRDaGlsZFdvcmtmbG93RXhlY3V0aW9u",
-            "RmFpbGVkQ2F1c2USOwo3U1RBUlRfQ0hJTERfV09SS0ZMT1dfRVhFQ1VUSU9O",
-            "X0ZBSUxFRF9DQVVTRV9VTlNQRUNJRklFRBAAEkcKQ1NUQVJUX0NISUxEX1dP",
-            "UktGTE9XX0VYRUNVVElPTl9GQUlMRURfQ0FVU0VfV09SS0ZMT1dfQUxSRUFE",
-            "WV9FWElTVFMQARJDCj9TVEFSVF9DSElMRF9XT1JLRkxPV19FWEVDVVRJT05f",
-            "RkFJTEVEX0NBVVNFX05BTUVTUEFDRV9OT1RfRk9VTkQQAiqRAgoqQ2FuY2Vs",
-            "RXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZENhdXNlEj8KO0NBTkNF",
-            "TF9FWFRFUk5BTF9XT1JLRkxPV19FWEVDVVRJT05fRkFJTEVEX0NBVVNFX1VO",
-            "U1BFQ0lGSUVEEAASWQpVQ0FOQ0VMX0VYVEVSTkFMX1dPUktGTE9XX0VYRUNV",
-            "VElPTl9GQUlMRURfQ0FVU0VfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9O",
-            "X05PVF9GT1VORBABEkcKQ0NBTkNFTF9FWFRFUk5BTF9XT1JLRkxPV19FWEVD",
-            "VVRJT05fRkFJTEVEX0NBVVNFX05BTUVTUEFDRV9OT1RfRk9VTkQQAiriAgoq",
-            "U2lnbmFsRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZENhdXNlEj8K",
-            "O1NJR05BTF9FWFRFUk5BTF9XT1JLRkxPV19FWEVDVVRJT05fRkFJTEVEX0NB",
-            "VVNFX1VOU1BFQ0lGSUVEEAASWQpVU0lHTkFMX0VYVEVSTkFMX1dPUktGTE9X",
-            "X0VYRUNVVElPTl9GQUlMRURfQ0FVU0VfRVhURVJOQUxfV09SS0ZMT1dfRVhF",
-            "Q1VUSU9OX05PVF9GT1VORBABEkcKQ1NJR05BTF9FWFRFUk5BTF9XT1JLRkxP",
-            "V19FWEVDVVRJT05fRkFJTEVEX0NBVVNFX05BTUVTUEFDRV9OT1RfRk9VTkQQ",
-            "AhJPCktTSUdOQUxfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX0ZBSUxF",
-            "RF9DQVVTRV9TSUdOQUxfQ09VTlRfTElNSVRfRVhDRUVERUQQAyrNAgoWUmVz",
-            "b3VyY2VFeGhhdXN0ZWRDYXVzZRIoCiRSRVNPVVJDRV9FWEhBVVNURURfQ0FV",
-            "U0VfVU5TUEVDSUZJRUQQABImCiJSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0Vf",
-            "UlBTX0xJTUlUEAESLQopUkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNFX0NPTkNV",
-            "UlJFTlRfTElNSVQQAhIuCipSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0VfU1lT",
-            "VEVNX09WRVJMT0FERUQQAxIuCipSRVNPVVJDRV9FWEhBVVNURURfQ0FVU0Vf",
-            "UEVSU0lTVEVOQ0VfTElNSVQQBBIqCiZSRVNPVVJDRV9FWEhBVVNURURfQ0FV",
-            "U0VfQlVTWV9XT1JLRkxPVxAFEiYKIlJFU09VUkNFX0VYSEFVU1RFRF9DQVVT",
-            "RV9BUFNfTElNSVQQBkKIAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhBG",
-            "YWlsZWRDYXVzZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92",
-            "MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxp",
-            "bzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "RExFRF9VUERBVEUQHxJGCkJXT1JLRkxPV19UQVNLX0ZBSUxFRF9DQVVTRV9C",
+            "QURfU0NIRURVTEVfTkVYVVNfT1BFUkFUSU9OX0FUVFJJQlVURVMQIBJGCkJX",
+            "T1JLRkxPV19UQVNLX0ZBSUxFRF9DQVVTRV9QRU5ESU5HX05FWFVTX09QRVJB",
+            "VElPTlNfTElNSVRfRVhDRUVERUQQIRJMCkhXT1JLRkxPV19UQVNLX0ZBSUxF",
+            "RF9DQVVTRV9CQURfUkVRVUVTVF9DQU5DRUxfTkVYVVNfT1BFUkFUSU9OX0FU",
+            "VFJJQlVURVMQIhIvCitXT1JLRkxPV19UQVNLX0ZBSUxFRF9DQVVTRV9GRUFU",
+            "VVJFX0RJU0FCTEVEECMq8wEKJlN0YXJ0Q2hpbGRXb3JrZmxvd0V4ZWN1dGlv",
+            "bkZhaWxlZENhdXNlEjsKN1NUQVJUX0NISUxEX1dPUktGTE9XX0VYRUNVVElP",
+            "Tl9GQUlMRURfQ0FVU0VfVU5TUEVDSUZJRUQQABJHCkNTVEFSVF9DSElMRF9X",
+            "T1JLRkxPV19FWEVDVVRJT05fRkFJTEVEX0NBVVNFX1dPUktGTE9XX0FMUkVB",
+            "RFlfRVhJU1RTEAESQwo/U1RBUlRfQ0hJTERfV09SS0ZMT1dfRVhFQ1VUSU9O",
+            "X0ZBSUxFRF9DQVVTRV9OQU1FU1BBQ0VfTk9UX0ZPVU5EEAIqkQIKKkNhbmNl",
+            "bEV4dGVybmFsV29ya2Zsb3dFeGVjdXRpb25GYWlsZWRDYXVzZRI/CjtDQU5D",
+            "RUxfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX0ZBSUxFRF9DQVVTRV9V",
+            "TlNQRUNJRklFRBAAElkKVUNBTkNFTF9FWFRFUk5BTF9XT1JLRkxPV19FWEVD",
+            "VVRJT05fRkFJTEVEX0NBVVNFX0VYVEVSTkFMX1dPUktGTE9XX0VYRUNVVElP",
+            "Tl9OT1RfRk9VTkQQARJHCkNDQU5DRUxfRVhURVJOQUxfV09SS0ZMT1dfRVhF",
+            "Q1VUSU9OX0ZBSUxFRF9DQVVTRV9OQU1FU1BBQ0VfTk9UX0ZPVU5EEAIq4gIK",
+            "KlNpZ25hbEV4dGVybmFsV29ya2Zsb3dFeGVjdXRpb25GYWlsZWRDYXVzZRI/",
+            "CjtTSUdOQUxfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX0ZBSUxFRF9D",
+            "QVVTRV9VTlNQRUNJRklFRBAAElkKVVNJR05BTF9FWFRFUk5BTF9XT1JLRkxP",
+            "V19FWEVDVVRJT05fRkFJTEVEX0NBVVNFX0VYVEVSTkFMX1dPUktGTE9XX0VY",
+            "RUNVVElPTl9OT1RfRk9VTkQQARJHCkNTSUdOQUxfRVhURVJOQUxfV09SS0ZM",
+            "T1dfRVhFQ1VUSU9OX0ZBSUxFRF9DQVVTRV9OQU1FU1BBQ0VfTk9UX0ZPVU5E",
+            "EAISTwpLU0lHTkFMX0VYVEVSTkFMX1dPUktGTE9XX0VYRUNVVElPTl9GQUlM",
+            "RURfQ0FVU0VfU0lHTkFMX0NPVU5UX0xJTUlUX0VYQ0VFREVEEAMqzQIKFlJl",
+            "c291cmNlRXhoYXVzdGVkQ2F1c2USKAokUkVTT1VSQ0VfRVhIQVVTVEVEX0NB",
+            "VVNFX1VOU1BFQ0lGSUVEEAASJgoiUkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNF",
+            "X1JQU19MSU1JVBABEi0KKVJFU09VUkNFX0VYSEFVU1RFRF9DQVVTRV9DT05D",
+            "VVJSRU5UX0xJTUlUEAISLgoqUkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNFX1NZ",
+            "U1RFTV9PVkVSTE9BREVEEAMSLgoqUkVTT1VSQ0VfRVhIQVVTVEVEX0NBVVNF",
+            "X1BFUlNJU1RFTkNFX0xJTUlUEAQSKgomUkVTT1VSQ0VfRVhIQVVTVEVEX0NB",
+            "VVNFX0JVU1lfV09SS0ZMT1cQBRImCiJSRVNPVVJDRV9FWEhBVVNURURfQ0FV",
+            "U0VfQVBTX0xJTUlUEAYqjwEKFlJlc291cmNlRXhoYXVzdGVkU2NvcGUSKAok",
+            "UkVTT1VSQ0VfRVhIQVVTVEVEX1NDT1BFX1VOU1BFQ0lGSUVEEAASJgoiUkVT",
+            "T1VSQ0VfRVhIQVVTVEVEX1NDT1BFX05BTUVTUEFDRRABEiMKH1JFU09VUkNF",
+            "X0VYSEFVU1RFRF9TQ09QRV9TWVNURU0QAkKIAQoYaW8udGVtcG9yYWwuYXBp",
+            "LmVudW1zLnYxQhBGYWlsZWRDYXVzZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlv",
+            "L2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx",
+            "6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowTaskFailedCause), typeof(global::Temporalio.Api.Enums.V1.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedCause), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowTaskFailedCause), typeof(global::Temporalio.Api.Enums.V1.StartChildWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.CancelExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.SignalExternalWorkflowExecutionFailedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedCause), typeof(global::Temporalio.Api.Enums.V1.ResourceExhaustedScope), }, null, null));
     }
     #endregion
 
@@ -187,6 +196,24 @@ namespace Temporalio.Api.Enums.V1 {
     /// Similar to WORKFLOW_TASK_FAILED_CAUSE_UNHANDLED_COMMAND, but for updates.
     /// </summary>
     [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_UNHANDLED_UPDATE")] UnhandledUpdate = 31,
+    /// <summary>
+    /// A workflow task completed with an invalid ScheduleNexusOperation command.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_BAD_SCHEDULE_NEXUS_OPERATION_ATTRIBUTES")] BadScheduleNexusOperationAttributes = 32,
+    /// <summary>
+    /// A workflow task completed requesting to schedule a Nexus Operation exceeding the server configured limit.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_PENDING_NEXUS_OPERATIONS_LIMIT_EXCEEDED")] PendingNexusOperationsLimitExceeded = 33,
+    /// <summary>
+    /// A workflow task completed with an invalid RequestCancelNexusOperation command.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_BAD_REQUEST_CANCEL_NEXUS_OPERATION_ATTRIBUTES")] BadRequestCancelNexusOperationAttributes = 34,
+    /// <summary>
+    /// A workflow task completed requesting a feature that's disabled on the server (either system wide or - typically -
+    /// for the workflow's namespace).
+    /// Check the workflow task failure message for more information.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_TASK_FAILED_CAUSE_FEATURE_DISABLED")] FeatureDisabled = 35,
   }
 
   public enum StartChildWorkflowExecutionFailedCause {
@@ -237,6 +264,18 @@ namespace Temporalio.Api.Enums.V1 {
     /// Caller exceeds action per second limit.
     /// </summary>
     [pbr::OriginalName("RESOURCE_EXHAUSTED_CAUSE_APS_LIMIT")] ApsLimit = 6,
+  }
+
+  public enum ResourceExhaustedScope {
+    [pbr::OriginalName("RESOURCE_EXHAUSTED_SCOPE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Exhausted resource is a system-level resource.
+    /// </summary>
+    [pbr::OriginalName("RESOURCE_EXHAUSTED_SCOPE_NAMESPACE")] Namespace = 1,
+    /// <summary>
+    /// Exhausted resource is a namespace-level resource.
+    /// </summary>
+    [pbr::OriginalName("RESOURCE_EXHAUSTED_SCOPE_SYSTEM")] System = 2,
   }
 
   #endregion
