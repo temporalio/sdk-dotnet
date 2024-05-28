@@ -31,58 +31,65 @@ namespace Temporalio.Api.Enums.V1 {
             "T1JLRkxPV19JRF9SRVVTRV9QT0xJQ1lfQUxMT1dfRFVQTElDQVRFX0ZBSUxF",
             "RF9PTkxZEAISLQopV09SS0ZMT1dfSURfUkVVU0VfUE9MSUNZX1JFSkVDVF9E",
             "VVBMSUNBVEUQAxIxCi1XT1JLRkxPV19JRF9SRVVTRV9QT0xJQ1lfVEVSTUlO",
-            "QVRFX0lGX1JVTk5JTkcQBCqkAQoRUGFyZW50Q2xvc2VQb2xpY3kSIwofUEFS",
-            "RU5UX0NMT1NFX1BPTElDWV9VTlNQRUNJRklFRBAAEiEKHVBBUkVOVF9DTE9T",
-            "RV9QT0xJQ1lfVEVSTUlOQVRFEAESHwobUEFSRU5UX0NMT1NFX1BPTElDWV9B",
-            "QkFORE9OEAISJgoiUEFSRU5UX0NMT1NFX1BPTElDWV9SRVFVRVNUX0NBTkNF",
-            "TBADKr0BChZDb250aW51ZUFzTmV3SW5pdGlhdG9yEikKJUNPTlRJTlVFX0FT",
-            "X05FV19JTklUSUFUT1JfVU5TUEVDSUZJRUQQABImCiJDT05USU5VRV9BU19O",
-            "RVdfSU5JVElBVE9SX1dPUktGTE9XEAESIwofQ09OVElOVUVfQVNfTkVXX0lO",
-            "SVRJQVRPUl9SRVRSWRACEisKJ0NPTlRJTlVFX0FTX05FV19JTklUSUFUT1Jf",
-            "Q1JPTl9TQ0hFRFVMRRADKuUCChdXb3JrZmxvd0V4ZWN1dGlvblN0YXR1cxIp",
-            "CiVXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX1VOU1BFQ0lGSUVEEAASJQoh",
-            "V09SS0ZMT1dfRVhFQ1VUSU9OX1NUQVRVU19SVU5OSU5HEAESJwojV09SS0ZM",
-            "T1dfRVhFQ1VUSU9OX1NUQVRVU19DT01QTEVURUQQAhIkCiBXT1JLRkxPV19F",
-            "WEVDVVRJT05fU1RBVFVTX0ZBSUxFRBADEiYKIldPUktGTE9XX0VYRUNVVElP",
-            "Tl9TVEFUVVNfQ0FOQ0VMRUQQBBIoCiRXT1JLRkxPV19FWEVDVVRJT05fU1RB",
-            "VFVTX1RFUk1JTkFURUQQBRIuCipXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVT",
-            "X0NPTlRJTlVFRF9BU19ORVcQBhInCiNXT1JLRkxPV19FWEVDVVRJT05fU1RB",
-            "VFVTX1RJTUVEX09VVBAHKrUBChRQZW5kaW5nQWN0aXZpdHlTdGF0ZRImCiJQ",
-            "RU5ESU5HX0FDVElWSVRZX1NUQVRFX1VOU1BFQ0lGSUVEEAASJAogUEVORElO",
-            "R19BQ1RJVklUWV9TVEFURV9TQ0hFRFVMRUQQARIiCh5QRU5ESU5HX0FDVElW",
-            "SVRZX1NUQVRFX1NUQVJURUQQAhIrCidQRU5ESU5HX0FDVElWSVRZX1NUQVRF",
-            "X0NBTkNFTF9SRVFVRVNURUQQAyqbAQoYUGVuZGluZ1dvcmtmbG93VGFza1N0",
-            "YXRlEisKJ1BFTkRJTkdfV09SS0ZMT1dfVEFTS19TVEFURV9VTlNQRUNJRklF",
-            "RBAAEikKJVBFTkRJTkdfV09SS0ZMT1dfVEFTS19TVEFURV9TQ0hFRFVMRUQQ",
-            "ARInCiNQRU5ESU5HX1dPUktGTE9XX1RBU0tfU1RBVEVfU1RBUlRFRBACKpcB",
-            "ChZIaXN0b3J5RXZlbnRGaWx0ZXJUeXBlEikKJUhJU1RPUllfRVZFTlRfRklM",
-            "VEVSX1RZUEVfVU5TUEVDSUZJRUQQABInCiNISVNUT1JZX0VWRU5UX0ZJTFRF",
-            "Ul9UWVBFX0FMTF9FVkVOVBABEikKJUhJU1RPUllfRVZFTlRfRklMVEVSX1RZ",
-            "UEVfQ0xPU0VfRVZFTlQQAiqfAgoKUmV0cnlTdGF0ZRIbChdSRVRSWV9TVEFU",
-            "RV9VTlNQRUNJRklFRBAAEhsKF1JFVFJZX1NUQVRFX0lOX1BST0dSRVNTEAES",
-            "JQohUkVUUllfU1RBVEVfTk9OX1JFVFJZQUJMRV9GQUlMVVJFEAISFwoTUkVU",
-            "UllfU1RBVEVfVElNRU9VVBADEigKJFJFVFJZX1NUQVRFX01BWElNVU1fQVRU",
-            "RU1QVFNfUkVBQ0hFRBAEEiQKIFJFVFJZX1NUQVRFX1JFVFJZX1BPTElDWV9O",
-            "T1RfU0VUEAUSJQohUkVUUllfU1RBVEVfSU5URVJOQUxfU0VSVkVSX0VSUk9S",
-            "EAYSIAocUkVUUllfU1RBVEVfQ0FOQ0VMX1JFUVVFU1RFRBAHKrABCgtUaW1l",
-            "b3V0VHlwZRIcChhUSU1FT1VUX1RZUEVfVU5TUEVDSUZJRUQQABIfChtUSU1F",
-            "T1VUX1RZUEVfU1RBUlRfVE9fQ0xPU0UQARIiCh5USU1FT1VUX1RZUEVfU0NI",
-            "RURVTEVfVE9fU1RBUlQQAhIiCh5USU1FT1VUX1RZUEVfU0NIRURVTEVfVE9f",
-            "Q0xPU0UQAxIaChZUSU1FT1VUX1RZUEVfSEVBUlRCRUFUEARChQEKGGlvLnRl",
-            "bXBvcmFsLmFwaS5lbnVtcy52MUINV29ya2Zsb3dQcm90b1ABWiFnby50ZW1w",
-            "b3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5F",
-            "bnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "QVRFX0lGX1JVTk5JTkcQBCrPAQoYV29ya2Zsb3dJZENvbmZsaWN0UG9saWN5",
+            "EisKJ1dPUktGTE9XX0lEX0NPTkZMSUNUX1BPTElDWV9VTlNQRUNJRklFRBAA",
+            "EiQKIFdPUktGTE9XX0lEX0NPTkZMSUNUX1BPTElDWV9GQUlMEAESLAooV09S",
+            "S0ZMT1dfSURfQ09ORkxJQ1RfUE9MSUNZX1VTRV9FWElTVElORxACEjIKLldP",
+            "UktGTE9XX0lEX0NPTkZMSUNUX1BPTElDWV9URVJNSU5BVEVfRVhJU1RJTkcQ",
+            "AyqkAQoRUGFyZW50Q2xvc2VQb2xpY3kSIwofUEFSRU5UX0NMT1NFX1BPTElD",
+            "WV9VTlNQRUNJRklFRBAAEiEKHVBBUkVOVF9DTE9TRV9QT0xJQ1lfVEVSTUlO",
+            "QVRFEAESHwobUEFSRU5UX0NMT1NFX1BPTElDWV9BQkFORE9OEAISJgoiUEFS",
+            "RU5UX0NMT1NFX1BPTElDWV9SRVFVRVNUX0NBTkNFTBADKr0BChZDb250aW51",
+            "ZUFzTmV3SW5pdGlhdG9yEikKJUNPTlRJTlVFX0FTX05FV19JTklUSUFUT1Jf",
+            "VU5TUEVDSUZJRUQQABImCiJDT05USU5VRV9BU19ORVdfSU5JVElBVE9SX1dP",
+            "UktGTE9XEAESIwofQ09OVElOVUVfQVNfTkVXX0lOSVRJQVRPUl9SRVRSWRAC",
+            "EisKJ0NPTlRJTlVFX0FTX05FV19JTklUSUFUT1JfQ1JPTl9TQ0hFRFVMRRAD",
+            "KuUCChdXb3JrZmxvd0V4ZWN1dGlvblN0YXR1cxIpCiVXT1JLRkxPV19FWEVD",
+            "VVRJT05fU1RBVFVTX1VOU1BFQ0lGSUVEEAASJQohV09SS0ZMT1dfRVhFQ1VU",
+            "SU9OX1NUQVRVU19SVU5OSU5HEAESJwojV09SS0ZMT1dfRVhFQ1VUSU9OX1NU",
+            "QVRVU19DT01QTEVURUQQAhIkCiBXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVT",
+            "X0ZBSUxFRBADEiYKIldPUktGTE9XX0VYRUNVVElPTl9TVEFUVVNfQ0FOQ0VM",
+            "RUQQBBIoCiRXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX1RFUk1JTkFURUQQ",
+            "BRIuCipXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX0NPTlRJTlVFRF9BU19O",
+            "RVcQBhInCiNXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX1RJTUVEX09VVBAH",
+            "KrUBChRQZW5kaW5nQWN0aXZpdHlTdGF0ZRImCiJQRU5ESU5HX0FDVElWSVRZ",
+            "X1NUQVRFX1VOU1BFQ0lGSUVEEAASJAogUEVORElOR19BQ1RJVklUWV9TVEFU",
+            "RV9TQ0hFRFVMRUQQARIiCh5QRU5ESU5HX0FDVElWSVRZX1NUQVRFX1NUQVJU",
+            "RUQQAhIrCidQRU5ESU5HX0FDVElWSVRZX1NUQVRFX0NBTkNFTF9SRVFVRVNU",
+            "RUQQAyqbAQoYUGVuZGluZ1dvcmtmbG93VGFza1N0YXRlEisKJ1BFTkRJTkdf",
+            "V09SS0ZMT1dfVEFTS19TVEFURV9VTlNQRUNJRklFRBAAEikKJVBFTkRJTkdf",
+            "V09SS0ZMT1dfVEFTS19TVEFURV9TQ0hFRFVMRUQQARInCiNQRU5ESU5HX1dP",
+            "UktGTE9XX1RBU0tfU1RBVEVfU1RBUlRFRBACKpcBChZIaXN0b3J5RXZlbnRG",
+            "aWx0ZXJUeXBlEikKJUhJU1RPUllfRVZFTlRfRklMVEVSX1RZUEVfVU5TUEVD",
+            "SUZJRUQQABInCiNISVNUT1JZX0VWRU5UX0ZJTFRFUl9UWVBFX0FMTF9FVkVO",
+            "VBABEikKJUhJU1RPUllfRVZFTlRfRklMVEVSX1RZUEVfQ0xPU0VfRVZFTlQQ",
+            "AiqfAgoKUmV0cnlTdGF0ZRIbChdSRVRSWV9TVEFURV9VTlNQRUNJRklFRBAA",
+            "EhsKF1JFVFJZX1NUQVRFX0lOX1BST0dSRVNTEAESJQohUkVUUllfU1RBVEVf",
+            "Tk9OX1JFVFJZQUJMRV9GQUlMVVJFEAISFwoTUkVUUllfU1RBVEVfVElNRU9V",
+            "VBADEigKJFJFVFJZX1NUQVRFX01BWElNVU1fQVRURU1QVFNfUkVBQ0hFRBAE",
+            "EiQKIFJFVFJZX1NUQVRFX1JFVFJZX1BPTElDWV9OT1RfU0VUEAUSJQohUkVU",
+            "UllfU1RBVEVfSU5URVJOQUxfU0VSVkVSX0VSUk9SEAYSIAocUkVUUllfU1RB",
+            "VEVfQ0FOQ0VMX1JFUVVFU1RFRBAHKrABCgtUaW1lb3V0VHlwZRIcChhUSU1F",
+            "T1VUX1RZUEVfVU5TUEVDSUZJRUQQABIfChtUSU1FT1VUX1RZUEVfU1RBUlRf",
+            "VE9fQ0xPU0UQARIiCh5USU1FT1VUX1RZUEVfU0NIRURVTEVfVE9fU1RBUlQQ",
+            "AhIiCh5USU1FT1VUX1RZUEVfU0NIRURVTEVfVE9fQ0xPU0UQAxIaChZUSU1F",
+            "T1VUX1RZUEVfSEVBUlRCRUFUEARChQEKGGlvLnRlbXBvcmFsLmFwaS5lbnVt",
+            "cy52MUINV29ya2Zsb3dQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51",
+            "bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBv",
+            "cmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.WorkflowIdConflictPolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), }, null, null));
     }
     #endregion
 
   }
   #region Enums
   /// <summary>
-  /// Defines how new runs of a workflow with a particular ID may or may not be allowed. Note that
-  /// it is *never* valid to have two actively running instances of the same workflow id.
+  /// Defines whether to allow re-using a workflow id from a previously *closed* workflow.
+  /// If the request is denied, a `WorkflowExecutionAlreadyStartedFailure` is returned.
+  ///
+  /// See `WorkflowIdConflictPolicy` for handling workflow id duplication with a *running* workflow.
   /// </summary>
   public enum WorkflowIdReusePolicy {
     [pbr::OriginalName("WORKFLOW_ID_REUSE_POLICY_UNSPECIFIED")] Unspecified = 0,
@@ -101,10 +108,34 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE")] RejectDuplicate = 3,
     /// <summary>
-    /// If a workflow is running using the same workflow ID, terminate it and start a new one.
-    /// If no running workflow, then the behavior is the same as ALLOW_DUPLICATE
+    /// This option belongs in WorkflowIdConflictPolicy but is here for backwards compatibility.
+    /// If specified, it acts like ALLOW_DUPLICATE, but also the WorkflowId*Conflict*Policy on
+    /// the request is treated as WORKFLOW_ID_CONFLICT_POLICY_TERMINATE_EXISTING.
+    /// If no running workflow, then the behavior is the same as ALLOW_DUPLICATE.
     /// </summary>
     [pbr::OriginalName("WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING")] TerminateIfRunning = 4,
+  }
+
+  /// <summary>
+  /// Defines what to do when trying to start a workflow with the same workflow id as a *running* workflow.
+  /// Note that it is *never* valid to have two actively running instances of the same workflow id.
+  ///
+  /// See `WorkflowIdReusePolicy` for handling workflow id duplication with a *closed* workflow.
+  /// </summary>
+  public enum WorkflowIdConflictPolicy {
+    [pbr::OriginalName("WORKFLOW_ID_CONFLICT_POLICY_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Don't start a new workflow; instead return `WorkflowExecutionAlreadyStartedFailure`.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_ID_CONFLICT_POLICY_FAIL")] Fail = 1,
+    /// <summary>
+    /// Don't start a new workflow; instead return a workflow handle for the running workflow.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_ID_CONFLICT_POLICY_USE_EXISTING")] UseExisting = 2,
+    /// <summary>
+    /// Terminate the running workflow before starting a new one.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_ID_CONFLICT_POLICY_TERMINATE_EXISTING")] TerminateExisting = 3,
   }
 
   /// <summary>

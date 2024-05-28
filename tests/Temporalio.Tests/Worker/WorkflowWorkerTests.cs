@@ -4501,6 +4501,48 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class NextRetryDelayWorkflow
+    {
+        [Activity]
+        public static void NextRetryDelayActivity()
+        {
+            throw new ApplicationFailureException(
+                "Intentional error", nextRetryDelay: TimeSpan.FromMilliseconds(5));
+        }
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Run the activity max attempt two
+            await Workflow.ExecuteActivityAsync(
+                () => NextRetryDelayActivity(),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromHours(1),
+                    RetryPolicy = new() { MaximumAttempts = 2 },
+                });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_NextRetryDelay_SetOnError()
+    {
+        await ExecuteWorkerAsync<NextRetryDelayWorkflow>(
+            async worker =>
+            {
+                var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                    Env.Client.ExecuteWorkflowAsync(
+                        (NextRetryDelayWorkflow wf) => wf.RunAsync(),
+                        new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+                var exc2 = Assert.IsType<ActivityFailureException>(exc.InnerException);
+                var exc3 = Assert.IsType<ApplicationFailureException>(exc2.InnerException);
+                Assert.Equal("Intentional error", exc3.Message);
+                Assert.Equal(TimeSpan.FromMilliseconds(5), exc3.NextRetryDelay);
+            },
+            new TemporalWorkerOptions().AddActivity(NextRetryDelayWorkflow.NextRetryDelayActivity));
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

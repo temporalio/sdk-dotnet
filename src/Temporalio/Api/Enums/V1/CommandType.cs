@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cih0ZW1wb3JhbC9hcGkvZW51bXMvdjEvY29tbWFuZF90eXBlLnByb3RvEhV0",
-            "ZW1wb3JhbC5hcGkuZW51bXMudjEqwAUKC0NvbW1hbmRUeXBlEhwKGENPTU1B",
+            "ZW1wb3JhbC5hcGkuZW51bXMudjEqnAYKC0NvbW1hbmRUeXBlEhwKGENPTU1B",
             "TkRfVFlQRV9VTlNQRUNJRklFRBAAEicKI0NPTU1BTkRfVFlQRV9TQ0hFRFVM",
             "RV9BQ1RJVklUWV9UQVNLEAESLQopQ09NTUFORF9UWVBFX1JFUVVFU1RfQ0FO",
             "Q0VMX0FDVElWSVRZX1RBU0sQAhIcChhDT01NQU5EX1RZUEVfU1RBUlRfVElN",
@@ -41,10 +41,12 @@ namespace Temporalio.Api.Enums.V1 {
             "WEVDVVRJT04QDBIyCi5DT01NQU5EX1RZUEVfVVBTRVJUX1dPUktGTE9XX1NF",
             "QVJDSF9BVFRSSUJVVEVTEA0SIQodQ09NTUFORF9UWVBFX1BST1RPQ09MX01F",
             "U1NBR0UQDhIrCidDT01NQU5EX1RZUEVfTU9ESUZZX1dPUktGTE9XX1BST1BF",
-            "UlRJRVMQEEKIAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQhBDb21tYW5k",
-            "VHlwZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
-            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
-            "OjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "UlRJRVMQEBIpCiVDT01NQU5EX1RZUEVfU0NIRURVTEVfTkVYVVNfT1BFUkFU",
+            "SU9OEBESLworQ09NTUFORF9UWVBFX1JFUVVFU1RfQ0FOQ0VMX05FWFVTX09Q",
+            "RVJBVElPThASQogBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCEENvbW1h",
+            "bmRUeXBlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2Vu",
+            "dW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpB",
+            "cGk6OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.CommandType), }, null, null));
@@ -73,6 +75,8 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("COMMAND_TYPE_UPSERT_WORKFLOW_SEARCH_ATTRIBUTES")] UpsertWorkflowSearchAttributes = 13,
     [pbr::OriginalName("COMMAND_TYPE_PROTOCOL_MESSAGE")] ProtocolMessage = 14,
     [pbr::OriginalName("COMMAND_TYPE_MODIFY_WORKFLOW_PROPERTIES")] ModifyWorkflowProperties = 16,
+    [pbr::OriginalName("COMMAND_TYPE_SCHEDULE_NEXUS_OPERATION")] ScheduleNexusOperation = 17,
+    [pbr::OriginalName("COMMAND_TYPE_REQUEST_CANCEL_NEXUS_OPERATION")] RequestCancelNexusOperation = 18,
   }
 
   #endregion

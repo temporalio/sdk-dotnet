@@ -52,7 +52,7 @@ namespace Temporalio.Api.Sdk.V1 {
   }
   #region Messages
   /// <summary>
-  /// The name of the query to retrieve this information is `__temporal_getWorkflowMetadata`.
+  /// The name of the query to retrieve this information is `__temporal_workflow_metadata`.
   /// </summary>
   public sealed partial class WorkflowMetadata : pb::IMessage<WorkflowMetadata>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE

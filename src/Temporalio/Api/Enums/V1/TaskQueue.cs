@@ -27,21 +27,28 @@ namespace Temporalio.Api.Enums.V1 {
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvdGFza19xdWV1ZS5wcm90bxIVdGVt",
             "cG9yYWwuYXBpLmVudW1zLnYxKmgKDVRhc2tRdWV1ZUtpbmQSHwobVEFTS19R",
             "VUVVRV9LSU5EX1VOU1BFQ0lGSUVEEAASGgoWVEFTS19RVUVVRV9LSU5EX05P",
-            "Uk1BTBABEhoKFlRBU0tfUVVFVUVfS0lORF9TVElDS1kQAipsCg1UYXNrUXVl",
-            "dWVUeXBlEh8KG1RBU0tfUVVFVUVfVFlQRV9VTlNQRUNJRklFRBAAEhwKGFRB",
-            "U0tfUVVFVUVfVFlQRV9XT1JLRkxPVxABEhwKGFRBU0tfUVVFVUVfVFlQRV9B",
-            "Q1RJVklUWRACKtIBChBUYXNrUmVhY2hhYmlsaXR5EiEKHVRBU0tfUkVBQ0hB",
-            "QklMSVRZX1VOU1BFQ0lGSUVEEAASIwofVEFTS19SRUFDSEFCSUxJVFlfTkVX",
-            "X1dPUktGTE9XUxABEigKJFRBU0tfUkVBQ0hBQklMSVRZX0VYSVNUSU5HX1dP",
-            "UktGTE9XUxACEiQKIFRBU0tfUkVBQ0hBQklMSVRZX09QRU5fV09SS0ZMT1dT",
-            "EAMSJgoiVEFTS19SRUFDSEFCSUxJVFlfQ0xPU0VEX1dPUktGTE9XUxAEQoYB",
-            "Chhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCDlRhc2tRdWV1ZVByb3RvUAFa",
-            "IWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFs",
-            "aW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFi",
-            "BnByb3RvMw=="));
+            "Uk1BTBABEhoKFlRBU0tfUVVFVUVfS0lORF9TVElDS1kQAiqHAQoNVGFza1F1",
+            "ZXVlVHlwZRIfChtUQVNLX1FVRVVFX1RZUEVfVU5TUEVDSUZJRUQQABIcChhU",
+            "QVNLX1FVRVVFX1RZUEVfV09SS0ZMT1cQARIcChhUQVNLX1FVRVVFX1RZUEVf",
+            "QUNUSVZJVFkQAhIZChVUQVNLX1FVRVVFX1RZUEVfTkVYVVMQAyrSAQoQVGFz",
+            "a1JlYWNoYWJpbGl0eRIhCh1UQVNLX1JFQUNIQUJJTElUWV9VTlNQRUNJRklF",
+            "RBAAEiMKH1RBU0tfUkVBQ0hBQklMSVRZX05FV19XT1JLRkxPV1MQARIoCiRU",
+            "QVNLX1JFQUNIQUJJTElUWV9FWElTVElOR19XT1JLRkxPV1MQAhIkCiBUQVNL",
+            "X1JFQUNIQUJJTElUWV9PUEVOX1dPUktGTE9XUxADEiYKIlRBU0tfUkVBQ0hB",
+            "QklMSVRZX0NMT1NFRF9XT1JLRkxPV1MQBCrRAQoXQnVpbGRJZFRhc2tSZWFj",
+            "aGFiaWxpdHkSKgomQlVJTERfSURfVEFTS19SRUFDSEFCSUxJVFlfVU5TUEVD",
+            "SUZJRUQQABIoCiRCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9SRUFDSEFC",
+            "TEUQARI0CjBCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9DTE9TRURfV09S",
+            "S0ZMT1dTX09OTFkQAhIqCiZCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9V",
+            "TlJFQUNIQUJMRRADKmgKFURlc2NyaWJlVGFza1F1ZXVlTW9kZRIoCiRERVND",
+            "UklCRV9UQVNLX1FVRVVFX01PREVfVU5TUEVDSUZJRUQQABIlCiFERVNDUklC",
+            "RV9UQVNLX1FVRVVFX01PREVfRU5IQU5DRUQQAUKGAQoYaW8udGVtcG9yYWwu",
+            "YXBpLmVudW1zLnYxQg5UYXNrUXVldWVQcm90b1ABWiFnby50ZW1wb3JhbC5p",
+            "by9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5W",
+            "MeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), typeof(global::Temporalio.Api.Enums.V1.BuildIdTaskReachability), typeof(global::Temporalio.Api.Enums.V1.DescribeTaskQueueMode), }, null, null));
     }
     #endregion
 
@@ -80,11 +87,16 @@ namespace Temporalio.Api.Enums.V1 {
     /// Activity type of task queue.
     /// </summary>
     [pbr::OriginalName("TASK_QUEUE_TYPE_ACTIVITY")] Activity = 2,
+    /// <summary>
+    /// Task queue type for dispatching Nexus requests.
+    /// </summary>
+    [pbr::OriginalName("TASK_QUEUE_TYPE_NEXUS")] Nexus = 3,
   }
 
   /// <summary>
   /// Specifies which category of tasks may reach a worker on a versioned task queue.
   /// Used both in a reachability query and its response.
+  /// Deprecated.
   /// </summary>
   public enum TaskReachability {
     [pbr::OriginalName("TASK_REACHABILITY_UNSPECIFIED")] Unspecified = 0,
@@ -108,6 +120,48 @@ namespace Temporalio.Api.Enums.V1 {
     /// retired dependending on application requirements. For example, if there's no need to query closed workflows.
     /// </summary>
     [pbr::OriginalName("TASK_REACHABILITY_CLOSED_WORKFLOWS")] ClosedWorkflows = 4,
+  }
+
+  /// <summary>
+  /// Specifies which category of tasks may reach a versioned worker of a certain Build ID.
+  /// Note: future activities who inherit their workflow's Build ID but not its Task Queue will not be
+  /// accounted for reachability as server cannot not know if they'll happen as they do not use
+  /// assignment rules of their Task Queue. Same goes for Child Workflows or Continue-As-New Workflows
+  /// who inherit the parent/previous workflow's Build ID but not its Task Queue. In those cases, make
+  /// sure to query reachability for the parent/previous workflow's Task Queue as well.
+  /// </summary>
+  public enum BuildIdTaskReachability {
+    /// <summary>
+    /// Task reachability is not reported
+    /// </summary>
+    [pbr::OriginalName("BUILD_ID_TASK_REACHABILITY_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Build ID may be used by new workflows or activities (base on versioning rules), or there are
+    /// open workflows or backlogged activities assigned to it.
+    /// </summary>
+    [pbr::OriginalName("BUILD_ID_TASK_REACHABILITY_REACHABLE")] Reachable = 1,
+    /// <summary>
+    /// Build ID does not have open workflows and is not reachable by new workflows,
+    /// but MAY have closed workflows within the namespace retention period.
+    /// Not applicable to activity-only task queues.
+    /// </summary>
+    [pbr::OriginalName("BUILD_ID_TASK_REACHABILITY_CLOSED_WORKFLOWS_ONLY")] ClosedWorkflowsOnly = 2,
+    /// <summary>
+    /// Build ID is not used for new executions, nor it has been used by any existing execution
+    /// within the retention period.
+    /// </summary>
+    [pbr::OriginalName("BUILD_ID_TASK_REACHABILITY_UNREACHABLE")] Unreachable = 3,
+  }
+
+  public enum DescribeTaskQueueMode {
+    /// <summary>
+    /// Unspecified means legacy behavior.
+    /// </summary>
+    [pbr::OriginalName("DESCRIBE_TASK_QUEUE_MODE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Enhanced mode reports aggregated results for all partitions, supports Build IDs, and reports richer info.
+    /// </summary>
+    [pbr::OriginalName("DESCRIBE_TASK_QUEUE_MODE_ENHANCED")] Enhanced = 1,
   }
 
   #endregion

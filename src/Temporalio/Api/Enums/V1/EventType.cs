@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZXZlbnRfdHlwZS5wcm90bxIVdGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxKsIRCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
+            "cG9yYWwuYXBpLmVudW1zLnYxKugTCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
             "RV9VTlNQRUNJRklFRBAAEikKJUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VU",
             "SU9OX1NUQVJURUQQARIrCidFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
             "Tl9DT01QTEVURUQQAhIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
@@ -74,11 +74,18 @@ namespace Temporalio.Api.Enums.V1 {
             "T1JLRkxPV19QUk9QRVJUSUVTX01PRElGSUVEX0VYVEVSTkFMTFkQLBI2CjJF",
             "VkVOVF9UWVBFX0FDVElWSVRZX1BST1BFUlRJRVNfTU9ESUZJRURfRVhURVJO",
             "QUxMWRAtEisKJ0VWRU5UX1RZUEVfV09SS0ZMT1dfUFJPUEVSVElFU19NT0RJ",
-            "RklFRBAuEjIKLkVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VUSU9OX1VQREFU",
-            "RV9SRVFVRVNURUQQL0KGAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQg5F",
-            "dmVudFR5cGVQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7",
-            "ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86",
-            "OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "RklFRBAuEjEKLUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VUSU9OX1VQREFU",
+            "RV9BRE1JVFRFRBAvEigKJEVWRU5UX1RZUEVfTkVYVVNfT1BFUkFUSU9OX1ND",
+            "SEVEVUxFRBAwEiYKIkVWRU5UX1RZUEVfTkVYVVNfT1BFUkFUSU9OX1NUQVJU",
+            "RUQQMRIoCiRFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DT01QTEVURUQQ",
+            "MhIlCiFFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9GQUlMRUQQMxInCiNF",
+            "VkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DQU5DRUxFRBA0EigKJEVWRU5U",
+            "X1RZUEVfTkVYVVNfT1BFUkFUSU9OX1RJTUVEX09VVBA1Ei8KK0VWRU5UX1RZ",
+            "UEVfTkVYVVNfT1BFUkFUSU9OX0NBTkNFTF9SRVFVRVNURUQQNkKGAQoYaW8u",
+            "dGVtcG9yYWwuYXBpLmVudW1zLnYxQg5FdmVudFR5cGVQcm90b1ABWiFnby50",
+            "ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFw",
+            "aS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EventType), }, null, null));
@@ -320,11 +327,39 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_WORKFLOW_PROPERTIES_MODIFIED")] WorkflowPropertiesModified = 46,
     /// <summary>
-    /// An update was requested. Note that not all update requests result in this
-    /// event. See UpdateRequestedEventOrigin for situations in which this event
+    /// An update was admitted. Note that not all admitted updates result in this
+    /// event. See UpdateAdmittedEventOrigin for situations in which this event
     /// is created.
     /// </summary>
-    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_REQUESTED")] WorkflowExecutionUpdateRequested = 47,
+    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ADMITTED")] WorkflowExecutionUpdateAdmitted = 47,
+    /// <summary>
+    /// A Nexus operation was scheduled using a ScheduleNexusOperation command.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_SCHEDULED")] NexusOperationScheduled = 48,
+    /// <summary>
+    /// An asynchronous Nexus operation was started by a Nexus handler.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_STARTED")] NexusOperationStarted = 49,
+    /// <summary>
+    /// A Nexus operation completed successfully.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_COMPLETED")] NexusOperationCompleted = 50,
+    /// <summary>
+    /// A Nexus operation failed.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_FAILED")] NexusOperationFailed = 51,
+    /// <summary>
+    /// A Nexus operation completed as canceled.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_CANCELED")] NexusOperationCanceled = 52,
+    /// <summary>
+    /// A Nexus operation timed out.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_TIMED_OUT")] NexusOperationTimedOut = 53,
+    /// <summary>
+    /// A Nexus operation was requested to be canceled using a RequestCancelNexusOperation command.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_CANCEL_REQUESTED")] NexusOperationCancelRequested = 54,
   }
 
   #endregion
