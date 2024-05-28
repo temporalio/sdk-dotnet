@@ -140,7 +140,7 @@ pub enum MetricKind {
     HistogramFloat,
     HistogramDuration,
     GaugeInteger,
-    GaugeFloat
+    GaugeFloat,
 }
 
 pub enum Metric {
@@ -149,7 +149,7 @@ pub enum Metric {
     HistogramFloat(Arc<dyn metrics::HistogramF64>),
     HistogramDuration(Arc<dyn metrics::HistogramDuration>),
     GaugeInteger(Arc<dyn metrics::Gauge>),
-    GaugeFloat(Arc<dyn metrics::GaugeF64>)
+    GaugeFloat(Arc<dyn metrics::GaugeF64>),
 }
 
 #[no_mangle]
@@ -160,10 +160,18 @@ pub extern "C" fn metric_new(
     let meter = unsafe { &*meter };
     let options = unsafe { &*options };
     Box::into_raw(Box::new(match options.kind {
-        MetricKind::CounterInteger => Metric::CounterInteger(meter.core.inner.counter(options.into())),
-        MetricKind::HistogramInteger => Metric::HistogramInteger(meter.core.inner.histogram(options.into())),
-        MetricKind::HistogramFloat => Metric::HistogramFloat(meter.core.inner.histogram_f64(options.into())),
-        MetricKind::HistogramDuration =>Metric::HistogramDuration(meter.core.inner.histogram_duration(options.into())),
+        MetricKind::CounterInteger => {
+            Metric::CounterInteger(meter.core.inner.counter(options.into()))
+        }
+        MetricKind::HistogramInteger => {
+            Metric::HistogramInteger(meter.core.inner.histogram(options.into()))
+        }
+        MetricKind::HistogramFloat => {
+            Metric::HistogramFloat(meter.core.inner.histogram_f64(options.into()))
+        }
+        MetricKind::HistogramDuration => {
+            Metric::HistogramDuration(meter.core.inner.histogram_duration(options.into()))
+        }
         MetricKind::GaugeInteger => Metric::GaugeInteger(meter.core.inner.gauge(options.into())),
         MetricKind::GaugeFloat => Metric::GaugeFloat(meter.core.inner.gauge_f64(options.into())),
     }))
@@ -216,7 +224,9 @@ pub extern "C" fn metric_record_duration(
     let metric = unsafe { &*metric };
     let attrs = unsafe { &*attrs };
     match metric {
-        Metric::HistogramDuration(histogram) => histogram.record(Duration::from_millis(value_ms), &attrs.core),
+        Metric::HistogramDuration(histogram) => {
+            histogram.record(Duration::from_millis(value_ms), &attrs.core)
+        }
         _ => panic!("Not a duration type"),
     }
 }
@@ -247,8 +257,11 @@ type CustomMetricMeterMetricRecordIntegerCallback =
 type CustomMetricMeterMetricRecordFloatCallback =
     unsafe extern "C" fn(metric: *const libc::c_void, value: f64, attributes: *const libc::c_void);
 
-type CustomMetricMeterMetricRecordDurationCallback =
-    unsafe extern "C" fn(metric: *const libc::c_void, value_ms: u64, attributes: *const libc::c_void);
+type CustomMetricMeterMetricRecordDurationCallback = unsafe extern "C" fn(
+    metric: *const libc::c_void,
+    value_ms: u64,
+    attributes: *const libc::c_void,
+);
 
 type CustomMetricMeterAttributesNewCallback = unsafe extern "C" fn(
     append_from: *const libc::c_void,
@@ -333,7 +346,10 @@ impl metrics::CoreMeter for CustomMetricMeterRef {
         Arc::new(self.new_metric(params, MetricKind::HistogramFloat))
     }
 
-    fn histogram_duration(&self, params: metrics::MetricParameters) -> Arc<dyn metrics::HistogramDuration> {
+    fn histogram_duration(
+        &self,
+        params: metrics::MetricParameters,
+    ) -> Arc<dyn metrics::HistogramDuration> {
         Arc::new(self.new_metric(params, MetricKind::HistogramDuration))
     }
 
@@ -418,11 +434,7 @@ impl CustomMetricMeterRef {
         }
     }
 
-    fn new_metric(
-        &self,
-        params: metrics::MetricParameters,
-        kind: MetricKind,
-    ) -> CustomMetric {
+    fn new_metric(&self, params: metrics::MetricParameters, kind: MetricKind) -> CustomMetric {
         unsafe {
             let meter = &*(self.meter_impl.0);
             let metric = (meter.metric_new)(

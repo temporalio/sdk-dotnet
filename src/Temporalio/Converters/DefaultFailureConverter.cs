@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Protobuf.WellKnownTypes;
 using Temporalio.Api.Failure.V1;
 using Temporalio.Exceptions;
 
@@ -155,6 +156,11 @@ namespace Temporalio.Converters
                                 ? null
                                 : new() { Payloads_ = { appDet.Details.Select(conv.ToPayload) } },
                     };
+                    if (appExc.NextRetryDelay != null)
+                    {
+                        failure.ApplicationFailureInfo.NextRetryDelay =
+                            Duration.FromTimeSpan((TimeSpan)appExc.NextRetryDelay);
+                    }
                     break;
                 case CanceledFailureException canExc:
                     var canDet =

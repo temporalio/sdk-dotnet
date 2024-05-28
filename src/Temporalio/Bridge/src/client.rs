@@ -286,6 +286,7 @@ async fn call_workflow_service(
         "DescribeSchedule" => rpc_call!(client, call, describe_schedule),
         "DescribeTaskQueue" => rpc_call!(client, call, describe_task_queue),
         "DescribeWorkflowExecution" => rpc_call!(client, call, describe_workflow_execution),
+        "ExecuteMultiOperation" => rpc_call!(client, call, execute_multi_operation),
         "GetClusterInfo" => rpc_call!(client, call, get_cluster_info),
         "GetSearchAttributes" => rpc_call!(client, call, get_search_attributes),
         "GetSystemInfo" => rpc_call!(client, call, get_system_info),
@@ -295,6 +296,7 @@ async fn call_workflow_service(
         "GetWorkerTaskReachability" => {
             rpc_call!(client, call, get_worker_task_reachability)
         }
+        "GetWorkerVersioningRules" => rpc_call!(client, call, get_worker_versioning_rules),
         "GetWorkflowExecutionHistory" => rpc_call!(client, call, get_workflow_execution_history),
         "GetWorkflowExecutionHistoryReverse" => {
             rpc_call!(client, call, get_workflow_execution_history_reverse)
@@ -312,6 +314,7 @@ async fn call_workflow_service(
         "ListWorkflowExecutions" => rpc_call!(client, call, list_workflow_executions),
         "PatchSchedule" => rpc_call!(client, call, patch_schedule),
         "PollActivityTaskQueue" => rpc_call!(client, call, poll_activity_task_queue),
+        "PollNexusTaskQueue" => rpc_call!(client, call, poll_nexus_task_queue),
         "PollWorkflowExecutionUpdate" => rpc_call!(client, call, poll_workflow_execution_update),
         "PollWorkflowTaskQueue" => rpc_call!(client, call, poll_workflow_task_queue),
         "QueryWorkflow" => rpc_call!(client, call, query_workflow),
@@ -337,6 +340,8 @@ async fn call_workflow_service(
         "RespondActivityTaskFailedById" => {
             rpc_call!(client, call, respond_activity_task_failed_by_id)
         }
+        "RespondNexusTaskCompleted" => rpc_call!(client, call, respond_nexus_task_completed),
+        "RespondNexusTaskFailed" => rpc_call!(client, call, respond_nexus_task_failed),
         "RespondQueryTaskCompleted" => rpc_call!(client, call, respond_query_task_completed),
         "RespondWorkflowTaskCompleted" => rpc_call!(client, call, respond_workflow_task_completed),
         "RespondWorkflowTaskFailed" => rpc_call!(client, call, respond_workflow_task_failed),
@@ -351,6 +356,7 @@ async fn call_workflow_service(
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
         "UpdateNamespace" => rpc_call!(client, call, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
+        "UpdateWorkerVersioningRules" => rpc_call!(client, call, update_worker_versioning_rules),
         "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
         "UpdateWorkerBuildIdCompatibility" => {
             rpc_call!(client, call, update_worker_build_id_compatibility)
@@ -368,12 +374,17 @@ async fn call_operator_service(
     match rpc {
         "AddOrUpdateRemoteCluster" => rpc_call!(client, call, add_or_update_remote_cluster),
         "AddSearchAttributes" => rpc_call!(client, call, add_search_attributes),
+        "CreateNexusEndpoint" => rpc_call!(client, call, create_nexus_endpoint),
         "DeleteNamespace" => rpc_call!(client, call, delete_namespace),
+        "DeleteNexusEndpoint" => rpc_call!(client, call, delete_nexus_endpoint),
         "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
+        "GetNexusEndpoint" => rpc_call!(client, call, get_nexus_endpoint),
         "ListClusters" => rpc_call!(client, call, list_clusters),
+        "ListNexusEndpoints" => rpc_call!(client, call, list_nexus_endpoints),
         "ListSearchAttributes" => rpc_call!(client, call, list_search_attributes),
         "RemoveRemoteCluster" => rpc_call!(client, call, remove_remote_cluster),
         "RemoveSearchAttributes" => rpc_call!(client, call, remove_search_attributes),
+        "UpdateNexusEndpoint" => rpc_call!(client, call, update_nexus_endpoint),
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }
 }

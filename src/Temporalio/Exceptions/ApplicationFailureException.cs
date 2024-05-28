@@ -24,16 +24,19 @@ namespace Temporalio.Exceptions
         /// <param name="errorType">Optional string type name of the exception.</param>
         /// <param name="nonRetryable">If true, marks the exception as non-retryable.</param>
         /// <param name="details">Collection of details to serialize into the exception.</param>
+        /// <param name="nextRetryDelay">Override the next retry delay with this value.</param>
         public ApplicationFailureException(
             string message,
             string? errorType = null,
             bool nonRetryable = false,
-            IReadOnlyCollection<object?>? details = null)
+            IReadOnlyCollection<object?>? details = null,
+            TimeSpan? nextRetryDelay = null)
             : base(message)
         {
             ErrorType = errorType;
             NonRetryable = nonRetryable;
             Details = new OutboundFailureDetails(details ?? Array.Empty<object?>());
+            NextRetryDelay = nextRetryDelay;
         }
 
         /// <summary>
@@ -46,17 +49,20 @@ namespace Temporalio.Exceptions
         /// <param name="errorType">Optional string type name of the exception.</param>
         /// <param name="nonRetryable">If true, marks the exception as non-retryable.</param>
         /// <param name="details">Collection of details to serialize into the exception.</param>
+        /// <param name="nextRetryDelay">Override the next retry delay with this value.</param>
         public ApplicationFailureException(
             string message,
             Exception? inner,
             string? errorType = null,
             bool nonRetryable = false,
-            IReadOnlyCollection<object?>? details = null)
+            IReadOnlyCollection<object?>? details = null,
+            TimeSpan? nextRetryDelay = null)
             : base(message, inner)
         {
             ErrorType = errorType;
             NonRetryable = nonRetryable;
             Details = new OutboundFailureDetails(details);
+            NextRetryDelay = nextRetryDelay;
         }
 
         /// <summary>
@@ -77,6 +83,7 @@ namespace Temporalio.Exceptions
             ErrorType = info.Type.Length == 0 ? null : info.Type;
             NonRetryable = info.NonRetryable;
             Details = new InboundFailureDetails(converter, info.Details?.Payloads_);
+            NextRetryDelay = info.NextRetryDelay?.ToTimeSpan();
         }
 
         /// <summary>
@@ -97,5 +104,10 @@ namespace Temporalio.Exceptions
         /// <see cref="InboundFailureDetails" /> for server-serialized exceptions.
         /// </remarks>
         public IFailureDetails Details { get; protected init; }
+
+        /// <summary>
+        /// Gets the next retry delay override if any was set.
+        /// </summary>
+        public TimeSpan? NextRetryDelay { get; protected init; }
     }
 }
