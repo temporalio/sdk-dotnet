@@ -169,6 +169,12 @@ namespace Temporalio.Extensions.OpenTelemetry
             return ret;
         }
 
+        private static void RecordExceptionWithStatus(Activity? activity, Exception exception)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
+            activity?.RecordException(exception);
+        }
+
         private sealed class ClientOutbound : ClientOutboundInterceptor
         {
             private readonly TracingInterceptor root;
@@ -370,7 +376,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                         }
                         catch (Exception e)
                         {
-                            activity.Activity?.RecordExceptionWithStatus(e);
+                            RecordExceptionWithStatus(activity.Activity, e);
                             throw;
                         }
                     }
@@ -406,7 +412,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                         }
                         catch (Exception e)
                         {
-                            activity.Activity?.RecordExceptionWithStatus(e);
+                            RecordExceptionWithStatus(activity.Activity, e);
                             throw;
                         }
                     }
@@ -447,7 +453,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                                 "CompleteUpdate" : "WorkflowTaskFailure";
                             WorkflowsSource.TrackWorkflowDiagnosticActivity(
                                 name: $"{namePrefix}:{input.Update}",
-                                updateActivity: act => act.RecordExceptionWithStatus(e)).
+                                updateActivity: act => RecordExceptionWithStatus(act, e)).
                                 Dispose();
                             throw;
                         }
@@ -474,7 +480,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                     "CompleteWorkflow" : "WorkflowTaskFailure";
                 WorkflowsSource.TrackWorkflowDiagnosticActivity(
                     name: $"{namePrefix}:{Workflow.Info.WorkflowType}",
-                    updateActivity: act => act.RecordExceptionWithStatus(e)).
+                    updateActivity: act => RecordExceptionWithStatus(act, e)).
                     Dispose();
             }
 
@@ -593,7 +599,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                         }
                         catch (Exception e)
                         {
-                            activity?.RecordExceptionWithStatus(e);
+                            RecordExceptionWithStatus(activity, e);
                             throw;
                         }
                     }
