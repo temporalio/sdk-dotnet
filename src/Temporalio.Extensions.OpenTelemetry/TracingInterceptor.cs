@@ -474,7 +474,11 @@ namespace Temporalio.Extensions.OpenTelemetry
                     "CompleteWorkflow" : "WorkflowTaskFailure";
                 WorkflowsSource.TrackWorkflowDiagnosticActivity(
                     name: $"{namePrefix}:{Workflow.Info.WorkflowType}",
-                    updateActivity: act => act.RecordException(e)).
+                    updateActivity: act =>
+                    {
+                        act.SetStatus(ActivityStatusCode.Error, e.Message);
+                        act.RecordException(e);
+                    }).
                     Dispose();
             }
 
