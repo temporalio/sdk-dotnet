@@ -370,7 +370,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                         }
                         catch (Exception e)
                         {
-                            activity.Activity?.RecordException(e);
+                            activity.Activity?.RecordExceptionWithStatus(e);
                             throw;
                         }
                     }
@@ -406,7 +406,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                         }
                         catch (Exception e)
                         {
-                            activity.Activity?.RecordException(e);
+                            activity.Activity?.RecordExceptionWithStatus(e);
                             throw;
                         }
                     }
@@ -447,7 +447,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                                 "CompleteUpdate" : "WorkflowTaskFailure";
                             WorkflowsSource.TrackWorkflowDiagnosticActivity(
                                 name: $"{namePrefix}:{input.Update}",
-                                updateActivity: act => act.RecordException(e)).
+                                updateActivity: act => act.RecordExceptionWithStatus(e)).
                                 Dispose();
                             throw;
                         }
@@ -474,11 +474,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                     "CompleteWorkflow" : "WorkflowTaskFailure";
                 WorkflowsSource.TrackWorkflowDiagnosticActivity(
                     name: $"{namePrefix}:{Workflow.Info.WorkflowType}",
-                    updateActivity: act =>
-                    {
-                        act.SetStatus(ActivityStatusCode.Error, e.Message);
-                        act.RecordException(e);
-                    }).
+                    updateActivity: act => act.RecordExceptionWithStatus(e)).
                     Dispose();
             }
 
@@ -597,7 +593,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                         }
                         catch (Exception e)
                         {
-                            activity.RecordException(e);
+                            activity?.RecordExceptionWithStatus(e);
                             throw;
                         }
                     }
