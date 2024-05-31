@@ -67,6 +67,11 @@ namespace Temporalio.Worker
                 WorkflowTracingEventListener.Instance.Register();
             }
 
+            if (Options.WorkerClientUpdater != null)
+            {
+                Options.WorkerClientUpdater.OnWorkerClientUpdated += OnWorkerClientUpdated;
+            }
+
             // Create workers
             if (options.Activities.Count > 0)
             {
@@ -108,7 +113,7 @@ namespace Temporalio.Worker
         /// </summary>
         /// <remarks>
         /// When this property is set, it actually replaces the underlying client that is being used
-        /// by the worker. This means the next calls by the worker to Temporal (e.g. responding
+        /// by the worker. This means subsequent calls by the worker to Temporal (e.g. responding
         /// task completion, activity heartbeat, etc) will be on this new client, but outstanding
         /// calls will not be immediately interrupted.
         /// </remarks>
@@ -246,6 +251,16 @@ namespace Temporalio.Worker
         }
 
         /// <summary>
+        /// Callback invoked when a worker client updated is pushed through the <see cref="IWorkerClientUpdater"/>.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="eventArgs">The <see cref="WorkerClientUpdatedEventArgs"/> of the event.</param>
+        internal void OnWorkerClientUpdated(object? sender, WorkerClientUpdatedEventArgs eventArgs)
+        {
+            Client = eventArgs.WorkerClient;
+        }
+
+        /// <summary>
         /// Dispose the worker.
         /// </summary>
         /// <param name="disposing">Whether disposing.</param>
@@ -253,8 +268,14 @@ namespace Temporalio.Worker
         {
             if (disposing)
             {
+                if (Options.WorkerClientUpdater != null)
+                {
+                    Options.WorkerClientUpdater.OnWorkerClientUpdated -= OnWorkerClientUpdated;
+                }
+
                 activityWorker?.Dispose();
                 BridgeWorker.Dispose();
+
                 // Remove task tracing if not disabled and there are workflows present
                 if (workflowTracingEventListenerEnabled)
                 {

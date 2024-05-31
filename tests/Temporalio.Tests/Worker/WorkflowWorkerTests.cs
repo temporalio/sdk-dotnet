@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
-using Temporalio.Api.History.V1;
 using Temporalio.Client;
 using Temporalio.Client.Schedules;
 using Temporalio.Common;
@@ -787,7 +786,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     }
                     else
                     {
-                        await AssertStartedEventuallyAsync(handle);
+                        await handle.AssertStartedEventuallyAsync();
                     }
                     await handle.CancelAsync();
                     var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
@@ -832,7 +831,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     }
                     else
                     {
-                        await AssertStartedEventuallyAsync(handle);
+                        await handle.AssertStartedEventuallyAsync();
                     }
                     await handle.CancelAsync();
                     Assert.Equal("done", await handle.GetResultAsync());
@@ -1277,7 +1276,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (WaitConditionWorkflow wf) => wf.RunAsync(Timeout.Infinite),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             // Confirm query says it's running
-            await AssertStartedEventuallyAsync(handle);
+            await handle.AssertStartedEventuallyAsync();
             // Cancel workflow and confirm it does
             await handle.CancelAsync();
             var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
@@ -2364,13 +2363,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var otherHandle = await Env.Client.StartWorkflowAsync(
                     (ExternalWorkflow.OtherWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                await AssertStartedEventuallyAsync(otherHandle);
+                await otherHandle.AssertStartedEventuallyAsync();
 
                 // Start primary workflow
                 var handle = await Env.Client.StartWorkflowAsync(
                     (ExternalWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                await AssertStartedEventuallyAsync(handle);
+                await handle.AssertStartedEventuallyAsync();
 
                 // Send a signal and confirm received
                 await handle.SignalAsync(wf => wf.SignalExternalAsync(otherHandle.Id));
@@ -2718,7 +2717,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await client.StartWorkflowAsync(
                     (HeadersWithCodecWorkflow wf) => wf.RunAsync(HeadersWithCodecWorkflow.Kind.Normal),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                await AssertChildStartedEventuallyAsync(handle);
+                await handle.AssertChildStartedEventuallyAsync();
                 await handle.QueryAsync(wf => wf.Query());
                 await handle.ExecuteUpdateAsync(wf => wf.UpdateAsync("foo"));
                 await handle.SignalAsync(wf => wf.SignalAsync(true));
@@ -3137,7 +3136,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
 
                 // Wait for timer start to appear in history
-                await AssertHasEventEventuallyAsync(handle, e => e.TimerStartedEventAttributes != null);
+                await handle.AssertHasEventEventuallyAsync(e => e.TimerStartedEventAttributes != null);
 
                 // Confirm events
                 Assert.Single(startingEvents);
@@ -4438,7 +4437,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         async worker =>
         {
             // Confirm the first ticking workflow has completed a task but not the second workflow
-            await AssertHasEventEventuallyAsync(handle1, e => e.WorkflowTaskCompletedEventAttributes != null);
+            await handle1.AssertHasEventEventuallyAsync(e => e.WorkflowTaskCompletedEventAttributes != null);
             await foreach (var evt in handle2.FetchHistoryEventsAsync())
             {
                 Assert.Null(evt.WorkflowTaskCompletedEventAttributes);
@@ -4449,7 +4448,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             worker.Client = otherEnv.Client;
 
             // Now confirm the other workflow has started
-            await AssertHasEventEventuallyAsync(handle1, e => e.WorkflowTaskCompletedEventAttributes != null);
+            await handle2.AssertHasEventEventuallyAsync(e => e.WorkflowTaskCompletedEventAttributes != null);
 
             // Terminate both
             await handle1.TerminateAsync();
@@ -4459,6 +4458,58 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             MaxCachedWorkflows = 0,
             MaxConcurrentWorkflowTaskPolls = 1,
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_WorkerClientReplacement_UsingWorkerClientUpdater_UsesNewClient()
+    {
+        // We are going to start a second ephemeral server and then replace the client. So we will
+        // start a no-cache ticking workflow with the current client and confirm it has accomplished
+        // at least one task. Then we will start another on the other client, and confirm it gets
+        // started too. Then we will terminate both. We have to use a ticking workflow with only one
+        // poller to force a quick re-poll to recognize our client change quickly (as opposed to
+        // just waiting the minute for poll timeout).
+        await using var otherEnv = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync();
+
+        // Start both workflows on different servers
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var handle1 = await Client.StartWorkflowAsync(
+            (TickingWorkflow wf) => wf.RunAsync(),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
+        var handle2 = await otherEnv.Client.StartWorkflowAsync(
+            (TickingWorkflow wf) => wf.RunAsync(),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
+
+        WorkerClientUpdater workerClientUpdater = new WorkerClientUpdater();
+
+        // Run the worker on the first env
+        await ExecuteWorkerAsync<TickingWorkflow>(
+        async worker =>
+        {
+            // Confirm the first ticking workflow has completed a task but not the second workflow
+            await handle1.AssertHasEventEventuallyAsync(e => e.WorkflowTaskCompletedEventAttributes != null);
+            await foreach (var evt in handle2.FetchHistoryEventsAsync())
+            {
+                Assert.Null(evt.WorkflowTaskCompletedEventAttributes);
+            }
+
+            // Now replace the client through the workflow client updater, which should be used fairly quickly because we should have
+            // timer-done poll completions every 100ms
+            workerClientUpdater.UpdateWorkerClient(otherEnv.Client);
+
+            // Now confirm the other workflow has started
+            await handle1.AssertHasEventEventuallyAsync(e => e.WorkflowTaskCompletedEventAttributes != null);
+
+            // Terminate both
+            await handle1.TerminateAsync();
+            await handle2.TerminateAsync();
+        },
+        new(taskQueue)
+        {
+            MaxCachedWorkflows = 0,
+            MaxConcurrentWorkflowTaskPolls = 1,
+            WorkerClientUpdater = workerClientUpdater,
         });
     }
 
@@ -4546,8 +4597,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
-        return AssertTaskFailureEventuallyAsync(
-            handle, attrs => Assert.Contains(messageContains, attrs.Failure?.Message));
+        return handle.AssertTaskFailureEventuallyAsync(
+            attrs => Assert.Contains(messageContains, attrs.Failure?.Message));
     }
 
     private async Task ExecuteWorkerAsync<TWf>(
@@ -4577,62 +4628,5 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
         using var worker = new TemporalWorker(client ?? Client, options);
         return await worker.ExecuteAsync(() => action(worker));
-    }
-
-    private static Task AssertTaskFailureEventuallyAsync(
-        WorkflowHandle handle, Action<WorkflowTaskFailedEventAttributes> assert)
-    {
-        return AssertMore.EventuallyAsync(async () =>
-        {
-            WorkflowTaskFailedEventAttributes? attrs = null;
-            await foreach (var evt in handle.FetchHistoryEventsAsync())
-            {
-                if (evt.WorkflowTaskFailedEventAttributes != null)
-                {
-                    attrs = evt.WorkflowTaskFailedEventAttributes;
-                }
-            }
-            Assert.NotNull(attrs);
-            assert(attrs!);
-        });
-    }
-
-    private static Task AssertStartedEventuallyAsync(WorkflowHandle handle)
-    {
-        return AssertHasEventEventuallyAsync(
-            handle, e => e.WorkflowExecutionStartedEventAttributes != null);
-    }
-
-    private static async Task AssertChildStartedEventuallyAsync(WorkflowHandle handle)
-    {
-        // Wait for started
-        string? childId = null;
-        await AssertHasEventEventuallyAsync(
-            handle,
-            e =>
-            {
-                childId = e.ChildWorkflowExecutionStartedEventAttributes?.WorkflowExecution?.WorkflowId;
-                return childId != null;
-            });
-        // Check that a workflow task has completed proving child has really started
-        await AssertHasEventEventuallyAsync(
-            handle.Client.GetWorkflowHandle(childId!),
-            e => e.WorkflowTaskCompletedEventAttributes != null);
-    }
-
-    private static Task AssertHasEventEventuallyAsync(
-        WorkflowHandle handle, Func<HistoryEvent, bool> predicate)
-    {
-        return AssertMore.EventuallyAsync(async () =>
-        {
-            await foreach (var evt in handle.FetchHistoryEventsAsync())
-            {
-                if (predicate(evt))
-                {
-                    return;
-                }
-            }
-            Assert.Fail("Event not found");
-        });
     }
 }
