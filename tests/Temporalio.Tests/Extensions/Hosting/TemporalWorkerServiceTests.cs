@@ -268,7 +268,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         workerClientUpdater.UpdateWorkerClient(otherEnv.Client);
 
         // Now confirm the other workflow has started
-        await handle1.AssertHasEventEventuallyAsync(e => e.WorkflowTaskCompletedEventAttributes != null);
+        await handle2.AssertHasEventEventuallyAsync(e => e.WorkflowTaskCompletedEventAttributes != null);
 
         // Terminate both
         await handle1.TerminateAsync();
