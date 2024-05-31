@@ -214,10 +214,10 @@ static string GenerateServiceRPCSource(
         code += "\n        /// <param name=\"options\">Optional RPC options.</param>";
         code += "\n        /// <returns>RPC response</returns>";
         code +=
-            $"\n        public async Task<{resp}> {call}Async({req} req, RpcOptions? options = null)\n";
+            $"\n        public Task<{resp}> {call}Async({req} req, RpcOptions? options = null)\n";
         code += "        {\n";
         code +=
-            $"            return await InvokeRpcAsync(\"{call}\", req, {resp}.Parser, options);\n";
+            $"            return InvokeRpcAsync(\"{call}\", req, {resp}.Parser, options);\n";
         code += "        }\n";
     }
     code += "    }\n}";

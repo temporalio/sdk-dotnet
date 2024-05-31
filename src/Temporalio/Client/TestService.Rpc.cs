@@ -15,9 +15,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetCurrentTimeResponse> GetCurrentTimeAsync(Google.Protobuf.WellKnownTypes.Empty req, RpcOptions? options = null)
+        public Task<GetCurrentTimeResponse> GetCurrentTimeAsync(Google.Protobuf.WellKnownTypes.Empty req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetCurrentTime", req, GetCurrentTimeResponse.Parser, options);
+            return InvokeRpcAsync("GetCurrentTime", req, GetCurrentTimeResponse.Parser, options);
         }
 
         /// <summary>
@@ -26,9 +26,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<LockTimeSkippingResponse> LockTimeSkippingAsync(LockTimeSkippingRequest req, RpcOptions? options = null)
+        public Task<LockTimeSkippingResponse> LockTimeSkippingAsync(LockTimeSkippingRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("LockTimeSkipping", req, LockTimeSkippingResponse.Parser, options);
+            return InvokeRpcAsync("LockTimeSkipping", req, LockTimeSkippingResponse.Parser, options);
         }
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<SleepResponse> SleepAsync(SleepRequest req, RpcOptions? options = null)
+        public Task<SleepResponse> SleepAsync(SleepRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("Sleep", req, SleepResponse.Parser, options);
+            return InvokeRpcAsync("Sleep", req, SleepResponse.Parser, options);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<SleepResponse> SleepUntilAsync(SleepUntilRequest req, RpcOptions? options = null)
+        public Task<SleepResponse> SleepUntilAsync(SleepUntilRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("SleepUntil", req, SleepResponse.Parser, options);
+            return InvokeRpcAsync("SleepUntil", req, SleepResponse.Parser, options);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UnlockTimeSkippingResponse> UnlockTimeSkippingAsync(UnlockTimeSkippingRequest req, RpcOptions? options = null)
+        public Task<UnlockTimeSkippingResponse> UnlockTimeSkippingAsync(UnlockTimeSkippingRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UnlockTimeSkipping", req, UnlockTimeSkippingResponse.Parser, options);
+            return InvokeRpcAsync("UnlockTimeSkipping", req, UnlockTimeSkippingResponse.Parser, options);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<SleepResponse> UnlockTimeSkippingWithSleepAsync(SleepRequest req, RpcOptions? options = null)
+        public Task<SleepResponse> UnlockTimeSkippingWithSleepAsync(SleepRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UnlockTimeSkippingWithSleep", req, SleepResponse.Parser, options);
+            return InvokeRpcAsync("UnlockTimeSkippingWithSleep", req, SleepResponse.Parser, options);
         }
     }
 }
