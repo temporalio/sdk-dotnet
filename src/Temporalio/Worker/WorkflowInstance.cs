@@ -651,63 +651,48 @@ namespace Temporalio.Worker
             while (scheduledTasks.Count > 0)
             {
                 // Run all tasks until empty
-                RunAllTasks();
+                while (scheduledTasks.Count > 0)
+                {
+                    // Pop last
+                    var task = scheduledTasks.Last!.Value;
+                    scheduledTasks.RemoveLast();
+                    scheduledTaskNodes.Remove(task);
 
-                // If there are any conditions, run the condition-check as a task. This is a task
-                // instead of just run inline because it needs to be in the workflow context (i.e.
-                // current task scheduler) so the `Workflow` methods work properly. However, we make
-                // sure that we only run this task because we want the loop to continue with other
-                // scheduled tasks that the conditions caused to wake up. An original, naive form of
-                // this ran all tasks including conditions, but that didn't allow conditions that
-                // depended on each other to properly re-schedule earlier conditions.
+                    // This should never return false
+                    if (!TryExecuteTask(task))
+                    {
+                        logger.LogWarning("Task unexpectedly was unable to execute");
+                    }
+                    if (currentActivationException != null)
+                    {
+                        ExceptionDispatchInfo.Capture(currentActivationException).Throw();
+                    }
+                }
+
+                // Check conditions. It would be nice if we could run this in the task scheduler
+                // because then users could have access to the `Workflow` context in the condition
+                // callback. However, this cannot be done because even just running one task in the
+                // scheduler causes .NET to add more tasks to the scheduler. And you don't want to
+                // "run until empty" with the condition, because conditions may need to be retried
+                // based on each other. This sounds confusing but basically: can't run check
+                // conditions in the task scheduler comfortably but still need to access the static
+                // Workflow class, hence the context override.
                 if (checkConditions && conditions.Count > 0)
                 {
-                    _ = QueueNewTaskAsync(CheckConditionsAsync);
-                    RunAllTasks(singleTaskOnly: true);
+                    Workflow.OverrideContext.Value = this;
+                    try
+                    {
+                        foreach (var source in conditions.Where(t => t.Item1()).Select(t => t.Item2))
+                        {
+                            source.TrySetResult(null);
+                        }
+                    }
+                    finally
+                    {
+                        Workflow.OverrideContext.Value = null;
+                    }
                 }
             }
-        }
-
-        private void RunAllTasks(bool singleTaskOnly = false)
-        {
-            while (scheduledTasks.Count > 0)
-            {
-                // Pop last
-                var task = scheduledTasks.Last!.Value;
-                scheduledTasks.RemoveLast();
-                scheduledTaskNodes.Remove(task);
-
-                // This should never return false
-                if (!TryExecuteTask(task))
-                {
-                    logger.LogWarning("Task unexpectedly was unable to execute");
-                }
-                if (currentActivationException != null)
-                {
-                    ExceptionDispatchInfo.Capture(currentActivationException).Throw();
-                }
-                // We return on single-task-only regardless of whether there are more tasks
-                if (singleTaskOnly)
-                {
-                    return;
-                }
-            }
-        }
-
-        private Task CheckConditionsAsync()
-        {
-            try
-            {
-                foreach (var source in conditions.Where(t => t.Item1()).Select(t => t.Item2))
-                {
-                    source.TrySetResult(null);
-                }
-            }
-            catch (Exception e)
-            {
-                currentActivationException = e;
-            }
-            return Task.CompletedTask;
         }
 
         private void AddCommand(WorkflowCommand cmd)

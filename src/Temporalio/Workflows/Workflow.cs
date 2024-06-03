@@ -196,8 +196,19 @@ namespace Temporalio.Workflows
         /// </remarks>
         public static DateTime UtcNow => Context.UtcNow;
 
+        /// <summary>
+        /// Gets an async local to override the context.
+        /// </summary>
+        /// <remarks>
+        /// This was only made available so WaitConditionAsync callbacks could have access to the
+        /// workflow context without running inside the task scheduler.
+        /// </remarks>
+        internal static AsyncLocal<IWorkflowContext?> OverrideContext { get; } = new();
+
         private static IWorkflowContext Context =>
-            TaskScheduler.Current as IWorkflowContext ?? throw new InvalidOperationException("Not in workflow");
+            TaskScheduler.Current as IWorkflowContext ??
+            OverrideContext.Value ??
+            throw new InvalidOperationException("Not in workflow");
 
         /// <summary>
         /// Create an exception via lambda invoking the run method that, when thrown out of the
