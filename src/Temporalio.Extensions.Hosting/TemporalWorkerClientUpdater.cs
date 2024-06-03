@@ -10,39 +10,39 @@ namespace Temporalio.Extensions.Hosting
     {
         private readonly object clientLock = new();
 
-        /// <summary>
-        /// The <see cref="EventHandler"/> used to dispatch notifications to subscribers that the Temporal worker client was updated.
-        /// </summary>
-        public event EventHandler<TemporalWorkerClientUpdatedEventArgs> TemporalWorkerClientUpdated
-        {
-            add
-            {
-                lock (clientLock)
-                {
-                    TemporalWorkerClientUpdatedEvent += value;
-                }
-            }
-
-            remove
-            {
-                lock (clientLock)
-                {
-                    TemporalWorkerClientUpdatedEvent -= value;
-                }
-            }
-        }
-
-        private event EventHandler<TemporalWorkerClientUpdatedEventArgs>? TemporalWorkerClientUpdatedEvent;
+        private event EventHandler<IWorkerClient>? OnClientUpdatedEvent;
 
         /// <summary>
         /// Dispatches a notification to all subscribers that a new worker client should be used.
         /// </summary>
         /// <param name="client">The new <see cref="IWorkerClient"/> that should be pushed out to all subscribing workers.</param>
-        public void UpdateTemporalWorkerClient(IWorkerClient client)
+        public void UpdateClient(IWorkerClient client)
         {
-            TemporalWorkerClientUpdatedEventArgs eventArgs = new TemporalWorkerClientUpdatedEventArgs(client);
+            OnClientUpdatedEvent?.Invoke(this, client);
+        }
 
-            TemporalWorkerClientUpdatedEvent?.Invoke(this, eventArgs);
+        /// <summary>
+        /// Adds a new subscriber that will be notified when a new worker client should be used.
+        /// </summary>
+        /// <param name="eventHandler">The event handler to add to the event listeners.</param>
+        internal void Subscribe(EventHandler<IWorkerClient> eventHandler)
+        {
+            lock (clientLock)
+            {
+                OnClientUpdatedEvent += eventHandler;
+            }
+        }
+
+        /// <summary>
+        /// Removes an existing subscriber from receiving notifications when a new worker client should be used.
+        /// </summary>
+        /// <param name="eventHandler">The event handler to remove from the event listeners.</param>
+        internal void Unsubscribe(EventHandler<IWorkerClient> eventHandler)
+        {
+            lock (clientLock)
+            {
+                OnClientUpdatedEvent -= eventHandler;
+            }
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Temporalio.Tests
 
         public static Task HasEventEventuallyAsync(WorkflowHandle handle, Func<HistoryEvent, bool> predicate)
         {
-            return AssertMore.EventuallyAsync(async () =>
+            return EventuallyAsync(async () =>
             {
                 await foreach (var evt in handle.FetchHistoryEventsAsync())
                 {

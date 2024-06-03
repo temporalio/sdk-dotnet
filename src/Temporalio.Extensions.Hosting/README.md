@@ -139,7 +139,7 @@ TemporalClientConnectOptions clientConnectOptions = new("my-other-temporal-host:
 
 ITemporalClient updatedClient = await TemporalClient.ConnectAsync(clientConnectOptions).ConfigureAwait(false);
 
-workerClientUpdater.UpdateTemporalWorkerClient(updatedClient);
+workerClientUpdater.UpdateClient(updatedClient);
 
 // Make sure you use RunAsync and not Run, see https://github.com/temporalio/sdk-dotnet/issues/220
 await host.RunAsync();

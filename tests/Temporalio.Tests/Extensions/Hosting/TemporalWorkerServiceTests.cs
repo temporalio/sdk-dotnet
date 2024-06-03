@@ -1,5 +1,3 @@
-using Temporalio.Tests.Worker;
-
 #pragma warning disable SA1201, SA1204 // We want to have classes near their tests
 namespace Temporalio.Tests.Extensions.Hosting;
 
@@ -210,6 +208,20 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             result);
     }
 
+    [Workflow]
+    public class TickingWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Just tick every 100ms for 10s
+            for (var i = 0; i < 100; i++)
+            {
+                await Workflow.DelayAsync(100);
+            }
+        }
+    }
+
     [Fact]
     public async Task TemporalWorkerService_WorkerClientReplacement_UsesNewClient()
     {
@@ -224,10 +236,10 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // Start both workflows on different servers
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var handle1 = await Client.StartWorkflowAsync(
-            (WorkflowWorkerTests.TickingWorkflow wf) => wf.RunAsync(),
+            (TickingWorkflow wf) => wf.RunAsync(),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
         var handle2 = await otherEnv.Client.StartWorkflowAsync(
-            (WorkflowWorkerTests.TickingWorkflow wf) => wf.RunAsync(),
+            (TickingWorkflow wf) => wf.RunAsync(),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
 
         var bld = Host.CreateApplicationBuilder();
@@ -241,7 +253,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         bld.Services.
             AddSingleton(Client).
             AddHostedTemporalWorker(taskQueue).
-            AddWorkflow<WorkflowWorkerTests.TickingWorkflow>()
+            AddWorkflow<TickingWorkflow>()
             .ConfigureOptions()
             .Configure<TemporalWorkerClientUpdater>((options, updater) =>
             {
@@ -264,7 +276,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
 
         // Now replace the client, which should be used fairly quickly because we should have
         // timer-done poll completions every 100ms
-        workerClientUpdater.UpdateTemporalWorkerClient(otherEnv.Client);
+        workerClientUpdater.UpdateClient(otherEnv.Client);
 
         // Now confirm the other workflow has started
         await AssertMore.HasEventEventuallyAsync(handle2, e => e.WorkflowTaskCompletedEventAttributes != null);

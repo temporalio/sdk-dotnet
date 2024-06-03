@@ -46,11 +46,6 @@ namespace Temporalio.Extensions.Hosting
                 options.ClientOptions = (TemporalClientConnectOptions)ClientOptions.Clone();
             }
 
-            if (WorkerClientUpdater != null)
-            {
-                options.WorkerClientUpdater = WorkerClientUpdater;
-            }
-
             return options;
         }
 

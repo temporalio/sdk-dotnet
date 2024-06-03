@@ -15,7 +15,7 @@ namespace Temporalio.Extensions.Hosting
     /// </summary>
     public class TemporalWorkerService : BackgroundService
     {
-        // These two are mutually exclusive
+        // These two (newClientOptions and existingClient) are mutually exclusive
         private readonly TemporalClientConnectOptions? newClientOptions;
         private readonly ITemporalClient? existingClient;
         private readonly TemporalWorkerOptions workerOptions;
@@ -31,8 +31,11 @@ namespace Temporalio.Extensions.Hosting
         /// <param name="options">Options to use to create the worker service.</param>
         public TemporalWorkerService(TemporalWorkerServiceOptions options)
         {
-            newClientOptions = options.ClientOptions ?? throw new ArgumentException(
-                "Client options is required", nameof(options));
+            if (options.ClientOptions == null)
+            {
+                throw new ArgumentException("Client options is required", nameof(options));
+            }
+
             workerOptions = options;
         }
 
@@ -175,9 +178,19 @@ namespace Temporalio.Extensions.Hosting
 
             if (workerClientUpdater != null)
             {
-                using (new TemporalWorkerClientUpdateSubscriber(workerClientUpdater, worker))
+                void SubscribeToClientUpdates(object? sender, IWorkerClient updatedClient)
                 {
+                    worker!.Client = updatedClient;
+                }
+
+                try
+                {
+                    workerClientUpdater.Subscribe(SubscribeToClientUpdates);
                     await worker.ExecuteAsync(stoppingToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    workerClientUpdater.Unsubscribe(SubscribeToClientUpdates);
                 }
             }
             else
