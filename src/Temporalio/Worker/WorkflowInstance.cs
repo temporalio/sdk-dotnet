@@ -653,19 +653,22 @@ namespace Temporalio.Worker
                 // Run all tasks until empty
                 RunAllTasks();
 
-                // If there are any conditions, schedule a new condition-check task and the run all
-                // tasks again. This is a scheduled task instead of just run inline because it needs
-                // to be in the workflow context (i.e. current task scheduler) so the `Workflow`
-                // methods work properly.
+                // If there are any conditions, run the condition-check as a task. This is a task
+                // instead of just run inline because it needs to be in the workflow context (i.e.
+                // current task scheduler) so the `Workflow` methods work properly. However, we make
+                // sure that we only run this task because we want the loop to continue with other
+                // scheduled tasks that the conditions caused to wake up. An original, naive form of
+                // this ran all tasks including conditions, but that didn't allow conditions that
+                // depended on each other to properly re-schedule earlier conditions.
                 if (checkConditions && conditions.Count > 0)
                 {
                     _ = QueueNewTaskAsync(CheckConditionsAsync);
-                    RunAllTasks();
+                    RunAllTasks(singleTaskOnly: true);
                 }
             }
         }
 
-        private void RunAllTasks()
+        private void RunAllTasks(bool singleTaskOnly = false)
         {
             while (scheduledTasks.Count > 0)
             {
@@ -682,6 +685,11 @@ namespace Temporalio.Worker
                 if (currentActivationException != null)
                 {
                     ExceptionDispatchInfo.Capture(currentActivationException).Throw();
+                }
+                // We return on single-task-only regardless of whether there are more tasks
+                if (singleTaskOnly)
+                {
+                    return;
                 }
             }
         }
