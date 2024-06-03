@@ -113,7 +113,7 @@ using Temporalio.Extensions.Hosting;
 var builder = Host.CreateApplicationBuilder(args);
 
 // Register a worker client updater.
-builder.Services.AddSingleton<IWorkerClientUpdater, WorkerClientUpdater>();
+builder.Services.AddSingleton<TemporalWorkerClientUpdater>();
 
 // Add a hosted Temporal worker which returns a builder to add activities and workflows, along with the worker client updater.
 builder.Services.
@@ -124,12 +124,12 @@ builder.Services.
     AddScopedActivities<MyActivityClass>().
     AddWorkflow<MyWorkflow>().
     ConfigureOptions().
-    Configure<IWorkerClientUpdater>((options, workerClientUpdater) => options.WorkerClientUpdater = workerClientUpdater);
+    Configure<TemporalWorkerClientUpdater>((options, workerClientUpdater) => options.WorkerClientUpdater = workerClientUpdater);
 
 var host = builder.Build();
 
 // You can have a BackgroundService periodically refresh the worker client like this.
-IWorkerClientUpdater workerClientUpdater = host.Services.GetRequiredService<IWorkerClientUpdater>();
+TemporalWorkerClientUpdater workerClientUpdater = host.Services.GetRequiredService<TemporalWorkerClientUpdater>();
 
 // Can update the TLS options if you need.
 TemporalClientConnectOptions clientConnectOptions = new("my-other-temporal-host:7233")
@@ -139,7 +139,7 @@ TemporalClientConnectOptions clientConnectOptions = new("my-other-temporal-host:
 
 ITemporalClient updatedClient = await TemporalClient.ConnectAsync(clientConnectOptions).ConfigureAwait(false);
 
-workerClientUpdater.UpdateWorkerClient(updatedClient);
+workerClientUpdater.UpdateTemporalWorkerClient(updatedClient);
 
 // Make sure you use RunAsync and not Run, see https://github.com/temporalio/sdk-dotnet/issues/220
 await host.RunAsync();

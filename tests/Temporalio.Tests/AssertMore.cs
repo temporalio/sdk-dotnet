@@ -1,11 +1,67 @@
 using System.Text;
 using System.Text.Json;
+using Temporalio.Api.History.V1;
+using Temporalio.Client;
 using Xunit;
 
 namespace Temporalio.Tests
 {
     public static class AssertMore
     {
+        public static Task TaskFailureEventuallyAsync(WorkflowHandle handle, Action<WorkflowTaskFailedEventAttributes> assert)
+        {
+            return AssertMore.EventuallyAsync(async () =>
+            {
+                WorkflowTaskFailedEventAttributes? attrs = null;
+                await foreach (var evt in handle.FetchHistoryEventsAsync())
+                {
+                    if (evt.WorkflowTaskFailedEventAttributes != null)
+                    {
+                        attrs = evt.WorkflowTaskFailedEventAttributes;
+                    }
+                }
+                Assert.NotNull(attrs);
+                assert(attrs!);
+            });
+        }
+
+        public static Task StartedEventuallyAsync(WorkflowHandle handle)
+        {
+            return HasEventEventuallyAsync(handle, e => e.WorkflowExecutionStartedEventAttributes != null);
+        }
+
+        public static async Task ChildStartedEventuallyAsync(WorkflowHandle handle)
+        {
+            // Wait for started
+            string? childId = null;
+            await HasEventEventuallyAsync(
+                handle,
+                e =>
+                {
+                    childId = e.ChildWorkflowExecutionStartedEventAttributes?.WorkflowExecution?.WorkflowId;
+                    return childId != null;
+                });
+            // Check that a workflow task has completed proving child has really started
+            await HasEventEventuallyAsync(
+                handle.Client.GetWorkflowHandle(childId!),
+                e => e.WorkflowTaskCompletedEventAttributes != null);
+        }
+
+        public static Task HasEventEventuallyAsync(WorkflowHandle handle, Func<HistoryEvent, bool> predicate)
+        {
+            return AssertMore.EventuallyAsync(async () =>
+            {
+                await foreach (var evt in handle.FetchHistoryEventsAsync())
+                {
+                    if (predicate(evt))
+                    {
+                        return;
+                    }
+                }
+                Assert.Fail("Event not found");
+            });
+        }
+
         public static Task EventuallyAsync(
             Func<Task> func, TimeSpan? interval = null, int iterations = 15) =>
             EventuallyAsync(

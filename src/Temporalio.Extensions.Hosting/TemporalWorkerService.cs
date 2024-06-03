@@ -19,6 +19,7 @@ namespace Temporalio.Extensions.Hosting
         private readonly TemporalClientConnectOptions? newClientOptions;
         private readonly ITemporalClient? existingClient;
         private readonly TemporalWorkerOptions workerOptions;
+        private readonly TemporalWorkerClientUpdater? workerClientUpdater;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorkerService"/> class using
@@ -157,6 +158,11 @@ namespace Temporalio.Extensions.Hosting
             {
                 newClientOptions.LoggerFactory = workerOptions.LoggerFactory;
             }
+
+            if (options.WorkerClientUpdater != null)
+            {
+                this.workerClientUpdater = options.WorkerClientUpdater;
+            }
         }
 
         /// <inheritdoc />
@@ -166,7 +172,18 @@ namespace Temporalio.Extensions.Hosting
             // Call connect just in case it was a lazy client (no-op if already connected)
             await client.Connection.ConnectAsync().ConfigureAwait(false);
             using var worker = new TemporalWorker(client, workerOptions);
-            await worker.ExecuteAsync(stoppingToken).ConfigureAwait(false);
+
+            if (workerClientUpdater != null)
+            {
+                using (new TemporalWorkerClientUpdateSubscriber(workerClientUpdater, worker))
+                {
+                    await worker.ExecuteAsync(stoppingToken).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                await worker.ExecuteAsync(stoppingToken).ConfigureAwait(false);
+            }
         }
     }
 }

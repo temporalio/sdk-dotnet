@@ -273,11 +273,6 @@ namespace Temporalio.Worker
         public WorkflowStackTrace WorkflowStackTrace { get; set; } = WorkflowStackTrace.None;
 
         /// <summary>
-        /// Gets or sets the <see cref="IWorkerClientUpdater"/> that can be used to push updates to the worker client.
-        /// </summary>
-        public IWorkerClientUpdater? WorkerClientUpdater { get; set; }
-
-        /// <summary>
         /// Gets the TEMPORAL_DEBUG environment variable.
         /// </summary>
         internal static string? DebugModeEnvironmentVariable { get; } = Environment.GetEnvironmentVariable("TEMPORAL_DEBUG");

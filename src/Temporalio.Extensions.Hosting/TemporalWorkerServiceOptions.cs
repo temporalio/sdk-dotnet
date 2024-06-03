@@ -31,6 +31,12 @@ namespace Temporalio.Extensions.Hosting
         /// </summary>
         public TemporalClientConnectOptions? ClientOptions { get; set; }
 
+        /// <summary>
+        /// Gets or sets the <see cref="TemporalWorkerClientUpdater"/> that can be used to push Temporal worker client updates to the underlying <see cref="TemporalWorker"/>.
+        /// If not set, the worker service will not be updateable with a new Temporal worker client.
+        /// </summary>
+        public TemporalWorkerClientUpdater? WorkerClientUpdater { get; set; }
+
         /// <inheritdoc />
         public override object Clone()
         {
@@ -39,6 +45,12 @@ namespace Temporalio.Extensions.Hosting
             {
                 options.ClientOptions = (TemporalClientConnectOptions)ClientOptions.Clone();
             }
+
+            if (WorkerClientUpdater != null)
+            {
+                options.WorkerClientUpdater = WorkerClientUpdater;
+            }
+
             return options;
         }
 
