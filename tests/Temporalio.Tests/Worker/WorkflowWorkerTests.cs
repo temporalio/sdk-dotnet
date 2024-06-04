@@ -4580,7 +4580,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Env.Client.StartWorkflowAsync(
                     (ConditionBounceWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                await AssertHasEventEventuallyAsync(handle, evt => evt.WorkflowTaskCompletedEventAttributes != null);
+                await AssertMore.HasEventEventuallyAsync(
+                    handle, evt => evt.WorkflowTaskCompletedEventAttributes != null);
                 await handle.SignalAsync(wf => wf.DoSignalAsync());
                 await handle.GetResultAsync();
             });
