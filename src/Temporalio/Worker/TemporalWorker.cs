@@ -108,7 +108,7 @@ namespace Temporalio.Worker
         /// </summary>
         /// <remarks>
         /// When this property is set, it actually replaces the underlying client that is being used
-        /// by the worker. This means the next calls by the worker to Temporal (e.g. responding
+        /// by the worker. This means subsequent calls by the worker to Temporal (e.g. responding
         /// task completion, activity heartbeat, etc) will be on this new client, but outstanding
         /// calls will not be immediately interrupted.
         /// </remarks>
@@ -255,6 +255,7 @@ namespace Temporalio.Worker
             {
                 activityWorker?.Dispose();
                 BridgeWorker.Dispose();
+
                 // Remove task tracing if not disabled and there are workflows present
                 if (workflowTracingEventListenerEnabled)
                 {
