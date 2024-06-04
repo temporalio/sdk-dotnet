@@ -15,9 +15,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<AddOrUpdateRemoteClusterResponse> AddOrUpdateRemoteClusterAsync(AddOrUpdateRemoteClusterRequest req, RpcOptions? options = null)
+        public Task<AddOrUpdateRemoteClusterResponse> AddOrUpdateRemoteClusterAsync(AddOrUpdateRemoteClusterRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("AddOrUpdateRemoteCluster", req, AddOrUpdateRemoteClusterResponse.Parser, options);
+            return InvokeRpcAsync("AddOrUpdateRemoteCluster", req, AddOrUpdateRemoteClusterResponse.Parser, options);
         }
 
         /// <summary>
@@ -26,9 +26,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<AddSearchAttributesResponse> AddSearchAttributesAsync(AddSearchAttributesRequest req, RpcOptions? options = null)
+        public Task<AddSearchAttributesResponse> AddSearchAttributesAsync(AddSearchAttributesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("AddSearchAttributes", req, AddSearchAttributesResponse.Parser, options);
+            return InvokeRpcAsync("AddSearchAttributes", req, AddSearchAttributesResponse.Parser, options);
         }
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<CreateNexusEndpointResponse> CreateNexusEndpointAsync(CreateNexusEndpointRequest req, RpcOptions? options = null)
+        public Task<CreateNexusEndpointResponse> CreateNexusEndpointAsync(CreateNexusEndpointRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("CreateNexusEndpoint", req, CreateNexusEndpointResponse.Parser, options);
+            return InvokeRpcAsync("CreateNexusEndpoint", req, CreateNexusEndpointResponse.Parser, options);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DeleteNamespaceResponse> DeleteNamespaceAsync(DeleteNamespaceRequest req, RpcOptions? options = null)
+        public Task<DeleteNamespaceResponse> DeleteNamespaceAsync(DeleteNamespaceRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DeleteNamespace", req, DeleteNamespaceResponse.Parser, options);
+            return InvokeRpcAsync("DeleteNamespace", req, DeleteNamespaceResponse.Parser, options);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DeleteNexusEndpointResponse> DeleteNexusEndpointAsync(DeleteNexusEndpointRequest req, RpcOptions? options = null)
+        public Task<DeleteNexusEndpointResponse> DeleteNexusEndpointAsync(DeleteNexusEndpointRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DeleteNexusEndpoint", req, DeleteNexusEndpointResponse.Parser, options);
+            return InvokeRpcAsync("DeleteNexusEndpoint", req, DeleteNexusEndpointResponse.Parser, options);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetNexusEndpointResponse> GetNexusEndpointAsync(GetNexusEndpointRequest req, RpcOptions? options = null)
+        public Task<GetNexusEndpointResponse> GetNexusEndpointAsync(GetNexusEndpointRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetNexusEndpoint", req, GetNexusEndpointResponse.Parser, options);
+            return InvokeRpcAsync("GetNexusEndpoint", req, GetNexusEndpointResponse.Parser, options);
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListClustersResponse> ListClustersAsync(ListClustersRequest req, RpcOptions? options = null)
+        public Task<ListClustersResponse> ListClustersAsync(ListClustersRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListClusters", req, ListClustersResponse.Parser, options);
+            return InvokeRpcAsync("ListClusters", req, ListClustersResponse.Parser, options);
         }
 
         /// <summary>
@@ -92,9 +92,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListNexusEndpointsResponse> ListNexusEndpointsAsync(ListNexusEndpointsRequest req, RpcOptions? options = null)
+        public Task<ListNexusEndpointsResponse> ListNexusEndpointsAsync(ListNexusEndpointsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListNexusEndpoints", req, ListNexusEndpointsResponse.Parser, options);
+            return InvokeRpcAsync("ListNexusEndpoints", req, ListNexusEndpointsResponse.Parser, options);
         }
 
         /// <summary>
@@ -103,9 +103,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListSearchAttributesResponse> ListSearchAttributesAsync(ListSearchAttributesRequest req, RpcOptions? options = null)
+        public Task<ListSearchAttributesResponse> ListSearchAttributesAsync(ListSearchAttributesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListSearchAttributes", req, ListSearchAttributesResponse.Parser, options);
+            return InvokeRpcAsync("ListSearchAttributes", req, ListSearchAttributesResponse.Parser, options);
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RemoveRemoteClusterResponse> RemoveRemoteClusterAsync(RemoveRemoteClusterRequest req, RpcOptions? options = null)
+        public Task<RemoveRemoteClusterResponse> RemoveRemoteClusterAsync(RemoveRemoteClusterRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RemoveRemoteCluster", req, RemoveRemoteClusterResponse.Parser, options);
+            return InvokeRpcAsync("RemoveRemoteCluster", req, RemoveRemoteClusterResponse.Parser, options);
         }
 
         /// <summary>
@@ -125,9 +125,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RemoveSearchAttributesResponse> RemoveSearchAttributesAsync(RemoveSearchAttributesRequest req, RpcOptions? options = null)
+        public Task<RemoveSearchAttributesResponse> RemoveSearchAttributesAsync(RemoveSearchAttributesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RemoveSearchAttributes", req, RemoveSearchAttributesResponse.Parser, options);
+            return InvokeRpcAsync("RemoveSearchAttributes", req, RemoveSearchAttributesResponse.Parser, options);
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateNexusEndpointResponse> UpdateNexusEndpointAsync(UpdateNexusEndpointRequest req, RpcOptions? options = null)
+        public Task<UpdateNexusEndpointResponse> UpdateNexusEndpointAsync(UpdateNexusEndpointRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateNexusEndpoint", req, UpdateNexusEndpointResponse.Parser, options);
+            return InvokeRpcAsync("UpdateNexusEndpoint", req, UpdateNexusEndpointResponse.Parser, options);
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<CountWorkflowExecutionsResponse> CountWorkflowExecutionsAsync(CountWorkflowExecutionsRequest req, RpcOptions? options = null)
+        public Task<CountWorkflowExecutionsResponse> CountWorkflowExecutionsAsync(CountWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("CountWorkflowExecutions", req, CountWorkflowExecutionsResponse.Parser, options);
+            return InvokeRpcAsync("CountWorkflowExecutions", req, CountWorkflowExecutionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -26,9 +26,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<CreateScheduleResponse> CreateScheduleAsync(CreateScheduleRequest req, RpcOptions? options = null)
+        public Task<CreateScheduleResponse> CreateScheduleAsync(CreateScheduleRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("CreateSchedule", req, CreateScheduleResponse.Parser, options);
+            return InvokeRpcAsync("CreateSchedule", req, CreateScheduleResponse.Parser, options);
         }
 
         /// <summary>
@@ -37,9 +37,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DeleteScheduleResponse> DeleteScheduleAsync(DeleteScheduleRequest req, RpcOptions? options = null)
+        public Task<DeleteScheduleResponse> DeleteScheduleAsync(DeleteScheduleRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DeleteSchedule", req, DeleteScheduleResponse.Parser, options);
+            return InvokeRpcAsync("DeleteSchedule", req, DeleteScheduleResponse.Parser, options);
         }
 
         /// <summary>
@@ -48,9 +48,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DeleteWorkflowExecutionResponse> DeleteWorkflowExecutionAsync(DeleteWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<DeleteWorkflowExecutionResponse> DeleteWorkflowExecutionAsync(DeleteWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DeleteWorkflowExecution", req, DeleteWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("DeleteWorkflowExecution", req, DeleteWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DeprecateNamespaceResponse> DeprecateNamespaceAsync(DeprecateNamespaceRequest req, RpcOptions? options = null)
+        public Task<DeprecateNamespaceResponse> DeprecateNamespaceAsync(DeprecateNamespaceRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DeprecateNamespace", req, DeprecateNamespaceResponse.Parser, options);
+            return InvokeRpcAsync("DeprecateNamespace", req, DeprecateNamespaceResponse.Parser, options);
         }
 
         /// <summary>
@@ -70,9 +70,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DescribeBatchOperationResponse> DescribeBatchOperationAsync(DescribeBatchOperationRequest req, RpcOptions? options = null)
+        public Task<DescribeBatchOperationResponse> DescribeBatchOperationAsync(DescribeBatchOperationRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DescribeBatchOperation", req, DescribeBatchOperationResponse.Parser, options);
+            return InvokeRpcAsync("DescribeBatchOperation", req, DescribeBatchOperationResponse.Parser, options);
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DescribeNamespaceResponse> DescribeNamespaceAsync(DescribeNamespaceRequest req, RpcOptions? options = null)
+        public Task<DescribeNamespaceResponse> DescribeNamespaceAsync(DescribeNamespaceRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DescribeNamespace", req, DescribeNamespaceResponse.Parser, options);
+            return InvokeRpcAsync("DescribeNamespace", req, DescribeNamespaceResponse.Parser, options);
         }
 
         /// <summary>
@@ -92,9 +92,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DescribeScheduleResponse> DescribeScheduleAsync(DescribeScheduleRequest req, RpcOptions? options = null)
+        public Task<DescribeScheduleResponse> DescribeScheduleAsync(DescribeScheduleRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DescribeSchedule", req, DescribeScheduleResponse.Parser, options);
+            return InvokeRpcAsync("DescribeSchedule", req, DescribeScheduleResponse.Parser, options);
         }
 
         /// <summary>
@@ -103,9 +103,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DescribeTaskQueueResponse> DescribeTaskQueueAsync(DescribeTaskQueueRequest req, RpcOptions? options = null)
+        public Task<DescribeTaskQueueResponse> DescribeTaskQueueAsync(DescribeTaskQueueRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DescribeTaskQueue", req, DescribeTaskQueueResponse.Parser, options);
+            return InvokeRpcAsync("DescribeTaskQueue", req, DescribeTaskQueueResponse.Parser, options);
         }
 
         /// <summary>
@@ -114,9 +114,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<DescribeWorkflowExecutionResponse> DescribeWorkflowExecutionAsync(DescribeWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<DescribeWorkflowExecutionResponse> DescribeWorkflowExecutionAsync(DescribeWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("DescribeWorkflowExecution", req, DescribeWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("DescribeWorkflowExecution", req, DescribeWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -125,9 +125,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ExecuteMultiOperationResponse> ExecuteMultiOperationAsync(ExecuteMultiOperationRequest req, RpcOptions? options = null)
+        public Task<ExecuteMultiOperationResponse> ExecuteMultiOperationAsync(ExecuteMultiOperationRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ExecuteMultiOperation", req, ExecuteMultiOperationResponse.Parser, options);
+            return InvokeRpcAsync("ExecuteMultiOperation", req, ExecuteMultiOperationResponse.Parser, options);
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetClusterInfoResponse> GetClusterInfoAsync(GetClusterInfoRequest req, RpcOptions? options = null)
+        public Task<GetClusterInfoResponse> GetClusterInfoAsync(GetClusterInfoRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetClusterInfo", req, GetClusterInfoResponse.Parser, options);
+            return InvokeRpcAsync("GetClusterInfo", req, GetClusterInfoResponse.Parser, options);
         }
 
         /// <summary>
@@ -147,9 +147,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetSearchAttributesResponse> GetSearchAttributesAsync(GetSearchAttributesRequest req, RpcOptions? options = null)
+        public Task<GetSearchAttributesResponse> GetSearchAttributesAsync(GetSearchAttributesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetSearchAttributes", req, GetSearchAttributesResponse.Parser, options);
+            return InvokeRpcAsync("GetSearchAttributes", req, GetSearchAttributesResponse.Parser, options);
         }
 
         /// <summary>
@@ -158,9 +158,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetSystemInfoResponse> GetSystemInfoAsync(GetSystemInfoRequest req, RpcOptions? options = null)
+        public Task<GetSystemInfoResponse> GetSystemInfoAsync(GetSystemInfoRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetSystemInfo", req, GetSystemInfoResponse.Parser, options);
+            return InvokeRpcAsync("GetSystemInfo", req, GetSystemInfoResponse.Parser, options);
         }
 
         /// <summary>
@@ -169,9 +169,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetWorkerBuildIdCompatibilityResponse> GetWorkerBuildIdCompatibilityAsync(GetWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
+        public Task<GetWorkerBuildIdCompatibilityResponse> GetWorkerBuildIdCompatibilityAsync(GetWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetWorkerBuildIdCompatibility", req, GetWorkerBuildIdCompatibilityResponse.Parser, options);
+            return InvokeRpcAsync("GetWorkerBuildIdCompatibility", req, GetWorkerBuildIdCompatibilityResponse.Parser, options);
         }
 
         /// <summary>
@@ -180,9 +180,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetWorkerTaskReachabilityResponse> GetWorkerTaskReachabilityAsync(GetWorkerTaskReachabilityRequest req, RpcOptions? options = null)
+        public Task<GetWorkerTaskReachabilityResponse> GetWorkerTaskReachabilityAsync(GetWorkerTaskReachabilityRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetWorkerTaskReachability", req, GetWorkerTaskReachabilityResponse.Parser, options);
+            return InvokeRpcAsync("GetWorkerTaskReachability", req, GetWorkerTaskReachabilityResponse.Parser, options);
         }
 
         /// <summary>
@@ -191,9 +191,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetWorkerVersioningRulesResponse> GetWorkerVersioningRulesAsync(GetWorkerVersioningRulesRequest req, RpcOptions? options = null)
+        public Task<GetWorkerVersioningRulesResponse> GetWorkerVersioningRulesAsync(GetWorkerVersioningRulesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetWorkerVersioningRules", req, GetWorkerVersioningRulesResponse.Parser, options);
+            return InvokeRpcAsync("GetWorkerVersioningRules", req, GetWorkerVersioningRulesResponse.Parser, options);
         }
 
         /// <summary>
@@ -202,9 +202,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetWorkflowExecutionHistoryResponse> GetWorkflowExecutionHistoryAsync(GetWorkflowExecutionHistoryRequest req, RpcOptions? options = null)
+        public Task<GetWorkflowExecutionHistoryResponse> GetWorkflowExecutionHistoryAsync(GetWorkflowExecutionHistoryRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetWorkflowExecutionHistory", req, GetWorkflowExecutionHistoryResponse.Parser, options);
+            return InvokeRpcAsync("GetWorkflowExecutionHistory", req, GetWorkflowExecutionHistoryResponse.Parser, options);
         }
 
         /// <summary>
@@ -213,9 +213,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<GetWorkflowExecutionHistoryReverseResponse> GetWorkflowExecutionHistoryReverseAsync(GetWorkflowExecutionHistoryReverseRequest req, RpcOptions? options = null)
+        public Task<GetWorkflowExecutionHistoryReverseResponse> GetWorkflowExecutionHistoryReverseAsync(GetWorkflowExecutionHistoryReverseRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("GetWorkflowExecutionHistoryReverse", req, GetWorkflowExecutionHistoryReverseResponse.Parser, options);
+            return InvokeRpcAsync("GetWorkflowExecutionHistoryReverse", req, GetWorkflowExecutionHistoryReverseResponse.Parser, options);
         }
 
         /// <summary>
@@ -224,9 +224,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListArchivedWorkflowExecutionsResponse> ListArchivedWorkflowExecutionsAsync(ListArchivedWorkflowExecutionsRequest req, RpcOptions? options = null)
+        public Task<ListArchivedWorkflowExecutionsResponse> ListArchivedWorkflowExecutionsAsync(ListArchivedWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListArchivedWorkflowExecutions", req, ListArchivedWorkflowExecutionsResponse.Parser, options);
+            return InvokeRpcAsync("ListArchivedWorkflowExecutions", req, ListArchivedWorkflowExecutionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -235,9 +235,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListBatchOperationsResponse> ListBatchOperationsAsync(ListBatchOperationsRequest req, RpcOptions? options = null)
+        public Task<ListBatchOperationsResponse> ListBatchOperationsAsync(ListBatchOperationsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListBatchOperations", req, ListBatchOperationsResponse.Parser, options);
+            return InvokeRpcAsync("ListBatchOperations", req, ListBatchOperationsResponse.Parser, options);
         }
 
         /// <summary>
@@ -246,9 +246,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListClosedWorkflowExecutionsResponse> ListClosedWorkflowExecutionsAsync(ListClosedWorkflowExecutionsRequest req, RpcOptions? options = null)
+        public Task<ListClosedWorkflowExecutionsResponse> ListClosedWorkflowExecutionsAsync(ListClosedWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListClosedWorkflowExecutions", req, ListClosedWorkflowExecutionsResponse.Parser, options);
+            return InvokeRpcAsync("ListClosedWorkflowExecutions", req, ListClosedWorkflowExecutionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -257,9 +257,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListNamespacesResponse> ListNamespacesAsync(ListNamespacesRequest req, RpcOptions? options = null)
+        public Task<ListNamespacesResponse> ListNamespacesAsync(ListNamespacesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListNamespaces", req, ListNamespacesResponse.Parser, options);
+            return InvokeRpcAsync("ListNamespaces", req, ListNamespacesResponse.Parser, options);
         }
 
         /// <summary>
@@ -268,9 +268,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListOpenWorkflowExecutionsResponse> ListOpenWorkflowExecutionsAsync(ListOpenWorkflowExecutionsRequest req, RpcOptions? options = null)
+        public Task<ListOpenWorkflowExecutionsResponse> ListOpenWorkflowExecutionsAsync(ListOpenWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListOpenWorkflowExecutions", req, ListOpenWorkflowExecutionsResponse.Parser, options);
+            return InvokeRpcAsync("ListOpenWorkflowExecutions", req, ListOpenWorkflowExecutionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -279,9 +279,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListScheduleMatchingTimesResponse> ListScheduleMatchingTimesAsync(ListScheduleMatchingTimesRequest req, RpcOptions? options = null)
+        public Task<ListScheduleMatchingTimesResponse> ListScheduleMatchingTimesAsync(ListScheduleMatchingTimesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListScheduleMatchingTimes", req, ListScheduleMatchingTimesResponse.Parser, options);
+            return InvokeRpcAsync("ListScheduleMatchingTimes", req, ListScheduleMatchingTimesResponse.Parser, options);
         }
 
         /// <summary>
@@ -290,9 +290,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListSchedulesResponse> ListSchedulesAsync(ListSchedulesRequest req, RpcOptions? options = null)
+        public Task<ListSchedulesResponse> ListSchedulesAsync(ListSchedulesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListSchedules", req, ListSchedulesResponse.Parser, options);
+            return InvokeRpcAsync("ListSchedules", req, ListSchedulesResponse.Parser, options);
         }
 
         /// <summary>
@@ -301,9 +301,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListTaskQueuePartitionsResponse> ListTaskQueuePartitionsAsync(ListTaskQueuePartitionsRequest req, RpcOptions? options = null)
+        public Task<ListTaskQueuePartitionsResponse> ListTaskQueuePartitionsAsync(ListTaskQueuePartitionsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListTaskQueuePartitions", req, ListTaskQueuePartitionsResponse.Parser, options);
+            return InvokeRpcAsync("ListTaskQueuePartitions", req, ListTaskQueuePartitionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -312,9 +312,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ListWorkflowExecutionsResponse> ListWorkflowExecutionsAsync(ListWorkflowExecutionsRequest req, RpcOptions? options = null)
+        public Task<ListWorkflowExecutionsResponse> ListWorkflowExecutionsAsync(ListWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ListWorkflowExecutions", req, ListWorkflowExecutionsResponse.Parser, options);
+            return InvokeRpcAsync("ListWorkflowExecutions", req, ListWorkflowExecutionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -323,9 +323,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<PatchScheduleResponse> PatchScheduleAsync(PatchScheduleRequest req, RpcOptions? options = null)
+        public Task<PatchScheduleResponse> PatchScheduleAsync(PatchScheduleRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("PatchSchedule", req, PatchScheduleResponse.Parser, options);
+            return InvokeRpcAsync("PatchSchedule", req, PatchScheduleResponse.Parser, options);
         }
 
         /// <summary>
@@ -334,9 +334,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<PollActivityTaskQueueResponse> PollActivityTaskQueueAsync(PollActivityTaskQueueRequest req, RpcOptions? options = null)
+        public Task<PollActivityTaskQueueResponse> PollActivityTaskQueueAsync(PollActivityTaskQueueRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("PollActivityTaskQueue", req, PollActivityTaskQueueResponse.Parser, options);
+            return InvokeRpcAsync("PollActivityTaskQueue", req, PollActivityTaskQueueResponse.Parser, options);
         }
 
         /// <summary>
@@ -345,9 +345,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<PollNexusTaskQueueResponse> PollNexusTaskQueueAsync(PollNexusTaskQueueRequest req, RpcOptions? options = null)
+        public Task<PollNexusTaskQueueResponse> PollNexusTaskQueueAsync(PollNexusTaskQueueRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("PollNexusTaskQueue", req, PollNexusTaskQueueResponse.Parser, options);
+            return InvokeRpcAsync("PollNexusTaskQueue", req, PollNexusTaskQueueResponse.Parser, options);
         }
 
         /// <summary>
@@ -356,9 +356,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<PollWorkflowExecutionUpdateResponse> PollWorkflowExecutionUpdateAsync(PollWorkflowExecutionUpdateRequest req, RpcOptions? options = null)
+        public Task<PollWorkflowExecutionUpdateResponse> PollWorkflowExecutionUpdateAsync(PollWorkflowExecutionUpdateRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("PollWorkflowExecutionUpdate", req, PollWorkflowExecutionUpdateResponse.Parser, options);
+            return InvokeRpcAsync("PollWorkflowExecutionUpdate", req, PollWorkflowExecutionUpdateResponse.Parser, options);
         }
 
         /// <summary>
@@ -367,9 +367,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<PollWorkflowTaskQueueResponse> PollWorkflowTaskQueueAsync(PollWorkflowTaskQueueRequest req, RpcOptions? options = null)
+        public Task<PollWorkflowTaskQueueResponse> PollWorkflowTaskQueueAsync(PollWorkflowTaskQueueRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("PollWorkflowTaskQueue", req, PollWorkflowTaskQueueResponse.Parser, options);
+            return InvokeRpcAsync("PollWorkflowTaskQueue", req, PollWorkflowTaskQueueResponse.Parser, options);
         }
 
         /// <summary>
@@ -378,9 +378,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<QueryWorkflowResponse> QueryWorkflowAsync(QueryWorkflowRequest req, RpcOptions? options = null)
+        public Task<QueryWorkflowResponse> QueryWorkflowAsync(QueryWorkflowRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("QueryWorkflow", req, QueryWorkflowResponse.Parser, options);
+            return InvokeRpcAsync("QueryWorkflow", req, QueryWorkflowResponse.Parser, options);
         }
 
         /// <summary>
@@ -389,9 +389,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RecordActivityTaskHeartbeatResponse> RecordActivityTaskHeartbeatAsync(RecordActivityTaskHeartbeatRequest req, RpcOptions? options = null)
+        public Task<RecordActivityTaskHeartbeatResponse> RecordActivityTaskHeartbeatAsync(RecordActivityTaskHeartbeatRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RecordActivityTaskHeartbeat", req, RecordActivityTaskHeartbeatResponse.Parser, options);
+            return InvokeRpcAsync("RecordActivityTaskHeartbeat", req, RecordActivityTaskHeartbeatResponse.Parser, options);
         }
 
         /// <summary>
@@ -400,9 +400,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RecordActivityTaskHeartbeatByIdResponse> RecordActivityTaskHeartbeatByIdAsync(RecordActivityTaskHeartbeatByIdRequest req, RpcOptions? options = null)
+        public Task<RecordActivityTaskHeartbeatByIdResponse> RecordActivityTaskHeartbeatByIdAsync(RecordActivityTaskHeartbeatByIdRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RecordActivityTaskHeartbeatById", req, RecordActivityTaskHeartbeatByIdResponse.Parser, options);
+            return InvokeRpcAsync("RecordActivityTaskHeartbeatById", req, RecordActivityTaskHeartbeatByIdResponse.Parser, options);
         }
 
         /// <summary>
@@ -411,9 +411,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RegisterNamespaceResponse> RegisterNamespaceAsync(RegisterNamespaceRequest req, RpcOptions? options = null)
+        public Task<RegisterNamespaceResponse> RegisterNamespaceAsync(RegisterNamespaceRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RegisterNamespace", req, RegisterNamespaceResponse.Parser, options);
+            return InvokeRpcAsync("RegisterNamespace", req, RegisterNamespaceResponse.Parser, options);
         }
 
         /// <summary>
@@ -422,9 +422,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RequestCancelWorkflowExecutionResponse> RequestCancelWorkflowExecutionAsync(RequestCancelWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<RequestCancelWorkflowExecutionResponse> RequestCancelWorkflowExecutionAsync(RequestCancelWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RequestCancelWorkflowExecution", req, RequestCancelWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("RequestCancelWorkflowExecution", req, RequestCancelWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -433,9 +433,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ResetStickyTaskQueueResponse> ResetStickyTaskQueueAsync(ResetStickyTaskQueueRequest req, RpcOptions? options = null)
+        public Task<ResetStickyTaskQueueResponse> ResetStickyTaskQueueAsync(ResetStickyTaskQueueRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ResetStickyTaskQueue", req, ResetStickyTaskQueueResponse.Parser, options);
+            return InvokeRpcAsync("ResetStickyTaskQueue", req, ResetStickyTaskQueueResponse.Parser, options);
         }
 
         /// <summary>
@@ -444,9 +444,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ResetWorkflowExecutionResponse> ResetWorkflowExecutionAsync(ResetWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<ResetWorkflowExecutionResponse> ResetWorkflowExecutionAsync(ResetWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ResetWorkflowExecution", req, ResetWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("ResetWorkflowExecution", req, ResetWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -455,9 +455,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondActivityTaskCanceledResponse> RespondActivityTaskCanceledAsync(RespondActivityTaskCanceledRequest req, RpcOptions? options = null)
+        public Task<RespondActivityTaskCanceledResponse> RespondActivityTaskCanceledAsync(RespondActivityTaskCanceledRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondActivityTaskCanceled", req, RespondActivityTaskCanceledResponse.Parser, options);
+            return InvokeRpcAsync("RespondActivityTaskCanceled", req, RespondActivityTaskCanceledResponse.Parser, options);
         }
 
         /// <summary>
@@ -466,9 +466,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondActivityTaskCanceledByIdResponse> RespondActivityTaskCanceledByIdAsync(RespondActivityTaskCanceledByIdRequest req, RpcOptions? options = null)
+        public Task<RespondActivityTaskCanceledByIdResponse> RespondActivityTaskCanceledByIdAsync(RespondActivityTaskCanceledByIdRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondActivityTaskCanceledById", req, RespondActivityTaskCanceledByIdResponse.Parser, options);
+            return InvokeRpcAsync("RespondActivityTaskCanceledById", req, RespondActivityTaskCanceledByIdResponse.Parser, options);
         }
 
         /// <summary>
@@ -477,9 +477,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondActivityTaskCompletedResponse> RespondActivityTaskCompletedAsync(RespondActivityTaskCompletedRequest req, RpcOptions? options = null)
+        public Task<RespondActivityTaskCompletedResponse> RespondActivityTaskCompletedAsync(RespondActivityTaskCompletedRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondActivityTaskCompleted", req, RespondActivityTaskCompletedResponse.Parser, options);
+            return InvokeRpcAsync("RespondActivityTaskCompleted", req, RespondActivityTaskCompletedResponse.Parser, options);
         }
 
         /// <summary>
@@ -488,9 +488,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondActivityTaskCompletedByIdResponse> RespondActivityTaskCompletedByIdAsync(RespondActivityTaskCompletedByIdRequest req, RpcOptions? options = null)
+        public Task<RespondActivityTaskCompletedByIdResponse> RespondActivityTaskCompletedByIdAsync(RespondActivityTaskCompletedByIdRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondActivityTaskCompletedById", req, RespondActivityTaskCompletedByIdResponse.Parser, options);
+            return InvokeRpcAsync("RespondActivityTaskCompletedById", req, RespondActivityTaskCompletedByIdResponse.Parser, options);
         }
 
         /// <summary>
@@ -499,9 +499,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondActivityTaskFailedResponse> RespondActivityTaskFailedAsync(RespondActivityTaskFailedRequest req, RpcOptions? options = null)
+        public Task<RespondActivityTaskFailedResponse> RespondActivityTaskFailedAsync(RespondActivityTaskFailedRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondActivityTaskFailed", req, RespondActivityTaskFailedResponse.Parser, options);
+            return InvokeRpcAsync("RespondActivityTaskFailed", req, RespondActivityTaskFailedResponse.Parser, options);
         }
 
         /// <summary>
@@ -510,9 +510,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondActivityTaskFailedByIdResponse> RespondActivityTaskFailedByIdAsync(RespondActivityTaskFailedByIdRequest req, RpcOptions? options = null)
+        public Task<RespondActivityTaskFailedByIdResponse> RespondActivityTaskFailedByIdAsync(RespondActivityTaskFailedByIdRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondActivityTaskFailedById", req, RespondActivityTaskFailedByIdResponse.Parser, options);
+            return InvokeRpcAsync("RespondActivityTaskFailedById", req, RespondActivityTaskFailedByIdResponse.Parser, options);
         }
 
         /// <summary>
@@ -521,9 +521,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondNexusTaskCompletedResponse> RespondNexusTaskCompletedAsync(RespondNexusTaskCompletedRequest req, RpcOptions? options = null)
+        public Task<RespondNexusTaskCompletedResponse> RespondNexusTaskCompletedAsync(RespondNexusTaskCompletedRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondNexusTaskCompleted", req, RespondNexusTaskCompletedResponse.Parser, options);
+            return InvokeRpcAsync("RespondNexusTaskCompleted", req, RespondNexusTaskCompletedResponse.Parser, options);
         }
 
         /// <summary>
@@ -532,9 +532,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondNexusTaskFailedResponse> RespondNexusTaskFailedAsync(RespondNexusTaskFailedRequest req, RpcOptions? options = null)
+        public Task<RespondNexusTaskFailedResponse> RespondNexusTaskFailedAsync(RespondNexusTaskFailedRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondNexusTaskFailed", req, RespondNexusTaskFailedResponse.Parser, options);
+            return InvokeRpcAsync("RespondNexusTaskFailed", req, RespondNexusTaskFailedResponse.Parser, options);
         }
 
         /// <summary>
@@ -543,9 +543,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondQueryTaskCompletedResponse> RespondQueryTaskCompletedAsync(RespondQueryTaskCompletedRequest req, RpcOptions? options = null)
+        public Task<RespondQueryTaskCompletedResponse> RespondQueryTaskCompletedAsync(RespondQueryTaskCompletedRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondQueryTaskCompleted", req, RespondQueryTaskCompletedResponse.Parser, options);
+            return InvokeRpcAsync("RespondQueryTaskCompleted", req, RespondQueryTaskCompletedResponse.Parser, options);
         }
 
         /// <summary>
@@ -554,9 +554,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondWorkflowTaskCompletedResponse> RespondWorkflowTaskCompletedAsync(RespondWorkflowTaskCompletedRequest req, RpcOptions? options = null)
+        public Task<RespondWorkflowTaskCompletedResponse> RespondWorkflowTaskCompletedAsync(RespondWorkflowTaskCompletedRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondWorkflowTaskCompleted", req, RespondWorkflowTaskCompletedResponse.Parser, options);
+            return InvokeRpcAsync("RespondWorkflowTaskCompleted", req, RespondWorkflowTaskCompletedResponse.Parser, options);
         }
 
         /// <summary>
@@ -565,9 +565,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<RespondWorkflowTaskFailedResponse> RespondWorkflowTaskFailedAsync(RespondWorkflowTaskFailedRequest req, RpcOptions? options = null)
+        public Task<RespondWorkflowTaskFailedResponse> RespondWorkflowTaskFailedAsync(RespondWorkflowTaskFailedRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("RespondWorkflowTaskFailed", req, RespondWorkflowTaskFailedResponse.Parser, options);
+            return InvokeRpcAsync("RespondWorkflowTaskFailed", req, RespondWorkflowTaskFailedResponse.Parser, options);
         }
 
         /// <summary>
@@ -576,9 +576,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<ScanWorkflowExecutionsResponse> ScanWorkflowExecutionsAsync(ScanWorkflowExecutionsRequest req, RpcOptions? options = null)
+        public Task<ScanWorkflowExecutionsResponse> ScanWorkflowExecutionsAsync(ScanWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("ScanWorkflowExecutions", req, ScanWorkflowExecutionsResponse.Parser, options);
+            return InvokeRpcAsync("ScanWorkflowExecutions", req, ScanWorkflowExecutionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -587,9 +587,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<SignalWithStartWorkflowExecutionResponse> SignalWithStartWorkflowExecutionAsync(SignalWithStartWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<SignalWithStartWorkflowExecutionResponse> SignalWithStartWorkflowExecutionAsync(SignalWithStartWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("SignalWithStartWorkflowExecution", req, SignalWithStartWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("SignalWithStartWorkflowExecution", req, SignalWithStartWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -598,9 +598,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<SignalWorkflowExecutionResponse> SignalWorkflowExecutionAsync(SignalWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<SignalWorkflowExecutionResponse> SignalWorkflowExecutionAsync(SignalWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("SignalWorkflowExecution", req, SignalWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("SignalWorkflowExecution", req, SignalWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -609,9 +609,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<StartBatchOperationResponse> StartBatchOperationAsync(StartBatchOperationRequest req, RpcOptions? options = null)
+        public Task<StartBatchOperationResponse> StartBatchOperationAsync(StartBatchOperationRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("StartBatchOperation", req, StartBatchOperationResponse.Parser, options);
+            return InvokeRpcAsync("StartBatchOperation", req, StartBatchOperationResponse.Parser, options);
         }
 
         /// <summary>
@@ -620,9 +620,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<StartWorkflowExecutionResponse> StartWorkflowExecutionAsync(StartWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<StartWorkflowExecutionResponse> StartWorkflowExecutionAsync(StartWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("StartWorkflowExecution", req, StartWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("StartWorkflowExecution", req, StartWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -631,9 +631,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<StopBatchOperationResponse> StopBatchOperationAsync(StopBatchOperationRequest req, RpcOptions? options = null)
+        public Task<StopBatchOperationResponse> StopBatchOperationAsync(StopBatchOperationRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("StopBatchOperation", req, StopBatchOperationResponse.Parser, options);
+            return InvokeRpcAsync("StopBatchOperation", req, StopBatchOperationResponse.Parser, options);
         }
 
         /// <summary>
@@ -642,9 +642,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<TerminateWorkflowExecutionResponse> TerminateWorkflowExecutionAsync(TerminateWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<TerminateWorkflowExecutionResponse> TerminateWorkflowExecutionAsync(TerminateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("TerminateWorkflowExecution", req, TerminateWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("TerminateWorkflowExecution", req, TerminateWorkflowExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -653,9 +653,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateNamespaceResponse> UpdateNamespaceAsync(UpdateNamespaceRequest req, RpcOptions? options = null)
+        public Task<UpdateNamespaceResponse> UpdateNamespaceAsync(UpdateNamespaceRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateNamespace", req, UpdateNamespaceResponse.Parser, options);
+            return InvokeRpcAsync("UpdateNamespace", req, UpdateNamespaceResponse.Parser, options);
         }
 
         /// <summary>
@@ -664,9 +664,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateScheduleResponse> UpdateScheduleAsync(UpdateScheduleRequest req, RpcOptions? options = null)
+        public Task<UpdateScheduleResponse> UpdateScheduleAsync(UpdateScheduleRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateSchedule", req, UpdateScheduleResponse.Parser, options);
+            return InvokeRpcAsync("UpdateSchedule", req, UpdateScheduleResponse.Parser, options);
         }
 
         /// <summary>
@@ -675,9 +675,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateWorkerBuildIdCompatibilityResponse> UpdateWorkerBuildIdCompatibilityAsync(UpdateWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
+        public Task<UpdateWorkerBuildIdCompatibilityResponse> UpdateWorkerBuildIdCompatibilityAsync(UpdateWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateWorkerBuildIdCompatibility", req, UpdateWorkerBuildIdCompatibilityResponse.Parser, options);
+            return InvokeRpcAsync("UpdateWorkerBuildIdCompatibility", req, UpdateWorkerBuildIdCompatibilityResponse.Parser, options);
         }
 
         /// <summary>
@@ -686,9 +686,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateWorkerVersioningRulesResponse> UpdateWorkerVersioningRulesAsync(UpdateWorkerVersioningRulesRequest req, RpcOptions? options = null)
+        public Task<UpdateWorkerVersioningRulesResponse> UpdateWorkerVersioningRulesAsync(UpdateWorkerVersioningRulesRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateWorkerVersioningRules", req, UpdateWorkerVersioningRulesResponse.Parser, options);
+            return InvokeRpcAsync("UpdateWorkerVersioningRules", req, UpdateWorkerVersioningRulesResponse.Parser, options);
         }
 
         /// <summary>
@@ -697,9 +697,9 @@ namespace Temporalio.Client
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public async Task<UpdateWorkflowExecutionResponse> UpdateWorkflowExecutionAsync(UpdateWorkflowExecutionRequest req, RpcOptions? options = null)
+        public Task<UpdateWorkflowExecutionResponse> UpdateWorkflowExecutionAsync(UpdateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
-            return await InvokeRpcAsync("UpdateWorkflowExecution", req, UpdateWorkflowExecutionResponse.Parser, options);
+            return InvokeRpcAsync("UpdateWorkflowExecution", req, UpdateWorkflowExecutionResponse.Parser, options);
         }
     }
 }
