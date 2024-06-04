@@ -208,6 +208,84 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             result);
     }
 
+    [Workflow]
+    public class TickingWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Just tick every 100ms for 10s
+            for (var i = 0; i < 100; i++)
+            {
+                await Workflow.DelayAsync(100);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task TemporalWorkerService_WorkerClientReplacement_UsesNewClient()
+    {
+        // We are going to start a second ephemeral server and then replace the client. So we will
+        // start a no-cache ticking workflow with the current client and confirm it has accomplished
+        // at least one task. Then we will start another on the other client, and confirm it gets
+        // started too. Then we will terminate both. We have to use a ticking workflow with only one
+        // poller to force a quick re-poll to recognize our client change quickly (as opposed to
+        // just waiting the minute for poll timeout).
+        await using var otherEnv = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync();
+
+        // Start both workflows on different servers
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var handle1 = await Client.StartWorkflowAsync(
+            (TickingWorkflow wf) => wf.RunAsync(),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
+        var handle2 = await otherEnv.Client.StartWorkflowAsync(
+            (TickingWorkflow wf) => wf.RunAsync(),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
+
+        var bld = Host.CreateApplicationBuilder();
+
+        TemporalWorkerClientUpdater workerClientUpdater = new TemporalWorkerClientUpdater();
+
+        // Register the worker client updater.
+        bld.Services.AddSingleton<TemporalWorkerClientUpdater>(workerClientUpdater);
+
+        // Add the first worker with the workflow and client already DI'd, and add the worker client updater.
+        bld.Services.
+            AddSingleton(Client).
+            AddHostedTemporalWorker(taskQueue).
+            AddWorkflow<TickingWorkflow>()
+            .ConfigureOptions()
+            .Configure<TemporalWorkerClientUpdater>((options, updater) =>
+            {
+                options.WorkerClientUpdater = updater;
+                options.MaxCachedWorkflows = 0;
+                options.MaxConcurrentWorkflowTaskPolls = 1;
+            });
+
+        // Start the host
+        using var tokenSource = new CancellationTokenSource();
+        using var host = bld.Build();
+        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
+
+        // Confirm the first ticking workflow has completed a task but not the second workflow
+        await AssertMore.HasEventEventuallyAsync(handle1, e => e.WorkflowTaskCompletedEventAttributes != null);
+        await foreach (var evt in handle2.FetchHistoryEventsAsync())
+        {
+            Assert.Null(evt.WorkflowTaskCompletedEventAttributes);
+        }
+
+        // Now replace the client, which should be used fairly quickly because we should have
+        // timer-done poll completions every 100ms
+        workerClientUpdater.UpdateClient(otherEnv.Client);
+
+        // Now confirm the other workflow has started
+        await AssertMore.HasEventEventuallyAsync(handle2, e => e.WorkflowTaskCompletedEventAttributes != null);
+
+        // Terminate both
+        await handle1.TerminateAsync();
+        await handle2.TerminateAsync();
+    }
+
     [Workflow("Workflow")]
     public class WorkflowV1
     {

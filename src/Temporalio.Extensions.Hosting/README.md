@@ -100,3 +100,47 @@ Some users may prefer to manually create the `TemporalWorker` without using host
 activities created via the service provider. `CreateTemporalActivityDefinitions` extension methods are present on
 `IServiceProvider` that will return a collection of `ActivityDefinition` instances for each activity on the type. These
 can be added to the `TemporalWorkerOptions` directly.
+
+## Worker Client Refresh
+
+Some users may need to update the worker's connection to Temporal. It's desirable to do this without stopping the worker entirely, as that will evict the sticky workflow cache.
+
+This can be done by using the `IWorkerClientUpdater`.
+
+```csharp
+using Temporalio.Extensions.Hosting;
+
+var builder = Host.CreateApplicationBuilder(args);
+
+// Register a worker client updater.
+builder.Services.AddSingleton<TemporalWorkerClientUpdater>();
+
+// Add a hosted Temporal worker which returns a builder to add activities and workflows, along with the worker client updater.
+builder.Services.
+    AddHostedTemporalWorker(
+        "my-temporal-host:7233",
+        "my-namespace",
+        "my-task-queue").
+    AddScopedActivities<MyActivityClass>().
+    AddWorkflow<MyWorkflow>().
+    ConfigureOptions().
+    Configure<TemporalWorkerClientUpdater>((options, workerClientUpdater) => options.WorkerClientUpdater = workerClientUpdater);
+
+var host = builder.Build();
+
+// You can have a BackgroundService periodically refresh the worker client like this.
+TemporalWorkerClientUpdater workerClientUpdater = host.Services.GetRequiredService<TemporalWorkerClientUpdater>();
+
+// Can update the TLS options if you need.
+TemporalClientConnectOptions clientConnectOptions = new("my-other-temporal-host:7233")
+{
+    Namespace = "default"
+};
+
+ITemporalClient updatedClient = await TemporalClient.ConnectAsync(clientConnectOptions).ConfigureAwait(false);
+
+workerClientUpdater.UpdateClient(updatedClient);
+
+// Make sure you use RunAsync and not Run, see https://github.com/temporalio/sdk-dotnet/issues/220
+await host.RunAsync();
+```
