@@ -4542,6 +4542,51 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions().AddActivity(NextRetryDelayWorkflow.NextRetryDelayActivity));
     }
 
+    [Workflow]
+    public class ConditionBounceWorkflow
+    {
+        private int workflowCounter;
+        private int signalCounter;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            while (workflowCounter < 5)
+            {
+                var counterBefore = workflowCounter;
+                await Workflow.WaitConditionAsync(() => workflowCounter > counterBefore);
+                signalCounter++;
+            }
+        }
+
+        [WorkflowSignal]
+        public async Task DoSignalAsync()
+        {
+            while (signalCounter < 5)
+            {
+                workflowCounter++;
+                var counterBefore = signalCounter;
+                await Workflow.WaitConditionAsync(() => signalCounter > counterBefore);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ConditionBounce_ProperlyReschedules()
+    {
+        await ExecuteWorkerAsync<ConditionBounceWorkflow>(
+            async worker =>
+            {
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (ConditionBounceWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await AssertMore.HasEventEventuallyAsync(
+                    handle, evt => evt.WorkflowTaskCompletedEventAttributes != null);
+                await handle.SignalAsync(wf => wf.DoSignalAsync());
+                await handle.GetResultAsync();
+            });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
