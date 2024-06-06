@@ -4587,6 +4587,21 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             });
     }
 
+    [Fact]
+    public async Task ExecuteAsync_InvalidWorker_Fails()
+    {
+        // Try to run a worker on an invalid namespace
+        var options = (TemporalClientOptions)Client.Options.Clone();
+        options.Namespace = "does-not-exist";
+        var client = new TemporalClient(Client.Connection, options);
+        using var worker = new TemporalWorker(
+            client,
+            new TemporalWorkerOptions("some-task-queue").AddWorkflow<SimpleWorkflow>());
+        var err = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => worker.ExecuteAsync(() => Task.Delay(2000)));
+        Assert.Contains("Worker validation failed", err.Message);
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

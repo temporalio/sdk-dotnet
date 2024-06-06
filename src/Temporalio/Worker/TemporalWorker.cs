@@ -272,6 +272,9 @@ namespace Temporalio.Worker
                 throw new InvalidOperationException("Already started");
             }
 
+            // Check that the worker is valid
+            await BridgeWorker.ValidateAsync().ConfigureAwait(false);
+
             var tasks = new List<Task>()
             {
                 // Create a task that will complete on cancellation

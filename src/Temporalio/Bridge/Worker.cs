@@ -89,6 +89,38 @@ namespace Temporalio.Bridge
         internal unsafe Interop.Worker* Ptr { get; private set; }
 
         /// <summary>
+        /// Validate the worker.
+        /// </summary>
+        /// <returns>Validation task.</returns>
+        public async Task ValidateAsync()
+        {
+            using (var scope = new Scope())
+            {
+                var completion = new TaskCompletionSource<bool>();
+                unsafe
+                {
+                    Interop.Methods.worker_validate(
+                        Ptr,
+                        null,
+                        scope.FunctionPointer<Interop.WorkerCallback>(
+                            (userData, fail) =>
+                            {
+                                if (fail != null)
+                                {
+                                    completion.TrySetException(new InvalidOperationException(
+                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                }
+                                else
+                                {
+                                    completion.TrySetResult(true);
+                                }
+                            }));
+                }
+                await completion.Task.ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Replace the client.
         /// </summary>
         /// <param name="client">New client.</param>
