@@ -39,6 +39,11 @@ namespace Temporalio.Workflows
         int CurrentHistorySize { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.CurrentUpdateInfo" />.
+        /// </summary>
+        WorkflowUpdateInfo? CurrentUpdateInfo { get; }
+
+        /// <summary>
         /// Gets or sets value for <see cref="Workflow.DynamicQuery" />.
         /// </summary>
         WorkflowQueryDefinition? DynamicQuery { get; set; }

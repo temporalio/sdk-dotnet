@@ -29,6 +29,7 @@ namespace Temporalio.Worker
     internal class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext
     {
         private static readonly string[] Newlines = new[] { "\r", "\n", "\r\n" };
+        private static readonly AsyncLocal<WorkflowUpdateInfo> CurrentUpdateInfoLocal = new();
 
         private readonly TaskFactory taskFactory;
         private readonly IFailureConverter failureConverter;
@@ -215,6 +216,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public int CurrentHistorySize { get; private set; }
+
+        /// <inheritdoc />
+        public WorkflowUpdateInfo? CurrentUpdateInfo => CurrentUpdateInfoLocal.Value;
 
         /// <inheritdoc />
         public WorkflowQueryDefinition? DynamicQuery
@@ -899,6 +903,9 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
+                // Set the current update for the life of this task
+                CurrentUpdateInfoLocal.Value = new(Id: update.Id, Name: update.Name);
+
                 // Find update definition or reject
                 var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
                 if (!updates.TryGetValue(update.Name, out var updateDefn))
