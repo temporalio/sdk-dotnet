@@ -68,6 +68,16 @@ namespace Temporalio.Workflows
         public static int CurrentHistorySize => Context.CurrentHistorySize;
 
         /// <summary>
+        /// Gets the current workflow update handler for the caller if any.
+        /// </summary>
+        /// <remarks>
+        /// This set via a <see cref="AsyncLocal{T}" /> and therefore only visible inside the
+        /// handler and tasks it creates.
+        /// </remarks>
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
+        public static WorkflowUpdateInfo? CurrentUpdateInfo => Context.CurrentUpdateInfo;
+
+        /// <summary>
         /// Gets or sets the current dynamic query handler. This can be null for no dynamic query
         /// handling.
         /// </summary>
