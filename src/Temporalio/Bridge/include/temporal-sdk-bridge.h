@@ -383,17 +383,17 @@ typedef struct WorkerOptions {
 } WorkerOptions;
 
 /**
+ * If fail is present, it must be freed.
+ */
+typedef void (*WorkerCallback)(void *user_data, const struct ByteArray *fail);
+
+/**
  * If success or fail are present, they must be freed. They will both be null
  * if this is a result of a poll shutdown.
  */
 typedef void (*WorkerPollCallback)(void *user_data,
                                    const struct ByteArray *success,
                                    const struct ByteArray *fail);
-
-/**
- * If fail is present, it must be freed.
- */
-typedef void (*WorkerCallback)(void *user_data, const struct ByteArray *fail);
 
 typedef struct WorkerReplayerOrFail {
   struct Worker *worker;
@@ -520,6 +520,8 @@ void ephemeral_server_shutdown(struct EphemeralServer *server,
 struct WorkerOrFail worker_new(struct Client *client, const struct WorkerOptions *options);
 
 void worker_free(struct Worker *worker);
+
+void worker_validate(struct Worker *worker, void *user_data, WorkerCallback callback);
 
 void worker_replace_client(struct Worker *worker, struct Client *new_client);
 

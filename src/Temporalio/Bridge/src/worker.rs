@@ -134,6 +134,34 @@ pub extern "C" fn worker_free(worker: *mut Worker) {
     }
 }
 
+/// If fail is present, it must be freed.
+type WorkerCallback = unsafe extern "C" fn(user_data: *mut libc::c_void, fail: *const ByteArray);
+
+#[no_mangle]
+pub extern "C" fn worker_validate(
+    worker: *mut Worker,
+    user_data: *mut libc::c_void,
+    callback: WorkerCallback,
+) {
+    let worker = unsafe { &*worker };
+    let user_data = UserDataHandle(user_data);
+    let core_worker = worker.worker.as_ref().unwrap().clone();
+    worker.runtime.core.tokio_handle().spawn(async move {
+        let fail = match core_worker.validate().await {
+            Ok(_) => std::ptr::null(),
+            Err(err) => worker
+                .runtime
+                .clone()
+                .alloc_utf8(&format!("Worker validation failed: {}", err))
+                .into_raw()
+                .cast_const(),
+        };
+        unsafe {
+            callback(user_data.into(), fail);
+        }
+    });
+}
+
 #[no_mangle]
 pub extern "C" fn worker_replace_client(worker: *mut Worker, new_client: *mut Client) {
     let worker = unsafe { &*worker };
@@ -217,9 +245,6 @@ pub extern "C" fn worker_poll_activity_task(
         }
     });
 }
-
-/// If fail is present, it must be freed.
-type WorkerCallback = unsafe extern "C" fn(user_data: *mut libc::c_void, fail: *const ByteArray);
 
 #[no_mangle]
 pub extern "C" fn worker_complete_workflow_activation(

@@ -4587,6 +4587,97 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             });
     }
 
+    [Fact]
+    public async Task ExecuteAsync_InvalidWorker_Fails()
+    {
+        // Try to run a worker on an invalid namespace
+        var options = (TemporalClientOptions)Client.Options.Clone();
+        options.Namespace = "does-not-exist";
+        var client = new TemporalClient(Client.Connection, options);
+        using var worker = new TemporalWorker(
+            client,
+            new TemporalWorkerOptions("some-task-queue").AddWorkflow<SimpleWorkflow>());
+        var err = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => worker.ExecuteAsync(() => Task.Delay(2000)));
+        Assert.Contains("Worker validation failed", err.Message);
+    }
+
+    [Workflow]
+    public class CurrentUpdateWorkflow
+    {
+        private readonly List<Task<string>> pendingGetUpdateIdTasks = new();
+
+        [WorkflowRun]
+        public async Task<string[]> RunAsync()
+        {
+            // Confirm no info
+            Assert.Null(Workflow.CurrentUpdateInfo);
+
+            // Wait for all tasks then return full set
+            await Workflow.WaitConditionAsync(() => pendingGetUpdateIdTasks.Count == 5);
+            var res = await Task.WhenAll(pendingGetUpdateIdTasks);
+
+            // Confirm again null then return
+            Assert.Null(Workflow.CurrentUpdateInfo);
+            return res;
+        }
+
+        [WorkflowUpdate]
+        public async Task<string> DoUpdateAsync()
+        {
+            Assert.Equal("DoUpdate", Workflow.CurrentUpdateInfo?.Name);
+            // Check that the simple helper awaited has the ID
+            Assert.Equal(Workflow.CurrentUpdateInfo?.Id, await GetUpdateIdAsync());
+
+            // Also schedule the task and wait for it in the main workflow to confirm it still gets
+            // the update ID
+            pendingGetUpdateIdTasks.Add(Task.Factory.StartNew(() => GetUpdateIdAsync()).Unwrap());
+
+            // Return
+            return Workflow.CurrentUpdateInfo?.Id ??
+                throw new InvalidOperationException("Missing update");
+        }
+
+        [WorkflowUpdateValidator(nameof(DoUpdateAsync))]
+        public void ValidateDoUpdate() =>
+            Assert.Equal("DoUpdate", Workflow.CurrentUpdateInfo?.Name);
+
+        private async Task<string> GetUpdateIdAsync()
+        {
+            await Workflow.DelayAsync(1);
+            return Workflow.CurrentUpdateInfo?.Id ??
+                throw new InvalidOperationException("Missing update");
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_CurrentUpdate_HasInfo()
+    {
+        await ExecuteWorkerAsync<CurrentUpdateWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (CurrentUpdateWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Issue 5 updates concurrently and confirm they have the right IDs
+                var expected = new[] { "update1", "update2", "update3", "update4", "update5" };
+                var actual = await Task.WhenAll(
+                    handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync(), new("update1")),
+                    handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync(), new("update2")),
+                    handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync(), new("update3")),
+                    handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync(), new("update4")),
+                    handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync(), new("update5")));
+                Assert.Equal(
+                    new[] { "update1", "update2", "update3", "update4", "update5" }.ToHashSet(),
+                    actual.ToHashSet());
+                Assert.Equal(
+                    new[] { "update1", "update2", "update3", "update4", "update5" }.ToHashSet(),
+                    (await handle.GetResultAsync()).ToHashSet());
+            });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
