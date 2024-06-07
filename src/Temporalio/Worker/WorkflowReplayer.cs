@@ -173,7 +173,8 @@ namespace Temporalio.Worker
                             OnTaskStarting: options.OnTaskStarting,
                             OnTaskCompleted: options.OnTaskCompleted,
                             RuntimeMetricMeter: new(() => runtime.MetricMeter),
-                            WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes),
+                            WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
+                            DisableCompletionCommandReordering: options.DisableWorkflowCompletionCommandReordering),
                         (runId, removeFromCache) => SetResult(removeFromCache));
                 }
                 catch

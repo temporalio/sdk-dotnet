@@ -67,6 +67,7 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance> onTaskStarting;
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
+        private readonly bool disableCompletionCommandReordering;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -187,6 +188,7 @@ namespace Temporalio.Worker
             Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
+            disableCompletionCommandReordering = details.DisableCompletionCommandReordering;
         }
 
         /// <summary>
@@ -573,28 +575,9 @@ namespace Temporalio.Worker
                     }
                 }
 
-                // Remove any non-query commands after terminal commands
-                if (completion.Successful != null)
-                {
-                    var seenCompletion = false;
-                    var i = 0;
-                    while (i < completion.Successful.Commands.Count)
-                    {
-                        var cmd = completion.Successful.Commands[i];
-                        if (!seenCompletion)
-                        {
-                            seenCompletion = cmd.CompleteWorkflowExecution != null ||
-                                cmd.ContinueAsNewWorkflowExecution != null ||
-                                cmd.FailWorkflowExecution != null;
-                        }
-                        else if (cmd.RespondToQuery != null)
-                        {
-                            completion.Successful.Commands.RemoveAt(i);
-                            continue;
-                        }
-                        i++;
-                    }
-                }
+                // Maybe apply workflow completion command reordering logic
+                ApplyCompletionCommandReordering(act, completion);
+
                 // Unset the completion
                 var toReturn = completion;
                 completion = null;
@@ -1400,6 +1383,71 @@ namespace Temporalio.Worker
                     line.Contains(" at Temporalio.Worker.")).Reverse();
                 return string.Join("\n", lines);
             }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));
+        }
+
+        private void ApplyCompletionCommandReordering(
+            WorkflowActivation act, WorkflowActivationCompletion completion)
+        {
+            // In earlier versions of the SDK we allowed commands to be sent after workflow
+            // completion. These ended up being removed effectively making the result of the
+            // workflow function mean any other later coroutine commands be ignored. To match
+            // Go/Java, we are now going to move workflow completion to the end (well, before any
+            // query results) so that same-task-post-completion commands are processed.
+            //
+            // Note this only applies for successful activations that don't have completion
+            // reordering disabled and that are either not replaying or have the flag set.
+            if (completion.Successful == null || disableCompletionCommandReordering)
+            {
+                return;
+            }
+            if (IsReplaying && !act.AvailableInternalFlags.Contains((uint)WorkflowLogicFlag.ReorderWorkflowCompletion))
+            {
+                return;
+            }
+
+            // We know we're on a newer SDK and can move completion to the end if we need to. First,
+            // find the completion command and the number of trailing query commands.
+            var completionCommandIndex = -1;
+            var trailingQueryCommandCount = 0;
+            for (var i = 0; i < completion.Successful.Commands.Count; i++)
+            {
+                var cmd = completion.Successful.Commands[i];
+                // Set completion index if the command is a completion
+                if (cmd.CompleteWorkflowExecution != null ||
+                    cmd.ContinueAsNewWorkflowExecution != null ||
+                    cmd.FailWorkflowExecution != null)
+                {
+                    completionCommandIndex = i;
+                }
+                // Increment trailing query count if query (or reset if not)
+                if (cmd.RespondToQuery == null)
+                {
+                    trailingQueryCommandCount = 0;
+                }
+                else
+                {
+                    trailingQueryCommandCount++;
+                }
+            }
+
+            // If there is no completion command, nothing to do
+            if (completionCommandIndex == -1)
+            {
+                return;
+            }
+            // We want to move the completion command to the end of the command set (not counting
+            // trailing queries), but if this would result in no movement then there is nothing to
+            // do.
+            if (completionCommandIndex == completion.Successful.Commands.Count - trailingQueryCommandCount - 1)
+            {
+                return;
+            }
+            // Now we know the completion is in the wrong spot, so set the SDK flag and move it
+            completion.Successful.UsedInternalFlags.Add((uint)WorkflowLogicFlag.ReorderWorkflowCompletion);
+            var compCmd = completion.Successful.Commands[completionCommandIndex];
+            completion.Successful.Commands.RemoveAt(completionCommandIndex);
+            completion.Successful.Commands.Insert(
+                completion.Successful.Commands.Count - trailingQueryCommandCount, compCmd);
         }
 
         /// <summary>
