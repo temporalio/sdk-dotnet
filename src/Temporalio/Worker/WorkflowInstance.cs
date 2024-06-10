@@ -1391,8 +1391,8 @@ namespace Temporalio.Worker
             // In earlier versions of the SDK we allowed commands to be sent after workflow
             // completion. These ended up being removed effectively making the result of the
             // workflow function mean any other later coroutine commands be ignored. To match
-            // Go/Java, we are now going to move workflow completion to the end (well, before any
-            // query results) so that same-task-post-completion commands are processed.
+            // Go/Java, we are now going to move workflow completion to the end so that
+            // same-task-post-completion commands are still accounted for.
             //
             // Note this only applies for successful activations that don't have completion
             // reordering disabled and that are either not replaying or have the flag set.
@@ -1406,48 +1406,34 @@ namespace Temporalio.Worker
             }
 
             // We know we're on a newer SDK and can move completion to the end if we need to. First,
-            // find the completion command and the number of trailing query commands.
+            // find the completion command.
             var completionCommandIndex = -1;
-            var trailingQueryCommandCount = 0;
-            for (var i = 0; i < completion.Successful.Commands.Count; i++)
+            for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
             {
                 var cmd = completion.Successful.Commands[i];
                 // Set completion index if the command is a completion
-                if (cmd.CompleteWorkflowExecution != null ||
+                if (cmd.CancelWorkflowExecution != null ||
+                    cmd.CompleteWorkflowExecution != null ||
                     cmd.ContinueAsNewWorkflowExecution != null ||
                     cmd.FailWorkflowExecution != null)
                 {
                     completionCommandIndex = i;
-                }
-                // Increment trailing query count if query (or reset if not)
-                if (cmd.RespondToQuery == null)
-                {
-                    trailingQueryCommandCount = 0;
-                }
-                else
-                {
-                    trailingQueryCommandCount++;
+                    break;
                 }
             }
 
-            // If there is no completion command, nothing to do
-            if (completionCommandIndex == -1)
+            // If there is no completion command or it's already at the end, nothing to do
+            if (completionCommandIndex == -1 ||
+                completionCommandIndex == completion.Successful.Commands.Count - 1)
             {
                 return;
             }
-            // We want to move the completion command to the end of the command set (not counting
-            // trailing queries), but if this would result in no movement then there is nothing to
-            // do.
-            if (completionCommandIndex == completion.Successful.Commands.Count - trailingQueryCommandCount - 1)
-            {
-                return;
-            }
+
             // Now we know the completion is in the wrong spot, so set the SDK flag and move it
             completion.Successful.UsedInternalFlags.Add((uint)WorkflowLogicFlag.ReorderWorkflowCompletion);
             var compCmd = completion.Successful.Commands[completionCommandIndex];
             completion.Successful.Commands.RemoveAt(completionCommandIndex);
-            completion.Successful.Commands.Insert(
-                completion.Successful.Commands.Count - trailingQueryCommandCount, compCmd);
+            completion.Successful.Commands.Insert(completion.Successful.Commands.Count, compCmd);
         }
 
         /// <summary>
