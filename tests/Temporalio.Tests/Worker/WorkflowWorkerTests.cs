@@ -4101,7 +4101,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     {
         var tq = $"tq-{Guid.NewGuid()}";
         var handle =
-            await ExecuteWorkerAsyncReturning<CurrentBuildIdWorkflow,
+            await ExecuteWorkerAsync<CurrentBuildIdWorkflow,
                 WorkflowHandle<CurrentBuildIdWorkflow>>(
             async worker =>
             {
@@ -4399,60 +4399,57 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
-    public class TickingWorkflow
+    public class WaitOnSignalWorkflow
     {
+        private bool complete;
+
         [WorkflowRun]
-        public async Task RunAsync()
-        {
-            // Just tick every 100ms for 10s
-            for (var i = 0; i < 100; i++)
-            {
-                await Workflow.DelayAsync(100);
-            }
-        }
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => complete);
+
+        [WorkflowSignal]
+        public async Task CompleteAsync() => complete = true;
     }
 
     [Fact]
     public async Task ExecuteWorkflowAsync_WorkerClientReplacement_UsesNewClient()
     {
-        // We are going to start a second ephemeral server and then replace the client. So we will
-        // start a no-cache ticking workflow with the current client and confirm it has accomplished
-        // at least one task. Then we will start another on the other client, and confirm it gets
-        // started too. Then we will terminate both. We have to use a ticking workflow with only one
-        // poller to force a quick re-poll to recognize our client change quickly (as opposed to
-        // just waiting the minute for poll timeout).
+        // We are going to create a second ephemeral server and start a workflow on each server.
+        // The worker will start with a client on the first, then we'll swap the clients, signal
+        // both workflows, and confirm the second workflow completes as expected.
         await using var otherEnv = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync();
 
         // Start both workflows on different servers
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var handle1 = await Client.StartWorkflowAsync(
-            (TickingWorkflow wf) => wf.RunAsync(),
+            (WaitOnSignalWorkflow wf) => wf.RunAsync(),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
         var handle2 = await otherEnv.Client.StartWorkflowAsync(
-            (TickingWorkflow wf) => wf.RunAsync(),
+            (WaitOnSignalWorkflow wf) => wf.RunAsync(),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
 
         // Run the worker on the first env
-        await ExecuteWorkerAsync<TickingWorkflow>(
+        await ExecuteWorkerAsync<WaitOnSignalWorkflow>(
         async worker =>
         {
-            // Confirm the first ticking workflow has completed a task but not the second workflow
+            // Confirm the first workflow has completed a task but not the second workflow
             await AssertMore.HasEventEventuallyAsync(handle1, e => e.WorkflowTaskCompletedEventAttributes != null);
             await foreach (var evt in handle2.FetchHistoryEventsAsync())
             {
                 Assert.Null(evt.WorkflowTaskCompletedEventAttributes);
             }
 
-            // Now replace the client, which should be used fairly quickly because we should have
-            // timer-done poll completions every 100ms
+            // Now replace the client
             worker.Client = otherEnv.Client;
 
-            // Now confirm the other workflow has started
-            await AssertMore.HasEventEventuallyAsync(handle2, e => e.WorkflowTaskCompletedEventAttributes != null);
+            // Signal both which should allow the current poll to wake up and it'll be a task
+            // failure when trying to submit that to the new client which is ignored. But also the
+            // new client will poll for the new workflow, which we will wait for it to complete.
+            await handle1.SignalAsync(wf => wf.CompleteAsync());
+            await handle2.SignalAsync(wf => wf.CompleteAsync());
 
-            // Terminate both
+            // Now confirm the other workflow completes
+            await handle2.GetResultAsync();
             await handle1.TerminateAsync();
-            await handle2.TerminateAsync();
         },
         new(taskQueue)
         {
@@ -4678,6 +4675,101 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             });
     }
 
+    [Workflow]
+    public class CoroutinesAfterCompleteWorkflow
+    {
+        private string? completeWorkflowWith;
+        private string? completeUpdateWith;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            await Workflow.WaitConditionAsync(() => completeWorkflowWith != null);
+            completeUpdateWith = "complete-update";
+            return completeWorkflowWith!;
+        }
+
+        [WorkflowUpdate]
+        public async Task<string> DoUpdateAsync()
+        {
+            completeWorkflowWith = "complete-workflow";
+            await Workflow.WaitConditionAsync(() => completeUpdateWith != null);
+            return completeUpdateWith!;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_CoroutinesAfterComplete_GetProcessed()
+    {
+        // Run one workflow without the flag set and one with and get histories
+        WorkflowHistory? historyWithoutFlag = null;
+        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Start update, wait on workflow result (update result would hang)
+                await handle.StartUpdateAsync(
+                    wf => wf.DoUpdateAsync(), new(WorkflowUpdateStage.Accepted));
+                Assert.Equal("complete-workflow", await handle.GetResultAsync());
+                historyWithoutFlag = await handle.FetchHistoryAsync();
+            },
+            new() { DisableWorkflowCompletionCommandReordering = true });
+
+        // Confirm without flag that the workflow ends with task complete (sans flag), update
+        // accepted, and workflow complete, but notably missing update complete
+        var lastEvents = historyWithoutFlag!.Events.TakeLast(3).ToArray();
+        Assert.NotNull(lastEvents[0].WorkflowTaskCompletedEventAttributes);
+        Assert.Equal(0, lastEvents[0].WorkflowTaskCompletedEventAttributes.SdkMetadata?.LangUsedFlags.Count ?? 0);
+        Assert.NotNull(lastEvents[1].WorkflowExecutionUpdateAcceptedEventAttributes);
+        Assert.NotNull(lastEvents[2].WorkflowExecutionCompletedEventAttributes);
+
+        WorkflowHistory? historyWithFlag = null;
+        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Start update, wait on workflow and update
+                var updateHandle = await handle.StartUpdateAsync(
+                    wf => wf.DoUpdateAsync(), new(WorkflowUpdateStage.Accepted));
+                Assert.Equal("complete-workflow", await handle.GetResultAsync());
+                Assert.Equal("complete-update", await updateHandle.GetResultAsync());
+                historyWithFlag = await handle.FetchHistoryAsync();
+            });
+
+        // Now confirm with the flag that the workflow ends with task complete (with flag), update
+        // accepted, update complete, and workflow complete
+        lastEvents = historyWithFlag!.Events.TakeLast(4).ToArray();
+        Assert.NotNull(lastEvents[0].WorkflowTaskCompletedEventAttributes);
+        Assert.Contains(
+            (uint)WorkflowLogicFlag.ReorderWorkflowCompletion,
+            lastEvents[0].WorkflowTaskCompletedEventAttributes.SdkMetadata.LangUsedFlags);
+        Assert.NotNull(lastEvents[1].WorkflowExecutionUpdateAcceptedEventAttributes);
+        Assert.NotNull(lastEvents[2].WorkflowExecutionUpdateCompletedEventAttributes);
+        Assert.NotNull(lastEvents[3].WorkflowExecutionCompletedEventAttributes);
+
+        // Now for extra sanity checking, we'll check the replayer. First, confirm with a
+        // flag-disabled replayer that without-flag succeeds but with-flag has non-determinism
+        var noFlagReplayer = new WorkflowReplayer(new WorkflowReplayerOptions()
+        {
+            DisableWorkflowCompletionCommandReordering = true,
+        }.AddWorkflow<CoroutinesAfterCompleteWorkflow>());
+        await noFlagReplayer.ReplayWorkflowAsync(historyWithoutFlag);
+        await Assert.ThrowsAsync<WorkflowNondeterminismException>(() =>
+            noFlagReplayer.ReplayWorkflowAsync(historyWithFlag));
+
+        // Confirm with flag-based replayer everything is ok for both histories
+        var flagReplayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<CoroutinesAfterCompleteWorkflow>());
+        await flagReplayer.ReplayWorkflowAsync(historyWithoutFlag);
+        await flagReplayer.ReplayWorkflowAsync(historyWithFlag);
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
@@ -4686,12 +4778,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             attrs => Assert.Contains(messageContains, attrs.Failure?.Message));
     }
 
-    private async Task ExecuteWorkerAsync<TWf>(
+    private Task<ValueTuple> ExecuteWorkerAsync<TWorkflow>(
         Func<TemporalWorker, Task> action,
         TemporalWorkerOptions? options = null,
-        IWorkerClient? client = null)
-    {
-        await ExecuteWorkerAsyncReturning<TWf, ValueTuple>(
+        IWorkerClient? client = null) =>
+        ExecuteWorkerAsync<TWorkflow, ValueTuple>(
             async (w) =>
             {
                 await action(w);
@@ -4699,17 +4790,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             },
             options,
             client);
-    }
 
-    private async Task<TArt> ExecuteWorkerAsyncReturning<TWf, TArt>(
-        Func<TemporalWorker, Task<TArt>> action,
+    private async Task<TResult> ExecuteWorkerAsync<TWorkflow, TResult>(
+        Func<TemporalWorker, Task<TResult>> action,
         TemporalWorkerOptions? options = null,
         IWorkerClient? client = null)
     {
         options ??= new();
         options = (TemporalWorkerOptions)options.Clone();
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
-        options.AddWorkflow<TWf>();
+        options.AddWorkflow<TWorkflow>();
         options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
         using var worker = new TemporalWorker(client ?? Client, options);
         return await worker.ExecuteAsync(() => action(worker));
