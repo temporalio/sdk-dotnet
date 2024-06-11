@@ -38,43 +38,44 @@ jobs:
             out-prefix: win-x64
     runs-on: ${{ matrix.runsOn || matrix.os }}
     container: ${{ matrix.container }}
+    env:
+      # This is required to allow continuing usage of Node 16 for actions,
+      # as Node 20 won't run on the docker image we use for linux builds
+      # (Node 20 require glibc 2.28+, but container image has glibc 2.17).
+      # https://github.blog/changelog/2024-05-17-updated-dates-for-actions-runner-using-node20-instead-of-node16-by-default/
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        # FIXME: v4+ requires Node 20
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
+        uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
 
       - name: Setup Rust cache
+        # FIXME: v2.7.2+ requires Node 20
         # Fixed version due to https://github.com/Swatinem/rust-cache/issues/183#issuecomment-1893979126
-        uses: Swatinem/rust-cache@v2.7.0
+        uses: Swatinem/rust-cache@v2.7.1
         with:
           workspaces: src/Temporalio/Bridge
           key: ${{ matrix.os }}
 
-      - name: Install protoc (non-Linux)
-        if: ${{ matrix.os != 'ubuntu-latest' && matrix.os != 'ubuntu-arm' }}
-        uses: arduino/setup-protoc@v3
+      - name: Install protoc
+        # FIXME: v3+ requires Node 20
+        uses: arduino/setup-protoc@v2
         with:
           version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install protoc (Linux)
-        if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'ubuntu-arm' }}
-        run: |
-          curl --location -o protobuf-compiler.zip ${{ matrix.protobuf-url }}
-          mkdir protobuf-compiler
-          unzip protobuf-compiler.zip -d protobuf-compiler
-          echo $(realpath .)/protobuf-compiler/bin >> $GITHUB_PATH
 
       - name: Build
         run: cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release
 
       - name: Upload bridge library
+        # FIXME: v4+ requires Node 20
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.out-prefix }}-bridge
@@ -86,12 +87,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Download bridge libraries
-        uses: actions/download-artifact@v3
+        # Need v3 here to stay compatible with the compile-native-binaries job.
+        uses: actions/download-artifact@v3-node20
         with:
           path: bridge-libraries
 
@@ -102,7 +104,7 @@ jobs:
         run: dotnet pack -c Release /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
 
       - name: Upload NuGet artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nuget-package
           path: |
@@ -132,12 +134,12 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Download NuGet artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nuget-package
           path: nuget-package
@@ -156,7 +158,7 @@ jobs:
 
       - name: Setup msbuild (Windows only)
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: microsoft/setup-msbuild@v1.1
+        uses: microsoft/setup-msbuild@v2
 
       - name: Run .NET framework smoke test (Windows only)
         if: ${{ matrix.os == 'windows-latest' }}
