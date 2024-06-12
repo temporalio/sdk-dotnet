@@ -393,15 +393,6 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "RunWorkflow:TracingWorkflow",
                 Parent: "StartWorkflow:TracingWorkflow",
                 Tags: workflowRunTags),
-            // Validate update
-            new(
-                "ValidateUpdate:UpdateTaskFailure",
-                Parent: "StartWorkflow:TracingWorkflow",
-                Tags: workflowRunTags,
-                // Ignore link because client-side send update not captured since it didn't complete
-                // TODO(cretz): This may need to change when server bug that doesn't finish update
-                // poll on workflow terminate is complete.
-                IgnoreLinks: true),
             // Handle update
             new(
                 "HandleUpdate:UpdateTaskFailure",
@@ -413,7 +404,13 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "WorkflowTaskFailure:UpdateTaskFailure",
                 Parent: "HandleUpdate:UpdateTaskFailure",
                 Tags: workflowRunTags,
-                Events: new[] { ActivityAssertion.ExceptionEvent("some message") }));
+                Events: new[] { ActivityAssertion.ExceptionEvent("some message") }),
+            // On 1.24+, updates properly fail on client when workflow terminated
+            new(
+                "UpdateWorkflow:UpdateTaskFailure",
+                Parent: null,
+                Tags: workflowTags,
+                Events: new[] { ActivityAssertion.ExceptionEvent("workflow execution already completed") }));
     }
 
     [Fact]
@@ -509,7 +506,8 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
             new(
                 "QueryWorkflow:QueryFailure",
                 Parent: null,
-                Tags: workflowTags),
+                Tags: workflowTags,
+                Events: new[] { ActivityAssertion.ExceptionEvent("fail3") }),
             // Handle query
             new(
                 "HandleQuery:QueryFailure",
