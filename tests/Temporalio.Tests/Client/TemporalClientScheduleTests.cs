@@ -323,7 +323,9 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
                 EndAt: now,
                 Overlap: ScheduleOverlapPolicy.AllowAll),
         });
-        Assert.Equal(6, (await handle.DescribeAsync()).Info.NumActions);
+        // Servers < 1.24 this is 6, servers >= 1.24 this is 7
+        var numActions = (await handle.DescribeAsync()).Info.NumActions;
+        Assert.True(numActions == 6 || numActions == 7, $"Invalid num actions: {numActions}");
 
         // Delete when done
         await TestUtils.DeleteAllSchedulesAsync(Client);

@@ -196,7 +196,15 @@ namespace Temporalio.Extensions.OpenTelemetry
                     {
                         input = input with { Headers = headers };
                     }
-                    return await base.StartWorkflowAsync<TWorkflow, TResult>(input).ConfigureAwait(false);
+                    try
+                    {
+                        return await base.StartWorkflowAsync<TWorkflow, TResult>(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
                 }
             }
 
@@ -212,7 +220,15 @@ namespace Temporalio.Extensions.OpenTelemetry
                     {
                         input = input with { Headers = headers };
                     }
-                    await base.SignalWorkflowAsync(input).ConfigureAwait(false);
+                    try
+                    {
+                        await base.SignalWorkflowAsync(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
                 }
             }
 
@@ -228,7 +244,15 @@ namespace Temporalio.Extensions.OpenTelemetry
                     {
                         input = input with { Headers = headers };
                     }
-                    return await base.QueryWorkflowAsync<TResult>(input).ConfigureAwait(false);
+                    try
+                    {
+                        return await base.QueryWorkflowAsync<TResult>(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
                 }
             }
 
@@ -245,7 +269,15 @@ namespace Temporalio.Extensions.OpenTelemetry
                     {
                         input = input with { Headers = headers };
                     }
-                    return await base.StartWorkflowUpdateAsync<TResult>(input).ConfigureAwait(false);
+                    try
+                    {
+                        return await base.StartWorkflowUpdateAsync<TResult>(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
                 }
             }
 
