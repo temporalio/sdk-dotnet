@@ -129,6 +129,15 @@ namespace Temporalio.Worker
             TemporalWorkerOptions.DefaultWorkflowInstanceFactory;
 
         /// <summary>
+        /// Gets or sets a value indicating whether the workflow completion command reordering will
+        /// apply.
+        /// </summary>
+        /// <remarks>
+        /// This is visible for testing only.
+        /// </remarks>
+        internal bool DisableWorkflowCompletionCommandReordering { get; set; }
+
+        /// <summary>
         /// Add the given type as a workflow.
         /// </summary>
         /// <typeparam name="T">Type to add.</typeparam>

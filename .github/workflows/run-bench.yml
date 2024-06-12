@@ -8,14 +8,12 @@ jobs:
     runs-on: buildjet-4vcpu-ubuntu-2204
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
       - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
@@ -23,13 +21,12 @@ jobs:
           workspaces: src/Temporalio/Bridge
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
 
       - name: Install protoc
-        uses: arduino/setup-protoc@v1
-        with:
-          # TODO(cretz): Upgrade when https://github.com/arduino/setup-protoc/issues/33 fixed
-          version: '3.x'
+        uses: arduino/setup-protoc@v3
+          # TODO: Upgrade proto once https://github.com/arduino/setup-protoc/issues/99 is fixed
+          version: '23.x'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build
