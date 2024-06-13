@@ -25,6 +25,7 @@ jobs:
 
       - name: Install protoc
         uses: arduino/setup-protoc@v3
+        with:
           # TODO: Upgrade proto once https://github.com/arduino/setup-protoc/issues/99 is fixed
           version: '23.x'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
