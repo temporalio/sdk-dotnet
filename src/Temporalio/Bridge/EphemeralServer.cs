@@ -51,7 +51,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<EphemeralServer>();
+                var completion = new TaskCompletionSource<EphemeralServer>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.ephemeral_server_start_dev_server(
@@ -76,7 +77,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<EphemeralServer>();
+                var completion = new TaskCompletionSource<EphemeralServer>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.ephemeral_server_start_test_server(
@@ -97,7 +99,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<bool>();
+                var completion = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.ephemeral_server_shutdown(
