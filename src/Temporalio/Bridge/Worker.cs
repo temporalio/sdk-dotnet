@@ -96,7 +96,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<bool>();
+                var completion = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.worker_validate(
@@ -141,7 +142,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<ByteArray?>();
+                var completion = new TaskCompletionSource<ByteArray?>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.worker_poll_workflow_activation(
@@ -179,7 +181,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<ByteArray?>();
+                var completion = new TaskCompletionSource<ByteArray?>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.worker_poll_activity_task(
@@ -218,7 +221,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<bool>();
+                var completion = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.worker_complete_workflow_activation(
@@ -252,7 +256,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<bool>();
+                var completion = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.worker_complete_activity_task(
@@ -338,7 +343,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<bool>();
+                var completion = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.worker_finalize_shutdown(

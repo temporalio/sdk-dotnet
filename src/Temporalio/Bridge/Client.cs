@@ -43,7 +43,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<Client>();
+                var completion = new TaskCompletionSource<Client>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.client_connect(
@@ -125,7 +126,8 @@ namespace Temporalio.Bridge
         {
             using (var scope = new Scope())
             {
-                var completion = new TaskCompletionSource<ByteArray>();
+                var completion = new TaskCompletionSource<ByteArray>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.client_rpc_call(
