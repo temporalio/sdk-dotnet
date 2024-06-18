@@ -9,7 +9,7 @@ on:
 jobs:
   build-lint-test:
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
         include:
