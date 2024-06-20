@@ -3994,6 +3994,44 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_ClientCanceled()
+    {
+        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                (UpdateWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            using var updateCancelSource = new CancellationTokenSource();
+            // Start update that waits until started and confirm it reached workflow
+            var updateTask = Task.Run(
+                () => handle.ExecuteUpdateAsync(
+                    wf => wf.DoUpdateLongWaitAsync(),
+                    new() { Rpc = new() { CancellationToken = updateCancelSource.Token } }));
+            await AssertMore.EqualEventuallyAsync(true, () => handle.QueryAsync(wf => wf.Waiting));
+
+            // Cancel and confirm error
+            updateCancelSource.Cancel();
+            await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(() => updateTask);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_ClientTimedOut()
+    {
+        // Don't even need to run worker for this one
+        var handle = await Env.Client.StartWorkflowAsync(
+            (UpdateWorkflow wf) => wf.RunAsync(),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue: $"tq-{Guid.NewGuid()}"));
+
+        // Run update that times out
+        await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(() =>
+            handle.ExecuteUpdateAsync(
+                wf => wf.DoUpdateLongWaitAsync(),
+                new() { Rpc = new() { Timeout = TimeSpan.FromMilliseconds(50) } }));
+    }
+
     [Workflow]
     public class ImmediatelyCompleteUpdateAndWorkflow
     {
