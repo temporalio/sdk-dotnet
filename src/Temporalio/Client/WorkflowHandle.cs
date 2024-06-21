@@ -348,10 +348,9 @@ namespace Temporalio.Client
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
         /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
-        public Task<WorkflowUpdateHandle> StartUpdateAsync(
+        public async Task<WorkflowUpdateHandle> StartUpdateAsync(
             string update, IReadOnlyCollection<object?> args, WorkflowUpdateStartOptions options) =>
-            StartUpdateAsync<ValueTuple>(update, args, options).ContinueWith<WorkflowUpdateHandle>(
-                t => t.Result, TaskScheduler.Current);
+            await StartUpdateAsync<ValueTuple>(update, args, options).ConfigureAwait(false);
 
         /// <summary>
         /// Start a workflow update using its name.

@@ -289,8 +289,18 @@ namespace Temporalio.Client
                 UpdateWorkflowExecutionResponse resp;
                 do
                 {
-                    resp = await Client.Connection.WorkflowService.UpdateWorkflowExecutionAsync(
-                        req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    try
+                    {
+                        resp = await Client.Connection.WorkflowService.UpdateWorkflowExecutionAsync(
+                            req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                    }
+                    catch (Exception e) when (e is OperationCanceledException ||
+                        (e is RpcException rpcErr && (
+                            rpcErr.Code == RpcException.StatusCode.DeadlineExceeded ||
+                            rpcErr.Code == RpcException.StatusCode.Cancelled)))
+                    {
+                        throw new WorkflowUpdateRpcTimeoutOrCanceledException(e);
+                    }
                 }
                 while (resp.Stage < req.WaitPolicy.LifecycleStage &&
                     resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);

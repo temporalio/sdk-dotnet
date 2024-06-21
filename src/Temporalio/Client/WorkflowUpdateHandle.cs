@@ -100,15 +100,25 @@ namespace Temporalio.Client
             // Continually retry to poll while we get an empty response
             while (KnownOutcome == null)
             {
-                var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(
-                    req, rpcOptions).ConfigureAwait(false);
+                try
+                {
+                    var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(
+                        req, rpcOptions).ConfigureAwait(false);
 #pragma warning disable CA1508
-                // .NET incorrectly assumes KnownOutcome cannot be null here because they assume a
-                // single thread. We accept there is technically a race condition here since this is
-                // not an atomic CAS operation, but outcome is the same server side for the same
-                // update.
-                KnownOutcome ??= resp.Outcome;
+                    // .NET incorrectly assumes KnownOutcome cannot be null here because they assume
+                    // a single thread. We accept there is technically a race condition here since
+                    // this is not an atomic CAS operation, but outcome is the same server side for
+                    // the same update.
+                    KnownOutcome ??= resp.Outcome;
 #pragma warning restore CA1508
+                }
+                catch (Exception e) when (e is OperationCanceledException ||
+                    (e is RpcException rpcErr && (
+                        rpcErr.Code == RpcException.StatusCode.DeadlineExceeded ||
+                        rpcErr.Code == RpcException.StatusCode.Cancelled)))
+                {
+                    throw new WorkflowUpdateRpcTimeoutOrCanceledException(e);
+                }
             }
         }
     }
