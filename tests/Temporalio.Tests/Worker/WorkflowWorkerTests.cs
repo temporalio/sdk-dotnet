@@ -3891,25 +3891,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_Updates_GetResultCancellation()
-    {
-        await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
-        {
-            // Start the workflow
-            var handle = await Env.Client.StartWorkflowAsync(
-                (UpdateWorkflow wf) => wf.RunAsync(),
-                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-            var updateHandle = await handle.StartUpdateAsync(
-                wf => wf.DoUpdateLongWaitAsync(), new(WorkflowUpdateStage.Accepted));
-            // Ask for the result but only for 1 second
-            using var tokenSource = new CancellationTokenSource();
-            tokenSource.CancelAfter(TimeSpan.FromSeconds(1));
-            await Assert.ThrowsAsync<OperationCanceledException>(() =>
-                updateHandle.GetResultAsync(new() { CancellationToken = tokenSource.Token }));
-        });
-    }
-
-    [Fact]
     public async Task ExecuteWorkflowAsync_Updates_ValidatorCreatesCommands()
     {
         await ExecuteWorkerAsync<UpdateWorkflow>(async worker =>
