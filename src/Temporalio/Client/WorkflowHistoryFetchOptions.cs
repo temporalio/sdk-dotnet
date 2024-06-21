@@ -31,7 +31,7 @@ namespace Temporalio.Client
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (WorkflowHistoryEventFetchOptions)MemberwiseClone();
+            var copy = (WorkflowHistoryFetchOptions)MemberwiseClone();
             if (Rpc != null)
             {
                 copy.Rpc = (RpcOptions)Rpc.Clone();
