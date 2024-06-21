@@ -19,7 +19,7 @@ namespace Temporalio.Client.Schedules
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
         public virtual object Clone()
         {
-            var copy = (WorkflowListOptions)MemberwiseClone();
+            var copy = (ScheduleListOptions)MemberwiseClone();
             if (Rpc != null)
             {
                 copy.Rpc = (RpcOptions)Rpc.Clone();
