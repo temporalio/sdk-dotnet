@@ -1004,6 +1004,14 @@ namespace Temporalio.Worker
                             // If workflow failure exception, it's an update failure. If it's some
                             // other exception, it's a task failure. Otherwise it's a success.
                             var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
+                            // There are .NET cases where cancellation occurs but is not considered
+                            // an exception. We are going to make it an exception. Unfortunately
+                            // there is no easy way to make it include the outer stack trace at this
+                            // time.
+                            if (exc == null && task.IsCanceled)
+                            {
+                                exc = new TaskCanceledException();
+                            }
                             if (exc != null && IsWorkflowFailureException(exc))
                             {
                                 AddCommand(new()

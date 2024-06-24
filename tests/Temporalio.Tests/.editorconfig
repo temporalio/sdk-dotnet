@@ -4,6 +4,9 @@
 
 # Please keep in alphabetical order by field.
 
+# We use generic lists for queries, it's ok.
+dotnet_diagnostic.CA1002.severity = none
+
 # We use getters for queries, they cannot be properties
 dotnet_diagnostic.CA1024.severity = none
 
