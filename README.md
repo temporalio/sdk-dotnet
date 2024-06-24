@@ -702,6 +702,8 @@ with .NET tasks inside of workflows:
   * Use `Workflow.WhenAnyAsync` instead.
   * Technically this only applies to an enumerable set of tasks with results or more than 2 tasks with results. Other
     uses are safe. See [this issue](https://github.com/dotnet/runtime/issues/87481).
+* Only use `System.Threading.SemaphoreSlim` with `WaitAsync` and `Release`, no thread-blocking calls.
+  * `System.Threading.SemaphoreSlim.Wait` and everything on `System.Threading.Semaphore` will deadlock the workflow.
 * Be wary of additional libraries' implicit use of the default scheduler.
   * For example, while there are articles for `Dataflow` about
     [using a specific scheduler](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-specify-a-task-scheduler-in-a-dataflow-block),
