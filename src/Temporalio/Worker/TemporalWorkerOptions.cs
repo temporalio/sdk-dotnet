@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 
 namespace Temporalio.Worker
@@ -271,6 +272,16 @@ namespace Temporalio.Worker
         /// cost, they are turned off by default.
         /// </remarks>
         public WorkflowStackTrace WorkflowStackTrace { get; set; } = WorkflowStackTrace.None;
+
+        /// <summary>
+        /// Gets or sets a custom <see cref="WorkerTuner"/>. Mutually exclusive with <see
+        /// cref="MaxConcurrentActivities"/>, <see cref="MaxConcurrentWorkflowTasks"/> and <see
+        /// cref="MaxConcurrentLocalActivities"/>.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: WorkerTuners are experimental.
+        /// </remarks>
+        public WorkerTuner? Tuner { get; set; }
 
         /// <summary>
         /// Gets the TEMPORAL_DEBUG environment variable.
