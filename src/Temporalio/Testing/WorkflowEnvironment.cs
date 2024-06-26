@@ -67,7 +67,7 @@ namespace Temporalio.Testing
         {
             options ??= new();
             var runtime = options.Runtime ?? TemporalRuntime.Default;
-            var server = await Bridge.EphemeralServer.StartTemporaliteAsync(
+            var server = await Bridge.EphemeralServer.StartDevServerAsync(
                 runtime.Runtime,
                 options).ConfigureAwait(false);
             return await StartEphemeralAsync(server, options).ConfigureAwait(false);

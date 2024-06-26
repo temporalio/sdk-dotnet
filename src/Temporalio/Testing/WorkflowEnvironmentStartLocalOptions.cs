@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Temporalio.Common;
+
 namespace Temporalio.Testing
 {
     /// <summary>
@@ -17,6 +20,11 @@ namespace Temporalio.Testing
         /// Gets or sets a value indicating whether the UI will be started with the server.
         /// </summary>
         public bool UI { get; set; }
+
+        /// <summary>
+        /// Gets or sets search attributes registered on the dev server on start.
+        /// </summary>
+        public IReadOnlyCollection<SearchAttributeKey>? SearchAttributes { get; set; }
 
         /// <summary>
         /// Gets or sets <b>unstable</b> dev server options.

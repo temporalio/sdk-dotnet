@@ -40,12 +40,12 @@ namespace Temporalio.Bridge
         public bool HasTestService { get; private init; }
 
         /// <summary>
-        /// Start Temporalite.
+        /// Start dev server.
         /// </summary>
         /// <param name="runtime">Runtime to use.</param>
         /// <param name="options">Options to use.</param>
         /// <returns>Started server.</returns>
-        public static async Task<EphemeralServer> StartTemporaliteAsync(
+        public static async Task<EphemeralServer> StartDevServerAsync(
             Runtime runtime,
             Testing.WorkflowEnvironmentStartLocalOptions options)
         {
