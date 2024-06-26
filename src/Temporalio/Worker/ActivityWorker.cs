@@ -366,13 +366,14 @@ namespace Temporalio.Worker
                     Headers: tsk.Start.HeaderFields)).ConfigureAwait(false);
 
                 completion.Result.Completed = new();
-                // As a special case, ValueTuple is considered "void"
-                if (result?.GetType() != typeof(ValueTuple))
+                // As a special case, ValueTuple is considered "void" which is null
+                if (result?.GetType() == typeof(ValueTuple))
                 {
-                    completion.Result.Completed.Result =
-                        await worker.Client.Options.DataConverter.ToPayloadAsync(
-                            result).ConfigureAwait(false);
+                    result = null;
                 }
+                completion.Result.Completed.Result =
+                    await worker.Client.Options.DataConverter.ToPayloadAsync(
+                        result).ConfigureAwait(false);
             }
             catch (CompleteAsyncException)
             {
