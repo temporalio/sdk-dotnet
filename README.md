@@ -10,10 +10,9 @@ execute asynchronous, long-running business logic in a scalable and resilient wa
 
 Also see:
 
-* [NuGet Package](https://www.nuget.org/packages/Temporalio)
-* [Application Development Guide](https://docs.temporal.io/application-development) (TODO: .NET docs)
+* [Application Development Guide](https://docs.temporal.io/develop/dotnet/)
+* [.NET Samples](https://github.com/temporalio/samples-dotnet)
 * [API Documentation](https://dotnet.temporal.io/api)
-* [Samples](https://github.com/temporalio/samples-dotnet)
 
 Extensions:
 
