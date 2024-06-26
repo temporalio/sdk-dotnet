@@ -5,6 +5,7 @@
         {
           "files": [
             "Temporalio/*.csproj",
+            "Temporalio.Extensions.DiagnosticSource/*.csproj",
             "Temporalio.Extensions.Hosting/*.csproj",
             "Temporalio.Extensions.OpenTelemetry/*.csproj"
           ],
