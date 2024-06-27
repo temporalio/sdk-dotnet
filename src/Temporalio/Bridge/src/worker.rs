@@ -78,7 +78,7 @@ pub struct ResourceBasedSlotSupplier {
 }
 
 #[repr(C)]
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Debug)]
 pub struct ResourceBasedTunerConfig {
     target_memory_usage: f64,
     target_cpu_usage: f64,
@@ -627,6 +627,7 @@ impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
             maybe_act_resource_opts,
             maybe_local_act_resource_opts,
         ];
+        dbg!(&all_resource_opts);
         let mut set_resource_opts = all_resource_opts.iter().flatten();
         let first = set_resource_opts.next();
         let all_are_same = if let Some(first) = first {

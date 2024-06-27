@@ -11,6 +11,6 @@ namespace Temporalio.Worker.Tuning
     /// CPU usage. This can be set to 1.0 if desired, but it's recommended to leave some
     /// headroom for other processes.</param>
     public sealed record ResourceBasedTunerOptions(
-        float TargetMemoryUsage,
-        float TargetCpuUsage);
+        double TargetMemoryUsage,
+        double TargetCpuUsage);
 }

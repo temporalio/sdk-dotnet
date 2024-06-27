@@ -498,6 +498,26 @@ namespace Temporalio.Bridge
             this Temporalio.Worker.Tuning.WorkerTuner tuner,
             Scope scope)
         {
+            Temporalio.Worker.Tuning.ResourceBasedTunerOptions? lastTunerOptions = null;
+            Temporalio.Worker.Tuning.ISlotSupplier[] suppliers =
+            {
+                tuner.GetWorkflowTaskSlotSupplier(), tuner.GetActivityTaskSlotSupplier(),
+                tuner.GetLocalActivitySlotSupplier(),
+            };
+            foreach (var supplier in suppliers)
+            {
+                if (supplier is Temporalio.Worker.Tuning.ResourceBasedSlotSupplier resourceBased)
+                {
+                    if (lastTunerOptions != null && lastTunerOptions != resourceBased.TunerOptions)
+                    {
+                        throw new ArgumentException(
+                            "All resource-based slot suppliers must have the same ResourceBasedTunerOptions");
+                    }
+
+                    lastTunerOptions = resourceBased.TunerOptions;
+                }
+            }
+
             return new()
             {
                 workflow_slot_supplier = tuner.GetWorkflowTaskSlotSupplier().ToInteropSlotSupplier(scope),
@@ -514,6 +534,7 @@ namespace Temporalio.Bridge
             {
                 return new()
                 {
+                    tag = Interop.SlotSupplier_Tag.FixedSize,
                     fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(fixedSize.NumSlots) },
                 };
             }
@@ -521,12 +542,18 @@ namespace Temporalio.Bridge
             {
                 return new()
                 {
+                    tag = Interop.SlotSupplier_Tag.ResourceBased,
                     resource_based = new Interop.ResourceBasedSlotSupplier()
                     {
                         // TODO: Appropriate defaults by slot type
                         minimum_slots = new UIntPtr(resourceBased.Options.MinimumSlots ?? 5),
                         maximum_slots = new UIntPtr(resourceBased.Options.MaximumSlots ?? 500),
                         ramp_throttle_ms = (ulong)(resourceBased.Options.RampThrottle?.TotalMilliseconds ?? 0),
+                        tuner_config = new Interop.ResourceBasedTunerConfig()
+                        {
+                            target_memory_usage = resourceBased.TunerOptions.TargetMemoryUsage,
+                            target_cpu_usage = resourceBased.TunerOptions.TargetCpuUsage,
+                        },
                     },
                 };
             }

@@ -20,8 +20,8 @@ namespace Temporalio.Worker.Tuning
         /// <param name="localActivityOptions">Options for the local activity slot supplier.</param>
         /// <returns>The tuner.</returns>
         public static WorkerTuner CreateResourceBased(
-            float targetMemoryUsage,
-            float targetCpuUsage,
+            double targetMemoryUsage,
+            double targetCpuUsage,
             ResourceBasedSlotSupplierOptions? workflowOptions = null,
             ResourceBasedSlotSupplierOptions? activityOptions = null,
             ResourceBasedSlotSupplierOptions? localActivityOptions = null)
