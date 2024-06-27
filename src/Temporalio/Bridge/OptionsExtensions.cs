@@ -411,9 +411,7 @@ namespace Temporalio.Bridge
                 build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = (uint)options.MaxCachedWorkflows,
-                max_outstanding_workflow_tasks = (uint)options.MaxConcurrentWorkflowTasks,
-                max_outstanding_activities = (uint)options.MaxConcurrentActivities,
-                max_outstanding_local_activities = (uint)options.MaxConcurrentLocalActivities,
+                tuner = options.Tuner.ToInteropTuner(scope),
                 no_remote_activities = (byte)(noRemoteActivities ? 1 : 0),
                 sticky_queue_schedule_to_start_timeout_millis =
                     (ulong)options.StickyQueueScheduleToStartTimeout.TotalMilliseconds,
@@ -452,10 +450,6 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
-            var nonDetWorkflowFailForTypes = options.Workflows.Where(
-                w => w.FailureExceptionTypes?.Any(
-                    t => t.IsAssignableFrom(typeof(WorkflowNondeterminismException))) ?? false).
-                Select(w => w.Name).ToArray();
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),
@@ -463,9 +457,7 @@ namespace Temporalio.Bridge
                 build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
-                max_outstanding_workflow_tasks = 2,
-                max_outstanding_activities = 1,
-                max_outstanding_local_activities = 1,
+                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixed(2, 1, 1).ToInteropTuner(scope),
                 no_remote_activities = 1,
                 sticky_queue_schedule_to_start_timeout_millis = 1000,
                 max_heartbeat_throttle_interval_millis = 1000,
@@ -481,6 +473,67 @@ namespace Temporalio.Bridge
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
             };
+        }
+
+        private static Interop.TunerHolder ToInteropTuner(
+            this Temporalio.Worker.Tuning.WorkerTuner? tuner,
+            Scope scope)
+        {
+            if (tuner == null)
+            {
+                return new()
+                {
+                    workflow_slot_supplier = new Interop.SlotSupplier()
+                    {
+                        fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(100) },
+                    },
+                    activity_slot_supplier = new Interop.SlotSupplier()
+                    {
+                        fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(100) },
+                    },
+                    local_activity_slot_supplier = new Interop.SlotSupplier()
+                    {
+                        fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(100) },
+                    },
+                };
+            }
+
+            return new()
+            {
+                workflow_slot_supplier = tuner.GetWorkflowTaskSlotSupplier().ToInteropSlotSupplier(scope),
+                activity_slot_supplier = tuner.GetActivityTaskSlotSupplier().ToInteropSlotSupplier(scope),
+                local_activity_slot_supplier = tuner.GetLocalActivitySlotSupplier().ToInteropSlotSupplier(scope),
+            };
+        }
+
+        private static Interop.SlotSupplier ToInteropSlotSupplier(
+                this Temporalio.Worker.Tuning.ISlotSupplier supplier,
+                Scope scope)
+        {
+            if (supplier is Temporalio.Worker.Tuning.FixedSizeSlotSupplier fixedSize)
+            {
+                return new()
+                {
+                    fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(fixedSize.NumSlots) },
+                };
+            }
+            else if (supplier is Temporalio.Worker.Tuning.ResourceBasedSlotSupplier resourceBased)
+            {
+                return new()
+                {
+                    resource_based = new Interop.ResourceBasedSlotSupplier()
+                    {
+                        // TODO: Appropriate defaults by slot type
+                        minimum_slots = new UIntPtr(resourceBased.Options.MinimumSlots ?? 5),
+                        maximum_slots = new UIntPtr(resourceBased.Options.MaximumSlots ?? 500),
+                        ramp_throttle_ms = (ulong)(resourceBased.Options.RampThrottle?.TotalMilliseconds ?? 0),
+                    },
+                };
+            }
+            else
+            {
+                throw new ArgumentException("ISlotSupplier must be one of the types provided by the library");
+            }
         }
 
         private static bool AnyNonDeterminismFailureTypes(
