@@ -404,6 +404,25 @@ namespace Temporalio.Bridge
             // We have to disable remote activities if a user asks _or_ if we are not running an
             // activity worker at all. Otherwise shutdown will not proceed properly.
             var noRemoteActivities = options.LocalActivityWorkerOnly || options.Activities.Count == 0;
+            var tuner = options.Tuner;
+            if (tuner == null)
+            {
+                var maxWF = (uint)(options.MaxConcurrentWorkflowTasks ?? 100);
+                var maxAct = (uint)(options.MaxConcurrentActivities ?? 100);
+                var maxLocalAct = (uint)(options.MaxConcurrentLocalActivities ?? 100);
+                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixed(maxWF, maxAct, maxLocalAct);
+            }
+            else
+            {
+                if (options.MaxConcurrentWorkflowTasks.HasValue ||
+                    options.MaxConcurrentActivities.HasValue ||
+                    options.MaxConcurrentLocalActivities.HasValue)
+                {
+                    throw new ArgumentException(
+                        "Cannot set both Tuner and any of MaxConcurrentWorkflowTasks, " +
+                        "MaxConcurrentActivities, or MaxConcurrentLocalActivities.");
+                }
+            }
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -411,7 +430,7 @@ namespace Temporalio.Bridge
                 build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = (uint)options.MaxCachedWorkflows,
-                tuner = options.Tuner.ToInteropTuner(scope),
+                tuner = tuner.ToInteropTuner(scope),
                 no_remote_activities = (byte)(noRemoteActivities ? 1 : 0),
                 sticky_queue_schedule_to_start_timeout_millis =
                     (ulong)options.StickyQueueScheduleToStartTimeout.TotalMilliseconds,
@@ -476,28 +495,9 @@ namespace Temporalio.Bridge
         }
 
         private static Interop.TunerHolder ToInteropTuner(
-            this Temporalio.Worker.Tuning.WorkerTuner? tuner,
+            this Temporalio.Worker.Tuning.WorkerTuner tuner,
             Scope scope)
         {
-            if (tuner == null)
-            {
-                return new()
-                {
-                    workflow_slot_supplier = new Interop.SlotSupplier()
-                    {
-                        fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(100) },
-                    },
-                    activity_slot_supplier = new Interop.SlotSupplier()
-                    {
-                        fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(100) },
-                    },
-                    local_activity_slot_supplier = new Interop.SlotSupplier()
-                    {
-                        fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(100) },
-                    },
-                };
-            }
-
             return new()
             {
                 workflow_slot_supplier = tuner.GetWorkflowTaskSlotSupplier().ToInteropSlotSupplier(scope),

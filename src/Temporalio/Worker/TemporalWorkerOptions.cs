@@ -125,9 +125,9 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of activities that will ever be given to this worker
-        /// concurrently. Default is 100.
+        /// concurrently. Default is 100. Mutually exclusive with <see cref="Tuner"/>.
         /// </summary>
-        public int MaxConcurrentActivities { get; set; } = 100;
+        public int? MaxConcurrentActivities { get; set; }
 
         /// <summary>
         /// Gets or sets the longest interval for throttling activity heartbeats. Default is 60s.
@@ -170,15 +170,15 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum allowed number of workflow tasks that will ever be given to
-        /// the worker at one time. Default is 100.
+        /// the worker at one time. Default is 100. Mutually exclusive with <see cref="Tuner"/>.
         /// </summary>
-        public int MaxConcurrentWorkflowTasks { get; set; } = 100;
+        public int? MaxConcurrentWorkflowTasks { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum number of local activities that will ever be given to this
-        /// worker concurrently. Default is 100.
+        /// worker concurrently. Default is 100. Mutually exclusive with <see cref="Tuner"/>.
         /// </summary>
-        public int MaxConcurrentLocalActivities { get; set; } = 100;
+        public int? MaxConcurrentLocalActivities { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the worker will only handle workflows and local
