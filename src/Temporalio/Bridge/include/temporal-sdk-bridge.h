@@ -357,16 +357,16 @@ typedef struct FixedSizeSlotSupplier {
   uintptr_t num_slots;
 } FixedSizeSlotSupplier;
 
-typedef struct ResourceBasedTunerConfig {
+typedef struct ResourceBasedTunerOptions {
   double target_memory_usage;
   double target_cpu_usage;
-} ResourceBasedTunerConfig;
+} ResourceBasedTunerOptions;
 
 typedef struct ResourceBasedSlotSupplier {
   uintptr_t minimum_slots;
   uintptr_t maximum_slots;
   uint64_t ramp_throttle_ms;
-  struct ResourceBasedTunerConfig tuner_config;
+  struct ResourceBasedTunerOptions tuner_options;
 } ResourceBasedSlotSupplier;
 
 typedef enum SlotSupplier_Tag {

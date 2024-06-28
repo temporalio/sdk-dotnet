@@ -559,7 +559,7 @@ namespace Temporalio.Bridge
                         ramp_throttle_ms =
                             (ulong)(resourceBased.Options.RampThrottle?.TotalMilliseconds ??
                                     defaultThrottle),
-                        tuner_config = new Interop.ResourceBasedTunerConfig()
+                        tuner_options = new Interop.ResourceBasedTunerOptions()
                         {
                             target_memory_usage = resourceBased.TunerOptions.TargetMemoryUsage,
                             target_cpu_usage = resourceBased.TunerOptions.TargetCpuUsage,

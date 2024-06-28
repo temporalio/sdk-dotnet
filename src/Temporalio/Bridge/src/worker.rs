@@ -74,12 +74,12 @@ pub struct ResourceBasedSlotSupplier {
     minimum_slots: usize,
     maximum_slots: usize,
     ramp_throttle_ms: u64,
-    tuner_config: ResourceBasedTunerConfig,
+    tuner_options: ResourceBasedTunerOptions,
 }
 
 #[repr(C)]
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub struct ResourceBasedTunerConfig {
+pub struct ResourceBasedTunerOptions {
     target_memory_usage: f64,
     target_cpu_usage: f64,
 }
@@ -606,19 +606,19 @@ impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
         // Verify all resource-based options are the same if any are set
         let maybe_wf_resource_opts =
             if let SlotSupplier::ResourceBased(ref ss) = holder.workflow_slot_supplier {
-                Some(&ss.tuner_config)
+                Some(&ss.tuner_options)
             } else {
                 None
             };
         let maybe_act_resource_opts =
             if let SlotSupplier::ResourceBased(ref ss) = holder.activity_slot_supplier {
-                Some(&ss.tuner_config)
+                Some(&ss.tuner_options)
             } else {
                 None
             };
         let maybe_local_act_resource_opts =
             if let SlotSupplier::ResourceBased(ref ss) = holder.local_activity_slot_supplier {
-                Some(&ss.tuner_config)
+                Some(&ss.tuner_options)
             } else {
                 None
             };

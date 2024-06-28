@@ -513,7 +513,7 @@ namespace Temporalio.Bridge.Interop
         public UIntPtr num_slots;
     }
 
-    internal partial struct ResourceBasedTunerConfig
+    internal partial struct ResourceBasedTunerOptions
     {
         public double target_memory_usage;
 
@@ -531,8 +531,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint64_t")]
         public ulong ramp_throttle_ms;
 
-        [NativeTypeName("struct ResourceBasedTunerConfig")]
-        public ResourceBasedTunerConfig tuner_config;
+        [NativeTypeName("struct ResourceBasedTunerOptions")]
+        public ResourceBasedTunerOptions tuner_options;
     }
 
     internal enum SlotSupplier_Tag
