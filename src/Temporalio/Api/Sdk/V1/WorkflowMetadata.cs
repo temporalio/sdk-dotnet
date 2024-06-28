@@ -25,25 +25,25 @@ namespace Temporalio.Api.Sdk.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cit0ZW1wb3JhbC9hcGkvc2RrL3YxL3dvcmtmbG93X21ldGFkYXRhLnByb3Rv",
-            "EhN0ZW1wb3JhbC5hcGkuc2RrLnYxIk8KEFdvcmtmbG93TWV0YWRhdGESOwoK",
+            "EhN0ZW1wb3JhbC5hcGkuc2RrLnYxImgKEFdvcmtmbG93TWV0YWRhdGESOwoK",
             "ZGVmaW5pdGlvbhgBIAEoCzInLnRlbXBvcmFsLmFwaS5zZGsudjEuV29ya2Zs",
-            "b3dEZWZpbml0aW9uIqYCChJXb3JrZmxvd0RlZmluaXRpb24SDAoEdHlwZRgB",
-            "IAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRJNChFxdWVyeV9kZWZpbml0aW9u",
-            "cxgDIAMoCzIyLnRlbXBvcmFsLmFwaS5zZGsudjEuV29ya2Zsb3dJbnRlcmFj",
-            "dGlvbkRlZmluaXRpb24STgoSc2lnbmFsX2RlZmluaXRpb25zGAQgAygLMjIu",
-            "dGVtcG9yYWwuYXBpLnNkay52MS5Xb3JrZmxvd0ludGVyYWN0aW9uRGVmaW5p",
-            "dGlvbhJOChJ1cGRhdGVfZGVmaW5pdGlvbnMYBSADKAsyMi50ZW1wb3JhbC5h",
-            "cGkuc2RrLnYxLldvcmtmbG93SW50ZXJhY3Rpb25EZWZpbml0aW9uIkIKHVdv",
-            "cmtmbG93SW50ZXJhY3Rpb25EZWZpbml0aW9uEgwKBG5hbWUYASABKAkSEwoL",
-            "ZGVzY3JpcHRpb24YAiABKAlCgwEKFmlvLnRlbXBvcmFsLmFwaS5zZGsudjFC",
-            "FVdvcmtmbG93TWV0YWRhdGFQcm90b1ABWh1nby50ZW1wb3JhbC5pby9hcGkv",
-            "c2RrL3YxO3Nka6oCFVRlbXBvcmFsaW8uQXBpLlNkay5WMeoCGFRlbXBvcmFs",
-            "aW86OkFwaTo6U2RrOjpWMWIGcHJvdG8z"));
+            "b3dEZWZpbml0aW9uEhcKD2N1cnJlbnRfZGV0YWlscxgCIAEoCSKRAgoSV29y",
+            "a2Zsb3dEZWZpbml0aW9uEgwKBHR5cGUYASABKAkSTQoRcXVlcnlfZGVmaW5p",
+            "dGlvbnMYAiADKAsyMi50ZW1wb3JhbC5hcGkuc2RrLnYxLldvcmtmbG93SW50",
+            "ZXJhY3Rpb25EZWZpbml0aW9uEk4KEnNpZ25hbF9kZWZpbml0aW9ucxgDIAMo",
+            "CzIyLnRlbXBvcmFsLmFwaS5zZGsudjEuV29ya2Zsb3dJbnRlcmFjdGlvbkRl",
+            "ZmluaXRpb24STgoSdXBkYXRlX2RlZmluaXRpb25zGAQgAygLMjIudGVtcG9y",
+            "YWwuYXBpLnNkay52MS5Xb3JrZmxvd0ludGVyYWN0aW9uRGVmaW5pdGlvbiJC",
+            "Ch1Xb3JrZmxvd0ludGVyYWN0aW9uRGVmaW5pdGlvbhIMCgRuYW1lGAEgASgJ",
+            "EhMKC2Rlc2NyaXB0aW9uGAIgASgJQoMBChZpby50ZW1wb3JhbC5hcGkuc2Rr",
+            "LnYxQhVXb3JrZmxvd01ldGFkYXRhUHJvdG9QAVodZ28udGVtcG9yYWwuaW8v",
+            "YXBpL3Nkay92MTtzZGuqAhVUZW1wb3JhbGlvLkFwaS5TZGsuVjHqAhhUZW1w",
+            "b3JhbGlvOjpBcGk6OlNkazo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Sdk.V1.WorkflowMetadata), global::Temporalio.Api.Sdk.V1.WorkflowMetadata.Parser, new[]{ "Definition" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Sdk.V1.WorkflowDefinition), global::Temporalio.Api.Sdk.V1.WorkflowDefinition.Parser, new[]{ "Type", "Description", "QueryDefinitions", "SignalDefinitions", "UpdateDefinitions" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Sdk.V1.WorkflowMetadata), global::Temporalio.Api.Sdk.V1.WorkflowMetadata.Parser, new[]{ "Definition", "CurrentDetails" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Sdk.V1.WorkflowDefinition), global::Temporalio.Api.Sdk.V1.WorkflowDefinition.Parser, new[]{ "Type", "QueryDefinitions", "SignalDefinitions", "UpdateDefinitions" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition), global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser, new[]{ "Name", "Description" }, null, null, null, null)
           }));
     }
@@ -54,6 +54,7 @@ namespace Temporalio.Api.Sdk.V1 {
   /// <summary>
   /// The name of the query to retrieve this information is `__temporal_workflow_metadata`.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class WorkflowMetadata : pb::IMessage<WorkflowMetadata>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -89,6 +90,7 @@ namespace Temporalio.Api.Sdk.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public WorkflowMetadata(WorkflowMetadata other) : this() {
       definition_ = other.definition_ != null ? other.definition_.Clone() : null;
+      currentDetails_ = other.currentDetails_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -113,6 +115,22 @@ namespace Temporalio.Api.Sdk.V1 {
       }
     }
 
+    /// <summary>Field number for the "current_details" field.</summary>
+    public const int CurrentDetailsFieldNumber = 2;
+    private string currentDetails_ = "";
+    /// <summary>
+    /// Current long-form details of the workflow's state. This is used by user interfaces to show
+    /// long-form text. This text may be formatted by the user interface.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string CurrentDetails {
+      get { return currentDetails_; }
+      set {
+        currentDetails_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -129,6 +147,7 @@ namespace Temporalio.Api.Sdk.V1 {
         return true;
       }
       if (!object.Equals(Definition, other.Definition)) return false;
+      if (CurrentDetails != other.CurrentDetails) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -137,6 +156,7 @@ namespace Temporalio.Api.Sdk.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (definition_ != null) hash ^= Definition.GetHashCode();
+      if (CurrentDetails.Length != 0) hash ^= CurrentDetails.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -159,6 +179,10 @@ namespace Temporalio.Api.Sdk.V1 {
         output.WriteRawTag(10);
         output.WriteMessage(Definition);
       }
+      if (CurrentDetails.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(CurrentDetails);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -173,6 +197,10 @@ namespace Temporalio.Api.Sdk.V1 {
         output.WriteRawTag(10);
         output.WriteMessage(Definition);
       }
+      if (CurrentDetails.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(CurrentDetails);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -185,6 +213,9 @@ namespace Temporalio.Api.Sdk.V1 {
       int size = 0;
       if (definition_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Definition);
+      }
+      if (CurrentDetails.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CurrentDetails);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -204,6 +235,9 @@ namespace Temporalio.Api.Sdk.V1 {
         }
         Definition.MergeFrom(other.Definition);
       }
+      if (other.CurrentDetails.Length != 0) {
+        CurrentDetails = other.CurrentDetails;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -215,7 +249,11 @@ namespace Temporalio.Api.Sdk.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -224,6 +262,10 @@ namespace Temporalio.Api.Sdk.V1 {
               Definition = new global::Temporalio.Api.Sdk.V1.WorkflowDefinition();
             }
             input.ReadMessage(Definition);
+            break;
+          }
+          case 18: {
+            CurrentDetails = input.ReadString();
             break;
           }
         }
@@ -237,7 +279,11 @@ namespace Temporalio.Api.Sdk.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -246,6 +292,10 @@ namespace Temporalio.Api.Sdk.V1 {
               Definition = new global::Temporalio.Api.Sdk.V1.WorkflowDefinition();
             }
             input.ReadMessage(Definition);
+            break;
+          }
+          case 18: {
+            CurrentDetails = input.ReadString();
             break;
           }
         }
@@ -258,6 +308,7 @@ namespace Temporalio.Api.Sdk.V1 {
   /// <summary>
   /// (-- api-linter: core::0203::optional=disabled --)
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class WorkflowDefinition : pb::IMessage<WorkflowDefinition>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -293,7 +344,6 @@ namespace Temporalio.Api.Sdk.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public WorkflowDefinition(WorkflowDefinition other) : this() {
       type_ = other.type_;
-      description_ = other.description_;
       queryDefinitions_ = other.queryDefinitions_.Clone();
       signalDefinitions_ = other.signalDefinitions_.Clone();
       updateDefinitions_ = other.updateDefinitions_.Clone();
@@ -322,27 +372,10 @@ namespace Temporalio.Api.Sdk.V1 {
       }
     }
 
-    /// <summary>Field number for the "description" field.</summary>
-    public const int DescriptionFieldNumber = 2;
-    private string description_ = "";
-    /// <summary>
-    /// An optional workflow description provided by the application.
-    /// By convention, external tools may interpret its first part,
-    /// i.e., ending with a line break, as a summary of the description.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Description {
-      get { return description_; }
-      set {
-        description_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     /// <summary>Field number for the "query_definitions" field.</summary>
-    public const int QueryDefinitionsFieldNumber = 3;
+    public const int QueryDefinitionsFieldNumber = 2;
     private static readonly pb::FieldCodec<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> _repeated_queryDefinitions_codec
-        = pb::FieldCodec.ForMessage(26, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
+        = pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> queryDefinitions_ = new pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -351,9 +384,9 @@ namespace Temporalio.Api.Sdk.V1 {
     }
 
     /// <summary>Field number for the "signal_definitions" field.</summary>
-    public const int SignalDefinitionsFieldNumber = 4;
+    public const int SignalDefinitionsFieldNumber = 3;
     private static readonly pb::FieldCodec<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> _repeated_signalDefinitions_codec
-        = pb::FieldCodec.ForMessage(34, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
+        = pb::FieldCodec.ForMessage(26, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> signalDefinitions_ = new pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -362,9 +395,9 @@ namespace Temporalio.Api.Sdk.V1 {
     }
 
     /// <summary>Field number for the "update_definitions" field.</summary>
-    public const int UpdateDefinitionsFieldNumber = 5;
+    public const int UpdateDefinitionsFieldNumber = 4;
     private static readonly pb::FieldCodec<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> _repeated_updateDefinitions_codec
-        = pb::FieldCodec.ForMessage(42, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
+        = pb::FieldCodec.ForMessage(34, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> updateDefinitions_ = new pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -388,7 +421,6 @@ namespace Temporalio.Api.Sdk.V1 {
         return true;
       }
       if (Type != other.Type) return false;
-      if (Description != other.Description) return false;
       if(!queryDefinitions_.Equals(other.queryDefinitions_)) return false;
       if(!signalDefinitions_.Equals(other.signalDefinitions_)) return false;
       if(!updateDefinitions_.Equals(other.updateDefinitions_)) return false;
@@ -400,7 +432,6 @@ namespace Temporalio.Api.Sdk.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (Type.Length != 0) hash ^= Type.GetHashCode();
-      if (Description.Length != 0) hash ^= Description.GetHashCode();
       hash ^= queryDefinitions_.GetHashCode();
       hash ^= signalDefinitions_.GetHashCode();
       hash ^= updateDefinitions_.GetHashCode();
@@ -426,10 +457,6 @@ namespace Temporalio.Api.Sdk.V1 {
         output.WriteRawTag(10);
         output.WriteString(Type);
       }
-      if (Description.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(Description);
-      }
       queryDefinitions_.WriteTo(output, _repeated_queryDefinitions_codec);
       signalDefinitions_.WriteTo(output, _repeated_signalDefinitions_codec);
       updateDefinitions_.WriteTo(output, _repeated_updateDefinitions_codec);
@@ -447,10 +474,6 @@ namespace Temporalio.Api.Sdk.V1 {
         output.WriteRawTag(10);
         output.WriteString(Type);
       }
-      if (Description.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(Description);
-      }
       queryDefinitions_.WriteTo(ref output, _repeated_queryDefinitions_codec);
       signalDefinitions_.WriteTo(ref output, _repeated_signalDefinitions_codec);
       updateDefinitions_.WriteTo(ref output, _repeated_updateDefinitions_codec);
@@ -466,9 +489,6 @@ namespace Temporalio.Api.Sdk.V1 {
       int size = 0;
       if (Type.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
-      }
-      if (Description.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
       }
       size += queryDefinitions_.CalculateSize(_repeated_queryDefinitions_codec);
       size += signalDefinitions_.CalculateSize(_repeated_signalDefinitions_codec);
@@ -488,9 +508,6 @@ namespace Temporalio.Api.Sdk.V1 {
       if (other.Type.Length != 0) {
         Type = other.Type;
       }
-      if (other.Description.Length != 0) {
-        Description = other.Description;
-      }
       queryDefinitions_.Add(other.queryDefinitions_);
       signalDefinitions_.Add(other.signalDefinitions_);
       updateDefinitions_.Add(other.updateDefinitions_);
@@ -505,7 +522,11 @@ namespace Temporalio.Api.Sdk.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -514,18 +535,14 @@ namespace Temporalio.Api.Sdk.V1 {
             break;
           }
           case 18: {
-            Description = input.ReadString();
-            break;
-          }
-          case 26: {
             queryDefinitions_.AddEntriesFrom(input, _repeated_queryDefinitions_codec);
             break;
           }
-          case 34: {
+          case 26: {
             signalDefinitions_.AddEntriesFrom(input, _repeated_signalDefinitions_codec);
             break;
           }
-          case 42: {
+          case 34: {
             updateDefinitions_.AddEntriesFrom(input, _repeated_updateDefinitions_codec);
             break;
           }
@@ -540,7 +557,11 @@ namespace Temporalio.Api.Sdk.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -549,18 +570,14 @@ namespace Temporalio.Api.Sdk.V1 {
             break;
           }
           case 18: {
-            Description = input.ReadString();
-            break;
-          }
-          case 26: {
             queryDefinitions_.AddEntriesFrom(ref input, _repeated_queryDefinitions_codec);
             break;
           }
-          case 34: {
+          case 26: {
             signalDefinitions_.AddEntriesFrom(ref input, _repeated_signalDefinitions_codec);
             break;
           }
-          case 42: {
+          case 34: {
             updateDefinitions_.AddEntriesFrom(ref input, _repeated_updateDefinitions_codec);
             break;
           }
@@ -576,6 +593,7 @@ namespace Temporalio.Api.Sdk.V1 {
   ///     aip.dev/not-precedent: The `name` field is optional. --)
   /// (-- api-linter: core::0203::optional=disabled --)
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class WorkflowInteractionDefinition : pb::IMessage<WorkflowInteractionDefinition>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -770,7 +788,11 @@ namespace Temporalio.Api.Sdk.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -793,7 +815,11 @@ namespace Temporalio.Api.Sdk.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
