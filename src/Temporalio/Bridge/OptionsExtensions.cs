@@ -407,10 +407,10 @@ namespace Temporalio.Bridge
             var tuner = options.Tuner;
             if (tuner == null)
             {
-                var maxWF = (uint)(options.MaxConcurrentWorkflowTasks ?? 100);
-                var maxAct = (uint)(options.MaxConcurrentActivities ?? 100);
-                var maxLocalAct = (uint)(options.MaxConcurrentLocalActivities ?? 100);
-                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixed(maxWF, maxAct, maxLocalAct);
+                var maxWF = options.MaxConcurrentWorkflowTasks ?? 100;
+                var maxAct = options.MaxConcurrentActivities ?? 100;
+                var maxLocalAct = options.MaxConcurrentLocalActivities ?? 100;
+                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(maxWF, maxAct, maxLocalAct);
             }
             else
             {
@@ -476,7 +476,7 @@ namespace Temporalio.Bridge
                 build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
-                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixed(2, 1, 1).ToInteropTuner(scope),
+                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope),
                 no_remote_activities = 1,
                 sticky_queue_schedule_to_start_timeout_millis = 1000,
                 max_heartbeat_throttle_interval_millis = 1000,
@@ -530,17 +530,22 @@ namespace Temporalio.Bridge
         }
 
         private static Interop.SlotSupplier ToInteropSlotSupplier(
-                this Temporalio.Worker.Tuning.ISlotSupplier supplier,
-                bool isWorkflow)
+            this Temporalio.Worker.Tuning.ISlotSupplier supplier,
+            bool isWorkflow)
         {
             if (supplier is Temporalio.Worker.Tuning.FixedSizeSlotSupplier fixedSize)
             {
+                if (fixedSize.SlotCount < 1)
+                {
+                    throw new ArgumentException(
+                        "FixedSizeSlotSupplier must have at least one slot");
+                }
                 return new()
                 {
                     tag = Interop.SlotSupplier_Tag.FixedSize,
                     fixed_size = new Interop.FixedSizeSlotSupplier()
                     {
-                        num_slots = new UIntPtr(fixedSize.NumSlots),
+                        num_slots = new UIntPtr((uint)fixedSize.SlotCount),
                     },
                 };
             }

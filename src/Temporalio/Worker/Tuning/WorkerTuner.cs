@@ -56,10 +56,10 @@ namespace Temporalio.Worker.Tuning
         /// <param name="numActivityTaskSlots">The number of available activity task slots.</param>
         /// <param name="numLocalActivitySlots">The number of available local activity slots.</param>
         /// <returns>The tuner.</returns>
-        public static WorkerTuner CreateFixed(
-            uint numWorkflowTaskSlots,
-            uint numActivityTaskSlots,
-            uint numLocalActivitySlots)
+        public static WorkerTuner CreateFixedSize(
+            int numWorkflowTaskSlots,
+            int numActivityTaskSlots,
+            int numLocalActivitySlots)
         {
             return new CompositeTuner(
                 new FixedSizeSlotSupplier(numWorkflowTaskSlots),
