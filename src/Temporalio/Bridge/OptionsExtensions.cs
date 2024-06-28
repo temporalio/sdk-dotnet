@@ -501,8 +501,8 @@ namespace Temporalio.Bridge
             Temporalio.Worker.Tuning.ResourceBasedTunerOptions? lastTunerOptions = null;
             Temporalio.Worker.Tuning.ISlotSupplier[] suppliers =
             {
-                tuner.GetWorkflowTaskSlotSupplier(), tuner.GetActivityTaskSlotSupplier(),
-                tuner.GetLocalActivitySlotSupplier(),
+                tuner.WorkflowTaskSlotSupplier, tuner.ActivityTaskSlotSupplier,
+                tuner.LocalActivitySlotSupplier,
             };
             foreach (var supplier in suppliers)
             {
@@ -521,11 +521,11 @@ namespace Temporalio.Bridge
             return new()
             {
                 workflow_slot_supplier =
-                    tuner.GetWorkflowTaskSlotSupplier().ToInteropSlotSupplier(true),
+                    tuner.WorkflowTaskSlotSupplier.ToInteropSlotSupplier(true),
                 activity_slot_supplier =
-                    tuner.GetActivityTaskSlotSupplier().ToInteropSlotSupplier(false),
+                    tuner.ActivityTaskSlotSupplier.ToInteropSlotSupplier(false),
                 local_activity_slot_supplier =
-                    tuner.GetLocalActivitySlotSupplier().ToInteropSlotSupplier(false),
+                    tuner.LocalActivitySlotSupplier.ToInteropSlotSupplier(false),
             };
         }
 

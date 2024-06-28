@@ -1,10 +1,46 @@
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
-    /// WorkerTuners allow for the dynamic customization of some aspects of worker configuration.
+    /// Implements <see cref="IWorkerTuner"/> by holding the different <see cref="ISlotSupplier"/>s.
     /// </summary>
-    public abstract class WorkerTuner
+    public class WorkerTuner : IWorkerTuner
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkerTuner"/> class composed of the
+        /// provided slot suppliers.
+        /// </summary>
+        /// <param name="workflowTaskSlotSupplier">The supplier of workflow task slots.</param>
+        /// <param name="activityTaskSlotSupplier">The supplier of activity task slots.</param>
+        /// <param name="localActivitySlotSupplier">The supplier of local activity slots.</param>
+        /// <returns>The tuner.</returns>
+        public WorkerTuner(
+            ISlotSupplier workflowTaskSlotSupplier,
+            ISlotSupplier activityTaskSlotSupplier,
+            ISlotSupplier localActivitySlotSupplier)
+        {
+            WorkflowTaskSlotSupplier = workflowTaskSlotSupplier;
+            ActivityTaskSlotSupplier = activityTaskSlotSupplier;
+            LocalActivitySlotSupplier = localActivitySlotSupplier;
+        }
+
+        /// <summary>
+        /// Gets a slot supplier for workflow tasks.
+        /// </summary>
+        /// <returns>A slot supplier for workflow tasks.</returns>
+        public ISlotSupplier WorkflowTaskSlotSupplier { get; init; }
+
+        /// <summary>
+        /// Gets a slot supplier for activity tasks.
+        /// </summary>
+        /// <returns>A slot supplier for activity tasks.</returns>
+        public ISlotSupplier ActivityTaskSlotSupplier { get; init; }
+
+        /// <summary>
+        /// Gets a slot supplier for local activities.
+        /// </summary>
+        /// <returns>A slot supplier for local activities.</returns>
+        public ISlotSupplier LocalActivitySlotSupplier { get; init; }
+
         /// <summary>
         /// Create a resource based tuner with the provided options.
         /// </summary>
@@ -31,7 +67,7 @@ namespace Temporalio.Worker.Tuning
         {
             ResourceBasedTunerOptions tunerOpts =
                 new ResourceBasedTunerOptions(targetMemoryUsage, targetCpuUsage);
-            return new CompositeTuner(
+            return new(
                 new ResourceBasedSlotSupplier(
                     workflowOptions == null
                         ? new ResourceBasedSlotSupplierOptions()
@@ -61,46 +97,10 @@ namespace Temporalio.Worker.Tuning
             int numActivityTaskSlots,
             int numLocalActivitySlots)
         {
-            return new CompositeTuner(
+            return new(
                 new FixedSizeSlotSupplier(numWorkflowTaskSlots),
                 new FixedSizeSlotSupplier(numActivityTaskSlots),
                 new FixedSizeSlotSupplier(numLocalActivitySlots));
         }
-
-        /// <summary>
-        /// Create a tuner composed of the provided slot suppliers.
-        /// </summary>
-        /// <param name="workflowTaskSlotSupplier">The supplier of workflow task slots.</param>
-        /// <param name="activityTaskSlotSupplier">The supplier of activity task slots.</param>
-        /// <param name="localActivitySlotSupplier">The supplier of local activity slots.</param>
-        /// <returns>The tuner.</returns>
-        public static WorkerTuner CreateComposite(
-            ISlotSupplier workflowTaskSlotSupplier,
-            ISlotSupplier activityTaskSlotSupplier,
-            ISlotSupplier localActivitySlotSupplier)
-        {
-            return new CompositeTuner(
-                workflowTaskSlotSupplier,
-                activityTaskSlotSupplier,
-                localActivitySlotSupplier);
-        }
-
-        /// <summary>
-        /// Gets a slot supplier for workflow tasks.
-        /// </summary>
-        /// <returns>A slot supplier for workflow tasks.</returns>
-        public abstract ISlotSupplier GetWorkflowTaskSlotSupplier();
-
-        /// <summary>
-        /// Gets a slot supplier for activity tasks.
-        /// </summary>
-        /// <returns>A slot supplier for activity tasks.</returns>
-        public abstract ISlotSupplier GetActivityTaskSlotSupplier();
-
-        /// <summary>
-        /// Gets a slot supplier for local activities.
-        /// </summary>
-        /// <returns>A slot supplier for local activities.</returns>
-        public abstract ISlotSupplier GetLocalActivitySlotSupplier();
     }
 }

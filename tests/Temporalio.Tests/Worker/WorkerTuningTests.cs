@@ -59,7 +59,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                Tuner = WorkerTuner.CreateComposite(
+                Tuner = new WorkerTuner(
                     new FixedSizeSlotSupplier(10),
                     new ResourceBasedSlotSupplier(
                         new ResourceBasedSlotSupplierOptions(),
@@ -83,7 +83,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
                 Client,
                 new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
                 {
-                    Tuner = WorkerTuner.CreateComposite(
+                    Tuner = new WorkerTuner(
                         new FixedSizeSlotSupplier(10),
                         new ResourceBasedSlotSupplier(
                             new ResourceBasedSlotSupplierOptions(),
