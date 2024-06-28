@@ -14,6 +14,11 @@ namespace Temporalio.Workflows
     internal interface IWorkflowContext
     {
         /// <summary>
+        /// Gets a value indicating whether <see cref="Workflow.AllHandlersFinished" /> is true.
+        /// </summary>
+        bool AllHandlersFinished { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.CancellationToken" />.
         /// </summary>
         CancellationToken CancellationToken { get; }

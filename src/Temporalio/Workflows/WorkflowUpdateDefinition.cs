@@ -18,13 +18,15 @@ namespace Temporalio.Workflows
             MethodInfo? method,
             MethodInfo? validatorMethod,
             Delegate? del,
-            Delegate? validatorDel)
+            Delegate? validatorDel,
+            HandlerUnfinishedPolicy unfinishedPolicy)
         {
             Name = name;
             Method = method;
             ValidatorMethod = validatorMethod;
             Delegate = del;
             ValidatorDelegate = validatorDel;
+            UnfinishedPolicy = unfinishedPolicy;
         }
 
         /// <summary>
@@ -56,6 +58,11 @@ namespace Temporalio.Workflows
         /// Gets the validator method if present and done with a delegate.
         /// </summary>
         internal Delegate? ValidatorDelegate { get; private init; }
+
+        /// <summary>
+        /// Gets the unfinished policy.
+        /// </summary>
+        internal HandlerUnfinishedPolicy UnfinishedPolicy { get; private init; }
 
         /// <summary>
         /// Get an update definition from a method or fail. The result is cached.
@@ -92,12 +99,17 @@ namespace Temporalio.Workflows
         /// <param name="name">Update name. Null for dynamic update.</param>
         /// <param name="del">Update delegate.</param>
         /// <param name="validatorDel">Optional validator delegate.</param>
+        /// <param name="unfinishedPolicy">Actions taken if a workflow exits with a running instance
+        /// of this handler.</param>
         /// <returns>Update definition.</returns>
         public static WorkflowUpdateDefinition CreateWithoutAttribute(
-            string? name, Delegate del, Delegate? validatorDel = null)
+            string? name,
+            Delegate del,
+            Delegate? validatorDel = null,
+            HandlerUnfinishedPolicy unfinishedPolicy = HandlerUnfinishedPolicy.WarnAndAbandon)
         {
             AssertValid(del.Method, dynamic: name == null, validatorDel?.Method);
-            return new(name, null, null, del, validatorDel);
+            return new(name, null, null, del, validatorDel, unfinishedPolicy);
         }
 
         /// <summary>
@@ -133,7 +145,7 @@ namespace Temporalio.Workflows
                     name = name.Substring(0, name.Length - 5);
                 }
             }
-            return new(name, method, validatorMethod, null, null);
+            return new(name, method, validatorMethod, null, null, attr.UnfinishedPolicy);
         }
 
         private static void AssertValid(

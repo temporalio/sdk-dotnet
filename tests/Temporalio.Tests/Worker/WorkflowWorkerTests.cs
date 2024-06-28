@@ -5267,6 +5267,230 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions().AddAllActivities(acts));
     }
 
+    [Workflow]
+    public class UnfinishedHandlersWorkflow
+    {
+        public enum WorkflowFinish
+        {
+            Succeed,
+            Fail,
+            Cancel,
+        }
+
+        private bool startedHandler;
+        private bool handlerMayReturn;
+        private bool handlerFinished;
+
+        public UnfinishedHandlersWorkflow()
+        {
+            // Add manual update/signal handlers
+            Workflow.Updates["MyUpdateManual"] = WorkflowUpdateDefinition.CreateWithoutAttribute(
+                "MyUpdateManual", DoUpdateOrSignal, null);
+            Workflow.Updates["MyUpdateManualAbandon"] = WorkflowUpdateDefinition.CreateWithoutAttribute(
+                "MyUpdateManualAbandon", DoUpdateOrSignal, null, HandlerUnfinishedPolicy.Abandon);
+            Workflow.Signals["MySignalManual"] = WorkflowSignalDefinition.CreateWithoutAttribute(
+                "MySignalManual", DoUpdateOrSignal);
+            Workflow.Signals["MySignalManualAbandon"] = WorkflowSignalDefinition.CreateWithoutAttribute(
+                "MySignalManualAbandon", DoUpdateOrSignal, HandlerUnfinishedPolicy.Abandon);
+        }
+
+        [WorkflowRun]
+        public async Task<bool> RunAsync(bool waitAllHandlersFinished, WorkflowFinish finish)
+        {
+            // Wait for started and finished if requested
+            await Workflow.WaitConditionAsync(() => startedHandler);
+            if (waitAllHandlersFinished)
+            {
+                handlerMayReturn = true;
+                await Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished);
+            }
+
+            // Cancel or fail
+            if (finish == WorkflowFinish.Cancel)
+            {
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.CancelWorkflowAsync(),
+                    new() { StartToCloseTimeout = TimeSpan.FromHours(1) });
+                await Workflow.WaitConditionAsync(() => false);
+            }
+            else if (finish == WorkflowFinish.Fail)
+            {
+                throw new ApplicationFailureException("Intentional failure");
+            }
+
+            return handlerFinished;
+        }
+
+        [WorkflowUpdate]
+        public Task MyUpdateAsync() => DoUpdateOrSignal();
+
+        [WorkflowUpdate(UnfinishedPolicy = HandlerUnfinishedPolicy.Abandon)]
+        public Task MyUpdateAbandonAsync() => DoUpdateOrSignal();
+
+        [WorkflowSignal]
+        public Task MySignalAsync() => DoUpdateOrSignal();
+
+        [WorkflowSignal(UnfinishedPolicy = HandlerUnfinishedPolicy.Abandon)]
+        public Task MySignalAbandonAsync() => DoUpdateOrSignal();
+
+        private async Task DoUpdateOrSignal()
+        {
+            startedHandler = true;
+            // Shield from cancellation
+            await Workflow.WaitConditionAsync(() => handlerMayReturn, default(CancellationToken));
+            handlerFinished = true;
+        }
+
+        public class Activities
+        {
+            private readonly ITemporalClient client;
+
+            public Activities(ITemporalClient client) => this.client = client;
+
+            [Activity]
+            public Task CancelWorkflowAsync() =>
+                client.GetWorkflowHandle(ActivityExecutionContext.Current.Info.WorkflowId).CancelAsync();
+        }
+    }
+
+    [Theory]
+    [InlineData(UnfinishedHandlersWorkflow.WorkflowFinish.Succeed)]
+    [InlineData(UnfinishedHandlersWorkflow.WorkflowFinish.Fail)]
+    [InlineData(UnfinishedHandlersWorkflow.WorkflowFinish.Cancel)]
+    public async Task ExecuteWorkflowAsync_UnfinishedHandlers_WarnProperly(
+        UnfinishedHandlersWorkflow.WorkflowFinish finish)
+    {
+        async Task AssertWarnings(
+            Func<WorkflowHandle<UnfinishedHandlersWorkflow>, Task> interaction,
+            bool waitAllHandlersFinished,
+            bool shouldWarn,
+            bool interactionShouldFailWithNotFound = false)
+        {
+            // Setup log capture
+            var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+            // Run the workflow
+            var acts = new UnfinishedHandlersWorkflow.Activities(Client);
+            await ExecuteWorkerAsync<UnfinishedHandlersWorkflow>(
+                async worker =>
+                {
+                    // Start workflow
+                    var handle = await Client.StartWorkflowAsync(
+                        (UnfinishedHandlersWorkflow wf) => wf.RunAsync(waitAllHandlersFinished, finish),
+                        new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                    // Perform interaction
+                    try
+                    {
+                        await interaction(handle);
+                        Assert.False(interactionShouldFailWithNotFound);
+                    }
+                    catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+                    {
+                        Assert.True(interactionShouldFailWithNotFound);
+                    }
+                    // Wait for workflow completion
+                    try
+                    {
+                        await handle.GetResultAsync();
+                        Assert.Equal(UnfinishedHandlersWorkflow.WorkflowFinish.Succeed, finish);
+                    }
+                    catch (WorkflowFailedException e) when (
+                        e.InnerException is ApplicationFailureException appEx &&
+                        appEx.Message == "Intentional failure")
+                    {
+                        Assert.Equal(UnfinishedHandlersWorkflow.WorkflowFinish.Fail, finish);
+                    }
+                    catch (WorkflowFailedException e) when (
+                        e.InnerException is CanceledFailureException)
+                    {
+                        Assert.Equal(UnfinishedHandlersWorkflow.WorkflowFinish.Cancel, finish);
+                    }
+                },
+                new TemporalWorkerOptions() { LoggerFactory = loggerFactory }.
+                    AddAllActivities(acts));
+            // Check warnings
+            Assert.Equal(
+                shouldWarn ? 1 : 0,
+                loggerFactory.Logs.
+                    Select(e => e.Formatted).
+                    // We have to dedupe logs because cancel causes unhandled command which causes
+                    // workflow complete to replay
+                    Distinct().
+                    Count(s => s.Contains("handlers are still running")));
+        }
+
+        // All update scenarios
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true,
+            interactionShouldFailWithNotFound: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAbandonAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false,
+            interactionShouldFailWithNotFound: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAbandonAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true,
+            interactionShouldFailWithNotFound: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false,
+            interactionShouldFailWithNotFound: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+
+        // All signal scenarios
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAbandonAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAbandonAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
