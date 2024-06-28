@@ -520,35 +520,45 @@ namespace Temporalio.Bridge
 
             return new()
             {
-                workflow_slot_supplier = tuner.GetWorkflowTaskSlotSupplier().ToInteropSlotSupplier(scope),
-                activity_slot_supplier = tuner.GetActivityTaskSlotSupplier().ToInteropSlotSupplier(scope),
-                local_activity_slot_supplier = tuner.GetLocalActivitySlotSupplier().ToInteropSlotSupplier(scope),
+                workflow_slot_supplier =
+                    tuner.GetWorkflowTaskSlotSupplier().ToInteropSlotSupplier(true),
+                activity_slot_supplier =
+                    tuner.GetActivityTaskSlotSupplier().ToInteropSlotSupplier(false),
+                local_activity_slot_supplier =
+                    tuner.GetLocalActivitySlotSupplier().ToInteropSlotSupplier(false),
             };
         }
 
         private static Interop.SlotSupplier ToInteropSlotSupplier(
                 this Temporalio.Worker.Tuning.ISlotSupplier supplier,
-                Scope scope)
+                bool isWorkflow)
         {
             if (supplier is Temporalio.Worker.Tuning.FixedSizeSlotSupplier fixedSize)
             {
                 return new()
                 {
                     tag = Interop.SlotSupplier_Tag.FixedSize,
-                    fixed_size = new Interop.FixedSizeSlotSupplier() { num_slots = new UIntPtr(fixedSize.NumSlots) },
+                    fixed_size = new Interop.FixedSizeSlotSupplier()
+                    {
+                        num_slots = new UIntPtr(fixedSize.NumSlots),
+                    },
                 };
             }
             else if (supplier is Temporalio.Worker.Tuning.ResourceBasedSlotSupplier resourceBased)
             {
+                var defaultMinimum = isWorkflow ? 5u : 1u;
+                var defaultThrottle = isWorkflow ? 0 : 50;
                 return new()
                 {
                     tag = Interop.SlotSupplier_Tag.ResourceBased,
                     resource_based = new Interop.ResourceBasedSlotSupplier()
                     {
-                        // TODO: Appropriate defaults by slot type
-                        minimum_slots = new UIntPtr(resourceBased.Options.MinimumSlots ?? 5),
+                        minimum_slots =
+                            new UIntPtr(resourceBased.Options.MinimumSlots ?? defaultMinimum),
                         maximum_slots = new UIntPtr(resourceBased.Options.MaximumSlots ?? 500),
-                        ramp_throttle_ms = (ulong)(resourceBased.Options.RampThrottle?.TotalMilliseconds ?? 0),
+                        ramp_throttle_ms =
+                            (ulong)(resourceBased.Options.RampThrottle?.TotalMilliseconds ??
+                                    defaultThrottle),
                         tuner_config = new Interop.ResourceBasedTunerConfig()
                         {
                             target_memory_usage = resourceBased.TunerOptions.TargetMemoryUsage,
@@ -559,7 +569,8 @@ namespace Temporalio.Bridge
             }
             else
             {
-                throw new ArgumentException("ISlotSupplier must be one of the types provided by the library");
+                throw new ArgumentException(
+                    "ISlotSupplier must be one of the types provided by the library");
             }
         }
 

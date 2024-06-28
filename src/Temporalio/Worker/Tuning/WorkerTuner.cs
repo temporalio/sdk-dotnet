@@ -1,7 +1,7 @@
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
-    /// TODO.
+    /// WorkerTuners allow for the dynamic customization of some aspects of worker configuration.
     /// </summary>
     public abstract class WorkerTuner
     {
@@ -19,6 +19,9 @@ namespace Temporalio.Worker.Tuning
         /// <param name="activityOptions">Options for the activity task slot supplier.</param>
         /// <param name="localActivityOptions">Options for the local activity slot supplier.</param>
         /// <returns>The tuner.</returns>
+        /// <remarks>
+        /// WARNING: Resource based tuning is currently experimental.
+        /// </remarks>
         public static WorkerTuner CreateResourceBased(
             double targetMemoryUsage,
             double targetCpuUsage,
