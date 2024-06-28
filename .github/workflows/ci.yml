@@ -67,7 +67,16 @@ jobs:
           dotnet run --project src/Temporalio.Api.Generator
           npx doctoc README.md
           git config --global core.safecrlf false
+          git diff > generator.diff
           git diff --exit-code
+
+      - name: Upload generator diff
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generator-diff
+          path: generator.diff
+          if-no-files-found: ignore
 
       - name: Check format
         if: ${{ matrix.checkTarget }}
