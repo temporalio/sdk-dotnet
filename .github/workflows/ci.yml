@@ -60,9 +60,8 @@ jobs:
 
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
-        # Needs to be 16.0.0 until https://github.com/dotnet/ClangSharp/pull/506 released
         run: |
-          dotnet tool install --global --version 16.0.0 ClangSharpPInvokeGenerator
+          dotnet tool install --global --version 18.1.0 ClangSharpPInvokeGenerator
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
           npx doctoc README.md
