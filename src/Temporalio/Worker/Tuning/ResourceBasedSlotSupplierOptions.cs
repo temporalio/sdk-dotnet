@@ -20,7 +20,7 @@ namespace Temporalio.Worker.Tuning
     /// WARNING: Resource based tuning is currently experimental.
     /// </remarks>
     public sealed record ResourceBasedSlotSupplierOptions(
-        uint? MinimumSlots = null,
-        uint? MaximumSlots = null,
+        int? MinimumSlots = null,
+        int? MaximumSlots = null,
         TimeSpan? RampThrottle = null);
 }

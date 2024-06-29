@@ -551,7 +551,7 @@ namespace Temporalio.Bridge
             }
             else if (supplier is Temporalio.Worker.Tuning.ResourceBasedSlotSupplier resourceBased)
             {
-                var defaultMinimum = isWorkflow ? 5u : 1u;
+                var defaultMinimum = isWorkflow ? 5 : 1;
                 var defaultThrottle = isWorkflow ? 0 : 50;
                 return new()
                 {
@@ -559,8 +559,10 @@ namespace Temporalio.Bridge
                     resource_based = new Interop.ResourceBasedSlotSupplier()
                     {
                         minimum_slots =
-                            new UIntPtr(resourceBased.Options.MinimumSlots ?? defaultMinimum),
-                        maximum_slots = new UIntPtr(resourceBased.Options.MaximumSlots ?? 500),
+                            new UIntPtr(
+                                (uint)(resourceBased.Options.MinimumSlots ?? defaultMinimum)),
+                        maximum_slots =
+                            new UIntPtr((uint)(resourceBased.Options.MaximumSlots ?? 500)),
                         ramp_throttle_ms =
                             (ulong)(resourceBased.Options.RampThrottle?.TotalMilliseconds ??
                                     defaultThrottle),
