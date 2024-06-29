@@ -165,6 +165,9 @@ pub extern "C" fn worker_new(client: *mut Client, options: *const WorkerOptions)
 
 #[no_mangle]
 pub extern "C" fn worker_free(worker: *mut Worker) {
+    if worker.is_null() {
+        return
+    }
     unsafe {
         let _ = Box::from_raw(worker);
     }
