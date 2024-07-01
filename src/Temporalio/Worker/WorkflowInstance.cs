@@ -69,8 +69,7 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
         private readonly bool disableCompletionCommandReordering;
-        private readonly SignalHandlers warnableInProgressSignals = new();
-        private readonly UpdateHandlers warnableInProgressUpdates = new();
+        private readonly Handlers inProgressHandlers = new();
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -208,8 +207,7 @@ namespace Temporalio.Worker
         public bool TracingEventsEnabled { get; private init; }
 
         /// <inheritdoc />
-        public bool AllHandlersFinished =>
-            warnableInProgressSignals.Count == 0 && warnableInProgressUpdates.Count == 0;
+        public bool AllHandlersFinished => inProgressHandlers.Count == 0;
 
         /// <inheritdoc />
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
@@ -588,8 +586,7 @@ namespace Temporalio.Worker
                 // Log warnings if we have completed
                 if (workflowComplete && !IsReplaying)
                 {
-                    warnableInProgressSignals.WarnIfAny(Info.WorkflowId, logger);
-                    warnableInProgressUpdates.WarnIfAny(Info.WorkflowId, logger);
+                    inProgressHandlers.WarnIfAnyLeftOver(Info.WorkflowId, logger);
                 }
 
                 // Unset the completion
@@ -1016,19 +1013,12 @@ namespace Temporalio.Worker
                         Definition: updateDefn,
                         Args: argsForUpdate,
                         Headers: update.Headers));
-                    LinkedListNode<(string Name, string Id)>? warnableExecution = null;
-                    if (updateDefn.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon)
-                    {
-                        warnableExecution = warnableInProgressUpdates.AddLast(
-                            (update.Name, update.Id));
-                    }
+                    var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
+                        update.Name, update.Id, updateDefn.UnfinishedPolicy));
                     return task.ContinueWith(
                         _ =>
                         {
-                            if (warnableExecution is { } toRemove)
-                            {
-                                warnableInProgressUpdates.Remove(warnableExecution);
-                            }
+                            inProgressHandlers.Remove(inProgress);
                             // If workflow failure exception, it's an update failure. If it's some
                             // other exception, it's a task failure. Otherwise it's a success.
                             var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
@@ -1274,11 +1264,8 @@ namespace Temporalio.Worker
                 }
 
                 // Handle signal
-                LinkedListNode<string>? warnableExecution = null;
-                if (signalDefn.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon)
-                {
-                    warnableExecution = warnableInProgressSignals.AddLast(signal.SignalName);
-                }
+                var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
+                    signal.SignalName, null, signalDefn.UnfinishedPolicy));
                 try
                 {
                     await inbound.Value.HandleSignalAsync(new(
@@ -1289,10 +1276,7 @@ namespace Temporalio.Worker
                 }
                 finally
                 {
-                    if (warnableExecution is { } toRemove)
-                    {
-                        warnableInProgressSignals.Remove(toRemove);
-                    }
+                    inProgressHandlers.Remove(inProgress);
                 }
             }));
         }
@@ -2283,11 +2267,11 @@ namespace Temporalio.Worker
                 instance.outbound.Value.CancelExternalWorkflowAsync(new(Id: Id, RunId: RunId));
         }
 
-        private class SignalHandlers : LinkedList<string>
+        private class Handlers : LinkedList<Handlers.Handler>
         {
 #pragma warning disable SA1118 // We're ok w/ string literals spanning lines
-            private static readonly Action<ILogger, string, string, Exception?> Warning =
-                LoggerMessage.Define<string, string>(
+            private static readonly Action<ILogger, string, WarnableSignals, Exception?> SignalWarning =
+                LoggerMessage.Define<string, WarnableSignals>(
                     LogLevel.Warning,
                     0,
                     "Workflow {Id} finished while signal handlers are still running. This may " +
@@ -2301,28 +2285,9 @@ namespace Temporalio.Worker
                     "`[WorkflowSignal(UnfinishedPolicy=HandlerUnfinishedPolicy.Abandon)]`. The " +
                     "following signals were unfinished (and warnings were not disabled for their " +
                     "handler): {Handlers}");
-#pragma warning restore SA1118
 
-            public void WarnIfAny(string id, ILogger logger)
-            {
-                if (Count > 0)
-                {
-                    Warning(logger, id, ToString(), null);
-                }
-            }
-
-            public override string ToString() => JsonSerializer.Serialize(
-                this.
-                    GroupBy(s => s).
-                    Select(g => (name: g.Key, count: g.Count())).
-                    ToArray());
-        }
-
-        private class UpdateHandlers : LinkedList<(string Name, string Id)>
-        {
-#pragma warning disable SA1118 // We're ok w/ string literals spanning lines
-            private static readonly Action<ILogger, string, string, Exception?> Warning =
-                LoggerMessage.Define<string, string>(
+            private static readonly Action<ILogger, string, WarnableUpdates, Exception?> UpdateWarning =
+                LoggerMessage.Define<string, WarnableUpdates>(
                     LogLevel.Warning,
                     0,
                     "Workflow {Id} finished while update handlers are still running. This may " +
@@ -2340,16 +2305,47 @@ namespace Temporalio.Worker
                     "handler): {Handlers}");
 #pragma warning restore SA1118
 
-            public void WarnIfAny(string id, ILogger logger)
+            public void WarnIfAnyLeftOver(string id, ILogger logger)
             {
-                if (Count > 0)
+                var signals = this.
+                    Where(h => h.UpdateId == null && h.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon).
+                    GroupBy(h => h.Name).
+                    Select(h => (h.Key, h.Count())).
+                    ToArray();
+                if (signals.Length > 0)
                 {
-                    Warning(logger, id, ToString(), null);
+                    SignalWarning(logger, id, new WarnableSignals { NamesAndCounts = signals }, null);
+                }
+                var updates = this.
+                    Where(h => h.UpdateId != null && h.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon).
+                    Select(h => (h.Name, h.UpdateId!)).
+                    ToArray();
+                if (updates.Length > 0)
+                {
+                    UpdateWarning(logger, id, new WarnableUpdates { NamesAndIds = updates }, null);
                 }
             }
 
-            public override string ToString() => JsonSerializer.Serialize(
-                this.Select(h => new { name = h.Name, id = h.Id }).ToArray());
+            public readonly struct WarnableSignals
+            {
+                public (string, int)[] NamesAndCounts { get; init; }
+
+                public override string ToString() => JsonSerializer.Serialize(
+                    NamesAndCounts.Select(v => new { name = v.Item1, count = v.Item2 }).ToArray());
+            }
+
+            public readonly struct WarnableUpdates
+            {
+                public (string, string)[] NamesAndIds { get; init; }
+
+                public override string ToString() => JsonSerializer.Serialize(
+                    NamesAndIds.Select(v => new { name = v.Item1, id = v.Item2 }).ToArray());
+            }
+
+            public record Handler(
+                string Name,
+                string? UpdateId,
+                HandlerUnfinishedPolicy UnfinishedPolicy);
         }
     }
 }
