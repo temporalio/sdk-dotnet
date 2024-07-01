@@ -145,6 +145,7 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="options">Options for connecting.</param>
         /// <returns>The established connection.</returns>
+        /// <exception cref="System.InvalidOperationException">Thrown when cannot successfully connect.</exception>
         public static async Task<TemporalConnection> ConnectAsync(TemporalConnectionOptions options)
         {
             var conn = new TemporalConnection(options, lazy: false);
