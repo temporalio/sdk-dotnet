@@ -701,8 +701,8 @@ with .NET tasks inside of workflows:
   * Use `Workflow.WhenAnyAsync` instead.
   * Technically this only applies to an enumerable set of tasks with results or more than 2 tasks with results. Other
     uses are safe. See [this issue](https://github.com/dotnet/runtime/issues/87481).
-* Do not use `System.Threading.Semaphore` or `System.Threading.SemaphoreSlim`.
-  * Use `Temporalio.Workflows.Semaphore` instead.
+* Do not use `System.Threading.Semaphore` or `System.Threading.SemaphoreSlim` or `System.Threading.Mutex`.
+  * Use `Temporalio.Workflows.Semaphore` or `Temporalio.Workflows.Mutex` instead.
   * _Technically_ `SemaphoreSlim` does work if only the async form of `WaitAsync` is used without no timeouts and
     `Release` is used. But anything else can deadlock the workflow and its use is cumbersome since it must be disposed.
 * Be wary of additional libraries' implicit use of the default scheduler.
