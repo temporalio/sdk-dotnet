@@ -1208,6 +1208,9 @@ Then, run:
 The Rust DLL is built automatically when the project is built. `protoc` may need to be on the `PATH` to build the Rust
 DLL.
 
+This can be annoying to install on linux - so alternatively, publish your PR and you can download the
+patch from the windows build when it fails because of a mismatch. It uploads the patch as an artifact.
+
 ### Regenerating protos
 
 Must have `protoc` on the `PATH`. Note, for now users should use `protoc` 23.x until
