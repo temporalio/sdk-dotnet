@@ -5141,7 +5141,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     Assert.DoesNotContain(waiting, waiting1.Contains);
                     return waiting;
                 });
-                Assert.Contains(await handle.QueryAsync(wf => wf.Completed), waiting1.Contains);
+                Assert.All(
+                    await handle.QueryAsync(wf => wf.Completed),
+                    v => Assert.Contains(v, waiting1));
 
                 // Now just complete the rest
                 foreach (var comp in acts.UpdateCompletions.Values)
@@ -5159,7 +5161,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     Assert.True(completed.Count == 5);
                     return completed;
                 });
-                Assert.Contains(completed.GetRange(0, 2), waiting1.Contains);
+                Assert.All(completed.GetRange(0, 2), v => Assert.Contains(v, waiting1));
                 Assert.DoesNotContain(completed.GetRange(2, 3), waiting1.Contains);
             },
             new TemporalWorkerOptions().AddAllActivities(acts));
