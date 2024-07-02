@@ -353,6 +353,45 @@ typedef struct WorkerOrFail {
   const struct ByteArray *fail;
 } WorkerOrFail;
 
+typedef struct FixedSizeSlotSupplier {
+  uintptr_t num_slots;
+} FixedSizeSlotSupplier;
+
+typedef struct ResourceBasedTunerOptions {
+  double target_memory_usage;
+  double target_cpu_usage;
+} ResourceBasedTunerOptions;
+
+typedef struct ResourceBasedSlotSupplier {
+  uintptr_t minimum_slots;
+  uintptr_t maximum_slots;
+  uint64_t ramp_throttle_ms;
+  struct ResourceBasedTunerOptions tuner_options;
+} ResourceBasedSlotSupplier;
+
+typedef enum SlotSupplier_Tag {
+  FixedSize,
+  ResourceBased,
+} SlotSupplier_Tag;
+
+typedef struct SlotSupplier {
+  SlotSupplier_Tag tag;
+  union {
+    struct {
+      struct FixedSizeSlotSupplier fixed_size;
+    };
+    struct {
+      struct ResourceBasedSlotSupplier resource_based;
+    };
+  };
+} SlotSupplier;
+
+typedef struct TunerHolder {
+  struct SlotSupplier workflow_slot_supplier;
+  struct SlotSupplier activity_slot_supplier;
+  struct SlotSupplier local_activity_slot_supplier;
+} TunerHolder;
+
 typedef struct ByteArrayRefArray {
   const struct ByteArrayRef *data;
   size_t size;
@@ -364,9 +403,7 @@ typedef struct WorkerOptions {
   struct ByteArrayRef build_id;
   struct ByteArrayRef identity_override;
   uint32_t max_cached_workflows;
-  uint32_t max_outstanding_workflow_tasks;
-  uint32_t max_outstanding_activities;
-  uint32_t max_outstanding_local_activities;
+  struct TunerHolder tuner;
   bool no_remote_activities;
   uint64_t sticky_queue_schedule_to_start_timeout_millis;
   uint64_t max_heartbeat_throttle_interval_millis;

@@ -44,7 +44,7 @@ namespace Temporalio.Bridge
         }
 
         /// <inheritdoc />
-        public override unsafe bool IsInvalid => false;
+        public override unsafe bool IsInvalid => ptr == null;
 
         /// <summary>
         /// Record a value for the metric.

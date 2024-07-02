@@ -37,6 +37,9 @@ public class WorkerVersioningTests : WorkflowEnvironmentTestBase
     [SkippableFact]
     public async Task TestVersionedWorkers_Succeed()
     {
+        throw new SkipException("Since 1.24 this test is flaky: https://github.com/temporalio/temporal/issues/6211");
+#pragma warning disable IDE0035, CS0162 // We know the below is now dead code
+
         Skip.IfNot(await ServerSupportsWorkerVersioning());
 
         await ExecuteWorkerAsync<WaitForFinishSignal>(

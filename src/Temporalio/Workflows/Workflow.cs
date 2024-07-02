@@ -19,6 +19,16 @@ namespace Temporalio.Workflows
     public static class Workflow
     {
         /// <summary>
+        /// Gets a value indicating whether all update and signal handlers have finished executing.
+        /// </summary>
+        /// <remarks>
+        /// Consider waiting on this condition before workflow return or continue-as-new, to prevent
+        /// interruption of in-progress handlers by workflow return:
+        /// <c>await Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)</c>.
+        /// </remarks>
+        public static bool AllHandlersFinished => Context.AllHandlersFinished;
+
+        /// <summary>
         /// Gets the cancellation token for the workflow.
         /// </summary>
         /// <remarks>
