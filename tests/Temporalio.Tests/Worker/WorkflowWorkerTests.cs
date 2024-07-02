@@ -5002,11 +5002,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public sealed class SemaphoreWorkflow : IDisposable
     {
-        private readonly Semaphore sema;
+        private readonly Semaphore? semaphore;
+        private readonly Mutex? mutex;
         private readonly Dictionary<int, CancellationTokenSource> cancellations = new();
 
         [WorkflowInit]
-        public SemaphoreWorkflow(int initialCount) => sema = new(initialCount);
+        public SemaphoreWorkflow(int? semaphoreCount)
+        {
+            semaphore = semaphoreCount is { } initialCount ? new(initialCount) : null;
+            mutex = semaphoreCount == null ? new() : null;
+        }
 
         public void Dispose()
         {
@@ -5017,7 +5022,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
 
         [WorkflowRun]
-        public Task RunAsync(int initialCount) => Workflow.WaitConditionAsync(() => false);
+        public Task RunAsync(int? semaphoreCount) => Workflow.WaitConditionAsync(() => false);
 
         [WorkflowQuery]
         public List<int> Waiting { get; } = new();
@@ -5045,15 +5050,15 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     {
                         throw new ApplicationFailureException("Cannot have MS and timespan");
                     }
-                    acquired = await sema.WaitAsync(timeoutMs, cancellationToken);
+                    acquired = await WaitAsync(timeoutMs, cancellationToken);
                 }
                 else if (update.TimeoutTimeSpan is { } timeoutTimeSpan)
                 {
-                    acquired = await sema.WaitAsync(timeoutTimeSpan, cancellationToken);
+                    acquired = await WaitAsync(timeoutTimeSpan, cancellationToken);
                 }
                 else
                 {
-                    await sema.WaitAsync(cancellationToken);
+                    await WaitAsync(cancellationToken);
                     acquired = true;
                 }
             }
@@ -5077,13 +5082,36 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             }
             finally
             {
-                sema.Release();
+                Release();
                 Waiting.Remove(update.Number);
             }
         }
 
         [WorkflowSignal]
         public async Task CancelUpdateAsync(int number) => cancellations[number].Cancel();
+
+#pragma warning disable VSTHRD110 // Returning tasks is ok
+        private Task WaitAsync(CancellationToken? cancellationToken = null) =>
+            semaphore?.WaitAsync(cancellationToken) ?? mutex!.WaitOneAsync(cancellationToken);
+
+        private Task<bool> WaitAsync(
+            int millisecondsTimeout,
+            CancellationToken? cancellationToken = null) =>
+            semaphore?.WaitAsync(millisecondsTimeout, cancellationToken) ??
+                mutex!.WaitOneAsync(millisecondsTimeout, cancellationToken);
+
+        private Task<bool> WaitAsync(
+            TimeSpan timeout,
+            CancellationToken? cancellationToken = null) =>
+            semaphore?.WaitAsync(timeout, cancellationToken) ??
+                mutex!.WaitOneAsync(timeout, cancellationToken);
+#pragma warning restore VSTHRD110
+
+        private void Release()
+        {
+            semaphore?.Release();
+            mutex?.ReleaseMutex();
+        }
 
         public record Update(int Number)
         {
@@ -5167,6 +5195,61 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions().AddAllActivities(acts));
     }
 
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Mutex_MultipleWaiters()
+    {
+        // This is a basic test of mutex usage. We will make a mutex with 3 updates and confirm
+        // that each proceeds one at a time.
+        var acts = new SemaphoreWorkflow.Activities(3);
+        await ExecuteWorkerAsync<SemaphoreWorkflow>(
+            async worker =>
+            {
+                // Start semaphore workflow with 3 updates
+                var handle = await Client.StartWorkflowAsync(
+                    (SemaphoreWorkflow wf) => wf.RunAsync(null),
+                    new($"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await Task.WhenAll(Enumerable.Range(0, 3).Select(i =>
+                    handle.StartUpdateAsync(
+                        wf => wf.UpdateAsync(new(i)),
+                        new(WorkflowUpdateStage.Accepted))));
+
+                // Confirm only 1 waiting
+                var waiting1 = Assert.Single(await handle.QueryAsync(wf => wf.Waiting));
+
+                // Unblock, wait for next one waiting
+                acts.UpdateCompletions[waiting1].SetResult();
+                var waiting2 = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var waiting = Assert.Single(await handle.QueryAsync(wf => wf.Waiting));
+                    Assert.NotEqual(waiting, waiting1);
+                    return waiting;
+                });
+
+                // Unblock, wait for final one waiting
+                acts.UpdateCompletions[waiting2].SetResult();
+                var waiting3 = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var waiting = Assert.Single(await handle.QueryAsync(wf => wf.Waiting));
+                    Assert.NotEqual(waiting, waiting1);
+                    Assert.NotEqual(waiting, waiting2);
+                    return waiting;
+                });
+
+                // Unblock and confirm completions
+                acts.UpdateCompletions[waiting3].SetResult();
+                var completed = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var completed = await handle.QueryAsync(wf => wf.Completed);
+                    Assert.True(completed.Count == 3);
+                    return completed;
+                });
+                Assert.Contains(0, completed);
+                Assert.Contains(1, completed);
+                Assert.Contains(2, completed);
+            },
+            new TemporalWorkerOptions().AddAllActivities(acts));
+    }
+
     [Theory]
     // 0 means non-blocking
     [InlineData(0, true)]
@@ -5221,12 +5304,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions().AddAllActivities(acts));
     }
 
-    [Theory]
-    // TODO(cretz): This is currently disabled since workflow cancellation is causing an issue.
-    // [InlineData(true)]
+    [SkippableTheory]
+    [InlineData(true)]
     [InlineData(false)]
     public async Task ExecuteWorkflowAsync_Semaphore_Cancellation(bool useWorkflowCancellation)
     {
+        if (useWorkflowCancellation)
+        {
+            throw new SkipException(
+                "Unable to cancel workflow for this test: https://github.com/temporalio/sdk-core/issues/772");
+        }
         // This tests that cancellation works. We will make a semaphore with 1 allowed and submit 2
         // updates. The second update will wait, and we will cancel the wait.
         var acts = new SemaphoreWorkflow.Activities(1);
