@@ -507,6 +507,106 @@ namespace Temporalio.Bridge.Interop
         public ByteArray* fail;
     }
 
+    internal partial struct FixedSizeSlotSupplier
+    {
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr num_slots;
+    }
+
+    internal partial struct ResourceBasedTunerOptions
+    {
+        public double target_memory_usage;
+
+        public double target_cpu_usage;
+    }
+
+    internal partial struct ResourceBasedSlotSupplier
+    {
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr minimum_slots;
+
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr maximum_slots;
+
+        [NativeTypeName("uint64_t")]
+        public ulong ramp_throttle_ms;
+
+        [NativeTypeName("struct ResourceBasedTunerOptions")]
+        public ResourceBasedTunerOptions tuner_options;
+    }
+
+    internal enum SlotSupplier_Tag
+    {
+        FixedSize,
+        ResourceBased,
+    }
+
+    internal unsafe partial struct SlotSupplier
+    {
+        public SlotSupplier_Tag tag;
+
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L379_C3")]
+        public _Anonymous_e__Union Anonymous;
+
+        internal ref FixedSizeSlotSupplier fixed_size
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
+                {
+                    return ref pField->fixed_size;
+                }
+            }
+        }
+
+        internal ref ResourceBasedSlotSupplier resource_based
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
+                {
+                    return ref pField->resource_based;
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        internal unsafe partial struct _Anonymous_e__Union
+        {
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L380_C5")]
+            public _Anonymous1_e__Struct Anonymous1;
+
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L383_C5")]
+            public _Anonymous2_e__Struct Anonymous2;
+
+            internal partial struct _Anonymous1_e__Struct
+            {
+                [NativeTypeName("struct FixedSizeSlotSupplier")]
+                public FixedSizeSlotSupplier fixed_size;
+            }
+
+            internal partial struct _Anonymous2_e__Struct
+            {
+                [NativeTypeName("struct ResourceBasedSlotSupplier")]
+                public ResourceBasedSlotSupplier resource_based;
+            }
+        }
+    }
+
+    internal partial struct TunerHolder
+    {
+        [NativeTypeName("struct SlotSupplier")]
+        public SlotSupplier workflow_slot_supplier;
+
+        [NativeTypeName("struct SlotSupplier")]
+        public SlotSupplier activity_slot_supplier;
+
+        [NativeTypeName("struct SlotSupplier")]
+        public SlotSupplier local_activity_slot_supplier;
+    }
+
     internal unsafe partial struct ByteArrayRefArray
     {
         [NativeTypeName("const struct ByteArrayRef *")]
@@ -533,14 +633,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint32_t")]
         public uint max_cached_workflows;
 
-        [NativeTypeName("uint32_t")]
-        public uint max_outstanding_workflow_tasks;
-
-        [NativeTypeName("uint32_t")]
-        public uint max_outstanding_activities;
-
-        [NativeTypeName("uint32_t")]
-        public uint max_outstanding_local_activities;
+        [NativeTypeName("struct TunerHolder")]
+        public TunerHolder tuner;
 
         [NativeTypeName("bool")]
         public byte no_remote_activities;

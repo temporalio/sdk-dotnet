@@ -4,6 +4,7 @@ use crate::ByteArray;
 use crate::ByteArrayRef;
 use crate::ByteArrayRefArray;
 use crate::UserDataHandle;
+use anyhow::{bail, Context};
 use prost::Message;
 use temporal_sdk_core::replay::HistoryForReplay;
 use temporal_sdk_core::replay::ReplayWorkerInput;
@@ -31,9 +32,7 @@ pub struct WorkerOptions {
     build_id: ByteArrayRef,
     identity_override: ByteArrayRef,
     max_cached_workflows: u32,
-    max_outstanding_workflow_tasks: u32,
-    max_outstanding_activities: u32,
-    max_outstanding_local_activities: u32,
+    tuner: TunerHolder,
     no_remote_activities: bool,
     sticky_queue_schedule_to_start_timeout_millis: u64,
     max_heartbeat_throttle_interval_millis: u64,
@@ -48,6 +47,43 @@ pub struct WorkerOptions {
     nondeterminism_as_workflow_fail: bool,
     nondeterminism_as_workflow_fail_for_types: ByteArrayRefArray,
 }
+
+#[repr(C)]
+pub struct TunerHolder {
+    workflow_slot_supplier: SlotSupplier,
+    activity_slot_supplier: SlotSupplier,
+    local_activity_slot_supplier: SlotSupplier,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum SlotSupplier {
+    FixedSize(FixedSizeSlotSupplier),
+    ResourceBased(ResourceBasedSlotSupplier),
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, PartialEq)]
+pub struct FixedSizeSlotSupplier {
+    num_slots: usize,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, PartialEq)]
+pub struct ResourceBasedSlotSupplier {
+    minimum_slots: usize,
+    maximum_slots: usize,
+    ramp_throttle_ms: u64,
+    tuner_options: ResourceBasedTunerOptions,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct ResourceBasedTunerOptions {
+    target_memory_usage: f64,
+    target_cpu_usage: f64,
+}
+
 
 #[derive(Clone)]
 pub struct Worker {
@@ -129,6 +165,9 @@ pub extern "C" fn worker_new(client: *mut Client, options: *const WorkerOptions)
 
 #[no_mangle]
 pub extern "C" fn worker_free(worker: *mut Worker) {
+    if worker.is_null() {
+        return
+    }
     unsafe {
         let _ = Box::from_raw(worker);
     }
@@ -503,6 +542,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
     type Error = anyhow::Error;
 
     fn try_from(opt: &WorkerOptions) -> anyhow::Result<Self> {
+        let converted_tuner: temporal_sdk_core::TunerHolder = (&opt.tuner).try_into()?;
         WorkerConfigBuilder::default()
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())
@@ -510,9 +550,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             .use_worker_versioning(opt.use_worker_versioning)
             .client_identity_override(opt.identity_override.to_option_string())
             .max_cached_workflows(opt.max_cached_workflows as usize)
-            .max_outstanding_workflow_tasks(opt.max_outstanding_workflow_tasks as usize)
-            .max_outstanding_activities(opt.max_outstanding_activities as usize)
-            .max_outstanding_local_activities(opt.max_outstanding_local_activities as usize)
+            .tuner(Arc::new(converted_tuner))
             .no_remote_activities(opt.no_remote_activities)
             .sticky_queue_schedule_to_start_timeout(Duration::from_millis(
                 opt.sticky_queue_schedule_to_start_timeout_millis,
@@ -561,5 +599,89 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             )
             .build()
             .map_err(|err| anyhow::anyhow!(err))
+    }
+}
+
+impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
+    type Error = anyhow::Error;
+
+    fn try_from(holder: &TunerHolder) -> anyhow::Result<Self> {
+        // Verify all resource-based options are the same if any are set
+        let maybe_wf_resource_opts =
+            if let SlotSupplier::ResourceBased(ref ss) = holder.workflow_slot_supplier {
+                Some(&ss.tuner_options)
+            } else {
+                None
+            };
+        let maybe_act_resource_opts =
+            if let SlotSupplier::ResourceBased(ref ss) = holder.activity_slot_supplier {
+                Some(&ss.tuner_options)
+            } else {
+                None
+            };
+        let maybe_local_act_resource_opts =
+            if let SlotSupplier::ResourceBased(ref ss) = holder.local_activity_slot_supplier {
+                Some(&ss.tuner_options)
+            } else {
+                None
+            };
+        let all_resource_opts = [
+            maybe_wf_resource_opts,
+            maybe_act_resource_opts,
+            maybe_local_act_resource_opts,
+        ];
+        let mut set_resource_opts = all_resource_opts.iter().flatten();
+        let first = set_resource_opts.next();
+        let all_are_same = if let Some(first) = first {
+            set_resource_opts.all(|elem| elem == first)
+        } else {
+            true
+        };
+        if !all_are_same {
+            bail!(
+                "All resource-based slot suppliers must have the same ResourceBasedTunerOptions",
+            );
+        }
+
+        let mut options = temporal_sdk_core::TunerHolderOptionsBuilder::default();
+        if let Some(first) = first {
+            options.resource_based_options(
+                temporal_sdk_core::ResourceBasedSlotsOptionsBuilder::default()
+                    .target_mem_usage(first.target_memory_usage)
+                    .target_cpu_usage(first.target_cpu_usage)
+                    .build()
+                    .expect("Building ResourceBasedSlotsOptions is infallible"),
+            );
+        };
+        options
+            .workflow_slot_options(holder.workflow_slot_supplier.try_into()?)
+            .activity_slot_options(holder.activity_slot_supplier.try_into()?)
+            .local_activity_slot_options(holder.local_activity_slot_supplier.try_into()?);
+        Ok(options
+            .build()
+            .context("Invalid tuner holder options")?
+            .build_tuner_holder()
+            .context("Failed building tuner holder")?)
+    }
+}
+
+impl TryFrom<SlotSupplier> for temporal_sdk_core::SlotSupplierOptions {
+    type Error = anyhow::Error;
+
+    fn try_from(supplier: SlotSupplier) -> anyhow::Result<temporal_sdk_core::SlotSupplierOptions> {
+        Ok(match supplier {
+            SlotSupplier::FixedSize(fs) => temporal_sdk_core::SlotSupplierOptions::FixedSize {
+                slots: fs.num_slots,
+            },
+            SlotSupplier::ResourceBased(ss) => {
+                temporal_sdk_core::SlotSupplierOptions::ResourceBased(
+                    temporal_sdk_core::ResourceSlotOptions::new(
+                        ss.minimum_slots,
+                        ss.maximum_slots,
+                        Duration::from_millis(ss.ramp_throttle_ms),
+                    ),
+                )
+            }
+        })
     }
 }

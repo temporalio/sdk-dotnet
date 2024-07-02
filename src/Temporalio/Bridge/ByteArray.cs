@@ -26,7 +26,7 @@ namespace Temporalio.Bridge
         }
 
         /// <inheritdoc/>
-        public override unsafe bool IsInvalid => false;
+        public override unsafe bool IsInvalid => byteArray == null;
 
         /// <summary>
         /// Convert the byte array to a UTF8 string.
