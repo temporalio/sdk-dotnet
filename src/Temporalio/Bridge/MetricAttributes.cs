@@ -44,7 +44,7 @@ namespace Temporalio.Bridge
         }
 
         /// <inheritdoc />
-        public override unsafe bool IsInvalid => false;
+        public override unsafe bool IsInvalid => Ptr == null;
 
         /// <summary>
         /// Gets the pointer to the attributes.
