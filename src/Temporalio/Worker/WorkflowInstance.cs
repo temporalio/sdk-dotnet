@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -68,6 +69,7 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
         private readonly bool disableCompletionCommandReordering;
+        private readonly Handlers inProgressHandlers = new();
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -203,6 +205,9 @@ namespace Temporalio.Worker
         /// Gets a value indicating whether this workflow works with tracing events.
         /// </summary>
         public bool TracingEventsEnabled { get; private init; }
+
+        /// <inheritdoc />
+        public bool AllHandlersFinished => inProgressHandlers.Count == 0;
 
         /// <inheritdoc />
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
@@ -576,7 +581,13 @@ namespace Temporalio.Worker
                 }
 
                 // Maybe apply workflow completion command reordering logic
-                ApplyCompletionCommandReordering(act, completion);
+                ApplyCompletionCommandReordering(act, completion, out var workflowComplete);
+
+                // Log warnings if we have completed
+                if (workflowComplete && !IsReplaying)
+                {
+                    inProgressHandlers.WarnIfAnyLeftOver(Info.WorkflowId, logger);
+                }
 
                 // Unset the completion
                 var toReturn = completion;
@@ -886,6 +897,10 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
+                // Make sure we have loaded the instance which may invoke the constructor thereby
+                // letting the constructor register update handlers at runtime
+                var ignored = Instance;
+
                 // Set the current update for the life of this task
                 CurrentUpdateInfoLocal.Value = new(Id: update.Id, Name: update.Name);
 
@@ -998,9 +1013,12 @@ namespace Temporalio.Worker
                         Definition: updateDefn,
                         Args: argsForUpdate,
                         Headers: update.Headers));
+                    var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
+                        update.Name, update.Id, updateDefn.UnfinishedPolicy));
                     return task.ContinueWith(
                         _ =>
                         {
+                            inProgressHandlers.Remove(inProgress);
                             // If workflow failure exception, it's an update failure. If it's some
                             // other exception, it's a task failure. Otherwise it's a success.
                             var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
@@ -1080,6 +1098,10 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
+                // Make sure we have loaded the instance which may invoke the constructor thereby
+                // letting the constructor register query handlers at runtime
+                var ignored = Instance;
+
                 var origCmdCount = completion?.Successful?.Commands?.Count;
                 try
                 {
@@ -1241,11 +1263,21 @@ namespace Temporalio.Worker
                     return;
                 }
 
-                await inbound.Value.HandleSignalAsync(new(
-                    Signal: signal.SignalName,
-                    Definition: signalDefn,
-                    Args: args,
-                    Headers: signal.Headers)).ConfigureAwait(true);
+                // Handle signal
+                var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
+                    signal.SignalName, null, signalDefn.UnfinishedPolicy));
+                try
+                {
+                    await inbound.Value.HandleSignalAsync(new(
+                        Signal: signal.SignalName,
+                        Definition: signalDefn,
+                        Args: args,
+                        Headers: signal.Headers)).ConfigureAwait(true);
+                }
+                finally
+                {
+                    inProgressHandlers.Remove(inProgress);
+                }
             }));
         }
 
@@ -1394,7 +1426,9 @@ namespace Temporalio.Worker
         }
 
         private void ApplyCompletionCommandReordering(
-            WorkflowActivation act, WorkflowActivationCompletion completion)
+            WorkflowActivation act,
+            WorkflowActivationCompletion completion,
+            out bool workflowComplete)
         {
             // In earlier versions of the SDK we allowed commands to be sent after workflow
             // completion. These ended up being removed effectively making the result of the
@@ -1404,40 +1438,42 @@ namespace Temporalio.Worker
             //
             // Note this only applies for successful activations that don't have completion
             // reordering disabled and that are either not replaying or have the flag set.
-            if (completion.Successful == null || disableCompletionCommandReordering)
-            {
-                return;
-            }
-            if (IsReplaying && !act.AvailableInternalFlags.Contains((uint)WorkflowLogicFlag.ReorderWorkflowCompletion))
-            {
-                return;
-            }
 
-            // We know we're on a newer SDK and can move completion to the end if we need to. First,
-            // find the completion command.
+            // Find the index of the completion command
             var completionCommandIndex = -1;
-            for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
+            if (completion.Successful != null)
             {
-                var cmd = completion.Successful.Commands[i];
-                // Set completion index if the command is a completion
-                if (cmd.CancelWorkflowExecution != null ||
-                    cmd.CompleteWorkflowExecution != null ||
-                    cmd.ContinueAsNewWorkflowExecution != null ||
-                    cmd.FailWorkflowExecution != null)
+                for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
                 {
-                    completionCommandIndex = i;
-                    break;
+                    var cmd = completion.Successful.Commands[i];
+                    // Set completion index if the command is a completion
+                    if (cmd.CancelWorkflowExecution != null ||
+                        cmd.CompleteWorkflowExecution != null ||
+                        cmd.ContinueAsNewWorkflowExecution != null ||
+                        cmd.FailWorkflowExecution != null)
+                    {
+                        completionCommandIndex = i;
+                        break;
+                    }
                 }
             }
+            workflowComplete = completionCommandIndex >= 0;
 
-            // If there is no completion command or it's already at the end, nothing to do
-            if (completionCommandIndex == -1 ||
-                completionCommandIndex == completion.Successful.Commands.Count - 1)
+            // This only applies for successful activations that have a completion not at the end,
+            // don't have completion reordering disabled, and that are either not replaying or have
+            // the flag set.
+            if (completion.Successful == null ||
+                completionCommandIndex == -1 ||
+                completionCommandIndex == completion.Successful.Commands.Count - 1 ||
+                disableCompletionCommandReordering ||
+                (IsReplaying && !act.AvailableInternalFlags.Contains(
+                    (uint)WorkflowLogicFlag.ReorderWorkflowCompletion)))
             {
                 return;
             }
 
-            // Now we know the completion is in the wrong spot, so set the SDK flag and move it
+            // Now we know the completion is in the wrong spot and we're on a newer SDK, so set the
+            // SDK flag and move it
             completion.Successful.UsedInternalFlags.Add((uint)WorkflowLogicFlag.ReorderWorkflowCompletion);
             var compCmd = completion.Successful.Commands[completionCommandIndex];
             completion.Successful.Commands.RemoveAt(completionCommandIndex);
@@ -2229,6 +2265,87 @@ namespace Temporalio.Worker
             /// <inheritdoc />
             public override Task CancelAsync() =>
                 instance.outbound.Value.CancelExternalWorkflowAsync(new(Id: Id, RunId: RunId));
+        }
+
+        private class Handlers : LinkedList<Handlers.Handler>
+        {
+#pragma warning disable SA1118 // We're ok w/ string literals spanning lines
+            private static readonly Action<ILogger, string, WarnableSignals, Exception?> SignalWarning =
+                LoggerMessage.Define<string, WarnableSignals>(
+                    LogLevel.Warning,
+                    0,
+                    "Workflow {Id} finished while signal handlers are still running. This may " +
+                    "have interrupted work that the signal handler was doing. You can wait for " +
+                    "all update and signal handlers to complete by using `await " +
+                    "Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)`. " +
+                    "Alternatively, if both you and the clients sending the signal are okay with " +
+                    "interrupting running handlers when the workflow finishes, and causing " +
+                    "clients to receive errors, then you can disable this warning via the signal " +
+                    "handler attribute: " +
+                    "`[WorkflowSignal(UnfinishedPolicy=HandlerUnfinishedPolicy.Abandon)]`. The " +
+                    "following signals were unfinished (and warnings were not disabled for their " +
+                    "handler): {Handlers}");
+
+            private static readonly Action<ILogger, string, WarnableUpdates, Exception?> UpdateWarning =
+                LoggerMessage.Define<string, WarnableUpdates>(
+                    LogLevel.Warning,
+                    0,
+                    "Workflow {Id} finished while update handlers are still running. This may " +
+                    "have interrupted work that the update handler was doing, and the client " +
+                    "that sent the update will receive a 'workflow execution already completed' " +
+                    "RpcException instead of the update result. You can wait for all update and " +
+                    "signal handlers to complete by using `await " +
+                    "Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)`. " +
+                    "Alternatively, if both you and the clients sending the update are okay with " +
+                    "interrupting running handlers when the workflow finishes, and causing " +
+                    "clients to receive errors, then you can disable this warning via the update " +
+                    "handler attribute: " +
+                    "`[WorkflowUpdate(UnfinishedPolicy=HandlerUnfinishedPolicy.Abandon)]`. The " +
+                    "following updates were unfinished (and warnings were not disabled for their " +
+                    "handler): {Handlers}");
+#pragma warning restore SA1118
+
+            public void WarnIfAnyLeftOver(string id, ILogger logger)
+            {
+                var signals = this.
+                    Where(h => h.UpdateId == null && h.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon).
+                    GroupBy(h => h.Name).
+                    Select(h => (h.Key, h.Count())).
+                    ToArray();
+                if (signals.Length > 0)
+                {
+                    SignalWarning(logger, id, new WarnableSignals { NamesAndCounts = signals }, null);
+                }
+                var updates = this.
+                    Where(h => h.UpdateId != null && h.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon).
+                    Select(h => (h.Name, h.UpdateId!)).
+                    ToArray();
+                if (updates.Length > 0)
+                {
+                    UpdateWarning(logger, id, new WarnableUpdates { NamesAndIds = updates }, null);
+                }
+            }
+
+            public readonly struct WarnableSignals
+            {
+                public (string, int)[] NamesAndCounts { get; init; }
+
+                public override string ToString() => JsonSerializer.Serialize(
+                    NamesAndCounts.Select(v => new { name = v.Item1, count = v.Item2 }).ToArray());
+            }
+
+            public readonly struct WarnableUpdates
+            {
+                public (string, string)[] NamesAndIds { get; init; }
+
+                public override string ToString() => JsonSerializer.Serialize(
+                    NamesAndIds.Select(v => new { name = v.Item1, id = v.Item2 }).ToArray());
+            }
+
+            public record Handler(
+                string Name,
+                string? UpdateId,
+                HandlerUnfinishedPolicy UnfinishedPolicy);
         }
     }
 }

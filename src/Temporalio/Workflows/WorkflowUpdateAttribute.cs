@@ -47,5 +47,11 @@ namespace Temporalio.Workflows
         /// an array of <see cref="Converters.IRawValue" />.
         /// </summary>
         public bool Dynamic { get; set; }
+
+        /// <summary>
+        /// Gets or sets the actions taken if a workflow exits with a running instance of this
+        /// handler. Default is <see cref="HandlerUnfinishedPolicy.WarnAndAbandon" />.
+        /// </summary>
+        public HandlerUnfinishedPolicy UnfinishedPolicy { get; set; } = HandlerUnfinishedPolicy.WarnAndAbandon;
     }
 }
