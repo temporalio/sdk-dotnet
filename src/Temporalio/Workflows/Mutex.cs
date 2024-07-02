@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 namespace Temporalio.Workflows
 {
     /// <summary>
-    /// Mutex is a thin wrapper around <see cref="Semaphore"/> with a single count.
+    /// Mutex is an alternative to <see cref="System.Threading.Mutex"/>. It is a thin wrapper around
+    /// <see cref="Semaphore"/> with a single count.
     /// </summary>
     public class Mutex
     {
