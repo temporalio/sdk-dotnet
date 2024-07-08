@@ -37,6 +37,7 @@ typedef enum OpenTelemetryMetricTemporality {
 typedef enum RpcService {
   Workflow = 1,
   Operator,
+  Cloud,
   Test,
   Health,
 } RpcService;

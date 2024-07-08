@@ -39,6 +39,12 @@ namespace Temporalio.Client
         public ITemporalConnection Connection { get; private init; }
 
         /// <inheritdoc />
+        public WorkflowService WorkflowService => Connection.WorkflowService;
+
+        /// <inheritdoc />
+        public OperatorService OperatorService => Connection.OperatorService;
+
+        /// <inheritdoc />
         public TemporalClientOptions Options { get; private init; }
 
         /// <inheritdoc />
