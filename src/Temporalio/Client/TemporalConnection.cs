@@ -32,6 +32,7 @@ namespace Temporalio.Client
         {
             WorkflowService = new WorkflowService.Core(this);
             OperatorService = new OperatorService.Core(this);
+            CloudService = new CloudService.Core(this);
             TestService = new TestService.Core(this);
             Options = options;
             if (options.RpcMetadata == null)
@@ -127,6 +128,9 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public OperatorService OperatorService { get; private init; }
+
+        /// <inheritdoc />
+        public CloudService CloudService { get; private init; }
 
         /// <inheritdoc />
         public TestService TestService { get; private init; }

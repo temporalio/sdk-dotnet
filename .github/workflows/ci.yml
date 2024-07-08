@@ -104,6 +104,15 @@ jobs:
           TEMPORAL_CLIENT_KEY: ${{ secrets.TEMPORAL_CLIENT_KEY }}
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
 
+      - name: Test cloud operations client
+        # Only supported in non-fork runs, since secrets are not available in forks
+        if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        env:
+          TEMPORAL_CLIENT_CLOUD_NAMESPACE: sdk-ci.a2dd6
+          TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
+          TEMPORAL_CLIENT_CLOUD_API_VERSION: 2024-05-13-00
+        run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.TemporalCloudOperationsClientTests.*"
+
       - name: Build docs
         if: ${{ matrix.docsTarget }}
         run: |

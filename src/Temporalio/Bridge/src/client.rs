@@ -9,8 +9,8 @@ use std::str::FromStr;
 use std::time::Duration;
 use temporal_client::{
     ClientKeepAliveConfig, ClientOptions as CoreClientOptions, ClientOptionsBuilder,
-    ClientTlsConfig, ConfiguredClient, HealthService, OperatorService, RetryClient, RetryConfig,
-    TemporalServiceClientWithMetrics, TestService, TlsConfig, WorkflowService,
+    ClientTlsConfig, CloudService, ConfiguredClient, HealthService, OperatorService, RetryClient,
+    RetryConfig, TemporalServiceClientWithMetrics, TestService, TlsConfig, WorkflowService,
 };
 use tonic::metadata::MetadataKey;
 use url::Url;
@@ -172,6 +172,7 @@ unsafe impl Sync for RpcCallOptions {}
 pub enum RpcService {
     Workflow = 1,
     Operator,
+    Cloud,
     Test,
     Health,
 }
@@ -219,6 +220,9 @@ pub extern "C" fn client_rpc_call(
             RpcService::Workflow => {
                 service_call!(call_workflow_service, client, options, cancel_token)
             }
+            RpcService::Cloud => {
+                service_call!(call_cloud_service, client, options, cancel_token)
+            }
             RpcService::Operator => {
                 service_call!(call_operator_service, client, options, cancel_token)
             }
@@ -265,6 +269,16 @@ macro_rules! rpc_call {
             rpc_resp($client.$call_name(rpc_req($call)?).await)
         } else {
             rpc_resp($client.into_inner().$call_name(rpc_req($call)?).await)
+        }
+    };
+}
+
+macro_rules! rpc_call_on_trait {
+    ($client:ident, $call:ident, $trait:tt, $call_name:ident) => {
+        if $call.retry {
+            rpc_resp($trait::$call_name(&mut $client, rpc_req($call)?).await)
+        } else {
+            rpc_resp($trait::$call_name(&mut $client.into_inner(), rpc_req($call)?).await)
         }
     };
 }
@@ -354,7 +368,7 @@ async fn call_workflow_service(
         "StartBatchOperation" => rpc_call!(client, call, start_batch_operation),
         "StopBatchOperation" => rpc_call!(client, call, stop_batch_operation),
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
-        "UpdateNamespace" => rpc_call!(client, call, update_namespace),
+        "UpdateNamespace" => rpc_call_on_trait!(client, call, WorkflowService, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
         "UpdateWorkerVersioningRules" => rpc_call!(client, call, update_worker_versioning_rules),
         "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
@@ -375,7 +389,7 @@ async fn call_operator_service(
         "AddOrUpdateRemoteCluster" => rpc_call!(client, call, add_or_update_remote_cluster),
         "AddSearchAttributes" => rpc_call!(client, call, add_search_attributes),
         "CreateNexusEndpoint" => rpc_call!(client, call, create_nexus_endpoint),
-        "DeleteNamespace" => rpc_call!(client, call, delete_namespace),
+        "DeleteNamespace" => rpc_call_on_trait!(client, call, OperatorService, delete_namespace),
         "DeleteNexusEndpoint" => rpc_call!(client, call, delete_nexus_endpoint),
         "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
         "GetNexusEndpoint" => rpc_call!(client, call, get_nexus_endpoint),
@@ -385,6 +399,50 @@ async fn call_operator_service(
         "RemoveRemoteCluster" => rpc_call!(client, call, remove_remote_cluster),
         "RemoveSearchAttributes" => rpc_call!(client, call, remove_search_attributes),
         "UpdateNexusEndpoint" => rpc_call!(client, call, update_nexus_endpoint),
+        rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
+    }
+}
+
+async fn call_cloud_service<'p>(
+    client: &CoreClient,
+    call: &RpcCallOptions,
+) -> anyhow::Result<Vec<u8>> {
+    let rpc = call.rpc.to_str();
+    let mut client = client.clone();
+    match rpc {
+        "AddNamespaceRegion" => rpc_call!(client, call, add_namespace_region),
+        "CreateApiKey" => rpc_call!(client, call, create_api_key),
+        "CreateNamespace" => rpc_call!(client, call, create_namespace),
+        "CreateServiceAccount" => rpc_call!(client, call, create_service_account),
+        "CreateUserGroup" => rpc_call!(client, call, create_user_group),
+        "CreateUser" => rpc_call!(client, call, create_user),
+        "DeleteApiKey" => rpc_call!(client, call, delete_api_key),
+        "DeleteNamespace" => rpc_call_on_trait!(client, call, CloudService, delete_namespace),
+        "DeleteServiceAccount" => rpc_call!(client, call, delete_service_account),
+        "DeleteUserGroup" => rpc_call!(client, call, delete_user_group),
+        "DeleteUser" => rpc_call!(client, call, delete_user),
+        "FailoverNamespaceRegion" => rpc_call!(client, call, failover_namespace_region),
+        "GetApiKey" => rpc_call!(client, call, get_api_key),
+        "GetApiKeys" => rpc_call!(client, call, get_api_keys),
+        "GetAsyncOperation" => rpc_call!(client, call, get_async_operation),
+        "GetNamespace" => rpc_call!(client, call, get_namespace),
+        "GetNamespaces" => rpc_call!(client, call, get_namespaces),
+        "GetRegion" => rpc_call!(client, call, get_region),
+        "GetRegions" => rpc_call!(client, call, get_regions),
+        "GetServiceAccount" => rpc_call!(client, call, get_service_account),
+        "GetServiceAccounts" => rpc_call!(client, call, get_service_accounts),
+        "GetUserGroup" => rpc_call!(client, call, get_user_group),
+        "GetUserGroups" => rpc_call!(client, call, get_user_groups),
+        "GetUser" => rpc_call!(client, call, get_user),
+        "GetUsers" => rpc_call!(client, call, get_users),
+        "RenameCustomSearchAttribute" => rpc_call!(client, call, rename_custom_search_attribute),
+        "SetUserGroupNamespaceAccess" => rpc_call!(client, call, set_user_group_namespace_access),
+        "SetUserNamespaceAccess" => rpc_call!(client, call, set_user_namespace_access),
+        "UpdateApiKey" => rpc_call!(client, call, update_api_key),
+        "UpdateNamespace" => rpc_call_on_trait!(client, call, CloudService, update_namespace),
+        "UpdateServiceAccount" => rpc_call!(client, call, update_service_account),
+        "UpdateUserGroup" => rpc_call!(client, call, update_user_group),
+        "UpdateUser" => rpc_call!(client, call, update_user),
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }
 }

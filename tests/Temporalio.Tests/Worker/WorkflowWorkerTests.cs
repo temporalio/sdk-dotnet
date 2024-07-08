@@ -4057,7 +4057,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             try
             {
-                var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(new()
+                var resp = await Client.WorkflowService.PollWorkflowExecutionUpdateAsync(new()
                 {
                     Identity = Client.Connection.Options.Identity,
                     Namespace = Client.Options.Namespace,
@@ -4134,7 +4134,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             },
             new(tq) { BuildId = "1.0" });
 
-        await Env.Client.Connection.WorkflowService.ResetStickyTaskQueueAsync(new()
+        await Env.Client.WorkflowService.ResetStickyTaskQueueAsync(new()
         {
             Namespace = Env.Client.Options.Namespace,
             Execution = new() { WorkflowId = handle.Id },
