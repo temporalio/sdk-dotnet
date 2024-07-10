@@ -19,7 +19,7 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ConnectAsync_Connection_Succeeds()
     {
-        var resp = await Client.Connection.WorkflowService.GetSystemInfoAsync(
+        var resp = await Client.WorkflowService.GetSystemInfoAsync(
             new Api.WorkflowService.V1.GetSystemInfoRequest());
         // Just confirm the response has a version and capabilities
         Assert.NotEmpty(resp.ServerVersion);
@@ -29,7 +29,7 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         // TODO(cretz): Find way to confirm this works without running our own gRPC server
         Client.Connection.RpcMetadata = new Dictionary<string, string> { ["header"] = "value" };
         Client.Connection.ApiKey = "my-api-key";
-        resp = await Client.Connection.WorkflowService.GetSystemInfoAsync(
+        resp = await Client.WorkflowService.GetSystemInfoAsync(
             new Api.WorkflowService.V1.GetSystemInfoRequest());
         Assert.NotEmpty(resp.ServerVersion);
         Assert.NotNull(resp.Capabilities);
@@ -70,9 +70,10 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
             }),
         });
 
-        // Check workflow service and operator service
-        await AssertAllRpcsAsync(captureMeter.Calls, env.Client.Connection.WorkflowService);
-        await AssertAllRpcsAsync(captureMeter.Calls, env.Client.Connection.OperatorService, skip: "AddOrUpdateRemoteCluster");
+        // Check workflow, operator, and cloud service
+        await AssertAllRpcsAsync(captureMeter.Calls, env.Client.WorkflowService);
+        await AssertAllRpcsAsync(captureMeter.Calls, env.Client.OperatorService, skip: "AddOrUpdateRemoteCluster");
+        await AssertAllRpcsAsync(captureMeter.Calls, env.Client.Connection.CloudService);
     }
 
     private static async Task AssertAllRpcsAsync<T>(

@@ -84,7 +84,6 @@ pub struct ResourceBasedTunerOptions {
     target_cpu_usage: f64,
 }
 
-
 #[derive(Clone)]
 pub struct Worker {
     worker: Option<Arc<temporal_sdk_core::Worker>>,
@@ -166,7 +165,7 @@ pub extern "C" fn worker_new(client: *mut Client, options: *const WorkerOptions)
 #[no_mangle]
 pub extern "C" fn worker_free(worker: *mut Worker) {
     if worker.is_null() {
-        return
+        return;
     }
     unsafe {
         let _ = Box::from_raw(worker);
@@ -638,9 +637,7 @@ impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
             true
         };
         if !all_are_same {
-            bail!(
-                "All resource-based slot suppliers must have the same ResourceBasedTunerOptions",
-            );
+            bail!("All resource-based slot suppliers must have the same ResourceBasedTunerOptions",);
         }
 
         let mut options = temporal_sdk_core::TunerHolderOptionsBuilder::default();

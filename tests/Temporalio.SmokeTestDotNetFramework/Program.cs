@@ -14,7 +14,7 @@ namespace Temporalio.SmokeTestDotNetFramework
             {
                 Console.WriteLine(
                     "System info: {0}",
-                    await env.Client.Connection.WorkflowService.GetSystemInfoAsync(new GetSystemInfoRequest()));
+                    await env.Client.WorkflowService.GetSystemInfoAsync(new GetSystemInfoRequest()));
             }
             finally
             {
