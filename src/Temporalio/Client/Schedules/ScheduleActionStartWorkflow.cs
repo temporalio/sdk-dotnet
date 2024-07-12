@@ -122,6 +122,10 @@ namespace Temporalio.Client.Schedules
             {
                 throw new ArgumentException("ID reuse policy cannot change from default for scheduled workflow");
             }
+            if (Options.IdConflictPolicy != Api.Enums.V1.WorkflowIdConflictPolicy.Unspecified)
+            {
+                throw new ArgumentException("ID conflict policy cannot change from default for scheduled workflow");
+            }
             if (Options.CronSchedule != null)
             {
                 throw new ArgumentException("Cron schedule cannot be set on scheduled workflow");

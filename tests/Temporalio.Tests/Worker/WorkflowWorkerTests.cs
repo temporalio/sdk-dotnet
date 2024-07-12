@@ -5580,6 +5580,66 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             shouldWarn: false);
     }
 
+    [Workflow]
+    public class IdConflictWorkflow
+    {
+        // Just wait forever
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_IdConflictPolicy_ProperlyApplies()
+    {
+        await ExecuteWorkerAsync<IdConflictWorkflow>(async worker =>
+        {
+            // Start a workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            handle = handle with { RunId = handle.ResultRunId };
+
+            // Confirm another fails by default
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() =>
+                Env.Client.StartWorkflowAsync(
+                    (IdConflictWorkflow wf) => wf.RunAsync(),
+                    new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)));
+
+            // Confirm fails if explicitly given that option
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() =>
+                Env.Client.StartWorkflowAsync(
+                    (IdConflictWorkflow wf) => wf.RunAsync(),
+                    new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                    {
+                        IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                    }));
+
+            // Confirm gives back same handle if requested
+            var newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.Equal(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+
+            // Confirm terminates and starts new if requested
+            newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.TerminateExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.NotEqual(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Terminated, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+        });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

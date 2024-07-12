@@ -63,6 +63,15 @@ namespace Temporalio.Client
         public WorkflowIdReusePolicy IdReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
 
         /// <summary>
+        /// Gets or sets how already-existing workflows of the same ID are treated. Default is
+        /// <see cref="WorkflowIdConflictPolicy.Unspecified" /> which effectively means
+        /// <see cref="WorkflowIdConflictPolicy.Fail"/> on the server. If this value is set, then
+        /// <see cref="IdReusePolicy"/> cannot be set to
+        /// <see cref="WorkflowIdReusePolicy.TerminateIfRunning"/>.
+        /// </summary>
+        public WorkflowIdConflictPolicy IdConflictPolicy { get; set; } = WorkflowIdConflictPolicy.Unspecified;
+
+        /// <summary>
         /// Gets or sets the retry policy for the workflow. If unset, workflow never retries.
         /// </summary>
         public RetryPolicy? RetryPolicy { get; set; }

@@ -504,6 +504,7 @@ namespace Temporalio.Client
                     Identity = Client.Connection.Options.Identity,
                     RequestId = Guid.NewGuid().ToString(),
                     WorkflowIdReusePolicy = input.Options.IdReusePolicy,
+                    WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                     RequestEagerExecution = input.Options.RequestEagerStart,
                 };
