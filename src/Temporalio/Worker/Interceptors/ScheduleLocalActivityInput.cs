@@ -5,7 +5,7 @@ using Temporalio.Workflows;
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
-    /// Input for <see cref="WorkflowOutboundInterceptor.ScheduleLocalActivityAsync" />.
+    /// Input for <see cref="WorkflowOutboundInterceptor.ScheduleLocalActivityAsync{TResult}" />.
     /// </summary>
     /// <param name="Activity">Activity type name.</param>
     /// <param name="Args">Activity args.</param>

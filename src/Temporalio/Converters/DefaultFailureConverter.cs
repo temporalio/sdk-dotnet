@@ -193,7 +193,7 @@ namespace Temporalio.Converters
         public class WithEncodedCommonAttributes : DefaultFailureConverter
         {
             /// <summary>
-            /// Initializes a new instance of the <see cref="WithEncodedCommonAttributes"/> class.
+            /// Initializes a new instance of the <see cref="DefaultFailureConverter.WithEncodedCommonAttributes"/> class.
             /// </summary>
             public WithEncodedCommonAttributes()
                 : base(new() { EncodeCommonAttributes = true })
