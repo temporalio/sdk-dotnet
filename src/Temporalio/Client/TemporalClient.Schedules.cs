@@ -225,6 +225,7 @@ namespace Temporalio.Client
                     {
                         // TODO(cretz): Allow setting of page size or next page token?
                         Namespace = Client.Options.Namespace,
+                        Query = input.Options?.Query ?? string.Empty,
                     };
                     do
                     {

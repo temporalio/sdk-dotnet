@@ -9,6 +9,11 @@ namespace Temporalio.Client.Schedules
     public class ScheduleListOptions : ICloneable
     {
         /// <summary>
+        /// Gets or sets the visibility list filter.
+        /// </summary>
+        public string? Query { get; set; }
+
+        /// <summary>
         /// Gets or sets RPC options for listing schedules.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
