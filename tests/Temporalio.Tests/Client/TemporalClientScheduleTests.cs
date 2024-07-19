@@ -3,6 +3,7 @@ namespace Temporalio.Tests.Client;
 using System.Collections.Generic;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client.Schedules;
+using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Xunit;
@@ -181,14 +182,21 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             "some result",
             await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
 
-        // Create 4 more schedules of the same type and confirm they are in the list eventually
+        // Create 4 more schedules of the same type and confirm they are in the list eventually.
+        // But create two with different search attributes.
+        await EnsureSearchAttributesPresentAsync();
+        var optsWithAttrs = new ScheduleOptions()
+        {
+            TypedSearchAttributes = new SearchAttributeCollection.Builder().
+                Set(AttrKeyword, "SomeKeyword").ToSearchAttributeCollection(),
+        };
         var expectedIds = new List<string>
         {
             handle.Id,
             (await Client.CreateScheduleAsync($"{handle.Id}-1", newSched)).Id,
             (await Client.CreateScheduleAsync($"{handle.Id}-2", newSched)).Id,
-            (await Client.CreateScheduleAsync($"{handle.Id}-3", newSched)).Id,
-            (await Client.CreateScheduleAsync($"{handle.Id}-4", newSched)).Id,
+            (await Client.CreateScheduleAsync($"{handle.Id}-3", newSched, optsWithAttrs)).Id,
+            (await Client.CreateScheduleAsync($"{handle.Id}-4", newSched, optsWithAttrs)).Id,
         };
         await AssertMore.EqualEventuallyAsync(expectedIds, async () =>
         {
@@ -200,6 +208,16 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             actualIds.Sort();
             return actualIds;
         });
+
+        // Confirm list with query works
+        var actualIds = new List<string>();
+        await foreach (var sched in Client.ListSchedulesAsync(
+            new() { Query = $"{AttrKeyword.Name} = 'SomeKeyword'" }))
+        {
+            actualIds.Add(sched.Id);
+        }
+        actualIds.Sort();
+        Assert.Equal(new List<string> { $"{handle.Id}-3", $"{handle.Id}-4" }, actualIds);
 
         // Delete when done
         await TestUtils.DeleteAllSchedulesAsync(Client);
