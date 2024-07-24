@@ -242,6 +242,15 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 case Scenario.WorkflowWhenAnyWithResultThreeParam:
                     return await await Workflow.WhenAnyAsync(
                         Task.FromResult("done"), Task.FromResult("done"), Task.FromResult("done"));
+                case Scenario.WorkflowWhenAll:
+                    return string.Join(string.Empty, await Workflow.WhenAllAsync(
+                        Task.FromResult("do"), Task.FromResult("ne")));
+                case Scenario.WorkflowRunTask:
+                    return await Workflow.RunTaskAsync(async () => "done");
+                case Scenario.WorkflowRunTaskAfterTaskStart:
+                    var runTaskStart = new Task<string>(() => "done");
+                    runTaskStart.Start();
+                    return await Workflow.RunTaskAsync(() => runTaskStart);
             }
             throw new InvalidOperationException("Unexpected completion");
         }
@@ -266,6 +275,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // https://github.com/dotnet/runtime/issues/87481
             TaskWhenAnyWithResultTwoParam,
             WorkflowWhenAnyWithResultThreeParam,
+            WorkflowWhenAll,
+            WorkflowRunTask,
+            WorkflowRunTaskAfterTaskStart,
         }
     }
 
@@ -325,6 +337,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskContinueWith);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultTwoParam);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAnyWithResultThreeParam);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAll);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTask);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTaskAfterTaskStart);
     }
 
     [Workflow]

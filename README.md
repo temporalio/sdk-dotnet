@@ -688,7 +688,8 @@ use `TaskScheduler.Default` implicitly (and some analyzers even encourage this).
 with .NET tasks inside of workflows:
 
 * Do not use `Task.Run` - this uses the default scheduler and puts work on the thread pool.
-  * Use `Task.Factory.StartNew` or instantiate the `Task` and run `Task.Start` on it.
+  * Use `Workflow.RunTaskAsync` instead.
+  * Can also use `Task.Factory.StartNew` with current scheduler or instantiate the `Task` and run `Task.Start` on it.
 * Do not use `Task.ConfigureAwait(false)` - this will not use the current context.
   * If you must use `Task.ConfigureAwait`, use `Task.ConfigureAwait(true)`.
   * There is no significant performance benefit to `Task.ConfigureAwait` in workflows anyways due to how the scheduler
@@ -701,6 +702,10 @@ with .NET tasks inside of workflows:
   * Use `Workflow.WhenAnyAsync` instead.
   * Technically this only applies to an enumerable set of tasks with results or more than 2 tasks with results. Other
     uses are safe. See [this issue](https://github.com/dotnet/runtime/issues/87481).
+* Do not use `Task.WhenAll`
+  * Use `Workflow.WhenAllAsync` instead.
+  * Technically `Task.WhenAll` is currently deterministic in .NET and safe, but it is better to use the wrapper to be
+    sure.
 * Do not use `System.Threading.Semaphore` or `System.Threading.SemaphoreSlim` or `System.Threading.Mutex`.
   * Use `Temporalio.Workflows.Semaphore` or `Temporalio.Workflows.Mutex` instead.
   * _Technically_ `SemaphoreSlim` does work if only the async form of `WaitAsync` is used without no timeouts and
