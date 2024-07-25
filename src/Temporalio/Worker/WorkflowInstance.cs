@@ -68,7 +68,6 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance> onTaskStarting;
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
-        private readonly bool disableCompletionCommandReordering;
         private readonly Handlers inProgressHandlers = new();
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
@@ -190,7 +189,6 @@ namespace Temporalio.Worker
             Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
-            disableCompletionCommandReordering = details.DisableCompletionCommandReordering;
         }
 
         /// <summary>

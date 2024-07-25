@@ -89,8 +89,7 @@ namespace Temporalio.Worker
                     OnTaskStarting: options.OnTaskStarting,
                     OnTaskCompleted: options.OnTaskCompleted,
                     RuntimeMetricMeter: MetricMeter,
-                    WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
-                    DisableCompletionCommandReordering: options.DisableWorkflowCompletionCommandReordering));
+                    WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes));
             }
         }
 
