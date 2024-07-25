@@ -1428,8 +1428,8 @@ namespace Temporalio.Worker
             WorkflowActivationCompletion completion,
             out bool workflowComplete)
         {
-            // Find the index of the completion command
-            var completionCommandIndex = -1;
+            // Find the index of the last completion command
+            var lastCompletionCommandIndex = -1;
             if (completion.Successful != null)
             {
                 for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
@@ -1441,21 +1441,21 @@ namespace Temporalio.Worker
                         cmd.ContinueAsNewWorkflowExecution != null ||
                         cmd.FailWorkflowExecution != null)
                     {
-                        completionCommandIndex = i;
+                        lastCompletionCommandIndex = i;
                         break;
                     }
                 }
             }
-            workflowComplete = completionCommandIndex >= 0;
+            workflowComplete = lastCompletionCommandIndex >= 0;
 
-            // In a previous version of .NET, if this was a successful activation completion with
-            // a completion command not at the end, we'd reorder it to move at the end. However,
-            // this logic has now moved to core and become more robust. Therefore, we only apply
-            // this logic if we're replaying and flag is present so that workflows/histories that
-            // were created after this .NET flag but before the core flag still work.
+            // In a previous version of .NET SDK, if this was a successful activation completion
+            // with a completion command not at the end, we'd reorder it to move at the end.
+            // However, this logic has now moved to core and become more robust. Therefore, we only
+            // apply this logic if we're replaying and flag is present so that workflows/histories
+            // that were created after this .NET flag but before the core flag still work.
             if (completion.Successful == null ||
-                completionCommandIndex == -1 ||
-                completionCommandIndex == completion.Successful.Commands.Count - 1 ||
+                lastCompletionCommandIndex == -1 ||
+                lastCompletionCommandIndex == completion.Successful.Commands.Count - 1 ||
                 !IsReplaying ||
                 !act.AvailableInternalFlags.Contains((uint)WorkflowLogicFlag.ReorderWorkflowCompletion))
             {
@@ -1465,8 +1465,8 @@ namespace Temporalio.Worker
             // Now we know that we're replaying w/ the flag set and the completion in the wrong
             // spot, so set the SDK flag and move it
             completion.Successful.UsedInternalFlags.Add((uint)WorkflowLogicFlag.ReorderWorkflowCompletion);
-            var compCmd = completion.Successful.Commands[completionCommandIndex];
-            completion.Successful.Commands.RemoveAt(completionCommandIndex);
+            var compCmd = completion.Successful.Commands[lastCompletionCommandIndex];
+            completion.Successful.Commands.RemoveAt(lastCompletionCommandIndex);
             completion.Successful.Commands.Insert(completion.Successful.Commands.Count, compCmd);
         }
 
