@@ -68,7 +68,6 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance> onTaskStarting;
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
-        private readonly bool disableCompletionCommandReordering;
         private readonly Handlers inProgressHandlers = new();
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
@@ -190,7 +189,6 @@ namespace Temporalio.Worker
             Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
-            disableCompletionCommandReordering = details.DisableCompletionCommandReordering;
         }
 
         /// <summary>
@@ -580,8 +578,8 @@ namespace Temporalio.Worker
                     }
                 }
 
-                // Maybe apply workflow completion command reordering logic
-                ApplyCompletionCommandReordering(act, completion, out var workflowComplete);
+                // Maybe apply legacy workflow completion command reordering logic
+                ApplyLegacyCompletionCommandReordering(act, completion, out var workflowComplete);
 
                 // Log warnings if we have completed
                 if (workflowComplete && !IsReplaying)
@@ -1425,22 +1423,13 @@ namespace Temporalio.Worker
             }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));
         }
 
-        private void ApplyCompletionCommandReordering(
+        private void ApplyLegacyCompletionCommandReordering(
             WorkflowActivation act,
             WorkflowActivationCompletion completion,
             out bool workflowComplete)
         {
-            // In earlier versions of the SDK we allowed commands to be sent after workflow
-            // completion. These ended up being removed effectively making the result of the
-            // workflow function mean any other later coroutine commands be ignored. To match
-            // Go/Java, we are now going to move workflow completion to the end so that
-            // same-task-post-completion commands are still accounted for.
-            //
-            // Note this only applies for successful activations that don't have completion
-            // reordering disabled and that are either not replaying or have the flag set.
-
-            // Find the index of the completion command
-            var completionCommandIndex = -1;
+            // Find the index of the last completion command
+            var lastCompletionCommandIndex = -1;
             if (completion.Successful != null)
             {
                 for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
@@ -1452,31 +1441,32 @@ namespace Temporalio.Worker
                         cmd.ContinueAsNewWorkflowExecution != null ||
                         cmd.FailWorkflowExecution != null)
                     {
-                        completionCommandIndex = i;
+                        lastCompletionCommandIndex = i;
                         break;
                     }
                 }
             }
-            workflowComplete = completionCommandIndex >= 0;
+            workflowComplete = lastCompletionCommandIndex >= 0;
 
-            // This only applies for successful activations that have a completion not at the end,
-            // don't have completion reordering disabled, and that are either not replaying or have
-            // the flag set.
+            // In a previous version of .NET SDK, if this was a successful activation completion
+            // with a completion command not at the end, we'd reorder it to move at the end.
+            // However, this logic has now moved to core and become more robust. Therefore, we only
+            // apply this logic if we're replaying and flag is present so that workflows/histories
+            // that were created after this .NET flag but before the core flag still work.
             if (completion.Successful == null ||
-                completionCommandIndex == -1 ||
-                completionCommandIndex == completion.Successful.Commands.Count - 1 ||
-                disableCompletionCommandReordering ||
-                (IsReplaying && !act.AvailableInternalFlags.Contains(
-                    (uint)WorkflowLogicFlag.ReorderWorkflowCompletion)))
+                lastCompletionCommandIndex == -1 ||
+                lastCompletionCommandIndex == completion.Successful.Commands.Count - 1 ||
+                !IsReplaying ||
+                !act.AvailableInternalFlags.Contains((uint)WorkflowLogicFlag.ReorderWorkflowCompletion))
             {
                 return;
             }
 
-            // Now we know the completion is in the wrong spot and we're on a newer SDK, so set the
-            // SDK flag and move it
+            // Now we know that we're replaying w/ the flag set and the completion in the wrong
+            // spot, so set the SDK flag and move it
             completion.Successful.UsedInternalFlags.Add((uint)WorkflowLogicFlag.ReorderWorkflowCompletion);
-            var compCmd = completion.Successful.Commands[completionCommandIndex];
-            completion.Successful.Commands.RemoveAt(completionCommandIndex);
+            var compCmd = completion.Successful.Commands[lastCompletionCommandIndex];
+            completion.Successful.Commands.RemoveAt(lastCompletionCommandIndex);
             completion.Successful.Commands.Insert(completion.Successful.Commands.Count, compCmd);
         }
 

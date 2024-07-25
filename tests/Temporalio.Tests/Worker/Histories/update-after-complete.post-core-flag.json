@@ -1,0 +1,219 @@
+{
+    "events": [
+        {
+            "eventId": "1",
+            "eventTime": "2024-07-25T14:23:41.117034100Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_STARTED",
+            "taskId": "1048592",
+            "workflowExecutionStartedEventAttributes": {
+                "workflowType": {
+                    "name": "CoroutinesAfterCompleteWorkflow"
+                },
+                "taskQueue": {
+                    "name": "tq-213a2c91-1b94-4bb3-833c-00f5e26d051f",
+                    "kind": "TASK_QUEUE_KIND_NORMAL"
+                },
+                "workflowTaskTimeout": "10s",
+                "originalExecutionRunId": "5089cc53-3890-4c77-9d97-d022167615e6",
+                "identity": "7980@DESKTOP-W0A14BL",
+                "firstExecutionRunId": "5089cc53-3890-4c77-9d97-d022167615e6",
+                "attempt": 1,
+                "firstWorkflowTaskBackoff": "0s",
+                "workflowId": "workflow-5a320621-de67-46bd-9a4b-d642d54d72ca"
+            }
+        },
+        {
+            "eventId": "2",
+            "eventTime": "2024-07-25T14:23:41.117034100Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
+            "taskId": "1048593",
+            "workflowTaskScheduledEventAttributes": {
+                "taskQueue": {
+                    "name": "tq-213a2c91-1b94-4bb3-833c-00f5e26d051f",
+                    "kind": "TASK_QUEUE_KIND_NORMAL"
+                },
+                "startToCloseTimeout": "10s",
+                "attempt": 1
+            }
+        },
+        {
+            "eventId": "3",
+            "eventTime": "2024-07-25T14:23:41.124550100Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
+            "taskId": "1048598",
+            "workflowTaskStartedEventAttributes": {
+                "scheduledEventId": "2",
+                "identity": "7980@DESKTOP-W0A14BL",
+                "requestId": "75861c85-2a09-4598-bb89-52761c47e1f0",
+                "historySizeBytes": "340",
+                "workerVersion": {
+                    "buildId": "970d827e-eac4-422a-b7bd-8f3ef0627c9a"
+                }
+            }
+        },
+        {
+            "eventId": "4",
+            "eventTime": "2024-07-25T14:23:41.210288Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
+            "taskId": "1048602",
+            "workflowTaskCompletedEventAttributes": {
+                "scheduledEventId": "2",
+                "startedEventId": "3",
+                "identity": "7980@DESKTOP-W0A14BL",
+                "workerVersion": {
+                    "buildId": "970d827e-eac4-422a-b7bd-8f3ef0627c9a"
+                },
+                "sdkMetadata": {
+                    "coreUsedFlags": [
+                        1,
+                        2,
+                        3
+                    ]
+                },
+                "meteringMetadata": {}
+            }
+        },
+        {
+            "eventId": "5",
+            "eventTime": "2024-07-25T14:23:41.210813700Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
+            "taskId": "1048605",
+            "workflowTaskScheduledEventAttributes": {
+                "taskQueue": {
+                    "name": "7980@DESKTOP-W0A14BL-cc38e04fe9bb46bca1037b0638b143d1",
+                    "kind": "TASK_QUEUE_KIND_STICKY",
+                    "normalName": "tq-213a2c91-1b94-4bb3-833c-00f5e26d051f"
+                },
+                "startToCloseTimeout": "10s",
+                "attempt": 1
+            }
+        },
+        {
+            "eventId": "6",
+            "eventTime": "2024-07-25T14:23:41.210813700Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
+            "taskId": "1048606",
+            "workflowTaskStartedEventAttributes": {
+                "scheduledEventId": "5",
+                "identity": "7980@DESKTOP-W0A14BL",
+                "requestId": "request-from-RespondWorkflowTaskCompleted",
+                "historySizeBytes": "571",
+                "workerVersion": {
+                    "buildId": "970d827e-eac4-422a-b7bd-8f3ef0627c9a"
+                }
+            }
+        },
+        {
+            "eventId": "7",
+            "eventTime": "2024-07-25T14:23:41.310552100Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
+            "taskId": "1048607",
+            "workflowTaskCompletedEventAttributes": {
+                "scheduledEventId": "5",
+                "startedEventId": "6",
+                "identity": "7980@DESKTOP-W0A14BL",
+                "workerVersion": {
+                    "buildId": "970d827e-eac4-422a-b7bd-8f3ef0627c9a"
+                },
+                "sdkMetadata": {},
+                "meteringMetadata": {}
+            }
+        },
+        {
+            "eventId": "8",
+            "eventTime": "2024-07-25T14:23:41.310552100Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ACCEPTED",
+            "taskId": "1048608",
+            "workflowExecutionUpdateAcceptedEventAttributes": {
+                "protocolInstanceId": "19a91ac3-cda1-49b3-b6c8-7419f0893cb9",
+                "acceptedRequestMessageId": "19a91ac3-cda1-49b3-b6c8-7419f0893cb9/request",
+                "acceptedRequestSequencingEventId": "5",
+                "acceptedRequest": {
+                    "meta": {
+                        "updateId": "19a91ac3-cda1-49b3-b6c8-7419f0893cb9",
+                        "identity": "7980@DESKTOP-W0A14BL"
+                    },
+                    "input": {
+                        "name": "DoUpdate"
+                    }
+                }
+            }
+        },
+        {
+            "eventId": "9",
+            "eventTime": "2024-07-25T14:23:41.310552100Z",
+            "eventType": "EVENT_TYPE_MARKER_RECORDED",
+            "taskId": "1048609",
+            "markerRecordedEventAttributes": {
+                "markerName": "core_local_activity",
+                "details": {
+                    "result": {
+                        "payloads": [
+                            {
+                                "metadata": {
+                                    "encoding": "anNvbi9wbGFpbg=="
+                                },
+                                "data": "ImFjdGl2aXR5LWZyb20td29ya2Zsb3ci"
+                            }
+                        ]
+                    },
+                    "data": {
+                        "payloads": [
+                            {
+                                "metadata": {
+                                    "encoding": "anNvbi9wbGFpbg=="
+                                },
+                                "data": "eyJzZXEiOjEsImF0dGVtcHQiOjEsImFjdGl2aXR5X2lkIjoiMSIsImFjdGl2aXR5X3R5cGUiOiJTb21lQWN0aXZpdHkiLCJjb21wbGV0ZV90aW1lIjp7InNlY29uZHMiOjE3MjE5MTc0MjEsIm5hbm9zIjoyMzQ0MTkzMDB9LCJiYWNrb2ZmIjpudWxsLCJvcmlnaW5hbF9zY2hlZHVsZV90aW1lIjp7InNlY29uZHMiOjE3MjE5MTc0MjEsIm5hbm9zIjoyNzc0ODM1MDB9fQ=="
+                            }
+                        ]
+                    }
+                },
+                "workflowTaskCompletedEventId": "7"
+            }
+        },
+        {
+            "eventId": "10",
+            "eventTime": "2024-07-25T14:23:41.310552100Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_COMPLETED",
+            "taskId": "1048610",
+            "workflowExecutionUpdateCompletedEventAttributes": {
+                "meta": {
+                    "updateId": "19a91ac3-cda1-49b3-b6c8-7419f0893cb9",
+                    "identity": "7980@DESKTOP-W0A14BL"
+                },
+                "outcome": {
+                    "success": {
+                        "payloads": [
+                            {
+                                "metadata": {
+                                    "encoding": "anNvbi9wbGFpbg=="
+                                },
+                                "data": "ImNvbXBsZXRlLXVwZGF0ZSI="
+                            }
+                        ]
+                    }
+                },
+                "acceptedEventId": "8"
+            }
+        },
+        {
+            "eventId": "11",
+            "eventTime": "2024-07-25T14:23:41.310552100Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_COMPLETED",
+            "taskId": "1048611",
+            "workflowExecutionCompletedEventAttributes": {
+                "result": {
+                    "payloads": [
+                        {
+                            "metadata": {
+                                "encoding": "anNvbi9wbGFpbg=="
+                            },
+                            "data": "ImNvbXBsZXRlLXdvcmtmbG93Ig=="
+                        }
+                    ]
+                },
+                "workflowTaskCompletedEventId": "7"
+            }
+        }
+    ]
+}

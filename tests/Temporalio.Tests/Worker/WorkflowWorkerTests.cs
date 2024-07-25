@@ -4698,14 +4698,22 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class CoroutinesAfterCompleteWorkflow
     {
+        [Activity]
+        public static string SomeActivity(string param) => param;
+
         private string? completeWorkflowWith;
         private string? completeUpdateWith;
+        private bool workflowCompleted;
 
         [WorkflowRun]
         public async Task<string> RunAsync()
         {
             await Workflow.WaitConditionAsync(() => completeWorkflowWith != null);
+            await Workflow.ExecuteLocalActivityAsync(
+                () => SomeActivity("activity-from-workflow"),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
             completeUpdateWith = "complete-update";
+            workflowCompleted = true;
             return completeWorkflowWith!;
         }
 
@@ -4716,37 +4724,23 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             await Workflow.WaitConditionAsync(() => completeUpdateWith != null);
             return completeUpdateWith!;
         }
+
+        [WorkflowSignal]
+        public async Task DoErroringSignalAsync(bool waitWorkflowComplete)
+        {
+            completeWorkflowWith = "complete-workflow";
+            if (waitWorkflowComplete)
+            {
+                await Workflow.WaitConditionAsync(() => workflowCompleted);
+            }
+            throw new ApplicationFailureException("Intentional error from signal");
+        }
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_CoroutinesAfterComplete_GetProcessed()
+    public async Task ExecuteWorkflowAsync_UpdateAfterComplete_ProcessesProperly()
     {
-        // Run one workflow without the flag set and one with and get histories
-        WorkflowHistory? historyWithoutFlag = null;
-        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
-            async worker =>
-            {
-                // Start
-                var handle = await Client.StartWorkflowAsync(
-                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                // Start update, wait on workflow result (update result would hang)
-                await handle.StartUpdateAsync(
-                    wf => wf.DoUpdateAsync(), new(WorkflowUpdateStage.Accepted));
-                Assert.Equal("complete-workflow", await handle.GetResultAsync());
-                historyWithoutFlag = await handle.FetchHistoryAsync();
-            },
-            new() { DisableWorkflowCompletionCommandReordering = true });
-
-        // Confirm without flag that the workflow ends with task complete (sans flag), update
-        // accepted, and workflow complete, but notably missing update complete
-        var lastEvents = historyWithoutFlag!.Events.TakeLast(3).ToArray();
-        Assert.NotNull(lastEvents[0].WorkflowTaskCompletedEventAttributes);
-        Assert.Equal(0, lastEvents[0].WorkflowTaskCompletedEventAttributes.SdkMetadata?.LangUsedFlags.Count ?? 0);
-        Assert.NotNull(lastEvents[1].WorkflowExecutionUpdateAcceptedEventAttributes);
-        Assert.NotNull(lastEvents[2].WorkflowExecutionCompletedEventAttributes);
-
-        WorkflowHistory? historyWithFlag = null;
+        // Confirm that an update that returns after the workflow returns properly has its result
         await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
             async worker =>
             {
@@ -4759,35 +4753,76 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     wf => wf.DoUpdateAsync(), new(WorkflowUpdateStage.Accepted));
                 Assert.Equal("complete-workflow", await handle.GetResultAsync());
                 Assert.Equal("complete-update", await updateHandle.GetResultAsync());
-                historyWithFlag = await handle.FetchHistoryAsync();
-            });
+            },
+            new TemporalWorkerOptions().AddActivity(CoroutinesAfterCompleteWorkflow.SomeActivity));
 
-        // Now confirm with the flag that the workflow ends with task complete (with flag), update
-        // accepted, update complete, and workflow complete
-        lastEvents = historyWithFlag!.Events.TakeLast(4).ToArray();
-        Assert.NotNull(lastEvents[0].WorkflowTaskCompletedEventAttributes);
-        Assert.Contains(
-            (uint)WorkflowLogicFlag.ReorderWorkflowCompletion,
-            lastEvents[0].WorkflowTaskCompletedEventAttributes.SdkMetadata.LangUsedFlags);
-        Assert.NotNull(lastEvents[1].WorkflowExecutionUpdateAcceptedEventAttributes);
-        Assert.NotNull(lastEvents[2].WorkflowExecutionUpdateCompletedEventAttributes);
-        Assert.NotNull(lastEvents[3].WorkflowExecutionCompletedEventAttributes);
-
-        // Now for extra sanity checking, we'll check the replayer. First, confirm with a
-        // flag-disabled replayer that without-flag succeeds but with-flag has non-determinism
-        var noFlagReplayer = new WorkflowReplayer(new WorkflowReplayerOptions()
-        {
-            DisableWorkflowCompletionCommandReordering = true,
-        }.AddWorkflow<CoroutinesAfterCompleteWorkflow>());
-        await noFlagReplayer.ReplayWorkflowAsync(historyWithoutFlag);
-        await Assert.ThrowsAsync<WorkflowNondeterminismException>(() =>
-            noFlagReplayer.ReplayWorkflowAsync(historyWithFlag));
-
-        // Confirm with flag-based replayer everything is ok for both histories
-        var flagReplayer = new WorkflowReplayer(
+        // There have been three stages in .NET SDK lifetime for post-completion commands:
+        //   1. pre-dotnet-flag - All code before any command reordering occurred
+        //   2. post-dotnet-flag - When .NET applied its own lang flag and did command reordering
+        //   3. post-core-flag - Current (as of this writing) core behavior to set flag and reorder
+        // The JSON files referenced below are histories of the same run as the workflow run above
+        // at each of the three stages. We replay to confirm new code works with old history.
+        var replayer = new WorkflowReplayer(
             new WorkflowReplayerOptions().AddWorkflow<CoroutinesAfterCompleteWorkflow>());
-        await flagReplayer.ReplayWorkflowAsync(historyWithoutFlag);
-        await flagReplayer.ReplayWorkflowAsync(historyWithFlag);
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/update-after-complete.pre-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/update-after-complete.post-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/update-after-complete.post-core-flag.json")));
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_MultiComplete_ProcessesProperly()
+    {
+        // Confirm that multi-complete with success first properly succeeds
+        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Issue signal, wait on workflow
+                await handle.SignalAsync(wf => wf.DoErroringSignalAsync(true));
+                Assert.Equal("complete-workflow", await handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions().AddActivity(CoroutinesAfterCompleteWorkflow.SomeActivity));
+
+        // Confirm that multi-complete with failure first properly fails
+        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Issue signal, wait on workflow
+                await handle.SignalAsync(wf => wf.DoErroringSignalAsync(false));
+                await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions().AddActivity(CoroutinesAfterCompleteWorkflow.SomeActivity));
+
+        // There have been three stages in .NET SDK lifetime for post-completion commands:
+        //   1. pre-dotnet-flag - All code before any command reordering occurred
+        //   2. post-dotnet-flag - When .NET applied its own lang flag and did command reordering
+        //   3. post-core-flag - Current (as of this writing) core behavior to set flag and reorder
+        // The JSON files referenced below are histories of the same runs as the workflow runs above
+        // at each of the three stages. We replay to confirm new code works with old history.
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<CoroutinesAfterCompleteWorkflow>());
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-after.pre-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-after.post-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-after.post-core-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-before.pre-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-before.post-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-before.post-core-flag.json")));
     }
 
     public class CallbackActivities

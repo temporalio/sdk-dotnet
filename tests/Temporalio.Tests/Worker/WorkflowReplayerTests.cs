@@ -2,7 +2,6 @@
 
 namespace Temporalio.Tests.Worker;
 
-using System.Runtime.CompilerServices;
 using Temporalio.Activities;
 using Temporalio.Common;
 using Temporalio.Exceptions;
@@ -100,7 +99,7 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
     public async Task ReplayWorkflowAsync_SimpleRunFromJson_Succeeds()
     {
         // Replay history from JSON
-        var json = ReadAllFileText("test_replayer_complete_history.json");
+        var json = TestUtils.ReadAllFileText("Histories/replayer-test.complete.json");
         var result = await new WorkflowReplayer(
             new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>()).
                 ReplayWorkflowAsync(WorkflowHistory.FromJson("some-id", json));
@@ -190,7 +189,8 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
     {
         // Replay history from JSON
         var history = WorkflowHistory.FromJson(
-            "some-id", ReadAllFileText("test_replayer_nondeterministic_history.json"));
+            "some-id",
+            TestUtils.ReadAllFileText("Histories/replayer-test.nondeterministic.json"));
         var replayer = new WorkflowReplayer(
             new WorkflowReplayerOptions().AddWorkflow<SayHelloWorkflow>());
         var exc = await Assert.ThrowsAsync<WorkflowNondeterminismException>(
@@ -209,9 +209,11 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         static IEnumerable<WorkflowHistory> HistoryIter()
         {
             yield return WorkflowHistory.FromJson(
-                "some-id1", ReadAllFileText("test_replayer_complete_history.json"));
+                "some-id1",
+                TestUtils.ReadAllFileText("Histories/replayer-test.complete.json"));
             yield return WorkflowHistory.FromJson(
-                "some-id1", ReadAllFileText("test_replayer_nondeterministic_history.json"));
+                "some-id1",
+                TestUtils.ReadAllFileText("Histories/replayer-test.nondeterministic.json"));
         }
 
         // Fail slow sync iter
@@ -229,9 +231,11 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
         static async IAsyncEnumerable<WorkflowHistory> HistoryIterAsync()
         {
             yield return WorkflowHistory.FromJson(
-                "some-id1", ReadAllFileText("test_replayer_complete_history.json"));
+                "some-id1",
+                TestUtils.ReadAllFileText("Histories/replayer-test.complete.json"));
             yield return WorkflowHistory.FromJson(
-                "some-id1", ReadAllFileText("test_replayer_nondeterministic_history.json"));
+                "some-id1",
+                TestUtils.ReadAllFileText("Histories/replayer-test.nondeterministic.json"));
         }
 
         // Fail slow sync iter
@@ -252,8 +256,4 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             }
         });
     }
-
-    private static string ReadAllFileText(
-        string relativePath, [CallerFilePath] string sourceFilePath = "") =>
-        File.ReadAllText(Path.Join(sourceFilePath, "..", relativePath));
 }
