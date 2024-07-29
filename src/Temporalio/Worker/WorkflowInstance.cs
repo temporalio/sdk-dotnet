@@ -2264,13 +2264,13 @@ namespace Temporalio.Worker
                 LoggerMessage.Define<string, WarnableSignals>(
                     LogLevel.Warning,
                     0,
-                    "Workflow {Id} finished while signal handlers are still running. This may " +
+                    "[TMPRL1102] Workflow {Id} finished while signal handlers are still running. This may " +
                     "have interrupted work that the signal handler was doing. You can wait for " +
                     "all update and signal handlers to complete by using `await " +
                     "Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)`. " +
                     "Alternatively, if both you and the clients sending the signal are okay with " +
-                    "interrupting running handlers when the workflow finishes, and causing " +
-                    "clients to receive errors, then you can disable this warning via the signal " +
+                    "interrupting running handlers when the workflow finishes, " +
+                    "then you can disable this warning via the signal " +
                     "handler attribute: " +
                     "`[WorkflowSignal(UnfinishedPolicy=HandlerUnfinishedPolicy.Abandon)]`. The " +
                     "following signals were unfinished (and warnings were not disabled for their " +
@@ -2280,7 +2280,7 @@ namespace Temporalio.Worker
                 LoggerMessage.Define<string, WarnableUpdates>(
                     LogLevel.Warning,
                     0,
-                    "Workflow {Id} finished while update handlers are still running. This may " +
+                    "[TMPRL1102] Workflow {Id} finished while update handlers are still running. This may " +
                     "have interrupted work that the update handler was doing, and the client " +
                     "that sent the update will receive a 'workflow execution already completed' " +
                     "RpcException instead of the update result. You can wait for all update and " +
