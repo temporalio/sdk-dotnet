@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Temporalio.Bridge.Interop;
 using Temporalio.Runtime;
 
 namespace Temporalio.Client
@@ -63,10 +62,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets or sets HTTP connect proxy options for this connection.
         /// </summary>
-        /// <remarks>
-        /// Default enabled, set to null to disable.
-        /// </remarks>
-        public HttpConnectProxyConfig? HttpConnectProxy { get; set; } = new();
+        public HttpConnectProxyConfig? HttpConnectProxy { get; set; }
 
         /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
