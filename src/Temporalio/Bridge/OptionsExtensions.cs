@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Temporalio.Bridge.Interop;
 using Temporalio.Exceptions;
 
 namespace Temporalio.Bridge
@@ -245,6 +246,10 @@ namespace Temporalio.Bridge
                     options.KeepAlive == null
                         ? null
                         : scope.Pointer(options.KeepAlive.ToInteropOptions()),
+                http_connect_proxy_options =
+                    options.HttpConnectProxy == null
+                        ? null
+                        : scope.Pointer(options.HttpConnectProxy.ToInteropOptions(scope)),
             };
         }
 
@@ -308,6 +313,22 @@ namespace Temporalio.Bridge
             {
                 interval_millis = (ulong)options.Interval.TotalMilliseconds,
                 timeout_millis = (ulong)options.Timeout.TotalMilliseconds,
+            };
+
+        /// <summary>
+        /// Convert http connect proxy options.
+        /// </summary>
+        /// <param name="config">Options to convert.</param>
+        /// <param name="scope">Scope to use.</param>
+        /// <returns>Converted options.</returns>
+        public static Interop.ClientHttpConnectProxyConfig ToInteropOptions(
+            this Temporalio.Client.HttpConnectProxyConfig config,
+            Scope scope) =>
+            new()
+            {
+                target_addr = scope.ByteArray(config.TargetHost),
+                username = scope.ByteArray(config.BasicAuth?.Username),
+                password = scope.ByteArray(config.BasicAuth?.Username),
             };
 
         /// <summary>

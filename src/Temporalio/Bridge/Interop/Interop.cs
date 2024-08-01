@@ -141,6 +141,18 @@ namespace Temporalio.Bridge.Interop
         public ulong timeout_millis;
     }
 
+    internal partial struct ClientHttpConnectProxyConfig
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef target_addr;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef username;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef password;
+    }
+
     internal unsafe partial struct ClientOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
@@ -169,6 +181,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("const struct ClientKeepAliveOptions *")]
         public ClientKeepAliveOptions* keep_alive_options;
+
+        [NativeTypeName("const struct ClientHttpConnectProxyConfig *")]
+        public ClientHttpConnectProxyConfig* http_connect_proxy_options;
     }
 
     internal unsafe partial struct ByteArray
