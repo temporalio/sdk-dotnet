@@ -6,7 +6,7 @@ namespace Temporalio.Client.Schedules
     /// An update returned from an updater.
     /// </summary>
     /// <param name="Schedule">Schedule to update.</param>
-    /// <param name="SearchAttributes">Optional indexed attributes that can be used while querying
+    /// <param name="TypedSearchAttributes">Optional indexed attributes that can be used while querying
     /// schedules via the list schedules APIs. The key and value type must be registered with
     /// Temporal server.
     ///
@@ -21,5 +21,5 @@ namespace Temporalio.Client.Schedules
     /// </param>
     public record ScheduleUpdate(
         Schedule Schedule,
-        SearchAttributeCollection? SearchAttributes = null);
+        SearchAttributeCollection? TypedSearchAttributes = null);
 }

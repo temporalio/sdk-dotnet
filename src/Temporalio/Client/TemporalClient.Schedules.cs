@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client.Interceptors;
@@ -204,7 +203,7 @@ namespace Temporalio.Client
                         Schedule = await update.Schedule.ToProtoAsync(Client.Options.DataConverter).ConfigureAwait(false),
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
-                        SearchAttributes = update.SearchAttributes?.ToProto(),
+                        SearchAttributes = update.TypedSearchAttributes?.ToProto(),
                     },
                     DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
             }

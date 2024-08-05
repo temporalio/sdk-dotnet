@@ -228,7 +228,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             var existing = input.Description.TypedSearchAttributes;
             return new(input.Description.Schedule)
             {
-                SearchAttributes = new SearchAttributeCollection.Builder(existing)
+                TypedSearchAttributes = new SearchAttributeCollection.Builder(existing)
                     .Set(AttrKeyword, "Enchi")
                     .ToSearchAttributeCollection(),
             };
@@ -237,7 +237,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         {
             return new(input.Description.Schedule)
             {
-                SearchAttributes = SearchAttributeCollection.Empty,
+                TypedSearchAttributes = SearchAttributeCollection.Empty,
             };
         });
         await AssertMore.EqualEventuallyAsync(0, async () =>
@@ -268,7 +268,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         {
             return new(input.Description.Schedule)
             {
-                SearchAttributes = new SearchAttributeCollection.Builder()
+                TypedSearchAttributes = new SearchAttributeCollection.Builder()
                     .Set(AttrKeyword, "AnotherThing")
                     .ToSearchAttributeCollection(),
             };
