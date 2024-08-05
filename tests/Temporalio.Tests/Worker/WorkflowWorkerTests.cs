@@ -5618,9 +5618,20 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class IdConflictWorkflow
     {
+        private string signal = "nothing";
+
         // Just wait forever
         [WorkflowRun]
         public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowSignal]
+        public async Task TheSignal(string sig)
+        {
+            signal = sig;
+        }
+
+        [WorkflowQuery]
+        public string GetSignal() => signal;
     }
 
     [Fact]
@@ -5648,12 +5659,26 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     {
                         IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
                     }));
+            // signal-with-start does not allow fail policy
 
             // Confirm gives back same handle if requested
             var newHandle = await Env.Client.StartWorkflowAsync(
                 (IdConflictWorkflow wf) => wf.RunAsync(),
                 new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
                 {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.Equal(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+            // Also with signal-with-start
+            newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    StartSignal = "TheSignal",
+                    StartSignalArgs = new[] { "hi!" },
                     IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
                 });
             newHandle = newHandle with { RunId = newHandle.ResultRunId };
@@ -5672,6 +5697,22 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.NotEqual(handle.RunId, newHandle.RunId);
             Assert.Equal(WorkflowExecutionStatus.Terminated, (await handle.DescribeAsync()).Status);
             Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+            // Also with signal-with-start
+            newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    StartSignal = "TheSignal",
+                    StartSignalArgs = new[] { "hi!" },
+                    IdConflictPolicy = WorkflowIdConflictPolicy.TerminateExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.NotEqual(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Terminated, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+            // Ensure it actually got the signal this time
+            var queryRes = await newHandle.QueryAsync(wf => wf.GetSignal());
+            Assert.Equal("hi!", queryRes);
         });
     }
 
