@@ -144,7 +144,7 @@ namespace Temporalio.Bridge.Interop
     internal partial struct ClientHttpConnectProxyOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef target_addr;
+        public ByteArrayRef target_host;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef username;

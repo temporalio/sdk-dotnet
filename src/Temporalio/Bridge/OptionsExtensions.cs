@@ -332,7 +332,7 @@ namespace Temporalio.Bridge
 
             return new ClientHttpConnectProxyOptions
             {
-                target_addr = scope.ByteArray(options.TargetHost),
+                target_host = scope.ByteArray(options.TargetHost),
                 username = scope.ByteArray(options.BasicAuth?.Username),
                 password = scope.ByteArray(options.BasicAuth?.Username),
             };
