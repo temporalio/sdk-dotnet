@@ -54,7 +54,7 @@ pub struct ClientKeepAliveOptions {
 }
 
 #[repr(C)]
-pub struct ClientHttpConnectProxyConfig {
+pub struct ClientHttpConnectProxyOptions {
     pub target_host: ByteArrayRef,
     pub username: ByteArrayRef,
     pub password: ByteArrayRef,
@@ -585,8 +585,8 @@ impl From<&ClientKeepAliveOptions> for ClientKeepAliveConfig {
     }
 }
 
-impl From<&ClientHttpConnectProxyConfig> for HttpConnectProxyOptions {
-    fn from(opts: &ClientHttpConnectProxyConfig) -> Self {
+impl From<&ClientHttpConnectProxyOptions> for HttpConnectProxyOptions {
+    fn from(opts: &ClientHttpConnectProxyOptions) -> Self {
         HttpConnectProxyOptions {
             target_addr: opts.target_host.to_string(),
             basic_auth: if opts.username.size != 0 && opts.password.size != 0 {

@@ -321,7 +321,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.ClientHttpConnectProxyConfig ToInteropOptions(
+        public static Interop.ClientHttpConnectProxyOptions ToInteropOptions(
             this Temporalio.Client.HttpConnectProxyOptions options,
             Scope scope)
         {
@@ -330,7 +330,7 @@ namespace Temporalio.Bridge
                 throw new ArgumentException("TargetHost is required");
             }
 
-            return new ClientHttpConnectProxyConfig
+            return new ClientHttpConnectProxyOptions
             {
                 target_addr = scope.ByteArray(options.TargetHost),
                 username = scope.ByteArray(options.BasicAuth?.Username),
