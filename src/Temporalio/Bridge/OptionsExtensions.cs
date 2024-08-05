@@ -318,18 +318,25 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Convert http connect proxy options.
         /// </summary>
-        /// <param name="config">Options to convert.</param>
+        /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
         public static Interop.ClientHttpConnectProxyConfig ToInteropOptions(
-            this Temporalio.Client.HttpConnectProxyConfig config,
-            Scope scope) =>
-            new()
+            this Temporalio.Client.HttpConnectProxyOptions options,
+            Scope scope)
+        {
+            if (string.IsNullOrEmpty(options.TargetHost))
             {
-                target_addr = scope.ByteArray(config.TargetHost),
-                username = scope.ByteArray(config.BasicAuth?.Username),
-                password = scope.ByteArray(config.BasicAuth?.Username),
+                throw new ArgumentException("TargetHost is required");
+            }
+
+            return new ClientHttpConnectProxyConfig
+            {
+                target_addr = scope.ByteArray(options.TargetHost),
+                username = scope.ByteArray(options.BasicAuth?.Username),
+                password = scope.ByteArray(options.BasicAuth?.Username),
             };
+        }
 
         /// <summary>
         /// Convert start local options options.

@@ -62,7 +62,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets or sets HTTP connect proxy options for this connection.
         /// </summary>
-        public HttpConnectProxyConfig? HttpConnectProxy { get; set; }
+        public HttpConnectProxyOptions? HttpConnectProxy { get; set; }
 
         /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
