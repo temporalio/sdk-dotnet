@@ -607,6 +607,7 @@ namespace Temporalio.Client
                     Header = req.Header,
                     WorkflowStartDelay = req.WorkflowStartDelay,
                     SignalName = input.Options.StartSignal,
+                    WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
                 };
                 if (input.Options.StartSignalArgs != null && input.Options.StartSignalArgs.Count > 0)
                 {
