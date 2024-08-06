@@ -9,7 +9,7 @@ use std::str::FromStr;
 use std::time::Duration;
 use temporal_client::{
     ClientKeepAliveConfig, ClientOptions as CoreClientOptions, ClientOptionsBuilder,
-    ClientTlsConfig, CloudService, ConfiguredClient, HealthService, OperatorService, RetryClient,
+    ClientTlsConfig, CloudService, ConfiguredClient, HealthService, HttpConnectProxyOptions, OperatorService, RetryClient,
     RetryConfig, TemporalServiceClientWithMetrics, TestService, TlsConfig, WorkflowService,
 };
 use tonic::metadata::MetadataKey;
@@ -26,6 +26,7 @@ pub struct ClientOptions {
     tls_options: *const ClientTlsOptions,
     retry_options: *const ClientRetryOptions,
     keep_alive_options: *const ClientKeepAliveOptions,
+    http_connect_proxy_options: *const ClientHttpConnectProxyOptions,
 }
 
 #[repr(C)]
@@ -50,6 +51,13 @@ pub struct ClientRetryOptions {
 pub struct ClientKeepAliveOptions {
     pub interval_millis: u64,
     pub timeout_millis: u64,
+}
+
+#[repr(C)]
+pub struct ClientHttpConnectProxyOptions {
+    pub target_host: ByteArrayRef,
+    pub username: ByteArrayRef,
+    pub password: ByteArrayRef,
 }
 
 type CoreClient = RetryClient<ConfiguredClient<TemporalServiceClientWithMetrics>>;
@@ -573,6 +581,19 @@ impl From<&ClientKeepAliveOptions> for ClientKeepAliveConfig {
         ClientKeepAliveConfig {
             interval: Duration::from_millis(opts.interval_millis),
             timeout: Duration::from_millis(opts.timeout_millis),
+        }
+    }
+}
+
+impl From<&ClientHttpConnectProxyOptions> for HttpConnectProxyOptions {
+    fn from(opts: &ClientHttpConnectProxyOptions) -> Self {
+        HttpConnectProxyOptions {
+            target_addr: opts.target_host.to_string(),
+            basic_auth: if opts.username.size != 0 && opts.password.size != 0 {
+                Some((opts.username.to_string(), opts.password.to_string()))
+            } else {
+                None
+            },
         }
     }
 }
