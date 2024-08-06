@@ -203,6 +203,7 @@ namespace Temporalio.Client
                         Schedule = await update.Schedule.ToProtoAsync(Client.Options.DataConverter).ConfigureAwait(false),
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
+                        SearchAttributes = update.TypedSearchAttributes?.ToProto(),
                     },
                     DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
             }
