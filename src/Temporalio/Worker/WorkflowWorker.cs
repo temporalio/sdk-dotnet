@@ -283,8 +283,7 @@ namespace Temporalio.Worker
                     OnTaskStarting: options.OnTaskStarting,
                     OnTaskCompleted: options.OnTaskCompleted,
                     RuntimeMetricMeter: options.RuntimeMetricMeter,
-                    WorkerLevelFailureExceptionTypes: options.WorkerLevelFailureExceptionTypes,
-                    DisableCompletionCommandReordering: options.DisableCompletionCommandReordering));
+                    WorkerLevelFailureExceptionTypes: options.WorkerLevelFailureExceptionTypes));
         }
     }
 }

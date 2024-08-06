@@ -60,6 +60,11 @@ namespace Temporalio.Client
         public KeepAliveOptions? KeepAlive { get; set; } = new();
 
         /// <summary>
+        /// Gets or sets HTTP connect proxy options for this connection.
+        /// </summary>
+        public HttpConnectProxyOptions? HttpConnectProxy { get; set; }
+
+        /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
         /// </summary>
         /// <remarks>

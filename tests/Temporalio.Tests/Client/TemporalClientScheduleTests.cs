@@ -188,7 +188,7 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         var optsWithAttrs = new ScheduleOptions()
         {
             TypedSearchAttributes = new SearchAttributeCollection.Builder().
-                Set(AttrKeyword, "SomeKeyword").ToSearchAttributeCollection(),
+                Set(AttrKeyword, "SomeKeyword").Set(AttrLong, 1234).ToSearchAttributeCollection(),
         };
         var expectedIds = new List<string>
         {
@@ -218,6 +218,71 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
         }
         actualIds.Sort();
         Assert.Equal(new List<string> { $"{handle.Id}-3", $"{handle.Id}-4" }, actualIds);
+
+        // Update the SAs of the 3rd schedule, wipe out the SAs of the 4th, confirm they
+        // are no longer in the list with 'SomeKeyword'
+        var handle3 = Client.GetScheduleHandle($"{handle.Id}-3");
+        var handle4 = Client.GetScheduleHandle($"{handle.Id}-4");
+        await handle3.UpdateAsync(input =>
+        {
+            var existing = input.Description.TypedSearchAttributes;
+            return new(input.Description.Schedule)
+            {
+                TypedSearchAttributes = new SearchAttributeCollection.Builder(existing)
+                    .Set(AttrKeyword, "Enchi")
+                    .ToSearchAttributeCollection(),
+            };
+        });
+        await handle4.UpdateAsync(input =>
+        {
+            return new(input.Description.Schedule)
+            {
+                TypedSearchAttributes = SearchAttributeCollection.Empty,
+            };
+        });
+        await AssertMore.EqualEventuallyAsync(0, async () =>
+        {
+            actualIds = new List<string>();
+            await foreach (var sched in Client.ListSchedulesAsync(
+                               new() { Query = $"{AttrKeyword.Name} = 'SomeKeyword'" }))
+            {
+                actualIds.Add(sched.Id);
+            }
+
+            return actualIds.Count;
+        });
+        // Verify that 3 is still present and 4 is not with the long attribute
+        await AssertMore.EqualEventuallyAsync(
+            new List<string> { $"{handle.Id}-3" }, async () =>
+        {
+            actualIds = new List<string>();
+            await foreach (var sched in Client.ListSchedulesAsync(
+                               new() { Query = $"{AttrLong.Name} = 1234" }))
+            {
+                actualIds.Add(sched.Id);
+            }
+            return actualIds;
+        });
+        // Verify simply replacing in fact eliminates unincluded attributes
+        await handle3.UpdateAsync(input =>
+        {
+            return new(input.Description.Schedule)
+            {
+                TypedSearchAttributes = new SearchAttributeCollection.Builder()
+                    .Set(AttrKeyword, "AnotherThing")
+                    .ToSearchAttributeCollection(),
+            };
+        });
+        await AssertMore.EqualEventuallyAsync(0, async () =>
+        {
+            actualIds = new List<string>();
+            await foreach (var sched in Client.ListSchedulesAsync(
+                               new() { Query = $"{AttrLong.Name} = 1234" }))
+            {
+                actualIds.Add(sched.Id);
+            }
+            return actualIds.Count;
+        });
 
         // Delete when done
         await TestUtils.DeleteAllSchedulesAsync(Client);

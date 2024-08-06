@@ -126,3 +126,11 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: npx vercel deploy src/Temporalio.ApiDoc/_site --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
+
+  # Runs the sdk features repo tests with this repo's current SDK code
+  features-tests:
+    uses: temporalio/features/.github/workflows/dotnet.yaml@main
+    with:
+      dotnet-repo-path: ${{github.event.pull_request.head.repo.full_name}}
+      version: ${{github.event.pull_request.head.ref}}
+      version-is-repo-ref: true

@@ -55,14 +55,6 @@ pub struct ForwardedLog {
 }
 
 #[repr(C)]
-pub struct ForwardedLogDetails {
-    target: ByteArray,
-    message: ByteArray,
-    timestamp_millis: u64,
-    fields_json: ByteArray,
-}
-
-#[repr(C)]
 pub enum ForwardedLogLevel {
     Trace = 0,
     Debug,

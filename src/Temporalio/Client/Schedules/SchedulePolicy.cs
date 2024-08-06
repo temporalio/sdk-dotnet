@@ -19,7 +19,7 @@ namespace Temporalio.Client.Schedules
         /// Gets the amount of time in the past to execute misseed actions after a Temporal server
         /// is unavailable.
         /// </summary>
-        public TimeSpan CatchupWindow { get; init; } = TimeSpan.FromMinutes(1);
+        public TimeSpan CatchupWindow { get; init; } = TimeSpan.FromDays(365);
 
         /// <summary>
         /// Gets a value indicating whether to pause the schedule if an action fails or times out.

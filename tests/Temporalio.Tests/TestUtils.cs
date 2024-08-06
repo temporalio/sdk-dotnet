@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
 using Temporalio.Exceptions;
@@ -11,11 +12,9 @@ using Temporalio.Runtime;
 
 public static class TestUtils
 {
-    public static string CallerFilePath(
-        [System.Runtime.CompilerServices.CallerFilePath] string? callerPath = null)
-    {
-        return callerPath ?? throw new ArgumentException("Unable to find caller path");
-    }
+    public static string ReadAllFileText(
+        string relativePath, [CallerFilePath] string sourceFilePath = "") =>
+        File.ReadAllText(Path.Join(sourceFilePath, "..", relativePath));
 
     public static int FreePort()
     {

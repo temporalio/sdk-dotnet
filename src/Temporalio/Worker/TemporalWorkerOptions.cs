@@ -298,15 +298,6 @@ namespace Temporalio.Worker
             DefaultWorkflowInstanceFactory;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the workflow completion command reordering will
-        /// apply.
-        /// </summary>
-        /// <remarks>
-        /// This is visible for testing only.
-        /// </remarks>
-        internal bool DisableWorkflowCompletionCommandReordering { get; set; }
-
-        /// <summary>
         /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is
         /// usually a method reference.
         /// </summary>

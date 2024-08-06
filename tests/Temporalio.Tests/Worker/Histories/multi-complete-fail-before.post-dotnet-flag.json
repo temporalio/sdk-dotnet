@@ -1,0 +1,161 @@
+{
+    "events": [
+        {
+            "eventId": "1",
+            "eventTime": "2024-07-25T14:09:52.075706900Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_STARTED",
+            "taskId": "1048592",
+            "workflowExecutionStartedEventAttributes": {
+                "workflowType": {
+                    "name": "CoroutinesAfterCompleteWorkflow"
+                },
+                "taskQueue": {
+                    "name": "tq-0480f83d-3eba-4f2e-9e47-9e4f798bb359",
+                    "kind": "TASK_QUEUE_KIND_NORMAL"
+                },
+                "workflowTaskTimeout": "10s",
+                "originalExecutionRunId": "27a16732-6035-4783-827f-9b733d1382b6",
+                "identity": "29568@DESKTOP-W0A14BL",
+                "firstExecutionRunId": "27a16732-6035-4783-827f-9b733d1382b6",
+                "attempt": 1,
+                "firstWorkflowTaskBackoff": "0s",
+                "workflowId": "workflow-92f94ae9-a5b1-45bf-931d-6e45bfa60386"
+            }
+        },
+        {
+            "eventId": "2",
+            "eventTime": "2024-07-25T14:09:52.075706900Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
+            "taskId": "1048593",
+            "workflowTaskScheduledEventAttributes": {
+                "taskQueue": {
+                    "name": "tq-0480f83d-3eba-4f2e-9e47-9e4f798bb359",
+                    "kind": "TASK_QUEUE_KIND_NORMAL"
+                },
+                "startToCloseTimeout": "10s",
+                "attempt": 1
+            }
+        },
+        {
+            "eventId": "3",
+            "eventTime": "2024-07-25T14:09:52.083745500Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
+            "taskId": "1048598",
+            "workflowTaskStartedEventAttributes": {
+                "scheduledEventId": "2",
+                "identity": "29568@DESKTOP-W0A14BL",
+                "requestId": "4a6ddae5-84a9-4324-b9ed-674e5ad19680",
+                "historySizeBytes": "341",
+                "workerVersion": {
+                    "buildId": "ffda7649-80e3-49b9-beb6-f9e127e6d0aa"
+                }
+            }
+        },
+        {
+            "eventId": "4",
+            "eventTime": "2024-07-25T14:09:52.154654500Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
+            "taskId": "1048602",
+            "workflowTaskCompletedEventAttributes": {
+                "scheduledEventId": "2",
+                "startedEventId": "3",
+                "identity": "29568@DESKTOP-W0A14BL",
+                "workerVersion": {
+                    "buildId": "ffda7649-80e3-49b9-beb6-f9e127e6d0aa"
+                },
+                "sdkMetadata": {
+                    "coreUsedFlags": [
+                        1,
+                        2
+                    ]
+                },
+                "meteringMetadata": {}
+            }
+        },
+        {
+            "eventId": "5",
+            "eventTime": "2024-07-25T14:09:52.126256700Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_SIGNALED",
+            "taskId": "1048603",
+            "workflowExecutionSignaledEventAttributes": {
+                "signalName": "DoErroringSignal",
+                "input": {
+                    "payloads": [
+                        {
+                            "metadata": {
+                                "encoding": "anNvbi9wbGFpbg=="
+                            },
+                            "data": "ZmFsc2U="
+                        }
+                    ]
+                },
+                "identity": "29568@DESKTOP-W0A14BL"
+            }
+        },
+        {
+            "eventId": "6",
+            "eventTime": "2024-07-25T14:09:52.155331900Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_SCHEDULED",
+            "taskId": "1048604",
+            "workflowTaskScheduledEventAttributes": {
+                "taskQueue": {
+                    "name": "29568@DESKTOP-W0A14BL-d98842ce0d214f188c19795864d9bc36",
+                    "kind": "TASK_QUEUE_KIND_STICKY",
+                    "normalName": "tq-0480f83d-3eba-4f2e-9e47-9e4f798bb359"
+                },
+                "startToCloseTimeout": "10s",
+                "attempt": 1
+            }
+        },
+        {
+            "eventId": "7",
+            "eventTime": "2024-07-25T14:09:52.155331900Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_STARTED",
+            "taskId": "1048605",
+            "workflowTaskStartedEventAttributes": {
+                "scheduledEventId": "6",
+                "identity": "29568@DESKTOP-W0A14BL",
+                "requestId": "request-from-RespondWorkflowTaskCompleted",
+                "historySizeBytes": "473",
+                "workerVersion": {
+                    "buildId": "ffda7649-80e3-49b9-beb6-f9e127e6d0aa"
+                }
+            }
+        },
+        {
+            "eventId": "8",
+            "eventTime": "2024-07-25T14:09:52.262705700Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_TASK_COMPLETED",
+            "taskId": "1048609",
+            "workflowTaskCompletedEventAttributes": {
+                "scheduledEventId": "6",
+                "startedEventId": "7",
+                "identity": "29568@DESKTOP-W0A14BL",
+                "workerVersion": {
+                    "buildId": "ffda7649-80e3-49b9-beb6-f9e127e6d0aa"
+                },
+                "sdkMetadata": {
+                    "langUsedFlags": [
+                        1
+                    ]
+                },
+                "meteringMetadata": {}
+            }
+        },
+        {
+            "eventId": "9",
+            "eventTime": "2024-07-25T14:09:52.262705700Z",
+            "eventType": "EVENT_TYPE_WORKFLOW_EXECUTION_FAILED",
+            "taskId": "1048610",
+            "workflowExecutionFailedEventAttributes": {
+                "failure": {
+                    "message": "Intentional error from signal",
+                    "stackTrace": "   at Temporalio.Tests.Worker.WorkflowWorkerTests.CoroutinesAfterCompleteWorkflow.DoErroringSignalAsync(Boolean waitWorkflowComplete) in c:\\work\\tem\\sdk-dotnet\\temporal-sdk-dotnet\\tests\\Temporalio.Tests\\Worker\\WorkflowWorkerTests.cs:line 4736\r\n   at Temporalio.Worker.WorkflowInstance.InboundImpl.HandleSignalAsync(HandleSignalInput input) in c:\\work\\tem\\sdk-dotnet\\temporal-sdk-dotnet\\src\\Temporalio\\Worker\\WorkflowInstance.cs:line 1566\r\n   at Temporalio.Worker.WorkflowInstance.\u003c\u003ec__DisplayClass158_0.\u003c\u003cApplySignalWorkflow\u003eb__1\u003ed.MoveNext() in c:\\work\\tem\\sdk-dotnet\\temporal-sdk-dotnet\\src\\Temporalio\\Worker\\WorkflowInstance.cs:line 1294\r\n--- End of stack trace from previous location ---\r\n   at Temporalio.Worker.WorkflowInstance.RunTopLevelAsync(Func`1 func) in c:\\work\\tem\\sdk-dotnet\\temporal-sdk-dotnet\\src\\Temporalio\\Worker\\WorkflowInstance.cs:line 789",
+                    "applicationFailureInfo": {}
+                },
+                "retryState": "RETRY_STATE_RETRY_POLICY_NOT_SET",
+                "workflowTaskCompletedEventId": "8"
+            }
+        }
+    ]
+}
