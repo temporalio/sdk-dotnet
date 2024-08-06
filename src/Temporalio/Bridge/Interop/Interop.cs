@@ -141,6 +141,18 @@ namespace Temporalio.Bridge.Interop
         public ulong timeout_millis;
     }
 
+    internal partial struct ClientHttpConnectProxyOptions
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef target_host;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef username;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef password;
+    }
+
     internal unsafe partial struct ClientOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
@@ -169,6 +181,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("const struct ClientKeepAliveOptions *")]
         public ClientKeepAliveOptions* keep_alive_options;
+
+        [NativeTypeName("const struct ClientHttpConnectProxyOptions *")]
+        public ClientHttpConnectProxyOptions* http_connect_proxy_options;
     }
 
     internal unsafe partial struct ByteArray
@@ -546,7 +561,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L380_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L387_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -575,11 +590,11 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L381_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L388_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L384_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L391_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
             internal partial struct _Anonymous1_e__Struct
