@@ -1022,6 +1022,39 @@ namespace Temporalio.Workflows
         public static bool Patched(string patchId) => Context.Patch(patchId, deprecated: false);
 
         /// <summary>
+        /// Workflow-safe form of <see cref="Task.Run(Func{Task}, CancellationToken)" />.
+        /// </summary>
+        /// <param name="function">The work to execute asynchronously.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used to cancel the work
+        /// if it has not yet started. Defaults to <see cref="CancellationToken"/>.</param>
+        /// <returns>A task for the running task (but not necessarily the task that is returned
+        /// from the function).</returns>
+        public static Task RunTaskAsync(
+            Func<Task> function, CancellationToken? cancellationToken = null) =>
+            Task.Factory.StartNew(
+                function,
+                cancellationToken ?? CancellationToken,
+                TaskCreationOptions.None,
+                TaskScheduler.Current).Unwrap();
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.Run{TResult}(Func{TResult}, CancellationToken)" />.
+        /// </summary>
+        /// <typeparam name="TResult">The type of the result returned by the task.</typeparam>
+        /// <param name="function">The work to execute asynchronously.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used to cancel the work
+        /// if it has not yet started. Defaults to <see cref="CancellationToken"/>.</param>
+        /// <returns>A task for the running task (but not necessarily the task that is returned
+        /// from the function).</returns>
+        public static Task<TResult> RunTaskAsync<TResult>(
+            Func<Task<TResult>> function, CancellationToken? cancellationToken = null) =>
+            Task.Factory.StartNew(
+                function,
+                cancellationToken ?? CancellationToken,
+                TaskCreationOptions.None,
+                TaskScheduler.Current).Unwrap();
+
+        /// <summary>
         /// Start a child workflow via lambda invoking the run method.
         /// </summary>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
@@ -1219,6 +1252,44 @@ namespace Temporalio.Workflows
             var task = await Task.WhenAny((IEnumerable<Task>)tasks).ConfigureAwait(true);
             return (Task<TResult>)task;
         }
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAll(IEnumerable{Task})" /> (which just calls
+        /// the standard library call currently because it is already safe).
+        /// </summary>
+        /// <param name="tasks">The tasks to wait on for completion.</param>
+        /// <returns>A task that represents the completion of all of the supplied tasks.</returns>
+        public static Task WhenAllAsync(IEnumerable<Task> tasks) =>
+            Task.WhenAll(tasks);
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAll(Task[])" /> (which just calls the standard
+        /// library call currently because it is already safe).
+        /// </summary>
+        /// <param name="tasks">The tasks to wait on for completion.</param>
+        /// <returns>A task that represents the completion of all of the supplied tasks.</returns>
+        public static Task WhenAllAsync(params Task[] tasks) =>
+            Task.WhenAll(tasks);
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAll{TResult}(IEnumerable{Task{TResult}})" />
+        /// (which just calls the standard library call currently because it is already safe).
+        /// </summary>
+        /// <typeparam name="TResult">The type of the completed task..</typeparam>
+        /// <param name="tasks">The tasks to wait on for completion.</param>
+        /// <returns>A task that represents the completion of all of the supplied tasks.</returns>
+        public static Task<TResult[]> WhenAllAsync<TResult>(IEnumerable<Task<TResult>> tasks) =>
+            Task.WhenAll(tasks);
+
+        /// <summary>
+        /// Workflow-safe form of <see cref="Task.WhenAll{TResult}(Task{TResult}[])" /> (which just
+        /// calls the standard library call currently because it is already safe).
+        /// </summary>
+        /// <typeparam name="TResult">The type of the completed task..</typeparam>
+        /// <param name="tasks">The tasks to wait on for completion.</param>
+        /// <returns>A task that represents the completion of all of the supplied tasks.</returns>
+        public static Task<TResult[]> WhenAllAsync<TResult>(params Task<TResult>[] tasks) =>
+            Task.WhenAll(tasks);
 
         /// <summary>
         /// Unsafe calls that can be made in a workflow.
