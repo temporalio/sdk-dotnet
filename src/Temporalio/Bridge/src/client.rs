@@ -26,7 +26,7 @@ pub struct ClientOptions {
     tls_options: *const ClientTlsOptions,
     retry_options: *const ClientRetryOptions,
     keep_alive_options: *const ClientKeepAliveOptions,
-    http_connect_proxy_options: *const HttpConnectProxyOptions,
+    http_connect_proxy_options: *const ClientHttpConnectProxyOptions,
 }
 
 #[repr(C)]
