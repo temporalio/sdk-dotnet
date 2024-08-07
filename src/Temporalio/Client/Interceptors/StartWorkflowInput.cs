@@ -4,7 +4,7 @@ using Temporalio.Api.Common.V1;
 namespace Temporalio.Client.Interceptors
 {
     /// <summary>
-    /// Input for <see cref="ClientOutboundInterceptor.StartWorkflowAsync" />.
+    /// Input for <see cref="ClientOutboundInterceptor.StartWorkflowAsync{TWorkflow,TResult}" />.
     /// </summary>
     /// <param name="Workflow">Workflow type name to start.</param>
     /// <param name="Args">Arguments for the workflow.</param>
