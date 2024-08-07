@@ -134,15 +134,3 @@ jobs:
       dotnet-repo-path: ${{github.event.pull_request.head.repo.full_name}}
       version: ${{github.event.pull_request.head.ref}}
       version-is-repo-ref: true
-
-  omes-image-build:
-    needs: build-lint-test
-    uses: temporalio/omes/.github/workflows/docker-images.yml@main
-    secrets: inherit
-    with:
-      lang: dotnet
-      sdk-repo-url: ${{ github.event.pull_request.head.repo.full_name || 'temporalio/sdk-dotnet' }}
-      sdk-repo-ref: ${{ github.event.pull_request.head.ref || github.ref }}
-      # TODO: Remove once we have a good way of cleaning up sha-based pushed images
-      docker-tag-ext: ci-latest
-      do-push: true
