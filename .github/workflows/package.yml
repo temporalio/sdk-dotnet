@@ -130,7 +130,7 @@ jobs:
     needs:
       - build-nuget-package
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
         include:
@@ -162,7 +162,7 @@ jobs:
 
       - name: Run smoke test
         run: |
-          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "${{ github.workspace }}/nuget-package;https://api.nuget.org/v3/index.json" --prerelease
+          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "${{ github.workspace }}/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
 
       - name: Setup msbuild (Windows only)
@@ -172,6 +172,6 @@ jobs:
       - name: Run .NET framework smoke test (Windows only)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio -s "${{ github.workspace }}/nuget-package;https://api.nuget.org/v3/index.json" --prerelease
+          dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio -s "${{ github.workspace }}/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           msbuild tests/Temporalio.SmokeTestDotNetFramework -t:restore,build -p:Platform=x64
           tests/Temporalio.SmokeTestDotNetFramework/bin/x64/Debug/Temporalio.SmokeTestDotNetFramework.exe
