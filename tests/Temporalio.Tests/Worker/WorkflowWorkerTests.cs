@@ -5505,6 +5505,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             bool shouldWarn,
             bool interactionShouldFailWithNotFound = false)
         {
+            // If the finish is a failure, we never warn regardless
+            if (finish == UnfinishedHandlersWorkflow.WorkflowFinish.Fail)
+            {
+                shouldWarn = false;
+            }
             // Setup log capture
             var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
             // Run the workflow
