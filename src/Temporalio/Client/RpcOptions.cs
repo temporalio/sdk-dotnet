@@ -27,7 +27,8 @@ namespace Temporalio.Client
         public IReadOnlyCollection<KeyValuePair<string, string>>? Metadata { get; set; }
 
         /// <summary>
-        /// Gets or sets the timeout for the call. Default is no timeout.
+        /// Gets or sets the timeout for the call. Default timeout is specific to the call (for
+        /// normal calls this may be 30s, for long-poll calls it is longer).
         /// </summary>
         public TimeSpan? Timeout { get; set; }
 

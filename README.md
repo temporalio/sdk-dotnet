@@ -706,6 +706,8 @@ with .NET tasks inside of workflows:
   * Use `Workflow.WhenAllAsync` instead.
   * Technically `Task.WhenAll` is currently deterministic in .NET and safe, but it is better to use the wrapper to be
     sure.
+* Do not use `CancellationTokenSource.CancelAsync`.
+  * Use `CancellationTokenSource.Cancel` instead.
 * Do not use `System.Threading.Semaphore` or `System.Threading.SemaphoreSlim` or `System.Threading.Mutex`.
   * Use `Temporalio.Workflows.Semaphore` or `Temporalio.Workflows.Mutex` instead.
   * _Technically_ `SemaphoreSlim` does work if only the async form of `WaitAsync` is used without no timeouts and
