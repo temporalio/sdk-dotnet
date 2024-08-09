@@ -579,10 +579,10 @@ namespace Temporalio.Worker
                 }
 
                 // Maybe apply legacy workflow completion command reordering logic
-                ApplyLegacyCompletionCommandReordering(act, completion, out var workflowComplete);
+                ApplyLegacyCompletionCommandReordering(act, completion, out var workflowCompleteNonFailure);
 
                 // Log warnings if we have completed
-                if (workflowComplete && !IsReplaying)
+                if (workflowCompleteNonFailure && !IsReplaying)
                 {
                     inProgressHandlers.WarnIfAnyLeftOver(Info.WorkflowId, logger);
                 }
@@ -1426,12 +1426,14 @@ namespace Temporalio.Worker
         private void ApplyLegacyCompletionCommandReordering(
             WorkflowActivation act,
             WorkflowActivationCompletion completion,
-            out bool workflowComplete)
+            out bool workflowCompleteNonFailure)
         {
             // Find the index of the last completion command
             var lastCompletionCommandIndex = -1;
+            workflowCompleteNonFailure = false;
             if (completion.Successful != null)
             {
+                // Iterate in reverse
                 for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
                 {
                     var cmd = completion.Successful.Commands[i];
@@ -1441,12 +1443,18 @@ namespace Temporalio.Worker
                         cmd.ContinueAsNewWorkflowExecution != null ||
                         cmd.FailWorkflowExecution != null)
                     {
-                        lastCompletionCommandIndex = i;
-                        break;
+                        // Only set this if not already set since we want the _last_ one and this
+                        // iterates in reverse
+                        if (lastCompletionCommandIndex == -1)
+                        {
+                            lastCompletionCommandIndex = i;
+                        }
+                        // Always override this bool because we want whether the _first_ completion
+                        // is a non-failure, not the last and this iterates in reverse
+                        workflowCompleteNonFailure = cmd.FailWorkflowExecution == null;
                     }
                 }
             }
-            workflowComplete = lastCompletionCommandIndex >= 0;
 
             // In a previous version of .NET SDK, if this was a successful activation completion
             // with a completion command not at the end, we'd reorder it to move at the end.
