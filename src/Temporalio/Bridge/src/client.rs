@@ -525,7 +525,8 @@ impl TryFrom<&ClientOptions> for CoreClientOptions {
             } else {
                 Some(opts.metadata.to_string_map_on_newlines())
             })
-            .api_key(opts.api_key.to_option_string());
+            .api_key(opts.api_key.to_option_string())
+            .http_connect_proxy(unsafe { opts.http_connect_proxy_options.as_ref() }.map(Into::into));
         if let Some(tls_config) = unsafe { opts.tls_options.as_ref() } {
             opts_builder.tls_cfg(tls_config.try_into()?);
         }
