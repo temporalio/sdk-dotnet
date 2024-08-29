@@ -20,11 +20,11 @@ namespace Temporalio.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpConnectProxyOptions"/> class.
         /// </summary>
-        /// <param name="targetHost">A 'host:port' string representing the target to proxy through.</param>
+        /// <param name="targetHost">A <c>host:port</c> string representing the target to proxy through.</param>
         public HttpConnectProxyOptions(string targetHost) => TargetHost = targetHost;
 
         /// <summary>
-        /// Gets or sets the target host to proxy through as a host:port string.
+        /// Gets or sets the target host to proxy through as a <c>host:port</c> string.
         /// </summary>
         /// <remarks>
         /// This is required for all proxy options.

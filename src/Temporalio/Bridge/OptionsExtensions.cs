@@ -334,7 +334,7 @@ namespace Temporalio.Bridge
             {
                 target_host = scope.ByteArray(options.TargetHost),
                 username = scope.ByteArray(options.BasicAuth?.Username),
-                password = scope.ByteArray(options.BasicAuth?.Username),
+                password = scope.ByteArray(options.BasicAuth?.Password),
             };
         }
 
