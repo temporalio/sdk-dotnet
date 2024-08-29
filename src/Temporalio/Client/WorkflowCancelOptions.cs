@@ -8,7 +8,7 @@ namespace Temporalio.Client
     public class WorkflowCancelOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets RPC options for starting the workflow.
+        /// Gets or sets RPC options for cancelling the workflow.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
 
