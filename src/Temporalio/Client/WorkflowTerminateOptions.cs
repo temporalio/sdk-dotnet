@@ -14,7 +14,7 @@ namespace Temporalio.Client
         public IReadOnlyCollection<object?>? Details { get; set; }
 
         /// <summary>
-        /// Gets or sets RPC options for starting the workflow.
+        /// Gets or sets RPC options for terminating the workflow.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
 

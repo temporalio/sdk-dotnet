@@ -21,7 +21,7 @@ namespace Temporalio.Client
         public bool SkipArchival { get; set; }
 
         /// <summary>
-        /// Gets or sets RPC options for starting the workflow.
+        /// Gets or sets RPC options for fetching history.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
 

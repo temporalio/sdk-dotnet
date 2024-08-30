@@ -15,7 +15,7 @@ namespace Temporalio.Client
         public QueryRejectCondition? RejectCondition { get; set; }
 
         /// <summary>
-        /// Gets or sets RPC options for starting the workflow.
+        /// Gets or sets RPC options for querying the workflow.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
 
