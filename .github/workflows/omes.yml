@@ -7,7 +7,6 @@ on:
 
 jobs:
   omes-image-build:
-    needs: build-lint-test
     uses: temporalio/omes/.github/workflows/docker-images.yml@main
     secrets: inherit
     with:
