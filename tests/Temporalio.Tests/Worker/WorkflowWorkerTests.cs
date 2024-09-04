@@ -5,17 +5,20 @@ namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
+using Temporalio.Api.History.V1;
 using Temporalio.Client;
 using Temporalio.Client.Schedules;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Runtime;
+using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -5734,6 +5737,60 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             var queryRes = await newHandle.QueryAsync(wf => wf.GetSignal());
             Assert.Equal("hi!", queryRes);
         });
+    }
+
+    [Workflow]
+    public class NullWithCodecWorkflow
+    {
+        [Activity]
+        public static string? ReturnsNull() => null;
+
+        [WorkflowRun]
+        public async Task<string?> RunAsync(string? input)
+        {
+            Assert.Null(input);
+            return await Workflow.ExecuteActivityAsync(
+                () => ReturnsNull(),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(10) });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_NullWithCodec_EncodedProperly()
+    {
+        // Need client with codec
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Base64PayloadCodec(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        // Run worker
+        await ExecuteWorkerAsync<NullWithCodecWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (NullWithCodecWorkflow wf) => wf.RunAsync(null),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                var result = await handle.GetResultAsync();
+                Assert.Null(result);
+                // Confirm the codec is in use in history with the activity result
+                ActivityTaskCompletedEventAttributes? attrs = null;
+                await foreach (var evt in handle.FetchHistoryEventsAsync())
+                {
+                    if (evt.ActivityTaskCompletedEventAttributes is { } taskAttrs)
+                    {
+                        attrs = taskAttrs;
+                        break;
+                    }
+                }
+                Assert.Equal(
+                    Base64PayloadCodec.EncodingName,
+                    attrs?.Result?.Payloads_?.Single()?.Metadata?.GetValueOrDefault("encoding")?.ToStringUtf8());
+            },
+            new TemporalWorkerOptions().AddAllActivities<NullWithCodecWorkflow>(null),
+            client);
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(

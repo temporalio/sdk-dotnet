@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
@@ -223,6 +224,7 @@ namespace Temporalio.Worker
             var encodedList = await codec.EncodeAsync(new Payload[] { payload }).ConfigureAwait(false);
             var encoded = encodedList.Single();
             payload.Metadata.Clear();
+            payload.Data = ByteString.Empty;
             payload.MergeFrom(encoded);
         }
 
@@ -324,6 +326,7 @@ namespace Temporalio.Worker
             // We are gonna require a single result here
             var decoded = await codec.DecodeAsync(new Payload[] { payload }).ConfigureAwait(false);
             payload.Metadata.Clear();
+            payload.Data = ByteString.Empty;
             payload.MergeFrom(decoded.Single());
         }
     }
