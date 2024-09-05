@@ -5,7 +5,6 @@ namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
