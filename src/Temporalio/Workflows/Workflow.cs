@@ -663,6 +663,7 @@ namespace Temporalio.Workflows
         /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
         /// to check if it's a cancellation either way.
         /// </remarks>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
         public static async Task ExecuteChildWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null)
         {
@@ -687,6 +688,7 @@ namespace Temporalio.Workflows
         /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
         /// to check if it's a cancellation either way.
         /// </remarks>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
         public static async Task<TResult> ExecuteChildWorkflowAsync<TResult>(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null)
         {
@@ -1063,14 +1065,11 @@ namespace Temporalio.Workflows
         /// <param name="options">Workflow options.</param>
         /// <returns>The child workflow handle once started.</returns>
         /// <remarks>
-        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
-        /// is given in the options but it is already running.
-        /// </remarks>
-        /// <remarks>
         /// Using an already-cancelled token may give a different exception than cancelling after
         /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
         /// to check if it's a cancellation either way.
         /// </remarks>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
         public static Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall,
             ChildWorkflowOptions? options = null)
@@ -1088,14 +1087,11 @@ namespace Temporalio.Workflows
         /// <param name="options">Workflow options.</param>
         /// <returns>The child workflow handle once started.</returns>
         /// <remarks>
-        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
-        /// is given in the options but it is already running.
-        /// </remarks>
-        /// <remarks>
         /// Using an already-cancelled token may give a different exception than cancelling after
         /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
         /// to check if it's a cancellation either way.
         /// </remarks>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
         public static async Task<ChildWorkflowHandle<TWorkflow>> StartChildWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, ChildWorkflowOptions? options = null)
         {
@@ -1113,14 +1109,11 @@ namespace Temporalio.Workflows
         /// <param name="options">Workflow options.</param>
         /// <returns>The child workflow handle once started.</returns>
         /// <remarks>
-        /// The task can throw a <see cref="Exceptions.WorkflowAlreadyStartedException" /> if an ID
-        /// is given in the options but it is already running.
-        /// </remarks>
-        /// <remarks>
         /// Using an already-cancelled token may give a different exception than cancelling after
         /// started. Use <see cref="Exceptions.TemporalException.IsCanceledException(Exception)" />
         /// to check if it's a cancellation either way.
         /// </remarks>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">Throw if an ID is given in the options, but it is already running. This exception is stored into the returned task.</exception>
         public static async Task<ChildWorkflowHandle> StartChildWorkflowAsync(
             string workflow, IReadOnlyCollection<object?> args, ChildWorkflowOptions? options = null) =>
             await Context.StartChildWorkflowAsync<ValueTuple, ValueTuple>(
