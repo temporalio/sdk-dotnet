@@ -135,7 +135,7 @@ namespace Temporalio.Workflows
             string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options);
 
         /// <summary>
-        /// Backing call for <see cref="Workflow.DelayAsync(TimeSpan, CancellationToken?)" /> and
+        /// Backing call for <see cref="Workflow.DelayAsync(System.TimeSpan, System.Threading.CancellationToken?)" /> and
         /// overloads.
         /// </summary>
         /// <param name="delay">Delay duration.</param>
@@ -213,7 +213,7 @@ namespace Temporalio.Workflows
         void UpsertTypedSearchAttributes(IReadOnlyCollection<SearchAttributeUpdate> updates);
 
         /// <summary>
-        /// Backing call for <see cref="Workflow.WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" />
+        /// Backing call for <see cref="Workflow.WaitConditionAsync(Func{bool}, System.TimeSpan, System.Threading.CancellationToken?)" />
         /// and overloads.
         /// </summary>
         /// <param name="conditionCheck">Function to call.</param>

@@ -253,7 +253,7 @@ namespace Temporalio.Testing
             private bool autoTimeSkipping = true;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="EphemeralServerBased"/> class.
+            /// Initializes a new instance of the <see cref="Temporalio.Testing.WorkflowEnvironment.EphemeralServerBased"/> class.
             /// </summary>
             /// <param name="client">Client for the server.</param>
             /// <param name="server">The underlying bridge server.</param>

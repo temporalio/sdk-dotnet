@@ -50,7 +50,7 @@ namespace Temporalio.Workflows
     {
         /// <summary>
         /// Gets the value that is set on
-        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this workflow is
+        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope{TState}(TState)" /> before this workflow is
         /// started.
         /// </summary>
         internal Dictionary<string, object> LoggerScope { get; } = new()

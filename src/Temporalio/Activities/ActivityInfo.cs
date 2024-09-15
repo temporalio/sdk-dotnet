@@ -55,7 +55,7 @@ namespace Temporalio.Activities
     {
         /// <summary>
         /// Gets the value that is set on
-        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this activity is
+        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope{TState}(TState)" /> before this activity is
         /// started.
         /// </summary>
         internal Dictionary<string, object> LoggerScope { get; } = new()

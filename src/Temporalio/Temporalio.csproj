@@ -25,9 +25,7 @@
 
   <!-- Allow tests to use internals -->
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>Temporalio.Tests</_Parameter1>
-    </AssemblyAttribute>
+    <InternalsVisibleTo Include="Temporalio.Tests" />
   </ItemGroup>
 
   <!-- Build/copy debug/release bridge DLL -->

@@ -5,7 +5,7 @@ using Temporalio.Workflows;
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
-    /// Input for <see cref="WorkflowOutboundInterceptor.StartChildWorkflowAsync" />.
+    /// Input for <see cref="WorkflowOutboundInterceptor.StartChildWorkflowAsync{TWorkflow, TResult}(StartChildWorkflowInput)" />.
     /// </summary>
     /// <param name="Workflow">Workflow type name.</param>
     /// <param name="Args">Workflow args.</param>

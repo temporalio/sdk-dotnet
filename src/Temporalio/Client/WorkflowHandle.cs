@@ -720,11 +720,11 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync{TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateStartOptions)" />
+        /// <see cref="WorkflowHandle{TWorkflow}.StartUpdateAsync{TUpdateResult}(System.Linq.Expressions.Expression{System.Func{TWorkflow, System.Threading.Tasks.Task{TUpdateResult}}}, WorkflowUpdateStartOptions)" />
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
+        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently, this
         /// API will timeout on long update requests instead of properly polling for their
         /// completion.</remarks>
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>

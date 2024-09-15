@@ -24,7 +24,7 @@ namespace Temporalio.Client
             private readonly TemporalConnection connection;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="Core"/> class.
+            /// Initializes a new instance of the <see cref="Temporalio.Client.WorkflowService.Core"/> class.
             /// </summary>
             /// <param name="connection">Connection to use.</param>
             public Core(TemporalConnection connection) => this.connection = connection;
