@@ -120,7 +120,7 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Create a workflow with a custom creator. The result is not cached. Most users will use
-        /// <see cref="Create(Type)" /> instead.
+        /// <see cref="Create(System.Type)" /> instead.
         /// </summary>
         /// <param name="type">Type to get definition for.</param>
         /// <param name="nameOverride">The name to use instead of what may be on the attribute.</param>

@@ -285,15 +285,15 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Sleep in a workflow for the given time. See documentation of
-        /// <see cref="DelayAsync(TimeSpan, CancellationToken?)" /> for details.
+        /// <see cref="DelayAsync(TimeSpan, System.Threading.CancellationToken?)" /> for details.
         /// </summary>
         /// <param name="millisecondsDelay">Delay amount. See documentation of
-        /// <see cref="DelayAsync(TimeSpan, CancellationToken?)" /> for details.</param>
+        /// <see cref="DelayAsync(TimeSpan, System.Threading.CancellationToken?)" /> for details.</param>
         /// <param name="cancellationToken">Cancellation token. See documentation of
-        /// <see cref="DelayAsync(TimeSpan, CancellationToken?)" /> for details.</param>
+        /// <see cref="DelayAsync(TimeSpan, System.Threading.CancellationToken?)" /> for details.</param>
         /// <returns>Task for completion. See documentation of
-        /// <see cref="DelayAsync(TimeSpan, CancellationToken?)" /> for details.</returns>
-        /// <seealso cref="DelayAsync(TimeSpan, CancellationToken?)" />
+        /// <see cref="DelayAsync(TimeSpan, System.Threading.CancellationToken?)" /> for details.</returns>
+        /// <seealso cref="DelayAsync(TimeSpan, System.Threading.CancellationToken?)" />
         public static Task DelayAsync(int millisecondsDelay, CancellationToken? cancellationToken = null) =>
             DelayAsync(TimeSpan.FromMilliseconds(millisecondsDelay), cancellationToken);
 
@@ -1139,41 +1139,41 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Wait for the given function to return true. See documentation of
-        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.
         /// </summary>
         /// <param name="conditionCheck">Condition function. See documentation of
-        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.</param>
         /// <param name="cancellationToken">Cancellation token. See documentation of
-        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.</param>
         /// <returns>Task when condition becomes true. See documentation
-        /// of <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// of <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.</returns>
-        /// <seealso cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" />.
+        /// <seealso cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" />.
         public static Task WaitConditionAsync(
             Func<bool> conditionCheck, CancellationToken? cancellationToken = null) =>
                 Context.WaitConditionAsync(conditionCheck, null, cancellationToken);
 
         /// <summary>
         /// Wait for the given function to return true or a timeout. See documentation of
-        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.
         /// </summary>
         /// <param name="conditionCheck">Condition function. See documentation of
-        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.</param>
         /// <param name="timeoutMilliseconds">Timeout milliseconds. See documentation of
-        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.</param>
         /// <param name="cancellationToken">Cancellation token. See documentation of
-        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.</param>
         /// <returns>Task when condition becomes true or a timeout has occurred. See documentation
-        /// of <see cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" /> for more
+        /// of <see cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" /> for more
         /// details.</returns>
-        /// <seealso cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" />.
+        /// <seealso cref="WaitConditionAsync(Func{bool}, TimeSpan, System.Threading.CancellationToken?)" />.
         public static Task<bool> WaitConditionAsync(
             Func<bool> conditionCheck,
             int timeoutMilliseconds,

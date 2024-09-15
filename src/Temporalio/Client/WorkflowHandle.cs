@@ -720,7 +720,7 @@ namespace Temporalio.Client
 
         /// <summary>
         /// Start an update and wait for it to complete. This is a shortcut for
-        /// <see cref="StartUpdateAsync{TUpdateResult}(Expression{Func{TWorkflow, Task{TUpdateResult}}}, WorkflowUpdateStartOptions)" />
+        /// <see cref="StartUpdateAsync{TUpdateResult}" />
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>
