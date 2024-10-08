@@ -77,12 +77,14 @@ public static class TestUtils
         EventId EventId,
         object? State,
         Exception? Exception,
-        string Formatted);
+        string Formatted,
+        Dictionary<string, object?> ScopeValues);
 
     public sealed class LogCaptureFactory : ILoggerFactory
     {
         private readonly ConcurrentQueue<LogEntry> logs = new();
         private readonly ILoggerFactory underlying;
+        private readonly IExternalScopeProvider scopeProvider = new LoggerExternalScopeProvider();
 
         public LogCaptureFactory(ILoggerFactory underlying) => this.underlying = underlying;
 
@@ -93,7 +95,7 @@ public static class TestUtils
         public void AddProvider(ILoggerProvider provider) => underlying.AddProvider(provider);
 
         public ILogger CreateLogger(string categoryName) =>
-            new LogCaptureLogger(underlying.CreateLogger(categoryName), logs);
+            new LogCaptureLogger(underlying.CreateLogger(categoryName), logs, scopeProvider);
 
         public void Dispose()
         {
@@ -105,15 +107,21 @@ public static class TestUtils
     {
         private readonly ILogger underlying;
         private readonly ConcurrentQueue<LogEntry> logs;
+        private readonly IExternalScopeProvider scopeProvider;
 
-        internal LogCaptureLogger(ILogger underlying, ConcurrentQueue<LogEntry> logs)
+        internal LogCaptureLogger(
+            ILogger underlying,
+            ConcurrentQueue<LogEntry> logs,
+            IExternalScopeProvider scopeProvider)
         {
             this.underlying = underlying;
             this.logs = logs;
+            this.scopeProvider = scopeProvider;
         }
 
         public IDisposable? BeginScope<TState>(TState state)
-            where TState : notnull => underlying.BeginScope(state);
+            where TState : notnull =>
+            new CompositeDisposable(scopeProvider.Push(state), underlying.BeginScope(state)!);
 
         public bool IsEnabled(LogLevel logLevel) => underlying.IsEnabled(logLevel);
 
@@ -124,8 +132,39 @@ public static class TestUtils
             Exception? exception,
             Func<TState, Exception?, string> formatter)
         {
-            logs.Enqueue(new(logLevel, eventId, state, exception, formatter.Invoke(state, exception)));
+            // Collect scopes
+            var allScopeValues = new Dictionary<string, object?>();
+            scopeProvider.ForEachScope(
+                (state, allScopeValues) =>
+                {
+                    if (state is IEnumerable<KeyValuePair<string, object?>> scopeValues)
+                    {
+                        foreach (var kv in scopeValues)
+                        {
+                            allScopeValues[kv.Key] = kv.Value;
+                        }
+                    }
+                },
+                allScopeValues);
+            logs.Enqueue(new(
+                logLevel,
+                eventId,
+                state,
+                exception,
+                formatter.Invoke(state, exception),
+                allScopeValues));
             underlying.Log(logLevel, eventId, state, exception, formatter);
+        }
+    }
+
+    private record CompositeDisposable(params IDisposable[] Disposables) : IDisposable
+    {
+        public void Dispose()
+        {
+            foreach (var d in Disposables)
+            {
+                d.Dispose();
+            }
         }
     }
 

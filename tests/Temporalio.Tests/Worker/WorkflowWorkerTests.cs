@@ -5794,6 +5794,64 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class UpdateLogWorkflow
+    {
+        private readonly TaskCompletionSource complete = new();
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            Workflow.Logger.LogInformation("In run");
+            await complete.Task;
+        }
+
+        [WorkflowUpdateValidator(nameof(UpdateAsync))]
+        public void ValidateUpdateAsync()
+        {
+            Workflow.Logger.LogInformation("In update validator");
+        }
+
+        [WorkflowUpdate]
+        public async Task UpdateAsync()
+        {
+            Workflow.Logger.LogInformation("In update");
+            complete.SetResult();
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateLog_LogsContext()
+    {
+        // Capture logs
+        using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+        // Run worker
+        await ExecuteWorkerAsync<UpdateLogWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (UpdateLogWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await handle.ExecuteUpdateAsync(
+                    wf => wf.UpdateAsync(), new() { Id = "my-update-id" });
+                await handle.GetResultAsync();
+            },
+            new() { LoggerFactory = loggerFactory });
+        // Grab entry for run log and confirm regular state but not update state
+        var runLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In run");
+        Assert.Equal("UpdateLogWorkflow", runLog.ScopeValues["WorkflowType"]);
+        Assert.False(runLog.ScopeValues.ContainsKey("UpdateId"));
+        // Check update log
+        var updateLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In update validator");
+        Assert.Equal("UpdateLogWorkflow", updateLog.ScopeValues["WorkflowType"]);
+        Assert.Equal("my-update-id", updateLog.ScopeValues["UpdateId"]);
+        Assert.Equal("Update", updateLog.ScopeValues["UpdateName"]);
+        updateLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In update");
+        Assert.Equal("UpdateLogWorkflow", updateLog.ScopeValues["WorkflowType"]);
+        Assert.Equal("my-update-id", updateLog.ScopeValues["UpdateId"]);
+        Assert.Equal("Update", updateLog.ScopeValues["UpdateName"]);
+    }
+
+    [Workflow]
     public class ActivityFailToFailWorkflow
     {
         public static TaskCompletionSource WaitingForCancel { get; } = new();
