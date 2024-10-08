@@ -5796,9 +5796,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class ActivityFailToFailWorkflow
     {
+        public static TaskCompletionSource WaitingForCancel { get; } = new();
+
         [Activity]
         public static async Task WaitForCancelAsync()
         {
+            WaitingForCancel.SetResult();
             while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
             {
                 ActivityExecutionContext.Current.Heartbeat();
@@ -5815,6 +5818,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 {
                     StartToCloseTimeout = TimeSpan.FromSeconds(10),
                     CancellationType = ActivityCancellationType.WaitCancellationCompleted,
+                    RetryPolicy = new() { MaximumAttempts = 1 },
+                    HeartbeatTimeout = TimeSpan.FromSeconds(1),
                 });
     }
 
@@ -5846,6 +5851,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await client.StartWorkflowAsync(
                     (ActivityFailToFailWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Wait until activity started
+                await ActivityFailToFailWorkflow.WaitingForCancel.Task;
                 // Issue cancel and wait result
                 await handle.CancelAsync();
                 var err = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
