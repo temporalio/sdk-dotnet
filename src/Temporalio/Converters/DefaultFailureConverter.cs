@@ -41,7 +41,7 @@ namespace Temporalio.Converters
         public DefaultFailureConverterOptions Options { get; private init; }
 
         /// <inheritdoc />
-        public Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
+        public virtual Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
         {
             // If the exception is not already a failure exception, make it an application exception
             var failureEx =
@@ -76,7 +76,7 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public Exception ToException(Failure failure, IPayloadConverter payloadConverter)
+        public virtual Exception ToException(Failure failure, IPayloadConverter payloadConverter)
         {
             // If encoded attributes are present and we can decode the attributes, set them as
             // expected
