@@ -5866,6 +5866,90 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             client);
     }
 
+    [Workflow]
+    public class DetachedCancellationWorkflow
+    {
+        public class Activities
+        {
+            public TaskCompletionSource WaitingForCancel { get; } = new();
+
+            public bool CleanupCalled { get; set; }
+
+            [Activity]
+            public async Task WaitForCancel()
+            {
+                WaitingForCancel.SetResult();
+                await Task.Delay(
+                    Timeout.Infinite,
+                    ActivityExecutionContext.Current.CancellationToken);
+            }
+
+            [Activity]
+            public void Cleanup() => CleanupCalled = true;
+        }
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Wait forever for cancellation, then cleanup
+            try
+            {
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.WaitForCancel(),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(10) });
+            }
+            catch (Exception e) when (TemporalException.IsCanceledException(e))
+            {
+                // Run cleanup with another token
+                using var detachedCancelSource = new CancellationTokenSource();
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.Cleanup(),
+                    new()
+                    {
+                        StartToCloseTimeout = TimeSpan.FromMinutes(10),
+                        CancellationToken = detachedCancelSource.Token,
+                    });
+                // Rethrow
+                throw;
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_DetachedCancellation_WorksProperly()
+    {
+        var activities = new DetachedCancellationWorkflow.Activities();
+        await ExecuteWorkerAsync<DetachedCancellationWorkflow>(
+            async worker =>
+            {
+                // Start workflow
+                var handle = await Client.StartWorkflowAsync(
+                    (DetachedCancellationWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Wait until waiting for cancel
+                await activities.WaitingForCancel.Task;
+
+                // Send workflow cancel
+                await handle.CancelAsync();
+
+                // Confirm canceled
+                var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
+                    () => handle.GetResultAsync());
+                Assert.IsType<CanceledFailureException>(exc.InnerException);
+
+                // Confirm cleanup called
+                Assert.True(activities.CleanupCalled);
+
+                // Run through replayer to confirm deterministic on replay
+                var history = await handle.FetchHistoryAsync();
+                var replayer = new WorkflowReplayer(
+                    new WorkflowReplayerOptions().AddWorkflow<DetachedCancellationWorkflow>());
+                await replayer.ReplayWorkflowAsync(history);
+            },
+            new TemporalWorkerOptions().AddAllActivities(activities));
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
