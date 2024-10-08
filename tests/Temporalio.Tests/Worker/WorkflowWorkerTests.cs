@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
+using Temporalio.Api.Failure.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
 using Temporalio.Client.Schedules;
@@ -5848,6 +5849,163 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal("UpdateLogWorkflow", updateLog.ScopeValues["WorkflowType"]);
         Assert.Equal("my-update-id", updateLog.ScopeValues["UpdateId"]);
         Assert.Equal("Update", updateLog.ScopeValues["UpdateName"]);
+    }
+
+    [Workflow]
+    public class ActivityFailToFailWorkflow
+    {
+        public static TaskCompletionSource WaitingForCancel { get; } = new();
+
+        [Activity]
+        public static async Task WaitForCancelAsync()
+        {
+            WaitingForCancel.SetResult();
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
+            {
+                ActivityExecutionContext.Current.Heartbeat();
+                await Task.Delay(100);
+            }
+            throw new InvalidOperationException("Intentional exception");
+        }
+
+        [WorkflowRun]
+        public Task RunAsync() =>
+            Workflow.ExecuteActivityAsync(
+                () => WaitForCancelAsync(),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromSeconds(10),
+                    CancellationType = ActivityCancellationType.WaitCancellationCompleted,
+                    RetryPolicy = new() { MaximumAttempts = 1 },
+                    HeartbeatTimeout = TimeSpan.FromSeconds(1),
+                });
+    }
+
+    public class CannotSerializeIntentionalFailureConverter : DefaultFailureConverter
+    {
+        public override Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
+        {
+            if (exception.Message == "Intentional exception")
+            {
+                throw new InvalidOperationException("Intentional conversion failure");
+            }
+            return base.ToFailure(exception, payloadConverter);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ActivityFailToFail_ProperlyHandled()
+    {
+        // Need client with failure converter
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            FailureConverter = new CannotSerializeIntentionalFailureConverter(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+        await ExecuteWorkerAsync<ActivityFailToFailWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (ActivityFailToFailWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Wait until activity started
+                await ActivityFailToFailWorkflow.WaitingForCancel.Task;
+                // Issue cancel and wait result
+                await handle.CancelAsync();
+                var err = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                    handle.GetResultAsync());
+                var errAct = Assert.IsType<ActivityFailureException>(err.InnerException);
+                var errFail = Assert.IsType<ApplicationFailureException>(errAct.InnerException);
+                Assert.Contains("Failed building completion", errFail.Message);
+                Assert.Contains("Intentional conversion failure", errFail.Message);
+            },
+            new TemporalWorkerOptions().AddAllActivities<ActivityFailToFailWorkflow>(null),
+            client);
+    }
+
+    [Workflow]
+    public class DetachedCancellationWorkflow
+    {
+        public class Activities
+        {
+            public TaskCompletionSource WaitingForCancel { get; } = new();
+
+            public bool CleanupCalled { get; set; }
+
+            [Activity]
+            public async Task WaitForCancel()
+            {
+                WaitingForCancel.SetResult();
+                await Task.Delay(
+                    Timeout.Infinite,
+                    ActivityExecutionContext.Current.CancellationToken);
+            }
+
+            [Activity]
+            public void Cleanup() => CleanupCalled = true;
+        }
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Wait forever for cancellation, then cleanup
+            try
+            {
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.WaitForCancel(),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(10) });
+            }
+            catch (Exception e) when (TemporalException.IsCanceledException(e))
+            {
+                // Run cleanup with another token
+                using var detachedCancelSource = new CancellationTokenSource();
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.Cleanup(),
+                    new()
+                    {
+                        StartToCloseTimeout = TimeSpan.FromMinutes(10),
+                        CancellationToken = detachedCancelSource.Token,
+                    });
+                // Rethrow
+                throw;
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_DetachedCancellation_WorksProperly()
+    {
+        var activities = new DetachedCancellationWorkflow.Activities();
+        await ExecuteWorkerAsync<DetachedCancellationWorkflow>(
+            async worker =>
+            {
+                // Start workflow
+                var handle = await Client.StartWorkflowAsync(
+                    (DetachedCancellationWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Wait until waiting for cancel
+                await activities.WaitingForCancel.Task;
+
+                // Send workflow cancel
+                await handle.CancelAsync();
+
+                // Confirm canceled
+                var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
+                    () => handle.GetResultAsync());
+                Assert.IsType<CanceledFailureException>(exc.InnerException);
+
+                // Confirm cleanup called
+                Assert.True(activities.CleanupCalled);
+
+                // Run through replayer to confirm deterministic on replay
+                var history = await handle.FetchHistoryAsync();
+                var replayer = new WorkflowReplayer(
+                    new WorkflowReplayerOptions().AddWorkflow<DetachedCancellationWorkflow>());
+                await replayer.ReplayWorkflowAsync(history);
+            },
+            new TemporalWorkerOptions().AddAllActivities(activities));
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(
