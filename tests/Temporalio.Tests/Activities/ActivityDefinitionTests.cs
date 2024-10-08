@@ -156,6 +156,23 @@ public class ActivityDefinitionTests
         Assert.Equal(128, await defn.InvokeAsync(new object?[] { 123 }));
     }
 
+    [Fact]
+    public void CreateAll_OpenGeneric_Throws()
+    {
+        var exc = Assert.ThrowsAny<Exception>(() => ActivityDefinition.CreateAll(
+            typeof(BadActivityGeneric), new BadActivityGeneric()));
+        Assert.Contains("contains generic parameters", exc.Message);
+    }
+
+    [Fact]
+    public async Task CreateAll_ClosedGeneric_CanInvoke()
+    {
+        var defn = ActivityDefinition.CreateAll(
+            typeof(GoodActivityGeneric<string>),
+            new GoodActivityGeneric<string>("some-val")).Single();
+        Assert.Equal("some-val", await defn.InvokeAsync(Array.Empty<object?>()));
+    }
+
     protected static void BadAct1()
     {
     }
@@ -172,6 +189,22 @@ public class ActivityDefinitionTests
     {
         [Activity]
         public static int MyActivity(int param) => param + 5;
+    }
+
+    public class BadActivityGeneric
+    {
+        [Activity]
+        public T BadActAsync<T>() => throw new NotSupportedException();
+    }
+
+    public class GoodActivityGeneric<T>
+    {
+        private readonly T result;
+
+        public GoodActivityGeneric(T result) => this.result = result;
+
+        [Activity]
+        public T GoodAsyncAsync() => result;
     }
 
     public class BadActivityClassNoActivities
