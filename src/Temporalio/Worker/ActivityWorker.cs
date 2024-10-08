@@ -223,11 +223,16 @@ namespace Temporalio.Worker
             {
                 completion = new()
                 {
+                    TaskToken = tsk.TaskToken,
                     Result = new()
                     {
                         Failed = new()
                         {
-                            Failure_ = new() { Message = $"Failed building completion: {e}" },
+                            Failure_ = new()
+                            {
+                                Message = $"Failed building completion: {e}",
+                                ApplicationFailureInfo = new() { Type = e.GetType().Name },
+                            },
                         },
                     },
                 };
