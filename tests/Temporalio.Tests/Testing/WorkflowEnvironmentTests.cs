@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
+using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Testing;
 using Temporalio.Worker;
@@ -198,5 +199,55 @@ public class WorkflowEnvironmentTests : TestBase
                 Assert.True(watch.Elapsed > TimeSpan.FromSeconds(2.5));
             });
         });
+    }
+
+    [Fact]
+    public async Task StartLocal_SearchAttributes_ProperlyRegistered()
+    {
+        // Prepare attrs
+        var attrBool = SearchAttributeKey.CreateBool("DotNetTemporalTestBool");
+        var attrDateTime = SearchAttributeKey.CreateDateTimeOffset("DotNetTemporalTestDateTime");
+        var attrDouble = SearchAttributeKey.CreateDouble("DotNetTemporalTestDouble");
+        var attrKeyword = SearchAttributeKey.CreateKeyword("DotNetTemporalTestKeyword");
+        var attrKeywordList = SearchAttributeKey.CreateKeywordList("DotNetTemporalTestKeywordList");
+        var attrLong = SearchAttributeKey.CreateLong("DotNetTemporalTestLong");
+        var attrText = SearchAttributeKey.CreateText("DotNetTemporalTestText");
+        var attrVals = new SearchAttributeCollection.Builder().
+            Set(attrBool, true).
+            Set(attrDateTime, new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeSpan.Zero)).
+            Set(attrDouble, 123.45).
+            Set(attrKeyword, "SomeKeyword").
+            Set(attrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
+            Set(attrLong, 678).
+            Set(attrText, "SomeText").
+            ToSearchAttributeCollection();
+        var attrs = new SearchAttributeKey[]
+        {
+            attrBool, attrDateTime, attrDouble, attrKeyword, attrKeywordList, attrLong, attrText,
+        };
+
+        // Confirm that when used in env without SAs it fails
+        await using var env1 = await WorkflowEnvironment.StartLocalAsync();
+        var exc = await Assert.ThrowsAsync<RpcException>(
+            () => env1.Client.StartWorkflowAsync(
+                "my-workflow",
+                Array.Empty<object?>(),
+                new(id: $"wf-{Guid.NewGuid()}", taskQueue: $"tq-{Guid.NewGuid()}")
+                {
+                    TypedSearchAttributes = attrVals,
+                }));
+        Assert.Contains("no mapping defined", exc.Message);
+
+        // Confirm that when used in env with SAs it succeeds
+        await using var env2 = await WorkflowEnvironment.StartLocalAsync(
+            new() { SearchAttributes = attrs });
+        var handle = await env2.Client.StartWorkflowAsync(
+            "my-workflow",
+            Array.Empty<object?>(),
+            new(id: $"wf-{Guid.NewGuid()}", taskQueue: $"tq-{Guid.NewGuid()}")
+            {
+                TypedSearchAttributes = attrVals,
+            });
+        Assert.Equal(attrVals, (await handle.DescribeAsync()).TypedSearchAttributes);
     }
 }
