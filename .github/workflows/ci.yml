@@ -48,7 +48,7 @@ jobs:
         with:
           # Specific .NET version required because GitHub macos ARM image has
           # bad pre-installed .NET version
-          dotnet-version: ${{ matrix.dotNetVersionOverride || 6 }}
+          dotnet-version: ${{ matrix.dotNetVersionOverride || '6.x' }}
 
       - name: Install protoc
         uses: arduino/setup-protoc@v3
