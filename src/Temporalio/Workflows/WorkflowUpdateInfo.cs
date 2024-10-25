@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Temporalio.Workflows
 {
     /// <summary>
@@ -12,5 +14,15 @@ namespace Temporalio.Workflows
         string Id,
         string Name)
     {
+        /// <summary>
+        /// Creates the value that is set on
+        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> for the update handler.
+        /// </summary>
+        /// <returns>Scope.</returns>
+        internal Dictionary<string, object> CreateLoggerScope() => new()
+        {
+            ["UpdateId"] = Id,
+            ["UpdateName"] = Name,
+        };
     }
 }

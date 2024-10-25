@@ -126,6 +126,10 @@ namespace Temporalio.Activities
         {
             var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
                 throw new ArgumentException($"{method} missing Activity attribute");
+            if (method.ContainsGenericParameters)
+            {
+                throw new ArgumentException($"{method} contains generic parameters");
+            }
             var parms = method.GetParameters();
             return Create(
                 NameFromAttributed(method, attr),

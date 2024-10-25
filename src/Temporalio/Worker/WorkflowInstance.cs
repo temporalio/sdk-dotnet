@@ -900,183 +900,193 @@ namespace Temporalio.Worker
                 var ignored = Instance;
 
                 // Set the current update for the life of this task
-                CurrentUpdateInfoLocal.Value = new(Id: update.Id, Name: update.Name);
+                var updateInfo = new WorkflowUpdateInfo(Id: update.Id, Name: update.Name);
+                CurrentUpdateInfoLocal.Value = updateInfo;
 
-                // Find update definition or reject
-                var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
-                if (!updates.TryGetValue(update.Name, out var updateDefn))
+                // Put the entire update in the log scope
+                using (logger.BeginScope(updateInfo.CreateLoggerScope()))
                 {
-                    updateDefn = DynamicUpdate;
-                    if (updateDefn == null)
-                    {
-                        var knownUpdates = updates.Keys.OrderBy(k => k);
-                        var failure = new InvalidOperationException(
-                            $"Update handler for {update.Name} expected but not found, " +
-                            $"known updates: [{string.Join(" ", knownUpdates)}]");
-                        AddCommand(new()
-                        {
-                            UpdateResponse = new()
-                            {
-                                ProtocolInstanceId = update.ProtocolInstanceId,
-                                Rejected = failureConverter.ToFailure(failure, PayloadConverter),
-                            },
-                        });
-                        return Task.CompletedTask;
-                    }
-                }
-
-                // May be loaded inside validate after validator, maybe not
-                object?[]? argsForUpdate = null;
-                // We define this up here because there are multiple places it's called below
-                object?[] DecodeUpdateArgs() => DecodeArgs(
-                    method: updateDefn.Method ?? updateDefn.Delegate!.Method,
-                    payloads: update.Input,
-                    itemName: $"Update {update.Name}",
-                    dynamic: updateDefn.Dynamic,
-                    dynamicArgPrepend: update.Name);
-
-                // Do validation. Whether or not this runs a validator, this should accept/reject.
-                try
-                {
-                    if (update.RunValidator)
-                    {
-                        // We only call the validation interceptor if a validator is present. We are
-                        // not allowed to share the arguments. We do not share the arguments (i.e.
-                        // we re-convert) to prevent a user from mistakenly mutating an argument in
-                        // the validator. We call the interceptor only if a validator is present to
-                        // match other SDKs where doubly converting arguments here unnecessarily
-                        // (because of the no-reuse-argument rule above) causes performance issues
-                        // for them (even if they don't much for us).
-                        if (updateDefn.ValidatorMethod != null || updateDefn.ValidatorDelegate != null)
-                        {
-                            // Capture command count so we can ensure it is unchanged after call
-                            var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
-                            inbound.Value.ValidateUpdate(new(
-                                Id: update.Id,
-                                Update: update.Name,
-                                Definition: updateDefn,
-                                Args: DecodeUpdateArgs(),
-                                Headers: update.Headers));
-                            // If the command count changed, we need to issue a task failure
-                            var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
-                            if (origCmdCount != newCmdCount)
-                            {
-                                currentActivationException = new InvalidOperationException(
-                                    $"Update validator for {update.Name} created workflow commands");
-                                return Task.CompletedTask;
-                            }
-                        }
-
-                        // We want to try to decode args here _inside_ the validator rejection
-                        // try/catch so we can prevent acceptance on invalid args
-                        argsForUpdate = DecodeUpdateArgs();
-                    }
-
-                    // Send accepted
-                    AddCommand(new()
-                    {
-                        UpdateResponse = new()
-                        {
-                            ProtocolInstanceId = update.ProtocolInstanceId,
-                            Accepted = new(),
-                        },
-                    });
-                }
-                catch (Exception e)
-                {
-                    // Send rejected
-                    AddCommand(new()
-                    {
-                        UpdateResponse = new()
-                        {
-                            ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
-                        },
-                    });
-                    return Task.CompletedTask;
-                }
-
-                // Issue actual update. We are using ContinueWith instead of await here so that user
-                // code can run immediately. But the user code _or_ the task could fail so we need
-                // to reject in both cases.
-                try
-                {
-                    // If the args were not already decoded because we didn't run the validation
-                    // step, decode them here
-                    argsForUpdate ??= DecodeUpdateArgs();
-
-                    var task = inbound.Value.HandleUpdateAsync(new(
-                        Id: update.Id,
-                        Update: update.Name,
-                        Definition: updateDefn,
-                        Args: argsForUpdate,
-                        Headers: update.Headers));
-                    var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
-                        update.Name, update.Id, updateDefn.UnfinishedPolicy));
-                    return task.ContinueWith(
-                        _ =>
-                        {
-                            inProgressHandlers.Remove(inProgress);
-                            // If workflow failure exception, it's an update failure. If it's some
-                            // other exception, it's a task failure. Otherwise it's a success.
-                            var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
-                            // There are .NET cases where cancellation occurs but is not considered
-                            // an exception. We are going to make it an exception. Unfortunately
-                            // there is no easy way to make it include the outer stack trace at this
-                            // time.
-                            if (exc == null && task.IsCanceled)
-                            {
-                                exc = new TaskCanceledException();
-                            }
-                            if (exc != null && IsWorkflowFailureException(exc))
-                            {
-                                AddCommand(new()
-                                {
-                                    UpdateResponse = new()
-                                    {
-                                        ProtocolInstanceId = update.ProtocolInstanceId,
-                                        Rejected = failureConverter.ToFailure(exc, PayloadConverter),
-                                    },
-                                });
-                            }
-                            else if (task.Exception is { } taskExc)
-                            {
-                                // Fails the task
-                                currentActivationException =
-                                    taskExc.InnerExceptions.SingleOrDefault() ?? taskExc;
-                            }
-                            else
-                            {
-                                // Success, have to use reflection to extract value if it's a Task<>
-                                var taskType = task.GetType();
-                                var result = taskType.IsGenericType ?
-                                    taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
-                                AddCommand(new()
-                                {
-                                    UpdateResponse = new()
-                                    {
-                                        ProtocolInstanceId = update.ProtocolInstanceId,
-                                        Completed = PayloadConverter.ToPayload(result),
-                                    },
-                                });
-                            }
-                            return Task.CompletedTask;
-                        },
-                        this).Unwrap();
-                }
-                catch (FailureException e)
-                {
-                    AddCommand(new()
-                    {
-                        UpdateResponse = new()
-                        {
-                            ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
-                        },
-                    });
-                    return Task.CompletedTask;
+                    return ApplyDoUpdateAsync(update);
                 }
             });
+        }
+
+        private Task ApplyDoUpdateAsync(DoUpdate update)
+        {
+            // Find update definition or reject
+            var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
+            if (!updates.TryGetValue(update.Name, out var updateDefn))
+            {
+                updateDefn = DynamicUpdate;
+                if (updateDefn == null)
+                {
+                    var knownUpdates = updates.Keys.OrderBy(k => k);
+                    var failure = new InvalidOperationException(
+                        $"Update handler for {update.Name} expected but not found, " +
+                        $"known updates: [{string.Join(" ", knownUpdates)}]");
+                    AddCommand(new()
+                    {
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Rejected = failureConverter.ToFailure(failure, PayloadConverter),
+                        },
+                    });
+                    return Task.CompletedTask;
+                }
+            }
+
+            // May be loaded inside validate after validator, maybe not
+            object?[]? argsForUpdate = null;
+            // We define this up here because there are multiple places it's called below
+            object?[] DecodeUpdateArgs() => DecodeArgs(
+                method: updateDefn.Method ?? updateDefn.Delegate!.Method,
+                payloads: update.Input,
+                itemName: $"Update {update.Name}",
+                dynamic: updateDefn.Dynamic,
+                dynamicArgPrepend: update.Name);
+
+            // Do validation. Whether or not this runs a validator, this should accept/reject.
+            try
+            {
+                if (update.RunValidator)
+                {
+                    // We only call the validation interceptor if a validator is present. We are
+                    // not allowed to share the arguments. We do not share the arguments (i.e.
+                    // we re-convert) to prevent a user from mistakenly mutating an argument in
+                    // the validator. We call the interceptor only if a validator is present to
+                    // match other SDKs where doubly converting arguments here unnecessarily
+                    // (because of the no-reuse-argument rule above) causes performance issues
+                    // for them (even if they don't much for us).
+                    if (updateDefn.ValidatorMethod != null || updateDefn.ValidatorDelegate != null)
+                    {
+                        // Capture command count so we can ensure it is unchanged after call
+                        var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                        inbound.Value.ValidateUpdate(new(
+                            Id: update.Id,
+                            Update: update.Name,
+                            Definition: updateDefn,
+                            Args: DecodeUpdateArgs(),
+                            Headers: update.Headers));
+                        // If the command count changed, we need to issue a task failure
+                        var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                        if (origCmdCount != newCmdCount)
+                        {
+                            currentActivationException = new InvalidOperationException(
+                                $"Update validator for {update.Name} created workflow commands");
+                            return Task.CompletedTask;
+                        }
+                    }
+
+                    // We want to try to decode args here _inside_ the validator rejection
+                    // try/catch so we can prevent acceptance on invalid args
+                    argsForUpdate = DecodeUpdateArgs();
+                }
+
+                // Send accepted
+                AddCommand(new()
+                {
+                    UpdateResponse = new()
+                    {
+                        ProtocolInstanceId = update.ProtocolInstanceId,
+                        Accepted = new(),
+                    },
+                });
+            }
+            catch (Exception e)
+            {
+                // Send rejected
+                AddCommand(new()
+                {
+                    UpdateResponse = new()
+                    {
+                        ProtocolInstanceId = update.ProtocolInstanceId,
+                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                    },
+                });
+                return Task.CompletedTask;
+            }
+
+            // Issue actual update. We are using ContinueWith instead of await here so that user
+            // code can run immediately. But the user code _or_ the task could fail so we need
+            // to reject in both cases.
+            try
+            {
+                // If the args were not already decoded because we didn't run the validation
+                // step, decode them here
+                argsForUpdate ??= DecodeUpdateArgs();
+
+                var task = inbound.Value.HandleUpdateAsync(new(
+                    Id: update.Id,
+                    Update: update.Name,
+                    Definition: updateDefn,
+                    Args: argsForUpdate,
+                    Headers: update.Headers));
+                var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
+                    update.Name, update.Id, updateDefn.UnfinishedPolicy));
+                return task.ContinueWith(
+                    _ =>
+                    {
+                        inProgressHandlers.Remove(inProgress);
+                        // If workflow failure exception, it's an update failure. If it's some
+                        // other exception, it's a task failure. Otherwise it's a success.
+                        var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
+                        // There are .NET cases where cancellation occurs but is not considered
+                        // an exception. We are going to make it an exception. Unfortunately
+                        // there is no easy way to make it include the outer stack trace at this
+                        // time.
+                        if (exc == null && task.IsCanceled)
+                        {
+                            exc = new TaskCanceledException();
+                        }
+                        if (exc != null && IsWorkflowFailureException(exc))
+                        {
+                            AddCommand(new()
+                            {
+                                UpdateResponse = new()
+                                {
+                                    ProtocolInstanceId = update.ProtocolInstanceId,
+                                    Rejected = failureConverter.ToFailure(exc, PayloadConverter),
+                                },
+                            });
+                        }
+                        else if (task.Exception is { } taskExc)
+                        {
+                            // Fails the task
+                            currentActivationException =
+                                taskExc.InnerExceptions.SingleOrDefault() ?? taskExc;
+                        }
+                        else
+                        {
+                            // Success, have to use reflection to extract value if it's a Task<>
+                            var taskType = task.GetType();
+                            var result = taskType.IsGenericType ?
+                                taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
+                            AddCommand(new()
+                            {
+                                UpdateResponse = new()
+                                {
+                                    ProtocolInstanceId = update.ProtocolInstanceId,
+                                    Completed = PayloadConverter.ToPayload(result),
+                                },
+                            });
+                        }
+                        return Task.CompletedTask;
+                    },
+                    this).Unwrap();
+            }
+            catch (FailureException e)
+            {
+                AddCommand(new()
+                {
+                    UpdateResponse = new()
+                    {
+                        ProtocolInstanceId = update.ProtocolInstanceId,
+                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                    },
+                });
+                return Task.CompletedTask;
+            }
         }
 
         private void ApplyFireTimer(FireTimer fireTimer)
