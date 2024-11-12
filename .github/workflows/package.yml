@@ -30,7 +30,7 @@ jobs:
           - os: macos-intel
             out-file: libtemporal_sdk_bridge.dylib
             out-prefix: osx-x64
-            runsOn: macos-12
+            runsOn: macos-13
           - os: macos-arm
             out-file: libtemporal_sdk_bridge.dylib
             out-prefix: osx-arm64
@@ -137,7 +137,7 @@ jobs:
           - os: ubuntu-arm
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
           - os: macos-intel
-            runsOn: macos-12
+            runsOn: macos-13
           - os: macos-arm
             runsOn: macos-14
     runs-on: ${{ matrix.runsOn || matrix.os }}
