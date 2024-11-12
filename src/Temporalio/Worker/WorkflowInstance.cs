@@ -68,6 +68,7 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance> onTaskStarting;
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
+        private readonly bool disableEagerActivityExecution;
         private readonly Handlers inProgressHandlers = new();
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
@@ -189,6 +190,7 @@ namespace Temporalio.Worker
             Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
+            disableEagerActivityExecution = details.DisableEagerActivityExecution;
         }
 
         /// <summary>
@@ -1755,6 +1757,7 @@ namespace Temporalio.Worker
                             Arguments = { instance.PayloadConverter.ToPayloads(input.Args) },
                             RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                             CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
+                            DoNotEagerlyExecute = instance.disableEagerActivityExecution || input.Options.DisableEagerActivityExecution,
                         };
                         if (input.Headers is IDictionary<string, Payload> headers)
                         {
