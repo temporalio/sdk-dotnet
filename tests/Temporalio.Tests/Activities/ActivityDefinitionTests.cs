@@ -1,7 +1,6 @@
-using System.Reflection;
-
 namespace Temporalio.Tests.Activities;
 
+using System.Reflection;
 using System.Threading.Tasks;
 using Temporalio.Activities;
 using Temporalio.Converters;
