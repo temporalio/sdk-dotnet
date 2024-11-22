@@ -112,7 +112,7 @@ namespace Temporalio.Worker
                 try
                 {
                     var results = new List<WorkflowReplayResult>();
-                    await foreach (var history in histories)
+                    await foreach (var history in histories.ConfigureAwait(false))
                     {
                         // Run until complete or cancelled, throw if cancelled, yield if complete
                         var runTask = runner.RunWorkflowAsync(history);

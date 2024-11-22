@@ -9,6 +9,7 @@ using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Microsoft.Extensions.Logging;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
@@ -1362,7 +1363,7 @@ namespace Temporalio.Worker
 
         private object?[] DecodeArgs(
             MethodInfo method,
-            IReadOnlyCollection<Payload> payloads,
+            RepeatedField<Payload> payloads,
             string itemName,
             bool dynamic,
             string? dynamicArgPrepend = null)
