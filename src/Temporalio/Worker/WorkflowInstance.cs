@@ -9,6 +9,7 @@ using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Microsoft.Extensions.Logging;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
@@ -68,6 +69,7 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance> onTaskStarting;
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
+        private readonly bool disableEagerActivityExecution;
         private readonly Handlers inProgressHandlers = new();
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
@@ -189,6 +191,7 @@ namespace Temporalio.Worker
             Random = new(details.Start.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
+            disableEagerActivityExecution = details.DisableEagerActivityExecution;
         }
 
         /// <summary>
@@ -1360,7 +1363,7 @@ namespace Temporalio.Worker
 
         private object?[] DecodeArgs(
             MethodInfo method,
-            IReadOnlyCollection<Payload> payloads,
+            RepeatedField<Payload> payloads,
             string itemName,
             bool dynamic,
             string? dynamicArgPrepend = null)
@@ -1755,6 +1758,7 @@ namespace Temporalio.Worker
                             Arguments = { instance.PayloadConverter.ToPayloads(input.Args) },
                             RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                             CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
+                            DoNotEagerlyExecute = instance.disableEagerActivityExecution || input.Options.DisableEagerActivityExecution,
                         };
                         if (input.Headers is IDictionary<string, Payload> headers)
                         {

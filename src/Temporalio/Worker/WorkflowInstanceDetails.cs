@@ -26,6 +26,7 @@ namespace Temporalio.Worker
     /// <param name="OnTaskCompleted">Callback for every instance task complete.</param>
     /// <param name="RuntimeMetricMeter">Lazy runtime-level metric meter.</param>
     /// <param name="WorkerLevelFailureExceptionTypes">Failure exception types at worker level.</param>
+    /// <param name="DisableEagerActivityExecution">Whether to disable eager at the worker level.</param>
     internal record WorkflowInstanceDetails(
         string Namespace,
         string TaskQueue,
@@ -41,5 +42,6 @@ namespace Temporalio.Worker
         Action<WorkflowInstance> OnTaskStarting,
         Action<WorkflowInstance, Exception?> OnTaskCompleted,
         Lazy<MetricMeter> RuntimeMetricMeter,
-        IReadOnlyCollection<Type>? WorkerLevelFailureExceptionTypes);
+        IReadOnlyCollection<Type>? WorkerLevelFailureExceptionTypes,
+        bool DisableEagerActivityExecution);
 }
