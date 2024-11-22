@@ -284,6 +284,21 @@ namespace Temporalio.Worker
         public WorkerTuner? Tuner { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether eager activity executions will be disabled from
+        /// a workflow.
+        /// </summary>
+        /// <remarks>
+        /// Eager activity execution is an optimization on some servers that sends activities back
+        /// to the same worker as the calling workflow if they can run there.
+        /// </remarks>
+        /// <remarks>
+        /// This should be set to <c>true</c> for <see cref="MaxTaskQueueActivitiesPerSecond" /> to
+        /// work and in a future version of this API may be implied as such (i.e. this setting will
+        /// be ignored if that setting is set).
+        /// </remarks>
+        public bool DisableEagerActivityExecution { get; set; }
+
+        /// <summary>
         /// Gets the TEMPORAL_DEBUG environment variable.
         /// </summary>
         internal static string? DebugModeEnvironmentVariable { get; } = Environment.GetEnvironmentVariable("TEMPORAL_DEBUG");
