@@ -62,7 +62,7 @@ cmd.SetHandler(async ctx =>
             MaxConcurrentActivities = maxConcurrent,
         }.
             AddActivity(BenchActivities.BenchActivity).
-            AddWorkflow(typeof(BenchWorkflow)));
+            AddWorkflow<BenchWorkflow>());
     using var cancelSource = CancellationTokenSource.CreateLinkedTokenSource(ctx.GetCancellationToken());
     var workerTask = Task.Run(() => worker.ExecuteAsync(cancelSource.Token));
 

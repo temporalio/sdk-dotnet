@@ -545,7 +545,7 @@ namespace Temporalio.Client
                 };
             }
             var events = new List<HistoryEvent>();
-            await foreach (var evt in FetchHistoryEventsAsync(eventFetchOptions))
+            await foreach (var evt in FetchHistoryEventsAsync(eventFetchOptions).ConfigureAwait(false))
             {
                 events.Add(evt);
             }
