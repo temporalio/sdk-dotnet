@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Temporalio.Tests.Activities;
 
 using System.Threading.Tasks;
@@ -171,6 +173,40 @@ public class ActivityDefinitionTests
             typeof(GoodActivityGeneric<string>),
             new GoodActivityGeneric<string>("some-val")).Single();
         Assert.Equal("some-val", await defn.InvokeAsync(Array.Empty<object?>()));
+    }
+
+    [Fact]
+    public async Task Create_WithMethodInfo_HasValidMethodInfo()
+    {
+        var methodInfo = typeof(ActivityDefinitionTests)
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+            .Single(mi => mi.Name.Equals(nameof(GoodAct1Async), StringComparison.Ordinal));
+
+        var defn = ActivityDefinition.Create(methodInfo, objects => methodInfo!.Invoke(this, objects));
+        Assert.Equal(methodInfo, defn.MethodInfo);
+    }
+
+    [Fact]
+    public async Task Create_WithDelegate_HasValidMethodInfo()
+    {
+        var methodInfo = typeof(ActivityDefinitionTests)
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+            .Single(mi => mi.Name.Equals(nameof(GoodAct1Async), StringComparison.Ordinal));
+
+        var defn = ActivityDefinition.Create(GoodAct1Async);
+        Assert.Equal(methodInfo, defn.MethodInfo);
+    }
+
+    [Fact]
+    public async Task Create_WithLambda_DoesNotHaveValidMethodInfo()
+    {
+        var defn = ActivityDefinition.Create(
+            "some-name",
+            typeof(int),
+            new Type[] { typeof(int) },
+            1,
+            parameters => ((int)parameters[0]!) + 5);
+        Assert.Null(defn.MethodInfo);
     }
 
     protected static void BadAct1()
