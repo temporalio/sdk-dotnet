@@ -45,6 +45,13 @@ namespace Temporalio.Bridge.Interop
         Health,
     }
 
+    internal enum SlotKindType
+    {
+        WorkflowSlotKindType,
+        ActivitySlotKindType,
+        LocalActivitySlotKindType,
+    }
+
     internal partial struct CancellationToken
     {
     }
@@ -551,17 +558,118 @@ namespace Temporalio.Bridge.Interop
         public ResourceBasedTunerOptions tuner_options;
     }
 
+    internal unsafe partial struct CustomSlotSupplier_WorkflowSlotKind
+    {
+        [NativeTypeName("const void *")]
+        public void* csharp_obj;
+    }
+
+    internal unsafe partial struct CustomSlotSupplier_ActivitySlotKind
+    {
+        [NativeTypeName("const void *")]
+        public void* csharp_obj;
+    }
+
+    internal unsafe partial struct CustomSlotSupplier_LocalActivitySlotKind
+    {
+        [NativeTypeName("const void *")]
+        public void* csharp_obj;
+    }
+
+    internal enum CustomSlotSupplierOfType_Tag
+    {
+        WorkflowCustomSlotSupplier,
+        ActivityCustomSlotSupplier,
+        LocalActivityCustomSlotSupplier,
+    }
+
+    internal unsafe partial struct CustomSlotSupplierOfType
+    {
+        public CustomSlotSupplierOfType_Tag tag;
+
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L406_C3")]
+        public _Anonymous_e__Union Anonymous;
+
+        internal ref CustomSlotSupplier_WorkflowSlotKind workflow_custom_slot_supplier
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
+                {
+                    return ref pField->workflow_custom_slot_supplier;
+                }
+            }
+        }
+
+        internal ref CustomSlotSupplier_ActivitySlotKind activity_custom_slot_supplier
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
+                {
+                    return ref pField->activity_custom_slot_supplier;
+                }
+            }
+        }
+
+        internal ref CustomSlotSupplier_LocalActivitySlotKind local_activity_custom_slot_supplier
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                {
+                    return ref pField->local_activity_custom_slot_supplier;
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        internal unsafe partial struct _Anonymous_e__Union
+        {
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L407_C5")]
+            public _Anonymous1_e__Struct Anonymous1;
+
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L410_C5")]
+            public _Anonymous2_e__Struct Anonymous2;
+
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L413_C5")]
+            public _Anonymous3_e__Struct Anonymous3;
+
+            internal partial struct _Anonymous1_e__Struct
+            {
+                [NativeTypeName("struct CustomSlotSupplier_WorkflowSlotKind")]
+                public CustomSlotSupplier_WorkflowSlotKind workflow_custom_slot_supplier;
+            }
+
+            internal partial struct _Anonymous2_e__Struct
+            {
+                [NativeTypeName("struct CustomSlotSupplier_ActivitySlotKind")]
+                public CustomSlotSupplier_ActivitySlotKind activity_custom_slot_supplier;
+            }
+
+            internal partial struct _Anonymous3_e__Struct
+            {
+                [NativeTypeName("struct CustomSlotSupplier_LocalActivitySlotKind")]
+                public CustomSlotSupplier_LocalActivitySlotKind local_activity_custom_slot_supplier;
+            }
+        }
+    }
+
     internal enum SlotSupplier_Tag
     {
         FixedSize,
         ResourceBased,
+        Custom,
     }
 
     internal unsafe partial struct SlotSupplier
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L387_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L427_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -586,16 +694,31 @@ namespace Temporalio.Bridge.Interop
             }
         }
 
+        internal ref CustomSlotSupplierOfType custom
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                {
+                    return ref pField->custom;
+                }
+            }
+        }
+
         [StructLayout(LayoutKind.Explicit)]
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L388_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L428_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L391_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L431_C5")]
             public _Anonymous2_e__Struct Anonymous2;
+
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L434_C5")]
+            public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct
             {
@@ -607,6 +730,12 @@ namespace Temporalio.Bridge.Interop
             {
                 [NativeTypeName("struct ResourceBasedSlotSupplier")]
                 public ResourceBasedSlotSupplier resource_based;
+            }
+
+            internal partial struct _Anonymous3_e__Struct
+            {
+                [NativeTypeName("struct CustomSlotSupplierOfType")]
+                public CustomSlotSupplierOfType custom;
             }
         }
     }
@@ -711,6 +840,124 @@ namespace Temporalio.Bridge.Interop
     {
         [NativeTypeName("const struct ByteArray *")]
         public ByteArray* fail;
+    }
+
+    internal partial struct SlotReserveCtx
+    {
+        [NativeTypeName("enum SlotKindType")]
+        public SlotKindType slot_type;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef task_queue;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef worker_identity;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef worker_build_id;
+
+        [NativeTypeName("bool")]
+        public byte is_sticky;
+    }
+
+    internal enum SlotInfo_Tag
+    {
+        WorkflowSlotInfo,
+        ActivitySlotInfo,
+        LocalActivitySlotInfo,
+    }
+
+    internal partial struct WorkflowSlotInfo_Body
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef workflow_type;
+
+        [NativeTypeName("bool")]
+        public byte is_sticky;
+    }
+
+    internal partial struct ActivitySlotInfo_Body
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef activity_type;
+    }
+
+    internal partial struct LocalActivitySlotInfo_Body
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef activity_type;
+    }
+
+    internal unsafe partial struct SlotInfo
+    {
+        public SlotInfo_Tag tag;
+
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L525_C3")]
+        public _Anonymous_e__Union Anonymous;
+
+        internal ref WorkflowSlotInfo_Body workflow_slot_info
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union* pField = &Anonymous)
+                {
+                    return ref pField->workflow_slot_info;
+                }
+            }
+        }
+
+        internal ref ActivitySlotInfo_Body activity_slot_info
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union* pField = &Anonymous)
+                {
+                    return ref pField->activity_slot_info;
+                }
+            }
+        }
+
+        internal ref LocalActivitySlotInfo_Body local_activity_slot_info
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union* pField = &Anonymous)
+                {
+                    return ref pField->local_activity_slot_info;
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        internal partial struct _Anonymous_e__Union
+        {
+            [FieldOffset(0)]
+            public WorkflowSlotInfo_Body workflow_slot_info;
+
+            [FieldOffset(0)]
+            public ActivitySlotInfo_Body activity_slot_info;
+
+            [FieldOffset(0)]
+            public LocalActivitySlotInfo_Body local_activity_slot_info;
+        }
+    }
+
+    internal partial struct SlotMarkUsedCtx
+    {
+        [NativeTypeName("struct SlotInfo")]
+        public SlotInfo slot_info;
+
+        [NativeTypeName("bool")]
+        public byte slot_permit;
+    }
+
+    internal unsafe partial struct SlotReleaseCtx
+    {
+        [NativeTypeName("const struct SlotInfo *")]
+        public SlotInfo* slot_info;
+
+        [NativeTypeName("bool")]
+        public byte slot_permit;
     }
 
     internal static unsafe partial class Methods
@@ -877,5 +1124,17 @@ namespace Temporalio.Bridge.Interop
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct WorkerReplayPushResult")]
         public static extern WorkerReplayPushResult worker_replay_push([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct WorkerReplayPusher *")] WorkerReplayPusher* worker_replay_pusher, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef workflow_id, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef history);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ReserveSlot([NativeTypeName("const void *")] void* csharp_obj, [NativeTypeName("struct SlotReserveCtx")] SlotReserveCtx ctx);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void TryReserveSlot([NativeTypeName("const void *")] void* csharp_obj, [NativeTypeName("struct SlotReserveCtx")] SlotReserveCtx ctx);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void MarkSlotUsed([NativeTypeName("const void *")] void* csharp_obj, [NativeTypeName("struct SlotMarkUsedCtx")] SlotMarkUsedCtx ctx);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void ReleaseSlot([NativeTypeName("const void *")] void* csharp_obj, [NativeTypeName("struct SlotReleaseCtx")] SlotReleaseCtx ctx);
     }
 }

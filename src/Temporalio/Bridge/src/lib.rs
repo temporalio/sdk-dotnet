@@ -105,6 +105,18 @@ impl ByteArrayRef {
     }
 }
 
+impl From<&str> for ByteArrayRef {
+    fn from(s: &str) -> ByteArrayRef {
+        ByteArrayRef::from_str(s)
+    }
+}
+
+impl From<String> for ByteArrayRef {
+    fn from(s: String) -> ByteArrayRef {
+        ByteArrayRef::from_string(&s)
+    }
+}
+
 #[repr(C)]
 pub struct ByteArrayRefArray {
     data: *const ByteArrayRef,

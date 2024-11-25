@@ -42,6 +42,12 @@ typedef enum RpcService {
   Health,
 } RpcService;
 
+typedef enum SlotKindType {
+  WorkflowSlotKindType,
+  ActivitySlotKindType,
+  LocalActivitySlotKindType,
+} SlotKindType;
+
 typedef struct CancellationToken CancellationToken;
 
 typedef struct Client Client;
@@ -377,9 +383,43 @@ typedef struct ResourceBasedSlotSupplier {
   struct ResourceBasedTunerOptions tuner_options;
 } ResourceBasedSlotSupplier;
 
+typedef struct CustomSlotSupplier_WorkflowSlotKind {
+  const void *csharp_obj;
+} CustomSlotSupplier_WorkflowSlotKind;
+
+typedef struct CustomSlotSupplier_ActivitySlotKind {
+  const void *csharp_obj;
+} CustomSlotSupplier_ActivitySlotKind;
+
+typedef struct CustomSlotSupplier_LocalActivitySlotKind {
+  const void *csharp_obj;
+} CustomSlotSupplier_LocalActivitySlotKind;
+
+typedef enum CustomSlotSupplierOfType_Tag {
+  WorkflowCustomSlotSupplier,
+  ActivityCustomSlotSupplier,
+  LocalActivityCustomSlotSupplier,
+} CustomSlotSupplierOfType_Tag;
+
+typedef struct CustomSlotSupplierOfType {
+  CustomSlotSupplierOfType_Tag tag;
+  union {
+    struct {
+      struct CustomSlotSupplier_WorkflowSlotKind workflow_custom_slot_supplier;
+    };
+    struct {
+      struct CustomSlotSupplier_ActivitySlotKind activity_custom_slot_supplier;
+    };
+    struct {
+      struct CustomSlotSupplier_LocalActivitySlotKind local_activity_custom_slot_supplier;
+    };
+  };
+} CustomSlotSupplierOfType;
+
 typedef enum SlotSupplier_Tag {
   FixedSize,
   ResourceBased,
+  Custom,
 } SlotSupplier_Tag;
 
 typedef struct SlotSupplier {
@@ -390,6 +430,9 @@ typedef struct SlotSupplier {
     };
     struct {
       struct ResourceBasedSlotSupplier resource_based;
+    };
+    struct {
+      struct CustomSlotSupplierOfType custom;
     };
   };
 } SlotSupplier;
@@ -449,6 +492,52 @@ typedef struct WorkerReplayerOrFail {
 typedef struct WorkerReplayPushResult {
   const struct ByteArray *fail;
 } WorkerReplayPushResult;
+
+typedef struct SlotReserveCtx {
+  enum SlotKindType slot_type;
+  struct ByteArrayRef task_queue;
+  struct ByteArrayRef worker_identity;
+  struct ByteArrayRef worker_build_id;
+  bool is_sticky;
+} SlotReserveCtx;
+
+typedef enum SlotInfo_Tag {
+  WorkflowSlotInfo,
+  ActivitySlotInfo,
+  LocalActivitySlotInfo,
+} SlotInfo_Tag;
+
+typedef struct WorkflowSlotInfo_Body {
+  struct ByteArrayRef workflow_type;
+  bool is_sticky;
+} WorkflowSlotInfo_Body;
+
+typedef struct ActivitySlotInfo_Body {
+  struct ByteArrayRef activity_type;
+} ActivitySlotInfo_Body;
+
+typedef struct LocalActivitySlotInfo_Body {
+  struct ByteArrayRef activity_type;
+} LocalActivitySlotInfo_Body;
+
+typedef struct SlotInfo {
+  SlotInfo_Tag tag;
+  union {
+    WorkflowSlotInfo_Body workflow_slot_info;
+    ActivitySlotInfo_Body activity_slot_info;
+    LocalActivitySlotInfo_Body local_activity_slot_info;
+  };
+} SlotInfo;
+
+typedef struct SlotMarkUsedCtx {
+  struct SlotInfo slot_info;
+  bool slot_permit;
+} SlotMarkUsedCtx;
+
+typedef struct SlotReleaseCtx {
+  const struct SlotInfo *slot_info;
+  bool slot_permit;
+} SlotReleaseCtx;
 
 #ifdef __cplusplus
 extern "C" {
@@ -607,6 +696,14 @@ struct WorkerReplayPushResult worker_replay_push(struct Worker *worker,
                                                  struct WorkerReplayPusher *worker_replay_pusher,
                                                  struct ByteArrayRef workflow_id,
                                                  struct ByteArrayRef history);
+
+extern void ReserveSlot(const void *csharp_obj, struct SlotReserveCtx ctx);
+
+extern void TryReserveSlot(const void *csharp_obj, struct SlotReserveCtx ctx);
+
+extern void MarkSlotUsed(const void *csharp_obj, struct SlotMarkUsedCtx ctx);
+
+extern void ReleaseSlot(const void *csharp_obj, struct SlotReleaseCtx ctx);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -111,4 +111,45 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         });
         Assert.Contains("Cannot set both Tuner and any of", argumentException.Message);
     }
+
+    class MySlotSupplier : ICustomSlotSupplier
+    {
+        public Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SlotPermit? TryReserveSlot(SlotReserveContext ctx)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void MarkSlotUsed(SlotMarkUsedContext ctx)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ReleaseSlot(SlotReleaseContext ctx)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Fact]
+    public async Task CanRunWith_CustomSlotSupplier()
+    {
+        var mySlotSupplier = new MySlotSupplier();
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            {
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier),
+            }.AddWorkflow<SimpleWorkflow>().AddActivity(SimpleWorkflow.SomeActivity));
+        await worker.ExecuteAsync(async () =>
+        {
+            await Env.Client.ExecuteWorkflowAsync(
+                (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        });
+    }
 }

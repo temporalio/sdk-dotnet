@@ -12,7 +12,15 @@ use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollActivityError;
 use temporal_sdk_core_api::errors::PollWfError;
 use temporal_sdk_core_api::errors::WorkflowErrorType;
+use temporal_sdk_core_api::worker::ActivitySlotKind;
+use temporal_sdk_core_api::worker::LocalActivitySlotKind;
+use temporal_sdk_core_api::worker::SlotInfoTrait;
 use temporal_sdk_core_api::worker::SlotKind;
+use temporal_sdk_core_api::worker::SlotMarkUsedContext;
+use temporal_sdk_core_api::worker::SlotReleaseContext;
+use temporal_sdk_core_api::worker::SlotReservationContext;
+use temporal_sdk_core_api::worker::SlotSupplierPermit;
+use temporal_sdk_core_api::worker::WorkflowSlotKind;
 use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
@@ -61,6 +69,7 @@ pub struct TunerHolder {
 pub enum SlotSupplier {
     FixedSize(FixedSizeSlotSupplier),
     ResourceBased(ResourceBasedSlotSupplier),
+    Custom(CustomSlotSupplierOfType),
 }
 
 #[repr(C)]
@@ -76,6 +85,205 @@ pub struct ResourceBasedSlotSupplier {
     maximum_slots: usize,
     ramp_throttle_ms: u64,
     tuner_options: ResourceBasedTunerOptions,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub enum CustomSlotSupplierOfType {
+    WorkflowCustomSlotSupplier(CustomSlotSupplier<WorkflowSlotKind>),
+    ActivityCustomSlotSupplier(CustomSlotSupplier<ActivitySlotKind>),
+    LocalActivityCustomSlotSupplier(CustomSlotSupplier<LocalActivitySlotKind>),
+}
+
+impl CustomSlotSupplierOfType {
+    // TODO: This is kinda weird
+    fn into_ss<SK: SlotKind + Send + Sync + 'static>(
+        self,
+    ) -> Arc<dyn temporal_sdk_core_api::worker::SlotSupplier<SlotKind = SK> + Send + Sync + 'static>
+    {
+        Arc::new(match self {
+            CustomSlotSupplierOfType::WorkflowCustomSlotSupplier(s) => CustomSlotSupplier {
+                csharp_obj: s.csharp_obj,
+                _pd: Default::default(),
+            },
+            CustomSlotSupplierOfType::ActivityCustomSlotSupplier(s) => CustomSlotSupplier {
+                csharp_obj: s.csharp_obj,
+                _pd: Default::default(),
+            },
+            CustomSlotSupplierOfType::LocalActivityCustomSlotSupplier(s) => CustomSlotSupplier {
+                csharp_obj: s.csharp_obj,
+                _pd: Default::default(),
+            },
+        })
+    }
+}
+
+// For reasons that aren't immediately clear to me the generic parameter is also required to
+// implement PartialEq, even though `PhantomData` will always implement it just fine, so we have
+// this manual implementation.
+impl PartialEq for CustomSlotSupplierOfType {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (
+                CustomSlotSupplierOfType::WorkflowCustomSlotSupplier(a),
+                CustomSlotSupplierOfType::WorkflowCustomSlotSupplier(b),
+            ) => a.csharp_obj == b.csharp_obj,
+            (
+                CustomSlotSupplierOfType::ActivityCustomSlotSupplier(a),
+                CustomSlotSupplierOfType::ActivityCustomSlotSupplier(b),
+            ) => a.csharp_obj == b.csharp_obj,
+            (
+                CustomSlotSupplierOfType::LocalActivityCustomSlotSupplier(a),
+                CustomSlotSupplierOfType::LocalActivityCustomSlotSupplier(b),
+            ) => a.csharp_obj == b.csharp_obj,
+            _ => false,
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, PartialEq)]
+pub struct CustomSlotSupplier<SK> {
+    csharp_obj: *const libc::c_void,
+    _pd: std::marker::PhantomData<SK>,
+}
+
+unsafe impl<SK> Send for CustomSlotSupplier<SK> {}
+unsafe impl<SK> Sync for CustomSlotSupplier<SK> {}
+
+#[repr(C)]
+pub enum SlotKindType {
+    WorkflowSlotKindType,
+    ActivitySlotKindType,
+    LocalActivitySlotKindType,
+}
+
+#[repr(C)]
+pub struct SlotReserveCtx {
+    slot_type: SlotKindType,
+    task_queue: ByteArrayRef,
+    worker_identity: ByteArrayRef,
+    worker_build_id: ByteArrayRef,
+    is_sticky: bool,
+}
+
+#[repr(C)]
+pub enum SlotInfo {
+    WorkflowSlotInfo {
+        workflow_type: ByteArrayRef,
+        is_sticky: bool,
+    },
+    ActivitySlotInfo {
+        activity_type: ByteArrayRef,
+    },
+    LocalActivitySlotInfo {
+        activity_type: ByteArrayRef,
+    },
+}
+
+#[repr(C)]
+pub struct SlotMarkUsedCtx {
+    slot_info: SlotInfo,
+    slot_permit: bool,
+}
+
+#[repr(C)]
+pub struct SlotReleaseCtx {
+    slot_info: *const SlotInfo,
+    slot_permit: bool,
+}
+
+#[async_trait::async_trait]
+impl<SK: SlotKind + Send + Sync> temporal_sdk_core_api::worker::SlotSupplier
+    for CustomSlotSupplier<SK>
+{
+    type SlotKind = SK;
+
+    async fn reserve_slot(&self, ctx: &dyn SlotReservationContext) -> SlotSupplierPermit {
+        let ctx = Self::convert_reserve_ctx(ctx);
+        unsafe {
+            ReserveSlot(self.csharp_obj, ctx);
+        }
+        unimplemented!()
+    }
+
+    fn try_reserve_slot(&self, ctx: &dyn SlotReservationContext) -> Option<SlotSupplierPermit> {
+        let ctx = Self::convert_reserve_ctx(ctx);
+        unsafe {
+            TryReserveSlot(self.csharp_obj, ctx);
+        }
+        unimplemented!()
+    }
+
+    fn mark_slot_used(&self, ctx: &dyn SlotMarkUsedContext<SlotKind = Self::SlotKind>) {
+        let ctx = SlotMarkUsedCtx {
+            slot_info: Self::convert_slot_info(ctx.info().downcast()),
+            slot_permit: false,
+        };
+        unsafe {
+            MarkSlotUsed(self.csharp_obj, ctx);
+        }
+        unimplemented!()
+    }
+
+    fn release_slot(&self, ctx: &dyn SlotReleaseContext<SlotKind = Self::SlotKind>) {
+        let mut info_ptr = std::ptr::null();
+        let converted_slot_info = ctx.info().map(|i| Self::convert_slot_info(i.downcast()));
+        if let Some(ref converted) = converted_slot_info {
+            info_ptr = converted;
+        }
+        let ctx = SlotReleaseCtx {
+            slot_info: info_ptr,
+            slot_permit: false,
+        };
+        unsafe {
+            ReleaseSlot(self.csharp_obj, ctx);
+        }
+        unimplemented!()
+    }
+
+    fn available_slots(&self) -> Option<usize> {
+        None
+    }
+}
+
+impl<SK: SlotKind + Send + Sync> CustomSlotSupplier<SK> {
+    fn convert_reserve_ctx(ctx: &dyn SlotReservationContext) -> SlotReserveCtx {
+        SlotReserveCtx {
+            slot_type: match SK::kind() {
+                temporal_sdk_core_api::worker::SlotKindType::Workflow => {
+                    SlotKindType::WorkflowSlotKindType
+                }
+                temporal_sdk_core_api::worker::SlotKindType::Activity => {
+                    SlotKindType::ActivitySlotKindType
+                }
+                temporal_sdk_core_api::worker::SlotKindType::LocalActivity => {
+                    SlotKindType::LocalActivitySlotKindType
+                }
+            },
+            task_queue: ctx.task_queue().into(),
+            worker_identity: ctx.worker_identity().into(),
+            worker_build_id: ctx.worker_build_id().into(),
+            is_sticky: ctx.is_sticky(),
+        }
+    }
+
+    fn convert_slot_info(info: temporal_sdk_core_api::worker::SlotInfo) -> SlotInfo {
+        match info {
+            temporal_sdk_core_api::worker::SlotInfo::Workflow(w) => SlotInfo::WorkflowSlotInfo {
+                workflow_type: w.workflow_type.clone().into(),
+                is_sticky: w.is_sticky,
+            },
+            temporal_sdk_core_api::worker::SlotInfo::Activity(a) => SlotInfo::ActivitySlotInfo {
+                activity_type: a.activity_type.clone().into(),
+            },
+            temporal_sdk_core_api::worker::SlotInfo::LocalActivity(a) => {
+                SlotInfo::LocalActivitySlotInfo {
+                    activity_type: a.activity_type.clone().into(),
+                }
+            }
+        }
+    }
 }
 
 #[repr(C)]
@@ -538,6 +746,13 @@ pub extern "C" fn worker_replay_push(
     }
 }
 
+extern "C" {
+    pub fn ReserveSlot(csharp_obj: *const libc::c_void, ctx: SlotReserveCtx);
+    pub fn TryReserveSlot(csharp_obj: *const libc::c_void, ctx: SlotReserveCtx);
+    pub fn MarkSlotUsed(csharp_obj: *const libc::c_void, ctx: SlotMarkUsedCtx);
+    pub fn ReleaseSlot(csharp_obj: *const libc::c_void, ctx: SlotReleaseCtx);
+}
+
 impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
     type Error = anyhow::Error;
 
@@ -663,7 +878,9 @@ impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
     }
 }
 
-impl<SK: SlotKind> TryFrom<SlotSupplier> for temporal_sdk_core::SlotSupplierOptions<SK> {
+impl<SK: SlotKind + Send + Sync + 'static> TryFrom<SlotSupplier>
+    for temporal_sdk_core::SlotSupplierOptions<SK>
+{
     type Error = anyhow::Error;
 
     fn try_from(
@@ -681,6 +898,9 @@ impl<SK: SlotKind> TryFrom<SlotSupplier> for temporal_sdk_core::SlotSupplierOpti
                         Duration::from_millis(ss.ramp_throttle_ms),
                     ),
                 )
+            }
+            SlotSupplier::Custom(cs) => {
+                temporal_sdk_core::SlotSupplierOptions::Custom(cs.into_ss())
             }
         })
     }
