@@ -9,12 +9,25 @@ namespace Temporalio.Worker.Tuning
     public class SlotMarkUsedContext
     {
         /// <summary>
-        /// Info about the task that will be using the slot.
+        /// Initializes a new instance of the <see cref="SlotMarkUsedContext"/> class.
+        /// </summary>
+        /// <param name="ctx">The bridge version of the slot mark used context.</param>
+        internal SlotMarkUsedContext(Temporalio.Bridge.Interop.SlotMarkUsedCtx ctx)
+        {
+            this.SlotInfo = SlotInfo.FromBridge(ctx.slot_info);
+            unsafe
+            {
+                this.Permit = SlotPermit.FromPointer(ctx.slot_permit);
+            }
+        }
+
+        /// <summary>
+        /// Gets info about the task that will be using the slot.
         /// </summary>
         public SlotInfo SlotInfo { get; }
 
         /// <summary>
-        /// The permit that was issued when the slot was reserved.
+        /// Gets the permit that was issued when the slot was reserved.
         /// </summary>
         public SlotPermit Permit { get; }
     }

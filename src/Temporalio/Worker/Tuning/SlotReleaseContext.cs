@@ -9,12 +9,25 @@ namespace Temporalio.Worker.Tuning
     public class SlotReleaseContext
     {
         /// <summary>
-        /// Info about the task that will be using the slot. May be null if the slot was never used.
+        /// Initializes a new instance of the <see cref="SlotReleaseContext"/> class.
+        /// </summary>
+        /// <param name="ctx">The bridge version of the slot release context.</param>
+        internal SlotReleaseContext(Temporalio.Bridge.Interop.SlotReleaseCtx ctx)
+        {
+            unsafe
+            {
+                this.SlotInfo = ctx.slot_info is null ? null : SlotInfo.FromBridge(*ctx.slot_info);
+                this.Permit = SlotPermit.FromPointer(ctx.slot_permit);
+            }
+        }
+
+        /// <summary>
+        /// Gets info about the task that will be using the slot. May be null if the slot was never used.
         /// </summary>
         public SlotInfo? SlotInfo { get; }
 
         /// <summary>
-        /// The permit that was issued when the slot was reserved.
+        /// Gets the permit that was issued when the slot was reserved.
         /// </summary>
         public SlotPermit Permit { get; }
     }

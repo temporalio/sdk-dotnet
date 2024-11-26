@@ -602,10 +602,21 @@ namespace Temporalio.Bridge
                     },
                 };
             }
+            else if (supplier is Temporalio.Worker.Tuning.ICustomSlotSupplier custom)
+            {
+                var wrapped = new CustomSlotSupplier(custom);
+                unsafe
+                {
+                    return new()
+                    {
+                        tag = Interop.SlotSupplier_Tag.Custom,
+                        custom = new Interop.CustomSlotSupplierCallbacksImpl() { _0 = wrapped.Ptr },
+                    };
+                }
+            }
             else
             {
-                throw new ArgumentException(
-                    "ISlotSupplier must be one of the types provided by the library");
+                throw new ArgumentException("ISlotSupplier is an invalid type");
             }
         }
 

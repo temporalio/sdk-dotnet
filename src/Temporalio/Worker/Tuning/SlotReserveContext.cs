@@ -1,3 +1,5 @@
+using Temporalio.Bridge;
+
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
@@ -9,28 +11,47 @@ namespace Temporalio.Worker.Tuning
     public class SlotReserveContext
     {
         /// <summary>
-        /// Gets or sets the type of slot trying to be reserved. Always one of "workflow", "activity", or "local-activity".
+        /// Initializes a new instance of the <see cref="SlotReserveContext"/> class.
         /// </summary>
-        public SlotType SlotType { get; set; }
+        /// <param name="ctx">The bridge version of the slot reserve context.</param>
+        internal SlotReserveContext(Temporalio.Bridge.Interop.SlotReserveCtx ctx)
+        {
+            this.SlotType = ctx.slot_type switch
+            {
+                Temporalio.Bridge.Interop.SlotKindType.WorkflowSlotKindType => SlotType.Workflow,
+                Temporalio.Bridge.Interop.SlotKindType.ActivitySlotKindType => SlotType.Activity,
+                Temporalio.Bridge.Interop.SlotKindType.LocalActivitySlotKindType => SlotType.LocalActivity,
+                _ => throw new System.ArgumentOutOfRangeException(nameof(ctx)),
+            };
+            this.TaskQueue = ByteArrayRef.ToUtf8(ctx.task_queue);
+            this.WorkerIdentity = ByteArrayRef.ToUtf8(ctx.worker_identity);
+            this.WorkerBuildId = ByteArrayRef.ToUtf8(ctx.worker_build_id);
+            this.IsSticky = ctx.is_sticky != 0;
+        }
 
         /// <summary>
-        /// Gets or sets the name of the task queue for which this reservation request is associated.
+        /// Gets the type of slot trying to be reserved. Always one of "workflow", "activity", or "local-activity".
         /// </summary>
-        public string TaskQueue { get; set; }
+        public SlotType SlotType { get; }
 
         /// <summary>
-        /// Gets or sets the identity of the worker that is requesting the reservation.
+        /// Gets the name of the task queue for which this reservation request is associated.
         /// </summary>
-        public string WorkerIdentity { get; set; }
+        public string TaskQueue { get; }
 
         /// <summary>
-        /// Gets or sets the build id of the worker that is requesting the reservation.
+        /// Gets the identity of the worker that is requesting the reservation.
         /// </summary>
-        public string WorkerBuildId { get; set; }
+        public string WorkerIdentity { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether true iff this is a reservation for a sticky poll for a workflow task.
+        /// Gets the build id of the worker that is requesting the reservation.
         /// </summary>
-        public bool IsSticky { get; set; }
+        public string WorkerBuildId { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether true iff this is a reservation for a sticky poll for a workflow task.
+        /// </summary>
+        public bool IsSticky { get; }
     }
 }

@@ -112,7 +112,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         Assert.Contains("Cannot set both Tuner and any of", argumentException.Message);
     }
 
-    class MySlotSupplier : ICustomSlotSupplier
+    private class MySlotSupplier : ICustomSlotSupplier
     {
         public Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx)
         {
