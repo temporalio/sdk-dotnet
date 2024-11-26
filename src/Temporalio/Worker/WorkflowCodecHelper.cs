@@ -102,8 +102,8 @@ namespace Temporalio.Worker
                         await DecodeAsync(codec, job.SignalWorkflow.Input).ConfigureAwait(false);
                         await DecodeAsync(codec, job.SignalWorkflow.Headers).ConfigureAwait(false);
                         break;
-                    case WorkflowActivationJob.VariantOneofCase.StartWorkflow:
-                        await DecodeAsync(codec, job.StartWorkflow).ConfigureAwait(false);
+                    case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
+                        await DecodeAsync(codec, job.InitializeWorkflow).ConfigureAwait(false);
                         break;
                 }
             }
@@ -278,21 +278,21 @@ namespace Temporalio.Worker
             }
         }
 
-        private static async Task DecodeAsync(IPayloadCodec codec, StartWorkflow start)
+        private static async Task DecodeAsync(IPayloadCodec codec, InitializeWorkflow init)
         {
-            await DecodeAsync(codec, start.Arguments).ConfigureAwait(false);
-            if (start.ContinuedFailure != null)
+            await DecodeAsync(codec, init.Arguments).ConfigureAwait(false);
+            if (init.ContinuedFailure != null)
             {
-                await codec.DecodeFailureAsync(start.ContinuedFailure).ConfigureAwait(false);
+                await codec.DecodeFailureAsync(init.ContinuedFailure).ConfigureAwait(false);
             }
-            if (start.Memo != null)
+            if (init.Memo != null)
             {
-                await DecodeAsync(codec, start.Memo.Fields).ConfigureAwait(false);
+                await DecodeAsync(codec, init.Memo.Fields).ConfigureAwait(false);
             }
-            await DecodeAsync(codec, start.Headers).ConfigureAwait(false);
-            if (start.LastCompletionResult != null)
+            await DecodeAsync(codec, init.Headers).ConfigureAwait(false);
+            if (init.LastCompletionResult != null)
             {
-                await DecodeAsync(codec, start.LastCompletionResult.Payloads_).ConfigureAwait(false);
+                await DecodeAsync(codec, init.LastCompletionResult.Payloads_).ConfigureAwait(false);
             }
         }
 
