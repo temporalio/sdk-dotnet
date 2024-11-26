@@ -74,8 +74,7 @@ namespace Temporalio.Api.Update.V1 {
   }
   #region Messages
   /// <summary>
-  /// Specifies to the gRPC server how long the client wants the an update-related
-  /// RPC call to wait before returning control to the caller.
+  /// Specifies client's intent to wait for Update results.
   /// </summary>
   public sealed partial class WaitPolicy : pb::IMessage<WaitPolicy>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -125,8 +124,11 @@ namespace Temporalio.Api.Update.V1 {
     public const int LifecycleStageFieldNumber = 1;
     private global::Temporalio.Api.Enums.V1.UpdateWorkflowExecutionLifecycleStage lifecycleStage_ = global::Temporalio.Api.Enums.V1.UpdateWorkflowExecutionLifecycleStage.Unspecified;
     /// <summary>
-    /// Indicates the update lifecycle stage that the gRPC call should wait for
-    /// before returning.
+    /// Indicates the Update lifecycle stage that the Update must reach before
+    /// API call is returned.
+    /// NOTE: This field works together with API call timeout which is limited by
+    /// server timeout (maximum wait time). If server timeout is expired before
+    /// user specified timeout, API call returns even if specified stage is not reached.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -271,8 +273,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// The data needed by a client to refer to a previously invoked workflow
-  /// execution update process.
+  /// The data needed by a client to refer to a previously invoked Workflow Update.
   /// </summary>
   public sealed partial class UpdateRef : pb::IMessage<UpdateRef>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -510,7 +511,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// The outcome of a workflow update - success or failure.
+  /// The outcome of a Workflow Update: success or failure.
   /// </summary>
   public sealed partial class Outcome : pb::IMessage<Outcome>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -798,7 +799,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// Metadata about a workflow execution update.
+  /// Metadata about a Workflow Update.
   /// </summary>
   public sealed partial class Meta : pb::IMessage<Meta>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -849,7 +850,7 @@ namespace Temporalio.Api.Update.V1 {
     public const int UpdateIdFieldNumber = 1;
     private string updateId_ = "";
     /// <summary>
-    /// An ID with workflow-scoped uniqueness for this update
+    /// An ID with workflow-scoped uniqueness for this Update.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -864,7 +865,7 @@ namespace Temporalio.Api.Update.V1 {
     public const int IdentityFieldNumber = 2;
     private string identity_ = "";
     /// <summary>
-    /// A string identifying the agent that requested this update.
+    /// A string identifying the agent that requested this Update.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1082,7 +1083,7 @@ namespace Temporalio.Api.Update.V1 {
     public const int HeaderFieldNumber = 1;
     private global::Temporalio.Api.Common.V1.Header header_;
     /// <summary>
-    /// Headers that are passed with the update from the requesting entity.
+    /// Headers that are passed with the Update from the requesting entity.
     /// These can include things like auth or tracing tokens.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1098,7 +1099,7 @@ namespace Temporalio.Api.Update.V1 {
     public const int NameFieldNumber = 2;
     private string name_ = "";
     /// <summary>
-    /// The name of the input handler to invoke on the target workflow
+    /// The name of the Update handler to invoke on the target Workflow.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1113,7 +1114,7 @@ namespace Temporalio.Api.Update.V1 {
     public const int ArgsFieldNumber = 3;
     private global::Temporalio.Api.Common.V1.Payloads args_;
     /// <summary>
-    /// The arguments to pass to the named handler.
+    /// The arguments to pass to the named Update handler.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1324,7 +1325,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// The client request that triggers a workflow execution update
+  /// The client request that triggers a Workflow Update.
   /// </summary>
   public sealed partial class Request : pb::IMessage<Request>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1571,8 +1572,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// An update protocol message indicating that a workflow execution update has
-  /// been rejected.
+  /// An Update protocol message indicating that a Workflow Update has been rejected.
   /// </summary>
   public sealed partial class Rejection : pb::IMessage<Rejection>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1893,7 +1893,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// An update protocol message indicating that a workflow execution update has
+  /// An Update protocol message indicating that a Workflow Update has
   /// been accepted (i.e. passed the worker-side validation phase).
   /// </summary>
   public sealed partial class Acceptance : pb::IMessage<Acceptance>
@@ -2169,7 +2169,7 @@ namespace Temporalio.Api.Update.V1 {
   }
 
   /// <summary>
-  /// An update protocol message indicating that a workflow execution update has
+  /// An Update protocol message indicating that a Workflow Update has
   /// completed with the contained outcome.
   /// </summary>
   public sealed partial class Response : pb::IMessage<Response>

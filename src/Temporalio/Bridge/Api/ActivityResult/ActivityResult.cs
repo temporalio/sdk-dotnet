@@ -48,8 +48,9 @@ namespace Temporalio.Bridge.Api.ActivityResult {
             "dXJlIhMKEVdpbGxDb21wbGV0ZUFzeW5jIo0BCglEb0JhY2tvZmYSDwoHYXR0",
             "ZW1wdBgBIAEoDRIzChBiYWNrb2ZmX2R1cmF0aW9uGAIgASgLMhkuZ29vZ2xl",
             "LnByb3RvYnVmLkR1cmF0aW9uEjoKFm9yaWdpbmFsX3NjaGVkdWxlX3RpbWUY",
-            "AyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQirqAidUZW1wb3Jh",
-            "bGlvOjpCcmlkZ2U6OkFwaTo6QWN0aXZpdHlSZXN1bHRiBnByb3RvMw=="));
+            "AyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQjTqAjFUZW1wb3Jh",
+            "bGlvOjpJbnRlcm5hbDo6QnJpZGdlOjpBcGk6OkFjdGl2aXR5UmVzdWx0YgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

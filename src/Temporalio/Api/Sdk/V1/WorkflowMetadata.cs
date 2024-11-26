@@ -367,6 +367,9 @@ namespace Temporalio.Api.Sdk.V1 {
     private static readonly pb::FieldCodec<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> _repeated_queryDefinitions_codec
         = pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> queryDefinitions_ = new pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition>();
+    /// <summary>
+    /// Query definitions, sorted by name.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> QueryDefinitions {
@@ -378,6 +381,9 @@ namespace Temporalio.Api.Sdk.V1 {
     private static readonly pb::FieldCodec<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> _repeated_signalDefinitions_codec
         = pb::FieldCodec.ForMessage(26, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> signalDefinitions_ = new pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition>();
+    /// <summary>
+    /// Signal definitions, sorted by name.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> SignalDefinitions {
@@ -389,6 +395,9 @@ namespace Temporalio.Api.Sdk.V1 {
     private static readonly pb::FieldCodec<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> _repeated_updateDefinitions_codec
         = pb::FieldCodec.ForMessage(34, global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition.Parser);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> updateDefinitions_ = new pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition>();
+    /// <summary>
+    /// Update definitions, sorted by name.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::Temporalio.Api.Sdk.V1.WorkflowInteractionDefinition> UpdateDefinitions {
