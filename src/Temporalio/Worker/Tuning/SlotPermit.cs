@@ -13,19 +13,6 @@ namespace Temporalio.Worker.Tuning
     /// </remarks>
     public class SlotPermit
     {
-        private SlotPermit()
-        {
-        }
-
-        /// <summary>
-        /// Reconstruct a permit from a pointer.
-        /// </summary>
-        /// <param name="permit">The pointer to the permit.</param>
-        /// <returns>The permit.</returns>
-        internal static unsafe SlotPermit FromPointer(void* permit)
-        {
-            return (SlotPermit)GCHandle.FromIntPtr(new(permit)).Target!;
-        }
     }
 #pragma warning restore CA1052
 }

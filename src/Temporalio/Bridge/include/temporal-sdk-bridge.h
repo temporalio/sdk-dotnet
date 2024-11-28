@@ -391,9 +391,12 @@ typedef struct SlotReserveCtx {
   bool is_sticky;
 } SlotReserveCtx;
 
-typedef void (*CustomReserveSlotCallback)(struct SlotReserveCtx ctx);
+typedef void (*CustomReserveSlotCallback)(struct SlotReserveCtx ctx, void *sender);
 
-typedef void (*CustomTryReserveSlotCallback)(struct SlotReserveCtx ctx);
+/**
+ * Must return C#-tracked id for the permit. A zero value means no permit was reserved.
+ */
+typedef uintptr_t (*CustomTryReserveSlotCallback)(struct SlotReserveCtx ctx);
 
 typedef enum SlotInfo_Tag {
   WorkflowSlotInfo,
@@ -426,9 +429,9 @@ typedef struct SlotInfo {
 typedef struct SlotMarkUsedCtx {
   struct SlotInfo slot_info;
   /**
-   * User instance of a slot permit.
+   * C# id for the slot permit.
    */
-  const void *slot_permit;
+  uintptr_t slot_permit;
 } SlotMarkUsedCtx;
 
 typedef void (*CustomMarkSlotUsedCallback)(struct SlotMarkUsedCtx ctx);
@@ -436,9 +439,9 @@ typedef void (*CustomMarkSlotUsedCallback)(struct SlotMarkUsedCtx ctx);
 typedef struct SlotReleaseCtx {
   const struct SlotInfo *slot_info;
   /**
-   * User instance of a slot permit.
+   * C# id for the slot permit.
    */
-  const void *slot_permit;
+  uintptr_t slot_permit;
 } SlotReleaseCtx;
 
 typedef void (*CustomReleaseSlotCallback)(struct SlotReleaseCtx ctx);
@@ -688,6 +691,8 @@ struct WorkerReplayPushResult worker_replay_push(struct Worker *worker,
                                                  struct WorkerReplayPusher *worker_replay_pusher,
                                                  struct ByteArrayRef workflow_id,
                                                  struct ByteArrayRef history);
+
+void complete_async_reserve(void *sender, uintptr_t permit_id);
 
 #ifdef __cplusplus
 } // extern "C"

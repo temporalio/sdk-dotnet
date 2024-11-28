@@ -24,6 +24,7 @@ use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
 use temporal_sdk_core_protos::coresdk::ActivityTaskCompletion;
 use temporal_sdk_core_protos::temporal::api::history::v1::History;
 use tokio::sync::mpsc::{channel, Sender};
+use tokio::sync::oneshot;
 use tokio_stream::wrappers::ReceiverStream;
 
 use std::collections::HashMap;
@@ -84,8 +85,19 @@ pub struct ResourceBasedSlotSupplier {
     tuner_options: ResourceBasedTunerOptions,
 }
 
-type CustomReserveSlotCallback = unsafe extern "C" fn(ctx: SlotReserveCtx);
-type CustomTryReserveSlotCallback = unsafe extern "C" fn(ctx: SlotReserveCtx);
+#[repr(C)]
+pub struct CustomSlotSupplier<SK> {
+    inner: CustomSlotSupplierCallbacksImpl,
+    _pd: std::marker::PhantomData<SK>,
+}
+
+unsafe impl<SK> Send for CustomSlotSupplier<SK> {}
+unsafe impl<SK> Sync for CustomSlotSupplier<SK> {}
+
+type CustomReserveSlotCallback =
+    unsafe extern "C" fn(ctx: SlotReserveCtx, sender: *mut libc::c_void);
+/// Must return C#-tracked id for the permit. A zero value means no permit was reserved.
+type CustomTryReserveSlotCallback = unsafe extern "C" fn(ctx: SlotReserveCtx) -> usize;
 type CustomMarkSlotUsedCallback = unsafe extern "C" fn(ctx: SlotMarkUsedCtx);
 type CustomReleaseSlotCallback = unsafe extern "C" fn(ctx: SlotReleaseCtx);
 
@@ -112,15 +124,6 @@ impl CustomSlotSupplierCallbacksImpl {
         })
     }
 }
-
-#[repr(C)]
-pub struct CustomSlotSupplier<SK> {
-    inner: CustomSlotSupplierCallbacksImpl,
-    _pd: std::marker::PhantomData<SK>,
-}
-
-unsafe impl<SK> Send for CustomSlotSupplier<SK> {}
-unsafe impl<SK> Sync for CustomSlotSupplier<SK> {}
 
 #[repr(C)]
 pub enum SlotKindType {
@@ -155,15 +158,15 @@ pub enum SlotInfo {
 #[repr(C)]
 pub struct SlotMarkUsedCtx {
     slot_info: SlotInfo,
-    /// User instance of a slot permit.
-    slot_permit: *const libc::c_void,
+    /// C# id for the slot permit.
+    slot_permit: usize,
 }
 
 #[repr(C)]
 pub struct SlotReleaseCtx {
     slot_info: *const SlotInfo,
-    /// User instance of a slot permit.
-    slot_permit: *const libc::c_void,
+    /// C# id for the slot permit.
+    slot_permit: usize,
 }
 
 #[async_trait::async_trait]
@@ -173,34 +176,34 @@ impl<SK: SlotKind + Send + Sync> temporal_sdk_core_api::worker::SlotSupplier
     type SlotKind = SK;
 
     async fn reserve_slot(&self, ctx: &dyn SlotReservationContext) -> SlotSupplierPermit {
+        let (tx, rx) = oneshot::channel();
         let ctx = Self::convert_reserve_ctx(ctx);
+        let tx = Box::into_raw(Box::new(tx)) as *mut libc::c_void;
         unsafe {
-            ((*self.inner.0).reserve)(ctx);
+            ((*self.inner.0).reserve)(ctx, tx);
         }
-        unimplemented!()
+        let r = rx.await.expect("reserve channel is not closed");
+        r
     }
 
     fn try_reserve_slot(&self, ctx: &dyn SlotReservationContext) -> Option<SlotSupplierPermit> {
         let ctx = Self::convert_reserve_ctx(ctx);
-        unsafe {
-            ((*self.inner.0).try_reserve)(ctx);
+        let permit_id = unsafe { ((*self.inner.0).try_reserve)(ctx) };
+        if permit_id == 0 {
+            None
+        } else {
+            Some(SlotSupplierPermit::with_user_data(permit_id))
         }
-        unimplemented!()
     }
 
     fn mark_slot_used(&self, ctx: &dyn SlotMarkUsedContext<SlotKind = Self::SlotKind>) {
         let ctx = SlotMarkUsedCtx {
             slot_info: Self::convert_slot_info(ctx.info().downcast()),
-            slot_permit: ctx
-                .permit()
-                .user_data::<UserDataHandle>()
-                .map(|ud| ud.0 as *const libc::c_void)
-                .unwrap_or(std::ptr::null()),
+            slot_permit: ctx.permit().user_data::<usize>().map(|u| *u).unwrap_or(0),
         };
         unsafe {
             ((*self.inner.0).mark_used)(ctx);
         }
-        unimplemented!()
     }
 
     fn release_slot(&self, ctx: &dyn SlotReleaseContext<SlotKind = Self::SlotKind>) {
@@ -211,16 +214,11 @@ impl<SK: SlotKind + Send + Sync> temporal_sdk_core_api::worker::SlotSupplier
         }
         let ctx = SlotReleaseCtx {
             slot_info: info_ptr,
-            slot_permit: ctx
-                .permit()
-                .user_data::<UserDataHandle>()
-                .map(|ud| ud.0 as *const libc::c_void)
-                .unwrap_or(std::ptr::null()),
+            slot_permit: ctx.permit().user_data::<usize>().map(|u| *u).unwrap_or(0),
         };
         unsafe {
             ((*self.inner.0).release)(ctx);
         }
-        unimplemented!()
     }
 
     fn available_slots(&self) -> Option<usize> {
@@ -252,15 +250,15 @@ impl<SK: SlotKind + Send + Sync> CustomSlotSupplier<SK> {
     fn convert_slot_info(info: temporal_sdk_core_api::worker::SlotInfo) -> SlotInfo {
         match info {
             temporal_sdk_core_api::worker::SlotInfo::Workflow(w) => SlotInfo::WorkflowSlotInfo {
-                workflow_type: w.workflow_type.clone().into(),
+                workflow_type: w.workflow_type.as_str().into(),
                 is_sticky: w.is_sticky,
             },
             temporal_sdk_core_api::worker::SlotInfo::Activity(a) => SlotInfo::ActivitySlotInfo {
-                activity_type: a.activity_type.clone().into(),
+                activity_type: a.activity_type.as_str().into(),
             },
             temporal_sdk_core_api::worker::SlotInfo::LocalActivity(a) => {
                 SlotInfo::LocalActivitySlotInfo {
-                    activity_type: a.activity_type.clone().into(),
+                    activity_type: a.activity_type.as_str().into(),
                 }
             }
         }
@@ -724,6 +722,19 @@ pub extern "C" fn worker_replay_push(
     };
     WorkerReplayPushResult {
         fail: std::ptr::null(),
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn complete_async_reserve(sender: *mut libc::c_void, permit_id: usize) {
+    if !sender.is_null() {
+        unsafe {
+            let sender = Box::from_raw(sender as *mut oneshot::Sender<SlotSupplierPermit>);
+            let permit = SlotSupplierPermit::with_user_data(permit_id);
+            let _ = sender.send(permit);
+        }
+    } else {
+        panic!("ReserveSlot sender must not be null!");
     }
 }
 

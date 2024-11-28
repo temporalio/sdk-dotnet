@@ -112,26 +112,36 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         Assert.Contains("Cannot set both Tuner and any of", argumentException.Message);
     }
 
+    private class MyPermit : SlotPermit
+    {
+        private readonly int dat;
+
+        public MyPermit(int v)
+        {
+            this.dat = v;
+        }
+    }
+
     private class MySlotSupplier : ICustomSlotSupplier
     {
-        public Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx)
+        public async Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx)
         {
-            throw new NotImplementedException();
+            // Do something async to make sure that works
+            await Task.Delay(10);
+            return new MyPermit(1);
         }
 
         public SlotPermit? TryReserveSlot(SlotReserveContext ctx)
         {
-            throw new NotImplementedException();
+            return new MyPermit(1);
         }
 
         public void MarkSlotUsed(SlotMarkUsedContext ctx)
         {
-            throw new NotImplementedException();
         }
 
         public void ReleaseSlot(SlotReleaseContext ctx)
         {
-            throw new NotImplementedException();
         }
     }
 

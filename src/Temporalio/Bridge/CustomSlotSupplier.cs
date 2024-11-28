@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Temporalio.Bridge
@@ -8,6 +11,8 @@ namespace Temporalio.Bridge
     internal class CustomSlotSupplier : NativeInvokeableClass<Interop.CustomSlotSupplierCallbacks>
     {
         private readonly Temporalio.Worker.Tuning.ICustomSlotSupplier userSupplier;
+        private readonly Dictionary<uint, GCHandle> permits = new();
+        private uint permitId = 1;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomSlotSupplier" /> class.
@@ -28,25 +33,65 @@ namespace Temporalio.Bridge
             PinCallbackHolder(interopCallbacks);
         }
 
-        private void Reserve(Interop.SlotReserveCtx ctx)
+        private unsafe void Reserve(Interop.SlotReserveCtx ctx, void* sender)
         {
-            // TODO: Need to call callback with result that will put it in a channel to await in Rust
-            var reserveTask = Task.Run(() => userSupplier.ReserveSlotAsync(new(ctx)));
+            SafeReserve(ctx, new IntPtr(sender));
         }
 
-        private void TryReserve(Interop.SlotReserveCtx ctx)
+        private void SafeReserve(Interop.SlotReserveCtx ctx, IntPtr sender)
         {
-            userSupplier.TryReserveSlot(new(ctx));
+            var reserveTask = Task.Run(async () =>
+            {
+                try
+                {
+                    var permit = await userSupplier.ReserveSlotAsync(new(ctx)).ConfigureAwait(false);
+                    var usedPermitId = AddPermitToMap(permit);
+                    unsafe
+                    {
+                        Interop.Methods.complete_async_reserve(sender.ToPointer(), new(usedPermitId));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exception in reserve: " + e.Message);
+                    throw;
+                }
+            });
+        }
+
+        private unsafe UIntPtr TryReserve(Interop.SlotReserveCtx ctx)
+        {
+            var maybePermit = userSupplier.TryReserveSlot(new(ctx));
+            if (maybePermit == null)
+            {
+                return UIntPtr.Zero;
+            }
+            var usedPermitId = AddPermitToMap(maybePermit);
+            return new(usedPermitId);
         }
 
         private void MarkUsed(Interop.SlotMarkUsedCtx ctx)
         {
-            userSupplier.MarkSlotUsed(new(ctx));
+            userSupplier.MarkSlotUsed(new(ctx, permits[ctx.slot_permit.ToUInt32()]));
         }
 
         private void Release(Interop.SlotReleaseCtx ctx)
         {
-            userSupplier.ReleaseSlot(new(ctx));
+            var permitId = ctx.slot_permit.ToUInt32();
+            userSupplier.ReleaseSlot(new(ctx, permits[permitId]));
+            permits.Remove(permitId);
+        }
+
+        private uint AddPermitToMap(Temporalio.Worker.Tuning.SlotPermit permit)
+        {
+            var handle = GCHandle.Alloc(permit);
+            lock (permits)
+            {
+                var usedPermitId = permitId;
+                permits.Add(permitId, handle);
+                permitId += 1;
+                return usedPermitId;
+            }
         }
     }
 }
