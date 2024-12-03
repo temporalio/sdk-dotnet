@@ -156,10 +156,10 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
 
         public HashSet<bool> SeenReleaseInfoPresence { get; } = new();
 
-        public async Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx)
+        public async Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
         {
             // Do something async to make sure that works
-            await Task.Delay(10);
+            await Task.Delay(10, cancellationToken);
             ReserveTracking(ctx);
             return new MyPermit(ReserveCount);
         }
@@ -243,7 +243,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
 
     private class ThrowingSlotSupplier : ICustomSlotSupplier
     {
-        public Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx)
+        public Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
         {
             // Let the workflow complete, but other reservations fail
             if (ctx.SlotType == SlotType.Workflow)
@@ -284,6 +284,45 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             await Env.Client.ExecuteWorkflowAsync(
                 (OneTaskWf wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+        });
+    }
+
+    private class BlockingSlotSupplier : ICustomSlotSupplier
+    {
+        public async Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
+        {
+            await Task.Delay(100_000, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+            throw new InvalidOperationException("Should not be reachable");
+        }
+
+        public ISlotPermit? TryReserveSlot(SlotReserveContext ctx)
+        {
+            return null;
+        }
+
+        public void MarkSlotUsed(SlotMarkUsedContext ctx)
+        {
+        }
+
+        public void ReleaseSlot(SlotReleaseContext ctx)
+        {
+        }
+    }
+
+    [Fact]
+    public async Task CanRunWith_BlockingSlotSupplier()
+    {
+        var mySlotSupplier = new BlockingSlotSupplier();
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            {
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier),
+            }.AddWorkflow<OneTaskWf>());
+        await worker.ExecuteAsync(async () =>
+        {
+            await Task.Delay(1000);
         });
     }
 }

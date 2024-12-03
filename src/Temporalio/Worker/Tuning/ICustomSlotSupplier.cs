@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Temporalio.Worker.Tuning
@@ -22,9 +23,11 @@ namespace Temporalio.Worker.Tuning
         /// This method will be called concurrently from multiple threads, so it must be thread-safe.
         /// </remarks>
         /// <param name="ctx">The context for slot reservation.</param>
+        /// <param name="cancellationToken">A cancellation token that the SDK may use
+        ///  to cancel the operation.</param>
         /// <returns>A permit to use the slot which may be populated with your own data.</returns>
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
-        public Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx);
+        public Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken);
 
         /// <summary>
         /// This function is called when trying to reserve slots for "eager" workflow and activity tasks.

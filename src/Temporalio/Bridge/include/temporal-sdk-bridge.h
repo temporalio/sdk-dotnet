@@ -389,9 +389,12 @@ typedef struct SlotReserveCtx {
   struct ByteArrayRef worker_identity;
   struct ByteArrayRef worker_build_id;
   bool is_sticky;
+  void *token_src;
 } SlotReserveCtx;
 
 typedef void (*CustomReserveSlotCallback)(struct SlotReserveCtx ctx, void *sender);
+
+typedef void (*CustomCancelReserveCallback)(void *token_source);
 
 /**
  * Must return C#-tracked id for the permit. A zero value means no permit was reserved.
@@ -448,6 +451,7 @@ typedef void (*CustomReleaseSlotCallback)(struct SlotReleaseCtx ctx);
 
 typedef struct CustomSlotSupplierCallbacks {
   CustomReserveSlotCallback reserve;
+  CustomCancelReserveCallback cancel_reserve;
   CustomTryReserveSlotCallback try_reserve;
   CustomMarkSlotUsedCallback mark_used;
   CustomReleaseSlotCallback release;
@@ -693,6 +697,8 @@ struct WorkerReplayPushResult worker_replay_push(struct Worker *worker,
                                                  struct ByteArrayRef history);
 
 void complete_async_reserve(void *sender, uintptr_t permit_id);
+
+void set_reserve_cancel_target(struct SlotReserveCtx *ctx, void *token_ptr);
 
 #ifdef __cplusplus
 } // extern "C"

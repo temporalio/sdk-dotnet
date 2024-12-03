@@ -558,7 +558,7 @@ namespace Temporalio.Bridge.Interop
         public ResourceBasedTunerOptions tuner_options;
     }
 
-    internal partial struct SlotReserveCtx
+    internal unsafe partial struct SlotReserveCtx
     {
         [NativeTypeName("enum SlotKindType")]
         public SlotKindType slot_type;
@@ -574,10 +574,15 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("bool")]
         public byte is_sticky;
+
+        public void* token_src;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void CustomReserveSlotCallback([NativeTypeName("struct SlotReserveCtx")] SlotReserveCtx ctx, void* sender);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomCancelReserveCallback(void* token_source);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("uintptr_t")]
@@ -615,7 +620,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L422_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L425_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref WorkflowSlotInfo_Body workflow_slot_info
@@ -694,6 +699,9 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("CustomReserveSlotCallback")]
         public IntPtr reserve;
 
+        [NativeTypeName("CustomCancelReserveCallback")]
+        public IntPtr cancel_reserve;
+
         [NativeTypeName("CustomTryReserveSlotCallback")]
         public IntPtr try_reserve;
 
@@ -721,7 +729,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L468_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L472_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -761,15 +769,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L469_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L473_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L472_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L476_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L475_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L479_C5")]
             public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct
@@ -1061,5 +1069,8 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void complete_async_reserve(void* sender, [NativeTypeName("uintptr_t")] UIntPtr permit_id);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void set_reserve_cancel_target([NativeTypeName("struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* token_ptr);
     }
 }
