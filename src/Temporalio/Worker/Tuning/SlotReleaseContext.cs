@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
@@ -14,14 +12,14 @@ namespace Temporalio.Worker.Tuning
         /// Initializes a new instance of the <see cref="SlotReleaseContext"/> class.
         /// </summary>
         /// <param name="ctx">The bridge version of the slot release context.</param>
-        /// <param name="userData">The user data associated with the slot.</param>
-        internal SlotReleaseContext(Temporalio.Bridge.Interop.SlotReleaseCtx ctx, GCHandle userData)
+        /// <param name="permit">The user-create permit instance.</param>
+        internal SlotReleaseContext(Temporalio.Bridge.Interop.SlotReleaseCtx ctx, ISlotPermit permit)
         {
             unsafe
             {
                 this.SlotInfo = ctx.slot_info is null ? null : SlotInfo.FromBridge(*ctx.slot_info);
-                this.Permit = (ISlotPermit)userData.Target!;
             }
+            this.Permit = permit;
         }
 
         /// <summary>

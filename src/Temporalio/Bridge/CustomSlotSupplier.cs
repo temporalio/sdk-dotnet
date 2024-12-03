@@ -15,7 +15,7 @@ namespace Temporalio.Bridge
     {
         private readonly ILogger logger;
         private readonly Temporalio.Worker.Tuning.ICustomSlotSupplier userSupplier;
-        private readonly Dictionary<uint, GCHandle> permits = new();
+        private readonly Dictionary<uint, Temporalio.Worker.Tuning.ISlotPermit> permits = new();
         private uint permitId = 1;
 
         /// <summary>
@@ -167,11 +167,10 @@ namespace Temporalio.Bridge
 
         private uint AddPermitToMap(Temporalio.Worker.Tuning.ISlotPermit permit)
         {
-            var handle = GCHandle.Alloc(permit);
             lock (permits)
             {
                 var usedPermitId = permitId;
-                permits.Add(permitId, handle);
+                permits.Add(permitId, permit);
                 permitId += 1;
                 return usedPermitId;
             }

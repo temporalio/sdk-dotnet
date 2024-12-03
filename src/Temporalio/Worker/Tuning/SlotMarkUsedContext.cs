@@ -14,14 +14,11 @@ namespace Temporalio.Worker.Tuning
         /// Initializes a new instance of the <see cref="SlotMarkUsedContext"/> class.
         /// </summary>
         /// <param name="ctx">The bridge version of the slot mark used context.</param>
-        /// <param name="userData">The user data associated with the slot.</param>
-        internal SlotMarkUsedContext(Temporalio.Bridge.Interop.SlotMarkUsedCtx ctx, GCHandle userData)
+        /// <param name="permit">The user-create permit instance.</param>
+        internal SlotMarkUsedContext(Temporalio.Bridge.Interop.SlotMarkUsedCtx ctx, ISlotPermit permit)
         {
             this.SlotInfo = SlotInfo.FromBridge(ctx.slot_info);
-            unsafe
-            {
-                this.Permit = (ISlotPermit)userData.Target!;
-            }
+            this.Permit = permit;
         }
 
         /// <summary>
