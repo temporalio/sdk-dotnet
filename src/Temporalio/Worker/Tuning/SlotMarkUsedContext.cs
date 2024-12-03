@@ -20,7 +20,7 @@ namespace Temporalio.Worker.Tuning
             this.SlotInfo = SlotInfo.FromBridge(ctx.slot_info);
             unsafe
             {
-                this.Permit = (SlotPermit)userData.Target!;
+                this.Permit = (ISlotPermit)userData.Target!;
             }
         }
 
@@ -32,6 +32,6 @@ namespace Temporalio.Worker.Tuning
         /// <summary>
         /// Gets the permit that was issued when the slot was reserved.
         /// </summary>
-        public SlotPermit Permit { get; }
+        public ISlotPermit Permit { get; }
     }
 }

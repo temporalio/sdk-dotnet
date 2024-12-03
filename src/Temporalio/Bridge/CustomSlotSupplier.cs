@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Temporalio.Bridge
 {
@@ -10,6 +11,7 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class CustomSlotSupplier : NativeInvokeableClass<Interop.CustomSlotSupplierCallbacks>
     {
+        private readonly ILogger logger;
         private readonly Temporalio.Worker.Tuning.ICustomSlotSupplier userSupplier;
         private readonly Dictionary<uint, GCHandle> permits = new();
         private uint permitId = 1;
@@ -18,8 +20,12 @@ namespace Temporalio.Bridge
         /// Initializes a new instance of the <see cref="CustomSlotSupplier" /> class.
         /// </summary>
         /// <param name="userSupplier">User's slot supplier implementation'.</param>
-        internal unsafe CustomSlotSupplier(Temporalio.Worker.Tuning.ICustomSlotSupplier userSupplier)
+        /// <param name="loggerFactory">Logger factory.</param>
+        internal unsafe CustomSlotSupplier(
+            Temporalio.Worker.Tuning.ICustomSlotSupplier userSupplier,
+            ILoggerFactory loggerFactory)
         {
+            this.logger = loggerFactory.CreateLogger<CustomSlotSupplier>();
             this.userSupplier = userSupplier;
 
             var interopCallbacks = new Interop.CustomSlotSupplierCallbacks
@@ -42,26 +48,45 @@ namespace Temporalio.Bridge
         {
             var reserveTask = Task.Run(async () =>
             {
-                try
+                while (true)
                 {
-                    var permit = await userSupplier.ReserveSlotAsync(new(ctx)).ConfigureAwait(false);
-                    var usedPermitId = AddPermitToMap(permit);
-                    unsafe
+                    try
                     {
-                        Interop.Methods.complete_async_reserve(sender.ToPointer(), new(usedPermitId));
+                        var permit = await userSupplier.ReserveSlotAsync(new(ctx)).ConfigureAwait(false);
+                        var usedPermitId = AddPermitToMap(permit);
+                        unsafe
+                        {
+                            Interop.Methods.complete_async_reserve(sender.ToPointer(), new(usedPermitId));
+                        }
+                        return;
                     }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Exception in reserve: " + e.Message);
-                    throw;
+#pragma warning disable CA1031 // We are ok catching all exceptions here
+                    catch (Exception e)
+                    {
+#pragma warning restore CA1031
+                        logger.LogError(e, "Error reserving slot");
+                    }
+                    // Wait for a bit to avoid spamming errors
+                    await Task.Delay(1000).ConfigureAwait(false);
                 }
             });
         }
 
         private unsafe UIntPtr TryReserve(Interop.SlotReserveCtx ctx)
         {
-            var maybePermit = userSupplier.TryReserveSlot(new(ctx));
+            Temporalio.Worker.Tuning.ISlotPermit? maybePermit;
+            try
+            {
+                maybePermit = userSupplier.TryReserveSlot(new(ctx));
+            }
+#pragma warning disable CA1031 // We are ok catching all exceptions here
+            catch (Exception e)
+            {
+#pragma warning restore CA1031
+                logger.LogError(e, "Error trying to reserve slot");
+                return UIntPtr.Zero;
+            }
+
             if (maybePermit == null)
             {
                 return UIntPtr.Zero;
@@ -72,17 +97,35 @@ namespace Temporalio.Bridge
 
         private void MarkUsed(Interop.SlotMarkUsedCtx ctx)
         {
-            userSupplier.MarkSlotUsed(new(ctx, permits[ctx.slot_permit.ToUInt32()]));
+            try
+            {
+                userSupplier.MarkSlotUsed(new(ctx, permits[ctx.slot_permit.ToUInt32()]));
+            }
+#pragma warning disable CA1031 // We are ok catching all exceptions here
+            catch (Exception e)
+            {
+#pragma warning restore CA1031
+                logger.LogError(e, "Error marking slot used");
+            }
         }
 
         private void Release(Interop.SlotReleaseCtx ctx)
         {
             var permitId = ctx.slot_permit.ToUInt32();
-            userSupplier.ReleaseSlot(new(ctx, permits[permitId]));
+            try
+            {
+                userSupplier.ReleaseSlot(new(ctx, permits[permitId]));
+            }
+#pragma warning disable CA1031 // We are ok catching all exceptions here
+            catch (Exception e)
+            {
+#pragma warning restore CA1031
+                logger.LogError(e, "Error releasing slot");
+            }
             permits.Remove(permitId);
         }
 
-        private uint AddPermitToMap(Temporalio.Worker.Tuning.SlotPermit permit)
+        private uint AddPermitToMap(Temporalio.Worker.Tuning.ISlotPermit permit)
         {
             var handle = GCHandle.Alloc(permit);
             lock (permits)

@@ -30,7 +30,7 @@ namespace Temporalio.Worker.Tuning
         }
 
         /// <summary>
-        /// Gets the type of slot trying to be reserved. Always one of "workflow", "activity", or "local-activity".
+        /// Gets the type of slot trying to be reserved.
         /// </summary>
         public SlotType SlotType { get; }
 
