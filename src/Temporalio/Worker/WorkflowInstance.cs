@@ -121,21 +121,21 @@ namespace Temporalio.Worker
             mutableQueries = new(() => new(Definition.Queries, OnQueryDefinitionAdded), false);
             mutableSignals = new(() => new(Definition.Signals, OnSignalDefinitionAdded), false);
             mutableUpdates = new(() => new(Definition.Updates, OnUpdateDefinitionAdded), false);
-            var initialMemo = details.Start.Memo;
+            var initialMemo = details.Init.Memo;
             memo = new(
                 () => initialMemo == null ? new Dictionary<string, IRawValue>(0) :
                     initialMemo.Fields.ToDictionary(
                         kvp => kvp.Key,
                         kvp => (IRawValue)new RawValue(kvp.Value)),
                 false);
-            var initialSearchAttributes = details.Start.SearchAttributes;
+            var initialSearchAttributes = details.Init.SearchAttributes;
             typedSearchAttributes = new(
                 () => initialSearchAttributes == null ? new(new()) :
                     SearchAttributeCollection.FromProto(initialSearchAttributes),
                 false);
             var act = details.InitialActivation;
             CurrentBuildId = act.BuildIdForCurrentTask;
-            var start = details.Start;
+            var start = details.Init;
             startArgs = new(
                 () => DecodeArgs(
                     method: Definition.RunMethod,
@@ -151,7 +151,7 @@ namespace Temporalio.Worker
                         { "task_queue", details.TaskQueue },
                         { "workflow_type", start.WorkflowType },
                     })));
-            initialSearchAttributes = details.Start.SearchAttributes;
+            initialSearchAttributes = details.Init.SearchAttributes;
             WorkflowInfo.ParentInfo? parent = null;
             if (start.ParentWorkflowInfo != null)
             {
@@ -188,7 +188,7 @@ namespace Temporalio.Worker
             replaySafeLogger = new(logger);
             onTaskStarting = details.OnTaskStarting;
             onTaskCompleted = details.OnTaskCompleted;
-            Random = new(details.Start.RandomnessSeed);
+            Random = new(details.Init.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
             disableEagerActivityExecution = details.DisableEagerActivityExecution;
@@ -538,8 +538,25 @@ namespace Temporalio.Worker
                     {
                         // We must set the sync context to null so work isn't posted there
                         SynchronizationContext.SetSynchronizationContext(null);
+                        // TODO: Temporary workaround in lieu of https://github.com/temporalio/sdk-dotnet/issues/375
+                        var sortedJobs = act.Jobs.OrderBy(j =>
+                        {
+                            switch (j.VariantCase)
+                            {
+                                case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
+                                case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
+                                    return 1;
+                                case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
+                                case WorkflowActivationJob.VariantOneofCase.DoUpdate:
+                                    return 2;
+                                case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
+                                    return 3;
+                                default:
+                                    return 4;
+                            }
+                        }).ToList();
                         // We can trust jobs are deterministically ordered by core
-                        foreach (var job in act.Jobs)
+                        foreach (var job in sortedJobs)
                         {
                             Apply(job);
                             // Run scheduler once. Do not check conditions when patching or querying.
@@ -880,8 +897,8 @@ namespace Temporalio.Worker
                 case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
                     ApplySignalWorkflow(job.SignalWorkflow);
                     break;
-                case WorkflowActivationJob.VariantOneofCase.StartWorkflow:
-                    ApplyStartWorkflow(job.StartWorkflow);
+                case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
+                    ApplyInitializeWorkflow(job.InitializeWorkflow);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
                     ApplyUpdateRandomSeed(job.UpdateRandomSeed);
@@ -1292,7 +1309,7 @@ namespace Temporalio.Worker
             }));
         }
 
-        private void ApplyStartWorkflow(StartWorkflow start)
+        private void ApplyInitializeWorkflow(InitializeWorkflow init)
         {
             _ = QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
             {

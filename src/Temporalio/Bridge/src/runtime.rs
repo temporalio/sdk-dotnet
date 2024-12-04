@@ -15,6 +15,7 @@ use std::time::Duration;
 use std::time::UNIX_EPOCH;
 use temporal_sdk_core::telemetry::{build_otlp_metric_exporter, start_prometheus_metric_exporter};
 use temporal_sdk_core::CoreRuntime;
+use temporal_sdk_core::TokioRuntimeBuilder;
 use temporal_sdk_core_api::telemetry::metrics::CoreMeter;
 use temporal_sdk_core_api::telemetry::MetricTemporality;
 use temporal_sdk_core_api::telemetry::{CoreLog, CoreLogConsumer};
@@ -128,7 +129,7 @@ pub extern "C" fn runtime_new(options: *const RuntimeOptions) -> RuntimeOrFail {
                 core: Arc::new(
                     CoreRuntime::new(
                         CoreTelemetryOptions::default(),
-                        tokio::runtime::Builder::new_current_thread(),
+                        TokioRuntimeBuilder::default(),
                     )
                     .unwrap(),
                 ),
@@ -224,10 +225,7 @@ impl Runtime {
         };
 
         // Build core runtime
-        let mut core = CoreRuntime::new(
-            telemetry_options,
-            tokio::runtime::Builder::new_multi_thread(),
-        )?;
+        let mut core = CoreRuntime::new(telemetry_options, TokioRuntimeBuilder::default())?;
 
         // We late-bind the metrics after core runtime is created since it needs
         // the Tokio handle

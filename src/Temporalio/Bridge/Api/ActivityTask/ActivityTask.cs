@@ -55,8 +55,8 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             "b24YASABKA4yKy5jb3Jlc2RrLmFjdGl2aXR5X3Rhc2suQWN0aXZpdHlDYW5j",
             "ZWxSZWFzb24qWAoUQWN0aXZpdHlDYW5jZWxSZWFzb24SDQoJTk9UX0ZPVU5E",
             "EAASDQoJQ0FOQ0VMTEVEEAESDQoJVElNRURfT1VUEAISEwoPV09SS0VSX1NI",
-            "VVRET1dOEANCKOoCJVRlbXBvcmFsaW86OkJyaWRnZTo6QXBpOjpBY3Rpdml0",
-            "eVRhc2tiBnByb3RvMw=="));
+            "VVRET1dOEANCMuoCL1RlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6OkFw",
+            "aTo6QWN0aXZpdHlUYXNrYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason), }, null, new pbr::GeneratedClrTypeInfo[] {

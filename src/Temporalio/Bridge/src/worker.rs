@@ -12,6 +12,7 @@ use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollActivityError;
 use temporal_sdk_core_api::errors::PollWfError;
 use temporal_sdk_core_api::errors::WorkflowErrorType;
+use temporal_sdk_core_api::worker::SlotKind;
 use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
@@ -662,10 +663,12 @@ impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
     }
 }
 
-impl TryFrom<SlotSupplier> for temporal_sdk_core::SlotSupplierOptions {
+impl<SK: SlotKind> TryFrom<SlotSupplier> for temporal_sdk_core::SlotSupplierOptions<SK> {
     type Error = anyhow::Error;
 
-    fn try_from(supplier: SlotSupplier) -> anyhow::Result<temporal_sdk_core::SlotSupplierOptions> {
+    fn try_from(
+        supplier: SlotSupplier,
+    ) -> anyhow::Result<temporal_sdk_core::SlotSupplierOptions<SK>> {
         Ok(match supplier {
             SlotSupplier::FixedSize(fs) => temporal_sdk_core::SlotSupplierOptions::FixedSize {
                 slots: fs.num_slots,

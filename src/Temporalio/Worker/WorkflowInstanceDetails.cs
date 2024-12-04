@@ -15,7 +15,7 @@ namespace Temporalio.Worker
     /// <param name="TaskQueue">Workflow task queue.</param>
     /// <param name="Definition">Workflow definition.</param>
     /// <param name="InitialActivation">Initial activation for the workflow.</param>
-    /// <param name="Start">Start attributes for the workflow.</param>
+    /// <param name="Init">Start attributes for the workflow.</param>
     /// <param name="Interceptors">Interceptors.</param>
     /// <param name="PayloadConverter">Payload converter.</param>
     /// <param name="FailureConverter">Failure converter.</param>
@@ -32,7 +32,7 @@ namespace Temporalio.Worker
         string TaskQueue,
         WorkflowDefinition Definition,
         WorkflowActivation InitialActivation,
-        StartWorkflow Start,
+        InitializeWorkflow Init,
         IReadOnlyCollection<Interceptors.IWorkerInterceptor> Interceptors,
         IPayloadConverter PayloadConverter,
         IFailureConverter FailureConverter,
