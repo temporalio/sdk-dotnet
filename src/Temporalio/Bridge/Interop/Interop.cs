@@ -579,14 +579,14 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomReserveSlotCallback([NativeTypeName("struct SlotReserveCtx")] SlotReserveCtx ctx, void* sender);
+    internal unsafe delegate void CustomReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* sender);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void CustomCancelReserveCallback(void* token_source);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("uintptr_t")]
-    internal delegate UIntPtr CustomTryReserveSlotCallback([NativeTypeName("struct SlotReserveCtx")] SlotReserveCtx ctx);
+    internal unsafe delegate UIntPtr CustomTryReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx);
 
     internal enum SlotInfo_Tag
     {
@@ -680,7 +680,7 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal delegate void CustomMarkSlotUsedCallback([NativeTypeName("struct SlotMarkUsedCtx")] SlotMarkUsedCtx ctx);
+    internal unsafe delegate void CustomMarkSlotUsedCallback([NativeTypeName("const struct SlotMarkUsedCtx *")] SlotMarkUsedCtx* ctx);
 
     internal unsafe partial struct SlotReleaseCtx
     {
@@ -692,7 +692,10 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal delegate void CustomReleaseSlotCallback([NativeTypeName("struct SlotReleaseCtx")] SlotReleaseCtx ctx);
+    internal unsafe delegate void CustomReleaseSlotCallback([NativeTypeName("const struct SlotReleaseCtx *")] SlotReleaseCtx* ctx);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomSlotImplFreeCallback([NativeTypeName("const struct CustomSlotSupplierCallbacks *")] CustomSlotSupplierCallbacks* userimpl);
 
     internal partial struct CustomSlotSupplierCallbacks
     {
@@ -710,6 +713,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("CustomReleaseSlotCallback")]
         public IntPtr release;
+
+        [NativeTypeName("CustomSlotImplFreeCallback")]
+        public IntPtr free;
     }
 
     internal unsafe partial struct CustomSlotSupplierCallbacksImpl
@@ -729,7 +735,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L472_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L475_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -769,15 +775,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L473_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L476_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L476_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L479_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L479_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L482_C5")]
             public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct

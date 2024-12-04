@@ -10,14 +10,15 @@ namespace Temporalio.Worker.Tuning
     /// <remarks>
     /// WARNING: Custom slot suppliers are currently experimental.
     /// </remarks>
-    public interface ICustomSlotSupplier : ISlotSupplier
+    public abstract class CustomSlotSupplier : SlotSupplier
     {
         /// <summary>
         /// This function is called before polling for new tasks. Your implementation must block
         /// until a slot is available then return a permit to use that slot.
         /// The only acceptable exception to throw is <see cref="OperationCanceledException"/>, as
         /// invocations of this method may be cancelled. Any other exceptions thrown will be logged
-        /// and ignored.
+        /// and ignored. If an exception is thrown, this method will be called again after a one
+        /// second wait, since it must block until a permit is returned.
         /// </summary>
         /// <remarks>
         /// This method will be called concurrently from multiple threads, so it must be thread-safe.
@@ -27,7 +28,7 @@ namespace Temporalio.Worker.Tuning
         ///  to cancel the operation.</param>
         /// <returns>A permit to use the slot which may be populated with your own data.</returns>
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
-        public Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken);
+        public abstract Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken);
 
         /// <summary>
         /// This function is called when trying to reserve slots for "eager" workflow and activity tasks.
@@ -38,9 +39,12 @@ namespace Temporalio.Worker.Tuning
         /// <remarks>
         /// This method will be called concurrently from multiple threads, so it must be thread-safe.
         /// </remarks>
+        /// <remarks>
+        /// Any exceptions thrown will be logged and ignored.
+        /// </remarks>
         /// <param name="ctx">The context for slot reservation.</param>
         /// <returns>Maybe a permit to use the slot which may be populated with your own data.</returns>
-        public ISlotPermit? TryReserveSlot(SlotReserveContext ctx);
+        public abstract SlotPermit? TryReserveSlot(SlotReserveContext ctx);
 
         /// <summary>
         /// This function is called once a slot is actually being used to process some task, which may be
@@ -51,8 +55,11 @@ namespace Temporalio.Worker.Tuning
         /// <remarks>
         /// This method will be called concurrently from multiple threads, so it must be thread-safe.
         /// </remarks>
+        /// <remarks>
+        /// Any exceptions thrown will be logged and ignored.
+        /// </remarks>
         /// <param name="ctx">The context for marking a slot as used.</param>
-        public void MarkSlotUsed(SlotMarkUsedContext ctx);
+        public abstract void MarkSlotUsed(SlotMarkUsedContext ctx);
 
         /// <summary>
         /// This function is called once a permit is no longer needed. This could be because the task has
@@ -62,7 +69,10 @@ namespace Temporalio.Worker.Tuning
         /// <remarks>
         /// This method will be called concurrently from multiple threads, so it must be thread-safe.
         /// </remarks>
+        /// <remarks>
+        /// Any exceptions thrown will be logged and ignored.
+        /// </remarks>
         /// <param name="ctx">The context for releasing a slot.</param>
-        public void ReleaseSlot(SlotReleaseContext ctx);
+        public abstract void ReleaseSlot(SlotReleaseContext ctx);
     }
 }

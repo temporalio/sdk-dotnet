@@ -1,35 +1,16 @@
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
-    /// Context for releasing a slot used from a <see cref="ICustomSlotSupplier"/>.
+    /// Context for releasing a slot used from a <see cref="CustomSlotSupplier"/>.
     /// </summary>
+    /// <param name="SlotInfo">Info about the task that will be using the slot. May be null if the slot was never used.</param>
+    /// <param name="Permit">The permit that was issued when the slot was reserved.</param>
     /// <remarks>
     /// WARNING: Custom slot suppliers are currently experimental.
     /// </remarks>
-    public class SlotReleaseContext
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SlotReleaseContext"/> class.
-        /// </summary>
-        /// <param name="ctx">The bridge version of the slot release context.</param>
-        /// <param name="permit">The user-create permit instance.</param>
-        internal SlotReleaseContext(Temporalio.Bridge.Interop.SlotReleaseCtx ctx, ISlotPermit permit)
-        {
-            unsafe
-            {
-                this.SlotInfo = ctx.slot_info is null ? null : SlotInfo.FromBridge(*ctx.slot_info);
-            }
-            this.Permit = permit;
-        }
-
-        /// <summary>
-        /// Gets info about the task that will be using the slot. May be null if the slot was never used.
-        /// </summary>
-        public SlotInfo? SlotInfo { get; }
-
-        /// <summary>
-        /// Gets the permit that was issued when the slot was reserved.
-        /// </summary>
-        public ISlotPermit Permit { get; }
-    }
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
+    public record SlotReleaseContext(SlotInfo? SlotInfo, SlotPermit Permit);
 }

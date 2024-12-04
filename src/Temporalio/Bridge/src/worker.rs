@@ -95,12 +95,14 @@ unsafe impl<SK> Send for CustomSlotSupplier<SK> {}
 unsafe impl<SK> Sync for CustomSlotSupplier<SK> {}
 
 type CustomReserveSlotCallback =
-    unsafe extern "C" fn(ctx: SlotReserveCtx, sender: *mut libc::c_void);
+    unsafe extern "C" fn(ctx: *const SlotReserveCtx, sender: *mut libc::c_void);
 type CustomCancelReserveCallback = unsafe extern "C" fn(token_source: *mut libc::c_void);
 /// Must return C#-tracked id for the permit. A zero value means no permit was reserved.
-type CustomTryReserveSlotCallback = unsafe extern "C" fn(ctx: SlotReserveCtx) -> usize;
-type CustomMarkSlotUsedCallback = unsafe extern "C" fn(ctx: SlotMarkUsedCtx);
-type CustomReleaseSlotCallback = unsafe extern "C" fn(ctx: SlotReleaseCtx);
+type CustomTryReserveSlotCallback = unsafe extern "C" fn(ctx: *const SlotReserveCtx) -> usize;
+type CustomMarkSlotUsedCallback = unsafe extern "C" fn(ctx: *const SlotMarkUsedCtx);
+type CustomReleaseSlotCallback = unsafe extern "C" fn(ctx: *const SlotReleaseCtx);
+type CustomSlotImplFreeCallback =
+    unsafe extern "C" fn(userimpl: *const CustomSlotSupplierCallbacks);
 
 #[repr(C)]
 #[derive(Clone, Copy)]
@@ -113,6 +115,7 @@ pub struct CustomSlotSupplierCallbacks {
     try_reserve: CustomTryReserveSlotCallback,
     mark_used: CustomMarkSlotUsedCallback,
     release: CustomReleaseSlotCallback,
+    free: CustomSlotImplFreeCallback,
 }
 
 impl CustomSlotSupplierCallbacksImpl {
@@ -124,6 +127,13 @@ impl CustomSlotSupplierCallbacksImpl {
             inner: self,
             _pd: Default::default(),
         })
+    }
+}
+impl Drop for CustomSlotSupplierCallbacks {
+    fn drop(&mut self) {
+        unsafe {
+            (self.free)(&*self);
+        }
     }
 }
 
@@ -144,6 +154,7 @@ pub struct SlotReserveCtx {
     // The C# side will store a pointer here to the cancellation token source
     token_src: *mut libc::c_void,
 }
+unsafe impl Send for SlotReserveCtx {}
 
 #[repr(C)]
 pub enum SlotInfo {
@@ -203,14 +214,14 @@ impl<SK: SlotKind + Send + Sync> temporal_sdk_core_api::worker::SlotSupplier
                 token_src: ctx.token_src,
                 callback: (*self.inner.0).cancel_reserve,
             };
-            ((*self.inner.0).reserve)(ctx, tx);
+            ((*self.inner.0).reserve)(&ctx, tx);
             rx.await.expect("reserve channel is not closed")
         }
     }
 
     fn try_reserve_slot(&self, ctx: &dyn SlotReservationContext) -> Option<SlotSupplierPermit> {
         let ctx = Self::convert_reserve_ctx(ctx);
-        let permit_id = unsafe { ((*self.inner.0).try_reserve)(ctx) };
+        let permit_id = unsafe { ((*self.inner.0).try_reserve)(&ctx) };
         if permit_id == 0 {
             None
         } else {
@@ -224,7 +235,7 @@ impl<SK: SlotKind + Send + Sync> temporal_sdk_core_api::worker::SlotSupplier
             slot_permit: ctx.permit().user_data::<usize>().map(|u| *u).unwrap_or(0),
         };
         unsafe {
-            ((*self.inner.0).mark_used)(ctx);
+            ((*self.inner.0).mark_used)(&ctx);
         }
     }
 
@@ -239,7 +250,7 @@ impl<SK: SlotKind + Send + Sync> temporal_sdk_core_api::worker::SlotSupplier
             slot_permit: ctx.permit().user_data::<usize>().map(|u| *u).unwrap_or(0),
         };
         unsafe {
-            ((*self.inner.0).release)(ctx);
+            ((*self.inner.0).release)(&ctx);
         }
     }
 

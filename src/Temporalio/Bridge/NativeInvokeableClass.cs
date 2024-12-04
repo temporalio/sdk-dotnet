@@ -8,7 +8,7 @@ namespace Temporalio.Bridge
     /// Extend this class to help with making a class that has callbacks which are invoked by Rust.
     /// </summary>
     /// <typeparam name="T">The native type that holds the function ptrs for callbacks to C#.</typeparam>
-    internal class NativeInvokeableClass<T>
+    internal abstract class NativeInvokeableClass<T>
     where T : unmanaged
     {
         private readonly List<GCHandle> handles = new();
@@ -23,7 +23,7 @@ namespace Temporalio.Bridge
         /// the callbacks via <see cref="FunctionPointer"/>. Also adds `this` to the handle list.
         /// </summary>
         /// <param name="value">The native type to pin.</param>
-        internal void PinCallbackHolder(T value)
+        private protected void PinCallbackHolder(T value)
         {
             // Pin the callback holder & set it as the first handle
             var holderHandle = GCHandle.Alloc(value, GCHandleType.Pinned);
@@ -42,7 +42,7 @@ namespace Temporalio.Bridge
         /// <typeparam name="TF">The native type of the function pointer.</typeparam>
         /// <param name="func">The C# method to use for the callback.</param>
         /// <returns>The function pointer to the C# method.</returns>
-        internal IntPtr FunctionPointer<TF>(TF func)
+        private protected IntPtr FunctionPointer<TF>(TF func)
             where TF : Delegate
         {
             var handle = GCHandle.Alloc(func);
@@ -53,8 +53,8 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Free the memory of the native type and all the function pointers.
         /// </summary>
-        /// <param name="meter">The native type to free.</param>
-        internal unsafe void Free(T* meter)
+        /// <param name="ptr">The native type to free.</param>
+        private protected unsafe void Free(T* ptr)
         {
             // Free in order which frees function pointers first then object handles
             foreach (var handle in handles)

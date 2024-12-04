@@ -9,10 +9,16 @@ namespace Temporalio.Worker.Tuning
     /// Pre-built slot suppliers are available as
     /// <see cref="FixedSizeSlotSupplier"/> and <see cref="ResourceBasedSlotSupplier"/>.
     ///
-    /// In order to implement your own slot supplier, you can implement the
-    /// <see cref="ICustomSlotSupplier"/> interface.
+    /// In order to implement your own slot supplier, you can extend the
+    /// <see cref="CustomSlotSupplier"/> class.
     /// </summary>
-    public interface ISlotSupplier
+    public abstract class SlotSupplier
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SlotSupplier"/> class.
+        /// </summary>
+        internal SlotSupplier()
+        {
+        }
     }
 }

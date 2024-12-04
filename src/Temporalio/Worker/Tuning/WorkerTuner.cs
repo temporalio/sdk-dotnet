@@ -1,7 +1,7 @@
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
-    /// Implements <see cref="IWorkerTuner"/> by holding the different <see cref="ISlotSupplier"/>s.
+    /// Implements <see cref="IWorkerTuner"/> by holding the different <see cref="SlotSupplier"/>s.
     /// </summary>
     public class WorkerTuner : IWorkerTuner
     {
@@ -14,9 +14,9 @@ namespace Temporalio.Worker.Tuning
         /// <param name="localActivitySlotSupplier">The supplier of local activity slots.</param>
         /// <returns>The tuner.</returns>
         public WorkerTuner(
-            ISlotSupplier workflowTaskSlotSupplier,
-            ISlotSupplier activityTaskSlotSupplier,
-            ISlotSupplier localActivitySlotSupplier)
+            SlotSupplier workflowTaskSlotSupplier,
+            SlotSupplier activityTaskSlotSupplier,
+            SlotSupplier localActivitySlotSupplier)
         {
             WorkflowTaskSlotSupplier = workflowTaskSlotSupplier;
             ActivityTaskSlotSupplier = activityTaskSlotSupplier;
@@ -27,19 +27,19 @@ namespace Temporalio.Worker.Tuning
         /// Gets a slot supplier for workflow tasks.
         /// </summary>
         /// <returns>A slot supplier for workflow tasks.</returns>
-        public ISlotSupplier WorkflowTaskSlotSupplier { get; init; }
+        public SlotSupplier WorkflowTaskSlotSupplier { get; init; }
 
         /// <summary>
         /// Gets a slot supplier for activity tasks.
         /// </summary>
         /// <returns>A slot supplier for activity tasks.</returns>
-        public ISlotSupplier ActivityTaskSlotSupplier { get; init; }
+        public SlotSupplier ActivityTaskSlotSupplier { get; init; }
 
         /// <summary>
         /// Gets a slot supplier for local activities.
         /// </summary>
         /// <returns>A slot supplier for local activities.</returns>
-        public ISlotSupplier LocalActivitySlotSupplier { get; init; }
+        public SlotSupplier LocalActivitySlotSupplier { get; init; }
 
         /// <summary>
         /// Create a resource based tuner with the provided options.

@@ -392,14 +392,14 @@ typedef struct SlotReserveCtx {
   void *token_src;
 } SlotReserveCtx;
 
-typedef void (*CustomReserveSlotCallback)(struct SlotReserveCtx ctx, void *sender);
+typedef void (*CustomReserveSlotCallback)(const struct SlotReserveCtx *ctx, void *sender);
 
 typedef void (*CustomCancelReserveCallback)(void *token_source);
 
 /**
  * Must return C#-tracked id for the permit. A zero value means no permit was reserved.
  */
-typedef uintptr_t (*CustomTryReserveSlotCallback)(struct SlotReserveCtx ctx);
+typedef uintptr_t (*CustomTryReserveSlotCallback)(const struct SlotReserveCtx *ctx);
 
 typedef enum SlotInfo_Tag {
   WorkflowSlotInfo,
@@ -437,7 +437,7 @@ typedef struct SlotMarkUsedCtx {
   uintptr_t slot_permit;
 } SlotMarkUsedCtx;
 
-typedef void (*CustomMarkSlotUsedCallback)(struct SlotMarkUsedCtx ctx);
+typedef void (*CustomMarkSlotUsedCallback)(const struct SlotMarkUsedCtx *ctx);
 
 typedef struct SlotReleaseCtx {
   const struct SlotInfo *slot_info;
@@ -447,7 +447,9 @@ typedef struct SlotReleaseCtx {
   uintptr_t slot_permit;
 } SlotReleaseCtx;
 
-typedef void (*CustomReleaseSlotCallback)(struct SlotReleaseCtx ctx);
+typedef void (*CustomReleaseSlotCallback)(const struct SlotReleaseCtx *ctx);
+
+typedef void (*CustomSlotImplFreeCallback)(const struct CustomSlotSupplierCallbacks *userimpl);
 
 typedef struct CustomSlotSupplierCallbacks {
   CustomReserveSlotCallback reserve;
@@ -455,6 +457,7 @@ typedef struct CustomSlotSupplierCallbacks {
   CustomTryReserveSlotCallback try_reserve;
   CustomMarkSlotUsedCallback mark_used;
   CustomReleaseSlotCallback release;
+  CustomSlotImplFreeCallback free;
 } CustomSlotSupplierCallbacks;
 
 typedef struct CustomSlotSupplierCallbacksImpl {

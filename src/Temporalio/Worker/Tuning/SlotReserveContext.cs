@@ -1,57 +1,26 @@
-using Temporalio.Bridge;
-
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
-    /// Context for reserving a slot from a <see cref="ICustomSlotSupplier"/>.
+    /// Context for reserving a slot from a <see cref="CustomSlotSupplier"/>.
     /// </summary>
+    /// <param name="SlotType">The type of slot trying to be reserved.</param>
+    /// <param name="TaskQueue">The name of the task queue for which this reservation request is associated.</param>
+    /// <param name="WorkerIdentity">The identity of the worker that is requesting the reservation.</param>
+    /// <param name="WorkerBuildId">The build id of the worker that is requesting the reservation.</param>
+    /// <param name="IsSticky">True iff this is a reservation for a sticky poll for a workflow task.</param>
     /// <remarks>
     /// WARNING: Custom slot suppliers are currently experimental.
     /// </remarks>
-    public class SlotReserveContext
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
+    public record SlotReserveContext(
+        SlotType SlotType,
+        string TaskQueue,
+        string WorkerIdentity,
+        string WorkerBuildId,
+        bool IsSticky)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SlotReserveContext"/> class.
-        /// </summary>
-        /// <param name="ctx">The bridge version of the slot reserve context.</param>
-        internal SlotReserveContext(Temporalio.Bridge.Interop.SlotReserveCtx ctx)
-        {
-            this.SlotType = ctx.slot_type switch
-            {
-                Temporalio.Bridge.Interop.SlotKindType.WorkflowSlotKindType => SlotType.Workflow,
-                Temporalio.Bridge.Interop.SlotKindType.ActivitySlotKindType => SlotType.Activity,
-                Temporalio.Bridge.Interop.SlotKindType.LocalActivitySlotKindType => SlotType.LocalActivity,
-                _ => throw new System.ArgumentOutOfRangeException(nameof(ctx)),
-            };
-            this.TaskQueue = ByteArrayRef.ToUtf8(ctx.task_queue);
-            this.WorkerIdentity = ByteArrayRef.ToUtf8(ctx.worker_identity);
-            this.WorkerBuildId = ByteArrayRef.ToUtf8(ctx.worker_build_id);
-            this.IsSticky = ctx.is_sticky != 0;
-        }
-
-        /// <summary>
-        /// Gets the type of slot trying to be reserved.
-        /// </summary>
-        public SlotType SlotType { get; }
-
-        /// <summary>
-        /// Gets the name of the task queue for which this reservation request is associated.
-        /// </summary>
-        public string TaskQueue { get; }
-
-        /// <summary>
-        /// Gets the identity of the worker that is requesting the reservation.
-        /// </summary>
-        public string WorkerIdentity { get; }
-
-        /// <summary>
-        /// Gets the build id of the worker that is requesting the reservation.
-        /// </summary>
-        public string WorkerBuildId { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether true iff this is a reservation for a sticky poll for a workflow task.
-        /// </summary>
-        public bool IsSticky { get; }
     }
 }

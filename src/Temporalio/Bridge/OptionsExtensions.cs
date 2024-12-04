@@ -531,7 +531,7 @@ namespace Temporalio.Bridge
             ILoggerFactory loggerFactory)
         {
             Temporalio.Worker.Tuning.ResourceBasedTunerOptions? lastTunerOptions = null;
-            Temporalio.Worker.Tuning.ISlotSupplier[] suppliers =
+            Temporalio.Worker.Tuning.SlotSupplier[] suppliers =
             {
                 tuner.WorkflowTaskSlotSupplier, tuner.ActivityTaskSlotSupplier,
                 tuner.LocalActivitySlotSupplier,
@@ -562,7 +562,7 @@ namespace Temporalio.Bridge
         }
 
         private static Interop.SlotSupplier ToInteropSlotSupplier(
-            this Temporalio.Worker.Tuning.ISlotSupplier supplier,
+            this Temporalio.Worker.Tuning.SlotSupplier supplier,
             bool isWorkflow,
             ILoggerFactory loggerFactory)
         {
@@ -607,7 +607,7 @@ namespace Temporalio.Bridge
                     },
                 };
             }
-            else if (supplier is Temporalio.Worker.Tuning.ICustomSlotSupplier custom)
+            else if (supplier is Temporalio.Worker.Tuning.CustomSlotSupplier custom)
             {
                 var wrapped = new CustomSlotSupplier(custom, loggerFactory);
                 unsafe

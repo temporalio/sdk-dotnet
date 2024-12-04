@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Temporalio.Bridge.Interop;
 
 namespace Temporalio.Bridge
 {
@@ -14,8 +14,8 @@ namespace Temporalio.Bridge
     internal class CustomSlotSupplier : NativeInvokeableClass<Interop.CustomSlotSupplierCallbacks>
     {
         private readonly ILogger logger;
-        private readonly Temporalio.Worker.Tuning.ICustomSlotSupplier userSupplier;
-        private readonly Dictionary<uint, Temporalio.Worker.Tuning.ISlotPermit> permits = new();
+        private readonly Temporalio.Worker.Tuning.CustomSlotSupplier userSupplier;
+        private readonly Dictionary<uint, Temporalio.Worker.Tuning.SlotPermit> permits = new();
         private uint permitId = 1;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Temporalio.Bridge
         /// <param name="userSupplier">User's slot supplier implementation'.</param>
         /// <param name="loggerFactory">Logger factory.</param>
         internal unsafe CustomSlotSupplier(
-            Temporalio.Worker.Tuning.ICustomSlotSupplier userSupplier,
+            Temporalio.Worker.Tuning.CustomSlotSupplier userSupplier,
             ILoggerFactory loggerFactory)
         {
             this.logger = loggerFactory.CreateLogger<CustomSlotSupplier>();
@@ -37,36 +37,36 @@ namespace Temporalio.Bridge
                 try_reserve = FunctionPointer<Interop.CustomTryReserveSlotCallback>(TryReserve),
                 mark_used = FunctionPointer<Interop.CustomMarkSlotUsedCallback>(MarkUsed),
                 release = FunctionPointer<Interop.CustomReleaseSlotCallback>(Release),
+                free = FunctionPointer<Interop.CustomSlotImplFreeCallback>(Free),
             };
 
             PinCallbackHolder(interopCallbacks);
         }
 
-        private static void SetCancelTokenOnCtx(ref SlotReserveCtx ctx, CancellationTokenSource cancelTokenSrc)
+        private static Temporalio.Worker.Tuning.SlotInfo SlotInfoFromBridge(Interop.SlotInfo slotInfo)
         {
-            unsafe
+            return slotInfo.tag switch
             {
-                try
-                {
-                    var handle = GCHandle.Alloc(cancelTokenSrc);
-                    fixed (Interop.SlotReserveCtx* p = &ctx)
-                    {
-                        Interop.Methods.set_reserve_cancel_target(p, GCHandle.ToIntPtr(handle).ToPointer());
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Error setting cancel token on ctx: {e}");
-                    throw;
-                }
-            }
+                Interop.SlotInfo_Tag.WorkflowSlotInfo =>
+                    new Temporalio.Worker.Tuning.SlotInfo.WorkflowSlotInfo(
+                        ByteArrayRef.ToUtf8(slotInfo.workflow_slot_info.workflow_type), slotInfo.workflow_slot_info.is_sticky != 0),
+                Interop.SlotInfo_Tag.ActivitySlotInfo =>
+                    new Temporalio.Worker.Tuning.SlotInfo.ActivitySlotInfo(
+                        ByteArrayRef.ToUtf8(slotInfo.activity_slot_info.activity_type)),
+                Interop.SlotInfo_Tag.LocalActivitySlotInfo =>
+                    new Temporalio.Worker.Tuning.SlotInfo.LocalActivitySlotInfo(
+                        ByteArrayRef.ToUtf8(slotInfo.local_activity_slot_info.activity_type)),
+                _ => throw new System.ArgumentOutOfRangeException(nameof(slotInfo)),
+            };
         }
 
-        private unsafe void Reserve(Interop.SlotReserveCtx ctx, void* sender)
+        private unsafe void Reserve(Interop.SlotReserveCtx* ctx, void* sender)
         {
-            SafeReserve(ctx, new IntPtr(sender));
+            SafeReserve(new IntPtr(ctx), new IntPtr(sender));
         }
 
+        // Note that this is always called by Rust, either because the call is cancelled or because
+        // it completed. Therefore the GCHandle is always freed.
         private unsafe void CancelReserve(void* tokenSrc)
         {
             var handle = GCHandle.FromIntPtr(new IntPtr(tokenSrc));
@@ -75,49 +75,66 @@ namespace Temporalio.Bridge
             handle.Free();
         }
 
-        private void SafeReserve(Interop.SlotReserveCtx ctx, IntPtr sender)
+        private void SafeReserve(IntPtr ctx, IntPtr sender)
         {
-            var reserveTask = Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
-                var cancelTokenSrc = new System.Threading.CancellationTokenSource();
-                SetCancelTokenOnCtx(ref ctx, cancelTokenSrc);
-                while (true)
+                using (var cancelTokenSrc = new System.Threading.CancellationTokenSource())
                 {
-                    try
+                    unsafe
                     {
-                        var permit = await userSupplier.ReserveSlotAsync(
-                            new(ctx), cancelTokenSrc.Token).ConfigureAwait(false);
-                        var usedPermitId = AddPermitToMap(permit);
-                        unsafe
+                        var srcHandle = GCHandle.Alloc(cancelTokenSrc);
+                        Interop.Methods.set_reserve_cancel_target(
+                            (Interop.SlotReserveCtx*)ctx.ToPointer(),
+                            GCHandle.ToIntPtr(srcHandle).ToPointer());
+                    }
+                    while (true)
+                    {
+                        try
                         {
-                            Interop.Methods.complete_async_reserve(sender.ToPointer(), new(usedPermitId));
+                            ConfiguredTaskAwaitable<Temporalio.Worker.Tuning.SlotPermit> reserveTask;
+                            unsafe
+                            {
+                                reserveTask = userSupplier.ReserveSlotAsync(
+                                    ReserveCtxFromBridge((Interop.SlotReserveCtx*)ctx.ToPointer()),
+                                    cancelTokenSrc.Token).ConfigureAwait(false);
+                            }
+                            var permit = await reserveTask;
+                            unsafe
+                            {
+                                var usedPermitId = AddPermitToMap(permit);
+                                Interop.Methods.complete_async_reserve(sender.ToPointer(), new(usedPermitId));
+                            }
+                            return;
                         }
-                        cancelTokenSrc.Dispose();
-                        return;
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        cancelTokenSrc.Dispose();
-                        return;
-                    }
+                        catch (OperationCanceledException) when (cancelTokenSrc.Token.IsCancellationRequested)
+                        {
+                            unsafe
+                            {
+                                // Always call this to ensure the sender is freed
+                                Interop.Methods.complete_async_reserve(sender.ToPointer(), new(0));
+                            }
+                            return;
+                        }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
-                    catch (Exception e)
-                    {
+                        catch (Exception e)
+                        {
 #pragma warning restore CA1031
-                        logger.LogError(e, "Error reserving slot");
+                            logger.LogError(e, "Error reserving slot");
+                        }
+                        // Wait for a bit to avoid spamming errors
+                        await Task.Delay(1000, cancelTokenSrc.Token).ConfigureAwait(false);
                     }
-                    // Wait for a bit to avoid spamming errors
-                    await Task.Delay(1000, cancelTokenSrc.Token).ConfigureAwait(false);
                 }
             });
         }
 
-        private unsafe UIntPtr TryReserve(Interop.SlotReserveCtx ctx)
+        private unsafe UIntPtr TryReserve(Interop.SlotReserveCtx* ctx)
         {
-            Temporalio.Worker.Tuning.ISlotPermit? maybePermit;
+            Temporalio.Worker.Tuning.SlotPermit? maybePermit;
             try
             {
-                maybePermit = userSupplier.TryReserveSlot(new(ctx));
+                maybePermit = userSupplier.TryReserveSlot(ReserveCtxFromBridge(ctx));
             }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
             catch (Exception e)
@@ -135,11 +152,16 @@ namespace Temporalio.Bridge
             return new(usedPermitId);
         }
 
-        private void MarkUsed(Interop.SlotMarkUsedCtx ctx)
+        private unsafe void MarkUsed(Interop.SlotMarkUsedCtx* ctx)
         {
             try
             {
-                userSupplier.MarkSlotUsed(new(ctx, permits[ctx.slot_permit.ToUInt32()]));
+                Temporalio.Worker.Tuning.SlotPermit permit;
+                lock (permits)
+                {
+                    permit = permits[(*ctx).slot_permit.ToUInt32()];
+                }
+                userSupplier.MarkSlotUsed(MarkUsedCtxFromBridge(ctx, permit));
             }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
             catch (Exception e)
@@ -149,12 +171,17 @@ namespace Temporalio.Bridge
             }
         }
 
-        private void Release(Interop.SlotReleaseCtx ctx)
+        private unsafe void Release(Interop.SlotReleaseCtx* ctx)
         {
-            var permitId = ctx.slot_permit.ToUInt32();
+            var permitId = (*ctx).slot_permit.ToUInt32();
+            Temporalio.Worker.Tuning.SlotPermit permit;
+            lock (permits)
+            {
+                permit = permits[permitId];
+            }
             try
             {
-                userSupplier.ReleaseSlot(new(ctx, permits[permitId]));
+                userSupplier.ReleaseSlot(ReleaseCtxFromBridge(ctx, permit));
             }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
             catch (Exception e)
@@ -162,10 +189,16 @@ namespace Temporalio.Bridge
 #pragma warning restore CA1031
                 logger.LogError(e, "Error releasing slot");
             }
-            permits.Remove(permitId);
+            finally
+            {
+                lock (permits)
+                {
+                    permits.Remove(permitId);
+                }
+            }
         }
 
-        private uint AddPermitToMap(Temporalio.Worker.Tuning.ISlotPermit permit)
+        private uint AddPermitToMap(Temporalio.Worker.Tuning.SlotPermit permit)
         {
             lock (permits)
             {
@@ -174,6 +207,40 @@ namespace Temporalio.Bridge
                 permitId += 1;
                 return usedPermitId;
             }
+        }
+
+        private unsafe Temporalio.Worker.Tuning.SlotReserveContext ReserveCtxFromBridge(Interop.SlotReserveCtx* ctx)
+        {
+            return new(
+                SlotType: (*ctx).slot_type switch
+                {
+                    Interop.SlotKindType.WorkflowSlotKindType => Temporalio.Worker.Tuning.SlotType.Workflow,
+                    Interop.SlotKindType.ActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.Activity,
+                    Interop.SlotKindType.LocalActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.LocalActivity,
+                    _ => throw new System.ArgumentOutOfRangeException(nameof(ctx)),
+                },
+                TaskQueue: ByteArrayRef.ToUtf8((*ctx).task_queue),
+                WorkerIdentity: ByteArrayRef.ToUtf8((*ctx).worker_identity),
+                WorkerBuildId: ByteArrayRef.ToUtf8((*ctx).worker_build_id),
+                IsSticky: (*ctx).is_sticky != 0);
+        }
+
+        private unsafe Temporalio.Worker.Tuning.SlotReleaseContext ReleaseCtxFromBridge(
+            Interop.SlotReleaseCtx* ctx,
+            Temporalio.Worker.Tuning.SlotPermit permit)
+        {
+            return new(
+                SlotInfo: (*ctx).slot_info is null ? null : SlotInfoFromBridge(*(*ctx).slot_info),
+                Permit: permit);
+        }
+
+        private unsafe Temporalio.Worker.Tuning.SlotMarkUsedContext MarkUsedCtxFromBridge(
+            Interop.SlotMarkUsedCtx* ctx,
+            Temporalio.Worker.Tuning.SlotPermit permit)
+        {
+            return new(
+                SlotInfo: SlotInfoFromBridge((*ctx).slot_info),
+                Permit: permit);
         }
     }
 }

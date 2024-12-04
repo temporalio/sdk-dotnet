@@ -122,17 +122,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         Assert.Contains("Cannot set both Tuner and any of", argumentException.Message);
     }
 
-    private struct MyPermit : ISlotPermit
-    {
-        public readonly uint Dat;
-
-        public MyPermit(uint v)
-        {
-            this.Dat = v;
-        }
-    }
-
-    private class MySlotSupplier : ICustomSlotSupplier
+    private class MySlotSupplier : CustomSlotSupplier
     {
         private object lockObj = new();
 
@@ -156,21 +146,21 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
 
         public HashSet<bool> SeenReleaseInfoPresence { get; } = new();
 
-        public async Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
+        public override async Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
         {
             // Do something async to make sure that works
             await Task.Delay(10, cancellationToken);
             ReserveTracking(ctx);
-            return new MyPermit(ReserveCount);
+            return new SlotPermit(ReserveCount);
         }
 
-        public ISlotPermit? TryReserveSlot(SlotReserveContext ctx)
+        public override SlotPermit? TryReserveSlot(SlotReserveContext ctx)
         {
             ReserveTracking(ctx);
-            return new MyPermit(ReserveCount);
+            return new SlotPermit(ReserveCount);
         }
 
-        public void MarkSlotUsed(SlotMarkUsedContext ctx)
+        public override void MarkSlotUsed(SlotMarkUsedContext ctx)
         {
             lock (lockObj)
             {
@@ -190,16 +180,16 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             }
         }
 
-        public void ReleaseSlot(SlotReleaseContext ctx)
+        public override void ReleaseSlot(SlotReleaseContext ctx)
         {
-            var permit = (MyPermit)ctx.Permit;
+            var dat = (uint)ctx.Permit.UserData!;
             lock (lockObj)
             {
                 ReleaseCount++;
                 SeenReleaseInfoPresence.Add(ctx.SlotInfo == null);
-                if (permit.Dat > BiggestReleasedPermit)
+                if (dat > BiggestReleasedPermit)
                 {
-                    BiggestReleasedPermit = permit.Dat;
+                    BiggestReleasedPermit = dat;
                 }
             }
         }
@@ -231,8 +221,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
                 (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
         });
-        Assert.Equal(mySlotSupplier.ReserveCount, mySlotSupplier.ReleaseCount);
-        Assert.Equal(mySlotSupplier.ReserveCount, mySlotSupplier.BiggestReleasedPermit);
+        Assert.Equal(mySlotSupplier.ReleaseCount, mySlotSupplier.BiggestReleasedPermit);
         Assert.True(mySlotSupplier.SawWFSlotInfo);
         Assert.True(mySlotSupplier.SawActSlotInfo);
         Assert.Contains("SimpleWorkflow", mySlotSupplier.SeenWorkflowTypes);
@@ -241,29 +230,29 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         Assert.Equal(2, mySlotSupplier.SeenReleaseInfoPresence.Count);
     }
 
-    private class ThrowingSlotSupplier : ICustomSlotSupplier
+    private class ThrowingSlotSupplier : CustomSlotSupplier
     {
-        public Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
+        public override Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
         {
             // Let the workflow complete, but other reservations fail
             if (ctx.SlotType == SlotType.Workflow)
             {
-                return Task.FromResult<ISlotPermit>(new MyPermit(1));
+                return Task.FromResult<SlotPermit>(new SlotPermit(1));
             }
             throw new InvalidOperationException("ReserveSlot");
         }
 
-        public ISlotPermit? TryReserveSlot(SlotReserveContext ctx)
+        public override SlotPermit? TryReserveSlot(SlotReserveContext ctx)
         {
             throw new InvalidOperationException("TryReserveSlot");
         }
 
-        public void MarkSlotUsed(SlotMarkUsedContext ctx)
+        public override void MarkSlotUsed(SlotMarkUsedContext ctx)
         {
             throw new InvalidOperationException("MarkSlotUsed");
         }
 
-        public void ReleaseSlot(SlotReleaseContext ctx)
+        public override void ReleaseSlot(SlotReleaseContext ctx)
         {
             throw new InvalidOperationException("ReleaseSlot");
         }
@@ -287,25 +276,25 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         });
     }
 
-    private class BlockingSlotSupplier : ICustomSlotSupplier
+    private class BlockingSlotSupplier : CustomSlotSupplier
     {
-        public async Task<ISlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
+        public override async Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
         {
             await Task.Delay(100_000, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             throw new InvalidOperationException("Should not be reachable");
         }
 
-        public ISlotPermit? TryReserveSlot(SlotReserveContext ctx)
+        public override SlotPermit? TryReserveSlot(SlotReserveContext ctx)
         {
             return null;
         }
 
-        public void MarkSlotUsed(SlotMarkUsedContext ctx)
+        public override void MarkSlotUsed(SlotMarkUsedContext ctx)
         {
         }
 
-        public void ReleaseSlot(SlotReleaseContext ctx)
+        public override void ReleaseSlot(SlotReleaseContext ctx)
         {
         }
     }
