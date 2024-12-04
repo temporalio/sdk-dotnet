@@ -898,7 +898,7 @@ namespace Temporalio.Worker
                     ApplySignalWorkflow(job.SignalWorkflow);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
-                    ApplyStartWorkflow(job.InitializeWorkflow);
+                    ApplyInitializeWorkflow(job.InitializeWorkflow);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
                     ApplyUpdateRandomSeed(job.UpdateRandomSeed);
@@ -1309,7 +1309,7 @@ namespace Temporalio.Worker
             }));
         }
 
-        private void ApplyStartWorkflow(InitializeWorkflow init)
+        private void ApplyInitializeWorkflow(InitializeWorkflow init)
         {
             _ = QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
             {
@@ -1732,7 +1732,6 @@ namespace Temporalio.Worker
                         {
                             Seq = seq,
                             StartToFireTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(delay),
-                            Summary = instance.PayloadConverter.ToPayload(string.Empty),
                         },
                     });
                 }
