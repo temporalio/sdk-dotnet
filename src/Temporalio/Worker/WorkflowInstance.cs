@@ -1732,6 +1732,7 @@ namespace Temporalio.Worker
                         {
                             Seq = seq,
                             StartToFireTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(delay),
+                            Summary = instance.PayloadConverter.ToPayload(string.Empty),
                         },
                     });
                 }
