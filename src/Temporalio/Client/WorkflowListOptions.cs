@@ -14,6 +14,11 @@ namespace Temporalio.Client
         public RpcOptions? Rpc { get; set; }
 
         /// <summary>
+        /// Gets or sets the maximum number of workflows to return. A zero value means no limit.
+        /// </summary>
+        public int Limit { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>

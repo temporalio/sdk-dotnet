@@ -272,6 +272,15 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
             actualResults.Add(result);
         }
         Assert.Equal(expectedResults, actualResults);
+
+        // Verify limit option works
+        var limitedResults = 0;
+        await foreach (var wf in Client.ListWorkflowsAsync(
+            $"WorkflowId = '{workflowId}'", new() { Limit = 3 }))
+        {
+            limitedResults++;
+        }
+        Assert.Equal(3, limitedResults);
     }
 
     [Workflow]
