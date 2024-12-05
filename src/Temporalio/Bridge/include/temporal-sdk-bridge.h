@@ -42,6 +42,12 @@ typedef enum RpcService {
   Health,
 } RpcService;
 
+typedef enum SlotKindType {
+  WorkflowSlotKindType,
+  ActivitySlotKindType,
+  LocalActivitySlotKindType,
+} SlotKindType;
+
 typedef struct CancellationToken CancellationToken;
 
 typedef struct Client Client;
@@ -377,9 +383,91 @@ typedef struct ResourceBasedSlotSupplier {
   struct ResourceBasedTunerOptions tuner_options;
 } ResourceBasedSlotSupplier;
 
+typedef struct SlotReserveCtx {
+  enum SlotKindType slot_type;
+  struct ByteArrayRef task_queue;
+  struct ByteArrayRef worker_identity;
+  struct ByteArrayRef worker_build_id;
+  bool is_sticky;
+  void *token_src;
+} SlotReserveCtx;
+
+typedef void (*CustomReserveSlotCallback)(const struct SlotReserveCtx *ctx, void *sender);
+
+typedef void (*CustomCancelReserveCallback)(void *token_source);
+
+/**
+ * Must return C#-tracked id for the permit. A zero value means no permit was reserved.
+ */
+typedef uintptr_t (*CustomTryReserveSlotCallback)(const struct SlotReserveCtx *ctx);
+
+typedef enum SlotInfo_Tag {
+  WorkflowSlotInfo,
+  ActivitySlotInfo,
+  LocalActivitySlotInfo,
+} SlotInfo_Tag;
+
+typedef struct WorkflowSlotInfo_Body {
+  struct ByteArrayRef workflow_type;
+  bool is_sticky;
+} WorkflowSlotInfo_Body;
+
+typedef struct ActivitySlotInfo_Body {
+  struct ByteArrayRef activity_type;
+} ActivitySlotInfo_Body;
+
+typedef struct LocalActivitySlotInfo_Body {
+  struct ByteArrayRef activity_type;
+} LocalActivitySlotInfo_Body;
+
+typedef struct SlotInfo {
+  SlotInfo_Tag tag;
+  union {
+    WorkflowSlotInfo_Body workflow_slot_info;
+    ActivitySlotInfo_Body activity_slot_info;
+    LocalActivitySlotInfo_Body local_activity_slot_info;
+  };
+} SlotInfo;
+
+typedef struct SlotMarkUsedCtx {
+  struct SlotInfo slot_info;
+  /**
+   * C# id for the slot permit.
+   */
+  uintptr_t slot_permit;
+} SlotMarkUsedCtx;
+
+typedef void (*CustomMarkSlotUsedCallback)(const struct SlotMarkUsedCtx *ctx);
+
+typedef struct SlotReleaseCtx {
+  const struct SlotInfo *slot_info;
+  /**
+   * C# id for the slot permit.
+   */
+  uintptr_t slot_permit;
+} SlotReleaseCtx;
+
+typedef void (*CustomReleaseSlotCallback)(const struct SlotReleaseCtx *ctx);
+
+typedef void (*CustomSlotImplFreeCallback)(const struct CustomSlotSupplierCallbacks *userimpl);
+
+typedef struct CustomSlotSupplierCallbacks {
+  CustomReserveSlotCallback reserve;
+  CustomCancelReserveCallback cancel_reserve;
+  CustomTryReserveSlotCallback try_reserve;
+  CustomMarkSlotUsedCallback mark_used;
+  CustomReleaseSlotCallback release;
+  CustomSlotImplFreeCallback free;
+} CustomSlotSupplierCallbacks;
+
+typedef struct CustomSlotSupplierCallbacksImpl {
+  const struct CustomSlotSupplierCallbacks *_0;
+} CustomSlotSupplierCallbacksImpl;
+
 typedef enum SlotSupplier_Tag {
   FixedSize,
   ResourceBased,
+  Custom,
 } SlotSupplier_Tag;
 
 typedef struct SlotSupplier {
@@ -390,6 +478,9 @@ typedef struct SlotSupplier {
     };
     struct {
       struct ResourceBasedSlotSupplier resource_based;
+    };
+    struct {
+      struct CustomSlotSupplierCallbacksImpl custom;
     };
   };
 } SlotSupplier;
@@ -607,6 +698,10 @@ struct WorkerReplayPushResult worker_replay_push(struct Worker *worker,
                                                  struct WorkerReplayPusher *worker_replay_pusher,
                                                  struct ByteArrayRef workflow_id,
                                                  struct ByteArrayRef history);
+
+void complete_async_reserve(void *sender, uintptr_t permit_id);
+
+void set_reserve_cancel_target(struct SlotReserveCtx *ctx, void *token_ptr);
 
 #ifdef __cplusplus
 } // extern "C"

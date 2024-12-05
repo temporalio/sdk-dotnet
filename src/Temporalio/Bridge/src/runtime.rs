@@ -316,13 +316,13 @@ impl fmt::Debug for LogForwarder {
 #[no_mangle]
 pub extern "C" fn forwarded_log_target(log: *const ForwardedLog) -> ByteArrayRef {
     let log = unsafe { &*log };
-    ByteArrayRef::from_string(&log.core.target)
+    ByteArrayRef::from_str(&log.core.target)
 }
 
 #[no_mangle]
 pub extern "C" fn forwarded_log_message(log: *const ForwardedLog) -> ByteArrayRef {
     let log = unsafe { &*log };
-    ByteArrayRef::from_string(&log.core.message)
+    ByteArrayRef::from_str(&log.core.message)
 }
 
 #[no_mangle]

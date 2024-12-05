@@ -417,7 +417,7 @@ impl CustomMetricMeterRef {
                         ),
                     };
                     CustomMetricAttribute {
-                        key: ByteArrayRef::from_string(&kv.key),
+                        key: ByteArrayRef::from_str(&kv.key),
                         value,
                         value_type,
                     }
