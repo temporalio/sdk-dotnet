@@ -621,7 +621,7 @@ namespace Temporalio.Bridge
             }
             else
             {
-                throw new ArgumentException("ISlotSupplier is an invalid type");
+                throw new ArgumentException("Unknown slot supplier type");
             }
         }
 

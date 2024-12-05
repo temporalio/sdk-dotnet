@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,14 +91,14 @@ namespace Temporalio.Bridge
                     {
                         try
                         {
-                            ConfiguredTaskAwaitable<Temporalio.Worker.Tuning.SlotPermit> reserveTask;
+                            Task<Temporalio.Worker.Tuning.SlotPermit> reserveTask;
                             unsafe
                             {
                                 reserveTask = userSupplier.ReserveSlotAsync(
                                     ReserveCtxFromBridge((Interop.SlotReserveCtx*)ctx.ToPointer()),
-                                    cancelTokenSrc.Token).ConfigureAwait(false);
+                                    cancelTokenSrc.Token);
                             }
-                            var permit = await reserveTask;
+                            var permit = await reserveTask.ConfigureAwait(false);
                             unsafe
                             {
                                 var usedPermitId = AddPermitToMap(permit);

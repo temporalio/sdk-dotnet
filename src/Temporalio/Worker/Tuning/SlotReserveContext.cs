@@ -20,7 +20,5 @@ namespace Temporalio.Worker.Tuning
         string TaskQueue,
         string WorkerIdentity,
         string WorkerBuildId,
-        bool IsSticky)
-    {
-    }
+        bool IsSticky);
 }

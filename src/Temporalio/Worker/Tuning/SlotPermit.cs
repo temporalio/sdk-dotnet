@@ -1,7 +1,8 @@
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
-    /// A permit to use a slot for a workflow/activity/local activity task.
+    /// A permit to use a slot for a workflow/activity/local activity task. This class can be
+    /// extended if desired.
     /// </summary>
     /// <remarks>
     /// WARNING: Custom slot suppliers are currently experimental.
