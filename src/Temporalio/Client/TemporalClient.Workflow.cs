@@ -458,6 +458,7 @@ namespace Temporalio.Client
                 // Need to combine cancellation token
                 var rpcOptsAndCancelSource = DefaultRetryOptions(input.Options?.Rpc).
                     WithAdditionalCancellationToken(cancellationToken);
+                var yielded = 0;
                 try
                 {
                     var req = new ListWorkflowExecutionsRequest()
@@ -472,6 +473,11 @@ namespace Temporalio.Client
                             req, rpcOptsAndCancelSource.Item1).ConfigureAwait(false);
                         foreach (var exec in resp.Executions)
                         {
+                            if (input.Options != null && input.Options.Limit > 0 &&
+                                yielded++ >= input.Options.Limit)
+                            {
+                                yield break;
+                            }
                             yield return new(exec, Client.Options.DataConverter);
                         }
                         req.NextPageToken = resp.NextPageToken;
