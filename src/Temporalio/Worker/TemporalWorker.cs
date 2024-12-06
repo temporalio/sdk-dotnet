@@ -34,6 +34,7 @@ namespace Temporalio.Worker
         public TemporalWorker(IWorkerClient client, TemporalWorkerOptions options)
         {
             this.client = client;
+            var loggerFactory = options.LoggerFactory ?? client.Options.LoggerFactory;
             // Clone the options to discourage mutation (but we aren't completely disabling mutation
             // on the Options field herein).
             Options = (TemporalWorkerOptions)options.Clone();
@@ -42,7 +43,8 @@ namespace Temporalio.Worker
             BridgeWorker = new(
                 (Bridge.Client)bridgeClient,
                 client.Options.Namespace,
-                options);
+                options,
+                loggerFactory);
             if (options.Activities.Count == 0 && options.Workflows.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow and/or activity");
@@ -81,7 +83,7 @@ namespace Temporalio.Worker
                     Workflows: options.Workflows,
                     DataConverter: client.Options.DataConverter,
                     Interceptors: Interceptors,
-                    LoggerFactory: options.LoggerFactory ?? client.Options.LoggerFactory,
+                    LoggerFactory: loggerFactory,
                     WorkflowInstanceFactory: options.WorkflowInstanceFactory,
                     DebugMode: options.DebugMode,
                     DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
@@ -89,7 +91,8 @@ namespace Temporalio.Worker
                     OnTaskStarting: options.OnTaskStarting,
                     OnTaskCompleted: options.OnTaskCompleted,
                     RuntimeMetricMeter: MetricMeter,
-                    WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes));
+                    WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
+                    DisableEagerActivityExecution: options.DisableEagerActivityExecution));
             }
         }
 

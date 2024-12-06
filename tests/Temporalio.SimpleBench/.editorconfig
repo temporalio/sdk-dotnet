@@ -4,6 +4,9 @@
 
 # Please keep in alphabetical order by field.
 
+# Don't care about item visibility
+dotnet_diagnostic.CA1515.severity = none
+
 # Some versions can't tell implicit Program shouldn't need to be instantiated
 dotnet_diagnostic.CA1812.severity = none
 

@@ -45,6 +45,13 @@ namespace Temporalio.Bridge.Interop
         Health,
     }
 
+    internal enum SlotKindType
+    {
+        WorkflowSlotKindType,
+        ActivitySlotKindType,
+        LocalActivitySlotKindType,
+    }
+
     internal partial struct CancellationToken
     {
     }
@@ -551,17 +558,184 @@ namespace Temporalio.Bridge.Interop
         public ResourceBasedTunerOptions tuner_options;
     }
 
+    internal unsafe partial struct SlotReserveCtx
+    {
+        [NativeTypeName("enum SlotKindType")]
+        public SlotKindType slot_type;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef task_queue;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef worker_identity;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef worker_build_id;
+
+        [NativeTypeName("bool")]
+        public byte is_sticky;
+
+        public void* token_src;
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* sender);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomCancelReserveCallback(void* token_source);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    [return: NativeTypeName("uintptr_t")]
+    internal unsafe delegate UIntPtr CustomTryReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx);
+
+    internal enum SlotInfo_Tag
+    {
+        WorkflowSlotInfo,
+        ActivitySlotInfo,
+        LocalActivitySlotInfo,
+    }
+
+    internal partial struct WorkflowSlotInfo_Body
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef workflow_type;
+
+        [NativeTypeName("bool")]
+        public byte is_sticky;
+    }
+
+    internal partial struct ActivitySlotInfo_Body
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef activity_type;
+    }
+
+    internal partial struct LocalActivitySlotInfo_Body
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef activity_type;
+    }
+
+    internal unsafe partial struct SlotInfo
+    {
+        public SlotInfo_Tag tag;
+
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L425_C3")]
+        public _Anonymous_e__Union Anonymous;
+
+        internal ref WorkflowSlotInfo_Body workflow_slot_info
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union* pField = &Anonymous)
+                {
+                    return ref pField->workflow_slot_info;
+                }
+            }
+        }
+
+        internal ref ActivitySlotInfo_Body activity_slot_info
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union* pField = &Anonymous)
+                {
+                    return ref pField->activity_slot_info;
+                }
+            }
+        }
+
+        internal ref LocalActivitySlotInfo_Body local_activity_slot_info
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union* pField = &Anonymous)
+                {
+                    return ref pField->local_activity_slot_info;
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        internal partial struct _Anonymous_e__Union
+        {
+            [FieldOffset(0)]
+            public WorkflowSlotInfo_Body workflow_slot_info;
+
+            [FieldOffset(0)]
+            public ActivitySlotInfo_Body activity_slot_info;
+
+            [FieldOffset(0)]
+            public LocalActivitySlotInfo_Body local_activity_slot_info;
+        }
+    }
+
+    internal partial struct SlotMarkUsedCtx
+    {
+        [NativeTypeName("struct SlotInfo")]
+        public SlotInfo slot_info;
+
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr slot_permit;
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomMarkSlotUsedCallback([NativeTypeName("const struct SlotMarkUsedCtx *")] SlotMarkUsedCtx* ctx);
+
+    internal unsafe partial struct SlotReleaseCtx
+    {
+        [NativeTypeName("const struct SlotInfo *")]
+        public SlotInfo* slot_info;
+
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr slot_permit;
+    }
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomReleaseSlotCallback([NativeTypeName("const struct SlotReleaseCtx *")] SlotReleaseCtx* ctx);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void CustomSlotImplFreeCallback([NativeTypeName("const struct CustomSlotSupplierCallbacks *")] CustomSlotSupplierCallbacks* userimpl);
+
+    internal partial struct CustomSlotSupplierCallbacks
+    {
+        [NativeTypeName("CustomReserveSlotCallback")]
+        public IntPtr reserve;
+
+        [NativeTypeName("CustomCancelReserveCallback")]
+        public IntPtr cancel_reserve;
+
+        [NativeTypeName("CustomTryReserveSlotCallback")]
+        public IntPtr try_reserve;
+
+        [NativeTypeName("CustomMarkSlotUsedCallback")]
+        public IntPtr mark_used;
+
+        [NativeTypeName("CustomReleaseSlotCallback")]
+        public IntPtr release;
+
+        [NativeTypeName("CustomSlotImplFreeCallback")]
+        public IntPtr free;
+    }
+
+    internal unsafe partial struct CustomSlotSupplierCallbacksImpl
+    {
+        [NativeTypeName("const struct CustomSlotSupplierCallbacks *")]
+        public CustomSlotSupplierCallbacks* _0;
+    }
+
     internal enum SlotSupplier_Tag
     {
         FixedSize,
         ResourceBased,
+        Custom,
     }
 
     internal unsafe partial struct SlotSupplier
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L387_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L475_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -586,16 +760,31 @@ namespace Temporalio.Bridge.Interop
             }
         }
 
+        internal ref CustomSlotSupplierCallbacksImpl custom
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                {
+                    return ref pField->custom;
+                }
+            }
+        }
+
         [StructLayout(LayoutKind.Explicit)]
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L388_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L476_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L391_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L479_C5")]
             public _Anonymous2_e__Struct Anonymous2;
+
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L482_C5")]
+            public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct
             {
@@ -607,6 +796,12 @@ namespace Temporalio.Bridge.Interop
             {
                 [NativeTypeName("struct ResourceBasedSlotSupplier")]
                 public ResourceBasedSlotSupplier resource_based;
+            }
+
+            internal partial struct _Anonymous3_e__Struct
+            {
+                [NativeTypeName("struct CustomSlotSupplierCallbacksImpl")]
+                public CustomSlotSupplierCallbacksImpl custom;
             }
         }
     }
@@ -877,5 +1072,11 @@ namespace Temporalio.Bridge.Interop
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct WorkerReplayPushResult")]
         public static extern WorkerReplayPushResult worker_replay_push([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct WorkerReplayPusher *")] WorkerReplayPusher* worker_replay_pusher, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef workflow_id, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef history);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void complete_async_reserve(void* sender, [NativeTypeName("uintptr_t")] UIntPtr permit_id);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void set_reserve_cancel_target([NativeTypeName("struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* token_ptr);
     }
 }

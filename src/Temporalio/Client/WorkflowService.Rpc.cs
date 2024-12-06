@@ -329,6 +329,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke PauseActivityById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<PauseActivityByIdResponse> PauseActivityByIdAsync(PauseActivityByIdRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("PauseActivityById", req, PauseActivityByIdResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke PollActivityTaskQueue.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -425,6 +436,17 @@ namespace Temporalio.Client
         public Task<RequestCancelWorkflowExecutionResponse> RequestCancelWorkflowExecutionAsync(RequestCancelWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("RequestCancelWorkflowExecution", req, RequestCancelWorkflowExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke ResetActivityById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ResetActivityByIdResponse> ResetActivityByIdAsync(ResetActivityByIdRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ResetActivityById", req, ResetActivityByIdResponse.Parser, options);
         }
 
         /// <summary>
@@ -582,6 +604,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke ShutdownWorker.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ShutdownWorkerResponse> ShutdownWorkerAsync(ShutdownWorkerRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ShutdownWorker", req, ShutdownWorkerResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke SignalWithStartWorkflowExecution.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -645,6 +678,28 @@ namespace Temporalio.Client
         public Task<TerminateWorkflowExecutionResponse> TerminateWorkflowExecutionAsync(TerminateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("TerminateWorkflowExecution", req, TerminateWorkflowExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UnpauseActivityById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UnpauseActivityByIdResponse> UnpauseActivityByIdAsync(UnpauseActivityByIdRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UnpauseActivityById", req, UnpauseActivityByIdResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateActivityOptionsById.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateActivityOptionsByIdResponse> UpdateActivityOptionsByIdAsync(UpdateActivityOptionsByIdRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateActivityOptionsById", req, UpdateActivityOptionsByIdResponse.Parser, options);
         }
 
         /// <summary>

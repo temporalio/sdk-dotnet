@@ -9,8 +9,9 @@ use std::str::FromStr;
 use std::time::Duration;
 use temporal_client::{
     ClientKeepAliveConfig, ClientOptions as CoreClientOptions, ClientOptionsBuilder,
-    ClientTlsConfig, CloudService, ConfiguredClient, HealthService, HttpConnectProxyOptions, OperatorService, RetryClient,
-    RetryConfig, TemporalServiceClientWithMetrics, TestService, TlsConfig, WorkflowService,
+    ClientTlsConfig, CloudService, ConfiguredClient, HealthService, HttpConnectProxyOptions,
+    OperatorService, RetryClient, RetryConfig, TemporalServiceClientWithMetrics, TestService,
+    TlsConfig, WorkflowService,
 };
 use tonic::metadata::MetadataKey;
 use url::Url;
@@ -335,6 +336,7 @@ async fn call_workflow_service(
         "ListTaskQueuePartitions" => rpc_call!(client, call, list_task_queue_partitions),
         "ListWorkflowExecutions" => rpc_call!(client, call, list_workflow_executions),
         "PatchSchedule" => rpc_call!(client, call, patch_schedule),
+        "PauseActivityById" => rpc_call!(client, call, pause_activity_by_id),
         "PollActivityTaskQueue" => rpc_call!(client, call, poll_activity_task_queue),
         "PollNexusTaskQueue" => rpc_call!(client, call, poll_nexus_task_queue),
         "PollWorkflowExecutionUpdate" => rpc_call!(client, call, poll_workflow_execution_update),
@@ -348,6 +350,7 @@ async fn call_workflow_service(
         "RequestCancelWorkflowExecution" => {
             rpc_call!(client, call, request_cancel_workflow_execution)
         }
+        "ResetActivityById" => rpc_call!(client, call, reset_activity_by_id),
         "ResetStickyTaskQueue" => rpc_call!(client, call, reset_sticky_task_queue),
         "ResetWorkflowExecution" => rpc_call!(client, call, reset_workflow_execution),
         "RespondActivityTaskCanceled" => rpc_call!(client, call, respond_activity_task_canceled),
@@ -368,6 +371,7 @@ async fn call_workflow_service(
         "RespondWorkflowTaskCompleted" => rpc_call!(client, call, respond_workflow_task_completed),
         "RespondWorkflowTaskFailed" => rpc_call!(client, call, respond_workflow_task_failed),
         "ScanWorkflowExecutions" => rpc_call!(client, call, scan_workflow_executions),
+        "ShutdownWorker" => rpc_call!(client, call, shutdown_worker),
         "SignalWithStartWorkflowExecution" => {
             rpc_call!(client, call, signal_with_start_workflow_execution)
         }
@@ -376,6 +380,12 @@ async fn call_workflow_service(
         "StartBatchOperation" => rpc_call!(client, call, start_batch_operation),
         "StopBatchOperation" => rpc_call!(client, call, stop_batch_operation),
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
+        "UnpauseActivityById" => {
+            rpc_call_on_trait!(client, call, WorkflowService, unpause_activity_by_id)
+        }
+        "UpdateActivityOptionsById" => {
+            rpc_call_on_trait!(client, call, WorkflowService, update_activity_options_by_id)
+        }
         "UpdateNamespace" => rpc_call_on_trait!(client, call, WorkflowService, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
         "UpdateWorkerVersioningRules" => rpc_call!(client, call, update_worker_versioning_rules),
@@ -526,7 +536,9 @@ impl TryFrom<&ClientOptions> for CoreClientOptions {
                 Some(opts.metadata.to_string_map_on_newlines())
             })
             .api_key(opts.api_key.to_option_string())
-            .http_connect_proxy(unsafe { opts.http_connect_proxy_options.as_ref() }.map(Into::into));
+            .http_connect_proxy(
+                unsafe { opts.http_connect_proxy_options.as_ref() }.map(Into::into),
+            );
         if let Some(tls_config) = unsafe { opts.tls_options.as_ref() } {
             opts_builder.tls_cfg(tls_config.try_into()?);
         }

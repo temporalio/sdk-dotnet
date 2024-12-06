@@ -7,11 +7,10 @@ namespace Temporalio.Bridge
     /// <summary>
     /// Core wrapper for a custom metric meter implementation.
     /// </summary>
-    internal class CustomMetricMeter
+    internal class CustomMetricMeter : NativeInvokeableClass<Interop.CustomMetricMeter>
     {
         private readonly Temporalio.Runtime.ICustomMetricMeter meter;
         private readonly Temporalio.Runtime.CustomMetricMeterOptions options;
-        private readonly List<GCHandle> handles = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomMetricMeter" /> class.
@@ -38,19 +37,8 @@ namespace Temporalio.Bridge
                 meter_free = FunctionPointer<Interop.CustomMetricMeterMeterFreeCallback>(Free),
             };
 
-            // Pin the metric meter pointer and set it as the first handle
-            var interopMeterHandle = GCHandle.Alloc(interopMeter, GCHandleType.Pinned);
-            handles.Insert(0, interopMeterHandle);
-            Ptr = (Interop.CustomMetricMeter*)interopMeterHandle.AddrOfPinnedObject();
-
-            // Add handle for ourself
-            handles.Add(GCHandle.Alloc(this));
+            PinCallbackHolder(interopMeter);
         }
-
-        /// <summary>
-        /// Gets the pointer to the native metric meter.
-        /// </summary>
-        internal unsafe Interop.CustomMetricMeter* Ptr { get; private init; }
 
         private static unsafe string? GetStringOrNull(Interop.ByteArrayRef bytes) =>
             (int)bytes.size == 0 ? null : GetString(bytes);
@@ -220,23 +208,5 @@ namespace Temporalio.Bridge
         }
 
         private unsafe void FreeAttributes(void* attributes) => GCHandle.FromIntPtr(new(attributes)).Free();
-
-        private unsafe void Free(Interop.CustomMetricMeter* meter)
-        {
-            // Free in order which frees function pointers first then meter handles
-            foreach (var handle in handles)
-            {
-                handle.Free();
-            }
-        }
-
-        // Similar to Scope.FunctionPointer
-        private IntPtr FunctionPointer<T>(T func)
-            where T : Delegate
-        {
-            var handle = GCHandle.Alloc(func);
-            handles.Add(handle);
-            return Marshal.GetFunctionPointerForDelegate(handle.Target!);
-        }
     }
 }

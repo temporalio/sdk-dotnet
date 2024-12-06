@@ -150,7 +150,7 @@ namespace Temporalio.Client
             WorkflowListOptions? listOptions = null,
             WorkflowHistoryEventFetchOptions? historyFetchOptions = null)
         {
-            await foreach (var exec in client.ListWorkflowsAsync(query, listOptions))
+            await foreach (var exec in client.ListWorkflowsAsync(query, listOptions).ConfigureAwait(false))
             {
                 yield return await client.GetWorkflowHandle(
                     exec.Id, exec.RunId).FetchHistoryAsync(historyFetchOptions).ConfigureAwait(false);

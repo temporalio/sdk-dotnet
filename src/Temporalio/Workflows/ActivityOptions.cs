@@ -86,6 +86,20 @@ namespace Temporalio.Workflows
         public VersioningIntent VersioningIntent { get; set; } = VersioningIntent.Unspecified;
 
         /// <summary>
+        /// Gets or sets a value indicating whether eager activity execution will be disabled for
+        /// this activity.
+        /// </summary>
+        /// <remarks>
+        /// Eager activity execution is an optimization on some servers that sends activities back
+        /// to the same worker as the calling workflow if they can run there.
+        /// </remarks>
+        /// <remarks>
+        /// If <c>false</c> (the default), eager execution may still be disabled at the worker level
+        /// or may not be requested due to lack of available slots.
+        /// </remarks>
+        public bool DisableEagerActivityExecution { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

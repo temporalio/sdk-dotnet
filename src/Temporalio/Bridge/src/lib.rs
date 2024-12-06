@@ -31,13 +31,6 @@ impl ByteArrayRef {
         }
     }
 
-    fn from_string(s: &String) -> ByteArrayRef {
-        ByteArrayRef {
-            data: s.as_ptr(),
-            size: s.len(),
-        }
-    }
-
     fn to_slice(&self) -> &[u8] {
         unsafe { std::slice::from_raw_parts(self.data, self.size) }
     }
@@ -102,6 +95,18 @@ impl ByteArrayRef {
             .iter()
             .map(|(k, v)| (k.to_string(), v.to_string()))
             .collect()
+    }
+}
+
+impl From<&str> for ByteArrayRef {
+    fn from(s: &str) -> ByteArrayRef {
+        ByteArrayRef::from_str(s)
+    }
+}
+
+impl From<String> for ByteArrayRef {
+    fn from(s: String) -> ByteArrayRef {
+        ByteArrayRef::from_str(&s)
     }
 }
 

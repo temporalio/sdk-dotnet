@@ -1227,7 +1227,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Now query after close to check that is replaying worked
                 var isReplayingValues = await Env.Client.GetWorkflowHandle<MiscHelpersWorkflow>(
                     workflowId).QueryAsync(wf => wf.GetEventsForIsReplaying());
-                Assert.Equal(new[] { false, true }, isReplayingValues);
+                Assert.Equal(new[] { false, true, true }, isReplayingValues);
             },
             new(taskQueue: taskQueue));
     }
@@ -2997,9 +2997,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await handle.SignalAsync(wf => wf.SomeSignalAsync("signal arg"));
                 Assert.Equal("done", await handle.QueryAsync(wf => wf.SomeQuery("query arg")));
                 Assert.Equal("done", await handle.ExecuteUpdateAsync(wf => wf.SomeUpdateAsync("update arg")));
-                await handle.SignalAsync(wf => wf.FinishAsync());
-                Assert.Equal("done", await handle.GetResultAsync());
-                Assert.Equal(
+                // Event list must be collected before the WF finishes, since when it finishes it
+                // will be evicted from the cache and the first SomeQuery event will not exist upon
+                // replay.
+                await AssertMore.EqualEventuallyAsync(
                     new List<string>
                     {
                         "activity-NonDynamicActivity: activity arg",
@@ -3008,7 +3009,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         "update-SomeUpdate: update arg",
                         "workflow-NonDynamicWorkflow: workflow arg",
                     },
-                    (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+                    async () => (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+                await handle.SignalAsync(wf => wf.FinishAsync());
+                Assert.Equal("done", await handle.GetResultAsync());
             },
             new TemporalWorkerOptions().AddActivity(DynamicWorkflow.DynamicActivity));
     }
