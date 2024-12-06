@@ -14,11 +14,13 @@ namespace Temporalio.Workflows
 
         private WorkflowSignalDefinition(
             string? name,
+            string? description,
             MethodInfo? method,
             Delegate? del,
             HandlerUnfinishedPolicy unfinishedPolicy)
         {
             Name = name;
+            Description = description;
             Method = method;
             Delegate = del;
             UnfinishedPolicy = unfinishedPolicy;
@@ -28,6 +30,12 @@ namespace Temporalio.Workflows
         /// Gets the signal name. This is null if the signal is dynamic.
         /// </summary>
         public string? Name { get; private init; }
+
+        /// <summary>
+        /// Gets the optional signal description.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? Description { get; private init; }
 
         /// <summary>
         /// Gets a value indicating whether the signal is dynamic.
@@ -75,14 +83,17 @@ namespace Temporalio.Workflows
         /// <param name="del">Signal delegate.</param>
         /// <param name="unfinishedPolicy">Actions taken if a workflow exits with a running instance
         /// of this handler.</param>
+        /// <param name="description">Optional description. WARNING: This setting is experimental.
+        /// </param>
         /// <returns>Signal definition.</returns>
         public static WorkflowSignalDefinition CreateWithoutAttribute(
             string? name,
             Delegate del,
-            HandlerUnfinishedPolicy unfinishedPolicy = HandlerUnfinishedPolicy.WarnAndAbandon)
+            HandlerUnfinishedPolicy unfinishedPolicy = HandlerUnfinishedPolicy.WarnAndAbandon,
+            string? description = null)
         {
             AssertValid(del.Method, dynamic: name == null);
-            return new(name, null, del, unfinishedPolicy);
+            return new(name, description, null, del, unfinishedPolicy);
         }
 
         /// <summary>
@@ -117,7 +128,7 @@ namespace Temporalio.Workflows
                     name = name.Substring(0, name.Length - 5);
                 }
             }
-            return new(name, method, null, attr.UnfinishedPolicy);
+            return new(name, attr.Description, method, null, attr.UnfinishedPolicy);
         }
 
         private static void AssertValid(MethodInfo method, bool dynamic)

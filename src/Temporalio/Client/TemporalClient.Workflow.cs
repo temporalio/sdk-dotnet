@@ -332,7 +332,8 @@ namespace Temporalio.Client
                         },
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                return new(resp, Client.Options.DataConverter);
+                return await WorkflowExecutionDescription.FromProtoAsync(
+                    resp, Client.Options.DataConverter).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -513,6 +514,9 @@ namespace Temporalio.Client
                     WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                     RequestEagerExecution = input.Options.RequestEagerStart,
+                    UserMetadata = await Client.Options.DataConverter.ToUserMetadataAsync(
+                        input.Options.StaticSummary, input.Options.StaticDetails).
+                        ConfigureAwait(false),
                 };
                 if (input.Args.Count > 0)
                 {
@@ -614,6 +618,7 @@ namespace Temporalio.Client
                     WorkflowStartDelay = req.WorkflowStartDelay,
                     SignalName = input.Options.StartSignal,
                     WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
+                    UserMetadata = req.UserMetadata,
                 };
                 if (input.Options.StartSignalArgs != null && input.Options.StartSignalArgs.Count > 0)
                 {

@@ -38,6 +38,12 @@ namespace Temporalio.Workflows
         public string? Name { get; }
 
         /// <summary>
+        /// Gets or sets a short description for this query that may appear in UI/CLI.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? Description { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the query is dynamic. If a query is dynamic, it
         /// cannot be given a name in this attribute and the method must accept a string name and
         /// an array of <see cref="Converters.IRawValue" />.
