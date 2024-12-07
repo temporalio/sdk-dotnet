@@ -352,6 +352,17 @@ namespace Temporalio.Bridge
             // Use TargetHost to get IP + Port
             options.ParseTargetHost(out string? ip, out int? port);
             ip ??= "127.0.0.1";
+
+            // If there are search attributes, prepend them to the args
+            var args = options.DevServerOptions.ExtraArgs;
+            if (options.SearchAttributes is { } attrs && attrs.Count > 0)
+            {
+                args = attrs.
+                    SelectMany(v => new[] { "--search-attribute", $"{v.Name}={v.ValueType}" }).
+                    Concat(args ?? Enumerable.Empty<string>()).
+                    ToArray();
+            }
+
             return new Interop.DevServerOptions()
             {
                 test_server = scope.Pointer(
@@ -363,7 +374,7 @@ namespace Temporalio.Bridge
                         download_version = scope.ByteArray(options.DevServerOptions.DownloadVersion),
                         download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                         port = (ushort)(port ?? 0),
-                        extra_args = scope.NewlineDelimited(options.DevServerOptions.ExtraArgs),
+                        extra_args = scope.NewlineDelimited(args),
                     }),
                 namespace_ = scope.ByteArray(options.Namespace),
                 ip = scope.ByteArray(ip),
