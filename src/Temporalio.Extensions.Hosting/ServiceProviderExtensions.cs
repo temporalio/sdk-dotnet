@@ -68,6 +68,14 @@ namespace Temporalio.Extensions.Hosting
 #else
                 var scope = provider.CreateScope();
 #endif
+                IServiceProviderAccessor? serviceProviderAccessor =
+                    scope.ServiceProvider.GetService<IServiceProviderAccessor>();
+
+                if (serviceProviderAccessor is not null)
+                {
+                    serviceProviderAccessor.ServiceProvider = scope.ServiceProvider;
+                }
+
                 try
                 {
                     object? result;
@@ -111,6 +119,10 @@ namespace Temporalio.Extensions.Hosting
                 }
                 finally
                 {
+                    if (serviceProviderAccessor is not null)
+                    {
+                        serviceProviderAccessor.ServiceProvider = null;
+                    }
 #if NET6_0_OR_GREATER
                     await scope.DisposeAsync().ConfigureAwait(false);
 #else
