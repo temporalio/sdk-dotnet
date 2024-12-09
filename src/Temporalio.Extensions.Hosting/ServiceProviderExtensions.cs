@@ -68,13 +68,7 @@ namespace Temporalio.Extensions.Hosting
 #else
                 var scope = provider.CreateScope();
 #endif
-                IServiceProviderAccessor? serviceProviderAccessor =
-                    scope.ServiceProvider.GetService<IServiceProviderAccessor>();
-
-                if (serviceProviderAccessor is not null)
-                {
-                    serviceProviderAccessor.ServiceProvider = scope.ServiceProvider;
-                }
+                ActivityServiceProviderAccessor.AsyncLocalCurrent.Value = scope.ServiceProvider;
 
                 try
                 {
@@ -119,10 +113,7 @@ namespace Temporalio.Extensions.Hosting
                 }
                 finally
                 {
-                    if (serviceProviderAccessor is not null)
-                    {
-                        serviceProviderAccessor.ServiceProvider = null;
-                    }
+                    ActivityServiceProviderAccessor.AsyncLocalCurrent.Value = null;
 #if NET6_0_OR_GREATER
                     await scope.DisposeAsync().ConfigureAwait(false);
 #else
