@@ -106,8 +106,9 @@ namespace Temporalio.Client
                         {
                             throw new WorkflowAlreadyStartedException(
                                 e.Message,
-                                input.Options.Id!,
-                                failure.RunId);
+                                workflowId: input.Options.Id!,
+                                workflowType: input.Workflow,
+                                runId: failure.RunId);
                         }
                     }
                     throw;
