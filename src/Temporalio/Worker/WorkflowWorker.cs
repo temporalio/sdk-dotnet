@@ -49,7 +49,9 @@ namespace Temporalio.Worker
             {
                 if (!defn.Instantiable)
                 {
-                    throw new ArgumentException($"Workflow named {defn.Name} is not instantiable");
+                    throw new ArgumentException($"Workflow named {defn.Name} is not instantiable. " +
+                        "Note, dependency injection is not supported in workflows. " +
+                        "Workflows must be deterministic and self-contained with a lifetime controlled by Temporal.");
                 }
                 if (defn.Name == null)
                 {

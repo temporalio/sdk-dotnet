@@ -88,7 +88,8 @@ CLI:
 
     dotnet add package Temporalio
 
-If you are using .NET Framework or a non-standard target platform, see the
+The .NET SDK supports .NET Framework >= 4.6.2, .NET Core >= 3.1 (so includes .NET 5+), and .NET Standard >= 2.0. If you
+are using .NET Framework or a non-standard target platform, see the
 [Built-in Native Shared Library](#built-in-native-shared-library) section later for additional information.
 
 **NOTE: This README is for the current branch and not necessarily what's released on NuGet.**
