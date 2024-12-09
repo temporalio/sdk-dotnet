@@ -13,9 +13,10 @@ namespace Temporalio.Workflows
         private static readonly ConcurrentDictionary<MethodInfo, WorkflowQueryDefinition> MethodDefinitions = new();
         private static readonly ConcurrentDictionary<PropertyInfo, WorkflowQueryDefinition> PropertyDefinitions = new();
 
-        private WorkflowQueryDefinition(string? name, MethodInfo? method, Delegate? del)
+        private WorkflowQueryDefinition(string? name, string? description, MethodInfo? method, Delegate? del)
         {
             Name = name;
+            Description = description;
             Method = method;
             Delegate = del;
         }
@@ -24,6 +25,11 @@ namespace Temporalio.Workflows
         /// Gets the query name. This is null if the query is dynamic.
         /// </summary>
         public string? Name { get; private init; }
+
+        /// <summary>
+        /// Gets the optional query description.
+        /// </summary>
+        public string? Description { get; private init; }
 
         /// <summary>
         /// Gets a value indicating whether the query is dynamic.
@@ -81,7 +87,7 @@ namespace Temporalio.Workflows
                 {
                     throw new ArgumentException($"WorkflowQuery property {property} cannot be dynamic");
                 }
-                return new(attr.Name ?? property.Name, method, null);
+                return new(attr.Name ?? property.Name, attr.Description, method, null);
             });
 
         /// <summary>
@@ -90,11 +96,14 @@ namespace Temporalio.Workflows
         /// </summary>
         /// <param name="name">Query name. Null for dynamic query.</param>
         /// <param name="del">Query delegate.</param>
+        /// <param name="description">Optional description. WARNING: This setting is experimental.
+        /// </param>
         /// <returns>Query definition.</returns>
-        public static WorkflowQueryDefinition CreateWithoutAttribute(string? name, Delegate del)
+        public static WorkflowQueryDefinition CreateWithoutAttribute(
+            string? name, Delegate del, string? description = null)
         {
             AssertValid(del.Method, dynamic: name == null);
-            return new(name, null, del);
+            return new(name, description, null, del);
         }
 
         /// <summary>
@@ -137,7 +146,7 @@ namespace Temporalio.Workflows
             {
                 name = method.Name;
             }
-            return new(name, method, null);
+            return new(name, attr.Description, method, null);
         }
 
         private static void AssertValid(MethodInfo method, bool dynamic)

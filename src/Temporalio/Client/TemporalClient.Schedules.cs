@@ -136,7 +136,8 @@ namespace Temporalio.Client
                         ScheduleId = input.Id,
                     },
                     DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
-                return new(input.Id, desc, Client.Options.DataConverter);
+                return await ScheduleDescription.FromProtoAsync(
+                    input.Id, desc, Client.Options.DataConverter).ConfigureAwait(false);
             }
 
             /// <inheritdoc />

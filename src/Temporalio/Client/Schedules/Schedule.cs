@@ -30,10 +30,10 @@ namespace Temporalio.Client.Schedules
         /// <param name="proto">Proto.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Converted value.</returns>
-        internal static Schedule FromProto(
+        internal static async Task<Schedule> FromProtoAsync(
             Api.Schedule.V1.Schedule proto, DataConverter dataConverter) =>
             new(
-                Action: ScheduleAction.FromProto(proto.Action, dataConverter),
+                Action: await ScheduleAction.FromProtoAsync(proto.Action, dataConverter).ConfigureAwait(false),
                 Spec: ScheduleSpec.FromProto(proto.Spec))
             {
                 Policy = SchedulePolicy.FromProto(proto.Policies),

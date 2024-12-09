@@ -60,6 +60,18 @@ namespace Temporalio.Workflows
         public static string CurrentBuildId => Context.CurrentBuildId;
 
         /// <summary>
+        /// Gets or sets the current details for this workflow that may appear in UI/CLI. Unlike
+        /// static details set at start, this value can be updated throughout the life of the
+        /// workflow. This can be in Temporal markdown format and can span multiple lines.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public static string CurrentDetails
+        {
+            get => Context.CurrentDetails;
+            set => Context.CurrentDetails = value;
+        }
+
+        /// <summary>
         /// Gets the current number of events in history.
         /// </summary>
         /// <remarks>
@@ -295,7 +307,7 @@ namespace Temporalio.Workflows
         /// <see cref="DelayAsync(TimeSpan, CancellationToken?)" /> for details.</returns>
         /// <seealso cref="DelayAsync(TimeSpan, CancellationToken?)" />
         public static Task DelayAsync(int millisecondsDelay, CancellationToken? cancellationToken = null) =>
-            DelayAsync(TimeSpan.FromMilliseconds(millisecondsDelay), cancellationToken);
+            Context.DelayWithOptionsAsync(new(millisecondsDelay, cancellationToken: cancellationToken));
 
         /// <summary>
         /// Sleep in a workflow for the given time.
@@ -318,7 +330,17 @@ namespace Temporalio.Workflows
         /// </para>
         /// </remarks>
         public static Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken = null) =>
-            Context.DelayAsync(delay, cancellationToken);
+            Context.DelayWithOptionsAsync(new(delay, cancellationToken: cancellationToken));
+
+        /// <summary>
+        /// Sleep in a workflow for the given options.
+        /// </summary>
+        /// <param name="options">Options.</param>
+        /// <returns>Task for completion. See documentation of
+        /// <see cref="DelayAsync(TimeSpan, CancellationToken?)" /> for details.</returns>
+        /// <seealso cref="DelayAsync(TimeSpan, CancellationToken?)" />
+        public static Task DelayWithOptionsAsync(DelayOptions options) =>
+            Context.DelayWithOptionsAsync(options);
 
         /// <summary>
         /// Mark a patch as deprecated.
@@ -1154,7 +1176,7 @@ namespace Temporalio.Workflows
         /// <seealso cref="WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" />.
         public static Task WaitConditionAsync(
             Func<bool> conditionCheck, CancellationToken? cancellationToken = null) =>
-                Context.WaitConditionAsync(conditionCheck, null, cancellationToken);
+                Context.WaitConditionWithOptionsAsync(new(conditionCheck, cancellationToken: cancellationToken));
 
         /// <summary>
         /// Wait for the given function to return true or a timeout. See documentation of
@@ -1178,10 +1200,11 @@ namespace Temporalio.Workflows
             Func<bool> conditionCheck,
             int timeoutMilliseconds,
             CancellationToken? cancellationToken = null) =>
-                Context.WaitConditionAsync(
+                Context.WaitConditionWithOptionsAsync(new(
                     conditionCheck,
-                    TimeSpan.FromMilliseconds(timeoutMilliseconds),
-                    cancellationToken);
+                    timeout: TimeSpan.FromMilliseconds(timeoutMilliseconds),
+                    timeoutSummary: "WaitConditionAsync",
+                    cancellationToken: cancellationToken));
 
         /// <summary>
         /// Wait for the given function to return true or a timeout.
@@ -1198,7 +1221,20 @@ namespace Temporalio.Workflows
         /// </remarks>
         public static Task<bool> WaitConditionAsync(
             Func<bool> conditionCheck, TimeSpan timeout, CancellationToken? cancellationToken = null) =>
-                Context.WaitConditionAsync(conditionCheck, timeout, cancellationToken);
+                Context.WaitConditionWithOptionsAsync(new(
+                    conditionCheck,
+                    timeout: timeout,
+                    timeoutSummary: "WaitConditionAsync",
+                    cancellationToken: cancellationToken));
+
+        /// <summary>
+        /// Wait for the given function to return true or a timeout.
+        /// </summary>
+        /// <param name="options">Options for the wait condition.</param>
+        /// <returns>Task with <c>true</c> when condition becomes true or <c>false</c> if a timeout
+        /// occurs.</returns>
+        public static Task<bool> WaitConditionWithOptionsAsync(WaitConditionOptions options) =>
+            Context.WaitConditionWithOptionsAsync(options);
 
         /// <summary>
         /// Workflow-safe form of <see cref="Task.WhenAny(Task[])" />.

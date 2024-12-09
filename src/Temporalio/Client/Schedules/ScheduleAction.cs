@@ -16,12 +16,13 @@ namespace Temporalio.Client.Schedules
         /// <param name="proto">Proto.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Converted value.</returns>
-        internal static ScheduleAction FromProto(
+        internal static async Task<ScheduleAction> FromProtoAsync(
             Api.Schedule.V1.ScheduleAction proto, DataConverter dataConverter)
         {
             if (proto.StartWorkflow != null)
             {
-                return ScheduleActionStartWorkflow.FromProto(proto.StartWorkflow, dataConverter);
+                return await ScheduleActionStartWorkflow.FromProtoAsync(
+                    proto.StartWorkflow, dataConverter).ConfigureAwait(false);
             }
             else
             {

@@ -23,6 +23,22 @@ namespace Temporalio.Workflows
         public string? TaskQueue { get; set; }
 
         /// <summary>
+        /// Gets or sets a single-line fixed summary for this workflow execution that may appear in
+        /// UI/CLI. This can be in single-line Temporal markdown format.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? StaticSummary { get; set; }
+
+        /// <summary>
+        /// Gets or sets general fixed details for this workflow execution that may appear in
+        /// UI/CLI. This can be in Temporal markdown format and can span multiple lines. This is a
+        /// fixed value on the workflow that cannot be updated. For details that can be updated, use
+        /// <see cref="Workflow.CurrentDetails" /> within the workflow.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? StaticDetails { get; set; }
+
+        /// <summary>
         /// Gets or sets the retry policy. Default is no retries.
         /// </summary>
         public RetryPolicy? RetryPolicy { get; set; }
