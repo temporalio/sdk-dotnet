@@ -44,34 +44,32 @@ jobs:
           submodules: recursive
 
       - name: Install Rust
-        if: !matrix.container
+        if: ${{ !matrix.container }}
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
 
       - name: Setup Rust cache
-        if:
-          !matrix.container # Fixed version due to https://github.com/Swatinem/rust-cache/issues/183#issuecomment-1893979126
-
-
+        if: ${{ !matrix.container }}
+        # Fixed version due to https://github.com/Swatinem/rust-cache/issues/183#issuecomment-1893979126
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src/Temporalio/Bridge
           key: ${{ matrix.os }}
 
       - name: Install protoc
-        if: !matrix.container
+        if: ${{ !matrix.container }}
         uses: arduino/setup-protoc@v3
         with:
           version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build (non-Docker)
-        if: !matrix.container
+        if: ${{ !matrix.container }}
         run: cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release
 
       - name: Build (Docker)
-        if: matrix.container
+        if: ${{ matrix.container }}
         run: |
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             ${{ matrix.container }} \
