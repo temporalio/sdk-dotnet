@@ -18,15 +18,13 @@ jobs:
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_x86_64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
-            curl-download: https://github.com/stunnel/static-curl/releases/download/8.8.0/curl-linux-x86_64-8.8.0.tar.xz
           - os: ubuntu-arm
             out-file: libtemporal_sdk_bridge.so
             out-prefix: linux-arm64
-            runsOn: buildjet-4vcpu-ubuntu-2204-arm
+            runsOn: ubuntu-24.04-arm64-2-core
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_aarch64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
-            curl-download: https://github.com/stunnel/static-curl/releases/download/8.8.0/curl-linux-aarch64-8.8.0.tar.xz
           - os: macos-intel
             out-file: libtemporal_sdk_bridge.dylib
             out-prefix: osx-x64
@@ -39,53 +37,53 @@ jobs:
             out-file: temporal_sdk_bridge.dll
             out-prefix: win-x64
     runs-on: ${{ matrix.runsOn || matrix.os }}
-    container: ${{ matrix.container }}
-    env:
-      # This is required to allow continuing usage of Node 16 for actions,
-      # as Node 20 won't run on the docker image we use for linux builds
-      # (Node 20 require glibc 2.28+, but container image has glibc 2.17).
-      # https://github.blog/changelog/2024-05-17-updated-dates-for-actions-runner-using-node20-instead-of-node16-by-default/
-      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: Checkout repository
-        # FIXME: v4+ requires Node 20
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      # Need to update cURL on Linux for the Rust install step
-      - name: Update cURL
-        if: ${{ matrix.curl-download }}
-        run: |
-          curl --fail -L "${{ matrix.curl-download }}" -o curl.tar.xz
-          tar -xJvf curl.tar.xz -C /usr/local/bin
-
       - name: Install Rust
+        if: ${{ !matrix.container }}
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
 
       - name: Setup Rust cache
-        # FIXME: v2.7.2+ requires Node 20
+        if: ${{ !matrix.container }}
         # Fixed version due to https://github.com/Swatinem/rust-cache/issues/183#issuecomment-1893979126
-        uses: Swatinem/rust-cache@v2.7.1
+        uses: Swatinem/rust-cache@v2
         with:
           workspaces: src/Temporalio/Bridge
           key: ${{ matrix.os }}
 
       - name: Install protoc
-        # FIXME: v3+ requires Node 20
-        uses: arduino/setup-protoc@v2
+        if: ${{ !matrix.container }}
+        uses: arduino/setup-protoc@v3
         with:
           version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build (non-Docker)
+        if: ${{ !matrix.container }}
         run: cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release
 
+      - name: Build (Docker)
+        if: ${{ matrix.container }}
+        run: |
+          docker run --rm -v "$(pwd):/workspace" -w /workspace \
+            ${{ matrix.container }} \
+            sh -c ' \
+                curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
+             && . $HOME/.cargo/env \
+             && curl -LO ${{ matrix.protobuf-url }} \
+             && unzip protoc-*.zip -d /usr/local/protobuf \
+             && export PATH="$PATH:/usr/local/protobuf/bin" \
+             && cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release \
+            '
+
       - name: Upload bridge library
-        # FIXME: v4+ requires Node 20
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.out-prefix }}-bridge
           path: src/Temporalio/Bridge/target/release/${{ matrix.out-file }}
@@ -101,8 +99,7 @@ jobs:
           submodules: recursive
 
       - name: Download bridge libraries
-        # Need v3 here to stay compatible with the compile-native-binaries job.
-        uses: actions/download-artifact@v3-node20
+        uses: actions/download-artifact@v4
         with:
           path: bridge-libraries
 
