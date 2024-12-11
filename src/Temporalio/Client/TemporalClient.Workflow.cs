@@ -332,7 +332,8 @@ namespace Temporalio.Client
                         },
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                return new(resp, Client.Options.DataConverter);
+                return await WorkflowExecutionDescription.FromProtoAsync(
+                    resp, Client.Options.DataConverter).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -458,6 +459,7 @@ namespace Temporalio.Client
                 // Need to combine cancellation token
                 var rpcOptsAndCancelSource = DefaultRetryOptions(input.Options?.Rpc).
                     WithAdditionalCancellationToken(cancellationToken);
+                var yielded = 0;
                 try
                 {
                     var req = new ListWorkflowExecutionsRequest()
@@ -472,6 +474,11 @@ namespace Temporalio.Client
                             req, rpcOptsAndCancelSource.Item1).ConfigureAwait(false);
                         foreach (var exec in resp.Executions)
                         {
+                            if (input.Options != null && input.Options.Limit > 0 &&
+                                yielded++ >= input.Options.Limit)
+                            {
+                                yield break;
+                            }
                             yield return new(exec, Client.Options.DataConverter);
                         }
                         req.NextPageToken = resp.NextPageToken;
@@ -507,6 +514,9 @@ namespace Temporalio.Client
                     WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                     RequestEagerExecution = input.Options.RequestEagerStart,
+                    UserMetadata = await Client.Options.DataConverter.ToUserMetadataAsync(
+                        input.Options.StaticSummary, input.Options.StaticDetails).
+                        ConfigureAwait(false),
                 };
                 if (input.Args.Count > 0)
                 {
@@ -608,6 +618,7 @@ namespace Temporalio.Client
                     WorkflowStartDelay = req.WorkflowStartDelay,
                     SignalName = input.Options.StartSignal,
                     WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
+                    UserMetadata = req.UserMetadata,
                 };
                 if (input.Options.StartSignalArgs != null && input.Options.StartSignalArgs.Count > 0)
                 {

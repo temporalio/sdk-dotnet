@@ -254,16 +254,16 @@ namespace Temporalio.Worker
 
         private IWorkflowInstance CreateInstance(WorkflowActivation act)
         {
-            var start = act.Jobs.Select(j => j.StartWorkflow).FirstOrDefault(s => s != null) ??
+            var init = act.Jobs.Select(j => j.InitializeWorkflow).FirstOrDefault(s => s != null) ??
                 throw new InvalidOperationException("Missing workflow start (unexpectedly evicted?)");
-            if (!workflows.TryGetValue(start.WorkflowType, out var defn))
+            if (!workflows.TryGetValue(init.WorkflowType, out var defn))
             {
                 defn = dynamicWorkflow;
                 if (defn == null)
                 {
                     var names = string.Join(", ", workflows.Keys.OrderBy(s => s));
                     throw new ApplicationFailureException(
-                        $"Workflow type {start.WorkflowType} is not registered on this worker, available workflows: {names}",
+                        $"Workflow type {init.WorkflowType} is not registered on this worker, available workflows: {names}",
                         "NotFoundError");
                 }
             }
@@ -273,7 +273,7 @@ namespace Temporalio.Worker
                     TaskQueue: options.TaskQueue,
                     Definition: defn,
                     InitialActivation: act,
-                    Start: start,
+                    Init: init,
                     Interceptors: options.Interceptors,
                     PayloadConverter: options.DataConverter.PayloadConverter,
                     FailureConverter: options.DataConverter.FailureConverter,

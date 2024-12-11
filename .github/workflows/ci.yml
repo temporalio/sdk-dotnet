@@ -57,11 +57,6 @@ jobs:
           version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
-        # We intentionally just build debug mode in this CI. We build before
-        # regen to confirm no interop header changes.
-        run: dotnet build
-
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
         run: |
@@ -84,6 +79,9 @@ jobs:
       - name: Check format
         if: ${{ matrix.checkTarget }}
         run: dotnet format --verify-no-changes
+
+      - name: Build
+        run: dotnet build
 
       - name: Test
         run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n
@@ -120,8 +118,8 @@ jobs:
       - name: Build docs
         if: ${{ matrix.docsTarget }}
         run: |
-            dotnet tool update -g docfx
-            docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors
+          dotnet tool update -g docfx
+          docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors
 
       - name: Deploy docs
         # Only deploy on main merge, not in PRs

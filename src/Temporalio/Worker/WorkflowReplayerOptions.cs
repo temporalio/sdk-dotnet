@@ -99,8 +99,8 @@ namespace Temporalio.Worker
         public bool DisableWorkflowTracingEventListener { get; set; }
 
         /// <summary>
-        /// Gets or sets the logging factory used by loggers in workers. If unset, defaults to the
-        /// client logger factory.
+        /// Gets or sets the logging factory used by loggers in workers. If unset, defaults to a
+        /// null logger.
         /// </summary>
         public ILoggerFactory LoggerFactory { get; set; } = NullLoggerFactory.Instance;
 

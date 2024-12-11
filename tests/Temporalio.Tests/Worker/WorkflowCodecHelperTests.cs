@@ -31,7 +31,7 @@ public class WorkflowCodecHelperTests : TestBase
                 return Task.CompletedTask;
             });
         // Confirm some known paths are there for fixed field, repeated, and map
-        Assert.Contains("Jobs.StartWorkflow.Headers", paths);
+        Assert.Contains("Jobs.InitializeWorkflow.Headers", paths);
         Assert.Contains("Jobs.SignalWorkflow.Input", paths);
         Assert.Contains("Jobs.ResolveActivity.Result.Completed.Result", paths);
     }

@@ -9,6 +9,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 anyhow = "1.0"
+async-trait = "0.1"
 futures = "0.3"
 libc = "0.2"
 log = "0.4"
@@ -21,7 +22,9 @@ rand = "0.8.5"
 rand_pcg = "0.3.1"
 serde_json = "1.0"
 temporal-client = { version = "0.1.0", path = "./sdk-core/client" }
-temporal-sdk-core = { version = "0.1.0", path = "./sdk-core/core", features = ["ephemeral-server"] }
+temporal-sdk-core = { version = "0.1.0", path = "./sdk-core/core", features = [
+    "ephemeral-server",
+] }
 temporal-sdk-core-api = { version = "0.1.0", path = "./sdk-core/core-api" }
 temporal-sdk-core-protos = { version = "0.1.0", path = "./sdk-core/sdk-core-protos" }
 tokio = "1.26"
@@ -39,3 +42,4 @@ incremental = false
 
 [build-dependencies]
 cbindgen = "0.24"
+anyhow = "1.0"

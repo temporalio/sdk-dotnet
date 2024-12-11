@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Interop;
 using Temporalio.Exceptions;
 
@@ -408,11 +409,13 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <param name="namespace_">Namespace for the worker.</param>
+        /// <param name="loggerFactory">Logger factory.</param>
         /// <returns>Converted options.</returns>
         public static Interop.WorkerOptions ToInteropOptions(
             this Temporalio.Worker.TemporalWorkerOptions options,
             Scope scope,
-            string namespace_)
+            string namespace_,
+            ILoggerFactory loggerFactory)
         {
             if (options.TaskQueue == null)
             {
@@ -458,7 +461,7 @@ namespace Temporalio.Bridge
                 build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = (uint)options.MaxCachedWorkflows,
-                tuner = tuner.ToInteropTuner(scope),
+                tuner = tuner.ToInteropTuner(scope, loggerFactory),
                 no_remote_activities = (byte)(noRemoteActivities ? 1 : 0),
                 sticky_queue_schedule_to_start_timeout_millis =
                     (ulong)options.StickyQueueScheduleToStartTimeout.TotalMilliseconds,
@@ -504,7 +507,7 @@ namespace Temporalio.Bridge
                 build_id = scope.ByteArray(buildId),
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
-                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope),
+                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope, options.LoggerFactory),
                 no_remote_activities = 1,
                 sticky_queue_schedule_to_start_timeout_millis = 1000,
                 max_heartbeat_throttle_interval_millis = 1000,
@@ -524,10 +527,11 @@ namespace Temporalio.Bridge
 
         private static Interop.TunerHolder ToInteropTuner(
             this Temporalio.Worker.Tuning.WorkerTuner tuner,
-            Scope scope)
+            Scope scope,
+            ILoggerFactory loggerFactory)
         {
             Temporalio.Worker.Tuning.ResourceBasedTunerOptions? lastTunerOptions = null;
-            Temporalio.Worker.Tuning.ISlotSupplier[] suppliers =
+            Temporalio.Worker.Tuning.SlotSupplier[] suppliers =
             {
                 tuner.WorkflowTaskSlotSupplier, tuner.ActivityTaskSlotSupplier,
                 tuner.LocalActivitySlotSupplier,
@@ -549,17 +553,18 @@ namespace Temporalio.Bridge
             return new()
             {
                 workflow_slot_supplier =
-                    tuner.WorkflowTaskSlotSupplier.ToInteropSlotSupplier(true),
+                    tuner.WorkflowTaskSlotSupplier.ToInteropSlotSupplier(true, loggerFactory),
                 activity_slot_supplier =
-                    tuner.ActivityTaskSlotSupplier.ToInteropSlotSupplier(false),
+                    tuner.ActivityTaskSlotSupplier.ToInteropSlotSupplier(false, loggerFactory),
                 local_activity_slot_supplier =
-                    tuner.LocalActivitySlotSupplier.ToInteropSlotSupplier(false),
+                    tuner.LocalActivitySlotSupplier.ToInteropSlotSupplier(false, loggerFactory),
             };
         }
 
         private static Interop.SlotSupplier ToInteropSlotSupplier(
-            this Temporalio.Worker.Tuning.ISlotSupplier supplier,
-            bool isWorkflow)
+            this Temporalio.Worker.Tuning.SlotSupplier supplier,
+            bool isWorkflow,
+            ILoggerFactory loggerFactory)
         {
             if (supplier is Temporalio.Worker.Tuning.FixedSizeSlotSupplier fixedSize)
             {
@@ -602,10 +607,21 @@ namespace Temporalio.Bridge
                     },
                 };
             }
+            else if (supplier is Temporalio.Worker.Tuning.CustomSlotSupplier custom)
+            {
+                var wrapped = new CustomSlotSupplier(custom, loggerFactory);
+                unsafe
+                {
+                    return new()
+                    {
+                        tag = Interop.SlotSupplier_Tag.Custom,
+                        custom = new Interop.CustomSlotSupplierCallbacksImpl() { _0 = wrapped.Ptr },
+                    };
+                }
+            }
             else
             {
-                throw new ArgumentException(
-                    "ISlotSupplier must be one of the types provided by the library");
+                throw new ArgumentException("Unknown slot supplier type");
             }
         }
 

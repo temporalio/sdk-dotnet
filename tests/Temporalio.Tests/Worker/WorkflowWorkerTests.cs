@@ -1227,7 +1227,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Now query after close to check that is replaying worked
                 var isReplayingValues = await Env.Client.GetWorkflowHandle<MiscHelpersWorkflow>(
                     workflowId).QueryAsync(wf => wf.GetEventsForIsReplaying());
-                Assert.Equal(new[] { false, true }, isReplayingValues);
+                Assert.Equal(new[] { false, true, true }, isReplayingValues);
             },
             new(taskQueue: taskQueue));
     }
@@ -2997,9 +2997,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await handle.SignalAsync(wf => wf.SomeSignalAsync("signal arg"));
                 Assert.Equal("done", await handle.QueryAsync(wf => wf.SomeQuery("query arg")));
                 Assert.Equal("done", await handle.ExecuteUpdateAsync(wf => wf.SomeUpdateAsync("update arg")));
-                await handle.SignalAsync(wf => wf.FinishAsync());
-                Assert.Equal("done", await handle.GetResultAsync());
-                Assert.Equal(
+                // Event list must be collected before the WF finishes, since when it finishes it
+                // will be evicted from the cache and the first SomeQuery event will not exist upon
+                // replay.
+                await AssertMore.EqualEventuallyAsync(
                     new List<string>
                     {
                         "activity-NonDynamicActivity: activity arg",
@@ -3008,7 +3009,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         "update-SomeUpdate: update arg",
                         "workflow-NonDynamicWorkflow: workflow arg",
                     },
-                    (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+                    async () => (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+                await handle.SignalAsync(wf => wf.FinishAsync());
+                Assert.Equal("done", await handle.GetResultAsync());
             },
             new TemporalWorkerOptions().AddActivity(DynamicWorkflow.DynamicActivity));
     }
@@ -6006,6 +6009,161 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await replayer.ReplayWorkflowAsync(history);
             },
             new TemporalWorkerOptions().AddAllActivities(activities));
+    }
+
+    [Workflow]
+    public class UserMetadataWorkflow
+    {
+        [Activity]
+        public static string DoNothing() => "done";
+
+        [WorkflowRun]
+        public async Task RunAsync(bool returnImmediately)
+        {
+            if (returnImmediately)
+            {
+                return;
+            }
+
+            // Timer, wait condition, activity, and child with metadata
+
+            // Timer
+            await Workflow.DelayWithOptionsAsync(new(1) { Summary = "my-timer" });
+
+            // Wait condition
+            await Workflow.WaitConditionWithOptionsAsync(new(
+                () => false, TimeSpan.FromMilliseconds(2), "my-wait-condition-timer"));
+
+            // Activity
+            await Workflow.ExecuteActivityAsync(() => DoNothing(), new()
+            {
+                StartToCloseTimeout = TimeSpan.FromSeconds(30),
+                Summary = "my-activity",
+            });
+
+            // Child
+            await Workflow.ExecuteChildWorkflowAsync(
+                (UserMetadataWorkflow wf) => wf.RunAsync(true),
+                new() { StaticSummary = "my-child", StaticDetails = "my-child-details" });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UserMetadata_PropagatedProperly()
+    {
+        await ExecuteWorkerAsync<UserMetadataWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (UserMetadataWorkflow wf) => wf.RunAsync(false),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        StaticSummary = "my-workflow",
+                        StaticDetails = "my-workflow-details",
+                    });
+                await handle.GetResultAsync();
+
+                // Check description has summary/details
+                var desc = await handle.DescribeAsync();
+                Assert.Equal("my-workflow", desc.StaticSummary);
+                Assert.Equal("my-workflow-details", desc.StaticDetails);
+
+                // Check history for timer (x2), activity, and child metadata
+                var history = await handle.FetchHistoryAsync();
+                Assert.Contains(history.Events, evt => evt.TimerStartedEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-timer\"");
+                Assert.Contains(history.Events, evt => evt.TimerStartedEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-wait-condition-timer\"");
+                Assert.Contains(history.Events, evt => evt.ActivityTaskScheduledEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-activity\"");
+                Assert.Contains(history.Events, evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-child\"" &&
+                    evt.UserMetadata?.Details?.Data?.ToStringUtf8() == "\"my-child-details\"");
+
+                // Go ahead and describe the child and confirm its metadata
+                var child = history.Events.Single(evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null);
+                desc = await Client.GetWorkflowHandle(
+                    child.StartChildWorkflowExecutionInitiatedEventAttributes.WorkflowId).DescribeAsync();
+                Assert.Equal("my-child", desc.StaticSummary);
+                Assert.Equal("my-child-details", desc.StaticDetails);
+            },
+            new TemporalWorkerOptions().AddAllActivities<UserMetadataWorkflow>(null));
+    }
+
+    [Workflow]
+    public class WorkflowMetadataWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            Workflow.CurrentDetails = "initial current details";
+            Workflow.Signals["some manual signal"] = WorkflowSignalDefinition.CreateWithoutAttribute(
+                "some manual signal", () => Task.CompletedTask, description: "some manual signal description");
+            await Workflow.WaitConditionAsync(() => Continue);
+            Workflow.CurrentDetails = "final current details";
+        }
+
+        [WorkflowSignal]
+        public Task SomeSignalAsync() => Task.CompletedTask;
+
+        [WorkflowSignal("some signal", Description = "some signal description")]
+        public Task SomeOtherSignalAsync() => Task.CompletedTask;
+
+        [WorkflowQuery(Description = "continue description")]
+        public bool Continue { get; set; }
+
+        [WorkflowQuery(Description = "some query description", Dynamic = true)]
+        public string SomeDynamicQueryAsync(string name, IRawValue[] args) => "some value";
+
+        [WorkflowUpdate(Description = "some update description")]
+        public async Task SomeUpdateAsync() => Continue = true;
+
+        [WorkflowUpdate("some update")]
+        public Task SomeOtherUpdateAsync() => Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_WorkflowMetadata_HasProperValues()
+    {
+        await ExecuteWorkerAsync<WorkflowMetadataWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (WorkflowMetadataWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            // Wait for start
+            await AssertMore.EqualEventuallyAsync(false, () => handle.QueryAsync(wf => wf.Continue));
+
+            // Check workflow metadata
+            var meta = await handle.QueryAsync<Api.Sdk.V1.WorkflowMetadata>(
+                "__temporal_workflow_metadata", Array.Empty<object?>());
+            Assert.Equal("initial current details", meta.CurrentDetails);
+            Assert.Equal("WorkflowMetadataWorkflow", meta.Definition.Type);
+            Assert.Equal(3, meta.Definition.SignalDefinitions.Count);
+            Assert.Equal(
+                string.Empty,
+                Assert.Single(meta.Definition.SignalDefinitions, s => s.Name == "SomeSignal").Description);
+            Assert.Equal(
+                "some signal description",
+                Assert.Single(meta.Definition.SignalDefinitions, s => s.Name == "some signal").Description);
+            Assert.Equal(
+                "some manual signal description",
+                Assert.Single(meta.Definition.SignalDefinitions, s => s.Name == "some manual signal").Description);
+            Assert.Equal(2, meta.Definition.QueryDefinitions.Count);
+            Assert.Equal(
+                "continue description",
+                Assert.Single(meta.Definition.QueryDefinitions, s => s.Name == "Continue").Description);
+            Assert.Equal(
+                "some query description",
+                Assert.Single(meta.Definition.QueryDefinitions, s => s.Name.Length == 0).Description);
+            Assert.Equal(2, meta.Definition.UpdateDefinitions.Count);
+            Assert.Equal(
+                "some update description",
+                Assert.Single(meta.Definition.UpdateDefinitions, s => s.Name == "SomeUpdate").Description);
+            Assert.Equal(
+                string.Empty,
+                Assert.Single(meta.Definition.UpdateDefinitions, s => s.Name == "some update").Description);
+        });
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(
