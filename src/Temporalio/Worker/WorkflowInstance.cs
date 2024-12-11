@@ -220,6 +220,9 @@ namespace Temporalio.Worker
         public string CurrentBuildId { get; private set; }
 
         /// <inheritdoc />
+        public string CurrentDetails { get; set; } = string.Empty;
+
+        /// <inheritdoc />
         public int CurrentHistoryLength { get; private set; }
 
         /// <inheritdoc />
@@ -343,8 +346,8 @@ namespace Temporalio.Worker
                 Headers: null));
 
         /// <inheritdoc/>
-        public Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken) =>
-            outbound.Value.DelayAsync(new(Delay: delay, CancellationToken: cancellationToken));
+        public Task DelayWithOptionsAsync(DelayOptions options) =>
+            outbound.Value.DelayAsync(new(options));
 
         /// <inheritdoc/>
         public Task<TResult> ExecuteActivityAsync<TResult>(
@@ -461,14 +464,11 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
-        public Task<bool> WaitConditionAsync(
-            Func<bool> conditionCheck,
-            TimeSpan? timeout,
-            CancellationToken? cancellationToken)
+        public Task<bool> WaitConditionWithOptionsAsync(WaitConditionOptions options)
         {
             var source = new TaskCompletionSource<object?>();
-            var node = conditions.AddLast(Tuple.Create(conditionCheck, source));
-            var token = cancellationToken ?? CancellationToken;
+            var node = conditions.AddLast(Tuple.Create(options.ConditionCheck, source));
+            var token = options.CancellationToken ?? CancellationToken;
             return QueueNewTaskAsync(async () =>
             {
                 try
@@ -476,7 +476,7 @@ namespace Temporalio.Worker
                     using (token.Register(() => source.TrySetCanceled(token)))
                     {
                         // If there's no timeout, it'll never return false, so just wait
-                        if (timeout == null)
+                        if (options.Timeout == null)
                         {
                             await source.Task.ConfigureAwait(true);
                             return true;
@@ -484,8 +484,11 @@ namespace Temporalio.Worker
                         // Try a timeout that we cancel if never hit
                         using (var delayCancelSource = new CancellationTokenSource())
                         {
-                            var completedTask = await Task.WhenAny(source.Task, DelayAsync(
-                                timeout.GetValueOrDefault(), delayCancelSource.Token)).ConfigureAwait(true);
+                            var completedTask = await Task.WhenAny(source.Task, DelayWithOptionsAsync(
+                                new(
+                                    delay: options.Timeout.GetValueOrDefault(),
+                                    summary: options.TimeoutSummary,
+                                    cancellationToken: delayCancelSource.Token))).ConfigureAwait(true);
                             // Do not timeout
                             if (completedTask == source.Task)
                             {
@@ -1141,6 +1144,12 @@ namespace Temporalio.Worker
                         queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
                             "__stack_trace", getter);
                     }
+                    else if (query.QueryType == "__temporal_workflow_metadata")
+                    {
+                        Func<Api.Sdk.V1.WorkflowMetadata> getter = GetWorkflowMetadata;
+                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
+                            "__temporal_workflow_metadata", getter);
+                    }
                     else
                     {
                         // Find definition or fail
@@ -1453,6 +1462,45 @@ namespace Temporalio.Worker
             }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));
         }
 
+        private Api.Sdk.V1.WorkflowMetadata GetWorkflowMetadata()
+        {
+            var defn = new Api.Sdk.V1.WorkflowDefinition() { Type = Info.WorkflowType };
+            if (DynamicQuery is { } dynQuery)
+            {
+                defn.QueryDefinitions.Add(
+                    new Api.Sdk.V1.WorkflowInteractionDefinition() { Description = dynQuery.Description });
+            }
+            defn.QueryDefinitions.AddRange(Queries.Values.Select(query =>
+                new Api.Sdk.V1.WorkflowInteractionDefinition()
+                {
+                    Name = query.Name ?? string.Empty,
+                    Description = query.Description ?? string.Empty,
+                }).OrderBy(q => q.Name));
+            if (DynamicSignal is { } dynSignal)
+            {
+                defn.SignalDefinitions.Add(
+                    new Api.Sdk.V1.WorkflowInteractionDefinition() { Description = dynSignal.Description });
+            }
+            defn.SignalDefinitions.AddRange(Signals.Values.Select(query =>
+                new Api.Sdk.V1.WorkflowInteractionDefinition()
+                {
+                    Name = query.Name ?? string.Empty,
+                    Description = query.Description ?? string.Empty,
+                }).OrderBy(q => q.Name));
+            if (DynamicUpdate is { } dynUpdate)
+            {
+                defn.UpdateDefinitions.Add(
+                    new Api.Sdk.V1.WorkflowInteractionDefinition() { Description = dynUpdate.Description });
+            }
+            defn.UpdateDefinitions.AddRange(Updates.Values.Select(query =>
+                new Api.Sdk.V1.WorkflowInteractionDefinition()
+                {
+                    Name = query.Name ?? string.Empty,
+                    Description = query.Description ?? string.Empty,
+                }).OrderBy(q => q.Name));
+            return new() { Definition = defn, CurrentDetails = CurrentDetails };
+        }
+
         private void ApplyLegacyCompletionCommandReordering(
             WorkflowActivation act,
             WorkflowActivationCompletion completion,
@@ -1732,6 +1780,8 @@ namespace Temporalio.Worker
                         {
                             Seq = seq,
                             StartToFireTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(delay),
+                            Summary = input.Summary == null ?
+                                null : instance.PayloadConverter.ToPayload(input.Summary),
                         },
                     });
                 }
@@ -1800,6 +1850,10 @@ namespace Temporalio.Worker
                         if (input.Options.VersioningIntent is { } vi)
                         {
                             cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
+                        }
+                        if (input.Options.Summary is { } summary)
+                        {
+                            cmd.Summary = instance.PayloadConverter.ToPayload(summary);
                         }
                         instance.AddCommand(new() { ScheduleActivity = cmd });
                         return seq;
@@ -1932,6 +1986,10 @@ namespace Temporalio.Worker
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                     CronSchedule = input.Options.CronSchedule ?? string.Empty,
                     CancellationType = (Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType)input.Options.CancellationType,
+                    StaticSummary = input.Options.StaticSummary is { } summ ?
+                        instance.PayloadConverter.ToPayload(summ) : null,
+                    StaticDetails = input.Options.StaticDetails is { } det ?
+                        instance.PayloadConverter.ToPayload(det) : null,
                 };
                 if (input.Options.ExecutionTimeout is TimeSpan execTimeout)
                 {
@@ -2173,9 +2231,10 @@ namespace Temporalio.Worker
                             case ActivityResolution.StatusOneofCase.Backoff:
                                 // We have to sleep the backoff amount. Note, this can be cancelled
                                 // like any other timer.
-                                await instance.DelayAsync(
-                                    res.Backoff.BackoffDuration.ToTimeSpan(),
-                                    cancellationToken).ConfigureAwait(true);
+                                await instance.DelayWithOptionsAsync(new(
+                                    delay: res.Backoff.BackoffDuration.ToTimeSpan(),
+                                    summary: "LocalActivityBackoff",
+                                    cancellationToken: cancellationToken)).ConfigureAwait(true);
                                 // Re-schedule with backoff info
                                 seq = applyScheduleCommand(res.Backoff);
                                 source = new TaskCompletionSource<ActivityResolution>();
