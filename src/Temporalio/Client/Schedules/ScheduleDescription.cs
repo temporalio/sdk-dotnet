@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Common;
 using Temporalio.Converters;
@@ -16,16 +17,11 @@ namespace Temporalio.Client.Schedules
         private readonly Lazy<IReadOnlyDictionary<string, IEncodedRawValue>> memo;
         private readonly Lazy<SearchAttributeCollection> searchAttributes;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ScheduleDescription"/> class.
-        /// </summary>
-        /// <param name="id">Workflow ID.</param>
-        /// <param name="rawDescription">Raw proto description.</param>
-        /// <param name="dataConverter">Data converter.</param>
-        internal ScheduleDescription(
-            string id, DescribeScheduleResponse rawDescription, DataConverter dataConverter)
+        private ScheduleDescription(
+            string id, Schedule schedule, DescribeScheduleResponse rawDescription, DataConverter dataConverter)
         {
             Id = id;
+            Schedule = schedule;
             RawDescription = rawDescription;
             // Search attribute conversion is cheap so it doesn't need to lock on publication. But
             // memo conversion may use remote codec so it should only ever be created once lazily.
@@ -39,7 +35,6 @@ namespace Temporalio.Client.Schedules
                     SearchAttributeCollection.Empty :
                     SearchAttributeCollection.FromProto(rawDescription.SearchAttributes),
                 LazyThreadSafetyMode.PublicationOnly);
-            Schedule = Schedule.FromProto(rawDescription.Schedule, dataConverter);
             Info = ScheduleInfo.FromProto(rawDescription.Info);
         }
 
@@ -77,5 +72,20 @@ namespace Temporalio.Client.Schedules
         /// Gets the raw proto description.
         /// </summary>
         internal DescribeScheduleResponse RawDescription { get; private init; }
+
+        /// <summary>
+        /// Convert from proto.
+        /// </summary>
+        /// <param name="id">ID.</param>
+        /// <param name="rawDescription">Proto.</param>
+        /// <param name="dataConverter">Converter.</param>
+        /// <returns>Converted value.</returns>
+        internal static async Task<ScheduleDescription> FromProtoAsync(
+            string id, DescribeScheduleResponse rawDescription, DataConverter dataConverter) =>
+            new(
+                id,
+                await Schedule.FromProtoAsync(rawDescription.Schedule, dataConverter).ConfigureAwait(false),
+                rawDescription,
+                dataConverter);
     }
 }
