@@ -42,7 +42,8 @@ namespace Temporalio.Workflows
         public string? Name { get; }
 
         /// <summary>
-        /// Gets or sets a short description for this update that may appear in UI/CLI.
+        /// Gets or sets a short description for this update that may appear in UI/CLI when workflow
+        /// is asked for which updates it supports.
         /// </summary>
         /// <remarks>WARNING: This setting is experimental.</remarks>
         public string? Description { get; set; }
