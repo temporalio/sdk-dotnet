@@ -6012,6 +6012,53 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class ChildWorkflowAlreadyExists1Workflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+    }
+
+    [Workflow]
+    public class ChildWorkflowAlreadyExists2Workflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string workflowId)
+        {
+            try
+            {
+                await Workflow.StartChildWorkflowAsync(
+                    (ChildWorkflowAlreadyExists2Workflow wf) => wf.RunAsync("ignored"),
+                    new() { Id = workflowId });
+                throw new ApplicationFailureException("Should not be reached");
+            }
+            catch (WorkflowAlreadyStartedException e)
+            {
+                return $"already started, type: {e.WorkflowType}, run ID: {e.RunId}";
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ChildWorkflowAlreadyExists_ErrorsProperly()
+    {
+        await ExecuteWorkerAsync<ChildWorkflowAlreadyExists1Workflow>(
+            async worker =>
+            {
+                // Start workflow
+                var handle = await Client.StartWorkflowAsync(
+                    (ChildWorkflowAlreadyExists1Workflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Try to run other one
+                var result = await Client.ExecuteWorkflowAsync(
+                    (ChildWorkflowAlreadyExists2Workflow wf) => wf.RunAsync(handle.Id),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                Assert.Equal("already started, type: ChildWorkflowAlreadyExists2Workflow, run ID: <unknown>", result);
+            },
+            new TemporalWorkerOptions().AddWorkflow<ChildWorkflowAlreadyExists2Workflow>());
+    }
+
+    [Workflow]
     public class UserMetadataWorkflow
     {
         [Activity]

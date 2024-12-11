@@ -2061,8 +2061,10 @@ namespace Temporalio.Worker
                                         handleSource.SetException(
                                             new WorkflowAlreadyStartedException(
                                                 "Child workflow already started",
-                                                startRes.Failed.WorkflowId,
-                                                startRes.Failed.WorkflowType));
+                                                workflowId: startRes.Failed.WorkflowId,
+                                                workflowType: startRes.Failed.WorkflowType,
+                                                // Pending https://github.com/temporalio/temporal/issues/6961
+                                                runId: "<unknown>"));
                                         return;
                                     default:
                                         handleSource.SetException(new InvalidOperationException(
