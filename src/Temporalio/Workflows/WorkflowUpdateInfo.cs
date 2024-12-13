@@ -9,7 +9,6 @@ namespace Temporalio.Workflows
     /// </summary>
     /// <param name="Id">Current update ID.</param>
     /// <param name="Name">Current update name.</param>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public record WorkflowUpdateInfo(
         string Id,
         string Name)

@@ -96,7 +96,6 @@ namespace Temporalio.Workflows
         /// This set via a <see cref="AsyncLocal{T}" /> and therefore only visible inside the
         /// handler and tasks it creates.
         /// </remarks>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public static WorkflowUpdateInfo? CurrentUpdateInfo => Context.CurrentUpdateInfo;
 
         /// <summary>

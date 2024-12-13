@@ -5,7 +5,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Options for executing an update on a <see cref="WorkflowHandle" />.
     /// </summary>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public class WorkflowUpdateOptions : ICloneable
     {
         /// <summary>

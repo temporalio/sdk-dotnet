@@ -309,7 +309,6 @@ namespace Temporalio.Client
         /// <param name="updateCall">Invocation of workflow update method.</param>
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle> StartUpdateAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateStartOptions options)
         {
@@ -328,7 +327,6 @@ namespace Temporalio.Client
         /// <param name="updateCall">Invocation of workflow update method.</param>
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TWorkflow, TUpdateResult>(
             Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
             WorkflowUpdateStartOptions options)
@@ -347,7 +345,6 @@ namespace Temporalio.Client
         /// <param name="args">Arguments for the update.</param>
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public async Task<WorkflowUpdateHandle> StartUpdateAsync(
             string update, IReadOnlyCollection<object?> args, WorkflowUpdateStartOptions options) =>
             await StartUpdateAsync<ValueTuple>(update, args, options).ConfigureAwait(false);
@@ -360,7 +357,6 @@ namespace Temporalio.Client
         /// <param name="args">Arguments for the update.</param>
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
             string update, IReadOnlyCollection<object?> args, WorkflowUpdateStartOptions options) =>
             Client.OutboundInterceptor.StartWorkflowUpdateAsync<TUpdateResult>(new(
@@ -378,9 +374,6 @@ namespace Temporalio.Client
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
-        /// API will timeout on long update requests instead of properly polling for their
-        /// completion.</remarks>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <param name="updateCall">Invocation of workflow update method.</param>
         /// <param name="options">Extra options.</param>
@@ -401,9 +394,6 @@ namespace Temporalio.Client
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
-        /// API will timeout on long update requests instead of properly polling for their
-        /// completion.</remarks>
         /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>
         /// <param name="updateCall">Invocation of workflow update method.</param>
@@ -424,9 +414,6 @@ namespace Temporalio.Client
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
-        /// API will timeout on long update requests instead of properly polling for their
-        /// completion.</remarks>
         /// <param name="update">Update name.</param>
         /// <param name="args">Update args.</param>
         /// <param name="options">Extra options.</param>
@@ -447,9 +434,6 @@ namespace Temporalio.Client
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
-        /// API will timeout on long update requests instead of properly polling for their
-        /// completion.</remarks>
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>
         /// <param name="update">Update name.</param>
         /// <param name="args">Update args.</param>
@@ -470,7 +454,6 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="id">ID of the update.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public WorkflowUpdateHandle GetUpdateHandle(string id) =>
             new(Client: Client, Id: id, WorkflowId: Id, WorkflowRunId: RunId);
 
@@ -480,7 +463,6 @@ namespace Temporalio.Client
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>
         /// <param name="id">ID of the update.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public WorkflowUpdateHandle<TUpdateResult> GetUpdateHandle<TUpdateResult>(string id) =>
             new(Client: Client, Id: id, WorkflowId: Id, WorkflowRunId: RunId);
 
@@ -679,7 +661,6 @@ namespace Temporalio.Client
         /// <param name="updateCall">Invocation of workflow update method.</param>
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle> StartUpdateAsync(
             Expression<Func<TWorkflow, Task>> updateCall, WorkflowUpdateStartOptions options) =>
             StartUpdateAsync<TWorkflow>(updateCall, options);
@@ -691,7 +672,6 @@ namespace Temporalio.Client
         /// <param name="updateCall">Invocation of workflow update method.</param>
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
             Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
             WorkflowUpdateStartOptions options) =>
@@ -703,9 +683,6 @@ namespace Temporalio.Client
         /// +
         /// <see cref="WorkflowUpdateHandle.GetResultAsync(RpcOptions?)" />.
         /// </summary>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
-        /// API will timeout on long update requests instead of properly polling for their
-        /// completion.</remarks>
         /// <param name="updateCall">Invocation of workflow update method.</param>
         /// <param name="options">Extra options.</param>
         /// <returns>Completed update task.</returns>
@@ -724,9 +701,6 @@ namespace Temporalio.Client
         /// +
         /// <see cref="WorkflowUpdateHandle{TResult}.GetResultAsync(RpcOptions?)" />.
         /// </summary>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change. Currently this
-        /// API will timeout on long update requests instead of properly polling for their
-        /// completion.</remarks>
         /// <typeparam name="TUpdateResult">Update result type.</typeparam>
         /// <param name="updateCall">Invocation of workflow update method.</param>
         /// <param name="options">Extra options.</param>
