@@ -20,6 +20,16 @@ namespace Temporalio.Client.Interceptors
             Next.StartWorkflowAsync<TWorkflow, TResult>(input);
 
         /// <summary>
+        /// Intercept start update with start workflow calls.
+        /// </summary>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Handle for the update.</returns>
+        public virtual Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TUpdateResult>(
+            StartUpdateWithStartWorkflowInput input) =>
+            Next.StartUpdateWithStartWorkflowAsync<TUpdateResult>(input);
+
+        /// <summary>
         /// Intercept signal workflow calls.
         /// </summary>
         /// <param name="input">Input details of the call.</param>
