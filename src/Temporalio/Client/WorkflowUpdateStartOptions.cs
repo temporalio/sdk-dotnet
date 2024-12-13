@@ -3,7 +3,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Options for starting an update on a <see cref="WorkflowHandle" />.
     /// </summary>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public class WorkflowUpdateStartOptions : WorkflowUpdateOptions
     {
         /// <summary>

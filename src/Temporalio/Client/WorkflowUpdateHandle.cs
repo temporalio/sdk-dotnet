@@ -15,7 +15,6 @@ namespace Temporalio.Client
     /// <param name="Id">Update ID.</param>
     /// <param name="WorkflowId">Workflow ID.</param>
     /// <param name="WorkflowRunId">Run ID if any.</param>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public record WorkflowUpdateHandle(
         ITemporalClient Client,
         string Id,
@@ -32,7 +31,6 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="rpcOptions">Extra RPC options.</param>
         /// <returns>Completed update task.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public Task GetResultAsync(RpcOptions? rpcOptions = null) =>
             GetResultAsync<ValueTuple>(rpcOptions);
 
@@ -42,7 +40,6 @@ namespace Temporalio.Client
         /// <typeparam name="TResult">Update result type.</typeparam>
         /// <param name="rpcOptions">Extra RPC options.</param>
         /// <returns>Completed update result.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public virtual async Task<TResult> GetResultAsync<TResult>(RpcOptions? rpcOptions = null)
         {
             await PollUntilOutcomeAsync(rpcOptions).ConfigureAwait(false);
@@ -131,7 +128,6 @@ namespace Temporalio.Client
     /// <param name="Id">Update ID.</param>
     /// <param name="WorkflowId">Workflow ID.</param>
     /// <param name="WorkflowRunId">Run ID if any.</param>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public record WorkflowUpdateHandle<TResult>(
         ITemporalClient Client,
         string Id,
@@ -144,7 +140,6 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="rpcOptions">Extra RPC options.</param>
         /// <returns>Completed update result.</returns>
-        /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
         public new Task<TResult> GetResultAsync(RpcOptions? rpcOptions = null) =>
             GetResultAsync<TResult>(rpcOptions);
     }

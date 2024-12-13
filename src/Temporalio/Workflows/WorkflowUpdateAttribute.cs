@@ -15,7 +15,6 @@ namespace Temporalio.Workflows
     /// <see cref="Worker.TemporalWorkerOptions.WorkflowFailureExceptionTypes"/> to change the
     /// default behavior.
     /// </remarks>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class WorkflowUpdateAttribute : Attribute
     {
@@ -45,7 +44,6 @@ namespace Temporalio.Workflows
         /// Gets or sets a short description for this update that may appear in UI/CLI when workflow
         /// is asked for which updates it supports.
         /// </summary>
-        /// <remarks>WARNING: This setting is experimental.</remarks>
         public string? Description { get; set; }
 
         /// <summary>
