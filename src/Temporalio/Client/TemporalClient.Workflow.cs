@@ -249,7 +249,7 @@ namespace Temporalio.Client
                     // exception, that will come when _they_ call get result
                     var handle = new WorkflowUpdateHandle<TUpdateResult>(
                         Client, updateReq.Request.Meta.UpdateId, input.Options.StartWorkflowOperation.Options.Id!, runId)
-                        { KnownOutcome = updateResp.Outcome };
+                    { KnownOutcome = updateResp.Outcome };
                     if (input.Options.WaitForStage == WorkflowUpdateStage.Completed)
                     {
                         await handle.PollUntilOutcomeAsync(input.Options.Rpc).ConfigureAwait(false);
