@@ -159,16 +159,22 @@ namespace Temporalio.Client
             public override async Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TUpdateResult>(
                 StartUpdateWithStartWorkflowInput input)
             {
+                // Try to mark used before using
+                if (input.Options.StartWorkflowOperation == null)
+                {
+                    throw new ArgumentException("Start workflow operation is required in options");
+                }
+                if (!input.Options.StartWorkflowOperation.TryMarkUsed())
+                {
+                    throw new ArgumentException("Start operation already used");
+                }
+
                 // We choose to put everything in one large try statement because we want to make
                 // sure that any failures are also propagated to the waiter of the handle too, not
                 // just thrown out of here.
                 try
                 {
                     // Disallow some options in start that don't work here, and require others
-                    if (input.Options.StartWorkflowOperation == null)
-                    {
-                        throw new ArgumentException("Start workflow operation is required in options");
-                    }
                     if (input.Options.StartWorkflowOperation.Options.StartSignal != null ||
                         input.Options.StartWorkflowOperation.Options.StartSignalArgs != null)
                     {
@@ -185,12 +191,6 @@ namespace Temporalio.Client
                     if (input.Options.StartWorkflowOperation.Options.Rpc != null)
                     {
                         throw new ArgumentException("Cannot set RPC options on start options, set them on the update options");
-                    }
-
-                    // Single atomic to prevent reuse
-                    if (!input.Options.StartWorkflowOperation.TryMarkUsed())
-                    {
-                        throw new ArgumentException("Start operation already used");
                     }
 
                     // Build request
@@ -236,14 +236,9 @@ namespace Temporalio.Client
                                 runId,
                                 runId)!);
                         }
-                        if (resp.Responses.Count > 1)
-                        {
-                            updateResp = resp.Responses[1].UpdateWorkflow;
-                        }
+                        updateResp = resp.Responses[1].UpdateWorkflow;
                     }
-                    while (updateResp == null || (
-                        updateResp.Stage < (UpdateWorkflowExecutionLifecycleStage)input.Options.WaitForStage &&
-                        updateResp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted));
+                    while (updateResp == null || updateResp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
 
                     // If the requested stage is completed, wait for result, but discard the update
                     // exception, that will come when _they_ call get result
@@ -462,8 +457,7 @@ namespace Temporalio.Client
                         throw new WorkflowUpdateRpcTimeoutOrCanceledException(e);
                     }
                 }
-                while (resp.Stage < req.WaitPolicy.LifecycleStage &&
-                    resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
+                while (resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
 
                 // If the requested stage is completed, wait for result, but discard the update
                 // exception, that will come when _they_ call get result
