@@ -34,6 +34,11 @@ namespace Temporalio.Extensions.OpenTelemetry
         public string? TagNameActivityId { get; set; } = "temporalActivityID";
 
         /// <summary>
+        /// Gets or sets the tag name for update IDs. If null, no tag is created.
+        /// </summary>
+        public string? TagNameUpdateId { get; set; } = "temporalUpdateID";
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

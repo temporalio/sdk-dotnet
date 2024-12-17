@@ -8,6 +8,7 @@ using System.Text;
 using global::OpenTelemetry.Trace;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Exceptions;
@@ -644,6 +645,89 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 Tags: workflowRunTags));
     }
 
+    [Fact]
+    public async Task TracingInterceptor_SignalWithStart_HaveProperSpans()
+    {
+        var activities = await WithTracingWorkerAsync(async (client, worker) =>
+        {
+            var twoSignalWait = new TracingWorkflowParam(
+                new TracingWorkflowAction[] { new(WaitUntilSignalCount: 2) });
+
+            // Signal with start new
+            var options = new WorkflowOptions(id: $"wf-{Guid.NewGuid()}", worker.Options.TaskQueue!);
+            options.SignalWithStart((TracingWorkflow wf) => wf.Signal1Async());
+            var handle = await client.StartWorkflowAsync(
+                (TracingWorkflow wf) => wf.RunAsync(twoSignalWait),
+                options);
+
+            // Wait first task done
+            await AssertMore.HasEventEventuallyAsync(
+                handle, e => e.WorkflowTaskCompletedEventAttributes != null);
+
+            // Go again
+            options = new WorkflowOptions(id: handle.Id, worker.Options.TaskQueue!);
+            options.SignalWithStart((TracingWorkflow wf) => wf.Signal2Async());
+            await client.ExecuteWorkflowAsync(
+                (TracingWorkflow wf) => wf.RunAsync(twoSignalWait),
+                options);
+        });
+        AssertActivities(
+            activities,
+            ActivityAssertion.NameAndParent(
+                "SignalWithStartWorkflow:TracingWorkflow", null),
+            ActivityAssertion.NameAndParent(
+                "HandleSignal:Signal1", "SignalWithStartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "HandleSignal:Signal2", "SignalWithStartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "RunWorkflow:TracingWorkflow", "SignalWithStartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "CompleteWorkflow:TracingWorkflow", "RunWorkflow:TracingWorkflow"),
+            // There's actually a second one of these
+            ActivityAssertion.NameAndParent(
+                "SignalWithStartWorkflow:TracingWorkflow", null));
+    }
+
+    [Fact]
+    public async Task TracingInterceptor_UpdateWithStart_HaveProperSpans()
+    {
+        var activities = await WithTracingWorkerAsync(async (client, worker) =>
+        {
+            var twoUpdateWait = new TracingWorkflowParam(
+                new TracingWorkflowAction[] { new(WaitUntilUpdateCount: 2) });
+
+            // Update with start new
+            var id = $"wf-{Guid.NewGuid()}";
+            await client.ExecuteUpdateWithStartWorkflowAsync(
+                (TracingWorkflow wf) => wf.Update1Async(),
+                new(WithStartWorkflowOperation.Create(
+                    (TracingWorkflow wf) => wf.RunAsync(twoUpdateWait),
+                    new(id, worker.Options.TaskQueue!) { IdConflictPolicy = WorkflowIdConflictPolicy.Fail })));
+
+            // And again
+            await client.ExecuteUpdateWithStartWorkflowAsync(
+                (TracingWorkflow wf) => wf.Update2Async(),
+                new(WithStartWorkflowOperation.Create(
+                    (TracingWorkflow wf) => wf.RunAsync(twoUpdateWait),
+                    new(id, worker.Options.TaskQueue!) { IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting })));
+        });
+        AssertActivities(
+            activities,
+            ActivityAssertion.NameAndParent(
+                "UpdateWithStartWorkflow:TracingWorkflow", null),
+            ActivityAssertion.NameAndParent(
+                "HandleUpdate:Update1", "UpdateWithStartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "HandleUpdate:Update2", "UpdateWithStartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "RunWorkflow:TracingWorkflow", "UpdateWithStartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "CompleteWorkflow:TracingWorkflow", "RunWorkflow:TracingWorkflow"),
+            // There's actually a second one of these
+            ActivityAssertion.NameAndParent(
+                "UpdateWithStartWorkflow:TracingWorkflow", null));
+    }
+
     private static void AssertActivities(
         IReadOnlyCollection<Activity> activities, params ActivityAssertion[] assertions)
     {
@@ -695,6 +779,37 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         bool expectFail = false,
         bool terminate = false)
     {
+        WorkflowHandle<TracingWorkflow>? handle = null;
+        var activities = await WithTracingWorkerAsync(async (client, worker) =>
+        {
+            // Start
+            var options = new WorkflowOptions(id: $"wf-{Guid.NewGuid()}", worker.Options.TaskQueue!);
+            handle = await client.StartWorkflowAsync((TracingWorkflow wf) => wf.RunAsync(param), options);
+
+            // Run after-start, then wait for complete
+            if (afterStart != null)
+            {
+                await afterStart.Invoke(handle);
+            }
+            if (terminate)
+            {
+                await handle.TerminateAsync();
+            }
+            if (expectFail)
+            {
+                await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
+            }
+            else
+            {
+                await handle.GetResultAsync();
+            }
+        });
+        return (handle!, activities);
+    }
+
+    private async Task<IReadOnlyCollection<Activity>> WithTracingWorkerAsync(
+        Func<ITemporalClient, TemporalWorker, Task> run)
+    {
         var activities = new List<Activity>();
 
         // Setup provider
@@ -717,35 +832,11 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 AddAllActivities<TracingActivities>(null).
                 AddWorkflow<TracingWorkflow>();
         using var worker = new TemporalWorker(client, workerOptions);
-        return await worker.ExecuteAsync(async () =>
-        {
-            // Start
-            var handle = await client.StartWorkflowAsync(
-                (TracingWorkflow wf) => wf.RunAsync(param),
-                new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-
-            // Run after-start, then wait for complete
-            if (afterStart != null)
-            {
-                await afterStart.Invoke(handle);
-            }
-            if (terminate)
-            {
-                await handle.TerminateAsync();
-            }
-            if (expectFail)
-            {
-                await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
-            }
-            else
-            {
-                await handle.GetResultAsync();
-            }
-            logger.LogDebug(
-                "Activities:\n{Activities}",
-                string.Join("\n", DumpActivities(activities)));
-            return (handle, activities);
-        });
+        await worker.ExecuteAsync(() => run(client, worker));
+        logger.LogDebug(
+            "Activities:\n{Activities}",
+            string.Join("\n", DumpActivities(activities)));
+        return activities;
     }
 
     public record ActivityAssertion(
@@ -754,15 +845,26 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         Action<KeyValuePair<string, string?>>[]? Tags = null,
         Action<ActivityEvent>[]? Events = null,
         Action<ActivityLink>[]? Links = null,
-        bool IgnoreLinks = false)
+        bool IgnoreLinks = false,
+        bool IgnoreTags = false,
+        bool IgnoreEvents = false)
     {
+        public static ActivityAssertion NameAndParent(string name, string? parent) => new(
+            Name: name, Parent: parent, IgnoreLinks: true, IgnoreTags: true, IgnoreEvents: true);
+
         public void AssertActivity(IReadOnlyCollection<Activity> activities, Activity activity)
         {
             Assert.Equal(Name, activity.OperationName);
             Activity? parent = activities.SingleOrDefault(a => a.SpanId == activity.ParentSpanId);
             Assert.Equal(Parent, parent?.OperationName);
-            AssertMore.Every(activity.Tags, Tags ?? Array.Empty<Action<KeyValuePair<string, string?>>>());
-            AssertMore.Every(activity.Events, Events ?? Array.Empty<Action<ActivityEvent>>());
+            if (!IgnoreTags)
+            {
+                AssertMore.Every(activity.Tags, Tags ?? Array.Empty<Action<KeyValuePair<string, string?>>>());
+            }
+            if (!IgnoreEvents)
+            {
+                AssertMore.Every(activity.Events, Events ?? Array.Empty<Action<ActivityEvent>>());
+            }
             if (!IgnoreLinks)
             {
                 AssertMore.Every(activity.Links, Links ?? Array.Empty<Action<ActivityLink>>());
@@ -794,6 +896,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         public static readonly ActivitySource CustomSource = new("MyCustomSource");
 
         private int signalCount;
+        private int updateCount;
 
         [WorkflowRun]
         public async Task RunAsync(TracingWorkflowParam param)
@@ -872,6 +975,10 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 {
                     CustomSource.TrackWorkflowDiagnosticActivity(action.CreateCustomActivity).Dispose();
                 }
+                if (action.WaitUntilUpdateCount > 0)
+                {
+                    await Workflow.WaitConditionAsync(() => updateCount >= action.WaitUntilUpdateCount);
+                }
             }
         }
 
@@ -932,6 +1039,12 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         public void ValidateUpdateValidatorFailure(string msg) =>
             throw new ApplicationFailureException(msg);
 
+        [WorkflowUpdate]
+        public async Task Update1Async() => updateCount++;
+
+        [WorkflowUpdate]
+        public async Task Update2Async() => updateCount++;
+
         private static async Task RaiseOnNonReplayAsync(string msg)
         {
             var replaying = Workflow.Unsafe.IsReplaying;
@@ -970,7 +1083,8 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         TracingWorkflowActionActivity? Activity = null,
         TracingWorkflowActionContinueAsNew? ContinueAsNew = null,
         int WaitUntilSignalCount = 0,
-        string? CreateCustomActivity = null);
+        string? CreateCustomActivity = null,
+        int WaitUntilUpdateCount = 0);
 
     public record TracingWorkflowActionChildWorkflow(
         TracingWorkflowParam Param,

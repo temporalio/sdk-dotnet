@@ -72,6 +72,9 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "worker.buildIdScavengerEnabled=true",
                         "--dynamic-config-value",
                         $"limit.historyCount.suggestContinueAsNew={ContinueAsNewSuggestedHistoryCount}",
+                        // Enable multi-op
+                        "--dynamic-config-value",
+                        "frontend.enableExecuteMultiOperation=true",
                     },
                 },
             });

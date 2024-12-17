@@ -6213,6 +6213,151 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class UpdateWithStartWorkflow
+    {
+        private bool finishWaiting;
+
+        [WorkflowRun]
+        public async Task RunAsync(int initialIncrement)
+        {
+            Counter += initialIncrement;
+            await Workflow.WaitConditionAsync(() => false);
+        }
+
+        [WorkflowUpdate]
+        public async Task IncrementCounter(int value) => Counter += value;
+
+        [WorkflowQuery]
+        public int Counter { get; set; }
+
+        [WorkflowUpdate]
+        public async Task FailAsync() => throw new ApplicationFailureException("Intentional failure");
+
+        [WorkflowUpdate]
+        public Task StartWaitingAsync() => Workflow.WaitConditionAsync(() => finishWaiting);
+
+        [WorkflowUpdate]
+        public async Task FinishWaitingAsync() => finishWaiting = true;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateWithStart_Simple()
+    {
+        await ExecuteWorkerAsync<UpdateWithStartWorkflow>(async worker =>
+        {
+            // Newly started
+            var id = $"workflow-{Guid.NewGuid()}";
+            var startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            await Client.ExecuteUpdateWithStartWorkflowAsync(
+                (UpdateWithStartWorkflow wf) => wf.IncrementCounter(456),
+                new(startOp));
+
+            // Confirm counter
+            var handle = await startOp.GetHandleAsync();
+            Assert.Equal(579, await handle.QueryAsync(wf => wf.Counter));
+
+            // Update with start 5 more times
+            foreach (var ignore in Enumerable.Range(0, 5))
+            {
+                await Client.ExecuteUpdateWithStartWorkflowAsync(
+                    (UpdateWithStartWorkflow wf) => wf.IncrementCounter(2),
+                    new(WithStartWorkflowOperation.Create(
+                        (UpdateWithStartWorkflow wf) => wf.RunAsync(10000),
+                        new(id: id, taskQueue: worker.Options.TaskQueue!)
+                        {
+                            IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                        })));
+            }
+            // Confirm 10 (i.e. 5 * 2) was added
+            Assert.Equal(589, await handle.QueryAsync(wf => wf.Counter));
+
+            // Confirm we get an already exists on both the start op and call if we set fail
+            // existing
+            startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() =>
+                Client.ExecuteUpdateWithStartWorkflowAsync(
+                    (UpdateWithStartWorkflow wf) => wf.IncrementCounter(456), new(startOp)));
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() => startOp.GetHandleAsync());
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateWithStart_UpdateFailure()
+    {
+        await ExecuteWorkerAsync<UpdateWithStartWorkflow>(async worker =>
+        {
+            // Update failed but workflow started
+            var id = $"workflow-{Guid.NewGuid()}";
+            var startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            var err = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                Client.ExecuteUpdateWithStartWorkflowAsync(
+                    (UpdateWithStartWorkflow wf) => wf.FailAsync(),
+                    new(startOp)));
+            var appErr = Assert.IsType<ApplicationFailureException>(err.InnerException);
+            Assert.Equal("Intentional failure", appErr.Message);
+            var handle = await startOp.GetHandleAsync();
+            Assert.Equal(123, await handle.QueryAsync(wf => wf.Counter));
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateWithStart_Cancellation()
+    {
+        await ExecuteWorkerAsync<UpdateWithStartWorkflow>(async worker =>
+        {
+            // Start in background with cancel token
+            var id = $"workflow-{Guid.NewGuid()}";
+            var startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            using var cancelSource = new CancellationTokenSource();
+            var updateTask = Task.Run(() => Client.ExecuteUpdateWithStartWorkflowAsync(
+                (UpdateWithStartWorkflow wf) => wf.StartWaitingAsync(),
+                new(startOp) { Rpc = new() { CancellationToken = cancelSource.Token } }));
+
+            // Wait until workflow ID exists
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                try
+                {
+                    await Client.GetWorkflowHandle(id).DescribeAsync();
+                }
+                catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+                {
+                    Assert.Fail("Not found");
+                }
+            });
+
+            // Now cancel token and confirm update cancellation results in proper cancellation
+            cancelSource.Cancel();
+            await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(
+                () => updateTask);
+            // Note, currently in this use case the handle isn't set either, the same exception
+            // appears for the start call
+            await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(
+                () => startOp.GetHandleAsync());
+        });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

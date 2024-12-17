@@ -26,6 +26,13 @@ public class GeneralTests : TestBase
         Assert.Contains(typeof(Temporalio.Client.Schedules.ScheduleListOptions), types);
         foreach (var type in types)
         {
+            // Exclude with start workflow operation which, while cloneable, is not considered an
+            // "options" object that should be instantiated with a parameterless constructor
+            if (typeof(Temporalio.Client.WithStartWorkflowOperation).IsAssignableFrom(type))
+            {
+                continue;
+            }
+
             // Instantiate and attempt clone
             var noParamConstructor = type.GetConstructors().
                 First(c => c.GetParameters().All(p => p.IsOptional));

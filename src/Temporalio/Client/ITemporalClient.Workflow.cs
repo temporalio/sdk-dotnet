@@ -92,6 +92,84 @@ namespace Temporalio.Client
         WorkflowHandle<TWorkflow, TResult> GetWorkflowHandle<TWorkflow, TResult>(
             string id, string? runId = null, string? firstExecutionRunId = null);
 
+        /// <summary>
+        /// Start an update via a call to a WorkflowUpdate attributed method, possibly starting the
+        /// workflow at the same time. Note that in some cases this call may fail but the workflow
+        /// will still be started.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
+        /// </remarks>
+        Task<WorkflowUpdateHandle> StartUpdateWithStartWorkflowAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> updateCall,
+            WorkflowStartUpdateWithStartOptions options);
+
+        /// <summary>
+        /// Start an update via a call to a WorkflowUpdate attributed method, possibly starting the
+        /// workflow at the same time. Note that in some cases this call may fail but the workflow
+        /// will still be started.
+        /// </summary>
+        /// <typeparam name="TWorkflow">Workflow class type.</typeparam>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="updateCall">Invocation of workflow update method.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
+        /// </remarks>
+        Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TWorkflow, TUpdateResult>(
+            Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
+            WorkflowStartUpdateWithStartOptions options);
+
+        /// <summary>
+        /// Start an update using its name, possibly starting the workflow at the same time. Note
+        /// that in some cases this call may fail but the workflow will still be started.
+        /// </summary>
+        /// <param name="update">Name of the update.</param>
+        /// <param name="args">Arguments for the update.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
+        /// </remarks>
+        Task<WorkflowUpdateHandle> StartUpdateWithStartWorkflowAsync(
+            string update, IReadOnlyCollection<object?> args, WorkflowStartUpdateWithStartOptions options);
+
+        /// <summary>
+        /// Start an update using its name, possibly starting the workflow at the same time. Note
+        /// that in some cases this call may fail but the workflow will still be started.
+        /// </summary>
+        /// <typeparam name="TUpdateResult">Update result type.</typeparam>
+        /// <param name="update">Name of the update.</param>
+        /// <param name="args">Arguments for the update.</param>
+        /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
+        /// <returns>Workflow update handle.</returns>
+        /// <exception cref="ArgumentException">Invalid run call or options.</exception>
+        /// <exception cref="Exceptions.WorkflowAlreadyStartedException">
+        /// Workflow was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
+        /// </remarks>
+        Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TUpdateResult>(
+            string update, IReadOnlyCollection<object?> args, WorkflowStartUpdateWithStartOptions options);
+
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>
         /// List workflows with the given query.

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -10,6 +11,7 @@ using Temporalio.Api.History.V1;
 using Temporalio.Api.TaskQueue.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Client.Interceptors;
+using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 
@@ -70,6 +72,44 @@ namespace Temporalio.Client
             string id, string? runId = null, string? firstExecutionRunId = null) =>
             new(Client: this, Id: id, RunId: runId, FirstExecutionRunId: firstExecutionRunId);
 
+        /// <inheritdoc />
+        public Task<WorkflowUpdateHandle> StartUpdateWithStartWorkflowAsync<TWorkflow>(
+            Expression<Func<TWorkflow, Task>> updateCall,
+            WorkflowStartUpdateWithStartOptions options)
+        {
+            var (method, args) = ExpressionUtil.ExtractCall(updateCall);
+            return StartUpdateWithStartWorkflowAsync(
+                Workflows.WorkflowUpdateDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <inheritdoc />
+        public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TWorkflow, TUpdateResult>(
+            Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
+            WorkflowStartUpdateWithStartOptions options)
+        {
+            var (method, args) = ExpressionUtil.ExtractCall(updateCall);
+            return StartUpdateWithStartWorkflowAsync<TUpdateResult>(
+                Workflows.WorkflowUpdateDefinition.NameFromMethodForCall(method),
+                args,
+                options);
+        }
+
+        /// <inheritdoc />
+        public async Task<WorkflowUpdateHandle> StartUpdateWithStartWorkflowAsync(
+            string update, IReadOnlyCollection<object?> args, WorkflowStartUpdateWithStartOptions options) =>
+            await StartUpdateWithStartWorkflowAsync<ValueTuple>(update, args, options).ConfigureAwait(false);
+
+        /// <inheritdoc />
+        public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TUpdateResult>(
+            string update, IReadOnlyCollection<object?> args, WorkflowStartUpdateWithStartOptions options) =>
+            OutboundInterceptor.StartUpdateWithStartWorkflowAsync<TUpdateResult>(new(
+                Update: update,
+                Args: args,
+                Options: options,
+                Headers: null));
+
 #if NETCOREAPP3_0_OR_GREATER
         /// <inheritdoc />
         public IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
@@ -112,6 +152,156 @@ namespace Temporalio.Client
                         }
                     }
                     throw;
+                }
+            }
+
+            /// <inheritdoc />
+            public override async Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TUpdateResult>(
+                StartUpdateWithStartWorkflowInput input)
+            {
+                // Try to mark used before using
+                if (input.Options.StartWorkflowOperation == null)
+                {
+                    throw new ArgumentException("Start workflow operation is required in options");
+                }
+                if (!input.Options.StartWorkflowOperation.TryMarkUsed())
+                {
+                    throw new ArgumentException("Start operation already used");
+                }
+
+                // We choose to put everything in one large try statement because we want to make
+                // sure that any failures are also propagated to the waiter of the handle too, not
+                // just thrown out of here.
+                try
+                {
+                    // Disallow some options in start that don't work here, and require others
+                    if (input.Options.StartWorkflowOperation.Options.StartSignal != null ||
+                        input.Options.StartWorkflowOperation.Options.StartSignalArgs != null)
+                    {
+                        throw new ArgumentException("Cannot have start signal on update with start");
+                    }
+                    if (input.Options.StartWorkflowOperation.Options.RequestEagerStart)
+                    {
+                        throw new ArgumentException("Cannot request eager start on update with start");
+                    }
+                    if (input.Options.StartWorkflowOperation.Options.IdConflictPolicy == WorkflowIdConflictPolicy.Unspecified)
+                    {
+                        throw new ArgumentException("Workflow ID conflict policy required for update with start");
+                    }
+                    if (input.Options.StartWorkflowOperation.Options.Rpc != null)
+                    {
+                        throw new ArgumentException("Cannot set RPC options on start options, set them on the update options");
+                    }
+
+                    // Build request
+                    var startReq = await CreateStartWorkflowRequestAsync(
+                        input.Options.StartWorkflowOperation.Workflow,
+                        input.Options.StartWorkflowOperation.Args,
+                        input.Options.StartWorkflowOperation.Options,
+                        input.Options.StartWorkflowOperation.Headers).ConfigureAwait(false);
+                    var updateReq = await CreateUpdateWorkflowRequestAsync(
+                        input.Update,
+                        input.Args,
+                        input.Options,
+                        input.Options.WaitForStage,
+                        input.Headers).ConfigureAwait(false);
+                    updateReq.WorkflowExecution = new() { WorkflowId = startReq.WorkflowId };
+                    var req = new ExecuteMultiOperationRequest() { Namespace = Client.Options.Namespace };
+                    req.Operations.Add(
+                        new ExecuteMultiOperationRequest.Types.Operation() { StartWorkflow = startReq });
+                    req.Operations.Add(
+                        new ExecuteMultiOperationRequest.Types.Operation() { UpdateWorkflow = updateReq });
+
+                    // Continually try to start until an exception occurs, the user-asked stage is
+                    // reached, or the stage is accepted. But we will set the workflow handle as soon as
+                    // we can.
+                    UpdateWorkflowExecutionResponse? updateResp = null;
+                    string? runId = null;
+                    do
+                    {
+                        var resp = await Client.Connection.WorkflowService.ExecuteMultiOperationAsync(
+                            req, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
+                        // Set start result if not already set
+                        runId = resp.Responses[0].StartWorkflow.RunId;
+                        if (!input.Options.StartWorkflowOperation.IsCompleted)
+                        {
+                            input.Options.StartWorkflowOperation.SetResult((WorkflowHandle)Activator.CreateInstance(
+                                input.Options.StartWorkflowOperation.HandleType,
+                                // Parameters on workflow handles are always: client, ID, run ID,
+                                // result run ID, and first execution run ID. This code is tested to
+                                // confirm.
+                                Client,
+                                input.Options.StartWorkflowOperation.Options.Id!,
+                                null,
+                                runId,
+                                runId)!);
+                        }
+                        updateResp = resp.Responses[1].UpdateWorkflow;
+                    }
+                    while (updateResp == null || updateResp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
+
+                    // If the requested stage is completed, wait for result, but discard the update
+                    // exception, that will come when _they_ call get result
+                    var handle = new WorkflowUpdateHandle<TUpdateResult>(
+                        Client, updateReq.Request.Meta.UpdateId, input.Options.StartWorkflowOperation.Options.Id!, runId)
+                    { KnownOutcome = updateResp.Outcome };
+                    if (input.Options.WaitForStage == WorkflowUpdateStage.Completed)
+                    {
+                        await handle.PollUntilOutcomeAsync(input.Options.Rpc).ConfigureAwait(false);
+                    }
+                    return handle;
+                }
+                catch (Exception e)
+                {
+                    // If this is a multi-operation failure, set exception to the first non-aborted
+                    if (e is RpcException rpcErr)
+                    {
+                        var status = rpcErr.GrpcStatus.Value;
+                        if (status != null && status.Details.Count == 1)
+                        {
+                            if (status.Details[0].TryUnpack(out Api.ErrorDetails.V1.MultiOperationExecutionFailure failure))
+                            {
+                                var nonAborted = failure.Statuses.FirstOrDefault(s => s.Details.Count == 0 ||
+                                    !s.Details[0].Is(Api.Failure.V1.MultiOperationExecutionAborted.Descriptor));
+                                var grpcStatus = new GrpcStatus() { Code = nonAborted.Code, Message = nonAborted.Message };
+                                grpcStatus.Details.AddRange(nonAborted.Details);
+                                e = new RpcException(grpcStatus);
+                            }
+                        }
+                    }
+
+                    // If this is a cancellation, use the update cancel exception
+                    if (e is OperationCanceledException || (e is RpcException rpcErr2 && (
+                        rpcErr2.Code == RpcException.StatusCode.DeadlineExceeded ||
+                        rpcErr2.Code == RpcException.StatusCode.Cancelled)))
+                    {
+                        e = new WorkflowUpdateRpcTimeoutOrCanceledException(e);
+                    }
+
+                    // Create workflow-already-started failure if it is that
+                    if (e is RpcException rpcErr3 && rpcErr3.Code == RpcException.StatusCode.AlreadyExists)
+                    {
+                        var status = rpcErr3.GrpcStatus.Value;
+                        if (status != null &&
+                            status.Details.Count == 1 &&
+                            status.Details[0].TryUnpack(out Api.ErrorDetails.V1.WorkflowExecutionAlreadyStartedFailure failure))
+                        {
+                            e = new WorkflowAlreadyStartedException(
+                                e.Message,
+                                // "<unknown>" should never happen if it got an RPC exception
+                                workflowId: input.Options.StartWorkflowOperation?.Options?.Id ?? "<unknown>",
+                                workflowType: input.Options.StartWorkflowOperation?.Workflow ?? "<unknown>",
+                                runId: failure.RunId);
+                        }
+                    }
+
+                    // Before we throw here, we want to try to set the start operation exception
+                    // if it has not already been completed
+                    if (input.Options.StartWorkflowOperation?.IsCompleted == false)
+                    {
+                        input.Options.StartWorkflowOperation.SetException(e);
+                    }
+                    throw e;
                 }
             }
 
@@ -240,50 +430,14 @@ namespace Temporalio.Client
                         "Admitted is not an allowed wait stage to start workflow update");
                 }
                 // Build request
-                var req = new UpdateWorkflowExecutionRequest()
+                var req = await CreateUpdateWorkflowRequestAsync(
+                    input.Update, input.Args, input.Options, input.Options.WaitForStage, input.Headers).ConfigureAwait(false);
+                req.WorkflowExecution = new()
                 {
-                    Namespace = Client.Options.Namespace,
-                    WorkflowExecution = new()
-                    {
-                        WorkflowId = input.Id,
-                        RunId = input.RunId ?? string.Empty,
-                    },
-                    Request = new()
-                    {
-                        Meta = new()
-                        {
-                            UpdateId = input.Options.Id ?? Guid.NewGuid().ToString(),
-                            Identity = Client.Connection.Options.Identity,
-                        },
-                        Input = new() { Name = input.Update },
-                    },
-                    WaitPolicy = new()
-                    {
-                        LifecycleStage = (UpdateWorkflowExecutionLifecycleStage)input.Options.WaitForStage,
-                    },
-                    FirstExecutionRunId = input.FirstExecutionRunId ?? string.Empty,
+                    WorkflowId = input.Id,
+                    RunId = input.RunId ?? string.Empty,
                 };
-                if (input.Args.Count > 0)
-                {
-                    req.Request.Input.Args = new Payloads();
-                    req.Request.Input.Args.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(
-                            input.Args).ConfigureAwait(false));
-                }
-                if (input.Headers != null)
-                {
-                    req.Request.Input.Header = new();
-                    req.Request.Input.Header.Fields.Add(input.Headers);
-                    // If there is a payload codec, use it to encode the headers
-                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
-                    {
-                        foreach (var kvp in req.Request.Input.Header.Fields)
-                        {
-                            req.Request.Input.Header.Fields[kvp.Key] =
-                                await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
-                        }
-                    }
-                }
+                req.FirstExecutionRunId = input.FirstExecutionRunId ?? string.Empty;
 
                 // Continually try to start until the user-asked stage is reached or the stage is
                 // accepted
@@ -303,8 +457,7 @@ namespace Temporalio.Client
                         throw new WorkflowUpdateRpcTimeoutOrCanceledException(e);
                     }
                 }
-                while (resp.Stage < req.WaitPolicy.LifecycleStage &&
-                    resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
+                while (resp.Stage < UpdateWorkflowExecutionLifecycleStage.Accepted);
 
                 // If the requested stage is completed, wait for result, but discard the update
                 // exception, that will come when _they_ call get result
@@ -498,88 +651,8 @@ namespace Temporalio.Client
             {
                 // We will build the non-signal-with-start request and convert to signal with start
                 // later if needed
-                var req = new StartWorkflowExecutionRequest()
-                {
-                    Namespace = Client.Options.Namespace,
-                    WorkflowId = input.Options.Id ??
-                        throw new ArgumentException("ID required to start workflow"),
-                    WorkflowType = new WorkflowType() { Name = input.Workflow },
-                    TaskQueue = new TaskQueue()
-                    {
-                        Name = input.Options.TaskQueue ??
-                            throw new ArgumentException("Task queue required to start workflow"),
-                    },
-                    Identity = Client.Connection.Options.Identity,
-                    RequestId = Guid.NewGuid().ToString(),
-                    WorkflowIdReusePolicy = input.Options.IdReusePolicy,
-                    WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
-                    RetryPolicy = input.Options.RetryPolicy?.ToProto(),
-                    RequestEagerExecution = input.Options.RequestEagerStart,
-                    UserMetadata = await Client.Options.DataConverter.ToUserMetadataAsync(
-                        input.Options.StaticSummary, input.Options.StaticDetails).
-                        ConfigureAwait(false),
-                };
-                if (input.Args.Count > 0)
-                {
-                    req.Input = new Payloads();
-                    req.Input.Payloads_.AddRange(await Client.Options.DataConverter.ToPayloadsAsync(
-                        input.Args).ConfigureAwait(false));
-                }
-                if (input.Options.ExecutionTimeout != null)
-                {
-                    req.WorkflowExecutionTimeout = Duration.FromTimeSpan(
-                        (TimeSpan)input.Options.ExecutionTimeout);
-                }
-                if (input.Options.RunTimeout != null)
-                {
-                    req.WorkflowRunTimeout = Duration.FromTimeSpan(
-                        (TimeSpan)input.Options.RunTimeout);
-                }
-                if (input.Options.TaskTimeout != null)
-                {
-                    req.WorkflowTaskTimeout = Duration.FromTimeSpan(
-                        (TimeSpan)input.Options.TaskTimeout);
-                }
-                if (input.Options.CronSchedule != null)
-                {
-                    req.CronSchedule = input.Options.CronSchedule;
-                }
-                if (input.Options.Memo != null && input.Options.Memo.Count > 0)
-                {
-                    req.Memo = new();
-                    foreach (var field in input.Options.Memo)
-                    {
-                        if (field.Value == null)
-                        {
-                            throw new ArgumentException($"Memo value for {field.Key} is null");
-                        }
-                        req.Memo.Fields.Add(
-                            field.Key,
-                            await Client.Options.DataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
-                    }
-                }
-                if (input.Options.TypedSearchAttributes != null && input.Options.TypedSearchAttributes.Count > 0)
-                {
-                    req.SearchAttributes = input.Options.TypedSearchAttributes.ToProto();
-                }
-                if (input.Options.StartDelay is { } startDelay)
-                {
-                    req.WorkflowStartDelay = Duration.FromTimeSpan(startDelay);
-                }
-                if (input.Headers != null)
-                {
-                    req.Header = new();
-                    req.Header.Fields.Add(input.Headers);
-                    // If there is a payload codec, use it to encode the headers
-                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
-                    {
-                        foreach (var kvp in req.Header.Fields)
-                        {
-                            req.Header.Fields[kvp.Key] =
-                                await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
-                        }
-                    }
-                }
+                var req = await CreateStartWorkflowRequestAsync(
+                    input.Workflow, input.Args, input.Options, input.Headers).ConfigureAwait(false);
 
                 // If not signal with start, just run and return
                 if (input.Options.StartSignal == null)
@@ -635,6 +708,154 @@ namespace Temporalio.Client
                     Client: Client,
                     Id: req.WorkflowId,
                     ResultRunId: signalResp.RunId);
+            }
+
+            private async Task<StartWorkflowExecutionRequest> CreateStartWorkflowRequestAsync(
+                string workflow,
+                IReadOnlyCollection<object?> args,
+                WorkflowOptions options,
+                IDictionary<string, Payload>? headers)
+            {
+                var req = new StartWorkflowExecutionRequest()
+                {
+                    Namespace = Client.Options.Namespace,
+                    WorkflowId = options.Id ??
+                        throw new ArgumentException("ID required to start workflow"),
+                    WorkflowType = new WorkflowType() { Name = workflow },
+                    TaskQueue = new TaskQueue()
+                    {
+                        Name = options.TaskQueue ??
+                            throw new ArgumentException("Task queue required to start workflow"),
+                    },
+                    Identity = Client.Connection.Options.Identity,
+                    RequestId = Guid.NewGuid().ToString(),
+                    WorkflowIdReusePolicy = options.IdReusePolicy,
+                    WorkflowIdConflictPolicy = options.IdConflictPolicy,
+                    RetryPolicy = options.RetryPolicy?.ToProto(),
+                    RequestEagerExecution = options.RequestEagerStart,
+                    UserMetadata = await Client.Options.DataConverter.ToUserMetadataAsync(
+                        options.StaticSummary, options.StaticDetails).
+                        ConfigureAwait(false),
+                };
+                if (args.Count > 0)
+                {
+                    req.Input = new Payloads();
+                    req.Input.Payloads_.AddRange(await Client.Options.DataConverter.ToPayloadsAsync(
+                        args).ConfigureAwait(false));
+                }
+                if (options.ExecutionTimeout != null)
+                {
+                    req.WorkflowExecutionTimeout = Duration.FromTimeSpan(
+                        (TimeSpan)options.ExecutionTimeout);
+                }
+                if (options.RunTimeout != null)
+                {
+                    req.WorkflowRunTimeout = Duration.FromTimeSpan(
+                        (TimeSpan)options.RunTimeout);
+                }
+                if (options.TaskTimeout != null)
+                {
+                    req.WorkflowTaskTimeout = Duration.FromTimeSpan(
+                        (TimeSpan)options.TaskTimeout);
+                }
+                if (options.CronSchedule != null)
+                {
+                    req.CronSchedule = options.CronSchedule;
+                }
+                if (options.Memo != null && options.Memo.Count > 0)
+                {
+                    req.Memo = new();
+                    foreach (var field in options.Memo)
+                    {
+                        if (field.Value == null)
+                        {
+                            throw new ArgumentException($"Memo value for {field.Key} is null");
+                        }
+                        req.Memo.Fields.Add(
+                            field.Key,
+                            await Client.Options.DataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
+                    }
+                }
+                if (options.TypedSearchAttributes != null && options.TypedSearchAttributes.Count > 0)
+                {
+                    req.SearchAttributes = options.TypedSearchAttributes.ToProto();
+                }
+                if (options.StartDelay is { } startDelay)
+                {
+                    req.WorkflowStartDelay = Duration.FromTimeSpan(startDelay);
+                }
+                if (headers != null)
+                {
+                    req.Header = new();
+                    req.Header.Fields.Add(headers);
+                    // If there is a payload codec, use it to encode the headers
+                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    {
+                        foreach (var kvp in req.Header.Fields)
+                        {
+                            req.Header.Fields[kvp.Key] =
+                                await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
+                        }
+                    }
+                }
+                return req;
+            }
+
+            private async Task<UpdateWorkflowExecutionRequest> CreateUpdateWorkflowRequestAsync(
+                string update,
+                IReadOnlyCollection<object?> args,
+                WorkflowUpdateOptions options,
+                WorkflowUpdateStage waitForStage,
+                IDictionary<string, Payload>? headers)
+            {
+                if (waitForStage == WorkflowUpdateStage.None)
+                {
+                    throw new ArgumentException("WaitForStage is required to start workflow update");
+                }
+                else if (waitForStage == WorkflowUpdateStage.Admitted)
+                {
+                    throw new ArgumentException(
+                        "Admitted is not an allowed wait stage to start workflow update");
+                }
+                // Build request
+                var req = new UpdateWorkflowExecutionRequest()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Request = new()
+                    {
+                        Meta = new()
+                        {
+                            UpdateId = options.Id ?? Guid.NewGuid().ToString(),
+                            Identity = Client.Connection.Options.Identity,
+                        },
+                        Input = new() { Name = update },
+                    },
+                    WaitPolicy = new()
+                    {
+                        LifecycleStage = (UpdateWorkflowExecutionLifecycleStage)waitForStage,
+                    },
+                };
+                if (args.Count > 0)
+                {
+                    req.Request.Input.Args = new Payloads();
+                    req.Request.Input.Args.Payloads_.AddRange(
+                        await Client.Options.DataConverter.ToPayloadsAsync(args).ConfigureAwait(false));
+                }
+                if (headers != null)
+                {
+                    req.Request.Input.Header = new();
+                    req.Request.Input.Header.Fields.Add(headers);
+                    // If there is a payload codec, use it to encode the headers
+                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    {
+                        foreach (var kvp in req.Request.Input.Header.Fields)
+                        {
+                            req.Request.Input.Header.Fields[kvp.Key] =
+                                await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
+                        }
+                    }
+                }
+                return req;
             }
         }
     }

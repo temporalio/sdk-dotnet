@@ -541,6 +541,9 @@ Some things to note about the above code:
 * A shortcut extension `ExecuteWorkflowAsync` is available that is just `StartWorkflowAsync` + `GetResultAsync`.
 * `SignalWithStart` method is present on the workflow options to make the workflow call a signal-with-start call which
   means it will only start the workflow if it's not running, but send a signal to it regardless.
+* Separate `StartUpdateWithStartWorkflowAsync` and `ExecuteUpdateWithStartWorkflowAsync` methods are present on the
+  client to make the workflow call an update-with-start call which means it may start the workflow if it's not running,
+  but perform an update on it regardless.
 
 #### Invoking Activities
 
