@@ -68,6 +68,8 @@ namespace Temporalio.Extensions.Hosting
 #else
                 var scope = provider.CreateScope();
 #endif
+                ActivityServiceProviderAccessor.AsyncLocalCurrent.Value = scope.ServiceProvider;
+
                 try
                 {
                     object? result;
@@ -111,6 +113,7 @@ namespace Temporalio.Extensions.Hosting
                 }
                 finally
                 {
+                    ActivityServiceProviderAccessor.AsyncLocalCurrent.Value = null;
 #if NET6_0_OR_GREATER
                     await scope.DisposeAsync().ConfigureAwait(false);
 #else
