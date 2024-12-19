@@ -3697,10 +3697,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (UpdateWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
 
-            // Make all possible overload calls via start then get response
-            await (await ((WorkflowHandle)handle).StartUpdateAsync(
+            // Make all possible overload calls via start then get response. For
+            // the first update we'll also confirm the run ID is set.
+            var updateHandle = await ((WorkflowHandle)handle).StartUpdateAsync(
                 (UpdateWorkflow wf) => wf.DoUpdateNoParamNoResponseAsync(),
-                new(WorkflowUpdateStage.Accepted))).GetResultAsync();
+                new(WorkflowUpdateStage.Accepted));
+            Assert.NotNull(updateHandle.WorkflowRunId);
+            await updateHandle.GetResultAsync();
             Assert.Equal(
                 $"no-param-response: {handle.Id}",
                 await (await ((WorkflowHandle)handle).StartUpdateAsync(
