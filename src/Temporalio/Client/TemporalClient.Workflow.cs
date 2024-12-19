@@ -253,7 +253,8 @@ namespace Temporalio.Client
                 }
                 catch (Exception e)
                 {
-                    // If this is a multi-operation failure, set exception to the first non-aborted
+                    // If this is a multi-operation failure, set exception to the first present,
+                    // non-OK, non-aborted error
                     if (e is RpcException rpcErr)
                     {
                         var status = rpcErr.GrpcStatus.Value;
@@ -261,11 +262,20 @@ namespace Temporalio.Client
                         {
                             if (status.Details[0].TryUnpack(out Api.ErrorDetails.V1.MultiOperationExecutionFailure failure))
                             {
-                                var nonAborted = failure.Statuses.FirstOrDefault(s => s.Details.Count == 0 ||
-                                    !s.Details[0].Is(Api.Failure.V1.MultiOperationExecutionAborted.Descriptor));
-                                var grpcStatus = new GrpcStatus() { Code = nonAborted.Code, Message = nonAborted.Message };
-                                grpcStatus.Details.AddRange(nonAborted.Details);
-                                e = new RpcException(grpcStatus);
+                                var nonAborted = failure.Statuses.FirstOrDefault(s =>
+                                    // Exists
+                                    s != null &&
+                                    // Not ok
+                                    s.Code != (int)RpcException.StatusCode.OK &&
+                                    // Not aborted
+                                    (s.Details.Count == 0 ||
+                                        !s.Details[0].Is(Api.Failure.V1.MultiOperationExecutionAborted.Descriptor)));
+                                if (nonAborted != null)
+                                {
+                                    var grpcStatus = new GrpcStatus() { Code = nonAborted.Code, Message = nonAborted.Message };
+                                    grpcStatus.Details.AddRange(nonAborted.Details);
+                                    e = new RpcException(grpcStatus);
+                                }
                             }
                         }
                     }
@@ -462,7 +472,7 @@ namespace Temporalio.Client
                 // If the requested stage is completed, wait for result, but discard the update
                 // exception, that will come when _they_ call get result
                 var handle = new WorkflowUpdateHandle<TResult>(
-                    Client, req.Request.Meta.UpdateId, input.Id, input.RunId)
+                    Client, req.Request.Meta.UpdateId, input.Id, resp.UpdateRef.WorkflowExecution.RunId)
                 { KnownOutcome = resp.Outcome };
                 if (input.Options.WaitForStage == WorkflowUpdateStage.Completed)
                 {
