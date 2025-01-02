@@ -541,31 +541,18 @@ namespace Temporalio.Worker
                     {
                         // We must set the sync context to null so work isn't posted there
                         SynchronizationContext.SetSynchronizationContext(null);
-                        // TODO: Temporary workaround in lieu of https://github.com/temporalio/sdk-dotnet/issues/375
-                        var sortedJobs = act.Jobs.OrderBy(j =>
-                        {
-                            switch (j.VariantCase)
-                            {
-                                case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
-                                case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
-                                    return 1;
-                                case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
-                                case WorkflowActivationJob.VariantOneofCase.DoUpdate:
-                                    return 2;
-                                case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
-                                    return 3;
-                                default:
-                                    return 4;
-                            }
-                        }).ToList();
+                        var noQueries = true;
                         // We can trust jobs are deterministically ordered by core
-                        foreach (var job in sortedJobs)
+                        foreach (var job in act.Jobs)
                         {
+                            if (job.QueryWorkflow != null)
+                            {
+                                noQueries = false;
+                            }
                             Apply(job);
-                            // Run scheduler once. Do not check conditions when patching or querying.
-                            var checkConditions = job.NotifyHasPatch == null && job.QueryWorkflow == null;
-                            RunOnce(checkConditions);
                         }
+                        // Run the scheduler once after applying jobs
+                        RunOnce(noQueries);
                     }
                     finally
                     {
