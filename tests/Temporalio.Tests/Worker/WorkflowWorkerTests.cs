@@ -6361,6 +6361,128 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class EventLoopTracingWorkflow
+    {
+        private readonly List<string> events = new();
+
+        [Activity]
+        public static string DoNothing() => "done";
+
+        [WorkflowRun]
+        public async Task<List<string>> RunAsync()
+        {
+            events.Add("main-start");
+            await Task.WhenAll(Timer(), Activity());
+            return events;
+        }
+
+        [WorkflowSignal]
+        public async Task SignalAsync(string name)
+        {
+            events.Add($"sig-{name}-sync");
+            await Task.CompletedTask;
+            events.Add($"sig-{name}-1");
+            await Workflow.WaitConditionAsync(() => true);
+            events.Add($"sig-{name}-2");
+        }
+
+        [WorkflowUpdate]
+        public async Task UpdateAsync(string name)
+        {
+            events.Add($"update-{name}-sync");
+            await Task.CompletedTask;
+            events.Add($"update-{name}-1");
+            await Workflow.WaitConditionAsync(() => true);
+            events.Add($"update-{name}-2");
+        }
+
+        private async Task Timer()
+        {
+            events.Add("timer-sync");
+            await Workflow.DelayAsync(TimeSpan.FromMilliseconds(1));
+            events.Add("timer-1");
+            await Workflow.WaitConditionAsync(() => true);
+            events.Add("timer-2");
+        }
+
+        private async Task Activity()
+        {
+            events.Add("activity-sync");
+            await Workflow.ExecuteActivityAsync(() => DoNothing(), new()
+            {
+                StartToCloseTimeout = TimeSpan.FromSeconds(5),
+            });
+            events.Add("activity-1");
+            await Workflow.WaitConditionAsync(() => true);
+            events.Add("activity-2");
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_EventLoopTracer()
+    {
+        // Capture logs
+        using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+        // Start the workflow first
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var handle = await Client.StartWorkflowAsync(
+            (EventLoopTracingWorkflow wf) => wf.RunAsync(),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue: taskQueue));
+        await handle.SignalAsync(wf => wf.SignalAsync("before"));
+        // Run worker
+        var expected = new[]
+        {
+            "sig-before-sync",
+            "sig-before-1",
+            "sig-before-2",
+            "main-start",
+            "timer-sync",
+            "activity-sync",
+            "activity-1",
+            "activity-2",
+            "sig-1-sync",
+            "sig-1-1",
+            "sig-1-2",
+            "update-1-sync",
+            "update-1-1",
+            "update-1-2",
+            "timer-1",
+            "timer-2",
+        };
+        // var expectedDoubleStart = new[]
+        // {
+        //     "sig-before-sync",
+        //     "sig-before-1",
+        //     "sig-before-2",
+        //     "sig-1-sync",
+        //     "sig-1-1",
+        //     "sig-1-2",
+        //     "main-start",
+        //     "timer-sync",
+        //     "activity-sync",
+        //     "update-1-sync",
+        //     "update-1-1",
+        //     "update-1-2",
+        //     "activity-1",
+        //     "activity-2",
+        //     "timer-1",
+        //     "timer-2"
+        // };
+        var workerOpts = new TemporalWorkerOptions() { LoggerFactory = loggerFactory, TaskQueue = taskQueue };
+        workerOpts.AddAllActivities<EventLoopTracingWorkflow>(null);
+        await ExecuteWorkerAsync<EventLoopTracingWorkflow>(
+            async worker =>
+            {
+                await Task.Delay(200);
+                await handle.SignalAsync(wf => wf.SignalAsync("1"));
+                await handle.ExecuteUpdateAsync(wf => wf.UpdateAsync("1"));
+                var results = await handle.GetResultAsync();
+                Assert.Equal(expected, results);
+            },
+            workerOpts);
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
