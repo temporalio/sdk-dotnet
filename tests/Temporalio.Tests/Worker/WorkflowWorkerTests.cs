@@ -6422,8 +6422,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_EventLoopTracer()
     {
-        // Capture logs
-        using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+        // This test is mostly useful to create histories for use with `ReplayWorkflowAsync_EventLoop_CorrectOrdering`
         // Start the workflow first
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var handle = await Client.StartWorkflowAsync(
@@ -6431,54 +6430,15 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: taskQueue));
         await handle.SignalAsync(wf => wf.SignalAsync("before"));
         // Run worker
-        var expected = new[]
-        {
-            "sig-before-sync",
-            "sig-before-1",
-            "sig-before-2",
-            "main-start",
-            "timer-sync",
-            "activity-sync",
-            "activity-1",
-            "activity-2",
-            "sig-1-sync",
-            "sig-1-1",
-            "sig-1-2",
-            "update-1-sync",
-            "update-1-1",
-            "update-1-2",
-            "timer-1",
-            "timer-2",
-        };
-        // var expectedDoubleStart = new[]
-        // {
-        //     "sig-before-sync",
-        //     "sig-before-1",
-        //     "sig-before-2",
-        //     "sig-1-sync",
-        //     "sig-1-1",
-        //     "sig-1-2",
-        //     "main-start",
-        //     "timer-sync",
-        //     "activity-sync",
-        //     "update-1-sync",
-        //     "update-1-1",
-        //     "update-1-2",
-        //     "activity-1",
-        //     "activity-2",
-        //     "timer-1",
-        //     "timer-2"
-        // };
-        var workerOpts = new TemporalWorkerOptions() { LoggerFactory = loggerFactory, TaskQueue = taskQueue };
+        var workerOpts = new TemporalWorkerOptions() { TaskQueue = taskQueue };
         workerOpts.AddAllActivities<EventLoopTracingWorkflow>(null);
         await ExecuteWorkerAsync<EventLoopTracingWorkflow>(
             async worker =>
             {
-                await Task.Delay(200);
+                // await Task.Delay(200);
                 await handle.SignalAsync(wf => wf.SignalAsync("1"));
                 await handle.ExecuteUpdateAsync(wf => wf.UpdateAsync("1"));
                 var results = await handle.GetResultAsync();
-                Assert.Equal(expected, results);
             },
             workerOpts);
     }

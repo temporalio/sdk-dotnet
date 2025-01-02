@@ -74,6 +74,7 @@ namespace Temporalio.Worker
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
+        private Lazy<Task>? runMainRoutineTask;
         private object? instance;
         private Exception? currentActivationException;
         private uint timerCounter;
@@ -553,6 +554,12 @@ namespace Temporalio.Worker
                         }
                         // Run the scheduler once after applying jobs
                         RunOnce(noQueries);
+                        // Main workflow routine task must be queued and run after other jobs
+                        if (runMainRoutineTask != null)
+                        {
+                            _ = runMainRoutineTask.Value;
+                            RunOnce(true);
+                        }
                     }
                     finally
                     {
@@ -1307,7 +1314,8 @@ namespace Temporalio.Worker
 
         private void ApplyInitializeWorkflow(InitializeWorkflow init)
         {
-            _ = QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
+#pragma warning disable VSTHRD011 // Don't actually want task value
+            runMainRoutineTask = new(() => QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
             {
                 var input = new ExecuteWorkflowInput(
                     Instance: Instance,
@@ -1318,7 +1326,8 @@ namespace Temporalio.Worker
                 var resultObj = await inbound.Value.ExecuteWorkflowAsync(input).ConfigureAwait(true);
                 var result = PayloadConverter.ToPayload(resultObj);
                 AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } });
-            }));
+            })));
+#pragma warning restore VSTHRD011
         }
 
         private void ApplyUpdateRandomSeed(UpdateRandomSeed update) =>
@@ -1444,6 +1453,7 @@ namespace Temporalio.Worker
                     line.Contains(" at System.Runtime.") ||
                     line.Contains(" at System.RuntimeMethodHandle.") ||
                     line.Contains(" at System.Threading.") ||
+                    line.Contains(" at System.Lazy") ||
                     line.Contains(" at Temporalio.Worker.")).Reverse();
                 return string.Join("\n", lines);
             }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));

@@ -6,9 +6,11 @@ using Temporalio.Activities;
 using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Worker;
+using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
+using static Temporalio.Tests.Worker.WorkflowWorkerTests;
 
 public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
 {
@@ -255,5 +257,93 @@ public class WorkflowReplayerTests : WorkflowEnvironmentTestBase
             {
             }
         });
+    }
+
+    public class WorkflowResultInterceptor : IWorkerInterceptor
+    {
+        public Queue<object?> WorkflowResults { get; } = new();
+
+        public WorkflowInboundInterceptor InterceptWorkflow(WorkflowInboundInterceptor nextInterceptor) =>
+            new WorkflowInbound(nextInterceptor, WorkflowResults);
+
+        public class WorkflowInbound : WorkflowInboundInterceptor
+        {
+            private Queue<object?> workflowResults = new();
+
+            public WorkflowInbound(WorkflowInboundInterceptor next, Queue<object?> workflowResults)
+                : base(next)
+            {
+                this.workflowResults = workflowResults;
+            }
+
+            public override async Task<object?> ExecuteWorkflowAsync(ExecuteWorkflowInput input)
+            {
+                var res = await base.ExecuteWorkflowAsync(input);
+                workflowResults.Enqueue(res);
+                return res;
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ReplayWorkflowAsync_EventLoop_CorrectOrdering()
+    {
+        var expected = new[]
+        {
+            "sig-before-sync",
+            "sig-before-1",
+            "sig-before-2",
+            "main-start",
+            "timer-sync",
+            "activity-sync",
+            "activity-1",
+            "activity-2",
+            "sig-1-sync",
+            "sig-1-1",
+            "sig-1-2",
+            "update-1-sync",
+            "update-1-1",
+            "update-1-2",
+            "timer-1",
+            "timer-2",
+        };
+        var expectedDoubleStart = new[]
+        {
+            "sig-before-sync",
+            "sig-before-1",
+            "sig-before-2",
+            "sig-1-sync",
+            "sig-1-1",
+            "sig-1-2",
+            "main-start",
+            "timer-sync",
+            "activity-sync",
+            "update-1-sync",
+            "update-1-1",
+            "update-1-2",
+            "activity-1",
+            "activity-2",
+            "timer-1",
+            "timer-2",
+        };
+        var expecteds = new[]
+        {
+            (expected, "Histories/expected-event-loop-ordering.json"),
+            (expectedDoubleStart, "Histories/expected-event-loop-ordering-double-signal-start.json"),
+        };
+        for (var i = 0; i < expecteds.Length; i++)
+        {
+            var (exp, file) = expecteds[i];
+            var history = WorkflowHistory.FromJson(
+                "some-id",
+                TestUtils.ReadAllFileText(file));
+            var wri = new WorkflowResultInterceptor();
+            var replayer = new WorkflowReplayer(
+                new WorkflowReplayerOptions()
+                { Interceptors = new[] { wri } }
+                .AddWorkflow<EventLoopTracingWorkflow>());
+            await replayer.ReplayWorkflowAsync(history);
+            Assert.Equal(exp, wri.WorkflowResults.Dequeue());
+        }
     }
 }
