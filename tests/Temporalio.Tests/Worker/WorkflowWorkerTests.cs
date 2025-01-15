@@ -6361,6 +6361,32 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class InstanceVisibleWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        public string SomeState => "some-state";
+
+        [WorkflowUpdate]
+        public async Task<string> GetSomeStateAsync() => GetSomeState();
+
+        public static string GetSomeState() => ((InstanceVisibleWorkflow)Workflow.Instance).SomeState;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Instance_VisibleToHelpers()
+    {
+        await ExecuteWorkerAsync<InstanceVisibleWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (InstanceVisibleWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("some-state", await handle.ExecuteUpdateAsync(wf => wf.GetSomeStateAsync()));
+        });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

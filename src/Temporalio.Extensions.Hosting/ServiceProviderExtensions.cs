@@ -62,21 +62,31 @@ namespace Temporalio.Extensions.Hosting
             // Invoker can be async (i.e. returns Task<object?>)
             async Task<object?> Invoker(object?[] args)
             {
-                // Wrap in a scope (even for statics to keep logic simple)
+                // Wrap in a scope if scope doesn't already exist. Keep track of whether we created
+                // it so we can dispose of it.
+                var scope = ActivityScope.ServiceScope;
+                var createdScopeOurselves = scope == null;
+                if (scope == null)
+                {
 #if NET6_0_OR_GREATER
-                var scope = provider.CreateAsyncScope();
+                    scope = provider.CreateAsyncScope();
 #else
-                var scope = provider.CreateScope();
+                    scope = provider.CreateScope();
 #endif
+                    ActivityScope.ServiceScope = scope;
+                }
+
+                // Run
                 try
                 {
                     object? result;
                     try
                     {
-                        // Invoke static or non-static
+                        // Create the instance if not static and not already created
                         var instance = method.IsStatic
                             ? null
-                            : scope.ServiceProvider.GetRequiredService(instanceType);
+                            : ActivityScope.ScopedInstance ?? scope.ServiceProvider.GetRequiredService(instanceType);
+                        ActivityScope.ScopedInstance = instance;
 
                         result = method.Invoke(instance, args);
                     }
@@ -111,11 +121,24 @@ namespace Temporalio.Extensions.Hosting
                 }
                 finally
                 {
+                    // Dispose of scope if we created it
+                    if (createdScopeOurselves)
+                    {
 #if NET6_0_OR_GREATER
-                    await scope.DisposeAsync().ConfigureAwait(false);
+                        if (scope is AsyncServiceScope asyncScope)
+                        {
+                            await asyncScope.DisposeAsync().ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            scope.Dispose();
+                        }
 #else
-                    scope.Dispose();
+                        scope.Dispose();
 #endif
+                    }
+                    ActivityScope.ServiceScope = null;
+                    ActivityScope.ScopedInstance = null;
                 }
             }
             return ActivityDefinition.Create(method, Invoker);

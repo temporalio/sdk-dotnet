@@ -285,6 +285,19 @@ namespace Temporalio.Worker
         public WorkflowInfo Info { get; private init; }
 
         /// <inheritdoc />
+        ///
+        /// This is lazily created and should never be called outside of the scheduler
+        public object Instance
+        {
+            get
+            {
+                // We create this lazily because we want the constructor in a workflow context
+                instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
+                return instance;
+            }
+        }
+
+        /// <inheritdoc />
         public bool IsReplaying { get; private set; }
 
         /// <inheritdoc />
@@ -321,20 +334,6 @@ namespace Temporalio.Worker
         /// Gets the workflow definition.
         /// </summary>
         internal WorkflowDefinition Definition { get; private init; }
-
-        /// <summary>
-        /// Gets the instance, lazily creating if needed. This should never be called outside this
-        /// scheduler.
-        /// </summary>
-        private object Instance
-        {
-            get
-            {
-                // We create this lazily because we want the constructor in a workflow context
-                instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
-                return instance;
-            }
-        }
 
         /// <inheritdoc/>
         public ContinueAsNewException CreateContinueAsNewException(
