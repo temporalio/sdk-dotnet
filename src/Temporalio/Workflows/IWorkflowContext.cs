@@ -74,6 +74,11 @@ namespace Temporalio.Workflows
         WorkflowInfo Info { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.Instance" />.
+        /// </summary>
+        object Instance { get; }
+
+        /// <summary>
         /// Gets a value indicating whether <see cref="Workflow.Unsafe.IsReplaying" /> is true.
         /// </summary>
         bool IsReplaying { get; }

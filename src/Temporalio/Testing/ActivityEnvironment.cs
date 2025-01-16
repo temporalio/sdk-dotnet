@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
+using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
 
@@ -59,6 +60,12 @@ namespace Temporalio.Testing
         /// Gets or inits the metric meter for this activity. If unset, a noop meter is used.
         /// </summary>
         public MetricMeter? MetricMeter { get; init; }
+
+        /// <summary>
+        /// Gets or inits the Temporal client accessible from the activity context. If unset, an
+        /// exception is thrown when the client is accessed.
+        /// </summary>
+        public ITemporalClient? TemporalClient { get; init; }
 
         /// <summary>
         /// Gets or sets the cancel reason. Callers may prefer <see cref="Cancel" /> instead.
@@ -134,7 +141,8 @@ namespace Temporalio.Testing
                     taskToken: ByteString.Empty,
                     logger: Logger,
                     payloadConverter: PayloadConverter,
-                    runtimeMetricMeter: new(() => MetricMeter ?? MetricMeterNoop.Instance))
+                    runtimeMetricMeter: new(() => MetricMeter ?? MetricMeterNoop.Instance),
+                    temporalClient: TemporalClient)
                 {
                     Heartbeater = Heartbeater,
                     CancelReasonRef = CancelReasonRef,

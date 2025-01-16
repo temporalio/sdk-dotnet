@@ -135,6 +135,11 @@ namespace Temporalio.Workflows
         public static WorkflowInfo Info => Context.Info;
 
         /// <summary>
+        /// Gets the instance of the current workflow class.
+        /// </summary>
+        public static object Instance => Context.Instance;
+
+        /// <summary>
         /// Gets a value indicating whether this code is currently running in a workflow.
         /// </summary>
         public static bool InWorkflow => TaskScheduler.Current is IWorkflowContext;
