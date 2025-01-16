@@ -10,6 +10,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Worker.Interceptors;
@@ -191,7 +192,8 @@ namespace Temporalio.Worker
                 taskToken: tsk.TaskToken,
                 logger: worker.LoggerFactory.CreateLogger($"Temporalio.Activity:{info.ActivityType}"),
                 payloadConverter: worker.Client.Options.DataConverter.PayloadConverter,
-                runtimeMetricMeter: worker.MetricMeter);
+                runtimeMetricMeter: worker.MetricMeter,
+                temporalClient: worker.Client as ITemporalClient);
 
             // Start task
             using (context.Logger.BeginScope(info.LoggerScope))
