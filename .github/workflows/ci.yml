@@ -22,6 +22,11 @@ jobs:
           - os: ubuntu-latest
             docsTarget: true
             cloudTestTarget: true
+            # This is here alongside docsTarget because newer docfx doesn't work
+            # with .NET 6.
+            dotNetVersionOverride: |
+              6.x
+              8.x
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
