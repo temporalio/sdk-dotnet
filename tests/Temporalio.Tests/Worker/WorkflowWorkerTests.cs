@@ -5512,7 +5512,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Func<WorkflowHandle<UnfinishedHandlersWorkflow>, Task> interaction,
             bool waitAllHandlersFinished,
             bool shouldWarn,
-            bool interactionShouldFailWithNotFound = false)
+            bool interactionShouldFailWithWorkflowAlreadyCompleted = false)
         {
             // If the finish is a failure, we never warn regardless
             if (finish == UnfinishedHandlersWorkflow.WorkflowFinish.Fail)
@@ -5534,11 +5534,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     try
                     {
                         await interaction(handle);
-                        Assert.False(interactionShouldFailWithNotFound);
+                        Assert.False(interactionShouldFailWithWorkflowAlreadyCompleted);
                     }
-                    catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+                    catch (WorkflowUpdateFailedException e) when (
+                        e.InnerException is ApplicationFailureException { ErrorType: "AcceptedUpdateCompletedWorkflow" })
                     {
-                        Assert.True(interactionShouldFailWithNotFound);
+                        Assert.True(interactionShouldFailWithWorkflowAlreadyCompleted);
                     }
                     // Wait for workflow completion
                     try
@@ -5576,7 +5577,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAsync()),
             waitAllHandlersFinished: false,
             shouldWarn: true,
-            interactionShouldFailWithNotFound: true);
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
         await AssertWarnings(
             interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAsync()),
             waitAllHandlersFinished: true,
@@ -5585,7 +5586,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAbandonAsync()),
             waitAllHandlersFinished: false,
             shouldWarn: false,
-            interactionShouldFailWithNotFound: true);
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
         await AssertWarnings(
             interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAbandonAsync()),
             waitAllHandlersFinished: true,
@@ -5594,7 +5595,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             interaction: h => h.ExecuteUpdateAsync("MyUpdateManual", Array.Empty<object?>()),
             waitAllHandlersFinished: false,
             shouldWarn: true,
-            interactionShouldFailWithNotFound: true);
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
         await AssertWarnings(
             interaction: h => h.ExecuteUpdateAsync("MyUpdateManual", Array.Empty<object?>()),
             waitAllHandlersFinished: true,
@@ -5603,7 +5604,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             interaction: h => h.ExecuteUpdateAsync("MyUpdateManualAbandon", Array.Empty<object?>()),
             waitAllHandlersFinished: false,
             shouldWarn: false,
-            interactionShouldFailWithNotFound: true);
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
         await AssertWarnings(
             interaction: h => h.ExecuteUpdateAsync("MyUpdateManualAbandon", Array.Empty<object?>()),
             waitAllHandlersFinished: true,
