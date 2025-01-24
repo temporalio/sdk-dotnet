@@ -25,19 +25,20 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiF0ZW1wb3JhbC9hcGkvZW51bXMvdjEvcmVzZXQucHJvdG8SFXRlbXBvcmFs",
-            "LmFwaS5lbnVtcy52MSqTAQoXUmVzZXRSZWFwcGx5RXhjbHVkZVR5cGUSKgom",
+            "LmFwaS5lbnVtcy52MSq5AQoXUmVzZXRSZWFwcGx5RXhjbHVkZVR5cGUSKgom",
             "UkVTRVRfUkVBUFBMWV9FWENMVURFX1RZUEVfVU5TUEVDSUZJRUQQABIlCiFS",
             "RVNFVF9SRUFQUExZX0VYQ0xVREVfVFlQRV9TSUdOQUwQARIlCiFSRVNFVF9S",
-            "RUFQUExZX0VYQ0xVREVfVFlQRV9VUERBVEUQAiqXAQoQUmVzZXRSZWFwcGx5",
-            "VHlwZRIiCh5SRVNFVF9SRUFQUExZX1RZUEVfVU5TUEVDSUZJRUQQABIdChlS",
-            "RVNFVF9SRUFQUExZX1RZUEVfU0lHTkFMEAESGwoXUkVTRVRfUkVBUFBMWV9U",
-            "WVBFX05PTkUQAhIjCh9SRVNFVF9SRUFQUExZX1RZUEVfQUxMX0VMSUdJQkxF",
-            "EAMqbgoJUmVzZXRUeXBlEhoKFlJFU0VUX1RZUEVfVU5TUEVDSUZJRUQQABIi",
-            "Ch5SRVNFVF9UWVBFX0ZJUlNUX1dPUktGTE9XX1RBU0sQARIhCh1SRVNFVF9U",
-            "WVBFX0xBU1RfV09SS0ZMT1dfVEFTSxACQoIBChhpby50ZW1wb3JhbC5hcGku",
-            "ZW51bXMudjFCClJlc2V0UHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2Vu",
-            "dW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1w",
-            "b3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "RUFQUExZX0VYQ0xVREVfVFlQRV9VUERBVEUQAhIkCiBSRVNFVF9SRUFQUExZ",
+            "X0VYQ0xVREVfVFlQRV9ORVhVUxADKpcBChBSZXNldFJlYXBwbHlUeXBlEiIK",
+            "HlJFU0VUX1JFQVBQTFlfVFlQRV9VTlNQRUNJRklFRBAAEh0KGVJFU0VUX1JF",
+            "QVBQTFlfVFlQRV9TSUdOQUwQARIbChdSRVNFVF9SRUFQUExZX1RZUEVfTk9O",
+            "RRACEiMKH1JFU0VUX1JFQVBQTFlfVFlQRV9BTExfRUxJR0lCTEUQAypuCglS",
+            "ZXNldFR5cGUSGgoWUkVTRVRfVFlQRV9VTlNQRUNJRklFRBAAEiIKHlJFU0VU",
+            "X1RZUEVfRklSU1RfV09SS0ZMT1dfVEFTSxABEiEKHVJFU0VUX1RZUEVfTEFT",
+            "VF9XT1JLRkxPV19UQVNLEAJCggEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52",
+            "MUIKUmVzZXRQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7",
+            "ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86",
+            "OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.ResetReapplyExcludeType), typeof(global::Temporalio.Api.Enums.V1.ResetReapplyType), typeof(global::Temporalio.Api.Enums.V1.ResetType), }, null, null));
@@ -47,18 +48,22 @@ namespace Temporalio.Api.Enums.V1 {
   }
   #region Enums
   /// <summary>
-  /// Event types to exclude when reapplying events.
+  /// Event types to exclude when reapplying events beyond the reset point.
   /// </summary>
   public enum ResetReapplyExcludeType {
     [pbr::OriginalName("RESET_REAPPLY_EXCLUDE_TYPE_UNSPECIFIED")] Unspecified = 0,
     /// <summary>
-    /// Exclude signals when reapplying events.
+    /// Exclude signals when reapplying events beyond the reset point.
     /// </summary>
     [pbr::OriginalName("RESET_REAPPLY_EXCLUDE_TYPE_SIGNAL")] Signal = 1,
     /// <summary>
-    /// Exclude updates when reapplying events.
+    /// Exclude updates when reapplying events beyond the reset point.
     /// </summary>
     [pbr::OriginalName("RESET_REAPPLY_EXCLUDE_TYPE_UPDATE")] Update = 2,
+    /// <summary>
+    /// Exclude nexus events when reapplying events beyond the reset point.
+    /// </summary>
+    [pbr::OriginalName("RESET_REAPPLY_EXCLUDE_TYPE_NEXUS")] Nexus = 3,
   }
 
   /// <summary>

@@ -68,14 +68,14 @@ namespace Temporalio.Api.Enums.V1 {
             "L0VWRU5UX1RZUEVfRVhURVJOQUxfV09SS0ZMT1dfRVhFQ1VUSU9OX1NJR05B",
             "TEVEECcSMAosRVZFTlRfVFlQRV9VUFNFUlRfV09SS0ZMT1dfU0VBUkNIX0FU",
             "VFJJQlVURVMQKBIxCi1FVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElPTl9V",
-            "UERBVEVfQUNDRVBURUQQKRIxCi1FVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNV",
-            "VElPTl9VUERBVEVfUkVKRUNURUQQKhIyCi5FVkVOVF9UWVBFX1dPUktGTE9X",
-            "X0VYRUNVVElPTl9VUERBVEVfQ09NUExFVEVEECsSNgoyRVZFTlRfVFlQRV9X",
-            "T1JLRkxPV19QUk9QRVJUSUVTX01PRElGSUVEX0VYVEVSTkFMTFkQLBI2CjJF",
-            "VkVOVF9UWVBFX0FDVElWSVRZX1BST1BFUlRJRVNfTU9ESUZJRURfRVhURVJO",
-            "QUxMWRAtEisKJ0VWRU5UX1RZUEVfV09SS0ZMT1dfUFJPUEVSVElFU19NT0RJ",
-            "RklFRBAuEjEKLUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VUSU9OX1VQREFU",
-            "RV9BRE1JVFRFRBAvEigKJEVWRU5UX1RZUEVfTkVYVVNfT1BFUkFUSU9OX1ND",
+            "UERBVEVfQURNSVRURUQQLxIxCi1FVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNV",
+            "VElPTl9VUERBVEVfQUNDRVBURUQQKRIxCi1FVkVOVF9UWVBFX1dPUktGTE9X",
+            "X0VYRUNVVElPTl9VUERBVEVfUkVKRUNURUQQKhIyCi5FVkVOVF9UWVBFX1dP",
+            "UktGTE9XX0VYRUNVVElPTl9VUERBVEVfQ09NUExFVEVEECsSNgoyRVZFTlRf",
+            "VFlQRV9XT1JLRkxPV19QUk9QRVJUSUVTX01PRElGSUVEX0VYVEVSTkFMTFkQ",
+            "LBI2CjJFVkVOVF9UWVBFX0FDVElWSVRZX1BST1BFUlRJRVNfTU9ESUZJRURf",
+            "RVhURVJOQUxMWRAtEisKJ0VWRU5UX1RZUEVfV09SS0ZMT1dfUFJPUEVSVElF",
+            "U19NT0RJRklFRBAuEigKJEVWRU5UX1RZUEVfTkVYVVNfT1BFUkFUSU9OX1ND",
             "SEVEVUxFRBAwEiYKIkVWRU5UX1RZUEVfTkVYVVNfT1BFUkFUSU9OX1NUQVJU",
             "RUQQMRIoCiRFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DT01QTEVURUQQ",
             "MhIlCiFFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9GQUlMRUQQMxInCiNF",
@@ -299,11 +299,17 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_UPSERT_WORKFLOW_SEARCH_ATTRIBUTES")] UpsertWorkflowSearchAttributes = 40,
     /// <summary>
-    /// An update was accepted (i.e. validated)
+    /// An update was admitted. Note that not all admitted updates result in this
+    /// event. See UpdateAdmittedEventOrigin for situations in which this event
+    /// is created.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ADMITTED")] WorkflowExecutionUpdateAdmitted = 47,
+    /// <summary>
+    /// An update was accepted (i.e. passed validation, perhaps because no validator was defined)
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ACCEPTED")] WorkflowExecutionUpdateAccepted = 41,
     /// <summary>
-    /// An update was rejected (i.e. failed validation)
+    /// This event is never written to history.
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_REJECTED")] WorkflowExecutionUpdateRejected = 42,
     /// <summary>
@@ -326,12 +332,6 @@ namespace Temporalio.Api.Enums.V1 {
     /// Workflow properties modified by user workflow code
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_WORKFLOW_PROPERTIES_MODIFIED")] WorkflowPropertiesModified = 46,
-    /// <summary>
-    /// An update was admitted. Note that not all admitted updates result in this
-    /// event. See UpdateAdmittedEventOrigin for situations in which this event
-    /// is created.
-    /// </summary>
-    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UPDATE_ADMITTED")] WorkflowExecutionUpdateAdmitted = 47,
     /// <summary>
     /// A Nexus operation was scheduled using a ScheduleNexusOperation command.
     /// </summary>

@@ -1,3 +1,5 @@
+#pragma warning disable SA1201, SA1204 // We want to have classes/methods near their tests
+#pragma warning disable xUnit1013 // We want instance methods as activities sometimes
 namespace Temporalio.Tests.Worker;
 
 using Temporalio.Activities;
@@ -20,10 +22,22 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     {
     }
 
+    [Activity]
+    public static string SimpleStaticMethod(int param)
+    {
+        return $"param: {param}";
+    }
+
     [Fact]
     public async Task ExecuteActivityAsync_SimpleStaticMethod_Succeeds()
     {
         Assert.Equal("param: 123", await ExecuteActivityAsync(SimpleStaticMethod, 123));
+    }
+
+    [Activity]
+    public Dictionary<string, List<string>> SimpleInstanceMethod(List<string> someStrings)
+    {
+        return new() { [instanceState1] = someStrings };
     }
 
     [Fact]
@@ -34,11 +48,23 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             await ExecuteActivityAsync(SimpleInstanceMethod, new List<string>() { "foo", "bar" }));
     }
 
+    [Activity]
+    public void SimpleVoidMethod(string someSuffix)
+    {
+        instanceState2 += someSuffix;
+    }
+
     [Fact]
     public async Task ExecuteActivityAsync_SimpleVoidMethod_Succeeds()
     {
         await ExecuteActivityAsync(SimpleVoidMethod, "-mutated");
         Assert.Equal("InstanceState2-mutated", instanceState2);
+    }
+
+    [Activity]
+    public Task<List<string>> SimpleMethodAsync(string someParam)
+    {
+        return Task.FromResult(new List<string>() { "foo:" + someParam, "bar:" + someParam });
     }
 
     [Fact]
@@ -47,6 +73,13 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal(
             new List<string>() { "foo:param", "bar:param" },
             await ExecuteActivityAsync(SimpleMethodAsync, "param"));
+    }
+
+    [Activity]
+    public Task SimpleVoidMethodAsync(string someSuffix)
+    {
+        instanceState3 += someSuffix;
+        return Task.CompletedTask;
     }
 
     [Fact]
@@ -667,34 +700,19 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Activity]
-    internal static string SimpleStaticMethod(int param)
+    public static async Task<string> UseTemporalClientActivity()
     {
-        return $"param: {param}";
+        var desc = await ActivityExecutionContext.Current.TemporalClient.GetWorkflowHandle(
+            ActivityExecutionContext.Current.Info.WorkflowId).DescribeAsync();
+        return desc.RawDescription.PendingActivities.First().ActivityType.Name;
     }
 
-    [Activity]
-    internal Dictionary<string, List<string>> SimpleInstanceMethod(List<string> someStrings)
+    [Fact]
+    public async Task ExecuteActivityAsync_UseTemporalClient_Succeeds()
     {
-        return new() { [instanceState1] = someStrings };
-    }
-
-    [Activity]
-    internal void SimpleVoidMethod(string someSuffix)
-    {
-        instanceState2 += someSuffix;
-    }
-
-    [Activity]
-    internal Task<List<string>> SimpleMethodAsync(string someParam)
-    {
-        return Task.FromResult(new List<string>() { "foo:" + someParam, "bar:" + someParam });
-    }
-
-    [Activity]
-    internal Task SimpleVoidMethodAsync(string someSuffix)
-    {
-        instanceState3 += someSuffix;
-        return Task.CompletedTask;
+        Assert.Equal(
+            "UseTemporalClientActivity",
+            await ExecuteAsyncActivityAsync(UseTemporalClientActivity));
     }
 
     internal async Task ExecuteActivityAsync(
@@ -734,6 +752,12 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
 
     internal Task<TResult> ExecuteActivityAsync<TResult>(
         Func<TResult> activity)
+    {
+        return ExecuteActivityInternalAsync<TResult>(activity, null);
+    }
+
+    internal Task<TResult> ExecuteAsyncActivityAsync<TResult>(
+        Func<Task<TResult>> activity)
     {
         return ExecuteActivityInternalAsync<TResult>(activity, null);
     }

@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Microsoft.Extensions.Logging;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
@@ -67,7 +69,8 @@ namespace Temporalio.Worker
         private readonly Action<WorkflowInstance> onTaskStarting;
         private readonly Action<WorkflowInstance, Exception?> onTaskCompleted;
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
-        private readonly bool disableCompletionCommandReordering;
+        private readonly bool disableEagerActivityExecution;
+        private readonly Handlers inProgressHandlers = new();
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -118,21 +121,21 @@ namespace Temporalio.Worker
             mutableQueries = new(() => new(Definition.Queries, OnQueryDefinitionAdded), false);
             mutableSignals = new(() => new(Definition.Signals, OnSignalDefinitionAdded), false);
             mutableUpdates = new(() => new(Definition.Updates, OnUpdateDefinitionAdded), false);
-            var initialMemo = details.Start.Memo;
+            var initialMemo = details.Init.Memo;
             memo = new(
                 () => initialMemo == null ? new Dictionary<string, IRawValue>(0) :
                     initialMemo.Fields.ToDictionary(
                         kvp => kvp.Key,
                         kvp => (IRawValue)new RawValue(kvp.Value)),
                 false);
-            var initialSearchAttributes = details.Start.SearchAttributes;
+            var initialSearchAttributes = details.Init.SearchAttributes;
             typedSearchAttributes = new(
                 () => initialSearchAttributes == null ? new(new()) :
                     SearchAttributeCollection.FromProto(initialSearchAttributes),
                 false);
             var act = details.InitialActivation;
             CurrentBuildId = act.BuildIdForCurrentTask;
-            var start = details.Start;
+            var start = details.Init;
             startArgs = new(
                 () => DecodeArgs(
                     method: Definition.RunMethod,
@@ -148,7 +151,7 @@ namespace Temporalio.Worker
                         { "task_queue", details.TaskQueue },
                         { "workflow_type", start.WorkflowType },
                     })));
-            initialSearchAttributes = details.Start.SearchAttributes;
+            initialSearchAttributes = details.Init.SearchAttributes;
             WorkflowInfo.ParentInfo? parent = null;
             if (start.ParentWorkflowInfo != null)
             {
@@ -185,10 +188,10 @@ namespace Temporalio.Worker
             replaySafeLogger = new(logger);
             onTaskStarting = details.OnTaskStarting;
             onTaskCompleted = details.OnTaskCompleted;
-            Random = new(details.Start.RandomnessSeed);
+            Random = new(details.Init.RandomnessSeed);
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
-            disableCompletionCommandReordering = details.DisableCompletionCommandReordering;
+            disableEagerActivityExecution = details.DisableEagerActivityExecution;
         }
 
         /// <summary>
@@ -205,6 +208,9 @@ namespace Temporalio.Worker
         public bool TracingEventsEnabled { get; private init; }
 
         /// <inheritdoc />
+        public bool AllHandlersFinished => inProgressHandlers.Count == 0;
+
+        /// <inheritdoc />
         public CancellationToken CancellationToken => cancellationTokenSource.Token;
 
         /// <inheritdoc />
@@ -212,6 +218,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public string CurrentBuildId { get; private set; }
+
+        /// <inheritdoc />
+        public string CurrentDetails { get; set; } = string.Empty;
 
         /// <inheritdoc />
         public int CurrentHistoryLength { get; private set; }
@@ -276,6 +285,19 @@ namespace Temporalio.Worker
         public WorkflowInfo Info { get; private init; }
 
         /// <inheritdoc />
+        ///
+        /// This is lazily created and should never be called outside of the scheduler
+        public object Instance
+        {
+            get
+            {
+                // We create this lazily because we want the constructor in a workflow context
+                instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
+                return instance;
+            }
+        }
+
+        /// <inheritdoc />
         public bool IsReplaying { get; private set; }
 
         /// <inheritdoc />
@@ -313,20 +335,6 @@ namespace Temporalio.Worker
         /// </summary>
         internal WorkflowDefinition Definition { get; private init; }
 
-        /// <summary>
-        /// Gets the instance, lazily creating if needed. This should never be called outside this
-        /// scheduler.
-        /// </summary>
-        private object Instance
-        {
-            get
-            {
-                // We create this lazily because we want the constructor in a workflow context
-                instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
-                return instance;
-            }
-        }
-
         /// <inheritdoc/>
         public ContinueAsNewException CreateContinueAsNewException(
             string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options) =>
@@ -337,8 +345,8 @@ namespace Temporalio.Worker
                 Headers: null));
 
         /// <inheritdoc/>
-        public Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken) =>
-            outbound.Value.DelayAsync(new(Delay: delay, CancellationToken: cancellationToken));
+        public Task DelayWithOptionsAsync(DelayOptions options) =>
+            outbound.Value.DelayAsync(new(options));
 
         /// <inheritdoc/>
         public Task<TResult> ExecuteActivityAsync<TResult>(
@@ -455,14 +463,11 @@ namespace Temporalio.Worker
         }
 
         /// <inheritdoc/>
-        public Task<bool> WaitConditionAsync(
-            Func<bool> conditionCheck,
-            TimeSpan? timeout,
-            CancellationToken? cancellationToken)
+        public Task<bool> WaitConditionWithOptionsAsync(WaitConditionOptions options)
         {
             var source = new TaskCompletionSource<object?>();
-            var node = conditions.AddLast(Tuple.Create(conditionCheck, source));
-            var token = cancellationToken ?? CancellationToken;
+            var node = conditions.AddLast(Tuple.Create(options.ConditionCheck, source));
+            var token = options.CancellationToken ?? CancellationToken;
             return QueueNewTaskAsync(async () =>
             {
                 try
@@ -470,7 +475,7 @@ namespace Temporalio.Worker
                     using (token.Register(() => source.TrySetCanceled(token)))
                     {
                         // If there's no timeout, it'll never return false, so just wait
-                        if (timeout == null)
+                        if (options.Timeout == null)
                         {
                             await source.Task.ConfigureAwait(true);
                             return true;
@@ -478,8 +483,11 @@ namespace Temporalio.Worker
                         // Try a timeout that we cancel if never hit
                         using (var delayCancelSource = new CancellationTokenSource())
                         {
-                            var completedTask = await Task.WhenAny(source.Task, DelayAsync(
-                                timeout.GetValueOrDefault(), delayCancelSource.Token)).ConfigureAwait(true);
+                            var completedTask = await Task.WhenAny(source.Task, DelayWithOptionsAsync(
+                                new(
+                                    delay: options.Timeout.GetValueOrDefault(),
+                                    summary: options.TimeoutSummary,
+                                    cancellationToken: delayCancelSource.Token))).ConfigureAwait(true);
                             // Do not timeout
                             if (completedTask == source.Task)
                             {
@@ -532,8 +540,25 @@ namespace Temporalio.Worker
                     {
                         // We must set the sync context to null so work isn't posted there
                         SynchronizationContext.SetSynchronizationContext(null);
+                        // TODO: Temporary workaround in lieu of https://github.com/temporalio/sdk-dotnet/issues/375
+                        var sortedJobs = act.Jobs.OrderBy(j =>
+                        {
+                            switch (j.VariantCase)
+                            {
+                                case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
+                                case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
+                                    return 1;
+                                case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
+                                case WorkflowActivationJob.VariantOneofCase.DoUpdate:
+                                    return 2;
+                                case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
+                                    return 3;
+                                default:
+                                    return 4;
+                            }
+                        }).ToList();
                         // We can trust jobs are deterministically ordered by core
-                        foreach (var job in act.Jobs)
+                        foreach (var job in sortedJobs)
                         {
                             Apply(job);
                             // Run scheduler once. Do not check conditions when patching or querying.
@@ -575,8 +600,14 @@ namespace Temporalio.Worker
                     }
                 }
 
-                // Maybe apply workflow completion command reordering logic
-                ApplyCompletionCommandReordering(act, completion);
+                // Maybe apply legacy workflow completion command reordering logic
+                ApplyLegacyCompletionCommandReordering(act, completion, out var workflowCompleteNonFailure);
+
+                // Log warnings if we have completed
+                if (workflowCompleteNonFailure && !IsReplaying)
+                {
+                    inProgressHandlers.WarnIfAnyLeftOver(Info.WorkflowId, logger);
+                }
 
                 // Unset the completion
                 var toReturn = completion;
@@ -868,8 +899,8 @@ namespace Temporalio.Worker
                 case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
                     ApplySignalWorkflow(job.SignalWorkflow);
                     break;
-                case WorkflowActivationJob.VariantOneofCase.StartWorkflow:
-                    ApplyStartWorkflow(job.StartWorkflow);
+                case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
+                    ApplyInitializeWorkflow(job.InitializeWorkflow);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
                     ApplyUpdateRandomSeed(job.UpdateRandomSeed);
@@ -886,173 +917,198 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
+                // Make sure we have loaded the instance which may invoke the constructor thereby
+                // letting the constructor register update handlers at runtime
+                var ignored = Instance;
+
                 // Set the current update for the life of this task
-                CurrentUpdateInfoLocal.Value = new(Id: update.Id, Name: update.Name);
+                var updateInfo = new WorkflowUpdateInfo(Id: update.Id, Name: update.Name);
+                CurrentUpdateInfoLocal.Value = updateInfo;
 
-                // Find update definition or reject
-                var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
-                if (!updates.TryGetValue(update.Name, out var updateDefn))
+                // Put the entire update in the log scope
+                using (logger.BeginScope(updateInfo.CreateLoggerScope()))
                 {
-                    updateDefn = DynamicUpdate;
-                    if (updateDefn == null)
-                    {
-                        var knownUpdates = updates.Keys.OrderBy(k => k);
-                        var failure = new InvalidOperationException(
-                            $"Update handler for {update.Name} expected but not found, " +
-                            $"known updates: [{string.Join(" ", knownUpdates)}]");
-                        AddCommand(new()
-                        {
-                            UpdateResponse = new()
-                            {
-                                ProtocolInstanceId = update.ProtocolInstanceId,
-                                Rejected = failureConverter.ToFailure(failure, PayloadConverter),
-                            },
-                        });
-                        return Task.CompletedTask;
-                    }
-                }
-
-                // May be loaded inside validate after validator, maybe not
-                object?[]? argsForUpdate = null;
-                // We define this up here because there are multiple places it's called below
-                object?[] DecodeUpdateArgs() => DecodeArgs(
-                    method: updateDefn.Method ?? updateDefn.Delegate!.Method,
-                    payloads: update.Input,
-                    itemName: $"Update {update.Name}",
-                    dynamic: updateDefn.Dynamic,
-                    dynamicArgPrepend: update.Name);
-
-                // Do validation. Whether or not this runs a validator, this should accept/reject.
-                try
-                {
-                    if (update.RunValidator)
-                    {
-                        // We only call the validation interceptor if a validator is present. We are
-                        // not allowed to share the arguments. We do not share the arguments (i.e.
-                        // we re-convert) to prevent a user from mistakenly mutating an argument in
-                        // the validator. We call the interceptor only if a validator is present to
-                        // match other SDKs where doubly converting arguments here unnecessarily
-                        // (because of the no-reuse-argument rule above) causes performance issues
-                        // for them (even if they don't much for us).
-                        if (updateDefn.ValidatorMethod != null || updateDefn.ValidatorDelegate != null)
-                        {
-                            // Capture command count so we can ensure it is unchanged after call
-                            var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
-                            inbound.Value.ValidateUpdate(new(
-                                Id: update.Id,
-                                Update: update.Name,
-                                Definition: updateDefn,
-                                Args: DecodeUpdateArgs(),
-                                Headers: update.Headers));
-                            // If the command count changed, we need to issue a task failure
-                            var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
-                            if (origCmdCount != newCmdCount)
-                            {
-                                currentActivationException = new InvalidOperationException(
-                                    $"Update validator for {update.Name} created workflow commands");
-                                return Task.CompletedTask;
-                            }
-                        }
-
-                        // We want to try to decode args here _inside_ the validator rejection
-                        // try/catch so we can prevent acceptance on invalid args
-                        argsForUpdate = DecodeUpdateArgs();
-                    }
-
-                    // Send accepted
-                    AddCommand(new()
-                    {
-                        UpdateResponse = new()
-                        {
-                            ProtocolInstanceId = update.ProtocolInstanceId,
-                            Accepted = new(),
-                        },
-                    });
-                }
-                catch (Exception e)
-                {
-                    // Send rejected
-                    AddCommand(new()
-                    {
-                        UpdateResponse = new()
-                        {
-                            ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
-                        },
-                    });
-                    return Task.CompletedTask;
-                }
-
-                // Issue actual update. We are using ContinueWith instead of await here so that user
-                // code can run immediately. But the user code _or_ the task could fail so we need
-                // to reject in both cases.
-                try
-                {
-                    // If the args were not already decoded because we didn't run the validation
-                    // step, decode them here
-                    argsForUpdate ??= DecodeUpdateArgs();
-
-                    var task = inbound.Value.HandleUpdateAsync(new(
-                        Id: update.Id,
-                        Update: update.Name,
-                        Definition: updateDefn,
-                        Args: argsForUpdate,
-                        Headers: update.Headers));
-                    return task.ContinueWith(
-                        _ =>
-                        {
-                            // If workflow failure exception, it's an update failure. If it's some
-                            // other exception, it's a task failure. Otherwise it's a success.
-                            var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
-                            if (exc != null && IsWorkflowFailureException(exc))
-                            {
-                                AddCommand(new()
-                                {
-                                    UpdateResponse = new()
-                                    {
-                                        ProtocolInstanceId = update.ProtocolInstanceId,
-                                        Rejected = failureConverter.ToFailure(exc, PayloadConverter),
-                                    },
-                                });
-                            }
-                            else if (task.Exception is { } taskExc)
-                            {
-                                // Fails the task
-                                currentActivationException =
-                                    taskExc.InnerExceptions.SingleOrDefault() ?? taskExc;
-                            }
-                            else
-                            {
-                                // Success, have to use reflection to extract value if it's a Task<>
-                                var taskType = task.GetType();
-                                var result = taskType.IsGenericType ?
-                                    taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
-                                AddCommand(new()
-                                {
-                                    UpdateResponse = new()
-                                    {
-                                        ProtocolInstanceId = update.ProtocolInstanceId,
-                                        Completed = PayloadConverter.ToPayload(result),
-                                    },
-                                });
-                            }
-                            return Task.CompletedTask;
-                        },
-                        this).Unwrap();
-                }
-                catch (FailureException e)
-                {
-                    AddCommand(new()
-                    {
-                        UpdateResponse = new()
-                        {
-                            ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
-                        },
-                    });
-                    return Task.CompletedTask;
+                    return ApplyDoUpdateAsync(update);
                 }
             });
+        }
+
+        private Task ApplyDoUpdateAsync(DoUpdate update)
+        {
+            // Find update definition or reject
+            var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
+            if (!updates.TryGetValue(update.Name, out var updateDefn))
+            {
+                updateDefn = DynamicUpdate;
+                if (updateDefn == null)
+                {
+                    var knownUpdates = updates.Keys.OrderBy(k => k);
+                    var failure = new InvalidOperationException(
+                        $"Update handler for {update.Name} expected but not found, " +
+                        $"known updates: [{string.Join(" ", knownUpdates)}]");
+                    AddCommand(new()
+                    {
+                        UpdateResponse = new()
+                        {
+                            ProtocolInstanceId = update.ProtocolInstanceId,
+                            Rejected = failureConverter.ToFailure(failure, PayloadConverter),
+                        },
+                    });
+                    return Task.CompletedTask;
+                }
+            }
+
+            // May be loaded inside validate after validator, maybe not
+            object?[]? argsForUpdate = null;
+            // We define this up here because there are multiple places it's called below
+            object?[] DecodeUpdateArgs() => DecodeArgs(
+                method: updateDefn.Method ?? updateDefn.Delegate!.Method,
+                payloads: update.Input,
+                itemName: $"Update {update.Name}",
+                dynamic: updateDefn.Dynamic,
+                dynamicArgPrepend: update.Name);
+
+            // Do validation. Whether or not this runs a validator, this should accept/reject.
+            try
+            {
+                if (update.RunValidator)
+                {
+                    // We only call the validation interceptor if a validator is present. We are
+                    // not allowed to share the arguments. We do not share the arguments (i.e.
+                    // we re-convert) to prevent a user from mistakenly mutating an argument in
+                    // the validator. We call the interceptor only if a validator is present to
+                    // match other SDKs where doubly converting arguments here unnecessarily
+                    // (because of the no-reuse-argument rule above) causes performance issues
+                    // for them (even if they don't much for us).
+                    if (updateDefn.ValidatorMethod != null || updateDefn.ValidatorDelegate != null)
+                    {
+                        // Capture command count so we can ensure it is unchanged after call
+                        var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                        inbound.Value.ValidateUpdate(new(
+                            Id: update.Id,
+                            Update: update.Name,
+                            Definition: updateDefn,
+                            Args: DecodeUpdateArgs(),
+                            Headers: update.Headers));
+                        // If the command count changed, we need to issue a task failure
+                        var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                        if (origCmdCount != newCmdCount)
+                        {
+                            currentActivationException = new InvalidOperationException(
+                                $"Update validator for {update.Name} created workflow commands");
+                            return Task.CompletedTask;
+                        }
+                    }
+
+                    // We want to try to decode args here _inside_ the validator rejection
+                    // try/catch so we can prevent acceptance on invalid args
+                    argsForUpdate = DecodeUpdateArgs();
+                }
+
+                // Send accepted
+                AddCommand(new()
+                {
+                    UpdateResponse = new()
+                    {
+                        ProtocolInstanceId = update.ProtocolInstanceId,
+                        Accepted = new(),
+                    },
+                });
+            }
+            catch (Exception e)
+            {
+                // Send rejected
+                AddCommand(new()
+                {
+                    UpdateResponse = new()
+                    {
+                        ProtocolInstanceId = update.ProtocolInstanceId,
+                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                    },
+                });
+                return Task.CompletedTask;
+            }
+
+            // Issue actual update. We are using ContinueWith instead of await here so that user
+            // code can run immediately. But the user code _or_ the task could fail so we need
+            // to reject in both cases.
+            try
+            {
+                // If the args were not already decoded because we didn't run the validation
+                // step, decode them here
+                argsForUpdate ??= DecodeUpdateArgs();
+
+                var task = inbound.Value.HandleUpdateAsync(new(
+                    Id: update.Id,
+                    Update: update.Name,
+                    Definition: updateDefn,
+                    Args: argsForUpdate,
+                    Headers: update.Headers));
+                var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
+                    update.Name, update.Id, updateDefn.UnfinishedPolicy));
+                return task.ContinueWith(
+                    _ =>
+                    {
+                        inProgressHandlers.Remove(inProgress);
+                        // If workflow failure exception, it's an update failure. If it's some
+                        // other exception, it's a task failure. Otherwise it's a success.
+                        var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
+                        // There are .NET cases where cancellation occurs but is not considered
+                        // an exception. We are going to make it an exception. Unfortunately
+                        // there is no easy way to make it include the outer stack trace at this
+                        // time.
+                        if (exc == null && task.IsCanceled)
+                        {
+                            exc = new TaskCanceledException();
+                        }
+                        if (exc != null && IsWorkflowFailureException(exc))
+                        {
+                            AddCommand(new()
+                            {
+                                UpdateResponse = new()
+                                {
+                                    ProtocolInstanceId = update.ProtocolInstanceId,
+                                    Rejected = failureConverter.ToFailure(exc, PayloadConverter),
+                                },
+                            });
+                        }
+                        else if (task.Exception is { } taskExc)
+                        {
+                            // Fails the task
+                            currentActivationException =
+                                taskExc.InnerExceptions.SingleOrDefault() ?? taskExc;
+                        }
+                        else
+                        {
+                            // Success, have to use reflection to extract value if it's a Task<>
+                            var taskType = task.GetType();
+                            var result = taskType.IsGenericType ?
+                                taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
+                            AddCommand(new()
+                            {
+                                UpdateResponse = new()
+                                {
+                                    ProtocolInstanceId = update.ProtocolInstanceId,
+                                    Completed = PayloadConverter.ToPayload(result),
+                                },
+                            });
+                        }
+                        return Task.CompletedTask;
+                    },
+                    this).Unwrap();
+            }
+            catch (FailureException e)
+            {
+                AddCommand(new()
+                {
+                    UpdateResponse = new()
+                    {
+                        ProtocolInstanceId = update.ProtocolInstanceId,
+                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                    },
+                });
+                return Task.CompletedTask;
+            }
         }
 
         private void ApplyFireTimer(FireTimer fireTimer)
@@ -1072,6 +1128,10 @@ namespace Temporalio.Worker
             // Queue it up so it can run in workflow environment
             _ = QueueNewTaskAsync(() =>
             {
+                // Make sure we have loaded the instance which may invoke the constructor thereby
+                // letting the constructor register query handlers at runtime
+                var ignored = Instance;
+
                 var origCmdCount = completion?.Successful?.Commands?.Count;
                 try
                 {
@@ -1082,6 +1142,12 @@ namespace Temporalio.Worker
                         Func<string> getter = GetStackTrace;
                         queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
                             "__stack_trace", getter);
+                    }
+                    else if (query.QueryType == "__temporal_workflow_metadata")
+                    {
+                        Func<Api.Sdk.V1.WorkflowMetadata> getter = GetWorkflowMetadata;
+                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
+                            "__temporal_workflow_metadata", getter);
                     }
                     else
                     {
@@ -1233,15 +1299,25 @@ namespace Temporalio.Worker
                     return;
                 }
 
-                await inbound.Value.HandleSignalAsync(new(
-                    Signal: signal.SignalName,
-                    Definition: signalDefn,
-                    Args: args,
-                    Headers: signal.Headers)).ConfigureAwait(true);
+                // Handle signal
+                var inProgress = inProgressHandlers.AddLast(new Handlers.Handler(
+                    signal.SignalName, null, signalDefn.UnfinishedPolicy));
+                try
+                {
+                    await inbound.Value.HandleSignalAsync(new(
+                        Signal: signal.SignalName,
+                        Definition: signalDefn,
+                        Args: args,
+                        Headers: signal.Headers)).ConfigureAwait(true);
+                }
+                finally
+                {
+                    inProgressHandlers.Remove(inProgress);
+                }
             }));
         }
 
-        private void ApplyStartWorkflow(StartWorkflow start)
+        private void ApplyInitializeWorkflow(InitializeWorkflow init)
         {
             _ = QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
             {
@@ -1312,7 +1388,7 @@ namespace Temporalio.Worker
 
         private object?[] DecodeArgs(
             MethodInfo method,
-            IReadOnlyCollection<Payload> payloads,
+            RepeatedField<Payload> payloads,
             string itemName,
             bool dynamic,
             string? dynamicArgPrepend = null)
@@ -1385,54 +1461,97 @@ namespace Temporalio.Worker
             }).Where(s => !string.IsNullOrEmpty(s)).Select(s => $"Task waiting at:\n{s}"));
         }
 
-        private void ApplyCompletionCommandReordering(
-            WorkflowActivation act, WorkflowActivationCompletion completion)
+        private Api.Sdk.V1.WorkflowMetadata GetWorkflowMetadata()
         {
-            // In earlier versions of the SDK we allowed commands to be sent after workflow
-            // completion. These ended up being removed effectively making the result of the
-            // workflow function mean any other later coroutine commands be ignored. To match
-            // Go/Java, we are now going to move workflow completion to the end so that
-            // same-task-post-completion commands are still accounted for.
-            //
-            // Note this only applies for successful activations that don't have completion
-            // reordering disabled and that are either not replaying or have the flag set.
-            if (completion.Successful == null || disableCompletionCommandReordering)
+            var defn = new Api.Sdk.V1.WorkflowDefinition() { Type = Info.WorkflowType };
+            if (DynamicQuery is { } dynQuery)
             {
-                return;
+                defn.QueryDefinitions.Add(
+                    new Api.Sdk.V1.WorkflowInteractionDefinition() { Description = dynQuery.Description });
             }
-            if (IsReplaying && !act.AvailableInternalFlags.Contains((uint)WorkflowLogicFlag.ReorderWorkflowCompletion))
-            {
-                return;
-            }
-
-            // We know we're on a newer SDK and can move completion to the end if we need to. First,
-            // find the completion command.
-            var completionCommandIndex = -1;
-            for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
-            {
-                var cmd = completion.Successful.Commands[i];
-                // Set completion index if the command is a completion
-                if (cmd.CancelWorkflowExecution != null ||
-                    cmd.CompleteWorkflowExecution != null ||
-                    cmd.ContinueAsNewWorkflowExecution != null ||
-                    cmd.FailWorkflowExecution != null)
+            defn.QueryDefinitions.AddRange(Queries.Values.Select(query =>
+                new Api.Sdk.V1.WorkflowInteractionDefinition()
                 {
-                    completionCommandIndex = i;
-                    break;
+                    Name = query.Name ?? string.Empty,
+                    Description = query.Description ?? string.Empty,
+                }).OrderBy(q => q.Name));
+            if (DynamicSignal is { } dynSignal)
+            {
+                defn.SignalDefinitions.Add(
+                    new Api.Sdk.V1.WorkflowInteractionDefinition() { Description = dynSignal.Description });
+            }
+            defn.SignalDefinitions.AddRange(Signals.Values.Select(query =>
+                new Api.Sdk.V1.WorkflowInteractionDefinition()
+                {
+                    Name = query.Name ?? string.Empty,
+                    Description = query.Description ?? string.Empty,
+                }).OrderBy(q => q.Name));
+            if (DynamicUpdate is { } dynUpdate)
+            {
+                defn.UpdateDefinitions.Add(
+                    new Api.Sdk.V1.WorkflowInteractionDefinition() { Description = dynUpdate.Description });
+            }
+            defn.UpdateDefinitions.AddRange(Updates.Values.Select(query =>
+                new Api.Sdk.V1.WorkflowInteractionDefinition()
+                {
+                    Name = query.Name ?? string.Empty,
+                    Description = query.Description ?? string.Empty,
+                }).OrderBy(q => q.Name));
+            return new() { Definition = defn, CurrentDetails = CurrentDetails };
+        }
+
+        private void ApplyLegacyCompletionCommandReordering(
+            WorkflowActivation act,
+            WorkflowActivationCompletion completion,
+            out bool workflowCompleteNonFailure)
+        {
+            // Find the index of the last completion command
+            var lastCompletionCommandIndex = -1;
+            workflowCompleteNonFailure = false;
+            if (completion.Successful != null)
+            {
+                // Iterate in reverse
+                for (var i = completion.Successful.Commands.Count - 1; i >= 0; i--)
+                {
+                    var cmd = completion.Successful.Commands[i];
+                    // Set completion index if the command is a completion
+                    if (cmd.CancelWorkflowExecution != null ||
+                        cmd.CompleteWorkflowExecution != null ||
+                        cmd.ContinueAsNewWorkflowExecution != null ||
+                        cmd.FailWorkflowExecution != null)
+                    {
+                        // Only set this if not already set since we want the _last_ one and this
+                        // iterates in reverse
+                        if (lastCompletionCommandIndex == -1)
+                        {
+                            lastCompletionCommandIndex = i;
+                        }
+                        // Always override this bool because we want whether the _first_ completion
+                        // is a non-failure, not the last and this iterates in reverse
+                        workflowCompleteNonFailure = cmd.FailWorkflowExecution == null;
+                    }
                 }
             }
 
-            // If there is no completion command or it's already at the end, nothing to do
-            if (completionCommandIndex == -1 ||
-                completionCommandIndex == completion.Successful.Commands.Count - 1)
+            // In a previous version of .NET SDK, if this was a successful activation completion
+            // with a completion command not at the end, we'd reorder it to move at the end.
+            // However, this logic has now moved to core and become more robust. Therefore, we only
+            // apply this logic if we're replaying and flag is present so that workflows/histories
+            // that were created after this .NET flag but before the core flag still work.
+            if (completion.Successful == null ||
+                lastCompletionCommandIndex == -1 ||
+                lastCompletionCommandIndex == completion.Successful.Commands.Count - 1 ||
+                !IsReplaying ||
+                !act.AvailableInternalFlags.Contains((uint)WorkflowLogicFlag.ReorderWorkflowCompletion))
             {
                 return;
             }
 
-            // Now we know the completion is in the wrong spot, so set the SDK flag and move it
+            // Now we know that we're replaying w/ the flag set and the completion in the wrong
+            // spot, so set the SDK flag and move it
             completion.Successful.UsedInternalFlags.Add((uint)WorkflowLogicFlag.ReorderWorkflowCompletion);
-            var compCmd = completion.Successful.Commands[completionCommandIndex];
-            completion.Successful.Commands.RemoveAt(completionCommandIndex);
+            var compCmd = completion.Successful.Commands[lastCompletionCommandIndex];
+            completion.Successful.Commands.RemoveAt(lastCompletionCommandIndex);
             completion.Successful.Commands.Insert(completion.Successful.Commands.Count, compCmd);
         }
 
@@ -1660,6 +1779,8 @@ namespace Temporalio.Worker
                         {
                             Seq = seq,
                             StartToFireTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(delay),
+                            Summary = input.Summary == null ?
+                                null : instance.PayloadConverter.ToPayload(input.Summary),
                         },
                     });
                 }
@@ -1703,6 +1824,7 @@ namespace Temporalio.Worker
                             Arguments = { instance.PayloadConverter.ToPayloads(input.Args) },
                             RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                             CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
+                            DoNotEagerlyExecute = instance.disableEagerActivityExecution || input.Options.DisableEagerActivityExecution,
                         };
                         if (input.Headers is IDictionary<string, Payload> headers)
                         {
@@ -1727,6 +1849,10 @@ namespace Temporalio.Worker
                         if (input.Options.VersioningIntent is { } vi)
                         {
                             cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
+                        }
+                        if (input.Options.Summary is { } summary)
+                        {
+                            cmd.Summary = instance.PayloadConverter.ToPayload(summary);
                         }
                         instance.AddCommand(new() { ScheduleActivity = cmd });
                         return seq;
@@ -1859,6 +1985,10 @@ namespace Temporalio.Worker
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                     CronSchedule = input.Options.CronSchedule ?? string.Empty,
                     CancellationType = (Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType)input.Options.CancellationType,
+                    StaticSummary = input.Options.StaticSummary is { } summ ?
+                        instance.PayloadConverter.ToPayload(summ) : null,
+                    StaticDetails = input.Options.StaticDetails is { } det ?
+                        instance.PayloadConverter.ToPayload(det) : null,
                 };
                 if (input.Options.ExecutionTimeout is TimeSpan execTimeout)
                 {
@@ -1930,8 +2060,10 @@ namespace Temporalio.Worker
                                         handleSource.SetException(
                                             new WorkflowAlreadyStartedException(
                                                 "Child workflow already started",
-                                                startRes.Failed.WorkflowId,
-                                                startRes.Failed.WorkflowType));
+                                                workflowId: startRes.Failed.WorkflowId,
+                                                workflowType: startRes.Failed.WorkflowType,
+                                                // Pending https://github.com/temporalio/temporal/issues/6961
+                                                runId: "<unknown>"));
                                         return;
                                     default:
                                         handleSource.SetException(new InvalidOperationException(
@@ -2098,9 +2230,10 @@ namespace Temporalio.Worker
                             case ActivityResolution.StatusOneofCase.Backoff:
                                 // We have to sleep the backoff amount. Note, this can be cancelled
                                 // like any other timer.
-                                await instance.DelayAsync(
-                                    res.Backoff.BackoffDuration.ToTimeSpan(),
-                                    cancellationToken).ConfigureAwait(true);
+                                await instance.DelayWithOptionsAsync(new(
+                                    delay: res.Backoff.BackoffDuration.ToTimeSpan(),
+                                    summary: "LocalActivityBackoff",
+                                    cancellationToken: cancellationToken)).ConfigureAwait(true);
                                 // Re-schedule with backoff info
                                 seq = applyScheduleCommand(res.Backoff);
                                 source = new TaskCompletionSource<ActivityResolution>();
@@ -2221,6 +2354,87 @@ namespace Temporalio.Worker
             /// <inheritdoc />
             public override Task CancelAsync() =>
                 instance.outbound.Value.CancelExternalWorkflowAsync(new(Id: Id, RunId: RunId));
+        }
+
+        private class Handlers : LinkedList<Handlers.Handler>
+        {
+#pragma warning disable SA1118 // We're ok w/ string literals spanning lines
+            private static readonly Action<ILogger, string, WarnableSignals, Exception?> SignalWarning =
+                LoggerMessage.Define<string, WarnableSignals>(
+                    LogLevel.Warning,
+                    0,
+                    "[TMPRL1102] Workflow {Id} finished while signal handlers are still running. This may " +
+                    "have interrupted work that the signal handler was doing. You can wait for " +
+                    "all update and signal handlers to complete by using `await " +
+                    "Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)`. " +
+                    "Alternatively, if both you and the clients sending the signal are okay with " +
+                    "interrupting running handlers when the workflow finishes, " +
+                    "then you can disable this warning via the signal " +
+                    "handler attribute: " +
+                    "`[WorkflowSignal(UnfinishedPolicy=HandlerUnfinishedPolicy.Abandon)]`. The " +
+                    "following signals were unfinished (and warnings were not disabled for their " +
+                    "handler): {Handlers}");
+
+            private static readonly Action<ILogger, string, WarnableUpdates, Exception?> UpdateWarning =
+                LoggerMessage.Define<string, WarnableUpdates>(
+                    LogLevel.Warning,
+                    0,
+                    "[TMPRL1102] Workflow {Id} finished while update handlers are still running. This may " +
+                    "have interrupted work that the update handler was doing, and the client " +
+                    "that sent the update will receive a 'workflow execution already completed' " +
+                    "RpcException instead of the update result. You can wait for all update and " +
+                    "signal handlers to complete by using `await " +
+                    "Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)`. " +
+                    "Alternatively, if both you and the clients sending the update are okay with " +
+                    "interrupting running handlers when the workflow finishes, and causing " +
+                    "clients to receive errors, then you can disable this warning via the update " +
+                    "handler attribute: " +
+                    "`[WorkflowUpdate(UnfinishedPolicy=HandlerUnfinishedPolicy.Abandon)]`. The " +
+                    "following updates were unfinished (and warnings were not disabled for their " +
+                    "handler): {Handlers}");
+#pragma warning restore SA1118
+
+            public void WarnIfAnyLeftOver(string id, ILogger logger)
+            {
+                var signals = this.
+                    Where(h => h.UpdateId == null && h.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon).
+                    GroupBy(h => h.Name).
+                    Select(h => (h.Key, h.Count())).
+                    ToArray();
+                if (signals.Length > 0)
+                {
+                    SignalWarning(logger, id, new WarnableSignals { NamesAndCounts = signals }, null);
+                }
+                var updates = this.
+                    Where(h => h.UpdateId != null && h.UnfinishedPolicy == HandlerUnfinishedPolicy.WarnAndAbandon).
+                    Select(h => (h.Name, h.UpdateId!)).
+                    ToArray();
+                if (updates.Length > 0)
+                {
+                    UpdateWarning(logger, id, new WarnableUpdates { NamesAndIds = updates }, null);
+                }
+            }
+
+            public readonly struct WarnableSignals
+            {
+                public (string, int)[] NamesAndCounts { get; init; }
+
+                public override string ToString() => JsonSerializer.Serialize(
+                    NamesAndCounts.Select(v => new { name = v.Item1, count = v.Item2 }).ToArray());
+            }
+
+            public readonly struct WarnableUpdates
+            {
+                public (string, string)[] NamesAndIds { get; init; }
+
+                public override string ToString() => JsonSerializer.Serialize(
+                    NamesAndIds.Select(v => new { name = v.Item1, id = v.Item2 }).ToArray());
+            }
+
+            public record Handler(
+                string Name,
+                string? UpdateId,
+                HandlerUnfinishedPolicy UnfinishedPolicy);
         }
     }
 }

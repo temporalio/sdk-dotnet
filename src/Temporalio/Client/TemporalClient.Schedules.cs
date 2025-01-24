@@ -136,7 +136,8 @@ namespace Temporalio.Client
                         ScheduleId = input.Id,
                     },
                     DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
-                return new(input.Id, desc, Client.Options.DataConverter);
+                return await ScheduleDescription.FromProtoAsync(
+                    input.Id, desc, Client.Options.DataConverter).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -203,6 +204,7 @@ namespace Temporalio.Client
                         Schedule = await update.Schedule.ToProtoAsync(Client.Options.DataConverter).ConfigureAwait(false),
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
+                        SearchAttributes = update.TypedSearchAttributes?.ToProto(),
                     },
                     DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
             }
@@ -225,6 +227,7 @@ namespace Temporalio.Client
                     {
                         // TODO(cretz): Allow setting of page size or next page token?
                         Namespace = Client.Options.Namespace,
+                        Query = input.Options?.Query ?? string.Empty,
                     };
                     do
                     {

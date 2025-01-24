@@ -15,6 +15,7 @@ use std::time::Duration;
 use std::time::UNIX_EPOCH;
 use temporal_sdk_core::telemetry::{build_otlp_metric_exporter, start_prometheus_metric_exporter};
 use temporal_sdk_core::CoreRuntime;
+use temporal_sdk_core::TokioRuntimeBuilder;
 use temporal_sdk_core_api::telemetry::metrics::CoreMeter;
 use temporal_sdk_core_api::telemetry::MetricTemporality;
 use temporal_sdk_core_api::telemetry::{CoreLog, CoreLogConsumer};
@@ -52,14 +53,6 @@ type ForwardedLogCallback =
 pub struct ForwardedLog {
     core: CoreLog,
     fields_json: Arc<Mutex<Option<String>>>,
-}
-
-#[repr(C)]
-pub struct ForwardedLogDetails {
-    target: ByteArray,
-    message: ByteArray,
-    timestamp_millis: u64,
-    fields_json: ByteArray,
 }
 
 #[repr(C)]
@@ -136,7 +129,7 @@ pub extern "C" fn runtime_new(options: *const RuntimeOptions) -> RuntimeOrFail {
                 core: Arc::new(
                     CoreRuntime::new(
                         CoreTelemetryOptions::default(),
-                        tokio::runtime::Builder::new_current_thread(),
+                        TokioRuntimeBuilder::default(),
                     )
                     .unwrap(),
                 ),
@@ -232,10 +225,7 @@ impl Runtime {
         };
 
         // Build core runtime
-        let mut core = CoreRuntime::new(
-            telemetry_options,
-            tokio::runtime::Builder::new_multi_thread(),
-        )?;
+        let mut core = CoreRuntime::new(telemetry_options, TokioRuntimeBuilder::default())?;
 
         // We late-bind the metrics after core runtime is created since it needs
         // the Tokio handle
@@ -326,13 +316,13 @@ impl fmt::Debug for LogForwarder {
 #[no_mangle]
 pub extern "C" fn forwarded_log_target(log: *const ForwardedLog) -> ByteArrayRef {
     let log = unsafe { &*log };
-    ByteArrayRef::from_string(&log.core.target)
+    ByteArrayRef::from_str(&log.core.target)
 }
 
 #[no_mangle]
 pub extern "C" fn forwarded_log_message(log: *const ForwardedLog) -> ByteArrayRef {
     let log = unsafe { &*log };
-    ByteArrayRef::from_string(&log.core.message)
+    ByteArrayRef::from_str(&log.core.message)
 }
 
 #[no_mangle]

@@ -73,6 +73,13 @@ namespace Temporalio.Workflows
         public string? TaskQueue { get; set; }
 
         /// <summary>
+        /// Gets or sets a single-line fixed summary for this activity that may appear in UI/CLI.
+        /// This can be in single-line Temporal markdown format.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? Summary { get; set; }
+
+        /// <summary>
         /// Gets or sets the unique identifier for the activity. This should never be set unless
         /// users have a strong understanding of the system. Contact Temporal support to discuss the
         /// use case before setting this value.
@@ -84,6 +91,20 @@ namespace Temporalio.Workflows
         /// Worker Versioning feature.
         /// </summary>
         public VersioningIntent VersioningIntent { get; set; } = VersioningIntent.Unspecified;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether eager activity execution will be disabled for
+        /// this activity.
+        /// </summary>
+        /// <remarks>
+        /// Eager activity execution is an optimization on some servers that sends activities back
+        /// to the same worker as the calling workflow if they can run there.
+        /// </remarks>
+        /// <remarks>
+        /// If <c>false</c> (the default), eager execution may still be disabled at the worker level
+        /// or may not be requested due to lack of available slots.
+        /// </remarks>
+        public bool DisableEagerActivityExecution { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

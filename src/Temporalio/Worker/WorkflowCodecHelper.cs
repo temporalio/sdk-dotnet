@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
@@ -101,8 +102,8 @@ namespace Temporalio.Worker
                         await DecodeAsync(codec, job.SignalWorkflow.Input).ConfigureAwait(false);
                         await DecodeAsync(codec, job.SignalWorkflow.Headers).ConfigureAwait(false);
                         break;
-                    case WorkflowActivationJob.VariantOneofCase.StartWorkflow:
-                        await DecodeAsync(codec, job.StartWorkflow).ConfigureAwait(false);
+                    case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
+                        await DecodeAsync(codec, job.InitializeWorkflow).ConfigureAwait(false);
                         break;
                 }
             }
@@ -156,6 +157,10 @@ namespace Temporalio.Worker
                 case WorkflowCommand.VariantOneofCase.ScheduleActivity:
                     await EncodeAsync(codec, cmd.ScheduleActivity.Arguments).ConfigureAwait(false);
                     await EncodeAsync(codec, cmd.ScheduleActivity.Headers).ConfigureAwait(false);
+                    if (cmd.ScheduleActivity.Summary != null)
+                    {
+                        await EncodeAsync(codec, cmd.ScheduleActivity.Summary).ConfigureAwait(false);
+                    }
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleLocalActivity:
                     await EncodeAsync(
@@ -176,6 +181,19 @@ namespace Temporalio.Worker
                         codec, cmd.StartChildWorkflowExecution.Memo).ConfigureAwait(false);
                     await EncodeAsync(
                         codec, cmd.StartChildWorkflowExecution.Headers).ConfigureAwait(false);
+                    if (cmd.StartChildWorkflowExecution.StaticDetails != null)
+                    {
+                        await EncodeAsync(
+                            codec, cmd.StartChildWorkflowExecution.StaticDetails).ConfigureAwait(false);
+                    }
+                    if (cmd.StartChildWorkflowExecution.StaticSummary != null)
+                    {
+                        await EncodeAsync(
+                            codec, cmd.StartChildWorkflowExecution.StaticSummary).ConfigureAwait(false);
+                    }
+                    break;
+                case WorkflowCommand.VariantOneofCase.StartTimer:
+                    await EncodeAsync(codec, cmd.StartTimer.Summary).ConfigureAwait(false);
                     break;
                 case WorkflowCommand.VariantOneofCase.UpdateResponse:
                     if (cmd.UpdateResponse.Completed is { } updateCompleted)
@@ -223,6 +241,7 @@ namespace Temporalio.Worker
             var encodedList = await codec.EncodeAsync(new Payload[] { payload }).ConfigureAwait(false);
             var encoded = encodedList.Single();
             payload.Metadata.Clear();
+            payload.Data = ByteString.Empty;
             payload.MergeFrom(encoded);
         }
 
@@ -276,21 +295,21 @@ namespace Temporalio.Worker
             }
         }
 
-        private static async Task DecodeAsync(IPayloadCodec codec, StartWorkflow start)
+        private static async Task DecodeAsync(IPayloadCodec codec, InitializeWorkflow init)
         {
-            await DecodeAsync(codec, start.Arguments).ConfigureAwait(false);
-            if (start.ContinuedFailure != null)
+            await DecodeAsync(codec, init.Arguments).ConfigureAwait(false);
+            if (init.ContinuedFailure != null)
             {
-                await codec.DecodeFailureAsync(start.ContinuedFailure).ConfigureAwait(false);
+                await codec.DecodeFailureAsync(init.ContinuedFailure).ConfigureAwait(false);
             }
-            if (start.Memo != null)
+            if (init.Memo != null)
             {
-                await DecodeAsync(codec, start.Memo.Fields).ConfigureAwait(false);
+                await DecodeAsync(codec, init.Memo.Fields).ConfigureAwait(false);
             }
-            await DecodeAsync(codec, start.Headers).ConfigureAwait(false);
-            if (start.LastCompletionResult != null)
+            await DecodeAsync(codec, init.Headers).ConfigureAwait(false);
+            if (init.LastCompletionResult != null)
             {
-                await DecodeAsync(codec, start.LastCompletionResult.Payloads_).ConfigureAwait(false);
+                await DecodeAsync(codec, init.LastCompletionResult.Payloads_).ConfigureAwait(false);
             }
         }
 
@@ -324,6 +343,7 @@ namespace Temporalio.Worker
             // We are gonna require a single result here
             var decoded = await codec.DecodeAsync(new Payload[] { payload }).ConfigureAwait(false);
             payload.Metadata.Clear();
+            payload.Data = ByteString.Empty;
             payload.MergeFrom(decoded.Single());
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Microsoft.Extensions.Logging;
 
 namespace Temporalio.Bridge
 {
@@ -16,11 +17,16 @@ namespace Temporalio.Bridge
         /// <param name="client">Client for the worker.</param>
         /// <param name="namespace_">Namespace for the worker.</param>
         /// <param name="options">Options for the worker.</param>
+        /// <param name="loggerFactory">Logger factory, used instead of the one in options by
+        ///   anything in the bridge that needs it, since it's guaranteed to be set.</param>
         /// <exception cref="Exception">
         /// If any of the options are invalid including improperly defined workflows/activities.
         /// </exception>
         public Worker(
-            Client client, string namespace_, Temporalio.Worker.TemporalWorkerOptions options)
+            Client client,
+            string namespace_,
+            Temporalio.Worker.TemporalWorkerOptions options,
+            ILoggerFactory loggerFactory)
             : base(IntPtr.Zero, true)
         {
             Runtime = client.Runtime;
@@ -29,7 +35,8 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     var workerOrFail = Interop.Methods.worker_new(
-                        client.Ptr, scope.Pointer(options.ToInteropOptions(scope, namespace_)));
+                        client.Ptr,
+                        scope.Pointer(options.ToInteropOptions(scope, namespace_, loggerFactory)));
                     if (workerOrFail.fail != null)
                     {
                         string failStr;
@@ -76,7 +83,7 @@ namespace Temporalio.Bridge
         }
 
         /// <inheritdoc />
-        public override unsafe bool IsInvalid => false;
+        public override unsafe bool IsInvalid => Ptr == null;
 
         /// <summary>
         /// Gets the runtime associated with this worker.

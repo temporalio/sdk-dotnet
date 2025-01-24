@@ -9,8 +9,9 @@ use std::str::FromStr;
 use std::time::Duration;
 use temporal_client::{
     ClientKeepAliveConfig, ClientOptions as CoreClientOptions, ClientOptionsBuilder,
-    ClientTlsConfig, ConfiguredClient, HealthService, OperatorService, RetryClient, RetryConfig,
-    TemporalServiceClientWithMetrics, TestService, TlsConfig, WorkflowService,
+    ClientTlsConfig, CloudService, ConfiguredClient, HealthService, HttpConnectProxyOptions,
+    OperatorService, RetryClient, RetryConfig, TemporalServiceClientWithMetrics, TestService,
+    TlsConfig, WorkflowService,
 };
 use tonic::metadata::MetadataKey;
 use url::Url;
@@ -26,6 +27,7 @@ pub struct ClientOptions {
     tls_options: *const ClientTlsOptions,
     retry_options: *const ClientRetryOptions,
     keep_alive_options: *const ClientKeepAliveOptions,
+    http_connect_proxy_options: *const ClientHttpConnectProxyOptions,
 }
 
 #[repr(C)]
@@ -50,6 +52,13 @@ pub struct ClientRetryOptions {
 pub struct ClientKeepAliveOptions {
     pub interval_millis: u64,
     pub timeout_millis: u64,
+}
+
+#[repr(C)]
+pub struct ClientHttpConnectProxyOptions {
+    pub target_host: ByteArrayRef,
+    pub username: ByteArrayRef,
+    pub password: ByteArrayRef,
 }
 
 type CoreClient = RetryClient<ConfiguredClient<TemporalServiceClientWithMetrics>>;
@@ -172,6 +181,7 @@ unsafe impl Sync for RpcCallOptions {}
 pub enum RpcService {
     Workflow = 1,
     Operator,
+    Cloud,
     Test,
     Health,
 }
@@ -218,6 +228,9 @@ pub extern "C" fn client_rpc_call(
         let res = match options.service {
             RpcService::Workflow => {
                 service_call!(call_workflow_service, client, options, cancel_token)
+            }
+            RpcService::Cloud => {
+                service_call!(call_cloud_service, client, options, cancel_token)
             }
             RpcService::Operator => {
                 service_call!(call_operator_service, client, options, cancel_token)
@@ -269,6 +282,16 @@ macro_rules! rpc_call {
     };
 }
 
+macro_rules! rpc_call_on_trait {
+    ($client:ident, $call:ident, $trait:tt, $call_name:ident) => {
+        if $call.retry {
+            rpc_resp($trait::$call_name(&mut $client, rpc_req($call)?).await)
+        } else {
+            rpc_resp($trait::$call_name(&mut $client.into_inner(), rpc_req($call)?).await)
+        }
+    };
+}
+
 async fn call_workflow_service(
     client: &CoreClient,
     call: &RpcCallOptions,
@@ -313,6 +336,7 @@ async fn call_workflow_service(
         "ListTaskQueuePartitions" => rpc_call!(client, call, list_task_queue_partitions),
         "ListWorkflowExecutions" => rpc_call!(client, call, list_workflow_executions),
         "PatchSchedule" => rpc_call!(client, call, patch_schedule),
+        "PauseActivityById" => rpc_call!(client, call, pause_activity_by_id),
         "PollActivityTaskQueue" => rpc_call!(client, call, poll_activity_task_queue),
         "PollNexusTaskQueue" => rpc_call!(client, call, poll_nexus_task_queue),
         "PollWorkflowExecutionUpdate" => rpc_call!(client, call, poll_workflow_execution_update),
@@ -326,6 +350,7 @@ async fn call_workflow_service(
         "RequestCancelWorkflowExecution" => {
             rpc_call!(client, call, request_cancel_workflow_execution)
         }
+        "ResetActivityById" => rpc_call!(client, call, reset_activity_by_id),
         "ResetStickyTaskQueue" => rpc_call!(client, call, reset_sticky_task_queue),
         "ResetWorkflowExecution" => rpc_call!(client, call, reset_workflow_execution),
         "RespondActivityTaskCanceled" => rpc_call!(client, call, respond_activity_task_canceled),
@@ -346,6 +371,7 @@ async fn call_workflow_service(
         "RespondWorkflowTaskCompleted" => rpc_call!(client, call, respond_workflow_task_completed),
         "RespondWorkflowTaskFailed" => rpc_call!(client, call, respond_workflow_task_failed),
         "ScanWorkflowExecutions" => rpc_call!(client, call, scan_workflow_executions),
+        "ShutdownWorker" => rpc_call!(client, call, shutdown_worker),
         "SignalWithStartWorkflowExecution" => {
             rpc_call!(client, call, signal_with_start_workflow_execution)
         }
@@ -354,7 +380,13 @@ async fn call_workflow_service(
         "StartBatchOperation" => rpc_call!(client, call, start_batch_operation),
         "StopBatchOperation" => rpc_call!(client, call, stop_batch_operation),
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
-        "UpdateNamespace" => rpc_call!(client, call, update_namespace),
+        "UnpauseActivityById" => {
+            rpc_call_on_trait!(client, call, WorkflowService, unpause_activity_by_id)
+        }
+        "UpdateActivityOptionsById" => {
+            rpc_call_on_trait!(client, call, WorkflowService, update_activity_options_by_id)
+        }
+        "UpdateNamespace" => rpc_call_on_trait!(client, call, WorkflowService, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
         "UpdateWorkerVersioningRules" => rpc_call!(client, call, update_worker_versioning_rules),
         "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
@@ -375,7 +407,7 @@ async fn call_operator_service(
         "AddOrUpdateRemoteCluster" => rpc_call!(client, call, add_or_update_remote_cluster),
         "AddSearchAttributes" => rpc_call!(client, call, add_search_attributes),
         "CreateNexusEndpoint" => rpc_call!(client, call, create_nexus_endpoint),
-        "DeleteNamespace" => rpc_call!(client, call, delete_namespace),
+        "DeleteNamespace" => rpc_call_on_trait!(client, call, OperatorService, delete_namespace),
         "DeleteNexusEndpoint" => rpc_call!(client, call, delete_nexus_endpoint),
         "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
         "GetNexusEndpoint" => rpc_call!(client, call, get_nexus_endpoint),
@@ -385,6 +417,50 @@ async fn call_operator_service(
         "RemoveRemoteCluster" => rpc_call!(client, call, remove_remote_cluster),
         "RemoveSearchAttributes" => rpc_call!(client, call, remove_search_attributes),
         "UpdateNexusEndpoint" => rpc_call!(client, call, update_nexus_endpoint),
+        rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
+    }
+}
+
+async fn call_cloud_service<'p>(
+    client: &CoreClient,
+    call: &RpcCallOptions,
+) -> anyhow::Result<Vec<u8>> {
+    let rpc = call.rpc.to_str();
+    let mut client = client.clone();
+    match rpc {
+        "AddNamespaceRegion" => rpc_call!(client, call, add_namespace_region),
+        "CreateApiKey" => rpc_call!(client, call, create_api_key),
+        "CreateNamespace" => rpc_call!(client, call, create_namespace),
+        "CreateServiceAccount" => rpc_call!(client, call, create_service_account),
+        "CreateUserGroup" => rpc_call!(client, call, create_user_group),
+        "CreateUser" => rpc_call!(client, call, create_user),
+        "DeleteApiKey" => rpc_call!(client, call, delete_api_key),
+        "DeleteNamespace" => rpc_call_on_trait!(client, call, CloudService, delete_namespace),
+        "DeleteServiceAccount" => rpc_call!(client, call, delete_service_account),
+        "DeleteUserGroup" => rpc_call!(client, call, delete_user_group),
+        "DeleteUser" => rpc_call!(client, call, delete_user),
+        "FailoverNamespaceRegion" => rpc_call!(client, call, failover_namespace_region),
+        "GetApiKey" => rpc_call!(client, call, get_api_key),
+        "GetApiKeys" => rpc_call!(client, call, get_api_keys),
+        "GetAsyncOperation" => rpc_call!(client, call, get_async_operation),
+        "GetNamespace" => rpc_call!(client, call, get_namespace),
+        "GetNamespaces" => rpc_call!(client, call, get_namespaces),
+        "GetRegion" => rpc_call!(client, call, get_region),
+        "GetRegions" => rpc_call!(client, call, get_regions),
+        "GetServiceAccount" => rpc_call!(client, call, get_service_account),
+        "GetServiceAccounts" => rpc_call!(client, call, get_service_accounts),
+        "GetUserGroup" => rpc_call!(client, call, get_user_group),
+        "GetUserGroups" => rpc_call!(client, call, get_user_groups),
+        "GetUser" => rpc_call!(client, call, get_user),
+        "GetUsers" => rpc_call!(client, call, get_users),
+        "RenameCustomSearchAttribute" => rpc_call!(client, call, rename_custom_search_attribute),
+        "SetUserGroupNamespaceAccess" => rpc_call!(client, call, set_user_group_namespace_access),
+        "SetUserNamespaceAccess" => rpc_call!(client, call, set_user_namespace_access),
+        "UpdateApiKey" => rpc_call!(client, call, update_api_key),
+        "UpdateNamespace" => rpc_call_on_trait!(client, call, CloudService, update_namespace),
+        "UpdateServiceAccount" => rpc_call!(client, call, update_service_account),
+        "UpdateUserGroup" => rpc_call!(client, call, update_user_group),
+        "UpdateUser" => rpc_call!(client, call, update_user),
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }
 }
@@ -459,7 +535,10 @@ impl TryFrom<&ClientOptions> for CoreClientOptions {
             } else {
                 Some(opts.metadata.to_string_map_on_newlines())
             })
-            .api_key(opts.api_key.to_option_string());
+            .api_key(opts.api_key.to_option_string())
+            .http_connect_proxy(
+                unsafe { opts.http_connect_proxy_options.as_ref() }.map(Into::into),
+            );
         if let Some(tls_config) = unsafe { opts.tls_options.as_ref() } {
             opts_builder.tls_cfg(tls_config.try_into()?);
         }
@@ -515,6 +594,19 @@ impl From<&ClientKeepAliveOptions> for ClientKeepAliveConfig {
         ClientKeepAliveConfig {
             interval: Duration::from_millis(opts.interval_millis),
             timeout: Duration::from_millis(opts.timeout_millis),
+        }
+    }
+}
+
+impl From<&ClientHttpConnectProxyOptions> for HttpConnectProxyOptions {
+    fn from(opts: &ClientHttpConnectProxyOptions) -> Self {
+        HttpConnectProxyOptions {
+            target_addr: opts.target_host.to_string(),
+            basic_auth: if opts.username.size != 0 && opts.password.size != 0 {
+                Some((opts.username.to_string(), opts.password.to_string()))
+            } else {
+                None
+            },
         }
     }
 }

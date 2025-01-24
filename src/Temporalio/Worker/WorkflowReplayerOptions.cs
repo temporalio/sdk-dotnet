@@ -99,8 +99,8 @@ namespace Temporalio.Worker
         public bool DisableWorkflowTracingEventListener { get; set; }
 
         /// <summary>
-        /// Gets or sets the logging factory used by loggers in workers. If unset, defaults to the
-        /// client logger factory.
+        /// Gets or sets the logging factory used by loggers in workers. If unset, defaults to a
+        /// null logger.
         /// </summary>
         public ILoggerFactory LoggerFactory { get; set; } = NullLoggerFactory.Instance;
 
@@ -127,15 +127,6 @@ namespace Temporalio.Worker
         /// </remarks>
         internal Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory { get; set; } =
             TemporalWorkerOptions.DefaultWorkflowInstanceFactory;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the workflow completion command reordering will
-        /// apply.
-        /// </summary>
-        /// <remarks>
-        /// This is visible for testing only.
-        /// </remarks>
-        internal bool DisableWorkflowCompletionCommandReordering { get; set; }
 
         /// <summary>
         /// Add the given type as a workflow.

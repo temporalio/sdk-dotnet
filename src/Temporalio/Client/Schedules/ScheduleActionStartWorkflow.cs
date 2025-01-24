@@ -84,7 +84,7 @@ namespace Temporalio.Client.Schedules
         /// <param name="proto">Proto.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Converted value.</returns>
-        internal static ScheduleActionStartWorkflow FromProto(
+        internal static async Task<ScheduleActionStartWorkflow> FromProtoAsync(
             Api.Workflow.V1.NewWorkflowExecutionInfo proto, DataConverter dataConverter)
         {
             IReadOnlyCollection<object?> args = proto.Input == null ?
@@ -93,6 +93,8 @@ namespace Temporalio.Client.Schedules
             var headers = proto.Header?.Fields?.ToDictionary(
                 kvp => kvp.Key,
                 kvp => (IEncodedRawValue)new EncodedRawValue(dataConverter, kvp.Value));
+            var (staticSummary, staticDetails) =
+                await dataConverter.FromUserMetadataAsync(proto.UserMetadata).ConfigureAwait(false);
             return new(
                 Workflow: proto.WorkflowType.Name,
                 Args: args,
@@ -109,6 +111,8 @@ namespace Temporalio.Client.Schedules
                     TypedSearchAttributes = proto.SearchAttributes == null ?
                         SearchAttributeCollection.Empty :
                         SearchAttributeCollection.FromProto(proto.SearchAttributes),
+                    StaticSummary = staticSummary,
+                    StaticDetails = staticDetails,
                 },
                 Headers: headers);
         }
@@ -121,6 +125,10 @@ namespace Temporalio.Client.Schedules
             if (Options.IdReusePolicy != Api.Enums.V1.WorkflowIdReusePolicy.AllowDuplicate)
             {
                 throw new ArgumentException("ID reuse policy cannot change from default for scheduled workflow");
+            }
+            if (Options.IdConflictPolicy != Api.Enums.V1.WorkflowIdConflictPolicy.Unspecified)
+            {
+                throw new ArgumentException("ID conflict policy cannot change from default for scheduled workflow");
             }
             if (Options.CronSchedule != null)
             {
@@ -164,6 +172,8 @@ namespace Temporalio.Client.Schedules
                 WorkflowTaskTimeout = Options.TaskTimeout is TimeSpan taskTimeout ?
                     Duration.FromTimeSpan(taskTimeout) : null,
                 RetryPolicy = Options.RetryPolicy?.ToProto(),
+                UserMetadata = await dataConverter.ToUserMetadataAsync(
+                    Options.StaticSummary, Options.StaticDetails).ConfigureAwait(false),
             };
             if (Options.Memo != null && Options.Memo.Count > 0)
             {

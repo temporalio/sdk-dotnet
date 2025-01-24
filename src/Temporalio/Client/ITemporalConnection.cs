@@ -49,6 +49,14 @@ namespace Temporalio.Client
         OperatorService OperatorService { get; }
 
         /// <summary>
+        /// Gets the raw cloud service.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: Cloud Operations API and its client are experimental and APIs may change.
+        /// </remarks>
+        CloudService CloudService { get; }
+
+        /// <summary>
         /// Gets the raw gRPC test service.
         /// </summary>
         /// <remarks>

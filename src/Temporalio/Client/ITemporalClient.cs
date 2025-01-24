@@ -19,5 +19,15 @@ namespace Temporalio.Client
         /// Gets the outbound interceptor in use.
         /// </summary>
         Interceptors.ClientOutboundInterceptor OutboundInterceptor { get; }
+
+        /// <summary>
+        /// Gets the raw gRPC workflow service. Most users do not need this.
+        /// </summary>
+        WorkflowService WorkflowService { get; }
+
+        /// <summary>
+        /// Gets the raw gRPC operator service for self-hosted servers. Most users do not need this.
+        /// </summary>
+        OperatorService OperatorService { get; }
     }
 }

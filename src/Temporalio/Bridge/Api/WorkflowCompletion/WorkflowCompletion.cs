@@ -39,8 +39,8 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
             "X2ZsYWdzGAYgAygNIoEBCgdGYWlsdXJlEjEKB2ZhaWx1cmUYASABKAsyIC50",
             "ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEkMKC2ZvcmNlX2NhdXNl",
             "GAIgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtmbG93VGFza0Zh",
-            "aWxlZENhdXNlQi7qAitUZW1wb3JhbGlvOjpCcmlkZ2U6OkFwaTo6V29ya2Zs",
-            "b3dDb21wbGV0aW9uYgZwcm90bzM="));
+            "aWxlZENhdXNlQjjqAjVUZW1wb3JhbGlvOjpJbnRlcm5hbDo6QnJpZGdlOjpB",
+            "cGk6OldvcmtmbG93Q29tcGxldGlvbmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCommands.WorkflowCommandsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

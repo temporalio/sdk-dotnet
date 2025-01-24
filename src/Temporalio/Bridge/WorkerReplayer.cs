@@ -48,7 +48,7 @@ namespace Temporalio.Bridge
         public Worker Worker { get; private init; }
 
         /// <inheritdoc />
-        public override unsafe bool IsInvalid => false;
+        public override unsafe bool IsInvalid => Ptr == null;
 
         /// <summary>
         /// Gets the runtime associated with this replayer.

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Temporalio.Workflows
 {
     /// <summary>
@@ -7,10 +9,19 @@ namespace Temporalio.Workflows
     /// </summary>
     /// <param name="Id">Current update ID.</param>
     /// <param name="Name">Current update name.</param>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public record WorkflowUpdateInfo(
         string Id,
         string Name)
     {
+        /// <summary>
+        /// Creates the value that is set on
+        /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> for the update handler.
+        /// </summary>
+        /// <returns>Scope.</returns>
+        internal Dictionary<string, object> CreateLoggerScope() => new()
+        {
+            ["UpdateId"] = Id,
+            ["UpdateName"] = Name,
+        };
     }
 }

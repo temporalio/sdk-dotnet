@@ -15,13 +15,22 @@ jobs:
         include:
           - os: windows-latest
             checkTarget: true
+            # We want to use one version for most things and this latest for
+            # others. This is an ok way to test both without requiring a
+            # separate matrix permutation.
+            dotNetVersionOverride: 8.x
           - os: ubuntu-latest
             docsTarget: true
             cloudTestTarget: true
+            # This is here alongside docsTarget because newer docfx doesn't work
+            # with .NET 6.
+            dotNetVersionOverride: |
+              6.x
+              8.x
           - os: ubuntu-arm
-            runsOn: buildjet-4vcpu-ubuntu-2204-arm
+            runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
-            runsOn: macos-12
+            runsOn: macos-13
           - os: macos-arm
             runsOn: macos-14
     runs-on: ${{ matrix.runsOn || matrix.os }}
@@ -44,7 +53,7 @@ jobs:
         with:
           # Specific .NET version required because GitHub macos ARM image has
           # bad pre-installed .NET version
-          dotnet-version: 6.x
+          dotnet-version: ${{ matrix.dotNetVersionOverride || '6.x' }}
 
       - name: Install protoc
         uses: arduino/setup-protoc@v3
@@ -53,25 +62,31 @@ jobs:
           version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
-        # We intentionally just build debug mode in this CI. We build before
-        # regen to confirm no interop header changes.
-        run: dotnet build
-
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
-        # Needs to be 16.0.0 until https://github.com/dotnet/ClangSharp/pull/506 released
         run: |
-          dotnet tool install --global --version 16.0.0 ClangSharpPInvokeGenerator
+          dotnet tool install --global --version 18.1.0 ClangSharpPInvokeGenerator
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
           npx doctoc README.md
           git config --global core.safecrlf false
+          git diff > generator.diff
           git diff --exit-code
+
+      - name: Upload generator diff
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: generator-diff
+          path: generator.diff
+          if-no-files-found: ignore
 
       - name: Check format
         if: ${{ matrix.checkTarget }}
         run: dotnet format --verify-no-changes
+
+      - name: Build
+        run: dotnet build
 
       - name: Test
         run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n
@@ -90,17 +105,26 @@ jobs:
         # Only supported in non-fork runs, since secrets are not available in forks
         if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
         env:
-          TEMPORAL_CLIENT_TARGET_HOST: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}.tmprl.cloud:7233
-          TEMPORAL_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
-          TEMPORAL_CLIENT_CERT: ${{ secrets.TEMPORAL_CLIENT_CERT }}
-          TEMPORAL_CLIENT_KEY: ${{ secrets.TEMPORAL_CLIENT_KEY }}
+          TEMPORAL_TEST_CLIENT_TARGET_HOST: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}.tmprl.cloud:7233
+          TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
+          TEMPORAL_TEST_CLIENT_CERT: ${{ secrets.TEMPORAL_CLIENT_CERT }}
+          TEMPORAL_TEST_CLIENT_KEY: ${{ secrets.TEMPORAL_CLIENT_KEY }}
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
+
+      - name: Test cloud operations client
+        # Only supported in non-fork runs, since secrets are not available in forks
+        if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        env:
+          TEMPORAL_CLIENT_CLOUD_NAMESPACE: sdk-ci.a2dd6
+          TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
+          TEMPORAL_CLIENT_CLOUD_API_VERSION: 2024-05-13-00
+        run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.TemporalCloudOperationsClientTests.*"
 
       - name: Build docs
         if: ${{ matrix.docsTarget }}
         run: |
-            dotnet tool update -g docfx
-            docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors
+          dotnet tool update -g docfx
+          docfx src/Temporalio.ApiDoc/docfx.json --warningsAsErrors
 
       - name: Deploy docs
         # Only deploy on main merge, not in PRs
@@ -109,3 +133,11 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         run: npx vercel deploy src/Temporalio.ApiDoc/_site --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
+
+  # Runs the sdk features repo tests with this repo's current SDK code
+  features-tests:
+    uses: temporalio/features/.github/workflows/dotnet.yaml@main
+    with:
+      dotnet-repo-path: ${{github.event.pull_request.head.repo.full_name}}
+      version: ${{github.event.pull_request.head.ref}}
+      version-is-repo-ref: true

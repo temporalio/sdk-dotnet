@@ -192,8 +192,6 @@ namespace Temporalio.Api.Failure.V1 {
     /// retry interval calculated by the retry policy. Retry attempts will
     /// still be subject to the maximum retries limit and total time limit
     /// defined by the policy.
-    /// ATTENTION: this value will be ignored if set for failures produced by
-    /// the workflow.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2653,7 +2651,7 @@ namespace Temporalio.Api.Failure.V1 {
     /// The `encoded_attributes` Payload could represent any serializable object, e.g. JSON object or a `Failure` proto
     /// message.
     ///
-    /// SDK authors: 
+    /// SDK authors:
     /// - The SDK should provide a default `encodeFailureAttributes` and `decodeFailureAttributes` implementation that:
     ///   - Uses a JSON object to represent `{ message, stack_trace }`.
     ///   - Overwrites the original message with "Encoded failure" to indicate that more information could be extracted.

@@ -4,11 +4,17 @@
 
 # Please keep in alphabetical order by field.
 
+# We use generic lists for queries, it's ok.
+dotnet_diagnostic.CA1002.severity = none
+
 # We use getters for queries, they cannot be properties
 dotnet_diagnostic.CA1024.severity = none
 
 # We use empty interfaces in some tests
 dotnet_diagnostic.CA1040.severity = none
+
+# Don't care about test item visibility
+dotnet_diagnostic.CA1515.severity = none
 
 # Tests can have underscores in method names
 dotnet_diagnostic.CA1707.severity = none
@@ -27,6 +33,9 @@ dotnet_diagnostic.CA2007.severity = none
 
 # Do not need task scheduler for workflows
 dotnet_diagnostic.CA2008.severity = none
+
+# Testing specific overloads is ok
+dotnet_diagnostic.CA2263.severity = none
 
 # Workflow randomness is intentionally deterministic
 dotnet_diagnostic.CA5394.severity = none

@@ -14,6 +14,11 @@ namespace Temporalio.Workflows
     internal interface IWorkflowContext
     {
         /// <summary>
+        /// Gets a value indicating whether <see cref="Workflow.AllHandlersFinished" /> is true.
+        /// </summary>
+        bool AllHandlersFinished { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.CancellationToken" />.
         /// </summary>
         CancellationToken CancellationToken { get; }
@@ -27,6 +32,11 @@ namespace Temporalio.Workflows
         /// Gets value for <see cref="Workflow.CurrentBuildId" />.
         /// </summary>
         string CurrentBuildId { get; }
+
+        /// <summary>
+        /// Gets or sets value for <see cref="Workflow.CurrentDetails" />.
+        /// </summary>
+        string CurrentDetails { get; set; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.CurrentHistoryLength" />.
@@ -62,6 +72,11 @@ namespace Temporalio.Workflows
         /// Gets value for <see cref="Workflow.Info" />.
         /// </summary>
         WorkflowInfo Info { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.Instance" />.
+        /// </summary>
+        object Instance { get; }
 
         /// <summary>
         /// Gets a value indicating whether <see cref="Workflow.Unsafe.IsReplaying" /> is true.
@@ -130,13 +145,12 @@ namespace Temporalio.Workflows
             string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options);
 
         /// <summary>
-        /// Backing call for <see cref="Workflow.DelayAsync(TimeSpan, CancellationToken?)" /> and
+        /// Backing call for <see cref="Workflow.DelayWithOptionsAsync(DelayOptions)" /> and
         /// overloads.
         /// </summary>
-        /// <param name="delay">Delay duration.</param>
-        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <param name="options">Options.</param>
         /// <returns>Task for completion.</returns>
-        Task DelayAsync(TimeSpan delay, CancellationToken? cancellationToken);
+        Task DelayWithOptionsAsync(DelayOptions options);
 
         /// <summary>
         /// Backing call for
@@ -208,16 +222,11 @@ namespace Temporalio.Workflows
         void UpsertTypedSearchAttributes(IReadOnlyCollection<SearchAttributeUpdate> updates);
 
         /// <summary>
-        /// Backing call for <see cref="Workflow.WaitConditionAsync(Func{bool}, TimeSpan, CancellationToken?)" />
+        /// Backing call for <see cref="Workflow.WaitConditionWithOptionsAsync(WaitConditionOptions)" />
         /// and overloads.
         /// </summary>
-        /// <param name="conditionCheck">Function to call.</param>
-        /// <param name="timeout">Optional timeout.</param>
-        /// <param name="cancellationToken">Optional cancellation token.</param>
+        /// <param name="options">Options.</param>
         /// <returns>Task for completion.</returns>
-        Task<bool> WaitConditionAsync(
-            Func<bool> conditionCheck,
-            TimeSpan? timeout,
-            CancellationToken? cancellationToken);
+        Task<bool> WaitConditionWithOptionsAsync(WaitConditionOptions options);
     }
 }

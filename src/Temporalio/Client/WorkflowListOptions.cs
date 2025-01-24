@@ -9,9 +9,14 @@ namespace Temporalio.Client
     public class WorkflowListOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets RPC options for starting the workflow.
+        /// Gets or sets RPC options for listing workflows.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
+
+        /// <summary>
+        /// Gets or sets the maximum number of workflows to return. A zero value means no limit.
+        /// </summary>
+        public int Limit { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

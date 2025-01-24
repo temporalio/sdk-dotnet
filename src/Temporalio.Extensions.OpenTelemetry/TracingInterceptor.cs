@@ -125,6 +125,27 @@ namespace Temporalio.Extensions.OpenTelemetry
         }
 
         /// <summary>
+        /// Create tag collection for the given workflow and update ID.
+        /// </summary>
+        /// <param name="workflowId">Workflow ID.</param>
+        /// <param name="updateId">Update ID.</param>
+        /// <returns>Tags.</returns>
+        protected virtual IEnumerable<KeyValuePair<string, object?>> CreateUpdateTags(
+            string workflowId, string? updateId)
+        {
+            var ret = new List<KeyValuePair<string, object?>>(2);
+            if (Options.TagNameWorkflowId is string wfName)
+            {
+                ret.Add(new(wfName, workflowId));
+            }
+            if (Options.TagNameUpdateId is string updateName && updateId is { } nonNullUpdateId)
+            {
+                ret.Add(new(updateName, nonNullUpdateId));
+            }
+            return ret;
+        }
+
+        /// <summary>
         /// Create tag collection from the current workflow environment. Must be called within a
         /// workflow.
         /// </summary>
@@ -208,6 +229,48 @@ namespace Temporalio.Extensions.OpenTelemetry
                 }
             }
 
+            public override async Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TUpdateResult>(
+                StartUpdateWithStartWorkflowInput input)
+            {
+                // Ignore if for some reason the start operation is not set by this interceptor
+                if (input.Options.StartWorkflowOperation == null)
+                {
+                    return await base.StartUpdateWithStartWorkflowAsync<TUpdateResult>(input).ConfigureAwait(false);
+                }
+
+                using (var activity = ClientSource.StartActivity(
+                    $"UpdateWithStartWorkflow:{input.Options.StartWorkflowOperation.Workflow}",
+                    kind: ActivityKind.Client,
+                    parentContext: default,
+                    tags: root.CreateUpdateTags(
+                        workflowId: input.Options.StartWorkflowOperation.Options.Id!,
+                        updateId: input.Options.Id)))
+                {
+                    // We want the header on _both_ start and update
+                    if (HeadersFromContext(input.Headers) is Dictionary<string, Payload> updateHeaders)
+                    {
+                        input = input with { Headers = updateHeaders };
+                    }
+                    if (HeadersFromContext(input.Options.StartWorkflowOperation.Headers) is Dictionary<string, Payload> startHeaders)
+                    {
+                        // We copy the operation but still mutate the existing headers. This is
+                        // similar to what is done by other interceptors (they copy the input
+                        // object but still mutate the original header dictionary if there).
+                        input.Options.StartWorkflowOperation = (WithStartWorkflowOperation)input.Options.StartWorkflowOperation.Clone();
+                        input.Options.StartWorkflowOperation.Headers = startHeaders;
+                    }
+                    try
+                    {
+                        return await base.StartUpdateWithStartWorkflowAsync<TUpdateResult>(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
+                }
+            }
+
             public override async Task SignalWorkflowAsync(SignalWorkflowInput input)
             {
                 using (var activity = ClientSource.StartActivity(
@@ -263,7 +326,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                     $"UpdateWorkflow:{input.Update}",
                     kind: ActivityKind.Client,
                     parentContext: default,
-                    tags: root.CreateWorkflowTags(input.Id)))
+                    tags: root.CreateUpdateTags(workflowId: input.Id, updateId: input.Options.Id)))
                 {
                     if (HeadersFromContext(input.Headers) is Dictionary<string, Payload> headers)
                     {

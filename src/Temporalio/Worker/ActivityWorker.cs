@@ -10,6 +10,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Client;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Worker.Interceptors;
@@ -191,7 +192,8 @@ namespace Temporalio.Worker
                 taskToken: tsk.TaskToken,
                 logger: worker.LoggerFactory.CreateLogger($"Temporalio.Activity:{info.ActivityType}"),
                 payloadConverter: worker.Client.Options.DataConverter.PayloadConverter,
-                runtimeMetricMeter: worker.MetricMeter);
+                runtimeMetricMeter: worker.MetricMeter,
+                temporalClient: worker.Client as ITemporalClient);
 
             // Start task
             using (context.Logger.BeginScope(info.LoggerScope))
@@ -223,11 +225,16 @@ namespace Temporalio.Worker
             {
                 completion = new()
                 {
+                    TaskToken = tsk.TaskToken,
                     Result = new()
                     {
                         Failed = new()
                         {
-                            Failure_ = new() { Message = $"Failed building completion: {e}" },
+                            Failure_ = new()
+                            {
+                                Message = $"Failed building completion: {e}",
+                                ApplicationFailureInfo = new() { Type = e.GetType().Name },
+                            },
                         },
                     },
                 };
@@ -366,13 +373,14 @@ namespace Temporalio.Worker
                     Headers: tsk.Start.HeaderFields)).ConfigureAwait(false);
 
                 completion.Result.Completed = new();
-                // As a special case, ValueTuple is considered "void"
-                if (result?.GetType() != typeof(ValueTuple))
+                // As a special case, ValueTuple is considered "void" which is null
+                if (result?.GetType() == typeof(ValueTuple))
                 {
-                    completion.Result.Completed.Result =
-                        await worker.Client.Options.DataConverter.ToPayloadAsync(
-                            result).ConfigureAwait(false);
+                    result = null;
                 }
+                completion.Result.Completed.Result =
+                    await worker.Client.Options.DataConverter.ToPayloadAsync(
+                        result).ConfigureAwait(false);
             }
             catch (CompleteAsyncException)
             {

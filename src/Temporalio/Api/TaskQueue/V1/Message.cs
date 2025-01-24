@@ -41,46 +41,51 @@ namespace Temporalio.Api.TaskQueue.V1 {
             "X3JlYWNoYWJpbGl0eRgCIAEoDjIuLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5C",
             "dWlsZElkVGFza1JlYWNoYWJpbGl0eRpeCg5UeXBlc0luZm9FbnRyeRILCgNr",
             "ZXkYASABKAUSOwoFdmFsdWUYAiABKAsyLC50ZW1wb3JhbC5hcGkudGFza3F1",
-            "ZXVlLnYxLlRhc2tRdWV1ZVR5cGVJbmZvOgI4ASJLChFUYXNrUXVldWVUeXBl",
-            "SW5mbxI2Cgdwb2xsZXJzGAEgAygLMiUudGVtcG9yYWwuYXBpLnRhc2txdWV1",
-            "ZS52MS5Qb2xsZXJJbmZvIqwBCg9UYXNrUXVldWVTdGF0dXMSGgoSYmFja2xv",
-            "Z19jb3VudF9oaW50GAEgASgDEhIKCnJlYWRfbGV2ZWwYAiABKAMSEQoJYWNr",
-            "X2xldmVsGAMgASgDEhcKD3JhdGVfcGVyX3NlY29uZBgEIAEoARI9Cg10YXNr",
-            "X2lkX2Jsb2NrGAUgASgLMiYudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5U",
-            "YXNrSWRCbG9jayIvCgtUYXNrSWRCbG9jaxIQCghzdGFydF9pZBgBIAEoAxIO",
-            "CgZlbmRfaWQYAiABKAMiQgoaVGFza1F1ZXVlUGFydGl0aW9uTWV0YWRhdGES",
-            "CwoDa2V5GAEgASgJEhcKD293bmVyX2hvc3RfbmFtZRgCIAEoCSLFAQoKUG9s",
-            "bGVySW5mbxI0ChBsYXN0X2FjY2Vzc190aW1lGAEgASgLMhouZ29vZ2xlLnBy",
-            "b3RvYnVmLlRpbWVzdGFtcBIQCghpZGVudGl0eRgCIAEoCRIXCg9yYXRlX3Bl",
-            "cl9zZWNvbmQYAyABKAESVgobd29ya2VyX3ZlcnNpb25fY2FwYWJpbGl0aWVz",
-            "GAQgASgLMjEudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9u",
-            "Q2FwYWJpbGl0aWVzIpoBChlTdGlja3lFeGVjdXRpb25BdHRyaWJ1dGVzEj8K",
-            "EXdvcmtlcl90YXNrX3F1ZXVlGAEgASgLMiQudGVtcG9yYWwuYXBpLnRhc2tx",
-            "dWV1ZS52MS5UYXNrUXVldWUSPAoZc2NoZWR1bGVfdG9fc3RhcnRfdGltZW91",
-            "dBgCIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbiIpChRDb21wYXRp",
-            "YmxlVmVyc2lvblNldBIRCglidWlsZF9pZHMYASADKAkiagoVVGFza1F1ZXVl",
-            "UmVhY2hhYmlsaXR5EhIKCnRhc2tfcXVldWUYASABKAkSPQoMcmVhY2hhYmls",
-            "aXR5GAIgAygOMicudGVtcG9yYWwuYXBpLmVudW1zLnYxLlRhc2tSZWFjaGFi",
-            "aWxpdHkiegoTQnVpbGRJZFJlYWNoYWJpbGl0eRIQCghidWlsZF9pZBgBIAEo",
-            "CRJRChd0YXNrX3F1ZXVlX3JlYWNoYWJpbGl0eRgCIAMoCzIwLnRlbXBvcmFs",
-            "LmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlUmVhY2hhYmlsaXR5IisKEFJh",
-            "bXBCeVBlcmNlbnRhZ2USFwoPcmFtcF9wZXJjZW50YWdlGAEgASgCIoABChVC",
-            "dWlsZElkQXNzaWdubWVudFJ1bGUSFwoPdGFyZ2V0X2J1aWxkX2lkGAEgASgJ",
-            "EkYKD3BlcmNlbnRhZ2VfcmFtcBgDIAEoCzIrLnRlbXBvcmFsLmFwaS50YXNr",
-            "cXVldWUudjEuUmFtcEJ5UGVyY2VudGFnZUgAQgYKBHJhbXAiUQodQ29tcGF0",
-            "aWJsZUJ1aWxkSWRSZWRpcmVjdFJ1bGUSFwoPc291cmNlX2J1aWxkX2lkGAEg",
-            "ASgJEhcKD3RhcmdldF9idWlsZF9pZBgCIAEoCSKTAQogVGltZXN0YW1wZWRC",
-            "dWlsZElkQXNzaWdubWVudFJ1bGUSPgoEcnVsZRgBIAEoCzIwLnRlbXBvcmFs",
-            "LmFwaS50YXNrcXVldWUudjEuQnVpbGRJZEFzc2lnbm1lbnRSdWxlEi8KC2Ny",
-            "ZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKj",
-            "AQooVGltZXN0YW1wZWRDb21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRJG",
-            "CgRydWxlGAEgASgLMjgudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Db21w",
-            "YXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRIvCgtjcmVhdGVfdGltZRgCIAEo",
-            "CzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCmAEKHGlvLnRlbXBvcmFs",
-            "LmFwaS50YXNrcXVldWUudjFCDE1lc3NhZ2VQcm90b1ABWilnby50ZW1wb3Jh",
-            "bC5pby9hcGkvdGFza3F1ZXVlL3YxO3Rhc2txdWV1ZaoCG1RlbXBvcmFsaW8u",
-            "QXBpLlRhc2tRdWV1ZS5WMeoCHlRlbXBvcmFsaW86OkFwaTo6VGFza1F1ZXVl",
-            "OjpWMWIGcHJvdG8z"));
+            "ZXVlLnYxLlRhc2tRdWV1ZVR5cGVJbmZvOgI4ASKFAQoRVGFza1F1ZXVlVHlw",
+            "ZUluZm8SNgoHcG9sbGVycxgBIAMoCzIlLnRlbXBvcmFsLmFwaS50YXNrcXVl",
+            "dWUudjEuUG9sbGVySW5mbxI4CgVzdGF0cxgCIAEoCzIpLnRlbXBvcmFsLmFw",
+            "aS50YXNrcXVldWUudjEuVGFza1F1ZXVlU3RhdHMipAEKDlRhc2tRdWV1ZVN0",
+            "YXRzEiEKGWFwcHJveGltYXRlX2JhY2tsb2dfY291bnQYASABKAMSOgoXYXBw",
+            "cm94aW1hdGVfYmFja2xvZ19hZ2UYAiABKAsyGS5nb29nbGUucHJvdG9idWYu",
+            "RHVyYXRpb24SFgoOdGFza3NfYWRkX3JhdGUYAyABKAISGwoTdGFza3NfZGlz",
+            "cGF0Y2hfcmF0ZRgEIAEoAiKsAQoPVGFza1F1ZXVlU3RhdHVzEhoKEmJhY2ts",
+            "b2dfY291bnRfaGludBgBIAEoAxISCgpyZWFkX2xldmVsGAIgASgDEhEKCWFj",
+            "a19sZXZlbBgDIAEoAxIXCg9yYXRlX3Blcl9zZWNvbmQYBCABKAESPQoNdGFz",
+            "a19pZF9ibG9jaxgFIAEoCzImLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEu",
+            "VGFza0lkQmxvY2siLwoLVGFza0lkQmxvY2sSEAoIc3RhcnRfaWQYASABKAMS",
+            "DgoGZW5kX2lkGAIgASgDIkIKGlRhc2tRdWV1ZVBhcnRpdGlvbk1ldGFkYXRh",
+            "EgsKA2tleRgBIAEoCRIXCg9vd25lcl9ob3N0X25hbWUYAiABKAkixQEKClBv",
+            "bGxlckluZm8SNAoQbGFzdF9hY2Nlc3NfdGltZRgBIAEoCzIaLmdvb2dsZS5w",
+            "cm90b2J1Zi5UaW1lc3RhbXASEAoIaWRlbnRpdHkYAiABKAkSFwoPcmF0ZV9w",
+            "ZXJfc2Vjb25kGAMgASgBElYKG3dvcmtlcl92ZXJzaW9uX2NhcGFiaWxpdGll",
+            "cxgEIAEoCzIxLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyVmVyc2lv",
+            "bkNhcGFiaWxpdGllcyKaAQoZU3RpY2t5RXhlY3V0aW9uQXR0cmlidXRlcxI/",
+            "ChF3b3JrZXJfdGFza19xdWV1ZRgBIAEoCzIkLnRlbXBvcmFsLmFwaS50YXNr",
+            "cXVldWUudjEuVGFza1F1ZXVlEjwKGXNjaGVkdWxlX3RvX3N0YXJ0X3RpbWVv",
+            "dXQYAiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24iKQoUQ29tcGF0",
+            "aWJsZVZlcnNpb25TZXQSEQoJYnVpbGRfaWRzGAEgAygJImoKFVRhc2tRdWV1",
+            "ZVJlYWNoYWJpbGl0eRISCgp0YXNrX3F1ZXVlGAEgASgJEj0KDHJlYWNoYWJp",
+            "bGl0eRgCIAMoDjInLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5UYXNrUmVhY2hh",
+            "YmlsaXR5InoKE0J1aWxkSWRSZWFjaGFiaWxpdHkSEAoIYnVpbGRfaWQYASAB",
+            "KAkSUQoXdGFza19xdWV1ZV9yZWFjaGFiaWxpdHkYAiADKAsyMC50ZW1wb3Jh",
+            "bC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZVJlYWNoYWJpbGl0eSIrChBS",
+            "YW1wQnlQZXJjZW50YWdlEhcKD3JhbXBfcGVyY2VudGFnZRgBIAEoAiKAAQoV",
+            "QnVpbGRJZEFzc2lnbm1lbnRSdWxlEhcKD3RhcmdldF9idWlsZF9pZBgBIAEo",
+            "CRJGCg9wZXJjZW50YWdlX3JhbXAYAyABKAsyKy50ZW1wb3JhbC5hcGkudGFz",
+            "a3F1ZXVlLnYxLlJhbXBCeVBlcmNlbnRhZ2VIAEIGCgRyYW1wIlEKHUNvbXBh",
+            "dGlibGVCdWlsZElkUmVkaXJlY3RSdWxlEhcKD3NvdXJjZV9idWlsZF9pZBgB",
+            "IAEoCRIXCg90YXJnZXRfYnVpbGRfaWQYAiABKAkikwEKIFRpbWVzdGFtcGVk",
+            "QnVpbGRJZEFzc2lnbm1lbnRSdWxlEj4KBHJ1bGUYASABKAsyMC50ZW1wb3Jh",
+            "bC5hcGkudGFza3F1ZXVlLnYxLkJ1aWxkSWRBc3NpZ25tZW50UnVsZRIvCgtj",
+            "cmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi",
+            "owEKKFRpbWVzdGFtcGVkQ29tcGF0aWJsZUJ1aWxkSWRSZWRpcmVjdFJ1bGUS",
+            "RgoEcnVsZRgBIAEoCzI4LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuQ29t",
+            "cGF0aWJsZUJ1aWxkSWRSZWRpcmVjdFJ1bGUSLwoLY3JlYXRlX3RpbWUYAiAB",
+            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQpgBChxpby50ZW1wb3Jh",
+            "bC5hcGkudGFza3F1ZXVlLnYxQgxNZXNzYWdlUHJvdG9QAVopZ28udGVtcG9y",
+            "YWwuaW8vYXBpL3Rhc2txdWV1ZS92MTt0YXNrcXVldWWqAhtUZW1wb3JhbGlv",
+            "LkFwaS5UYXNrUXVldWUuVjHqAh5UZW1wb3JhbGlvOjpBcGk6OlRhc2tRdWV1",
+            "ZTo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -88,7 +93,8 @@ namespace Temporalio.Api.TaskQueue.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueMetadata), global::Temporalio.Api.TaskQueue.V1.TaskQueueMetadata.Parser, new[]{ "MaxTasksPerSecond" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection.Parser, new[]{ "BuildIds", "Unversioned", "AllActive" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo.Parser, new[]{ "TypesInfo", "TaskReachability" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo.Parser, new[]{ "Pollers" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo.Parser, new[]{ "Pollers", "Stats" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueStats), global::Temporalio.Api.TaskQueue.V1.TaskQueueStats.Parser, new[]{ "ApproximateBacklogCount", "ApproximateBacklogAge", "TasksAddRate", "TasksDispatchRate" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueStatus), global::Temporalio.Api.TaskQueue.V1.TaskQueueStatus.Parser, new[]{ "BacklogCountHint", "ReadLevel", "AckLevel", "RatePerSecond", "TaskIdBlock" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskIdBlock), global::Temporalio.Api.TaskQueue.V1.TaskIdBlock.Parser, new[]{ "StartId", "EndId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueuePartitionMetadata), global::Temporalio.Api.TaskQueue.V1.TaskQueuePartitionMetadata.Parser, new[]{ "Key", "OwnerHostName" }, null, null, null, null),
@@ -666,8 +672,8 @@ namespace Temporalio.Api.TaskQueue.V1 {
     public const int AllActiveFieldNumber = 3;
     private bool allActive_;
     /// <summary>
-    /// Include all active versions. A version is considered active if it has had new
-    /// tasks or polls recently.
+    /// Include all active versions. A version is considered active if, in the last few minutes,
+    /// it has had new tasks or polls, or it has been the subject of certain task queue API calls.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -911,6 +917,17 @@ namespace Temporalio.Api.TaskQueue.V1 {
     /// <summary>Field number for the "task_reachability" field.</summary>
     public const int TaskReachabilityFieldNumber = 2;
     private global::Temporalio.Api.Enums.V1.BuildIdTaskReachability taskReachability_ = global::Temporalio.Api.Enums.V1.BuildIdTaskReachability.Unspecified;
+    /// <summary>
+    /// Task Reachability is eventually consistent; there may be a delay until it converges to the most
+    /// accurate value but it is designed in a way to take the more conservative side until it converges.
+    /// For example REACHABLE is more conservative than CLOSED_WORKFLOWS_ONLY.
+    ///
+    /// Note: future activities who inherit their workflow's Build ID but not its Task Queue will not be
+    /// accounted for reachability as server cannot know if they'll happen as they do not use
+    /// assignment rules of their Task Queue. Same goes for Child Workflows or Continue-As-New Workflows
+    /// who inherit the parent/previous workflow's Build ID but not its Task Queue. In those cases, make
+    /// sure to query reachability for the parent/previous workflow's Task Queue as well.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Temporalio.Api.Enums.V1.BuildIdTaskReachability TaskReachability {
@@ -1102,6 +1119,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TaskQueueTypeInfo(TaskQueueTypeInfo other) : this() {
       pollers_ = other.pollers_.Clone();
+      stats_ = other.stats_ != null ? other.stats_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1125,6 +1143,18 @@ namespace Temporalio.Api.TaskQueue.V1 {
       get { return pollers_; }
     }
 
+    /// <summary>Field number for the "stats" field.</summary>
+    public const int StatsFieldNumber = 2;
+    private global::Temporalio.Api.TaskQueue.V1.TaskQueueStats stats_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.TaskQueue.V1.TaskQueueStats Stats {
+      get { return stats_; }
+      set {
+        stats_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1141,6 +1171,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
         return true;
       }
       if(!pollers_.Equals(other.pollers_)) return false;
+      if (!object.Equals(Stats, other.Stats)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1149,6 +1180,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     public override int GetHashCode() {
       int hash = 1;
       hash ^= pollers_.GetHashCode();
+      if (stats_ != null) hash ^= Stats.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1168,6 +1200,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
       output.WriteRawMessage(this);
     #else
       pollers_.WriteTo(output, _repeated_pollers_codec);
+      if (stats_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Stats);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1179,6 +1215,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       pollers_.WriteTo(ref output, _repeated_pollers_codec);
+      if (stats_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Stats);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1190,6 +1230,9 @@ namespace Temporalio.Api.TaskQueue.V1 {
     public int CalculateSize() {
       int size = 0;
       size += pollers_.CalculateSize(_repeated_pollers_codec);
+      if (stats_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Stats);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1203,6 +1246,12 @@ namespace Temporalio.Api.TaskQueue.V1 {
         return;
       }
       pollers_.Add(other.pollers_);
+      if (other.stats_ != null) {
+        if (stats_ == null) {
+          Stats = new global::Temporalio.Api.TaskQueue.V1.TaskQueueStats();
+        }
+        Stats.MergeFrom(other.Stats);
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1222,6 +1271,13 @@ namespace Temporalio.Api.TaskQueue.V1 {
             pollers_.AddEntriesFrom(input, _repeated_pollers_codec);
             break;
           }
+          case 18: {
+            if (stats_ == null) {
+              Stats = new global::Temporalio.Api.TaskQueue.V1.TaskQueueStats();
+            }
+            input.ReadMessage(Stats);
+            break;
+          }
         }
       }
     #endif
@@ -1239,6 +1295,376 @@ namespace Temporalio.Api.TaskQueue.V1 {
             break;
           case 10: {
             pollers_.AddEntriesFrom(ref input, _repeated_pollers_codec);
+            break;
+          }
+          case 18: {
+            if (stats_ == null) {
+              Stats = new global::Temporalio.Api.TaskQueue.V1.TaskQueueStats();
+            }
+            input.ReadMessage(Stats);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// TaskQueueStats contains statistics about task queue backlog and activity.
+  ///
+  /// For workflow task queue type, this result is partial because tasks sent to sticky queues are not included. Read
+  /// comments above each metric to understand the impact of sticky queue exclusion on that metric accuracy.
+  /// </summary>
+  public sealed partial class TaskQueueStats : pb::IMessage<TaskQueueStats>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TaskQueueStats> _parser = new pb::MessageParser<TaskQueueStats>(() => new TaskQueueStats());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TaskQueueStats> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueStats() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueStats(TaskQueueStats other) : this() {
+      approximateBacklogCount_ = other.approximateBacklogCount_;
+      approximateBacklogAge_ = other.approximateBacklogAge_ != null ? other.approximateBacklogAge_.Clone() : null;
+      tasksAddRate_ = other.tasksAddRate_;
+      tasksDispatchRate_ = other.tasksDispatchRate_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TaskQueueStats Clone() {
+      return new TaskQueueStats(this);
+    }
+
+    /// <summary>Field number for the "approximate_backlog_count" field.</summary>
+    public const int ApproximateBacklogCountFieldNumber = 1;
+    private long approximateBacklogCount_;
+    /// <summary>
+    /// The approximate number of tasks backlogged in this task queue. May count expired tasks but eventually
+    /// converges to the right value. Can be relied upon for scaling decisions.
+    ///
+    /// Special note for workflow task queue type: this metric does not count sticky queue tasks. However, because
+    /// those tasks only remain valid for a few seconds, the inaccuracy becomes less significant as the backlog size
+    /// grows.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long ApproximateBacklogCount {
+      get { return approximateBacklogCount_; }
+      set {
+        approximateBacklogCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "approximate_backlog_age" field.</summary>
+    public const int ApproximateBacklogAgeFieldNumber = 2;
+    private global::Google.Protobuf.WellKnownTypes.Duration approximateBacklogAge_;
+    /// <summary>
+    /// Approximate age of the oldest task in the backlog based on the creation time of the task at the head of
+    /// the queue. Can be relied upon for scaling decisions.
+    ///
+    /// Special note for workflow task queue type: this metric does not count sticky queue tasks. However, because
+    /// those tasks only remain valid for a few seconds, they should not affect the result when backlog is older than
+    /// few seconds.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration ApproximateBacklogAge {
+      get { return approximateBacklogAge_; }
+      set {
+        approximateBacklogAge_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "tasks_add_rate" field.</summary>
+    public const int TasksAddRateFieldNumber = 3;
+    private float tasksAddRate_;
+    /// <summary>
+    /// The approximate tasks per second added to the task queue, averaging the last 30 seconds. These includes tasks
+    /// whether or not they were added to/dispatched from the backlog or they were dispatched immediately without going
+    /// to the backlog (sync-matched).
+    ///
+    /// The difference between `tasks_add_rate` and `tasks_dispatch_rate` is a reliable metric for the rate at which
+    /// backlog grows/shrinks.
+    ///
+    /// Note: the actual tasks delivered to the workers may significantly be higher than the numbers reported by
+    /// tasks_add_rate, because:
+    /// - Tasks can be sent to workers without going to the task queue. This is called Eager dispatch. Eager dispatch is
+    ///   enable for activities by default in the latest SDKs.
+    /// - Tasks going to Sticky queue are not accounted for. Note that, typically, only the first workflow task of each
+    ///   workflow goes to a normal queue, and the rest workflow tasks go to the Sticky queue associated with a specific
+    ///   worker instance.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float TasksAddRate {
+      get { return tasksAddRate_; }
+      set {
+        tasksAddRate_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "tasks_dispatch_rate" field.</summary>
+    public const int TasksDispatchRateFieldNumber = 4;
+    private float tasksDispatchRate_;
+    /// <summary>
+    /// The approximate tasks per second dispatched from the task queue, averaging the last 30 seconds. These includes
+    /// tasks whether or not they were added to/dispatched from the backlog or they were dispatched immediately without
+    /// going to the backlog (sync-matched).
+    ///
+    /// The difference between `tasks_add_rate` and `tasks_dispatch_rate` is a reliable metric for the rate at which
+    /// backlog grows/shrinks.
+    ///
+    /// Note: the actual tasks delivered to the workers may significantly be higher than the numbers reported by
+    /// tasks_dispatch_rate, because:
+    /// - Tasks can be sent to workers without going to the task queue. This is called Eager dispatch. Eager dispatch is
+    ///   enable for activities by default in the latest SDKs.
+    /// - Tasks going to Sticky queue are not accounted for. Note that, typically, only the first workflow task of each
+    ///   workflow goes to a normal queue, and the rest workflow tasks go to the Sticky queue associated with a specific
+    ///   worker instance.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float TasksDispatchRate {
+      get { return tasksDispatchRate_; }
+      set {
+        tasksDispatchRate_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TaskQueueStats);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TaskQueueStats other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ApproximateBacklogCount != other.ApproximateBacklogCount) return false;
+      if (!object.Equals(ApproximateBacklogAge, other.ApproximateBacklogAge)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(TasksAddRate, other.TasksAddRate)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(TasksDispatchRate, other.TasksDispatchRate)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ApproximateBacklogCount != 0L) hash ^= ApproximateBacklogCount.GetHashCode();
+      if (approximateBacklogAge_ != null) hash ^= ApproximateBacklogAge.GetHashCode();
+      if (TasksAddRate != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(TasksAddRate);
+      if (TasksDispatchRate != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(TasksDispatchRate);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ApproximateBacklogCount != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(ApproximateBacklogCount);
+      }
+      if (approximateBacklogAge_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ApproximateBacklogAge);
+      }
+      if (TasksAddRate != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(TasksAddRate);
+      }
+      if (TasksDispatchRate != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(TasksDispatchRate);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ApproximateBacklogCount != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(ApproximateBacklogCount);
+      }
+      if (approximateBacklogAge_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ApproximateBacklogAge);
+      }
+      if (TasksAddRate != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(TasksAddRate);
+      }
+      if (TasksDispatchRate != 0F) {
+        output.WriteRawTag(37);
+        output.WriteFloat(TasksDispatchRate);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ApproximateBacklogCount != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ApproximateBacklogCount);
+      }
+      if (approximateBacklogAge_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ApproximateBacklogAge);
+      }
+      if (TasksAddRate != 0F) {
+        size += 1 + 4;
+      }
+      if (TasksDispatchRate != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TaskQueueStats other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ApproximateBacklogCount != 0L) {
+        ApproximateBacklogCount = other.ApproximateBacklogCount;
+      }
+      if (other.approximateBacklogAge_ != null) {
+        if (approximateBacklogAge_ == null) {
+          ApproximateBacklogAge = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        ApproximateBacklogAge.MergeFrom(other.ApproximateBacklogAge);
+      }
+      if (other.TasksAddRate != 0F) {
+        TasksAddRate = other.TasksAddRate;
+      }
+      if (other.TasksDispatchRate != 0F) {
+        TasksDispatchRate = other.TasksDispatchRate;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            ApproximateBacklogCount = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            if (approximateBacklogAge_ == null) {
+              ApproximateBacklogAge = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ApproximateBacklogAge);
+            break;
+          }
+          case 29: {
+            TasksAddRate = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            TasksDispatchRate = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            ApproximateBacklogCount = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            if (approximateBacklogAge_ == null) {
+              ApproximateBacklogAge = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ApproximateBacklogAge);
+            break;
+          }
+          case 29: {
+            TasksAddRate = input.ReadFloat();
+            break;
+          }
+          case 37: {
+            TasksDispatchRate = input.ReadFloat();
             break;
           }
         }
@@ -1265,7 +1691,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1611,7 +2037,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1837,7 +2263,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2063,7 +2489,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2385,7 +2811,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2637,7 +3063,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2821,7 +3247,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[11]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3046,7 +3472,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[12]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3267,7 +3693,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[13]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3446,29 +3872,31 @@ namespace Temporalio.Api.TaskQueue.V1 {
   }
 
   /// <summary>
-  /// These rules assign a Build ID to Unassigned Workflow Executions and
-  /// Activities.
+  /// Assignment rules are applied to *new* Workflow and Activity executions at
+  /// schedule time to assign them to a Build ID.
   ///
-  /// Specifically, assignment rules are applied to the following Executions or
-  /// Activities when they are scheduled in a Task Queue:
-  ///    - Generally, any new Workflow Execution, except:
-  ///      - When A Child Workflow or a Continue-As-New Execution inherits the
-  ///        Build ID from its parent/previous execution by setting the
-  ///        `inherit_build_id` flag.
-  ///      - Workflow Executions started Eagerly are assigned to the Build ID of
-  ///        the Starter.
-  ///    - An Activity that is scheduled on a Task Queue different from the one
-  ///      their Workflow runs on, unless the `use_workflow_build_id` flag is set.
+  /// Assignment rules will not be used in the following cases:
+  ///    - Child Workflows or Continue-As-New Executions who inherit their
+  ///      parent/previous Workflow's assigned Build ID (by setting the
+  ///      `inherit_build_id` flag - default behavior in SDKs when the same Task Queue
+  ///      is used.)
+  ///    - An Activity that inherits the assigned Build ID of its Workflow (by
+  ///      setting the `use_workflow_build_id` flag - default behavior in SDKs
+  ///      when the same Task Queue is used.)
   ///
   /// In absence of (applicable) redirect rules (`CompatibleBuildIdRedirectRule`s)
   /// the task will be dispatched to Workers of the Build ID determined by the
-  /// assignment rules. Otherwise, the final Build ID will be determined by the
-  /// redirect rules.
+  /// assignment rules (or inherited). Otherwise, the final Build ID will be
+  /// determined by the redirect rules.
   ///
-  /// When using Worker Versioning, in the steady state, for a given Task Queue,
-  /// there should typically be exactly one assignment rule to send all Unassigned
-  /// tasks to the latest Build ID. Existence of at least one such "unconditional"
-  /// rule at all times is enforce by the system, unless the `force` flag is used
+  /// Once a Workflow completes its first Workflow Task in a particular Build ID it
+  /// stays in that Build ID regardless of changes to assignment rules. Redirect
+  /// rules can be used to move the workflow to another compatible Build ID.
+  ///
+  /// When using Worker Versioning on a Task Queue, in the steady state,
+  /// there should typically be a single assignment rule to send all new executions
+  /// to the latest Build ID. Existence of at least one such "unconditional"
+  /// rule at all times is enforces by the system, unless the `force` flag is used
   /// by the user when replacing/deleting these rules (for exceptional cases).
   ///
   /// During a deployment, one or more additional rules can be added to assign a
@@ -3479,10 +3907,8 @@ namespace Temporalio.Api.TaskQueue.V1 {
   /// applied and the rest will be ignored.
   ///
   /// In the event that no assignment rule is applicable on a task (or the Task
-  /// Queue is simply not versioned), the tasks will be sent to unversioned
-  /// workers, if available. Otherwise, they remain Unassigned, and will be
-  /// retried for assignment, or dispatch to unversioned workers, at a later time
-  /// depending on the availability of workers.
+  /// Queue is simply not versioned), the tasks will be dispatched to an
+  /// unversioned Worker.
   /// </summary>
   public sealed partial class BuildIdAssignmentRule : pb::IMessage<BuildIdAssignmentRule>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -3498,7 +3924,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[14]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3778,8 +4204,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
   ///  - To be able to Reset an old Execution so it can run on the current
   ///    (compatible) Build ID.
   ///
-  /// Redirect rules can be chained, but only the last rule in the chain can have
-  /// a ramp.
+  /// Redirect rules can be chained.
   /// </summary>
   public sealed partial class CompatibleBuildIdRedirectRule : pb::IMessage<CompatibleBuildIdRedirectRule>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -3795,7 +4220,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[15]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3841,6 +4266,12 @@ namespace Temporalio.Api.TaskQueue.V1 {
     /// <summary>Field number for the "target_build_id" field.</summary>
     public const int TargetBuildIdFieldNumber = 2;
     private string targetBuildId_ = "";
+    /// <summary>
+    /// Target Build ID must be compatible with the Source Build ID; that is it
+    /// must be able to process event histories made by the Source Build ID by
+    /// using [Patching](https://docs.temporal.io/workflows#patching) or other
+    /// means.
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string TargetBuildId {
@@ -4021,7 +4452,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[16]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4265,7 +4696,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[17]; }
+      get { return global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

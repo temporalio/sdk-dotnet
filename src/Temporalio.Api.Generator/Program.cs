@@ -6,6 +6,7 @@ var currFile = new StackTrace(true).GetFrame(0)?.GetFileName();
 var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
 var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/sdk-core-protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
+var apiCloudProtoDir = Path.Join(protoDir, "api_cloud_upstream");
 var testSrvProtoDir = Path.Join(protoDir, "testsrv_upstream");
 var bridgeProtoDir = Path.Join(protoDir, "local");
 
@@ -43,6 +44,10 @@ foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOpti
     {
         Protoc(fi.FullName, Path.Join(projectDir, "src/Temporalio"), "Temporalio", apiProtoDir);
     }
+}
+foreach (var fi in new DirectoryInfo(apiCloudProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
+{
+    Protoc(fi.FullName, Path.Join(projectDir, "src/Temporalio"), "Temporalio", apiCloudProtoDir, apiProtoDir);
 }
 foreach (
     var fi in new DirectoryInfo(testSrvProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
@@ -94,6 +99,13 @@ File.WriteAllText(
         "Temporalio.Client",
         "OperatorService",
         "Temporalio.Api.OperatorService.V1"));
+File.WriteAllText(
+    Path.Join(projectDir, "src/Temporalio/Client/CloudService.Rpc.cs"),
+    GenerateServiceRPCSource(
+        Path.Join(apiCloudProtoDir, "temporal/api/cloud/cloudservice/v1/service.proto"),
+        "Temporalio.Client",
+        "CloudService",
+        "Temporalio.Api.Cloud.CloudService.V1"));
 File.WriteAllText(
     Path.Join(projectDir, "src/Temporalio/Client/TestService.Rpc.cs"),
     GenerateServiceRPCSource(

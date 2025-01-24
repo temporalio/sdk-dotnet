@@ -25,7 +25,7 @@ namespace Temporalio.Bridge
         }
 
         /// <inheritdoc />
-        public override unsafe bool IsInvalid => false;
+        public override unsafe bool IsInvalid => ptr == null;
 
         /// <summary>
         /// Generate a random integer within the given range.

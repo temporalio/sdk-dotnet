@@ -27,10 +27,10 @@ namespace Temporalio.Bridge
         }
 
         /// <inheritdoc />
-        public override unsafe bool IsInvalid => false;
+        public override unsafe bool IsInvalid => ptr == null;
 
         /// <summary>
-        /// Gets the target host:port of the server.
+        /// Gets the target <c>host:port</c> of the server.
         /// </summary>
         public string Target { get; private init; }
 

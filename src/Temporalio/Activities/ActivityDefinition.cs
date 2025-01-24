@@ -19,13 +19,15 @@ namespace Temporalio.Activities
             Type returnType,
             IReadOnlyCollection<Type> parameterTypes,
             int requiredParameterCount,
-            Func<object?[], object?> invoker)
+            Func<object?[], object?> invoker,
+            MethodInfo? methodInfo)
         {
             Name = name;
             ReturnType = returnType;
             ParameterTypes = parameterTypes;
             RequiredParameterCount = requiredParameterCount;
             this.invoker = invoker;
+            MethodInfo = methodInfo;
         }
 
         /// <summary>
@@ -55,6 +57,11 @@ namespace Temporalio.Activities
         /// Gets a value indicating whether the activity is dynamic.
         /// </summary>
         public bool Dynamic => Name == null;
+
+        /// <summary>
+        /// Gets the <see cref="MethodInfo"/>. Will only have a value if one was used to create this <see cref="ActivityDefinition"/>.
+        /// </summary>
+        public MethodInfo? MethodInfo { get; private init; }
 
         /// <summary>
         /// Create an activity definition from a delegate. <see cref="Delegate.DynamicInvoke" /> is
@@ -89,31 +96,7 @@ namespace Temporalio.Activities
             int requiredParameterCount,
             Func<object?[], object?> invoker)
         {
-            // If there is a null name, which means dynamic, there must only be one parameter type
-            // and it must be varargs IRawValue
-            if (name == null && (
-                requiredParameterCount != 1 ||
-                parameterTypes.SingleOrDefault() != typeof(Converters.IRawValue[])))
-            {
-                throw new ArgumentException(
-                    $"Dynamic activity must accept a required array of IRawValue");
-            }
-
-            if (requiredParameterCount > parameterTypes.Count)
-            {
-                throw new ArgumentException(
-                    $"Activity {name} has more required parameters than parameters",
-                    nameof(requiredParameterCount));
-            }
-            foreach (var parameterType in parameterTypes)
-            {
-                if (parameterType.IsByRef)
-                {
-                    throw new ArgumentException(
-                        $"Activity {name} has disallowed ref/out parameter");
-                }
-            }
-            return new(name, returnType, parameterTypes, requiredParameterCount, invoker);
+            return Create(name, returnType, parameterTypes, requiredParameterCount, invoker, methodInfo: null);
         }
 
         /// <summary>
@@ -126,13 +109,18 @@ namespace Temporalio.Activities
         {
             var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
                 throw new ArgumentException($"{method} missing Activity attribute");
+            if (method.ContainsGenericParameters)
+            {
+                throw new ArgumentException($"{method} contains generic parameters");
+            }
             var parms = method.GetParameters();
             return Create(
                 NameFromAttributed(method, attr),
                 method.ReturnType,
                 parms.Select(p => p.ParameterType).ToArray(),
                 parms.Count(p => !p.HasDefaultValue),
-                parameters => invoker.Invoke(ParametersWithDefaults(parms, parameters)));
+                parameters => invoker.Invoke(ParametersWithDefaults(parms, parameters)),
+                method);
         }
 
         /// <summary>
@@ -295,6 +283,41 @@ namespace Temporalio.Activities
                 name = name.Substring(0, name.Length - 5);
             }
             return name;
+        }
+
+        private static ActivityDefinition Create(
+            string? name,
+            Type returnType,
+            IReadOnlyCollection<Type> parameterTypes,
+            int requiredParameterCount,
+            Func<object?[], object?> invoker,
+            MethodInfo? methodInfo)
+        {
+            // If there is a null name, which means dynamic, there must only be one parameter type
+            // and it must be varargs IRawValue
+            if (name == null && (
+                requiredParameterCount != 1 ||
+                parameterTypes.SingleOrDefault() != typeof(Converters.IRawValue[])))
+            {
+                throw new ArgumentException(
+                    $"Dynamic activity must accept a required array of IRawValue");
+            }
+
+            if (requiredParameterCount > parameterTypes.Count)
+            {
+                throw new ArgumentException(
+                    $"Activity {name} has more required parameters than parameters",
+                    nameof(requiredParameterCount));
+            }
+            foreach (var parameterType in parameterTypes)
+            {
+                if (parameterType.IsByRef)
+                {
+                    throw new ArgumentException(
+                        $"Activity {name} has disallowed ref/out parameter");
+                }
+            }
+            return new(name, returnType, parameterTypes, requiredParameterCount, invoker, methodInfo);
         }
     }
 }

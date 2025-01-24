@@ -4,6 +4,7 @@ use crate::ByteArray;
 use crate::ByteArrayRef;
 use crate::ByteArrayRefArray;
 use crate::UserDataHandle;
+use anyhow::{bail, Context};
 use prost::Message;
 use temporal_sdk_core::replay::HistoryForReplay;
 use temporal_sdk_core::replay::ReplayWorkerInput;
@@ -11,12 +12,19 @@ use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollActivityError;
 use temporal_sdk_core_api::errors::PollWfError;
 use temporal_sdk_core_api::errors::WorkflowErrorType;
+use temporal_sdk_core_api::worker::SlotInfoTrait;
+use temporal_sdk_core_api::worker::SlotKind;
+use temporal_sdk_core_api::worker::SlotMarkUsedContext;
+use temporal_sdk_core_api::worker::SlotReleaseContext;
+use temporal_sdk_core_api::worker::SlotReservationContext;
+use temporal_sdk_core_api::worker::SlotSupplierPermit;
 use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
 use temporal_sdk_core_protos::coresdk::ActivityTaskCompletion;
 use temporal_sdk_core_protos::temporal::api::history::v1::History;
 use tokio::sync::mpsc::{channel, Sender};
+use tokio::sync::oneshot;
 use tokio_stream::wrappers::ReceiverStream;
 
 use std::collections::HashMap;
@@ -31,9 +39,7 @@ pub struct WorkerOptions {
     build_id: ByteArrayRef,
     identity_override: ByteArrayRef,
     max_cached_workflows: u32,
-    max_outstanding_workflow_tasks: u32,
-    max_outstanding_activities: u32,
-    max_outstanding_local_activities: u32,
+    tuner: TunerHolder,
     no_remote_activities: bool,
     sticky_queue_schedule_to_start_timeout_millis: u64,
     max_heartbeat_throttle_interval_millis: u64,
@@ -47,6 +53,257 @@ pub struct WorkerOptions {
     max_concurrent_activity_task_polls: u32,
     nondeterminism_as_workflow_fail: bool,
     nondeterminism_as_workflow_fail_for_types: ByteArrayRefArray,
+}
+
+#[repr(C)]
+pub struct TunerHolder {
+    workflow_slot_supplier: SlotSupplier,
+    activity_slot_supplier: SlotSupplier,
+    local_activity_slot_supplier: SlotSupplier,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub enum SlotSupplier {
+    FixedSize(FixedSizeSlotSupplier),
+    ResourceBased(ResourceBasedSlotSupplier),
+    Custom(CustomSlotSupplierCallbacksImpl),
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct FixedSizeSlotSupplier {
+    num_slots: usize,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct ResourceBasedSlotSupplier {
+    minimum_slots: usize,
+    maximum_slots: usize,
+    ramp_throttle_ms: u64,
+    tuner_options: ResourceBasedTunerOptions,
+}
+
+#[repr(C)]
+pub struct CustomSlotSupplier<SK> {
+    inner: CustomSlotSupplierCallbacksImpl,
+    _pd: std::marker::PhantomData<SK>,
+}
+
+unsafe impl<SK> Send for CustomSlotSupplier<SK> {}
+unsafe impl<SK> Sync for CustomSlotSupplier<SK> {}
+
+type CustomReserveSlotCallback =
+    unsafe extern "C" fn(ctx: *const SlotReserveCtx, sender: *mut libc::c_void);
+type CustomCancelReserveCallback = unsafe extern "C" fn(token_source: *mut libc::c_void);
+/// Must return C#-tracked id for the permit. A zero value means no permit was reserved.
+type CustomTryReserveSlotCallback = unsafe extern "C" fn(ctx: *const SlotReserveCtx) -> usize;
+type CustomMarkSlotUsedCallback = unsafe extern "C" fn(ctx: *const SlotMarkUsedCtx);
+type CustomReleaseSlotCallback = unsafe extern "C" fn(ctx: *const SlotReleaseCtx);
+type CustomSlotImplFreeCallback =
+    unsafe extern "C" fn(userimpl: *const CustomSlotSupplierCallbacks);
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct CustomSlotSupplierCallbacksImpl(*const CustomSlotSupplierCallbacks);
+
+#[repr(C)]
+pub struct CustomSlotSupplierCallbacks {
+    reserve: CustomReserveSlotCallback,
+    cancel_reserve: CustomCancelReserveCallback,
+    try_reserve: CustomTryReserveSlotCallback,
+    mark_used: CustomMarkSlotUsedCallback,
+    release: CustomReleaseSlotCallback,
+    free: CustomSlotImplFreeCallback,
+}
+
+impl CustomSlotSupplierCallbacksImpl {
+    fn into_ss<SK: SlotKind + Send + Sync + 'static>(
+        self,
+    ) -> Arc<dyn temporal_sdk_core_api::worker::SlotSupplier<SlotKind = SK> + Send + Sync + 'static>
+    {
+        Arc::new(CustomSlotSupplier {
+            inner: self,
+            _pd: Default::default(),
+        })
+    }
+}
+impl Drop for CustomSlotSupplierCallbacks {
+    fn drop(&mut self) {
+        unsafe {
+            (self.free)(&*self);
+        }
+    }
+}
+
+#[repr(C)]
+pub enum SlotKindType {
+    WorkflowSlotKindType,
+    ActivitySlotKindType,
+    LocalActivitySlotKindType,
+}
+
+#[repr(C)]
+pub struct SlotReserveCtx {
+    slot_type: SlotKindType,
+    task_queue: ByteArrayRef,
+    worker_identity: ByteArrayRef,
+    worker_build_id: ByteArrayRef,
+    is_sticky: bool,
+    // The C# side will store a pointer here to the cancellation token source
+    token_src: *mut libc::c_void,
+}
+unsafe impl Send for SlotReserveCtx {}
+
+#[repr(C)]
+pub enum SlotInfo {
+    WorkflowSlotInfo {
+        workflow_type: ByteArrayRef,
+        is_sticky: bool,
+    },
+    ActivitySlotInfo {
+        activity_type: ByteArrayRef,
+    },
+    LocalActivitySlotInfo {
+        activity_type: ByteArrayRef,
+    },
+}
+
+#[repr(C)]
+pub struct SlotMarkUsedCtx {
+    slot_info: SlotInfo,
+    /// C# id for the slot permit.
+    slot_permit: usize,
+}
+
+#[repr(C)]
+pub struct SlotReleaseCtx {
+    slot_info: *const SlotInfo,
+    /// C# id for the slot permit.
+    slot_permit: usize,
+}
+
+struct CancelReserveGuard {
+    token_src: *mut libc::c_void,
+    callback: CustomCancelReserveCallback,
+}
+impl Drop for CancelReserveGuard {
+    fn drop(&mut self) {
+        if !self.token_src.is_null() {
+            unsafe {
+                (self.callback)(self.token_src);
+            }
+        }
+    }
+}
+unsafe impl Send for CancelReserveGuard {}
+
+#[async_trait::async_trait]
+impl<SK: SlotKind + Send + Sync> temporal_sdk_core_api::worker::SlotSupplier
+    for CustomSlotSupplier<SK>
+{
+    type SlotKind = SK;
+
+    async fn reserve_slot(&self, ctx: &dyn SlotReservationContext) -> SlotSupplierPermit {
+        let (tx, rx) = oneshot::channel();
+        let ctx = Self::convert_reserve_ctx(ctx);
+        let tx = Box::into_raw(Box::new(tx)) as *mut libc::c_void;
+        unsafe {
+            let _drop_guard = CancelReserveGuard {
+                token_src: ctx.token_src,
+                callback: (*self.inner.0).cancel_reserve,
+            };
+            ((*self.inner.0).reserve)(&ctx, tx);
+            rx.await.expect("reserve channel is not closed")
+        }
+    }
+
+    fn try_reserve_slot(&self, ctx: &dyn SlotReservationContext) -> Option<SlotSupplierPermit> {
+        let ctx = Self::convert_reserve_ctx(ctx);
+        let permit_id = unsafe { ((*self.inner.0).try_reserve)(&ctx) };
+        if permit_id == 0 {
+            None
+        } else {
+            Some(SlotSupplierPermit::with_user_data(permit_id))
+        }
+    }
+
+    fn mark_slot_used(&self, ctx: &dyn SlotMarkUsedContext<SlotKind = Self::SlotKind>) {
+        let ctx = SlotMarkUsedCtx {
+            slot_info: Self::convert_slot_info(ctx.info().downcast()),
+            slot_permit: ctx.permit().user_data::<usize>().map(|u| *u).unwrap_or(0),
+        };
+        unsafe {
+            ((*self.inner.0).mark_used)(&ctx);
+        }
+    }
+
+    fn release_slot(&self, ctx: &dyn SlotReleaseContext<SlotKind = Self::SlotKind>) {
+        let mut info_ptr = std::ptr::null();
+        let converted_slot_info = ctx.info().map(|i| Self::convert_slot_info(i.downcast()));
+        if let Some(ref converted) = converted_slot_info {
+            info_ptr = converted;
+        }
+        let ctx = SlotReleaseCtx {
+            slot_info: info_ptr,
+            slot_permit: ctx.permit().user_data::<usize>().map(|u| *u).unwrap_or(0),
+        };
+        unsafe {
+            ((*self.inner.0).release)(&ctx);
+        }
+    }
+
+    fn available_slots(&self) -> Option<usize> {
+        None
+    }
+}
+
+impl<SK: SlotKind + Send + Sync> CustomSlotSupplier<SK> {
+    fn convert_reserve_ctx(ctx: &dyn SlotReservationContext) -> SlotReserveCtx {
+        SlotReserveCtx {
+            slot_type: match SK::kind() {
+                temporal_sdk_core_api::worker::SlotKindType::Workflow => {
+                    SlotKindType::WorkflowSlotKindType
+                }
+                temporal_sdk_core_api::worker::SlotKindType::Activity => {
+                    SlotKindType::ActivitySlotKindType
+                }
+                temporal_sdk_core_api::worker::SlotKindType::LocalActivity => {
+                    SlotKindType::LocalActivitySlotKindType
+                }
+            },
+            task_queue: ctx.task_queue().into(),
+            worker_identity: ctx.worker_identity().into(),
+            worker_build_id: ctx.worker_build_id().into(),
+            is_sticky: ctx.is_sticky(),
+            token_src: std::ptr::null_mut(),
+        }
+    }
+
+    fn convert_slot_info(info: temporal_sdk_core_api::worker::SlotInfo) -> SlotInfo {
+        match info {
+            temporal_sdk_core_api::worker::SlotInfo::Workflow(w) => SlotInfo::WorkflowSlotInfo {
+                workflow_type: w.workflow_type.as_str().into(),
+                is_sticky: w.is_sticky,
+            },
+            temporal_sdk_core_api::worker::SlotInfo::Activity(a) => SlotInfo::ActivitySlotInfo {
+                activity_type: a.activity_type.as_str().into(),
+            },
+            temporal_sdk_core_api::worker::SlotInfo::LocalActivity(a) => {
+                SlotInfo::LocalActivitySlotInfo {
+                    activity_type: a.activity_type.as_str().into(),
+                }
+            }
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct ResourceBasedTunerOptions {
+    target_memory_usage: f64,
+    target_cpu_usage: f64,
 }
 
 #[derive(Clone)]
@@ -129,6 +386,9 @@ pub extern "C" fn worker_new(client: *mut Client, options: *const WorkerOptions)
 
 #[no_mangle]
 pub extern "C" fn worker_free(worker: *mut Worker) {
+    if worker.is_null() {
+        return;
+    }
     unsafe {
         let _ = Box::from_raw(worker);
     }
@@ -499,10 +759,34 @@ pub extern "C" fn worker_replay_push(
     }
 }
 
+#[no_mangle]
+pub extern "C" fn complete_async_reserve(sender: *mut libc::c_void, permit_id: usize) {
+    if !sender.is_null() {
+        unsafe {
+            let sender = Box::from_raw(sender as *mut oneshot::Sender<SlotSupplierPermit>);
+            let permit = SlotSupplierPermit::with_user_data(permit_id);
+            let _ = sender.send(permit);
+        }
+    } else {
+        panic!("ReserveSlot sender must not be null!");
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn set_reserve_cancel_target(
+    ctx: *mut SlotReserveCtx,
+    token_ptr: *mut libc::c_void,
+) {
+    if let Some(ctx) = ctx.as_mut() {
+        ctx.token_src = token_ptr;
+    }
+}
+
 impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
     type Error = anyhow::Error;
 
     fn try_from(opt: &WorkerOptions) -> anyhow::Result<Self> {
+        let converted_tuner: temporal_sdk_core::TunerHolder = (&opt.tuner).try_into()?;
         WorkerConfigBuilder::default()
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())
@@ -510,9 +794,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             .use_worker_versioning(opt.use_worker_versioning)
             .client_identity_override(opt.identity_override.to_option_string())
             .max_cached_workflows(opt.max_cached_workflows as usize)
-            .max_outstanding_workflow_tasks(opt.max_outstanding_workflow_tasks as usize)
-            .max_outstanding_activities(opt.max_outstanding_activities as usize)
-            .max_outstanding_local_activities(opt.max_outstanding_local_activities as usize)
+            .tuner(Arc::new(converted_tuner))
             .no_remote_activities(opt.no_remote_activities)
             .sticky_queue_schedule_to_start_timeout(Duration::from_millis(
                 opt.sticky_queue_schedule_to_start_timeout_millis,
@@ -561,5 +843,94 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             )
             .build()
             .map_err(|err| anyhow::anyhow!(err))
+    }
+}
+
+impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
+    type Error = anyhow::Error;
+
+    fn try_from(holder: &TunerHolder) -> anyhow::Result<Self> {
+        // Verify all resource-based options are the same if any are set
+        let maybe_wf_resource_opts =
+            if let SlotSupplier::ResourceBased(ref ss) = holder.workflow_slot_supplier {
+                Some(&ss.tuner_options)
+            } else {
+                None
+            };
+        let maybe_act_resource_opts =
+            if let SlotSupplier::ResourceBased(ref ss) = holder.activity_slot_supplier {
+                Some(&ss.tuner_options)
+            } else {
+                None
+            };
+        let maybe_local_act_resource_opts =
+            if let SlotSupplier::ResourceBased(ref ss) = holder.local_activity_slot_supplier {
+                Some(&ss.tuner_options)
+            } else {
+                None
+            };
+        let all_resource_opts = [
+            maybe_wf_resource_opts,
+            maybe_act_resource_opts,
+            maybe_local_act_resource_opts,
+        ];
+        let mut set_resource_opts = all_resource_opts.iter().flatten();
+        let first = set_resource_opts.next();
+        let all_are_same = if let Some(first) = first {
+            set_resource_opts.all(|elem| elem == first)
+        } else {
+            true
+        };
+        if !all_are_same {
+            bail!("All resource-based slot suppliers must have the same ResourceBasedTunerOptions",);
+        }
+
+        let mut options = temporal_sdk_core::TunerHolderOptionsBuilder::default();
+        if let Some(first) = first {
+            options.resource_based_options(
+                temporal_sdk_core::ResourceBasedSlotsOptionsBuilder::default()
+                    .target_mem_usage(first.target_memory_usage)
+                    .target_cpu_usage(first.target_cpu_usage)
+                    .build()
+                    .expect("Building ResourceBasedSlotsOptions is infallible"),
+            );
+        };
+        options
+            .workflow_slot_options(holder.workflow_slot_supplier.try_into()?)
+            .activity_slot_options(holder.activity_slot_supplier.try_into()?)
+            .local_activity_slot_options(holder.local_activity_slot_supplier.try_into()?);
+        Ok(options
+            .build()
+            .context("Invalid tuner holder options")?
+            .build_tuner_holder()
+            .context("Failed building tuner holder")?)
+    }
+}
+
+impl<SK: SlotKind + Send + Sync + 'static> TryFrom<SlotSupplier>
+    for temporal_sdk_core::SlotSupplierOptions<SK>
+{
+    type Error = anyhow::Error;
+
+    fn try_from(
+        supplier: SlotSupplier,
+    ) -> anyhow::Result<temporal_sdk_core::SlotSupplierOptions<SK>> {
+        Ok(match supplier {
+            SlotSupplier::FixedSize(fs) => temporal_sdk_core::SlotSupplierOptions::FixedSize {
+                slots: fs.num_slots,
+            },
+            SlotSupplier::ResourceBased(ss) => {
+                temporal_sdk_core::SlotSupplierOptions::ResourceBased(
+                    temporal_sdk_core::ResourceSlotOptions::new(
+                        ss.minimum_slots,
+                        ss.maximum_slots,
+                        Duration::from_millis(ss.ramp_throttle_ms),
+                    ),
+                )
+            }
+            SlotSupplier::Custom(cs) => {
+                temporal_sdk_core::SlotSupplierOptions::Custom(cs.into_ss())
+            }
+        })
     }
 }

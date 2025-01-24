@@ -4,17 +4,21 @@
 namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
+using System.Linq.Expressions;
 using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
+using Temporalio.Api.Failure.V1;
+using Temporalio.Api.History.V1;
 using Temporalio.Client;
 using Temporalio.Client.Schedules;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Runtime;
+using Temporalio.Tests.Converters;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -241,6 +245,15 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 case Scenario.WorkflowWhenAnyWithResultThreeParam:
                     return await await Workflow.WhenAnyAsync(
                         Task.FromResult("done"), Task.FromResult("done"), Task.FromResult("done"));
+                case Scenario.WorkflowWhenAll:
+                    return string.Join(string.Empty, await Workflow.WhenAllAsync(
+                        Task.FromResult("do"), Task.FromResult("ne")));
+                case Scenario.WorkflowRunTask:
+                    return await Workflow.RunTaskAsync(async () => "done");
+                case Scenario.WorkflowRunTaskAfterTaskStart:
+                    var runTaskStart = new Task<string>(() => "done");
+                    runTaskStart.Start();
+                    return await Workflow.RunTaskAsync(() => runTaskStart);
             }
             throw new InvalidOperationException("Unexpected completion");
         }
@@ -265,6 +278,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // https://github.com/dotnet/runtime/issues/87481
             TaskWhenAnyWithResultTwoParam,
             WorkflowWhenAnyWithResultThreeParam,
+            WorkflowWhenAll,
+            WorkflowRunTask,
+            WorkflowRunTaskAfterTaskStart,
         }
     }
 
@@ -324,6 +340,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskContinueWith);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultTwoParam);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAnyWithResultThreeParam);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAll);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTask);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTaskAfterTaskStart);
     }
 
     [Workflow]
@@ -1208,7 +1227,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // Now query after close to check that is replaying worked
                 var isReplayingValues = await Env.Client.GetWorkflowHandle<MiscHelpersWorkflow>(
                     workflowId).QueryAsync(wf => wf.GetEventsForIsReplaying());
-                Assert.Equal(new[] { false, true }, isReplayingValues);
+                Assert.Equal(new[] { false, true, true }, isReplayingValues);
             },
             new(taskQueue: taskQueue));
     }
@@ -2978,9 +2997,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await handle.SignalAsync(wf => wf.SomeSignalAsync("signal arg"));
                 Assert.Equal("done", await handle.QueryAsync(wf => wf.SomeQuery("query arg")));
                 Assert.Equal("done", await handle.ExecuteUpdateAsync(wf => wf.SomeUpdateAsync("update arg")));
-                await handle.SignalAsync(wf => wf.FinishAsync());
-                Assert.Equal("done", await handle.GetResultAsync());
-                Assert.Equal(
+                // Event list must be collected before the WF finishes, since when it finishes it
+                // will be evicted from the cache and the first SomeQuery event will not exist upon
+                // replay.
+                await AssertMore.EqualEventuallyAsync(
                     new List<string>
                     {
                         "activity-NonDynamicActivity: activity arg",
@@ -2989,7 +3009,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         "update-SomeUpdate: update arg",
                         "workflow-NonDynamicWorkflow: workflow arg",
                     },
-                    (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+                    async () => (await handle.QueryAsync(wf => wf.Events)).OrderBy(v => v).ToList());
+                await handle.SignalAsync(wf => wf.FinishAsync());
+                Assert.Equal("done", await handle.GetResultAsync());
             },
             new TemporalWorkerOptions().AddActivity(DynamicWorkflow.DynamicActivity));
     }
@@ -3675,10 +3697,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (UpdateWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
 
-            // Make all possible overload calls via start then get response
-            await (await ((WorkflowHandle)handle).StartUpdateAsync(
+            // Make all possible overload calls via start then get response. For
+            // the first update we'll also confirm the run ID is set.
+            var updateHandle = await ((WorkflowHandle)handle).StartUpdateAsync(
                 (UpdateWorkflow wf) => wf.DoUpdateNoParamNoResponseAsync(),
-                new(WorkflowUpdateStage.Accepted))).GetResultAsync();
+                new(WorkflowUpdateStage.Accepted));
+            Assert.NotNull(updateHandle.WorkflowRunId);
+            await updateHandle.GetResultAsync();
             Assert.Equal(
                 $"no-param-response: {handle.Id}",
                 await (await ((WorkflowHandle)handle).StartUpdateAsync(
@@ -4056,7 +4081,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             try
             {
-                var resp = await Client.Connection.WorkflowService.PollWorkflowExecutionUpdateAsync(new()
+                var resp = await Client.WorkflowService.PollWorkflowExecutionUpdateAsync(new()
                 {
                     Identity = Client.Connection.Options.Identity,
                     Namespace = Client.Options.Namespace,
@@ -4133,7 +4158,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             },
             new(tq) { BuildId = "1.0" });
 
-        await Env.Client.Connection.WorkflowService.ResetStickyTaskQueueAsync(new()
+        await Env.Client.WorkflowService.ResetStickyTaskQueueAsync(new()
         {
             Namespace = Env.Client.Options.Namespace,
             Execution = new() { WorkflowId = handle.Id },
@@ -4697,14 +4722,22 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class CoroutinesAfterCompleteWorkflow
     {
+        [Activity]
+        public static string SomeActivity(string param) => param;
+
         private string? completeWorkflowWith;
         private string? completeUpdateWith;
+        private bool workflowCompleted;
 
         [WorkflowRun]
         public async Task<string> RunAsync()
         {
             await Workflow.WaitConditionAsync(() => completeWorkflowWith != null);
+            await Workflow.ExecuteLocalActivityAsync(
+                () => SomeActivity("activity-from-workflow"),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
             completeUpdateWith = "complete-update";
+            workflowCompleted = true;
             return completeWorkflowWith!;
         }
 
@@ -4715,37 +4748,23 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             await Workflow.WaitConditionAsync(() => completeUpdateWith != null);
             return completeUpdateWith!;
         }
+
+        [WorkflowSignal]
+        public async Task DoErroringSignalAsync(bool waitWorkflowComplete)
+        {
+            completeWorkflowWith = "complete-workflow";
+            if (waitWorkflowComplete)
+            {
+                await Workflow.WaitConditionAsync(() => workflowCompleted);
+            }
+            throw new ApplicationFailureException("Intentional error from signal");
+        }
     }
 
     [Fact]
-    public async Task ExecuteWorkflowAsync_CoroutinesAfterComplete_GetProcessed()
+    public async Task ExecuteWorkflowAsync_UpdateAfterComplete_ProcessesProperly()
     {
-        // Run one workflow without the flag set and one with and get histories
-        WorkflowHistory? historyWithoutFlag = null;
-        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
-            async worker =>
-            {
-                // Start
-                var handle = await Client.StartWorkflowAsync(
-                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
-                // Start update, wait on workflow result (update result would hang)
-                await handle.StartUpdateAsync(
-                    wf => wf.DoUpdateAsync(), new(WorkflowUpdateStage.Accepted));
-                Assert.Equal("complete-workflow", await handle.GetResultAsync());
-                historyWithoutFlag = await handle.FetchHistoryAsync();
-            },
-            new() { DisableWorkflowCompletionCommandReordering = true });
-
-        // Confirm without flag that the workflow ends with task complete (sans flag), update
-        // accepted, and workflow complete, but notably missing update complete
-        var lastEvents = historyWithoutFlag!.Events.TakeLast(3).ToArray();
-        Assert.NotNull(lastEvents[0].WorkflowTaskCompletedEventAttributes);
-        Assert.Equal(0, lastEvents[0].WorkflowTaskCompletedEventAttributes.SdkMetadata?.LangUsedFlags.Count ?? 0);
-        Assert.NotNull(lastEvents[1].WorkflowExecutionUpdateAcceptedEventAttributes);
-        Assert.NotNull(lastEvents[2].WorkflowExecutionCompletedEventAttributes);
-
-        WorkflowHistory? historyWithFlag = null;
+        // Confirm that an update that returns after the workflow returns properly has its result
         await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
             async worker =>
             {
@@ -4758,35 +4777,1615 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     wf => wf.DoUpdateAsync(), new(WorkflowUpdateStage.Accepted));
                 Assert.Equal("complete-workflow", await handle.GetResultAsync());
                 Assert.Equal("complete-update", await updateHandle.GetResultAsync());
-                historyWithFlag = await handle.FetchHistoryAsync();
+            },
+            new TemporalWorkerOptions().AddActivity(CoroutinesAfterCompleteWorkflow.SomeActivity));
+
+        // There have been three stages in .NET SDK lifetime for post-completion commands:
+        //   1. pre-dotnet-flag - All code before any command reordering occurred
+        //   2. post-dotnet-flag - When .NET applied its own lang flag and did command reordering
+        //   3. post-core-flag - Current (as of this writing) core behavior to set flag and reorder
+        // The JSON files referenced below are histories of the same run as the workflow run above
+        // at each of the three stages. We replay to confirm new code works with old history.
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<CoroutinesAfterCompleteWorkflow>());
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/update-after-complete.pre-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/update-after-complete.post-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/update-after-complete.post-core-flag.json")));
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_MultiComplete_ProcessesProperly()
+    {
+        // Confirm that multi-complete with success first properly succeeds
+        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Issue signal, wait on workflow
+                await handle.SignalAsync(wf => wf.DoErroringSignalAsync(true));
+                Assert.Equal("complete-workflow", await handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions().AddActivity(CoroutinesAfterCompleteWorkflow.SomeActivity));
+
+        // Confirm that multi-complete with failure first properly fails
+        await ExecuteWorkerAsync<CoroutinesAfterCompleteWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (CoroutinesAfterCompleteWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Issue signal, wait on workflow
+                await handle.SignalAsync(wf => wf.DoErroringSignalAsync(false));
+                await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
+            },
+            new TemporalWorkerOptions().AddActivity(CoroutinesAfterCompleteWorkflow.SomeActivity));
+
+        // There have been three stages in .NET SDK lifetime for post-completion commands:
+        //   1. pre-dotnet-flag - All code before any command reordering occurred
+        //   2. post-dotnet-flag - When .NET applied its own lang flag and did command reordering
+        //   3. post-core-flag - Current (as of this writing) core behavior to set flag and reorder
+        // The JSON files referenced below are histories of the same runs as the workflow runs above
+        // at each of the three stages. We replay to confirm new code works with old history.
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<CoroutinesAfterCompleteWorkflow>());
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-after.pre-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-after.post-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-after.post-core-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-before.pre-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-before.post-dotnet-flag.json")));
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-complete-fail-before.post-core-flag.json")));
+    }
+
+    public class CallbackActivities
+    {
+        private readonly Func<string, Task<string>> func;
+
+        public CallbackActivities(Func<string, Task<string>> func) => this.func = func;
+
+        [Activity]
+        public Task<string> DoActivityAsync(string param) => func(param);
+    }
+
+    [Workflow]
+    public class StdlibSemaphoreWorkflow : IDisposable
+    {
+        private readonly SemaphoreSlim semaSlim = new(1, 1);
+        private readonly System.Threading.Semaphore semaHeavy = new(1, 1);
+
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => CompletedUpdates.Count == 3);
+
+        [WorkflowQuery]
+        public List<string> CompletedUpdates { get; } = new();
+
+        [WorkflowUpdate]
+        public async Task UpdateWithAsyncSlim()
+        {
+            await semaSlim.WaitAsync();
+            try
+            {
+                CompletedUpdates.Add(await Workflow.ExecuteActivityAsync(
+                    (CallbackActivities act) => act.DoActivityAsync(Workflow.CurrentUpdateInfo!.Id),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(10) }));
+            }
+            finally
+            {
+                semaSlim.Release();
+            }
+        }
+
+        [WorkflowUpdate]
+        public async Task UpdateWithSyncSlim()
+        {
+#pragma warning disable CA1849, VSTHRD103 // Intentionally block thread
+            semaSlim.Wait();
+#pragma warning restore CA1849, VSTHRD103
+            try
+            {
+                CompletedUpdates.Add(await Workflow.ExecuteActivityAsync(
+                    (CallbackActivities act) => act.DoActivityAsync(Workflow.CurrentUpdateInfo!.Id),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(10) }));
+            }
+            finally
+            {
+                semaSlim.Release();
+            }
+        }
+
+        [WorkflowUpdate]
+        public async Task UpdateWithUsing()
+        {
+            using var ignore = new Locker(semaSlim);
+            CompletedUpdates.Add(await Workflow.ExecuteActivityAsync(
+                (CallbackActivities act) => act.DoActivityAsync(Workflow.CurrentUpdateInfo!.Id),
+                new() { StartToCloseTimeout = TimeSpan.FromMinutes(10) }));
+        }
+
+        [WorkflowUpdate]
+        public async Task UpdateWithHeavy()
+        {
+            semaHeavy.WaitOne();
+            try
+            {
+                CompletedUpdates.Add(await Workflow.ExecuteActivityAsync(
+                    (CallbackActivities act) => act.DoActivityAsync(Workflow.CurrentUpdateInfo!.Id),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(10) }));
+            }
+            finally
+            {
+                semaHeavy.Release();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            semaSlim.Dispose();
+            semaHeavy.Dispose();
+        }
+
+        private class Locker : IDisposable
+        {
+            private readonly SemaphoreSlim sema;
+
+            public Locker(SemaphoreSlim sema)
+            {
+                this.sema = sema;
+                sema.Wait();
+            }
+
+            public void Dispose() => sema.Release();
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_StdlibSemaphore_AsyncSlimWorks()
+    {
+        var complete0 = new TaskCompletionSource<string>();
+        var complete1 = new TaskCompletionSource<string>();
+        var complete2 = new TaskCompletionSource<string>();
+        var acts = new CallbackActivities(async param =>
+        {
+            switch (param)
+            {
+                case "update-0":
+                    return await complete0.Task;
+                case "update-1":
+                    return await complete1.Task;
+                case "update-2":
+                    return await complete2.Task;
+                default:
+                    throw new ArgumentException("Bad param");
+            }
+        });
+        await ExecuteWorkerAsync<StdlibSemaphoreWorkflow>(
+            async worker =>
+            {
+                // Start
+                var handle = await Client.StartWorkflowAsync(
+                    (StdlibSemaphoreWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Start 3 updates
+                await handle.StartUpdateAsync(
+                    wf => wf.UpdateWithAsyncSlim(),
+                    new(id: "update-0", waitForStage: WorkflowUpdateStage.Accepted));
+                await handle.StartUpdateAsync(
+                    wf => wf.UpdateWithAsyncSlim(),
+                    new(id: "update-1", waitForStage: WorkflowUpdateStage.Accepted));
+                await handle.StartUpdateAsync(
+                    wf => wf.UpdateWithAsyncSlim(),
+                    new(id: "update-2", waitForStage: WorkflowUpdateStage.Accepted));
+                // Complete the tasks out of order but confirm the results are in order
+                complete2.SetResult("done-2");
+                complete1.SetResult("done-1");
+                // Sleep a tad
+                await Task.Delay(100);
+                complete0.SetResult("done-0");
+                await handle.GetResultAsync();
+                Assert.Equal(
+                    new List<string> { "done-0", "done-1", "done-2" },
+                    await handle.QueryAsync(wf => wf.CompletedUpdates));
+            },
+            new TemporalWorkerOptions().AddAllActivities(acts));
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_StdlibSemaphore_NonAsyncDeadlocks()
+    {
+        async Task AssertDeadlocks(Expression<Func<StdlibSemaphoreWorkflow, Task>> updateExpr)
+        {
+            // Since this is just going to deadlock forever, we need to run the worker in the
+            // background
+            var handleCompletion = new TaskCompletionSource<WorkflowHandle>();
+            _ = Task.Run(() => ExecuteWorkerAsync<StdlibSemaphoreWorkflow>(
+                async worker =>
+                {
+                    // Start
+                    var handle = await Client.StartWorkflowAsync(
+                        (StdlibSemaphoreWorkflow wf) => wf.RunAsync(),
+                        new($"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                    await AssertMore.HasEventEventuallyAsync(
+                        handle, evt => evt.WorkflowTaskCompletedEventAttributes != null);
+
+                    // Run two updates in background
+                    _ = Task.Run(() =>
+                        handle.StartUpdateAsync(
+                            updateExpr,
+                            new(id: "update-0", waitForStage: WorkflowUpdateStage.Accepted)));
+                    _ = Task.Run(() =>
+                        handle.StartUpdateAsync(
+                            updateExpr,
+                            new(id: "update-1", waitForStage: WorkflowUpdateStage.Accepted)));
+
+                    // Send handle back to check
+                    handleCompletion.SetResult(handle);
+                    // This will never complete
+                    await handle.GetResultAsync();
+                },
+                new TemporalWorkerOptions().AddAllActivities(new CallbackActivities(async ignore =>
+                {
+                    await Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.CancellationToken);
+                    return "never-reached";
+                }))));
+
+            // Wait for deadlock, ignore the hanging worker
+            await AssertTaskFailureContainsEventuallyAsync(
+                await handleCompletion.Task, "deadlocked");
+        }
+
+        // Run the three deadlocking scenarios concurrently since they are slow
+        await Task.WhenAll(
+            AssertDeadlocks(wf => wf.UpdateWithSyncSlim()),
+            AssertDeadlocks(wf => wf.UpdateWithUsing()),
+            AssertDeadlocks(wf => wf.UpdateWithHeavy()));
+    }
+
+    [Workflow]
+    public sealed class SemaphoreWorkflow : IDisposable
+    {
+        private readonly Semaphore? semaphore;
+        private readonly Mutex? mutex;
+        private readonly Dictionary<int, CancellationTokenSource> cancellations = new();
+
+        [WorkflowInit]
+        public SemaphoreWorkflow(int? semaphoreCount)
+        {
+            semaphore = semaphoreCount is { } initialCount ? new(initialCount) : null;
+            mutex = semaphoreCount == null ? new() : null;
+        }
+
+        public void Dispose()
+        {
+            foreach (var source in cancellations.Values)
+            {
+                source.Dispose();
+            }
+        }
+
+        [WorkflowRun]
+        public Task RunAsync(int? semaphoreCount) => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowQuery]
+        public List<int> Waiting { get; } = new();
+
+        [WorkflowQuery]
+        public List<int> Completed { get; } = new();
+
+        [WorkflowUpdate]
+        public async Task UpdateAsync(Update update)
+        {
+            // Create cancellation token if needed
+            CancellationToken? cancellationToken = null;
+            if (update.CanCancelManually)
+            {
+                cancellationToken = (cancellations[update.Number] = new()).Token;
+            }
+
+            // Do the wait
+            bool acquired;
+            try
+            {
+                if (update.TimeoutMs is { } timeoutMs)
+                {
+                    if (update.TimeoutTimeSpan != null)
+                    {
+                        throw new ApplicationFailureException("Cannot have MS and timespan");
+                    }
+                    acquired = await WaitAsync(timeoutMs, cancellationToken);
+                }
+                else if (update.TimeoutTimeSpan is { } timeoutTimeSpan)
+                {
+                    acquired = await WaitAsync(timeoutTimeSpan, cancellationToken);
+                }
+                else
+                {
+                    await WaitAsync(cancellationToken);
+                    acquired = true;
+                }
+            }
+            catch (TaskCanceledException e)
+            {
+                throw new ApplicationFailureException("Acquire canceled", e);
+            }
+            if (!acquired)
+            {
+                throw new ApplicationFailureException("Failed to acquire");
+            }
+
+            // Invoke activity, update completion, and return
+            Waiting.Add(update.Number);
+            try
+            {
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.DoActivityAsync(update.Number),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(30) });
+                Completed.Add(update.Number);
+            }
+            finally
+            {
+                Release();
+                Waiting.Remove(update.Number);
+            }
+        }
+
+        [WorkflowSignal]
+        public async Task CancelUpdateAsync(int number) => cancellations[number].Cancel();
+
+#pragma warning disable VSTHRD110 // Returning tasks is ok
+        private Task WaitAsync(CancellationToken? cancellationToken = null) =>
+            semaphore?.WaitAsync(cancellationToken) ?? mutex!.WaitOneAsync(cancellationToken);
+
+        private Task<bool> WaitAsync(
+            int millisecondsTimeout,
+            CancellationToken? cancellationToken = null) =>
+            semaphore?.WaitAsync(millisecondsTimeout, cancellationToken) ??
+                mutex!.WaitOneAsync(millisecondsTimeout, cancellationToken);
+
+        private Task<bool> WaitAsync(
+            TimeSpan timeout,
+            CancellationToken? cancellationToken = null) =>
+            semaphore?.WaitAsync(timeout, cancellationToken) ??
+                mutex!.WaitOneAsync(timeout, cancellationToken);
+#pragma warning restore VSTHRD110
+
+        private void Release()
+        {
+            semaphore?.Release();
+            mutex?.ReleaseMutex();
+        }
+
+        public record Update(int Number)
+        {
+            public int? TimeoutMs { get; init; }
+
+            public TimeSpan? TimeoutTimeSpan { get; init; }
+
+            public bool CanCancelManually { get; init; }
+        }
+
+        public class Activities
+        {
+            public Activities(int maxUpdates) =>
+                UpdateCompletions = Enumerable.Range(0, maxUpdates).
+                    ToDictionary(i => i, i => new TaskCompletionSource());
+
+            public Dictionary<int, TaskCompletionSource> UpdateCompletions { get; }
+
+            [Activity]
+            public Task DoActivityAsync(int number) => UpdateCompletions[number].Task;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Semaphore_MultipleWaiters()
+    {
+        // This is a basic test of semaphore usage. We will make a semaphore with 2 allowed and 5
+        // provided and confirm as we complete some that others can go.
+        var acts = new SemaphoreWorkflow.Activities(5);
+        await ExecuteWorkerAsync<SemaphoreWorkflow>(
+            async worker =>
+            {
+                // Start semaphore workflow with 5 updates, max 2 at a time
+                var handle = await Client.StartWorkflowAsync(
+                    (SemaphoreWorkflow wf) => wf.RunAsync(2),
+                    new($"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await Task.WhenAll(Enumerable.Range(0, 5).Select(i =>
+                    handle.StartUpdateAsync(
+                        wf => wf.UpdateAsync(new(i)),
+                        new(WorkflowUpdateStage.Accepted))));
+
+                // Confirm there are 2 waiting. We intentionally do this without an "eventually"
+                // because the acceptance of the updates is enough to put them all at this expected
+                // state.
+                var waiting1 = await handle.QueryAsync(wf => wf.Waiting);
+                Assert.True(waiting1.Count == 2);
+
+                // Unblock them and confirm the next two are set
+                acts.UpdateCompletions[waiting1[0]].SetResult();
+                acts.UpdateCompletions[waiting1[1]].SetResult();
+                var waiting2 = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var waiting = await handle.QueryAsync(wf => wf.Waiting);
+                    Assert.True(waiting.Count == 2);
+                    Assert.DoesNotContain(waiting, waiting1.Contains);
+                    return waiting;
+                });
+                Assert.All(
+                    await handle.QueryAsync(wf => wf.Completed),
+                    v => Assert.Contains(v, waiting1));
+
+                // Now just complete the rest
+                foreach (var comp in acts.UpdateCompletions.Values)
+                {
+                    if (comp.Task.Status != TaskStatus.RanToCompletion)
+                    {
+                        comp.SetResult();
+                    }
+                }
+
+                // Confirm completions
+                var completed = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var completed = await handle.QueryAsync(wf => wf.Completed);
+                    Assert.True(completed.Count == 5);
+                    return completed;
+                });
+                Assert.All(completed.GetRange(0, 2), v => Assert.Contains(v, waiting1));
+                Assert.DoesNotContain(completed.GetRange(2, 3), waiting1.Contains);
+            },
+            new TemporalWorkerOptions().AddAllActivities(acts));
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Mutex_MultipleWaiters()
+    {
+        // This is a basic test of mutex usage. We will make a mutex with 3 updates and confirm
+        // that each proceeds one at a time.
+        var acts = new SemaphoreWorkflow.Activities(3);
+        await ExecuteWorkerAsync<SemaphoreWorkflow>(
+            async worker =>
+            {
+                // Start semaphore workflow with 3 updates
+                var handle = await Client.StartWorkflowAsync(
+                    (SemaphoreWorkflow wf) => wf.RunAsync(null),
+                    new($"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await Task.WhenAll(Enumerable.Range(0, 3).Select(i =>
+                    handle.StartUpdateAsync(
+                        wf => wf.UpdateAsync(new(i)),
+                        new(WorkflowUpdateStage.Accepted))));
+
+                // Confirm only 1 waiting
+                var waiting1 = Assert.Single(await handle.QueryAsync(wf => wf.Waiting));
+
+                // Unblock, wait for next one waiting
+                acts.UpdateCompletions[waiting1].SetResult();
+                var waiting2 = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var waiting = Assert.Single(await handle.QueryAsync(wf => wf.Waiting));
+                    Assert.NotEqual(waiting, waiting1);
+                    return waiting;
+                });
+
+                // Unblock, wait for final one waiting
+                acts.UpdateCompletions[waiting2].SetResult();
+                var waiting3 = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var waiting = Assert.Single(await handle.QueryAsync(wf => wf.Waiting));
+                    Assert.NotEqual(waiting, waiting1);
+                    Assert.NotEqual(waiting, waiting2);
+                    return waiting;
+                });
+
+                // Unblock and confirm completions
+                acts.UpdateCompletions[waiting3].SetResult();
+                var completed = await AssertMore.EventuallyAsync(async () =>
+                {
+                    var completed = await handle.QueryAsync(wf => wf.Completed);
+                    Assert.True(completed.Count == 3);
+                    return completed;
+                });
+                Assert.Contains(0, completed);
+                Assert.Contains(1, completed);
+                Assert.Contains(2, completed);
+            },
+            new TemporalWorkerOptions().AddAllActivities(acts));
+    }
+
+    [Theory]
+    // 0 means non-blocking
+    [InlineData(0, true)]
+    [InlineData(0, false)]
+    // 100ms is a normal timer
+    [InlineData(100, true)]
+    [InlineData(100, false)]
+    public async Task ExecuteWorkflowAsync_Semaphore_Timeout(int timeoutMs, bool useTimeoutMs)
+    {
+        SemaphoreWorkflow.Update NewNoTimeoutUpdate(int number) => new(number)
+        {
+            TimeoutMs = useTimeoutMs ? timeoutMs : null,
+            TimeoutTimeSpan = useTimeoutMs ? null : TimeSpan.FromMilliseconds(timeoutMs),
+        };
+        // This tests that non-blocking wait works. We will make a semaphore with 1 allowed and
+        // submit a non-blocking update to it. We will do the same then again and confirm the update
+        // fails acquiring.
+        var acts = new SemaphoreWorkflow.Activities(1);
+        await ExecuteWorkerAsync<SemaphoreWorkflow>(
+            async worker =>
+            {
+                try
+                {
+                    var handle = await Client.StartWorkflowAsync(
+                        (SemaphoreWorkflow wf) => wf.RunAsync(1),
+                        new($"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                    // This update can start
+                    var updateParam1 = NewNoTimeoutUpdate(0);
+                    await handle.StartUpdateAsync(
+                        wf => wf.UpdateAsync(updateParam1),
+                        new(WorkflowUpdateStage.Accepted));
+                    Assert.Single(await handle.QueryAsync(wf => wf.Waiting), 0);
+                    // This update should fail
+                    var updateParam2 = NewNoTimeoutUpdate(1);
+                    var exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                        () => handle.ExecuteUpdateAsync(wf => wf.UpdateAsync(updateParam2)));
+                    Assert.Equal(
+                        "Failed to acquire",
+                        Assert.IsType<ApplicationFailureException>(exc.InnerException).Message);
+                    // Whether the timeout was 0 or not affects whether a timer was started, so
+                    // confirm that
+                    Assert.Equal(
+                        timeoutMs != 0,
+                        (await handle.FetchHistoryAsync()).Events.Any(
+                            evt => evt.TimerStartedEventAttributes != null));
+                }
+                finally
+                {
+                    acts.UpdateCompletions[0].SetResult();
+                }
+            },
+            new TemporalWorkerOptions().AddAllActivities(acts));
+    }
+
+    [SkippableTheory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ExecuteWorkflowAsync_Semaphore_Cancellation(bool useWorkflowCancellation)
+    {
+        if (useWorkflowCancellation)
+        {
+            throw new SkipException(
+                "Unable to cancel workflow for this test: https://github.com/temporalio/sdk-core/issues/772");
+        }
+        // This tests that cancellation works. We will make a semaphore with 1 allowed and submit 2
+        // updates. The second update will wait, and we will cancel the wait.
+        var acts = new SemaphoreWorkflow.Activities(1);
+        await ExecuteWorkerAsync<SemaphoreWorkflow>(
+            async worker =>
+            {
+                try
+                {
+                    var handle = await Client.StartWorkflowAsync(
+                        (SemaphoreWorkflow wf) => wf.RunAsync(1),
+                        new($"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                    await handle.StartUpdateAsync(
+                        wf => wf.UpdateAsync(new(0)),
+                        new(WorkflowUpdateStage.Accepted));
+                    var update2 = await handle.StartUpdateAsync(
+                        wf => wf.UpdateAsync(new(1) { CanCancelManually = true }),
+                        new(WorkflowUpdateStage.Accepted));
+                    Assert.Equal(0, (await handle.QueryAsync(wf => wf.Waiting)).First());
+
+                    // Cancel and confirm result
+                    if (useWorkflowCancellation)
+                    {
+                        await handle.CancelAsync();
+                    }
+                    else
+                    {
+                        await handle.SignalAsync(wf => wf.CancelUpdateAsync(1));
+                    }
+                    var exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
+                        () => update2.GetResultAsync());
+                    Assert.Equal(
+                        "Acquire canceled",
+                        Assert.IsType<ApplicationFailureException>(exc.InnerException).Message);
+                }
+                finally
+                {
+                    acts.UpdateCompletions[0].SetResult();
+                }
+            },
+            new TemporalWorkerOptions().AddAllActivities(acts));
+    }
+
+    [Workflow]
+    public class UnfinishedHandlersWorkflow
+    {
+        public enum WorkflowFinish
+        {
+            Succeed,
+            Fail,
+            Cancel,
+        }
+
+        private bool startedHandler;
+        private bool handlerMayReturn;
+        private bool handlerFinished;
+
+        public UnfinishedHandlersWorkflow()
+        {
+            // Add manual update/signal handlers
+            Workflow.Updates["MyUpdateManual"] = WorkflowUpdateDefinition.CreateWithoutAttribute(
+                "MyUpdateManual", DoUpdateOrSignal, null);
+            Workflow.Updates["MyUpdateManualAbandon"] = WorkflowUpdateDefinition.CreateWithoutAttribute(
+                "MyUpdateManualAbandon", DoUpdateOrSignal, null, HandlerUnfinishedPolicy.Abandon);
+            Workflow.Signals["MySignalManual"] = WorkflowSignalDefinition.CreateWithoutAttribute(
+                "MySignalManual", DoUpdateOrSignal);
+            Workflow.Signals["MySignalManualAbandon"] = WorkflowSignalDefinition.CreateWithoutAttribute(
+                "MySignalManualAbandon", DoUpdateOrSignal, HandlerUnfinishedPolicy.Abandon);
+        }
+
+        [WorkflowRun]
+        public async Task<bool> RunAsync(bool waitAllHandlersFinished, WorkflowFinish finish)
+        {
+            // Wait for started and finished if requested
+            await Workflow.WaitConditionAsync(() => startedHandler);
+            if (waitAllHandlersFinished)
+            {
+                handlerMayReturn = true;
+                await Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished);
+            }
+
+            // Cancel or fail
+            if (finish == WorkflowFinish.Cancel)
+            {
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.CancelWorkflowAsync(),
+                    new() { StartToCloseTimeout = TimeSpan.FromHours(1) });
+                await Workflow.WaitConditionAsync(() => false);
+            }
+            else if (finish == WorkflowFinish.Fail)
+            {
+                throw new ApplicationFailureException("Intentional failure");
+            }
+
+            return handlerFinished;
+        }
+
+        [WorkflowUpdate]
+        public Task MyUpdateAsync() => DoUpdateOrSignal();
+
+        [WorkflowUpdate(UnfinishedPolicy = HandlerUnfinishedPolicy.Abandon)]
+        public Task MyUpdateAbandonAsync() => DoUpdateOrSignal();
+
+        [WorkflowSignal]
+        public Task MySignalAsync() => DoUpdateOrSignal();
+
+        [WorkflowSignal(UnfinishedPolicy = HandlerUnfinishedPolicy.Abandon)]
+        public Task MySignalAbandonAsync() => DoUpdateOrSignal();
+
+        private async Task DoUpdateOrSignal()
+        {
+            startedHandler = true;
+            // Shield from cancellation
+            await Workflow.WaitConditionAsync(() => handlerMayReturn, default(CancellationToken));
+            handlerFinished = true;
+        }
+
+        public class Activities
+        {
+            private readonly ITemporalClient client;
+
+            public Activities(ITemporalClient client) => this.client = client;
+
+            [Activity]
+            public Task CancelWorkflowAsync() =>
+                client.GetWorkflowHandle(ActivityExecutionContext.Current.Info.WorkflowId).CancelAsync();
+        }
+    }
+
+    [Theory]
+    [InlineData(UnfinishedHandlersWorkflow.WorkflowFinish.Succeed)]
+    [InlineData(UnfinishedHandlersWorkflow.WorkflowFinish.Fail)]
+    [InlineData(UnfinishedHandlersWorkflow.WorkflowFinish.Cancel)]
+    public async Task ExecuteWorkflowAsync_UnfinishedHandlers_WarnProperly(
+        UnfinishedHandlersWorkflow.WorkflowFinish finish)
+    {
+        async Task AssertWarnings(
+            Func<WorkflowHandle<UnfinishedHandlersWorkflow>, Task> interaction,
+            bool waitAllHandlersFinished,
+            bool shouldWarn,
+            bool interactionShouldFailWithWorkflowAlreadyCompleted = false)
+        {
+            // If the finish is a failure, we never warn regardless
+            if (finish == UnfinishedHandlersWorkflow.WorkflowFinish.Fail)
+            {
+                shouldWarn = false;
+            }
+            // Setup log capture
+            var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+            // Run the workflow
+            var acts = new UnfinishedHandlersWorkflow.Activities(Client);
+            await ExecuteWorkerAsync<UnfinishedHandlersWorkflow>(
+                async worker =>
+                {
+                    // Start workflow
+                    var handle = await Client.StartWorkflowAsync(
+                        (UnfinishedHandlersWorkflow wf) => wf.RunAsync(waitAllHandlersFinished, finish),
+                        new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                    // Perform interaction
+                    try
+                    {
+                        await interaction(handle);
+                        Assert.False(interactionShouldFailWithWorkflowAlreadyCompleted);
+                    }
+                    catch (WorkflowUpdateFailedException e) when (
+                        e.InnerException is ApplicationFailureException { ErrorType: "AcceptedUpdateCompletedWorkflow" })
+                    {
+                        Assert.True(interactionShouldFailWithWorkflowAlreadyCompleted);
+                    }
+                    // Wait for workflow completion
+                    try
+                    {
+                        await handle.GetResultAsync();
+                        Assert.Equal(UnfinishedHandlersWorkflow.WorkflowFinish.Succeed, finish);
+                    }
+                    catch (WorkflowFailedException e) when (
+                        e.InnerException is ApplicationFailureException appEx &&
+                        appEx.Message == "Intentional failure")
+                    {
+                        Assert.Equal(UnfinishedHandlersWorkflow.WorkflowFinish.Fail, finish);
+                    }
+                    catch (WorkflowFailedException e) when (
+                        e.InnerException is CanceledFailureException)
+                    {
+                        Assert.Equal(UnfinishedHandlersWorkflow.WorkflowFinish.Cancel, finish);
+                    }
+                },
+                new TemporalWorkerOptions() { LoggerFactory = loggerFactory }.
+                    AddAllActivities(acts));
+            // Check warnings
+            Assert.Equal(
+                shouldWarn ? 1 : 0,
+                loggerFactory.Logs.
+                    Select(e => e.Formatted).
+                    // We have to dedupe logs because cancel causes unhandled command which causes
+                    // workflow complete to replay
+                    Distinct().
+                    Count(s => s.Contains("handlers are still running")));
+        }
+
+        // All update scenarios
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true,
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAbandonAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false,
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync(wf => wf.MyUpdateAbandonAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true,
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false,
+            interactionShouldFailWithWorkflowAlreadyCompleted: true);
+        await AssertWarnings(
+            interaction: h => h.ExecuteUpdateAsync("MyUpdateManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+
+        // All signal scenarios
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAbandonAsync()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync(wf => wf.MySignalAbandonAsync()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: true);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManual", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: false,
+            shouldWarn: false);
+        await AssertWarnings(
+            interaction: h => h.SignalAsync("MySignalManualAbandon", Array.Empty<object?>()),
+            waitAllHandlersFinished: true,
+            shouldWarn: false);
+    }
+
+    [Workflow]
+    public class IdConflictWorkflow
+    {
+        private string signal = "nothing";
+
+        // Just wait forever
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowSignal]
+        public async Task TheSignal(string sig)
+        {
+            signal = sig;
+        }
+
+        [WorkflowQuery]
+        public string GetSignal() => signal;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_IdConflictPolicy_ProperlyApplies()
+    {
+        await ExecuteWorkerAsync<IdConflictWorkflow>(async worker =>
+        {
+            // Start a workflow
+            var handle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            handle = handle with { RunId = handle.ResultRunId };
+
+            // Confirm another fails by default
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() =>
+                Env.Client.StartWorkflowAsync(
+                    (IdConflictWorkflow wf) => wf.RunAsync(),
+                    new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)));
+
+            // Confirm fails if explicitly given that option
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() =>
+                Env.Client.StartWorkflowAsync(
+                    (IdConflictWorkflow wf) => wf.RunAsync(),
+                    new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                    {
+                        IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                    }));
+            // signal-with-start does not allow fail policy
+
+            // Confirm gives back same handle if requested
+            var newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.Equal(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+            // Also with signal-with-start
+            newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    StartSignal = "TheSignal",
+                    StartSignalArgs = new[] { "hi!" },
+                    IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.Equal(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+
+            // Confirm terminates and starts new if requested
+            newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.TerminateExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.NotEqual(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Terminated, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+            // Also with signal-with-start
+            newHandle = await Env.Client.StartWorkflowAsync(
+                (IdConflictWorkflow wf) => wf.RunAsync(),
+                new(id: handle.Id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    StartSignal = "TheSignal",
+                    StartSignalArgs = new[] { "hi!" },
+                    IdConflictPolicy = WorkflowIdConflictPolicy.TerminateExisting,
+                });
+            newHandle = newHandle with { RunId = newHandle.ResultRunId };
+            Assert.NotEqual(handle.RunId, newHandle.RunId);
+            Assert.Equal(WorkflowExecutionStatus.Terminated, (await handle.DescribeAsync()).Status);
+            Assert.Equal(WorkflowExecutionStatus.Running, (await newHandle.DescribeAsync()).Status);
+            // Ensure it actually got the signal this time
+            var queryRes = await newHandle.QueryAsync(wf => wf.GetSignal());
+            Assert.Equal("hi!", queryRes);
+        });
+    }
+
+    [Workflow]
+    public class NullWithCodecWorkflow
+    {
+        [Activity]
+        public static string? ReturnsNull() => null;
+
+        [WorkflowRun]
+        public async Task<string?> RunAsync(string? input)
+        {
+            Assert.Null(input);
+            return await Workflow.ExecuteActivityAsync(
+                () => ReturnsNull(),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(10) });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_NullWithCodec_EncodedProperly()
+    {
+        // Need client with codec
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Base64PayloadCodec(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        // Run worker
+        await ExecuteWorkerAsync<NullWithCodecWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (NullWithCodecWorkflow wf) => wf.RunAsync(null),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                var result = await handle.GetResultAsync();
+                Assert.Null(result);
+                // Confirm the codec is in use in history with the activity result
+                ActivityTaskCompletedEventAttributes? attrs = null;
+                await foreach (var evt in handle.FetchHistoryEventsAsync())
+                {
+                    if (evt.ActivityTaskCompletedEventAttributes is { } taskAttrs)
+                    {
+                        attrs = taskAttrs;
+                        break;
+                    }
+                }
+                Assert.Equal(
+                    Base64PayloadCodec.EncodingName,
+                    attrs?.Result?.Payloads_?.Single()?.Metadata?.GetValueOrDefault("encoding")?.ToStringUtf8());
+            },
+            new TemporalWorkerOptions().AddAllActivities<NullWithCodecWorkflow>(null),
+            client);
+    }
+
+    [Workflow]
+    public class UpdateLogWorkflow
+    {
+        private readonly TaskCompletionSource complete = new();
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            Workflow.Logger.LogInformation("In run");
+            await complete.Task;
+        }
+
+        [WorkflowUpdateValidator(nameof(UpdateAsync))]
+        public void ValidateUpdateAsync()
+        {
+            Workflow.Logger.LogInformation("In update validator");
+        }
+
+        [WorkflowUpdate]
+        public async Task UpdateAsync()
+        {
+            Workflow.Logger.LogInformation("In update");
+            complete.SetResult();
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateLog_LogsContext()
+    {
+        // Capture logs
+        using var loggerFactory = new TestUtils.LogCaptureFactory(LoggerFactory);
+        // Run worker
+        await ExecuteWorkerAsync<UpdateLogWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (UpdateLogWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await handle.ExecuteUpdateAsync(
+                    wf => wf.UpdateAsync(), new() { Id = "my-update-id" });
+                await handle.GetResultAsync();
+            },
+            new() { LoggerFactory = loggerFactory });
+        // Grab entry for run log and confirm regular state but not update state
+        var runLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In run");
+        Assert.Equal("UpdateLogWorkflow", runLog.ScopeValues["WorkflowType"]);
+        Assert.False(runLog.ScopeValues.ContainsKey("UpdateId"));
+        // Check update log
+        var updateLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In update validator");
+        Assert.Equal("UpdateLogWorkflow", updateLog.ScopeValues["WorkflowType"]);
+        Assert.Equal("my-update-id", updateLog.ScopeValues["UpdateId"]);
+        Assert.Equal("Update", updateLog.ScopeValues["UpdateName"]);
+        updateLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In update");
+        Assert.Equal("UpdateLogWorkflow", updateLog.ScopeValues["WorkflowType"]);
+        Assert.Equal("my-update-id", updateLog.ScopeValues["UpdateId"]);
+        Assert.Equal("Update", updateLog.ScopeValues["UpdateName"]);
+    }
+
+    [Workflow]
+    public class ActivityFailToFailWorkflow
+    {
+        public static TaskCompletionSource WaitingForCancel { get; } = new();
+
+        [Activity]
+        public static async Task WaitForCancelAsync()
+        {
+            WaitingForCancel.SetResult();
+            while (!ActivityExecutionContext.Current.CancellationToken.IsCancellationRequested)
+            {
+                ActivityExecutionContext.Current.Heartbeat();
+                await Task.Delay(100);
+            }
+            throw new InvalidOperationException("Intentional exception");
+        }
+
+        [WorkflowRun]
+        public Task RunAsync() =>
+            Workflow.ExecuteActivityAsync(
+                () => WaitForCancelAsync(),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromSeconds(10),
+                    CancellationType = ActivityCancellationType.WaitCancellationCompleted,
+                    RetryPolicy = new() { MaximumAttempts = 1 },
+                    HeartbeatTimeout = TimeSpan.FromSeconds(1),
+                });
+    }
+
+    public class CannotSerializeIntentionalFailureConverter : DefaultFailureConverter
+    {
+        public override Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
+        {
+            if (exception.Message == "Intentional exception")
+            {
+                throw new InvalidOperationException("Intentional conversion failure");
+            }
+            return base.ToFailure(exception, payloadConverter);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ActivityFailToFail_ProperlyHandled()
+    {
+        // Need client with failure converter
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            FailureConverter = new CannotSerializeIntentionalFailureConverter(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+        await ExecuteWorkerAsync<ActivityFailToFailWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (ActivityFailToFailWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Wait until activity started
+                await ActivityFailToFailWorkflow.WaitingForCancel.Task;
+                // Issue cancel and wait result
+                await handle.CancelAsync();
+                var err = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                    handle.GetResultAsync());
+                var errAct = Assert.IsType<ActivityFailureException>(err.InnerException);
+                var errFail = Assert.IsType<ApplicationFailureException>(errAct.InnerException);
+                Assert.Contains("Failed building completion", errFail.Message);
+                Assert.Contains("Intentional conversion failure", errFail.Message);
+            },
+            new TemporalWorkerOptions().AddAllActivities<ActivityFailToFailWorkflow>(null),
+            client);
+    }
+
+    [Workflow]
+    public class DetachedCancellationWorkflow
+    {
+        public class Activities
+        {
+            public TaskCompletionSource WaitingForCancel { get; } = new();
+
+            public bool CleanupCalled { get; set; }
+
+            [Activity]
+            public async Task WaitForCancel()
+            {
+                WaitingForCancel.SetResult();
+                await Task.Delay(
+                    Timeout.Infinite,
+                    ActivityExecutionContext.Current.CancellationToken);
+            }
+
+            [Activity]
+            public void Cleanup() => CleanupCalled = true;
+        }
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Wait forever for cancellation, then cleanup
+            try
+            {
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.WaitForCancel(),
+                    new() { StartToCloseTimeout = TimeSpan.FromMinutes(10) });
+            }
+            catch (Exception e) when (TemporalException.IsCanceledException(e))
+            {
+                // Run cleanup with another token
+                using var detachedCancelSource = new CancellationTokenSource();
+                await Workflow.ExecuteActivityAsync(
+                    (Activities acts) => acts.Cleanup(),
+                    new()
+                    {
+                        StartToCloseTimeout = TimeSpan.FromMinutes(10),
+                        CancellationToken = detachedCancelSource.Token,
+                    });
+                // Rethrow
+                throw;
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_DetachedCancellation_WorksProperly()
+    {
+        var activities = new DetachedCancellationWorkflow.Activities();
+        await ExecuteWorkerAsync<DetachedCancellationWorkflow>(
+            async worker =>
+            {
+                // Start workflow
+                var handle = await Client.StartWorkflowAsync(
+                    (DetachedCancellationWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Wait until waiting for cancel
+                await activities.WaitingForCancel.Task;
+
+                // Send workflow cancel
+                await handle.CancelAsync();
+
+                // Confirm canceled
+                var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
+                    () => handle.GetResultAsync());
+                Assert.IsType<CanceledFailureException>(exc.InnerException);
+
+                // Confirm cleanup called
+                Assert.True(activities.CleanupCalled);
+
+                // Run through replayer to confirm deterministic on replay
+                var history = await handle.FetchHistoryAsync();
+                var replayer = new WorkflowReplayer(
+                    new WorkflowReplayerOptions().AddWorkflow<DetachedCancellationWorkflow>());
+                await replayer.ReplayWorkflowAsync(history);
+            },
+            new TemporalWorkerOptions().AddAllActivities(activities));
+    }
+
+    [Workflow]
+    public class ChildWorkflowAlreadyExists1Workflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+    }
+
+    [Workflow]
+    public class ChildWorkflowAlreadyExists2Workflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string workflowId)
+        {
+            try
+            {
+                await Workflow.StartChildWorkflowAsync(
+                    (ChildWorkflowAlreadyExists2Workflow wf) => wf.RunAsync("ignored"),
+                    new() { Id = workflowId });
+                throw new ApplicationFailureException("Should not be reached");
+            }
+            catch (WorkflowAlreadyStartedException e)
+            {
+                return $"already started, type: {e.WorkflowType}, run ID: {e.RunId}";
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ChildWorkflowAlreadyExists_ErrorsProperly()
+    {
+        await ExecuteWorkerAsync<ChildWorkflowAlreadyExists1Workflow>(
+            async worker =>
+            {
+                // Start workflow
+                var handle = await Client.StartWorkflowAsync(
+                    (ChildWorkflowAlreadyExists1Workflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                // Try to run other one
+                var result = await Client.ExecuteWorkflowAsync(
+                    (ChildWorkflowAlreadyExists2Workflow wf) => wf.RunAsync(handle.Id),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                Assert.Equal("already started, type: ChildWorkflowAlreadyExists2Workflow, run ID: <unknown>", result);
+            },
+            new TemporalWorkerOptions().AddWorkflow<ChildWorkflowAlreadyExists2Workflow>());
+    }
+
+    [Workflow]
+    public class UserMetadataWorkflow
+    {
+        [Activity]
+        public static string DoNothing() => "done";
+
+        [WorkflowRun]
+        public async Task RunAsync(bool returnImmediately)
+        {
+            if (returnImmediately)
+            {
+                return;
+            }
+
+            // Timer, wait condition, activity, and child with metadata
+
+            // Timer
+            await Workflow.DelayWithOptionsAsync(new(1) { Summary = "my-timer" });
+
+            // Wait condition
+            await Workflow.WaitConditionWithOptionsAsync(new(
+                () => false, TimeSpan.FromMilliseconds(2), "my-wait-condition-timer"));
+
+            // Activity
+            await Workflow.ExecuteActivityAsync(() => DoNothing(), new()
+            {
+                StartToCloseTimeout = TimeSpan.FromSeconds(30),
+                Summary = "my-activity",
             });
 
-        // Now confirm with the flag that the workflow ends with task complete (with flag), update
-        // accepted, update complete, and workflow complete
-        lastEvents = historyWithFlag!.Events.TakeLast(4).ToArray();
-        Assert.NotNull(lastEvents[0].WorkflowTaskCompletedEventAttributes);
-        Assert.Contains(
-            (uint)WorkflowLogicFlag.ReorderWorkflowCompletion,
-            lastEvents[0].WorkflowTaskCompletedEventAttributes.SdkMetadata.LangUsedFlags);
-        Assert.NotNull(lastEvents[1].WorkflowExecutionUpdateAcceptedEventAttributes);
-        Assert.NotNull(lastEvents[2].WorkflowExecutionUpdateCompletedEventAttributes);
-        Assert.NotNull(lastEvents[3].WorkflowExecutionCompletedEventAttributes);
+            // Child
+            await Workflow.ExecuteChildWorkflowAsync(
+                (UserMetadataWorkflow wf) => wf.RunAsync(true),
+                new() { StaticSummary = "my-child", StaticDetails = "my-child-details" });
+        }
+    }
 
-        // Now for extra sanity checking, we'll check the replayer. First, confirm with a
-        // flag-disabled replayer that without-flag succeeds but with-flag has non-determinism
-        var noFlagReplayer = new WorkflowReplayer(new WorkflowReplayerOptions()
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UserMetadata_PropagatedProperly()
+    {
+        await ExecuteWorkerAsync<UserMetadataWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (UserMetadataWorkflow wf) => wf.RunAsync(false),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        StaticSummary = "my-workflow",
+                        StaticDetails = "my-workflow-details",
+                    });
+                await handle.GetResultAsync();
+
+                // Check description has summary/details
+                var desc = await handle.DescribeAsync();
+                Assert.Equal("my-workflow", desc.StaticSummary);
+                Assert.Equal("my-workflow-details", desc.StaticDetails);
+
+                // Check history for timer (x2), activity, and child metadata
+                var history = await handle.FetchHistoryAsync();
+                Assert.Contains(history.Events, evt => evt.TimerStartedEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-timer\"");
+                Assert.Contains(history.Events, evt => evt.TimerStartedEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-wait-condition-timer\"");
+                Assert.Contains(history.Events, evt => evt.ActivityTaskScheduledEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-activity\"");
+                Assert.Contains(history.Events, evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-child\"" &&
+                    evt.UserMetadata?.Details?.Data?.ToStringUtf8() == "\"my-child-details\"");
+
+                // Go ahead and describe the child and confirm its metadata
+                var child = history.Events.Single(evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null);
+                desc = await Client.GetWorkflowHandle(
+                    child.StartChildWorkflowExecutionInitiatedEventAttributes.WorkflowId).DescribeAsync();
+                Assert.Equal("my-child", desc.StaticSummary);
+                Assert.Equal("my-child-details", desc.StaticDetails);
+            },
+            new TemporalWorkerOptions().AddAllActivities<UserMetadataWorkflow>(null));
+    }
+
+    [Workflow]
+    public class WorkflowMetadataWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
         {
-            DisableWorkflowCompletionCommandReordering = true,
-        }.AddWorkflow<CoroutinesAfterCompleteWorkflow>());
-        await noFlagReplayer.ReplayWorkflowAsync(historyWithoutFlag);
-        await Assert.ThrowsAsync<WorkflowNondeterminismException>(() =>
-            noFlagReplayer.ReplayWorkflowAsync(historyWithFlag));
+            Workflow.CurrentDetails = "initial current details";
+            Workflow.Signals["some manual signal"] = WorkflowSignalDefinition.CreateWithoutAttribute(
+                "some manual signal", () => Task.CompletedTask, description: "some manual signal description");
+            await Workflow.WaitConditionAsync(() => Continue);
+            Workflow.CurrentDetails = "final current details";
+        }
 
-        // Confirm with flag-based replayer everything is ok for both histories
-        var flagReplayer = new WorkflowReplayer(
-            new WorkflowReplayerOptions().AddWorkflow<CoroutinesAfterCompleteWorkflow>());
-        await flagReplayer.ReplayWorkflowAsync(historyWithoutFlag);
-        await flagReplayer.ReplayWorkflowAsync(historyWithFlag);
+        [WorkflowSignal]
+        public Task SomeSignalAsync() => Task.CompletedTask;
+
+        [WorkflowSignal("some signal", Description = "some signal description")]
+        public Task SomeOtherSignalAsync() => Task.CompletedTask;
+
+        [WorkflowQuery(Description = "continue description")]
+        public bool Continue { get; set; }
+
+        [WorkflowQuery(Description = "some query description", Dynamic = true)]
+        public string SomeDynamicQueryAsync(string name, IRawValue[] args) => "some value";
+
+        [WorkflowUpdate(Description = "some update description")]
+        public async Task SomeUpdateAsync() => Continue = true;
+
+        [WorkflowUpdate("some update")]
+        public Task SomeOtherUpdateAsync() => Task.CompletedTask;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_WorkflowMetadata_HasProperValues()
+    {
+        await ExecuteWorkerAsync<WorkflowMetadataWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (WorkflowMetadataWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            // Wait for start
+            await AssertMore.EqualEventuallyAsync(false, () => handle.QueryAsync(wf => wf.Continue));
+
+            // Check workflow metadata
+            var meta = await handle.QueryAsync<Api.Sdk.V1.WorkflowMetadata>(
+                "__temporal_workflow_metadata", Array.Empty<object?>());
+            Assert.Equal("initial current details", meta.CurrentDetails);
+            Assert.Equal("WorkflowMetadataWorkflow", meta.Definition.Type);
+            Assert.Equal(3, meta.Definition.SignalDefinitions.Count);
+            Assert.Equal(
+                string.Empty,
+                Assert.Single(meta.Definition.SignalDefinitions, s => s.Name == "SomeSignal").Description);
+            Assert.Equal(
+                "some signal description",
+                Assert.Single(meta.Definition.SignalDefinitions, s => s.Name == "some signal").Description);
+            Assert.Equal(
+                "some manual signal description",
+                Assert.Single(meta.Definition.SignalDefinitions, s => s.Name == "some manual signal").Description);
+            Assert.Equal(2, meta.Definition.QueryDefinitions.Count);
+            Assert.Equal(
+                "continue description",
+                Assert.Single(meta.Definition.QueryDefinitions, s => s.Name == "Continue").Description);
+            Assert.Equal(
+                "some query description",
+                Assert.Single(meta.Definition.QueryDefinitions, s => s.Name.Length == 0).Description);
+            Assert.Equal(2, meta.Definition.UpdateDefinitions.Count);
+            Assert.Equal(
+                "some update description",
+                Assert.Single(meta.Definition.UpdateDefinitions, s => s.Name == "SomeUpdate").Description);
+            Assert.Equal(
+                string.Empty,
+                Assert.Single(meta.Definition.UpdateDefinitions, s => s.Name == "some update").Description);
+        });
+    }
+
+    [Workflow]
+    public class UpdateWithStartWorkflow
+    {
+        private bool finishWaiting;
+
+        [WorkflowRun]
+        public async Task RunAsync(int initialIncrement)
+        {
+            Counter += initialIncrement;
+            await Workflow.WaitConditionAsync(() => false);
+        }
+
+        [WorkflowUpdate]
+        public async Task IncrementCounter(int value) => Counter += value;
+
+        [WorkflowQuery]
+        public int Counter { get; set; }
+
+        [WorkflowUpdate]
+        public async Task FailAsync() => throw new ApplicationFailureException("Intentional failure");
+
+        [WorkflowUpdate]
+        public Task StartWaitingAsync() => Workflow.WaitConditionAsync(() => finishWaiting);
+
+        [WorkflowUpdate]
+        public async Task FinishWaitingAsync() => finishWaiting = true;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateWithStart_Simple()
+    {
+        await ExecuteWorkerAsync<UpdateWithStartWorkflow>(async worker =>
+        {
+            // Newly started
+            var id = $"workflow-{Guid.NewGuid()}";
+            var startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            await Client.ExecuteUpdateWithStartWorkflowAsync(
+                (UpdateWithStartWorkflow wf) => wf.IncrementCounter(456),
+                new(startOp));
+
+            // Confirm counter
+            var handle = await startOp.GetHandleAsync();
+            Assert.Equal(579, await handle.QueryAsync(wf => wf.Counter));
+
+            // Update with start 5 more times
+            foreach (var ignore in Enumerable.Range(0, 5))
+            {
+                await Client.ExecuteUpdateWithStartWorkflowAsync(
+                    (UpdateWithStartWorkflow wf) => wf.IncrementCounter(2),
+                    new(WithStartWorkflowOperation.Create(
+                        (UpdateWithStartWorkflow wf) => wf.RunAsync(10000),
+                        new(id: id, taskQueue: worker.Options.TaskQueue!)
+                        {
+                            IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                        })));
+            }
+            // Confirm 10 (i.e. 5 * 2) was added
+            Assert.Equal(589, await handle.QueryAsync(wf => wf.Counter));
+
+            // Confirm we get an already exists on both the start op and call if we set fail
+            // existing
+            startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() =>
+                Client.ExecuteUpdateWithStartWorkflowAsync(
+                    (UpdateWithStartWorkflow wf) => wf.IncrementCounter(456), new(startOp)));
+            await Assert.ThrowsAsync<WorkflowAlreadyStartedException>(() => startOp.GetHandleAsync());
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateWithStart_UpdateFailure()
+    {
+        await ExecuteWorkerAsync<UpdateWithStartWorkflow>(async worker =>
+        {
+            // Update failed but workflow started
+            var id = $"workflow-{Guid.NewGuid()}";
+            var startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            var err = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                Client.ExecuteUpdateWithStartWorkflowAsync(
+                    (UpdateWithStartWorkflow wf) => wf.FailAsync(),
+                    new(startOp)));
+            var appErr = Assert.IsType<ApplicationFailureException>(err.InnerException);
+            Assert.Equal("Intentional failure", appErr.Message);
+            var handle = await startOp.GetHandleAsync();
+            Assert.Equal(123, await handle.QueryAsync(wf => wf.Counter));
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UpdateWithStart_Cancellation()
+    {
+        await ExecuteWorkerAsync<UpdateWithStartWorkflow>(async worker =>
+        {
+            // Start in background with cancel token
+            var id = $"workflow-{Guid.NewGuid()}";
+            var startOp = WithStartWorkflowOperation.Create(
+                (UpdateWithStartWorkflow wf) => wf.RunAsync(123),
+                new(id: id, taskQueue: worker.Options.TaskQueue!)
+                {
+                    IdConflictPolicy = WorkflowIdConflictPolicy.Fail,
+                });
+            using var cancelSource = new CancellationTokenSource();
+            var updateTask = Task.Run(() => Client.ExecuteUpdateWithStartWorkflowAsync(
+                (UpdateWithStartWorkflow wf) => wf.StartWaitingAsync(),
+                new(startOp) { Rpc = new() { CancellationToken = cancelSource.Token } }));
+
+            // Wait until workflow ID exists
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                try
+                {
+                    await Client.GetWorkflowHandle(id).DescribeAsync();
+                }
+                catch (RpcException e) when (e.Code == RpcException.StatusCode.NotFound)
+                {
+                    Assert.Fail("Not found");
+                }
+            });
+
+            // Now cancel token and confirm update cancellation results in proper cancellation
+            cancelSource.Cancel();
+            await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(
+                () => updateTask);
+            // Note, currently in this use case the handle isn't set either, the same exception
+            // appears for the start call
+            await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(
+                () => startOp.GetHandleAsync());
+        });
+    }
+
+    [Workflow]
+    public class InstanceVisibleWorkflow
+    {
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        public string SomeState => "some-state";
+
+        [WorkflowUpdate]
+        public async Task<string> GetSomeStateAsync() => GetSomeState();
+
+        public static string GetSomeState() => ((InstanceVisibleWorkflow)Workflow.Instance).SomeState;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Instance_VisibleToHelpers()
+    {
+        await ExecuteWorkerAsync<InstanceVisibleWorkflow>(async worker =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (InstanceVisibleWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("some-state", await handle.ExecuteUpdateAsync(wf => wf.GetSomeStateAsync()));
+        });
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(

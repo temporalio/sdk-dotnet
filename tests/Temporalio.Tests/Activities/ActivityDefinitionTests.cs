@@ -1,5 +1,6 @@
 namespace Temporalio.Tests.Activities;
 
+using System.Reflection;
 using System.Threading.Tasks;
 using Temporalio.Activities;
 using Temporalio.Converters;
@@ -156,6 +157,57 @@ public class ActivityDefinitionTests
         Assert.Equal(128, await defn.InvokeAsync(new object?[] { 123 }));
     }
 
+    [Fact]
+    public void CreateAll_OpenGeneric_Throws()
+    {
+        var exc = Assert.ThrowsAny<Exception>(() => ActivityDefinition.CreateAll(
+            typeof(BadActivityGeneric), new BadActivityGeneric()));
+        Assert.Contains("contains generic parameters", exc.Message);
+    }
+
+    [Fact]
+    public async Task CreateAll_ClosedGeneric_CanInvoke()
+    {
+        var defn = ActivityDefinition.CreateAll(
+            typeof(GoodActivityGeneric<string>),
+            new GoodActivityGeneric<string>("some-val")).Single();
+        Assert.Equal("some-val", await defn.InvokeAsync(Array.Empty<object?>()));
+    }
+
+    [Fact]
+    public async Task Create_WithMethodInfo_HasValidMethodInfo()
+    {
+        var methodInfo = typeof(ActivityDefinitionTests)
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+            .Single(mi => mi.Name.Equals(nameof(GoodAct1Async), StringComparison.Ordinal));
+
+        var defn = ActivityDefinition.Create(methodInfo, objects => methodInfo!.Invoke(this, objects));
+        Assert.Equal(methodInfo, defn.MethodInfo);
+    }
+
+    [Fact]
+    public async Task Create_WithDelegate_HasValidMethodInfo()
+    {
+        var methodInfo = typeof(ActivityDefinitionTests)
+            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+            .Single(mi => mi.Name.Equals(nameof(GoodAct1Async), StringComparison.Ordinal));
+
+        var defn = ActivityDefinition.Create(GoodAct1Async);
+        Assert.Equal(methodInfo, defn.MethodInfo);
+    }
+
+    [Fact]
+    public async Task Create_WithLambda_DoesNotHaveValidMethodInfo()
+    {
+        var defn = ActivityDefinition.Create(
+            "some-name",
+            typeof(int),
+            new Type[] { typeof(int) },
+            1,
+            parameters => ((int)parameters[0]!) + 5);
+        Assert.Null(defn.MethodInfo);
+    }
+
     protected static void BadAct1()
     {
     }
@@ -172,6 +224,22 @@ public class ActivityDefinitionTests
     {
         [Activity]
         public static int MyActivity(int param) => param + 5;
+    }
+
+    public class BadActivityGeneric
+    {
+        [Activity]
+        public T BadActAsync<T>() => throw new NotSupportedException();
+    }
+
+    public class GoodActivityGeneric<T>
+    {
+        private readonly T result;
+
+        public GoodActivityGeneric(T result) => this.result = result;
+
+        [Activity]
+        public T GoodAsyncAsync() => result;
     }
 
     public class BadActivityClassNoActivities

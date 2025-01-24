@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 
 namespace Temporalio.Worker
@@ -124,9 +125,9 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of activities that will ever be given to this worker
-        /// concurrently. Default is 100.
+        /// concurrently. Default is 100. Mutually exclusive with <see cref="Tuner"/>.
         /// </summary>
-        public int MaxConcurrentActivities { get; set; } = 100;
+        public int? MaxConcurrentActivities { get; set; }
 
         /// <summary>
         /// Gets or sets the longest interval for throttling activity heartbeats. Default is 60s.
@@ -169,15 +170,15 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum allowed number of workflow tasks that will ever be given to
-        /// the worker at one time. Default is 100.
+        /// the worker at one time. Default is 100. Mutually exclusive with <see cref="Tuner"/>.
         /// </summary>
-        public int MaxConcurrentWorkflowTasks { get; set; } = 100;
+        public int? MaxConcurrentWorkflowTasks { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum number of local activities that will ever be given to this
-        /// worker concurrently. Default is 100.
+        /// worker concurrently. Default is 100. Mutually exclusive with <see cref="Tuner"/>.
         /// </summary>
-        public int MaxConcurrentLocalActivities { get; set; } = 100;
+        public int? MaxConcurrentLocalActivities { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the worker will only handle workflows and local
@@ -273,6 +274,31 @@ namespace Temporalio.Worker
         public WorkflowStackTrace WorkflowStackTrace { get; set; } = WorkflowStackTrace.None;
 
         /// <summary>
+        /// Gets or sets a custom <see cref="WorkerTuner"/>. Mutually exclusive with <see
+        /// cref="MaxConcurrentActivities"/>, <see cref="MaxConcurrentWorkflowTasks"/> and <see
+        /// cref="MaxConcurrentLocalActivities"/>.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: WorkerTuners are experimental.
+        /// </remarks>
+        public WorkerTuner? Tuner { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether eager activity executions will be disabled from
+        /// a workflow.
+        /// </summary>
+        /// <remarks>
+        /// Eager activity execution is an optimization on some servers that sends activities back
+        /// to the same worker as the calling workflow if they can run there.
+        /// </remarks>
+        /// <remarks>
+        /// This should be set to <c>true</c> for <see cref="MaxTaskQueueActivitiesPerSecond" /> to
+        /// work and in a future version of this API may be implied as such (i.e. this setting will
+        /// be ignored if that setting is set).
+        /// </remarks>
+        public bool DisableEagerActivityExecution { get; set; }
+
+        /// <summary>
         /// Gets the TEMPORAL_DEBUG environment variable.
         /// </summary>
         internal static string? DebugModeEnvironmentVariable { get; } = Environment.GetEnvironmentVariable("TEMPORAL_DEBUG");
@@ -285,15 +311,6 @@ namespace Temporalio.Worker
         /// </remarks>
         internal Func<WorkflowInstanceDetails, IWorkflowInstance> WorkflowInstanceFactory { get; set; } =
             DefaultWorkflowInstanceFactory;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the workflow completion command reordering will
-        /// apply.
-        /// </summary>
-        /// <remarks>
-        /// This is visible for testing only.
-        /// </remarks>
-        internal bool DisableWorkflowCompletionCommandReordering { get; set; }
 
         /// <summary>
         /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is

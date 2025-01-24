@@ -38,10 +38,23 @@ namespace Temporalio.Workflows
         public string? Name { get; }
 
         /// <summary>
+        /// Gets or sets a short description for this signal that may appear in UI/CLI when workflow
+        /// is asked for which signals it supports.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? Description { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the signal is dynamic. If a signal is dynamic,
         /// it cannot be given a name in this attribute and the method must accept a string name and
         /// an array of <see cref="Converters.IRawValue" />.
         /// </summary>
         public bool Dynamic { get; set; }
+
+        /// <summary>
+        /// Gets or sets the actions taken if a workflow exits with a running instance of this
+        /// handler. Default is <see cref="HandlerUnfinishedPolicy.WarnAndAbandon" />.
+        /// </summary>
+        public HandlerUnfinishedPolicy UnfinishedPolicy { get; set; } = HandlerUnfinishedPolicy.WarnAndAbandon;
     }
 }

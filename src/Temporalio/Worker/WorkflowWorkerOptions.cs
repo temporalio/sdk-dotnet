@@ -22,5 +22,5 @@ namespace Temporalio.Worker
         Action<WorkflowInstance, Exception?> OnTaskCompleted,
         Lazy<MetricMeter> RuntimeMetricMeter,
         IReadOnlyCollection<Type>? WorkerLevelFailureExceptionTypes,
-        bool DisableCompletionCommandReordering);
+        bool DisableEagerActivityExecution);
 }

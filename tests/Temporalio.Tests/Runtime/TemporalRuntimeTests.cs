@@ -32,7 +32,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
                 Runtime = new(
                     new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr1) } } }),
             });
-        await client1.Connection.WorkflowService.GetSystemInfoAsync(new());
+        await client1.WorkflowService.GetSystemInfoAsync(new());
         var promAddr2 = $"127.0.0.1:{TestUtils.FreePort()}";
         var client2 = await TemporalClient.ConnectAsync(
             new()
@@ -42,7 +42,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
                 Runtime = new(
                     new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr2) } } }),
             });
-        await client2.Connection.WorkflowService.GetSystemInfoAsync(new());
+        await client2.WorkflowService.GetSystemInfoAsync(new());
 
         // Check that Prometheus on each runtime is reporting metrics
         using var httpClient = new HttpClient();

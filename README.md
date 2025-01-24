@@ -10,10 +10,9 @@ execute asynchronous, long-running business logic in a scalable and resilient wa
 
 Also see:
 
-* [NuGet Package](https://www.nuget.org/packages/Temporalio)
-* [Application Development Guide](https://docs.temporal.io/application-development) (TODO: .NET docs)
+* [Application Development Guide](https://docs.temporal.io/develop/dotnet/)
+* [.NET Samples](https://github.com/temporalio/samples-dotnet)
 * [API Documentation](https://dotnet.temporal.io/api)
-* [Samples](https://github.com/temporalio/samples-dotnet)
 
 Extensions:
 
@@ -89,7 +88,8 @@ CLI:
 
     dotnet add package Temporalio
 
-If you are using .NET Framework or a non-standard target platform, see the
+The .NET SDK supports .NET Framework >= 4.6.2, .NET Core >= 3.1 (so includes .NET 5+), and .NET Standard >= 2.0. If you
+are using .NET Framework or a non-standard target platform, see the
 [Built-in Native Shared Library](#built-in-native-shared-library) section later for additional information.
 
 **NOTE: This README is for the current branch and not necessarily what's released on NuGet.**
@@ -541,6 +541,9 @@ Some things to note about the above code:
 * A shortcut extension `ExecuteWorkflowAsync` is available that is just `StartWorkflowAsync` + `GetResultAsync`.
 * `SignalWithStart` method is present on the workflow options to make the workflow call a signal-with-start call which
   means it will only start the workflow if it's not running, but send a signal to it regardless.
+* Separate `StartUpdateWithStartWorkflowAsync` and `ExecuteUpdateWithStartWorkflowAsync` methods are present on the
+  client to make the workflow call an update-with-start call which means it may start the workflow if it's not running,
+  but perform an update on it regardless.
 
 #### Invoking Activities
 
@@ -689,7 +692,8 @@ use `TaskScheduler.Default` implicitly (and some analyzers even encourage this).
 with .NET tasks inside of workflows:
 
 * Do not use `Task.Run` - this uses the default scheduler and puts work on the thread pool.
-  * Use `Task.Factory.StartNew` or instantiate the `Task` and run `Task.Start` on it.
+  * Use `Workflow.RunTaskAsync` instead.
+  * Can also use `Task.Factory.StartNew` with current scheduler or instantiate the `Task` and run `Task.Start` on it.
 * Do not use `Task.ConfigureAwait(false)` - this will not use the current context.
   * If you must use `Task.ConfigureAwait`, use `Task.ConfigureAwait(true)`.
   * There is no significant performance benefit to `Task.ConfigureAwait` in workflows anyways due to how the scheduler
@@ -702,6 +706,16 @@ with .NET tasks inside of workflows:
   * Use `Workflow.WhenAnyAsync` instead.
   * Technically this only applies to an enumerable set of tasks with results or more than 2 tasks with results. Other
     uses are safe. See [this issue](https://github.com/dotnet/runtime/issues/87481).
+* Do not use `Task.WhenAll`
+  * Use `Workflow.WhenAllAsync` instead.
+  * Technically `Task.WhenAll` is currently deterministic in .NET and safe, but it is better to use the wrapper to be
+    sure.
+* Do not use `CancellationTokenSource.CancelAsync`.
+  * Use `CancellationTokenSource.Cancel` instead.
+* Do not use `System.Threading.Semaphore` or `System.Threading.SemaphoreSlim` or `System.Threading.Mutex`.
+  * Use `Temporalio.Workflows.Semaphore` or `Temporalio.Workflows.Mutex` instead.
+  * _Technically_ `SemaphoreSlim` does work if only the async form of `WaitAsync` is used without no timeouts and
+    `Release` is used. But anything else can deadlock the workflow and its use is cumbersome since it must be disposed.
 * Be wary of additional libraries' implicit use of the default scheduler.
   * For example, while there are articles for `Dataflow` about
     [using a specific scheduler](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/how-to-specify-a-task-scheduler-in-a-dataflow-block),
@@ -1204,6 +1218,9 @@ Then, run:
 
 The Rust DLL is built automatically when the project is built. `protoc` may need to be on the `PATH` to build the Rust
 DLL.
+
+This can be annoying to install on linux - so alternatively, publish your PR and you can download the
+patch from the windows build when it fails because of a mismatch. It uploads the patch as an artifact.
 
 ### Regenerating protos
 

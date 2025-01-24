@@ -29,8 +29,8 @@ namespace Temporalio.Bridge.Api.Common {
             "G05hbWVzcGFjZWRXb3JrZmxvd0V4ZWN1dGlvbhIRCgluYW1lc3BhY2UYASAB",
             "KAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJKkAKEFZl",
             "cnNpb25pbmdJbnRlbnQSDwoLVU5TUEVDSUZJRUQQABIOCgpDT01QQVRJQkxF",
-            "EAESCwoHREVGQVVMVBACQiLqAh9UZW1wb3JhbGlvOjpCcmlkZ2U6OkFwaTo6",
-            "Q29tbW9uYgZwcm90bzM="));
+            "EAESCwoHREVGQVVMVBACQizqAilUZW1wb3JhbGlvOjpJbnRlcm5hbDo6QnJp",
+            "ZGdlOjpBcGk6OkNvbW1vbmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.Common.VersioningIntent), }, null, new pbr::GeneratedClrTypeInfo[] {

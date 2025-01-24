@@ -30,6 +30,18 @@ namespace Temporalio.Exceptions
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="RpcException"/> class.
+        /// </summary>
+        /// <param name="grpcStatus">gRPC status to derive values from.</param>
+        internal RpcException(GrpcStatus grpcStatus)
+            : base(grpcStatus.Message)
+        {
+            Code = (StatusCode)grpcStatus.Code;
+            RawStatus = null;
+            GrpcStatus = new(() => grpcStatus);
+        }
+
+        /// <summary>
         /// gRPC status code taken from
         /// https://github.com/grpc/grpc-dotnet/blob/master/src/Grpc.Core.Api/StatusCode.cs.
         /// </summary>
@@ -140,7 +152,7 @@ namespace Temporalio.Exceptions
         public StatusCode Code { get; private init; }
 
         /// <summary>
-        /// Gets the gRPC status message as a protobuf.
+        /// Gets the gRPC status message as a protobuf. This may not be set even if GrpcStatus is.
         /// </summary>
         public byte[]? RawStatus { get; private init; }
 

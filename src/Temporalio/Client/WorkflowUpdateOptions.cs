@@ -5,7 +5,6 @@ namespace Temporalio.Client
     /// <summary>
     /// Options for executing an update on a <see cref="WorkflowHandle" />.
     /// </summary>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     public class WorkflowUpdateOptions : ICloneable
     {
         /// <summary>
@@ -29,7 +28,7 @@ namespace Temporalio.Client
         public string? Id { get; set; }
 
         /// <summary>
-        /// Gets or sets RPC options for starting the workflow.
+        /// Gets or sets RPC options for update RPC calls.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
 

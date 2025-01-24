@@ -15,7 +15,7 @@ namespace Temporalio.Worker
     /// <param name="TaskQueue">Workflow task queue.</param>
     /// <param name="Definition">Workflow definition.</param>
     /// <param name="InitialActivation">Initial activation for the workflow.</param>
-    /// <param name="Start">Start attributes for the workflow.</param>
+    /// <param name="Init">Start attributes for the workflow.</param>
     /// <param name="Interceptors">Interceptors.</param>
     /// <param name="PayloadConverter">Payload converter.</param>
     /// <param name="FailureConverter">Failure converter.</param>
@@ -26,15 +26,13 @@ namespace Temporalio.Worker
     /// <param name="OnTaskCompleted">Callback for every instance task complete.</param>
     /// <param name="RuntimeMetricMeter">Lazy runtime-level metric meter.</param>
     /// <param name="WorkerLevelFailureExceptionTypes">Failure exception types at worker level.</param>
-    /// <param name="DisableCompletionCommandReordering">
-    /// Whether to disable completion command reordering.
-    /// </param>
+    /// <param name="DisableEagerActivityExecution">Whether to disable eager at the worker level.</param>
     internal record WorkflowInstanceDetails(
         string Namespace,
         string TaskQueue,
         WorkflowDefinition Definition,
         WorkflowActivation InitialActivation,
-        StartWorkflow Start,
+        InitializeWorkflow Init,
         IReadOnlyCollection<Interceptors.IWorkerInterceptor> Interceptors,
         IPayloadConverter PayloadConverter,
         IFailureConverter FailureConverter,
@@ -45,5 +43,5 @@ namespace Temporalio.Worker
         Action<WorkflowInstance, Exception?> OnTaskCompleted,
         Lazy<MetricMeter> RuntimeMetricMeter,
         IReadOnlyCollection<Type>? WorkerLevelFailureExceptionTypes,
-        bool DisableCompletionCommandReordering);
+        bool DisableEagerActivityExecution);
 }

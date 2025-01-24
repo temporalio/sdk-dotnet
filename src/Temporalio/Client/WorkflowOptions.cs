@@ -42,6 +42,22 @@ namespace Temporalio.Client
         public string? TaskQueue { get; set; }
 
         /// <summary>
+        /// Gets or sets a single-line fixed summary for this workflow execution that may appear in
+        /// UI/CLI. This can be in single-line Temporal markdown format.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? StaticSummary { get; set; }
+
+        /// <summary>
+        /// Gets or sets general fixed details for this workflow execution that may appear in
+        /// UI/CLI. This can be in Temporal markdown format and can span multiple lines. This is a
+        /// fixed value on the workflow that cannot be updated. For details that can be updated, use
+        /// <see cref="Workflows.Workflow.CurrentDetails" /> within the workflow.
+        /// </summary>
+        /// <remarks>WARNING: This setting is experimental.</remarks>
+        public string? StaticDetails { get; set; }
+
+        /// <summary>
         /// Gets or sets the total workflow execution timeout including retries and continue as new.
         /// </summary>
         public TimeSpan? ExecutionTimeout { get; set; }
@@ -61,6 +77,15 @@ namespace Temporalio.Client
         /// <see cref="WorkflowIdReusePolicy.AllowDuplicate" />.
         /// </summary>
         public WorkflowIdReusePolicy IdReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
+
+        /// <summary>
+        /// Gets or sets how already-existing workflows of the same ID are treated. Default is
+        /// <see cref="WorkflowIdConflictPolicy.Unspecified" /> which effectively means
+        /// <see cref="WorkflowIdConflictPolicy.Fail"/> on the server. If this value is set, then
+        /// <see cref="IdReusePolicy"/> cannot be set to
+        /// <see cref="WorkflowIdReusePolicy.TerminateIfRunning"/>.
+        /// </summary>
+        public WorkflowIdConflictPolicy IdConflictPolicy { get; set; } = WorkflowIdConflictPolicy.Unspecified;
 
         /// <summary>
         /// Gets or sets the retry policy for the workflow. If unset, workflow never retries.

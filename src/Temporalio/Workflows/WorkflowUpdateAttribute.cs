@@ -15,7 +15,6 @@ namespace Temporalio.Workflows
     /// <see cref="Worker.TemporalWorkerOptions.WorkflowFailureExceptionTypes"/> to change the
     /// default behavior.
     /// </remarks>
-    /// <remarks>WARNING: Workflow update is experimental and APIs may change.</remarks>
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     public sealed class WorkflowUpdateAttribute : Attribute
     {
@@ -42,10 +41,22 @@ namespace Temporalio.Workflows
         public string? Name { get; }
 
         /// <summary>
+        /// Gets or sets a short description for this update that may appear in UI/CLI when workflow
+        /// is asked for which updates it supports.
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the update is dynamic. If a update is dynamic,
         /// it cannot be given a name in this attribute and the method must accept a string name and
         /// an array of <see cref="Converters.IRawValue" />.
         /// </summary>
         public bool Dynamic { get; set; }
+
+        /// <summary>
+        /// Gets or sets the actions taken if a workflow exits with a running instance of this
+        /// handler. Default is <see cref="HandlerUnfinishedPolicy.WarnAndAbandon" />.
+        /// </summary>
+        public HandlerUnfinishedPolicy UnfinishedPolicy { get; set; } = HandlerUnfinishedPolicy.WarnAndAbandon;
     }
 }
