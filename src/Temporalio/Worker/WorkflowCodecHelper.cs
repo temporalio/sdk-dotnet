@@ -193,7 +193,10 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.StartTimer:
-                    await EncodeAsync(codec, cmd.StartTimer.Summary).ConfigureAwait(false);
+                    if (cmd.StartTimer.Summary != null)
+                    {
+                        await EncodeAsync(codec, cmd.StartTimer.Summary).ConfigureAwait(false);
+                    }
                     break;
                 case WorkflowCommand.VariantOneofCase.UpdateResponse:
                     if (cmd.UpdateResponse.Completed is { } updateCompleted)
