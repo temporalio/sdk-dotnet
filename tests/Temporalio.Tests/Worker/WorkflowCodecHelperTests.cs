@@ -78,6 +78,26 @@ public class WorkflowCodecHelperTests : TestBase
         });
     }
 
+    [Fact]
+    public async Task EncodeAsync_AllPayloads_WorksWithNull()
+    {
+        // For every singular Payload field, we are going to set it to null and ensure it can still
+        // encode. This is to prevent regression since we missed that sometimes we are not checking
+        // for null in WorkflowCodecHelper.
+        var comp = new WorkflowActivationCompletion();
+        var codec = new MarkerPayloadCodec();
+        await CreateAndVisitPayload(new(), comp, async (ctx, payload) =>
+        {
+            var (msg, prop) = ctx.PropertyPath.Last();
+            var propInfo = msg.GetType().GetProperty(prop);
+            if (propInfo?.PropertyType == typeof(Payload))
+            {
+                propInfo.SetValue(msg, null);
+                await WorkflowCodecHelper.EncodeAsync(codec, comp);
+            }
+        });
+    }
+
     // Creates payloads as needed, null context if already seen
     private static async Task CreateAndVisitPayload(
         PayloadVisitContext ctx, IMessage current, Func<PayloadVisitContext, Func<Payload>, Task> visitor)
