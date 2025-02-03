@@ -163,6 +163,10 @@ namespace Temporalio.Extensions.OpenTelemetry
             {
                 ret.Add(new(runName, info.RunId));
             }
+            if (Options.TagNameNamespace is string namespaceName)
+            {
+                ret.Add(new(namespaceName, info.Namespace));
+            }
             return ret;
         }
 
@@ -186,6 +190,10 @@ namespace Temporalio.Extensions.OpenTelemetry
             if (Options.TagNameActivityId is string actName)
             {
                 ret.Add(new(actName, info.ActivityId));
+            }
+            if (Options.TagNameNamespace is string namespaceName)
+            {
+                ret.Add(new(namespaceName, info.WorkflowNamespace));
             }
             return ret;
         }
