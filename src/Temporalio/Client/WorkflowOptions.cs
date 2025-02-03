@@ -73,7 +73,7 @@ namespace Temporalio.Client
         public TimeSpan? TaskTimeout { get; set; }
 
         /// <summary>
-        /// Gets or sets whether to allow re-using a workflow id from a previously *closed* workflow.
+        /// Gets or sets whether to allow re-using a workflow ID from a previously *closed* workflow.
         /// Default is <see cref="WorkflowIdReusePolicy.AllowDuplicate" />.
         /// </summary>
         public WorkflowIdReusePolicy IdReusePolicy { get; set; } = WorkflowIdReusePolicy.AllowDuplicate;
