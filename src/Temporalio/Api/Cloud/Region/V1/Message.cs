@@ -25,23 +25,28 @@ namespace Temporalio.Api.Cloud.Region.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cip0ZW1wb3JhbC9hcGkvY2xvdWQvcmVnaW9uL3YxL21lc3NhZ2UucHJvdG8S",
-            "HHRlbXBvcmFsLmFwaS5jbG91ZC5yZWdpb24udjEiXQoGUmVnaW9uEgoKAmlk",
-            "GAEgASgJEhYKDmNsb3VkX3Byb3ZpZGVyGAIgASgJEh0KFWNsb3VkX3Byb3Zp",
-            "ZGVyX3JlZ2lvbhgDIAEoCRIQCghsb2NhdGlvbhgEIAEoCUKiAQofaW8udGVt",
-            "cG9yYWwuYXBpLmNsb3VkLnJlZ2lvbi52MUIMTWVzc2FnZVByb3RvUAFaKWdv",
-            "LnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9yZWdpb24vdjE7cmVnaW9uqgIeVGVt",
-            "cG9yYWxpby5BcGkuQ2xvdWQuUmVnaW9uLlYx6gIiVGVtcG9yYWxpbzo6QXBp",
-            "OjpDbG91ZDo6UmVnaW9uOjpWMWIGcHJvdG8z"));
+            "HHRlbXBvcmFsLmFwaS5jbG91ZC5yZWdpb24udjEimQIKBlJlZ2lvbhIKCgJp",
+            "ZBgBIAEoCRIlChljbG91ZF9wcm92aWRlcl9kZXByZWNhdGVkGAIgASgJQgIY",
+            "ARJKCg5jbG91ZF9wcm92aWRlchgFIAEoDjIyLnRlbXBvcmFsLmFwaS5jbG91",
+            "ZC5yZWdpb24udjEuUmVnaW9uLkNsb3VkUHJvdmlkZXISHQoVY2xvdWRfcHJv",
+            "dmlkZXJfcmVnaW9uGAMgASgJEhAKCGxvY2F0aW9uGAQgASgJIl8KDUNsb3Vk",
+            "UHJvdmlkZXISHgoaQ0xPVURfUFJPVklERVJfVU5TUEVDSUZJRUQQABIWChJD",
+            "TE9VRF9QUk9WSURFUl9BV1MQARIWChJDTE9VRF9QUk9WSURFUl9HQ1AQAkKi",
+            "AQofaW8udGVtcG9yYWwuYXBpLmNsb3VkLnJlZ2lvbi52MUIMTWVzc2FnZVBy",
+            "b3RvUAFaKWdvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9yZWdpb24vdjE7cmVn",
+            "aW9uqgIeVGVtcG9yYWxpby5BcGkuQ2xvdWQuUmVnaW9uLlYx6gIiVGVtcG9y",
+            "YWxpbzo6QXBpOjpDbG91ZDo6UmVnaW9uOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Region.V1.Region), global::Temporalio.Api.Cloud.Region.V1.Region.Parser, new[]{ "Id", "CloudProvider", "CloudProviderRegion", "Location" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Region.V1.Region), global::Temporalio.Api.Cloud.Region.V1.Region.Parser, new[]{ "Id", "CloudProviderDeprecated", "CloudProvider", "CloudProviderRegion", "Location" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider) }, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Region : pb::IMessage<Region>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -77,6 +82,7 @@ namespace Temporalio.Api.Cloud.Region.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public Region(Region other) : this() {
       id_ = other.id_;
+      cloudProviderDeprecated_ = other.cloudProviderDeprecated_;
       cloudProvider_ = other.cloudProvider_;
       cloudProviderRegion_ = other.cloudProviderRegion_;
       location_ = other.location_;
@@ -104,19 +110,39 @@ namespace Temporalio.Api.Cloud.Region.V1 {
       }
     }
 
-    /// <summary>Field number for the "cloud_provider" field.</summary>
-    public const int CloudProviderFieldNumber = 2;
-    private string cloudProvider_ = "";
+    /// <summary>Field number for the "cloud_provider_deprecated" field.</summary>
+    public const int CloudProviderDeprecatedFieldNumber = 2;
+    private string cloudProviderDeprecated_ = "";
     /// <summary>
     /// The name of the cloud provider that's hosting the region.
     /// Currently only "aws" is supported.
+    /// Deprecated: Not supported after 2024-10-01-00 api version. Use cloud_provider instead. 
+    /// temporal:versioning:max_version=2024-10-01-00
+    /// </summary>
+    [global::System.ObsoleteAttribute]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string CloudProviderDeprecated {
+      get { return cloudProviderDeprecated_; }
+      set {
+        cloudProviderDeprecated_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "cloud_provider" field.</summary>
+    public const int CloudProviderFieldNumber = 5;
+    private global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider cloudProvider_ = global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider.Unspecified;
+    /// <summary>
+    /// The cloud provider that's hosting the region.
+    /// temporal:versioning:min_version=2024-10-01-00
+    /// temporal:enums:replaces=cloud_provider_deprecated
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string CloudProvider {
+    public global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider CloudProvider {
       get { return cloudProvider_; }
       set {
-        cloudProvider_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        cloudProvider_ = value;
       }
     }
 
@@ -166,6 +192,7 @@ namespace Temporalio.Api.Cloud.Region.V1 {
         return true;
       }
       if (Id != other.Id) return false;
+      if (CloudProviderDeprecated != other.CloudProviderDeprecated) return false;
       if (CloudProvider != other.CloudProvider) return false;
       if (CloudProviderRegion != other.CloudProviderRegion) return false;
       if (Location != other.Location) return false;
@@ -177,7 +204,8 @@ namespace Temporalio.Api.Cloud.Region.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (CloudProvider.Length != 0) hash ^= CloudProvider.GetHashCode();
+      if (CloudProviderDeprecated.Length != 0) hash ^= CloudProviderDeprecated.GetHashCode();
+      if (CloudProvider != global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider.Unspecified) hash ^= CloudProvider.GetHashCode();
       if (CloudProviderRegion.Length != 0) hash ^= CloudProviderRegion.GetHashCode();
       if (Location.Length != 0) hash ^= Location.GetHashCode();
       if (_unknownFields != null) {
@@ -202,9 +230,9 @@ namespace Temporalio.Api.Cloud.Region.V1 {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (CloudProvider.Length != 0) {
+      if (CloudProviderDeprecated.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(CloudProvider);
+        output.WriteString(CloudProviderDeprecated);
       }
       if (CloudProviderRegion.Length != 0) {
         output.WriteRawTag(26);
@@ -213,6 +241,10 @@ namespace Temporalio.Api.Cloud.Region.V1 {
       if (Location.Length != 0) {
         output.WriteRawTag(34);
         output.WriteString(Location);
+      }
+      if (CloudProvider != global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) CloudProvider);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -228,9 +260,9 @@ namespace Temporalio.Api.Cloud.Region.V1 {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (CloudProvider.Length != 0) {
+      if (CloudProviderDeprecated.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(CloudProvider);
+        output.WriteString(CloudProviderDeprecated);
       }
       if (CloudProviderRegion.Length != 0) {
         output.WriteRawTag(26);
@@ -239,6 +271,10 @@ namespace Temporalio.Api.Cloud.Region.V1 {
       if (Location.Length != 0) {
         output.WriteRawTag(34);
         output.WriteString(Location);
+      }
+      if (CloudProvider != global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) CloudProvider);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -253,8 +289,11 @@ namespace Temporalio.Api.Cloud.Region.V1 {
       if (Id.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
       }
-      if (CloudProvider.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(CloudProvider);
+      if (CloudProviderDeprecated.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CloudProviderDeprecated);
+      }
+      if (CloudProvider != global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CloudProvider);
       }
       if (CloudProviderRegion.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(CloudProviderRegion);
@@ -277,7 +316,10 @@ namespace Temporalio.Api.Cloud.Region.V1 {
       if (other.Id.Length != 0) {
         Id = other.Id;
       }
-      if (other.CloudProvider.Length != 0) {
+      if (other.CloudProviderDeprecated.Length != 0) {
+        CloudProviderDeprecated = other.CloudProviderDeprecated;
+      }
+      if (other.CloudProvider != global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider.Unspecified) {
         CloudProvider = other.CloudProvider;
       }
       if (other.CloudProviderRegion.Length != 0) {
@@ -297,7 +339,11 @@ namespace Temporalio.Api.Cloud.Region.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -306,7 +352,7 @@ namespace Temporalio.Api.Cloud.Region.V1 {
             break;
           }
           case 18: {
-            CloudProvider = input.ReadString();
+            CloudProviderDeprecated = input.ReadString();
             break;
           }
           case 26: {
@@ -315,6 +361,10 @@ namespace Temporalio.Api.Cloud.Region.V1 {
           }
           case 34: {
             Location = input.ReadString();
+            break;
+          }
+          case 40: {
+            CloudProvider = (global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider) input.ReadEnum();
             break;
           }
         }
@@ -328,7 +378,11 @@ namespace Temporalio.Api.Cloud.Region.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -337,7 +391,7 @@ namespace Temporalio.Api.Cloud.Region.V1 {
             break;
           }
           case 18: {
-            CloudProvider = input.ReadString();
+            CloudProviderDeprecated = input.ReadString();
             break;
           }
           case 26: {
@@ -348,10 +402,31 @@ namespace Temporalio.Api.Cloud.Region.V1 {
             Location = input.ReadString();
             break;
           }
+          case 40: {
+            CloudProvider = (global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider) input.ReadEnum();
+            break;
+          }
         }
       }
     }
     #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the Region message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      /// <summary>
+      /// The cloud provider that's hosting the region.
+      /// </summary>
+      public enum CloudProvider {
+        [pbr::OriginalName("CLOUD_PROVIDER_UNSPECIFIED")] Unspecified = 0,
+        [pbr::OriginalName("CLOUD_PROVIDER_AWS")] Aws = 1,
+        [pbr::OriginalName("CLOUD_PROVIDER_GCP")] Gcp = 2,
+      }
+
+    }
+    #endregion
 
   }
 

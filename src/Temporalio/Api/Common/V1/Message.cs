@@ -56,37 +56,38 @@ namespace Temporalio.Api.Common.V1 {
             "IAEoBRIhChlub25fcmV0cnlhYmxlX2Vycm9yX3R5cGVzGAUgAygJIkYKEE1l",
             "dGVyaW5nTWV0YWRhdGESMgoqbm9uZmlyc3RfbG9jYWxfYWN0aXZpdHlfZXhl",
             "Y3V0aW9uX2F0dGVtcHRzGA0gASgNIj4KEldvcmtlclZlcnNpb25TdGFtcBIQ",
-            "CghidWlsZF9pZBgBIAEoCRIWCg51c2VfdmVyc2lvbmluZxgDIAEoCCJFChlX",
+            "CghidWlsZF9pZBgBIAEoCRIWCg51c2VfdmVyc2lvbmluZxgDIAEoCCJlChlX",
             "b3JrZXJWZXJzaW9uQ2FwYWJpbGl0aWVzEhAKCGJ1aWxkX2lkGAEgASgJEhYK",
-            "DnVzZV92ZXJzaW9uaW5nGAIgASgIIukCCgxSZXNldE9wdGlvbnMSNQoTZmly",
-            "c3Rfd29ya2Zsb3dfdGFzaxgBIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5FbXB0",
-            "eUgAEjQKEmxhc3Rfd29ya2Zsb3dfdGFzaxgCIAEoCzIWLmdvb2dsZS5wcm90",
-            "b2J1Zi5FbXB0eUgAEhoKEHdvcmtmbG93X3Rhc2tfaWQYAyABKANIABISCghi",
-            "dWlsZF9pZBgEIAEoCUgAEkMKEnJlc2V0X3JlYXBwbHlfdHlwZRgKIAEoDjIn",
-            "LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5SZXNldFJlYXBwbHlUeXBlEhgKEGN1",
-            "cnJlbnRfcnVuX29ubHkYCyABKAgSUwobcmVzZXRfcmVhcHBseV9leGNsdWRl",
-            "X3R5cGVzGAwgAygOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLlJlc2V0UmVh",
-            "cHBseUV4Y2x1ZGVUeXBlQggKBnRhcmdldCK3AgoIQ2FsbGJhY2sSNwoFbmV4",
-            "dXMYAiABKAsyJi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkNhbGxiYWNrLk5l",
-            "eHVzSAASPQoIaW50ZXJuYWwYAyABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9u",
-            "LnYxLkNhbGxiYWNrLkludGVybmFsSAAahwEKBU5leHVzEgsKA3VybBgBIAEo",
-            "CRJCCgZoZWFkZXIYAiADKAsyMi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkNh",
-            "bGxiYWNrLk5leHVzLkhlYWRlckVudHJ5Gi0KC0hlYWRlckVudHJ5EgsKA2tl",
-            "eRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEaGAoISW50ZXJuYWwSDAoEZGF0",
-            "YRgBIAEoDEIJCgd2YXJpYW50SgQIARACIrADCgRMaW5rEkQKDndvcmtmbG93",
-            "X2V2ZW50GAEgASgLMioudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5MaW5rLldv",
-            "cmtmbG93RXZlbnRIABI6CgliYXRjaF9qb2IYAiABKAsyJS50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLkxpbmsuQmF0Y2hKb2JIABr+AQoNV29ya2Zsb3dFdmVu",
-            "dBIRCgluYW1lc3BhY2UYASABKAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoG",
-            "cnVuX2lkGAMgASgJEk4KCWV2ZW50X3JlZhhkIAEoCzI5LnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuTGluay5Xb3JrZmxvd0V2ZW50LkV2ZW50UmVmZXJlbmNl",
-            "SAAaWAoORXZlbnRSZWZlcmVuY2USEAoIZXZlbnRfaWQYASABKAMSNAoKZXZl",
-            "bnRfdHlwZRgCIAEoDjIgLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5FdmVudFR5",
-            "cGVCCwoJcmVmZXJlbmNlGhoKCEJhdGNoSm9iEg4KBmpvYl9pZBgBIAEoCUIJ",
-            "Cgd2YXJpYW50QokBChlpby50ZW1wb3JhbC5hcGkuY29tbW9uLnYxQgxNZXNz",
-            "YWdlUHJvdG9QAVojZ28udGVtcG9yYWwuaW8vYXBpL2NvbW1vbi92MTtjb21t",
-            "b26qAhhUZW1wb3JhbGlvLkFwaS5Db21tb24uVjHqAhtUZW1wb3JhbGlvOjpB",
-            "cGk6OkNvbW1vbjo6VjFiBnByb3RvMw=="));
+            "DnVzZV92ZXJzaW9uaW5nGAIgASgIEh4KFmRlcGxveW1lbnRfc2VyaWVzX25h",
+            "bWUYBCABKAki6QIKDFJlc2V0T3B0aW9ucxI1ChNmaXJzdF93b3JrZmxvd190",
+            "YXNrGAEgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAASNAoSbGFzdF93",
+            "b3JrZmxvd190YXNrGAIgASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAAS",
+            "GgoQd29ya2Zsb3dfdGFza19pZBgDIAEoA0gAEhIKCGJ1aWxkX2lkGAQgASgJ",
+            "SAASQwoScmVzZXRfcmVhcHBseV90eXBlGAogASgOMicudGVtcG9yYWwuYXBp",
+            "LmVudW1zLnYxLlJlc2V0UmVhcHBseVR5cGUSGAoQY3VycmVudF9ydW5fb25s",
+            "eRgLIAEoCBJTChtyZXNldF9yZWFwcGx5X2V4Y2x1ZGVfdHlwZXMYDCADKA4y",
+            "Li50ZW1wb3JhbC5hcGkuZW51bXMudjEuUmVzZXRSZWFwcGx5RXhjbHVkZVR5",
+            "cGVCCAoGdGFyZ2V0IrcCCghDYWxsYmFjaxI3CgVuZXh1cxgCIAEoCzImLnRl",
+            "bXBvcmFsLmFwaS5jb21tb24udjEuQ2FsbGJhY2suTmV4dXNIABI9CghpbnRl",
+            "cm5hbBgDIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuQ2FsbGJhY2su",
+            "SW50ZXJuYWxIABqHAQoFTmV4dXMSCwoDdXJsGAEgASgJEkIKBmhlYWRlchgC",
+            "IAMoCzIyLnRlbXBvcmFsLmFwaS5jb21tb24udjEuQ2FsbGJhY2suTmV4dXMu",
+            "SGVhZGVyRW50cnkaLQoLSGVhZGVyRW50cnkSCwoDa2V5GAEgASgJEg0KBXZh",
+            "bHVlGAIgASgJOgI4ARoYCghJbnRlcm5hbBIMCgRkYXRhGAEgASgMQgkKB3Zh",
+            "cmlhbnRKBAgBEAIisAMKBExpbmsSRAoOd29ya2Zsb3dfZXZlbnQYASABKAsy",
+            "Ki50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkxpbmsuV29ya2Zsb3dFdmVudEgA",
+            "EjoKCWJhdGNoX2pvYhgCIAEoCzIlLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "TGluay5CYXRjaEpvYkgAGv4BCg1Xb3JrZmxvd0V2ZW50EhEKCW5hbWVzcGFj",
+            "ZRgBIAEoCRITCgt3b3JrZmxvd19pZBgCIAEoCRIOCgZydW5faWQYAyABKAkS",
+            "TgoJZXZlbnRfcmVmGGQgASgLMjkudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5M",
+            "aW5rLldvcmtmbG93RXZlbnQuRXZlbnRSZWZlcmVuY2VIABpYCg5FdmVudFJl",
+            "ZmVyZW5jZRIQCghldmVudF9pZBgBIAEoAxI0CgpldmVudF90eXBlGAIgASgO",
+            "MiAudGVtcG9yYWwuYXBpLmVudW1zLnYxLkV2ZW50VHlwZUILCglyZWZlcmVu",
+            "Y2UaGgoIQmF0Y2hKb2ISDgoGam9iX2lkGAEgASgJQgkKB3ZhcmlhbnRCiQEK",
+            "GWlvLnRlbXBvcmFsLmFwaS5jb21tb24udjFCDE1lc3NhZ2VQcm90b1ABWiNn",
+            "by50ZW1wb3JhbC5pby9hcGkvY29tbW9uL3YxO2NvbW1vbqoCGFRlbXBvcmFs",
+            "aW8uQXBpLkNvbW1vbi5WMeoCG1RlbXBvcmFsaW86OkFwaTo6Q29tbW9uOjpW",
+            "MWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.EventTypeReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -102,7 +103,7 @@ namespace Temporalio.Api.Common.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.RetryPolicy), global::Temporalio.Api.Common.V1.RetryPolicy.Parser, new[]{ "InitialInterval", "BackoffCoefficient", "MaximumInterval", "MaximumAttempts", "NonRetryableErrorTypes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.MeteringMetadata), global::Temporalio.Api.Common.V1.MeteringMetadata.Parser, new[]{ "NonfirstLocalActivityExecutionAttempts" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionStamp), global::Temporalio.Api.Common.V1.WorkerVersionStamp.Parser, new[]{ "BuildId", "UseVersioning" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionCapabilities), global::Temporalio.Api.Common.V1.WorkerVersionCapabilities.Parser, new[]{ "BuildId", "UseVersioning" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerVersionCapabilities), global::Temporalio.Api.Common.V1.WorkerVersionCapabilities.Parser, new[]{ "BuildId", "UseVersioning", "DeploymentSeriesName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.ResetOptions), global::Temporalio.Api.Common.V1.ResetOptions.Parser, new[]{ "FirstWorkflowTask", "LastWorkflowTask", "WorkflowTaskId", "BuildId", "ResetReapplyType", "CurrentRunOnly", "ResetReapplyExcludeTypes" }, new[]{ "Target" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Callback), global::Temporalio.Api.Common.V1.Callback.Parser, new[]{ "Nexus", "Internal" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Callback.Types.Nexus), global::Temporalio.Api.Common.V1.Callback.Types.Nexus.Parser, new[]{ "Url", "Header" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Callback.Types.Internal), global::Temporalio.Api.Common.V1.Callback.Types.Internal.Parser, new[]{ "Data" }, null, null, null, null)}),
@@ -114,6 +115,7 @@ namespace Temporalio.Api.Common.V1 {
 
   }
   #region Messages
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class DataBlob : pb::IMessage<DataBlob>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -298,7 +300,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -321,7 +327,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -343,6 +353,7 @@ namespace Temporalio.Api.Common.V1 {
   /// <summary>
   /// See `Payload`
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Payloads : pb::IMessage<Payloads>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -487,7 +498,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -506,7 +521,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -526,6 +545,7 @@ namespace Temporalio.Api.Common.V1 {
   /// metadata which describes this binary data (format, encoding, encryption, etc). Serialization
   /// of the data may be user-defined.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Payload : pb::IMessage<Payload>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -699,7 +719,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -722,7 +746,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -745,6 +773,7 @@ namespace Temporalio.Api.Common.V1 {
   /// A user-defined set of *indexed* fields that are used/exposed when listing/searching workflows.
   /// The payload is not serialized in a user-defined way.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class SearchAttributes : pb::IMessage<SearchAttributes>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -889,7 +918,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -908,7 +941,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -926,6 +963,7 @@ namespace Temporalio.Api.Common.V1 {
   /// <summary>
   /// A user-defined set of *unindexed* fields that are exposed when listing/searching workflows
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Memo : pb::IMessage<Memo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1070,7 +1108,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1089,7 +1131,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1108,6 +1154,7 @@ namespace Temporalio.Api.Common.V1 {
   /// Contains metadata that can be attached to a variety of requests, like starting a workflow, and
   /// can be propagated between, for example, workflows and activities.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Header : pb::IMessage<Header>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1252,7 +1299,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1271,7 +1322,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1291,6 +1346,7 @@ namespace Temporalio.Api.Common.V1 {
   /// uuid, a workflow execution is globally unique. Note that many commands allow specifying an empty
   /// run id as a way of saying "target the latest run of the workflow".
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class WorkflowExecution : pb::IMessage<WorkflowExecution>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1475,7 +1531,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1498,7 +1558,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1521,6 +1585,7 @@ namespace Temporalio.Api.Common.V1 {
   /// Represents the identifier used by a workflow author to define the workflow. Typically, the
   /// name of a function. This is sometimes referred to as the workflow's "name"
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class WorkflowType : pb::IMessage<WorkflowType>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1676,7 +1741,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1695,7 +1764,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1714,6 +1787,7 @@ namespace Temporalio.Api.Common.V1 {
   /// Represents the identifier used by a activity author to define the activity. Typically, the
   /// name of a function. This is sometimes referred to as the activity's "name"
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ActivityType : pb::IMessage<ActivityType>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1869,7 +1943,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1888,7 +1966,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1906,6 +1988,7 @@ namespace Temporalio.Api.Common.V1 {
   /// <summary>
   /// How retries ought to be handled, usable by both workflows and activities
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class RetryPolicy : pb::IMessage<RetryPolicy>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2192,7 +2275,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2233,7 +2320,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2273,6 +2364,7 @@ namespace Temporalio.Api.Common.V1 {
   /// <summary>
   /// Metadata relevant for metering purposes
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class MeteringMetadata : pb::IMessage<MeteringMetadata>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2436,7 +2528,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2455,7 +2551,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2471,8 +2571,10 @@ namespace Temporalio.Api.Common.V1 {
   }
 
   /// <summary>
+  /// Deprecated. This message is replaced with `Deployment` and `VersioningBehavior`.
   /// Identifies the version(s) of a worker that processed a task
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class WorkerVersionStamp : pb::IMessage<WorkerVersionStamp>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2665,7 +2767,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2688,7 +2794,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2708,10 +2818,11 @@ namespace Temporalio.Api.Common.V1 {
   }
 
   /// <summary>
-  /// Identifies the version(s) that a worker is compatible with when polling or identifying itself,
+  /// Identifies the version that a worker is compatible with when polling or identifying itself,
   /// and whether or not this worker is opting into the build-id based versioning feature. This is
   /// used by matching to determine which workers ought to receive what tasks.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class WorkerVersionCapabilities : pb::IMessage<WorkerVersionCapabilities>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2748,6 +2859,7 @@ namespace Temporalio.Api.Common.V1 {
     public WorkerVersionCapabilities(WorkerVersionCapabilities other) : this() {
       buildId_ = other.buildId_;
       useVersioning_ = other.useVersioning_;
+      deploymentSeriesName_ = other.deploymentSeriesName_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2788,6 +2900,21 @@ namespace Temporalio.Api.Common.V1 {
       }
     }
 
+    /// <summary>Field number for the "deployment_series_name" field.</summary>
+    public const int DeploymentSeriesNameFieldNumber = 4;
+    private string deploymentSeriesName_ = "";
+    /// <summary>
+    /// Must be sent if user has set a deployment series name (versioning-3).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeploymentSeriesName {
+      get { return deploymentSeriesName_; }
+      set {
+        deploymentSeriesName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -2805,6 +2932,7 @@ namespace Temporalio.Api.Common.V1 {
       }
       if (BuildId != other.BuildId) return false;
       if (UseVersioning != other.UseVersioning) return false;
+      if (DeploymentSeriesName != other.DeploymentSeriesName) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2814,6 +2942,7 @@ namespace Temporalio.Api.Common.V1 {
       int hash = 1;
       if (BuildId.Length != 0) hash ^= BuildId.GetHashCode();
       if (UseVersioning != false) hash ^= UseVersioning.GetHashCode();
+      if (DeploymentSeriesName.Length != 0) hash ^= DeploymentSeriesName.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2840,6 +2969,10 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(16);
         output.WriteBool(UseVersioning);
       }
+      if (DeploymentSeriesName.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(DeploymentSeriesName);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2858,6 +2991,10 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(16);
         output.WriteBool(UseVersioning);
       }
+      if (DeploymentSeriesName.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(DeploymentSeriesName);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2873,6 +3010,9 @@ namespace Temporalio.Api.Common.V1 {
       }
       if (UseVersioning != false) {
         size += 1 + 1;
+      }
+      if (DeploymentSeriesName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeploymentSeriesName);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2892,6 +3032,9 @@ namespace Temporalio.Api.Common.V1 {
       if (other.UseVersioning != false) {
         UseVersioning = other.UseVersioning;
       }
+      if (other.DeploymentSeriesName.Length != 0) {
+        DeploymentSeriesName = other.DeploymentSeriesName;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -2903,7 +3046,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2913,6 +3060,10 @@ namespace Temporalio.Api.Common.V1 {
           }
           case 16: {
             UseVersioning = input.ReadBool();
+            break;
+          }
+          case 34: {
+            DeploymentSeriesName = input.ReadString();
             break;
           }
         }
@@ -2926,7 +3077,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2936,6 +3091,10 @@ namespace Temporalio.Api.Common.V1 {
           }
           case 16: {
             UseVersioning = input.ReadBool();
+            break;
+          }
+          case 34: {
+            DeploymentSeriesName = input.ReadString();
             break;
           }
         }
@@ -2949,6 +3108,7 @@ namespace Temporalio.Api.Common.V1 {
   /// Describes where and how to reset a workflow, used for batch reset currently
   /// and may be used for single-workflow reset later.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ResetOptions : pb::IMessage<ResetOptions>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -3369,7 +3529,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -3423,7 +3587,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -3476,6 +3644,7 @@ namespace Temporalio.Api.Common.V1 {
   /// <summary>
   /// Callback to attach to various events in the system, e.g. workflow run completion.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Callback : pb::IMessage<Callback>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -3699,7 +3868,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -3732,7 +3905,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -3764,6 +3941,7 @@ namespace Temporalio.Api.Common.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static partial class Types {
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class Nexus : pb::IMessage<Nexus>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -3943,7 +4121,11 @@ namespace Temporalio.Api.Common.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -3966,7 +4148,11 @@ namespace Temporalio.Api.Common.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;
@@ -3991,6 +4177,7 @@ namespace Temporalio.Api.Common.V1 {
       /// The only reason that this is exposed is because callbacks are replicated across clusters via the
       /// WorkflowExecutionStarted event, which is defined in the public API.
       /// </summary>
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class Internal : pb::IMessage<Internal>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -4149,7 +4336,11 @@ namespace Temporalio.Api.Common.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -4168,7 +4359,11 @@ namespace Temporalio.Api.Common.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;
@@ -4194,6 +4389,7 @@ namespace Temporalio.Api.Common.V1 {
   /// in this case, a history event in workflow A could contain a Link to the workflow started event in
   /// workflow B, and vice-versa.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Link : pb::IMessage<Link>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -4417,7 +4613,11 @@ namespace Temporalio.Api.Common.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -4450,7 +4650,11 @@ namespace Temporalio.Api.Common.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -4482,6 +4686,7 @@ namespace Temporalio.Api.Common.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static partial class Types {
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class WorkflowEvent : pb::IMessage<WorkflowEvent>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -4757,7 +4962,11 @@ namespace Temporalio.Api.Common.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -4793,7 +5002,11 @@ namespace Temporalio.Api.Common.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;
@@ -4828,6 +5041,7 @@ namespace Temporalio.Api.Common.V1 {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public static partial class Types {
+          [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
           public sealed partial class EventReference : pb::IMessage<EventReference>
           #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
               , pb::IBufferMessage
@@ -5012,7 +5226,11 @@ namespace Temporalio.Api.Common.V1 {
             #else
               uint tag;
               while ((tag = input.ReadTag()) != 0) {
-                switch(tag) {
+              if ((tag & 7) == 4) {
+                // Abort on any end group tag.
+                return;
+              }
+              switch(tag) {
                   default:
                     _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                     break;
@@ -5035,7 +5253,11 @@ namespace Temporalio.Api.Common.V1 {
             void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
               uint tag;
               while ((tag = input.ReadTag()) != 0) {
-                switch(tag) {
+              if ((tag & 7) == 4) {
+                // Abort on any end group tag.
+                return;
+              }
+              switch(tag) {
                   default:
                     _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                     break;
@@ -5064,6 +5286,7 @@ namespace Temporalio.Api.Common.V1 {
       /// Batch jobs can be used to perform operations on a set of workflows (e.g. terminate, signal, cancel, etc).
       /// This link can be put on workflow history events generated by actions taken by a batch job.
       /// </summary>
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class BatchJob : pb::IMessage<BatchJob>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -5219,7 +5442,11 @@ namespace Temporalio.Api.Common.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -5238,7 +5465,11 @@ namespace Temporalio.Api.Common.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;

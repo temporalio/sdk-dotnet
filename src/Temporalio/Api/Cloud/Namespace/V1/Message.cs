@@ -25,76 +25,115 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Ci10ZW1wb3JhbC9hcGkvY2xvdWQvbmFtZXNwYWNlL3YxL21lc3NhZ2UucHJv",
-            "dG8SH3RlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEaH2dvb2dsZS9w",
-            "cm90b2J1Zi90aW1lc3RhbXAucHJvdG8igQEKFUNlcnRpZmljYXRlRmlsdGVy",
-            "U3BlYxITCgtjb21tb25fbmFtZRgBIAEoCRIUCgxvcmdhbml6YXRpb24YAiAB",
-            "KAkSGwoTb3JnYW5pemF0aW9uYWxfdW5pdBgDIAEoCRIgChhzdWJqZWN0X2Fs",
-            "dGVybmF0aXZlX25hbWUYBCABKAkikAEKDE10bHNBdXRoU3BlYxIaChJhY2Nl",
-            "cHRlZF9jbGllbnRfY2EYASABKAkSUwoTY2VydGlmaWNhdGVfZmlsdGVycxgC",
-            "IAMoCzI2LnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuQ2VydGlm",
-            "aWNhdGVGaWx0ZXJTcGVjEg8KB2VuYWJsZWQYAyABKAgiIQoOQXBpS2V5QXV0",
-            "aFNwZWMSDwoHZW5hYmxlZBgBIAEoCCJoCg9Db2RlY1NlcnZlclNwZWMSEAoI",
-            "ZW5kcG9pbnQYASABKAkSGQoRcGFzc19hY2Nlc3NfdG9rZW4YAiABKAgSKAog",
-            "aW5jbHVkZV9jcm9zc19vcmlnaW5fY3JlZGVudGlhbHMYAyABKAgixAMKDU5h",
-            "bWVzcGFjZVNwZWMSDAoEbmFtZRgBIAEoCRIPCgdyZWdpb25zGAIgAygJEhYK",
-            "DnJldGVudGlvbl9kYXlzGAMgASgFEkAKCW10bHNfYXV0aBgEIAEoCzItLnRl",
-            "bXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuTXRsc0F1dGhTcGVjEkUK",
-            "DGFwaV9rZXlfYXV0aBgHIAEoCzIvLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1l",
-            "c3BhY2UudjEuQXBpS2V5QXV0aFNwZWMSbAoYY3VzdG9tX3NlYXJjaF9hdHRy",
-            "aWJ1dGVzGAUgAygLMkoudGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52",
-            "MS5OYW1lc3BhY2VTcGVjLkN1c3RvbVNlYXJjaEF0dHJpYnV0ZXNFbnRyeRJG",
-            "Cgxjb2RlY19zZXJ2ZXIYBiABKAsyMC50ZW1wb3JhbC5hcGkuY2xvdWQubmFt",
-            "ZXNwYWNlLnYxLkNvZGVjU2VydmVyU3BlYxo9ChtDdXN0b21TZWFyY2hBdHRy",
-            "aWJ1dGVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASJR",
-            "CglFbmRwb2ludHMSEwoLd2ViX2FkZHJlc3MYASABKAkSGQoRbXRsc19ncnBj",
-            "X2FkZHJlc3MYAiABKAkSFAoMZ3JwY19hZGRyZXNzGAMgASgJIioKBkxpbWl0",
-            "cxIgChhhY3Rpb25zX3Blcl9zZWNvbmRfbGltaXQYASABKAUiWAoSQVdTUHJp",
-            "dmF0ZUxpbmtJbmZvEh4KFmFsbG93ZWRfcHJpbmNpcGFsX2FybnMYASADKAkS",
-            "IgoadnBjX2VuZHBvaW50X3NlcnZpY2VfbmFtZXMYAiADKAkidAoTUHJpdmF0",
-            "ZUNvbm5lY3Rpdml0eRIOCgZyZWdpb24YASABKAkSTQoQYXdzX3ByaXZhdGVf",
-            "bGluaxgCIAEoCzIzLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEu",
-            "QVdTUHJpdmF0ZUxpbmtJbmZvIrIFCglOYW1lc3BhY2USEQoJbmFtZXNwYWNl",
-            "GAEgASgJEhgKEHJlc291cmNlX3ZlcnNpb24YAiABKAkSPAoEc3BlYxgDIAEo",
-            "CzIuLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuTmFtZXNwYWNl",
-            "U3BlYxINCgVzdGF0ZRgEIAEoCRIaChJhc3luY19vcGVyYXRpb25faWQYBSAB",
-            "KAkSPQoJZW5kcG9pbnRzGAYgASgLMioudGVtcG9yYWwuYXBpLmNsb3VkLm5h",
-            "bWVzcGFjZS52MS5FbmRwb2ludHMSFQoNYWN0aXZlX3JlZ2lvbhgHIAEoCRI3",
-            "CgZsaW1pdHMYCCABKAsyJy50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNl",
-            "LnYxLkxpbWl0cxJUChZwcml2YXRlX2Nvbm5lY3Rpdml0aWVzGAkgAygLMjQu",
-            "dGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5Qcml2YXRlQ29ubmVj",
-            "dGl2aXR5EjAKDGNyZWF0ZWRfdGltZRgKIAEoCzIaLmdvb2dsZS5wcm90b2J1",
-            "Zi5UaW1lc3RhbXASNgoSbGFzdF9tb2RpZmllZF90aW1lGAsgASgLMhouZ29v",
-            "Z2xlLnByb3RvYnVmLlRpbWVzdGFtcBJTCg1yZWdpb25fc3RhdHVzGAwgAygL",
-            "MjwudGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5OYW1lc3BhY2Uu",
-            "UmVnaW9uU3RhdHVzRW50cnkaawoRUmVnaW9uU3RhdHVzRW50cnkSCwoDa2V5",
-            "GAEgASgJEkUKBXZhbHVlGAIgASgLMjYudGVtcG9yYWwuYXBpLmNsb3VkLm5h",
-            "bWVzcGFjZS52MS5OYW1lc3BhY2VSZWdpb25TdGF0dXM6AjgBIkIKFU5hbWVz",
-            "cGFjZVJlZ2lvblN0YXR1cxINCgVzdGF0ZRgBIAEoCRIaChJhc3luY19vcGVy",
-            "YXRpb25faWQYAiABKAlCsQEKImlvLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1l",
-            "c3BhY2UudjFCDE1lc3NhZ2VQcm90b1ABWi9nby50ZW1wb3JhbC5pby9hcGkv",
-            "Y2xvdWQvbmFtZXNwYWNlL3YxO25hbWVzcGFjZaoCIVRlbXBvcmFsaW8uQXBp",
-            "LkNsb3VkLk5hbWVzcGFjZS5WMeoCJVRlbXBvcmFsaW86OkFwaTo6Q2xvdWQ6",
-            "Ok5hbWVzcGFjZTo6VjFiBnByb3RvMw=="));
+            "dG8SH3RlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEaLHRlbXBvcmFs",
+            "L2FwaS9jbG91ZC9yZXNvdXJjZS92MS9tZXNzYWdlLnByb3RvGh9nb29nbGUv",
+            "cHJvdG9idWYvdGltZXN0YW1wLnByb3RvGih0ZW1wb3JhbC9hcGkvY2xvdWQv",
+            "c2luay92MS9tZXNzYWdlLnByb3RvIoEBChVDZXJ0aWZpY2F0ZUZpbHRlclNw",
+            "ZWMSEwoLY29tbW9uX25hbWUYASABKAkSFAoMb3JnYW5pemF0aW9uGAIgASgJ",
+            "EhsKE29yZ2FuaXphdGlvbmFsX3VuaXQYAyABKAkSIAoYc3ViamVjdF9hbHRl",
+            "cm5hdGl2ZV9uYW1lGAQgASgJIrcBCgxNdGxzQXV0aFNwZWMSJQodYWNjZXB0",
+            "ZWRfY2xpZW50X2NhX2RlcHJlY2F0ZWQYASABKAkSGgoSYWNjZXB0ZWRfY2xp",
+            "ZW50X2NhGAQgASgMElMKE2NlcnRpZmljYXRlX2ZpbHRlcnMYAiADKAsyNi50",
+            "ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkNlcnRpZmljYXRlRmls",
+            "dGVyU3BlYxIPCgdlbmFibGVkGAMgASgIIiEKDkFwaUtleUF1dGhTcGVjEg8K",
+            "B2VuYWJsZWQYASABKAgiaAoPQ29kZWNTZXJ2ZXJTcGVjEhAKCGVuZHBvaW50",
+            "GAEgASgJEhkKEXBhc3NfYWNjZXNzX3Rva2VuGAIgASgIEigKIGluY2x1ZGVf",
+            "Y3Jvc3Nfb3JpZ2luX2NyZWRlbnRpYWxzGAMgASgIItUHCg1OYW1lc3BhY2VT",
+            "cGVjEgwKBG5hbWUYASABKAkSDwoHcmVnaW9ucxgCIAMoCRIWCg5yZXRlbnRp",
+            "b25fZGF5cxgDIAEoBRJACgltdGxzX2F1dGgYBCABKAsyLS50ZW1wb3JhbC5h",
+            "cGkuY2xvdWQubmFtZXNwYWNlLnYxLk10bHNBdXRoU3BlYxJFCgxhcGlfa2V5",
+            "X2F1dGgYByABKAsyLy50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYx",
+            "LkFwaUtleUF1dGhTcGVjEnAKGGN1c3RvbV9zZWFyY2hfYXR0cmlidXRlcxgF",
+            "IAMoCzJKLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuTmFtZXNw",
+            "YWNlU3BlYy5DdXN0b21TZWFyY2hBdHRyaWJ1dGVzRW50cnlCAhgBEl8KEXNl",
+            "YXJjaF9hdHRyaWJ1dGVzGAggAygLMkQudGVtcG9yYWwuYXBpLmNsb3VkLm5h",
+            "bWVzcGFjZS52MS5OYW1lc3BhY2VTcGVjLlNlYXJjaEF0dHJpYnV0ZXNFbnRy",
+            "eRJGCgxjb2RlY19zZXJ2ZXIYBiABKAsyMC50ZW1wb3JhbC5hcGkuY2xvdWQu",
+            "bmFtZXNwYWNlLnYxLkNvZGVjU2VydmVyU3BlYxo9ChtDdXN0b21TZWFyY2hB",
+            "dHRyaWJ1dGVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4",
+            "ARp7ChVTZWFyY2hBdHRyaWJ1dGVzRW50cnkSCwoDa2V5GAEgASgJElEKBXZh",
+            "bHVlGAIgASgOMkIudGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5O",
+            "YW1lc3BhY2VTcGVjLlNlYXJjaEF0dHJpYnV0ZVR5cGU6AjgBIqwCChNTZWFy",
+            "Y2hBdHRyaWJ1dGVUeXBlEiUKIVNFQVJDSF9BVFRSSUJVVEVfVFlQRV9VTlNQ",
+            "RUNJRklFRBAAEh4KGlNFQVJDSF9BVFRSSUJVVEVfVFlQRV9URVhUEAESIQod",
+            "U0VBUkNIX0FUVFJJQlVURV9UWVBFX0tFWVdPUkQQAhIdChlTRUFSQ0hfQVRU",
+            "UklCVVRFX1RZUEVfSU5UEAMSIAocU0VBUkNIX0FUVFJJQlVURV9UWVBFX0RP",
+            "VUJMRRAEEh4KGlNFQVJDSF9BVFRSSUJVVEVfVFlQRV9CT09MEAUSIgoeU0VB",
+            "UkNIX0FUVFJJQlVURV9UWVBFX0RBVEVUSU1FEAYSJgoiU0VBUkNIX0FUVFJJ",
+            "QlVURV9UWVBFX0tFWVdPUkRfTElTVBAHIlEKCUVuZHBvaW50cxITCgt3ZWJf",
+            "YWRkcmVzcxgBIAEoCRIZChFtdGxzX2dycGNfYWRkcmVzcxgCIAEoCRIUCgxn",
+            "cnBjX2FkZHJlc3MYAyABKAkiKgoGTGltaXRzEiAKGGFjdGlvbnNfcGVyX3Nl",
+            "Y29uZF9saW1pdBgBIAEoBSJYChJBV1NQcml2YXRlTGlua0luZm8SHgoWYWxs",
+            "b3dlZF9wcmluY2lwYWxfYXJucxgBIAMoCRIiChp2cGNfZW5kcG9pbnRfc2Vy",
+            "dmljZV9uYW1lcxgCIAMoCSJ0ChNQcml2YXRlQ29ubmVjdGl2aXR5Eg4KBnJl",
+            "Z2lvbhgBIAEoCRJNChBhd3NfcHJpdmF0ZV9saW5rGAIgASgLMjMudGVtcG9y",
+            "YWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5BV1NQcml2YXRlTGlua0luZm8i",
+            "/wUKCU5hbWVzcGFjZRIRCgluYW1lc3BhY2UYASABKAkSGAoQcmVzb3VyY2Vf",
+            "dmVyc2lvbhgCIAEoCRI8CgRzcGVjGAMgASgLMi4udGVtcG9yYWwuYXBpLmNs",
+            "b3VkLm5hbWVzcGFjZS52MS5OYW1lc3BhY2VTcGVjEhwKEHN0YXRlX2RlcHJl",
+            "Y2F0ZWQYBCABKAlCAhgBEjwKBXN0YXRlGA0gASgOMi0udGVtcG9yYWwuYXBp",
+            "LmNsb3VkLnJlc291cmNlLnYxLlJlc291cmNlU3RhdGUSGgoSYXN5bmNfb3Bl",
+            "cmF0aW9uX2lkGAUgASgJEj0KCWVuZHBvaW50cxgGIAEoCzIqLnRlbXBvcmFs",
+            "LmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuRW5kcG9pbnRzEhUKDWFjdGl2ZV9y",
+            "ZWdpb24YByABKAkSNwoGbGltaXRzGAggASgLMicudGVtcG9yYWwuYXBpLmNs",
+            "b3VkLm5hbWVzcGFjZS52MS5MaW1pdHMSVAoWcHJpdmF0ZV9jb25uZWN0aXZp",
+            "dGllcxgJIAMoCzI0LnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEu",
+            "UHJpdmF0ZUNvbm5lY3Rpdml0eRIwCgxjcmVhdGVkX3RpbWUYCiABKAsyGi5n",
+            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKEmxhc3RfbW9kaWZpZWRfdGlt",
+            "ZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASUwoNcmVnaW9u",
+            "X3N0YXR1cxgMIAMoCzI8LnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2Uu",
+            "djEuTmFtZXNwYWNlLlJlZ2lvblN0YXR1c0VudHJ5GmsKEVJlZ2lvblN0YXR1",
+            "c0VudHJ5EgsKA2tleRgBIAEoCRJFCgV2YWx1ZRgCIAEoCzI2LnRlbXBvcmFs",
+            "LmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuTmFtZXNwYWNlUmVnaW9uU3RhdHVz",
+            "OgI4ASKbAgoVTmFtZXNwYWNlUmVnaW9uU3RhdHVzEhwKEHN0YXRlX2RlcHJl",
+            "Y2F0ZWQYASABKAlCAhgBEksKBXN0YXRlGAMgASgOMjwudGVtcG9yYWwuYXBp",
+            "LmNsb3VkLm5hbWVzcGFjZS52MS5OYW1lc3BhY2VSZWdpb25TdGF0dXMuU3Rh",
+            "dGUSGgoSYXN5bmNfb3BlcmF0aW9uX2lkGAIgASgJInsKBVN0YXRlEhUKEVNU",
+            "QVRFX1VOU1BFQ0lGSUVEEAASEAoMU1RBVEVfQURESU5HEAESEAoMU1RBVEVf",
+            "QUNUSVZFEAISEQoNU1RBVEVfUEFTU0lWRRADEhIKDlNUQVRFX1JFTU9WSU5H",
+            "EAQSEAoMU1RBVEVfRkFJTEVEEAUikQEKDkV4cG9ydFNpbmtTcGVjEgwKBG5h",
+            "bWUYASABKAkSDwoHZW5hYmxlZBgCIAEoCBIuCgJzMxgDIAEoCzIiLnRlbXBv",
+            "cmFsLmFwaS5jbG91ZC5zaW5rLnYxLlMzU3BlYxIwCgNnY3MYBCABKAsyIy50",
+            "ZW1wb3JhbC5hcGkuY2xvdWQuc2luay52MS5HQ1NTcGVjIvYDCgpFeHBvcnRT",
+            "aW5rEgwKBG5hbWUYASABKAkSGAoQcmVzb3VyY2VfdmVyc2lvbhgCIAEoCRI8",
+            "CgVzdGF0ZRgDIAEoDjItLnRlbXBvcmFsLmFwaS5jbG91ZC5yZXNvdXJjZS52",
+            "MS5SZXNvdXJjZVN0YXRlEj0KBHNwZWMYBCABKAsyLy50ZW1wb3JhbC5hcGku",
+            "Y2xvdWQubmFtZXNwYWNlLnYxLkV4cG9ydFNpbmtTcGVjEkIKBmhlYWx0aBgF",
+            "IAEoDjIyLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuRXhwb3J0",
+            "U2luay5IZWFsdGgSFQoNZXJyb3JfbWVzc2FnZRgGIAEoCRI7ChdsYXRlc3Rf",
+            "ZGF0YV9leHBvcnRfdGltZRgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
+            "c3RhbXASOgoWbGFzdF9oZWFsdGhfY2hlY2tfdGltZRgIIAEoCzIaLmdvb2ds",
+            "ZS5wcm90b2J1Zi5UaW1lc3RhbXAibwoGSGVhbHRoEhYKEkhFQUxUSF9VTlNQ",
+            "RUNJRklFRBAAEg0KCUhFQUxUSF9PSxABEhkKFUhFQUxUSF9FUlJPUl9JTlRF",
+            "Uk5BTBACEiMKH0hFQUxUSF9FUlJPUl9VU0VSX0NPTkZJR1VSQVRJT04QA0Kx",
+            "AQoiaW8udGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MUIMTWVzc2Fn",
+            "ZVByb3RvUAFaL2dvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9uYW1lc3BhY2Uv",
+            "djE7bmFtZXNwYWNlqgIhVGVtcG9yYWxpby5BcGkuQ2xvdWQuTmFtZXNwYWNl",
+            "LlYx6gIlVGVtcG9yYWxpbzo6QXBpOjpDbG91ZDo6TmFtZXNwYWNlOjpWMWIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.CertificateFilterSpec), global::Temporalio.Api.Cloud.Namespace.V1.CertificateFilterSpec.Parser, new[]{ "CommonName", "Organization", "OrganizationalUnit", "SubjectAlternativeName" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.MtlsAuthSpec), global::Temporalio.Api.Cloud.Namespace.V1.MtlsAuthSpec.Parser, new[]{ "AcceptedClientCa", "CertificateFilters", "Enabled" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.MtlsAuthSpec), global::Temporalio.Api.Cloud.Namespace.V1.MtlsAuthSpec.Parser, new[]{ "AcceptedClientCaDeprecated", "AcceptedClientCa", "CertificateFilters", "Enabled" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.ApiKeyAuthSpec), global::Temporalio.Api.Cloud.Namespace.V1.ApiKeyAuthSpec.Parser, new[]{ "Enabled" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec), global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec.Parser, new[]{ "Endpoint", "PassAccessToken", "IncludeCrossOriginCredentials" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec), global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Parser, new[]{ "Name", "Regions", "RetentionDays", "MtlsAuth", "ApiKeyAuth", "CustomSearchAttributes", "CodecServer" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec), global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Parser, new[]{ "Name", "Regions", "RetentionDays", "MtlsAuth", "ApiKeyAuth", "CustomSearchAttributes", "SearchAttributes", "CodecServer" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType) }, null, new pbr::GeneratedClrTypeInfo[] { null, null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Endpoints), global::Temporalio.Api.Cloud.Namespace.V1.Endpoints.Parser, new[]{ "WebAddress", "MtlsGrpcAddress", "GrpcAddress" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Limits), global::Temporalio.Api.Cloud.Namespace.V1.Limits.Parser, new[]{ "ActionsPerSecondLimit" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.AWSPrivateLinkInfo), global::Temporalio.Api.Cloud.Namespace.V1.AWSPrivateLinkInfo.Parser, new[]{ "AllowedPrincipalArns", "VpcEndpointServiceNames" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.PrivateConnectivity), global::Temporalio.Api.Cloud.Namespace.V1.PrivateConnectivity.Parser, new[]{ "Region", "AwsPrivateLink" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Namespace), global::Temporalio.Api.Cloud.Namespace.V1.Namespace.Parser, new[]{ "Namespace_", "ResourceVersion", "Spec", "State", "AsyncOperationId", "Endpoints", "ActiveRegion", "Limits", "PrivateConnectivities", "CreatedTime", "LastModifiedTime", "RegionStatus" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus), global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Parser, new[]{ "State", "AsyncOperationId" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Namespace), global::Temporalio.Api.Cloud.Namespace.V1.Namespace.Parser, new[]{ "Namespace_", "ResourceVersion", "Spec", "StateDeprecated", "State", "AsyncOperationId", "Endpoints", "ActiveRegion", "Limits", "PrivateConnectivities", "CreatedTime", "LastModifiedTime", "RegionStatus" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus), global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Parser, new[]{ "StateDeprecated", "State", "AsyncOperationId" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec), global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec.Parser, new[]{ "Name", "Enabled", "S3", "Gcs" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.ExportSink), global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Parser, new[]{ "Name", "ResourceVersion", "State", "Spec", "Health", "ErrorMessage", "LatestDataExportTime", "LastHealthCheckTime" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health) }, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class CertificateFilterSpec : pb::IMessage<CertificateFilterSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -353,7 +392,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -384,7 +427,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -411,6 +458,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class MtlsAuthSpec : pb::IMessage<MtlsAuthSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -445,6 +493,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public MtlsAuthSpec(MtlsAuthSpec other) : this() {
+      acceptedClientCaDeprecated_ = other.acceptedClientCaDeprecated_;
       acceptedClientCa_ = other.acceptedClientCa_;
       certificateFilters_ = other.certificateFilters_.Clone();
       enabled_ = other.enabled_;
@@ -457,18 +506,37 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       return new MtlsAuthSpec(this);
     }
 
-    /// <summary>Field number for the "accepted_client_ca" field.</summary>
-    public const int AcceptedClientCaFieldNumber = 1;
-    private string acceptedClientCa_ = "";
+    /// <summary>Field number for the "accepted_client_ca_deprecated" field.</summary>
+    public const int AcceptedClientCaDeprecatedFieldNumber = 1;
+    private string acceptedClientCaDeprecated_ = "";
     /// <summary>
     /// The base64 encoded ca cert(s) in PEM format that the clients can use for authentication and authorization.
     /// This must only be one value, but the CA can have a chain.
     ///
     /// (-- api-linter: core::0140::base64=disabled --)
+    /// Deprecated: Not supported after 2024-05-13-00 api version. Use accepted_client_ca instead.
+    /// temporal:versioning:max_version=2024-05-13-00
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string AcceptedClientCa {
+    public string AcceptedClientCaDeprecated {
+      get { return acceptedClientCaDeprecated_; }
+      set {
+        acceptedClientCaDeprecated_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "accepted_client_ca" field.</summary>
+    public const int AcceptedClientCaFieldNumber = 4;
+    private pb::ByteString acceptedClientCa_ = pb::ByteString.Empty;
+    /// <summary>
+    /// The ca cert(s) in PEM format that the clients can use for authentication and authorization.
+    /// This must only be one value, but the CA can have a chain.
+    /// temporal:versioning:min_version=2024-05-13-00
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString AcceptedClientCa {
       get { return acceptedClientCa_; }
       set {
         acceptedClientCa_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
@@ -523,6 +591,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (AcceptedClientCaDeprecated != other.AcceptedClientCaDeprecated) return false;
       if (AcceptedClientCa != other.AcceptedClientCa) return false;
       if(!certificateFilters_.Equals(other.certificateFilters_)) return false;
       if (Enabled != other.Enabled) return false;
@@ -533,6 +602,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (AcceptedClientCaDeprecated.Length != 0) hash ^= AcceptedClientCaDeprecated.GetHashCode();
       if (AcceptedClientCa.Length != 0) hash ^= AcceptedClientCa.GetHashCode();
       hash ^= certificateFilters_.GetHashCode();
       if (Enabled != false) hash ^= Enabled.GetHashCode();
@@ -554,14 +624,18 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (AcceptedClientCa.Length != 0) {
+      if (AcceptedClientCaDeprecated.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(AcceptedClientCa);
+        output.WriteString(AcceptedClientCaDeprecated);
       }
       certificateFilters_.WriteTo(output, _repeated_certificateFilters_codec);
       if (Enabled != false) {
         output.WriteRawTag(24);
         output.WriteBool(Enabled);
+      }
+      if (AcceptedClientCa.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteBytes(AcceptedClientCa);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -573,14 +647,18 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (AcceptedClientCa.Length != 0) {
+      if (AcceptedClientCaDeprecated.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(AcceptedClientCa);
+        output.WriteString(AcceptedClientCaDeprecated);
       }
       certificateFilters_.WriteTo(ref output, _repeated_certificateFilters_codec);
       if (Enabled != false) {
         output.WriteRawTag(24);
         output.WriteBool(Enabled);
+      }
+      if (AcceptedClientCa.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteBytes(AcceptedClientCa);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -592,8 +670,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (AcceptedClientCaDeprecated.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(AcceptedClientCaDeprecated);
+      }
       if (AcceptedClientCa.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(AcceptedClientCa);
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(AcceptedClientCa);
       }
       size += certificateFilters_.CalculateSize(_repeated_certificateFilters_codec);
       if (Enabled != false) {
@@ -610,6 +691,9 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     public void MergeFrom(MtlsAuthSpec other) {
       if (other == null) {
         return;
+      }
+      if (other.AcceptedClientCaDeprecated.Length != 0) {
+        AcceptedClientCaDeprecated = other.AcceptedClientCaDeprecated;
       }
       if (other.AcceptedClientCa.Length != 0) {
         AcceptedClientCa = other.AcceptedClientCa;
@@ -629,12 +713,16 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            AcceptedClientCa = input.ReadString();
+            AcceptedClientCaDeprecated = input.ReadString();
             break;
           }
           case 18: {
@@ -643,6 +731,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
           }
           case 24: {
             Enabled = input.ReadBool();
+            break;
+          }
+          case 34: {
+            AcceptedClientCa = input.ReadBytes();
             break;
           }
         }
@@ -656,12 +748,16 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            AcceptedClientCa = input.ReadString();
+            AcceptedClientCaDeprecated = input.ReadString();
             break;
           }
           case 18: {
@@ -672,6 +768,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             Enabled = input.ReadBool();
             break;
           }
+          case 34: {
+            AcceptedClientCa = input.ReadBytes();
+            break;
+          }
         }
       }
     }
@@ -679,6 +779,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class ApiKeyAuthSpec : pb::IMessage<ApiKeyAuthSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -838,7 +939,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -857,7 +962,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -872,6 +981,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class CodecServerSpec : pb::IMessage<CodecServerSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1094,7 +1204,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1121,7 +1235,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1144,6 +1262,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class NamespaceSpec : pb::IMessage<NamespaceSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1184,6 +1303,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       mtlsAuth_ = other.mtlsAuth_ != null ? other.mtlsAuth_.Clone() : null;
       apiKeyAuth_ = other.apiKeyAuth_ != null ? other.apiKeyAuth_.Clone() : null;
       customSearchAttributes_ = other.customSearchAttributes_.Clone();
+      searchAttributes_ = other.searchAttributes_.Clone();
       codecServer_ = other.codecServer_ != null ? other.codecServer_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -1293,11 +1413,33 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     /// Supported attribute types: text, keyword, int, double, bool, datetime, keyword_list.
     /// NOTE: currently deleting a search attribute is not supported.
     /// Optional, default is empty.
+    /// Deprecated: Not supported after 2024-10-01-00 api version. Use search_attributes instead.
+    /// temporal:versioning:max_version=2024-10-01-00
     /// </summary>
+    [global::System.ObsoleteAttribute]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::MapField<string, string> CustomSearchAttributes {
       get { return customSearchAttributes_; }
+    }
+
+    /// <summary>Field number for the "search_attributes" field.</summary>
+    public const int SearchAttributesFieldNumber = 8;
+    private static readonly pbc::MapField<string, global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType>.Codec _map_searchAttributes_codec
+        = new pbc::MapField<string, global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForEnum(16, x => (int) x, x => (global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType) x, global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType.Unspecified), 66);
+    private readonly pbc::MapField<string, global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType> searchAttributes_ = new pbc::MapField<string, global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType>();
+    /// <summary>
+    /// The custom search attributes to use for the namespace.
+    /// The name of the attribute is the key and the type is the value.
+    /// Note: currently deleting a search attribute is not supported.
+    /// Optional, default is empty.
+    /// temporal:versioning:min_version=2024-10-01-00
+    /// temporal:enums:replaces=custom_search_attributes
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType> SearchAttributes {
+      get { return searchAttributes_; }
     }
 
     /// <summary>Field number for the "codec_server" field.</summary>
@@ -1337,6 +1479,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (!object.Equals(MtlsAuth, other.MtlsAuth)) return false;
       if (!object.Equals(ApiKeyAuth, other.ApiKeyAuth)) return false;
       if (!CustomSearchAttributes.Equals(other.CustomSearchAttributes)) return false;
+      if (!SearchAttributes.Equals(other.SearchAttributes)) return false;
       if (!object.Equals(CodecServer, other.CodecServer)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1351,6 +1494,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (mtlsAuth_ != null) hash ^= MtlsAuth.GetHashCode();
       if (apiKeyAuth_ != null) hash ^= ApiKeyAuth.GetHashCode();
       hash ^= CustomSearchAttributes.GetHashCode();
+      hash ^= SearchAttributes.GetHashCode();
       if (codecServer_ != null) hash ^= CodecServer.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1392,6 +1536,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(ApiKeyAuth);
       }
+      searchAttributes_.WriteTo(output, _map_searchAttributes_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1424,6 +1569,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(ApiKeyAuth);
       }
+      searchAttributes_.WriteTo(ref output, _map_searchAttributes_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1448,6 +1594,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ApiKeyAuth);
       }
       size += customSearchAttributes_.CalculateSize(_map_customSearchAttributes_codec);
+      size += searchAttributes_.CalculateSize(_map_searchAttributes_codec);
       if (codecServer_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(CodecServer);
       }
@@ -1483,6 +1630,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         ApiKeyAuth.MergeFrom(other.ApiKeyAuth);
       }
       customSearchAttributes_.MergeFrom(other.customSearchAttributes_);
+      searchAttributes_.MergeFrom(other.searchAttributes_);
       if (other.codecServer_ != null) {
         if (codecServer_ == null) {
           CodecServer = new global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec();
@@ -1500,7 +1648,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1541,6 +1693,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             input.ReadMessage(ApiKeyAuth);
             break;
           }
+          case 66: {
+            searchAttributes_.AddEntriesFrom(input, _map_searchAttributes_codec);
+            break;
+          }
         }
       }
     #endif
@@ -1552,7 +1708,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1593,13 +1753,37 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             input.ReadMessage(ApiKeyAuth);
             break;
           }
+          case 66: {
+            searchAttributes_.AddEntriesFrom(ref input, _map_searchAttributes_codec);
+            break;
+          }
         }
       }
     }
     #endif
 
+    #region Nested types
+    /// <summary>Container for nested types declared in the NamespaceSpec message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public enum SearchAttributeType {
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_UNSPECIFIED")] Unspecified = 0,
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_TEXT")] Text = 1,
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_KEYWORD")] Keyword = 2,
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_INT")] Int = 3,
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_DOUBLE")] Double = 4,
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_BOOL")] Bool = 5,
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_DATETIME")] Datetime = 6,
+        [pbr::OriginalName("SEARCH_ATTRIBUTE_TYPE_KEYWORD_LIST")] KeywordList = 7,
+      }
+
+    }
+    #endregion
+
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Endpoints : pb::IMessage<Endpoints>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1822,7 +2006,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1849,7 +2037,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1872,6 +2064,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Limits : pb::IMessage<Limits>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2031,7 +2224,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2050,7 +2247,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2065,6 +2266,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class AWSPrivateLinkInfo : pb::IMessage<AWSPrivateLinkInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2233,7 +2435,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2256,7 +2462,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2275,6 +2485,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class PrivateConnectivity : pb::IMessage<PrivateConnectivity>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2469,7 +2680,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2495,7 +2710,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2517,6 +2736,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Namespace : pb::IMessage<Namespace>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2554,6 +2774,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       namespace_ = other.namespace_;
       resourceVersion_ = other.resourceVersion_;
       spec_ = other.spec_ != null ? other.spec_.Clone() : null;
+      stateDeprecated_ = other.stateDeprecated_;
       state_ = other.state_;
       asyncOperationId_ = other.asyncOperationId_;
       endpoints_ = other.endpoints_ != null ? other.endpoints_.Clone() : null;
@@ -2618,18 +2839,39 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       }
     }
 
-    /// <summary>Field number for the "state" field.</summary>
-    public const int StateFieldNumber = 4;
-    private string state_ = "";
+    /// <summary>Field number for the "state_deprecated" field.</summary>
+    public const int StateDeprecatedFieldNumber = 4;
+    private string stateDeprecated_ = "";
     /// <summary>
     /// The current state of the namespace.
+    /// Deprecated: Not supported after 2024-10-01-00 api version. Use state instead.
+    /// temporal:versioning:max_version=2024-10-01-00
+    /// </summary>
+    [global::System.ObsoleteAttribute]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string StateDeprecated {
+      get { return stateDeprecated_; }
+      set {
+        stateDeprecated_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 13;
+    private global::Temporalio.Api.Cloud.Resource.V1.ResourceState state_ = global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified;
+    /// <summary>
+    /// The current state of the namespace.
+    /// For any failed state, reach out to Temporal Cloud support for remediation.
+    /// temporal:versioning:min_version=2024-10-01-00
+    /// temporal:enums:replaces=state_deprecated
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string State {
+    public global::Temporalio.Api.Cloud.Resource.V1.ResourceState State {
       get { return state_; }
       set {
-        state_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        state_ = value;
       }
     }
 
@@ -2771,6 +3013,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (Namespace_ != other.Namespace_) return false;
       if (ResourceVersion != other.ResourceVersion) return false;
       if (!object.Equals(Spec, other.Spec)) return false;
+      if (StateDeprecated != other.StateDeprecated) return false;
       if (State != other.State) return false;
       if (AsyncOperationId != other.AsyncOperationId) return false;
       if (!object.Equals(Endpoints, other.Endpoints)) return false;
@@ -2790,7 +3033,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (Namespace_.Length != 0) hash ^= Namespace_.GetHashCode();
       if (ResourceVersion.Length != 0) hash ^= ResourceVersion.GetHashCode();
       if (spec_ != null) hash ^= Spec.GetHashCode();
-      if (State.Length != 0) hash ^= State.GetHashCode();
+      if (StateDeprecated.Length != 0) hash ^= StateDeprecated.GetHashCode();
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) hash ^= State.GetHashCode();
       if (AsyncOperationId.Length != 0) hash ^= AsyncOperationId.GetHashCode();
       if (endpoints_ != null) hash ^= Endpoints.GetHashCode();
       if (ActiveRegion.Length != 0) hash ^= ActiveRegion.GetHashCode();
@@ -2829,9 +3073,9 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(26);
         output.WriteMessage(Spec);
       }
-      if (State.Length != 0) {
+      if (StateDeprecated.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteString(State);
+        output.WriteString(StateDeprecated);
       }
       if (AsyncOperationId.Length != 0) {
         output.WriteRawTag(42);
@@ -2859,6 +3103,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteMessage(LastModifiedTime);
       }
       regionStatus_.WriteTo(output, _map_regionStatus_codec);
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        output.WriteRawTag(104);
+        output.WriteEnum((int) State);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2881,9 +3129,9 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(26);
         output.WriteMessage(Spec);
       }
-      if (State.Length != 0) {
+      if (StateDeprecated.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteString(State);
+        output.WriteString(StateDeprecated);
       }
       if (AsyncOperationId.Length != 0) {
         output.WriteRawTag(42);
@@ -2911,6 +3159,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteMessage(LastModifiedTime);
       }
       regionStatus_.WriteTo(ref output, _map_regionStatus_codec);
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        output.WriteRawTag(104);
+        output.WriteEnum((int) State);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2930,8 +3182,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (spec_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Spec);
       }
-      if (State.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(State);
+      if (StateDeprecated.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(StateDeprecated);
+      }
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
       }
       if (AsyncOperationId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(AsyncOperationId);
@@ -2977,7 +3232,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         }
         Spec.MergeFrom(other.Spec);
       }
-      if (other.State.Length != 0) {
+      if (other.StateDeprecated.Length != 0) {
+        StateDeprecated = other.StateDeprecated;
+      }
+      if (other.State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
         State = other.State;
       }
       if (other.AsyncOperationId.Length != 0) {
@@ -3023,7 +3281,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -3043,7 +3305,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             break;
           }
           case 34: {
-            State = input.ReadString();
+            StateDeprecated = input.ReadString();
             break;
           }
           case 42: {
@@ -3090,6 +3352,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             regionStatus_.AddEntriesFrom(input, _map_regionStatus_codec);
             break;
           }
+          case 104: {
+            State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
+            break;
+          }
         }
       }
     #endif
@@ -3101,7 +3367,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -3121,7 +3391,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             break;
           }
           case 34: {
-            State = input.ReadString();
+            StateDeprecated = input.ReadString();
             break;
           }
           case 42: {
@@ -3168,6 +3438,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             regionStatus_.AddEntriesFrom(ref input, _map_regionStatus_codec);
             break;
           }
+          case 104: {
+            State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
+            break;
+          }
         }
       }
     }
@@ -3175,6 +3449,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class NamespaceRegionStatus : pb::IMessage<NamespaceRegionStatus>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -3209,6 +3484,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public NamespaceRegionStatus(NamespaceRegionStatus other) : this() {
+      stateDeprecated_ = other.stateDeprecated_;
       state_ = other.state_;
       asyncOperationId_ = other.asyncOperationId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -3220,20 +3496,40 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       return new NamespaceRegionStatus(this);
     }
 
-    /// <summary>Field number for the "state" field.</summary>
-    public const int StateFieldNumber = 1;
-    private string state_ = "";
+    /// <summary>Field number for the "state_deprecated" field.</summary>
+    public const int StateDeprecatedFieldNumber = 1;
+    private string stateDeprecated_ = "";
     /// <summary>
     /// The current state of the namespace region.
     /// Possible values: adding, active, passive, removing, failed.
     /// For any failed state, reach out to Temporal Cloud support for remediation.
+    /// Deprecated: Not supported after 2024-10-01-00 api version. Use state instead.
+    /// temporal:versioning:max_version=2024-10-01-00
+    /// </summary>
+    [global::System.ObsoleteAttribute]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string StateDeprecated {
+      get { return stateDeprecated_; }
+      set {
+        stateDeprecated_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 3;
+    private global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State state_ = global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State.Unspecified;
+    /// <summary>
+    /// The current state of the namespace region.
+    /// temporal:versioning:min_version=2024-10-01-00
+    /// temporal:enums:replaces=state_deprecated
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string State {
+    public global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State State {
       get { return state_; }
       set {
-        state_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        state_ = value;
       }
     }
 
@@ -3267,6 +3563,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (StateDeprecated != other.StateDeprecated) return false;
       if (State != other.State) return false;
       if (AsyncOperationId != other.AsyncOperationId) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -3276,7 +3573,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (State.Length != 0) hash ^= State.GetHashCode();
+      if (StateDeprecated.Length != 0) hash ^= StateDeprecated.GetHashCode();
+      if (State != global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State.Unspecified) hash ^= State.GetHashCode();
       if (AsyncOperationId.Length != 0) hash ^= AsyncOperationId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -3296,13 +3594,17 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (State.Length != 0) {
+      if (StateDeprecated.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(State);
+        output.WriteString(StateDeprecated);
       }
       if (AsyncOperationId.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(AsyncOperationId);
+      }
+      if (State != global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) State);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -3314,13 +3616,17 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (State.Length != 0) {
+      if (StateDeprecated.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(State);
+        output.WriteString(StateDeprecated);
       }
       if (AsyncOperationId.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(AsyncOperationId);
+      }
+      if (State != global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) State);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -3332,8 +3638,11 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (State.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(State);
+      if (StateDeprecated.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(StateDeprecated);
+      }
+      if (State != global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
       }
       if (AsyncOperationId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(AsyncOperationId);
@@ -3350,7 +3659,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (other == null) {
         return;
       }
-      if (other.State.Length != 0) {
+      if (other.StateDeprecated.Length != 0) {
+        StateDeprecated = other.StateDeprecated;
+      }
+      if (other.State != global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State.Unspecified) {
         State = other.State;
       }
       if (other.AsyncOperationId.Length != 0) {
@@ -3367,16 +3679,24 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            State = input.ReadString();
+            StateDeprecated = input.ReadString();
             break;
           }
           case 18: {
             AsyncOperationId = input.ReadString();
+            break;
+          }
+          case 24: {
+            State = (global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State) input.ReadEnum();
             break;
           }
         }
@@ -3390,22 +3710,925 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 10: {
-            State = input.ReadString();
+            StateDeprecated = input.ReadString();
             break;
           }
           case 18: {
             AsyncOperationId = input.ReadString();
             break;
           }
+          case 24: {
+            State = (global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State) input.ReadEnum();
+            break;
+          }
         }
       }
     }
     #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the NamespaceRegionStatus message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public enum State {
+        [pbr::OriginalName("STATE_UNSPECIFIED")] Unspecified = 0,
+        /// <summary>
+        /// The region is being added to the namespace.
+        /// </summary>
+        [pbr::OriginalName("STATE_ADDING")] Adding = 1,
+        /// <summary>
+        /// The namespace is active in this region.
+        /// </summary>
+        [pbr::OriginalName("STATE_ACTIVE")] Active = 2,
+        /// <summary>
+        /// The namespace is passive in this region.
+        /// </summary>
+        [pbr::OriginalName("STATE_PASSIVE")] Passive = 3,
+        /// <summary>
+        /// The region is being removed from the namespace.
+        /// </summary>
+        [pbr::OriginalName("STATE_REMOVING")] Removing = 4,
+        /// <summary>
+        /// The region failed to be added/removed, check failure_reason in the last async_operation status for more details.
+        /// </summary>
+        [pbr::OriginalName("STATE_FAILED")] Failed = 5,
+      }
+
+    }
+    #endregion
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class ExportSinkSpec : pb::IMessage<ExportSinkSpec>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ExportSinkSpec> _parser = new pb::MessageParser<ExportSinkSpec>(() => new ExportSinkSpec());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ExportSinkSpec> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Namespace.V1.MessageReflection.Descriptor.MessageTypes[11]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportSinkSpec() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportSinkSpec(ExportSinkSpec other) : this() {
+      name_ = other.name_;
+      enabled_ = other.enabled_;
+      s3_ = other.s3_ != null ? other.s3_.Clone() : null;
+      gcs_ = other.gcs_ != null ? other.gcs_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportSinkSpec Clone() {
+      return new ExportSinkSpec(this);
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
+    /// <summary>
+    /// The unique name of the export sink, it can't be changed once set. 
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "enabled" field.</summary>
+    public const int EnabledFieldNumber = 2;
+    private bool enabled_;
+    /// <summary>
+    /// A flag indicating whether the export sink is enabled or not.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Enabled {
+      get { return enabled_; }
+      set {
+        enabled_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "s3" field.</summary>
+    public const int S3FieldNumber = 3;
+    private global::Temporalio.Api.Cloud.Sink.V1.S3Spec s3_;
+    /// <summary>
+    /// The S3 configuration details when destination_type is S3.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Sink.V1.S3Spec S3 {
+      get { return s3_; }
+      set {
+        s3_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "gcs" field.</summary>
+    public const int GcsFieldNumber = 4;
+    private global::Temporalio.Api.Cloud.Sink.V1.GCSSpec gcs_;
+    /// <summary>
+    /// This is a feature under development. We will allow GCS sink support for GCP Namespaces.
+    /// The GCS configuration details when destination_type is GCS. 
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Sink.V1.GCSSpec Gcs {
+      get { return gcs_; }
+      set {
+        gcs_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ExportSinkSpec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ExportSinkSpec other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Name != other.Name) return false;
+      if (Enabled != other.Enabled) return false;
+      if (!object.Equals(S3, other.S3)) return false;
+      if (!object.Equals(Gcs, other.Gcs)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (Enabled != false) hash ^= Enabled.GetHashCode();
+      if (s3_ != null) hash ^= S3.GetHashCode();
+      if (gcs_ != null) hash ^= Gcs.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (Enabled != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(Enabled);
+      }
+      if (s3_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(S3);
+      }
+      if (gcs_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Gcs);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (Enabled != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(Enabled);
+      }
+      if (s3_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(S3);
+      }
+      if (gcs_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Gcs);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (Enabled != false) {
+        size += 1 + 1;
+      }
+      if (s3_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(S3);
+      }
+      if (gcs_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Gcs);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ExportSinkSpec other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.Enabled != false) {
+        Enabled = other.Enabled;
+      }
+      if (other.s3_ != null) {
+        if (s3_ == null) {
+          S3 = new global::Temporalio.Api.Cloud.Sink.V1.S3Spec();
+        }
+        S3.MergeFrom(other.S3);
+      }
+      if (other.gcs_ != null) {
+        if (gcs_ == null) {
+          Gcs = new global::Temporalio.Api.Cloud.Sink.V1.GCSSpec();
+        }
+        Gcs.MergeFrom(other.Gcs);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 16: {
+            Enabled = input.ReadBool();
+            break;
+          }
+          case 26: {
+            if (s3_ == null) {
+              S3 = new global::Temporalio.Api.Cloud.Sink.V1.S3Spec();
+            }
+            input.ReadMessage(S3);
+            break;
+          }
+          case 34: {
+            if (gcs_ == null) {
+              Gcs = new global::Temporalio.Api.Cloud.Sink.V1.GCSSpec();
+            }
+            input.ReadMessage(Gcs);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 16: {
+            Enabled = input.ReadBool();
+            break;
+          }
+          case 26: {
+            if (s3_ == null) {
+              S3 = new global::Temporalio.Api.Cloud.Sink.V1.S3Spec();
+            }
+            input.ReadMessage(S3);
+            break;
+          }
+          case 34: {
+            if (gcs_ == null) {
+              Gcs = new global::Temporalio.Api.Cloud.Sink.V1.GCSSpec();
+            }
+            input.ReadMessage(Gcs);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class ExportSink : pb::IMessage<ExportSink>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ExportSink> _parser = new pb::MessageParser<ExportSink>(() => new ExportSink());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ExportSink> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Namespace.V1.MessageReflection.Descriptor.MessageTypes[12]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportSink() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportSink(ExportSink other) : this() {
+      name_ = other.name_;
+      resourceVersion_ = other.resourceVersion_;
+      state_ = other.state_;
+      spec_ = other.spec_ != null ? other.spec_.Clone() : null;
+      health_ = other.health_;
+      errorMessage_ = other.errorMessage_;
+      latestDataExportTime_ = other.latestDataExportTime_ != null ? other.latestDataExportTime_.Clone() : null;
+      lastHealthCheckTime_ = other.lastHealthCheckTime_ != null ? other.lastHealthCheckTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ExportSink Clone() {
+      return new ExportSink(this);
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
+    /// <summary>
+    /// The unique name of the export sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "resource_version" field.</summary>
+    public const int ResourceVersionFieldNumber = 2;
+    private string resourceVersion_ = "";
+    /// <summary>
+    /// The version of the export sink resource.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ResourceVersion {
+      get { return resourceVersion_; }
+      set {
+        resourceVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 3;
+    private global::Temporalio.Api.Cloud.Resource.V1.ResourceState state_ = global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified;
+    /// <summary>
+    /// The current state of the export sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Resource.V1.ResourceState State {
+      get { return state_; }
+      set {
+        state_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "spec" field.</summary>
+    public const int SpecFieldNumber = 4;
+    private global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec spec_;
+    /// <summary>
+    /// The specification details of the export sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec Spec {
+      get { return spec_; }
+      set {
+        spec_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "health" field.</summary>
+    public const int HealthFieldNumber = 5;
+    private global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health health_ = global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health.Unspecified;
+    /// <summary>
+    /// The health status of the export sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health Health {
+      get { return health_; }
+      set {
+        health_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_message" field.</summary>
+    public const int ErrorMessageFieldNumber = 6;
+    private string errorMessage_ = "";
+    /// <summary>
+    /// An error message describing any issues with the export sink, if applicable.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorMessage {
+      get { return errorMessage_; }
+      set {
+        errorMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "latest_data_export_time" field.</summary>
+    public const int LatestDataExportTimeFieldNumber = 7;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp latestDataExportTime_;
+    /// <summary>
+    /// The timestamp of the latest successful data export.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp LatestDataExportTime {
+      get { return latestDataExportTime_; }
+      set {
+        latestDataExportTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "last_health_check_time" field.</summary>
+    public const int LastHealthCheckTimeFieldNumber = 8;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp lastHealthCheckTime_;
+    /// <summary>
+    /// The timestamp of the last health check performed on the export sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp LastHealthCheckTime {
+      get { return lastHealthCheckTime_; }
+      set {
+        lastHealthCheckTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ExportSink);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ExportSink other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Name != other.Name) return false;
+      if (ResourceVersion != other.ResourceVersion) return false;
+      if (State != other.State) return false;
+      if (!object.Equals(Spec, other.Spec)) return false;
+      if (Health != other.Health) return false;
+      if (ErrorMessage != other.ErrorMessage) return false;
+      if (!object.Equals(LatestDataExportTime, other.LatestDataExportTime)) return false;
+      if (!object.Equals(LastHealthCheckTime, other.LastHealthCheckTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (ResourceVersion.Length != 0) hash ^= ResourceVersion.GetHashCode();
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) hash ^= State.GetHashCode();
+      if (spec_ != null) hash ^= Spec.GetHashCode();
+      if (Health != global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health.Unspecified) hash ^= Health.GetHashCode();
+      if (ErrorMessage.Length != 0) hash ^= ErrorMessage.GetHashCode();
+      if (latestDataExportTime_ != null) hash ^= LatestDataExportTime.GetHashCode();
+      if (lastHealthCheckTime_ != null) hash ^= LastHealthCheckTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ResourceVersion);
+      }
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) State);
+      }
+      if (spec_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Spec);
+      }
+      if (Health != global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) Health);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorMessage);
+      }
+      if (latestDataExportTime_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(LatestDataExportTime);
+      }
+      if (lastHealthCheckTime_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(LastHealthCheckTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ResourceVersion);
+      }
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) State);
+      }
+      if (spec_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Spec);
+      }
+      if (Health != global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) Health);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorMessage);
+      }
+      if (latestDataExportTime_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(LatestDataExportTime);
+      }
+      if (lastHealthCheckTime_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(LastHealthCheckTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (ResourceVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ResourceVersion);
+      }
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
+      }
+      if (spec_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Spec);
+      }
+      if (Health != global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Health);
+      }
+      if (ErrorMessage.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorMessage);
+      }
+      if (latestDataExportTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LatestDataExportTime);
+      }
+      if (lastHealthCheckTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastHealthCheckTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ExportSink other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.ResourceVersion.Length != 0) {
+        ResourceVersion = other.ResourceVersion;
+      }
+      if (other.State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        State = other.State;
+      }
+      if (other.spec_ != null) {
+        if (spec_ == null) {
+          Spec = new global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec();
+        }
+        Spec.MergeFrom(other.Spec);
+      }
+      if (other.Health != global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health.Unspecified) {
+        Health = other.Health;
+      }
+      if (other.ErrorMessage.Length != 0) {
+        ErrorMessage = other.ErrorMessage;
+      }
+      if (other.latestDataExportTime_ != null) {
+        if (latestDataExportTime_ == null) {
+          LatestDataExportTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        LatestDataExportTime.MergeFrom(other.LatestDataExportTime);
+      }
+      if (other.lastHealthCheckTime_ != null) {
+        if (lastHealthCheckTime_ == null) {
+          LastHealthCheckTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        LastHealthCheckTime.MergeFrom(other.LastHealthCheckTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+          case 24: {
+            State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
+            break;
+          }
+          case 34: {
+            if (spec_ == null) {
+              Spec = new global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec();
+            }
+            input.ReadMessage(Spec);
+            break;
+          }
+          case 40: {
+            Health = (global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health) input.ReadEnum();
+            break;
+          }
+          case 50: {
+            ErrorMessage = input.ReadString();
+            break;
+          }
+          case 58: {
+            if (latestDataExportTime_ == null) {
+              LatestDataExportTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LatestDataExportTime);
+            break;
+          }
+          case 66: {
+            if (lastHealthCheckTime_ == null) {
+              LastHealthCheckTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastHealthCheckTime);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+          case 24: {
+            State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
+            break;
+          }
+          case 34: {
+            if (spec_ == null) {
+              Spec = new global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec();
+            }
+            input.ReadMessage(Spec);
+            break;
+          }
+          case 40: {
+            Health = (global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health) input.ReadEnum();
+            break;
+          }
+          case 50: {
+            ErrorMessage = input.ReadString();
+            break;
+          }
+          case 58: {
+            if (latestDataExportTime_ == null) {
+              LatestDataExportTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LatestDataExportTime);
+            break;
+          }
+          case 66: {
+            if (lastHealthCheckTime_ == null) {
+              LastHealthCheckTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastHealthCheckTime);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the ExportSink message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public enum Health {
+        [pbr::OriginalName("HEALTH_UNSPECIFIED")] Unspecified = 0,
+        [pbr::OriginalName("HEALTH_OK")] Ok = 1,
+        [pbr::OriginalName("HEALTH_ERROR_INTERNAL")] ErrorInternal = 2,
+        [pbr::OriginalName("HEALTH_ERROR_USER_CONFIGURATION")] ErrorUserConfiguration = 3,
+      }
+
+    }
+    #endregion
 
   }
 

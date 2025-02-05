@@ -43,6 +43,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateNamespaceExportSink.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateNamespaceExportSinkResponse> CreateNamespaceExportSinkAsync(CreateNamespaceExportSinkRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateNamespaceExportSink", req, CreateNamespaceExportSinkResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke CreateNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateNexusEndpointResponse> CreateNexusEndpointAsync(CreateNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateNexusEndpoint", req, CreateNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CreateServiceAccount.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -98,6 +120,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke DeleteNamespaceExportSink.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteNamespaceExportSinkResponse> DeleteNamespaceExportSinkAsync(DeleteNamespaceExportSinkRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteNamespaceExportSink", req, DeleteNamespaceExportSinkResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteNexusEndpointResponse> DeleteNexusEndpointAsync(DeleteNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteNexusEndpoint", req, DeleteNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke DeleteServiceAccount.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -139,6 +183,17 @@ namespace Temporalio.Client
         public Task<FailoverNamespaceRegionResponse> FailoverNamespaceRegionAsync(FailoverNamespaceRegionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("FailoverNamespaceRegion", req, FailoverNamespaceRegionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetAccount.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetAccountResponse> GetAccountAsync(GetAccountRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetAccount", req, GetAccountResponse.Parser, options);
         }
 
         /// <summary>
@@ -186,6 +241,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetNamespaceExportSink.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetNamespaceExportSinkResponse> GetNamespaceExportSinkAsync(GetNamespaceExportSinkRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetNamespaceExportSink", req, GetNamespaceExportSinkResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetNamespaceExportSinks.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetNamespaceExportSinksResponse> GetNamespaceExportSinksAsync(GetNamespaceExportSinksRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetNamespaceExportSinks", req, GetNamespaceExportSinksResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetNamespaces.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -194,6 +271,28 @@ namespace Temporalio.Client
         public Task<GetNamespacesResponse> GetNamespacesAsync(GetNamespacesRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetNamespaces", req, GetNamespacesResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetNexusEndpointResponse> GetNexusEndpointAsync(GetNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetNexusEndpoint", req, GetNexusEndpointResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetNexusEndpoints.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetNexusEndpointsResponse> GetNexusEndpointsAsync(GetNexusEndpointsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetNexusEndpoints", req, GetNexusEndpointsResponse.Parser, options);
         }
 
         /// <summary>
@@ -238,6 +337,17 @@ namespace Temporalio.Client
         public Task<GetServiceAccountsResponse> GetServiceAccountsAsync(GetServiceAccountsRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetServiceAccounts", req, GetServiceAccountsResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetUsage.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetUsageResponse> GetUsageAsync(GetUsageRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetUsage", req, GetUsageResponse.Parser, options);
         }
 
         /// <summary>
@@ -318,6 +428,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke UpdateAccount.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateAccountResponse> UpdateAccountAsync(UpdateAccountRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateAccount", req, UpdateAccountResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke UpdateApiKey.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -337,6 +458,28 @@ namespace Temporalio.Client
         public Task<UpdateNamespaceResponse> UpdateNamespaceAsync(UpdateNamespaceRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateNamespace", req, UpdateNamespaceResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateNamespaceExportSink.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateNamespaceExportSinkResponse> UpdateNamespaceExportSinkAsync(UpdateNamespaceExportSinkRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateNamespaceExportSink", req, UpdateNamespaceExportSinkResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateNexusEndpoint.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateNexusEndpointResponse> UpdateNexusEndpointAsync(UpdateNexusEndpointRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateNexusEndpoint", req, UpdateNexusEndpointResponse.Parser, options);
         }
 
         /// <summary>
@@ -370,6 +513,17 @@ namespace Temporalio.Client
         public Task<UpdateUserGroupResponse> UpdateUserGroupAsync(UpdateUserGroupRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateUserGroup", req, UpdateUserGroupResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke ValidateNamespaceExportSink.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ValidateNamespaceExportSinkResponse> ValidateNamespaceExportSinkAsync(ValidateNamespaceExportSinkRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ValidateNamespaceExportSink", req, ValidateNamespaceExportSinkResponse.Parser, options);
         }
     }
 }
