@@ -111,6 +111,17 @@ namespace Temporalio.Worker
 
         private static async Task EncodeAsync(IPayloadCodec codec, WorkflowCommand cmd)
         {
+            if (cmd.UserMetadata != null)
+            {
+                if (cmd.UserMetadata.Summary != null)
+                {
+                    await EncodeAsync(codec, cmd.UserMetadata.Summary).ConfigureAwait(false);
+                }
+                if (cmd.UserMetadata.Details != null)
+                {
+                    await EncodeAsync(codec, cmd.UserMetadata.Details).ConfigureAwait(false);
+                }
+            }
             switch (cmd.VariantCase)
             {
                 case WorkflowCommand.VariantOneofCase.CompleteWorkflowExecution:
@@ -157,10 +168,6 @@ namespace Temporalio.Worker
                 case WorkflowCommand.VariantOneofCase.ScheduleActivity:
                     await EncodeAsync(codec, cmd.ScheduleActivity.Arguments).ConfigureAwait(false);
                     await EncodeAsync(codec, cmd.ScheduleActivity.Headers).ConfigureAwait(false);
-                    if (cmd.ScheduleActivity.Summary != null)
-                    {
-                        await EncodeAsync(codec, cmd.ScheduleActivity.Summary).ConfigureAwait(false);
-                    }
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleLocalActivity:
                     await EncodeAsync(
@@ -181,22 +188,8 @@ namespace Temporalio.Worker
                         codec, cmd.StartChildWorkflowExecution.Memo).ConfigureAwait(false);
                     await EncodeAsync(
                         codec, cmd.StartChildWorkflowExecution.Headers).ConfigureAwait(false);
-                    if (cmd.StartChildWorkflowExecution.StaticDetails != null)
-                    {
-                        await EncodeAsync(
-                            codec, cmd.StartChildWorkflowExecution.StaticDetails).ConfigureAwait(false);
-                    }
-                    if (cmd.StartChildWorkflowExecution.StaticSummary != null)
-                    {
-                        await EncodeAsync(
-                            codec, cmd.StartChildWorkflowExecution.StaticSummary).ConfigureAwait(false);
-                    }
                     break;
                 case WorkflowCommand.VariantOneofCase.StartTimer:
-                    if (cmd.StartTimer.Summary != null)
-                    {
-                        await EncodeAsync(codec, cmd.StartTimer.Summary).ConfigureAwait(false);
-                    }
                     break;
                 case WorkflowCommand.VariantOneofCase.UpdateResponse:
                     if (cmd.UpdateResponse.Completed is { } updateCompleted)

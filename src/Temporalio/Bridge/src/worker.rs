@@ -9,8 +9,7 @@ use prost::Message;
 use temporal_sdk_core::replay::HistoryForReplay;
 use temporal_sdk_core::replay::ReplayWorkerInput;
 use temporal_sdk_core::WorkerConfigBuilder;
-use temporal_sdk_core_api::errors::PollActivityError;
-use temporal_sdk_core_api::errors::PollWfError;
+use temporal_sdk_core_api::errors::PollError;
 use temporal_sdk_core_api::errors::WorkflowErrorType;
 use temporal_sdk_core_api::worker::SlotInfoTrait;
 use temporal_sdk_core_api::worker::SlotKind;
@@ -142,6 +141,7 @@ pub enum SlotKindType {
     WorkflowSlotKindType,
     ActivitySlotKindType,
     LocalActivitySlotKindType,
+    NexusSlotKindType,
 }
 
 #[repr(C)]
@@ -167,6 +167,10 @@ pub enum SlotInfo {
     },
     LocalActivitySlotInfo {
         activity_type: ByteArrayRef,
+    },
+    NexusSlotInfo {
+        operation: ByteArrayRef,
+        service: ByteArrayRef,
     },
 }
 
@@ -272,6 +276,9 @@ impl<SK: SlotKind + Send + Sync> CustomSlotSupplier<SK> {
                 temporal_sdk_core_api::worker::SlotKindType::LocalActivity => {
                     SlotKindType::LocalActivitySlotKindType
                 }
+                temporal_sdk_core_api::worker::SlotKindType::Nexus => {
+                    SlotKindType::NexusSlotKindType
+                }
             },
             task_queue: ctx.task_queue().into(),
             worker_identity: ctx.worker_identity().into(),
@@ -295,6 +302,10 @@ impl<SK: SlotKind + Send + Sync> CustomSlotSupplier<SK> {
                     activity_type: a.activity_type.as_str().into(),
                 }
             }
+            temporal_sdk_core_api::worker::SlotInfo::Nexus(n) => SlotInfo::NexusSlotInfo {
+                operation: n.operation.as_str().into(),
+                service: n.operation.as_str().into(),
+            },
         }
     }
 }
@@ -455,7 +466,7 @@ pub extern "C" fn worker_poll_workflow_activation(
                     .cast_const(),
                 std::ptr::null(),
             ),
-            Err(PollWfError::ShutDown) => (std::ptr::null(), std::ptr::null()),
+            Err(PollError::ShutDown) => (std::ptr::null(), std::ptr::null()),
             Err(err) => (
                 std::ptr::null(),
                 worker
@@ -489,7 +500,7 @@ pub extern "C" fn worker_poll_activity_task(
                     .cast_const(),
                 std::ptr::null(),
             ),
-            Err(PollActivityError::ShutDown) => (std::ptr::null(), std::ptr::null()),
+            Err(PollError::ShutDown) => (std::ptr::null(), std::ptr::null()),
             Err(err) => (
                 std::ptr::null(),
                 worker

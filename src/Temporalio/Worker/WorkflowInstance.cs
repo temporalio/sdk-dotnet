@@ -1779,6 +1779,9 @@ namespace Temporalio.Worker
                         {
                             Seq = seq,
                             StartToFireTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(delay),
+                        },
+                        UserMetadata = new()
+                        {
                             Summary = input.Summary == null ?
                                 null : instance.PayloadConverter.ToPayload(input.Summary),
                         },
@@ -1850,11 +1853,15 @@ namespace Temporalio.Worker
                         {
                             cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                         }
+                        var workflowCommand = new WorkflowCommand() { ScheduleActivity = cmd };
                         if (input.Options.Summary is { } summary)
                         {
-                            cmd.Summary = instance.PayloadConverter.ToPayload(summary);
+                            workflowCommand.UserMetadata = new()
+                            {
+                                Summary = instance.PayloadConverter.ToPayload(summary),
+                            };
                         }
-                        instance.AddCommand(new() { ScheduleActivity = cmd });
+                        instance.AddCommand(workflowCommand);
                         return seq;
                     },
                     input.Options.CancellationToken ?? instance.CancellationToken);
@@ -1985,10 +1992,6 @@ namespace Temporalio.Worker
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                     CronSchedule = input.Options.CronSchedule ?? string.Empty,
                     CancellationType = (Bridge.Api.ChildWorkflow.ChildWorkflowCancellationType)input.Options.CancellationType,
-                    StaticSummary = input.Options.StaticSummary is { } summ ?
-                        instance.PayloadConverter.ToPayload(summ) : null,
-                    StaticDetails = input.Options.StaticDetails is { } det ?
-                        instance.PayloadConverter.ToPayload(det) : null,
                 };
                 if (input.Options.ExecutionTimeout is TimeSpan execTimeout)
                 {
@@ -2019,7 +2022,18 @@ namespace Temporalio.Worker
                 {
                     cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                 }
-                instance.AddCommand(new() { StartChildWorkflowExecution = cmd });
+                var workflowCommand = new WorkflowCommand() { StartChildWorkflowExecution = cmd };
+                if (input.Options?.StaticSummary != null || input.Options?.StaticDetails != null)
+                {
+                    workflowCommand.UserMetadata = new()
+                    {
+                        Summary = input.Options.StaticSummary is { } summary ?
+                            instance.PayloadConverter.ToPayload(summary) : null,
+                        Details = input.Options.StaticDetails is { } details ?
+                            instance.PayloadConverter.ToPayload(details) : null,
+                    };
+                }
+                instance.AddCommand(workflowCommand);
 
                 // Add start as pending and wait inside of task
                 var handleSource = new TaskCompletionSource<ChildWorkflowHandle<TWorkflow, TResult>>();

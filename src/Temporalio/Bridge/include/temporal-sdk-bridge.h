@@ -46,6 +46,7 @@ typedef enum SlotKindType {
   WorkflowSlotKindType,
   ActivitySlotKindType,
   LocalActivitySlotKindType,
+  NexusSlotKindType,
 } SlotKindType;
 
 typedef struct CancellationToken CancellationToken;
@@ -405,6 +406,7 @@ typedef enum SlotInfo_Tag {
   WorkflowSlotInfo,
   ActivitySlotInfo,
   LocalActivitySlotInfo,
+  NexusSlotInfo,
 } SlotInfo_Tag;
 
 typedef struct WorkflowSlotInfo_Body {
@@ -420,12 +422,18 @@ typedef struct LocalActivitySlotInfo_Body {
   struct ByteArrayRef activity_type;
 } LocalActivitySlotInfo_Body;
 
+typedef struct NexusSlotInfo_Body {
+  struct ByteArrayRef operation;
+  struct ByteArrayRef service;
+} NexusSlotInfo_Body;
+
 typedef struct SlotInfo {
   SlotInfo_Tag tag;
   union {
     WorkflowSlotInfo_Body workflow_slot_info;
     ActivitySlotInfo_Body activity_slot_info;
     LocalActivitySlotInfo_Body local_activity_slot_info;
+    NexusSlotInfo_Body nexus_slot_info;
   };
 } SlotInfo;
 
