@@ -73,13 +73,16 @@ namespace Temporalio.Api.Enums.V1 {
             "T1VUX1RZUEVfVU5TUEVDSUZJRUQQABIfChtUSU1FT1VUX1RZUEVfU1RBUlRf",
             "VE9fQ0xPU0UQARIiCh5USU1FT1VUX1RZUEVfU0NIRURVTEVfVE9fU1RBUlQQ",
             "AhIiCh5USU1FT1VUX1RZUEVfU0NIRURVTEVfVE9fQ0xPU0UQAxIaChZUSU1F",
-            "T1VUX1RZUEVfSEVBUlRCRUFUEARChQEKGGlvLnRlbXBvcmFsLmFwaS5lbnVt",
-            "cy52MUINV29ya2Zsb3dQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51",
-            "bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBv",
-            "cmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "T1VUX1RZUEVfSEVBUlRCRUFUEAQqfwoSVmVyc2lvbmluZ0JlaGF2aW9yEiMK",
+            "H1ZFUlNJT05JTkdfQkVIQVZJT1JfVU5TUEVDSUZJRUQQABIeChpWRVJTSU9O",
+            "SU5HX0JFSEFWSU9SX1BJTk5FRBABEiQKIFZFUlNJT05JTkdfQkVIQVZJT1Jf",
+            "QVVUT19VUEdSQURFEAJChQEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIN",
+            "V29ya2Zsb3dQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7",
+            "ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86",
+            "OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.WorkflowIdConflictPolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.WorkflowIdConflictPolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), typeof(global::Temporalio.Api.Enums.V1.VersioningBehavior), }, null, null));
     }
     #endregion
 
@@ -227,6 +230,34 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("TIMEOUT_TYPE_SCHEDULE_TO_START")] ScheduleToStart = 2,
     [pbr::OriginalName("TIMEOUT_TYPE_SCHEDULE_TO_CLOSE")] ScheduleToClose = 3,
     [pbr::OriginalName("TIMEOUT_TYPE_HEARTBEAT")] Heartbeat = 4,
+  }
+
+  public enum VersioningBehavior {
+    /// <summary>
+    /// Workflow execution is unversioned. This is the legacy behavior. An unversioned workflow's
+    /// task may go to any unversioned worker who is polling for the task queue.
+    /// </summary>
+    [pbr::OriginalName("VERSIONING_BEHAVIOR_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Workflow will be pinned to the current deployment until completion. Can be overridden
+    /// explicitly via `UpdateWorkflowExecutionOptions` API.
+    /// Activities of `PINNED` workflows are sent to the same deployment. Exception to this would be
+    /// when the activity task queue workers are not present in the workflows deployment, in which
+    /// case the activity will be sent to the current deployment of its own task queue.
+    /// </summary>
+    [pbr::OriginalName("VERSIONING_BEHAVIOR_PINNED")] Pinned = 1,
+    /// <summary>
+    /// Workflow will automatically move to the current deployment of its task queue when the next
+    /// workflow task is dispatched.
+    /// Activities of `AUTO_UPGRADE` workflows are sent to the current deployment of the workflow
+    /// execution based on the last completed workflow task. Exception to this would be when the
+    /// activity task queue workers are not present in the workflow's deployment, in which case the
+    /// activity will be sent to the current deployment of its own task queue.
+    /// Workflows stuck on a backlogged activity will still auto-upgrade if the default deployment
+    /// of their task queue changes, without having to wait for the backlogged activity to complete
+    /// on the old deployment.
+    /// </summary>
+    [pbr::OriginalName("VERSIONING_BEHAVIOR_AUTO_UPGRADE")] AutoUpgrade = 2,
   }
 
   #endregion

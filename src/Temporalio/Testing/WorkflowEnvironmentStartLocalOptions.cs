@@ -22,6 +22,11 @@ namespace Temporalio.Testing
         public bool UI { get; set; }
 
         /// <summary>
+        /// Gets or sets a value for the UI port to use if <see cref="UI"/> is true.
+        /// </summary>
+        public int UIPort { get; set; }
+
+        /// <summary>
         /// Gets or sets search attributes registered on the dev server on start.
         /// </summary>
         public IReadOnlyCollection<SearchAttributeKey>? SearchAttributes { get; set; }

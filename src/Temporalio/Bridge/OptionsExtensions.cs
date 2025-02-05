@@ -85,6 +85,18 @@ namespace Temporalio.Bridge
                 default:
                     throw new ArgumentException("Unrecognized temporality");
             }
+            Interop.OpenTelemetryProtocol protocol;
+            switch (options.Protocol)
+            {
+                case Temporalio.Runtime.OpenTelemetryProtocol.Grpc:
+                    protocol = Interop.OpenTelemetryProtocol.Grpc;
+                    break;
+                case Temporalio.Runtime.OpenTelemetryProtocol.Http:
+                    protocol = Interop.OpenTelemetryProtocol.Http;
+                    break;
+                default:
+                    throw new ArgumentException("Unrecognized protocol");
+            }
             return new Interop.OpenTelemetryOptions()
             {
                 url = scope.ByteArray(options.Url.ToString()),
@@ -95,6 +107,7 @@ namespace Temporalio.Bridge
                         : options.MetricsExportInterval.Value.TotalMilliseconds),
                 metric_temporality = temporality,
                 durations_as_seconds = (byte)(options.UseSecondsForDuration ? 1 : 0),
+                protocol = protocol,
             };
         }
 
@@ -380,6 +393,7 @@ namespace Temporalio.Bridge
                 ip = scope.ByteArray(ip),
                 database_filename = scope.ByteArray(options.DevServerOptions.DatabaseFilename),
                 ui = (byte)(options.UI ? 1 : 0),
+                ui_port = (ushort)options.UIPort,
                 log_format = scope.ByteArray(options.DevServerOptions.LogFormat),
                 log_level = scope.ByteArray(options.DevServerOptions.LogLevel),
             };

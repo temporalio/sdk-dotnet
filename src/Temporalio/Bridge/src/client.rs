@@ -406,17 +406,23 @@ async fn call_operator_service(
     match rpc {
         "AddOrUpdateRemoteCluster" => rpc_call!(client, call, add_or_update_remote_cluster),
         "AddSearchAttributes" => rpc_call!(client, call, add_search_attributes),
-        "CreateNexusEndpoint" => rpc_call!(client, call, create_nexus_endpoint),
+        "CreateNexusEndpoint" => {
+            rpc_call_on_trait!(client, call, OperatorService, create_nexus_endpoint)
+        }
         "DeleteNamespace" => rpc_call_on_trait!(client, call, OperatorService, delete_namespace),
-        "DeleteNexusEndpoint" => rpc_call!(client, call, delete_nexus_endpoint),
+        "DeleteNexusEndpoint" => {
+            rpc_call_on_trait!(client, call, OperatorService, delete_nexus_endpoint)
+        }
         "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
-        "GetNexusEndpoint" => rpc_call!(client, call, get_nexus_endpoint),
+        "GetNexusEndpoint" => rpc_call_on_trait!(client, call, OperatorService, get_nexus_endpoint),
         "ListClusters" => rpc_call!(client, call, list_clusters),
         "ListNexusEndpoints" => rpc_call!(client, call, list_nexus_endpoints),
         "ListSearchAttributes" => rpc_call!(client, call, list_search_attributes),
         "RemoveRemoteCluster" => rpc_call!(client, call, remove_remote_cluster),
         "RemoveSearchAttributes" => rpc_call!(client, call, remove_search_attributes),
-        "UpdateNexusEndpoint" => rpc_call!(client, call, update_nexus_endpoint),
+        "UpdateNexusEndpoint" => {
+            rpc_call_on_trait!(client, call, OperatorService, update_nexus_endpoint)
+        }
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }
 }

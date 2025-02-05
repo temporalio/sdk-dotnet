@@ -36,6 +36,12 @@ namespace Temporalio.Bridge.Interop
         Delta,
     }
 
+    internal enum OpenTelemetryProtocol
+    {
+        Grpc = 1,
+        Http,
+    }
+
     internal enum RpcService
     {
         Workflow = 1,
@@ -50,6 +56,7 @@ namespace Temporalio.Bridge.Interop
         WorkflowSlotKindType,
         ActivitySlotKindType,
         LocalActivitySlotKindType,
+        NexusSlotKindType,
     }
 
     internal partial struct CancellationToken
@@ -321,6 +328,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("bool")]
         public byte durations_as_seconds;
+
+        [NativeTypeName("enum OpenTelemetryProtocol")]
+        public OpenTelemetryProtocol protocol;
     }
 
     internal partial struct PrometheusOptions
@@ -508,6 +518,9 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("bool")]
         public byte ui;
 
+        [NativeTypeName("uint16_t")]
+        public ushort ui_port;
+
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef log_format;
 
@@ -593,6 +606,7 @@ namespace Temporalio.Bridge.Interop
         WorkflowSlotInfo,
         ActivitySlotInfo,
         LocalActivitySlotInfo,
+        NexusSlotInfo,
     }
 
     internal partial struct WorkflowSlotInfo_Body
@@ -616,11 +630,20 @@ namespace Temporalio.Bridge.Interop
         public ByteArrayRef activity_type;
     }
 
+    internal partial struct NexusSlotInfo_Body
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef operation;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef service;
+    }
+
     internal unsafe partial struct SlotInfo
     {
         public SlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L425_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L439_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref WorkflowSlotInfo_Body workflow_slot_info
@@ -656,6 +679,17 @@ namespace Temporalio.Bridge.Interop
             }
         }
 
+        internal ref NexusSlotInfo_Body nexus_slot_info
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union* pField = &Anonymous)
+                {
+                    return ref pField->nexus_slot_info;
+                }
+            }
+        }
+
         [StructLayout(LayoutKind.Explicit)]
         internal partial struct _Anonymous_e__Union
         {
@@ -667,6 +701,9 @@ namespace Temporalio.Bridge.Interop
 
             [FieldOffset(0)]
             public LocalActivitySlotInfo_Body local_activity_slot_info;
+
+            [FieldOffset(0)]
+            public NexusSlotInfo_Body nexus_slot_info;
         }
     }
 
@@ -735,7 +772,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L475_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L490_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -775,15 +812,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L476_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L491_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L479_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L494_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L482_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L497_C5")]
             public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct

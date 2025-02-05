@@ -27,22 +27,27 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
             "Ci10ZW1wb3JhbC9hcGkvY2xvdWQvb3BlcmF0aW9uL3YxL21lc3NhZ2UucHJv",
             "dG8SH3RlbXBvcmFsLmFwaS5jbG91ZC5vcGVyYXRpb24udjEaHmdvb2dsZS9w",
             "cm90b2J1Zi9kdXJhdGlvbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVz",
-            "dGFtcC5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90byKiAgoOQXN5",
-            "bmNPcGVyYXRpb24SCgoCaWQYASABKAkSDQoFc3RhdGUYAiABKAkSMQoOY2hl",
-            "Y2tfZHVyYXRpb24YAyABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24S",
-            "FgoOb3BlcmF0aW9uX3R5cGUYBCABKAkSLQoPb3BlcmF0aW9uX2lucHV0GAUg",
-            "ASgLMhQuZ29vZ2xlLnByb3RvYnVmLkFueRIWCg5mYWlsdXJlX3JlYXNvbhgG",
-            "IAEoCRIwCgxzdGFydGVkX3RpbWUYByABKAsyGi5nb29nbGUucHJvdG9idWYu",
-            "VGltZXN0YW1wEjEKDWZpbmlzaGVkX3RpbWUYCCABKAsyGi5nb29nbGUucHJv",
-            "dG9idWYuVGltZXN0YW1wQrEBCiJpby50ZW1wb3JhbC5hcGkuY2xvdWQub3Bl",
-            "cmF0aW9uLnYxQgxNZXNzYWdlUHJvdG9QAVovZ28udGVtcG9yYWwuaW8vYXBp",
-            "L2Nsb3VkL29wZXJhdGlvbi92MTtvcGVyYXRpb26qAiFUZW1wb3JhbGlvLkFw",
-            "aS5DbG91ZC5PcGVyYXRpb24uVjHqAiVUZW1wb3JhbGlvOjpBcGk6OkNsb3Vk",
-            "OjpPcGVyYXRpb246OlYxYgZwcm90bzM="));
+            "dGFtcC5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90byL+AwoOQXN5",
+            "bmNPcGVyYXRpb24SCgoCaWQYASABKAkSHAoQc3RhdGVfZGVwcmVjYXRlZBgC",
+            "IAEoCUICGAESRAoFc3RhdGUYCSABKA4yNS50ZW1wb3JhbC5hcGkuY2xvdWQu",
+            "b3BlcmF0aW9uLnYxLkFzeW5jT3BlcmF0aW9uLlN0YXRlEjEKDmNoZWNrX2R1",
+            "cmF0aW9uGAMgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEhYKDm9w",
+            "ZXJhdGlvbl90eXBlGAQgASgJEi0KD29wZXJhdGlvbl9pbnB1dBgFIAEoCzIU",
+            "Lmdvb2dsZS5wcm90b2J1Zi5BbnkSFgoOZmFpbHVyZV9yZWFzb24YBiABKAkS",
+            "MAoMc3RhcnRlZF90aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
+            "dGFtcBIxCg1maW5pc2hlZF90aW1lGAggASgLMhouZ29vZ2xlLnByb3RvYnVm",
+            "LlRpbWVzdGFtcCKEAQoFU3RhdGUSFQoRU1RBVEVfVU5TUEVDSUZJRUQQABIR",
+            "Cg1TVEFURV9QRU5ESU5HEAESFQoRU1RBVEVfSU5fUFJPR1JFU1MQAhIQCgxT",
+            "VEFURV9GQUlMRUQQAxITCg9TVEFURV9DQU5DRUxMRUQQBBITCg9TVEFURV9G",
+            "VUxGSUxMRUQQBUKxAQoiaW8udGVtcG9yYWwuYXBpLmNsb3VkLm9wZXJhdGlv",
+            "bi52MUIMTWVzc2FnZVByb3RvUAFaL2dvLnRlbXBvcmFsLmlvL2FwaS9jbG91",
+            "ZC9vcGVyYXRpb24vdjE7b3BlcmF0aW9uqgIhVGVtcG9yYWxpby5BcGkuQ2xv",
+            "dWQuT3BlcmF0aW9uLlYx6gIlVGVtcG9yYWxpbzo6QXBpOjpDbG91ZDo6T3Bl",
+            "cmF0aW9uOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation), global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Parser, new[]{ "Id", "State", "CheckDuration", "OperationType", "OperationInput", "FailureReason", "StartedTime", "FinishedTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation), global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Parser, new[]{ "Id", "StateDeprecated", "State", "CheckDuration", "OperationType", "OperationInput", "FailureReason", "StartedTime", "FinishedTime" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State) }, null, null)
           }));
     }
     #endregion
@@ -84,6 +89,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public AsyncOperation(AsyncOperation other) : this() {
       id_ = other.id_;
+      stateDeprecated_ = other.stateDeprecated_;
       state_ = other.state_;
       checkDuration_ = other.checkDuration_ != null ? other.checkDuration_.Clone() : null;
       operationType_ = other.operationType_;
@@ -104,7 +110,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public const int IdFieldNumber = 1;
     private string id_ = "";
     /// <summary>
-    /// The operation id
+    /// The operation id.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -115,19 +121,39 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
       }
     }
 
-    /// <summary>Field number for the "state" field.</summary>
-    public const int StateFieldNumber = 2;
-    private string state_ = "";
+    /// <summary>Field number for the "state_deprecated" field.</summary>
+    public const int StateDeprecatedFieldNumber = 2;
+    private string stateDeprecated_ = "";
     /// <summary>
-    /// The current state of this operation
-    /// Possible values are: pending, in_progress, failed, cancelled, fulfilled
+    /// The current state of this operation.
+    /// Possible values are: pending, in_progress, failed, cancelled, fulfilled.
+    /// Deprecated: Not supported after 2024-10-01-00 api version. Use state instead.
+    /// temporal:versioning:max_version=2024-10-01-00
+    /// </summary>
+    [global::System.ObsoleteAttribute]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string StateDeprecated {
+      get { return stateDeprecated_; }
+      set {
+        stateDeprecated_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 9;
+    private global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State state_ = global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State.Unspecified;
+    /// <summary>
+    /// The current state of this operation.
+    /// temporal:versioning:min_version=2024-10-01-00
+    /// temporal:enums:replaces=state_deprecated
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string State {
+    public global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State State {
       get { return state_; }
       set {
-        state_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        state_ = value;
       }
     }
 
@@ -135,7 +161,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public const int CheckDurationFieldNumber = 3;
     private global::Google.Protobuf.WellKnownTypes.Duration checkDuration_;
     /// <summary>
-    /// The recommended duration to check back for an update in the operation's state
+    /// The recommended duration to check back for an update in the operation's state.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -150,7 +176,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public const int OperationTypeFieldNumber = 4;
     private string operationType_ = "";
     /// <summary>
-    /// The type of operation being performed
+    /// The type of operation being performed.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -165,7 +191,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public const int OperationInputFieldNumber = 5;
     private global::Google.Protobuf.WellKnownTypes.Any operationInput_;
     /// <summary>
-    /// The input to the operation being performed
+    /// The input to the operation being performed.
     ///
     /// (-- api-linter: core::0146::any=disabled --)
     /// </summary>
@@ -182,7 +208,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public const int FailureReasonFieldNumber = 6;
     private string failureReason_ = "";
     /// <summary>
-    /// If the operation failed, the reason for the failure
+    /// If the operation failed, the reason for the failure.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -197,7 +223,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public const int StartedTimeFieldNumber = 7;
     private global::Google.Protobuf.WellKnownTypes.Timestamp startedTime_;
     /// <summary>
-    /// The date and time when the operation initiated
+    /// The date and time when the operation initiated.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -212,7 +238,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public const int FinishedTimeFieldNumber = 8;
     private global::Google.Protobuf.WellKnownTypes.Timestamp finishedTime_;
     /// <summary>
-    /// The date and time when the operation completed
+    /// The date and time when the operation completed.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -239,6 +265,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
         return true;
       }
       if (Id != other.Id) return false;
+      if (StateDeprecated != other.StateDeprecated) return false;
       if (State != other.State) return false;
       if (!object.Equals(CheckDuration, other.CheckDuration)) return false;
       if (OperationType != other.OperationType) return false;
@@ -254,7 +281,8 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (State.Length != 0) hash ^= State.GetHashCode();
+      if (StateDeprecated.Length != 0) hash ^= StateDeprecated.GetHashCode();
+      if (State != global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State.Unspecified) hash ^= State.GetHashCode();
       if (checkDuration_ != null) hash ^= CheckDuration.GetHashCode();
       if (OperationType.Length != 0) hash ^= OperationType.GetHashCode();
       if (operationInput_ != null) hash ^= OperationInput.GetHashCode();
@@ -283,9 +311,9 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (State.Length != 0) {
+      if (StateDeprecated.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(State);
+        output.WriteString(StateDeprecated);
       }
       if (checkDuration_ != null) {
         output.WriteRawTag(26);
@@ -310,6 +338,10 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
       if (finishedTime_ != null) {
         output.WriteRawTag(66);
         output.WriteMessage(FinishedTime);
+      }
+      if (State != global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State.Unspecified) {
+        output.WriteRawTag(72);
+        output.WriteEnum((int) State);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -325,9 +357,9 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (State.Length != 0) {
+      if (StateDeprecated.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(State);
+        output.WriteString(StateDeprecated);
       }
       if (checkDuration_ != null) {
         output.WriteRawTag(26);
@@ -353,6 +385,10 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
         output.WriteRawTag(66);
         output.WriteMessage(FinishedTime);
       }
+      if (State != global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State.Unspecified) {
+        output.WriteRawTag(72);
+        output.WriteEnum((int) State);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -366,8 +402,11 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
       if (Id.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
       }
-      if (State.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(State);
+      if (StateDeprecated.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(StateDeprecated);
+      }
+      if (State != global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
       }
       if (checkDuration_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(CheckDuration);
@@ -402,7 +441,10 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
       if (other.Id.Length != 0) {
         Id = other.Id;
       }
-      if (other.State.Length != 0) {
+      if (other.StateDeprecated.Length != 0) {
+        StateDeprecated = other.StateDeprecated;
+      }
+      if (other.State != global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State.Unspecified) {
         State = other.State;
       }
       if (other.checkDuration_ != null) {
@@ -455,7 +497,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
             break;
           }
           case 18: {
-            State = input.ReadString();
+            StateDeprecated = input.ReadString();
             break;
           }
           case 26: {
@@ -492,6 +534,10 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
               FinishedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(FinishedTime);
+            break;
+          }
+          case 72: {
+            State = (global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State) input.ReadEnum();
             break;
           }
         }
@@ -514,7 +560,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
             break;
           }
           case 18: {
-            State = input.ReadString();
+            StateDeprecated = input.ReadString();
             break;
           }
           case 26: {
@@ -553,10 +599,46 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
             input.ReadMessage(FinishedTime);
             break;
           }
+          case 72: {
+            State = (global::Temporalio.Api.Cloud.Operation.V1.AsyncOperation.Types.State) input.ReadEnum();
+            break;
+          }
         }
       }
     }
     #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the AsyncOperation message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public enum State {
+        [pbr::OriginalName("STATE_UNSPECIFIED")] Unspecified = 0,
+        /// <summary>
+        /// The operation is pending.
+        /// </summary>
+        [pbr::OriginalName("STATE_PENDING")] Pending = 1,
+        /// <summary>
+        /// The operation is in progress.
+        /// </summary>
+        [pbr::OriginalName("STATE_IN_PROGRESS")] InProgress = 2,
+        /// <summary>
+        /// The operation failed, check failure_reason for more details.
+        /// </summary>
+        [pbr::OriginalName("STATE_FAILED")] Failed = 3,
+        /// <summary>
+        /// The operation was cancelled.
+        /// </summary>
+        [pbr::OriginalName("STATE_CANCELLED")] Cancelled = 4,
+        /// <summary>
+        /// The operation was fulfilled.
+        /// </summary>
+        [pbr::OriginalName("STATE_FULFILLED")] Fulfilled = 5,
+      }
+
+    }
+    #endregion
 
   }
 

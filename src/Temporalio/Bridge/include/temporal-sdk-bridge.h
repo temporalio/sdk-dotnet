@@ -34,6 +34,11 @@ typedef enum OpenTelemetryMetricTemporality {
   Delta,
 } OpenTelemetryMetricTemporality;
 
+typedef enum OpenTelemetryProtocol {
+  Grpc = 1,
+  Http,
+} OpenTelemetryProtocol;
+
 typedef enum RpcService {
   Workflow = 1,
   Operator,
@@ -46,6 +51,7 @@ typedef enum SlotKindType {
   WorkflowSlotKindType,
   ActivitySlotKindType,
   LocalActivitySlotKindType,
+  NexusSlotKindType,
 } SlotKindType;
 
 typedef struct CancellationToken CancellationToken;
@@ -216,6 +222,7 @@ typedef struct OpenTelemetryOptions {
   uint32_t metric_periodicity_millis;
   enum OpenTelemetryMetricTemporality metric_temporality;
   bool durations_as_seconds;
+  enum OpenTelemetryProtocol protocol;
 } OpenTelemetryOptions;
 
 typedef struct PrometheusOptions {
@@ -345,6 +352,7 @@ typedef struct DevServerOptions {
    */
   struct ByteArrayRef database_filename;
   bool ui;
+  uint16_t ui_port;
   struct ByteArrayRef log_format;
   struct ByteArrayRef log_level;
 } DevServerOptions;
@@ -405,6 +413,7 @@ typedef enum SlotInfo_Tag {
   WorkflowSlotInfo,
   ActivitySlotInfo,
   LocalActivitySlotInfo,
+  NexusSlotInfo,
 } SlotInfo_Tag;
 
 typedef struct WorkflowSlotInfo_Body {
@@ -420,12 +429,18 @@ typedef struct LocalActivitySlotInfo_Body {
   struct ByteArrayRef activity_type;
 } LocalActivitySlotInfo_Body;
 
+typedef struct NexusSlotInfo_Body {
+  struct ByteArrayRef operation;
+  struct ByteArrayRef service;
+} NexusSlotInfo_Body;
+
 typedef struct SlotInfo {
   SlotInfo_Tag tag;
   union {
     WorkflowSlotInfo_Body workflow_slot_info;
     ActivitySlotInfo_Body activity_slot_info;
     LocalActivitySlotInfo_Body local_activity_slot_info;
+    NexusSlotInfo_Body nexus_slot_info;
   };
 } SlotInfo;
 

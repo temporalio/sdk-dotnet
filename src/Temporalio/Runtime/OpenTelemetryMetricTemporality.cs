@@ -1,7 +1,7 @@
 namespace Temporalio.Runtime
 {
     /// <summary>
-    /// Temporality for OpenTelemetrry metrics.
+    /// Temporality for OpenTelemetry metrics.
     /// </summary>
     public enum OpenTelemetryMetricTemporality
     {
