@@ -35,27 +35,30 @@ namespace Temporalio.Api.Enums.V1 {
             "EAUSHwobSU5ERVhFRF9WQUxVRV9UWVBFX0RBVEVUSU1FEAYSIwofSU5ERVhF",
             "RF9WQUxVRV9UWVBFX0tFWVdPUkRfTElTVBAHKl4KCFNldmVyaXR5EhgKFFNF",
             "VkVSSVRZX1VOU1BFQ0lGSUVEEAASEQoNU0VWRVJJVFlfSElHSBABEhMKD1NF",
-            "VkVSSVRZX01FRElVTRACEhAKDFNFVkVSSVRZX0xPVxADKsIBCg1DYWxsYmFj",
+            "VkVSSVRZX01FRElVTRACEhAKDFNFVkVSSVRZX0xPVxADKt4BCg1DYWxsYmFj",
             "a1N0YXRlEh4KGkNBTExCQUNLX1NUQVRFX1VOU1BFQ0lGSUVEEAASGgoWQ0FM",
             "TEJBQ0tfU1RBVEVfU1RBTkRCWRABEhwKGENBTExCQUNLX1NUQVRFX1NDSEVE",
             "VUxFRBACEh4KGkNBTExCQUNLX1NUQVRFX0JBQ0tJTkdfT0ZGEAMSGQoVQ0FM",
             "TEJBQ0tfU1RBVEVfRkFJTEVEEAQSHAoYQ0FMTEJBQ0tfU1RBVEVfU1VDQ0VF",
-            "REVEEAUq0gEKGlBlbmRpbmdOZXh1c09wZXJhdGlvblN0YXRlEi0KKVBFTkRJ",
-            "TkdfTkVYVVNfT1BFUkFUSU9OX1NUQVRFX1VOU1BFQ0lGSUVEEAASKwonUEVO",
-            "RElOR19ORVhVU19PUEVSQVRJT05fU1RBVEVfU0NIRURVTEVEEAESLQopUEVO",
-            "RElOR19ORVhVU19PUEVSQVRJT05fU1RBVEVfQkFDS0lOR19PRkYQAhIpCiVQ",
-            "RU5ESU5HX05FWFVTX09QRVJBVElPTl9TVEFURV9TVEFSVEVEEAMqzgIKH05l",
-            "eHVzT3BlcmF0aW9uQ2FuY2VsbGF0aW9uU3RhdGUSMgouTkVYVVNfT1BFUkFU",
-            "SU9OX0NBTkNFTExBVElPTl9TVEFURV9VTlNQRUNJRklFRBAAEjAKLE5FWFVT",
-            "X09QRVJBVElPTl9DQU5DRUxMQVRJT05fU1RBVEVfU0NIRURVTEVEEAESMgou",
-            "TkVYVVNfT1BFUkFUSU9OX0NBTkNFTExBVElPTl9TVEFURV9CQUNLSU5HX09G",
-            "RhACEjAKLE5FWFVTX09QRVJBVElPTl9DQU5DRUxMQVRJT05fU1RBVEVfU1VD",
-            "Q0VFREVEEAMSLQopTkVYVVNfT1BFUkFUSU9OX0NBTkNFTExBVElPTl9TVEFU",
-            "RV9GQUlMRUQQBBIwCixORVhVU19PUEVSQVRJT05fQ0FOQ0VMTEFUSU9OX1NU",
-            "QVRFX1RJTUVEX09VVBAFQoMBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFC",
-            "C0NvbW1vblByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtl",
-            "bnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6",
-            "QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "REVEEAUSGgoWQ0FMTEJBQ0tfU1RBVEVfQkxPQ0tFRBAGKv0BChpQZW5kaW5n",
+            "TmV4dXNPcGVyYXRpb25TdGF0ZRItCilQRU5ESU5HX05FWFVTX09QRVJBVElP",
+            "Tl9TVEFURV9VTlNQRUNJRklFRBAAEisKJ1BFTkRJTkdfTkVYVVNfT1BFUkFU",
+            "SU9OX1NUQVRFX1NDSEVEVUxFRBABEi0KKVBFTkRJTkdfTkVYVVNfT1BFUkFU",
+            "SU9OX1NUQVRFX0JBQ0tJTkdfT0ZGEAISKQolUEVORElOR19ORVhVU19PUEVS",
+            "QVRJT05fU1RBVEVfU1RBUlRFRBADEikKJVBFTkRJTkdfTkVYVVNfT1BFUkFU",
+            "SU9OX1NUQVRFX0JMT0NLRUQQBCr+AgofTmV4dXNPcGVyYXRpb25DYW5jZWxs",
+            "YXRpb25TdGF0ZRIyCi5ORVhVU19PUEVSQVRJT05fQ0FOQ0VMTEFUSU9OX1NU",
+            "QVRFX1VOU1BFQ0lGSUVEEAASMAosTkVYVVNfT1BFUkFUSU9OX0NBTkNFTExB",
+            "VElPTl9TVEFURV9TQ0hFRFVMRUQQARIyCi5ORVhVU19PUEVSQVRJT05fQ0FO",
+            "Q0VMTEFUSU9OX1NUQVRFX0JBQ0tJTkdfT0ZGEAISMAosTkVYVVNfT1BFUkFU",
+            "SU9OX0NBTkNFTExBVElPTl9TVEFURV9TVUNDRUVERUQQAxItCilORVhVU19P",
+            "UEVSQVRJT05fQ0FOQ0VMTEFUSU9OX1NUQVRFX0ZBSUxFRBAEEjAKLE5FWFVT",
+            "X09QRVJBVElPTl9DQU5DRUxMQVRJT05fU1RBVEVfVElNRURfT1VUEAUSLgoq",
+            "TkVYVVNfT1BFUkFUSU9OX0NBTkNFTExBVElPTl9TVEFURV9CTE9DS0VEEAZC",
+            "gwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUILQ29tbW9uUHJvdG9QAVoh",
+            "Z28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxp",
+            "by5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), typeof(global::Temporalio.Api.Enums.V1.CallbackState), typeof(global::Temporalio.Api.Enums.V1.PendingNexusOperationState), typeof(global::Temporalio.Api.Enums.V1.NexusOperationCancellationState), }, null, null));
@@ -116,6 +119,10 @@ namespace Temporalio.Api.Enums.V1 {
     /// Callback has succeeded.
     /// </summary>
     [pbr::OriginalName("CALLBACK_STATE_SUCCEEDED")] Succeeded = 5,
+    /// <summary>
+    /// Callback is blocked (eg: by circuit breaker).
+    /// </summary>
+    [pbr::OriginalName("CALLBACK_STATE_BLOCKED")] Blocked = 6,
   }
 
   /// <summary>
@@ -138,6 +145,10 @@ namespace Temporalio.Api.Enums.V1 {
     /// Operation was started and will complete asynchronously.
     /// </summary>
     [pbr::OriginalName("PENDING_NEXUS_OPERATION_STATE_STARTED")] Started = 3,
+    /// <summary>
+    /// Operation is blocked (eg: by circuit breaker).
+    /// </summary>
+    [pbr::OriginalName("PENDING_NEXUS_OPERATION_STATE_BLOCKED")] Blocked = 4,
   }
 
   /// <summary>
@@ -168,6 +179,10 @@ namespace Temporalio.Api.Enums.V1 {
     /// The associated operation timed out - exceeded the user supplied schedule-to-close timeout.
     /// </summary>
     [pbr::OriginalName("NEXUS_OPERATION_CANCELLATION_STATE_TIMED_OUT")] TimedOut = 5,
+    /// <summary>
+    /// Cancellation request is blocked (eg: by circuit breaker).
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_CANCELLATION_STATE_BLOCKED")] Blocked = 6,
   }
 
   #endregion

@@ -30,154 +30,192 @@ namespace Temporalio.Api.Workflow.V1 {
             "L3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90bxoidGVtcG9yYWwvYXBpL2VudW1z",
             "L3YxL2NvbW1vbi5wcm90bxokdGVtcG9yYWwvYXBpL2VudW1zL3YxL3dvcmtm",
             "bG93LnByb3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2UucHJv",
-            "dG8aJXRlbXBvcmFsL2FwaS9mYWlsdXJlL3YxL21lc3NhZ2UucHJvdG8aJ3Rl",
-            "bXBvcmFsL2FwaS90YXNrcXVldWUvdjEvbWVzc2FnZS5wcm90bxondGVtcG9y",
-            "YWwvYXBpL3Nkay92MS91c2VyX21ldGFkYXRhLnByb3RvIvcHChVXb3JrZmxv",
-            "d0V4ZWN1dGlvbkluZm8SPAoJZXhlY3V0aW9uGAEgASgLMikudGVtcG9yYWwu",
-            "YXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhIyCgR0eXBlGAIgASgL",
-            "MiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd1R5cGUSLgoKc3Rh",
-            "cnRfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoK",
-            "Y2xvc2VfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAS",
-            "PgoGc3RhdHVzGAUgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtm",
-            "bG93RXhlY3V0aW9uU3RhdHVzEhYKDmhpc3RvcnlfbGVuZ3RoGAYgASgDEhsK",
-            "E3BhcmVudF9uYW1lc3BhY2VfaWQYByABKAkSQwoQcGFyZW50X2V4ZWN1dGlv",
-            "bhgIIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVj",
-            "dXRpb24SMgoOZXhlY3V0aW9uX3RpbWUYCSABKAsyGi5nb29nbGUucHJvdG9i",
-            "dWYuVGltZXN0YW1wEioKBG1lbW8YCiABKAsyHC50ZW1wb3JhbC5hcGkuY29t",
-            "bW9uLnYxLk1lbW8SQwoRc2VhcmNoX2F0dHJpYnV0ZXMYCyABKAsyKC50ZW1w",
-            "b3JhbC5hcGkuY29tbW9uLnYxLlNlYXJjaEF0dHJpYnV0ZXMSQAoRYXV0b19y",
-            "ZXNldF9wb2ludHMYDCABKAsyJS50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEu",
-            "UmVzZXRQb2ludHMSEgoKdGFza19xdWV1ZRgNIAEoCRIeChZzdGF0ZV90cmFu",
-            "c2l0aW9uX2NvdW50GA4gASgDEhoKEmhpc3Rvcnlfc2l6ZV9ieXRlcxgPIAEo",
-            "AxJUCiBtb3N0X3JlY2VudF93b3JrZXJfdmVyc2lvbl9zdGFtcBgQIAEoCzIq",
-            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyVmVyc2lvblN0YW1wEjUK",
-            "EmV4ZWN1dGlvbl9kdXJhdGlvbhgRIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5E",
-            "dXJhdGlvbhJBCg5yb290X2V4ZWN1dGlvbhgSIAEoCzIpLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SGQoRYXNzaWduZWRfYnVp",
-            "bGRfaWQYEyABKAkSGgoSaW5oZXJpdGVkX2J1aWxkX2lkGBQgASgJEhQKDGZp",
-            "cnN0X3J1bl9pZBgVIAEoCSLHAgoXV29ya2Zsb3dFeGVjdXRpb25Db25maWcS",
-            "OAoKdGFza19xdWV1ZRgBIAEoCzIkLnRlbXBvcmFsLmFwaS50YXNrcXVldWUu",
-            "djEuVGFza1F1ZXVlEj0KGndvcmtmbG93X2V4ZWN1dGlvbl90aW1lb3V0GAIg",
-            "ASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjcKFHdvcmtmbG93X3J1",
-            "bl90aW1lb3V0GAMgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEkAK",
-            "HWRlZmF1bHRfd29ya2Zsb3dfdGFza190aW1lb3V0GAQgASgLMhkuZ29vZ2xl",
-            "LnByb3RvYnVmLkR1cmF0aW9uEjgKDXVzZXJfbWV0YWRhdGEYBSABKAsyIS50",
-            "ZW1wb3JhbC5hcGkuc2RrLnYxLlVzZXJNZXRhZGF0YSLSBwoTUGVuZGluZ0Fj",
-            "dGl2aXR5SW5mbxITCgthY3Rpdml0eV9pZBgBIAEoCRI7Cg1hY3Rpdml0eV90",
-            "eXBlGAIgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5BY3Rpdml0eVR5",
-            "cGUSOgoFc3RhdGUYAyABKA4yKy50ZW1wb3JhbC5hcGkuZW51bXMudjEuUGVu",
-            "ZGluZ0FjdGl2aXR5U3RhdGUSOwoRaGVhcnRiZWF0X2RldGFpbHMYBCABKAsy",
-            "IC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEjcKE2xhc3RfaGVh",
-            "cnRiZWF0X3RpbWUYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
-            "EjUKEWxhc3Rfc3RhcnRlZF90aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVm",
-            "LlRpbWVzdGFtcBIPCgdhdHRlbXB0GAcgASgFEhgKEG1heGltdW1fYXR0ZW1w",
-            "dHMYCCABKAUSMgoOc2NoZWR1bGVkX3RpbWUYCSABKAsyGi5nb29nbGUucHJv",
-            "dG9idWYuVGltZXN0YW1wEjMKD2V4cGlyYXRpb25fdGltZRgKIAEoCzIaLmdv",
-            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASNgoMbGFzdF9mYWlsdXJlGAsgASgL",
-            "MiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRIcChRsYXN0X3dv",
-            "cmtlcl9pZGVudGl0eRgMIAEoCRI3ChV1c2Vfd29ya2Zsb3dfYnVpbGRfaWQY",
-            "DSABKAsyFi5nb29nbGUucHJvdG9idWYuRW1wdHlIABIuCiRsYXN0X2luZGVw",
-            "ZW5kZW50bHlfYXNzaWduZWRfYnVpbGRfaWQYDiABKAlIABJNChlsYXN0X3dv",
-            "cmtlcl92ZXJzaW9uX3N0YW1wGA8gASgLMioudGVtcG9yYWwuYXBpLmNvbW1v",
-            "bi52MS5Xb3JrZXJWZXJzaW9uU3RhbXASOQoWY3VycmVudF9yZXRyeV9pbnRl",
-            "cnZhbBgQIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI+ChpsYXN0",
-            "X2F0dGVtcHRfY29tcGxldGVfdGltZRgRIAEoCzIaLmdvb2dsZS5wcm90b2J1",
-            "Zi5UaW1lc3RhbXASPgoabmV4dF9hdHRlbXB0X3NjaGVkdWxlX3RpbWUYEiAB",
-            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg4KBnBhdXNlZBgTIAEo",
-            "CEITChFhc3NpZ25lZF9idWlsZF9pZCK5AQoZUGVuZGluZ0NoaWxkRXhlY3V0",
-            "aW9uSW5mbxITCgt3b3JrZmxvd19pZBgBIAEoCRIOCgZydW5faWQYAiABKAkS",
-            "GgoSd29ya2Zsb3dfdHlwZV9uYW1lGAMgASgJEhQKDGluaXRpYXRlZF9pZBgE",
-            "IAEoAxJFChNwYXJlbnRfY2xvc2VfcG9saWN5GAUgASgOMigudGVtcG9yYWwu",
-            "YXBpLmVudW1zLnYxLlBhcmVudENsb3NlUG9saWN5Io0CChdQZW5kaW5nV29y",
-            "a2Zsb3dUYXNrSW5mbxI+CgVzdGF0ZRgBIAEoDjIvLnRlbXBvcmFsLmFwaS5l",
-            "bnVtcy52MS5QZW5kaW5nV29ya2Zsb3dUYXNrU3RhdGUSMgoOc2NoZWR1bGVk",
-            "X3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjsKF29y",
-            "aWdpbmFsX3NjaGVkdWxlZF90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVm",
-            "LlRpbWVzdGFtcBIwCgxzdGFydGVkX3RpbWUYBCABKAsyGi5nb29nbGUucHJv",
-            "dG9idWYuVGltZXN0YW1wEg8KB2F0dGVtcHQYBSABKAUiRwoLUmVzZXRQb2lu",
-            "dHMSOAoGcG9pbnRzGAEgAygLMigudGVtcG9yYWwuYXBpLndvcmtmbG93LnYx",
-            "LlJlc2V0UG9pbnRJbmZvIusBCg5SZXNldFBvaW50SW5mbxIQCghidWlsZF9p",
-            "ZBgHIAEoCRIXCg9iaW5hcnlfY2hlY2tzdW0YASABKAkSDgoGcnVuX2lkGAIg",
-            "ASgJEigKIGZpcnN0X3dvcmtmbG93X3Rhc2tfY29tcGxldGVkX2lkGAMgASgD",
-            "Ei8KC2NyZWF0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
-            "dGFtcBIvCgtleHBpcmVfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5U",
-            "aW1lc3RhbXASEgoKcmVzZXR0YWJsZRgGIAEoCCKGBgoYTmV3V29ya2Zsb3dF",
-            "eGVjdXRpb25JbmZvEhMKC3dvcmtmbG93X2lkGAEgASgJEjsKDXdvcmtmbG93",
-            "X3R5cGUYAiABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93",
-            "VHlwZRI4Cgp0YXNrX3F1ZXVlGAMgASgLMiQudGVtcG9yYWwuYXBpLnRhc2tx",
-            "dWV1ZS52MS5UYXNrUXVldWUSLwoFaW5wdXQYBCABKAsyIC50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLlBheWxvYWRzEj0KGndvcmtmbG93X2V4ZWN1dGlvbl90",
-            "aW1lb3V0GAUgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjcKFHdv",
-            "cmtmbG93X3J1bl90aW1lb3V0GAYgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1",
-            "cmF0aW9uEjgKFXdvcmtmbG93X3Rhc2tfdGltZW91dBgHIAEoCzIZLmdvb2ds",
-            "ZS5wcm90b2J1Zi5EdXJhdGlvbhJOChh3b3JrZmxvd19pZF9yZXVzZV9wb2xp",
-            "Y3kYCCABKA4yLC50ZW1wb3JhbC5hcGkuZW51bXMudjEuV29ya2Zsb3dJZFJl",
-            "dXNlUG9saWN5EjkKDHJldHJ5X3BvbGljeRgJIAEoCzIjLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuUmV0cnlQb2xpY3kSFQoNY3Jvbl9zY2hlZHVsZRgKIAEo",
-            "CRIqCgRtZW1vGAsgASgLMhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5NZW1v",
-            "EkMKEXNlYXJjaF9hdHRyaWJ1dGVzGAwgASgLMigudGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVzEi4KBmhlYWRlchgNIAEoCzIeLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuSGVhZGVyEjgKDXVzZXJfbWV0YWRhdGEY",
-            "DiABKAsyIS50ZW1wb3JhbC5hcGkuc2RrLnYxLlVzZXJNZXRhZGF0YSK6BAoM",
-            "Q2FsbGJhY2tJbmZvEjIKCGNhbGxiYWNrGAEgASgLMiAudGVtcG9yYWwuYXBp",
-            "LmNvbW1vbi52MS5DYWxsYmFjaxI/Cgd0cmlnZ2VyGAIgASgLMi4udGVtcG9y",
-            "YWwuYXBpLndvcmtmbG93LnYxLkNhbGxiYWNrSW5mby5UcmlnZ2VyEjUKEXJl",
-            "Z2lzdHJhdGlvbl90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
-            "dGFtcBIzCgVzdGF0ZRgEIAEoDjIkLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5D",
-            "YWxsYmFja1N0YXRlEg8KB2F0dGVtcHQYBSABKAUSPgoabGFzdF9hdHRlbXB0",
-            "X2NvbXBsZXRlX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
-            "YW1wEj4KFGxhc3RfYXR0ZW1wdF9mYWlsdXJlGAcgASgLMiAudGVtcG9yYWwu",
-            "YXBpLmZhaWx1cmUudjEuRmFpbHVyZRI+ChpuZXh0X2F0dGVtcHRfc2NoZWR1",
-            "bGVfdGltZRgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAaEAoO",
-            "V29ya2Zsb3dDbG9zZWQaZgoHVHJpZ2dlchJQCg93b3JrZmxvd19jbG9zZWQY",
-            "ASABKAsyNS50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuQ2FsbGJhY2tJbmZv",
-            "LldvcmtmbG93Q2xvc2VkSABCCQoHdmFyaWFudCLdBAoZUGVuZGluZ05leHVz",
-            "T3BlcmF0aW9uSW5mbxIQCghlbmRwb2ludBgBIAEoCRIPCgdzZXJ2aWNlGAIg",
-            "ASgJEhEKCW9wZXJhdGlvbhgDIAEoCRIUCgxvcGVyYXRpb25faWQYBCABKAkS",
-            "PAoZc2NoZWR1bGVfdG9fY2xvc2VfdGltZW91dBgFIAEoCzIZLmdvb2dsZS5w",
-            "cm90b2J1Zi5EdXJhdGlvbhIyCg5zY2hlZHVsZWRfdGltZRgGIAEoCzIaLmdv",
-            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASQAoFc3RhdGUYByABKA4yMS50ZW1w",
-            "b3JhbC5hcGkuZW51bXMudjEuUGVuZGluZ05leHVzT3BlcmF0aW9uU3RhdGUS",
-            "DwoHYXR0ZW1wdBgIIAEoBRI+ChpsYXN0X2F0dGVtcHRfY29tcGxldGVfdGlt",
-            "ZRgJIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoUbGFzdF9h",
-            "dHRlbXB0X2ZhaWx1cmUYCiABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52",
-            "MS5GYWlsdXJlEj4KGm5leHRfYXR0ZW1wdF9zY2hlZHVsZV90aW1lGAsgASgL",
-            "MhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBJTChFjYW5jZWxsYXRpb25f",
-            "aW5mbxgMIAEoCzI4LnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5OZXh1c09w",
-            "ZXJhdGlvbkNhbmNlbGxhdGlvbkluZm8SGgoSc2NoZWR1bGVkX2V2ZW50X2lk",
-            "GA0gASgDIuwCCh5OZXh1c09wZXJhdGlvbkNhbmNlbGxhdGlvbkluZm8SMgoO",
-            "cmVxdWVzdGVkX3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
-            "YW1wEkUKBXN0YXRlGAIgASgOMjYudGVtcG9yYWwuYXBpLmVudW1zLnYxLk5l",
-            "eHVzT3BlcmF0aW9uQ2FuY2VsbGF0aW9uU3RhdGUSDwoHYXR0ZW1wdBgDIAEo",
-            "BRI+ChpsYXN0X2F0dGVtcHRfY29tcGxldGVfdGltZRgEIAEoCzIaLmdvb2ds",
+            "dG8aKHRlbXBvcmFsL2FwaS9kZXBsb3ltZW50L3YxL21lc3NhZ2UucHJvdG8a",
+            "JXRlbXBvcmFsL2FwaS9mYWlsdXJlL3YxL21lc3NhZ2UucHJvdG8aJ3RlbXBv",
+            "cmFsL2FwaS90YXNrcXVldWUvdjEvbWVzc2FnZS5wcm90bxondGVtcG9yYWwv",
+            "YXBpL3Nkay92MS91c2VyX21ldGFkYXRhLnByb3RvIssIChVXb3JrZmxvd0V4",
+            "ZWN1dGlvbkluZm8SPAoJZXhlY3V0aW9uGAEgASgLMikudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhIyCgR0eXBlGAIgASgLMiQu",
+            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd1R5cGUSLgoKc3RhcnRf",
+            "dGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY2xv",
+            "c2VfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoG",
+            "c3RhdHVzGAUgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtmbG93",
+            "RXhlY3V0aW9uU3RhdHVzEhYKDmhpc3RvcnlfbGVuZ3RoGAYgASgDEhsKE3Bh",
+            "cmVudF9uYW1lc3BhY2VfaWQYByABKAkSQwoQcGFyZW50X2V4ZWN1dGlvbhgI",
+            "IAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRp",
+            "b24SMgoOZXhlY3V0aW9uX3RpbWUYCSABKAsyGi5nb29nbGUucHJvdG9idWYu",
+            "VGltZXN0YW1wEioKBG1lbW8YCiABKAsyHC50ZW1wb3JhbC5hcGkuY29tbW9u",
+            "LnYxLk1lbW8SQwoRc2VhcmNoX2F0dHJpYnV0ZXMYCyABKAsyKC50ZW1wb3Jh",
+            "bC5hcGkuY29tbW9uLnYxLlNlYXJjaEF0dHJpYnV0ZXMSQAoRYXV0b19yZXNl",
+            "dF9wb2ludHMYDCABKAsyJS50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuUmVz",
+            "ZXRQb2ludHMSEgoKdGFza19xdWV1ZRgNIAEoCRIeChZzdGF0ZV90cmFuc2l0",
+            "aW9uX2NvdW50GA4gASgDEhoKEmhpc3Rvcnlfc2l6ZV9ieXRlcxgPIAEoAxJU",
+            "CiBtb3N0X3JlY2VudF93b3JrZXJfdmVyc2lvbl9zdGFtcBgQIAEoCzIqLnRl",
+            "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyVmVyc2lvblN0YW1wEjUKEmV4",
+            "ZWN1dGlvbl9kdXJhdGlvbhgRIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJh",
+            "dGlvbhJBCg5yb290X2V4ZWN1dGlvbhgSIAEoCzIpLnRlbXBvcmFsLmFwaS5j",
+            "b21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SGQoRYXNzaWduZWRfYnVpbGRf",
+            "aWQYEyABKAkSGgoSaW5oZXJpdGVkX2J1aWxkX2lkGBQgASgJEhQKDGZpcnN0",
+            "X3J1bl9pZBgVIAEoCRJSCg92ZXJzaW9uaW5nX2luZm8YFiABKAsyOS50ZW1w",
+            "b3JhbC5hcGkud29ya2Zsb3cudjEuV29ya2Zsb3dFeGVjdXRpb25WZXJzaW9u",
+            "aW5nSW5mbyKfAgodV29ya2Zsb3dFeGVjdXRpb25FeHRlbmRlZEluZm8SPQoZ",
+            "ZXhlY3V0aW9uX2V4cGlyYXRpb25fdGltZRgBIAEoCzIaLmdvb2dsZS5wcm90",
+            "b2J1Zi5UaW1lc3RhbXASNwoTcnVuX2V4cGlyYXRpb25fdGltZRgCIAEoCzIa",
+            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASGAoQY2FuY2VsX3JlcXVlc3Rl",
+            "ZBgDIAEoCBIzCg9sYXN0X3Jlc2V0X3RpbWUYBCABKAsyGi5nb29nbGUucHJv",
+            "dG9idWYuVGltZXN0YW1wEjcKE29yaWdpbmFsX3N0YXJ0X3RpbWUYBSABKAsy",
+            "Gi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIrQCCh9Xb3JrZmxvd0V4ZWN1",
+            "dGlvblZlcnNpb25pbmdJbmZvEjsKCGJlaGF2aW9yGAEgASgOMikudGVtcG9y",
+            "YWwuYXBpLmVudW1zLnYxLlZlcnNpb25pbmdCZWhhdmlvchI6CgpkZXBsb3lt",
+            "ZW50GAIgASgLMiYudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuRGVwbG95",
+            "bWVudBJJChN2ZXJzaW9uaW5nX292ZXJyaWRlGAMgASgLMiwudGVtcG9yYWwu",
+            "YXBpLndvcmtmbG93LnYxLlZlcnNpb25pbmdPdmVycmlkZRJNChVkZXBsb3lt",
+            "ZW50X3RyYW5zaXRpb24YBCABKAsyLi50ZW1wb3JhbC5hcGkud29ya2Zsb3cu",
+            "djEuRGVwbG95bWVudFRyYW5zaXRpb24iUgoURGVwbG95bWVudFRyYW5zaXRp",
+            "b24SOgoKZGVwbG95bWVudBgBIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3lt",
+            "ZW50LnYxLkRlcGxveW1lbnQixwIKF1dvcmtmbG93RXhlY3V0aW9uQ29uZmln",
+            "EjgKCnRhc2tfcXVldWUYASABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVl",
+            "LnYxLlRhc2tRdWV1ZRI9Chp3b3JrZmxvd19leGVjdXRpb25fdGltZW91dBgC",
+            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI3ChR3b3JrZmxvd19y",
+            "dW5fdGltZW91dBgDIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhJA",
+            "Ch1kZWZhdWx0X3dvcmtmbG93X3Rhc2tfdGltZW91dBgEIAEoCzIZLmdvb2ds",
+            "ZS5wcm90b2J1Zi5EdXJhdGlvbhI4Cg11c2VyX21ldGFkYXRhGAUgASgLMiEu",
+            "dGVtcG9yYWwuYXBpLnNkay52MS5Vc2VyTWV0YWRhdGEikwgKE1BlbmRpbmdB",
+            "Y3Rpdml0eUluZm8SEwoLYWN0aXZpdHlfaWQYASABKAkSOwoNYWN0aXZpdHlf",
+            "dHlwZRgCIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuQWN0aXZpdHlU",
+            "eXBlEjoKBXN0YXRlGAMgASgOMisudGVtcG9yYWwuYXBpLmVudW1zLnYxLlBl",
+            "bmRpbmdBY3Rpdml0eVN0YXRlEjsKEWhlYXJ0YmVhdF9kZXRhaWxzGAQgASgL",
+            "MiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxI3ChNsYXN0X2hl",
+            "YXJ0YmVhdF90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFt",
+            "cBI1ChFsYXN0X3N0YXJ0ZWRfdGltZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1",
+            "Zi5UaW1lc3RhbXASDwoHYXR0ZW1wdBgHIAEoBRIYChBtYXhpbXVtX2F0dGVt",
+            "cHRzGAggASgFEjIKDnNjaGVkdWxlZF90aW1lGAkgASgLMhouZ29vZ2xlLnBy",
+            "b3RvYnVmLlRpbWVzdGFtcBIzCg9leHBpcmF0aW9uX3RpbWUYCiABKAsyGi5n",
+            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKDGxhc3RfZmFpbHVyZRgLIAEo",
+            "CzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSHAoUbGFzdF93",
+            "b3JrZXJfaWRlbnRpdHkYDCABKAkSNwoVdXNlX3dvcmtmbG93X2J1aWxkX2lk",
+            "GA0gASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAASLgokbGFzdF9pbmRl",
+            "cGVuZGVudGx5X2Fzc2lnbmVkX2J1aWxkX2lkGA4gASgJSAASTQoZbGFzdF93",
+            "b3JrZXJfdmVyc2lvbl9zdGFtcBgPIAEoCzIqLnRlbXBvcmFsLmFwaS5jb21t",
+            "b24udjEuV29ya2VyVmVyc2lvblN0YW1wEjkKFmN1cnJlbnRfcmV0cnlfaW50",
+            "ZXJ2YWwYECABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SPgoabGFz",
+            "dF9hdHRlbXB0X2NvbXBsZXRlX3RpbWUYESABKAsyGi5nb29nbGUucHJvdG9i",
+            "dWYuVGltZXN0YW1wEj4KGm5leHRfYXR0ZW1wdF9zY2hlZHVsZV90aW1lGBIg",
+            "ASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIOCgZwYXVzZWQYEyAB",
+            "KAgSPwoPbGFzdF9kZXBsb3ltZW50GBQgASgLMiYudGVtcG9yYWwuYXBpLmRl",
+            "cGxveW1lbnQudjEuRGVwbG95bWVudEITChFhc3NpZ25lZF9idWlsZF9pZCK5",
+            "AQoZUGVuZGluZ0NoaWxkRXhlY3V0aW9uSW5mbxITCgt3b3JrZmxvd19pZBgB",
+            "IAEoCRIOCgZydW5faWQYAiABKAkSGgoSd29ya2Zsb3dfdHlwZV9uYW1lGAMg",
+            "ASgJEhQKDGluaXRpYXRlZF9pZBgEIAEoAxJFChNwYXJlbnRfY2xvc2VfcG9s",
+            "aWN5GAUgASgOMigudGVtcG9yYWwuYXBpLmVudW1zLnYxLlBhcmVudENsb3Nl",
+            "UG9saWN5Io0CChdQZW5kaW5nV29ya2Zsb3dUYXNrSW5mbxI+CgVzdGF0ZRgB",
+            "IAEoDjIvLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5QZW5kaW5nV29ya2Zsb3dU",
+            "YXNrU3RhdGUSMgoOc2NoZWR1bGVkX3RpbWUYAiABKAsyGi5nb29nbGUucHJv",
+            "dG9idWYuVGltZXN0YW1wEjsKF29yaWdpbmFsX3NjaGVkdWxlZF90aW1lGAMg",
+            "ASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIwCgxzdGFydGVkX3Rp",
+            "bWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB2F0dGVt",
+            "cHQYBSABKAUiRwoLUmVzZXRQb2ludHMSOAoGcG9pbnRzGAEgAygLMigudGVt",
+            "cG9yYWwuYXBpLndvcmtmbG93LnYxLlJlc2V0UG9pbnRJbmZvIusBCg5SZXNl",
+            "dFBvaW50SW5mbxIQCghidWlsZF9pZBgHIAEoCRIXCg9iaW5hcnlfY2hlY2tz",
+            "dW0YASABKAkSDgoGcnVuX2lkGAIgASgJEigKIGZpcnN0X3dvcmtmbG93X3Rh",
+            "c2tfY29tcGxldGVkX2lkGAMgASgDEi8KC2NyZWF0ZV90aW1lGAQgASgLMhou",
+            "Z29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtleHBpcmVfdGltZRgFIAEo",
+            "CzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEgoKcmVzZXR0YWJsZRgG",
+            "IAEoCCLRBgoYTmV3V29ya2Zsb3dFeGVjdXRpb25JbmZvEhMKC3dvcmtmbG93",
+            "X2lkGAEgASgJEjsKDXdvcmtmbG93X3R5cGUYAiABKAsyJC50ZW1wb3JhbC5h",
+            "cGkuY29tbW9uLnYxLldvcmtmbG93VHlwZRI4Cgp0YXNrX3F1ZXVlGAMgASgL",
+            "MiQudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUSLwoFaW5w",
+            "dXQYBCABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEj0K",
+            "GndvcmtmbG93X2V4ZWN1dGlvbl90aW1lb3V0GAUgASgLMhkuZ29vZ2xlLnBy",
+            "b3RvYnVmLkR1cmF0aW9uEjcKFHdvcmtmbG93X3J1bl90aW1lb3V0GAYgASgL",
+            "MhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjgKFXdvcmtmbG93X3Rhc2tf",
+            "dGltZW91dBgHIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhJOChh3",
+            "b3JrZmxvd19pZF9yZXVzZV9wb2xpY3kYCCABKA4yLC50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuV29ya2Zsb3dJZFJldXNlUG9saWN5EjkKDHJldHJ5X3BvbGlj",
+            "eRgJIAEoCzIjLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUmV0cnlQb2xpY3kS",
+            "FQoNY3Jvbl9zY2hlZHVsZRgKIAEoCRIqCgRtZW1vGAsgASgLMhwudGVtcG9y",
+            "YWwuYXBpLmNvbW1vbi52MS5NZW1vEkMKEXNlYXJjaF9hdHRyaWJ1dGVzGAwg",
+            "ASgLMigudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVz",
+            "Ei4KBmhlYWRlchgNIAEoCzIeLnRlbXBvcmFsLmFwaS5jb21tb24udjEuSGVh",
+            "ZGVyEjgKDXVzZXJfbWV0YWRhdGEYDiABKAsyIS50ZW1wb3JhbC5hcGkuc2Rr",
+            "LnYxLlVzZXJNZXRhZGF0YRJJChN2ZXJzaW9uaW5nX292ZXJyaWRlGA8gASgL",
+            "MiwudGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLlZlcnNpb25pbmdPdmVycmlk",
+            "ZSLSBAoMQ2FsbGJhY2tJbmZvEjIKCGNhbGxiYWNrGAEgASgLMiAudGVtcG9y",
+            "YWwuYXBpLmNvbW1vbi52MS5DYWxsYmFjaxI/Cgd0cmlnZ2VyGAIgASgLMi4u",
+            "dGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLkNhbGxiYWNrSW5mby5UcmlnZ2Vy",
+            "EjUKEXJlZ2lzdHJhdGlvbl90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVm",
+            "LlRpbWVzdGFtcBIzCgVzdGF0ZRgEIAEoDjIkLnRlbXBvcmFsLmFwaS5lbnVt",
+            "cy52MS5DYWxsYmFja1N0YXRlEg8KB2F0dGVtcHQYBSABKAUSPgoabGFzdF9h",
+            "dHRlbXB0X2NvbXBsZXRlX3RpbWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYu",
+            "VGltZXN0YW1wEj4KFGxhc3RfYXR0ZW1wdF9mYWlsdXJlGAcgASgLMiAudGVt",
+            "cG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRI+ChpuZXh0X2F0dGVtcHRf",
+            "c2NoZWR1bGVfdGltZRgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
+            "bXASFgoOYmxvY2tlZF9yZWFzb24YCSABKAkaEAoOV29ya2Zsb3dDbG9zZWQa",
+            "ZgoHVHJpZ2dlchJQCg93b3JrZmxvd19jbG9zZWQYASABKAsyNS50ZW1wb3Jh",
+            "bC5hcGkud29ya2Zsb3cudjEuQ2FsbGJhY2tJbmZvLldvcmtmbG93Q2xvc2Vk",
+            "SABCCQoHdmFyaWFudCL1BAoZUGVuZGluZ05leHVzT3BlcmF0aW9uSW5mbxIQ",
+            "CghlbmRwb2ludBgBIAEoCRIPCgdzZXJ2aWNlGAIgASgJEhEKCW9wZXJhdGlv",
+            "bhgDIAEoCRIUCgxvcGVyYXRpb25faWQYBCABKAkSPAoZc2NoZWR1bGVfdG9f",
+            "Y2xvc2VfdGltZW91dBgFIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlv",
+            "bhIyCg5zY2hlZHVsZWRfdGltZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5U",
+            "aW1lc3RhbXASQAoFc3RhdGUYByABKA4yMS50ZW1wb3JhbC5hcGkuZW51bXMu",
+            "djEuUGVuZGluZ05leHVzT3BlcmF0aW9uU3RhdGUSDwoHYXR0ZW1wdBgIIAEo",
+            "BRI+ChpsYXN0X2F0dGVtcHRfY29tcGxldGVfdGltZRgJIAEoCzIaLmdvb2ds",
             "ZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoUbGFzdF9hdHRlbXB0X2ZhaWx1cmUY",
-            "BSABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEj4KGm5l",
-            "eHRfYXR0ZW1wdF9zY2hlZHVsZV90aW1lGAYgASgLMhouZ29vZ2xlLnByb3Rv",
-            "YnVmLlRpbWVzdGFtcEKTAQobaW8udGVtcG9yYWwuYXBpLndvcmtmbG93LnYx",
-            "QgxNZXNzYWdlUHJvdG9QAVonZ28udGVtcG9yYWwuaW8vYXBpL3dvcmtmbG93",
-            "L3YxO3dvcmtmbG93qgIaVGVtcG9yYWxpby5BcGkuV29ya2Zsb3cuVjHqAh1U",
-            "ZW1wb3JhbGlvOjpBcGk6OldvcmtmbG93OjpWMWIGcHJvdG8z"));
+            "CiABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEj4KGm5l",
+            "eHRfYXR0ZW1wdF9zY2hlZHVsZV90aW1lGAsgASgLMhouZ29vZ2xlLnByb3Rv",
+            "YnVmLlRpbWVzdGFtcBJTChFjYW5jZWxsYXRpb25faW5mbxgMIAEoCzI4LnRl",
+            "bXBvcmFsLmFwaS53b3JrZmxvdy52MS5OZXh1c09wZXJhdGlvbkNhbmNlbGxh",
+            "dGlvbkluZm8SGgoSc2NoZWR1bGVkX2V2ZW50X2lkGA0gASgDEhYKDmJsb2Nr",
+            "ZWRfcmVhc29uGA4gASgJIoQDCh5OZXh1c09wZXJhdGlvbkNhbmNlbGxhdGlv",
+            "bkluZm8SMgoOcmVxdWVzdGVkX3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9i",
+            "dWYuVGltZXN0YW1wEkUKBXN0YXRlGAIgASgOMjYudGVtcG9yYWwuYXBpLmVu",
+            "dW1zLnYxLk5leHVzT3BlcmF0aW9uQ2FuY2VsbGF0aW9uU3RhdGUSDwoHYXR0",
+            "ZW1wdBgDIAEoBRI+ChpsYXN0X2F0dGVtcHRfY29tcGxldGVfdGltZRgEIAEo",
+            "CzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoUbGFzdF9hdHRlbXB0",
+            "X2ZhaWx1cmUYBSABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWls",
+            "dXJlEj4KGm5leHRfYXR0ZW1wdF9zY2hlZHVsZV90aW1lGAYgASgLMhouZ29v",
+            "Z2xlLnByb3RvYnVmLlRpbWVzdGFtcBIWCg5ibG9ja2VkX3JlYXNvbhgHIAEo",
+            "CSJlChhXb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnMSSQoTdmVyc2lvbmluZ19v",
+            "dmVycmlkZRgBIAEoCzIsLnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5WZXJz",
+            "aW9uaW5nT3ZlcnJpZGUijQEKElZlcnNpb25pbmdPdmVycmlkZRI7CghiZWhh",
+            "dmlvchgBIAEoDjIpLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5WZXJzaW9uaW5n",
+            "QmVoYXZpb3ISOgoKZGVwbG95bWVudBgCIAEoCzImLnRlbXBvcmFsLmFwaS5k",
+            "ZXBsb3ltZW50LnYxLkRlcGxveW1lbnRCkwEKG2lvLnRlbXBvcmFsLmFwaS53",
+            "b3JrZmxvdy52MUIMTWVzc2FnZVByb3RvUAFaJ2dvLnRlbXBvcmFsLmlvL2Fw",
+            "aS93b3JrZmxvdy92MTt3b3JrZmxvd6oCGlRlbXBvcmFsaW8uQXBpLldvcmtm",
+            "bG93LlYx6gIdVGVtcG9yYWxpbzo6QXBpOjpXb3JrZmxvdzo6VjFiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionInfo.Parser, new[]{ "Execution", "Type", "StartTime", "CloseTime", "Status", "HistoryLength", "ParentNamespaceId", "ParentExecution", "ExecutionTime", "Memo", "SearchAttributes", "AutoResetPoints", "TaskQueue", "StateTransitionCount", "HistorySizeBytes", "MostRecentWorkerVersionStamp", "ExecutionDuration", "RootExecution", "AssignedBuildId", "InheritedBuildId", "FirstRunId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionInfo.Parser, new[]{ "Execution", "Type", "StartTime", "CloseTime", "Status", "HistoryLength", "ParentNamespaceId", "ParentExecution", "ExecutionTime", "Memo", "SearchAttributes", "AutoResetPoints", "TaskQueue", "StateTransitionCount", "HistorySizeBytes", "MostRecentWorkerVersionStamp", "ExecutionDuration", "RootExecution", "AssignedBuildId", "InheritedBuildId", "FirstRunId", "VersioningInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionExtendedInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionExtendedInfo.Parser, new[]{ "ExecutionExpirationTime", "RunExpirationTime", "CancelRequested", "LastResetTime", "OriginalStartTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo.Parser, new[]{ "Behavior", "Deployment", "VersioningOverride", "DeploymentTransition" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.DeploymentTransition), global::Temporalio.Api.Workflow.V1.DeploymentTransition.Parser, new[]{ "Deployment" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionConfig), global::Temporalio.Api.Workflow.V1.WorkflowExecutionConfig.Parser, new[]{ "TaskQueue", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "DefaultWorkflowTaskTimeout", "UserMetadata" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.PendingActivityInfo), global::Temporalio.Api.Workflow.V1.PendingActivityInfo.Parser, new[]{ "ActivityId", "ActivityType", "State", "HeartbeatDetails", "LastHeartbeatTime", "LastStartedTime", "Attempt", "MaximumAttempts", "ScheduledTime", "ExpirationTime", "LastFailure", "LastWorkerIdentity", "UseWorkflowBuildId", "LastIndependentlyAssignedBuildId", "LastWorkerVersionStamp", "CurrentRetryInterval", "LastAttemptCompleteTime", "NextAttemptScheduleTime", "Paused" }, new[]{ "AssignedBuildId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.PendingActivityInfo), global::Temporalio.Api.Workflow.V1.PendingActivityInfo.Parser, new[]{ "ActivityId", "ActivityType", "State", "HeartbeatDetails", "LastHeartbeatTime", "LastStartedTime", "Attempt", "MaximumAttempts", "ScheduledTime", "ExpirationTime", "LastFailure", "LastWorkerIdentity", "UseWorkflowBuildId", "LastIndependentlyAssignedBuildId", "LastWorkerVersionStamp", "CurrentRetryInterval", "LastAttemptCompleteTime", "NextAttemptScheduleTime", "Paused", "LastDeployment" }, new[]{ "AssignedBuildId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.PendingChildExecutionInfo), global::Temporalio.Api.Workflow.V1.PendingChildExecutionInfo.Parser, new[]{ "WorkflowId", "RunId", "WorkflowTypeName", "InitiatedId", "ParentClosePolicy" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.PendingWorkflowTaskInfo), global::Temporalio.Api.Workflow.V1.PendingWorkflowTaskInfo.Parser, new[]{ "State", "ScheduledTime", "OriginalScheduledTime", "StartedTime", "Attempt" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.ResetPoints), global::Temporalio.Api.Workflow.V1.ResetPoints.Parser, new[]{ "Points" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.ResetPointInfo), global::Temporalio.Api.Workflow.V1.ResetPointInfo.Parser, new[]{ "BuildId", "BinaryChecksum", "RunId", "FirstWorkflowTaskCompletedId", "CreateTime", "ExpireTime", "Resettable" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.NewWorkflowExecutionInfo), global::Temporalio.Api.Workflow.V1.NewWorkflowExecutionInfo.Parser, new[]{ "WorkflowId", "WorkflowType", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "WorkflowIdReusePolicy", "RetryPolicy", "CronSchedule", "Memo", "SearchAttributes", "Header", "UserMetadata" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.CallbackInfo), global::Temporalio.Api.Workflow.V1.CallbackInfo.Parser, new[]{ "Callback", "Trigger", "RegistrationTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.WorkflowClosed), global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.WorkflowClosed.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.NewWorkflowExecutionInfo), global::Temporalio.Api.Workflow.V1.NewWorkflowExecutionInfo.Parser, new[]{ "WorkflowId", "WorkflowType", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "WorkflowIdReusePolicy", "RetryPolicy", "CronSchedule", "Memo", "SearchAttributes", "Header", "UserMetadata", "VersioningOverride" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.CallbackInfo), global::Temporalio.Api.Workflow.V1.CallbackInfo.Parser, new[]{ "Callback", "Trigger", "RegistrationTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "BlockedReason" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.WorkflowClosed), global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.WorkflowClosed.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.Trigger), global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.Trigger.Parser, new[]{ "WorkflowClosed" }, new[]{ "Variant" }, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.PendingNexusOperationInfo), global::Temporalio.Api.Workflow.V1.PendingNexusOperationInfo.Parser, new[]{ "Endpoint", "Service", "Operation", "OperationId", "ScheduleToCloseTimeout", "ScheduledTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "CancellationInfo", "ScheduledEventId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.NexusOperationCancellationInfo), global::Temporalio.Api.Workflow.V1.NexusOperationCancellationInfo.Parser, new[]{ "RequestedTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.PendingNexusOperationInfo), global::Temporalio.Api.Workflow.V1.PendingNexusOperationInfo.Parser, new[]{ "Endpoint", "Service", "Operation", "OperationId", "ScheduleToCloseTimeout", "ScheduledTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "CancellationInfo", "ScheduledEventId", "BlockedReason" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.NexusOperationCancellationInfo), global::Temporalio.Api.Workflow.V1.NexusOperationCancellationInfo.Parser, new[]{ "RequestedTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "BlockedReason" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionOptions), global::Temporalio.Api.Workflow.V1.WorkflowExecutionOptions.Parser, new[]{ "VersioningOverride" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.VersioningOverride), global::Temporalio.Api.Workflow.V1.VersioningOverride.Parser, new[]{ "Behavior", "Deployment" }, null, null, null, null)
           }));
     }
     #endregion
 
   }
   #region Messages
+  /// <summary>
+  /// Hold basic information about a workflow execution.
+  /// This structure is a part of visibility, and thus contain a limited subset of information.
+  /// </summary>
   public sealed partial class WorkflowExecutionInfo : pb::IMessage<WorkflowExecutionInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -233,6 +271,7 @@ namespace Temporalio.Api.Workflow.V1 {
       assignedBuildId_ = other.assignedBuildId_;
       inheritedBuildId_ = other.inheritedBuildId_;
       firstRunId_ = other.firstRunId_;
+      versioningInfo_ = other.versioningInfo_ != null ? other.versioningInfo_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -427,6 +466,7 @@ namespace Temporalio.Api.Workflow.V1 {
     private global::Temporalio.Api.Common.V1.WorkerVersionStamp mostRecentWorkerVersionStamp_;
     /// <summary>
     /// If set, the most recent worker version stamp that appeared in a workflow task completion
+    /// Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -494,6 +534,7 @@ namespace Temporalio.Api.Workflow.V1 {
     /// again, the assigned build ID may change according to the latest versioning rules.
     /// Assigned build ID can also change in the middle of a execution if Compatible Redirect Rules are applied to
     /// this execution.
+    /// Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -510,6 +551,7 @@ namespace Temporalio.Api.Workflow.V1 {
     /// <summary>
     /// Build ID inherited from a previous/parent execution. If present, assigned_build_id will be set to this, instead
     /// of using the assignment rules.
+    /// Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -537,6 +579,23 @@ namespace Temporalio.Api.Workflow.V1 {
       get { return firstRunId_; }
       set {
         firstRunId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "versioning_info" field.</summary>
+    public const int VersioningInfoFieldNumber = 22;
+    private global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo versioningInfo_;
+    /// <summary>
+    /// Absent value means the workflow execution is not versioned. When present, the execution might
+    /// be versioned or unversioned, depending on `versioning_info.behavior` and `versioning_info.versioning_override`.
+    /// Experimental. Versioning info is experimental and might change in the future.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo VersioningInfo {
+      get { return versioningInfo_; }
+      set {
+        versioningInfo_ = value;
       }
     }
 
@@ -576,6 +635,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (AssignedBuildId != other.AssignedBuildId) return false;
       if (InheritedBuildId != other.InheritedBuildId) return false;
       if (FirstRunId != other.FirstRunId) return false;
+      if (!object.Equals(VersioningInfo, other.VersioningInfo)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -604,6 +664,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (AssignedBuildId.Length != 0) hash ^= AssignedBuildId.GetHashCode();
       if (InheritedBuildId.Length != 0) hash ^= InheritedBuildId.GetHashCode();
       if (FirstRunId.Length != 0) hash ^= FirstRunId.GetHashCode();
+      if (versioningInfo_ != null) hash ^= VersioningInfo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -706,6 +767,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(170, 1);
         output.WriteString(FirstRunId);
       }
+      if (versioningInfo_ != null) {
+        output.WriteRawTag(178, 1);
+        output.WriteMessage(VersioningInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -800,6 +865,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(170, 1);
         output.WriteString(FirstRunId);
       }
+      if (versioningInfo_ != null) {
+        output.WriteRawTag(178, 1);
+        output.WriteMessage(VersioningInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -872,6 +941,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (FirstRunId.Length != 0) {
         size += 2 + pb::CodedOutputStream.ComputeStringSize(FirstRunId);
+      }
+      if (versioningInfo_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(VersioningInfo);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -983,6 +1055,12 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (other.FirstRunId.Length != 0) {
         FirstRunId = other.FirstRunId;
+      }
+      if (other.versioningInfo_ != null) {
+        if (versioningInfo_ == null) {
+          VersioningInfo = new global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo();
+        }
+        VersioningInfo.MergeFrom(other.VersioningInfo);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1117,6 +1195,13 @@ namespace Temporalio.Api.Workflow.V1 {
           }
           case 170: {
             FirstRunId = input.ReadString();
+            break;
+          }
+          case 178: {
+            if (versioningInfo_ == null) {
+              VersioningInfo = new global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo();
+            }
+            input.ReadMessage(VersioningInfo);
             break;
           }
         }
@@ -1254,6 +1339,984 @@ namespace Temporalio.Api.Workflow.V1 {
             FirstRunId = input.ReadString();
             break;
           }
+          case 178: {
+            if (versioningInfo_ == null) {
+              VersioningInfo = new global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo();
+            }
+            input.ReadMessage(VersioningInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Holds all the extra information about workflow execution that is not part of Visibility.
+  /// </summary>
+  public sealed partial class WorkflowExecutionExtendedInfo : pb::IMessage<WorkflowExecutionExtendedInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkflowExecutionExtendedInfo> _parser = new pb::MessageParser<WorkflowExecutionExtendedInfo>(() => new WorkflowExecutionExtendedInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkflowExecutionExtendedInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionExtendedInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionExtendedInfo(WorkflowExecutionExtendedInfo other) : this() {
+      executionExpirationTime_ = other.executionExpirationTime_ != null ? other.executionExpirationTime_.Clone() : null;
+      runExpirationTime_ = other.runExpirationTime_ != null ? other.runExpirationTime_.Clone() : null;
+      cancelRequested_ = other.cancelRequested_;
+      lastResetTime_ = other.lastResetTime_ != null ? other.lastResetTime_.Clone() : null;
+      originalStartTime_ = other.originalStartTime_ != null ? other.originalStartTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionExtendedInfo Clone() {
+      return new WorkflowExecutionExtendedInfo(this);
+    }
+
+    /// <summary>Field number for the "execution_expiration_time" field.</summary>
+    public const int ExecutionExpirationTimeFieldNumber = 1;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp executionExpirationTime_;
+    /// <summary>
+    /// Workflow execution expiration time is defined as workflow start time plus expiration timeout.
+    /// Workflow start time may change after workflow reset.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp ExecutionExpirationTime {
+      get { return executionExpirationTime_; }
+      set {
+        executionExpirationTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "run_expiration_time" field.</summary>
+    public const int RunExpirationTimeFieldNumber = 2;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp runExpirationTime_;
+    /// <summary>
+    /// Workflow run expiration time is defined as current workflow run start time plus workflow run timeout.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp RunExpirationTime {
+      get { return runExpirationTime_; }
+      set {
+        runExpirationTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "cancel_requested" field.</summary>
+    public const int CancelRequestedFieldNumber = 3;
+    private bool cancelRequested_;
+    /// <summary>
+    /// indicates if the workflow received a cancel request
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool CancelRequested {
+      get { return cancelRequested_; }
+      set {
+        cancelRequested_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "last_reset_time" field.</summary>
+    public const int LastResetTimeFieldNumber = 4;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp lastResetTime_;
+    /// <summary>
+    /// Last workflow reset time. Nil if the workflow was never reset.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp LastResetTime {
+      get { return lastResetTime_; }
+      set {
+        lastResetTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "original_start_time" field.</summary>
+    public const int OriginalStartTimeFieldNumber = 5;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp originalStartTime_;
+    /// <summary>
+    /// Original workflow start time.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp OriginalStartTime {
+      get { return originalStartTime_; }
+      set {
+        originalStartTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkflowExecutionExtendedInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkflowExecutionExtendedInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(ExecutionExpirationTime, other.ExecutionExpirationTime)) return false;
+      if (!object.Equals(RunExpirationTime, other.RunExpirationTime)) return false;
+      if (CancelRequested != other.CancelRequested) return false;
+      if (!object.Equals(LastResetTime, other.LastResetTime)) return false;
+      if (!object.Equals(OriginalStartTime, other.OriginalStartTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (executionExpirationTime_ != null) hash ^= ExecutionExpirationTime.GetHashCode();
+      if (runExpirationTime_ != null) hash ^= RunExpirationTime.GetHashCode();
+      if (CancelRequested != false) hash ^= CancelRequested.GetHashCode();
+      if (lastResetTime_ != null) hash ^= LastResetTime.GetHashCode();
+      if (originalStartTime_ != null) hash ^= OriginalStartTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (executionExpirationTime_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ExecutionExpirationTime);
+      }
+      if (runExpirationTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(RunExpirationTime);
+      }
+      if (CancelRequested != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(CancelRequested);
+      }
+      if (lastResetTime_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(LastResetTime);
+      }
+      if (originalStartTime_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(OriginalStartTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (executionExpirationTime_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ExecutionExpirationTime);
+      }
+      if (runExpirationTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(RunExpirationTime);
+      }
+      if (CancelRequested != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(CancelRequested);
+      }
+      if (lastResetTime_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(LastResetTime);
+      }
+      if (originalStartTime_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(OriginalStartTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (executionExpirationTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ExecutionExpirationTime);
+      }
+      if (runExpirationTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RunExpirationTime);
+      }
+      if (CancelRequested != false) {
+        size += 1 + 1;
+      }
+      if (lastResetTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastResetTime);
+      }
+      if (originalStartTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(OriginalStartTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkflowExecutionExtendedInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.executionExpirationTime_ != null) {
+        if (executionExpirationTime_ == null) {
+          ExecutionExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        ExecutionExpirationTime.MergeFrom(other.ExecutionExpirationTime);
+      }
+      if (other.runExpirationTime_ != null) {
+        if (runExpirationTime_ == null) {
+          RunExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        RunExpirationTime.MergeFrom(other.RunExpirationTime);
+      }
+      if (other.CancelRequested != false) {
+        CancelRequested = other.CancelRequested;
+      }
+      if (other.lastResetTime_ != null) {
+        if (lastResetTime_ == null) {
+          LastResetTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        LastResetTime.MergeFrom(other.LastResetTime);
+      }
+      if (other.originalStartTime_ != null) {
+        if (originalStartTime_ == null) {
+          OriginalStartTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        OriginalStartTime.MergeFrom(other.OriginalStartTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (executionExpirationTime_ == null) {
+              ExecutionExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(ExecutionExpirationTime);
+            break;
+          }
+          case 18: {
+            if (runExpirationTime_ == null) {
+              RunExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RunExpirationTime);
+            break;
+          }
+          case 24: {
+            CancelRequested = input.ReadBool();
+            break;
+          }
+          case 34: {
+            if (lastResetTime_ == null) {
+              LastResetTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastResetTime);
+            break;
+          }
+          case 42: {
+            if (originalStartTime_ == null) {
+              OriginalStartTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(OriginalStartTime);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (executionExpirationTime_ == null) {
+              ExecutionExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(ExecutionExpirationTime);
+            break;
+          }
+          case 18: {
+            if (runExpirationTime_ == null) {
+              RunExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RunExpirationTime);
+            break;
+          }
+          case 24: {
+            CancelRequested = input.ReadBool();
+            break;
+          }
+          case 34: {
+            if (lastResetTime_ == null) {
+              LastResetTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastResetTime);
+            break;
+          }
+          case 42: {
+            if (originalStartTime_ == null) {
+              OriginalStartTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(OriginalStartTime);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Holds all the information about versioning for a workflow execution.
+  /// Experimental. Versioning info is experimental and might change in the future.
+  /// </summary>
+  public sealed partial class WorkflowExecutionVersioningInfo : pb::IMessage<WorkflowExecutionVersioningInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkflowExecutionVersioningInfo> _parser = new pb::MessageParser<WorkflowExecutionVersioningInfo>(() => new WorkflowExecutionVersioningInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkflowExecutionVersioningInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionVersioningInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionVersioningInfo(WorkflowExecutionVersioningInfo other) : this() {
+      behavior_ = other.behavior_;
+      deployment_ = other.deployment_ != null ? other.deployment_.Clone() : null;
+      versioningOverride_ = other.versioningOverride_ != null ? other.versioningOverride_.Clone() : null;
+      deploymentTransition_ = other.deploymentTransition_ != null ? other.deploymentTransition_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionVersioningInfo Clone() {
+      return new WorkflowExecutionVersioningInfo(this);
+    }
+
+    /// <summary>Field number for the "behavior" field.</summary>
+    public const int BehaviorFieldNumber = 1;
+    private global::Temporalio.Api.Enums.V1.VersioningBehavior behavior_ = global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified;
+    /// <summary>
+    /// Versioning behavior determines how the server should treat this execution when workers are
+    /// upgraded. When present it means this workflow execution is versioned; UNSPECIFIED means
+    /// unversioned. See the comments in `VersioningBehavior` enum for more info about different
+    /// behaviors.
+    /// This field is first set after an execution completes its first workflow task on a versioned
+    /// worker, and set again on completion of every subsequent workflow task.
+    /// Note that `behavior` is overridden by `versioning_override` if the latter is present.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.VersioningBehavior Behavior {
+      get { return behavior_; }
+      set {
+        behavior_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "deployment" field.</summary>
+    public const int DeploymentFieldNumber = 2;
+    private global::Temporalio.Api.Deployment.V1.Deployment deployment_;
+    /// <summary>
+    /// The worker deployment that completed the last workflow task of this workflow execution. Must
+    /// be present if `behavior` is set. Absent value means no workflow task is completed, or the
+    /// last workflow task was completed by an unversioned worker. Unversioned workers may still send
+    /// a deployment value which will be stored here, so the right way to check if an execution is
+    /// versioned if an execution is versioned or not is via the `behavior` field.
+    /// Note that `deployment` is overridden by `versioning_override` if the latter is present.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.Deployment Deployment {
+      get { return deployment_; }
+      set {
+        deployment_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "versioning_override" field.</summary>
+    public const int VersioningOverrideFieldNumber = 3;
+    private global::Temporalio.Api.Workflow.V1.VersioningOverride versioningOverride_;
+    /// <summary>
+    /// Present if user has set an execution-specific versioning override. This override takes
+    /// precedence over SDK-sent `behavior` (and `deployment` when override is PINNED). An override
+    /// can be set when starting a new execution, as well as afterwards by calling the
+    /// `UpdateWorkflowExecutionOptions` API.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.VersioningOverride VersioningOverride {
+      get { return versioningOverride_; }
+      set {
+        versioningOverride_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "deployment_transition" field.</summary>
+    public const int DeploymentTransitionFieldNumber = 4;
+    private global::Temporalio.Api.Workflow.V1.DeploymentTransition deploymentTransition_;
+    /// <summary>
+    /// When present, indicates the workflow is transitioning to a different deployment. Can
+    /// indicate one of the following transitions: unversioned -> versioned, versioned -> versioned
+    /// on a different deployment, or versioned -> unversioned.
+    /// Not applicable to workflows with PINNED behavior.
+    /// When a workflow with AUTO_UPGRADE behavior creates a new workflow task, it will automatically
+    /// start a transition to the task queue's current deployment if the task queue's current
+    /// deployment is different from the workflow's deployment.
+    /// If the AUTO_UPGRADE workflow is stuck due to backlogged activity or workflow tasks, those
+    /// tasks will be redirected to the task queue's current deployment. As soon as a poller from
+    /// that deployment is available to receive the task, the workflow will automatically start a
+    /// transition to that deployment and continue execution there.
+    /// A deployment transition can only exist while there is a pending or started workflow task.
+    /// Once the pending workflow task completes on the transition's target deployment, the
+    /// transition completes and the workflow's `deployment` and `behavior` fields are updated per
+    /// the worker's task completion response.
+    /// Pending activities will not start new attempts during a transition. Once the transition is
+    /// completed, pending activities will start their next attempt on the new deployment.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.DeploymentTransition DeploymentTransition {
+      get { return deploymentTransition_; }
+      set {
+        deploymentTransition_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkflowExecutionVersioningInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkflowExecutionVersioningInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Behavior != other.Behavior) return false;
+      if (!object.Equals(Deployment, other.Deployment)) return false;
+      if (!object.Equals(VersioningOverride, other.VersioningOverride)) return false;
+      if (!object.Equals(DeploymentTransition, other.DeploymentTransition)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) hash ^= Behavior.GetHashCode();
+      if (deployment_ != null) hash ^= Deployment.GetHashCode();
+      if (versioningOverride_ != null) hash ^= VersioningOverride.GetHashCode();
+      if (deploymentTransition_ != null) hash ^= DeploymentTransition.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Behavior);
+      }
+      if (deployment_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Deployment);
+      }
+      if (versioningOverride_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(VersioningOverride);
+      }
+      if (deploymentTransition_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(DeploymentTransition);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Behavior);
+      }
+      if (deployment_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Deployment);
+      }
+      if (versioningOverride_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(VersioningOverride);
+      }
+      if (deploymentTransition_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(DeploymentTransition);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Behavior);
+      }
+      if (deployment_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deployment);
+      }
+      if (versioningOverride_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(VersioningOverride);
+      }
+      if (deploymentTransition_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeploymentTransition);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkflowExecutionVersioningInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        Behavior = other.Behavior;
+      }
+      if (other.deployment_ != null) {
+        if (deployment_ == null) {
+          Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+        }
+        Deployment.MergeFrom(other.Deployment);
+      }
+      if (other.versioningOverride_ != null) {
+        if (versioningOverride_ == null) {
+          VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+        }
+        VersioningOverride.MergeFrom(other.VersioningOverride);
+      }
+      if (other.deploymentTransition_ != null) {
+        if (deploymentTransition_ == null) {
+          DeploymentTransition = new global::Temporalio.Api.Workflow.V1.DeploymentTransition();
+        }
+        DeploymentTransition.MergeFrom(other.DeploymentTransition);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Behavior = (global::Temporalio.Api.Enums.V1.VersioningBehavior) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            if (deployment_ == null) {
+              Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(Deployment);
+            break;
+          }
+          case 26: {
+            if (versioningOverride_ == null) {
+              VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+            }
+            input.ReadMessage(VersioningOverride);
+            break;
+          }
+          case 34: {
+            if (deploymentTransition_ == null) {
+              DeploymentTransition = new global::Temporalio.Api.Workflow.V1.DeploymentTransition();
+            }
+            input.ReadMessage(DeploymentTransition);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Behavior = (global::Temporalio.Api.Enums.V1.VersioningBehavior) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            if (deployment_ == null) {
+              Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(Deployment);
+            break;
+          }
+          case 26: {
+            if (versioningOverride_ == null) {
+              VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+            }
+            input.ReadMessage(VersioningOverride);
+            break;
+          }
+          case 34: {
+            if (deploymentTransition_ == null) {
+              DeploymentTransition = new global::Temporalio.Api.Workflow.V1.DeploymentTransition();
+            }
+            input.ReadMessage(DeploymentTransition);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Holds information about ongoing transition of a workflow execution from one deployment to another.
+  /// Experimental. Deployment transition is experimental and might change in the future.
+  /// </summary>
+  public sealed partial class DeploymentTransition : pb::IMessage<DeploymentTransition>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DeploymentTransition> _parser = new pb::MessageParser<DeploymentTransition>(() => new DeploymentTransition());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DeploymentTransition> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeploymentTransition() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeploymentTransition(DeploymentTransition other) : this() {
+      deployment_ = other.deployment_ != null ? other.deployment_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeploymentTransition Clone() {
+      return new DeploymentTransition(this);
+    }
+
+    /// <summary>Field number for the "deployment" field.</summary>
+    public const int DeploymentFieldNumber = 1;
+    private global::Temporalio.Api.Deployment.V1.Deployment deployment_;
+    /// <summary>
+    /// The target deployment of the transition. Null means a so-far-versioned workflow is
+    /// transitioning to unversioned workers.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.Deployment Deployment {
+      get { return deployment_; }
+      set {
+        deployment_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DeploymentTransition);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DeploymentTransition other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Deployment, other.Deployment)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (deployment_ != null) hash ^= Deployment.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (deployment_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Deployment);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (deployment_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Deployment);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (deployment_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deployment);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DeploymentTransition other) {
+      if (other == null) {
+        return;
+      }
+      if (other.deployment_ != null) {
+        if (deployment_ == null) {
+          Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+        }
+        Deployment.MergeFrom(other.Deployment);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (deployment_ == null) {
+              Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(Deployment);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (deployment_ == null) {
+              Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(Deployment);
+            break;
+          }
         }
       }
     }
@@ -1275,7 +2338,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1660,7 +2723,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1697,6 +2760,7 @@ namespace Temporalio.Api.Workflow.V1 {
       lastAttemptCompleteTime_ = other.lastAttemptCompleteTime_ != null ? other.lastAttemptCompleteTime_.Clone() : null;
       nextAttemptScheduleTime_ = other.nextAttemptScheduleTime_ != null ? other.nextAttemptScheduleTime_.Clone() : null;
       paused_ = other.paused_;
+      lastDeployment_ = other.lastDeployment_ != null ? other.lastDeployment_.Clone() : null;
       switch (other.AssignedBuildIdCase) {
         case AssignedBuildIdOneofCase.UseWorkflowBuildId:
           UseWorkflowBuildId = other.UseWorkflowBuildId.Clone();
@@ -1911,6 +2975,7 @@ namespace Temporalio.Api.Workflow.V1 {
     private global::Temporalio.Api.Common.V1.WorkerVersionStamp lastWorkerVersionStamp_;
     /// <summary>
     /// The version stamp of the worker to whom this activity was most recently dispatched
+    /// Deprecated. This field should be cleaned up when versioning-2 API is removed. [cleanup-experimental-wv]
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1985,6 +3050,22 @@ namespace Temporalio.Api.Workflow.V1 {
       }
     }
 
+    /// <summary>Field number for the "last_deployment" field.</summary>
+    public const int LastDeploymentFieldNumber = 20;
+    private global::Temporalio.Api.Deployment.V1.Deployment lastDeployment_;
+    /// <summary>
+    /// The deployment this activity was dispatched to most recently. Present only if the activity
+    /// was dispatched to a versioned worker.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.Deployment LastDeployment {
+      get { return lastDeployment_; }
+      set {
+        lastDeployment_ = value;
+      }
+    }
+
     private object assignedBuildId_;
     /// <summary>Enum of possible cases for the "assigned_build_id" oneof.</summary>
     public enum AssignedBuildIdOneofCase {
@@ -2040,6 +3121,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (!object.Equals(LastAttemptCompleteTime, other.LastAttemptCompleteTime)) return false;
       if (!object.Equals(NextAttemptScheduleTime, other.NextAttemptScheduleTime)) return false;
       if (Paused != other.Paused) return false;
+      if (!object.Equals(LastDeployment, other.LastDeployment)) return false;
       if (AssignedBuildIdCase != other.AssignedBuildIdCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -2067,6 +3149,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (lastAttemptCompleteTime_ != null) hash ^= LastAttemptCompleteTime.GetHashCode();
       if (nextAttemptScheduleTime_ != null) hash ^= NextAttemptScheduleTime.GetHashCode();
       if (Paused != false) hash ^= Paused.GetHashCode();
+      if (lastDeployment_ != null) hash ^= LastDeployment.GetHashCode();
       hash ^= (int) assignedBuildIdCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -2162,6 +3245,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(152, 1);
         output.WriteBool(Paused);
       }
+      if (lastDeployment_ != null) {
+        output.WriteRawTag(162, 1);
+        output.WriteMessage(LastDeployment);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2248,6 +3335,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(152, 1);
         output.WriteBool(Paused);
       }
+      if (lastDeployment_ != null) {
+        output.WriteRawTag(162, 1);
+        output.WriteMessage(LastDeployment);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2314,6 +3405,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (Paused != false) {
         size += 2 + 1;
+      }
+      if (lastDeployment_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(LastDeployment);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2410,6 +3504,12 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (other.Paused != false) {
         Paused = other.Paused;
+      }
+      if (other.lastDeployment_ != null) {
+        if (lastDeployment_ == null) {
+          LastDeployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+        }
+        LastDeployment.MergeFrom(other.LastDeployment);
       }
       switch (other.AssignedBuildIdCase) {
         case AssignedBuildIdOneofCase.UseWorkflowBuildId:
@@ -2552,6 +3652,13 @@ namespace Temporalio.Api.Workflow.V1 {
             Paused = input.ReadBool();
             break;
           }
+          case 162: {
+            if (lastDeployment_ == null) {
+              LastDeployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(LastDeployment);
+            break;
+          }
         }
       }
     #endif
@@ -2681,6 +3788,13 @@ namespace Temporalio.Api.Workflow.V1 {
             Paused = input.ReadBool();
             break;
           }
+          case 162: {
+            if (lastDeployment_ == null) {
+              LastDeployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(LastDeployment);
+            break;
+          }
         }
       }
     }
@@ -2702,7 +3816,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3042,7 +4156,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3412,7 +4526,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3595,7 +4709,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4048,7 +5162,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4082,6 +5196,7 @@ namespace Temporalio.Api.Workflow.V1 {
       searchAttributes_ = other.searchAttributes_ != null ? other.searchAttributes_.Clone() : null;
       header_ = other.header_ != null ? other.header_.Clone() : null;
       userMetadata_ = other.userMetadata_ != null ? other.userMetadata_.Clone() : null;
+      versioningOverride_ = other.versioningOverride_ != null ? other.versioningOverride_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4285,6 +5400,22 @@ namespace Temporalio.Api.Workflow.V1 {
       }
     }
 
+    /// <summary>Field number for the "versioning_override" field.</summary>
+    public const int VersioningOverrideFieldNumber = 15;
+    private global::Temporalio.Api.Workflow.V1.VersioningOverride versioningOverride_;
+    /// <summary>
+    /// If set, takes precedence over the Versioning Behavior sent by the SDK on Workflow Task completion.
+    /// To unset the override after the workflow is running, use UpdateWorkflowExecutionOptions.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.VersioningOverride VersioningOverride {
+      get { return versioningOverride_; }
+      set {
+        versioningOverride_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -4314,6 +5445,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (!object.Equals(SearchAttributes, other.SearchAttributes)) return false;
       if (!object.Equals(Header, other.Header)) return false;
       if (!object.Equals(UserMetadata, other.UserMetadata)) return false;
+      if (!object.Equals(VersioningOverride, other.VersioningOverride)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4335,6 +5467,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (searchAttributes_ != null) hash ^= SearchAttributes.GetHashCode();
       if (header_ != null) hash ^= Header.GetHashCode();
       if (userMetadata_ != null) hash ^= UserMetadata.GetHashCode();
+      if (versioningOverride_ != null) hash ^= VersioningOverride.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4409,6 +5542,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(114);
         output.WriteMessage(UserMetadata);
       }
+      if (versioningOverride_ != null) {
+        output.WriteRawTag(122);
+        output.WriteMessage(VersioningOverride);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4475,6 +5612,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(114);
         output.WriteMessage(UserMetadata);
       }
+      if (versioningOverride_ != null) {
+        output.WriteRawTag(122);
+        output.WriteMessage(VersioningOverride);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4526,6 +5667,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (userMetadata_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserMetadata);
+      }
+      if (versioningOverride_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(VersioningOverride);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4613,6 +5757,12 @@ namespace Temporalio.Api.Workflow.V1 {
           UserMetadata = new global::Temporalio.Api.Sdk.V1.UserMetadata();
         }
         UserMetadata.MergeFrom(other.UserMetadata);
+      }
+      if (other.versioningOverride_ != null) {
+        if (versioningOverride_ == null) {
+          VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+        }
+        VersioningOverride.MergeFrom(other.VersioningOverride);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4716,6 +5866,13 @@ namespace Temporalio.Api.Workflow.V1 {
               UserMetadata = new global::Temporalio.Api.Sdk.V1.UserMetadata();
             }
             input.ReadMessage(UserMetadata);
+            break;
+          }
+          case 122: {
+            if (versioningOverride_ == null) {
+              VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+            }
+            input.ReadMessage(VersioningOverride);
             break;
           }
         }
@@ -4822,6 +5979,13 @@ namespace Temporalio.Api.Workflow.V1 {
             input.ReadMessage(UserMetadata);
             break;
           }
+          case 122: {
+            if (versioningOverride_ == null) {
+              VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+            }
+            input.ReadMessage(VersioningOverride);
+            break;
+          }
         }
       }
     }
@@ -4846,7 +6010,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4874,6 +6038,7 @@ namespace Temporalio.Api.Workflow.V1 {
       lastAttemptCompleteTime_ = other.lastAttemptCompleteTime_ != null ? other.lastAttemptCompleteTime_.Clone() : null;
       lastAttemptFailure_ = other.lastAttemptFailure_ != null ? other.lastAttemptFailure_.Clone() : null;
       nextAttemptScheduleTime_ = other.nextAttemptScheduleTime_ != null ? other.nextAttemptScheduleTime_.Clone() : null;
+      blockedReason_ = other.blockedReason_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5001,6 +6166,21 @@ namespace Temporalio.Api.Workflow.V1 {
       }
     }
 
+    /// <summary>Field number for the "blocked_reason" field.</summary>
+    public const int BlockedReasonFieldNumber = 9;
+    private string blockedReason_ = "";
+    /// <summary>
+    /// If the state is BLOCKED, blocked reason provides additional information.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string BlockedReason {
+      get { return blockedReason_; }
+      set {
+        blockedReason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -5024,6 +6204,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (!object.Equals(LastAttemptCompleteTime, other.LastAttemptCompleteTime)) return false;
       if (!object.Equals(LastAttemptFailure, other.LastAttemptFailure)) return false;
       if (!object.Equals(NextAttemptScheduleTime, other.NextAttemptScheduleTime)) return false;
+      if (BlockedReason != other.BlockedReason) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5039,6 +6220,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (lastAttemptCompleteTime_ != null) hash ^= LastAttemptCompleteTime.GetHashCode();
       if (lastAttemptFailure_ != null) hash ^= LastAttemptFailure.GetHashCode();
       if (nextAttemptScheduleTime_ != null) hash ^= NextAttemptScheduleTime.GetHashCode();
+      if (BlockedReason.Length != 0) hash ^= BlockedReason.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5089,6 +6271,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(66);
         output.WriteMessage(NextAttemptScheduleTime);
       }
+      if (BlockedReason.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(BlockedReason);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5131,6 +6317,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(66);
         output.WriteMessage(NextAttemptScheduleTime);
       }
+      if (BlockedReason.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(BlockedReason);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -5164,6 +6354,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (nextAttemptScheduleTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(NextAttemptScheduleTime);
+      }
+      if (BlockedReason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BlockedReason);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5218,6 +6411,9 @@ namespace Temporalio.Api.Workflow.V1 {
           NextAttemptScheduleTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         NextAttemptScheduleTime.MergeFrom(other.NextAttemptScheduleTime);
+      }
+      if (other.BlockedReason.Length != 0) {
+        BlockedReason = other.BlockedReason;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5284,6 +6480,10 @@ namespace Temporalio.Api.Workflow.V1 {
             input.ReadMessage(NextAttemptScheduleTime);
             break;
           }
+          case 74: {
+            BlockedReason = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -5347,6 +6547,10 @@ namespace Temporalio.Api.Workflow.V1 {
               NextAttemptScheduleTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(NextAttemptScheduleTime);
+            break;
+          }
+          case 74: {
+            BlockedReason = input.ReadString();
             break;
           }
         }
@@ -5768,7 +6972,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5801,6 +7005,7 @@ namespace Temporalio.Api.Workflow.V1 {
       nextAttemptScheduleTime_ = other.nextAttemptScheduleTime_ != null ? other.nextAttemptScheduleTime_.Clone() : null;
       cancellationInfo_ = other.cancellationInfo_ != null ? other.cancellationInfo_.Clone() : null;
       scheduledEventId_ = other.scheduledEventId_;
+      blockedReason_ = other.blockedReason_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6005,6 +7210,21 @@ namespace Temporalio.Api.Workflow.V1 {
       }
     }
 
+    /// <summary>Field number for the "blocked_reason" field.</summary>
+    public const int BlockedReasonFieldNumber = 14;
+    private string blockedReason_ = "";
+    /// <summary>
+    /// If the state is BLOCKED, blocked reason provides additional information.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string BlockedReason {
+      get { return blockedReason_; }
+      set {
+        blockedReason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -6033,6 +7253,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (!object.Equals(NextAttemptScheduleTime, other.NextAttemptScheduleTime)) return false;
       if (!object.Equals(CancellationInfo, other.CancellationInfo)) return false;
       if (ScheduledEventId != other.ScheduledEventId) return false;
+      if (BlockedReason != other.BlockedReason) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6053,6 +7274,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (nextAttemptScheduleTime_ != null) hash ^= NextAttemptScheduleTime.GetHashCode();
       if (cancellationInfo_ != null) hash ^= CancellationInfo.GetHashCode();
       if (ScheduledEventId != 0L) hash ^= ScheduledEventId.GetHashCode();
+      if (BlockedReason.Length != 0) hash ^= BlockedReason.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6123,6 +7345,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(104);
         output.WriteInt64(ScheduledEventId);
       }
+      if (BlockedReason.Length != 0) {
+        output.WriteRawTag(114);
+        output.WriteString(BlockedReason);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6185,6 +7411,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(104);
         output.WriteInt64(ScheduledEventId);
       }
+      if (BlockedReason.Length != 0) {
+        output.WriteRawTag(114);
+        output.WriteString(BlockedReason);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -6233,6 +7463,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (ScheduledEventId != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(ScheduledEventId);
+      }
+      if (BlockedReason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BlockedReason);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -6302,6 +7535,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (other.ScheduledEventId != 0L) {
         ScheduledEventId = other.ScheduledEventId;
+      }
+      if (other.BlockedReason.Length != 0) {
+        BlockedReason = other.BlockedReason;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -6386,6 +7622,10 @@ namespace Temporalio.Api.Workflow.V1 {
           }
           case 104: {
             ScheduledEventId = input.ReadInt64();
+            break;
+          }
+          case 114: {
+            BlockedReason = input.ReadString();
             break;
           }
         }
@@ -6473,6 +7713,10 @@ namespace Temporalio.Api.Workflow.V1 {
             ScheduledEventId = input.ReadInt64();
             break;
           }
+          case 114: {
+            BlockedReason = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -6497,7 +7741,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6523,6 +7767,7 @@ namespace Temporalio.Api.Workflow.V1 {
       lastAttemptCompleteTime_ = other.lastAttemptCompleteTime_ != null ? other.lastAttemptCompleteTime_.Clone() : null;
       lastAttemptFailure_ = other.lastAttemptFailure_ != null ? other.lastAttemptFailure_.Clone() : null;
       nextAttemptScheduleTime_ = other.nextAttemptScheduleTime_ != null ? other.nextAttemptScheduleTime_.Clone() : null;
+      blockedReason_ = other.blockedReason_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6620,6 +7865,21 @@ namespace Temporalio.Api.Workflow.V1 {
       }
     }
 
+    /// <summary>Field number for the "blocked_reason" field.</summary>
+    public const int BlockedReasonFieldNumber = 7;
+    private string blockedReason_ = "";
+    /// <summary>
+    /// If the state is BLOCKED, blocked reason provides additional information.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string BlockedReason {
+      get { return blockedReason_; }
+      set {
+        blockedReason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -6641,6 +7901,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (!object.Equals(LastAttemptCompleteTime, other.LastAttemptCompleteTime)) return false;
       if (!object.Equals(LastAttemptFailure, other.LastAttemptFailure)) return false;
       if (!object.Equals(NextAttemptScheduleTime, other.NextAttemptScheduleTime)) return false;
+      if (BlockedReason != other.BlockedReason) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6654,6 +7915,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (lastAttemptCompleteTime_ != null) hash ^= LastAttemptCompleteTime.GetHashCode();
       if (lastAttemptFailure_ != null) hash ^= LastAttemptFailure.GetHashCode();
       if (nextAttemptScheduleTime_ != null) hash ^= NextAttemptScheduleTime.GetHashCode();
+      if (BlockedReason.Length != 0) hash ^= BlockedReason.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6696,6 +7958,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(50);
         output.WriteMessage(NextAttemptScheduleTime);
       }
+      if (BlockedReason.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(BlockedReason);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6730,6 +7996,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(50);
         output.WriteMessage(NextAttemptScheduleTime);
       }
+      if (BlockedReason.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(BlockedReason);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -6757,6 +8027,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (nextAttemptScheduleTime_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(NextAttemptScheduleTime);
+      }
+      if (BlockedReason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BlockedReason);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -6799,6 +8072,9 @@ namespace Temporalio.Api.Workflow.V1 {
           NextAttemptScheduleTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         NextAttemptScheduleTime.MergeFrom(other.NextAttemptScheduleTime);
+      }
+      if (other.BlockedReason.Length != 0) {
+        BlockedReason = other.BlockedReason;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -6851,6 +8127,10 @@ namespace Temporalio.Api.Workflow.V1 {
             input.ReadMessage(NextAttemptScheduleTime);
             break;
           }
+          case 58: {
+            BlockedReason = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -6900,6 +8180,459 @@ namespace Temporalio.Api.Workflow.V1 {
               NextAttemptScheduleTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(NextAttemptScheduleTime);
+            break;
+          }
+          case 58: {
+            BlockedReason = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class WorkflowExecutionOptions : pb::IMessage<WorkflowExecutionOptions>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkflowExecutionOptions> _parser = new pb::MessageParser<WorkflowExecutionOptions>(() => new WorkflowExecutionOptions());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkflowExecutionOptions> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[14]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionOptions() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionOptions(WorkflowExecutionOptions other) : this() {
+      versioningOverride_ = other.versioningOverride_ != null ? other.versioningOverride_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionOptions Clone() {
+      return new WorkflowExecutionOptions(this);
+    }
+
+    /// <summary>Field number for the "versioning_override" field.</summary>
+    public const int VersioningOverrideFieldNumber = 1;
+    private global::Temporalio.Api.Workflow.V1.VersioningOverride versioningOverride_;
+    /// <summary>
+    /// If set, takes precedence over the Versioning Behavior sent by the SDK on Workflow Task completion.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.VersioningOverride VersioningOverride {
+      get { return versioningOverride_; }
+      set {
+        versioningOverride_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkflowExecutionOptions);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkflowExecutionOptions other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(VersioningOverride, other.VersioningOverride)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (versioningOverride_ != null) hash ^= VersioningOverride.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (versioningOverride_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(VersioningOverride);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (versioningOverride_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(VersioningOverride);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (versioningOverride_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(VersioningOverride);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkflowExecutionOptions other) {
+      if (other == null) {
+        return;
+      }
+      if (other.versioningOverride_ != null) {
+        if (versioningOverride_ == null) {
+          VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+        }
+        VersioningOverride.MergeFrom(other.VersioningOverride);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (versioningOverride_ == null) {
+              VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+            }
+            input.ReadMessage(VersioningOverride);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (versioningOverride_ == null) {
+              VersioningOverride = new global::Temporalio.Api.Workflow.V1.VersioningOverride();
+            }
+            input.ReadMessage(VersioningOverride);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Used to override the versioning behavior and deployment of a specific workflow execution. If set,
+  /// takes precedence over the worker-sent values. See `WorkflowExecutionInfo.VersioningInfo` for more
+  /// information. To remove the override, call `UpdateWorkflowExecutionOptions` with a null
+  /// `VersioningOverride`, and use the `update_mask` to indicate that it should be mutated.
+  /// </summary>
+  public sealed partial class VersioningOverride : pb::IMessage<VersioningOverride>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<VersioningOverride> _parser = new pb::MessageParser<VersioningOverride>(() => new VersioningOverride());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<VersioningOverride> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[15]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersioningOverride() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersioningOverride(VersioningOverride other) : this() {
+      behavior_ = other.behavior_;
+      deployment_ = other.deployment_ != null ? other.deployment_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersioningOverride Clone() {
+      return new VersioningOverride(this);
+    }
+
+    /// <summary>Field number for the "behavior" field.</summary>
+    public const int BehaviorFieldNumber = 1;
+    private global::Temporalio.Api.Enums.V1.VersioningBehavior behavior_ = global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified;
+    /// <summary>
+    /// Required.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.VersioningBehavior Behavior {
+      get { return behavior_; }
+      set {
+        behavior_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "deployment" field.</summary>
+    public const int DeploymentFieldNumber = 2;
+    private global::Temporalio.Api.Deployment.V1.Deployment deployment_;
+    /// <summary>
+    /// Required if behavior is `PINNED`. Must be null if behavior is `AUTO_UPGRADE`.
+    /// Identifies the worker deployment to pin the workflow to.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.Deployment Deployment {
+      get { return deployment_; }
+      set {
+        deployment_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as VersioningOverride);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(VersioningOverride other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Behavior != other.Behavior) return false;
+      if (!object.Equals(Deployment, other.Deployment)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) hash ^= Behavior.GetHashCode();
+      if (deployment_ != null) hash ^= Deployment.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Behavior);
+      }
+      if (deployment_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Deployment);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Behavior);
+      }
+      if (deployment_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Deployment);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Behavior);
+      }
+      if (deployment_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Deployment);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(VersioningOverride other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Behavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        Behavior = other.Behavior;
+      }
+      if (other.deployment_ != null) {
+        if (deployment_ == null) {
+          Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+        }
+        Deployment.MergeFrom(other.Deployment);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Behavior = (global::Temporalio.Api.Enums.V1.VersioningBehavior) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            if (deployment_ == null) {
+              Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(Deployment);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Behavior = (global::Temporalio.Api.Enums.V1.VersioningBehavior) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            if (deployment_ == null) {
+              Deployment = new global::Temporalio.Api.Deployment.V1.Deployment();
+            }
+            input.ReadMessage(Deployment);
             break;
           }
         }

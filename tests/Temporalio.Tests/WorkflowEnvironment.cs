@@ -33,7 +33,7 @@ public class WorkflowEnvironment : IAsyncLifetime
             var options = new TemporalClientConnectOptions(host)
             {
                 Namespace = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_NAMESPACE") ??
-                    throw new InvalidOperationException("Missing test namespace"),
+                    throw new InvalidOperationException("Missing test namespace. Set TEMPORAL_TEST_CLIENT_NAMESPACE"),
             };
             var clientCert = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_CERT");
             var clientKey = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_KEY");

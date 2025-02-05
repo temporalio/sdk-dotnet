@@ -27,24 +27,26 @@ namespace Temporalio.Api.Query.V1 {
             "CiN0ZW1wb3JhbC9hcGkvcXVlcnkvdjEvbWVzc2FnZS5wcm90bxIVdGVtcG9y",
             "YWwuYXBpLnF1ZXJ5LnYxGiF0ZW1wb3JhbC9hcGkvZW51bXMvdjEvcXVlcnku",
             "cHJvdG8aJHRlbXBvcmFsL2FwaS9lbnVtcy92MS93b3JrZmxvdy5wcm90bxok",
-            "dGVtcG9yYWwvYXBpL2NvbW1vbi92MS9tZXNzYWdlLnByb3RvIokBCg1Xb3Jr",
-            "Zmxvd1F1ZXJ5EhIKCnF1ZXJ5X3R5cGUYASABKAkSNAoKcXVlcnlfYXJncxgC",
-            "IAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSLgoGaGVh",
-            "ZGVyGAMgASgLMh4udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5IZWFkZXIimwEK",
-            "E1dvcmtmbG93UXVlcnlSZXN1bHQSOwoLcmVzdWx0X3R5cGUYASABKA4yJi50",
-            "ZW1wb3JhbC5hcGkuZW51bXMudjEuUXVlcnlSZXN1bHRUeXBlEjAKBmFuc3dl",
-            "chgCIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSFQoN",
-            "ZXJyb3JfbWVzc2FnZRgDIAEoCSJPCg1RdWVyeVJlamVjdGVkEj4KBnN0YXR1",
+            "dGVtcG9yYWwvYXBpL2NvbW1vbi92MS9tZXNzYWdlLnByb3RvGiV0ZW1wb3Jh",
+            "bC9hcGkvZmFpbHVyZS92MS9tZXNzYWdlLnByb3RvIokBCg1Xb3JrZmxvd1F1",
+            "ZXJ5EhIKCnF1ZXJ5X3R5cGUYASABKAkSNAoKcXVlcnlfYXJncxgCIAEoCzIg",
+            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSLgoGaGVhZGVyGAMg",
+            "ASgLMh4udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5IZWFkZXIizgEKE1dvcmtm",
+            "bG93UXVlcnlSZXN1bHQSOwoLcmVzdWx0X3R5cGUYASABKA4yJi50ZW1wb3Jh",
+            "bC5hcGkuZW51bXMudjEuUXVlcnlSZXN1bHRUeXBlEjAKBmFuc3dlchgCIAEo",
+            "CzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSFQoNZXJyb3Jf",
+            "bWVzc2FnZRgDIAEoCRIxCgdmYWlsdXJlGAQgASgLMiAudGVtcG9yYWwuYXBp",
+            "LmZhaWx1cmUudjEuRmFpbHVyZSJPCg1RdWVyeVJlamVjdGVkEj4KBnN0YXR1",
             "cxgBIAEoDjIuLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5Xb3JrZmxvd0V4ZWN1",
             "dGlvblN0YXR1c0KEAQoYaW8udGVtcG9yYWwuYXBpLnF1ZXJ5LnYxQgxNZXNz",
             "YWdlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL3F1ZXJ5L3YxO3F1ZXJ5",
             "qgIXVGVtcG9yYWxpby5BcGkuUXVlcnkuVjHqAhpUZW1wb3JhbGlvOjpBcGk6",
             "OlF1ZXJ5OjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.QueryReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.QueryReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Query.V1.WorkflowQuery), global::Temporalio.Api.Query.V1.WorkflowQuery.Parser, new[]{ "QueryType", "QueryArgs", "Header" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Query.V1.WorkflowQueryResult), global::Temporalio.Api.Query.V1.WorkflowQueryResult.Parser, new[]{ "ResultType", "Answer", "ErrorMessage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Query.V1.WorkflowQueryResult), global::Temporalio.Api.Query.V1.WorkflowQueryResult.Parser, new[]{ "ResultType", "Answer", "ErrorMessage", "Failure" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Query.V1.QueryRejected), global::Temporalio.Api.Query.V1.QueryRejected.Parser, new[]{ "Status" }, null, null, null, null)
           }));
     }
@@ -135,7 +137,7 @@ namespace Temporalio.Api.Query.V1 {
     public const int HeaderFieldNumber = 3;
     private global::Temporalio.Api.Common.V1.Header header_;
     /// <summary>
-    /// Headers that were passed by the caller of the query and copied by temporal 
+    /// Headers that were passed by the caller of the query and copied by temporal
     /// server into the workflow task.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -386,6 +388,7 @@ namespace Temporalio.Api.Query.V1 {
       resultType_ = other.resultType_;
       answer_ = other.answer_ != null ? other.answer_.Clone() : null;
       errorMessage_ = other.errorMessage_;
+      failure_ = other.failure_ != null ? other.failure_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -414,7 +417,8 @@ namespace Temporalio.Api.Query.V1 {
     public const int AnswerFieldNumber = 2;
     private global::Temporalio.Api.Common.V1.Payloads answer_;
     /// <summary>
-    /// Set when the query succeeds with the results
+    /// Set when the query succeeds with the results.
+    /// Mutually exclusive with `error_message` and `failure`.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -430,6 +434,7 @@ namespace Temporalio.Api.Query.V1 {
     private string errorMessage_ = "";
     /// <summary>
     /// Mutually exclusive with `answer`. Set when the query fails.
+    /// See also the newer `failure` field.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -437,6 +442,23 @@ namespace Temporalio.Api.Query.V1 {
       get { return errorMessage_; }
       set {
         errorMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "failure" field.</summary>
+    public const int FailureFieldNumber = 4;
+    private global::Temporalio.Api.Failure.V1.Failure failure_;
+    /// <summary>
+    /// The full reason for this query failure. This field is newer than `error_message` and can be encoded by the SDK's
+    /// failure converter to support E2E encryption of messages and stack traces.
+    /// Mutually exclusive with `answer`. Set when the query fails.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Failure.V1.Failure Failure {
+      get { return failure_; }
+      set {
+        failure_ = value;
       }
     }
 
@@ -458,6 +480,7 @@ namespace Temporalio.Api.Query.V1 {
       if (ResultType != other.ResultType) return false;
       if (!object.Equals(Answer, other.Answer)) return false;
       if (ErrorMessage != other.ErrorMessage) return false;
+      if (!object.Equals(Failure, other.Failure)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -468,6 +491,7 @@ namespace Temporalio.Api.Query.V1 {
       if (ResultType != global::Temporalio.Api.Enums.V1.QueryResultType.Unspecified) hash ^= ResultType.GetHashCode();
       if (answer_ != null) hash ^= Answer.GetHashCode();
       if (ErrorMessage.Length != 0) hash ^= ErrorMessage.GetHashCode();
+      if (failure_ != null) hash ^= Failure.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -498,6 +522,10 @@ namespace Temporalio.Api.Query.V1 {
         output.WriteRawTag(26);
         output.WriteString(ErrorMessage);
       }
+      if (failure_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Failure);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -520,6 +548,10 @@ namespace Temporalio.Api.Query.V1 {
         output.WriteRawTag(26);
         output.WriteString(ErrorMessage);
       }
+      if (failure_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Failure);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -538,6 +570,9 @@ namespace Temporalio.Api.Query.V1 {
       }
       if (ErrorMessage.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorMessage);
+      }
+      if (failure_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failure);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -562,6 +597,12 @@ namespace Temporalio.Api.Query.V1 {
       }
       if (other.ErrorMessage.Length != 0) {
         ErrorMessage = other.ErrorMessage;
+      }
+      if (other.failure_ != null) {
+        if (failure_ == null) {
+          Failure = new global::Temporalio.Api.Failure.V1.Failure();
+        }
+        Failure.MergeFrom(other.Failure);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -593,6 +634,13 @@ namespace Temporalio.Api.Query.V1 {
             ErrorMessage = input.ReadString();
             break;
           }
+          case 34: {
+            if (failure_ == null) {
+              Failure = new global::Temporalio.Api.Failure.V1.Failure();
+            }
+            input.ReadMessage(Failure);
+            break;
+          }
         }
       }
     #endif
@@ -621,6 +669,13 @@ namespace Temporalio.Api.Query.V1 {
           }
           case 26: {
             ErrorMessage = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (failure_ == null) {
+              Failure = new global::Temporalio.Api.Failure.V1.Failure();
+            }
+            input.ReadMessage(Failure);
             break;
           }
         }

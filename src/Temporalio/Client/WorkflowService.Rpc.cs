@@ -76,6 +76,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke DescribeDeployment.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DescribeDeploymentResponse> DescribeDeploymentAsync(DescribeDeploymentRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DescribeDeployment", req, DescribeDeploymentResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke DescribeNamespace.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -139,6 +150,28 @@ namespace Temporalio.Client
         public Task<GetClusterInfoResponse> GetClusterInfoAsync(GetClusterInfoRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetClusterInfo", req, GetClusterInfoResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetCurrentDeployment.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetCurrentDeploymentResponse> GetCurrentDeploymentAsync(GetCurrentDeploymentRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetCurrentDeployment", req, GetCurrentDeploymentResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetDeploymentReachability.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetDeploymentReachabilityResponse> GetDeploymentReachabilityAsync(GetDeploymentReachabilityRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetDeploymentReachability", req, GetDeploymentReachabilityResponse.Parser, options);
         }
 
         /// <summary>
@@ -249,6 +282,17 @@ namespace Temporalio.Client
         public Task<ListClosedWorkflowExecutionsResponse> ListClosedWorkflowExecutionsAsync(ListClosedWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("ListClosedWorkflowExecutions", req, ListClosedWorkflowExecutionsResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke ListDeployments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ListDeploymentsResponse> ListDeploymentsAsync(ListDeploymentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ListDeployments", req, ListDeploymentsResponse.Parser, options);
         }
 
         /// <summary>
@@ -604,6 +648,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke SetCurrentDeployment.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<SetCurrentDeploymentResponse> SetCurrentDeploymentAsync(SetCurrentDeploymentRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("SetCurrentDeployment", req, SetCurrentDeploymentResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke ShutdownWorker.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -755,6 +810,17 @@ namespace Temporalio.Client
         public Task<UpdateWorkflowExecutionResponse> UpdateWorkflowExecutionAsync(UpdateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateWorkflowExecution", req, UpdateWorkflowExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateWorkflowExecutionOptions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateWorkflowExecutionOptionsResponse> UpdateWorkflowExecutionOptionsAsync(UpdateWorkflowExecutionOptionsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateWorkflowExecutionOptions", req, UpdateWorkflowExecutionOptionsResponse.Parser, options);
         }
     }
 }
