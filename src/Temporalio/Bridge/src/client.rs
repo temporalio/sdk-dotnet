@@ -305,12 +305,15 @@ async fn call_workflow_service(
         "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
         "DeprecateNamespace" => rpc_call!(client, call, deprecate_namespace),
         "DescribeBatchOperation" => rpc_call!(client, call, describe_batch_operation),
+        "DescribeDeployment" => rpc_call!(client, call, describe_deployment),
         "DescribeNamespace" => rpc_call!(client, call, describe_namespace),
         "DescribeSchedule" => rpc_call!(client, call, describe_schedule),
         "DescribeTaskQueue" => rpc_call!(client, call, describe_task_queue),
         "DescribeWorkflowExecution" => rpc_call!(client, call, describe_workflow_execution),
         "ExecuteMultiOperation" => rpc_call!(client, call, execute_multi_operation),
         "GetClusterInfo" => rpc_call!(client, call, get_cluster_info),
+        "GetCurrentDeployment" => rpc_call!(client, call, get_current_deployment),
+        "GetDeploymentReachability" => rpc_call!(client, call, get_deployment_reachability),
         "GetSearchAttributes" => rpc_call!(client, call, get_search_attributes),
         "GetSystemInfo" => rpc_call!(client, call, get_system_info),
         "GetWorkerBuildIdCompatibility" => {
@@ -329,6 +332,7 @@ async fn call_workflow_service(
         }
         "ListBatchOperations" => rpc_call!(client, call, list_batch_operations),
         "ListClosedWorkflowExecutions" => rpc_call!(client, call, list_closed_workflow_executions),
+        "ListDeployments" => rpc_call!(client, call, list_deployments),
         "ListNamespaces" => rpc_call!(client, call, list_namespaces),
         "ListOpenWorkflowExecutions" => rpc_call!(client, call, list_open_workflow_executions),
         "ListScheduleMatchingTimes" => rpc_call!(client, call, list_schedule_matching_times),
@@ -371,6 +375,7 @@ async fn call_workflow_service(
         "RespondWorkflowTaskCompleted" => rpc_call!(client, call, respond_workflow_task_completed),
         "RespondWorkflowTaskFailed" => rpc_call!(client, call, respond_workflow_task_failed),
         "ScanWorkflowExecutions" => rpc_call!(client, call, scan_workflow_executions),
+        "SetCurrentDeployment" => rpc_call!(client, call, set_current_deployment),
         "ShutdownWorker" => rpc_call!(client, call, shutdown_worker),
         "SignalWithStartWorkflowExecution" => {
             rpc_call!(client, call, signal_with_start_workflow_execution)
@@ -390,6 +395,9 @@ async fn call_workflow_service(
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
         "UpdateWorkerVersioningRules" => rpc_call!(client, call, update_worker_versioning_rules),
         "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
+        "UpdateWorkflowExecutionOptions" => {
+            rpc_call!(client, call, update_workflow_execution_options)
+        }
         "UpdateWorkerBuildIdCompatibility" => {
             rpc_call!(client, call, update_worker_build_id_compatibility)
         }
@@ -437,24 +445,38 @@ async fn call_cloud_service<'p>(
         "AddNamespaceRegion" => rpc_call!(client, call, add_namespace_region),
         "CreateApiKey" => rpc_call!(client, call, create_api_key),
         "CreateNamespace" => rpc_call!(client, call, create_namespace),
+        "CreateNamespaceExportSink" => rpc_call!(client, call, create_namespace_export_sink),
+        "CreateNexusEndpoint" => {
+            rpc_call_on_trait!(client, call, CloudService, create_nexus_endpoint)
+        }
         "CreateServiceAccount" => rpc_call!(client, call, create_service_account),
         "CreateUserGroup" => rpc_call!(client, call, create_user_group),
         "CreateUser" => rpc_call!(client, call, create_user),
         "DeleteApiKey" => rpc_call!(client, call, delete_api_key),
         "DeleteNamespace" => rpc_call_on_trait!(client, call, CloudService, delete_namespace),
+        "DeleteNamespaceExportSink" => rpc_call!(client, call, delete_namespace_export_sink),
+        "DeleteNexusEndpoint" => {
+            rpc_call_on_trait!(client, call, CloudService, delete_nexus_endpoint)
+        }
         "DeleteServiceAccount" => rpc_call!(client, call, delete_service_account),
         "DeleteUserGroup" => rpc_call!(client, call, delete_user_group),
         "DeleteUser" => rpc_call!(client, call, delete_user),
         "FailoverNamespaceRegion" => rpc_call!(client, call, failover_namespace_region),
+        "GetAccount" => rpc_call!(client, call, get_account),
         "GetApiKey" => rpc_call!(client, call, get_api_key),
         "GetApiKeys" => rpc_call!(client, call, get_api_keys),
         "GetAsyncOperation" => rpc_call!(client, call, get_async_operation),
         "GetNamespace" => rpc_call!(client, call, get_namespace),
+        "GetNamespaceExportSink" => rpc_call!(client, call, get_namespace_export_sink),
+        "GetNamespaceExportSinks" => rpc_call!(client, call, get_namespace_export_sinks),
         "GetNamespaces" => rpc_call!(client, call, get_namespaces),
+        "GetNexusEndpoint" => rpc_call_on_trait!(client, call, CloudService, get_nexus_endpoint),
+        "GetNexusEndpoints" => rpc_call!(client, call, get_nexus_endpoints),
         "GetRegion" => rpc_call!(client, call, get_region),
         "GetRegions" => rpc_call!(client, call, get_regions),
         "GetServiceAccount" => rpc_call!(client, call, get_service_account),
         "GetServiceAccounts" => rpc_call!(client, call, get_service_accounts),
+        "GetUsage" => rpc_call!(client, call, get_usage),
         "GetUserGroup" => rpc_call!(client, call, get_user_group),
         "GetUserGroups" => rpc_call!(client, call, get_user_groups),
         "GetUser" => rpc_call!(client, call, get_user),
@@ -462,11 +484,17 @@ async fn call_cloud_service<'p>(
         "RenameCustomSearchAttribute" => rpc_call!(client, call, rename_custom_search_attribute),
         "SetUserGroupNamespaceAccess" => rpc_call!(client, call, set_user_group_namespace_access),
         "SetUserNamespaceAccess" => rpc_call!(client, call, set_user_namespace_access),
+        "UpdateAccount" => rpc_call!(client, call, update_account),
         "UpdateApiKey" => rpc_call!(client, call, update_api_key),
         "UpdateNamespace" => rpc_call_on_trait!(client, call, CloudService, update_namespace),
+        "UpdateNamespaceExportSink" => rpc_call!(client, call, update_namespace_export_sink),
+        "UpdateNexusEndpoint" => {
+            rpc_call_on_trait!(client, call, CloudService, update_nexus_endpoint)
+        }
         "UpdateServiceAccount" => rpc_call!(client, call, update_service_account),
         "UpdateUserGroup" => rpc_call!(client, call, update_user_group),
         "UpdateUser" => rpc_call!(client, call, update_user),
+        "ValidateNamespaceExportSink" => rpc_call!(client, call, validate_namespace_export_sink),
         rpc => Err(anyhow::anyhow!("Unknown RPC call {}", rpc)),
     }
 }
