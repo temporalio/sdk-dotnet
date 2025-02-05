@@ -84,12 +84,19 @@ pub struct OpenTelemetryOptions {
     metric_periodicity_millis: u32,
     metric_temporality: OpenTelemetryMetricTemporality,
     durations_as_seconds: bool,
+    protocol: OpenTelemetryProtocol,
 }
 
 #[repr(C)]
 pub enum OpenTelemetryMetricTemporality {
     Cumulative = 1,
     Delta,
+}
+
+#[repr(C)]
+pub enum OpenTelemetryProtocol {
+    Grpc = 1,
+    Http,
 }
 
 #[repr(C)]

@@ -34,6 +34,11 @@ typedef enum OpenTelemetryMetricTemporality {
   Delta,
 } OpenTelemetryMetricTemporality;
 
+typedef enum OpenTelemetryProtocol {
+  Grpc = 1,
+  Http,
+} OpenTelemetryProtocol;
+
 typedef enum RpcService {
   Workflow = 1,
   Operator,
@@ -217,6 +222,7 @@ typedef struct OpenTelemetryOptions {
   uint32_t metric_periodicity_millis;
   enum OpenTelemetryMetricTemporality metric_temporality;
   bool durations_as_seconds;
+  enum OpenTelemetryProtocol protocol;
 } OpenTelemetryOptions;
 
 typedef struct PrometheusOptions {

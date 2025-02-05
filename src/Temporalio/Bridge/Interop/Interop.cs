@@ -36,6 +36,12 @@ namespace Temporalio.Bridge.Interop
         Delta,
     }
 
+    internal enum OpenTelemetryProtocol
+    {
+        Grpc = 1,
+        Http,
+    }
+
     internal enum RpcService
     {
         Workflow = 1,
@@ -322,6 +328,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("bool")]
         public byte durations_as_seconds;
+
+        [NativeTypeName("enum OpenTelemetryProtocol")]
+        public OpenTelemetryProtocol protocol;
     }
 
     internal partial struct PrometheusOptions
@@ -631,7 +640,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L432_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L438_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref WorkflowSlotInfo_Body workflow_slot_info
@@ -760,7 +769,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L483_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L489_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -800,15 +809,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L484_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L490_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L487_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L493_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L490_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L496_C5")]
             public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct

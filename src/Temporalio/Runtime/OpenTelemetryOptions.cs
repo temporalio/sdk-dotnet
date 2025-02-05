@@ -58,6 +58,11 @@ namespace Temporalio.Runtime
         public bool UseSecondsForDuration { get; set; }
 
         /// <summary>
+        /// Gets or sets the protocol to use for the OpenTelemetry collector.
+        /// </summary>
+        public OpenTelemetryProtocol Protocol { get; set; } = OpenTelemetryProtocol.Grpc;
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
