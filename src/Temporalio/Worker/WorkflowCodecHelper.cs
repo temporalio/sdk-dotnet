@@ -82,6 +82,40 @@ namespace Temporalio.Worker
                                 ConfigureAwait(false);
                         }
                         break;
+                    case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperation:
+                        if (job.ResolveNexusOperation.Result.Completed != null)
+                        {
+                            await DecodeAsync(
+                                codec, job.ResolveNexusOperation.Result.Completed).
+                                ConfigureAwait(false);
+                        }
+                        else if (job.ResolveNexusOperation.Result.Failed != null)
+                        {
+                            await codec.DecodeFailureAsync(
+                                job.ResolveNexusOperation.Result.Failed).
+                                ConfigureAwait(false);
+                        }
+                        else if (job.ResolveNexusOperation.Result.Cancelled != null)
+                        {
+                            await codec.DecodeFailureAsync(
+                                job.ResolveNexusOperation.Result.Cancelled).
+                                ConfigureAwait(false);
+                        }
+                        else if (job.ResolveNexusOperation.Result.TimedOut != null)
+                        {
+                            await codec.DecodeFailureAsync(
+                                job.ResolveNexusOperation.Result.TimedOut).
+                                ConfigureAwait(false);
+                        }
+                        break;
+                    case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
+                        if (job.ResolveNexusOperationStart.CancelledBeforeStart != null)
+                        {
+                            await codec.DecodeFailureAsync(
+                                job.ResolveNexusOperationStart.CancelledBeforeStart).
+                                ConfigureAwait(false);
+                        }
+                        break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveRequestCancelExternalWorkflow:
                         if (job.ResolveRequestCancelExternalWorkflow.Failure != null)
                         {
@@ -180,6 +214,10 @@ namespace Temporalio.Worker
                         codec, cmd.SignalExternalWorkflowExecution.Args).ConfigureAwait(false);
                     await EncodeAsync(
                         codec, cmd.SignalExternalWorkflowExecution.Headers).ConfigureAwait(false);
+                    break;
+                case WorkflowCommand.VariantOneofCase.ScheduleNexusOperation:
+                    await EncodeAsync(
+                        codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
                     break;
                 case WorkflowCommand.VariantOneofCase.StartChildWorkflowExecution:
                     await EncodeAsync(
