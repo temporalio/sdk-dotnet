@@ -209,7 +209,7 @@ impl TryFrom<&DevServerOptions> for ephemeral_server::TemporalDevServerConfig {
             .port(test_server_options.port())
             .db_filename(options.database_filename.to_option_string())
             .ui(options.ui)
-            .ui_port(if options.ui_port == 0 {
+            .ui_port(if options.ui_port == 0 || !options.ui {
                 None
             } else {
                 Some(options.ui_port)
