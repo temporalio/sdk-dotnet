@@ -352,6 +352,7 @@ typedef struct DevServerOptions {
    */
   struct ByteArrayRef database_filename;
   bool ui;
+  uint16_t ui_port;
   struct ByteArrayRef log_format;
   struct ByteArrayRef log_level;
 } DevServerOptions;

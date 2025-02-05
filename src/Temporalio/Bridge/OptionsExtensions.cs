@@ -393,6 +393,7 @@ namespace Temporalio.Bridge
                 ip = scope.ByteArray(ip),
                 database_filename = scope.ByteArray(options.DevServerOptions.DatabaseFilename),
                 ui = (byte)(options.UI ? 1 : 0),
+                ui_port = (ushort)options.UIPort,
                 log_format = scope.ByteArray(options.DevServerOptions.LogFormat),
                 log_level = scope.ByteArray(options.DevServerOptions.LogLevel),
             };
