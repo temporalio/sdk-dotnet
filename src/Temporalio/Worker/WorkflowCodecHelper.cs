@@ -216,8 +216,11 @@ namespace Temporalio.Worker
                         codec, cmd.SignalExternalWorkflowExecution.Headers).ConfigureAwait(false);
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleNexusOperation:
-                    await EncodeAsync(
-                        codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
+                    if (cmd.ScheduleNexusOperation.Input != null)
+                    {
+                        await EncodeAsync(
+                                codec, cmd.ScheduleNexusOperation.Input).ConfigureAwait(false);
+                    }
                     break;
                 case WorkflowCommand.VariantOneofCase.StartChildWorkflowExecution:
                     await EncodeAsync(
