@@ -208,6 +208,13 @@ public class ActivityDefinitionTests
         Assert.Null(defn.MethodInfo);
     }
 
+    [Fact]
+    public void Create_With_Reserved_Name_Throws()
+    {
+        var exc = Assert.ThrowsAny<Exception>(() => ActivityDefinition.Create(IHaveABadName));
+        Assert.Contains("Activity name __temporal_badname cannot start with __temporal", exc.Message);
+    }
+
     protected static void BadAct1()
     {
     }
@@ -219,6 +226,9 @@ public class ActivityDefinitionTests
 
     [Activity]
     protected static Task GoodAct1Async() => Task.CompletedTask;
+
+    [Activity("__temporal_badname")]
+    protected static Task IHaveABadName() => Task.CompletedTask;
 
     public static class GoodActivityClassStatic
     {

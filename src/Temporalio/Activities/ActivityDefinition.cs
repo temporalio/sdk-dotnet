@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using Temporalio.Common;
 
 namespace Temporalio.Activities
 {
@@ -293,6 +294,11 @@ namespace Temporalio.Activities
             Func<object?[], object?> invoker,
             MethodInfo? methodInfo)
         {
+            if (name != null && name.StartsWith(Constants.ReservedNamePrefix))
+            {
+                throw new ArgumentException(
+                    $"Activity name {name} cannot start with {Constants.ReservedNamePrefix}");
+            }
             // If there is a null name, which means dynamic, there must only be one parameter type
             // and it must be varargs IRawValue
             if (name == null && (
