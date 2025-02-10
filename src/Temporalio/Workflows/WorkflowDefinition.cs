@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Temporalio.Common;
 using Temporalio.Runtime;
 
 namespace Temporalio.Workflows

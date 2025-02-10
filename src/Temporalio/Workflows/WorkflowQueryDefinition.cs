@@ -24,9 +24,9 @@ namespace Temporalio.Workflows
         private static readonly ConcurrentDictionary<MethodInfo, WorkflowQueryDefinition> MethodDefinitions = new();
         private static readonly ConcurrentDictionary<PropertyInfo, WorkflowQueryDefinition> PropertyDefinitions = new();
 
-        private WorkflowQueryDefinition(string? name, string? description, MethodInfo? method, Delegate? del)
+        private WorkflowQueryDefinition(string? name, string? description, MethodInfo? method, Delegate? del, bool bypassReserved = false)
         {
-            if (name != null)
+            if (!bypassReserved && name != null)
             {
                 foreach (var reservedQ in ReservedQueryHandlerPrefixes)
                 {
@@ -125,6 +125,21 @@ namespace Temporalio.Workflows
         {
             AssertValid(del.Method, dynamic: name == null);
             return new(name, description, null, del);
+        }
+
+        /// <summary>
+        /// Internal version of <see cref="CreateWithoutAttribute" /> that bypasses reserved name checks.
+        /// </summary>
+        /// <param name="name">Query name. Null for dynamic query.</param>
+        /// <param name="del">Query delegate.</param>
+        /// <param name="description">Optional description. WARNING: This setting is experimental.
+        /// </param>
+        /// <returns>Query definition.</returns>
+        internal static WorkflowQueryDefinition CreateWithoutAttributeReservedName(
+            string name, Delegate del, string? description = null)
+        {
+            AssertValid(del.Method, dynamic: name == null);
+            return new(name, description, null, del, bypassReserved: true);
         }
 
         /// <summary>

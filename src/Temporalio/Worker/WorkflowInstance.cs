@@ -1145,13 +1145,13 @@ namespace Temporalio.Worker
                     if (query.QueryType == "__stack_trace")
                     {
                         Func<string> getter = GetStackTrace;
-                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
+                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttributeReservedName(
                             "__stack_trace", getter);
                     }
                     else if (query.QueryType == "__temporal_workflow_metadata")
                     {
                         Func<Api.Sdk.V1.WorkflowMetadata> getter = GetWorkflowMetadata;
-                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
+                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttributeReservedName(
                             "__temporal_workflow_metadata", getter);
                     }
                     else
