@@ -13,6 +13,11 @@ namespace Temporalio.Runtime
     /// </remarks>
     public sealed class TemporalRuntime
     {
+        /// <summary>
+        /// Prefix for reserved handler and definition names.
+        /// </summary>
+        internal const string ReservedNamePrefix = "__temporal";
+
         private static readonly Lazy<TemporalRuntime> LazyDefault =
             new(() => new TemporalRuntime(new TemporalRuntimeOptions()));
 

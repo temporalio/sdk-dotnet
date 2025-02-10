@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Temporalio.Common;
+using Temporalio.Runtime;
 
 namespace Temporalio.Workflows
 {
@@ -429,33 +430,10 @@ namespace Temporalio.Workflows
             }
 
             // Verify that registered names to not use our reserved prefix
-            if (name != null && name.StartsWith(Constants.ReservedNamePrefix))
+            if (name != null && name.StartsWith(TemporalRuntime.ReservedNamePrefix))
             {
-                errs.Add($"Workflow name {name} cannot start with {Constants.ReservedNamePrefix}");
+                errs.Add($"Workflow name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
             }
-            void CheckNamesForPrefix(IEnumerable<string> keys, string type)
-            {
-                foreach (var key in keys)
-                {
-                    if (key.StartsWith(Constants.ReservedNamePrefix))
-                    {
-                        errs.Add($"{type} handler name {key} cannot start with {Constants.ReservedNamePrefix}");
-                    }
-                    else if (type == "Query")
-                    {
-                        foreach (var reservedQ in Workflow.ReservedQueryHandlerPrefixes)
-                        {
-                            if (key.StartsWith(reservedQ))
-                            {
-                                errs.Add($"{type} handler name {key} cannot start with {reservedQ}");
-                            }
-                        }
-                    }
-                }
-            }
-            CheckNamesForPrefix(signals.Keys, "Signal");
-            CheckNamesForPrefix(queries.Keys, "Query");
-            CheckNamesForPrefix(updates.Keys, "Update");
 
             // If there are any errors, throw
             if (errs.Count > 0)

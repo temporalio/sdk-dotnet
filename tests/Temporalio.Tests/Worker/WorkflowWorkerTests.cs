@@ -3000,12 +3000,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
                 // Verify that invocations using the reserved prefix are not forwarded to dynamic
                 // handlers
-                await handle.SignalAsync($"{Constants.ReservedNamePrefix}_whatever", new[] { "signal arg 1" });
+                await handle.SignalAsync($"{TemporalRuntime.ReservedNamePrefix}_whatever", new[] { "signal arg 1" });
                 var queryExc2 = await Assert.ThrowsAsync<WorkflowQueryFailedException>(
-                    () => handle.QueryAsync<string>($"{Constants.ReservedNamePrefix}_whatever", new[] { "query arg 1" }));
+                    () => handle.QueryAsync<string>($"{TemporalRuntime.ReservedNamePrefix}_whatever", new[] { "query arg 1" }));
                 Assert.Contains("not found", queryExc2.Message);
                 var updateExc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(
-                    () => handle.ExecuteUpdateAsync<string>($"{Constants.ReservedNamePrefix}_whatever", new[] { "update arg 1" }));
+                    () => handle.ExecuteUpdateAsync<string>($"{TemporalRuntime.ReservedNamePrefix}_whatever", new[] { "update arg 1" }));
                 Assert.Contains("not found", updateExc.InnerException?.Message);
 
                 // Event list must be collected before the WF finishes, since when it finishes it

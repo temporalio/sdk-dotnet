@@ -19,15 +19,6 @@ namespace Temporalio.Workflows
     public static class Workflow
     {
         /// <summary>
-        /// All known reserved query handler prefixes.
-        /// </summary>
-        internal static readonly string[] ReservedQueryHandlerPrefixes =
-        {
-            "__stack_trace",
-            "__enhanced_stack_trace",
-        };
-
-        /// <summary>
         /// Gets a value indicating whether all update and signal handlers have finished executing.
         /// </summary>
         /// <remarks>

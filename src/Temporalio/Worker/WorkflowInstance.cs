@@ -20,6 +20,7 @@ using Temporalio.Bridge.Api.WorkflowCompletion;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
 
@@ -107,7 +108,7 @@ namespace Temporalio.Worker
                         (WorkflowInboundInterceptor)rootInbound,
                         (v, impl) => impl.InterceptWorkflow(v));
                     ret.Init(new OutboundImpl(this));
-                    return new InboundReservedPrefixInterceptor(rootInbound, ret);
+                    return ret;
                 },
                 false);
             outbound = new(
@@ -940,7 +941,7 @@ namespace Temporalio.Worker
             if (!updates.TryGetValue(update.Name, out var updateDefn))
             {
                 // Do not fall back onto dynamic update if using the reserved prefix
-                if (!update.Name.StartsWith(Constants.ReservedNamePrefix))
+                if (!update.Name.StartsWith(TemporalRuntime.ReservedNamePrefix))
                 {
                     updateDefn = DynamicUpdate;
                 }
@@ -1160,7 +1161,7 @@ namespace Temporalio.Worker
                         if (!queries.TryGetValue(query.QueryType, out queryDefn))
                         {
                             // Do not fall back onto dynamic query if using the reserved prefix
-                            if (!query.QueryType.StartsWith(Constants.ReservedNamePrefix))
+                            if (!query.QueryType.StartsWith(TemporalRuntime.ReservedNamePrefix))
                             {
                                 queryDefn = DynamicQuery;
                             }
@@ -1276,7 +1277,7 @@ namespace Temporalio.Worker
             if (!signals.TryGetValue(signal.SignalName, out var signalDefn))
             {
                 // Do not fall back onto dynamic signal if using the reserved prefix
-                if (!signal.SignalName.StartsWith(Constants.ReservedNamePrefix))
+                if (!signal.SignalName.StartsWith(TemporalRuntime.ReservedNamePrefix))
                 {
                     signalDefn = DynamicSignal;
                 }
@@ -2461,52 +2462,6 @@ namespace Temporalio.Worker
                 string Name,
                 string? UpdateId,
                 HandlerUnfinishedPolicy UnfinishedPolicy);
-        }
-
-        /// <summary>
-        /// This interceptor ensures that handlers using the reserved prefix bypass user
-        /// interceptors.
-        /// </summary>
-        private class InboundReservedPrefixInterceptor : WorkflowInboundInterceptor
-        {
-            private readonly InboundImpl root;
-            private readonly WorkflowInboundInterceptor complete;
-
-            public InboundReservedPrefixInterceptor(InboundImpl root, WorkflowInboundInterceptor complete)
-            {
-                this.root = root;
-                this.complete = complete;
-            }
-
-            public override void Init(WorkflowOutboundInterceptor outbound) => complete.Init(outbound);
-
-            public override Task<object?> ExecuteWorkflowAsync(ExecuteWorkflowInput input) =>
-                complete.ExecuteWorkflowAsync(input);
-
-            public override Task HandleSignalAsync(HandleSignalInput input) =>
-                input.Signal.StartsWith(Constants.ReservedNamePrefix)
-                    ? root.HandleSignalAsync(input)
-                    : complete.HandleSignalAsync(input);
-
-            public override object? HandleQuery(HandleQueryInput input) =>
-                input.Query.StartsWith(Constants.ReservedNamePrefix) ?
-                    root.HandleQuery(input) :
-                    complete.HandleQuery(input);
-
-            public override void ValidateUpdate(HandleUpdateInput input)
-            {
-                if (input.Update.StartsWith(Constants.ReservedNamePrefix))
-                {
-                    root.ValidateUpdate(input);
-                    return;
-                }
-                complete.ValidateUpdate(input);
-            }
-
-            public override Task<object?> HandleUpdateAsync(HandleUpdateInput input) =>
-                input.Update.StartsWith(Constants.ReservedNamePrefix) ?
-                    root.HandleUpdateAsync(input) :
-                    complete.HandleUpdateAsync(input);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Threading.Tasks;
+using Temporalio.Runtime;
 
 namespace Temporalio.Workflows
 {
@@ -19,6 +20,10 @@ namespace Temporalio.Workflows
             Delegate? del,
             HandlerUnfinishedPolicy unfinishedPolicy)
         {
+            if (name != null && name.StartsWith(TemporalRuntime.ReservedNamePrefix))
+            {
+                throw new ArgumentException($"Signal handler name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
+            }
             Name = name;
             Description = description;
             Method = method;

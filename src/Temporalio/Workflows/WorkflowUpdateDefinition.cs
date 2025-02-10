@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Temporalio.Runtime;
 
 namespace Temporalio.Workflows
 {
@@ -22,6 +23,10 @@ namespace Temporalio.Workflows
             Delegate? validatorDel,
             HandlerUnfinishedPolicy unfinishedPolicy)
         {
+            if (name != null && name.StartsWith(TemporalRuntime.ReservedNamePrefix))
+            {
+                throw new ArgumentException($"Update handler name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
+            }
             Name = name;
             Description = description;
             Method = method;
