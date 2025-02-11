@@ -234,6 +234,17 @@ public class WorkflowDefinitionTests
         AssertBad<Bad.WfUpdate>("ValidateGenericUpdate[TLocal](TLocal) with WorkflowUpdateValidator contains generic parameters");
     }
 
+    [Fact]
+    public void Reserved_Handler_Prefixes_Throws()
+    {
+        AssertBad<Bad.BadWfName>("Workflow name __temporal_why_would_you_do_this cannot start with __temporal");
+        AssertBad<Bad.BadHandlerNames>("Signal handler name __temporal_dumb_signal cannot start with __temporal");
+        AssertBad<Bad.BadHandlerNames>("Query handler name __temporal_dumb_query cannot start with __temporal");
+        AssertBad<Bad.BadHandlerNames>("Query handler name __stack_trace cannot start with __stack_trace");
+        AssertBad<Bad.BadHandlerNames>("Query handler name __enhanced_stack_trace cannot start with __enhanced_stack_trace");
+        AssertBad<Bad.BadHandlerNames>("Update handler name __temporal_dumb_update cannot start with __temporal");
+    }
+
     private static void AssertBad<T>(string errContains)
     {
         var err = Assert.ThrowsAny<Exception>(() => WorkflowDefinition.Create(typeof(T)));
@@ -523,6 +534,35 @@ public class WorkflowDefinitionTests
             protected void ValidateUpdate5()
             {
             }
+        }
+
+        [Workflow("__temporal_why_would_you_do_this")]
+        public class BadWfName
+        {
+            [WorkflowRun]
+            public Task RunAsync() => Task.CompletedTask;
+        }
+
+        [Workflow]
+        public class BadHandlerNames
+        {
+            [WorkflowRun]
+            public Task RunAsync() => Task.CompletedTask;
+
+            [WorkflowSignal("__temporal_dumb_signal")]
+            public Task SignalAsync() => Task.CompletedTask;
+
+            [WorkflowQuery("__temporal_dumb_query")]
+            public string Query() => string.Empty;
+
+            [WorkflowQuery("__stack_trace")]
+            public string StackTraceImpostor() => string.Empty;
+
+            [WorkflowQuery("__enhanced_stack_trace")]
+            public string EnhancedStackTraceImpostor() => string.Empty;
+
+            [WorkflowUpdate("__temporal_dumb_update")]
+            public Task UpdateAsync() => Task.CompletedTask;
         }
     }
 

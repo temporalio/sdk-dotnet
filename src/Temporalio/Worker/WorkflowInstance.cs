@@ -20,6 +20,7 @@ using Temporalio.Bridge.Api.WorkflowCompletion;
 using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
+using Temporalio.Runtime;
 using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
 
@@ -939,7 +940,11 @@ namespace Temporalio.Worker
             var updates = mutableUpdates.IsValueCreated ? mutableUpdates.Value : Definition.Updates;
             if (!updates.TryGetValue(update.Name, out var updateDefn))
             {
-                updateDefn = DynamicUpdate;
+                // Do not fall back onto dynamic update if using the reserved prefix
+                if (!update.Name.StartsWith(TemporalRuntime.ReservedNamePrefix))
+                {
+                    updateDefn = DynamicUpdate;
+                }
                 if (updateDefn == null)
                 {
                     var knownUpdates = updates.Keys.OrderBy(k => k);
@@ -1136,18 +1141,15 @@ namespace Temporalio.Worker
                 try
                 {
                     WorkflowQueryDefinition? queryDefn;
-                    // If it's a stack trace query, create definition
+                    object? resultObj;
+
                     if (query.QueryType == "__stack_trace")
                     {
-                        Func<string> getter = GetStackTrace;
-                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
-                            "__stack_trace", getter);
+                        resultObj = GetStackTrace();
                     }
                     else if (query.QueryType == "__temporal_workflow_metadata")
                     {
-                        Func<Api.Sdk.V1.WorkflowMetadata> getter = GetWorkflowMetadata;
-                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttribute(
-                            "__temporal_workflow_metadata", getter);
+                        resultObj = GetWorkflowMetadata();
                     }
                     else
                     {
@@ -1155,7 +1157,11 @@ namespace Temporalio.Worker
                         var queries = mutableQueries.IsValueCreated ? mutableQueries.Value : Definition.Queries;
                         if (!queries.TryGetValue(query.QueryType, out queryDefn))
                         {
-                            queryDefn = DynamicQuery;
+                            // Do not fall back onto dynamic query if using the reserved prefix
+                            if (!query.QueryType.StartsWith(TemporalRuntime.ReservedNamePrefix))
+                            {
+                                queryDefn = DynamicQuery;
+                            }
                             if (queryDefn == null)
                             {
                                 var knownQueries = queries.Keys.OrderBy(k => k);
@@ -1164,8 +1170,7 @@ namespace Temporalio.Worker
                                     $"known queries: [{string.Join(" ", knownQueries)}]");
                             }
                         }
-                    }
-                    var resultObj = inbound.Value.HandleQuery(new(
+                        resultObj = inbound.Value.HandleQuery(new(
                             Id: query.QueryId,
                             Query: query.QueryType,
                             Definition: queryDefn,
@@ -1176,6 +1181,7 @@ namespace Temporalio.Worker
                                 dynamic: queryDefn.Dynamic,
                                 dynamicArgPrepend: query.QueryType),
                             Headers: query.Headers));
+                    }
                     AddCommand(new()
                     {
                         RespondToQuery = new()
@@ -1267,7 +1273,11 @@ namespace Temporalio.Worker
             var signals = mutableSignals.IsValueCreated ? mutableSignals.Value : Definition.Signals;
             if (!signals.TryGetValue(signal.SignalName, out var signalDefn))
             {
-                signalDefn = DynamicSignal;
+                // Do not fall back onto dynamic signal if using the reserved prefix
+                if (!signal.SignalName.StartsWith(TemporalRuntime.ReservedNamePrefix))
+                {
+                    signalDefn = DynamicSignal;
+                }
                 if (signalDefn == null)
                 {
                     // No definition found, buffer

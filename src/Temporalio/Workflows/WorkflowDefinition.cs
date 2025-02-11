@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Temporalio.Runtime;
 
 namespace Temporalio.Workflows
 {
@@ -425,6 +426,12 @@ namespace Temporalio.Workflows
                         errs.Add(e.Message);
                     }
                 }
+            }
+
+            // Verify that registered names to not use our reserved prefix
+            if (name != null && name.StartsWith(TemporalRuntime.ReservedNamePrefix))
+            {
+                errs.Add($"Workflow name {name} cannot start with {TemporalRuntime.ReservedNamePrefix}");
             }
 
             // If there are any errors, throw

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Temporalio.Runtime;
 
 namespace Temporalio.Workflows
 {
@@ -10,11 +12,26 @@ namespace Temporalio.Workflows
     /// </summary>
     public class WorkflowQueryDefinition
     {
+        private static readonly string[] ReservedQueryHandlerPrefixes =
+        {
+            TemporalRuntime.ReservedNamePrefix,
+            "__stack_trace",
+            "__enhanced_stack_trace",
+        };
+
         private static readonly ConcurrentDictionary<MethodInfo, WorkflowQueryDefinition> MethodDefinitions = new();
         private static readonly ConcurrentDictionary<PropertyInfo, WorkflowQueryDefinition> PropertyDefinitions = new();
 
         private WorkflowQueryDefinition(string? name, string? description, MethodInfo? method, Delegate? del)
         {
+            if (name != null)
+            {
+                var reservedQ = ReservedQueryHandlerPrefixes.FirstOrDefault(p => name.StartsWith(p));
+                if (!string.IsNullOrEmpty(reservedQ))
+                {
+                    throw new ArgumentException($"Query handler name {name} cannot start with {reservedQ}");
+                }
+            }
             Name = name;
             Description = description;
             Method = method;

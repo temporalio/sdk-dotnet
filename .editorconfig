@@ -47,6 +47,9 @@ dotnet_diagnostic.CA2237.severity = none
 # Warn on unused imports
 dotnet_diagnostic.IDE0005.severity = warning
 
+# Don't warn on using var
+dotnet_diagnostic.IDE0008.severity = none
+
 # Cannot use range operator on older versions
 dotnet_diagnostic.IDE0057.severity = none
 
