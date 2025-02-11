@@ -68,6 +68,9 @@ Extensions:
     - [Activity Testing](#activity-testing)
   - [OpenTelemetry Tracing Support](#opentelemetry-tracing-support)
   - [Built-in Native Shared Library](#built-in-native-shared-library)
+  - [TLS/CA Loading Issues](#tlsca-loading-issues)
+    - [AWS Lambda .NET CA Loading Issues](#aws-lambda-net-ca-loading-issues)
+    - [Azure App Service CA Loading Issues](#azure-app-service-ca-loading-issues)
 - [Development](#development)
   - [Build](#build)
   - [Code formatting](#code-formatting)
@@ -1140,6 +1143,36 @@ If the native shared library is not loading for whatever reason, the following e
 could not be found.
 
 See the earlier part of this section for details on what environments are supported.
+
+### TLS/CA Loading Issues
+
+Some platforms are not loading the system CA list properly due to quirks with how the platforms work.
+
+#### AWS Lambda .NET CA Loading Issues
+
+Due to a [recent change](https://github.com/aws/aws-lambda-dotnet/pull/1661) in newer AWS .NET Lambda images to force
+override the `SSL_CERT_FILE` environment variable, the CA list cannot be loaded from the system properly in our
+Rust-based extension. This may cause errors like:
+
+> System.InvalidOperationException: Connection failed: Server connection error: tonic::transport::Error(Transport, NativeCertsNotFound)
+
+To fix, set the `SSL_CERT_FILE` environment variable to `/etc/ssl/certs/ca-certificates.crt` or
+`/etc/pki/tls/certs/ca-bundle.crt` (both should work, though may have to try/test in case only one does). See
+[this issue](https://github.com/aws/aws-lambda-dotnet/issues/1973) for more details.
+
+#### Azure App Service CA Loading Issues
+
+By default, Azure App Service on Windows does not load the user profile. This means our Rust-based extension that uses
+[CertOpenStore](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-certopenstore) to load the
+"ROOT" system CA store does not work. This may cause errors like:
+
+> System.InvalidOperationException: Connection failed: Server connection error: tonic::transport::Error(Transport, NativeCertsNotFound)
+
+or
+
+> System.InvalidOperationException: Connection failed: Server connection error: tonic::transport::Error(Transport, Os { code: 5, kind: PermissionDenied, message: "Access is denied." })
+
+To fix this, the `WEBSITE_LOAD_USER_PROFILE` environment can be set to `1` to load the user profile.
 
 ## Development
 
