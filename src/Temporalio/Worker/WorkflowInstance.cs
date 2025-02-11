@@ -1141,18 +1141,15 @@ namespace Temporalio.Worker
                 try
                 {
                     WorkflowQueryDefinition? queryDefn;
-                    // If it's a stack trace query, create definition
+                    object? resultObj;
+
                     if (query.QueryType == "__stack_trace")
                     {
-                        Func<string> getter = GetStackTrace;
-                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttributeReservedName(
-                            "__stack_trace", getter);
+                        resultObj = GetStackTrace();
                     }
                     else if (query.QueryType == "__temporal_workflow_metadata")
                     {
-                        Func<Api.Sdk.V1.WorkflowMetadata> getter = GetWorkflowMetadata;
-                        queryDefn = WorkflowQueryDefinition.CreateWithoutAttributeReservedName(
-                            "__temporal_workflow_metadata", getter);
+                        resultObj = GetWorkflowMetadata();
                     }
                     else
                     {
@@ -1173,8 +1170,7 @@ namespace Temporalio.Worker
                                     $"known queries: [{string.Join(" ", knownQueries)}]");
                             }
                         }
-                    }
-                    var resultObj = inbound.Value.HandleQuery(new(
+                        resultObj = inbound.Value.HandleQuery(new(
                             Id: query.QueryId,
                             Query: query.QueryType,
                             Definition: queryDefn,
@@ -1185,6 +1181,7 @@ namespace Temporalio.Worker
                                 dynamic: queryDefn.Dynamic,
                                 dynamicArgPrepend: query.QueryType),
                             Headers: query.Headers));
+                    }
                     AddCommand(new()
                     {
                         RespondToQuery = new()

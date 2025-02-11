@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Temporalio.Runtime;
@@ -11,10 +12,7 @@ namespace Temporalio.Workflows
     /// </summary>
     public class WorkflowQueryDefinition
     {
-        /// <summary>
-        /// All known reserved query handler prefixes.
-        /// </summary>
-        internal static readonly string[] ReservedQueryHandlerPrefixes =
+        private static readonly string[] ReservedQueryHandlerPrefixes =
         {
             TemporalRuntime.ReservedNamePrefix,
             "__stack_trace",
@@ -24,16 +22,14 @@ namespace Temporalio.Workflows
         private static readonly ConcurrentDictionary<MethodInfo, WorkflowQueryDefinition> MethodDefinitions = new();
         private static readonly ConcurrentDictionary<PropertyInfo, WorkflowQueryDefinition> PropertyDefinitions = new();
 
-        private WorkflowQueryDefinition(string? name, string? description, MethodInfo? method, Delegate? del, bool bypassReserved = false)
+        private WorkflowQueryDefinition(string? name, string? description, MethodInfo? method, Delegate? del)
         {
-            if (!bypassReserved && name != null)
+            if (name != null)
             {
-                foreach (var reservedQ in ReservedQueryHandlerPrefixes)
+                var reservedQ = ReservedQueryHandlerPrefixes.FirstOrDefault(p => name.StartsWith(p));
+                if (!string.IsNullOrEmpty(reservedQ))
                 {
-                    if (name.StartsWith(reservedQ))
-                    {
-                        throw new ArgumentException($"Query handler name {name} cannot start with {reservedQ}");
-                    }
+                    throw new ArgumentException($"Query handler name {name} cannot start with {reservedQ}");
                 }
             }
             Name = name;
@@ -125,21 +121,6 @@ namespace Temporalio.Workflows
         {
             AssertValid(del.Method, dynamic: name == null);
             return new(name, description, null, del);
-        }
-
-        /// <summary>
-        /// Internal version of <see cref="CreateWithoutAttribute" /> that bypasses reserved name checks.
-        /// </summary>
-        /// <param name="name">Query name. Null for dynamic query.</param>
-        /// <param name="del">Query delegate.</param>
-        /// <param name="description">Optional description. WARNING: This setting is experimental.
-        /// </param>
-        /// <returns>Query definition.</returns>
-        internal static WorkflowQueryDefinition CreateWithoutAttributeReservedName(
-            string name, Delegate del, string? description = null)
-        {
-            AssertValid(del.Method, dynamic: name == null);
-            return new(name, description, null, del, bypassReserved: true);
         }
 
         /// <summary>
