@@ -6399,6 +6399,112 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Workflow]
+    public class SignalsSameTaskWorkflow
+    {
+        private readonly List<string> signals = new();
+
+        [WorkflowRun]
+        public async Task<List<string>> RunAsync()
+        {
+            await Workflow.WaitConditionAsync(() => signals.Count > 0);
+            return signals;
+        }
+
+        [WorkflowSignal]
+        public async Task SignalAsync(string value) => signals.Add(value);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_SignalsSameTask_ExecuteBeforeMain()
+    {
+        // Start the workflow with no worker
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var handle = await Client.StartWorkflowAsync(
+            (SignalsSameTaskWorkflow wf) => wf.RunAsync(),
+            new(id: $"workflow-{Guid.NewGuid()}", taskQueue));
+        // Send two signals
+        await handle.SignalAsync(wf => wf.SignalAsync("one"));
+        await handle.SignalAsync(wf => wf.SignalAsync("two"));
+        // Now start the worker and wait for result
+        await ExecuteWorkerAsync<SignalsSameTaskWorkflow>(
+            async worker =>
+            {
+                // Confirm both signals were seen
+                Assert.Equal(new List<string> { "one", "two" }, await handle.GetResultAsync());
+                // Confirm this completed in one task
+                var history = await handle.FetchHistoryAsync();
+                Assert.Equal(1, history.Events.Count(e => e.WorkflowTaskCompletedEventAttributes != null));
+            },
+            new(taskQueue));
+    }
+
+    public class UnhandledCommandActivities
+    {
+        private readonly Func<Task> callOnActivity;
+        private bool called;
+
+        public UnhandledCommandActivities(Func<Task> callOnActivity) => this.callOnActivity = callOnActivity;
+
+        [Activity]
+        public async Task WaitOnCallbackAsync()
+        {
+            // Only call if not called
+            if (!called)
+            {
+                called = true;
+                await callOnActivity();
+            }
+        }
+    }
+
+    [Workflow]
+    public class UnhandledCommandWorkflow
+    {
+        private readonly List<string> signals = new();
+
+        [WorkflowRun]
+        public async Task<List<string>> RunAsync()
+        {
+            await Workflow.ExecuteLocalActivityAsync(
+                (UnhandledCommandActivities acts) => acts.WaitOnCallbackAsync(),
+                new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) });
+            return signals;
+        }
+
+        [WorkflowSignal]
+        public async Task SignalAsync(string value) => signals.Add(value);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_UnhandledCommand_ProperlyProcessesSignals()
+    {
+        // When our local activity is called, we want to add two signals
+        var workflowId = $"workflow-{Guid.NewGuid()}";
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var acts = new UnhandledCommandActivities(async () =>
+        {
+            var handle = Client.GetWorkflowHandle<UnhandledCommandWorkflow>(workflowId);
+            await handle.SignalAsync(wf => wf.SignalAsync("one"));
+            await handle.SignalAsync(wf => wf.SignalAsync("two"));
+        });
+        // Now start the worker and wait for result
+        await ExecuteWorkerAsync<UnhandledCommandWorkflow>(
+            async worker =>
+            {
+                // Run the workflow
+                var handle = await Client.StartWorkflowAsync(
+                    (UnhandledCommandWorkflow wf) => wf.RunAsync(),
+                    new(workflowId, taskQueue));
+                // Confirm both signals were seen
+                Assert.Equal(new List<string> { "one", "two" }, await handle.GetResultAsync());
+                // Confirm history has the failed task we expect
+                await AssertMore.TaskFailureEventuallyAsync(handle, attrs =>
+                    Assert.Equal(WorkflowTaskFailedCause.UnhandledCommand, attrs.Cause));
+            },
+            new TemporalWorkerOptions(taskQueue).AddAllActivities(acts));
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
