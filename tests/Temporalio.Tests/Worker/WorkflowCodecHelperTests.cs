@@ -40,7 +40,7 @@ public class WorkflowCodecHelperTests : TestBase
     public async Task EncodeAsync_AllPayloads_EncodesAll()
     {
         var comp = new WorkflowActivationCompletion();
-        var codec = new MarkerPayloadCodec();
+        var codecs = new List<IPayloadCodec> { new MarkerPayloadCodec(), new MarkerNoClonePayloadCodec() };
         await CreateAndVisitPayload(new(), comp, async (ctx, payload) =>
         {
             // We don't check search attributes on purpose
@@ -49,10 +49,13 @@ public class WorkflowCodecHelperTests : TestBase
                 return;
             }
             Assert.DoesNotContain("encoded", payload().Metadata.Keys);
-            await WorkflowCodecHelper.EncodeAsync(codec, comp);
-            if (!payload().Metadata.ContainsKey("encoded"))
+            foreach (var codec in codecs)
             {
-                Assert.Fail($"Payload at path {ctx.Path} not encoded");
+                await WorkflowCodecHelper.EncodeAsync(codec, comp);
+                if (!payload().Metadata.ContainsKey("encoded"))
+                {
+                    Assert.Fail($"Payload at path {ctx.Path} not encoded with codec {codec}");
+                }
             }
         });
     }
@@ -61,7 +64,7 @@ public class WorkflowCodecHelperTests : TestBase
     public async Task DecodeAsync_AllPayloads_DecodesAll()
     {
         var act = new WorkflowActivation();
-        var codec = new MarkerPayloadCodec();
+        var codecs = new List<IPayloadCodec> { new MarkerPayloadCodec(), new MarkerNoClonePayloadCodec() };
         await CreateAndVisitPayload(new(), act, async (ctx, payload) =>
         {
             // We don't check search attributes on purpose
@@ -70,10 +73,13 @@ public class WorkflowCodecHelperTests : TestBase
                 return;
             }
             Assert.DoesNotContain("decoded", payload().Metadata.Keys);
-            await WorkflowCodecHelper.DecodeAsync(codec, act);
-            if (!payload().Metadata.ContainsKey("decoded"))
+            foreach (var codec in codecs)
             {
-                Assert.Fail($"Payload at path {ctx.Path} not decoded");
+                await WorkflowCodecHelper.DecodeAsync(codec, act);
+                if (!payload().Metadata.ContainsKey("decoded"))
+                {
+                    Assert.Fail($"Payload at path {ctx.Path} not decoded with codec {codec}");
+                }
             }
         });
     }
@@ -185,6 +191,25 @@ public class WorkflowCodecHelperTests : TestBase
             Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
             {
                 var newP = p.Clone();
+                newP.Metadata["decoded"] = ByteString.Empty;
+                return newP;
+            }).ToList());
+    }
+
+    private class MarkerNoClonePayloadCodec : IPayloadCodec
+    {
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
+            {
+                var newP = p;
+                newP.Metadata["encoded"] = ByteString.Empty;
+                return newP;
+            }).ToList());
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
+            {
+                var newP = p;
                 newP.Metadata["decoded"] = ByteString.Empty;
                 return newP;
             }).ToList());
