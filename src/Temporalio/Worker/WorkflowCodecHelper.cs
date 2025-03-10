@@ -382,7 +382,8 @@ namespace Temporalio.Worker
 
         private static async Task DecodeAsync(IPayloadCodec codec, Payload payload)
         {
-            // We are gonna require a single result here
+            // We are gonna require a single result here.
+            // Similarly with encode, we leave the payload alone if it's exactly the same object as the original.
             var decoded = await codec.DecodeAsync(new Payload[] { payload }).ConfigureAwait(false);
             var decodedPayload = decoded.Single();
             if (!ReferenceEquals(decodedPayload, payload))
