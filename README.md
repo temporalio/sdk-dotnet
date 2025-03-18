@@ -136,7 +136,7 @@ public class SayHelloWorkflow
             // This is a lambda expression where the instance is typed. If this
             // were static, you wouldn't need a parameter.
             (MyActivities act) => act.SayHello(name),
-            new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) });
     }
 }
 ```
@@ -401,7 +401,7 @@ public class GreetingWorkflow
                 // This is a static activity method. If it were an instance
                 // method, a typed parameter can be accepted in the lambda call.
                 () => GreetingActivities.CreateGreeting(greetingParams),
-                new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+                new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) });
             Workflow.Logger.LogDebug("Greeting set to {Greeting}", currentGreeting);
 
             // Wait for param update or complete signal. Note, cancellation can
