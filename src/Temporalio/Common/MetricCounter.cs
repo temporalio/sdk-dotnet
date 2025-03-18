@@ -19,6 +19,17 @@ namespace Temporalio.Common
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="MetricCounter{T}" /> class.
+        /// </summary>
+        /// <param name="name">The name of the counter.</param>
+        /// <param name="unit">The optional unit of measurement for the values recorded by the counter.</param>
+        /// <param name="description">The optional description of the counter.</param>
+        protected MetricCounter(string name, string? unit = null, string? description = null)
+            : this(new(name, unit, description))
+        {
+        }
+
+        /// <summary>
         /// Add the given value to the counter.
         /// </summary>
         /// <param name="value">Value to add. Currently this can only be a positive integer.</param>
