@@ -1115,6 +1115,7 @@ activity context:
 * `Heartbeater` - Callback invoked each heartbeat.
 * `WorkerShutdownTokenSource` - Token source for issuing worker shutdown.
 * `PayloadConverter` - Defaulted to default payload converter.
+* `MetricMeter` - Defaulted to noop meter.
 
 ### OpenTelemetry Tracing Support
 
