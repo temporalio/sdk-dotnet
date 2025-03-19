@@ -177,6 +177,7 @@ namespace Temporalio.Client
         /// <param name="query">Query to use for filtering.</param>
         /// <param name="options">Options for the list call.</param>
         /// <returns>Async enumerator for the workflows.</returns>
+        /// <seealso href="https://docs.temporal.io/visibility">Visibility docs.</seealso>
         public IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
             string query, WorkflowListOptions? options = null);
 #endif
@@ -187,6 +188,7 @@ namespace Temporalio.Client
         /// <param name="query">Query to use for counting.</param>
         /// <param name="options">Options for the count call.</param>
         /// <returns>Count information for the workflows.</returns>
+        /// <seealso href="https://docs.temporal.io/visibility">Visibility docs.</seealso>
         public Task<WorkflowExecutionCount> CountWorkflowsAsync(
             string query, WorkflowCountOptions? options = null);
     }

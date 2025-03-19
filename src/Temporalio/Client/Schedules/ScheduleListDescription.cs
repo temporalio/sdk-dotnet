@@ -20,7 +20,8 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <param name="rawEntry">Raw proto.</param>
         /// <param name="dataConverter">Data converter.</param>
-        internal ScheduleListDescription(
+        /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
+        protected internal ScheduleListDescription(
             Api.Schedule.V1.ScheduleListEntry rawEntry, DataConverter dataConverter)
         {
             RawEntry = rawEntry;

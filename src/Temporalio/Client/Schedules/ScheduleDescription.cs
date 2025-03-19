@@ -17,7 +17,15 @@ namespace Temporalio.Client.Schedules
         private readonly Lazy<IReadOnlyDictionary<string, IEncodedRawValue>> memo;
         private readonly Lazy<SearchAttributeCollection> searchAttributes;
 
-        private ScheduleDescription(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScheduleDescription"/> class.
+        /// </summary>
+        /// <param name="id">ID for the schedule.</param>
+        /// <param name="schedule">Schedule.</param>
+        /// <param name="rawDescription">Raw protobuf description.</param>
+        /// <param name="dataConverter">Data converter.</param>
+        /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
+        protected internal ScheduleDescription(
             string id, Schedule schedule, DescribeScheduleResponse rawDescription, DataConverter dataConverter)
         {
             Id = id;

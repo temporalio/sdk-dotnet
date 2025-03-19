@@ -22,7 +22,8 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="rawInfo">Raw proto info.</param>
         /// <param name="dataConverter">Data converter used for memos.</param>
-        internal WorkflowExecution(WorkflowExecutionInfo rawInfo, DataConverter dataConverter)
+        /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
+        protected internal WorkflowExecution(WorkflowExecutionInfo rawInfo, DataConverter dataConverter)
         {
             RawInfo = rawInfo;
             // Search attribute conversion is cheap so it doesn't need to lock on publication. But
