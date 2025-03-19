@@ -6439,36 +6439,35 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new(taskQueue));
     }
 
-    public class UnhandledCommandActivities
+    public class MultiSignalOrderActivities
     {
-        private readonly Func<Task> callOnActivity;
-        private bool called;
+        private readonly ITemporalClient client;
 
-        public UnhandledCommandActivities(Func<Task> callOnActivity) => this.callOnActivity = callOnActivity;
+        public MultiSignalOrderActivities(ITemporalClient client) => this.client = client;
 
         [Activity]
-        public async Task WaitOnCallbackAsync()
+        public async Task SendTwoSignalsAsync()
         {
-            // Only call if not called
-            if (!called)
-            {
-                called = true;
-                await callOnActivity();
-            }
+            var handle = client.GetWorkflowHandle<MultiSignalOrderWorkflow>(
+                ActivityExecutionContext.Current.Info.WorkflowId);
+            await handle.SignalAsync(wf => wf.SignalAsync("one"));
+            await handle.SignalAsync(wf => wf.SignalAsync("two"));
         }
     }
 
-    [Workflow]
-    public class UnhandledCommandWorkflow
+    public abstract class MultiSignalOrderWorkflowBase
     {
         private readonly List<string> signals = new();
 
-        [WorkflowRun]
-        public async Task<List<string>> RunAsync()
+        public virtual async Task<List<string>> RunAsync()
         {
             await Workflow.ExecuteLocalActivityAsync(
-                (UnhandledCommandActivities acts) => acts.WaitOnCallbackAsync(),
+                (MultiSignalOrderActivities acts) => acts.SendTwoSignalsAsync(),
                 new() { StartToCloseTimeout = TimeSpan.FromMinutes(5) });
+
+            // The key to this logic compared to the signals-same-task before it is this
+            // AllHandlersFinished check
+            await Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished && signals.Count > 0);
             return signals;
         }
 
@@ -6476,33 +6475,137 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public async Task SignalAsync(string value) => signals.Add(value);
     }
 
-    [Fact]
-    public async Task ExecuteWorkflowAsync_UnhandledCommand_ProperlyProcessesSignals()
+    [Workflow]
+    public class MultiSignalOrderWorkflow : MultiSignalOrderWorkflowBase
     {
-        // When our local activity is called, we want to add two signals
-        var workflowId = $"workflow-{Guid.NewGuid()}";
-        var taskQueue = $"tq-{Guid.NewGuid()}";
-        var acts = new UnhandledCommandActivities(async () =>
-        {
-            var handle = Client.GetWorkflowHandle<UnhandledCommandWorkflow>(workflowId);
-            await handle.SignalAsync(wf => wf.SignalAsync("one"));
-            await handle.SignalAsync(wf => wf.SignalAsync("two"));
-        });
-        // Now start the worker and wait for result
-        await ExecuteWorkerAsync<UnhandledCommandWorkflow>(
+        [WorkflowRun]
+        public override Task<List<string>> RunAsync() => base.RunAsync();
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_MultiSignalOrder_ProperlyProcessesSignals()
+    {
+        await ExecuteWorkerAsync<MultiSignalOrderWorkflow>(
             async worker =>
             {
                 // Run the workflow
                 var handle = await Client.StartWorkflowAsync(
-                    (UnhandledCommandWorkflow wf) => wf.RunAsync(),
-                    new(workflowId, taskQueue));
+                    (MultiSignalOrderWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+
                 // Confirm both signals were seen
                 Assert.Equal(new List<string> { "one", "two" }, await handle.GetResultAsync());
-                // Confirm history has the failed task we expect
-                await AssertMore.TaskFailureEventuallyAsync(handle, attrs =>
-                    Assert.Equal(WorkflowTaskFailedCause.UnhandledCommand, attrs.Cause));
+
+                // // Helper code to generate the JSON for the following test
+                // await handle.GetResultAsync();
+                // var history = await handle.FetchHistoryAsync();
+                // Console.WriteLine("JSON:\n{0}", (await handle.FetchHistoryAsync()).ToJson());
             },
-            new TemporalWorkerOptions(taskQueue).AddAllActivities(acts));
+            new TemporalWorkerOptions().AddAllActivities(new MultiSignalOrderActivities(Client)));
+    }
+
+    [Workflow(nameof(MultiSignalOrderWorkflow))]
+    public class MultiSignalOrderPreSdkFlagWorkflow : MultiSignalOrderWorkflowBase
+    {
+        public static List<string>? Signals { get; private set; }
+
+        [WorkflowRun]
+        public override async Task<List<string>> RunAsync()
+        {
+            var signals = await base.RunAsync();
+            Signals = new(signals);
+            return signals;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_MultiSignalOrderPreSdkFlag_ImproperlyProcessesSignals()
+    {
+        Assert.Null(MultiSignalOrderPreSdkFlagWorkflow.Signals);
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<MultiSignalOrderPreSdkFlagWorkflow>());
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-signal-order.pre-dotnet-flag.json")));
+        // It only had 1 signal instead of 2
+        Assert.Equal(new List<string> { "one" }, MultiSignalOrderPreSdkFlagWorkflow.Signals);
+    }
+
+    public class MultiWaitConditionWorkflowBase
+    {
+        private readonly List<string> stages = new();
+
+        public async virtual Task<List<string>> RunAsync()
+        {
+            stages.Add("one");
+            await Workflow.WhenAllAsync(
+                Workflow.RunTaskAsync(async () =>
+                {
+                    await Workflow.WaitConditionAsync(() => stages.Last() != "one");
+                    stages.Add("three");
+                }),
+                Workflow.RunTaskAsync(async () =>
+                {
+                    await Workflow.WaitConditionAsync(() => stages.Count > 0);
+                    stages.Add("two");
+                }),
+                Workflow.RunTaskAsync(async () =>
+                {
+                    await Workflow.WaitConditionAsync(() => stages.Count > 0);
+                    stages.Add("four");
+                }));
+            return stages;
+        }
+    }
+
+    [Workflow]
+    public class MultiWaitConditionWorkflow : MultiWaitConditionWorkflowBase
+    {
+        [WorkflowRun]
+        public override Task<List<string>> RunAsync() => base.RunAsync();
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_MultiWaitCondition_OnlyResolvesOneAtATime()
+    {
+        await ExecuteWorkerAsync<MultiWaitConditionWorkflow>(async worker =>
+        {
+            // Run the workflow
+            var handle = await Client.StartWorkflowAsync(
+                (MultiWaitConditionWorkflow wf) => wf.RunAsync(),
+                new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+            // Confirm stages are in order
+            Assert.Equal(new List<string> { "one", "two", "three", "four" }, await handle.GetResultAsync());
+
+            // // Helper code to generate the JSON for the following test
+            // var history = await handle.FetchHistoryAsync();
+            // Console.WriteLine("JSON:\n{0}", (await handle.FetchHistoryAsync()).ToJson());
+        });
+    }
+
+    [Workflow(nameof(MultiWaitConditionWorkflow))]
+    public class MultiWaitConditionPreSdkFlagWorkflow : MultiWaitConditionWorkflowBase
+    {
+        public static List<string>? Stages { get; private set; }
+
+        [WorkflowRun]
+        public override async Task<List<string>> RunAsync()
+        {
+            var stages = await base.RunAsync();
+            Stages = new(stages);
+            return stages;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_MultiWaitConditionPreSdkFlag_ImproperlyProcessesConditions()
+    {
+        Assert.Null(MultiWaitConditionPreSdkFlagWorkflow.Stages);
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<MultiWaitConditionPreSdkFlagWorkflow>());
+        await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson(
+            "some-id", TestUtils.ReadAllFileText("Histories/multi-wait-condition.pre-dotnet-flag.json")));
+        // Has wrong order
+        Assert.Equal(new List<string> { "one", "two", "four", "three" }, MultiWaitConditionPreSdkFlagWorkflow.Stages);
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(

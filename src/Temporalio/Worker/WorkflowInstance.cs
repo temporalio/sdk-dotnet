@@ -85,6 +85,8 @@ namespace Temporalio.Worker
         private WorkflowQueryDefinition? dynamicQuery;
         private WorkflowSignalDefinition? dynamicSignal;
         private WorkflowUpdateDefinition? dynamicUpdate;
+        private bool workflowInitialized;
+        private bool applyModernEventLoopLogic;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -529,6 +531,20 @@ namespace Temporalio.Worker
                 IsReplaying = act.IsReplaying;
                 UtcNow = act.Timestamp.ToDateTime();
 
+                // If the workflow has not been initialized, we are in the first activation and we
+                // need to set the modern-event-loop-logic flag
+                if (!workflowInitialized)
+                {
+                    // If we're not replaying or we are replaying and the flag is already set, set
+                    // to true and mark flag. Otherwise we leave false.
+                    if (!IsReplaying ||
+                        act.AvailableInternalFlags.Contains((uint)WorkflowLogicFlag.ApplyModernEventLoopLogic))
+                    {
+                        applyModernEventLoopLogic = true;
+                        completion.Successful.UsedInternalFlags.Add((uint)WorkflowLogicFlag.ApplyModernEventLoopLogic);
+                    }
+                }
+
                 // Starting callback
                 onTaskStarting(this);
 
@@ -541,29 +557,59 @@ namespace Temporalio.Worker
                     {
                         // We must set the sync context to null so work isn't posted there
                         SynchronizationContext.SetSynchronizationContext(null);
-                        // TODO: Temporary workaround in lieu of https://github.com/temporalio/sdk-dotnet/issues/375
-                        var sortedJobs = act.Jobs.OrderBy(j =>
+
+                        // We only sort jobs in legacy event loop logic, modern relies on Core
+                        List<WorkflowActivationJob> jobs;
+                        if (applyModernEventLoopLogic)
                         {
-                            switch (j.VariantCase)
+                            jobs = act.Jobs.ToList();
+                        }
+                        else
+                        {
+                            jobs = act.Jobs.OrderBy(j =>
                             {
-                                case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
-                                case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
-                                    return 1;
-                                case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
-                                case WorkflowActivationJob.VariantOneofCase.DoUpdate:
-                                    return 2;
-                                case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
-                                    return 3;
-                                default:
-                                    return 4;
-                            }
-                        }).ToList();
-                        // We can trust jobs are deterministically ordered by core
-                        foreach (var job in sortedJobs)
+                                switch (j.VariantCase)
+                                {
+                                    case WorkflowActivationJob.VariantOneofCase.NotifyHasPatch:
+                                    case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
+                                        return 1;
+                                    case WorkflowActivationJob.VariantOneofCase.SignalWorkflow:
+                                    case WorkflowActivationJob.VariantOneofCase.DoUpdate:
+                                        return 2;
+                                    case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
+                                        return 3;
+                                    default:
+                                        return 4;
+                                }
+                            }).ToList();
+                        }
+
+                        // Apply each job
+                        foreach (var job in jobs)
                         {
                             Apply(job);
-                            // Run scheduler once. Do not check conditions when patching or querying.
-                            var checkConditions = job.NotifyHasPatch == null && job.QueryWorkflow == null;
+                            // We only run the scheduler after each job in legacy event loop logic
+                            if (!applyModernEventLoopLogic)
+                            {
+                                // Run scheduler once. Do not check conditions when patching or
+                                // querying with legacy event loop logic.
+                                var checkConditions = job.NotifyHasPatch == null && job.QueryWorkflow == null;
+                                RunOnce(checkConditions);
+                            }
+                        }
+
+                        // For modern event loop logic, we initialize here if not initialized
+                        // already
+                        if (applyModernEventLoopLogic && !workflowInitialized)
+                        {
+                            InitializeWorkflow();
+                        }
+
+                        // For modern event loop logic, we run the event loop only after applying
+                        // everything, and we check conditions if there are any non-query jobs
+                        if (applyModernEventLoopLogic)
+                        {
+                            var checkConditions = jobs.Any(j => j.VariantCase != WorkflowActivationJob.VariantOneofCase.QueryWorkflow);
                             RunOnce(checkConditions);
                         }
                     }
@@ -701,9 +747,20 @@ namespace Temporalio.Worker
                     Workflow.OverrideContext.Value = this;
                     try
                     {
-                        foreach (var source in conditions.Where(t => t.Item1()).Select(t => t.Item2))
+                        foreach (var condition in conditions)
                         {
-                            source.TrySetResult(null);
+                            // Check whether the condition evaluates to true
+                            if (condition.Item1())
+                            {
+                                // Set condition as resolved
+                                condition.Item2.TrySetResult(null);
+                                // When applying modern event loop logic, we want to break after the
+                                // first condition is resolved instead of checking/applying all
+                                if (applyModernEventLoopLogic)
+                                {
+                                    break;
+                                }
+                            }
                         }
                     }
                     finally
@@ -901,7 +958,11 @@ namespace Temporalio.Worker
                     ApplySignalWorkflow(job.SignalWorkflow);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.InitializeWorkflow:
-                    ApplyInitializeWorkflow(job.InitializeWorkflow);
+                    // We only initialize the workflow at job time on legacy event loop logic
+                    if (!applyModernEventLoopLogic)
+                    {
+                        InitializeWorkflow();
+                    }
                     break;
                 case WorkflowActivationJob.VariantOneofCase.UpdateRandomSeed:
                     ApplyUpdateRandomSeed(job.UpdateRandomSeed);
@@ -1333,8 +1394,16 @@ namespace Temporalio.Worker
             }));
         }
 
-        private void ApplyInitializeWorkflow(InitializeWorkflow init)
+        private void ApplyUpdateRandomSeed(UpdateRandomSeed update) =>
+            Random = new(update.RandomnessSeed);
+
+        private void InitializeWorkflow()
         {
+            if (workflowInitialized)
+            {
+                throw new InvalidOperationException("Workflow unexpectedly initialized");
+            }
+            workflowInitialized = true;
             _ = QueueNewTaskAsync(() => RunTopLevelAsync(async () =>
             {
                 var input = new ExecuteWorkflowInput(
@@ -1348,9 +1417,6 @@ namespace Temporalio.Worker
                 AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } });
             }));
         }
-
-        private void ApplyUpdateRandomSeed(UpdateRandomSeed update) =>
-            Random = new(update.RandomnessSeed);
 
         private void OnQueryDefinitionAdded(string name, WorkflowQueryDefinition defn)
         {
