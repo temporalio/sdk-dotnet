@@ -1206,11 +1206,17 @@ namespace Temporalio.Worker
 
                     if (query.QueryType == "__stack_trace")
                     {
-                        resultObj = GetStackTrace();
+                        // Use raw value built from default converter because we don't want to use
+                        // user-conversion
+                        resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
+                            GetStackTrace()));
                     }
                     else if (query.QueryType == "__temporal_workflow_metadata")
                     {
-                        resultObj = GetWorkflowMetadata();
+                        // Use raw value built from default converter because we don't want to use
+                        // user-conversion
+                        resultObj = new RawValue(DataConverter.Default.PayloadConverter.ToPayload(
+                            GetWorkflowMetadata()));
                     }
                     else
                     {

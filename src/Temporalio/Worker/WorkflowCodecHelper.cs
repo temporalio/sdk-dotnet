@@ -275,11 +275,16 @@ namespace Temporalio.Worker
         {
             // We are gonna require a single result here. It is important that we do Single() call
             // before clearing out payload to merge with since underlying enumerable may be lazy.
+            // If the returned payload is literally the same object as the one sent to the codec,
+            // we leave it alone.
             var encodedList = await codec.EncodeAsync(new Payload[] { payload }).ConfigureAwait(false);
             var encoded = encodedList.Single();
-            payload.Metadata.Clear();
-            payload.Data = ByteString.Empty;
-            payload.MergeFrom(encoded);
+            if (!ReferenceEquals(encoded, payload))
+            {
+                payload.Metadata.Clear();
+                payload.Data = ByteString.Empty;
+                payload.MergeFrom(encoded);
+            }
         }
 
         private static async Task DecodeAsync(IPayloadCodec codec, ActivityResolution res)
@@ -377,11 +382,16 @@ namespace Temporalio.Worker
 
         private static async Task DecodeAsync(IPayloadCodec codec, Payload payload)
         {
-            // We are gonna require a single result here
+            // We are gonna require a single result here.
+            // Similarly with encode, we leave the payload alone if it's exactly the same object as the original.
             var decoded = await codec.DecodeAsync(new Payload[] { payload }).ConfigureAwait(false);
-            payload.Metadata.Clear();
-            payload.Data = ByteString.Empty;
-            payload.MergeFrom(decoded.Single());
+            var decodedPayload = decoded.Single();
+            if (!ReferenceEquals(decodedPayload, payload))
+            {
+                payload.Metadata.Clear();
+                payload.Data = ByteString.Empty;
+                payload.MergeFrom(decodedPayload);
+            }
         }
     }
 }
