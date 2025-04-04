@@ -208,7 +208,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets a value indicating whether this workflow works with tracing events.
         /// </summary>
-        public bool TracingEventsEnabled { get; private init; }
+        public bool TracingEventsEnabled { get; private set; }
 
         /// <inheritdoc />
         public bool AllHandlersFinished => inProgressHandlers.Count == 0;
@@ -515,6 +515,37 @@ namespace Temporalio.Worker
                     conditions.Remove(node);
                 }
             });
+        }
+
+        /// <inheritdoc/>
+        public T WithTracingEventListenerDisabled<T>(Func<T> fn)
+        {
+            // Capture the existing value and restore it later. We recognize this is not thread safe
+            // if other people have called this in other places, but we do not want to explicitly
+            // prevent it or add a stack here and people should not be blocking in the function
+            // anyways. This is an unsafe calls and docs on the user-facing portion adequately
+            // explain the dangers.
+            var prevEnabled = TracingEventsEnabled;
+            TracingEventsEnabled = false;
+            try
+            {
+                // Make sure no commands were added
+                var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+
+                var result = fn();
+
+                var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
+                if (origCmdCount != newCmdCount)
+                {
+                    throw new InvalidOperationException(
+                        $"Function during tracing event listener disabling created workflow commands");
+                }
+                return result;
+            }
+            finally
+            {
+                TracingEventsEnabled = prevEnabled;
+            }
         }
 
         /// <inheritdoc/>
