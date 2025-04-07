@@ -29,7 +29,7 @@ namespace Temporalio.Worker
     /// <summary>
     /// Instance of a workflow execution.
     /// </summary>
-    internal class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext
+    internal class WorkflowInstance : TaskScheduler, IWorkflowInstance, IWorkflowContext, IWorkflowCodecHelperInstance
     {
         private static readonly string[] Newlines = new[] { "\r", "\n", "\r\n" };
         private static readonly AsyncLocal<WorkflowUpdateInfo> CurrentUpdateInfoLocal = new();
@@ -50,11 +50,11 @@ namespace Temporalio.Worker
         private readonly LinkedList<Task> scheduledTasks = new();
         private readonly Dictionary<Task, LinkedListNode<Task>> scheduledTaskNodes = new();
         private readonly Dictionary<uint, TaskCompletionSource<object?>> timersPending = new();
-        private readonly Dictionary<uint, TaskCompletionSource<ActivityResolution>> activitiesPending = new();
-        private readonly Dictionary<uint, TaskCompletionSource<ResolveChildWorkflowExecutionStart>> childWorkflowsPendingStart = new();
-        private readonly Dictionary<uint, TaskCompletionSource<ChildWorkflowResult>> childWorkflowsPendingCompletion = new();
-        private readonly Dictionary<uint, TaskCompletionSource<ResolveSignalExternalWorkflow>> externalSignalsPending = new();
-        private readonly Dictionary<uint, TaskCompletionSource<ResolveRequestCancelExternalWorkflow>> externalCancelsPending = new();
+        private readonly Dictionary<uint, PendingActivityInfo> activitiesPending = new();
+        private readonly Dictionary<uint, PendingChildInfo> childWorkflowsPendingStart = new();
+        private readonly Dictionary<uint, PendingChildInfo> childWorkflowsPendingCompletion = new();
+        private readonly Dictionary<uint, PendingExternalSignal> externalSignalsPending = new();
+        private readonly Dictionary<uint, PendingExternalCancel> externalCancelsPending = new();
         // Buffered signals have to be a list instead of a dictionary because when a dynamic signal
         // handler is added, we need to traverse in insertion order
         private readonly List<SignalWorkflow> bufferedSignals = new();
@@ -674,6 +674,37 @@ namespace Temporalio.Worker
         public void SetCurrentActivationException(Exception exc) => currentActivationException ??= exc;
 
         /// <inheritdoc/>
+        public ISerializationContext.Activity? GetPendingActivitySerializationContext(uint seq)
+        {
+            activitiesPending.TryGetValue(seq, out var pending);
+            return pending?.SerializationContext;
+        }
+
+        /// <inheritdoc/>
+        public ISerializationContext.Workflow? GetPendingChildSerializationContext(uint seq)
+        {
+            if (!childWorkflowsPendingStart.TryGetValue(seq, out var pending))
+            {
+                childWorkflowsPendingCompletion.TryGetValue(seq, out pending);
+            }
+            return pending?.SerializationContext;
+        }
+
+        /// <inheritdoc/>
+        public ISerializationContext.Workflow? GetPendingExternalCancelSerializationContext(uint seq)
+        {
+            externalCancelsPending.TryGetValue(seq, out var pending);
+            return pending?.SerializationContext;
+        }
+
+        /// <inheritdoc/>
+        public ISerializationContext.Workflow? GetPendingExternalSignalSerializationContext(uint seq)
+        {
+            externalSignalsPending.TryGetValue(seq, out var pending);
+            return pending?.SerializationContext;
+        }
+
+        /// <inheritdoc/>
         protected override IEnumerable<Task>? GetScheduledTasks() => scheduledTasks;
 
         /// <inheritdoc/>
@@ -1284,54 +1315,54 @@ namespace Temporalio.Worker
 
         private void ApplyResolveActivity(ResolveActivity resolve)
         {
-            if (!activitiesPending.TryGetValue(resolve.Seq, out var source))
+            if (!activitiesPending.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
                     $"Failed finding activity for sequence {resolve.Seq}");
             }
-            source.TrySetResult(resolve.Result);
+            pending.CompletionSource.TrySetResult(resolve.Result);
         }
 
         private void ApplyResolveChildWorkflowExecution(ResolveChildWorkflowExecution resolve)
         {
-            if (!childWorkflowsPendingCompletion.TryGetValue(resolve.Seq, out var source))
+            if (!childWorkflowsPendingCompletion.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
                     $"Failed finding child for sequence {resolve.Seq}");
             }
-            source.TrySetResult(resolve.Result);
+            pending.ResultCompletionSource.TrySetResult(resolve.Result);
         }
 
         private void ApplyResolveChildWorkflowExecutionStart(
             ResolveChildWorkflowExecutionStart resolve)
         {
-            if (!childWorkflowsPendingStart.TryGetValue(resolve.Seq, out var source))
+            if (!childWorkflowsPendingStart.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
                     $"Failed finding child for sequence {resolve.Seq}");
             }
-            source.TrySetResult(resolve);
+            pending.StartCompletionSource.TrySetResult(resolve);
         }
 
         private void ApplyResolveRequestCancelExternalWorkflow(
             ResolveRequestCancelExternalWorkflow resolve)
         {
-            if (!externalCancelsPending.TryGetValue(resolve.Seq, out var source))
+            if (!externalCancelsPending.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
                     $"Failed finding external cancel for sequence {resolve.Seq}");
             }
-            source.TrySetResult(resolve);
+            pending.CompletionSource.TrySetResult(resolve);
         }
 
         private void ApplyResolveSignalExternalWorkflow(ResolveSignalExternalWorkflow resolve)
         {
-            if (!externalSignalsPending.TryGetValue(resolve.Seq, out var source))
+            if (!externalSignalsPending.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
                     $"Failed finding external signal for sequence {resolve.Seq}");
             }
-            source.TrySetResult(resolve);
+            pending.CompletionSource.TrySetResult(resolve);
         }
 
         private void ApplySignalWorkflow(SignalWorkflow signal)
@@ -1804,20 +1835,32 @@ namespace Temporalio.Worker
                         RunId = input.RunId ?? string.Empty,
                     },
                 };
-                var source = new TaskCompletionSource<ResolveRequestCancelExternalWorkflow>();
-                instance.externalCancelsPending[cmd.Seq] = source;
+                var pending = new PendingExternalCancel(
+                    SerializationContext: new(Namespace: instance.Info.Namespace, WorkflowId: input.Id),
+                    CompletionSource: new());
+                instance.externalCancelsPending[cmd.Seq] = pending;
                 instance.AddCommand(new() { RequestCancelExternalWorkflowExecution = cmd });
 
                 // Handle
                 return instance.QueueNewTaskAsync(async () =>
                 {
-                    var res = await source.Task.ConfigureAwait(true);
+                    var res = await pending.CompletionSource.Task.ConfigureAwait(true);
                     instance.externalCancelsPending.Remove(cmd.Seq);
                     // Throw if failed
                     if (res.Failure != null)
                     {
-                        throw instance.failureConverter.ToException(
-                            res.Failure, instance.PayloadConverter);
+                        // Payload and failure converter with context
+                        var payloadConverter = instance.PayloadConverter;
+                        if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
+                        {
+                            payloadConverter = withContext.WithSerializationContext(pending.SerializationContext);
+                        }
+                        var failureConverter = instance.failureConverter;
+                        if (failureConverter is IWithSerializationContext<IFailureConverter> withContext2)
+                        {
+                            failureConverter = withContext2.WithSerializationContext(pending.SerializationContext);
+                        }
+                        throw failureConverter.ToException(res.Failure, payloadConverter);
                     }
                 });
             }
@@ -1895,8 +1938,23 @@ namespace Temporalio.Worker
                     throw new ArgumentException("Activity options must have StartToCloseTimeout or ScheduleToCloseTimeout");
                 }
 
+                // Get payload converter with context
+                var serializationContext = new ISerializationContext.Activity(
+                    Namespace: instance.Info.Namespace,
+                    WorkflowId: instance.Info.WorkflowId,
+                    WorkflowType: instance.Info.WorkflowType,
+                    ActivityType: input.Activity,
+                    ActivityTaskQueue: input.Options.TaskQueue ?? instance.Info.TaskQueue,
+                    IsLocal: false);
+                var payloadConverter = instance.PayloadConverter;
+                if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
+                {
+                    payloadConverter = withContext.WithSerializationContext(serializationContext);
+                }
+
                 return ExecuteActivityInternalAsync<TResult>(
-                    local: false,
+                    payloadConverter: payloadConverter,
+                    serializationContext,
                     doBackoff =>
                     {
                         var seq = ++instance.activityCounter;
@@ -1905,8 +1963,8 @@ namespace Temporalio.Worker
                             Seq = seq,
                             ActivityId = input.Options.ActivityId ?? seq.ToString(),
                             ActivityType = input.Activity,
-                            TaskQueue = input.Options.TaskQueue ?? instance.Info.TaskQueue,
-                            Arguments = { instance.PayloadConverter.ToPayloads(input.Args) },
+                            TaskQueue = serializationContext.ActivityTaskQueue,
+                            Arguments = { payloadConverter.ToPayloads(input.Args) },
                             RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                             CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
                             DoNotEagerlyExecute = instance.disableEagerActivityExecution || input.Options.DisableEagerActivityExecution,
@@ -1940,7 +1998,7 @@ namespace Temporalio.Worker
                         {
                             workflowCommand.UserMetadata = new()
                             {
-                                Summary = instance.PayloadConverter.ToPayload(summary),
+                                Summary = payloadConverter.ToPayload(summary),
                             };
                         }
                         instance.AddCommand(workflowCommand);
@@ -1959,8 +2017,23 @@ namespace Temporalio.Worker
                     throw new ArgumentException("Activity options must have StartToCloseTimeout or ScheduleToCloseTimeout");
                 }
 
+                // Get payload converter with context
+                var serializationContext = new ISerializationContext.Activity(
+                    Namespace: instance.Info.Namespace,
+                    WorkflowId: instance.Info.WorkflowId,
+                    WorkflowType: instance.Info.WorkflowType,
+                    ActivityType: input.Activity,
+                    ActivityTaskQueue: instance.Info.TaskQueue,
+                    IsLocal: true);
+                var payloadConverter = instance.PayloadConverter;
+                if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
+                {
+                    payloadConverter = withContext.WithSerializationContext(serializationContext);
+                }
+
                 return ExecuteActivityInternalAsync<TResult>(
-                    local: true,
+                    payloadConverter: payloadConverter,
+                    serializationContext: serializationContext,
                     doBackoff =>
                     {
                         var seq = ++instance.activityCounter;
@@ -1969,7 +2042,7 @@ namespace Temporalio.Worker
                             Seq = seq,
                             ActivityId = input.Options.ActivityId ?? seq.ToString(),
                             ActivityType = input.Activity,
-                            Arguments = { instance.PayloadConverter.ToPayloads(input.Args) },
+                            Arguments = { payloadConverter.ToPayloads(input.Args) },
                             RetryPolicy = input.Options.RetryPolicy?.ToProto(),
                             CancellationType = (Bridge.Api.WorkflowCommands.ActivityCancellationType)input.Options.CancellationType,
                         };
@@ -2007,23 +2080,45 @@ namespace Temporalio.Worker
             /// <inheritdoc />
             public override Task SignalChildWorkflowAsync(SignalChildWorkflowInput input)
             {
+                // Payload converter with context
+                var serializationContext = new ISerializationContext.Workflow(
+                    Namespace: instance.Info.Namespace,
+                    WorkflowId: input.Id);
+                var payloadConverter = instance.PayloadConverter;
+                if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
+                {
+                    payloadConverter = withContext.WithSerializationContext(serializationContext);
+                }
                 var cmd = new SignalExternalWorkflowExecution()
                 {
                     Seq = ++instance.externalSignalsCounter,
                     ChildWorkflowId = input.Id,
                     SignalName = input.Signal,
-                    Args = { instance.PayloadConverter.ToPayloads(input.Args) },
+                    Args = { payloadConverter.ToPayloads(input.Args) },
                 };
                 if (input.Headers is IDictionary<string, Payload> headers)
                 {
                     cmd.Headers.Add(headers);
                 }
-                return SignalExternalWorkflowInternalAsync(cmd, input.Options?.CancellationToken);
+                return SignalExternalWorkflowInternalAsync(
+                    serializationContext,
+                    payloadConverter,
+                    cmd,
+                    input.Options?.CancellationToken);
             }
 
             /// <inheritdoc />
             public override Task SignalExternalWorkflowAsync(SignalExternalWorkflowInput input)
             {
+                // Payload converter with context
+                var serializationContext = new ISerializationContext.Workflow(
+                    Namespace: instance.Info.Namespace,
+                    WorkflowId: input.Id);
+                var payloadConverter = instance.PayloadConverter;
+                if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
+                {
+                    payloadConverter = withContext.WithSerializationContext(serializationContext);
+                }
                 var cmd = new SignalExternalWorkflowExecution()
                 {
                     Seq = ++instance.externalSignalsCounter,
@@ -2034,13 +2129,17 @@ namespace Temporalio.Worker
                         RunId = input.RunId ?? string.Empty,
                     },
                     SignalName = input.Signal,
-                    Args = { instance.PayloadConverter.ToPayloads(input.Args) },
+                    Args = { payloadConverter.ToPayloads(input.Args) },
                 };
                 if (input.Headers is IDictionary<string, Payload> headers)
                 {
                     cmd.Headers.Add(headers);
                 }
-                return SignalExternalWorkflowInternalAsync(cmd, input.Options?.CancellationToken);
+                return SignalExternalWorkflowInternalAsync(
+                    serializationContext,
+                    payloadConverter,
+                    cmd,
+                    input.Options?.CancellationToken);
             }
 
             /// <inheritdoc />
@@ -2059,16 +2158,26 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Child cancelled before scheduled"));
                 }
 
+                // Get payload converter with context
+                var serializationContext = new ISerializationContext.Workflow(
+                    Namespace: instance.Info.Namespace,
+                    WorkflowId: input.Options.Id ?? Workflow.NewGuid().ToString());
+                var payloadConverter = instance.PayloadConverter;
+                if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
+                {
+                    payloadConverter = withContext.WithSerializationContext(serializationContext);
+                }
+
                 // Add the start command
                 var seq = ++instance.childWorkflowCounter;
                 var cmd = new StartChildWorkflowExecution()
                 {
                     Seq = seq,
                     Namespace = instance.Info.Namespace,
-                    WorkflowId = input.Options.Id ?? Workflow.NewGuid().ToString(),
+                    WorkflowId = serializationContext.WorkflowId,
                     WorkflowType = input.Workflow,
                     TaskQueue = input.Options.TaskQueue ?? instance.Info.TaskQueue,
-                    Input = { instance.PayloadConverter.ToPayloads(input.Args) },
+                    Input = { payloadConverter.ToPayloads(input.Args) },
                     ParentClosePolicy = (Bridge.Api.ChildWorkflow.ParentClosePolicy)input.Options.ParentClosePolicy,
                     WorkflowIdReusePolicy = input.Options.IdReusePolicy,
                     RetryPolicy = input.Options.RetryPolicy?.ToProto(),
@@ -2090,7 +2199,7 @@ namespace Temporalio.Worker
                 if (input.Options?.Memo is IReadOnlyDictionary<string, object> memo)
                 {
                     cmd.Memo.Add(memo.ToDictionary(
-                        kvp => kvp.Key, kvp => instance.PayloadConverter.ToPayload(kvp.Value)));
+                        kvp => kvp.Key, kvp => payloadConverter.ToPayload(kvp.Value)));
                 }
                 if (input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
                 {
@@ -2110,17 +2219,20 @@ namespace Temporalio.Worker
                     workflowCommand.UserMetadata = new()
                     {
                         Summary = input.Options.StaticSummary is { } summary ?
-                            instance.PayloadConverter.ToPayload(summary) : null,
+                            payloadConverter.ToPayload(summary) : null,
                         Details = input.Options.StaticDetails is { } details ?
-                            instance.PayloadConverter.ToPayload(details) : null,
+                            payloadConverter.ToPayload(details) : null,
                     };
                 }
                 instance.AddCommand(workflowCommand);
 
                 // Add start as pending and wait inside of task
                 var handleSource = new TaskCompletionSource<ChildWorkflowHandle<TWorkflow, TResult>>();
-                var startSource = new TaskCompletionSource<ResolveChildWorkflowExecutionStart>();
-                instance.childWorkflowsPendingStart[seq] = startSource;
+                var pending = new PendingChildInfo(
+                    SerializationContext: serializationContext,
+                    StartCompletionSource: new(),
+                    ResultCompletionSource: new());
+                instance.childWorkflowsPendingStart[seq] = pending;
 
                 _ = instance.QueueNewTaskAsync(async () =>
                 {
@@ -2138,7 +2250,7 @@ namespace Temporalio.Worker
                     }))
                     {
                         // Wait for start
-                        var startRes = await startSource.Task.ConfigureAwait(true);
+                        var startRes = await pending.StartCompletionSource.Task.ConfigureAwait(true);
                         // Remove pending
                         instance.childWorkflowsPendingStart.Remove(seq);
                         // Handle the start result
@@ -2147,7 +2259,7 @@ namespace Temporalio.Worker
                         {
                             case ResolveChildWorkflowExecutionStart.StatusOneofCase.Succeeded:
                                 // Create handle
-                                handle = new(instance, cmd.WorkflowId, startRes.Succeeded.RunId);
+                                handle = new(instance, payloadConverter, cmd.WorkflowId, startRes.Succeeded.RunId);
                                 break;
                             case ResolveChildWorkflowExecutionStart.StatusOneofCase.Failed:
                                 switch (startRes.Failed.Cause)
@@ -2167,21 +2279,25 @@ namespace Temporalio.Worker
                                         return;
                                 }
                             case ResolveChildWorkflowExecutionStart.StatusOneofCase.Cancelled:
+                                // Failure converter with context
+                                var failureConverter = instance.failureConverter;
+                                if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
+                                {
+                                    failureConverter = withContext.WithSerializationContext(serializationContext);
+                                }
                                 handleSource.SetException(
-                                    instance.failureConverter.ToException(
-                                        startRes.Cancelled.Failure, instance.PayloadConverter));
+                                    failureConverter.ToException(startRes.Cancelled.Failure, payloadConverter));
                                 return;
                             default:
                                 throw new InvalidOperationException("Unrecognized child start case");
                         }
 
                         // Create task for waiting for pending result, then resolve handle source
-                        var completionSource = new TaskCompletionSource<ChildWorkflowResult>();
-                        instance.childWorkflowsPendingCompletion[seq] = completionSource;
+                        instance.childWorkflowsPendingCompletion[seq] = pending;
                         handleSource.SetResult(handle);
 
                         // Wait for completion
-                        var completeRes = await completionSource.Task.ConfigureAwait(true);
+                        var completeRes = await pending.ResultCompletionSource.Task.ConfigureAwait(true);
                         instance.childWorkflowsPendingCompletion.Remove(seq);
 
                         // Handle completion
@@ -2196,12 +2312,24 @@ namespace Temporalio.Worker
                                 handle.CompletionSource.SetResult(completeRes.Completed.Result);
                                 break;
                             case ChildWorkflowResult.StatusOneofCase.Failed:
-                                handle.CompletionSource.SetException(instance.failureConverter.ToException(
-                                    completeRes.Failed.Failure_, instance.PayloadConverter));
+                                // Failure converter with context
+                                var failureConverter = instance.failureConverter;
+                                if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
+                                {
+                                    failureConverter = withContext.WithSerializationContext(serializationContext);
+                                }
+                                handle.CompletionSource.SetException(failureConverter.ToException(
+                                    completeRes.Failed.Failure_, payloadConverter));
                                 break;
                             case ChildWorkflowResult.StatusOneofCase.Cancelled:
-                                handle.CompletionSource.SetException(instance.failureConverter.ToException(
-                                    completeRes.Cancelled.Failure, instance.PayloadConverter));
+                                // Failure converter with context
+                                var failureConverter2 = instance.failureConverter;
+                                if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
+                                {
+                                    failureConverter2 = withContext2.WithSerializationContext(serializationContext);
+                                }
+                                handle.CompletionSource.SetException(failureConverter2.ToException(
+                                    completeRes.Cancelled.Failure, payloadConverter));
                                 break;
                             default:
                                 throw new InvalidOperationException("Unrecognized child complete case");
@@ -2212,7 +2340,10 @@ namespace Temporalio.Worker
             }
 
             private Task SignalExternalWorkflowInternalAsync(
-                SignalExternalWorkflowExecution cmd, CancellationToken? inputCancelToken)
+                ISerializationContext.Workflow serializationContext,
+                IPayloadConverter payloadConverter,
+                SignalExternalWorkflowExecution cmd,
+                CancellationToken? inputCancelToken)
             {
                 var token = inputCancelToken ?? instance.CancellationToken;
                 // Like other cases (e.g. child workflow start), we do not even want to schedule if
@@ -2223,8 +2354,10 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Signal cancelled before scheduled"));
                 }
 
-                var source = new TaskCompletionSource<ResolveSignalExternalWorkflow>();
-                instance.externalSignalsPending[cmd.Seq] = source;
+                var pending = new PendingExternalSignal(
+                    SerializationContext: serializationContext,
+                    CompletionSource: new());
+                instance.externalSignalsPending[cmd.Seq] = pending;
                 instance.AddCommand(new() { SignalExternalWorkflowExecution = cmd });
 
                 // Handle
@@ -2242,20 +2375,26 @@ namespace Temporalio.Worker
                         }
                     }))
                     {
-                        var res = await source.Task.ConfigureAwait(true);
+                        var res = await pending.CompletionSource.Task.ConfigureAwait(true);
                         instance.externalSignalsPending.Remove(cmd.Seq);
                         // Throw if failed
                         if (res.Failure != null)
                         {
-                            throw instance.failureConverter.ToException(
-                                res.Failure, instance.PayloadConverter);
+                            // Failure converter with context
+                            var failureConverter = instance.failureConverter;
+                            if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
+                            {
+                                failureConverter = withContext.WithSerializationContext(serializationContext);
+                            }
+                            throw failureConverter.ToException(res.Failure, payloadConverter);
                         }
                     }
                 });
             }
 
             private Task<TResult> ExecuteActivityInternalAsync<TResult>(
-                bool local,
+                IPayloadConverter payloadConverter,
+                ISerializationContext.Activity serializationContext,
                 Func<DoBackoff?, uint> applyScheduleCommand,
                 CancellationToken cancellationToken)
             {
@@ -2271,8 +2410,10 @@ namespace Temporalio.Worker
                 }
 
                 var seq = applyScheduleCommand(null);
-                var source = new TaskCompletionSource<ActivityResolution>();
-                instance.activitiesPending[seq] = source;
+                var pending = new PendingActivityInfo(
+                    SerializationContext: serializationContext,
+                    CompletionSource: new());
+                instance.activitiesPending[seq] = pending;
                 return instance.QueueNewTaskAsync(async () =>
                 {
                     // In a loop for local-activity backoff
@@ -2285,7 +2426,7 @@ namespace Temporalio.Worker
                             // Send cancel if activity present
                             if (instance.activitiesPending.ContainsKey(seq))
                             {
-                                if (local)
+                                if (serializationContext.IsLocal)
                                 {
                                     instance.AddCommand(
                                         new() { RequestCancelLocalActivity = new() { Seq = seq } });
@@ -2298,7 +2439,7 @@ namespace Temporalio.Worker
                             }
                         }))
                         {
-                            res = await source.Task.ConfigureAwait(true);
+                            res = await pending.CompletionSource.Task.ConfigureAwait(true);
                         }
 
                         // Apply result. Only DoBackoff will cause loop to continue.
@@ -2316,13 +2457,23 @@ namespace Temporalio.Worker
                                 {
                                     throw new InvalidOperationException("No activity result present");
                                 }
-                                return instance.PayloadConverter.ToValue<TResult>(res.Completed.Result);
+                                return payloadConverter.ToValue<TResult>(res.Completed.Result);
                             case ActivityResolution.StatusOneofCase.Failed:
-                                throw instance.failureConverter.ToException(
-                                    res.Failed.Failure_, instance.PayloadConverter);
+                                // Failure converter with context
+                                var failureConverter = instance.failureConverter;
+                                if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
+                                {
+                                    failureConverter = withContext.WithSerializationContext(serializationContext);
+                                }
+                                throw failureConverter.ToException(res.Failed.Failure_, payloadConverter);
                             case ActivityResolution.StatusOneofCase.Cancelled:
-                                throw instance.failureConverter.ToException(
-                                    res.Cancelled.Failure, instance.PayloadConverter);
+                                // Failure converter with context
+                                var failureConverter2 = instance.failureConverter;
+                                if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
+                                {
+                                    failureConverter2 = withContext2.WithSerializationContext(serializationContext);
+                                }
+                                throw failureConverter2.ToException(res.Cancelled.Failure, payloadConverter);
                             case ActivityResolution.StatusOneofCase.Backoff:
                                 // We have to sleep the backoff amount. Note, this can be cancelled
                                 // like any other timer.
@@ -2332,8 +2483,8 @@ namespace Temporalio.Worker
                                     cancellationToken: cancellationToken)).ConfigureAwait(true);
                                 // Re-schedule with backoff info
                                 seq = applyScheduleCommand(res.Backoff);
-                                source = new TaskCompletionSource<ActivityResolution>();
-                                instance.activitiesPending[seq] = source;
+                                pending = pending with { CompletionSource = new TaskCompletionSource<ActivityResolution>() };
+                                instance.activitiesPending[seq] = pending;
                                 break;
                             default:
                                 throw new InvalidOperationException("Activity does not have result");
@@ -2351,6 +2502,7 @@ namespace Temporalio.Worker
         internal class ChildWorkflowHandleImpl<TWorkflow, TResult> : ChildWorkflowHandle<TWorkflow, TResult>
         {
             private readonly WorkflowInstance instance;
+            private readonly IPayloadConverter payloadConverter;
             private readonly string id;
             private readonly string firstExecutionRunId;
 
@@ -2358,12 +2510,17 @@ namespace Temporalio.Worker
             /// Initializes a new instance of the <see cref="ChildWorkflowHandleImpl{TWorkflow, TResult}"/> class.
             /// </summary>
             /// <param name="instance">Workflow instance.</param>
+            /// <param name="payloadConverter">Payload converter.</param>
             /// <param name="id">Workflow ID.</param>
             /// <param name="firstExecutionRunId">Workflow run ID.</param>
             public ChildWorkflowHandleImpl(
-                WorkflowInstance instance, string id, string firstExecutionRunId)
+                WorkflowInstance instance,
+                IPayloadConverter payloadConverter,
+                string id,
+                string firstExecutionRunId)
             {
                 this.instance = instance;
+                this.payloadConverter = payloadConverter;
                 this.id = id;
                 this.firstExecutionRunId = firstExecutionRunId;
             }
@@ -2388,7 +2545,7 @@ namespace Temporalio.Worker
                 {
                     return default!;
                 }
-                return instance.PayloadConverter.ToValue<TLocalResult>(payload);
+                return payloadConverter.ToValue<TLocalResult>(payload);
             }
 
             /// <inheritdoc />
@@ -2451,6 +2608,23 @@ namespace Temporalio.Worker
             public override Task CancelAsync() =>
                 instance.outbound.Value.CancelExternalWorkflowAsync(new(Id: Id, RunId: RunId));
         }
+
+        private record PendingActivityInfo(
+            ISerializationContext.Activity SerializationContext,
+            TaskCompletionSource<ActivityResolution> CompletionSource);
+
+        private record PendingChildInfo(
+            ISerializationContext.Workflow SerializationContext,
+            TaskCompletionSource<ResolveChildWorkflowExecutionStart> StartCompletionSource,
+            TaskCompletionSource<ChildWorkflowResult> ResultCompletionSource);
+
+        private record PendingExternalSignal(
+            ISerializationContext.Workflow SerializationContext,
+            TaskCompletionSource<ResolveSignalExternalWorkflow> CompletionSource);
+
+        private record PendingExternalCancel(
+            ISerializationContext.Workflow SerializationContext,
+            TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
 
         private class Handlers : LinkedList<Handlers.Handler>
         {

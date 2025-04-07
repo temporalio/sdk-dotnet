@@ -78,13 +78,17 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <param name="id">ID.</param>
         /// <param name="rawDescription">Proto.</param>
+        /// <param name="clientNamespace">Client namespace.</param>
         /// <param name="dataConverter">Converter.</param>
         /// <returns>Converted value.</returns>
         internal static async Task<ScheduleDescription> FromProtoAsync(
-            string id, DescribeScheduleResponse rawDescription, DataConverter dataConverter) =>
+            string id,
+            DescribeScheduleResponse rawDescription,
+            string clientNamespace,
+            DataConverter dataConverter) =>
             new(
                 id,
-                await Schedule.FromProtoAsync(rawDescription.Schedule, dataConverter).ConfigureAwait(false),
+                await Schedule.FromProtoAsync(rawDescription.Schedule, clientNamespace, dataConverter).ConfigureAwait(false),
                 rawDescription,
                 dataConverter);
     }

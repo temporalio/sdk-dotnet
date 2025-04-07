@@ -162,14 +162,24 @@ namespace Temporalio.Worker
                 var span = dur.ToTimeSpan();
                 return span == TimeSpan.Zero ? null : span;
             }
-            // Create info
+            // Activity-specific data converter
             var start = tsk.Start;
+            var dataConverter = worker.Client.Options.DataConverter.WithSerializationContext(
+                new ISerializationContext.Activity(
+                    Namespace: start.WorkflowNamespace,
+                    WorkflowId: start.WorkflowExecution.WorkflowId,
+                    WorkflowType: start.WorkflowType,
+                    ActivityType: start.ActivityType,
+                    ActivityTaskQueue: worker.Options.TaskQueue!,
+                    IsLocal: start.IsLocal));
+
+            // Create info
             var info = new ActivityInfo(
                 ActivityId: start.ActivityId,
                 ActivityType: start.ActivityType,
                 Attempt: (int)start.Attempt,
                 CurrentAttemptScheduledTime: start.CurrentAttemptScheduledTime.ToDateTime(),
-                DataConverter: worker.Client.Options.DataConverter,
+                DataConverter: dataConverter,
                 HeartbeatDetails: start.HeartbeatDetails,
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
@@ -191,7 +201,7 @@ namespace Temporalio.Worker
                 workerShutdownToken: workerShutdownTokenSource.Token,
                 taskToken: tsk.TaskToken,
                 logger: worker.LoggerFactory.CreateLogger($"Temporalio.Activity:{info.ActivityType}"),
-                payloadConverter: worker.Client.Options.DataConverter.PayloadConverter,
+                payloadConverter: dataConverter.PayloadConverter,
                 runtimeMetricMeter: worker.MetricMeter,
                 temporalClient: worker.Client as ITemporalClient);
 
@@ -202,24 +212,26 @@ namespace Temporalio.Worker
                 // shutdown which could never run until after this (and the primary execute) are
                 // done. So we don't have to worry about the dictionary having an activity without
                 // a task even though we're late-binding it here.
-                var act = new RunningActivity(context, cancelTokenSource);
+                var act = new RunningActivity(context, cancelTokenSource, dataConverter);
                 runningActivities[tsk.TaskToken] = act;
 #pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
                 act.Task = worker.Options.ActivityTaskFactory.StartNew(
-                    () => ExecuteActivityAsync(act, tsk)).Unwrap();
+                    () => ExecuteActivityAsync(act, tsk, dataConverter)).Unwrap();
 #pragma warning restore CA2008
             }
         }
 
         private async Task ExecuteActivityAsync(
             RunningActivity act,
-            Bridge.Api.ActivityTask.ActivityTask tsk)
+            Bridge.Api.ActivityTask.ActivityTask tsk,
+            DataConverter dataConverter)
         {
             // Try to build a completion, but if it fails then manually build one with the failure
             Bridge.Api.ActivityTaskCompletion completion;
             try
             {
-                completion = await ExecuteActivityInternalAsync(act, tsk).ConfigureAwait(false);
+                completion = await ExecuteActivityInternalAsync(
+                    act, tsk, dataConverter).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -281,7 +293,8 @@ namespace Temporalio.Worker
 
         private async Task<Bridge.Api.ActivityTaskCompletion> ExecuteActivityInternalAsync(
             RunningActivity act,
-            Bridge.Api.ActivityTask.ActivityTask tsk)
+            Bridge.Api.ActivityTask.ActivityTask tsk,
+            DataConverter dataConverter)
         {
             act.Context.Logger.LogDebug(
                 "Running activity {ActivityType} (Token {TaskToken})",
@@ -322,7 +335,7 @@ namespace Temporalio.Worker
                         paramVals = new[]
                         {
                             await Task.WhenAll(tsk.Start.Input.Select(p =>
-                                worker.Client.Options.DataConverter.ToValueAsync<IRawValue>(p))).
+                                dataConverter.ToValueAsync<IRawValue>(p))).
                                 ConfigureAwait(false),
                         };
                     }
@@ -340,8 +353,7 @@ namespace Temporalio.Worker
                         // discard extra input arguments that the signature doesn't accept.
                         paramVals = await Task.WhenAll(
                             tsk.Start.Input.Zip(defn.ParameterTypes, (input, paramType) =>
-                                worker.Client.Options.DataConverter.ToValueAsync(
-                                    input, paramType))).ConfigureAwait(false);
+                                dataConverter.ToValueAsync(input, paramType))).ConfigureAwait(false);
                     }
                 }
                 catch (Exception e)
@@ -350,7 +362,7 @@ namespace Temporalio.Worker
                 }
 
                 // If there is a payload codec, use it to decode the headers
-                if (worker.Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                if (dataConverter.PayloadCodec is IPayloadCodec codec)
                 {
                     foreach (var kvp in tsk.Start.HeaderFields)
                     {
@@ -379,8 +391,7 @@ namespace Temporalio.Worker
                     result = null;
                 }
                 completion.Result.Completed.Result =
-                    await worker.Client.Options.DataConverter.ToPayloadAsync(
-                        result).ConfigureAwait(false);
+                    await dataConverter.ToPayloadAsync(result).ConfigureAwait(false);
             }
             catch (CompleteAsyncException)
             {
@@ -396,7 +407,7 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Cancelled = new()
                 {
-                    Failure = await worker.Client.Options.DataConverter.ToFailureAsync(
+                    Failure = await dataConverter.ToFailureAsync(
                         new CanceledFailureException("Cancelled")).ConfigureAwait(false),
                 };
             }
@@ -407,7 +418,7 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await worker.Client.Options.DataConverter.ToFailureAsync(
+                    Failure_ = await dataConverter.ToFailureAsync(
                         act.HeartbeatFailureException).ConfigureAwait(false),
                 };
             }
@@ -419,8 +430,7 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.Failed = new()
                 {
-                    Failure_ = await worker.Client.Options.DataConverter.ToFailureAsync(
-                        e).ConfigureAwait(false),
+                    Failure_ = await dataConverter.ToFailureAsync(e).ConfigureAwait(false),
                 };
             }
             finally
@@ -438,6 +448,7 @@ namespace Temporalio.Worker
         internal class RunningActivity
         {
             private readonly CancellationTokenSource cancelTokenSource;
+            private readonly DataConverter dataConverter;
 
             private readonly object mutex = new();
             // All of these fields are locked on "mutex". While volatile could be used for the first
@@ -455,11 +466,15 @@ namespace Temporalio.Worker
             /// </summary>
             /// <param name="context">Activity context.</param>
             /// <param name="cancelTokenSource">Cancel source.</param>
+            /// <param name="dataConverter">Data converter.</param>
             public RunningActivity(
-                ActivityExecutionContext context, CancellationTokenSource cancelTokenSource)
+                ActivityExecutionContext context,
+                CancellationTokenSource cancelTokenSource,
+                DataConverter dataConverter)
             {
                 Context = context;
                 this.cancelTokenSource = cancelTokenSource;
+                this.dataConverter = dataConverter;
             }
 
             /// <summary>
@@ -638,8 +653,7 @@ namespace Temporalio.Worker
                         if (details.Length > 0)
                         {
                             heartbeat.Details.AddRange(
-                                await worker.Client.Options.DataConverter.ToPayloadsAsync(
-                                    details).ConfigureAwait(false));
+                                await dataConverter.ToPayloadsAsync(details).ConfigureAwait(false));
                         }
                         worker.BridgeWorker.RecordActivityHeartbeat(heartbeat);
                     }

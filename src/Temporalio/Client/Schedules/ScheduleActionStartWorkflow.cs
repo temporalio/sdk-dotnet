@@ -82,11 +82,18 @@ namespace Temporalio.Client.Schedules
         /// Convert from proto.
         /// </summary>
         /// <param name="proto">Proto.</param>
+        /// <param name="clientNamespace">Client namespace.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Converted value.</returns>
         internal static async Task<ScheduleActionStartWorkflow> FromProtoAsync(
-            Api.Workflow.V1.NewWorkflowExecutionInfo proto, DataConverter dataConverter)
+            Api.Workflow.V1.NewWorkflowExecutionInfo proto, string clientNamespace, DataConverter dataConverter)
         {
+            // Workflow-specific data converter
+            dataConverter = dataConverter.WithSerializationContext(
+                new ISerializationContext.Workflow(
+                    Namespace: clientNamespace,
+                    WorkflowId: proto.WorkflowId));
+
             IReadOnlyCollection<object?> args = proto.Input == null ?
                 Array.Empty<object?>() :
                 proto.Input.Payloads_.Select(p => new EncodedRawValue(dataConverter, p)).ToList();
@@ -119,7 +126,7 @@ namespace Temporalio.Client.Schedules
 
         /// <inheritdoc />
         internal override async Task<Api.Schedule.V1.ScheduleAction> ToProtoAsync(
-            DataConverter dataConverter)
+            string clientNamespace, DataConverter dataConverter)
         {
             // Disallow some options
             if (Options.IdReusePolicy != Api.Enums.V1.WorkflowIdReusePolicy.AllowDuplicate)
@@ -142,6 +149,11 @@ namespace Temporalio.Client.Schedules
             {
                 throw new ArgumentException("RPC options cannot be set on scheduled workflow");
             }
+            // Workflow-specific data converter
+            dataConverter = dataConverter.WithSerializationContext(
+                new ISerializationContext.Workflow(
+                    Namespace: clientNamespace,
+                    WorkflowId: Options.Id ?? throw new ArgumentException("ID required on workflow action")));
 
             // Build input. We have to go one payload at a time here because half could be encoded
             // and half not (e.g. they just changed the second parameter).
@@ -156,8 +168,7 @@ namespace Temporalio.Client.Schedules
 
             var workflow = new Api.Workflow.V1.NewWorkflowExecutionInfo()
             {
-                WorkflowId = Options.Id ??
-                    throw new ArgumentException("ID required on workflow action"),
+                WorkflowId = Options.Id,
                 WorkflowType = new() { Name = Workflow },
                 TaskQueue = new()
                 {

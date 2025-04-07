@@ -10,6 +10,11 @@ namespace Temporalio.Converters
     /// <remarks>
     /// This is often useful for encryption and/or compression.
     /// </remarks>
+    /// <remarks>
+    /// Implementations of this interface can also implement
+    /// <see cref="IWithSerializationContext{TResult}"/> for <c>IPayloadCodec</c> to customize the
+    /// converter based on context.
+    /// </remarks>
     public interface IPayloadCodec
     {
         /// <summary>

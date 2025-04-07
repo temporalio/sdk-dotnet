@@ -25,6 +25,7 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task HeartbeatAsyncActivityAsync(HeartbeatAsyncActivityInput input)
             {
+                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {
@@ -32,8 +33,7 @@ namespace Temporalio.Client
                     {
                         Payloads_ =
                         {
-                            await Client.Options.DataConverter.ToPayloadsAsync(
-                                input.Options.Details).ConfigureAwait(false),
+                            await converter.ToPayloadsAsync(input.Options.Details).ConfigureAwait(false),
                         },
                     };
                 }
@@ -80,8 +80,8 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task CompleteAsyncActivityAsync(CompleteAsyncActivityInput input)
             {
-                var result = await Client.Options.DataConverter.ToPayloadAsync(
-                    input.Result).ConfigureAwait(false);
+                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
+                var result = await converter.ToPayloadAsync(input.Result).ConfigureAwait(false);
                 if (input.Activity is AsyncActivityHandle.IdReference idRef)
                 {
                     await Client.Connection.WorkflowService.RespondActivityTaskCompletedByIdAsync(
@@ -117,8 +117,8 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task FailAsyncActivityAsync(FailAsyncActivityInput input)
             {
-                var failure = await Client.Options.DataConverter.ToFailureAsync(
-                    input.Exception).ConfigureAwait(false);
+                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
+                var failure = await converter.ToFailureAsync(input.Exception).ConfigureAwait(false);
                 Payloads? lastHeartbeatDetails = null;
                 if (input.Options?.LastHeartbeatDetails != null &&
                     input.Options.LastHeartbeatDetails.Count > 0)
@@ -127,7 +127,7 @@ namespace Temporalio.Client
                     {
                         Payloads_ =
                         {
-                            await Client.Options.DataConverter.ToPayloadsAsync(
+                            await converter.ToPayloadsAsync(
                                 input.Options.LastHeartbeatDetails).ConfigureAwait(false),
                         },
                     };
@@ -170,6 +170,7 @@ namespace Temporalio.Client
             public override async Task ReportCancellationAsyncActivityAsync(
                 ReportCancellationAsyncActivityInput input)
             {
+                var converter = input.DataConverterOverride ?? Client.Options.DataConverter;
                 Payloads? details = null;
                 if (input.Options?.Details != null && input.Options.Details.Count > 0)
                 {
@@ -177,8 +178,7 @@ namespace Temporalio.Client
                     {
                         Payloads_ =
                         {
-                            await Client.Options.DataConverter.ToPayloadsAsync(
-                                input.Options.Details).ConfigureAwait(false),
+                            await converter.ToPayloadsAsync(input.Options.Details).ConfigureAwait(false),
                         },
                     };
                 }

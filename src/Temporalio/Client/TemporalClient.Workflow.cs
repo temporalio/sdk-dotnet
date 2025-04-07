@@ -168,6 +168,11 @@ namespace Temporalio.Client
                 {
                     throw new ArgumentException("Start operation already used");
                 }
+                // Workflow-specific data converter
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Workflow(
+                        Namespace: Client.Options.Namespace,
+                        WorkflowId: input.Options.StartWorkflowOperation.Options.Id ?? throw new ArgumentException("ID required to start workflow")));
 
                 // We choose to put everything in one large try statement because we want to make
                 // sure that any failures are also propagated to the waiter of the handle too, not
@@ -198,12 +203,14 @@ namespace Temporalio.Client
                         input.Options.StartWorkflowOperation.Workflow,
                         input.Options.StartWorkflowOperation.Args,
                         input.Options.StartWorkflowOperation.Options,
+                        dataConverter,
                         input.Options.StartWorkflowOperation.Headers).ConfigureAwait(false);
                     var updateReq = await CreateUpdateWorkflowRequestAsync(
                         input.Update,
                         input.Args,
                         input.Options,
                         input.Options.WaitForStage,
+                        dataConverter,
                         input.Headers).ConfigureAwait(false);
                     updateReq.WorkflowExecution = new() { WorkflowId = startReq.WorkflowId };
                     var req = new ExecuteMultiOperationRequest() { Namespace = Client.Options.Namespace };
@@ -318,6 +325,11 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task SignalWorkflowAsync(SignalWorkflowInput input)
             {
+                // Workflow-specific data converter
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Workflow(
+                        Namespace: Client.Options.Namespace,
+                        WorkflowId: input.Id));
                 var req = new SignalWorkflowExecutionRequest()
                 {
                     Namespace = Client.Options.Namespace,
@@ -333,15 +345,15 @@ namespace Temporalio.Client
                 if (input.Args.Count > 0)
                 {
                     req.Input = new Payloads();
-                    req.Input.Payloads_.AddRange(await Client.Options.DataConverter.ToPayloadsAsync(
-                        input.Args).ConfigureAwait(false));
+                    req.Input.Payloads_.AddRange(
+                        await dataConverter.ToPayloadsAsync(input.Args).ConfigureAwait(false));
                 }
                 if (input.Headers != null)
                 {
                     req.Header = new();
                     req.Header.Fields.Add(input.Headers);
                     // If there is a payload codec, use it to encode the headers
-                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    if (dataConverter.PayloadCodec is IPayloadCodec codec)
                     {
                         foreach (var kvp in req.Header.Fields)
                         {
@@ -357,6 +369,11 @@ namespace Temporalio.Client
             /// <inheritdoc />
             public override async Task<TResult> QueryWorkflowAsync<TResult>(QueryWorkflowInput input)
             {
+                // Workflow-specific data converter
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Workflow(
+                        Namespace: Client.Options.Namespace,
+                        WorkflowId: input.Id));
                 var req = new QueryWorkflowRequest()
                 {
                     Namespace = Client.Options.Namespace,
@@ -371,8 +388,7 @@ namespace Temporalio.Client
                 {
                     req.Query.QueryArgs = new Payloads();
                     req.Query.QueryArgs.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(
-                            input.Args).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(input.Args).ConfigureAwait(false));
                 }
                 if (input.Options?.RejectCondition != null)
                 {
@@ -387,7 +403,7 @@ namespace Temporalio.Client
                     req.Query.Header = new();
                     req.Query.Header.Fields.Add(input.Headers);
                     // If there is a payload codec, use it to encode the headers
-                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    if (dataConverter.PayloadCodec is IPayloadCodec codec)
                     {
                         foreach (var kvp in req.Query.Header.Fields)
                         {
@@ -422,7 +438,7 @@ namespace Temporalio.Client
                 {
                     throw new InvalidOperationException("No result present");
                 }
-                return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
+                return await dataConverter.ToSingleValueAsync<TResult>(
                     resp.QueryResult.Payloads_).ConfigureAwait(false);
             }
 
@@ -439,9 +455,14 @@ namespace Temporalio.Client
                     throw new ArgumentException(
                         "Admitted is not an allowed wait stage to start workflow update");
                 }
+                // Workflow-specific data converter
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Workflow(
+                        Namespace: Client.Options.Namespace,
+                        WorkflowId: input.Id));
                 // Build request
                 var req = await CreateUpdateWorkflowRequestAsync(
-                    input.Update, input.Args, input.Options, input.Options.WaitForStage, input.Headers).ConfigureAwait(false);
+                    input.Update, input.Args, input.Options, input.Options.WaitForStage, dataConverter, input.Headers).ConfigureAwait(false);
                 req.WorkflowExecution = new()
                 {
                     WorkflowId = input.Id,
@@ -485,6 +506,11 @@ namespace Temporalio.Client
             public override async Task<WorkflowExecutionDescription> DescribeWorkflowAsync(
                 DescribeWorkflowInput input)
             {
+                // Workflow-specific data converter
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Workflow(
+                        Namespace: Client.Options.Namespace,
+                        WorkflowId: input.Id));
                 var resp = await Client.Connection.WorkflowService.DescribeWorkflowExecutionAsync(
                     new()
                     {
@@ -497,7 +523,7 @@ namespace Temporalio.Client
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 return await WorkflowExecutionDescription.FromProtoAsync(
-                    resp, Client.Options.DataConverter).ConfigureAwait(false);
+                    resp, dataConverter).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -536,10 +562,14 @@ namespace Temporalio.Client
                 };
                 if (input.Options?.Details != null && input.Options?.Details.Count > 0)
                 {
+                    // Workflow-specific data converter
+                    var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                        new ISerializationContext.Workflow(
+                            Namespace: Client.Options.Namespace,
+                            WorkflowId: input.Id));
                     req.Details = new Payloads();
                     req.Details.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(
-                            input.Options.Details).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(input.Options.Details).ConfigureAwait(false));
                 }
                 await Client.Connection.WorkflowService.TerminateWorkflowExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
@@ -643,7 +673,7 @@ namespace Temporalio.Client
                             {
                                 yield break;
                             }
-                            yield return new(exec, Client.Options.DataConverter);
+                            yield return new(exec, Client.Options.DataConverter, Client.Options.Namespace);
                         }
                         req.NextPageToken = resp.NextPageToken;
                     }
@@ -659,10 +689,15 @@ namespace Temporalio.Client
             private async Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowInternalAsync<TWorkflow, TResult>(
                 StartWorkflowInput input)
             {
+                // Workflow-specific data converter
+                var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                    new ISerializationContext.Workflow(
+                        Namespace: Client.Options.Namespace,
+                        WorkflowId: input.Options.Id ?? throw new ArgumentException("ID required to start workflow")));
                 // We will build the non-signal-with-start request and convert to signal with start
                 // later if needed
                 var req = await CreateStartWorkflowRequestAsync(
-                    input.Workflow, input.Args, input.Options, input.Headers).ConfigureAwait(false);
+                    input.Workflow, input.Args, input.Options, dataConverter, input.Headers).ConfigureAwait(false);
 
                 // If not signal with start, just run and return
                 if (input.Options.StartSignal == null)
@@ -708,8 +743,7 @@ namespace Temporalio.Client
                 {
                     signalReq.SignalInput = new Payloads();
                     signalReq.SignalInput.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(
-                            input.Options.StartSignalArgs).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(input.Options.StartSignalArgs).ConfigureAwait(false));
                 }
                 var signalResp = await Client.Connection.WorkflowService.SignalWithStartWorkflowExecutionAsync(
                     signalReq, DefaultRetryOptions(input.Options.Rpc)).ConfigureAwait(false);
@@ -724,6 +758,7 @@ namespace Temporalio.Client
                 string workflow,
                 IReadOnlyCollection<object?> args,
                 WorkflowOptions options,
+                DataConverter dataConverter,
                 IDictionary<string, Payload>? headers)
             {
                 var req = new StartWorkflowExecutionRequest()
@@ -743,14 +778,14 @@ namespace Temporalio.Client
                     WorkflowIdConflictPolicy = options.IdConflictPolicy,
                     RetryPolicy = options.RetryPolicy?.ToProto(),
                     RequestEagerExecution = options.RequestEagerStart,
-                    UserMetadata = await Client.Options.DataConverter.ToUserMetadataAsync(
+                    UserMetadata = await dataConverter.ToUserMetadataAsync(
                         options.StaticSummary, options.StaticDetails).
                         ConfigureAwait(false),
                 };
                 if (args.Count > 0)
                 {
                     req.Input = new Payloads();
-                    req.Input.Payloads_.AddRange(await Client.Options.DataConverter.ToPayloadsAsync(
+                    req.Input.Payloads_.AddRange(await dataConverter.ToPayloadsAsync(
                         args).ConfigureAwait(false));
                 }
                 if (options.ExecutionTimeout != null)
@@ -783,7 +818,7 @@ namespace Temporalio.Client
                         }
                         req.Memo.Fields.Add(
                             field.Key,
-                            await Client.Options.DataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
+                            await dataConverter.ToPayloadAsync(field.Value).ConfigureAwait(false));
                     }
                 }
                 if (options.TypedSearchAttributes != null && options.TypedSearchAttributes.Count > 0)
@@ -799,7 +834,7 @@ namespace Temporalio.Client
                     req.Header = new();
                     req.Header.Fields.Add(headers);
                     // If there is a payload codec, use it to encode the headers
-                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    if (dataConverter.PayloadCodec is IPayloadCodec codec)
                     {
                         foreach (var kvp in req.Header.Fields)
                         {
@@ -816,6 +851,7 @@ namespace Temporalio.Client
                 IReadOnlyCollection<object?> args,
                 WorkflowUpdateOptions options,
                 WorkflowUpdateStage waitForStage,
+                DataConverter dataConverter,
                 IDictionary<string, Payload>? headers)
             {
                 if (waitForStage == WorkflowUpdateStage.None)
@@ -849,14 +885,14 @@ namespace Temporalio.Client
                 {
                     req.Request.Input.Args = new Payloads();
                     req.Request.Input.Args.Payloads_.AddRange(
-                        await Client.Options.DataConverter.ToPayloadsAsync(args).ConfigureAwait(false));
+                        await dataConverter.ToPayloadsAsync(args).ConfigureAwait(false));
                 }
                 if (headers != null)
                 {
                     req.Request.Input.Header = new();
                     req.Request.Input.Header.Fields.Add(headers);
                     // If there is a payload codec, use it to encode the headers
-                    if (Client.Options.DataConverter.PayloadCodec is IPayloadCodec codec)
+                    if (dataConverter.PayloadCodec is IPayloadCodec codec)
                     {
                         foreach (var kvp in req.Request.Input.Header.Fields)
                         {

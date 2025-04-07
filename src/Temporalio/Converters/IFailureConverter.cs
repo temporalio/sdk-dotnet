@@ -12,6 +12,11 @@ namespace Temporalio.Converters
     /// this converter should be immediate and avoid any network calls or any asynchronous/slow code
     /// paths.
     /// </remarks>
+    /// <remarks>
+    /// Implementations of this interface can also implement
+    /// <see cref="IWithSerializationContext{TResult}"/> for <c>IFailureConverter</c> to customize
+    /// the converter based on context.
+    /// </remarks>
     /// <seealso cref="DefaultFailureConverter" />
     public interface IFailureConverter
     {
