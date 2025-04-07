@@ -1353,6 +1353,14 @@ namespace Temporalio.Workflows
             /// before this call, so while nested disablement may work as expected, concurrent
             /// disablement may not.
             /// </remarks>
+            /// <remarks>
+            /// Due to .NET unpredictability for which task scheduler is chosen and the workflow
+            /// using a different task scheduler and no synchronization context, users should NOT
+            /// make this lambda async and should NOT have the lambda return a task that the caller
+            /// awaits. Rather, <c>.GetAwaiter().GetResult()</c> or similar should be used inside
+            /// the lambda or whatever blocking form is needed, keeping in mind deadlock detection
+            /// constraints.
+            /// </remarks>
             /// <typeparam name="T">Return type parameter.</typeparam>
             /// <param name="fn">Function to run.</param>
             /// <returns>Result of the function.</returns>
@@ -1374,6 +1382,14 @@ namespace Temporalio.Workflows
             /// function, an exception is thrown. On complete, the disablement is set to what it was
             /// before this call, so while nested disablement may work as expected, concurrent
             /// disablement may not.
+            /// </remarks>
+            /// <remarks>
+            /// Due to .NET unpredictability for which task scheduler is chosen and the workflow
+            /// using a different task scheduler and no synchronization context, users should NOT
+            /// make this lambda async and should NOT have the lambda return a task that the caller
+            /// awaits. Rather, <c>.GetAwaiter().GetResult()</c> or similar should be used inside
+            /// the lambda or whatever blocking form is needed, keeping in mind deadlock detection
+            /// constraints.
             /// </remarks>
             /// <param name="fn">Function to run.</param>
             /// <seealso cref="Worker.TemporalWorkerOptions.DisableWorkflowTracingEventListener"/>

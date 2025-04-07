@@ -261,9 +261,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     runTaskStart.Start();
                     return await Workflow.RunTaskAsync(() => runTaskStart);
                 case Scenario.TaskRunListenerDisabled:
-                    return await Workflow.Unsafe.WithTracingEventListenerDisabled(async () =>
+                    return Workflow.Unsafe.WithTracingEventListenerDisabled(() =>
                     {
-                        return await Task.Run(async () => "done");
+                        var task = Task.Run(async () => "done");
+                        return task.GetAwaiter().GetResult();
                     });
             }
             throw new InvalidOperationException("Unexpected completion");

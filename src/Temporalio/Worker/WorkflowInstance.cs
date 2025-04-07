@@ -538,7 +538,7 @@ namespace Temporalio.Worker
                 if (origCmdCount != newCmdCount)
                 {
                     throw new InvalidOperationException(
-                        $"Function during tracing event listener disabling created workflow commands");
+                        "Function during tracing event listener disabling created workflow commands");
                 }
                 return result;
             }
