@@ -9,7 +9,15 @@ namespace Temporalio.Client
     /// </summary>
     public class WorkflowExecutionDescription : WorkflowExecution
     {
-        private WorkflowExecutionDescription(
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WorkflowExecutionDescription"/> class.
+        /// </summary>
+        /// <param name="rawDescription">Raw protobuf description.</param>
+        /// <param name="staticSummary">Static summary.</param>
+        /// <param name="staticDetails">Static details.</param>
+        /// <param name="dataConverter">Data converter.</param>
+        /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
+        protected internal WorkflowExecutionDescription(
             DescribeWorkflowExecutionResponse rawDescription,
             string? staticSummary,
             string? staticDetails,
