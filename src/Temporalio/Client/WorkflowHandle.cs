@@ -109,15 +109,11 @@ namespace Temporalio.Client
                                 histRunId = compAttr.NewExecutionRunId;
                                 break;
                             }
-                            // Ignore return if they didn't want it
-                            if (typeof(TResult) == typeof(ValueTuple))
+                            // Use default if they are ignoring result or payload not present
+                            if (typeof(TResult) == typeof(ValueTuple) ||
+                                compAttr.Result == null || compAttr.Result.Payloads_.Count == 0)
                             {
                                 return default!;
-                            }
-                            // Otherwise we expect a single payload
-                            if (compAttr.Result == null)
-                            {
-                                throw new InvalidOperationException("No result present");
                             }
                             return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
                                 compAttr.Result.Payloads_).ConfigureAwait(false);

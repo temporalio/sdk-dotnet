@@ -52,8 +52,9 @@ namespace Temporalio.Client
             }
             else if (KnownOutcome.Success is { } success)
             {
-                // Ignore return if they didn't want it
-                if (typeof(TResult) == typeof(ValueTuple))
+                // Use default if they are ignoring result or payload not present
+                if (typeof(TResult) == typeof(ValueTuple) ||
+                    success == null || success.Payloads_.Count == 0)
                 {
                     return default!;
                 }

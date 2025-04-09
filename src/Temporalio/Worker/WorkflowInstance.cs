@@ -2188,11 +2188,6 @@ namespace Temporalio.Worker
                         switch (completeRes.StatusCase)
                         {
                             case ChildWorkflowResult.StatusOneofCase.Completed:
-                                // We expect a single payload
-                                if (completeRes.Completed.Result == null)
-                                {
-                                    throw new InvalidOperationException("No child result present");
-                                }
                                 handle.CompletionSource.SetResult(completeRes.Completed.Result);
                                 break;
                             case ChildWorkflowResult.StatusOneofCase.Failed:
@@ -2306,8 +2301,8 @@ namespace Temporalio.Worker
                         switch (res.StatusCase)
                         {
                             case ActivityResolution.StatusOneofCase.Completed:
-                                // Ignore result if they didn't want it
-                                if (typeof(TResult) == typeof(ValueTuple))
+                                // Use default if they are ignoring result or payload not present
+                                if (typeof(TResult) == typeof(ValueTuple) || res.Completed.Result == null)
                                 {
                                     return default!;
                                 }
@@ -2377,14 +2372,14 @@ namespace Temporalio.Worker
             /// <summary>
             /// Gets the source for the resulting payload of the child.
             /// </summary>
-            internal TaskCompletionSource<Payload> CompletionSource { get; } = new();
+            internal TaskCompletionSource<Payload?> CompletionSource { get; } = new();
 
             /// <inheritdoc />
             public override async Task<TLocalResult> GetResultAsync<TLocalResult>()
             {
                 var payload = await CompletionSource.Task.ConfigureAwait(true);
-                // Ignore if they are ignoring result
-                if (typeof(TLocalResult) == typeof(ValueTuple))
+                // Use default if they are ignoring result or payload not present
+                if (typeof(TLocalResult) == typeof(ValueTuple) || payload == null)
                 {
                     return default!;
                 }
