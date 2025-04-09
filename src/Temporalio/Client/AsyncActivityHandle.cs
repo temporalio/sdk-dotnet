@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Temporalio.Converters;
 
 namespace Temporalio.Client
 {
@@ -10,7 +11,13 @@ namespace Temporalio.Client
     /// <param name="Activity">Reference to the activity for this handle.</param>
     public record AsyncActivityHandle(
         ITemporalClient Client, AsyncActivityHandle.Reference Activity)
+        : IWithSerializationContext<AsyncActivityHandle>
     {
+        /// <summary>
+        /// Gets or inits the data converter that will be used instead of the clients if set.
+        /// </summary>
+        public DataConverter? DataConverterOverride { get; init; }
+
         /// <summary>
         /// Issue a heartbeat for this activity.
         /// </summary>
@@ -22,7 +29,7 @@ namespace Temporalio.Client
         /// </exception>
         public Task HeartbeatAsync(AsyncActivityHeartbeatOptions? options = null) =>
             Client.OutboundInterceptor.HeartbeatAsyncActivityAsync(new(
-                Activity: Activity, Options: options));
+                Activity: Activity, Options: options, DataConverterOverride: DataConverterOverride));
 
         /// <summary>
         /// Complete this activity.
@@ -33,7 +40,7 @@ namespace Temporalio.Client
         public Task CompleteAsync(
             object? result = null, AsyncActivityCompleteOptions? options = null) =>
             Client.OutboundInterceptor.CompleteAsyncActivityAsync(new(
-                Activity: Activity, Result: result, Options: options));
+                Activity: Activity, Result: result, Options: options, DataConverterOverride: DataConverterOverride));
 
         /// <summary>
         /// Fail this activity.
@@ -43,7 +50,7 @@ namespace Temporalio.Client
         /// <returns>Completion task.</returns>
         public Task FailAsync(Exception exception, AsyncActivityFailOptions? options = null) =>
             Client.OutboundInterceptor.FailAsyncActivityAsync(new(
-                Activity: Activity, Exception: exception, Options: options));
+                Activity: Activity, Exception: exception, Options: options, DataConverterOverride: DataConverterOverride));
 
         /// <summary>
         /// Report this activity as cancelled.
@@ -53,7 +60,25 @@ namespace Temporalio.Client
         public Task ReportCancellationAsync(
             AsyncActivityReportCancellationOptions? options = null) =>
             Client.OutboundInterceptor.ReportCancellationAsyncActivityAsync(new(
-                Activity: Activity, Options: options));
+                Activity: Activity, Options: options, DataConverterOverride: DataConverterOverride));
+
+        /// <summary>
+        /// If the data converter supports customizing based on serialization context, recreate this
+        /// handle with a data converter override using the given context.
+        /// </summary>
+        /// <param name="context">Context to provide to data converter.</param>
+        /// <returns>New handle if context supported on data converter, same handle otherwise.</returns>
+        public AsyncActivityHandle WithSerializationContext(ISerializationContext context)
+        {
+            var converter = DataConverterOverride ?? Client.Options.DataConverter;
+            var newConverter = converter.WithSerializationContext(context);
+            // Don't do anything if same object
+            if (ReferenceEquals(converter, newConverter))
+            {
+                return this;
+            }
+            return this with { DataConverterOverride = newConverter };
+        }
 
         /// <summary>
         /// Reference to an existing activity.

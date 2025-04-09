@@ -14,7 +14,7 @@ namespace Temporalio.Client
             string? staticSummary,
             string? staticDetails,
             DataConverter dataConverter)
-            : base(rawDescription.WorkflowExecutionInfo, dataConverter)
+            : base(rawDescription.WorkflowExecutionInfo, dataConverter, null)
         {
             RawDescription = rawDescription;
             StaticSummary = staticSummary;

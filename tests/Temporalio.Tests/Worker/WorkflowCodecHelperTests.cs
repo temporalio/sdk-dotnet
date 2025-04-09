@@ -17,6 +17,13 @@ public class WorkflowCodecHelperTests : TestBase
     {
     }
 
+    internal static WorkflowCodecHelper.WorkflowCodecContext SimpleCodecContext { get; } = new(
+        Namespace: "my-namespace",
+        WorkflowId: "my-workflow-id",
+        WorkflowType: "my-workflow-type",
+        TaskQueue: "my-task-queue",
+        Instance: null);
+
     [Fact]
     public async Task CreateAndVisitPayload_Visiting_ReachesAllExpectedValues()
     {
@@ -51,7 +58,7 @@ public class WorkflowCodecHelperTests : TestBase
             Assert.DoesNotContain("encoded", payload().Metadata.Keys);
             foreach (var codec in codecs)
             {
-                await WorkflowCodecHelper.EncodeAsync(codec, comp);
+                await WorkflowCodecHelper.EncodeAsync(codec, SimpleCodecContext, comp);
                 if (!payload().Metadata.ContainsKey("encoded"))
                 {
                     Assert.Fail($"Payload at path {ctx.Path} not encoded with codec {codec}");
@@ -75,7 +82,7 @@ public class WorkflowCodecHelperTests : TestBase
             Assert.DoesNotContain("decoded", payload().Metadata.Keys);
             foreach (var codec in codecs)
             {
-                await WorkflowCodecHelper.DecodeAsync(codec, act);
+                await WorkflowCodecHelper.DecodeAsync(codec, SimpleCodecContext, act);
                 if (!payload().Metadata.ContainsKey("decoded"))
                 {
                     Assert.Fail($"Payload at path {ctx.Path} not decoded with codec {codec}");
@@ -99,7 +106,7 @@ public class WorkflowCodecHelperTests : TestBase
             if (propInfo?.PropertyType == typeof(Payload))
             {
                 propInfo.SetValue(msg, null);
-                await WorkflowCodecHelper.EncodeAsync(codec, comp);
+                await WorkflowCodecHelper.EncodeAsync(codec, SimpleCodecContext, comp);
             }
         });
     }

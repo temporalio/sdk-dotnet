@@ -21,7 +21,7 @@ namespace Temporalio.Converters
             SerializerOptions = serializerOptions;
 
         /// <inheritdoc />
-        public string Encoding => "json/plain";
+        public virtual string Encoding => "json/plain";
 
         /// <summary>
         /// Gets the serializer options used during conversion.
@@ -29,7 +29,7 @@ namespace Temporalio.Converters
         protected JsonSerializerOptions SerializerOptions { get; private init; }
 
         /// <inheritdoc />
-        public bool TryToPayload(object? value, out Payload? payload)
+        public virtual bool TryToPayload(object? value, out Payload? payload)
         {
             payload = new();
             payload.Metadata["encoding"] = EncodingByteString;
@@ -40,7 +40,7 @@ namespace Temporalio.Converters
         }
 
         /// <inheritdoc />
-        public object? ToValue(Payload payload, Type type) =>
+        public virtual object? ToValue(Payload payload, Type type) =>
             JsonSerializer.Deserialize(payload.Data.ToByteArray(), type, SerializerOptions);
     }
 }

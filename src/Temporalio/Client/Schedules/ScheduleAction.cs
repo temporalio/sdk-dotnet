@@ -14,15 +14,16 @@ namespace Temporalio.Client.Schedules
         /// Convert from proto.
         /// </summary>
         /// <param name="proto">Proto.</param>
+        /// <param name="clientNamespace">Client namespace.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Converted value.</returns>
         internal static async Task<ScheduleAction> FromProtoAsync(
-            Api.Schedule.V1.ScheduleAction proto, DataConverter dataConverter)
+            Api.Schedule.V1.ScheduleAction proto, string clientNamespace, DataConverter dataConverter)
         {
             if (proto.StartWorkflow != null)
             {
                 return await ScheduleActionStartWorkflow.FromProtoAsync(
-                    proto.StartWorkflow, dataConverter).ConfigureAwait(false);
+                    proto.StartWorkflow, clientNamespace, dataConverter).ConfigureAwait(false);
             }
             else
             {
@@ -33,8 +34,10 @@ namespace Temporalio.Client.Schedules
         /// <summary>
         /// Convert to proto.
         /// </summary>
+        /// <param name="clientNamespace">Client namespace.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Proto.</returns>
-        internal abstract Task<Api.Schedule.V1.ScheduleAction> ToProtoAsync(DataConverter dataConverter);
+        internal abstract Task<Api.Schedule.V1.ScheduleAction> ToProtoAsync(
+            string clientNamespace, DataConverter dataConverter);
     }
 }

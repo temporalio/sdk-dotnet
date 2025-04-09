@@ -45,7 +45,8 @@ namespace Temporalio.Client
                 {
                     Namespace = Client.Options.Namespace,
                     ScheduleId = input.Id,
-                    Schedule = await input.Schedule.ToProtoAsync(Client.Options.DataConverter).ConfigureAwait(false),
+                    Schedule = await input.Schedule.ToProtoAsync(
+                        Client.Options.Namespace, Client.Options.DataConverter).ConfigureAwait(false),
                     Identity = Client.Connection.Options.Identity,
                     RequestId = Guid.NewGuid().ToString(),
                 };
@@ -137,7 +138,7 @@ namespace Temporalio.Client
                     },
                     DefaultRetryOptions(input.RpcOptions)).ConfigureAwait(false);
                 return await ScheduleDescription.FromProtoAsync(
-                    input.Id, desc, Client.Options.DataConverter).ConfigureAwait(false);
+                    input.Id, desc, Client.Options.Namespace, Client.Options.DataConverter).ConfigureAwait(false);
             }
 
             /// <inheritdoc />
@@ -201,7 +202,8 @@ namespace Temporalio.Client
                     {
                         Namespace = Client.Options.Namespace,
                         ScheduleId = input.Id,
-                        Schedule = await update.Schedule.ToProtoAsync(Client.Options.DataConverter).ConfigureAwait(false),
+                        Schedule = await update.Schedule.ToProtoAsync(
+                            Client.Options.Namespace, Client.Options.DataConverter).ConfigureAwait(false),
                         Identity = Client.Connection.Options.Identity,
                         RequestId = Guid.NewGuid().ToString(),
                         SearchAttributes = update.TypedSearchAttributes?.ToProto(),

@@ -21,10 +21,11 @@ namespace Temporalio.Worker
         /// Encode the completion.
         /// </summary>
         /// <param name="codec">Codec to use.</param>
+        /// <param name="codecContext">Codec context.</param>
         /// <param name="comp">Completion to encode.</param>
         /// <returns>Task for completion.</returns>
         internal static async Task EncodeAsync(
-            IPayloadCodec codec, WorkflowActivationCompletion comp)
+            IPayloadCodec codec, WorkflowCodecContext codecContext, WorkflowActivationCompletion comp)
         {
             switch (comp.StatusCase)
             {
@@ -37,7 +38,7 @@ namespace Temporalio.Worker
                 case WorkflowActivationCompletion.StatusOneofCase.Successful:
                     foreach (var cmd in comp.Successful.Commands)
                     {
-                        await EncodeAsync(codec, cmd).ConfigureAwait(false);
+                        await EncodeAsync(codec, codecContext, cmd).ConfigureAwait(false);
                     }
                     break;
             }
@@ -47,9 +48,10 @@ namespace Temporalio.Worker
         /// Decode the activation.
         /// </summary>
         /// <param name="codec">Codec to use.</param>
+        /// <param name="codecContext">Codec context.</param>
         /// <param name="act">Activation to decode.</param>
         /// <returns>Task for completion.</returns>
-        internal static async Task DecodeAsync(IPayloadCodec codec, WorkflowActivation act)
+        internal static async Task DecodeAsync(IPayloadCodec codec, WorkflowCodecContext codecContext, WorkflowActivation act)
         {
             foreach (var job in act.Jobs)
             {
@@ -67,17 +69,38 @@ namespace Temporalio.Worker
                         await DecodeAsync(codec, job.QueryWorkflow.Headers).ConfigureAwait(false);
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveActivity:
-                        await DecodeAsync(codec, job.ResolveActivity.Result).ConfigureAwait(false);
+                        // Apply activity context
+                        var actCodec = codec;
+                        if (codec is IWithSerializationContext<IPayloadCodec> withAct &&
+                            codecContext.Instance?.GetPendingActivitySerializationContext(job.ResolveActivity.Seq) is { } actContext)
+                        {
+                            actCodec = withAct.WithSerializationContext(actContext);
+                        }
+                        await DecodeAsync(actCodec, job.ResolveActivity.Result).ConfigureAwait(false);
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveChildWorkflowExecution:
+                        // Apply child workflow context
+                        var childCodec = codec;
+                        if (codec is IWithSerializationContext<IPayloadCodec> withChild &&
+                            codecContext.Instance?.GetPendingChildSerializationContext(job.ResolveChildWorkflowExecution.Seq) is { } childContext)
+                        {
+                            childCodec = withChild.WithSerializationContext(childContext);
+                        }
                         await DecodeAsync(
-                            codec, job.ResolveChildWorkflowExecution.Result).ConfigureAwait(false);
+                            childCodec, job.ResolveChildWorkflowExecution.Result).ConfigureAwait(false);
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveChildWorkflowExecutionStart:
                         if (job.ResolveChildWorkflowExecutionStart.Cancelled != null
                             && job.ResolveChildWorkflowExecutionStart.Cancelled.Failure != null)
                         {
-                            await codec.DecodeFailureAsync(
+                            // Apply child workflow context
+                            var childCodec2 = codec;
+                            if (codec is IWithSerializationContext<IPayloadCodec> withChild2 &&
+                                codecContext.Instance?.GetPendingChildSerializationContext(job.ResolveChildWorkflowExecution.Seq) is { } childContext2)
+                            {
+                                childCodec2 = withChild2.WithSerializationContext(childContext2);
+                            }
+                            await childCodec2.DecodeFailureAsync(
                                 job.ResolveChildWorkflowExecutionStart.Cancelled.Failure).
                                 ConfigureAwait(false);
                         }
@@ -119,7 +142,14 @@ namespace Temporalio.Worker
                     case WorkflowActivationJob.VariantOneofCase.ResolveRequestCancelExternalWorkflow:
                         if (job.ResolveRequestCancelExternalWorkflow.Failure != null)
                         {
-                            await codec.DecodeFailureAsync(
+                            // Apply external workflow context
+                            var extCanCodec = codec;
+                            if (codec is IWithSerializationContext<IPayloadCodec> withExtCan &&
+                                codecContext.Instance?.GetPendingExternalCancelSerializationContext(job.ResolveRequestCancelExternalWorkflow.Seq) is { } extCanContext)
+                            {
+                                extCanCodec = withExtCan.WithSerializationContext(extCanContext);
+                            }
+                            await extCanCodec.DecodeFailureAsync(
                                 job.ResolveRequestCancelExternalWorkflow.Failure).
                                 ConfigureAwait(false);
                         }
@@ -127,7 +157,14 @@ namespace Temporalio.Worker
                     case WorkflowActivationJob.VariantOneofCase.ResolveSignalExternalWorkflow:
                         if (job.ResolveSignalExternalWorkflow.Failure != null)
                         {
-                            await codec.DecodeFailureAsync(
+                            // Apply external workflow context
+                            var extSigCodec = codec;
+                            if (codec is IWithSerializationContext<IPayloadCodec> withExtSig &&
+                                codecContext.Instance?.GetPendingExternalSignalSerializationContext(job.ResolveSignalExternalWorkflow.Seq) is { } extSigContext)
+                            {
+                                extSigCodec = withExtSig.WithSerializationContext(extSigContext);
+                            }
+                            await extSigCodec.DecodeFailureAsync(
                                 job.ResolveSignalExternalWorkflow.Failure).
                                 ConfigureAwait(false);
                         }
@@ -143,7 +180,10 @@ namespace Temporalio.Worker
             }
         }
 
-        private static async Task EncodeAsync(IPayloadCodec codec, WorkflowCommand cmd)
+        private static async Task EncodeAsync(
+            IPayloadCodec codec,
+            WorkflowCodecContext codecContext,
+            WorkflowCommand cmd)
         {
             if (cmd.UserMetadata != null)
             {
@@ -200,20 +240,58 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleActivity:
-                    await EncodeAsync(codec, cmd.ScheduleActivity.Arguments).ConfigureAwait(false);
-                    await EncodeAsync(codec, cmd.ScheduleActivity.Headers).ConfigureAwait(false);
+                    // Apply activity context
+                    var actCodec = codec;
+                    if (codec is IWithSerializationContext<IPayloadCodec> withAct)
+                    {
+                        actCodec = withAct.WithSerializationContext(
+                            new ISerializationContext.Activity(
+                                Namespace: codecContext.Namespace,
+                                WorkflowId: codecContext.WorkflowId,
+                                WorkflowType: codecContext.WorkflowType,
+                                ActivityType: cmd.ScheduleActivity.ActivityType,
+                                ActivityTaskQueue: cmd.ScheduleActivity.TaskQueue ?? codecContext.TaskQueue,
+                                IsLocal: false));
+                    }
+                    await EncodeAsync(actCodec, cmd.ScheduleActivity.Arguments).ConfigureAwait(false);
+                    await EncodeAsync(actCodec, cmd.ScheduleActivity.Headers).ConfigureAwait(false);
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleLocalActivity:
+                    // Apply activity context
+                    var localActCodec = codec;
+                    if (codec is IWithSerializationContext<IPayloadCodec> withLocalAct)
+                    {
+                        localActCodec = withLocalAct.WithSerializationContext(
+                            new ISerializationContext.Activity(
+                                Namespace: codecContext.Namespace,
+                                WorkflowId: codecContext.WorkflowId,
+                                WorkflowType: codecContext.WorkflowType,
+                                ActivityType: cmd.ScheduleLocalActivity.ActivityType,
+                                ActivityTaskQueue: codecContext.TaskQueue,
+                                IsLocal: true));
+                    }
                     await EncodeAsync(
-                        codec, cmd.ScheduleLocalActivity.Arguments).ConfigureAwait(false);
+                        localActCodec, cmd.ScheduleLocalActivity.Arguments).ConfigureAwait(false);
                     await EncodeAsync(
-                        codec, cmd.ScheduleLocalActivity.Headers).ConfigureAwait(false);
+                        localActCodec, cmd.ScheduleLocalActivity.Headers).ConfigureAwait(false);
                     break;
                 case WorkflowCommand.VariantOneofCase.SignalExternalWorkflowExecution:
+                    // Apply external workflow context
+                    var extSigCodec = codec;
+                    if (codec is IWithSerializationContext<IPayloadCodec> withExtSigContext)
+                    {
+                        var workflowId = cmd.SignalExternalWorkflowExecution.HasChildWorkflowId ?
+                            cmd.SignalExternalWorkflowExecution.ChildWorkflowId :
+                            cmd.SignalExternalWorkflowExecution.WorkflowExecution.WorkflowId;
+                        extSigCodec = withExtSigContext.WithSerializationContext(
+                            new ISerializationContext.Workflow(
+                                Namespace: codecContext.Namespace,
+                                WorkflowId: workflowId));
+                    }
                     await EncodeAsync(
-                        codec, cmd.SignalExternalWorkflowExecution.Args).ConfigureAwait(false);
+                        extSigCodec, cmd.SignalExternalWorkflowExecution.Args).ConfigureAwait(false);
                     await EncodeAsync(
-                        codec, cmd.SignalExternalWorkflowExecution.Headers).ConfigureAwait(false);
+                        extSigCodec, cmd.SignalExternalWorkflowExecution.Headers).ConfigureAwait(false);
                     break;
                 case WorkflowCommand.VariantOneofCase.ScheduleNexusOperation:
                     if (cmd.ScheduleNexusOperation.Input != null)
@@ -223,12 +301,21 @@ namespace Temporalio.Worker
                     }
                     break;
                 case WorkflowCommand.VariantOneofCase.StartChildWorkflowExecution:
+                    // Apply child workflow context
+                    var childCodec = codec;
+                    if (codec is IWithSerializationContext<IPayloadCodec> withChild)
+                    {
+                        childCodec = withChild.WithSerializationContext(
+                            new ISerializationContext.Workflow(
+                                Namespace: codecContext.Namespace,
+                                WorkflowId: cmd.StartChildWorkflowExecution.WorkflowId));
+                    }
                     await EncodeAsync(
-                        codec, cmd.StartChildWorkflowExecution.Input).ConfigureAwait(false);
+                        childCodec, cmd.StartChildWorkflowExecution.Input).ConfigureAwait(false);
                     await EncodeAsync(
-                        codec, cmd.StartChildWorkflowExecution.Memo).ConfigureAwait(false);
+                        childCodec, cmd.StartChildWorkflowExecution.Memo).ConfigureAwait(false);
                     await EncodeAsync(
-                        codec, cmd.StartChildWorkflowExecution.Headers).ConfigureAwait(false);
+                        childCodec, cmd.StartChildWorkflowExecution.Headers).ConfigureAwait(false);
                     break;
                 case WorkflowCommand.VariantOneofCase.StartTimer:
                     break;
@@ -393,5 +480,12 @@ namespace Temporalio.Worker
                 payload.MergeFrom(decodedPayload);
             }
         }
+
+        internal record WorkflowCodecContext(
+            string Namespace,
+            string WorkflowId,
+            string WorkflowType,
+            string TaskQueue,
+            IWorkflowCodecHelperInstance? Instance);
     }
 }

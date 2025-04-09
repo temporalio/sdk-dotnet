@@ -28,12 +28,13 @@ namespace Temporalio.Client.Schedules
         /// Convert from proto.
         /// </summary>
         /// <param name="proto">Proto.</param>
+        /// <param name="clientNamespace">Client namespace.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Converted value.</returns>
         internal static async Task<Schedule> FromProtoAsync(
-            Api.Schedule.V1.Schedule proto, DataConverter dataConverter) =>
+            Api.Schedule.V1.Schedule proto, string clientNamespace, DataConverter dataConverter) =>
             new(
-                Action: await ScheduleAction.FromProtoAsync(proto.Action, dataConverter).ConfigureAwait(false),
+                Action: await ScheduleAction.FromProtoAsync(proto.Action, clientNamespace, dataConverter).ConfigureAwait(false),
                 Spec: ScheduleSpec.FromProto(proto.Spec))
             {
                 Policy = SchedulePolicy.FromProto(proto.Policies),
@@ -43,14 +44,16 @@ namespace Temporalio.Client.Schedules
         /// <summary>
         /// Convert to proto.
         /// </summary>
+        /// <param name="clientNamespace">Client namespace.</param>
         /// <param name="dataConverter">Data converter.</param>
         /// <returns>Proto.</returns>
-        internal async Task<Api.Schedule.V1.Schedule> ToProtoAsync(DataConverter dataConverter) => new()
-        {
-            Spec = Spec.ToProto(),
-            Action = await Action.ToProtoAsync(dataConverter).ConfigureAwait(false),
-            Policies = Policy.ToProto(),
-            State = State.ToProto(),
-        };
+        internal async Task<Api.Schedule.V1.Schedule> ToProtoAsync(
+            string clientNamespace, DataConverter dataConverter) => new()
+            {
+                Spec = Spec.ToProto(),
+                Action = await Action.ToProtoAsync(clientNamespace, dataConverter).ConfigureAwait(false),
+                Policies = Policy.ToProto(),
+                State = State.ToProto(),
+            };
     }
 }

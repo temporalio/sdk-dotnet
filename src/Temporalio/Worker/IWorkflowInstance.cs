@@ -6,7 +6,7 @@ namespace Temporalio.Worker
     /// <summary>
     /// Representation of a workflow instance that can be sent activations.
     /// </summary>
-    internal interface IWorkflowInstance
+    internal interface IWorkflowInstance : IWorkflowCodecHelperInstance
     {
         /// <summary>
         /// Send activation and get completion.
