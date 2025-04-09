@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "temporal_sdk_bridge"
-crate-type = ["cdylib", "rlib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0"

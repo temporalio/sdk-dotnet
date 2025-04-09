@@ -85,6 +85,20 @@ namespace Temporalio.Testing
             WorkflowEnvironmentStartTimeSkippingOptions? options = null)
         {
             options ??= new();
+
+            // If they did not provide a binary to use, eagerly fail on musl since musl
+            // time-skipping is not supported at this time. We can only do this check in .NET 5+,
+            // otherwise we assume it is not musl for now since this is just a temporary situation.
+            // TODO(cretz): Remove when musl-support for time-skipping test server is present.
+#if NET5_0_OR_GREATER
+            if (options.TestServer.ExistingPath == null &&
+                System.Runtime.InteropServices.RuntimeInformation.Contains("-musl", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException(
+                    "Time-skipping test server not currently supported in musl-based environments");
+            }
+#endif
+
             var runtime = options.Runtime ?? TemporalRuntime.Default;
             var server = await Bridge.EphemeralServer.StartTestServerAsync(
                 runtime.Runtime,
