@@ -49,11 +49,11 @@ namespace Temporalio.Client.Schedules
         /// <returns>Proto.</returns>
         internal async Task<Api.Schedule.V1.Schedule> ToProtoAsync(
             string clientNamespace, DataConverter dataConverter) => new()
-        {
-            Spec = Spec.ToProto(),
-            Action = await Action.ToProtoAsync(clientNamespace, dataConverter).ConfigureAwait(false),
-            Policies = Policy.ToProto(),
-            State = State.ToProto(),
-        };
+            {
+                Spec = Spec.ToProto(),
+                Action = await Action.ToProtoAsync(clientNamespace, dataConverter).ConfigureAwait(false),
+                Policies = Policy.ToProto(),
+                State = State.ToProto(),
+            };
     }
 }
