@@ -19,6 +19,17 @@ namespace Temporalio.Common
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="MetricHistogram{T}" /> class.
+        /// </summary>
+        /// <param name="name">The name of the histogram.</param>
+        /// <param name="unit">The optional unit of measurement for the values recorded by the histogram.</param>
+        /// <param name="description">The optional description of the histogram.</param>
+        protected MetricHistogram(string name, string? unit = null, string? description = null)
+            : this(new(name, unit, description))
+        {
+        }
+
+        /// <summary>
         /// Record the given value on the histogram.
         /// </summary>
         /// <param name="value">Value to record. Currently this can only be a positive

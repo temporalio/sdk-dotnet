@@ -254,6 +254,7 @@ namespace Temporalio.Worker
         /// When false, the default, a <see cref="System.Diagnostics.Tracing.EventListener" /> is
         /// used to catch improper calls from inside the workflow.
         /// </remarks>
+        /// <seealso cref="Workflow.Unsafe.WithTracingEventListenerDisabled{T}(Func{T})"/>
         public bool DisableWorkflowTracingEventListener { get; set; }
 
         /// <summary>

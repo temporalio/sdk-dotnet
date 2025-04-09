@@ -19,6 +19,17 @@ namespace Temporalio.Common
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="MetricGauge{T}" /> class.
+        /// </summary>
+        /// <param name="name">The name of the gauge.</param>
+        /// <param name="unit">The optional unit of measurement for the values recorded by the gauge.</param>
+        /// <param name="description">The optional description of the gauge.</param>
+        protected MetricGauge(string name, string? unit = null, string? description = null)
+            : this(new(name, unit, description))
+        {
+        }
+
+        /// <summary>
         /// Set the given value on the gauge.
         /// </summary>
         /// <param name="value">Value to record. Currently this can only be a positive
