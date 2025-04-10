@@ -15,7 +15,7 @@ namespace Temporalio.Extensions.Hosting
         string TaskQueue { get; }
 
         /// <summary>
-        /// Gets the build ID for this worker service. If unset, versioning is disabled.
+        /// Gets the build ID for this worker service.
         /// </summary>
         string? BuildId { get; }
 
