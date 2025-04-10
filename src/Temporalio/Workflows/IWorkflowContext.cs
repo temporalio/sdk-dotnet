@@ -228,5 +228,14 @@ namespace Temporalio.Workflows
         /// <param name="options">Options.</param>
         /// <returns>Task for completion.</returns>
         Task<bool> WaitConditionWithOptionsAsync(WaitConditionOptions options);
+
+        /// <summary>
+        /// Backing call for
+        /// <see cref="Workflow.Unsafe.WithTracingEventListenerDisabled{T}(Func{T})"/>.
+        /// </summary>
+        /// <typeparam name="T">Return type.</typeparam>
+        /// <param name="fn">Function.</param>
+        /// <returns>Result.</returns>
+        T WithTracingEventListenerDisabled<T>(Func<T> fn);
     }
 }

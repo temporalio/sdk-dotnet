@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
+        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest]
         include:
           - os: ubuntu-latest
             out-file: libtemporal_sdk_bridge.so
@@ -25,6 +25,13 @@ jobs:
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_aarch64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
+          - os: alpine-latest
+            out-file: libtemporal_sdk_bridge.so
+            out-prefix: linux-musl-x64
+            # Need Alpine container since GH runner doesn't have one
+            container: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
+            runsOn: ubuntu-latest
           - os: macos-intel
             out-file: libtemporal_sdk_bridge.dylib
             out-prefix: osx-x64
@@ -68,8 +75,8 @@ jobs:
         if: ${{ !matrix.container }}
         run: cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release
 
-      - name: Build (Docker)
-        if: ${{ matrix.container }}
+      - name: Build (Docker non-Alpine)
+        if: ${{ matrix.container && matrix.os != 'alpine-latest' }}
         run: |
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             ${{ matrix.container }} \
@@ -82,11 +89,27 @@ jobs:
              && cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release \
             '
 
+      - name: Build (Docker Alpine)
+        if: ${{ matrix.container && matrix.os == 'alpine-latest' }}
+        run: |
+          docker run --rm -v "$(pwd):/workspace" -w /workspace \
+            ${{ matrix.container }} \
+            sh -c ' \
+                curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y \
+             && . $HOME/.cargo/env \
+             && apk add --no-cache build-base \
+             && curl -LO ${{ matrix.protobuf-url }} \
+             && unzip protoc-*.zip -d /usr/local/protobuf \
+             && export PATH="$PATH:/usr/local/protobuf/bin" \
+             && RUSTFLAGS="-C target-feature=-crt-static" cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release \
+            '
+
       - name: Upload bridge library
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.out-prefix }}-bridge
           path: src/Temporalio/Bridge/target/release/${{ matrix.out-file }}
+          if-no-files-found: error
 
   build-nuget-package:
     needs:
@@ -129,15 +152,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
+        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest]
         include:
           - os: ubuntu-arm
             runsOn: buildjet-4vcpu-ubuntu-2204-arm
+          - os: alpine-latest
+            container: mcr.microsoft.com/dotnet/sdk:6.0-alpine
+            runsOn: ubuntu-latest
           - os: macos-intel
             runsOn: macos-13
           - os: macos-arm
             runsOn: macos-14
     runs-on: ${{ matrix.runsOn || matrix.os }}
+    container: ${{ matrix.container }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -148,18 +175,30 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: nuget-package
-          path: nuget-package
+          path: ${{ github.workspace }}/nuget-package
 
-      - name: Setup .NET
+      - name: Setup .NET (non-Alpine)
         uses: actions/setup-dotnet@v4
+        if: ${{ matrix.os != 'alpine-latest' }}
         with:
           # Specific .NET version required because GitHub macos ARM image has
           # bad pre-installed .NET version
           dotnet-version: 6.x
 
-      - name: Run smoke test
+      - name: Setup .NET (Alpine)
+        if: ${{ matrix.os == 'alpine-latest' }}
+        run: apk add dotnet6-sdk
+
+      - name: Run smoke test (non-Windows)
+        if: ${{ matrix.os != 'windows-latest' }}
         run: |
-          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "${{ github.workspace }}/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
+          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
+          dotnet run --project tests/Temporalio.SmokeTest
+
+      - name: Run smoke test (Windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
 
       - name: Setup msbuild (Windows only)
@@ -169,6 +208,6 @@ jobs:
       - name: Run .NET framework smoke test (Windows only)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
-          dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio -s "${{ github.workspace }}/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
+          dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           msbuild tests/Temporalio.SmokeTestDotNetFramework -t:restore,build -p:Platform=x64
           tests/Temporalio.SmokeTestDotNetFramework/bin/x64/Debug/Temporalio.SmokeTestDotNetFramework.exe
