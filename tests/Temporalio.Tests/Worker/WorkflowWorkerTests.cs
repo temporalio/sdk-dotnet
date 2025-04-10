@@ -225,6 +225,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 case Scenario.TaskWhenAnyWithResultThreeParam:
                     return await await Task.WhenAny(
                         Task.FromResult("done"), Task.FromResult("done"), Task.FromResult("done"));
+                case Scenario.ListenerDisabledCreateCommand:
+                    return await Workflow.Unsafe.WithTracingEventListenerDisabled(async () =>
+                    {
+                        await Workflow.DelayAsync(100);
+                        return await Task.Run(async () => "done");
+                    });
 
                 // Good
                 case Scenario.TaskFactoryStartNew:
@@ -254,6 +260,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     var runTaskStart = new Task<string>(() => "done");
                     runTaskStart.Start();
                     return await Workflow.RunTaskAsync(() => runTaskStart);
+                case Scenario.TaskRunListenerDisabled:
+                    return Workflow.Unsafe.WithTracingEventListenerDisabled(() =>
+                    {
+                        var task = Task.Run(async () => "done");
+                        return task.GetAwaiter().GetResult();
+                    });
             }
             throw new InvalidOperationException("Unexpected completion");
         }
@@ -270,6 +282,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             DataflowReceiveAsync,
             // https://github.com/dotnet/runtime/issues/87481
             TaskWhenAnyWithResultThreeParam,
+            ListenerDisabledCreateCommand,
 
             // Good
             TaskFactoryStartNew,
@@ -281,6 +294,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             WorkflowWhenAll,
             WorkflowRunTask,
             WorkflowRunTaskAfterTaskStart,
+            TaskRunListenerDisabled,
         }
     }
 
@@ -318,6 +332,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioFailsTask(
             StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultThreeParam,
             "not scheduled on workflow scheduler");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.ListenerDisabledCreateCommand,
+            "Function during tracing event listener disabling created workflow commands");
     }
 
     [Fact]
@@ -343,6 +360,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAll);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTask);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTaskAfterTaskStart);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskRunListenerDisabled);
     }
 
     [Workflow]
