@@ -110,13 +110,30 @@ namespace Temporalio.Activities
         {
             var attr = method.GetCustomAttribute<ActivityAttribute>(false) ??
                 throw new ArgumentException($"{method} missing Activity attribute");
+            return CreateWithoutAttribute(
+                NameFromAttributed(method, attr), method, invoker);
+        }
+
+        /// <summary>
+        /// Create an activity definition with a name, a method, and a custom invoker. This does not
+        /// require/check the activity attribute. This is a helper for
+        /// <see cref="Create(string?, Type, IReadOnlyCollection{Type}, int, Func{object?[], object?}, MethodInfo?)"/>
+        /// that collects parameters and handles parameter defaults.
+        /// </summary>
+        /// <param name="name">Name to use for the activity or null for dynamic.</param>
+        /// <param name="method">Activity method.</param>
+        /// <param name="invoker">Invoker.</param>
+        /// <returns>Definition for the activity.</returns>
+        public static ActivityDefinition CreateWithoutAttribute(
+            string? name, MethodInfo method, Func<object?[], object?> invoker)
+        {
             if (method.ContainsGenericParameters)
             {
                 throw new ArgumentException($"{method} contains generic parameters");
             }
             var parms = method.GetParameters();
             return Create(
-                NameFromAttributed(method, attr),
+                name,
                 method.ReturnType,
                 parms.Select(p => p.ParameterType).ToArray(),
                 parms.Count(p => !p.HasDefaultValue),
