@@ -44,11 +44,16 @@ namespace Temporalio.Client
         {
             await PollUntilOutcomeAsync(rpcOptions).ConfigureAwait(false);
 
+            // Workflow-specific data converter
+            var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                new ISerializationContext.Workflow(
+                    Namespace: Client.Options.Namespace,
+                    WorkflowId: WorkflowId));
             // Convert outcome to result
             if (KnownOutcome!.Failure is { } failure)
             {
                 throw new WorkflowUpdateFailedException(
-                    await Client.Options.DataConverter.ToExceptionAsync(failure).ConfigureAwait(false));
+                    await dataConverter.ToExceptionAsync(failure).ConfigureAwait(false));
             }
             else if (KnownOutcome.Success is { } success)
             {
@@ -58,7 +63,7 @@ namespace Temporalio.Client
                 {
                     return default!;
                 }
-                return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
+                return await dataConverter.ToSingleValueAsync<TResult>(
                     success.Payloads_).ConfigureAwait(false);
             }
             throw new InvalidOperationException($"Unrecognized outcome case: {KnownOutcome.ValueCase}");

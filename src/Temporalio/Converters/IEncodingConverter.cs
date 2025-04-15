@@ -6,6 +6,11 @@ namespace Temporalio.Converters
     /// <summary>
     /// Representation of a payload converter for a specific encoding.
     /// </summary>
+    /// <remarks>
+    /// Implementations of this interface can also implement
+    /// <see cref="IWithSerializationContext{TResult}"/> for <c>IEncodingConverter</c> to customize
+    /// the converter based on context.
+    /// </remarks>
     public interface IEncodingConverter
     {
         /// <summary>

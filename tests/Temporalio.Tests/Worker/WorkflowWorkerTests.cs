@@ -4,8 +4,11 @@
 namespace Temporalio.Tests.Worker;
 
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks.Dataflow;
+using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
@@ -6624,6 +6627,424 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             "some-id", TestUtils.ReadAllFileText("Histories/multi-wait-condition.pre-dotnet-flag.json")));
         // Has wrong order
         Assert.Equal(new List<string> { "one", "two", "four", "three" }, MultiWaitConditionPreSdkFlagWorkflow.Stages);
+    }
+
+    public record ContextValue(string Name, List<ContextValue.ContextEvent> Events)
+    {
+        public record ContextEvent(bool Outbound, ContextInfo Info);
+
+        public override string ToString() => $"{{ Name = {Name}, Events = [{string.Join(", ", Events)}] }}";
+
+        public virtual bool Equals(ContextValue? other) =>
+            other != null &&
+            Name == other.Name &&
+            Events.SequenceEqual(other.Events);
+
+        public override int GetHashCode() =>
+            HashCode.Combine(Name, Events.Aggregate(0, HashCode.Combine));
+
+        public void AssertWorkflowEqual(
+            string expectedName,
+            string workflowId,
+            bool activity = false,
+            bool? activityInboundOverride = null) =>
+            Assert.Equal(
+                new ContextValue(
+                    Name: expectedName,
+                    Events: new List<ContextEvent>
+                    {
+                        new(true, new(Activity: activity, Workflow: !activity, WorkflowId: workflowId)),
+                        new(false, new(
+                            Activity: activityInboundOverride ?? activity,
+                            Workflow: !(activityInboundOverride ?? activity),
+                            WorkflowId: workflowId)),
+                    }),
+                this);
+    }
+
+    public record ContextInfo(
+        bool Activity = false,
+        bool Workflow = false,
+        string WorkflowId = "<unknown>")
+    {
+        public static ContextInfo Create(ISerializationContext context) =>
+            new(
+                Activity: context is ISerializationContext.Activity,
+                Workflow: context is ISerializationContext.Workflow,
+                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId);
+    }
+
+    public class ContextJsonPlainConverter : JsonPlainConverter, IWithSerializationContext<IEncodingConverter>
+    {
+        private readonly ContextInfo contextInfo;
+
+        public ContextJsonPlainConverter(ContextInfo contextInfo)
+            : base(new()) => this.contextInfo = contextInfo;
+
+        public IEncodingConverter WithSerializationContext(ISerializationContext context) =>
+            new ContextJsonPlainConverter(ContextInfo.Create(context));
+
+        public override bool TryToPayload(object? value, out Payload? payload)
+        {
+            if (value is ContextValue contextValue)
+            {
+                contextValue.Events.Add(new(true, contextInfo));
+            }
+            return base.TryToPayload(value, out payload);
+        }
+
+        public override object? ToValue(Payload payload, Type type)
+        {
+            var value = base.ToValue(payload, type);
+            if (value is ContextValue contextValue)
+            {
+                contextValue.Events.Add(new(false, contextInfo));
+            }
+            return value;
+        }
+    }
+
+    public class ContextFailureConverter : DefaultFailureConverter, IWithSerializationContext<IFailureConverter>
+    {
+        private readonly ContextInfo contextInfo;
+
+        public ContextFailureConverter(ContextInfo contextInfo) => this.contextInfo = contextInfo;
+
+        public override Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
+        {
+            var failure = base.ToFailure(exception, payloadConverter);
+            if (failure.ApplicationFailureInfo != null && !failure.Message.Contains("[activity:"))
+            {
+                var activity = contextInfo.Activity ? "true" : "false";
+                failure.Message += $" [activity: {activity}, workflow-id: {contextInfo.WorkflowId}]";
+            }
+            return failure;
+        }
+
+        public IFailureConverter WithSerializationContext(ISerializationContext context) =>
+            new ContextFailureConverter(ContextInfo.Create(context));
+    }
+
+    public class ContextPayloadCodec : IPayloadCodec, IWithSerializationContext<IPayloadCodec>
+    {
+        public const string EncodingName = "context-encoding";
+        private readonly ContextInfo contextInfo;
+
+        public ContextPayloadCodec(ContextInfo contextInfo) => this.contextInfo = contextInfo;
+
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
+                new Payload()
+                {
+                    Data = ByteString.CopyFrom(
+                        Convert.ToBase64String(p.ToByteArray()),
+                        Encoding.ASCII),
+                    Metadata =
+                    {
+                        new Dictionary<string, ByteString>
+                        {
+                            ["encoding"] = ByteString.CopyFromUtf8(EncodingName),
+                            ["activity"] = ByteString.CopyFromUtf8(contextInfo.Activity ? "true" : "false"),
+                            ["workflow-id"] = ByteString.CopyFromUtf8(contextInfo.WorkflowId),
+                        },
+                    },
+                }).ToList());
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
+            {
+                Assert.Equal(EncodingName, p.Metadata["encoding"].ToStringUtf8());
+                Assert.Equal(contextInfo.Activity, p.Metadata["activity"].ToStringUtf8() == "true");
+                Assert.Equal(contextInfo.WorkflowId, p.Metadata["workflow-id"].ToStringUtf8());
+                return Payload.Parser.ParseFrom(
+                    Convert.FromBase64String(p.Data.ToString(Encoding.ASCII)));
+            }).ToList());
+
+        public IPayloadCodec WithSerializationContext(ISerializationContext context) =>
+            new ContextPayloadCodec(ContextInfo.Create(context));
+    }
+
+    public record ContextHistoryExpectation(
+        string Name,
+        Func<HistoryEvent, Payload?> Predicate,
+        bool Activity = false)
+    {
+        public async Task AssertInHistoryAsync(WorkflowHistory history)
+        {
+            try
+            {
+                Payload? payload = null;
+                // Find by predicate and name match
+                foreach (var maybePayload in history.Events.Select(Predicate))
+                {
+                    if (maybePayload != null)
+                    {
+                        var decoded = Payload.Parser.ParseFrom(Convert.FromBase64String(maybePayload.Data.ToString(Encoding.ASCII)));
+                        var value = await DataConverter.Default.ToValueAsync<ContextValue>(decoded);
+                        if (Name == value.Name)
+                        {
+                            payload = maybePayload;
+                            break;
+                        }
+                    }
+                }
+                Assert.NotNull(payload);
+                Assert.Equal(ContextPayloadCodec.EncodingName, payload.Metadata["encoding"].ToStringUtf8());
+                Assert.Equal(Activity ? "true" : "false", payload.Metadata["activity"].ToStringUtf8());
+                Assert.Equal(history.Id, payload.Metadata["workflow-id"].ToStringUtf8());
+            }
+            catch (Exception e)
+            {
+                throw new InvalidOperationException($"Failed for {Name}", e);
+            }
+        }
+    }
+
+    [Workflow]
+    public class ConverterContextWorkflow
+    {
+        private bool complete;
+
+        [WorkflowRun]
+        public async Task<ContextValue> RunAsync(ContextValue value)
+        {
+            value.AssertWorkflowEqual("workflow-input", Workflow.Info.WorkflowId);
+            await Workflow.WaitConditionAsync(() => complete);
+            return new("workflow-result", new());
+        }
+
+        [WorkflowSignal]
+        public async Task CompleteAsync() => complete = true;
+
+        [WorkflowSignal]
+        public async Task SomeSignalAsync(ContextValue value)
+        {
+            value.AssertWorkflowEqual("signal-input", Workflow.Info.WorkflowId);
+        }
+
+        [WorkflowQuery]
+        public ContextValue SomeQuery(ContextValue value)
+        {
+            value.AssertWorkflowEqual("query-input", Workflow.Info.WorkflowId);
+            return new("query-result", new());
+        }
+
+        [WorkflowUpdate]
+        public async Task<ContextValue> SomeUpdateAsync(ContextValue value)
+        {
+            value.AssertWorkflowEqual("update-input", Workflow.Info.WorkflowId);
+            return new("update-result", new());
+        }
+
+        [WorkflowUpdate]
+        public async Task SignalExternalAsync(string workflowId)
+        {
+            var handle = Workflow.GetExternalWorkflowHandle<ConverterContextWorkflow>(workflowId);
+            await handle.SignalAsync(wf => wf.SomeSignalAsync(new("signal-input", new())));
+        }
+
+        [WorkflowUpdate]
+        public async Task DoChildAsync()
+        {
+            // Start child
+            var handle = await Workflow.StartChildWorkflowAsync(
+                (ConverterContextWorkflow wf) => wf.RunAsync(new("workflow-input", new())));
+            await handle.SignalAsync(wf => wf.SomeSignalAsync(new("signal-input", new())));
+            await handle.SignalAsync(wf => wf.CompleteAsync());
+            var res = await handle.GetResultAsync();
+            res.AssertWorkflowEqual("workflow-result", handle.Id);
+        }
+
+        [WorkflowUpdate]
+        public async Task DoActivityAsync()
+        {
+            // Regular activity
+            var res = await Workflow.ExecuteActivityAsync(
+                () => SomeActivity(new("activity-input", new())),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
+            res.AssertWorkflowEqual("activity-result", Workflow.Info.WorkflowId, activity: true);
+
+            // Local activity
+            res = await Workflow.ExecuteLocalActivityAsync(
+                () => SomeActivity(new("activity-input", new())),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
+            res.AssertWorkflowEqual("activity-result", Workflow.Info.WorkflowId, activity: true);
+        }
+
+        [Activity]
+        public static ContextValue SomeActivity(ContextValue value)
+        {
+            value.AssertWorkflowEqual(
+                "activity-input",
+                ActivityExecutionContext.Current.Info.WorkflowId,
+                activity: true);
+            return new("activity-result", new());
+        }
+
+        [WorkflowUpdate]
+        public async Task DoUpdateAndActivityFailureAsync()
+        {
+            try
+            {
+                await Workflow.ExecuteActivityAsync(
+                    () => SomeFailingActivity(),
+                    new() { StartToCloseTimeout = TimeSpan.FromSeconds(10) });
+                throw new InvalidOperationException("Expected failure");
+            }
+            catch (ActivityFailureException e) when (e.InnerException?.Message?.StartsWith("Intentional activity failure") == true)
+            {
+                throw new ApplicationFailureException(
+                    "Intentional update failure",
+                    e,
+                    details: new[] { new ContextValue("update-failure", new()) });
+            }
+        }
+
+        [Activity]
+        public static void SomeFailingActivity() =>
+            throw new ApplicationFailureException(
+                "Intentional activity failure",
+                nonRetryable: true,
+                details: new[] { new ContextValue("activity-failure", new()) });
+
+        [WorkflowUpdate]
+        public async Task DoAsyncActivityCompletionAsync()
+        {
+            var res = await Workflow.ExecuteActivityAsync(
+                () => SomeAsyncCompletingActivity(),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
+            res.AssertWorkflowEqual("activity-async-result", Workflow.Info.WorkflowId, activity: true);
+        }
+
+        [Activity]
+        public static ContextValue SomeAsyncCompletingActivity()
+        {
+            // Schedule completion in the background
+            var handle = ActivityExecutionContext.Current.TemporalClient.GetAsyncActivityHandle(
+                ActivityExecutionContext.Current.Info.TaskToken).WithSerializationContext(
+                    new ISerializationContext.Activity(ActivityExecutionContext.Current.Info));
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(300);
+                await handle.CompleteAsync(new ContextValue("activity-async-result", new()));
+            });
+            throw new CompleteAsyncException();
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ConverterContext_ProperlyAvailable()
+    {
+        // It is accepted that this does not test every pemutation of every way a payload converter,
+        // failure converter, and codec are used in clients, workflows, and activities.
+
+        // Context-aware data converter
+        var dataConverter = new DataConverter(
+            PayloadConverter: new DefaultPayloadConverter(
+                ((DefaultPayloadConverter)Client.Options.DataConverter.PayloadConverter).EncodingConverters.Select(e =>
+                    e is JsonPlainConverter ? new ContextJsonPlainConverter(new()) : e).ToArray()),
+            FailureConverter: new ContextFailureConverter(new()),
+            PayloadCodec: new ContextPayloadCodec(new()));
+
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = dataConverter;
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        await ExecuteWorkerAsync<ConverterContextWorkflow>(
+            async worker =>
+            {
+                var historyExpects = new List<ContextHistoryExpectation>();
+
+                // Start the workflow
+                var handle = await client.StartWorkflowAsync(
+                    (ConverterContextWorkflow wf) => wf.RunAsync(new("workflow-input", new())),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                historyExpects.Add(new(
+                    "workflow-input",
+                    e => e.WorkflowExecutionStartedEventAttributes?.Input?.Payloads_?.FirstOrDefault()));
+                historyExpects.Add(new(
+                    "workflow-result",
+                    e => e.WorkflowExecutionCompletedEventAttributes?.Result?.Payloads_?.FirstOrDefault()));
+
+                // Signal
+                await handle.SignalAsync(wf => wf.SomeSignalAsync(new("signal-input", new())));
+                historyExpects.Add(new(
+                    "signal-input",
+                    e => e.WorkflowExecutionSignaledEventAttributes?.Input?.Payloads_?.FirstOrDefault()));
+
+                // Query
+                var res = await handle.QueryAsync(wf => wf.SomeQuery(new("query-input", new())));
+                res.AssertWorkflowEqual("query-result", handle.Id);
+
+                // Update
+                res = await handle.ExecuteUpdateAsync(wf => wf.SomeUpdateAsync(new("update-input", new())));
+                res.AssertWorkflowEqual("update-result", handle.Id);
+                historyExpects.Add(new(
+                    "update-input",
+                    e => e.WorkflowExecutionUpdateAcceptedEventAttributes?.AcceptedRequest?.Input?.Args?.Payloads_?.FirstOrDefault()));
+                historyExpects.Add(new(
+                    "update-result",
+                    e => e.WorkflowExecutionUpdateCompletedEventAttributes?.Outcome?.Success?.Payloads_?.FirstOrDefault()));
+
+                // Start another for external and signal it
+                var externalHandle = await client.StartWorkflowAsync(
+                    (ConverterContextWorkflow wf) => wf.RunAsync(new("workflow-input", new())),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await handle.ExecuteUpdateAsync(wf => wf.SignalExternalAsync(externalHandle.Id));
+                await externalHandle.SignalAsync(wf => wf.CompleteAsync());
+                res = await externalHandle.GetResultAsync();
+                res.AssertWorkflowEqual("workflow-result", externalHandle.Id);
+
+                // Do some child work too
+                await handle.ExecuteUpdateAsync(wf => wf.DoChildAsync());
+
+                // And activity work
+                await handle.ExecuteUpdateAsync(wf => wf.DoActivityAsync());
+                historyExpects.Add(new(
+                    "activity-input",
+                    e => e.ActivityTaskScheduledEventAttributes?.Input?.Payloads_?.FirstOrDefault(),
+                    Activity: true));
+                historyExpects.Add(new(
+                    "activity-result",
+                    e => e.ActivityTaskCompletedEventAttributes?.Result?.Payloads_?.FirstOrDefault(),
+                    Activity: true));
+
+                // Update and activity failure
+                var err = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                    handle.ExecuteUpdateAsync(wf => wf.DoUpdateAndActivityFailureAsync()));
+                var err2 = Assert.IsType<ApplicationFailureException>(err.InnerException);
+                Assert.EndsWith($"[activity: false, workflow-id: {handle.Id}]", err2.Message);
+                err2.Details.ElementAt<ContextValue>(0).AssertWorkflowEqual(
+                    "update-failure", handle.Id);
+                var err3 = Assert.IsType<ActivityFailureException>(err2.InnerException);
+                var err4 = Assert.IsType<ApplicationFailureException>(err3.InnerException);
+                Assert.EndsWith($"[activity: true, workflow-id: {handle.Id}]", err4.Message);
+                // This is a strange case where we use the activity context to convert to payload,
+                // but the client context here to convert from payload.
+                err4.Details.ElementAt<ContextValue>(0).AssertWorkflowEqual(
+                    "activity-failure", handle.Id, activity: true, activityInboundOverride: false);
+
+                // Async activity completion
+                await handle.ExecuteUpdateAsync(wf => wf.DoAsyncActivityCompletionAsync());
+                historyExpects.Add(new(
+                    "activity-async-result",
+                    e => e.ActivityTaskCompletedEventAttributes?.Result?.Payloads_?.FirstOrDefault(),
+                    Activity: true));
+
+                // Complete, check result
+                await handle.SignalAsync(wf => wf.CompleteAsync());
+                res = await handle.GetResultAsync();
+                res.AssertWorkflowEqual("workflow-result", handle.Id);
+
+                // Check that the codec did the right things
+                var history = await handle.FetchHistoryAsync();
+                foreach (var historyExpect in historyExpects)
+                {
+                    await historyExpect.AssertInHistoryAsync(history);
+                }
+            },
+            new TemporalWorkerOptions().AddAllActivities<ConverterContextWorkflow>(null),
+            client);
     }
 
     [Workflow]

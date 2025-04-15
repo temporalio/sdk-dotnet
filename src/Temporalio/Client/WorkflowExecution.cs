@@ -22,17 +22,34 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="rawInfo">Raw proto info.</param>
         /// <param name="dataConverter">Data converter used for memos.</param>
-        /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
-        protected internal WorkflowExecution(WorkflowExecutionInfo rawInfo, DataConverter dataConverter)
+        /// <param name="clientNamespaceForDataConverterWithContext">Namespace to make the data
+        /// converter specific to the workflow context. If null, assumes the data converter is
+        /// already context specific.</param>
+        protected internal WorkflowExecution(
+            WorkflowExecutionInfo rawInfo,
+            DataConverter dataConverter,
+            string? clientNamespaceForDataConverterWithContext)
         {
             RawInfo = rawInfo;
             // Search attribute conversion is cheap so it doesn't need to lock on publication. But
             // memo conversion may use remote codec so it should only ever be created once lazily.
-            memo = new(
-                () => rawInfo.Memo == null ? new Dictionary<string, IEncodedRawValue>(0) :
-                    rawInfo.Memo.Fields.ToDictionary(
+            memo = new(() =>
+            {
+                if (rawInfo.Memo == null)
+                {
+                    return new Dictionary<string, IEncodedRawValue>(0);
+                }
+                var specificDataConverter = dataConverter;
+                if (clientNamespaceForDataConverterWithContext is { } ns)
+                {
+                    specificDataConverter = dataConverter.WithSerializationContext(
+                        new ISerializationContext.Workflow(
+                            Namespace: ns, WorkflowId: rawInfo.Execution.WorkflowId));
+                }
+                return rawInfo.Memo.Fields.ToDictionary(
                         kvp => kvp.Key,
-                        kvp => (IEncodedRawValue)new EncodedRawValue(dataConverter, kvp.Value)));
+                        kvp => (IEncodedRawValue)new EncodedRawValue(specificDataConverter, kvp.Value));
+            });
             searchAttributes = new(
                 () => rawInfo.SearchAttributes == null ?
                     SearchAttributeCollection.Empty :

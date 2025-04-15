@@ -15,8 +15,12 @@ namespace Temporalio.Converters
     /// See <see cref="DefaultPayloadConverter()" /> for the default set of encoding converters
     /// used. To create a custom converter, a new class should extend this one.
     /// </remarks>
-    public class DefaultPayloadConverter : IPayloadConverter
+    public class DefaultPayloadConverter :
+        IPayloadConverter,
+        IWithSerializationContext<IPayloadConverter>
     {
+        private readonly bool anyConvertersWithSerializationContext;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultPayloadConverter"/> class.
         /// </summary>
@@ -75,6 +79,8 @@ namespace Temporalio.Converters
             EncodingConverters = Array.AsReadOnly(encodingConverters);
             IndexedEncodingConverters = encodingConverters.ToDictionary(
                 x => ByteString.CopyFromUtf8(x.Encoding));
+            anyConvertersWithSerializationContext = encodingConverters.Any(e =>
+                e is IWithSerializationContext<IEncodingConverter>);
         }
 
         // KeyedCollection not worth it and OrderedDictionary not generic. So we'll expose the
@@ -129,6 +135,18 @@ namespace Temporalio.Converters
                 return converter.ToValue(payload, type);
             }
             throw new ArgumentException($"Unknown payload encoding {encoding.ToStringUtf8()}");
+        }
+
+        /// <inheritdoc/>
+        public virtual IPayloadConverter WithSerializationContext(ISerializationContext context)
+        {
+            if (!anyConvertersWithSerializationContext)
+            {
+                return this;
+            }
+            return new DefaultPayloadConverter(EncodingConverters.Select(e =>
+                e is IWithSerializationContext<IEncodingConverter> ew ?
+                    ew.WithSerializationContext(context) : e).ToArray());
         }
     }
 }

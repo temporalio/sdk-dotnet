@@ -80,6 +80,12 @@ namespace Temporalio.Client
         public virtual async Task<TResult> GetResultAsync<TResult>(
             bool followRuns = true, RpcOptions? rpcOptions = null)
         {
+            // Workflow-specific data converter
+            var dataConverter = Client.Options.DataConverter.WithSerializationContext(
+                new ISerializationContext.Workflow(
+                    Namespace: Client.Options.Namespace,
+                    WorkflowId: Id));
+
             // Continually get pages
             var histRunId = ResultRunId;
             while (true)
@@ -115,7 +121,12 @@ namespace Temporalio.Client
                             {
                                 return default!;
                             }
-                            return await Client.Options.DataConverter.ToSingleValueAsync<TResult>(
+                            // Otherwise we expect a single payload
+                            if (compAttr.Result == null)
+                            {
+                                throw new InvalidOperationException("No result present");
+                            }
+                            return await dataConverter.ToSingleValueAsync<TResult>(
                                 compAttr.Result.Payloads_).ConfigureAwait(false);
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionFailedEventAttributes:
                             var failAttr = evt.WorkflowExecutionFailedEventAttributes;
@@ -125,8 +136,7 @@ namespace Temporalio.Client
                                 break;
                             }
                             throw new WorkflowFailedException(
-                                await Client.Options.DataConverter.ToExceptionAsync(
-                                    failAttr.Failure).ConfigureAwait(false));
+                                await dataConverter.ToExceptionAsync(failAttr.Failure).ConfigureAwait(false));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionCanceledEventAttributes:
                             var cancelAttr = evt.WorkflowExecutionCanceledEventAttributes;
                             throw new WorkflowFailedException(new CanceledFailureException(
@@ -136,7 +146,7 @@ namespace Temporalio.Client
                                     CanceledFailureInfo = new() { Details = cancelAttr.Details },
                                 },
                                 null,
-                                Client.Options.DataConverter.PayloadConverter));
+                                dataConverter.PayloadConverter));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionTerminatedEventAttributes:
                             var termAttr = evt.WorkflowExecutionTerminatedEventAttributes;
                             var message = string.IsNullOrEmpty(termAttr.Reason) ?
@@ -144,9 +154,7 @@ namespace Temporalio.Client
                             InboundFailureDetails? details = null;
                             if (termAttr.Details != null && termAttr.Details.Payloads_.Count > 0)
                             {
-                                details = new(
-                                    Client.Options.DataConverter.PayloadConverter,
-                                    termAttr.Details.Payloads_);
+                                details = new(dataConverter.PayloadConverter, termAttr.Details.Payloads_);
                             }
                             throw new WorkflowFailedException(new TerminatedFailureException(
                                 new() { Message = message, TerminatedFailureInfo = new() },
@@ -169,7 +177,7 @@ namespace Temporalio.Client
                                     },
                                 },
                                 null,
-                                Client.Options.DataConverter.PayloadConverter));
+                                dataConverter.PayloadConverter));
                         case HistoryEvent.AttributesOneofCase.WorkflowExecutionContinuedAsNewEventAttributes:
                             var contAttr = evt.WorkflowExecutionContinuedAsNewEventAttributes;
                             if (string.IsNullOrEmpty(contAttr.NewExecutionRunId))
