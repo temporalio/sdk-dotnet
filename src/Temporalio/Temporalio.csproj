@@ -90,6 +90,9 @@
       <Content Include="$(BridgeLibraryRoot)/linux-arm64-bridge/libtemporal_sdk_bridge.so">
         <PackagePath>runtimes/linux-arm64/native/libtemporal_sdk_bridge.so</PackagePath>
       </Content>
+      <Content Include="$(BridgeLibraryRoot)/linux-musl-x64-bridge/libtemporal_sdk_bridge.so">
+        <PackagePath>runtimes/linux-musl-x64/native/libtemporal_sdk_bridge.so</PackagePath>
+      </Content>
       <Content Include="$(BridgeLibraryRoot)/osx-x64-bridge/libtemporal_sdk_bridge.dylib">
         <PackagePath>runtimes/osx-x64/native/libtemporal_sdk_bridge.dylib</PackagePath>
       </Content>

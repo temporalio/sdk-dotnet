@@ -815,6 +815,8 @@ reimplementation of the Temporal server with special time skipping capabilities.
 to run when first called. Note, this class is not thread safe nor safe for use with independent tests. It can be reused,
 but only for one test at a time because time skipping is locked/unlocked at the environment level.
 
+⚠️ WARNING - at this time, the time-skipping test server does not work on musl-based environments like Alpine.
+
 ##### Automatic Time Skipping
 
 Anytime a workflow result is waiting on, the time-skipping server automatically advances to the next event it can. To
@@ -1130,8 +1132,8 @@ included when using modern versions of .NET on a common platform. If you are usi
 explicitly set the platform to `x64` or `arm64` because `AnyCPU` will not choose the proper library.
 
 Currently we only support [RIDs](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog) `linux-arm64`,
-`linux-x64`, `osx-arm64`, `osx-x64`, and `win-x64`. Any other platforms needed (e.g. `linux-musl-x64` on Alpine) will
-require a custom build.
+`linux-x64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, and `win-x64`. Any other platforms needed (e.g. `linux-musl-x64`
+on Alpine) will require a custom build.
 
 The native shared library on Windows does require a Visual C++ runtime. Some containers, such as Windows Nano Server, do
 not include this runtime. If not available, users may have to manually copy this runtime (usually just

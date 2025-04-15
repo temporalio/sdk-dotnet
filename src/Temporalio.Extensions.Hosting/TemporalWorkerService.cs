@@ -135,11 +135,6 @@ namespace Temporalio.Extensions.Hosting
                 throw new InvalidOperationException(
                     $"Build ID '{taskQueueAndBuildId.BuildId ?? "<unset>"}' on constructor different than '{options.BuildId ?? "<unset>"}' on options");
             }
-            if (options.UseWorkerVersioning != (taskQueueAndBuildId.BuildId != null))
-            {
-                throw new InvalidOperationException(
-                    $"Use versioning option is {options.UseWorkerVersioning}, but constructor expects different");
-            }
 
             newClientOptions = options.ClientOptions;
             if (newClientOptions == null)

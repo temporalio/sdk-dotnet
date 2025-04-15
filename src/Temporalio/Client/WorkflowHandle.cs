@@ -115,8 +115,9 @@ namespace Temporalio.Client
                                 histRunId = compAttr.NewExecutionRunId;
                                 break;
                             }
-                            // Ignore return if they didn't want it
-                            if (typeof(TResult) == typeof(ValueTuple))
+                            // Use default if they are ignoring result or payload not present
+                            if (typeof(TResult) == typeof(ValueTuple) ||
+                                compAttr.Result == null || compAttr.Result.Payloads_.Count == 0)
                             {
                                 return default!;
                             }
@@ -231,7 +232,7 @@ namespace Temporalio.Client
         /// the workflow yet.
         /// </returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task SignalAsync(
+        public virtual Task SignalAsync(
             string signal, IReadOnlyCollection<object?> args, WorkflowSignalOptions? options = null) =>
             Client.OutboundInterceptor.SignalWorkflowAsync(new(
                 Id: Id,
@@ -295,7 +296,7 @@ namespace Temporalio.Client
         /// Query rejected by server based on rejection condition.
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task<TQueryResult> QueryAsync<TQueryResult>(
+        public virtual Task<TQueryResult> QueryAsync<TQueryResult>(
             string query, IReadOnlyCollection<object?> args, WorkflowQueryOptions? options = null) =>
             Client.OutboundInterceptor.QueryWorkflowAsync<TQueryResult>(new(
                 Id: Id,
@@ -360,7 +361,7 @@ namespace Temporalio.Client
         /// <param name="args">Arguments for the update.</param>
         /// <param name="options">Update options. Currently <c>WaitForStage</c> is required.</param>
         /// <returns>Workflow update handle.</returns>
-        public Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
+        public virtual Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateAsync<TUpdateResult>(
             string update, IReadOnlyCollection<object?> args, WorkflowUpdateStartOptions options) =>
             Client.OutboundInterceptor.StartWorkflowUpdateAsync<TUpdateResult>(new(
                 Id: Id,
@@ -474,7 +475,7 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="options">Extra options.</param>
         /// <returns>Description for the workflow.</returns>
-        public Task<WorkflowExecutionDescription> DescribeAsync(
+        public virtual Task<WorkflowExecutionDescription> DescribeAsync(
             WorkflowDescribeOptions? options = null) =>
             Client.OutboundInterceptor.DescribeWorkflowAsync(new(
                 Id: Id,
@@ -487,7 +488,7 @@ namespace Temporalio.Client
         /// <param name="options">Cancellation options.</param>
         /// <returns>Cancel accepted task.</returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task CancelAsync(WorkflowCancelOptions? options = null) =>
+        public virtual Task CancelAsync(WorkflowCancelOptions? options = null) =>
             Client.OutboundInterceptor.CancelWorkflowAsync(new(
                 Id: Id,
                 RunId: RunId,
@@ -501,7 +502,7 @@ namespace Temporalio.Client
         /// <param name="options">Termination options.</param>
         /// <returns>Terminate completed task.</returns>
         /// <exception cref="RpcException">Server-side error.</exception>
-        public Task TerminateAsync(
+        public virtual Task TerminateAsync(
             string? reason = null, WorkflowTerminateOptions? options = null) =>
             Client.OutboundInterceptor.TerminateWorkflowAsync(new(
                 Id: Id,
@@ -512,11 +513,11 @@ namespace Temporalio.Client
 
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>
-        /// Fetcgh history for the workflow.
+        /// Fetch history for the workflow.
         /// </summary>
         /// <param name="options">Options for history fetching.</param>
         /// <returns>Fetched history.</returns>
-        public async Task<WorkflowHistory> FetchHistoryAsync(
+        public async virtual Task<WorkflowHistory> FetchHistoryAsync(
             WorkflowHistoryEventFetchOptions? options = null)
         {
             WorkflowHistoryEventFetchOptions? eventFetchOptions = null;
@@ -542,7 +543,7 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="options">History event fetch options.</param>
         /// <returns>Async enumerable to iterate events for.</returns>
-        public IAsyncEnumerable<HistoryEvent> FetchHistoryEventsAsync(
+        public virtual IAsyncEnumerable<HistoryEvent> FetchHistoryEventsAsync(
             WorkflowHistoryEventFetchOptions? options = null) =>
             FetchHistoryEventsInternalAsync(options);
 

@@ -15,7 +15,8 @@ namespace Temporalio.Client
         /// Initializes a new instance of the <see cref="WorkflowExecutionCount" /> class.
         /// </summary>
         /// <param name="raw">Raw proto.</param>
-        internal WorkflowExecutionCount(CountWorkflowExecutionsResponse raw)
+        /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
+        protected internal WorkflowExecutionCount(CountWorkflowExecutionsResponse raw)
         {
             Count = raw.Count;
             Groups = raw.Groups?.Select(
@@ -42,7 +43,8 @@ namespace Temporalio.Client
             /// Initializes a new instance of the <see cref="AggregationGroup"/> class.
             /// </summary>
             /// <param name="raw">Raw proto.</param>
-            internal AggregationGroup(CountWorkflowExecutionsResponse.Types.AggregationGroup raw)
+            /// <remarks>WARNING: This constructor may be mutated in backwards incompatible ways.</remarks>
+            protected internal AggregationGroup(CountWorkflowExecutionsResponse.Types.AggregationGroup raw)
             {
                 Count = raw.Count;
                 GroupValues = raw.GroupValues?.

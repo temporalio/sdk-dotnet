@@ -434,9 +434,10 @@ namespace Temporalio.Client
                     throw new WorkflowQueryRejectedException(resp.QueryRejected.Status);
                 }
 
-                if (resp.QueryResult == null)
+                // Use default value if no result present
+                if (resp.QueryResult == null || resp.QueryResult.Payloads_.Count == 0)
                 {
-                    throw new InvalidOperationException("No result present");
+                    return default!;
                 }
                 return await dataConverter.ToSingleValueAsync<TResult>(
                     resp.QueryResult.Payloads_).ConfigureAwait(false);

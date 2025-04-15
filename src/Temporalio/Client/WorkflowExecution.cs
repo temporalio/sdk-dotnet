@@ -25,7 +25,7 @@ namespace Temporalio.Client
         /// <param name="clientNamespaceForDataConverterWithContext">Namespace to make the data
         /// converter specific to the workflow context. If null, assumes the data converter is
         /// already context specific.</param>
-        internal WorkflowExecution(
+        protected internal WorkflowExecution(
             WorkflowExecutionInfo rawInfo,
             DataConverter dataConverter,
             string? clientNamespaceForDataConverterWithContext)

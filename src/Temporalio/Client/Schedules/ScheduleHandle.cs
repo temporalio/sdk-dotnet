@@ -20,7 +20,7 @@ namespace Temporalio.Client.Schedules
         /// <param name="backfills">Backfill periods.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Task for completion.</returns>
-        public Task BackfillAsync(
+        public virtual Task BackfillAsync(
             IReadOnlyCollection<ScheduleBackfill> backfills, RpcOptions? rpcOptions = null)
         {
             if (backfills.Count == 0)
@@ -36,7 +36,7 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Task for completion.</returns>
-        public Task DeleteAsync(RpcOptions? rpcOptions = null) =>
+        public virtual Task DeleteAsync(RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.DeleteScheduleAsync(new(Id: Id, RpcOptions: rpcOptions));
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Schedule description.</returns>
-        public Task<ScheduleDescription> DescribeAsync(RpcOptions? rpcOptions = null) =>
+        public virtual Task<ScheduleDescription> DescribeAsync(RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.DescribeScheduleAsync(new(Id: Id, RpcOptions: rpcOptions));
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace Temporalio.Client.Schedules
         /// <param name="note">Note to set when pausing.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Task for completion.</returns>
-        public Task PauseAsync(string? note = null, RpcOptions? rpcOptions = null) =>
+        public virtual Task PauseAsync(string? note = null, RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.PauseScheduleAsync(
                 new(Id: Id, Note: note, RpcOptions: rpcOptions));
 
@@ -62,7 +62,7 @@ namespace Temporalio.Client.Schedules
         /// </summary>
         /// <param name="options">Options for triggering.</param>
         /// <returns>Task for completion.</returns>
-        public Task TriggerAsync(ScheduleTriggerOptions? options = null) =>
+        public virtual Task TriggerAsync(ScheduleTriggerOptions? options = null) =>
             Client.OutboundInterceptor.TriggerScheduleAsync(new(Id: Id, Options: options));
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Temporalio.Client.Schedules
         /// <param name="note">Note to set when unpausing.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Task for completion.</returns>
-        public Task UnpauseAsync(string? note = null, RpcOptions? rpcOptions = null) =>
+        public virtual Task UnpauseAsync(string? note = null, RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.UnpauseScheduleAsync(
                 new(Id: Id, Note: note, RpcOptions: rpcOptions));
 
@@ -98,7 +98,7 @@ namespace Temporalio.Client.Schedules
         /// to perform an update.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Task for completion.</returns>
-        public Task UpdateAsync(
+        public virtual Task UpdateAsync(
             Func<ScheduleUpdateInput, Task<ScheduleUpdate?>> updater,
             RpcOptions? rpcOptions = null) =>
             Client.OutboundInterceptor.UpdateScheduleAsync(

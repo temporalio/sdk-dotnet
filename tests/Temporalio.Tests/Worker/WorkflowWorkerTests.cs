@@ -228,6 +228,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 case Scenario.TaskWhenAnyWithResultThreeParam:
                     return await await Task.WhenAny(
                         Task.FromResult("done"), Task.FromResult("done"), Task.FromResult("done"));
+                case Scenario.ListenerDisabledCreateCommand:
+                    return await Workflow.Unsafe.WithTracingEventListenerDisabled(async () =>
+                    {
+                        await Workflow.DelayAsync(100);
+                        return await Task.Run(async () => "done");
+                    });
 
                 // Good
                 case Scenario.TaskFactoryStartNew:
@@ -257,6 +263,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     var runTaskStart = new Task<string>(() => "done");
                     runTaskStart.Start();
                     return await Workflow.RunTaskAsync(() => runTaskStart);
+                case Scenario.TaskRunListenerDisabled:
+                    return Workflow.Unsafe.WithTracingEventListenerDisabled(() =>
+                    {
+                        var task = Task.Run(async () => "done");
+                        return task.GetAwaiter().GetResult();
+                    });
             }
             throw new InvalidOperationException("Unexpected completion");
         }
@@ -273,6 +285,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             DataflowReceiveAsync,
             // https://github.com/dotnet/runtime/issues/87481
             TaskWhenAnyWithResultThreeParam,
+            ListenerDisabledCreateCommand,
 
             // Good
             TaskFactoryStartNew,
@@ -284,6 +297,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             WorkflowWhenAll,
             WorkflowRunTask,
             WorkflowRunTaskAfterTaskStart,
+            TaskRunListenerDisabled,
         }
     }
 
@@ -321,6 +335,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioFailsTask(
             StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultThreeParam,
             "not scheduled on workflow scheduler");
+        await AssertScenarioFailsTask(
+            StandardLibraryCallsWorkflow.Scenario.ListenerDisabledCreateCommand,
+            "Function during tracing event listener disabling created workflow commands");
     }
 
     [Fact]
@@ -346,6 +363,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAll);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTask);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTaskAfterTaskStart);
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskRunListenerDisabled);
     }
 
     [Workflow]
@@ -7027,6 +7045,72 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             },
             new TemporalWorkerOptions().AddAllActivities<ConverterContextWorkflow>(null),
             client);
+    }
+
+    [Workflow]
+    public class PayloadMissingWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string?> RunAsync(bool returnImmediately)
+        {
+            if (returnImmediately)
+            {
+                return null;
+            }
+            // Run child that returns immediately, run activity that does the same
+            await Workflow.ExecuteChildWorkflowAsync<string?>(
+                "PayloadMissingWorkflow",
+                new object?[] { true });
+            await Workflow.ExecuteActivityAsync<string?>(
+                "DoSomething",
+                Array.Empty<object?>(),
+                new() { StartToCloseTimeout = TimeSpan.FromSeconds(30) });
+            return null;
+        }
+
+        [Activity]
+        public static string? DoSomething() => null;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PayloadMissing_StillWorks()
+    {
+        // This test confirms that the absence of a payload inside activity and child workflow
+        // result is ok. This can happen when calling an activity or child in another SDK like Go.
+
+        // Run workflow and get handle
+        var handle = await ExecuteWorkerAsync<PayloadMissingWorkflow, WorkflowHandle>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (PayloadMissingWorkflow wf) => wf.RunAsync(false),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await handle.GetResultAsync();
+                return handle;
+            },
+            new TemporalWorkerOptions().AddAllActivities<PayloadMissingWorkflow>(null));
+
+        // Get history and confirm it can replay
+        var replayer = new WorkflowReplayer(
+            new WorkflowReplayerOptions().AddWorkflow<PayloadMissingWorkflow>());
+        var history = await handle.FetchHistoryAsync();
+        await replayer.ReplayWorkflowAsync(history);
+
+        // Now complete remove the activity and child complete payloads. This used to break.
+        foreach (var evt in history.Events)
+        {
+            if (evt.ChildWorkflowExecutionCompletedEventAttributes is { } childEvent)
+            {
+                Assert.NotNull(childEvent.Result);
+                childEvent.Result = null;
+            }
+            else if (evt.ActivityTaskCompletedEventAttributes is { } actEvent)
+            {
+                Assert.NotNull(actEvent.Result);
+                actEvent.Result = null;
+            }
+        }
+        await replayer.ReplayWorkflowAsync(history);
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(

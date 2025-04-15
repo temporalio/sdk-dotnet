@@ -28,10 +28,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </param>
         /// <param name="taskQueue">Task queue for the worker.</param>
         /// <param name="buildId">
-        /// Build ID for the worker. Set to non-null to opt in to versioning. If versioning is
-        /// wanted, this must be set here and not later via configure options. This is because the
-        /// combination of task queue and build ID make up the unique identifier for a worker in the
-        /// service collection.
+        /// Build ID for the worker. It is important to set build ID here and not later via
+        /// configure options. This is because the combination of task queue and build ID make up
+        /// the unique identifier for a worker in the service collection.
         /// </param>
         /// <returns>Options builder to configure the service.</returns>
         public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
@@ -55,10 +54,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">Service collection to create hosted worker on.</param>
         /// <param name="taskQueue">Task queue for the worker.</param>
         /// <param name="buildId">
-        /// Build ID for the worker. Set to non-null to opt in to versioning. If versioning is
-        /// wanted, this must be set here and not later via configure options. This is because the
-        /// combination of task queue and build ID make up the unique identifier for a worker in the
-        /// service collection.
+        /// Build ID for the worker. It is important to set build ID here and not later via
+        /// configure options. This is because the combination of task queue and build ID make up
+        /// the unique identifier for a worker in the service collection.
         /// </param>
         /// <returns>Options builder to configure the service.</returns>
         public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
@@ -75,7 +73,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     options.TaskQueue = taskQueue;
                     options.BuildId = buildId;
-                    options.UseWorkerVersioning = buildId != null;
                 },
                 // Disallow duplicate options registrations because that means multiple worker
                 // services with the same task queue + build ID were added.
