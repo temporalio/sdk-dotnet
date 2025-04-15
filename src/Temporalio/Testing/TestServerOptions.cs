@@ -35,6 +35,12 @@ namespace Temporalio.Testing
         public IReadOnlyCollection<string>? ExtraArgs { get; set; }
 
         /// <summary>
+        /// Gets or sets how long the automatic download should be cached for. If null, cached
+        /// indefinitely.
+        /// </summary>
+        public TimeSpan? DownloadTtl { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

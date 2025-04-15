@@ -27,25 +27,28 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
             "Cj90ZW1wb3JhbC9zZGsvY29yZS93b3JrZmxvd19jb21wbGV0aW9uL3dvcmtm",
             "bG93X2NvbXBsZXRpb24ucHJvdG8SG2NvcmVzZGsud29ya2Zsb3dfY29tcGxl",
             "dGlvbholdGVtcG9yYWwvYXBpL2ZhaWx1cmUvdjEvbWVzc2FnZS5wcm90bxoo",
-            "dGVtcG9yYWwvYXBpL2VudW1zL3YxL2ZhaWxlZF9jYXVzZS5wcm90bxoldGVt",
-            "cG9yYWwvc2RrL2NvcmUvY29tbW9uL2NvbW1vbi5wcm90bxo7dGVtcG9yYWwv",
-            "c2RrL2NvcmUvd29ya2Zsb3dfY29tbWFuZHMvd29ya2Zsb3dfY29tbWFuZHMu",
-            "cHJvdG8irAEKHFdvcmtmbG93QWN0aXZhdGlvbkNvbXBsZXRpb24SDgoGcnVu",
-            "X2lkGAEgASgJEjoKCnN1Y2Nlc3NmdWwYAiABKAsyJC5jb3Jlc2RrLndvcmtm",
-            "bG93X2NvbXBsZXRpb24uU3VjY2Vzc0gAEjYKBmZhaWxlZBgDIAEoCzIkLmNv",
-            "cmVzZGsud29ya2Zsb3dfY29tcGxldGlvbi5GYWlsdXJlSABCCAoGc3RhdHVz",
-            "ImQKB1N1Y2Nlc3MSPAoIY29tbWFuZHMYASADKAsyKi5jb3Jlc2RrLndvcmtm",
-            "bG93X2NvbW1hbmRzLldvcmtmbG93Q29tbWFuZBIbChN1c2VkX2ludGVybmFs",
-            "X2ZsYWdzGAYgAygNIoEBCgdGYWlsdXJlEjEKB2ZhaWx1cmUYASABKAsyIC50",
-            "ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEkMKC2ZvcmNlX2NhdXNl",
-            "GAIgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtmbG93VGFza0Zh",
-            "aWxlZENhdXNlQjjqAjVUZW1wb3JhbGlvOjpJbnRlcm5hbDo6QnJpZGdlOjpB",
-            "cGk6OldvcmtmbG93Q29tcGxldGlvbmIGcHJvdG8z"));
+            "dGVtcG9yYWwvYXBpL2VudW1zL3YxL2ZhaWxlZF9jYXVzZS5wcm90bxokdGVt",
+            "cG9yYWwvYXBpL2VudW1zL3YxL3dvcmtmbG93LnByb3RvGiV0ZW1wb3JhbC9z",
+            "ZGsvY29yZS9jb21tb24vY29tbW9uLnByb3RvGjt0ZW1wb3JhbC9zZGsvY29y",
+            "ZS93b3JrZmxvd19jb21tYW5kcy93b3JrZmxvd19jb21tYW5kcy5wcm90byKs",
+            "AQocV29ya2Zsb3dBY3RpdmF0aW9uQ29tcGxldGlvbhIOCgZydW5faWQYASAB",
+            "KAkSOgoKc3VjY2Vzc2Z1bBgCIAEoCzIkLmNvcmVzZGsud29ya2Zsb3dfY29t",
+            "cGxldGlvbi5TdWNjZXNzSAASNgoGZmFpbGVkGAMgASgLMiQuY29yZXNkay53",
+            "b3JrZmxvd19jb21wbGV0aW9uLkZhaWx1cmVIAEIICgZzdGF0dXMirAEKB1N1",
+            "Y2Nlc3MSPAoIY29tbWFuZHMYASADKAsyKi5jb3Jlc2RrLndvcmtmbG93X2Nv",
+            "bW1hbmRzLldvcmtmbG93Q29tbWFuZBIbChN1c2VkX2ludGVybmFsX2ZsYWdz",
+            "GAYgAygNEkYKE3ZlcnNpb25pbmdfYmVoYXZpb3IYByABKA4yKS50ZW1wb3Jh",
+            "bC5hcGkuZW51bXMudjEuVmVyc2lvbmluZ0JlaGF2aW9yIoEBCgdGYWlsdXJl",
+            "EjEKB2ZhaWx1cmUYASABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5G",
+            "YWlsdXJlEkMKC2ZvcmNlX2NhdXNlGAIgASgOMi4udGVtcG9yYWwuYXBpLmVu",
+            "dW1zLnYxLldvcmtmbG93VGFza0ZhaWxlZENhdXNlQjjqAjVUZW1wb3JhbGlv",
+            "OjpJbnRlcm5hbDo6QnJpZGdlOjpBcGk6OldvcmtmbG93Q29tcGxldGlvbmIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCommands.WorkflowCommandsReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCommands.WorkflowCommandsReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion), global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowActivationCompletion.Parser, new[]{ "RunId", "Successful", "Failed" }, new[]{ "Status" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.Success), global::Temporalio.Bridge.Api.WorkflowCompletion.Success.Parser, new[]{ "Commands", "UsedInternalFlags" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.Success), global::Temporalio.Bridge.Api.WorkflowCompletion.Success.Parser, new[]{ "Commands", "UsedInternalFlags", "VersioningBehavior" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCompletion.Failure), global::Temporalio.Bridge.Api.WorkflowCompletion.Failure.Parser, new[]{ "Failure_", "ForceCause" }, null, null, null, null)
           }));
     }
@@ -56,6 +59,7 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
   /// <summary>
   /// Result of a single workflow activation, reported from lang to core
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   internal sealed partial class WorkflowActivationCompletion : pb::IMessage<WorkflowActivationCompletion>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -311,7 +315,11 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -348,7 +356,11 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -384,6 +396,7 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
   /// <summary>
   /// Successful workflow activation with a list of commands generated by the workflow execution
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   internal sealed partial class Success : pb::IMessage<Success>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -420,6 +433,7 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     public Success(Success other) : this() {
       commands_ = other.commands_.Clone();
       usedInternalFlags_ = other.usedInternalFlags_.Clone();
+      versioningBehavior_ = other.versioningBehavior_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -457,6 +471,21 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       get { return usedInternalFlags_; }
     }
 
+    /// <summary>Field number for the "versioning_behavior" field.</summary>
+    public const int VersioningBehaviorFieldNumber = 7;
+    private global::Temporalio.Api.Enums.V1.VersioningBehavior versioningBehavior_ = global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified;
+    /// <summary>
+    /// The versioning behavior this workflow is currently using
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.VersioningBehavior VersioningBehavior {
+      get { return versioningBehavior_; }
+      set {
+        versioningBehavior_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -474,6 +503,7 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       }
       if(!commands_.Equals(other.commands_)) return false;
       if(!usedInternalFlags_.Equals(other.usedInternalFlags_)) return false;
+      if (VersioningBehavior != other.VersioningBehavior) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -483,6 +513,7 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       int hash = 1;
       hash ^= commands_.GetHashCode();
       hash ^= usedInternalFlags_.GetHashCode();
+      if (VersioningBehavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) hash ^= VersioningBehavior.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -503,6 +534,10 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     #else
       commands_.WriteTo(output, _repeated_commands_codec);
       usedInternalFlags_.WriteTo(output, _repeated_usedInternalFlags_codec);
+      if (VersioningBehavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        output.WriteRawTag(56);
+        output.WriteEnum((int) VersioningBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -515,6 +550,10 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       commands_.WriteTo(ref output, _repeated_commands_codec);
       usedInternalFlags_.WriteTo(ref output, _repeated_usedInternalFlags_codec);
+      if (VersioningBehavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        output.WriteRawTag(56);
+        output.WriteEnum((int) VersioningBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -527,6 +566,9 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       int size = 0;
       size += commands_.CalculateSize(_repeated_commands_codec);
       size += usedInternalFlags_.CalculateSize(_repeated_usedInternalFlags_codec);
+      if (VersioningBehavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) VersioningBehavior);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -541,6 +583,9 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
       }
       commands_.Add(other.commands_);
       usedInternalFlags_.Add(other.usedInternalFlags_);
+      if (other.VersioningBehavior != global::Temporalio.Api.Enums.V1.VersioningBehavior.Unspecified) {
+        VersioningBehavior = other.VersioningBehavior;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -552,7 +597,11 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -563,6 +612,10 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
           case 50:
           case 48: {
             usedInternalFlags_.AddEntriesFrom(input, _repeated_usedInternalFlags_codec);
+            break;
+          }
+          case 56: {
+            VersioningBehavior = (global::Temporalio.Api.Enums.V1.VersioningBehavior) input.ReadEnum();
             break;
           }
         }
@@ -576,7 +629,11 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -589,6 +646,10 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
             usedInternalFlags_.AddEntriesFrom(ref input, _repeated_usedInternalFlags_codec);
             break;
           }
+          case 56: {
+            VersioningBehavior = (global::Temporalio.Api.Enums.V1.VersioningBehavior) input.ReadEnum();
+            break;
+          }
         }
       }
     }
@@ -599,6 +660,7 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
   /// <summary>
   /// Failure to activate or execute a workflow
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   internal sealed partial class Failure : pb::IMessage<Failure>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -789,7 +851,11 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -815,7 +881,11 @@ namespace Temporalio.Bridge.Api.WorkflowCompletion {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;

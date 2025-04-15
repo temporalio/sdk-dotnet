@@ -302,6 +302,10 @@ async fn call_workflow_service(
         "CountWorkflowExecutions" => rpc_call!(client, call, count_workflow_executions),
         "CreateSchedule" => rpc_call!(client, call, create_schedule),
         "DeleteSchedule" => rpc_call!(client, call, delete_schedule),
+        "DeleteWorkerDeployment" => rpc_call!(client, call, delete_worker_deployment),
+        "DeleteWorkerDeploymentVersion" => {
+            rpc_call!(client, call, delete_worker_deployment_version)
+        }
         "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
         "DeprecateNamespace" => rpc_call!(client, call, deprecate_namespace),
         "DescribeBatchOperation" => rpc_call!(client, call, describe_batch_operation),
@@ -309,6 +313,10 @@ async fn call_workflow_service(
         "DescribeNamespace" => rpc_call!(client, call, describe_namespace),
         "DescribeSchedule" => rpc_call!(client, call, describe_schedule),
         "DescribeTaskQueue" => rpc_call!(client, call, describe_task_queue),
+        "DescribeWorkerDeployment" => rpc_call!(client, call, describe_worker_deployment),
+        "DescribeWorkerDeploymentVersion" => {
+            rpc_call!(client, call, describe_worker_deployment_version)
+        }
         "DescribeWorkflowExecution" => rpc_call!(client, call, describe_workflow_execution),
         "ExecuteMultiOperation" => rpc_call!(client, call, execute_multi_operation),
         "GetClusterInfo" => rpc_call!(client, call, get_cluster_info),
@@ -338,9 +346,10 @@ async fn call_workflow_service(
         "ListScheduleMatchingTimes" => rpc_call!(client, call, list_schedule_matching_times),
         "ListSchedules" => rpc_call!(client, call, list_schedules),
         "ListTaskQueuePartitions" => rpc_call!(client, call, list_task_queue_partitions),
+        "ListWorkerDeployments" => rpc_call!(client, call, list_worker_deployments),
         "ListWorkflowExecutions" => rpc_call!(client, call, list_workflow_executions),
         "PatchSchedule" => rpc_call!(client, call, patch_schedule),
-        "PauseActivityById" => rpc_call!(client, call, pause_activity_by_id),
+        "PauseActivity" => rpc_call!(client, call, pause_activity),
         "PollActivityTaskQueue" => rpc_call!(client, call, poll_activity_task_queue),
         "PollNexusTaskQueue" => rpc_call!(client, call, poll_nexus_task_queue),
         "PollWorkflowExecutionUpdate" => rpc_call!(client, call, poll_workflow_execution_update),
@@ -354,7 +363,7 @@ async fn call_workflow_service(
         "RequestCancelWorkflowExecution" => {
             rpc_call!(client, call, request_cancel_workflow_execution)
         }
-        "ResetActivityById" => rpc_call!(client, call, reset_activity_by_id),
+        "ResetActivity" => rpc_call!(client, call, reset_activity),
         "ResetStickyTaskQueue" => rpc_call!(client, call, reset_sticky_task_queue),
         "ResetWorkflowExecution" => rpc_call!(client, call, reset_workflow_execution),
         "RespondActivityTaskCanceled" => rpc_call!(client, call, respond_activity_task_canceled),
@@ -376,6 +385,12 @@ async fn call_workflow_service(
         "RespondWorkflowTaskFailed" => rpc_call!(client, call, respond_workflow_task_failed),
         "ScanWorkflowExecutions" => rpc_call!(client, call, scan_workflow_executions),
         "SetCurrentDeployment" => rpc_call!(client, call, set_current_deployment),
+        "SetWorkerDeploymentCurrentVersion" => {
+            rpc_call!(client, call, set_worker_deployment_current_version)
+        }
+        "SetWorkerDeploymentRampingVersion" => {
+            rpc_call!(client, call, set_worker_deployment_ramping_version)
+        }
         "ShutdownWorker" => rpc_call!(client, call, shutdown_worker),
         "SignalWithStartWorkflowExecution" => {
             rpc_call!(client, call, signal_with_start_workflow_execution)
@@ -385,14 +400,17 @@ async fn call_workflow_service(
         "StartBatchOperation" => rpc_call!(client, call, start_batch_operation),
         "StopBatchOperation" => rpc_call!(client, call, stop_batch_operation),
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
-        "UnpauseActivityById" => {
-            rpc_call_on_trait!(client, call, WorkflowService, unpause_activity_by_id)
+        "UnpauseActivity" => {
+            rpc_call_on_trait!(client, call, WorkflowService, unpause_activity)
         }
-        "UpdateActivityOptionsById" => {
-            rpc_call_on_trait!(client, call, WorkflowService, update_activity_options_by_id)
+        "UpdateActivityOptions" => {
+            rpc_call_on_trait!(client, call, WorkflowService, update_activity_options)
         }
         "UpdateNamespace" => rpc_call_on_trait!(client, call, WorkflowService, update_namespace),
         "UpdateSchedule" => rpc_call!(client, call, update_schedule),
+        "UpdateWorkerDeploymentVersionMetadata" => {
+            rpc_call!(client, call, update_worker_deployment_version_metadata)
+        }
         "UpdateWorkerVersioningRules" => rpc_call!(client, call, update_worker_versioning_rules),
         "UpdateWorkflowExecution" => rpc_call!(client, call, update_workflow_execution),
         "UpdateWorkflowExecutionOptions" => {

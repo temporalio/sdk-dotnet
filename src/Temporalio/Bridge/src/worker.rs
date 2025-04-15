@@ -11,12 +11,14 @@ use temporal_sdk_core::replay::ReplayWorkerInput;
 use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollError;
 use temporal_sdk_core_api::errors::WorkflowErrorType;
+use temporal_sdk_core_api::worker::PollerBehavior;
 use temporal_sdk_core_api::worker::SlotInfoTrait;
 use temporal_sdk_core_api::worker::SlotKind;
 use temporal_sdk_core_api::worker::SlotMarkUsedContext;
 use temporal_sdk_core_api::worker::SlotReleaseContext;
 use temporal_sdk_core_api::worker::SlotReservationContext;
 use temporal_sdk_core_api::worker::SlotSupplierPermit;
+use temporal_sdk_core_api::worker::WorkerVersioningStrategy;
 use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
@@ -282,7 +284,12 @@ impl<SK: SlotKind + Send + Sync> CustomSlotSupplier<SK> {
             },
             task_queue: ctx.task_queue().into(),
             worker_identity: ctx.worker_identity().into(),
-            worker_build_id: ctx.worker_build_id().into(),
+            worker_build_id: ctx
+                .worker_deployment_version()
+                .as_ref()
+                .map(|v| v.build_id.clone())
+                .unwrap_or_default()
+                .into(),
             is_sticky: ctx.is_sticky(),
             token_src: std::ptr::null_mut(),
         }
@@ -801,8 +808,15 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
         WorkerConfigBuilder::default()
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())
-            .worker_build_id(opt.build_id.to_str())
-            .use_worker_versioning(opt.use_worker_versioning)
+            .versioning_strategy(if opt.use_worker_versioning {
+                WorkerVersioningStrategy::LegacyBuildIdBased {
+                    build_id: opt.build_id.to_string(),
+                }
+            } else {
+                WorkerVersioningStrategy::None {
+                    build_id: opt.build_id.to_string(),
+                }
+            })
             .client_identity_override(opt.identity_override.to_option_string())
             .max_cached_workflows(opt.max_cached_workflows as usize)
             .tuner(Arc::new(converted_tuner))
@@ -832,9 +846,13 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             // auto-cancel-activity behavior or shutdown will not occur, so we
             // always set it even if 0.
             .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
-            .max_concurrent_wft_polls(opt.max_concurrent_workflow_task_polls as usize)
+            .workflow_task_poller_behavior(PollerBehavior::SimpleMaximum(
+                opt.max_concurrent_workflow_task_polls as usize,
+            ))
             .nonsticky_to_sticky_poll_ratio(opt.nonsticky_to_sticky_poll_ratio)
-            .max_concurrent_at_polls(opt.max_concurrent_activity_task_polls as usize)
+            .activity_task_poller_behavior(PollerBehavior::SimpleMaximum(
+                opt.max_concurrent_activity_task_polls as usize,
+            ))
             .workflow_failure_errors(if opt.nondeterminism_as_workflow_fail {
                 HashSet::from([WorkflowErrorType::Nondeterminism])
             } else {

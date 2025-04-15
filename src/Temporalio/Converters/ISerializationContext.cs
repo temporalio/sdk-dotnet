@@ -24,6 +24,10 @@ namespace Temporalio.Converters
             /// <summary>
             /// Gets the ID for the workflow.
             /// </summary>
+            /// <remarks>
+            /// Note, when creating/describing schedules, this may be the workflow ID prefix as
+            /// configured, not the final workflow ID when the workflow is created by the schedule.
+            /// </remarks>
             string WorkflowId { get; }
         }
 
@@ -37,7 +41,9 @@ namespace Temporalio.Converters
         /// remain compatible from one version to the next.
         /// </remarks>
         /// <param name="Namespace">Workflow/activity namespace.</param>
-        /// <param name="WorkflowId">Workflow ID.</param>
+        /// <param name="WorkflowId">Workflow ID. Note, when creating/describing schedules, this may
+        /// be the workflow ID prefix as configured, not the final workflow ID when the workflow is
+        /// created by the schedule.</param>
         /// <param name="WorkflowType">Workflow Type.</param>
         /// <param name="ActivityType">Activity Type.</param>
         /// <param name="ActivityTaskQueue">ActivityTaskQueue.</param>

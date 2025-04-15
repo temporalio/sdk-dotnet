@@ -26,75 +26,79 @@ namespace Temporalio.Api.Nexus.V1 {
           string.Concat(
             "CiN0ZW1wb3JhbC9hcGkvbmV4dXMvdjEvbWVzc2FnZS5wcm90bxIVdGVtcG9y",
             "YWwuYXBpLm5leHVzLnYxGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1wLnBy",
-            "b3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2UucHJvdG8inAEK",
-            "B0ZhaWx1cmUSDwoHbWVzc2FnZRgBIAEoCRI+CghtZXRhZGF0YRgCIAMoCzIs",
-            "LnRlbXBvcmFsLmFwaS5uZXh1cy52MS5GYWlsdXJlLk1ldGFkYXRhRW50cnkS",
-            "DwoHZGV0YWlscxgDIAEoDBovCg1NZXRhZGF0YUVudHJ5EgsKA2tleRgBIAEo",
-            "CRINCgV2YWx1ZRgCIAEoCToCOAEiUwoMSGFuZGxlckVycm9yEhIKCmVycm9y",
-            "X3R5cGUYASABKAkSLwoHZmFpbHVyZRgCIAEoCzIeLnRlbXBvcmFsLmFwaS5u",
-            "ZXh1cy52MS5GYWlsdXJlImYKGlVuc3VjY2Vzc2Z1bE9wZXJhdGlvbkVycm9y",
-            "EhcKD29wZXJhdGlvbl9zdGF0ZRgBIAEoCRIvCgdmYWlsdXJlGAIgASgLMh4u",
-            "dGVtcG9yYWwuYXBpLm5leHVzLnYxLkZhaWx1cmUiIQoETGluaxILCgN1cmwY",
-            "ASABKAkSDAoEdHlwZRgCIAEoCSLRAgoVU3RhcnRPcGVyYXRpb25SZXF1ZXN0",
-            "Eg8KB3NlcnZpY2UYASABKAkSEQoJb3BlcmF0aW9uGAIgASgJEhIKCnJlcXVl",
-            "c3RfaWQYAyABKAkSEAoIY2FsbGJhY2sYBCABKAkSMAoHcGF5bG9hZBgFIAEo",
-            "CzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZBJZCg9jYWxsYmFj",
-            "a19oZWFkZXIYBiADKAsyQC50ZW1wb3JhbC5hcGkubmV4dXMudjEuU3RhcnRP",
-            "cGVyYXRpb25SZXF1ZXN0LkNhbGxiYWNrSGVhZGVyRW50cnkSKgoFbGlua3MY",
-            "ByADKAsyGy50ZW1wb3JhbC5hcGkubmV4dXMudjEuTGluaxo1ChNDYWxsYmFj",
-            "a0hlYWRlckVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEi",
-            "UgoWQ2FuY2VsT3BlcmF0aW9uUmVxdWVzdBIPCgdzZXJ2aWNlGAEgASgJEhEK",
-            "CW9wZXJhdGlvbhgCIAEoCRIUCgxvcGVyYXRpb25faWQYAyABKAkixwIKB1Jl",
-            "cXVlc3QSOgoGaGVhZGVyGAEgAygLMioudGVtcG9yYWwuYXBpLm5leHVzLnYx",
-            "LlJlcXVlc3QuSGVhZGVyRW50cnkSMgoOc2NoZWR1bGVkX3RpbWUYAiABKAsy",
-            "Gi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEkcKD3N0YXJ0X29wZXJhdGlv",
-            "bhgDIAEoCzIsLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5TdGFydE9wZXJhdGlv",
-            "blJlcXVlc3RIABJJChBjYW5jZWxfb3BlcmF0aW9uGAQgASgLMi0udGVtcG9y",
-            "YWwuYXBpLm5leHVzLnYxLkNhbmNlbE9wZXJhdGlvblJlcXVlc3RIABotCgtI",
-            "ZWFkZXJFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBQgkK",
-            "B3ZhcmlhbnQivAMKFlN0YXJ0T3BlcmF0aW9uUmVzcG9uc2USSgoMc3luY19z",
-            "dWNjZXNzGAEgASgLMjIudGVtcG9yYWwuYXBpLm5leHVzLnYxLlN0YXJ0T3Bl",
-            "cmF0aW9uUmVzcG9uc2UuU3luY0gAEkwKDWFzeW5jX3N1Y2Nlc3MYAiABKAsy",
-            "My50ZW1wb3JhbC5hcGkubmV4dXMudjEuU3RhcnRPcGVyYXRpb25SZXNwb25z",
-            "ZS5Bc3luY0gAEkwKD29wZXJhdGlvbl9lcnJvchgDIAEoCzIxLnRlbXBvcmFs",
-            "LmFwaS5uZXh1cy52MS5VbnN1Y2Nlc3NmdWxPcGVyYXRpb25FcnJvckgAGmQK",
-            "BFN5bmMSMAoHcGF5bG9hZBgBIAEoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24u",
-            "djEuUGF5bG9hZBIqCgVsaW5rcxgCIAMoCzIbLnRlbXBvcmFsLmFwaS5uZXh1",
-            "cy52MS5MaW5rGkkKBUFzeW5jEhQKDG9wZXJhdGlvbl9pZBgBIAEoCRIqCgVs",
-            "aW5rcxgCIAMoCzIbLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5MaW5rQgkKB3Zh",
-            "cmlhbnQiGQoXQ2FuY2VsT3BlcmF0aW9uUmVzcG9uc2UiqwEKCFJlc3BvbnNl",
-            "EkgKD3N0YXJ0X29wZXJhdGlvbhgBIAEoCzItLnRlbXBvcmFsLmFwaS5uZXh1",
-            "cy52MS5TdGFydE9wZXJhdGlvblJlc3BvbnNlSAASSgoQY2FuY2VsX29wZXJh",
-            "dGlvbhgCIAEoCzIuLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5DYW5jZWxPcGVy",
-            "YXRpb25SZXNwb25zZUgAQgkKB3ZhcmlhbnQi2AEKCEVuZHBvaW50Eg8KB3Zl",
-            "cnNpb24YASABKAMSCgoCaWQYAiABKAkSMQoEc3BlYxgDIAEoCzIjLnRlbXBv",
-            "cmFsLmFwaS5uZXh1cy52MS5FbmRwb2ludFNwZWMSMAoMY3JlYXRlZF90aW1l",
-            "GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI2ChJsYXN0X21v",
-            "ZGlmaWVkX3RpbWUYBSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
-            "EhIKCnVybF9wcmVmaXgYBiABKAkiiQEKDEVuZHBvaW50U3BlYxIMCgRuYW1l",
-            "GAEgASgJEjQKC2Rlc2NyaXB0aW9uGAIgASgLMh8udGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5QYXlsb2FkEjUKBnRhcmdldBgDIAEoCzIlLnRlbXBvcmFsLmFw",
-            "aS5uZXh1cy52MS5FbmRwb2ludFRhcmdldCLpAQoORW5kcG9pbnRUYXJnZXQS",
-            "PgoGd29ya2VyGAEgASgLMiwudGVtcG9yYWwuYXBpLm5leHVzLnYxLkVuZHBv",
-            "aW50VGFyZ2V0LldvcmtlckgAEkIKCGV4dGVybmFsGAIgASgLMi4udGVtcG9y",
-            "YWwuYXBpLm5leHVzLnYxLkVuZHBvaW50VGFyZ2V0LkV4dGVybmFsSAAaLwoG",
-            "V29ya2VyEhEKCW5hbWVzcGFjZRgBIAEoCRISCgp0YXNrX3F1ZXVlGAIgASgJ",
-            "GhcKCEV4dGVybmFsEgsKA3VybBgBIAEoCUIJCgd2YXJpYW50QoQBChhpby50",
-            "ZW1wb3JhbC5hcGkubmV4dXMudjFCDE1lc3NhZ2VQcm90b1ABWiFnby50ZW1w",
-            "b3JhbC5pby9hcGkvbmV4dXMvdjE7bmV4dXOqAhdUZW1wb3JhbGlvLkFwaS5O",
-            "ZXh1cy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6TmV4dXM6OlYxYgZwcm90bzM="));
+            "b3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2UucHJvdG8aIXRl",
+            "bXBvcmFsL2FwaS9lbnVtcy92MS9uZXh1cy5wcm90byKcAQoHRmFpbHVyZRIP",
+            "CgdtZXNzYWdlGAEgASgJEj4KCG1ldGFkYXRhGAIgAygLMiwudGVtcG9yYWwu",
+            "YXBpLm5leHVzLnYxLkZhaWx1cmUuTWV0YWRhdGFFbnRyeRIPCgdkZXRhaWxz",
+            "GAMgASgMGi8KDU1ldGFkYXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVl",
+            "GAIgASgJOgI4ASKiAQoMSGFuZGxlckVycm9yEhIKCmVycm9yX3R5cGUYASAB",
+            "KAkSLwoHZmFpbHVyZRgCIAEoCzIeLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5G",
+            "YWlsdXJlEk0KDnJldHJ5X2JlaGF2aW9yGAMgASgOMjUudGVtcG9yYWwuYXBp",
+            "LmVudW1zLnYxLk5leHVzSGFuZGxlckVycm9yUmV0cnlCZWhhdmlvciJmChpV",
+            "bnN1Y2Nlc3NmdWxPcGVyYXRpb25FcnJvchIXCg9vcGVyYXRpb25fc3RhdGUY",
+            "ASABKAkSLwoHZmFpbHVyZRgCIAEoCzIeLnRlbXBvcmFsLmFwaS5uZXh1cy52",
+            "MS5GYWlsdXJlIiEKBExpbmsSCwoDdXJsGAEgASgJEgwKBHR5cGUYAiABKAki",
+            "0QIKFVN0YXJ0T3BlcmF0aW9uUmVxdWVzdBIPCgdzZXJ2aWNlGAEgASgJEhEK",
+            "CW9wZXJhdGlvbhgCIAEoCRISCgpyZXF1ZXN0X2lkGAMgASgJEhAKCGNhbGxi",
+            "YWNrGAQgASgJEjAKB3BheWxvYWQYBSABKAsyHy50ZW1wb3JhbC5hcGkuY29t",
+            "bW9uLnYxLlBheWxvYWQSWQoPY2FsbGJhY2tfaGVhZGVyGAYgAygLMkAudGVt",
+            "cG9yYWwuYXBpLm5leHVzLnYxLlN0YXJ0T3BlcmF0aW9uUmVxdWVzdC5DYWxs",
+            "YmFja0hlYWRlckVudHJ5EioKBWxpbmtzGAcgAygLMhsudGVtcG9yYWwuYXBp",
+            "Lm5leHVzLnYxLkxpbmsaNQoTQ2FsbGJhY2tIZWFkZXJFbnRyeRILCgNrZXkY",
+            "ASABKAkSDQoFdmFsdWUYAiABKAk6AjgBImsKFkNhbmNlbE9wZXJhdGlvblJl",
+            "cXVlc3QSDwoHc2VydmljZRgBIAEoCRIRCglvcGVyYXRpb24YAiABKAkSFAoM",
+            "b3BlcmF0aW9uX2lkGAMgASgJEhcKD29wZXJhdGlvbl90b2tlbhgEIAEoCSLH",
+            "AgoHUmVxdWVzdBI6CgZoZWFkZXIYASADKAsyKi50ZW1wb3JhbC5hcGkubmV4",
+            "dXMudjEuUmVxdWVzdC5IZWFkZXJFbnRyeRIyCg5zY2hlZHVsZWRfdGltZRgC",
+            "IAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASRwoPc3RhcnRfb3Bl",
+            "cmF0aW9uGAMgASgLMiwudGVtcG9yYWwuYXBpLm5leHVzLnYxLlN0YXJ0T3Bl",
+            "cmF0aW9uUmVxdWVzdEgAEkkKEGNhbmNlbF9vcGVyYXRpb24YBCABKAsyLS50",
+            "ZW1wb3JhbC5hcGkubmV4dXMudjEuQ2FuY2VsT3BlcmF0aW9uUmVxdWVzdEgA",
+            "Gi0KC0hlYWRlckVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToC",
+            "OAFCCQoHdmFyaWFudCLVAwoWU3RhcnRPcGVyYXRpb25SZXNwb25zZRJKCgxz",
+            "eW5jX3N1Y2Nlc3MYASABKAsyMi50ZW1wb3JhbC5hcGkubmV4dXMudjEuU3Rh",
+            "cnRPcGVyYXRpb25SZXNwb25zZS5TeW5jSAASTAoNYXN5bmNfc3VjY2VzcxgC",
+            "IAEoCzIzLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5TdGFydE9wZXJhdGlvblJl",
+            "c3BvbnNlLkFzeW5jSAASTAoPb3BlcmF0aW9uX2Vycm9yGAMgASgLMjEudGVt",
+            "cG9yYWwuYXBpLm5leHVzLnYxLlVuc3VjY2Vzc2Z1bE9wZXJhdGlvbkVycm9y",
+            "SAAaZAoEU3luYxIwCgdwYXlsb2FkGAEgASgLMh8udGVtcG9yYWwuYXBpLmNv",
+            "bW1vbi52MS5QYXlsb2FkEioKBWxpbmtzGAIgAygLMhsudGVtcG9yYWwuYXBp",
+            "Lm5leHVzLnYxLkxpbmsaYgoFQXN5bmMSFAoMb3BlcmF0aW9uX2lkGAEgASgJ",
+            "EioKBWxpbmtzGAIgAygLMhsudGVtcG9yYWwuYXBpLm5leHVzLnYxLkxpbmsS",
+            "FwoPb3BlcmF0aW9uX3Rva2VuGAMgASgJQgkKB3ZhcmlhbnQiGQoXQ2FuY2Vs",
+            "T3BlcmF0aW9uUmVzcG9uc2UiqwEKCFJlc3BvbnNlEkgKD3N0YXJ0X29wZXJh",
+            "dGlvbhgBIAEoCzItLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5TdGFydE9wZXJh",
+            "dGlvblJlc3BvbnNlSAASSgoQY2FuY2VsX29wZXJhdGlvbhgCIAEoCzIuLnRl",
+            "bXBvcmFsLmFwaS5uZXh1cy52MS5DYW5jZWxPcGVyYXRpb25SZXNwb25zZUgA",
+            "QgkKB3ZhcmlhbnQi2AEKCEVuZHBvaW50Eg8KB3ZlcnNpb24YASABKAMSCgoC",
+            "aWQYAiABKAkSMQoEc3BlYxgDIAEoCzIjLnRlbXBvcmFsLmFwaS5uZXh1cy52",
+            "MS5FbmRwb2ludFNwZWMSMAoMY3JlYXRlZF90aW1lGAQgASgLMhouZ29vZ2xl",
+            "LnByb3RvYnVmLlRpbWVzdGFtcBI2ChJsYXN0X21vZGlmaWVkX3RpbWUYBSAB",
+            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhIKCnVybF9wcmVmaXgY",
+            "BiABKAkiiQEKDEVuZHBvaW50U3BlYxIMCgRuYW1lGAEgASgJEjQKC2Rlc2Ny",
+            "aXB0aW9uGAIgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2Fk",
+            "EjUKBnRhcmdldBgDIAEoCzIlLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5FbmRw",
+            "b2ludFRhcmdldCLpAQoORW5kcG9pbnRUYXJnZXQSPgoGd29ya2VyGAEgASgL",
+            "MiwudGVtcG9yYWwuYXBpLm5leHVzLnYxLkVuZHBvaW50VGFyZ2V0Lldvcmtl",
+            "ckgAEkIKCGV4dGVybmFsGAIgASgLMi4udGVtcG9yYWwuYXBpLm5leHVzLnYx",
+            "LkVuZHBvaW50VGFyZ2V0LkV4dGVybmFsSAAaLwoGV29ya2VyEhEKCW5hbWVz",
+            "cGFjZRgBIAEoCRISCgp0YXNrX3F1ZXVlGAIgASgJGhcKCEV4dGVybmFsEgsK",
+            "A3VybBgBIAEoCUIJCgd2YXJpYW50QoQBChhpby50ZW1wb3JhbC5hcGkubmV4",
+            "dXMudjFCDE1lc3NhZ2VQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvbmV4",
+            "dXMvdjE7bmV4dXOqAhdUZW1wb3JhbGlvLkFwaS5OZXh1cy5WMeoCGlRlbXBv",
+            "cmFsaW86OkFwaTo6TmV4dXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.NexusReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Failure), global::Temporalio.Api.Nexus.V1.Failure.Parser, new[]{ "Message", "Metadata", "Details" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.HandlerError), global::Temporalio.Api.Nexus.V1.HandlerError.Parser, new[]{ "ErrorType", "Failure" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.HandlerError), global::Temporalio.Api.Nexus.V1.HandlerError.Parser, new[]{ "ErrorType", "Failure", "RetryBehavior" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.UnsuccessfulOperationError), global::Temporalio.Api.Nexus.V1.UnsuccessfulOperationError.Parser, new[]{ "OperationState", "Failure" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Link), global::Temporalio.Api.Nexus.V1.Link.Parser, new[]{ "Url", "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationRequest), global::Temporalio.Api.Nexus.V1.StartOperationRequest.Parser, new[]{ "Service", "Operation", "RequestId", "Callback", "Payload", "CallbackHeader", "Links" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.CancelOperationRequest), global::Temporalio.Api.Nexus.V1.CancelOperationRequest.Parser, new[]{ "Service", "Operation", "OperationId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.CancelOperationRequest), global::Temporalio.Api.Nexus.V1.CancelOperationRequest.Parser, new[]{ "Service", "Operation", "OperationId", "OperationToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Request), global::Temporalio.Api.Nexus.V1.Request.Parser, new[]{ "Header", "ScheduledTime", "StartOperation", "CancelOperation" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationResponse), global::Temporalio.Api.Nexus.V1.StartOperationResponse.Parser, new[]{ "SyncSuccess", "AsyncSuccess", "OperationError" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Sync), global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Sync.Parser, new[]{ "Payload", "Links" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Async), global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Async.Parser, new[]{ "OperationId", "Links" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Async), global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Async.Parser, new[]{ "OperationId", "Links", "OperationToken" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.CancelOperationResponse), global::Temporalio.Api.Nexus.V1.CancelOperationResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Response), global::Temporalio.Api.Nexus.V1.Response.Parser, new[]{ "StartOperation", "CancelOperation" }, new[]{ "Variant" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Endpoint), global::Temporalio.Api.Nexus.V1.Endpoint.Parser, new[]{ "Version", "Id", "Spec", "CreatedTime", "LastModifiedTime", "UrlPrefix" }, null, null, null, null),
@@ -111,6 +115,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// A general purpose failure message.
   /// See: https://github.com/nexus-rpc/api/blob/main/SPEC.md#failure
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Failure : pb::IMessage<Failure>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -316,7 +321,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -343,7 +352,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -366,6 +379,7 @@ namespace Temporalio.Api.Nexus.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class HandlerError : pb::IMessage<HandlerError>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -402,6 +416,7 @@ namespace Temporalio.Api.Nexus.V1 {
     public HandlerError(HandlerError other) : this() {
       errorType_ = other.errorType_;
       failure_ = other.failure_ != null ? other.failure_.Clone() : null;
+      retryBehavior_ = other.retryBehavior_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -438,6 +453,21 @@ namespace Temporalio.Api.Nexus.V1 {
       }
     }
 
+    /// <summary>Field number for the "retry_behavior" field.</summary>
+    public const int RetryBehaviorFieldNumber = 3;
+    private global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior retryBehavior_ = global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior.Unspecified;
+    /// <summary>
+    /// Retry behavior, defaults to the retry behavior of the error type as defined in the spec.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior RetryBehavior {
+      get { return retryBehavior_; }
+      set {
+        retryBehavior_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -455,6 +485,7 @@ namespace Temporalio.Api.Nexus.V1 {
       }
       if (ErrorType != other.ErrorType) return false;
       if (!object.Equals(Failure, other.Failure)) return false;
+      if (RetryBehavior != other.RetryBehavior) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -464,6 +495,7 @@ namespace Temporalio.Api.Nexus.V1 {
       int hash = 1;
       if (ErrorType.Length != 0) hash ^= ErrorType.GetHashCode();
       if (failure_ != null) hash ^= Failure.GetHashCode();
+      if (RetryBehavior != global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior.Unspecified) hash ^= RetryBehavior.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -490,6 +522,10 @@ namespace Temporalio.Api.Nexus.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Failure);
       }
+      if (RetryBehavior != global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) RetryBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -508,6 +544,10 @@ namespace Temporalio.Api.Nexus.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Failure);
       }
+      if (RetryBehavior != global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) RetryBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -523,6 +563,9 @@ namespace Temporalio.Api.Nexus.V1 {
       }
       if (failure_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failure);
+      }
+      if (RetryBehavior != global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) RetryBehavior);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -545,6 +588,9 @@ namespace Temporalio.Api.Nexus.V1 {
         }
         Failure.MergeFrom(other.Failure);
       }
+      if (other.RetryBehavior != global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior.Unspecified) {
+        RetryBehavior = other.RetryBehavior;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -556,7 +602,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -571,6 +621,10 @@ namespace Temporalio.Api.Nexus.V1 {
             input.ReadMessage(Failure);
             break;
           }
+          case 24: {
+            RetryBehavior = (global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior) input.ReadEnum();
+            break;
+          }
         }
       }
     #endif
@@ -582,7 +636,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -597,6 +655,10 @@ namespace Temporalio.Api.Nexus.V1 {
             input.ReadMessage(Failure);
             break;
           }
+          case 24: {
+            RetryBehavior = (global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior) input.ReadEnum();
+            break;
+          }
         }
       }
     }
@@ -604,6 +666,7 @@ namespace Temporalio.Api.Nexus.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class UnsuccessfulOperationError : pb::IMessage<UnsuccessfulOperationError>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -794,7 +857,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -820,7 +887,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -842,6 +913,7 @@ namespace Temporalio.Api.Nexus.V1 {
 
   }
 
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Link : pb::IMessage<Link>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1029,7 +1101,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1052,7 +1128,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1074,6 +1154,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// A request to start an operation.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class StartOperationRequest : pb::IMessage<StartOperationRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1405,7 +1486,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1451,7 +1536,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1496,6 +1585,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// A request to cancel an operation.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class CancelOperationRequest : pb::IMessage<CancelOperationRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1533,6 +1623,7 @@ namespace Temporalio.Api.Nexus.V1 {
       service_ = other.service_;
       operation_ = other.operation_;
       operationId_ = other.operationId_;
+      operationToken_ = other.operationToken_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1577,6 +1668,8 @@ namespace Temporalio.Api.Nexus.V1 {
     private string operationId_ = "";
     /// <summary>
     /// Operation ID as originally generated by a Handler.
+    ///
+    /// Deprecated: Renamed to operation_token.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1584,6 +1677,21 @@ namespace Temporalio.Api.Nexus.V1 {
       get { return operationId_; }
       set {
         operationId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation_token" field.</summary>
+    public const int OperationTokenFieldNumber = 4;
+    private string operationToken_ = "";
+    /// <summary>
+    /// Operation token as originally generated by a Handler.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationToken {
+      get { return operationToken_; }
+      set {
+        operationToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -1605,6 +1713,7 @@ namespace Temporalio.Api.Nexus.V1 {
       if (Service != other.Service) return false;
       if (Operation != other.Operation) return false;
       if (OperationId != other.OperationId) return false;
+      if (OperationToken != other.OperationToken) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1615,6 +1724,7 @@ namespace Temporalio.Api.Nexus.V1 {
       if (Service.Length != 0) hash ^= Service.GetHashCode();
       if (Operation.Length != 0) hash ^= Operation.GetHashCode();
       if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
+      if (OperationToken.Length != 0) hash ^= OperationToken.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1645,6 +1755,10 @@ namespace Temporalio.Api.Nexus.V1 {
         output.WriteRawTag(26);
         output.WriteString(OperationId);
       }
+      if (OperationToken.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(OperationToken);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1667,6 +1781,10 @@ namespace Temporalio.Api.Nexus.V1 {
         output.WriteRawTag(26);
         output.WriteString(OperationId);
       }
+      if (OperationToken.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(OperationToken);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1685,6 +1803,9 @@ namespace Temporalio.Api.Nexus.V1 {
       }
       if (OperationId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      }
+      if (OperationToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationToken);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1707,6 +1828,9 @@ namespace Temporalio.Api.Nexus.V1 {
       if (other.OperationId.Length != 0) {
         OperationId = other.OperationId;
       }
+      if (other.OperationToken.Length != 0) {
+        OperationToken = other.OperationToken;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1718,7 +1842,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -1734,6 +1862,10 @@ namespace Temporalio.Api.Nexus.V1 {
             OperationId = input.ReadString();
             break;
           }
+          case 34: {
+            OperationToken = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1745,7 +1877,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -1761,6 +1897,10 @@ namespace Temporalio.Api.Nexus.V1 {
             OperationId = input.ReadString();
             break;
           }
+          case 34: {
+            OperationToken = input.ReadString();
+            break;
+          }
         }
       }
     }
@@ -1771,6 +1911,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// A Nexus request.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Request : pb::IMessage<Request>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2053,7 +2194,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2097,7 +2242,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2140,6 +2289,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// Response variant for StartOperationRequest.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class StartOperationResponse : pb::IMessage<StartOperationResponse>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2401,7 +2551,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -2443,7 +2597,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -2487,6 +2645,7 @@ namespace Temporalio.Api.Nexus.V1 {
       /// <summary>
       /// An operation completed successfully.
       /// </summary>
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class Sync : pb::IMessage<Sync>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -2663,7 +2822,11 @@ namespace Temporalio.Api.Nexus.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -2689,7 +2852,11 @@ namespace Temporalio.Api.Nexus.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;
@@ -2715,6 +2882,7 @@ namespace Temporalio.Api.Nexus.V1 {
       /// The operation will complete asynchronously.
       /// The returned ID can be used to reference this operation.
       /// </summary>
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class Async : pb::IMessage<Async>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -2751,6 +2919,7 @@ namespace Temporalio.Api.Nexus.V1 {
         public Async(Async other) : this() {
           operationId_ = other.operationId_;
           links_ = other.links_.Clone();
+          operationToken_ = other.operationToken_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -2763,6 +2932,9 @@ namespace Temporalio.Api.Nexus.V1 {
         /// <summary>Field number for the "operation_id" field.</summary>
         public const int OperationIdFieldNumber = 1;
         private string operationId_ = "";
+        /// <summary>
+        /// Deprecated: Renamed to operation_token.
+        /// </summary>
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public string OperationId {
@@ -2783,6 +2955,18 @@ namespace Temporalio.Api.Nexus.V1 {
           get { return links_; }
         }
 
+        /// <summary>Field number for the "operation_token" field.</summary>
+        public const int OperationTokenFieldNumber = 3;
+        private string operationToken_ = "";
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string OperationToken {
+          get { return operationToken_; }
+          set {
+            operationToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -2800,6 +2984,7 @@ namespace Temporalio.Api.Nexus.V1 {
           }
           if (OperationId != other.OperationId) return false;
           if(!links_.Equals(other.links_)) return false;
+          if (OperationToken != other.OperationToken) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -2809,6 +2994,7 @@ namespace Temporalio.Api.Nexus.V1 {
           int hash = 1;
           if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
           hash ^= links_.GetHashCode();
+          if (OperationToken.Length != 0) hash ^= OperationToken.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -2832,6 +3018,10 @@ namespace Temporalio.Api.Nexus.V1 {
             output.WriteString(OperationId);
           }
           links_.WriteTo(output, _repeated_links_codec);
+          if (OperationToken.Length != 0) {
+            output.WriteRawTag(26);
+            output.WriteString(OperationToken);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -2847,6 +3037,10 @@ namespace Temporalio.Api.Nexus.V1 {
             output.WriteString(OperationId);
           }
           links_.WriteTo(ref output, _repeated_links_codec);
+          if (OperationToken.Length != 0) {
+            output.WriteRawTag(26);
+            output.WriteString(OperationToken);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -2861,6 +3055,9 @@ namespace Temporalio.Api.Nexus.V1 {
             size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
           }
           size += links_.CalculateSize(_repeated_links_codec);
+          if (OperationToken.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationToken);
+          }
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
           }
@@ -2877,6 +3074,9 @@ namespace Temporalio.Api.Nexus.V1 {
             OperationId = other.OperationId;
           }
           links_.Add(other.links_);
+          if (other.OperationToken.Length != 0) {
+            OperationToken = other.OperationToken;
+          }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
 
@@ -2888,7 +3088,11 @@ namespace Temporalio.Api.Nexus.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -2898,6 +3102,10 @@ namespace Temporalio.Api.Nexus.V1 {
               }
               case 18: {
                 links_.AddEntriesFrom(input, _repeated_links_codec);
+                break;
+              }
+              case 26: {
+                OperationToken = input.ReadString();
                 break;
               }
             }
@@ -2911,7 +3119,11 @@ namespace Temporalio.Api.Nexus.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;
@@ -2921,6 +3133,10 @@ namespace Temporalio.Api.Nexus.V1 {
               }
               case 18: {
                 links_.AddEntriesFrom(ref input, _repeated_links_codec);
+                break;
+              }
+              case 26: {
+                OperationToken = input.ReadString();
                 break;
               }
             }
@@ -2938,6 +3154,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// Response variant for CancelOperationRequest.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class CancelOperationResponse : pb::IMessage<CancelOperationResponse>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -3064,7 +3281,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -3079,7 +3300,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -3093,6 +3318,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// A response indicating that the handler has successfully processed a request.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Response : pb::IMessage<Response>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -3316,7 +3542,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -3349,7 +3579,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -3381,6 +3615,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// A cluster-global binding from an endpoint ID to a target for dispatching incoming Nexus requests.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Endpoint : pb::IMessage<Endpoint>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -3715,7 +3950,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -3763,7 +4002,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -3810,6 +4053,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// Contains mutable fields for an Endpoint.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class EndpointSpec : pb::IMessage<EndpointSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -4041,7 +4285,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -4074,7 +4322,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -4106,6 +4358,7 @@ namespace Temporalio.Api.Nexus.V1 {
   /// <summary>
   /// Target to route requests to.
   /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class EndpointTarget : pb::IMessage<EndpointTarget>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -4329,7 +4582,11 @@ namespace Temporalio.Api.Nexus.V1 {
     #else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
@@ -4362,7 +4619,11 @@ namespace Temporalio.Api.Nexus.V1 {
     void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
@@ -4397,6 +4658,7 @@ namespace Temporalio.Api.Nexus.V1 {
       /// <summary>
       /// Target a worker polling on a Nexus task queue in a specific namespace.
       /// </summary>
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class Worker : pb::IMessage<Worker>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -4587,7 +4849,11 @@ namespace Temporalio.Api.Nexus.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -4610,7 +4876,11 @@ namespace Temporalio.Api.Nexus.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;
@@ -4634,6 +4904,7 @@ namespace Temporalio.Api.Nexus.V1 {
       /// At a later point, this will support providing credentials, in the meantime, an http.RoundTripper can be injected
       /// into the server to modify the request.
       /// </summary>
+      [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
       public sealed partial class External : pb::IMessage<External>
       #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
           , pb::IBufferMessage
@@ -4792,7 +5063,11 @@ namespace Temporalio.Api.Nexus.V1 {
         #else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
@@ -4811,7 +5086,11 @@ namespace Temporalio.Api.Nexus.V1 {
         void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
+          if ((tag & 7) == 4) {
+            // Abort on any end group tag.
+            return;
+          }
+          switch(tag) {
               default:
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
                 break;

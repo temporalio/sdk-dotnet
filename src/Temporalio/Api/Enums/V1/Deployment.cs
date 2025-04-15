@@ -29,14 +29,20 @@ namespace Temporalio.Api.Enums.V1 {
             "EicKI0RFUExPWU1FTlRfUkVBQ0hBQklMSVRZX1VOU1BFQ0lGSUVEEAASJQoh",
             "REVQTE9ZTUVOVF9SRUFDSEFCSUxJVFlfUkVBQ0hBQkxFEAESMQotREVQTE9Z",
             "TUVOVF9SRUFDSEFCSUxJVFlfQ0xPU0VEX1dPUktGTE9XU19PTkxZEAISJwoj",
-            "REVQTE9ZTUVOVF9SRUFDSEFCSUxJVFlfVU5SRUFDSEFCTEUQA0KHAQoYaW8u",
-            "dGVtcG9yYWwuYXBpLmVudW1zLnYxQg9EZXBsb3ltZW50UHJvdG9QAVohZ28u",
-            "dGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5B",
-            "cGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJv",
-            "dG8z"));
+            "REVQTE9ZTUVOVF9SRUFDSEFCSUxJVFlfVU5SRUFDSEFCTEUQAyqLAQoVVmVy",
+            "c2lvbkRyYWluYWdlU3RhdHVzEicKI1ZFUlNJT05fRFJBSU5BR0VfU1RBVFVT",
+            "X1VOU1BFQ0lGSUVEEAASJAogVkVSU0lPTl9EUkFJTkFHRV9TVEFUVVNfRFJB",
+            "SU5JTkcQARIjCh9WRVJTSU9OX0RSQUlOQUdFX1NUQVRVU19EUkFJTkVEEAIq",
+            "jAEKFFdvcmtlclZlcnNpb25pbmdNb2RlEiYKIldPUktFUl9WRVJTSU9OSU5H",
+            "X01PREVfVU5TUEVDSUZJRUQQABImCiJXT1JLRVJfVkVSU0lPTklOR19NT0RF",
+            "X1VOVkVSU0lPTkVEEAESJAogV09SS0VSX1ZFUlNJT05JTkdfTU9ERV9WRVJT",
+            "SU9ORUQQAkKHAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQg9EZXBsb3lt",
+            "ZW50UHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1z",
+            "qgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6",
+            "OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.DeploymentReachability), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.DeploymentReachability), typeof(global::Temporalio.Api.Enums.V1.VersionDrainageStatus), typeof(global::Temporalio.Api.Enums.V1.WorkerVersioningMode), }, null, null));
     }
     #endregion
 
@@ -67,6 +73,67 @@ namespace Temporalio.Api.Enums.V1 {
     /// deployment went out of retention period. The deployment can be decommissioned safely.
     /// </summary>
     [pbr::OriginalName("DEPLOYMENT_REACHABILITY_UNREACHABLE")] Unreachable = 3,
+  }
+
+  /// <summary>
+  /// (-- api-linter: core::0216::synonyms=disabled
+  ///     aip.dev/not-precedent: Call this status because it is . --)
+  /// Specify the drainage status for a Worker Deployment Version so users can decide whether they
+  /// can safely decommission the version.
+  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
+  /// </summary>
+  public enum VersionDrainageStatus {
+    /// <summary>
+    /// Drainage Status is not specified.
+    /// </summary>
+    [pbr::OriginalName("VERSION_DRAINAGE_STATUS_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// The Worker Deployment Version is not used by new workflows but is still used by
+    /// open pinned workflows. The version cannot be decommissioned safely.
+    /// </summary>
+    [pbr::OriginalName("VERSION_DRAINAGE_STATUS_DRAINING")] Draining = 1,
+    /// <summary>
+    /// The Worker Deployment Version is not used by new or open workflows, but might be still needed by
+    /// Queries sent to closed workflows. The version can be decommissioned safely if user does
+    /// not query closed workflows. If the user does query closed workflows for some time x after
+    /// workflows are closed, they should decommission the version after it has been drained for that duration.
+    /// </summary>
+    [pbr::OriginalName("VERSION_DRAINAGE_STATUS_DRAINED")] Drained = 2,
+  }
+
+  /// <summary>
+  /// Versioning Mode of a worker is set by the app developer in the worker code, and specifies the
+  /// behavior of the system in the following related aspects:
+  /// - Whether or not Temporal Server considers this worker's version (Build ID) when dispatching
+  ///   tasks to it.
+  /// - Whether or not the workflows processed by this worker are versioned using the worker's version.
+  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
+  /// </summary>
+  public enum WorkerVersioningMode {
+    [pbr::OriginalName("WORKER_VERSIONING_MODE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Workers with this mode are not distinguished from each other for task routing, even if they
+    /// have different Build IDs.
+    /// Workflows processed by this worker will be unversioned and user needs to use Patching to keep
+    /// the new code compatible with prior versions.
+    /// This mode is recommended to be used along with Rolling Upgrade deployment strategies.
+    /// Workers with this mode are represented by the special string `__unversioned__` in the APIs.
+    /// </summary>
+    [pbr::OriginalName("WORKER_VERSIONING_MODE_UNVERSIONED")] Unversioned = 1,
+    /// <summary>
+    /// Workers with this mode are part of a Worker Deployment Version which is identified as
+    /// "&lt;deployment_name>.&lt;build_id>". Such workers are called "versioned" as opposed to
+    /// "unversioned".
+    /// Each Deployment Version is distinguished from other Versions for task routing and users can
+    /// configure Temporal Server to send tasks to a particular Version (see
+    /// `WorkerDeploymentInfo.routing_config`). This mode is the best option for Blue/Green and
+    /// Rainbow strategies (but typically not suitable for Rolling upgrades.)
+    /// Workflow Versioning Behaviors are enabled in this mode: each workflow type must choose
+    /// between the Pinned and AutoUpgrade behaviors. Depending on the chosen behavior, the user may
+    /// or may not need to use Patching to keep the new code compatible with prior versions. (see
+    /// VersioningBehavior enum.)
+    /// </summary>
+    [pbr::OriginalName("WORKER_VERSIONING_MODE_VERSIONED")] Versioned = 2,
   }
 
   #endregion
