@@ -52,6 +52,10 @@ dotnet_diagnostic.SA1118.severity = none
 # To test lambda attributes, lambda and attribute share line
 dotnet_diagnostic.SA1134.severity = none
 
+# We want to have classes near their tests
+dotnet_diagnostic.SA1201.severity = none
+dotnet_diagnostic.SA1204.severity = none
+
 # We allow underscores as names and Rosyln devs won't fix
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/2599
 dotnet_diagnostic.SA1313.severity = none

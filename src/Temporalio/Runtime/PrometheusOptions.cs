@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Temporalio.Runtime
 {
@@ -40,6 +41,12 @@ namespace Temporalio.Runtime
         /// seconds. If false, it is integer milliseconds.
         /// </summary>
         public bool UseSecondsForDuration { get; set; }
+
+        /// <summary>
+        /// Gets or sets the histogram bucket overrides. The dictionary key is the metric name and
+        /// the value is the collection of buckets as floats.
+        /// </summary>
+        public IReadOnlyDictionary<string, IReadOnlyCollection<double>>? HistogramBucketOverrides { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

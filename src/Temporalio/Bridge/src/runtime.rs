@@ -5,6 +5,7 @@ use crate::ByteArrayRef;
 use crate::MetadataRef;
 
 use serde_json::json;
+use std::collections::HashMap;
 use std::fmt;
 use std::net::SocketAddr;
 use std::str::FromStr;
@@ -17,6 +18,7 @@ use temporal_sdk_core::telemetry::{build_otlp_metric_exporter, start_prometheus_
 use temporal_sdk_core::CoreRuntime;
 use temporal_sdk_core::TokioRuntimeBuilder;
 use temporal_sdk_core_api::telemetry::metrics::CoreMeter;
+use temporal_sdk_core_api::telemetry::HistogramBucketOverrides;
 use temporal_sdk_core_api::telemetry::MetricTemporality;
 use temporal_sdk_core_api::telemetry::{CoreLog, CoreLogConsumer};
 use temporal_sdk_core_api::telemetry::{
@@ -85,6 +87,9 @@ pub struct OpenTelemetryOptions {
     metric_temporality: OpenTelemetryMetricTemporality,
     durations_as_seconds: bool,
     protocol: OpenTelemetryProtocol,
+    /// Histogram bucket overrides in form of
+    /// <metric1>\n<float>,<float>,<float>\n<metric2>\n<float>,<float>,<float>
+    histogram_bucket_overrides: MetadataRef,
 }
 
 #[repr(C)]
@@ -105,6 +110,9 @@ pub struct PrometheusOptions {
     counters_total_suffix: bool,
     unit_suffix: bool,
     durations_as_seconds: bool,
+    /// Histogram bucket overrides in form of
+    /// <metric1>\n<float>,<float>,<float>\n<metric2>\n<float>,<float>,<float>
+    histogram_bucket_overrides: MetadataRef,
 }
 
 #[derive(Clone)]
@@ -378,7 +386,12 @@ fn create_meter(
                 OpenTelemetryMetricTemporality::Delta => MetricTemporality::Delta,
             })
             .global_tags(options.global_tags.to_string_map_on_newlines())
-            .use_seconds_for_durations(otel_options.durations_as_seconds);
+            .use_seconds_for_durations(otel_options.durations_as_seconds)
+            .histogram_bucket_overrides(HistogramBucketOverrides {
+                overrides: parse_histogram_bucket_overrides(
+                    &otel_options.histogram_bucket_overrides,
+                )?,
+            });
         if otel_options.metric_periodicity_millis > 0 {
             build.metric_periodicity(Duration::from_millis(
                 otel_options.metric_periodicity_millis.into(),
@@ -398,7 +411,12 @@ fn create_meter(
             .global_tags(options.global_tags.to_string_map_on_newlines())
             .counters_total_suffix(prom_options.counters_total_suffix)
             .unit_suffix(prom_options.unit_suffix)
-            .use_seconds_for_durations(prom_options.durations_as_seconds);
+            .use_seconds_for_durations(prom_options.durations_as_seconds)
+            .histogram_bucket_overrides(HistogramBucketOverrides {
+                overrides: parse_histogram_bucket_overrides(
+                    &prom_options.histogram_bucket_overrides,
+                )?,
+            });
         Ok(start_prometheus_metric_exporter(build.build()?)?.meter)
     } else if let Some(custom_meter) = custom_meter {
         Ok(Arc::new(custom_meter))
@@ -407,4 +425,20 @@ fn create_meter(
             "Either OpenTelemetry config, Prometheus config, or custom meter must be provided"
         ))
     }
+}
+
+fn parse_histogram_bucket_overrides(
+    raw: &MetadataRef,
+) -> anyhow::Result<HashMap<String, Vec<f64>>> {
+    raw.to_string_map_on_newlines()
+        .into_iter()
+        .map(|(k, v)| {
+            let vals: anyhow::Result<Vec<f64>> = v
+                .split(',')
+                .map(str::parse::<f64>)
+                .collect::<Result<_, _>>() // Result<Vec<f64>, ParseFloatError>
+                .map_err(Into::into);
+            vals.map(|vals| (k, vals))
+        })
+        .collect()
 }

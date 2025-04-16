@@ -1,5 +1,3 @@
-#pragma warning disable SA1201, SA1204 // We want to have classes near their tests
-
 namespace Temporalio.Tests.Testing;
 
 using System.Diagnostics;
