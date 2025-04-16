@@ -57,9 +57,6 @@ namespace Temporalio.Worker
             {
                 switch (job.VariantCase)
                 {
-                    case WorkflowActivationJob.VariantOneofCase.CancelWorkflow:
-                        await DecodeAsync(codec, job.CancelWorkflow.Details).ConfigureAwait(false);
-                        break;
                     case WorkflowActivationJob.VariantOneofCase.DoUpdate:
                         await DecodeAsync(codec, job.DoUpdate.Headers).ConfigureAwait(false);
                         await DecodeAsync(codec, job.DoUpdate.Input).ConfigureAwait(false);

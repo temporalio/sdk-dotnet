@@ -83,11 +83,11 @@ namespace Temporalio.Api.Common.V1 {
             "aW5rLldvcmtmbG93RXZlbnQuRXZlbnRSZWZlcmVuY2VIABpYCg5FdmVudFJl",
             "ZmVyZW5jZRIQCghldmVudF9pZBgBIAEoAxI0CgpldmVudF90eXBlGAIgASgO",
             "MiAudGVtcG9yYWwuYXBpLmVudW1zLnYxLkV2ZW50VHlwZUILCglyZWZlcmVu",
-            "Y2UaGgoIQmF0Y2hKb2ISDgoGam9iX2lkGAEgASgJQgkKB3ZhcmlhbnRCiQEK",
-            "GWlvLnRlbXBvcmFsLmFwaS5jb21tb24udjFCDE1lc3NhZ2VQcm90b1ABWiNn",
-            "by50ZW1wb3JhbC5pby9hcGkvY29tbW9uL3YxO2NvbW1vbqoCGFRlbXBvcmFs",
-            "aW8uQXBpLkNvbW1vbi5WMeoCG1RlbXBvcmFsaW86OkFwaTo6Q29tbW9uOjpW",
-            "MWIGcHJvdG8z"));
+            "Y2UaGgoIQmF0Y2hKb2ISDgoGam9iX2lkGAEgASgJQgkKB3ZhcmlhbnQiIAoI",
+            "UHJpb3JpdHkSFAoMcHJpb3JpdHlfa2V5GAEgASgFQokBChlpby50ZW1wb3Jh",
+            "bC5hcGkuY29tbW9uLnYxQgxNZXNzYWdlUHJvdG9QAVojZ28udGVtcG9yYWwu",
+            "aW8vYXBpL2NvbW1vbi92MTtjb21tb26qAhhUZW1wb3JhbGlvLkFwaS5Db21t",
+            "b24uVjHqAhtUZW1wb3JhbGlvOjpBcGk6OkNvbW1vbjo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.EventTypeReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -108,7 +108,8 @@ namespace Temporalio.Api.Common.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Callback), global::Temporalio.Api.Common.V1.Callback.Parser, new[]{ "Nexus", "Internal" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Callback.Types.Nexus), global::Temporalio.Api.Common.V1.Callback.Types.Nexus.Parser, new[]{ "Url", "Header" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Callback.Types.Internal), global::Temporalio.Api.Common.V1.Callback.Types.Internal.Parser, new[]{ "Data" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link), global::Temporalio.Api.Common.V1.Link.Parser, new[]{ "WorkflowEvent", "BatchJob" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent), global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Parser, new[]{ "Namespace", "WorkflowId", "RunId", "EventRef" }, new[]{ "Reference" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Types.EventReference), global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Types.EventReference.Parser, new[]{ "EventId", "EventType" }, null, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.BatchJob), global::Temporalio.Api.Common.V1.Link.Types.BatchJob.Parser, new[]{ "JobId" }, null, null, null, null)})
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.BatchJob), global::Temporalio.Api.Common.V1.Link.Types.BatchJob.Parser, new[]{ "JobId" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Priority), global::Temporalio.Api.Common.V1.Priority.Parser, new[]{ "PriorityKey" }, null, null, null, null)
           }));
     }
     #endregion
@@ -2713,6 +2714,7 @@ namespace Temporalio.Api.Common.V1 {
   /// Identifies the version that a worker is compatible with when polling or identifying itself,
   /// and whether or not this worker is opting into the build-id based versioning feature. This is
   /// used by matching to determine which workers ought to receive what tasks.
+  /// Deprecated. Use WorkerDeploymentOptions instead.
   /// </summary>
   public sealed partial class WorkerVersionCapabilities : pb::IMessage<WorkerVersionCapabilities>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -5297,6 +5299,228 @@ namespace Temporalio.Api.Common.V1 {
 
     }
     #endregion
+
+  }
+
+  /// <summary>
+  /// Priority contains metadata that controls relative ordering of task processing
+  /// when tasks are backlogged in a queue. Initially, Priority will be used in
+  /// activity and workflow task queues, which are typically where backlogs exist.
+  /// Other queues in the server (such as transfer and timer queues) and rate
+  /// limiting decisions do not use Priority, but may in the future.
+  ///
+  /// Priority is attached to workflows and activities. Activities and child
+  /// workflows inherit Priority from the workflow that created them, but may
+  /// override fields when they are started or modified. For each field of a
+  /// Priority on an activity/workflow, not present or equal to zero/empty string
+  /// means to inherit the value from the calling workflow, or if there is no
+  /// calling workflow, then use the default (documented below).
+  ///
+  /// Despite being named "Priority", this message will also contains fields that
+  /// control "fairness" mechanisms.
+  ///
+  /// The overall semantics of Priority are:
+  /// 1. First, consider "priority_key": lower number goes first.
+  /// (more will be added here later)
+  /// </summary>
+  public sealed partial class Priority : pb::IMessage<Priority>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Priority> _parser = new pb::MessageParser<Priority>(() => new Priority());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Priority> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Common.V1.MessageReflection.Descriptor.MessageTypes[16]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Priority() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Priority(Priority other) : this() {
+      priorityKey_ = other.priorityKey_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Priority Clone() {
+      return new Priority(this);
+    }
+
+    /// <summary>Field number for the "priority_key" field.</summary>
+    public const int PriorityKeyFieldNumber = 1;
+    private int priorityKey_;
+    /// <summary>
+    /// Priority key is a positive integer from 1 to n, where smaller integers
+    /// correspond to higher priorities (tasks run sooner). In general, tasks in
+    /// a queue should be processed in close to priority order, although small
+    /// deviations are possible.
+    ///
+    /// The maximum priority value (minimum priority) is determined by server
+    /// configuration, and defaults to 5.
+    ///
+    /// The default priority is (min+max)/2. With the default max of 5 and min of
+    /// 1, that comes out to 3.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int PriorityKey {
+      get { return priorityKey_; }
+      set {
+        priorityKey_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Priority);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Priority other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (PriorityKey != other.PriorityKey) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (PriorityKey != 0) hash ^= PriorityKey.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (PriorityKey != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(PriorityKey);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (PriorityKey != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(PriorityKey);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (PriorityKey != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PriorityKey);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Priority other) {
+      if (other == null) {
+        return;
+      }
+      if (other.PriorityKey != 0) {
+        PriorityKey = other.PriorityKey;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            PriorityKey = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            PriorityKey = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
 
   }
 

@@ -32,7 +32,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             "dGl2aXR5VGFzaxISCgp0YXNrX3Rva2VuGAEgASgMEi0KBXN0YXJ0GAMgASgL",
             "MhwuY29yZXNkay5hY3Rpdml0eV90YXNrLlN0YXJ0SAASLwoGY2FuY2VsGAQg",
             "ASgLMh0uY29yZXNkay5hY3Rpdml0eV90YXNrLkNhbmNlbEgAQgkKB3Zhcmlh",
-            "bnQi7QYKBVN0YXJ0EhoKEndvcmtmbG93X25hbWVzcGFjZRgBIAEoCRIVCg13",
+            "bnQioQcKBVN0YXJ0EhoKEndvcmtmbG93X25hbWVzcGFjZRgBIAEoCRIVCg13",
             "b3JrZmxvd190eXBlGAIgASgJEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgDIAEo",
             "CzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24S",
             "EwoLYWN0aXZpdHlfaWQYBCABKAkSFQoNYWN0aXZpdHlfdHlwZRgFIAEoCRJF",
@@ -49,19 +49,20 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             "dXQYDiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SNAoRaGVhcnRi",
             "ZWF0X3RpbWVvdXQYDyABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24S",
             "OQoMcmV0cnlfcG9saWN5GBAgASgLMiMudGVtcG9yYWwuYXBpLmNvbW1vbi52",
-            "MS5SZXRyeVBvbGljeRIQCghpc19sb2NhbBgRIAEoCBpUChFIZWFkZXJGaWVs",
-            "ZHNFbnRyeRILCgNrZXkYASABKAkSLgoFdmFsdWUYAiABKAsyHy50ZW1wb3Jh",
-            "bC5hcGkuY29tbW9uLnYxLlBheWxvYWQ6AjgBIkUKBkNhbmNlbBI7CgZyZWFz",
-            "b24YASABKA4yKy5jb3Jlc2RrLmFjdGl2aXR5X3Rhc2suQWN0aXZpdHlDYW5j",
-            "ZWxSZWFzb24qWAoUQWN0aXZpdHlDYW5jZWxSZWFzb24SDQoJTk9UX0ZPVU5E",
-            "EAASDQoJQ0FOQ0VMTEVEEAESDQoJVElNRURfT1VUEAISEwoPV09SS0VSX1NI",
-            "VVRET1dOEANCMuoCL1RlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6OkFw",
-            "aTo6QWN0aXZpdHlUYXNrYgZwcm90bzM="));
+            "MS5SZXRyeVBvbGljeRIyCghwcmlvcml0eRgSIAEoCzIgLnRlbXBvcmFsLmFw",
+            "aS5jb21tb24udjEuUHJpb3JpdHkSEAoIaXNfbG9jYWwYESABKAgaVAoRSGVh",
+            "ZGVyRmllbGRzRW50cnkSCwoDa2V5GAEgASgJEi4KBXZhbHVlGAIgASgLMh8u",
+            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkOgI4ASJFCgZDYW5jZWwS",
+            "OwoGcmVhc29uGAEgASgOMisuY29yZXNkay5hY3Rpdml0eV90YXNrLkFjdGl2",
+            "aXR5Q2FuY2VsUmVhc29uKlgKFEFjdGl2aXR5Q2FuY2VsUmVhc29uEg0KCU5P",
+            "VF9GT1VORBAAEg0KCUNBTkNFTExFRBABEg0KCVRJTUVEX09VVBACEhMKD1dP",
+            "UktFUl9TSFVURE9XThADQjLqAi9UZW1wb3JhbGlvOjpJbnRlcm5hbDo6QnJp",
+            "ZGdlOjpBcGk6OkFjdGl2aXR5VGFza2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityTask), global::Temporalio.Bridge.Api.ActivityTask.ActivityTask.Parser, new[]{ "TaskToken", "Start", "Cancel" }, new[]{ "Variant" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Start), global::Temporalio.Bridge.Api.ActivityTask.Start.Parser, new[]{ "WorkflowNamespace", "WorkflowType", "WorkflowExecution", "ActivityId", "ActivityType", "HeaderFields", "Input", "HeartbeatDetails", "ScheduledTime", "CurrentAttemptScheduledTime", "StartedTime", "Attempt", "ScheduleToCloseTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "IsLocal" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Start), global::Temporalio.Bridge.Api.ActivityTask.Start.Parser, new[]{ "WorkflowNamespace", "WorkflowType", "WorkflowExecution", "ActivityId", "ActivityType", "HeaderFields", "Input", "HeartbeatDetails", "ScheduledTime", "CurrentAttemptScheduledTime", "StartedTime", "Attempt", "ScheduleToCloseTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "Priority", "IsLocal" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Cancel), global::Temporalio.Bridge.Api.ActivityTask.Cancel.Parser, new[]{ "Reason" }, null, null, null, null)
           }));
     }
@@ -475,6 +476,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       startToCloseTimeout_ = other.startToCloseTimeout_ != null ? other.startToCloseTimeout_.Clone() : null;
       heartbeatTimeout_ = other.heartbeatTimeout_ != null ? other.heartbeatTimeout_.Clone() : null;
       retryPolicy_ = other.retryPolicy_ != null ? other.retryPolicy_.Clone() : null;
+      priority_ = other.priority_ != null ? other.priority_.Clone() : null;
       isLocal_ = other.isLocal_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -718,6 +720,21 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       }
     }
 
+    /// <summary>Field number for the "priority" field.</summary>
+    public const int PriorityFieldNumber = 18;
+    private global::Temporalio.Api.Common.V1.Priority priority_;
+    /// <summary>
+    /// Priority of this activity. Local activities will always have this field set to the default.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.Priority Priority {
+      get { return priority_; }
+      set {
+        priority_ = value;
+      }
+    }
+
     /// <summary>Field number for the "is_local" field.</summary>
     public const int IsLocalFieldNumber = 17;
     private bool isLocal_;
@@ -765,6 +782,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       if (!object.Equals(StartToCloseTimeout, other.StartToCloseTimeout)) return false;
       if (!object.Equals(HeartbeatTimeout, other.HeartbeatTimeout)) return false;
       if (!object.Equals(RetryPolicy, other.RetryPolicy)) return false;
+      if (!object.Equals(Priority, other.Priority)) return false;
       if (IsLocal != other.IsLocal) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -789,6 +807,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       if (startToCloseTimeout_ != null) hash ^= StartToCloseTimeout.GetHashCode();
       if (heartbeatTimeout_ != null) hash ^= HeartbeatTimeout.GetHashCode();
       if (retryPolicy_ != null) hash ^= RetryPolicy.GetHashCode();
+      if (priority_ != null) hash ^= Priority.GetHashCode();
       if (IsLocal != false) hash ^= IsLocal.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -867,6 +886,10 @@ namespace Temporalio.Bridge.Api.ActivityTask {
         output.WriteRawTag(136, 1);
         output.WriteBool(IsLocal);
       }
+      if (priority_ != null) {
+        output.WriteRawTag(146, 1);
+        output.WriteMessage(Priority);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -936,6 +959,10 @@ namespace Temporalio.Bridge.Api.ActivityTask {
         output.WriteRawTag(136, 1);
         output.WriteBool(IsLocal);
       }
+      if (priority_ != null) {
+        output.WriteRawTag(146, 1);
+        output.WriteMessage(Priority);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -987,6 +1014,9 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       }
       if (retryPolicy_ != null) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(RetryPolicy);
+      }
+      if (priority_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Priority);
       }
       if (IsLocal != false) {
         size += 2 + 1;
@@ -1068,6 +1098,12 @@ namespace Temporalio.Bridge.Api.ActivityTask {
           RetryPolicy = new global::Temporalio.Api.Common.V1.RetryPolicy();
         }
         RetryPolicy.MergeFrom(other.RetryPolicy);
+      }
+      if (other.priority_ != null) {
+        if (priority_ == null) {
+          Priority = new global::Temporalio.Api.Common.V1.Priority();
+        }
+        Priority.MergeFrom(other.Priority);
       }
       if (other.IsLocal != false) {
         IsLocal = other.IsLocal;
@@ -1179,6 +1215,13 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             IsLocal = input.ReadBool();
             break;
           }
+          case 146: {
+            if (priority_ == null) {
+              Priority = new global::Temporalio.Api.Common.V1.Priority();
+            }
+            input.ReadMessage(Priority);
+            break;
+          }
         }
       }
     #endif
@@ -1284,6 +1327,13 @@ namespace Temporalio.Bridge.Api.ActivityTask {
           }
           case 136: {
             IsLocal = input.ReadBool();
+            break;
+          }
+          case 146: {
+            if (priority_ == null) {
+              Priority = new global::Temporalio.Api.Common.V1.Priority();
+            }
+            input.ReadMessage(Priority);
             break;
           }
         }

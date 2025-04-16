@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use crate::runtime::Runtime;
 use crate::ByteArray;
 use crate::ByteArrayRef;
@@ -37,6 +39,8 @@ pub struct TestServerOptions {
     port: u16,
     /// Newline delimited
     extra_args: ByteArrayRef,
+    /// 0 means no TTL
+    download_ttl_ms: u64,
 }
 
 /// Anything besides user data must be freed if non-null.
@@ -251,6 +255,11 @@ impl TestServerOptions {
                     }
                 },
                 dest_dir: self.download_dest_dir.to_option_string(),
+                ttl: if self.download_ttl_ms == 0 {
+                    None
+                } else {
+                    Some(Duration::from_secs(self.download_ttl_ms))
+                },
             }
         }
     }

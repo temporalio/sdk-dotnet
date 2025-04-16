@@ -43,6 +43,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke DeleteWorkerDeployment.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteWorkerDeploymentResponse> DeleteWorkerDeploymentAsync(DeleteWorkerDeploymentRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteWorkerDeployment", req, DeleteWorkerDeploymentResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteWorkerDeploymentVersion.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteWorkerDeploymentVersionResponse> DeleteWorkerDeploymentVersionAsync(DeleteWorkerDeploymentVersionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteWorkerDeploymentVersion", req, DeleteWorkerDeploymentVersionResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke DeleteWorkflowExecution.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -117,6 +139,28 @@ namespace Temporalio.Client
         public Task<DescribeTaskQueueResponse> DescribeTaskQueueAsync(DescribeTaskQueueRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DescribeTaskQueue", req, DescribeTaskQueueResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DescribeWorkerDeployment.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DescribeWorkerDeploymentResponse> DescribeWorkerDeploymentAsync(DescribeWorkerDeploymentRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DescribeWorkerDeployment", req, DescribeWorkerDeploymentResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DescribeWorkerDeploymentVersion.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DescribeWorkerDeploymentVersionResponse> DescribeWorkerDeploymentVersionAsync(DescribeWorkerDeploymentVersionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DescribeWorkerDeploymentVersion", req, DescribeWorkerDeploymentVersionResponse.Parser, options);
         }
 
         /// <summary>
@@ -351,6 +395,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke ListWorkerDeployments.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ListWorkerDeploymentsResponse> ListWorkerDeploymentsAsync(ListWorkerDeploymentsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ListWorkerDeployments", req, ListWorkerDeploymentsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke ListWorkflowExecutions.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -373,14 +428,14 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Invoke PauseActivityById.
+        /// Invoke PauseActivity.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public Task<PauseActivityByIdResponse> PauseActivityByIdAsync(PauseActivityByIdRequest req, RpcOptions? options = null)
+        public Task<PauseActivityResponse> PauseActivityAsync(PauseActivityRequest req, RpcOptions? options = null)
         {
-            return InvokeRpcAsync("PauseActivityById", req, PauseActivityByIdResponse.Parser, options);
+            return InvokeRpcAsync("PauseActivity", req, PauseActivityResponse.Parser, options);
         }
 
         /// <summary>
@@ -483,14 +538,14 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Invoke ResetActivityById.
+        /// Invoke ResetActivity.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public Task<ResetActivityByIdResponse> ResetActivityByIdAsync(ResetActivityByIdRequest req, RpcOptions? options = null)
+        public Task<ResetActivityResponse> ResetActivityAsync(ResetActivityRequest req, RpcOptions? options = null)
         {
-            return InvokeRpcAsync("ResetActivityById", req, ResetActivityByIdResponse.Parser, options);
+            return InvokeRpcAsync("ResetActivity", req, ResetActivityResponse.Parser, options);
         }
 
         /// <summary>
@@ -659,6 +714,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke SetWorkerDeploymentCurrentVersion.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<SetWorkerDeploymentCurrentVersionResponse> SetWorkerDeploymentCurrentVersionAsync(SetWorkerDeploymentCurrentVersionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("SetWorkerDeploymentCurrentVersion", req, SetWorkerDeploymentCurrentVersionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke SetWorkerDeploymentRampingVersion.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<SetWorkerDeploymentRampingVersionResponse> SetWorkerDeploymentRampingVersionAsync(SetWorkerDeploymentRampingVersionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("SetWorkerDeploymentRampingVersion", req, SetWorkerDeploymentRampingVersionResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke ShutdownWorker.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -736,25 +813,25 @@ namespace Temporalio.Client
         }
 
         /// <summary>
-        /// Invoke UnpauseActivityById.
+        /// Invoke UnpauseActivity.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public Task<UnpauseActivityByIdResponse> UnpauseActivityByIdAsync(UnpauseActivityByIdRequest req, RpcOptions? options = null)
+        public Task<UnpauseActivityResponse> UnpauseActivityAsync(UnpauseActivityRequest req, RpcOptions? options = null)
         {
-            return InvokeRpcAsync("UnpauseActivityById", req, UnpauseActivityByIdResponse.Parser, options);
+            return InvokeRpcAsync("UnpauseActivity", req, UnpauseActivityResponse.Parser, options);
         }
 
         /// <summary>
-        /// Invoke UpdateActivityOptionsById.
+        /// Invoke UpdateActivityOptions.
         /// </summary>
         /// <param name="req">Request for the call.</param>
         /// <param name="options">Optional RPC options.</param>
         /// <returns>RPC response</returns>
-        public Task<UpdateActivityOptionsByIdResponse> UpdateActivityOptionsByIdAsync(UpdateActivityOptionsByIdRequest req, RpcOptions? options = null)
+        public Task<UpdateActivityOptionsResponse> UpdateActivityOptionsAsync(UpdateActivityOptionsRequest req, RpcOptions? options = null)
         {
-            return InvokeRpcAsync("UpdateActivityOptionsById", req, UpdateActivityOptionsByIdResponse.Parser, options);
+            return InvokeRpcAsync("UpdateActivityOptions", req, UpdateActivityOptionsResponse.Parser, options);
         }
 
         /// <summary>
@@ -788,6 +865,17 @@ namespace Temporalio.Client
         public Task<UpdateWorkerBuildIdCompatibilityResponse> UpdateWorkerBuildIdCompatibilityAsync(UpdateWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateWorkerBuildIdCompatibility", req, UpdateWorkerBuildIdCompatibilityResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateWorkerDeploymentVersionMetadata.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateWorkerDeploymentVersionMetadataResponse> UpdateWorkerDeploymentVersionMetadataAsync(UpdateWorkerDeploymentVersionMetadataRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateWorkerDeploymentVersionMetadata", req, UpdateWorkerDeploymentVersionMetadataResponse.Parser, options);
         }
 
         /// <summary>

@@ -31,6 +31,11 @@ impl ByteArrayRef {
         }
     }
 
+    fn empty() -> ByteArrayRef {
+        static EMPTY: &'static str = "";
+        ByteArrayRef::from_str(&EMPTY)
+    }
+
     fn to_slice(&self) -> &[u8] {
         unsafe { std::slice::from_raw_parts(self.data, self.size) }
     }
@@ -101,12 +106,6 @@ impl ByteArrayRef {
 impl From<&str> for ByteArrayRef {
     fn from(s: &str) -> ByteArrayRef {
         ByteArrayRef::from_str(s)
-    }
-}
-
-impl From<String> for ByteArrayRef {
-    fn from(s: String) -> ByteArrayRef {
-        ByteArrayRef::from_str(&s)
     }
 }
 

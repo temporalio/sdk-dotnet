@@ -388,6 +388,8 @@ namespace Temporalio.Bridge
                         download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                         port = (ushort)(port ?? 0),
                         extra_args = scope.NewlineDelimited(args),
+                        download_ttl_ms =
+                            (ulong)(options.DevServerOptions.DownloadTtl?.TotalMilliseconds ?? 0),
                     }),
                 namespace_ = scope.ByteArray(options.Namespace),
                 ip = scope.ByteArray(ip),
@@ -425,6 +427,8 @@ namespace Temporalio.Bridge
                 download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                 port = (ushort)(port ?? 0),
                 extra_args = scope.NewlineDelimited(options.TestServer.ExtraArgs),
+                download_ttl_ms =
+                    (ulong)(options.TestServer.DownloadTtl?.TotalMilliseconds ?? 0),
             };
         }
 

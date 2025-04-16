@@ -338,6 +338,10 @@ typedef struct TestServerOptions {
    * Newline delimited
    */
   struct ByteArrayRef extra_args;
+  /**
+   * 0 means no TTL
+   */
+  uint64_t download_ttl_ms;
 } TestServerOptions;
 
 typedef struct DevServerOptions {

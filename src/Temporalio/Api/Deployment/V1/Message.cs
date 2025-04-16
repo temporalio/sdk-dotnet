@@ -26,41 +26,91 @@ namespace Temporalio.Api.Deployment.V1 {
           string.Concat(
             "Cih0ZW1wb3JhbC9hcGkvZGVwbG95bWVudC92MS9tZXNzYWdlLnByb3RvEhp0",
             "ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MRofZ29vZ2xlL3Byb3RvYnVmL3Rp",
-            "bWVzdGFtcC5wcm90bxomdGVtcG9yYWwvYXBpL2VudW1zL3YxL3Rhc2tfcXVl",
-            "dWUucHJvdG8aJHRlbXBvcmFsL2FwaS9jb21tb24vdjEvbWVzc2FnZS5wcm90",
-            "byIzCgpEZXBsb3ltZW50EhMKC3Nlcmllc19uYW1lGAEgASgJEhAKCGJ1aWxk",
-            "X2lkGAIgASgJIo4ECg5EZXBsb3ltZW50SW5mbxI6CgpkZXBsb3ltZW50GAEg",
-            "ASgLMiYudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuRGVwbG95bWVudBIv",
-            "CgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
-            "bXASUgoQdGFza19xdWV1ZV9pbmZvcxgDIAMoCzI4LnRlbXBvcmFsLmFwaS5k",
-            "ZXBsb3ltZW50LnYxLkRlcGxveW1lbnRJbmZvLlRhc2tRdWV1ZUluZm8SSgoI",
-            "bWV0YWRhdGEYBCADKAsyOC50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5E",
-            "ZXBsb3ltZW50SW5mby5NZXRhZGF0YUVudHJ5EhIKCmlzX2N1cnJlbnQYBSAB",
-            "KAgaUAoNTWV0YWRhdGFFbnRyeRILCgNrZXkYASABKAkSLgoFdmFsdWUYAiAB",
-            "KAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQ6AjgBGogBCg1U",
-            "YXNrUXVldWVJbmZvEgwKBG5hbWUYASABKAkSMgoEdHlwZRgCIAEoDjIkLnRl",
-            "bXBvcmFsLmFwaS5lbnVtcy52MS5UYXNrUXVldWVUeXBlEjUKEWZpcnN0X3Bv",
-            "bGxlcl90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLq",
-            "AQoYVXBkYXRlRGVwbG95bWVudE1ldGFkYXRhEl8KDnVwc2VydF9lbnRyaWVz",
-            "GAEgAygLMkcudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuVXBkYXRlRGVw",
-            "bG95bWVudE1ldGFkYXRhLlVwc2VydEVudHJpZXNFbnRyeRIWCg5yZW1vdmVf",
-            "ZW50cmllcxgCIAMoCRpVChJVcHNlcnRFbnRyaWVzRW50cnkSCwoDa2V5GAEg",
-            "ASgJEi4KBXZhbHVlGAIgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Q",
-            "YXlsb2FkOgI4ASKVAQoSRGVwbG95bWVudExpc3RJbmZvEjoKCmRlcGxveW1l",
-            "bnQYASABKAsyJi50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5EZXBsb3lt",
-            "ZW50Ei8KC2NyZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp",
-            "bWVzdGFtcBISCgppc19jdXJyZW50GAMgASgIQp0BCh1pby50ZW1wb3JhbC5h",
-            "cGkuZGVwbG95bWVudC52MUIMTWVzc2FnZVByb3RvUAFaK2dvLnRlbXBvcmFs",
-            "LmlvL2FwaS9kZXBsb3ltZW50L3YxO2RlcGxveW1lbnSqAhxUZW1wb3JhbGlv",
-            "LkFwaS5EZXBsb3ltZW50LlYx6gIfVGVtcG9yYWxpbzo6QXBpOjpEZXBsb3lt",
-            "ZW50OjpWMWIGcHJvdG8z"));
+            "bWVzdGFtcC5wcm90bxomdGVtcG9yYWwvYXBpL2VudW1zL3YxL2RlcGxveW1l",
+            "bnQucHJvdG8aJnRlbXBvcmFsL2FwaS9lbnVtcy92MS90YXNrX3F1ZXVlLnBy",
+            "b3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2UucHJvdG8ikQEK",
+            "F1dvcmtlckRlcGxveW1lbnRPcHRpb25zEhcKD2RlcGxveW1lbnRfbmFtZRgB",
+            "IAEoCRIQCghidWlsZF9pZBgCIAEoCRJLChZ3b3JrZXJfdmVyc2lvbmluZ19t",
+            "b2RlGAMgASgOMisudGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtlclZlcnNp",
+            "b25pbmdNb2RlIjMKCkRlcGxveW1lbnQSEwoLc2VyaWVzX25hbWUYASABKAkS",
+            "EAoIYnVpbGRfaWQYAiABKAkijgQKDkRlcGxveW1lbnRJbmZvEjoKCmRlcGxv",
+            "eW1lbnQYASABKAsyJi50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5EZXBs",
+            "b3ltZW50Ei8KC2NyZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVm",
+            "LlRpbWVzdGFtcBJSChB0YXNrX3F1ZXVlX2luZm9zGAMgAygLMjgudGVtcG9y",
+            "YWwuYXBpLmRlcGxveW1lbnQudjEuRGVwbG95bWVudEluZm8uVGFza1F1ZXVl",
+            "SW5mbxJKCghtZXRhZGF0YRgEIAMoCzI4LnRlbXBvcmFsLmFwaS5kZXBsb3lt",
+            "ZW50LnYxLkRlcGxveW1lbnRJbmZvLk1ldGFkYXRhRW50cnkSEgoKaXNfY3Vy",
+            "cmVudBgFIAEoCBpQCg1NZXRhZGF0YUVudHJ5EgsKA2tleRgBIAEoCRIuCgV2",
+            "YWx1ZRgCIAEoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZDoC",
+            "OAEaiAEKDVRhc2tRdWV1ZUluZm8SDAoEbmFtZRgBIAEoCRIyCgR0eXBlGAIg",
+            "ASgOMiQudGVtcG9yYWwuYXBpLmVudW1zLnYxLlRhc2tRdWV1ZVR5cGUSNQoR",
+            "Zmlyc3RfcG9sbGVyX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGlt",
+            "ZXN0YW1wIuoBChhVcGRhdGVEZXBsb3ltZW50TWV0YWRhdGESXwoOdXBzZXJ0",
+            "X2VudHJpZXMYASADKAsyRy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5V",
+            "cGRhdGVEZXBsb3ltZW50TWV0YWRhdGEuVXBzZXJ0RW50cmllc0VudHJ5EhYK",
+            "DnJlbW92ZV9lbnRyaWVzGAIgAygJGlUKElVwc2VydEVudHJpZXNFbnRyeRIL",
+            "CgNrZXkYASABKAkSLgoFdmFsdWUYAiABKAsyHy50ZW1wb3JhbC5hcGkuY29t",
+            "bW9uLnYxLlBheWxvYWQ6AjgBIpUBChJEZXBsb3ltZW50TGlzdEluZm8SOgoK",
+            "ZGVwbG95bWVudBgBIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYx",
+            "LkRlcGxveW1lbnQSLwoLY3JlYXRlX3RpbWUYAiABKAsyGi5nb29nbGUucHJv",
+            "dG9idWYuVGltZXN0YW1wEhIKCmlzX2N1cnJlbnQYAyABKAgihAUKG1dvcmtl",
+            "ckRlcGxveW1lbnRWZXJzaW9uSW5mbxIPCgd2ZXJzaW9uGAEgASgJEhcKD2Rl",
+            "cGxveW1lbnRfbmFtZRgCIAEoCRIvCgtjcmVhdGVfdGltZRgDIAEoCzIaLmdv",
+            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASOAoUcm91dGluZ19jaGFuZ2VkX3Rp",
+            "bWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKEmN1cnJl",
+            "bnRfc2luY2VfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
+            "bXASNgoScmFtcGluZ19zaW5jZV90aW1lGAYgASgLMhouZ29vZ2xlLnByb3Rv",
+            "YnVmLlRpbWVzdGFtcBIXCg9yYW1wX3BlcmNlbnRhZ2UYByABKAISZgoQdGFz",
+            "a19xdWV1ZV9pbmZvcxgIIAMoCzJMLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50",
+            "LnYxLldvcmtlckRlcGxveW1lbnRWZXJzaW9uSW5mby5WZXJzaW9uVGFza1F1",
+            "ZXVlSW5mbxJGCg1kcmFpbmFnZV9pbmZvGAkgASgLMi8udGVtcG9yYWwuYXBp",
+            "LmRlcGxveW1lbnQudjEuVmVyc2lvbkRyYWluYWdlSW5mbxI9CghtZXRhZGF0",
+            "YRgKIAEoCzIrLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLlZlcnNpb25N",
+            "ZXRhZGF0YRpYChRWZXJzaW9uVGFza1F1ZXVlSW5mbxIMCgRuYW1lGAEgASgJ",
+            "EjIKBHR5cGUYAiABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFza1F1",
+            "ZXVlVHlwZSLBAQoTVmVyc2lvbkRyYWluYWdlSW5mbxI8CgZzdGF0dXMYASAB",
+            "KA4yLC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVmVyc2lvbkRyYWluYWdlU3Rh",
+            "dHVzEjUKEWxhc3RfY2hhbmdlZF90aW1lGAIgASgLMhouZ29vZ2xlLnByb3Rv",
+            "YnVmLlRpbWVzdGFtcBI1ChFsYXN0X2NoZWNrZWRfdGltZRgDIAEoCzIaLmdv",
+            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi0AMKFFdvcmtlckRlcGxveW1lbnRJ",
+            "bmZvEgwKBG5hbWUYASABKAkSagoRdmVyc2lvbl9zdW1tYXJpZXMYAiADKAsy",
+            "Ty50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50",
+            "SW5mby5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvblN1bW1hcnkSLwoLY3JlYXRl",
+            "X3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEkEKDnJv",
+            "dXRpbmdfY29uZmlnGAQgASgLMikudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQu",
+            "djEuUm91dGluZ0NvbmZpZxIeChZsYXN0X21vZGlmaWVyX2lkZW50aXR5GAUg",
+            "ASgJGqkBCh5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvblN1bW1hcnkSDwoHdmVy",
+            "c2lvbhgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90",
+            "b2J1Zi5UaW1lc3RhbXASRQoPZHJhaW5hZ2Vfc3RhdHVzGAMgASgOMiwudGVt",
+            "cG9yYWwuYXBpLmVudW1zLnYxLlZlcnNpb25EcmFpbmFnZVN0YXR1cyKtAQoP",
+            "VmVyc2lvbk1ldGFkYXRhEkkKB2VudHJpZXMYASADKAsyOC50ZW1wb3JhbC5h",
+            "cGkuZGVwbG95bWVudC52MS5WZXJzaW9uTWV0YWRhdGEuRW50cmllc0VudHJ5",
+            "Gk8KDEVudHJpZXNFbnRyeRILCgNrZXkYASABKAkSLgoFdmFsdWUYAiABKAsy",
+            "Hy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQ6AjgBIrYCCg1Sb3V0",
+            "aW5nQ29uZmlnEhcKD2N1cnJlbnRfdmVyc2lvbhgBIAEoCRIXCg9yYW1waW5n",
+            "X3ZlcnNpb24YAiABKAkSIgoacmFtcGluZ192ZXJzaW9uX3BlcmNlbnRhZ2UY",
+            "AyABKAISQAocY3VycmVudF92ZXJzaW9uX2NoYW5nZWRfdGltZRgEIAEoCzIa",
+            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASQAoccmFtcGluZ192ZXJzaW9u",
+            "X2NoYW5nZWRfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
+            "bXASSwoncmFtcGluZ192ZXJzaW9uX3BlcmNlbnRhZ2VfY2hhbmdlZF90aW1l",
+            "GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEKdAQodaW8udGVt",
+            "cG9yYWwuYXBpLmRlcGxveW1lbnQudjFCDE1lc3NhZ2VQcm90b1ABWitnby50",
+            "ZW1wb3JhbC5pby9hcGkvZGVwbG95bWVudC92MTtkZXBsb3ltZW50qgIcVGVt",
+            "cG9yYWxpby5BcGkuRGVwbG95bWVudC5WMeoCH1RlbXBvcmFsaW86OkFwaTo6",
+            "RGVwbG95bWVudDo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.DeploymentReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.WorkerDeploymentOptions), global::Temporalio.Api.Deployment.V1.WorkerDeploymentOptions.Parser, new[]{ "DeploymentName", "BuildId", "WorkerVersioningMode" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.Deployment), global::Temporalio.Api.Deployment.V1.Deployment.Parser, new[]{ "SeriesName", "BuildId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.DeploymentInfo), global::Temporalio.Api.Deployment.V1.DeploymentInfo.Parser, new[]{ "Deployment", "CreateTime", "TaskQueueInfos", "Metadata", "IsCurrent" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.DeploymentInfo.Types.TaskQueueInfo), global::Temporalio.Api.Deployment.V1.DeploymentInfo.Types.TaskQueueInfo.Parser, new[]{ "Name", "Type", "FirstPollerTime" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.UpdateDeploymentMetadata), global::Temporalio.Api.Deployment.V1.UpdateDeploymentMetadata.Parser, new[]{ "UpsertEntries", "RemoveEntries" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.DeploymentListInfo), global::Temporalio.Api.Deployment.V1.DeploymentListInfo.Parser, new[]{ "Deployment", "CreateTime", "IsCurrent" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.DeploymentListInfo), global::Temporalio.Api.Deployment.V1.DeploymentListInfo.Parser, new[]{ "Deployment", "CreateTime", "IsCurrent" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo), global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Parser, new[]{ "Version", "DeploymentName", "CreateTime", "RoutingChangedTime", "CurrentSinceTime", "RampingSinceTime", "RampPercentage", "TaskQueueInfos", "DrainageInfo", "Metadata" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Types.VersionTaskQueueInfo), global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Types.VersionTaskQueueInfo.Parser, new[]{ "Name", "Type" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.VersionDrainageInfo), global::Temporalio.Api.Deployment.V1.VersionDrainageInfo.Parser, new[]{ "Status", "LastChangedTime", "LastCheckedTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo), global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Parser, new[]{ "Name", "VersionSummaries", "CreateTime", "RoutingConfig", "LastModifierIdentity" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Types.WorkerDeploymentVersionSummary), global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Types.WorkerDeploymentVersionSummary.Parser, new[]{ "Version", "CreateTime", "DrainageStatus" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.VersionMetadata), global::Temporalio.Api.Deployment.V1.VersionMetadata.Parser, new[]{ "Entries" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Deployment.V1.RoutingConfig), global::Temporalio.Api.Deployment.V1.RoutingConfig.Parser, new[]{ "CurrentVersion", "RampingVersion", "RampingVersionPercentage", "CurrentVersionChangedTime", "RampingVersionChangedTime", "RampingVersionPercentageChangedTime" }, null, null, null, null)
           }));
     }
     #endregion
@@ -68,9 +118,290 @@ namespace Temporalio.Api.Deployment.V1 {
   }
   #region Messages
   /// <summary>
+  /// Worker Deployment options set in SDK that need to be sent to server in every poll.
+  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
+  /// </summary>
+  public sealed partial class WorkerDeploymentOptions : pb::IMessage<WorkerDeploymentOptions>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkerDeploymentOptions> _parser = new pb::MessageParser<WorkerDeploymentOptions>(() => new WorkerDeploymentOptions());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkerDeploymentOptions> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentOptions() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentOptions(WorkerDeploymentOptions other) : this() {
+      deploymentName_ = other.deploymentName_;
+      buildId_ = other.buildId_;
+      workerVersioningMode_ = other.workerVersioningMode_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentOptions Clone() {
+      return new WorkerDeploymentOptions(this);
+    }
+
+    /// <summary>Field number for the "deployment_name" field.</summary>
+    public const int DeploymentNameFieldNumber = 1;
+    private string deploymentName_ = "";
+    /// <summary>
+    /// Required. Worker Deployment name.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeploymentName {
+      get { return deploymentName_; }
+      set {
+        deploymentName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "build_id" field.</summary>
+    public const int BuildIdFieldNumber = 2;
+    private string buildId_ = "";
+    /// <summary>
+    /// The Build ID of the worker. Required when `worker_versioning_mode==VERSIONED`, in which case,
+    /// the worker will be part of a Deployment Version identified by "&lt;deployment_name>.&lt;build_id>".
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string BuildId {
+      get { return buildId_; }
+      set {
+        buildId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "worker_versioning_mode" field.</summary>
+    public const int WorkerVersioningModeFieldNumber = 3;
+    private global::Temporalio.Api.Enums.V1.WorkerVersioningMode workerVersioningMode_ = global::Temporalio.Api.Enums.V1.WorkerVersioningMode.Unspecified;
+    /// <summary>
+    /// Required. Versioning Mode for this worker. Must be the same for all workers with the
+    /// same `deployment_name` and `build_id` combination, across all Task Queues.
+    /// When `worker_versioning_mode==VERSIONED`, the worker will be part of a Deployment Version
+    /// identified by "&lt;deployment_name>.&lt;build_id>".
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.WorkerVersioningMode WorkerVersioningMode {
+      get { return workerVersioningMode_; }
+      set {
+        workerVersioningMode_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkerDeploymentOptions);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkerDeploymentOptions other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (DeploymentName != other.DeploymentName) return false;
+      if (BuildId != other.BuildId) return false;
+      if (WorkerVersioningMode != other.WorkerVersioningMode) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (DeploymentName.Length != 0) hash ^= DeploymentName.GetHashCode();
+      if (BuildId.Length != 0) hash ^= BuildId.GetHashCode();
+      if (WorkerVersioningMode != global::Temporalio.Api.Enums.V1.WorkerVersioningMode.Unspecified) hash ^= WorkerVersioningMode.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (DeploymentName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(DeploymentName);
+      }
+      if (BuildId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(BuildId);
+      }
+      if (WorkerVersioningMode != global::Temporalio.Api.Enums.V1.WorkerVersioningMode.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) WorkerVersioningMode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (DeploymentName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(DeploymentName);
+      }
+      if (BuildId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(BuildId);
+      }
+      if (WorkerVersioningMode != global::Temporalio.Api.Enums.V1.WorkerVersioningMode.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) WorkerVersioningMode);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (DeploymentName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeploymentName);
+      }
+      if (BuildId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(BuildId);
+      }
+      if (WorkerVersioningMode != global::Temporalio.Api.Enums.V1.WorkerVersioningMode.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) WorkerVersioningMode);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkerDeploymentOptions other) {
+      if (other == null) {
+        return;
+      }
+      if (other.DeploymentName.Length != 0) {
+        DeploymentName = other.DeploymentName;
+      }
+      if (other.BuildId.Length != 0) {
+        BuildId = other.BuildId;
+      }
+      if (other.WorkerVersioningMode != global::Temporalio.Api.Enums.V1.WorkerVersioningMode.Unspecified) {
+        WorkerVersioningMode = other.WorkerVersioningMode;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            DeploymentName = input.ReadString();
+            break;
+          }
+          case 18: {
+            BuildId = input.ReadString();
+            break;
+          }
+          case 24: {
+            WorkerVersioningMode = (global::Temporalio.Api.Enums.V1.WorkerVersioningMode) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            DeploymentName = input.ReadString();
+            break;
+          }
+          case 18: {
+            BuildId = input.ReadString();
+            break;
+          }
+          case 24: {
+            WorkerVersioningMode = (global::Temporalio.Api.Enums.V1.WorkerVersioningMode) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// `Deployment` identifies a deployment of Temporal workers. The combination of deployment series
   /// name + build ID serves as the identifier. User can use `WorkerDeploymentOptions` in their worker
   /// programs to specify these values.
+  /// Deprecated.
   /// </summary>
   public sealed partial class Deployment : pb::IMessage<Deployment>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -86,7 +417,7 @@ namespace Temporalio.Api.Deployment.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -313,6 +644,7 @@ namespace Temporalio.Api.Deployment.V1 {
   /// `DeploymentInfo` holds information about a deployment. Deployment information is tracked
   /// automatically by server as soon as the first poll from that deployment reaches the server. There
   /// can be multiple task queue workers in a single deployment which are listed in this message.
+  /// Deprecated.
   /// </summary>
   public sealed partial class DeploymentInfo : pb::IMessage<DeploymentInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -328,7 +660,7 @@ namespace Temporalio.Api.Deployment.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -939,6 +1271,7 @@ namespace Temporalio.Api.Deployment.V1 {
 
   /// <summary>
   /// Used as part of Deployment write APIs to update metadata attached to a deployment.
+  /// Deprecated.
   /// </summary>
   public sealed partial class UpdateDeploymentMetadata : pb::IMessage<UpdateDeploymentMetadata>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -954,7 +1287,7 @@ namespace Temporalio.Api.Deployment.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1150,6 +1483,7 @@ namespace Temporalio.Api.Deployment.V1 {
   /// <summary>
   /// DeploymentListInfo is an abbreviated set of fields from DeploymentInfo that's returned in
   /// ListDeployments.
+  /// Deprecated.
   /// </summary>
   public sealed partial class DeploymentListInfo : pb::IMessage<DeploymentListInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -1165,7 +1499,7 @@ namespace Temporalio.Api.Deployment.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1426,6 +1760,2420 @@ namespace Temporalio.Api.Deployment.V1 {
           }
           case 24: {
             IsCurrent = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// A Worker Deployment Version (Version, for short) represents all workers of the same 
+  /// code and config within a Deployment. Workers of the same Version are expected to 
+  /// behave exactly the same so when executions move between them there are no 
+  /// non-determinism issues.
+  /// Worker Deployment Versions are created in Temporal server automatically when 
+  /// their first poller arrives to the server.
+  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
+  /// </summary>
+  public sealed partial class WorkerDeploymentVersionInfo : pb::IMessage<WorkerDeploymentVersionInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkerDeploymentVersionInfo> _parser = new pb::MessageParser<WorkerDeploymentVersionInfo>(() => new WorkerDeploymentVersionInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkerDeploymentVersionInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentVersionInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentVersionInfo(WorkerDeploymentVersionInfo other) : this() {
+      version_ = other.version_;
+      deploymentName_ = other.deploymentName_;
+      createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
+      routingChangedTime_ = other.routingChangedTime_ != null ? other.routingChangedTime_.Clone() : null;
+      currentSinceTime_ = other.currentSinceTime_ != null ? other.currentSinceTime_.Clone() : null;
+      rampingSinceTime_ = other.rampingSinceTime_ != null ? other.rampingSinceTime_.Clone() : null;
+      rampPercentage_ = other.rampPercentage_;
+      taskQueueInfos_ = other.taskQueueInfos_.Clone();
+      drainageInfo_ = other.drainageInfo_ != null ? other.drainageInfo_.Clone() : null;
+      metadata_ = other.metadata_ != null ? other.metadata_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentVersionInfo Clone() {
+      return new WorkerDeploymentVersionInfo(this);
+    }
+
+    /// <summary>Field number for the "version" field.</summary>
+    public const int VersionFieldNumber = 1;
+    private string version_ = "";
+    /// <summary>
+    /// The fully-qualified string representation of the version, in the form "&lt;deployment_name>.&lt;build_id>".
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Version {
+      get { return version_; }
+      set {
+        version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deployment_name" field.</summary>
+    public const int DeploymentNameFieldNumber = 2;
+    private string deploymentName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeploymentName {
+      get { return deploymentName_; }
+      set {
+        deploymentName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "create_time" field.</summary>
+    public const int CreateTimeFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp createTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp CreateTime {
+      get { return createTime_; }
+      set {
+        createTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "routing_changed_time" field.</summary>
+    public const int RoutingChangedTimeFieldNumber = 4;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp routingChangedTime_;
+    /// <summary>
+    /// Last time `current_since_time`, `ramping_since_time, or `ramp_percentage` of this version changed.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp RoutingChangedTime {
+      get { return routingChangedTime_; }
+      set {
+        routingChangedTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "current_since_time" field.</summary>
+    public const int CurrentSinceTimeFieldNumber = 5;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp currentSinceTime_;
+    /// <summary>
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: 'Since' captures the field semantics despite being a preposition. --)
+    /// Nil if not current.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp CurrentSinceTime {
+      get { return currentSinceTime_; }
+      set {
+        currentSinceTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ramping_since_time" field.</summary>
+    public const int RampingSinceTimeFieldNumber = 6;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp rampingSinceTime_;
+    /// <summary>
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: 'Since' captures the field semantics despite being a preposition. --)
+    /// Nil if not ramping. Updated when the version first starts ramping, not on each ramp change.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp RampingSinceTime {
+      get { return rampingSinceTime_; }
+      set {
+        rampingSinceTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ramp_percentage" field.</summary>
+    public const int RampPercentageFieldNumber = 7;
+    private float rampPercentage_;
+    /// <summary>
+    /// Range: [0, 100]. Must be zero if the version is not ramping (i.e. `ramping_since_time` is nil).
+    /// Can be in the range [0, 100] if the version is ramping.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float RampPercentage {
+      get { return rampPercentage_; }
+      set {
+        rampPercentage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "task_queue_infos" field.</summary>
+    public const int TaskQueueInfosFieldNumber = 8;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Types.VersionTaskQueueInfo> _repeated_taskQueueInfos_codec
+        = pb::FieldCodec.ForMessage(66, global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Types.VersionTaskQueueInfo.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Types.VersionTaskQueueInfo> taskQueueInfos_ = new pbc::RepeatedField<global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Types.VersionTaskQueueInfo>();
+    /// <summary>
+    /// All the Task Queues that have ever polled from this Deployment version.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Types.VersionTaskQueueInfo> TaskQueueInfos {
+      get { return taskQueueInfos_; }
+    }
+
+    /// <summary>Field number for the "drainage_info" field.</summary>
+    public const int DrainageInfoFieldNumber = 9;
+    private global::Temporalio.Api.Deployment.V1.VersionDrainageInfo drainageInfo_;
+    /// <summary>
+    /// Helps user determine when it is safe to decommission the workers of this
+    /// Version. Not present when version is current or ramping.
+    /// Current limitations:
+    /// - Not supported for Unversioned mode.
+    /// - Periodically refreshed, may have delays up to few minutes (consult the
+    ///   last_checked_time value).
+    /// - Refreshed only when version is not current or ramping AND the status is not
+    ///   "drained" yet.
+    /// - Once the status is changed to "drained", it is not changed until the Version
+    ///   becomes Current or Ramping again, at which time the drainage info is cleared.
+    ///   This means if the Version is "drained" but new workflows are sent to it via
+    ///   Pinned Versioning Override, the status does not account for those Pinned-override
+    ///   executions and remains "drained".
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.VersionDrainageInfo DrainageInfo {
+      get { return drainageInfo_; }
+      set {
+        drainageInfo_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "metadata" field.</summary>
+    public const int MetadataFieldNumber = 10;
+    private global::Temporalio.Api.Deployment.V1.VersionMetadata metadata_;
+    /// <summary>
+    /// Arbitrary user-provided metadata attached to this version.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.VersionMetadata Metadata {
+      get { return metadata_; }
+      set {
+        metadata_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkerDeploymentVersionInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkerDeploymentVersionInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Version != other.Version) return false;
+      if (DeploymentName != other.DeploymentName) return false;
+      if (!object.Equals(CreateTime, other.CreateTime)) return false;
+      if (!object.Equals(RoutingChangedTime, other.RoutingChangedTime)) return false;
+      if (!object.Equals(CurrentSinceTime, other.CurrentSinceTime)) return false;
+      if (!object.Equals(RampingSinceTime, other.RampingSinceTime)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RampPercentage, other.RampPercentage)) return false;
+      if(!taskQueueInfos_.Equals(other.taskQueueInfos_)) return false;
+      if (!object.Equals(DrainageInfo, other.DrainageInfo)) return false;
+      if (!object.Equals(Metadata, other.Metadata)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Version.Length != 0) hash ^= Version.GetHashCode();
+      if (DeploymentName.Length != 0) hash ^= DeploymentName.GetHashCode();
+      if (createTime_ != null) hash ^= CreateTime.GetHashCode();
+      if (routingChangedTime_ != null) hash ^= RoutingChangedTime.GetHashCode();
+      if (currentSinceTime_ != null) hash ^= CurrentSinceTime.GetHashCode();
+      if (rampingSinceTime_ != null) hash ^= RampingSinceTime.GetHashCode();
+      if (RampPercentage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RampPercentage);
+      hash ^= taskQueueInfos_.GetHashCode();
+      if (drainageInfo_ != null) hash ^= DrainageInfo.GetHashCode();
+      if (metadata_ != null) hash ^= Metadata.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Version.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Version);
+      }
+      if (DeploymentName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DeploymentName);
+      }
+      if (createTime_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(CreateTime);
+      }
+      if (routingChangedTime_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(RoutingChangedTime);
+      }
+      if (currentSinceTime_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(CurrentSinceTime);
+      }
+      if (rampingSinceTime_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(RampingSinceTime);
+      }
+      if (RampPercentage != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(RampPercentage);
+      }
+      taskQueueInfos_.WriteTo(output, _repeated_taskQueueInfos_codec);
+      if (drainageInfo_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(DrainageInfo);
+      }
+      if (metadata_ != null) {
+        output.WriteRawTag(82);
+        output.WriteMessage(Metadata);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Version.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Version);
+      }
+      if (DeploymentName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DeploymentName);
+      }
+      if (createTime_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(CreateTime);
+      }
+      if (routingChangedTime_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(RoutingChangedTime);
+      }
+      if (currentSinceTime_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(CurrentSinceTime);
+      }
+      if (rampingSinceTime_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(RampingSinceTime);
+      }
+      if (RampPercentage != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(RampPercentage);
+      }
+      taskQueueInfos_.WriteTo(ref output, _repeated_taskQueueInfos_codec);
+      if (drainageInfo_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(DrainageInfo);
+      }
+      if (metadata_ != null) {
+        output.WriteRawTag(82);
+        output.WriteMessage(Metadata);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Version.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+      }
+      if (DeploymentName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeploymentName);
+      }
+      if (createTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTime);
+      }
+      if (routingChangedTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoutingChangedTime);
+      }
+      if (currentSinceTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CurrentSinceTime);
+      }
+      if (rampingSinceTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RampingSinceTime);
+      }
+      if (RampPercentage != 0F) {
+        size += 1 + 4;
+      }
+      size += taskQueueInfos_.CalculateSize(_repeated_taskQueueInfos_codec);
+      if (drainageInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DrainageInfo);
+      }
+      if (metadata_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Metadata);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkerDeploymentVersionInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Version.Length != 0) {
+        Version = other.Version;
+      }
+      if (other.DeploymentName.Length != 0) {
+        DeploymentName = other.DeploymentName;
+      }
+      if (other.createTime_ != null) {
+        if (createTime_ == null) {
+          CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        CreateTime.MergeFrom(other.CreateTime);
+      }
+      if (other.routingChangedTime_ != null) {
+        if (routingChangedTime_ == null) {
+          RoutingChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        RoutingChangedTime.MergeFrom(other.RoutingChangedTime);
+      }
+      if (other.currentSinceTime_ != null) {
+        if (currentSinceTime_ == null) {
+          CurrentSinceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        CurrentSinceTime.MergeFrom(other.CurrentSinceTime);
+      }
+      if (other.rampingSinceTime_ != null) {
+        if (rampingSinceTime_ == null) {
+          RampingSinceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        RampingSinceTime.MergeFrom(other.RampingSinceTime);
+      }
+      if (other.RampPercentage != 0F) {
+        RampPercentage = other.RampPercentage;
+      }
+      taskQueueInfos_.Add(other.taskQueueInfos_);
+      if (other.drainageInfo_ != null) {
+        if (drainageInfo_ == null) {
+          DrainageInfo = new global::Temporalio.Api.Deployment.V1.VersionDrainageInfo();
+        }
+        DrainageInfo.MergeFrom(other.DrainageInfo);
+      }
+      if (other.metadata_ != null) {
+        if (metadata_ == null) {
+          Metadata = new global::Temporalio.Api.Deployment.V1.VersionMetadata();
+        }
+        Metadata.MergeFrom(other.Metadata);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Version = input.ReadString();
+            break;
+          }
+          case 18: {
+            DeploymentName = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
+            break;
+          }
+          case 34: {
+            if (routingChangedTime_ == null) {
+              RoutingChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RoutingChangedTime);
+            break;
+          }
+          case 42: {
+            if (currentSinceTime_ == null) {
+              CurrentSinceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CurrentSinceTime);
+            break;
+          }
+          case 50: {
+            if (rampingSinceTime_ == null) {
+              RampingSinceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RampingSinceTime);
+            break;
+          }
+          case 61: {
+            RampPercentage = input.ReadFloat();
+            break;
+          }
+          case 66: {
+            taskQueueInfos_.AddEntriesFrom(input, _repeated_taskQueueInfos_codec);
+            break;
+          }
+          case 74: {
+            if (drainageInfo_ == null) {
+              DrainageInfo = new global::Temporalio.Api.Deployment.V1.VersionDrainageInfo();
+            }
+            input.ReadMessage(DrainageInfo);
+            break;
+          }
+          case 82: {
+            if (metadata_ == null) {
+              Metadata = new global::Temporalio.Api.Deployment.V1.VersionMetadata();
+            }
+            input.ReadMessage(Metadata);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Version = input.ReadString();
+            break;
+          }
+          case 18: {
+            DeploymentName = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
+            break;
+          }
+          case 34: {
+            if (routingChangedTime_ == null) {
+              RoutingChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RoutingChangedTime);
+            break;
+          }
+          case 42: {
+            if (currentSinceTime_ == null) {
+              CurrentSinceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CurrentSinceTime);
+            break;
+          }
+          case 50: {
+            if (rampingSinceTime_ == null) {
+              RampingSinceTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RampingSinceTime);
+            break;
+          }
+          case 61: {
+            RampPercentage = input.ReadFloat();
+            break;
+          }
+          case 66: {
+            taskQueueInfos_.AddEntriesFrom(ref input, _repeated_taskQueueInfos_codec);
+            break;
+          }
+          case 74: {
+            if (drainageInfo_ == null) {
+              DrainageInfo = new global::Temporalio.Api.Deployment.V1.VersionDrainageInfo();
+            }
+            input.ReadMessage(DrainageInfo);
+            break;
+          }
+          case 82: {
+            if (metadata_ == null) {
+              Metadata = new global::Temporalio.Api.Deployment.V1.VersionMetadata();
+            }
+            input.ReadMessage(Metadata);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the WorkerDeploymentVersionInfo message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public sealed partial class VersionTaskQueueInfo : pb::IMessage<VersionTaskQueueInfo>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<VersionTaskQueueInfo> _parser = new pb::MessageParser<VersionTaskQueueInfo>(() => new VersionTaskQueueInfo());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<VersionTaskQueueInfo> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersionInfo.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public VersionTaskQueueInfo() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public VersionTaskQueueInfo(VersionTaskQueueInfo other) : this() {
+          name_ = other.name_;
+          type_ = other.type_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public VersionTaskQueueInfo Clone() {
+          return new VersionTaskQueueInfo(this);
+        }
+
+        /// <summary>Field number for the "name" field.</summary>
+        public const int NameFieldNumber = 1;
+        private string name_ = "";
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Name {
+          get { return name_; }
+          set {
+            name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        /// <summary>Field number for the "type" field.</summary>
+        public const int TypeFieldNumber = 2;
+        private global::Temporalio.Api.Enums.V1.TaskQueueType type_ = global::Temporalio.Api.Enums.V1.TaskQueueType.Unspecified;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Enums.V1.TaskQueueType Type {
+          get { return type_; }
+          set {
+            type_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as VersionTaskQueueInfo);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(VersionTaskQueueInfo other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Name != other.Name) return false;
+          if (Type != other.Type) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Name.Length != 0) hash ^= Name.GetHashCode();
+          if (Type != global::Temporalio.Api.Enums.V1.TaskQueueType.Unspecified) hash ^= Type.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (Name.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Name);
+          }
+          if (Type != global::Temporalio.Api.Enums.V1.TaskQueueType.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Type);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (Name.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Name);
+          }
+          if (Type != global::Temporalio.Api.Enums.V1.TaskQueueType.Unspecified) {
+            output.WriteRawTag(16);
+            output.WriteEnum((int) Type);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (Name.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+          }
+          if (Type != global::Temporalio.Api.Enums.V1.TaskQueueType.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(VersionTaskQueueInfo other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Name.Length != 0) {
+            Name = other.Name;
+          }
+          if (other.Type != global::Temporalio.Api.Enums.V1.TaskQueueType.Unspecified) {
+            Type = other.Type;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                Name = input.ReadString();
+                break;
+              }
+              case 16: {
+                Type = (global::Temporalio.Api.Enums.V1.TaskQueueType) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10: {
+                Name = input.ReadString();
+                break;
+              }
+              case 16: {
+                Type = (global::Temporalio.Api.Enums.V1.TaskQueueType) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+    }
+    #endregion
+
+  }
+
+  /// <summary>
+  /// Information about workflow drainage to help the user determine when it is safe
+  /// to decommission a Version. Not present while version is current or ramping.
+  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
+  /// </summary>
+  public sealed partial class VersionDrainageInfo : pb::IMessage<VersionDrainageInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<VersionDrainageInfo> _parser = new pb::MessageParser<VersionDrainageInfo>(() => new VersionDrainageInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<VersionDrainageInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersionDrainageInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersionDrainageInfo(VersionDrainageInfo other) : this() {
+      status_ = other.status_;
+      lastChangedTime_ = other.lastChangedTime_ != null ? other.lastChangedTime_.Clone() : null;
+      lastCheckedTime_ = other.lastCheckedTime_ != null ? other.lastCheckedTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersionDrainageInfo Clone() {
+      return new VersionDrainageInfo(this);
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 1;
+    private global::Temporalio.Api.Enums.V1.VersionDrainageStatus status_ = global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified;
+    /// <summary>
+    /// Set to DRAINING when the version first stops accepting new executions (is no longer current or ramping).
+    /// Set to DRAINED when no more open pinned workflows exist on this version.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.VersionDrainageStatus Status {
+      get { return status_; }
+      set {
+        status_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "last_changed_time" field.</summary>
+    public const int LastChangedTimeFieldNumber = 2;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp lastChangedTime_;
+    /// <summary>
+    /// Last time the drainage status changed.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp LastChangedTime {
+      get { return lastChangedTime_; }
+      set {
+        lastChangedTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "last_checked_time" field.</summary>
+    public const int LastCheckedTimeFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp lastCheckedTime_;
+    /// <summary>
+    /// Last time the system checked for drainage of this version.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp LastCheckedTime {
+      get { return lastCheckedTime_; }
+      set {
+        lastCheckedTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as VersionDrainageInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(VersionDrainageInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Status != other.Status) return false;
+      if (!object.Equals(LastChangedTime, other.LastChangedTime)) return false;
+      if (!object.Equals(LastCheckedTime, other.LastCheckedTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Status != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) hash ^= Status.GetHashCode();
+      if (lastChangedTime_ != null) hash ^= LastChangedTime.GetHashCode();
+      if (lastCheckedTime_ != null) hash ^= LastCheckedTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Status != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Status);
+      }
+      if (lastChangedTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(LastChangedTime);
+      }
+      if (lastCheckedTime_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(LastCheckedTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Status != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Status);
+      }
+      if (lastChangedTime_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(LastChangedTime);
+      }
+      if (lastCheckedTime_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(LastCheckedTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Status != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Status);
+      }
+      if (lastChangedTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastChangedTime);
+      }
+      if (lastCheckedTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastCheckedTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(VersionDrainageInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Status != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+        Status = other.Status;
+      }
+      if (other.lastChangedTime_ != null) {
+        if (lastChangedTime_ == null) {
+          LastChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        LastChangedTime.MergeFrom(other.LastChangedTime);
+      }
+      if (other.lastCheckedTime_ != null) {
+        if (lastCheckedTime_ == null) {
+          LastCheckedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        LastCheckedTime.MergeFrom(other.LastCheckedTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Status = (global::Temporalio.Api.Enums.V1.VersionDrainageStatus) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            if (lastChangedTime_ == null) {
+              LastChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastChangedTime);
+            break;
+          }
+          case 26: {
+            if (lastCheckedTime_ == null) {
+              LastCheckedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastCheckedTime);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Status = (global::Temporalio.Api.Enums.V1.VersionDrainageStatus) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            if (lastChangedTime_ == null) {
+              LastChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastChangedTime);
+            break;
+          }
+          case 26: {
+            if (lastCheckedTime_ == null) {
+              LastCheckedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastCheckedTime);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// A Worker Deployment (Deployment, for short) represents all workers serving 
+  /// a shared set of Task Queues. Typically, a Deployment represents one service or 
+  /// application.
+  /// A Deployment contains multiple Deployment Versions, each representing a different 
+  /// version of workers. (see documentation of WorkerDeploymentVersionInfo)
+  /// Deployment records are created in Temporal server automatically when their
+  /// first poller arrives to the server.
+  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
+  /// </summary>
+  public sealed partial class WorkerDeploymentInfo : pb::IMessage<WorkerDeploymentInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkerDeploymentInfo> _parser = new pb::MessageParser<WorkerDeploymentInfo>(() => new WorkerDeploymentInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkerDeploymentInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentInfo(WorkerDeploymentInfo other) : this() {
+      name_ = other.name_;
+      versionSummaries_ = other.versionSummaries_.Clone();
+      createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
+      routingConfig_ = other.routingConfig_ != null ? other.routingConfig_.Clone() : null;
+      lastModifierIdentity_ = other.lastModifierIdentity_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerDeploymentInfo Clone() {
+      return new WorkerDeploymentInfo(this);
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
+    /// <summary>
+    /// Identifies a Worker Deployment. Must be unique within the namespace.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "version_summaries" field.</summary>
+    public const int VersionSummariesFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Types.WorkerDeploymentVersionSummary> _repeated_versionSummaries_codec
+        = pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Types.WorkerDeploymentVersionSummary.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Types.WorkerDeploymentVersionSummary> versionSummaries_ = new pbc::RepeatedField<global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Types.WorkerDeploymentVersionSummary>();
+    /// <summary>
+    /// Deployment Versions that are currently tracked in this Deployment. A DeploymentVersion will be
+    /// cleaned up automatically if all the following conditions meet:
+    /// - It does not receive new executions (is not current or ramping)
+    /// - It has no active pollers (see WorkerDeploymentVersionInfo.pollers_status) 
+    /// - It is drained (see WorkerDeploymentVersionInfo.drainage_status) 
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Types.WorkerDeploymentVersionSummary> VersionSummaries {
+      get { return versionSummaries_; }
+    }
+
+    /// <summary>Field number for the "create_time" field.</summary>
+    public const int CreateTimeFieldNumber = 3;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp createTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp CreateTime {
+      get { return createTime_; }
+      set {
+        createTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "routing_config" field.</summary>
+    public const int RoutingConfigFieldNumber = 4;
+    private global::Temporalio.Api.Deployment.V1.RoutingConfig routingConfig_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.RoutingConfig RoutingConfig {
+      get { return routingConfig_; }
+      set {
+        routingConfig_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "last_modifier_identity" field.</summary>
+    public const int LastModifierIdentityFieldNumber = 5;
+    private string lastModifierIdentity_ = "";
+    /// <summary>
+    /// Identity of the last client who modified the configuration of this Deployment. Set to the
+    /// `identity` value sent by APIs such as `SetWorkerDeploymentCurrentVersion` and
+    /// `SetWorkerDeploymentRampingVersion`.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string LastModifierIdentity {
+      get { return lastModifierIdentity_; }
+      set {
+        lastModifierIdentity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkerDeploymentInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkerDeploymentInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Name != other.Name) return false;
+      if(!versionSummaries_.Equals(other.versionSummaries_)) return false;
+      if (!object.Equals(CreateTime, other.CreateTime)) return false;
+      if (!object.Equals(RoutingConfig, other.RoutingConfig)) return false;
+      if (LastModifierIdentity != other.LastModifierIdentity) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      hash ^= versionSummaries_.GetHashCode();
+      if (createTime_ != null) hash ^= CreateTime.GetHashCode();
+      if (routingConfig_ != null) hash ^= RoutingConfig.GetHashCode();
+      if (LastModifierIdentity.Length != 0) hash ^= LastModifierIdentity.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      versionSummaries_.WriteTo(output, _repeated_versionSummaries_codec);
+      if (createTime_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(CreateTime);
+      }
+      if (routingConfig_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(RoutingConfig);
+      }
+      if (LastModifierIdentity.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(LastModifierIdentity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      versionSummaries_.WriteTo(ref output, _repeated_versionSummaries_codec);
+      if (createTime_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(CreateTime);
+      }
+      if (routingConfig_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(RoutingConfig);
+      }
+      if (LastModifierIdentity.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(LastModifierIdentity);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      size += versionSummaries_.CalculateSize(_repeated_versionSummaries_codec);
+      if (createTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTime);
+      }
+      if (routingConfig_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RoutingConfig);
+      }
+      if (LastModifierIdentity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(LastModifierIdentity);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkerDeploymentInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      versionSummaries_.Add(other.versionSummaries_);
+      if (other.createTime_ != null) {
+        if (createTime_ == null) {
+          CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        CreateTime.MergeFrom(other.CreateTime);
+      }
+      if (other.routingConfig_ != null) {
+        if (routingConfig_ == null) {
+          RoutingConfig = new global::Temporalio.Api.Deployment.V1.RoutingConfig();
+        }
+        RoutingConfig.MergeFrom(other.RoutingConfig);
+      }
+      if (other.LastModifierIdentity.Length != 0) {
+        LastModifierIdentity = other.LastModifierIdentity;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            versionSummaries_.AddEntriesFrom(input, _repeated_versionSummaries_codec);
+            break;
+          }
+          case 26: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
+            break;
+          }
+          case 34: {
+            if (routingConfig_ == null) {
+              RoutingConfig = new global::Temporalio.Api.Deployment.V1.RoutingConfig();
+            }
+            input.ReadMessage(RoutingConfig);
+            break;
+          }
+          case 42: {
+            LastModifierIdentity = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            versionSummaries_.AddEntriesFrom(ref input, _repeated_versionSummaries_codec);
+            break;
+          }
+          case 26: {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CreateTime);
+            break;
+          }
+          case 34: {
+            if (routingConfig_ == null) {
+              RoutingConfig = new global::Temporalio.Api.Deployment.V1.RoutingConfig();
+            }
+            input.ReadMessage(RoutingConfig);
+            break;
+          }
+          case 42: {
+            LastModifierIdentity = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the WorkerDeploymentInfo message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public sealed partial class WorkerDeploymentVersionSummary : pb::IMessage<WorkerDeploymentVersionSummary>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<WorkerDeploymentVersionSummary> _parser = new pb::MessageParser<WorkerDeploymentVersionSummary>(() => new WorkerDeploymentVersionSummary());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<WorkerDeploymentVersionSummary> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Deployment.V1.WorkerDeploymentInfo.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkerDeploymentVersionSummary() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkerDeploymentVersionSummary(WorkerDeploymentVersionSummary other) : this() {
+          version_ = other.version_;
+          createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
+          drainageStatus_ = other.drainageStatus_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkerDeploymentVersionSummary Clone() {
+          return new WorkerDeploymentVersionSummary(this);
+        }
+
+        /// <summary>Field number for the "version" field.</summary>
+        public const int VersionFieldNumber = 1;
+        private string version_ = "";
+        /// <summary>
+        /// The fully-qualified string representation of the version, in the form "&lt;deployment_name>.&lt;build_id>".
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Version {
+          get { return version_; }
+          set {
+            version_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+          }
+        }
+
+        /// <summary>Field number for the "create_time" field.</summary>
+        public const int CreateTimeFieldNumber = 2;
+        private global::Google.Protobuf.WellKnownTypes.Timestamp createTime_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Google.Protobuf.WellKnownTypes.Timestamp CreateTime {
+          get { return createTime_; }
+          set {
+            createTime_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "drainage_status" field.</summary>
+        public const int DrainageStatusFieldNumber = 3;
+        private global::Temporalio.Api.Enums.V1.VersionDrainageStatus drainageStatus_ = global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Enums.V1.VersionDrainageStatus DrainageStatus {
+          get { return drainageStatus_; }
+          set {
+            drainageStatus_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as WorkerDeploymentVersionSummary);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(WorkerDeploymentVersionSummary other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (Version != other.Version) return false;
+          if (!object.Equals(CreateTime, other.CreateTime)) return false;
+          if (DrainageStatus != other.DrainageStatus) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (Version.Length != 0) hash ^= Version.GetHashCode();
+          if (createTime_ != null) hash ^= CreateTime.GetHashCode();
+          if (DrainageStatus != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) hash ^= DrainageStatus.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (createTime_ != null) {
+            output.WriteRawTag(18);
+            output.WriteMessage(CreateTime);
+          }
+          if (DrainageStatus != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+            output.WriteRawTag(24);
+            output.WriteEnum((int) DrainageStatus);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (Version.Length != 0) {
+            output.WriteRawTag(10);
+            output.WriteString(Version);
+          }
+          if (createTime_ != null) {
+            output.WriteRawTag(18);
+            output.WriteMessage(CreateTime);
+          }
+          if (DrainageStatus != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+            output.WriteRawTag(24);
+            output.WriteEnum((int) DrainageStatus);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (Version.Length != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeStringSize(Version);
+          }
+          if (createTime_ != null) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTime);
+          }
+          if (DrainageStatus != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+            size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) DrainageStatus);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(WorkerDeploymentVersionSummary other) {
+          if (other == null) {
+            return;
+          }
+          if (other.Version.Length != 0) {
+            Version = other.Version;
+          }
+          if (other.createTime_ != null) {
+            if (createTime_ == null) {
+              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            CreateTime.MergeFrom(other.CreateTime);
+          }
+          if (other.DrainageStatus != global::Temporalio.Api.Enums.V1.VersionDrainageStatus.Unspecified) {
+            DrainageStatus = other.DrainageStatus;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 18: {
+                if (createTime_ == null) {
+                  CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+                }
+                input.ReadMessage(CreateTime);
+                break;
+              }
+              case 24: {
+                DrainageStatus = (global::Temporalio.Api.Enums.V1.VersionDrainageStatus) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10: {
+                Version = input.ReadString();
+                break;
+              }
+              case 18: {
+                if (createTime_ == null) {
+                  CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+                }
+                input.ReadMessage(CreateTime);
+                break;
+              }
+              case 24: {
+                DrainageStatus = (global::Temporalio.Api.Enums.V1.VersionDrainageStatus) input.ReadEnum();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+    }
+    #endregion
+
+  }
+
+  public sealed partial class VersionMetadata : pb::IMessage<VersionMetadata>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<VersionMetadata> _parser = new pb::MessageParser<VersionMetadata>(() => new VersionMetadata());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<VersionMetadata> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[8]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersionMetadata() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersionMetadata(VersionMetadata other) : this() {
+      entries_ = other.entries_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VersionMetadata Clone() {
+      return new VersionMetadata(this);
+    }
+
+    /// <summary>Field number for the "entries" field.</summary>
+    public const int EntriesFieldNumber = 1;
+    private static readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec _map_entries_codec
+        = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Common.V1.Payload.Parser), 10);
+    private readonly pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> entries_ = new pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload>();
+    /// <summary>
+    /// Arbitrary key-values.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, global::Temporalio.Api.Common.V1.Payload> Entries {
+      get { return entries_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as VersionMetadata);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(VersionMetadata other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!Entries.Equals(other.Entries)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= Entries.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      entries_.WriteTo(output, _map_entries_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      entries_.WriteTo(ref output, _map_entries_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += entries_.CalculateSize(_map_entries_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(VersionMetadata other) {
+      if (other == null) {
+        return;
+      }
+      entries_.MergeFrom(other.entries_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            entries_.AddEntriesFrom(input, _map_entries_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            entries_.AddEntriesFrom(ref input, _map_entries_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class RoutingConfig : pb::IMessage<RoutingConfig>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RoutingConfig> _parser = new pb::MessageParser<RoutingConfig>(() => new RoutingConfig());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RoutingConfig> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoutingConfig() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoutingConfig(RoutingConfig other) : this() {
+      currentVersion_ = other.currentVersion_;
+      rampingVersion_ = other.rampingVersion_;
+      rampingVersionPercentage_ = other.rampingVersionPercentage_;
+      currentVersionChangedTime_ = other.currentVersionChangedTime_ != null ? other.currentVersionChangedTime_.Clone() : null;
+      rampingVersionChangedTime_ = other.rampingVersionChangedTime_ != null ? other.rampingVersionChangedTime_.Clone() : null;
+      rampingVersionPercentageChangedTime_ = other.rampingVersionPercentageChangedTime_ != null ? other.rampingVersionPercentageChangedTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoutingConfig Clone() {
+      return new RoutingConfig(this);
+    }
+
+    /// <summary>Field number for the "current_version" field.</summary>
+    public const int CurrentVersionFieldNumber = 1;
+    private string currentVersion_ = "";
+    /// <summary>
+    /// Always present. Specifies which Deployment Version should should receive new workflow
+    /// executions and tasks of existing unversioned or AutoUpgrade workflows.
+    /// Can be one of the following:
+    /// - A Deployment Version identifier in the form "&lt;deployment_name>.&lt;build_id>".
+    /// - Or, the "__unversioned__" special value, to represent all the unversioned workers (those
+    ///   with `UNVERSIONED` (or unspecified) `WorkerVersioningMode`.)
+    /// Note: Current Version is overridden by the Ramping Version for a portion of traffic when a ramp
+    /// is set (see `ramping_version`.)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string CurrentVersion {
+      get { return currentVersion_; }
+      set {
+        currentVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "ramping_version" field.</summary>
+    public const int RampingVersionFieldNumber = 2;
+    private string rampingVersion_ = "";
+    /// <summary>
+    /// When present, it means the traffic is being shifted from the Current Version to the Ramping
+    /// Version.
+    /// Must always be different from Current Version. Can be one of the following:
+    /// - A Deployment Version identifier in the form "&lt;deployment_name>.&lt;build_id>".
+    /// - Or, the "__unversioned__" special value, to represent all the unversioned workers (those
+    ///   with `UNVERSIONED` (or unspecified) `WorkerVersioningMode`.)
+    /// Note that it is possible to ramp from one Version to another Version, or from unversioned
+    /// workers to a particular Version, or from a particular Version to unversioned workers.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RampingVersion {
+      get { return rampingVersion_; }
+      set {
+        rampingVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "ramping_version_percentage" field.</summary>
+    public const int RampingVersionPercentageFieldNumber = 3;
+    private float rampingVersionPercentage_;
+    /// <summary>
+    /// Percentage of tasks that are routed to the Ramping Version instead of the Current Version.
+    /// Valid range: [0, 100]. A 100% value means the Ramping Version is receiving full traffic but
+    /// not yet "promoted" to be the Current Version, likely due to pending validations.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float RampingVersionPercentage {
+      get { return rampingVersionPercentage_; }
+      set {
+        rampingVersionPercentage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "current_version_changed_time" field.</summary>
+    public const int CurrentVersionChangedTimeFieldNumber = 4;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp currentVersionChangedTime_;
+    /// <summary>
+    /// Last time current version was changed.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp CurrentVersionChangedTime {
+      get { return currentVersionChangedTime_; }
+      set {
+        currentVersionChangedTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ramping_version_changed_time" field.</summary>
+    public const int RampingVersionChangedTimeFieldNumber = 5;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp rampingVersionChangedTime_;
+    /// <summary>
+    /// Last time ramping version was changed. Not updated if only the ramp percentage changes.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp RampingVersionChangedTime {
+      get { return rampingVersionChangedTime_; }
+      set {
+        rampingVersionChangedTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ramping_version_percentage_changed_time" field.</summary>
+    public const int RampingVersionPercentageChangedTimeFieldNumber = 6;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp rampingVersionPercentageChangedTime_;
+    /// <summary>
+    /// Last time ramping version percentage was changed.
+    /// If ramping version is changed, this is also updated, even if the percentage stays the same.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp RampingVersionPercentageChangedTime {
+      get { return rampingVersionPercentageChangedTime_; }
+      set {
+        rampingVersionPercentageChangedTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RoutingConfig);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RoutingConfig other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (CurrentVersion != other.CurrentVersion) return false;
+      if (RampingVersion != other.RampingVersion) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RampingVersionPercentage, other.RampingVersionPercentage)) return false;
+      if (!object.Equals(CurrentVersionChangedTime, other.CurrentVersionChangedTime)) return false;
+      if (!object.Equals(RampingVersionChangedTime, other.RampingVersionChangedTime)) return false;
+      if (!object.Equals(RampingVersionPercentageChangedTime, other.RampingVersionPercentageChangedTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (CurrentVersion.Length != 0) hash ^= CurrentVersion.GetHashCode();
+      if (RampingVersion.Length != 0) hash ^= RampingVersion.GetHashCode();
+      if (RampingVersionPercentage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RampingVersionPercentage);
+      if (currentVersionChangedTime_ != null) hash ^= CurrentVersionChangedTime.GetHashCode();
+      if (rampingVersionChangedTime_ != null) hash ^= RampingVersionChangedTime.GetHashCode();
+      if (rampingVersionPercentageChangedTime_ != null) hash ^= RampingVersionPercentageChangedTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (CurrentVersion.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(CurrentVersion);
+      }
+      if (RampingVersion.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RampingVersion);
+      }
+      if (RampingVersionPercentage != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(RampingVersionPercentage);
+      }
+      if (currentVersionChangedTime_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(CurrentVersionChangedTime);
+      }
+      if (rampingVersionChangedTime_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(RampingVersionChangedTime);
+      }
+      if (rampingVersionPercentageChangedTime_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(RampingVersionPercentageChangedTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (CurrentVersion.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(CurrentVersion);
+      }
+      if (RampingVersion.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RampingVersion);
+      }
+      if (RampingVersionPercentage != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(RampingVersionPercentage);
+      }
+      if (currentVersionChangedTime_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(CurrentVersionChangedTime);
+      }
+      if (rampingVersionChangedTime_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(RampingVersionChangedTime);
+      }
+      if (rampingVersionPercentageChangedTime_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(RampingVersionPercentageChangedTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (CurrentVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CurrentVersion);
+      }
+      if (RampingVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RampingVersion);
+      }
+      if (RampingVersionPercentage != 0F) {
+        size += 1 + 4;
+      }
+      if (currentVersionChangedTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CurrentVersionChangedTime);
+      }
+      if (rampingVersionChangedTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RampingVersionChangedTime);
+      }
+      if (rampingVersionPercentageChangedTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RampingVersionPercentageChangedTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RoutingConfig other) {
+      if (other == null) {
+        return;
+      }
+      if (other.CurrentVersion.Length != 0) {
+        CurrentVersion = other.CurrentVersion;
+      }
+      if (other.RampingVersion.Length != 0) {
+        RampingVersion = other.RampingVersion;
+      }
+      if (other.RampingVersionPercentage != 0F) {
+        RampingVersionPercentage = other.RampingVersionPercentage;
+      }
+      if (other.currentVersionChangedTime_ != null) {
+        if (currentVersionChangedTime_ == null) {
+          CurrentVersionChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        CurrentVersionChangedTime.MergeFrom(other.CurrentVersionChangedTime);
+      }
+      if (other.rampingVersionChangedTime_ != null) {
+        if (rampingVersionChangedTime_ == null) {
+          RampingVersionChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        RampingVersionChangedTime.MergeFrom(other.RampingVersionChangedTime);
+      }
+      if (other.rampingVersionPercentageChangedTime_ != null) {
+        if (rampingVersionPercentageChangedTime_ == null) {
+          RampingVersionPercentageChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        RampingVersionPercentageChangedTime.MergeFrom(other.RampingVersionPercentageChangedTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            CurrentVersion = input.ReadString();
+            break;
+          }
+          case 18: {
+            RampingVersion = input.ReadString();
+            break;
+          }
+          case 29: {
+            RampingVersionPercentage = input.ReadFloat();
+            break;
+          }
+          case 34: {
+            if (currentVersionChangedTime_ == null) {
+              CurrentVersionChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CurrentVersionChangedTime);
+            break;
+          }
+          case 42: {
+            if (rampingVersionChangedTime_ == null) {
+              RampingVersionChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RampingVersionChangedTime);
+            break;
+          }
+          case 50: {
+            if (rampingVersionPercentageChangedTime_ == null) {
+              RampingVersionPercentageChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RampingVersionPercentageChangedTime);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            CurrentVersion = input.ReadString();
+            break;
+          }
+          case 18: {
+            RampingVersion = input.ReadString();
+            break;
+          }
+          case 29: {
+            RampingVersionPercentage = input.ReadFloat();
+            break;
+          }
+          case 34: {
+            if (currentVersionChangedTime_ == null) {
+              CurrentVersionChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(CurrentVersionChangedTime);
+            break;
+          }
+          case 42: {
+            if (rampingVersionChangedTime_ == null) {
+              RampingVersionChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RampingVersionChangedTime);
+            break;
+          }
+          case 50: {
+            if (rampingVersionPercentageChangedTime_ == null) {
+              RampingVersionPercentageChangedTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(RampingVersionPercentageChangedTime);
             break;
           }
         }
