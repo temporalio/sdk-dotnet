@@ -284,12 +284,11 @@ impl<SK: SlotKind + Send + Sync> CustomSlotSupplier<SK> {
             },
             task_queue: ctx.task_queue().into(),
             worker_identity: ctx.worker_identity().into(),
-            worker_build_id: ctx
-                .worker_deployment_version()
-                .as_ref()
-                .map(|v| v.build_id.clone())
-                .unwrap_or_default()
-                .into(),
+            worker_build_id: if let Some(vers) = ctx.worker_deployment_version() {
+                vers.build_id.as_str().into()
+            } else {
+                ByteArrayRef::empty()
+            },
             is_sticky: ctx.is_sticky(),
             token_src: std::ptr::null_mut(),
         }
