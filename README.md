@@ -310,7 +310,7 @@ using Temporalio.Converters;
 public class CamelCasePayloadConverter : DefaultPayloadConverter
 {
     public CamelCasePayloadConverter()
-      : base(new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
+        : base(new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
     {
     }
 }
@@ -423,7 +423,7 @@ public class GreetingWorkflow
     // WARNING: Workflow updates are experimental
     [WorkflowUpdate]
     public async Task UpdateGreetingParamsAsync(GreetingParams greetingParams) =>
-      this.greetingParamsUpdate = greetingParams;
+        this.greetingParamsUpdate = greetingParams;
 
     [WorkflowSignal]
     public async Task CompleteWithGreetingAsync() => this.complete = true;
@@ -441,7 +441,7 @@ Notes about the above code:
   different signal
 * Workflow code must be deterministic. See the "Workflow Logic Constraints" section below.
 * `Workflow.ExecuteActivityAsync` is strongly typed and accepts a lambda expression. This activity call can be a sync or
-  async function, return a value or not, and invoked statically or on an instance (which would require accepting the
+  async function, return a value or not, and be invoked statically or on an instance (which would require accepting the
   instance as the only lambda parameter).
 
 Attributes that can be applied:
@@ -449,12 +449,12 @@ Attributes that can be applied:
 * `[Workflow]` attribute must be present on the workflow type.
   * The attribute can have a string argument for the workflow type name. Otherwise the name is defaulted to the
     unqualified type name (with the `I` prefix removed if on an interface and has a capital letter following).
-  * `Dynamic = true` can be set for the workflow which makes the workflow a dynamic workflow meaning it will be called
+  * `Dynamic = true` can be set for the workflow, which makes the workflow a dynamic workflow -- meaning it will be called
     when no other workflows match. The run call must accept a single parameter of `Temporalio.Converters.IRawValue[]`
     for the arguments. Only one dynamic workflow may be registered on a worker.
 * `[WorkflowRun]` attribute must be present on one and only one public method.
   * The workflow run method must return a `Task` or `Task<>`.
-  * The workflow run method _should_ accept a single parameter and return a single type. Records are encouraged because
+  * The workflow run method _should_ accept a single parameter and return a single type, for example, a Record. Single types/Records are encouraged because
     optional fields can be added without affecting backwards compatibility of the workflow definition.
   * The parameters of this method and its return type are considered the parameters and return type of the workflow
     itself.
@@ -463,6 +463,8 @@ Attributes that can be applied:
     just invokes the base class method.
 * `[WorkflowSignal]` attribute may be present on any public method that handles signals.
   * Signal methods must return a `Task`.
+  * Similar to `[WorkflowRun]`, The signal method _should_ accept a single parameter of a single type, for example, a Record. Single types/Records are encouraged because
+    optional fields can be added without affecting backwards compatibility of the workflow definition.
   * The attribute can have a string argument for the signal name. Otherwise the name is defaulted to the unqualified
     method name with `Async` trimmed off the end if it is present.
   * This attribute is not inherited and therefore must be explicitly set on any override.
@@ -495,7 +497,7 @@ Workflows can inherit from interfaces and base classes. Callers can use these in
 without the implementation present. This can be valuable in separating logic, but there are some details that should be
 noted.
 
-`[Workflow]` and `[WorkflowRun]` attributes are never inherited and must be defined on item that is actually registered
+`[Workflow]` and `[WorkflowRun]` attributes are never inherited and must be defined on items that are actually registered
 with the worker. This means even if an interface or base class has these, they must also be present on the final
 implementing class. So if a base class has a full `[WorkflowRun]` implementation, the subclass must override that
 method, set `[WorkflowRun]` on the override, and then it can delegate to the base class. This explicit non-inheritance
@@ -727,7 +729,7 @@ with .NET tasks inside of workflows:
 
 In order to help catch wrong scheduler use, by default the Temporal .NET SDK adds an event source listener for
 info-level task events. While this technically receives events from all uses of tasks in the process, we make sure to
-ignore anything that is not running in a workflow in a high performant way (basically one thread local check). For code
+ignore anything that is not running in a workflow in a highly performant way (basically one thread local check). For code
 that does run in a workflow and accidentally starts a task in another scheduler, an `InvalidWorkflowOperationException`
 will be thrown which "pauses" the workflow (fails the workflow task which continually retries until the code is fixed.).
 This is unfortunately a runtime-only check, but can help catch mistakes early. If this needs to be turned off for any
@@ -740,7 +742,7 @@ timers.
 ##### Workflow .editorconfig
 
 Since workflow code follows some different logic rules than regular C# code, there are some common analyzer rules out
-there that developers may want to disable. To ensure these are only disabled for workflows, current recommendation is to
+there that developers may want to disable. To ensure these are only disabled for workflows, the current recommendation is to
 use the `.workflow.cs` extension for files containing workflows.
 
 Here are the rules to disable:
@@ -819,7 +821,7 @@ but only for one test at a time because time skipping is locked/unlocked at the 
 
 ##### Automatic Time Skipping
 
-Anytime a workflow result is waiting on, the time-skipping server automatically advances to the next event it can. To
+Anytime a workflow result is waited on, the time-skipping server automatically advances to the next event it can. To
 manually advance time before waiting on the result of the workflow, the `WorkflowEnvironment.DelayAsync` method can be
 used. If an activity is running, time-skipping is disabled.
 
@@ -852,9 +854,9 @@ public async Task WaitADayWorkflow_SimpleRun_Succeeds()
 {
     await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
     using var worker = new TemporalWorker(
-      env.Client,
-      new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
-          AddWorkflow<WaitADayWorkflow>());
+        env.Client,
+        new TemporalWorkerOptions($"task-queue-{Guid.NewGuid()}").
+            AddWorkflow<WaitADayWorkflow>());
     await worker.ExecuteAsync(async () =>
     {
         var result = await env.Client.ExecuteWorkflowAsync(
@@ -972,7 +974,7 @@ using Temporalio.Worker;
 public static async Task ReplayFromJsonAsync(string historyJson)
 {
     var replayer = new WorkflowReplayer(
-      new WorkflowReplayerOptions().AddWorkflow<MyWorkflow>());
+        new WorkflowReplayerOptions().AddWorkflow<MyWorkflow>());
     await replayer.ReplayWorkflowAsync(WorkflowHistory.FromJson("my-workflow-id", historyJson));
 }
 ```
@@ -991,7 +993,7 @@ using Temporalio.Worker;
 public static async Task CheckPastHistoriesAysnc(ITemporalClient client)
 {
     var replayer = new WorkflowReplayer(
-      new WorkflowReplayerOptions().AddWorkflow<MyWorkflow>());
+        new WorkflowReplayerOptions().AddWorkflow<MyWorkflow>());
     var listIter = client.ListWorkflowHistoriesAsync("WorkflowType = 'SayHello'");
     await foreach (var result in replayer.ReplayWorkflowsAsync(listIter))
     {
@@ -1049,7 +1051,7 @@ Notes about activity definitions:
 * Long running activities should heartbeat to regularly to inform server the activity is still running.
   * Heartbeats are throttled internally, so users can call this frequently without fear of calling too much.
   * Activities must heartbeat to receive cancellation.
-* Activities can be defined on static or instance methods. They can even be lambdas or local methods, but rarely is this
+* Activities can be defined as static or instance methods. They can even be lambdas or local methods, but rarely is this
   valuable since often an activity will be referenced by a workflow.
 * Activities can be synchronous or asynchronous. If an activity returns a `Task`, that task is awaited on as part of the
   activity.
