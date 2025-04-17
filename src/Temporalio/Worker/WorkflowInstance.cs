@@ -163,6 +163,13 @@ namespace Temporalio.Worker
                     RunId: start.ParentWorkflowInfo.RunId,
                     WorkflowId: start.ParentWorkflowInfo.WorkflowId);
             }
+            WorkflowInfo.RootInfo? root = null;
+            if (start.RootWorkflow != null)
+            {
+                root = new(
+                    RunId: start.RootWorkflow.RunId,
+                    WorkflowId: start.RootWorkflow.WorkflowId);
+            }
             var lastFailure = start.ContinuedFailure == null ?
                 null : failureConverter.ToException(start.ContinuedFailure, PayloadConverter);
             var lastResult = start.LastCompletionResult?.Payloads_.Select(v => new RawValue(v)).ToArray();
@@ -178,6 +185,7 @@ namespace Temporalio.Worker
                 Namespace: details.Namespace,
                 Parent: parent,
                 RetryPolicy: start.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(start.RetryPolicy),
+                Root: root,
                 RunId: act.RunId,
                 RunTimeout: start.WorkflowRunTimeout?.ToTimeSpan(),
                 StartTime: act.Timestamp.ToDateTime(),

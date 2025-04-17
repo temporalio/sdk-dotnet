@@ -18,6 +18,8 @@ namespace Temporalio.Workflows
     /// <param name="Namespace">Namespace for the workflow.</param>
     /// <param name="Parent">Parent information for the workflow if this is a child.</param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
+    /// <param name="Root">Root information for the workflow. This is nil in pre-1.27.0 server
+    /// versions or if there is no root (i.e. the root is itself).</param>
     /// <param name="RunId">Run ID for the workflow.</param>
     /// <param name="RunTimeout">Run timeout for the workflow.</param>
     /// <param name="StartTime">Time when the workflow started.</param>
@@ -40,6 +42,7 @@ namespace Temporalio.Workflows
         string Namespace,
         WorkflowInfo.ParentInfo? Parent,
         RetryPolicy? RetryPolicy,
+        WorkflowInfo.RootInfo? Root,
         string RunId,
         TimeSpan? RunTimeout,
         DateTime StartTime,
@@ -71,6 +74,15 @@ namespace Temporalio.Workflows
         /// <param name="WorkflowId">Workflow ID for the parent.</param>
         public record ParentInfo(
             string Namespace,
+            string RunId,
+            string WorkflowId);
+
+        /// <summary>
+        /// Information about a parent of a workflow.
+        /// </summary>
+        /// <param name="RunId">Run ID for the root.</param>
+        /// <param name="WorkflowId">Workflow ID for the root.</param>
+        public record RootInfo(
             string RunId,
             string WorkflowId);
     }
