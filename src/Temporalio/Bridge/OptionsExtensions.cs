@@ -108,6 +108,8 @@ namespace Temporalio.Bridge
                 metric_temporality = temporality,
                 durations_as_seconds = (byte)(options.UseSecondsForDuration ? 1 : 0),
                 protocol = protocol,
+                histogram_bucket_overrides = ToHistogramBucketOverrides(
+                    options.HistogramBucketOverrides, scope),
             };
         }
 
@@ -131,6 +133,8 @@ namespace Temporalio.Bridge
                 counters_total_suffix = (byte)(options.HasCounterTotalSuffix ? 1 : 0),
                 unit_suffix = (byte)(options.HasUnitSuffix ? 1 : 0),
                 durations_as_seconds = (byte)(options.UseSecondsForDuration ? 1 : 0),
+                histogram_bucket_overrides = ToHistogramBucketOverrides(
+                    options.HistogramBucketOverrides, scope),
             };
         }
 
@@ -180,11 +184,7 @@ namespace Temporalio.Bridge
                 {
                     throw new ArgumentException("Prometheus options must have bind address");
                 }
-                prometheus = scope.Pointer(
-                    new Interop.PrometheusOptions()
-                    {
-                        bind_address = scope.ByteArray(options.Prometheus.BindAddress),
-                    });
+                prometheus = scope.Pointer(options.Prometheus.ToInteropOptions(scope));
             }
             else if (options.OpenTelemetry != null)
             {
@@ -553,6 +553,12 @@ namespace Temporalio.Bridge
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
             };
         }
+
+        private static Interop.ByteArrayRef ToHistogramBucketOverrides(
+            IReadOnlyDictionary<string, IReadOnlyCollection<double>>? overrides, Scope scope) =>
+            scope.Metadata(overrides?.Select(kvp =>
+                new KeyValuePair<string, string>(
+                    kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))));
 
         private static Interop.TunerHolder ToInteropTuner(
             this Temporalio.Worker.Tuning.WorkerTuner tuner,

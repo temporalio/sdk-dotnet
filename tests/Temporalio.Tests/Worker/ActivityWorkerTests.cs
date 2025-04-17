@@ -1,4 +1,3 @@
-#pragma warning disable SA1201, SA1204 // We want to have classes/methods near their tests
 #pragma warning disable xUnit1013 // We want instance methods as activities sometimes
 namespace Temporalio.Tests.Worker;
 

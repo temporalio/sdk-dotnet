@@ -63,6 +63,12 @@ namespace Temporalio.Runtime
         public OpenTelemetryProtocol Protocol { get; set; } = OpenTelemetryProtocol.Grpc;
 
         /// <summary>
+        /// Gets or sets the histogram bucket overrides. The dictionary key is the metric name and
+        /// the value is the collection of buckets as floats.
+        /// </summary>
+        public IReadOnlyDictionary<string, IReadOnlyCollection<double>>? HistogramBucketOverrides { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

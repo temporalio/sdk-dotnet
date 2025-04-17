@@ -273,4 +273,62 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         [WorkflowRun]
         public async Task RunAsync() => throw new InvalidOperationException("Intentional error");
     }
+
+    [Fact]
+    public async Task Runtime_HistogramBucketOverrides_WorksProperly()
+    {
+        // Prom metrics with custom histogram buckets
+        var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
+        var client = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = new(new()
+                {
+                    Telemetry = new()
+                    {
+                        Metrics = new()
+                        {
+                            Prometheus = new(promAddr)
+                            {
+                                HistogramBucketOverrides = new Dictionary<string, IReadOnlyCollection<double>>
+                                {
+                                    ["temporal_request_latency"] = new[] { 123.4, 567.89 },
+                                    ["custom_histogram"] = new[] { 5d, 6, 7 },
+                                },
+                            },
+                        },
+                    },
+                }),
+            });
+
+        // Generate metrics
+        await client.WorkflowService.GetSystemInfoAsync(new());
+        var hist = client.Connection.Options.Runtime!.MetricMeter.CreateHistogram<float>("custom_histogram");
+        hist.Record(4.5f);
+        hist.Record(5.5f);
+        hist.Record(6.5f);
+        hist.Record(7.5f);
+
+        // Check metrics
+        using var httpClient = new HttpClient();
+        var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
+        var respLines = (await resp.Content.ReadAsStringAsync()).Split('\n');
+        Assert.Contains(
+            respLines,
+            line => line.StartsWith("temporal_request_latency_bucket{") && line.Contains("le=\"123.4\"}"));
+        Assert.Contains(
+            respLines,
+            line => line.StartsWith("temporal_request_latency_bucket{") && line.Contains("le=\"567.89\"}"));
+        Assert.Contains(
+            respLines,
+            line => line.StartsWith("custom_histogram_bucket{") && line.EndsWith("le=\"5\"} 1"));
+        Assert.Contains(
+            respLines,
+            line => line.StartsWith("custom_histogram_bucket{") && line.EndsWith("le=\"6\"} 2"));
+        Assert.Contains(
+            respLines,
+            line => line.StartsWith("custom_histogram_bucket{") && line.EndsWith("le=\"7\"} 3"));
+    }
 }

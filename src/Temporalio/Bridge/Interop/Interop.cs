@@ -331,6 +331,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("enum OpenTelemetryProtocol")]
         public OpenTelemetryProtocol protocol;
+
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef histogram_bucket_overrides;
     }
 
     internal partial struct PrometheusOptions
@@ -346,6 +349,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("bool")]
         public byte durations_as_seconds;
+
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef histogram_bucket_overrides;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -646,7 +652,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L443_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L453_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref WorkflowSlotInfo_Body workflow_slot_info
@@ -775,7 +781,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L494_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L504_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -815,15 +821,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L495_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L505_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L498_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L508_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L501_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L511_C5")]
             public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct

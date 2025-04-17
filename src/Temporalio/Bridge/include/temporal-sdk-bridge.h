@@ -223,6 +223,11 @@ typedef struct OpenTelemetryOptions {
   enum OpenTelemetryMetricTemporality metric_temporality;
   bool durations_as_seconds;
   enum OpenTelemetryProtocol protocol;
+  /**
+   * Histogram bucket overrides in form of
+   * <metric1>\n<float>,<float>,<float>\n<metric2>\n<float>,<float>,<float>
+   */
+  MetadataRef histogram_bucket_overrides;
 } OpenTelemetryOptions;
 
 typedef struct PrometheusOptions {
@@ -230,6 +235,11 @@ typedef struct PrometheusOptions {
   bool counters_total_suffix;
   bool unit_suffix;
   bool durations_as_seconds;
+  /**
+   * Histogram bucket overrides in form of
+   * <metric1>\n<float>,<float>,<float>\n<metric2>\n<float>,<float>,<float>
+   */
+  MetadataRef histogram_bucket_overrides;
 } PrometheusOptions;
 
 typedef const void *(*CustomMetricMeterMetricNewCallback)(struct ByteArrayRef name,
