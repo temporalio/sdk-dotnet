@@ -373,9 +373,18 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public Task<WorkflowInfo> RunAsync() => Task.FromResult(Workflow.Info);
     }
 
+    [Workflow]
+    public class InfoFromChildWorkflow
+    {
+        [WorkflowRun]
+        public Task<WorkflowInfo> RunAsync() =>
+            Workflow.ExecuteChildWorkflowAsync((InfoWorkflow wf) => wf.RunAsync());
+    }
+
     [Fact]
     public async Task ExecuteWorkflowAsync_Info_Succeeds()
     {
+        // Normal info
         await ExecuteWorkerAsync<InfoWorkflow>(async worker =>
         {
             var handle = await Env.Client.StartWorkflowAsync(
@@ -389,6 +398,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Equal(worker.Client.Options.Namespace, result.Namespace);
             Assert.Null(result.Parent);
             Assert.Null(result.RetryPolicy);
+            Assert.Null(result.Root);
             Assert.Equal(handle.ResultRunId, result.RunId);
             Assert.Null(result.RunTimeout);
             Assert.InRange(
@@ -401,6 +411,22 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Equal(handle.Id, result.WorkflowId);
             Assert.Equal("InfoWorkflow", result.WorkflowType);
         });
+        // Child info
+        await ExecuteWorkerAsync<InfoFromChildWorkflow>(
+            async worker =>
+            {
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (InfoFromChildWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                var result = await handle.GetResultAsync();
+                Assert.Equal(
+                    new WorkflowInfo.ParentInfo(Env.Client.Options.Namespace, handle.ResultRunId!, handle.Id),
+                    result.Parent);
+                Assert.Equal(
+                    new WorkflowInfo.RootInfo(handle.ResultRunId!, handle.Id),
+                    result.Root);
+            },
+            new TemporalWorkerOptions().AddWorkflow<InfoWorkflow>());
     }
 
     public record HistoryInfo(int HistoryLength, int HistorySize, bool ContinueAsNewSuggested);
