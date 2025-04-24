@@ -137,7 +137,7 @@ namespace Temporalio.Worker
                     SearchAttributeCollection.FromProto(initialSearchAttributes),
                 false);
             var act = details.InitialActivation;
-            CurrentBuildId = act.DeploymentVersionForCurrentTask?.BuildId ?? string.Empty;
+            CurrentDeploymentVersion = WorkerDeploymentVersion.FromBridge(act.DeploymentVersionForCurrentTask);
             var start = details.Init;
             startArgs = new(
                 () => DecodeArgs(
@@ -229,7 +229,10 @@ namespace Temporalio.Worker
         public bool ContinueAsNewSuggested { get; private set; }
 
         /// <inheritdoc />
-        public string CurrentBuildId { get; private set; }
+        public string CurrentBuildId => CurrentDeploymentVersion?.BuildId ?? string.Empty;
+
+        /// <inheritdoc />
+        public WorkerDeploymentVersion? CurrentDeploymentVersion { get; private set; }
 
         /// <inheritdoc />
         public string CurrentDetails { get; set; } = string.Empty;
@@ -572,7 +575,7 @@ namespace Temporalio.Worker
                 ContinueAsNewSuggested = act.ContinueAsNewSuggested;
                 CurrentHistoryLength = checked((int)act.HistoryLength);
                 CurrentHistorySize = checked((int)act.HistorySizeBytes);
-                CurrentBuildId = act.DeploymentVersionForCurrentTask?.BuildId ?? string.Empty;
+                CurrentDeploymentVersion = WorkerDeploymentVersion.FromBridge(act.DeploymentVersionForCurrentTask);
                 IsReplaying = act.IsReplaying;
                 UtcNow = act.Timestamp.ToDateTime();
 

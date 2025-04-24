@@ -18,7 +18,6 @@ use temporal_sdk_core_api::worker::SlotMarkUsedContext;
 use temporal_sdk_core_api::worker::SlotReleaseContext;
 use temporal_sdk_core_api::worker::SlotReservationContext;
 use temporal_sdk_core_api::worker::SlotSupplierPermit;
-use temporal_sdk_core_api::worker::WorkerVersioningStrategy;
 use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
@@ -37,7 +36,7 @@ use std::time::Duration;
 pub struct WorkerOptions {
     namespace: ByteArrayRef,
     task_queue: ByteArrayRef,
-    build_id: ByteArrayRef,
+    versioning_strategy: WorkerVersioningStrategy,
     identity_override: ByteArrayRef,
     max_cached_workflows: u32,
     tuner: TunerHolder,
@@ -48,12 +47,41 @@ pub struct WorkerOptions {
     max_activities_per_second: f64,
     max_task_queue_activities_per_second: f64,
     graceful_shutdown_period_millis: u64,
-    use_worker_versioning: bool,
     max_concurrent_workflow_task_polls: u32,
     nonsticky_to_sticky_poll_ratio: f32,
     max_concurrent_activity_task_polls: u32,
     nondeterminism_as_workflow_fail: bool,
     nondeterminism_as_workflow_fail_for_types: ByteArrayRefArray,
+}
+
+#[repr(C)]
+pub enum WorkerVersioningStrategy {
+    None(WorkerVersioningNone),
+    DeploymentBased(WorkerDeploymentOptions),
+    LegacyBuildIdBased(LegacyBuildIdBased),
+}
+
+#[repr(C)]
+pub struct WorkerVersioningNone {
+    pub build_id: ByteArrayRef,
+}
+
+#[repr(C)]
+pub struct WorkerDeploymentOptions {
+    pub version: WorkerDeploymentVersion,
+    pub use_worker_versioning: bool,
+    pub default_versioning_behavior: i32,
+}
+
+#[repr(C)]
+pub struct LegacyBuildIdBased {
+    pub build_id: ByteArrayRef,
+}
+
+#[repr(C)]
+pub struct WorkerDeploymentVersion {
+    pub deployment_name: ByteArrayRef,
+    pub build_id: ByteArrayRef,
 }
 
 #[repr(C)]
@@ -807,13 +835,35 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
         WorkerConfigBuilder::default()
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())
-            .versioning_strategy(if opt.use_worker_versioning {
-                WorkerVersioningStrategy::LegacyBuildIdBased {
-                    build_id: opt.build_id.to_string(),
-                }
-            } else {
-                WorkerVersioningStrategy::None {
-                    build_id: opt.build_id.to_string(),
+            .versioning_strategy({
+                match &opt.versioning_strategy {
+                    WorkerVersioningStrategy::None(n) => {
+                        temporal_sdk_core_api::worker::WorkerVersioningStrategy::None {
+                            build_id: n.build_id.to_string(),
+                        }
+                    }
+                    WorkerVersioningStrategy::DeploymentBased(dopts) => {
+                        temporal_sdk_core_api::worker::WorkerVersioningStrategy::WorkerDeploymentBased(
+                            temporal_sdk_core_api::worker::WorkerDeploymentOptions {
+                                version: temporal_sdk_core_api::worker::WorkerDeploymentVersion {
+                                    deployment_name: dopts.version.deployment_name.to_string(),
+                                    build_id: dopts.version.build_id.to_string(),
+                                },
+                                use_worker_versioning: dopts.use_worker_versioning,
+                                default_versioning_behavior: match dopts.default_versioning_behavior {
+                                    0 => None,
+                                    1 => Some(temporal_sdk_core_protos::temporal::api::enums::v1::VersioningBehavior::Pinned),
+                                    2 => Some(temporal_sdk_core_protos::temporal::api::enums::v1::VersioningBehavior::AutoUpgrade),
+                                    _ => bail!("Invalid default versioning behavior {}", dopts.default_versioning_behavior),
+                                }
+                            }
+                        )
+                    }
+                    WorkerVersioningStrategy::LegacyBuildIdBased(l) => {
+                        temporal_sdk_core_api::worker::WorkerVersioningStrategy::LegacyBuildIdBased {
+                            build_id: l.build_id.to_string(),
+                        }
+                    }
                 }
             })
             .client_identity_override(opt.identity_override.to_option_string())
