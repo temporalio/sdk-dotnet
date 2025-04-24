@@ -404,9 +404,9 @@ typedef struct WorkerDeploymentOptions {
   int32_t default_versioning_behavior;
 } WorkerDeploymentOptions;
 
-typedef struct LegacyBuildIdBased {
+typedef struct LegacyBuildIdBasedStrategy {
   struct ByteArrayRef build_id;
-} LegacyBuildIdBased;
+} LegacyBuildIdBasedStrategy;
 
 typedef enum WorkerVersioningStrategy_Tag {
   None,
@@ -424,7 +424,7 @@ typedef struct WorkerVersioningStrategy {
       struct WorkerDeploymentOptions deployment_based;
     };
     struct {
-      struct LegacyBuildIdBased legacy_build_id_based;
+      struct LegacyBuildIdBasedStrategy legacy_build_id_based;
     };
   };
 } WorkerVersioningStrategy;
