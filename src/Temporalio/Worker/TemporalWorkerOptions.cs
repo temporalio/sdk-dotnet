@@ -109,6 +109,8 @@ namespace Temporalio.Worker
         /// If unset, the default is
         /// <c>Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId</c>.
         /// </summary>
+        /// <remarks>Exclusive with <see cref="DeploymentOptions"/>.</remarks>
+        [Obsolete("Use DeploymentOptions instead")]
         public string? BuildId { get; set; }
 
         /// <summary>
@@ -116,7 +118,16 @@ namespace Temporalio.Worker
         /// only receives workflow tasks for workflows which it claims to be compatible with. The
         /// <see cref="BuildId"/> field is used as this worker's version when enabled, and must be set.
         /// </summary>
+        /// <remarks>Exclusive with <see cref="DeploymentOptions"/>.</remarks>
+        [Obsolete("Use DeploymentOptions instead")]
         public bool UseWorkerVersioning { get; set; }
+
+        /// <summary>
+        /// Gets or sets the deployment options for this worker.
+        /// </summary>
+        /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
+        /// change.</remarks>
+        public WorkerDeploymentOptions? DeploymentOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the identity for this worker. If unset, defaults to the client's identity.

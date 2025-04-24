@@ -389,6 +389,46 @@ typedef struct WorkerOrFail {
   const struct ByteArray *fail;
 } WorkerOrFail;
 
+typedef struct WorkerVersioningNone {
+  struct ByteArrayRef build_id;
+} WorkerVersioningNone;
+
+typedef struct WorkerDeploymentVersion {
+  struct ByteArrayRef deployment_name;
+  struct ByteArrayRef build_id;
+} WorkerDeploymentVersion;
+
+typedef struct WorkerDeploymentOptions {
+  struct WorkerDeploymentVersion version;
+  bool use_worker_versioning;
+  int32_t default_versioning_behavior;
+} WorkerDeploymentOptions;
+
+typedef struct LegacyBuildIdBased {
+  struct ByteArrayRef build_id;
+} LegacyBuildIdBased;
+
+typedef enum WorkerVersioningStrategy_Tag {
+  None,
+  DeploymentBased,
+  LegacyBuildIdBased,
+} WorkerVersioningStrategy_Tag;
+
+typedef struct WorkerVersioningStrategy {
+  WorkerVersioningStrategy_Tag tag;
+  union {
+    struct {
+      struct WorkerVersioningNone none;
+    };
+    struct {
+      struct WorkerDeploymentOptions deployment_based;
+    };
+    struct {
+      struct LegacyBuildIdBased legacy_build_id_based;
+    };
+  };
+} WorkerVersioningStrategy;
+
 typedef struct FixedSizeSlotSupplier {
   uintptr_t num_slots;
 } FixedSizeSlotSupplier;
@@ -528,7 +568,7 @@ typedef struct ByteArrayRefArray {
 typedef struct WorkerOptions {
   struct ByteArrayRef namespace_;
   struct ByteArrayRef task_queue;
-  struct ByteArrayRef build_id;
+  struct WorkerVersioningStrategy versioning_strategy;
   struct ByteArrayRef identity_override;
   uint32_t max_cached_workflows;
   struct TunerHolder tuner;
@@ -539,7 +579,6 @@ typedef struct WorkerOptions {
   double max_activities_per_second;
   double max_task_queue_activities_per_second;
   uint64_t graceful_shutdown_period_millis;
-  bool use_worker_versioning;
   uint32_t max_concurrent_workflow_task_polls;
   float nonsticky_to_sticky_poll_ratio;
   uint32_t max_concurrent_activity_task_polls;

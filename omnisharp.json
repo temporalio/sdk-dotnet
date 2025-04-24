@@ -4,5 +4,8 @@
   },
   "RoslynExtensionsOptions": {
     "enableAnalyzersSupport": true
+  },
+  "fileOptions": {
+    "systemExcludeSearchPatterns": ["src/Temporalio/Bridge/src/**"]
   }
 }
