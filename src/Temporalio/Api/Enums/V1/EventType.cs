@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZXZlbnRfdHlwZS5wcm90bxIVdGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxKpsUCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
+            "cG9yYWwuYXBpLmVudW1zLnYxKooVCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
             "RV9VTlNQRUNJRklFRBAAEikKJUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VU",
             "SU9OX1NUQVJURUQQARIrCidFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
             "Tl9DT01QTEVURUQQAhIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
@@ -82,11 +82,13 @@ namespace Temporalio.Api.Enums.V1 {
             "VkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DQU5DRUxFRBA0EigKJEVWRU5U",
             "X1RZUEVfTkVYVVNfT1BFUkFUSU9OX1RJTUVEX09VVBA1Ei8KK0VWRU5UX1RZ",
             "UEVfTkVYVVNfT1BFUkFUSU9OX0NBTkNFTF9SRVFVRVNURUQQNhIxCi1FVkVO",
-            "VF9UWVBFX1dPUktGTE9XX0VYRUNVVElPTl9PUFRJT05TX1VQREFURUQQN0KG",
-            "AQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQg5FdmVudFR5cGVQcm90b1AB",
-            "WiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3Jh",
-            "bGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYx",
-            "YgZwcm90bzM="));
+            "VF9UWVBFX1dPUktGTE9XX0VYRUNVVElPTl9PUFRJT05TX1VQREFURUQQNxI3",
+            "CjNFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DQU5DRUxfUkVRVUVTVF9D",
+            "T01QTEVURUQQOBI0CjBFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DQU5D",
+            "RUxfUkVRVUVTVF9GQUlMRUQQOUKGAQoYaW8udGVtcG9yYWwuYXBpLmVudW1z",
+            "LnYxQg5FdmVudFR5cGVQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51",
+            "bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBv",
+            "cmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EventType), }, null, null));
@@ -365,6 +367,14 @@ namespace Temporalio.Api.Enums.V1 {
     /// Workflow execution options updated by user.
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_OPTIONS_UPDATED")] WorkflowExecutionOptionsUpdated = 55,
+    /// <summary>
+    /// A cancellation request for a Nexus operation was successfully delivered to the Nexus handler.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_CANCEL_REQUEST_COMPLETED")] NexusOperationCancelRequestCompleted = 56,
+    /// <summary>
+    /// A cancellation request for a Nexus operation resulted in an error.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_CANCEL_REQUEST_FAILED")] NexusOperationCancelRequestFailed = 57,
   }
 
   #endregion

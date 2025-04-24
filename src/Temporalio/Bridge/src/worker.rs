@@ -58,7 +58,7 @@ pub struct WorkerOptions {
 pub enum WorkerVersioningStrategy {
     None(WorkerVersioningNone),
     DeploymentBased(WorkerDeploymentOptions),
-    LegacyBuildIdBased(LegacyBuildIdBased),
+    LegacyBuildIdBased(LegacyBuildIdBasedStrategy),
 }
 
 #[repr(C)]
@@ -74,7 +74,7 @@ pub struct WorkerDeploymentOptions {
 }
 
 #[repr(C)]
-pub struct LegacyBuildIdBased {
+pub struct LegacyBuildIdBasedStrategy {
     pub build_id: ByteArrayRef,
 }
 
