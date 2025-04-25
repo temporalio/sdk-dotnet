@@ -4285,7 +4285,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Equal("1.0", await handle.QueryAsync(wf => wf.GetBuildId()));
                 return handle;
             },
+#pragma warning disable 0618
             new(tq) { BuildId = "1.0" });
+#pragma warning restore 0618
 
         await Env.Client.WorkflowService.ResetStickyTaskQueueAsync(new()
         {
@@ -4303,7 +4305,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await handle.GetResultAsync();
                 Assert.Equal("1.1", await handle.QueryAsync(wf => wf.GetBuildId()));
             },
+#pragma warning disable 0618
             new(tq) { BuildId = "1.1" });
+#pragma warning restore 0618
     }
 
     public abstract class FailureTypesWorkflow
