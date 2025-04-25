@@ -660,6 +660,12 @@ namespace Temporalio.Worker
                             var checkConditions = jobs.Any(j => j.VariantCase != WorkflowActivationJob.VariantOneofCase.QueryWorkflow);
                             RunOnce(checkConditions);
                         }
+
+                        if (Definition.VersioningBehavior != null)
+                        {
+                            completion.Successful.VersioningBehavior =
+                                (Temporalio.Api.Enums.V1.VersioningBehavior)Definition.VersioningBehavior;
+                        }
                     }
                     finally
                     {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Temporalio.Common;
 using Temporalio.Runtime;
 
 namespace Temporalio.Workflows
@@ -28,7 +29,8 @@ namespace Temporalio.Workflows
             IReadOnlyDictionary<string, WorkflowQueryDefinition> queries,
             WorkflowQueryDefinition? dynamicQuery,
             IReadOnlyDictionary<string, WorkflowUpdateDefinition> updates,
-            WorkflowUpdateDefinition? dynamicUpdate)
+            WorkflowUpdateDefinition? dynamicUpdate,
+            VersioningBehavior? versioningBehavior)
         {
             Name = name;
             Type = type;
@@ -41,6 +43,7 @@ namespace Temporalio.Workflows
             DynamicQuery = dynamicQuery;
             Updates = updates;
             DynamicUpdate = dynamicUpdate;
+            VersioningBehavior = versioningBehavior;
         }
 
         /// <summary>
@@ -105,6 +108,11 @@ namespace Temporalio.Workflows
         public Type[]? FailureExceptionTypes { get; private init; }
 
         /// <summary>
+        /// Gets the versioning behavior.
+        /// </summary>
+        public VersioningBehavior? VersioningBehavior { get; private init; }
+
+        /// <summary>
         /// Create a workflow definition for the given type or fail. The result is cached by type.
         /// </summary>
         /// <typeparam name="T">Type to get definition for.</typeparam>
@@ -164,6 +172,8 @@ namespace Temporalio.Workflows
             {
                 errs.Add($"{type} has generic type arguments");
             }
+
+            var versioningBehavior = attr.VersioningBehavior;
 
             // Check constructors. We intentionally fetch non-public too to make sure the init
             // attribute isn't set on them.
@@ -451,7 +461,8 @@ namespace Temporalio.Workflows
                 queries: queries,
                 dynamicQuery: dynamicQuery,
                 updates: updates,
-                dynamicUpdate: dynamicUpdate);
+                dynamicUpdate: dynamicUpdate,
+                versioningBehavior: versioningBehavior);
         }
 
         /// <summary>
