@@ -62,6 +62,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
             this IServiceCollection services, string taskQueue, string? buildId = null)
         {
+            // TODO: Review - We probably need to deprecate buildId param & add deployment version?
             // We have to use AddSingleton instead of AddHostedService because the latter does
             // not allow us to register multiple of the same type, see
             // https://github.com/dotnet/runtime/issues/38751.
@@ -72,7 +73,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 options =>
                 {
                     options.TaskQueue = taskQueue;
+#pragma warning disable 0618
                     options.BuildId = buildId;
+#pragma warning restore 0618
                 },
                 // Disallow duplicate options registrations because that means multiple worker
                 // services with the same task queue + build ID were added.

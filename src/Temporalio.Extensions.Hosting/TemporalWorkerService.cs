@@ -120,6 +120,7 @@ namespace Temporalio.Extensions.Hosting
             ITemporalClient? existingClient = null,
             ILoggerFactory? loggerFactory = null)
         {
+            // TODO: Review - We probably need *another* constructor with deployment version?
             var options = (TemporalWorkerServiceOptions)optionsMonitor.Get(
                 TemporalWorkerServiceOptions.GetUniqueOptionsName(
                     taskQueueAndBuildId.TaskQueue, taskQueueAndBuildId.BuildId)).Clone();
@@ -130,11 +131,13 @@ namespace Temporalio.Extensions.Hosting
                 throw new InvalidOperationException(
                     $"Task queue '{taskQueueAndBuildId.TaskQueue}' on constructor different than '{options.TaskQueue}' on options");
             }
+#pragma warning disable 0618
             if (options.BuildId != taskQueueAndBuildId.BuildId)
             {
                 throw new InvalidOperationException(
                     $"Build ID '{taskQueueAndBuildId.BuildId ?? "<unset>"}' on constructor different than '{options.BuildId ?? "<unset>"}' on options");
             }
+#pragma warning restore 0618
 
             newClientOptions = options.ClientOptions;
             if (newClientOptions == null)
