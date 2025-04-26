@@ -30,7 +30,8 @@ namespace Temporalio.Workflows
             WorkflowQueryDefinition? dynamicQuery,
             IReadOnlyDictionary<string, WorkflowUpdateDefinition> updates,
             WorkflowUpdateDefinition? dynamicUpdate,
-            VersioningBehavior? versioningBehavior)
+            VersioningBehavior? versioningBehavior,
+            Func<object?, WorkflowDefinitionOptions>? dynamicOptionsMethod)
         {
             Name = name;
             Type = type;
@@ -44,6 +45,7 @@ namespace Temporalio.Workflows
             Updates = updates;
             DynamicUpdate = dynamicUpdate;
             VersioningBehavior = versioningBehavior;
+            DynamicConfigMethod = dynamicOptionsMethod;
         }
 
         /// <summary>
@@ -111,6 +113,11 @@ namespace Temporalio.Workflows
         /// Gets the versioning behavior.
         /// </summary>
         public VersioningBehavior? VersioningBehavior { get; private init; }
+
+        /// <summary>
+        /// Gets the dynamic configuration method.
+        /// </summary>
+        public Func<object?, WorkflowDefinitionOptions>? DynamicConfigMethod { get; private init; }
 
         /// <summary>
         /// Create a workflow definition for the given type or fail. The result is cached by type.
@@ -246,6 +253,7 @@ namespace Temporalio.Workflows
             // Find and validate run, signal, query, and update methods. We intentionally fetch
             // non-public too to make sure attributes aren't set on them.
             MethodInfo? runMethod = null;
+            Func<object?, WorkflowDefinitionOptions>? dynamicOptionsMethod = null;
             var signals = new Dictionary<string, WorkflowSignalDefinition>();
             WorkflowSignalDefinition? dynamicSignal = null;
             var queries = new Dictionary<string, WorkflowQueryDefinition>();
@@ -295,6 +303,27 @@ namespace Temporalio.Workflows
                     {
                         runMethod = method;
                     }
+                }
+                if (method.IsDefined(typeof(WorkflowDynamicOptionsAttribute), false))
+                {
+                    if (!method.IsPublic)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} must be public");
+                    }
+                    if (method.IsStatic)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} cannot be static");
+                    }
+                    if (method.ReturnType != typeof(WorkflowDefinitionOptions))
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} must return WorkflowDefinitionOptions");
+                    }
+                    var parameters = method.GetParameters();
+                    if (parameters.Length != 0)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} must take no parameters");
+                    }
+                    dynamicOptionsMethod = instance => (WorkflowDefinitionOptions)method.Invoke(instance, null)!;
                 }
                 if (method.IsDefined(typeof(WorkflowSignalAttribute), false))
                 {
@@ -462,7 +491,8 @@ namespace Temporalio.Workflows
                 dynamicQuery: dynamicQuery,
                 updates: updates,
                 dynamicUpdate: dynamicUpdate,
-                versioningBehavior: versioningBehavior);
+                versioningBehavior: versioningBehavior,
+                dynamicOptionsMethod: dynamicOptionsMethod);
         }
 
         /// <summary>
