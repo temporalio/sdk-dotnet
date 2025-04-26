@@ -253,15 +253,21 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
         public async Task<string> RunAsync(IRawValue[] args) => "dynamic";
     }
 
-    [Workflow(Dynamic = true, VersioningBehavior = VersioningBehavior.AutoUpgrade)]
-    public class DynamicWorkflowVersioningOnConfig
+    [Workflow(Dynamic = true, VersioningBehavior = VersioningBehavior.Pinned)]
+    public class DynamicWorkflowVersioningOnMethod
     {
         [WorkflowRun]
         public async Task<string> RunAsync(IRawValue[] args) => "dynamic";
+
+        [WorkflowDynamicOptions]
+        public WorkflowDefinitionOptions DynamicOptions() => new()
+        {
+            VersioningBehavior = VersioningBehavior.AutoUpgrade,
+        };
     }
 
     [Fact]
-    public async Task WorkerDeployment_DynamicWorkflow_WithPinnedVersioning()
+    public async Task WorkerDeployment_DynamicWorkflow_OnDefinition()
     {
         await TestWorkerDeploymentDynamicWorkflow(
             typeof(DynamicWorkflowVersioningOnDefn),
@@ -269,10 +275,10 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task WorkerDeployment_DynamicWorkflow_WithAutoUpgradeVersioning()
+    public async Task WorkerDeployment_DynamicWorkflow_OnMethod()
     {
         await TestWorkerDeploymentDynamicWorkflow(
-            typeof(DynamicWorkflowVersioningOnConfig),
+            typeof(DynamicWorkflowVersioningOnMethod),
             VersioningBehavior.AutoUpgrade);
     }
 
