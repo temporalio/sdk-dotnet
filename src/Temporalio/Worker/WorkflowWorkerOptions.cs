@@ -24,5 +24,6 @@ namespace Temporalio.Worker
         IReadOnlyCollection<Type>? WorkerLevelFailureExceptionTypes,
         bool DisableEagerActivityExecution,
         Action<string> AssertValidLocalActivity,
-        VersioningBehavior? DefaultVersioningBehavior);
+        VersioningBehavior? DefaultVersioningBehavior,
+        WorkerDeploymentOptions? DeploymentOptions);
 }

@@ -176,7 +176,8 @@ namespace Temporalio.Worker
                             WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
                             DisableEagerActivityExecution: false,
                             AssertValidLocalActivity: _ => { },
-                            DefaultVersioningBehavior: null),
+                            DefaultVersioningBehavior: null,
+                            DeploymentOptions: null),
                         (runId, removeFromCache) => SetResult(removeFromCache));
                 }
                 catch

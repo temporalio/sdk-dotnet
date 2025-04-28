@@ -98,7 +98,8 @@ namespace Temporalio.Worker
                                     $"Activity {activityType} is not registered on this worker," +
                                     $" no available activities."))
                                 .AssertValidActivity(activityType),
-                    DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior));
+                    DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior,
+                    DeploymentOptions: options.DeploymentOptions));
             }
         }
 
