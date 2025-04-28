@@ -55,11 +55,14 @@ namespace Temporalio.Worker
                         "Workflows must be deterministic and self-contained with a lifetime controlled by Temporal.");
                 }
 
-                if (options.DefaultVersioningBehavior is null or VersioningBehavior.Unspecified
-                    && defn.VersioningBehavior is null or VersioningBehavior.Unspecified)
+                if (options.DeploymentOptions?.UseWorkerVersioning == true)
                 {
-                    throw new ArgumentException($"Workflow named {defn.Name} must specify a " +
-                        "versioning behavior, since the worker has no default.");
+                    if (options.DeploymentOptions?.DefaultVersioningBehavior is null or VersioningBehavior.Unspecified
+                        && defn.VersioningBehavior is null or VersioningBehavior.Unspecified)
+                    {
+                        throw new ArgumentException($"Workflow named {defn.Name} must specify a " +
+                            "versioning behavior, since the worker has no default.");
+                    }
                 }
 
                 if (defn.Name == null)

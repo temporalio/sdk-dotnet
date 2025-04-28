@@ -93,7 +93,7 @@ namespace Temporalio.Worker
                     RuntimeMetricMeter: MetricMeter,
                     WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
                     DisableEagerActivityExecution: options.DisableEagerActivityExecution,
-                    DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior));
+                    DeploymentOptions: options.DeploymentOptions));
             }
         }
 
