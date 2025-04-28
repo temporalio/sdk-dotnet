@@ -155,7 +155,7 @@ jobs:
         os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest]
         include:
           - os: ubuntu-arm
-            runsOn: buildjet-4vcpu-ubuntu-2204-arm
+            runsOn: ubuntu-24.04-arm64-2-core
           - os: alpine-latest
             container: mcr.microsoft.com/dotnet/sdk:6.0-alpine
             runsOn: ubuntu-latest
