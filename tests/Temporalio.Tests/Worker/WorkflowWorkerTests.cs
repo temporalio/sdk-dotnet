@@ -4169,6 +4169,79 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class UpdateBadResultSerializationWorkflow
+    {
+        public record MyUpdateResult(string Value);
+
+        [WorkflowRun]
+        public Task RunAsync() => Workflow.WaitConditionAsync(() => false);
+
+        [WorkflowUpdate]
+        public async Task<MyUpdateResult> DoUpdateAsync(string value) => new(value);
+    }
+
+    public class UpdateBadResultSerializationPayloadConverter : IPayloadConverter
+    {
+        public bool FailTask { get; set; }
+
+        public Payload ToPayload(object? value)
+        {
+            if (value is UpdateBadResultSerializationWorkflow.MyUpdateResult)
+            {
+                if (FailTask)
+                {
+                    throw new InvalidOperationException("Intentionally failing task");
+                }
+                throw new ApplicationFailureException("Intentionally failing update");
+            }
+            return DataConverter.Default.PayloadConverter.ToPayload(value);
+        }
+
+        public object? ToValue(Payload payload, Type type) =>
+            DataConverter.Default.PayloadConverter.ToValue(payload, type);
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Updates_BadResultSerialization()
+    {
+        // Client with failure payload converter
+        var converter = new UpdateBadResultSerializationPayloadConverter();
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with { PayloadConverter = converter };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        // Update failure
+        await ExecuteWorkerAsync<UpdateBadResultSerializationWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (UpdateBadResultSerializationWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                var exc = await Assert.ThrowsAsync<WorkflowUpdateFailedException>(() =>
+                    handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync("some value")));
+                Assert.Equal(
+                    "Intentionally failing update",
+                    Assert.IsType<ApplicationFailureException>(exc.InnerException).Message);
+            },
+            client: client);
+
+        // Task failure
+        converter.FailTask = true;
+        await ExecuteWorkerAsync<UpdateBadResultSerializationWorkflow>(
+            async worker =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (UpdateBadResultSerializationWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                _ = Task.Run(() => handle.ExecuteUpdateAsync(wf => wf.DoUpdateAsync("some value")));
+                await AssertMore.HasEventEventuallyAsync(
+                    handle,
+                    e => e.WorkflowTaskFailedEventAttributes?.Failure?.Message == "Intentionally failing task");
+            },
+            client: client);
+    }
+
+    [Workflow]
     public class CurrentBuildIdWorkflow
     {
         [Activity]

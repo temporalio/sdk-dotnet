@@ -1185,49 +1185,73 @@ namespace Temporalio.Worker
                 return task.ContinueWith(
                     _ =>
                     {
-                        inProgressHandlers.Remove(inProgress);
-                        // If workflow failure exception, it's an update failure. If it's some
-                        // other exception, it's a task failure. Otherwise it's a success.
-                        var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
-                        // There are .NET cases where cancellation occurs but is not considered
-                        // an exception. We are going to make it an exception. Unfortunately
-                        // there is no easy way to make it include the outer stack trace at this
-                        // time.
-                        if (exc == null && task.IsCanceled)
+                        try
                         {
-                            exc = new TaskCanceledException();
-                        }
-                        if (exc != null && IsWorkflowFailureException(exc))
-                        {
-                            AddCommand(new()
+                            inProgressHandlers.Remove(inProgress);
+                            // If workflow failure exception, it's an update failure. If it's some
+                            // other exception, it's a task failure. Otherwise it's a success.
+                            var exc = task.Exception?.InnerExceptions?.SingleOrDefault();
+                            // There are .NET cases where cancellation occurs but is not considered
+                            // an exception. We are going to make it an exception. Unfortunately
+                            // there is no easy way to make it include the outer stack trace at this
+                            // time.
+                            if (exc == null && task.IsCanceled)
                             {
-                                UpdateResponse = new()
-                                {
-                                    ProtocolInstanceId = update.ProtocolInstanceId,
-                                    Rejected = failureConverter.ToFailure(exc, PayloadConverter),
-                                },
-                            });
-                        }
-                        else if (task.Exception is { } taskExc)
-                        {
-                            // Fails the task
-                            currentActivationException =
-                                taskExc.InnerExceptions.SingleOrDefault() ?? taskExc;
-                        }
-                        else
-                        {
-                            // Success, have to use reflection to extract value if it's a Task<>
-                            var taskType = task.GetType();
-                            var result = taskType.IsGenericType ?
-                                taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
-                            AddCommand(new()
+                                exc = new TaskCanceledException();
+                            }
+                            if (exc != null && IsWorkflowFailureException(exc))
                             {
-                                UpdateResponse = new()
+                                AddCommand(new()
                                 {
-                                    ProtocolInstanceId = update.ProtocolInstanceId,
-                                    Completed = PayloadConverter.ToPayload(result),
-                                },
-                            });
+                                    UpdateResponse = new()
+                                    {
+                                        ProtocolInstanceId = update.ProtocolInstanceId,
+                                        Rejected = failureConverter.ToFailure(exc, PayloadConverter),
+                                    },
+                                });
+                            }
+                            else if (task.Exception is { } taskExc)
+                            {
+                                // Fails the task
+                                currentActivationException =
+                                    taskExc.InnerExceptions.SingleOrDefault() ?? taskExc;
+                            }
+                            else
+                            {
+                                // Success, have to use reflection to extract value if it's a Task<>
+                                try
+                                {
+                                    var taskType = task.GetType();
+                                    var result = taskType.IsGenericType ?
+                                        taskType.GetProperty("Result")!.GetValue(task) : ValueTuple.Create();
+                                    AddCommand(new()
+                                    {
+                                        UpdateResponse = new()
+                                        {
+                                            ProtocolInstanceId = update.ProtocolInstanceId,
+                                            Completed = PayloadConverter.ToPayload(result),
+                                        },
+                                    });
+                                }
+                                catch (Exception e) when (IsWorkflowFailureException(e))
+                                {
+                                    // Payload conversion can fail with a fail-update exception
+                                    // instead of a fail-task exception. Any failure here does
+                                    // bubble to outer catch as task failure.
+                                    AddCommand(new()
+                                    {
+                                        UpdateResponse = new()
+                                        {
+                                            ProtocolInstanceId = update.ProtocolInstanceId,
+                                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                                        },
+                                    });
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            currentActivationException = e;
                         }
                         return Task.CompletedTask;
                     },
