@@ -132,6 +132,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
             this IServiceCollection services, string taskQueue, WorkerDeploymentOptions deploymentOptions)
         {
+            if (deploymentOptions.Version == null)
+            {
+                throw new ArgumentException("Version must be set in", nameof(deploymentOptions));
+            }
             // We have to use AddSingleton instead of AddHostedService because the latter does
             // not allow us to register multiple of the same type, see
             // https://github.com/dotnet/runtime/issues/38751.
