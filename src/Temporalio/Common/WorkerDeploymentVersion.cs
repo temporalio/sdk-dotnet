@@ -6,30 +6,9 @@ namespace Temporalio.Common
     /// Represents the version of a specific worker deployment.
     /// </summary>
     /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may change.</remarks>
-    public sealed class WorkerDeploymentVersion
+    public sealed record WorkerDeploymentVersion(string DeploymentName, string BuildId)
     {
         private static readonly char[] Separator = new char[] { '.' };
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WorkerDeploymentVersion"/> class.
-        /// </summary>
-        /// <param name="deploymentName">The name of the deployment.</param>
-        /// <param name="buildId">The build ID.</param>
-        public WorkerDeploymentVersion(string deploymentName, string buildId)
-        {
-            DeploymentName = deploymentName;
-            BuildId = buildId;
-        }
-
-        /// <summary>
-        /// Gets the name of the deployment.
-        /// </summary>
-        public string DeploymentName { get; }
-
-        /// <summary>
-        /// Gets the build ID.
-        /// </summary>
-        public string BuildId { get; }
 
         /// <summary>
         /// Parse a version from a canonical string, which must be in the format:

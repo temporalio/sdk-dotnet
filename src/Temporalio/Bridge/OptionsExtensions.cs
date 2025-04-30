@@ -451,7 +451,7 @@ namespace Temporalio.Bridge
                 throw new ArgumentException("Task queue must be provided in worker options");
             }
 #pragma warning disable 0618
-            var buildId = options.DeploymentOptions?.Version.BuildId ?? options.BuildId;
+            var buildId = options.DeploymentOptions?.Version?.BuildId ?? options.BuildId;
 #pragma warning restore 0618
             var buildIdAutoDetermined = false;
             if (buildId == null)
@@ -464,6 +464,10 @@ namespace Temporalio.Bridge
             Interop.WorkerVersioningStrategy versioningStrategy;
             if (options.DeploymentOptions != null)
             {
+                if (options.DeploymentOptions.Version == null)
+                {
+                    throw new ArgumentException("Worker options DeploymentOptions.Version must be set");
+                }
                 versioningStrategy = new()
                 {
                     tag = Interop.WorkerVersioningStrategy_Tag.DeploymentBased,

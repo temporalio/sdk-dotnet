@@ -210,10 +210,10 @@ namespace Temporalio.Extensions.Hosting
             }
             else
             {
-                if (options.DeploymentOptions?.Version.ToCanonicalString() != serviceId.Version)
+                if (options.DeploymentOptions?.Version?.ToCanonicalString() != serviceId.Version)
                 {
                     throw new InvalidOperationException(
-                        $"Deployment Version '{serviceId.Version ?? "<unset>"}' on constructor different than '{options.DeploymentOptions?.Version.ToCanonicalString() ?? "<unset>"}' on options");
+                        $"Deployment Version '{serviceId.Version ?? "<unset>"}' on constructor different than '{options.DeploymentOptions?.Version?.ToCanonicalString() ?? "<unset>"}' on options");
                 }
             }
 
