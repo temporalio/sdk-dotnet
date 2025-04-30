@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Temporalio.Client;
 using Temporalio.Extensions.Hosting;
+using Temporalio.Worker;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -68,7 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // https://github.com/dotnet/runtime/issues/38751.
             services.AddSingleton<IHostedService>(provider =>
                 ActivatorUtilities.CreateInstance<TemporalWorkerService>(
-                    provider, (TaskQueue: taskQueue, BuildId: buildId)));
+                    provider, new TemporalWorkerServiceId(taskQueue, buildId, true)));
             return new TemporalWorkerServiceOptionsBuilder(taskQueue, buildId, services).ConfigureOptions(
                 options =>
                 {
@@ -79,6 +80,72 @@ namespace Microsoft.Extensions.DependencyInjection
                 },
                 // Disallow duplicate options registrations because that means multiple worker
                 // services with the same task queue + build ID were added.
+                disallowDuplicates: true);
+        }
+
+        /// <summary>
+        /// Add a hosted Temporal worker service as a <see cref="IHostedService" /> that contains
+        /// its own client that connects with the given target and namespace. To use an injected
+        /// <see cref="ITemporalClient" />, use
+        /// <see cref="AddHostedTemporalWorker(IServiceCollection, string, string?)" />. The worker
+        /// service will be registered as a singleton. The result is an options builder that can be
+        /// used to configure the service.
+        /// </summary>
+        /// <param name="services">Service collection to create hosted worker on.</param>
+        /// <param name="clientTargetHost">Client target host to connect to when starting the
+        /// worker.</param>
+        /// <param name="clientNamespace">Client namespace to connect to when starting the worker.
+        /// </param>
+        /// <param name="taskQueue">Task queue for the worker.</param>
+        /// <param name="deploymentOptions">
+        /// Deployment options for the worker. It is important to set deployment options here and
+        /// not later via configure options. This is because the combination of task queue and
+        /// deployment version make up the unique identifier for a worker in the service collection.
+        /// </param>
+        /// <returns>Options builder to configure the service.</returns>
+        public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
+            this IServiceCollection services,
+            string clientTargetHost,
+            string clientNamespace,
+            string taskQueue,
+            WorkerDeploymentOptions deploymentOptions) =>
+            services.AddHostedTemporalWorker(taskQueue, deploymentOptions).ConfigureOptions(options =>
+                options.ClientOptions = new(clientTargetHost) { Namespace = clientNamespace });
+
+        /// <summary>
+        /// Add a hosted Temporal worker service as a <see cref="IHostedService" /> that expects
+        /// an injected <see cref="ITemporalClient" /> (or the returned builder
+        /// can have client options populated). Use
+        /// <see cref="AddHostedTemporalWorker(IServiceCollection, string, string, string, string?)" />
+        /// to not expect an injected instance and instead connect to a client on worker start. The
+        /// worker service will be registered as a singleton. The result is an options builder that
+        /// can be used to configure the service.
+        /// </summary>
+        /// <param name="services">Service collection to create hosted worker on.</param>
+        /// <param name="taskQueue">Task queue for the worker.</param>
+        /// <param name="deploymentOptions">
+        /// Deployment options for the worker. It is important to set deployment options here and
+        /// not later via configure options. This is because the combination of task queue and
+        /// deployment version make up the unique identifier for a worker in the service collection.
+        /// </param>
+        /// <returns>Options builder to configure the service.</returns>
+        public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
+            this IServiceCollection services, string taskQueue, WorkerDeploymentOptions deploymentOptions)
+        {
+            // We have to use AddSingleton instead of AddHostedService because the latter does
+            // not allow us to register multiple of the same type, see
+            // https://github.com/dotnet/runtime/issues/38751.
+            services.AddSingleton<IHostedService>(provider =>
+                ActivatorUtilities.CreateInstance<TemporalWorkerService>(
+                    provider, new TemporalWorkerServiceId(taskQueue, deploymentOptions.Version.ToCanonicalString(), false)));
+            return new TemporalWorkerServiceOptionsBuilder(taskQueue, deploymentOptions, services).ConfigureOptions(
+                options =>
+                {
+                    options.TaskQueue = taskQueue;
+                    options.DeploymentOptions = deploymentOptions;
+                },
+                // Disallow duplicate options registrations because that means multiple worker
+                // services with the same task queue + version were added.
                 disallowDuplicates: true);
         }
 

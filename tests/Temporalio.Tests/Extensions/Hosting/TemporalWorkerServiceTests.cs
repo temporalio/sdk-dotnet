@@ -6,7 +6,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Temporalio.Activities;
 using Temporalio.Client;
+using Temporalio.Common;
 using Temporalio.Extensions.Hosting;
+using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
@@ -285,14 +287,14 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         await handle2.TerminateAsync();
     }
 
-    [Workflow("Workflow")]
+    [Workflow("DeploymentVersioningWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
     public class WorkflowV1
     {
         [WorkflowRun]
         public async Task<string> RunAsync() => "done-v1";
     }
 
-    [Workflow("Workflow")]
+    [Workflow("DeploymentVersioningWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
     public class WorkflowV2
     {
         [WorkflowRun]
@@ -333,6 +335,44 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // Update default and run again
         await Env.Client.UpdateWorkerBuildIdCompatibilityAsync(
             taskQueue, new BuildIdOp.AddNewDefault("2.0"));
+        res = await Client.ExecuteWorkflowAsync(
+            (WorkflowV1 wf) => wf.RunAsync(),
+            new($"wf-{Guid.NewGuid()}", taskQueue));
+        Assert.Equal("done-v2", res);
+    }
+
+    [Fact]
+    public async Task TemporalWorkerService_ExecuteAsync_MultipleDeploymentVersionsSameQueue()
+    {
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var workerV1 = new WorkerDeploymentVersion($"deployment-{taskQueue}", "1.0");
+        var workerV2 = new WorkerDeploymentVersion($"deployment-{taskQueue}", "2.0");
+        // Build with two workers on same queue but different versions
+        var bld = Host.CreateApplicationBuilder();
+        bld.Services.AddSingleton(Client);
+        bld.Services.
+            AddHostedTemporalWorker(taskQueue, new WorkerDeploymentOptions(workerV1, true)).
+            AddWorkflow<WorkflowV1>();
+        bld.Services.
+            AddHostedTemporalWorker(taskQueue, new WorkerDeploymentOptions(workerV2, true)).
+            AddWorkflow<WorkflowV2>();
+
+        // Start the host
+        using var tokenSource = new CancellationTokenSource();
+        using var host = bld.Build();
+        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
+
+        // Set 1.0 as default and run
+        var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
+        await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, workerV1);
+        var res = await Client.ExecuteWorkflowAsync(
+            (WorkflowV1 wf) => wf.RunAsync(),
+            new($"wf-{Guid.NewGuid()}", taskQueue));
+        Assert.Equal("done-v1", res);
+
+        // Update default and run again
+        var describe2 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV2);
+        await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, workerV2);
         res = await Client.ExecuteWorkflowAsync(
             (WorkflowV1 wf) => wf.RunAsync(),
             new($"wf-{Guid.NewGuid()}", taskQueue));

@@ -1,7 +1,5 @@
-using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
-using Temporalio.Exceptions;
 using Temporalio.Worker;
 using Temporalio.Workflows;
 using Xunit;
@@ -116,8 +114,8 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
         async Task ExecuteTest(TemporalWorker w1, TemporalWorker w2, TemporalWorker w3)
         {
             // Wait for deployment version to be registered and make it current
-            var describe1 = await WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
-            await SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, workerV1);
+            var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, workerV1);
 
             // Start workflow 1 which will use v1 worker on auto-upgrade
             var wf1 = await Client.StartWorkflowAsync(
@@ -126,8 +124,8 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             Assert.Equal("v1", await wf1.QueryAsync(wf => wf.State()));
 
             // Set v2 as current and start workflow 2
-            var describe2 = await WaitUntilWorkerDeploymentVisibleAsync(Client, workerV2);
-            await SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, workerV2);
+            var describe2 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV2);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, workerV2);
 
             var wf2 = await Client.StartWorkflowAsync(
                 (DeploymentVersioningWorkflowV2Pinned wf) => wf.RunAsync(),
@@ -135,8 +133,8 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             Assert.Equal("v2", await wf2.QueryAsync(wf => wf.State()));
 
             // Set v3 as current and start workflow 3
-            var describe3 = await WaitUntilWorkerDeploymentVisibleAsync(Client, workerV3);
-            await SetCurrentDeploymentVersionAsync(Client, describe3.ConflictToken, workerV3);
+            var describe3 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV3);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe3.ConflictToken, workerV3);
 
             var wf3 = await Client.StartWorkflowAsync(
                 (DeploymentVersioningWorkflowV3AutoUpgrade wf) => wf.RunAsync(),
@@ -190,13 +188,13 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
 
         async Task ExecuteRampTest(TemporalWorker w1, TemporalWorker w2)
         {
-            await WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
-            var describeResp = await WaitUntilWorkerDeploymentVisibleAsync(Client, v2);
+            await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
+            var describeResp = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v2);
 
             // Set current version to v1 and ramp v2 to 100%
-            var conflictToken = (await SetCurrentDeploymentVersionAsync(
+            var conflictToken = (await TestUtils.SetCurrentDeploymentVersionAsync(
                 Client, describeResp.ConflictToken, v1)).ConflictToken;
-            conflictToken = (await SetRampingVersionAsync(
+            conflictToken = (await TestUtils.SetRampingVersionAsync(
                 Client, conflictToken, v2, 100)).ConflictToken;
 
             // Run workflows and verify they run on v2
@@ -211,7 +209,7 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             }
 
             // Set ramp to 0, expecting workflows to run on v1
-            conflictToken = (await SetRampingVersionAsync(Client, conflictToken, v2, 0)).ConflictToken;
+            conflictToken = (await TestUtils.SetRampingVersionAsync(Client, conflictToken, v2, 0)).ConflictToken;
             for (int i = 0; i < 3; i++)
             {
                 var wfa = await Client.StartWorkflowAsync(
@@ -223,7 +221,7 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             }
 
             // Set ramp to 50 and eventually verify workflows run on both versions
-            await SetRampingVersionAsync(Client, conflictToken, v2, 50);
+            await TestUtils.SetRampingVersionAsync(Client, conflictToken, v2, 50);
 
             var seenResults = new HashSet<string>();
 
@@ -299,8 +297,8 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
 
         await worker.ExecuteAsync(async () =>
         {
-            var describeResp = await WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
-            await SetCurrentDeploymentVersionAsync(Client, describeResp.ConflictToken, workerV1);
+            var describeResp = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describeResp.ConflictToken, workerV1);
 
             var handle = await Client.StartWorkflowAsync(
                 "cooldynamicworkflow",
@@ -380,8 +378,8 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
 
         await worker.ExecuteAsync(async () =>
         {
-            var describeResp = await WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
-            await SetCurrentDeploymentVersionAsync(Client, describeResp.ConflictToken, workerV1);
+            var describeResp = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describeResp.ConflictToken, workerV1);
 
             var handle = await Client.StartWorkflowAsync(
                 (NoVersioningAnnotationWorkflow wf) => wf.RunAsync(),
@@ -395,61 +393,5 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
                 evt.WorkflowTaskCompletedEventAttributes.VersioningBehavior ==
                   Temporalio.Api.Enums.V1.VersioningBehavior.Pinned);
         });
-    }
-
-    private async Task<Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionResponse>
-    SetRampingVersionAsync(
-        ITemporalClient client,
-        Google.Protobuf.ByteString conflictToken,
-        WorkerDeploymentVersion version,
-        int rampPercentage)
-    {
-        return await client.WorkflowService.SetWorkerDeploymentRampingVersionAsync(
-            new()
-            {
-                Namespace = client.Options.Namespace,
-                DeploymentName = version.DeploymentName,
-                Version = version.ToCanonicalString(),
-                ConflictToken = conflictToken,
-                Percentage = rampPercentage,
-            });
-    }
-
-    private async Task<Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentResponse>
-    WaitUntilWorkerDeploymentVisibleAsync(ITemporalClient client, WorkerDeploymentVersion version) =>
-        await AssertMore.EventuallyAsync(async () =>
-        {
-            try
-            {
-                var response = await client.WorkflowService.DescribeWorkerDeploymentAsync(
-                    new()
-                    {
-                        Namespace = client.Options.Namespace,
-                        DeploymentName = version.DeploymentName,
-                    });
-
-                Assert.Contains(
-                    response.WorkerDeploymentInfo.VersionSummaries,
-                    vs => vs.Version == version.ToCanonicalString());
-                return response;
-            }
-            catch (RpcException)
-            {
-                throw new Xunit.Sdk.XunitException("Failed to describe worker deployment");
-            }
-        });
-
-    private async Task<Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionResponse>
-    SetCurrentDeploymentVersionAsync(
-        ITemporalClient client, Google.Protobuf.ByteString conflictToken, WorkerDeploymentVersion version)
-    {
-        return await client.WorkflowService.SetWorkerDeploymentCurrentVersionAsync(
-            new()
-            {
-                Namespace = client.Options.Namespace,
-                DeploymentName = version.DeploymentName,
-                Version = version.ToCanonicalString(),
-                ConflictToken = conflictToken,
-            });
     }
 }
