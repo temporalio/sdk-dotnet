@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Temporalio.Client;
-using Temporalio.Common;
 using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Hosting
@@ -120,42 +119,7 @@ namespace Temporalio.Extensions.Hosting
             ITemporalClient? existingClient = null,
             ILoggerFactory? loggerFactory = null)
         : this(
-                new TemporalWorkerServiceId(taskQueueAndBuildId.TaskQueue, taskQueueAndBuildId.BuildId, true),
-                optionsMonitor,
-                existingClient,
-                loggerFactory)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TemporalWorkerService"/> class using
-        /// options and possibly an existing client. This constructor is only for use by DI
-        /// containers. The task queue and build ID are used as the name for the options monitor to
-        /// lookup the options for the worker service.
-        /// </summary>
-        /// <param name="taskQueueAndDeploymentVersion">Task Queue and Deployment Version for the
-        /// options name.</param>
-        /// <param name="optionsMonitor">Used to lookup the options to build the worker with.
-        /// </param>
-        /// <param name="existingClient">Existing client to use if the options don't specify
-        /// client connection options (connected when run if lazy and not connected).</param>
-        /// <param name="loggerFactory">Logger factory to use if not already on the worker options.
-        /// The worker options logger factory or this one will be also be used for the client if an
-        /// existing client does not exist (regardless of client options' logger factory).</param>
-        /// <remarks>
-        /// WARNING: Do not rely on the signature of this constructor, it is for DI container use
-        /// only and may change in incompatible ways.
-        /// </remarks>
-        public TemporalWorkerService(
-            (string TaskQueue, WorkerDeploymentVersion? DeploymentVersion) taskQueueAndDeploymentVersion,
-            IOptionsMonitor<TemporalWorkerServiceOptions> optionsMonitor,
-            ITemporalClient? existingClient = null,
-            ILoggerFactory? loggerFactory = null)
-        : this(
-                new TemporalWorkerServiceId(
-                    taskQueueAndDeploymentVersion.TaskQueue,
-                    taskQueueAndDeploymentVersion.DeploymentVersion?.ToCanonicalString(),
-                    false),
+                new TemporalWorkerServiceIdentifier(taskQueueAndBuildId.TaskQueue, taskQueueAndBuildId.BuildId, true),
                 optionsMonitor,
                 existingClient,
                 loggerFactory)
@@ -182,7 +146,7 @@ namespace Temporalio.Extensions.Hosting
         /// </remarks>
         [ActivatorUtilitiesConstructor]
         public TemporalWorkerService(
-            TemporalWorkerServiceId serviceId,
+            TemporalWorkerServiceIdentifier serviceId,
             IOptionsMonitor<TemporalWorkerServiceOptions> optionsMonitor,
             ITemporalClient? existingClient = null,
             ILoggerFactory? loggerFactory = null)
@@ -198,7 +162,7 @@ namespace Temporalio.Extensions.Hosting
                     $"Task queue '{serviceId.TaskQueue}' on constructor different than '{options.TaskQueue}' on options");
             }
 
-            if (serviceId.IsBuildId)
+            if (serviceId.VersionIsBuildId)
             {
 #pragma warning disable 0618
                 if (options.BuildId != serviceId.Version)

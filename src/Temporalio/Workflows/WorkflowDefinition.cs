@@ -45,7 +45,7 @@ namespace Temporalio.Workflows
             Updates = updates;
             DynamicUpdate = dynamicUpdate;
             VersioningBehavior = versioningBehavior;
-            DynamicConfigMethod = dynamicOptionsMethod;
+            DynamicOptionsMethod = dynamicOptionsMethod;
         }
 
         /// <summary>
@@ -115,9 +115,9 @@ namespace Temporalio.Workflows
         public VersioningBehavior? VersioningBehavior { get; private init; }
 
         /// <summary>
-        /// Gets the dynamic configuration method.
+        /// Gets the dynamic options method.
         /// </summary>
-        public Func<object?, WorkflowDefinitionOptions>? DynamicConfigMethod { get; private init; }
+        public Func<object?, WorkflowDefinitionOptions>? DynamicOptionsMethod { get; private init; }
 
         /// <summary>
         /// Create a workflow definition for the given type or fail. The result is cached by type.
@@ -318,10 +318,18 @@ namespace Temporalio.Workflows
                     {
                         throw new ArgumentException($"WorkflowDynamicOptions method {method} must return WorkflowDefinitionOptions");
                     }
+                    if (name != null)
+                    {
+                        throw new ArgumentException("WorkflowDynamicOptions can only be used in dynamic workflows");
+                    }
                     var parameters = method.GetParameters();
                     if (parameters.Length != 0)
                     {
                         throw new ArgumentException($"WorkflowDynamicOptions method {method} must take no parameters");
+                    }
+                    if (dynamicOptionsMethod != null)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} cannot be used more than once");
                     }
                     dynamicOptionsMethod = instance => (WorkflowDefinitionOptions)method.Invoke(instance, null)!;
                 }
