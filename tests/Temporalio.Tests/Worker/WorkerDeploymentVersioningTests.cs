@@ -258,10 +258,16 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
         public async Task<string> RunAsync(IRawValue[] args) => "dynamic";
 
         [WorkflowDynamicOptions]
-        public WorkflowDefinitionOptions DynamicOptions() => new()
+        public WorkflowDefinitionOptions DynamicOptions()
         {
-            VersioningBehavior = VersioningBehavior.AutoUpgrade,
-        };
+            // Verify various workflow properties are accessible
+            _ = Workflow.Instance;
+            _ = Workflow.Info;
+            return new()
+            {
+                VersioningBehavior = VersioningBehavior.AutoUpgrade,
+            };
+        }
     }
 
     [Fact]
@@ -393,5 +399,37 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
                 evt.WorkflowTaskCompletedEventAttributes.VersioningBehavior ==
                   Temporalio.Api.Enums.V1.VersioningBehavior.Pinned);
         });
+    }
+
+    [Fact]
+    public void CannotUseOldAndNewVersioningOptionsTogether()
+    {
+#pragma warning disable 0618
+        var deploymentName = $"deployment-{Guid.NewGuid()}";
+
+        var ex1 = Assert.Throws<ArgumentException>(() =>
+        {
+            var unused = new TemporalWorker(
+                Client,
+                new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+                {
+                    DeploymentOptions = new(new WorkerDeploymentVersion(deploymentName, "1.0"), true),
+                    BuildId = "ooga booga",
+                }.AddWorkflow<NoVersioningAnnotationWorkflow>());
+        });
+        Assert.Contains("BuildId cannot be used together", ex1.Message);
+
+        var ex2 = Assert.Throws<ArgumentException>(() =>
+        {
+            var unused = new TemporalWorker(
+                Client,
+                new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+                {
+                    DeploymentOptions = new(new WorkerDeploymentVersion(deploymentName, "1.0"), true),
+                    UseWorkerVersioning = true,
+                }.AddWorkflow<NoVersioningAnnotationWorkflow>());
+        });
+        Assert.Contains("UseWorkerVersioning cannot be used together", ex2.Message);
+#pragma warning restore 0618
     }
 }

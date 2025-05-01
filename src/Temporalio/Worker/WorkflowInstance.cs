@@ -87,8 +87,8 @@ namespace Temporalio.Worker
         private WorkflowUpdateDefinition? dynamicUpdate;
         private bool workflowInitialized;
         private bool applyModernEventLoopLogic;
-        private VersioningBehavior? establishedVersioningBehavior;
-        private IReadOnlyCollection<Type>? dynamicFailureExceptionTypes;
+        private WorkflowDefinitionOptions? dynamicDefinitionOptions;
+        private bool dynamicDefinitionOptionsInitialized;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -312,25 +312,27 @@ namespace Temporalio.Worker
             {
                 // We create this lazily because we want the constructor in a workflow context
                 instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
+                // Dynamic options method needs to be invoked at this point, after initting the
+                // workflow instance but before performing any activations.
+                _ = DynamicDefinitionOptions;
+                return instance;
+            }
+        }
 
-                if (Definition.VersioningBehavior != null)
+        /// <inheritdoc />
+        public WorkflowDefinitionOptions? DynamicDefinitionOptions
+        {
+            get
+            {
+                if (!dynamicDefinitionOptionsInitialized)
                 {
-                    establishedVersioningBehavior = Definition.VersioningBehavior;
-                }
-                if (Definition.DynamicConfigMethod != null)
-                {
-                    var dynamicConfig = Definition.DynamicConfigMethod.Invoke(instance);
-                    if (dynamicConfig != null)
+                    dynamicDefinitionOptionsInitialized = true;
+                    if (Definition.DynamicOptionsMethod != null)
                     {
-                        if (dynamicConfig.VersioningBehavior != VersioningBehavior.Unspecified)
-                        {
-                            establishedVersioningBehavior = dynamicConfig.VersioningBehavior;
-                        }
-                        dynamicFailureExceptionTypes = dynamicConfig.FailureExceptionTypes;
+                        dynamicDefinitionOptions = Definition.DynamicOptionsMethod.Invoke(instance);
                     }
                 }
-
-                return instance;
+                return dynamicDefinitionOptions;
             }
         }
 
@@ -681,6 +683,14 @@ namespace Temporalio.Worker
                             RunOnce(checkConditions);
                         }
 
+                        var establishedVersioningBehavior = Definition.VersioningBehavior;
+                        Console.WriteLine("Established versioning behavior: " + establishedVersioningBehavior);
+                        Console.WriteLine("Dynamic versioning behavior: " + dynamicDefinitionOptions?.VersioningBehavior);
+                        if (dynamicDefinitionOptions?.VersioningBehavior != null
+                            && dynamicDefinitionOptions.VersioningBehavior != VersioningBehavior.Unspecified)
+                        {
+                            establishedVersioningBehavior = dynamicDefinitionOptions.VersioningBehavior;
+                        }
                         if (establishedVersioningBehavior != null)
                         {
                             completion.Successful.VersioningBehavior =
@@ -1018,7 +1028,7 @@ namespace Temporalio.Worker
             // reusing cancellation tokens if the workflow fails.
             e is FailureException ||
                 e is OperationCanceledException ||
-                (dynamicFailureExceptionTypes ?? Definition.FailureExceptionTypes)?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
+                (dynamicDefinitionOptions?.FailureExceptionTypes ?? Definition.FailureExceptionTypes)?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
                 workerLevelFailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true;
 
         private void Apply(WorkflowActivationJob job)

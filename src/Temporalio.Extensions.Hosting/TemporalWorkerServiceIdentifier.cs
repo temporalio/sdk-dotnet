@@ -3,10 +3,8 @@ namespace Temporalio.Extensions.Hosting
     /// <summary>
     /// Represents the unique identifier for a hosted Temporal Worker service.
     /// </summary>
-    public record TemporalWorkerServiceId(
+    public record TemporalWorkerServiceIdentifier(
         string TaskQueue,
         string? Version,
-        bool IsBuildId)
-    {
-    }
+        bool VersionIsBuildId);
 }

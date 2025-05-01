@@ -125,6 +125,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets or sets the deployment options for this worker.
         /// </summary>
+        /// <remarks>Exclusive with <see cref="DeploymentOptions"/> and <see cref="UseWorkerVersioning"/>.</remarks>
         /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
         /// change.</remarks>
         public WorkerDeploymentOptions? DeploymentOptions { get; set; }
@@ -408,6 +409,10 @@ namespace Temporalio.Worker
             var options = (TemporalWorkerOptions)MemberwiseClone();
             options.activities = new List<ActivityDefinition>(Activities);
             options.workflows = new List<WorkflowDefinition>(Workflows);
+            if (options.DeploymentOptions != null)
+            {
+                options.DeploymentOptions = (WorkerDeploymentOptions)options.DeploymentOptions.Clone();
+            }
             return options;
         }
 

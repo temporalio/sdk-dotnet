@@ -69,7 +69,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // https://github.com/dotnet/runtime/issues/38751.
             services.AddSingleton<IHostedService>(provider =>
                 ActivatorUtilities.CreateInstance<TemporalWorkerService>(
-                    provider, new TemporalWorkerServiceId(taskQueue, buildId, true)));
+                    provider, new TemporalWorkerServiceIdentifier(taskQueue, buildId, true)));
             return new TemporalWorkerServiceOptionsBuilder(taskQueue, buildId, services).ConfigureOptions(
                 options =>
                 {
@@ -141,7 +141,7 @@ namespace Microsoft.Extensions.DependencyInjection
             // https://github.com/dotnet/runtime/issues/38751.
             services.AddSingleton<IHostedService>(provider =>
                 ActivatorUtilities.CreateInstance<TemporalWorkerService>(
-                    provider, new TemporalWorkerServiceId(taskQueue, deploymentOptions.Version.ToCanonicalString(), false)));
+                    provider, new TemporalWorkerServiceIdentifier(taskQueue, deploymentOptions.Version.ToCanonicalString(), false)));
             return new TemporalWorkerServiceOptionsBuilder(taskQueue, deploymentOptions, services).ConfigureOptions(
                 options =>
                 {

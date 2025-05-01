@@ -18,6 +18,9 @@ namespace Temporalio.Workflows
         /// workflow/update in all user exception cases.
         /// </summary>
         /// <remarks>
+        /// If set, overrides any value set on <see cref="WorkflowAttribute.FailureExceptionTypes"/>.
+        /// </remarks>
+        /// <remarks>
         /// WARNING: This property is experimental and may change in the future. If unset
         /// (i.e. left null), currently the default is to only fail the workflow/update on
         /// <see cref="Exceptions.FailureException" /> + cancellation and suspend via task failure
@@ -28,6 +31,10 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets the versioning behavior to use for this workflow.
         /// </summary>
+        /// <remarks>
+        /// If set to a non-unspecified value, overrides any value set on
+        /// <see cref="WorkflowAttribute.VersioningBehavior"/>.
+        /// </remarks>
         /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
         /// change.</remarks>
         public VersioningBehavior VersioningBehavior { get; init; }
