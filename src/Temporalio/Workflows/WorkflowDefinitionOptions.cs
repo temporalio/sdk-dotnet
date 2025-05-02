@@ -7,7 +7,7 @@ namespace Temporalio.Workflows
     /// Additional options for a workflow definition that may be returned by
     /// a function annotated with <see cref="WorkflowDynamicOptionsAttribute"/>.
     /// </summary>
-    public class WorkflowDefinitionOptions
+    public class WorkflowDefinitionOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will
@@ -38,5 +38,11 @@ namespace Temporalio.Workflows
         /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
         /// change.</remarks>
         public VersioningBehavior VersioningBehavior { get; set; }
+
+        /// <summary>
+        /// Create a shallow copy of these options.
+        /// </summary>
+        /// <returns>A shallow copy of these options and any transitive options fields.</returns>
+        public object Clone() => (WorkflowDefinitionOptions)MemberwiseClone();
     }
 }

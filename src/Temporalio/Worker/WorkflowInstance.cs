@@ -72,6 +72,7 @@ namespace Temporalio.Worker
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
         private readonly bool disableEagerActivityExecution;
         private readonly Handlers inProgressHandlers = new();
+        private readonly WorkflowDefinitionOptions definitionOptions;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -87,7 +88,6 @@ namespace Temporalio.Worker
         private WorkflowUpdateDefinition? dynamicUpdate;
         private bool workflowInitialized;
         private bool applyModernEventLoopLogic;
-        private WorkflowDefinitionOptions definitionOptions;
         private bool dynamicOptionsGetterInvoked;
 
         /// <summary>
@@ -320,10 +320,10 @@ namespace Temporalio.Worker
                 instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
                 // Dynamic options method needs to be invoked at this point, after initting the
                 // workflow instance but before performing any activations.
-                if (!dynamicOptionsGetterInvoked && Definition.DynamicOptionsMethod != null)
+                if (!dynamicOptionsGetterInvoked && Definition.DynamicOptionsGetter != null)
                 {
                     dynamicOptionsGetterInvoked = true;
-                    var dynOptions = Definition.DynamicOptionsMethod.Invoke(Instance);
+                    var dynOptions = Definition.DynamicOptionsGetter.Invoke(Instance);
                     if (dynOptions.FailureExceptionTypes != null)
                     {
                         definitionOptions.FailureExceptionTypes = dynOptions.FailureExceptionTypes;
@@ -689,11 +689,8 @@ namespace Temporalio.Worker
                             RunOnce(checkConditions);
                         }
 
-                        if (definitionOptions?.VersioningBehavior != null)
-                        {
-                            completion.Successful.VersioningBehavior =
-                              (Temporalio.Api.Enums.V1.VersioningBehavior)definitionOptions.VersioningBehavior;
-                        }
+                        completion.Successful.VersioningBehavior =
+                            (Temporalio.Api.Enums.V1.VersioningBehavior)definitionOptions.VersioningBehavior;
                     }
                     finally
                     {
@@ -1026,7 +1023,7 @@ namespace Temporalio.Worker
             // reusing cancellation tokens if the workflow fails.
             e is FailureException ||
                 e is OperationCanceledException ||
-                definitionOptions?.FailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
+                definitionOptions.FailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
                 workerLevelFailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true;
 
         private void Apply(WorkflowActivationJob job)

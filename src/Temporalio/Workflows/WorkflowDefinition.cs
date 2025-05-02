@@ -45,7 +45,7 @@ namespace Temporalio.Workflows
             Updates = updates;
             DynamicUpdate = dynamicUpdate;
             VersioningBehavior = versioningBehavior;
-            DynamicOptionsMethod = dynamicOptionsMethod;
+            DynamicOptionsGetter = dynamicOptionsMethod;
         }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets the dynamic options method.
         /// </summary>
-        public Func<object?, WorkflowDefinitionOptions>? DynamicOptionsMethod { get; private init; }
+        public Func<object?, WorkflowDefinitionOptions>? DynamicOptionsGetter { get; private init; }
 
         /// <summary>
         /// Create a workflow definition for the given type or fail. The result is cached by type.

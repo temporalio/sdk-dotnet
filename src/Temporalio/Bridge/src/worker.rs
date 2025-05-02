@@ -843,6 +843,11 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
                         }
                     }
                     WorkerVersioningStrategy::DeploymentBased(dopts) => {
+                        let dvb = if let Ok(v) = dopts.default_versioning_behavior.try_into() {
+                            Some(v)
+                        } else {
+                            bail!("Invalid default versioning behavior {}", dopts.default_versioning_behavior)
+                        };
                         temporal_sdk_core_api::worker::WorkerVersioningStrategy::WorkerDeploymentBased(
                             temporal_sdk_core_api::worker::WorkerDeploymentOptions {
                                 version: temporal_sdk_core_api::worker::WorkerDeploymentVersion {
@@ -850,12 +855,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
                                     build_id: dopts.version.build_id.to_string(),
                                 },
                                 use_worker_versioning: dopts.use_worker_versioning,
-                                default_versioning_behavior: match dopts.default_versioning_behavior {
-                                    0 => None,
-                                    1 => Some(temporal_sdk_core_protos::temporal::api::enums::v1::VersioningBehavior::Pinned),
-                                    2 => Some(temporal_sdk_core_protos::temporal::api::enums::v1::VersioningBehavior::AutoUpgrade),
-                                    _ => bail!("Invalid default versioning behavior {}", dopts.default_versioning_behavior),
-                                }
+                                default_versioning_behavior: dvb,
                             }
                         )
                     }
