@@ -183,6 +183,7 @@ namespace Temporalio.Worker
                 HeartbeatDetails: start.HeartbeatDetails,
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
+                Priority: new(start.Priority),
                 ScheduleToCloseTimeout: OptionalTimeSpan(start.ScheduleToCloseTimeout),
                 ScheduledTime: start.ScheduledTime.ToDateTime(),
                 StartToCloseTimeout: OptionalTimeSpan(start.StartToCloseTimeout),
