@@ -189,7 +189,7 @@ namespace Temporalio.Worker
                 LastResult: lastResult,
                 Namespace: details.Namespace,
                 Parent: parent,
-                Priority: new(start.Priority),
+                Priority: start.Priority is { } p ? new(p) : Common.Priority.Default,
                 RetryPolicy: start.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(start.RetryPolicy),
                 Root: root,
                 RunId: act.RunId,

@@ -14,14 +14,27 @@ namespace Temporalio.Common
     /// 1. First, consider "priority_key": lower number goes first.
     /// (more will be added here later).
     /// </summary>
-    public sealed record Priority()
+    public sealed record Priority
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Priority"/> class.
+        /// </summary>
+        /// <param name="priorityKey">The priority key.</param>
+        public Priority(int? priorityKey = null) => PriorityKey = priorityKey;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Priority"/> class from a proto.
         /// </summary>
         /// <param name="priority">The proto to initialize from.</param>
         internal Priority(Temporalio.Api.Common.V1.Priority priority)
-            : this() => PriorityKey = priority?.PriorityKey != 0 ? priority?.PriorityKey : null;
+            : this(priority?.PriorityKey != 0 ? priority?.PriorityKey : null)
+        {
+        }
+
+        /// <summary>
+        /// Gets the default Priority instance.
+        /// </summary>
+        public static Priority Default => new();
 
         /// <summary>
         /// Gets the priority key, which is a positive integer from 1 to n, where smaller integers

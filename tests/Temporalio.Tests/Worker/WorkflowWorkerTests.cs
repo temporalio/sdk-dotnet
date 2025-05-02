@@ -7242,12 +7242,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // Execute child workflow with priority 4
             await Workflow.ExecuteChildWorkflowAsync(
                 (WorkflowUsingPriorities wf) => wf.RunAsync(4, true),
-                new() { Priority = new() { PriorityKey = 4 } });
+                new() { Priority = new(4) });
 
             // Start child workflow with priority 2
             var handle = await Workflow.StartChildWorkflowAsync(
                 (WorkflowUsingPriorities wf) => wf.RunAsync(2, true),
-                new() { Priority = new() { PriorityKey = 2 } });
+                new() { Priority = new(2) });
 
             await handle.GetResultAsync();
 
@@ -7257,7 +7257,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 new()
                 {
                     StartToCloseTimeout = TimeSpan.FromSeconds(5),
-                    Priority = new() { PriorityKey = 5 },
+                    Priority = new(5),
                 });
 
             return "Done!";
@@ -7275,7 +7275,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     (WorkflowUsingPriorities wf) => wf.RunAsync(1, false),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                     {
-                        Priority = new() { PriorityKey = 1 },
+                        Priority = new(1),
                     });
 
                 await handle.GetResultAsync();
