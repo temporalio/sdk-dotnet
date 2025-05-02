@@ -177,7 +177,9 @@ namespace Temporalio.Extensions.Hosting
         {
             // To ensure the user isn't accidentally registering a duplicate task queue + version
             // worker, we check here that there aren't duplicate options
+#pragma warning disable 0618
             var version = builder.BuildId ?? builder.DeploymentOptions?.Version?.ToCanonicalString();
+#pragma warning restore 0618
             var optionsName = TemporalWorkerServiceOptions.GetUniqueOptionsName(
                     builder.TaskQueue, version);
             if (disallowDuplicates)

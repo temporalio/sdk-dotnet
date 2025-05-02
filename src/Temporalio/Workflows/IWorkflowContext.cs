@@ -84,12 +84,6 @@ namespace Temporalio.Workflows
         object Instance { get; }
 
         /// <summary>
-        /// Gets the options defined by the <see cref="WorkflowDynamicOptionsAttribute" /> annotated
-        /// method, if any.
-        /// </summary>
-        WorkflowDefinitionOptions? DynamicDefinitionOptions { get; }
-
-        /// <summary>
         /// Gets a value indicating whether <see cref="Workflow.Unsafe.IsReplaying" /> is true.
         /// </summary>
         bool IsReplaying { get; }

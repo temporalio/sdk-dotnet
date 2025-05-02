@@ -34,12 +34,13 @@ namespace Microsoft.Extensions.DependencyInjection
         /// the unique identifier for a worker in the service collection.
         /// </param>
         /// <returns>Options builder to configure the service.</returns>
+        [Obsolete("Use the AddHostedTemporalWorker overload with WorkerDeploymentOptions instead")]
         public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
             this IServiceCollection services,
             string clientTargetHost,
             string clientNamespace,
             string taskQueue,
-            string? buildId = null) =>
+            string buildId) =>
             services.AddHostedTemporalWorker(taskQueue, buildId).ConfigureOptions(options =>
                 options.ClientOptions = new(clientTargetHost) { Namespace = clientNamespace });
 
@@ -60,10 +61,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// the unique identifier for a worker in the service collection.
         /// </param>
         /// <returns>Options builder to configure the service.</returns>
+        [Obsolete("Use the AddHostedTemporalWorker overload with WorkerDeploymentOptions instead")]
         public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
-            this IServiceCollection services, string taskQueue, string? buildId = null)
+            this IServiceCollection services, string taskQueue, string buildId)
         {
-            // TODO: Review - We probably need to deprecate buildId param & add deployment version?
             // We have to use AddSingleton instead of AddHostedService because the latter does
             // not allow us to register multiple of the same type, see
             // https://github.com/dotnet/runtime/issues/38751.
@@ -108,7 +109,7 @@ namespace Microsoft.Extensions.DependencyInjection
             string clientTargetHost,
             string clientNamespace,
             string taskQueue,
-            WorkerDeploymentOptions deploymentOptions) =>
+            WorkerDeploymentOptions? deploymentOptions = null) =>
             services.AddHostedTemporalWorker(taskQueue, deploymentOptions).ConfigureOptions(options =>
                 options.ClientOptions = new(clientTargetHost) { Namespace = clientNamespace });
 
@@ -130,18 +131,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </param>
         /// <returns>Options builder to configure the service.</returns>
         public static ITemporalWorkerServiceOptionsBuilder AddHostedTemporalWorker(
-            this IServiceCollection services, string taskQueue, WorkerDeploymentOptions deploymentOptions)
+            this IServiceCollection services, string taskQueue, WorkerDeploymentOptions? deploymentOptions = null)
         {
-            if (deploymentOptions.Version == null)
+            if (deploymentOptions != null && deploymentOptions.Version == null)
             {
                 throw new ArgumentException("Version must be set in", nameof(deploymentOptions));
             }
             // We have to use AddSingleton instead of AddHostedService because the latter does
             // not allow us to register multiple of the same type, see
             // https://github.com/dotnet/runtime/issues/38751.
-            services.AddSingleton<IHostedService>(provider =>
+            _ = services.AddSingleton<IHostedService>(provider =>
                 ActivatorUtilities.CreateInstance<TemporalWorkerService>(
-                    provider, new TemporalWorkerServiceIdentifier(taskQueue, deploymentOptions.Version.ToCanonicalString(), false)));
+                    provider,
+                    new TemporalWorkerServiceIdentifier(taskQueue, deploymentOptions?.Version?.ToCanonicalString(), false)));
             return new TemporalWorkerServiceOptionsBuilder(taskQueue, deploymentOptions, services).ConfigureOptions(
                 options =>
                 {
