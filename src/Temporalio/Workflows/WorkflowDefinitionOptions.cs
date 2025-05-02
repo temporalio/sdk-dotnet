@@ -10,7 +10,7 @@ namespace Temporalio.Workflows
     public class WorkflowDefinitionOptions
     {
         /// <summary>
-        /// Gets the types of exceptions that, if a workflow-thrown exception extends, will
+        /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will
         /// cause the workflow/update to fail instead of suspending the workflow via task failure.
         /// These are applied in addition to
         /// <see cref="Worker.TemporalWorkerOptions.WorkflowFailureExceptionTypes" /> for the
@@ -26,10 +26,10 @@ namespace Temporalio.Workflows
         /// <see cref="Exceptions.FailureException" /> + cancellation and suspend via task failure
         /// all others. But this default may change in the future.
         /// </remarks>
-        public Type[]? FailureExceptionTypes { get; init; }
+        public Type[]? FailureExceptionTypes { get; set; }
 
         /// <summary>
-        /// Gets the versioning behavior to use for this workflow.
+        /// Gets or sets the versioning behavior to use for this workflow.
         /// </summary>
         /// <remarks>
         /// If set to a non-unspecified value, overrides any value set on
@@ -37,6 +37,6 @@ namespace Temporalio.Workflows
         /// </remarks>
         /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
         /// change.</remarks>
-        public VersioningBehavior VersioningBehavior { get; init; }
+        public VersioningBehavior VersioningBehavior { get; set; }
     }
 }

@@ -113,6 +113,7 @@ namespace Temporalio.Extensions.Hosting
         /// WARNING: Do not rely on the signature of this constructor, it is for DI container use
         /// only and may change in incompatible ways.
         /// </remarks>
+        [Obsolete("Deprecated older form of DI constructor, TemporalWorkerServiceIdentifier one is used instead.")]
         public TemporalWorkerService(
             (string TaskQueue, string? BuildId) taskQueueAndBuildId,
             IOptionsMonitor<TemporalWorkerServiceOptions> optionsMonitor,

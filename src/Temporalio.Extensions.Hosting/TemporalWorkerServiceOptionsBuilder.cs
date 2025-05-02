@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Temporalio.Worker;
 
@@ -29,7 +30,9 @@ namespace Temporalio.Extensions.Hosting
         public TemporalWorkerServiceOptionsBuilder(string taskQueue, string? buildId, IServiceCollection services)
         {
             TaskQueue = taskQueue;
+#pragma warning disable 0618
             BuildId = buildId;
+#pragma warning restore 0618
             Services = services;
         }
 
@@ -51,6 +54,7 @@ namespace Temporalio.Extensions.Hosting
         public string TaskQueue { get; private init; }
 
         /// <inheritdoc />
+        [Obsolete("Use DeploymentOptions instead")]
         public string? BuildId { get; private init; }
 
         /// <inheritdoc />

@@ -4568,7 +4568,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Client.ExecuteWorkflowAsync(
                     "FailOnBadInputWorkflow",
                     new object?[] { 1234 },
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        ExecutionTimeout = TimeSpan.FromSeconds(10),
+                    }));
             Assert.Contains(
                 "failure decoding parameters",
                 Assert.IsType<ApplicationFailureException>(wfExc.InnerException).Message);
