@@ -104,6 +104,11 @@ namespace Temporalio.Workflows
         public VersioningIntent VersioningIntent { get; set; } = VersioningIntent.Unspecified;
 
         /// <summary>
+        /// Gets or sets the priority that should be used for this Child Workflow.
+        /// </summary>
+        public Priority? Priority { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

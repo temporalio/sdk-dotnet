@@ -7217,6 +7217,107 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await replayer.ReplayWorkflowAsync(history);
     }
 
+    [Workflow]
+    public class WorkflowUsingPriorities
+    {
+        [Activity]
+        public static string CheckPriorityActivity(int shouldHavePriority)
+        {
+            Assert.Equal(shouldHavePriority, ActivityExecutionContext.Current.Info.Priority?.PriorityKey);
+            return "Done!";
+        }
+
+        [Activity]
+        public static string SayHello(string name) => $"Hello, {name}!";
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(int? expectedPriority, bool stopAfterCheck)
+        {
+            Assert.Equal(expectedPriority, Workflow.Info.Priority?.PriorityKey);
+            if (stopAfterCheck)
+            {
+                return "Done!";
+            }
+
+            // Execute child workflow with priority 4
+            await Workflow.ExecuteChildWorkflowAsync(
+                (WorkflowUsingPriorities wf) => wf.RunAsync(4, true),
+                new() { Priority = new(4) });
+
+            // Start child workflow with priority 2
+            var handle = await Workflow.StartChildWorkflowAsync(
+                (WorkflowUsingPriorities wf) => wf.RunAsync(2, true),
+                new() { Priority = new(2) });
+
+            await handle.GetResultAsync();
+
+            // Execute activity with priority 5
+            await Workflow.ExecuteActivityAsync(
+                () => SayHello("hi"),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromSeconds(5),
+                    Priority = new(5),
+                });
+
+            return "Done!";
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Priorities_HandlesPriorityProperly()
+    {
+        await ExecuteWorkerAsync<WorkflowUsingPriorities>(
+            async worker =>
+            {
+                // Start workflow with priority 1
+                var handle = await Client.StartWorkflowAsync(
+                    (WorkflowUsingPriorities wf) => wf.RunAsync(1, false),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        Priority = new(1),
+                    });
+
+                await handle.GetResultAsync();
+
+                // Check history for priority values
+                var history = await handle.FetchHistoryAsync();
+                bool firstChild = true;
+
+                foreach (var evt in history.Events)
+                {
+                    if (evt.WorkflowExecutionStartedEventAttributes != null)
+                    {
+                        Assert.Equal(1, evt.WorkflowExecutionStartedEventAttributes.Priority?.PriorityKey);
+                    }
+                    else if (evt.StartChildWorkflowExecutionInitiatedEventAttributes != null)
+                    {
+                        if (firstChild)
+                        {
+                            Assert.Equal(4, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.PriorityKey);
+                            firstChild = false;
+                        }
+                        else
+                        {
+                            Assert.Equal(2, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.PriorityKey);
+                        }
+                    }
+                    else if (evt.ActivityTaskScheduledEventAttributes != null)
+                    {
+                        Assert.Equal(5, evt.ActivityTaskScheduledEventAttributes.Priority?.PriorityKey);
+                    }
+                }
+
+                // Verify a workflow started without priorities sees null for the key
+                handle = await Client.StartWorkflowAsync(
+                    (WorkflowUsingPriorities wf) => wf.RunAsync(null, true),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                await handle.GetResultAsync();
+            },
+            new TemporalWorkerOptions().AddAllActivities<WorkflowUsingPriorities>(null));
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {

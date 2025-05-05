@@ -11,6 +11,7 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
 using Temporalio.Client;
+using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Worker.Interceptors;
@@ -183,6 +184,7 @@ namespace Temporalio.Worker
                 HeartbeatDetails: start.HeartbeatDetails,
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
+                Priority: start.Priority is { } p ? new(p) : Priority.Default,
                 ScheduleToCloseTimeout: OptionalTimeSpan(start.ScheduleToCloseTimeout),
                 ScheduledTime: start.ScheduledTime.ToDateTime(),
                 StartToCloseTimeout: OptionalTimeSpan(start.StartToCloseTimeout),
