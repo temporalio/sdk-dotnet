@@ -189,6 +189,7 @@ namespace Temporalio.Worker
                 LastResult: lastResult,
                 Namespace: details.Namespace,
                 Parent: parent,
+                Priority: start.Priority is { } p ? new(p) : Common.Priority.Default,
                 RetryPolicy: start.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(start.RetryPolicy),
                 Root: root,
                 RunId: act.RunId,
@@ -2104,6 +2105,10 @@ namespace Temporalio.Worker
                                 Summary = payloadConverter.ToPayload(summary),
                             };
                         }
+                        if (input.Options.Priority is { } priority)
+                        {
+                            cmd.Priority = priority.ToProto();
+                        }
                         instance.AddCommand(workflowCommand);
                         return seq;
                     },
@@ -2317,6 +2322,10 @@ namespace Temporalio.Worker
                 if (input.Options?.VersioningIntent is { } vi)
                 {
                     cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
+                }
+                if (input.Options?.Priority is { } priority)
+                {
+                    cmd.Priority = priority.ToProto();
                 }
                 var workflowCommand = new WorkflowCommand() { StartChildWorkflowExecution = cmd };
                 if (input.Options?.StaticSummary != null || input.Options?.StaticDetails != null)
