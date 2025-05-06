@@ -565,6 +565,25 @@ typedef struct ByteArrayRefArray {
   size_t size;
 } ByteArrayRefArray;
 
+typedef enum PollerBehavior_Tag {
+  PollerBehavior_SimpleMaximum = 0,
+  PollerBehavior_Autoscaling = 1,
+} PollerBehavior_Tag;
+
+typedef struct PollerBehavior_AutoscalingFields {
+  uintptr_t minimum;
+  uintptr_t maximum;
+  uintptr_t initial;
+} PollerBehavior_AutoscalingFields;
+
+typedef struct PollerBehavior {
+  PollerBehavior_Tag tag;
+  union {
+    uintptr_t simple_maximum;
+    PollerBehavior_AutoscalingFields autoscaling;
+  };
+} PollerBehavior;
+
 typedef struct WorkerOptions {
   struct ByteArrayRef namespace_;
   struct ByteArrayRef task_queue;
@@ -579,9 +598,9 @@ typedef struct WorkerOptions {
   double max_activities_per_second;
   double max_task_queue_activities_per_second;
   uint64_t graceful_shutdown_period_millis;
-  uint32_t max_concurrent_workflow_task_polls;
+  struct PollerBehavior max_concurrent_workflow_task_polls;
   float nonsticky_to_sticky_poll_ratio;
-  uint32_t max_concurrent_activity_task_polls;
+  struct PollerBehavior max_concurrent_activity_task_polls;
   bool nondeterminism_as_workflow_fail;
   struct ByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
 } WorkerOptions;
