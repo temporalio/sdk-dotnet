@@ -143,7 +143,7 @@ namespace Temporalio.Worker
         /// Checks if the given activity type is registered on this worker.
         /// </summary>
         /// <param name="activityType">The type of activity to look up. </param>
-        /// <returns>Null if the activity type is registered, an error message for providing other available
+        /// <returns>Null if the activity type is registered, a list of alternative activities otherwise
         /// activities otherwise. </returns>
         public string? ActivityLookup(string activityType)
         {
