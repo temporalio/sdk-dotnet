@@ -47,11 +47,47 @@ pub struct WorkerOptions {
     max_activities_per_second: f64,
     max_task_queue_activities_per_second: f64,
     graceful_shutdown_period_millis: u64,
-    max_concurrent_workflow_task_polls: u32,
+    max_concurrent_workflow_task_polls: PollerBehavior,
     nonsticky_to_sticky_poll_ratio: f32,
-    max_concurrent_activity_task_polls: u32,
+    max_concurrent_activity_task_polls: PollerBehavior,
     nondeterminism_as_workflow_fail: bool,
     nondeterminism_as_workflow_fail_for_types: ByteArrayRefArray,
+}
+
+#[repr(C)]
+pub struct PollerBehaviorSimpleMaximum {
+    pub simple_maximum: usize,
+}
+
+#[repr(C)]
+pub struct PollerBehaviorAutoscaling {
+    pub minimum: usize,
+    pub maximum: usize,
+    pub initial: usize,
+}
+
+/// Recreates [temporal_sdk_core_api::worker::PollerBehavior]
+#[repr(C)]
+pub enum PollerBehavior {
+    SimpleMaximum(PollerBehaviorSimpleMaximum),
+    Autoscaling(PollerBehaviorAutoscaling),
+}
+
+impl From<PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior {
+    fn from(value: PollerBehavior) -> Self {
+        match value {
+            PollerBehavior::SimpleMaximum(simple) => {
+                temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum(simple.simple_maximum)
+            }
+            PollerBehavior::Autoscaling(auto) => {
+                temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
+                    minimum: auto.minimum,
+                    maximum: auto.maximum,
+                    initial: auto.initial,
+                }
+            }
+        }
+    }
 }
 
 #[repr(C)]
@@ -895,13 +931,9 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             // auto-cancel-activity behavior or shutdown will not occur, so we
             // always set it even if 0.
             .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
-            .workflow_task_poller_behavior(PollerBehavior::SimpleMaximum(
-                opt.max_concurrent_workflow_task_polls as usize,
-            ))
+            .workflow_task_poller_behavior(opt.max_concurrent_workflow_task_polls)
             .nonsticky_to_sticky_poll_ratio(opt.nonsticky_to_sticky_poll_ratio)
-            .activity_task_poller_behavior(PollerBehavior::SimpleMaximum(
-                opt.max_concurrent_activity_task_polls as usize,
-            ))
+            .activity_task_poller_behavior(opt.max_concurrent_activity_task_polls)
             .workflow_failure_errors(if opt.nondeterminism_as_workflow_fail {
                 HashSet::from([WorkflowErrorType::Nondeterminism])
             } else {

@@ -566,21 +566,27 @@ typedef struct ByteArrayRefArray {
 } ByteArrayRefArray;
 
 typedef enum PollerBehavior_Tag {
-  PollerBehavior_SimpleMaximum = 0,
-  PollerBehavior_Autoscaling = 1,
+  PollerBehavior_SimpleMaximum ,
+  PollerBehavior_Autoscaling,
 } PollerBehavior_Tag;
 
-typedef struct PollerBehavior_AutoscalingFields {
-  uintptr_t minimum;
-  uintptr_t maximum;
-  uintptr_t initial;
-} PollerBehavior_AutoscalingFields;
+typedef struct PollerBehaviorAutoscaling {
+  uint32_t minimum;
+  uint32_t maximum;
+  uint32_t initial;
+} PollerBehaviorAutoscaling;
 
 typedef struct PollerBehavior {
   PollerBehavior_Tag tag;
   union {
-    uintptr_t simple_maximum;
-    PollerBehavior_AutoscalingFields autoscaling;
+    struct
+    {
+      uint32_t simple_maximum;
+    };
+    struct
+    {
+      struct PollerBehaviorAutoscaling autoscaling;
+    };
   };
 } PollerBehavior;
 
