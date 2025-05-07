@@ -140,6 +140,24 @@ namespace Temporalio.Worker
         }
 
         /// <summary>
+        /// Checks if the given activity type is registered on this worker.
+        /// </summary>
+        /// <param name="activityType">The type of activity to look up. </param>
+        /// <returns>Null if the activity type is registered, an error message for providing other available
+        /// activities otherwise. </returns>
+        public string? ActivityLookup(string activityType)
+        {
+            if (activities.ContainsKey(activityType))
+            {
+                return null;
+            }
+
+            var avail = activities.Keys.ToList();
+            avail.Sort();
+            return string.Join(", ", avail);
+        }
+
+        /// <summary>
         /// Dispose the worker.
         /// </summary>
         /// <param name="disposing">Whether disposing.</param>

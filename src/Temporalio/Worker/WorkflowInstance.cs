@@ -203,6 +203,7 @@ namespace Temporalio.Worker
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
             disableEagerActivityExecution = details.DisableEagerActivityExecution;
+            ActivityLookup = details.ActivityLookup;
         }
 
         /// <summary>
@@ -345,6 +346,11 @@ namespace Temporalio.Worker
         /// Gets the workflow definition.
         /// </summary>
         internal WorkflowDefinition Definition { get; private init; }
+
+        /// <summary>
+        /// Gets the activity lookup function.
+        /// </summary>
+        internal Func<string, string?> ActivityLookup { get; private init; }
 
         /// <inheritdoc/>
         public ContinueAsNewException CreateContinueAsNewException(
@@ -2078,6 +2084,15 @@ namespace Temporalio.Worker
                     input.Options.ScheduleToCloseTimeout == null)
                 {
                     throw new ArgumentException("Activity options must have StartToCloseTimeout or ScheduleToCloseTimeout");
+                }
+
+                var activityInfo = instance.ActivityLookup(input.Activity);
+                if (activityInfo != null)
+                {
+                    throw new ApplicationFailureException(
+                        $"Activity {input.Activity} is not registered on this worker," +
+                        $" available activities: {activityInfo}",
+                        errorType: "NotFoundError");
                 }
 
                 // Get payload converter with context

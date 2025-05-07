@@ -7210,6 +7210,36 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await replayer.ReplayWorkflowAsync(history);
     }
 
+    [Workflow]
+    public class LocalActivityMissingWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            await Workflow.ExecuteLocalActivityAsync("invalid_activity", Array.Empty<object>(), new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+        }
+
+        [Activity]
+        public static string? DoSomething() => null;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityMissing()
+    {
+        var err = await Assert.ThrowsAsync<WorkflowFailedException>(() => ExecuteWorkerAsync<LocalActivityMissingWorkflow, WorkflowHandle>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (LocalActivityMissingWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await handle.GetResultAsync();
+                return handle;
+            },
+            new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingWorkflow>(null)));
+        var err2 = Assert.IsType<ApplicationFailureException>(err.InnerException);
+        Assert.Contains("Activity invalid_activity is not registered", err2.Message);
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
