@@ -565,30 +565,20 @@ typedef struct ByteArrayRefArray {
   size_t size;
 } ByteArrayRefArray;
 
-typedef enum PollerBehavior_Tag {
-  PollerBehavior_SimpleMaximum ,
-  PollerBehavior_Autoscaling,
-} PollerBehavior_Tag;
+typedef struct PollerBehavior {
+  const struct PollerAutoscaling *autoscaling;
+  const struct PollerSimpleMaximum *simple_maximum;
+};
 
-typedef struct PollerBehaviorAutoscaling {
+typedef struct PollerSimpleMaximum {
+  uint32_t maximum;
+};
+
+typedef struct PollerAutoscaling {
   uint32_t minimum;
   uint32_t maximum;
   uint32_t initial;
-} PollerBehaviorAutoscaling;
-
-typedef struct PollerBehavior {
-  PollerBehavior_Tag tag;
-  union {
-    struct
-    {
-      uint32_t simple_maximum;
-    };
-    struct
-    {
-      struct PollerBehaviorAutoscaling autoscaling;
-    };
-  };
-} PollerBehavior;
+} PollerAutoscaling;
 
 typedef struct WorkerOptions {
   struct ByteArrayRef namespace_;

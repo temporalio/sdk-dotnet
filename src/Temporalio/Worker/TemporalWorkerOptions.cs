@@ -207,9 +207,9 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll workflow task requests we will
-        /// perform at a time on this worker's task queue. Default is 5.
+        /// perform at a time on this worker's task queue. Default is SimpleMaximum 5.
         /// </summary>
-        public int MaxConcurrentWorkflowTaskPolls { get; set; } = 5;
+        public PollerBehavior MaxConcurrentWorkflowTaskPolls { get; set; } = new PollerBehavior.SimpleMaximum(5);
 
         /// <summary>
         /// Gets or sets the sticky poll ratio. <see cref="MaxConcurrentWorkflowTaskPolls" /> times
@@ -225,7 +225,7 @@ namespace Temporalio.Worker
         /// Gets or sets the maximum number of concurrent poll activity task requests we will
         /// perform at a time on this worker's task queue. Default is 5.
         /// </summary>
-        public int MaxConcurrentActivityTaskPolls { get; set; } = 5;
+        public PollerBehavior MaxConcurrentActivityTaskPolls { get; set; } = new PollerBehavior.SimpleMaximum(5);
 
         /// <summary>
         /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will
