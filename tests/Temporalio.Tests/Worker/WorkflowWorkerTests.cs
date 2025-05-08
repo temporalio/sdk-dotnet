@@ -7322,30 +7322,40 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task AutoscallingPollingWorker()
     {
+        var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                Metrics = new() { Prometheus = new(promAddr), },
+            },
+        });
+        var client = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = runtime,
+            });
+
         await ExecuteWorkerAsync<WaitOnSignalWorkflow>(
         async worker =>
         {
-            var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
-            var client = await TemporalClient.ConnectAsync(
-                new()
-                {
-                    TargetHost = Client.Connection.Options.TargetHost,
-                    Namespace = Client.Options.Namespace,
-                    Runtime = new(
-                        new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr) } } }),
-                });
             await client.WorkflowService.GetSystemInfoAsync(new());
 
             // Give pollers a beat to start
-            await Task.Delay(TimeSpan.FromMilliseconds(300));
+            await Task.Delay(TimeSpan.FromMilliseconds(10000));
 
             using var httpClient = new HttpClient();
             var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
             var body = await resp.Content.ReadAsStringAsync();
+            Console.WriteLine("body: " + body);
             var bodyLines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-
+            // Console.WriteLine("bodyLines: " + string.Join(", ", bodyLines));
             var matches = bodyLines.Where(l => l.Contains("temporal_num_pollers")).ToList();
+            // Console.WriteLine("matches: " + string.Join(", ", matches));
             var activityPollers = matches.Where(l => l.Contains("activity_task")).ToList();
+            Console.WriteLine("activityPollers: " + string.Join(", ", activityPollers));
             Assert.Single(activityPollers, "Should have exactly one activity poller metric");
             Assert.True(activityPollers[0].EndsWith('2'), "Activity poller count should be 2");
             var workflowPollers = matches.Where(l => l.Contains("workflow_task")).ToList();

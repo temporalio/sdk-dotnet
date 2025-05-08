@@ -82,7 +82,6 @@ impl TryFrom<&PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior 
             if !value.simple_maximum.is_null() {
                 return Ok(temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum((*value.simple_maximum).simple_maximum));
             }
-            println!("hi2 {:?}, {:?}, {:?}", (*value.autoscaling).minimum, (*value.autoscaling).maximum, (*value.autoscaling).initial);
             return Ok(temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
                 minimum: (*value.autoscaling).minimum,
                 maximum: (*value.autoscaling).maximum,
@@ -933,7 +932,6 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             // auto-cancel-activity behavior or shutdown will not occur, so we
             // always set it even if 0.
             .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
-            // TODO: opt.max_concurrent_workflow_task_polls is the wrong type here
             .workflow_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.max_concurrent_workflow_task_polls)?)
             .nonsticky_to_sticky_poll_ratio(opt.nonsticky_to_sticky_poll_ratio)
             .activity_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.max_concurrent_activity_task_polls)?)

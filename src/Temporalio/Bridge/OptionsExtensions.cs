@@ -544,8 +544,6 @@ namespace Temporalio.Bridge
                         "MaxConcurrentActivities, or MaxConcurrentLocalActivities.");
                 }
             }
-            Console.WriteLine($"MaxConcurrentWorkflowTaskPolls: {options.MaxConcurrentWorkflowTaskPolls.GetType().Name}");
-            Console.WriteLine($"MaxConcurrentActivityTaskPolls: {options.MaxConcurrentActivityTaskPolls.GetType().Name}");
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -565,9 +563,9 @@ namespace Temporalio.Bridge
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
-                max_concurrent_workflow_task_polls = options.MaxConcurrentWorkflowTaskPolls.ToInteropPollerBehavior(),
+                max_concurrent_workflow_task_polls = options.MaxConcurrentWorkflowTaskPolls.ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
-                max_concurrent_activity_task_polls = options.MaxConcurrentActivityTaskPolls.ToInteropPollerBehavior(),
+                max_concurrent_activity_task_polls = options.MaxConcurrentActivityTaskPolls.ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -613,9 +611,9 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                max_concurrent_workflow_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(),
+                max_concurrent_workflow_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = 1,
-                max_concurrent_activity_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(),
+                max_concurrent_activity_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -742,29 +740,27 @@ namespace Temporalio.Bridge
                 ToArray();
 
         private static Interop.PollerBehavior ToInteropPollerBehavior(
-            this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior)
+            this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior, Scope scope)
         {
             if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum simpleMax)
             {
                 var max = new PollerSimpleMaximum { maximum = new UIntPtr(simpleMax.Maximum), };
                 unsafe
                 {
-                    return new Interop.PollerBehavior { simple_maximum = &max, };
+                    return new Interop.PollerBehavior { simple_maximum = scope.Pointer(max), };
                 }
             }
             else if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.Autoscaling autoscaling)
             {
-                Console.WriteLine($"Autoscaling: {autoscaling.Minimum}, {autoscaling.Maximum}, {autoscaling.Initial}");
                 var autoscale = new PollerAutoscaling
                 {
                     minimum = new UIntPtr(autoscaling.Minimum),
                     maximum = new UIntPtr(autoscaling.Maximum),
                     initial = new UIntPtr(autoscaling.Initial),
                 };
-                Console.WriteLine($"Autoscaling new: {autoscale.minimum}, {autoscale.maximum}, {autoscale.initial}");
                 unsafe
                 {
-                    return new Interop.PollerBehavior { autoscaling = &autoscale, };
+                    return new Interop.PollerBehavior { autoscaling = scope.Pointer(autoscale), };
                 }
             }
             else
