@@ -7238,6 +7238,33 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingWorkflow>(null));
     }
 
+    [Workflow]
+    public class LocalActivityMissingDynamicWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string?> RunAsync()
+        {
+            return await Workflow.ExecuteLocalActivityAsync<string?>("invalid_activity", Array.Empty<object>(), new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+        }
+
+        [Activity(Dynamic = true)]
+        public static string? DoSomething(IRawValue[] args) => "hello";
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityMissing_Dynamic()
+    {
+        var err = await ExecuteWorkerAsync<LocalActivityMissingDynamicWorkflow>(
+            async worker =>
+            {
+                var result = await Client.ExecuteWorkflowAsync(
+                    (LocalActivityMissingDynamicWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                Assert.Equal("hello", result);
+            },
+            new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingDynamicWorkflow>(null));
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
