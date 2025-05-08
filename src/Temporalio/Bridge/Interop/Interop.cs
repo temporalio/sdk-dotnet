@@ -105,9 +105,11 @@ namespace Temporalio.Bridge.Interop
 
     internal unsafe partial struct ByteArrayRef
     {
-        [NativeTypeName("const uint8_t *")] public byte* data;
+        [NativeTypeName("const uint8_t *")]
+        public byte* data;
 
-        [NativeTypeName("size_t")] public UIntPtr size;
+        [NativeTypeName("size_t")]
+        public UIntPtr size;
     }
 
     internal partial struct ClientTlsOptions
@@ -127,24 +129,30 @@ namespace Temporalio.Bridge.Interop
 
     internal partial struct ClientRetryOptions
     {
-        [NativeTypeName("uint64_t")] public ulong initial_interval_millis;
+        [NativeTypeName("uint64_t")]
+        public ulong initial_interval_millis;
 
         public double randomization_factor;
 
         public double multiplier;
 
-        [NativeTypeName("uint64_t")] public ulong max_interval_millis;
+        [NativeTypeName("uint64_t")]
+        public ulong max_interval_millis;
 
-        [NativeTypeName("uint64_t")] public ulong max_elapsed_time_millis;
+        [NativeTypeName("uint64_t")]
+        public ulong max_elapsed_time_millis;
 
-        [NativeTypeName("uintptr_t")] public UIntPtr max_retries;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr max_retries;
     }
 
     internal partial struct ClientKeepAliveOptions
     {
-        [NativeTypeName("uint64_t")] public ulong interval_millis;
+        [NativeTypeName("uint64_t")]
+        public ulong interval_millis;
 
-        [NativeTypeName("uint64_t")] public ulong timeout_millis;
+        [NativeTypeName("uint64_t")]
+        public ulong timeout_millis;
     }
 
     internal partial struct ClientHttpConnectProxyOptions
@@ -170,7 +178,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef client_version;
 
-        [NativeTypeName("MetadataRef")] public ByteArrayRef metadata;
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef metadata;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef api_key;
@@ -193,23 +202,26 @@ namespace Temporalio.Bridge.Interop
 
     internal unsafe partial struct ByteArray
     {
-        [NativeTypeName("const uint8_t *")] public byte* data;
+        [NativeTypeName("const uint8_t *")]
+        public byte* data;
 
-        [NativeTypeName("size_t")] public UIntPtr size;
+        [NativeTypeName("size_t")]
+        public UIntPtr size;
 
-        [NativeTypeName("size_t")] public UIntPtr cap;
+        [NativeTypeName("size_t")]
+        public UIntPtr cap;
 
-        [NativeTypeName("bool")] public byte disable_free;
+        [NativeTypeName("bool")]
+        public byte disable_free;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ClientConnectCallback(void* user_data,
-        [NativeTypeName("struct Client *")] Client* success,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void ClientConnectCallback(void* user_data, [NativeTypeName("struct Client *")] Client* success, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
     internal unsafe partial struct RpcCallOptions
     {
-        [NativeTypeName("enum RpcService")] public RpcService service;
+        [NativeTypeName("enum RpcService")]
+        public RpcService service;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef rpc;
@@ -217,34 +229,38 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef req;
 
-        [NativeTypeName("bool")] public byte retry;
+        [NativeTypeName("bool")]
+        public byte retry;
 
-        [NativeTypeName("MetadataRef")] public ByteArrayRef metadata;
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef metadata;
 
-        [NativeTypeName("uint32_t")] public uint timeout_millis;
+        [NativeTypeName("uint32_t")]
+        public uint timeout_millis;
 
         [NativeTypeName("const struct CancellationToken *")]
         public CancellationToken* cancellation_token;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ClientRpcCallCallback(void* user_data,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("uint32_t")] uint status_code,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* failure_message,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* failure_details);
+    internal unsafe delegate void ClientRpcCallCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_message, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_details);
 
     [StructLayout(LayoutKind.Explicit)]
     internal partial struct MetricAttributeValue
     {
-        [FieldOffset(0)] [NativeTypeName("struct ByteArrayRef")]
+        [FieldOffset(0)]
+        [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef string_value;
 
-        [FieldOffset(0)] [NativeTypeName("int64_t")]
+        [FieldOffset(0)]
+        [NativeTypeName("int64_t")]
         public long int_value;
 
-        [FieldOffset(0)] public double float_value;
+        [FieldOffset(0)]
+        public double float_value;
 
-        [FieldOffset(0)] [NativeTypeName("bool")]
+        [FieldOffset(0)]
+        [NativeTypeName("bool")]
         public byte bool_value;
     }
 
@@ -271,21 +287,21 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef unit;
 
-        [NativeTypeName("enum MetricKind")] public MetricKind kind;
+        [NativeTypeName("enum MetricKind")]
+        public MetricKind kind;
     }
 
     internal unsafe partial struct RuntimeOrFail
     {
-        [NativeTypeName("struct Runtime *")] public Runtime* runtime;
+        [NativeTypeName("struct Runtime *")]
+        public Runtime* runtime;
 
         [NativeTypeName("const struct ByteArray *")]
         public ByteArray* fail;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ForwardedLogCallback(
-        [NativeTypeName("enum ForwardedLogLevel")] ForwardedLogLevel level,
-        [NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+    internal unsafe delegate void ForwardedLogCallback([NativeTypeName("enum ForwardedLogLevel")] ForwardedLogLevel level, [NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
 
     internal partial struct LoggingOptions
     {
@@ -301,19 +317,23 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef url;
 
-        [NativeTypeName("MetadataRef")] public ByteArrayRef headers;
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef headers;
 
-        [NativeTypeName("uint32_t")] public uint metric_periodicity_millis;
+        [NativeTypeName("uint32_t")]
+        public uint metric_periodicity_millis;
 
         [NativeTypeName("enum OpenTelemetryMetricTemporality")]
         public OpenTelemetryMetricTemporality metric_temporality;
 
-        [NativeTypeName("bool")] public byte durations_as_seconds;
+        [NativeTypeName("bool")]
+        public byte durations_as_seconds;
 
         [NativeTypeName("enum OpenTelemetryProtocol")]
         public OpenTelemetryProtocol protocol;
 
-        [NativeTypeName("MetadataRef")] public ByteArrayRef histogram_bucket_overrides;
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef histogram_bucket_overrides;
     }
 
     internal partial struct PrometheusOptions
@@ -321,58 +341,60 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef bind_address;
 
-        [NativeTypeName("bool")] public byte counters_total_suffix;
+        [NativeTypeName("bool")]
+        public byte counters_total_suffix;
 
-        [NativeTypeName("bool")] public byte unit_suffix;
+        [NativeTypeName("bool")]
+        public byte unit_suffix;
 
-        [NativeTypeName("bool")] public byte durations_as_seconds;
+        [NativeTypeName("bool")]
+        public byte durations_as_seconds;
 
-        [NativeTypeName("MetadataRef")] public ByteArrayRef histogram_bucket_overrides;
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef histogram_bucket_overrides;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("const void *")]
-    internal unsafe delegate void* CustomMetricMeterMetricNewCallback(
-        [NativeTypeName("struct ByteArrayRef")] ByteArrayRef name,
-        [NativeTypeName("struct ByteArrayRef")] ByteArrayRef description,
-        [NativeTypeName("struct ByteArrayRef")] ByteArrayRef unit, [NativeTypeName("enum MetricKind")] MetricKind kind);
+    internal unsafe delegate void* CustomMetricMeterMetricNewCallback([NativeTypeName("struct ByteArrayRef")] ByteArrayRef name, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef description, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef unit, [NativeTypeName("enum MetricKind")] MetricKind kind);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void CustomMetricMeterMetricFreeCallback([NativeTypeName("const void *")] void* metric);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricRecordIntegerCallback(
-        [NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value,
-        [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void CustomMetricMeterMetricRecordIntegerCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const void *")] void* attributes);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricRecordFloatCallback(
-        [NativeTypeName("const void *")] void* metric, double value, [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void CustomMetricMeterMetricRecordFloatCallback([NativeTypeName("const void *")] void* metric, double value, [NativeTypeName("const void *")] void* attributes);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricRecordDurationCallback(
-        [NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value_ms,
-        [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void CustomMetricMeterMetricRecordDurationCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const void *")] void* attributes);
 
     internal unsafe partial struct CustomMetricAttributeValueString
     {
-        [NativeTypeName("const uint8_t *")] public byte* data;
+        [NativeTypeName("const uint8_t *")]
+        public byte* data;
 
-        [NativeTypeName("size_t")] public UIntPtr size;
+        [NativeTypeName("size_t")]
+        public UIntPtr size;
     }
 
     [StructLayout(LayoutKind.Explicit)]
     internal partial struct CustomMetricAttributeValue
     {
-        [FieldOffset(0)] [NativeTypeName("struct CustomMetricAttributeValueString")]
+        [FieldOffset(0)]
+        [NativeTypeName("struct CustomMetricAttributeValueString")]
         public CustomMetricAttributeValueString string_value;
 
-        [FieldOffset(0)] [NativeTypeName("int64_t")]
+        [FieldOffset(0)]
+        [NativeTypeName("int64_t")]
         public long int_value;
 
-        [FieldOffset(0)] public double float_value;
+        [FieldOffset(0)]
+        public double float_value;
 
-        [FieldOffset(0)] [NativeTypeName("bool")]
+        [FieldOffset(0)]
+        [NativeTypeName("bool")]
         public byte bool_value;
     }
 
@@ -390,18 +412,13 @@ namespace Temporalio.Bridge.Interop
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("const void *")]
-    internal unsafe delegate void* CustomMetricMeterAttributesNewCallback(
-        [NativeTypeName("const void *")] void* append_from,
-        [NativeTypeName("const struct CustomMetricAttribute *")] CustomMetricAttribute* attributes,
-        [NativeTypeName("size_t")] UIntPtr attributes_size);
+    internal unsafe delegate void* CustomMetricMeterAttributesNewCallback([NativeTypeName("const void *")] void* append_from, [NativeTypeName("const struct CustomMetricAttribute *")] CustomMetricAttribute* attributes, [NativeTypeName("size_t")] UIntPtr attributes_size);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterAttributesFreeCallback(
-        [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void CustomMetricMeterAttributesFreeCallback([NativeTypeName("const void *")] void* attributes);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMeterFreeCallback(
-        [NativeTypeName("const struct CustomMetricMeter *")] CustomMetricMeter* meter);
+    internal unsafe delegate void CustomMetricMeterMeterFreeCallback([NativeTypeName("const struct CustomMetricMeter *")] CustomMetricMeter* meter);
 
     internal partial struct CustomMetricMeter
     {
@@ -441,9 +458,11 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("const struct CustomMetricMeter *")]
         public CustomMetricMeter* custom_meter;
 
-        [NativeTypeName("bool")] public byte attach_service_name;
+        [NativeTypeName("bool")]
+        public byte attach_service_name;
 
-        [NativeTypeName("MetadataRef")] public ByteArrayRef global_tags;
+        [NativeTypeName("MetadataRef")]
+        public ByteArrayRef global_tags;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef metric_prefix;
@@ -481,12 +500,14 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef download_dest_dir;
 
-        [NativeTypeName("uint16_t")] public ushort port;
+        [NativeTypeName("uint16_t")]
+        public ushort port;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef extra_args;
 
-        [NativeTypeName("uint64_t")] public ulong download_ttl_ms;
+        [NativeTypeName("uint64_t")]
+        public ulong download_ttl_ms;
     }
 
     internal unsafe partial struct DevServerOptions
@@ -503,9 +524,11 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef database_filename;
 
-        [NativeTypeName("bool")] public byte ui;
+        [NativeTypeName("bool")]
+        public byte ui;
 
-        [NativeTypeName("uint16_t")] public ushort ui_port;
+        [NativeTypeName("uint16_t")]
+        public ushort ui_port;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef log_format;
@@ -515,136 +538,24 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void EphemeralServerStartCallback(void* user_data,
-        [NativeTypeName("struct EphemeralServer *")] EphemeralServer* success,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* success_target,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void EphemeralServerStartCallback(void* user_data, [NativeTypeName("struct EphemeralServer *")] EphemeralServer* success, [NativeTypeName("const struct ByteArray *")] ByteArray* success_target, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void EphemeralServerShutdownCallback(void* user_data,
-        [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void EphemeralServerShutdownCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
 
     internal unsafe partial struct WorkerOrFail
     {
-        [NativeTypeName("struct Worker *")] public Worker* worker;
+        [NativeTypeName("struct Worker *")]
+        public Worker* worker;
 
         [NativeTypeName("const struct ByteArray *")]
         public ByteArray* fail;
     }
 
-    internal partial struct WorkerVersioningNone
-    {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
-    }
-
-    internal partial struct WorkerDeploymentVersion
-    {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef deployment_name;
-
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
-    }
-
-    internal partial struct WorkerDeploymentOptions
-    {
-        [NativeTypeName("struct WorkerDeploymentVersion")]
-        public WorkerDeploymentVersion version;
-
-        [NativeTypeName("bool")] public byte use_worker_versioning;
-
-        [NativeTypeName("int32_t")] public int default_versioning_behavior;
-    }
-
-    internal partial struct LegacyBuildIdBasedStrategy
-    {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
-    }
-
-    internal enum WorkerVersioningStrategy_Tag
-    {
-        None,
-        DeploymentBased,
-        LegacyBuildIdBased,
-    }
-
-    internal unsafe partial struct WorkerVersioningStrategy
-    {
-        public WorkerVersioningStrategy_Tag tag;
-
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L419_C3")]
-        public _Anonymous_e__Union Anonymous;
-
-        internal ref WorkerVersioningNone none
-        {
-            get
-            {
-                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
-                {
-                    return ref pField->none;
-                }
-            }
-        }
-
-        internal ref WorkerDeploymentOptions deployment_based
-        {
-            get
-            {
-                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
-                {
-                    return ref pField->deployment_based;
-                }
-            }
-        }
-
-        internal ref LegacyBuildIdBasedStrategy legacy_build_id_based
-        {
-            get
-            {
-                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
-                {
-                    return ref pField->legacy_build_id_based;
-                }
-            }
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        internal unsafe partial struct _Anonymous_e__Union
-        {
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L420_C5")]
-            public _Anonymous1_e__Struct Anonymous1;
-
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L423_C5")]
-            public _Anonymous2_e__Struct Anonymous2;
-
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L426_C5")]
-            public _Anonymous3_e__Struct Anonymous3;
-
-            internal partial struct _Anonymous1_e__Struct
-            {
-                [NativeTypeName("struct WorkerVersioningNone")]
-                public WorkerVersioningNone none;
-            }
-
-            internal partial struct _Anonymous2_e__Struct
-            {
-                [NativeTypeName("struct WorkerDeploymentOptions")]
-                public WorkerDeploymentOptions deployment_based;
-            }
-
-            internal partial struct _Anonymous3_e__Struct
-            {
-                [NativeTypeName("struct LegacyBuildIdBasedStrategy")]
-                public LegacyBuildIdBasedStrategy legacy_build_id_based;
-            }
-        }
-    }
-
     internal partial struct FixedSizeSlotSupplier
     {
-        [NativeTypeName("uintptr_t")] public UIntPtr num_slots;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr num_slots;
     }
 
     internal partial struct ResourceBasedTunerOptions
@@ -656,11 +567,14 @@ namespace Temporalio.Bridge.Interop
 
     internal partial struct ResourceBasedSlotSupplier
     {
-        [NativeTypeName("uintptr_t")] public UIntPtr minimum_slots;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr minimum_slots;
 
-        [NativeTypeName("uintptr_t")] public UIntPtr maximum_slots;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr maximum_slots;
 
-        [NativeTypeName("uint64_t")] public ulong ramp_throttle_ms;
+        [NativeTypeName("uint64_t")]
+        public ulong ramp_throttle_ms;
 
         [NativeTypeName("struct ResourceBasedTunerOptions")]
         public ResourceBasedTunerOptions tuner_options;
@@ -668,7 +582,8 @@ namespace Temporalio.Bridge.Interop
 
     internal unsafe partial struct SlotReserveCtx
     {
-        [NativeTypeName("enum SlotKindType")] public SlotKindType slot_type;
+        [NativeTypeName("enum SlotKindType")]
+        public SlotKindType slot_type;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef task_queue;
@@ -679,22 +594,21 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef worker_build_id;
 
-        [NativeTypeName("bool")] public byte is_sticky;
+        [NativeTypeName("bool")]
+        public byte is_sticky;
 
         public void* token_src;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomReserveSlotCallback(
-        [NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* sender);
+    internal unsafe delegate void CustomReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* sender);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void CustomCancelReserveCallback(void* token_source);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("uintptr_t")]
-    internal unsafe delegate UIntPtr CustomTryReserveSlotCallback(
-        [NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx);
+    internal unsafe delegate UIntPtr CustomTryReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx);
 
     internal enum SlotInfo_Tag
     {
@@ -709,7 +623,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef workflow_type;
 
-        [NativeTypeName("bool")] public byte is_sticky;
+        [NativeTypeName("bool")]
+        public byte is_sticky;
     }
 
     internal partial struct ActivitySlotInfo_Body
@@ -737,7 +652,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L493_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L453_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref WorkflowSlotInfo_Body workflow_slot_info
@@ -787,42 +702,46 @@ namespace Temporalio.Bridge.Interop
         [StructLayout(LayoutKind.Explicit)]
         internal partial struct _Anonymous_e__Union
         {
-            [FieldOffset(0)] public WorkflowSlotInfo_Body workflow_slot_info;
+            [FieldOffset(0)]
+            public WorkflowSlotInfo_Body workflow_slot_info;
 
-            [FieldOffset(0)] public ActivitySlotInfo_Body activity_slot_info;
+            [FieldOffset(0)]
+            public ActivitySlotInfo_Body activity_slot_info;
 
-            [FieldOffset(0)] public LocalActivitySlotInfo_Body local_activity_slot_info;
+            [FieldOffset(0)]
+            public LocalActivitySlotInfo_Body local_activity_slot_info;
 
-            [FieldOffset(0)] public NexusSlotInfo_Body nexus_slot_info;
+            [FieldOffset(0)]
+            public NexusSlotInfo_Body nexus_slot_info;
         }
     }
 
     internal partial struct SlotMarkUsedCtx
     {
-        [NativeTypeName("struct SlotInfo")] public SlotInfo slot_info;
+        [NativeTypeName("struct SlotInfo")]
+        public SlotInfo slot_info;
 
-        [NativeTypeName("uintptr_t")] public UIntPtr slot_permit;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr slot_permit;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMarkSlotUsedCallback(
-        [NativeTypeName("const struct SlotMarkUsedCtx *")] SlotMarkUsedCtx* ctx);
+    internal unsafe delegate void CustomMarkSlotUsedCallback([NativeTypeName("const struct SlotMarkUsedCtx *")] SlotMarkUsedCtx* ctx);
 
     internal unsafe partial struct SlotReleaseCtx
     {
         [NativeTypeName("const struct SlotInfo *")]
         public SlotInfo* slot_info;
 
-        [NativeTypeName("uintptr_t")] public UIntPtr slot_permit;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr slot_permit;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomReleaseSlotCallback(
-        [NativeTypeName("const struct SlotReleaseCtx *")] SlotReleaseCtx* ctx);
+    internal unsafe delegate void CustomReleaseSlotCallback([NativeTypeName("const struct SlotReleaseCtx *")] SlotReleaseCtx* ctx);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomSlotImplFreeCallback(
-        [NativeTypeName("const struct CustomSlotSupplierCallbacks *")] CustomSlotSupplierCallbacks* userimpl);
+    internal unsafe delegate void CustomSlotImplFreeCallback([NativeTypeName("const struct CustomSlotSupplierCallbacks *")] CustomSlotSupplierCallbacks* userimpl);
 
     internal partial struct CustomSlotSupplierCallbacks
     {
@@ -862,7 +781,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L544_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L504_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -901,13 +820,16 @@ namespace Temporalio.Bridge.Interop
         [StructLayout(LayoutKind.Explicit)]
         internal unsafe partial struct _Anonymous_e__Union
         {
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L545_C5")]
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L505_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L548_C5")]
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L508_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L551_C5")]
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L511_C5")]
             public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct
@@ -942,72 +864,7 @@ namespace Temporalio.Bridge.Interop
         public SlotSupplier local_activity_slot_supplier;
     }
 
-    internal partial struct PollerBehaviorAutoscaling
-    {
-        [NativeTypeName("uint32_t")] public uint minimum;
-        [NativeTypeName("uint32_t")] public uint maximum;
-        [NativeTypeName("uint32_t")] public uint initial;
-    }
-
-    internal enum PollerBehavior_Tag
-    {
-        SimpleMaximum,
-        Autoscaling,
-    }
-
-    internal unsafe partial struct PollerBehavior
-    {
-        public PollerBehavior_Tag tag;
-        
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L581_C3")]
-        public _Anonymous_e__Union Anonymous;
-
-        internal ref UInt32 simple_maximum
-        {
-            get
-            {
-                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
-                {
-                    return ref pField->simple_maximum;
-                }
-            }
-        }
-
-        internal ref PollerBehaviorAutoscaling autoscaling
-        {
-            get
-            {
-                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
-                {
-                    return ref pField->autoscaling;
-                }
-            }
-        }
-        
-        [StructLayout(LayoutKind.Explicit)]
-        internal unsafe partial struct _Anonymous_e__Union
-        {
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L582_C5")]
-            public _Anonymous1_e__Struct Anonymous1;
-
-            [FieldOffset(0)] [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L586_C5")]
-            public _Anonymous2_e__Struct Anonymous2;
-
-            internal partial struct _Anonymous1_e__Struct
-            {
-                [NativeTypeName("uint32_t")]
-                public UInt32 simple_maximum;
-            }
-
-            internal partial struct _Anonymous2_e__Struct
-            {
-                [NativeTypeName("struct PollerBehaviorAutoscaling")]
-                public PollerBehaviorAutoscaling autoscaling;
-            }
-        }
-    }
-
-internal unsafe partial struct ByteArrayRefArray
+    internal unsafe partial struct ByteArrayRefArray
     {
         [NativeTypeName("const struct ByteArrayRef *")]
         public ByteArrayRef* data;
@@ -1024,8 +881,8 @@ internal unsafe partial struct ByteArrayRefArray
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef task_queue;
 
-        [NativeTypeName("struct WorkerVersioningStrategy")]
-        public WorkerVersioningStrategy versioning_strategy;
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef build_id;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef identity_override;
@@ -1055,13 +912,16 @@ internal unsafe partial struct ByteArrayRefArray
         [NativeTypeName("uint64_t")]
         public ulong graceful_shutdown_period_millis;
 
-        [NativeTypeName("struct PollerBehavior")]
-        public PollerBehavior max_concurrent_workflow_task_polls;
+        [NativeTypeName("bool")]
+        public byte use_worker_versioning;
+
+        [NativeTypeName("uint32_t")]
+        public uint max_concurrent_workflow_task_polls;
 
         public float nonsticky_to_sticky_poll_ratio;
 
-        [NativeTypeName("struct PollerBehavior")]
-        public PollerBehavior max_concurrent_activity_task_polls;
+        [NativeTypeName("uint32_t")]
+        public uint max_concurrent_activity_task_polls;
 
         [NativeTypeName("bool")]
         public byte nondeterminism_as_workflow_fail;
