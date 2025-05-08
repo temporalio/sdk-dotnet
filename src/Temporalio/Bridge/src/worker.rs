@@ -55,22 +55,22 @@ pub struct WorkerOptions {
 }
 
 #[repr(C)]
-pub struct PollerBehaviorSimpleMaximum {
+pub struct PollerSimpleMaximum {
     pub simple_maximum: usize,
 }
 
 #[repr(C)]
-pub struct PollerBehaviorAutoscaling {
+pub struct PollerAutoscaling {
     pub minimum: usize,
     pub maximum: usize,
     pub initial: usize,
 }
 
-/// Recreates [temporal_sdk_core_api::worker::PollerBehavior]
+/// Only one of simple_maximum and autoscaling can be present.
 #[repr(C)]
-pub enum PollerBehavior {
-    SimpleMaximum(PollerBehaviorSimpleMaximum),
-    Autoscaling(PollerBehaviorAutoscaling),
+pub struct PollerBehavior {
+    simple_maximum: *const PollerSimpleMaximum,
+    autoscaling: *const PollerAutoscaling,
 }
 
 impl From<PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior {
