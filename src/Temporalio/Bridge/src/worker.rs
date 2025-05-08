@@ -78,14 +78,11 @@ impl TryFrom<&PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior 
         if !value.simple_maximum.is_null() && !value.autoscaling.is_null() {
             bail!("simple_maximum and autoscaling cannot both be non-null values");
         }
-        println!("value.simple_maximum: {:?} \n\t{:?}", value.simple_maximum, value.simple_maximum.is_null());
-        println!("value.autoscaling: {:?} \n\t{:?}", value.autoscaling, value.autoscaling.is_null());
         unsafe {
             if !value.simple_maximum.is_null() {
-                println!("hi");
                 return Ok(temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum((*value.simple_maximum).simple_maximum));
             }
-            println!("hi2");
+            println!("hi2 {:?}, {:?}, {:?}", (*value.autoscaling).minimum, (*value.autoscaling).maximum, (*value.autoscaling).initial);
             return Ok(temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
                 minimum: (*value.autoscaling).minimum,
                 maximum: (*value.autoscaling).maximum,

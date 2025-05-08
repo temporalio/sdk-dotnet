@@ -990,29 +990,29 @@ namespace Temporalio.Bridge.Interop
 
     internal unsafe partial struct PollerBehavior
     {
-        [NativeTypeName("const struct PollerAutoscaling *")]
-        public PollerAutoscaling* autoscaling;
-
         [NativeTypeName("const struct PollerSimpleMaximum *")]
         public PollerSimpleMaximum* simple_maximum;
+
+        [NativeTypeName("const struct PollerAutoscaling *")]
+        public PollerAutoscaling* autoscaling;
     }
 
     internal partial struct PollerSimpleMaximum
     {
-        [NativeTypeName("uint32_t")]
-        public uint maximum;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr maximum;
     }
 
     internal partial struct PollerAutoscaling
     {
-        [NativeTypeName("uint32_t")]
-        public uint minimum;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr minimum;
 
-        [NativeTypeName("uint32_t")]
-        public uint maximum;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr maximum;
 
-        [NativeTypeName("uint32_t")]
-        public uint initial;
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr initial;
     }
 
     internal partial struct WorkerOptions

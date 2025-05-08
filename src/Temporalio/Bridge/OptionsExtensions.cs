@@ -5,7 +5,6 @@ using System.Reflection;
 using Microsoft.Extensions.Logging;
 using Temporalio.Bridge.Interop;
 using Temporalio.Exceptions;
-using PollerBehavior = Temporalio.Worker.Tuning.PollerBehavior;
 
 namespace Temporalio.Bridge
 {
@@ -545,6 +544,8 @@ namespace Temporalio.Bridge
                         "MaxConcurrentActivities, or MaxConcurrentLocalActivities.");
                 }
             }
+            Console.WriteLine($"MaxConcurrentWorkflowTaskPolls: {options.MaxConcurrentWorkflowTaskPolls.GetType().Name}");
+            Console.WriteLine($"MaxConcurrentActivityTaskPolls: {options.MaxConcurrentActivityTaskPolls.GetType().Name}");
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -612,9 +613,9 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                max_concurrent_workflow_task_polls = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(),
+                max_concurrent_workflow_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(),
                 nonsticky_to_sticky_poll_ratio = 1,
-                max_concurrent_activity_task_polls = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(),
+                max_concurrent_activity_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -745,7 +746,7 @@ namespace Temporalio.Bridge
         {
             if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum simpleMax)
             {
-                var max = new PollerSimpleMaximum { maximum = simpleMax.Maximum, };
+                var max = new PollerSimpleMaximum { maximum = new UIntPtr(simpleMax.Maximum), };
                 unsafe
                 {
                     return new Interop.PollerBehavior { simple_maximum = &max, };
@@ -753,10 +754,14 @@ namespace Temporalio.Bridge
             }
             else if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.Autoscaling autoscaling)
             {
+                Console.WriteLine($"Autoscaling: {autoscaling.Minimum}, {autoscaling.Maximum}, {autoscaling.Initial}");
                 var autoscale = new PollerAutoscaling
                 {
-                    minimum = autoscaling.Minimum, maximum = autoscaling.Maximum, initial = autoscaling.Initial,
+                    minimum = new UIntPtr(autoscaling.Minimum),
+                    maximum = new UIntPtr(autoscaling.Maximum),
+                    initial = new UIntPtr(autoscaling.Initial),
                 };
+                Console.WriteLine($"Autoscaling new: {autoscale.minimum}, {autoscale.maximum}, {autoscale.initial}");
                 unsafe
                 {
                     return new Interop.PollerBehavior { autoscaling = &autoscale, };
