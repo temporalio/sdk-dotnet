@@ -92,7 +92,12 @@ namespace Temporalio.Worker
                     OnTaskCompleted: options.OnTaskCompleted,
                     RuntimeMetricMeter: MetricMeter,
                     WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
-                    DisableEagerActivityExecution: options.DisableEagerActivityExecution));
+                    DisableEagerActivityExecution: options.DisableEagerActivityExecution,
+                    AssertValidLocalActivity: (activityType) => (activityWorker ??
+                                throw new InvalidOperationException(
+                                    $"Activity {activityType} is not registered on this worker," +
+                                    $" no available activities."))
+                                .AssertValidActivity(activityType)));
             }
         }
 

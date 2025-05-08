@@ -7210,6 +7210,83 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await replayer.ReplayWorkflowAsync(history);
     }
 
+    [Workflow]
+    public class LocalActivityMissingWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            await Workflow.ExecuteLocalActivityAsync("invalid_activity", Array.Empty<object>(), new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+        }
+
+        [Activity]
+        public static string? DoSomething() => null;
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityMissing()
+    {
+        await ExecuteWorkerAsync<LocalActivityMissingWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (LocalActivityMissingWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered on this worker, available activities: DoSomething");
+            },
+            new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingWorkflow>(null));
+    }
+
+    [Workflow]
+    public class LocalActivityMissingDynamicWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string?> RunAsync()
+        {
+            return await Workflow.ExecuteLocalActivityAsync<string?>("invalid_activity", Array.Empty<object>(), new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+        }
+
+        [Activity(Dynamic = true)]
+        public static string? DoSomething(IRawValue[] args) => "hello";
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityMissing_Dynamic()
+    {
+        await ExecuteWorkerAsync<LocalActivityMissingDynamicWorkflow>(
+            async worker =>
+            {
+                var result = await Client.ExecuteWorkflowAsync(
+                    (LocalActivityMissingDynamicWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                Assert.Equal("hello", result);
+            },
+            new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingDynamicWorkflow>(null));
+    }
+
+    [Workflow]
+    public class LocalActivityMissingNoActivitiesWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string?> RunAsync()
+        {
+            return await Workflow.ExecuteLocalActivityAsync<string?>("invalid_activity", Array.Empty<object>(), new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityMissing_NoActivities()
+    {
+        await ExecuteWorkerAsync<LocalActivityMissingNoActivitiesWorkflow>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (LocalActivityMissingNoActivitiesWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered on this worker, no available activities.");
+            });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
