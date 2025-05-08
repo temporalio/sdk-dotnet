@@ -143,18 +143,16 @@ namespace Temporalio.Worker
         /// Checks if the given activity type is registered on this worker.
         /// </summary>
         /// <param name="activityType">The type of activity to look up. </param>
-        /// <returns>Null if the activity type is registered, a list of alternative activities otherwise
-        /// activities otherwise. </returns>
-        public string? ActivityLookup(string activityType)
+        public void AssertValidActivity(string activityType)
         {
-            if (activities.ContainsKey(activityType))
+            if (dynamicActivity != null || activities.ContainsKey(activityType))
             {
-                return null;
+                return;
             }
 
-            var avail = activities.Keys.ToList();
-            avail.Sort();
-            return string.Join(", ", avail);
+            throw new InvalidOperationException(
+                $"Activity {activityType} is not registered on this worker," +
+                $" available activities: {ActivityList()}");
         }
 
         /// <summary>
@@ -167,6 +165,13 @@ namespace Temporalio.Worker
             {
                 workerShutdownTokenSource.Dispose();
             }
+        }
+
+        private string ActivityList()
+        {
+            var avail = activities.Keys.ToList();
+            avail.Sort();
+            return string.Join(", ", avail);
         }
 
         private void StartActivity(Bridge.Api.ActivityTask.ActivityTask tsk)
@@ -334,12 +339,9 @@ namespace Temporalio.Worker
                     defn = dynamicActivity;
                     if (defn == null)
                     {
-                        var avail = activities.Keys.ToList();
-                        avail.Sort();
-                        var availStr = string.Join(", ", avail);
                         throw new ApplicationFailureException(
                             $"Activity {act.Context.Info.ActivityType} is not registered on this worker," +
-                            $" available activities: {availStr}",
+                            $" available activities: {ActivityList()}",
                             errorType: "NotFoundError");
                     }
                 }

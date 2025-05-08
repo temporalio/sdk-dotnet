@@ -203,7 +203,7 @@ namespace Temporalio.Worker
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
             disableEagerActivityExecution = details.DisableEagerActivityExecution;
-            ActivityLookup = details.ActivityLookup;
+            AssertValidActivity = details.AssertValidActivity;
         }
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets the activity lookup function.
         /// </summary>
-        internal Func<string, string?> ActivityLookup { get; private init; }
+        internal Action<string> AssertValidActivity { get; private init; }
 
         /// <inheritdoc/>
         public ContinueAsNewException CreateContinueAsNewException(
@@ -2086,14 +2086,7 @@ namespace Temporalio.Worker
                     throw new ArgumentException("Activity options must have StartToCloseTimeout or ScheduleToCloseTimeout");
                 }
 
-                var activityInfo = instance.ActivityLookup(input.Activity);
-                if (activityInfo != null)
-                {
-                    throw new ApplicationFailureException(
-                        $"Activity {input.Activity} is not registered on this worker," +
-                        $" available activities: {activityInfo}",
-                        errorType: "NotFoundError");
-                }
+                instance.AssertValidActivity(input.Activity);
 
                 // Get payload converter with context
                 var serializationContext = new ISerializationContext.Activity(

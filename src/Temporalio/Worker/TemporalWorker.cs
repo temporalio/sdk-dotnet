@@ -93,7 +93,7 @@ namespace Temporalio.Worker
                     RuntimeMetricMeter: MetricMeter,
                     WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
                     DisableEagerActivityExecution: options.DisableEagerActivityExecution,
-                    ActivityLookup: (activityType) => activityWorker?.ActivityLookup(activityType) ?? null));
+                    AssertValidActivity: (activityType) => activityWorker?.AssertValidActivity(activityType)));
             }
         }
 
