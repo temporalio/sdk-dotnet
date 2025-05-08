@@ -21,6 +21,7 @@ using Temporalio.Exceptions;
 using Temporalio.Runtime;
 using Temporalio.Tests.Converters;
 using Temporalio.Worker;
+using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
@@ -4634,7 +4635,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         new(taskQueue)
         {
             MaxCachedWorkflows = 0,
-            MaxConcurrentWorkflowTaskPolls = 1,
+            MaxConcurrentWorkflowTaskPolls = new PollerBehavior.SimpleMaximum(1),
         });
     }
 

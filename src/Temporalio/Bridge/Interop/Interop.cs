@@ -683,61 +683,7 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint32_t")]
         public uint initial;
     }
-
-    internal unsafe partial struct PollerBehavior
-    {
-        public PollerBehavior_Tag tag;
-
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L581_C3")]
-        public _Anonymous_e__Union Anonymous;
-
-        internal ref uint simple_maximum
-        {
-            get
-            {
-                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
-                {
-                    return ref pField->simple_maximum;
-                }
-            }
-        }
-
-        internal ref PollerBehaviorAutoscaling autoscaling
-        {
-            get
-            {
-                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
-                {
-                    return ref pField->autoscaling;
-                }
-            }
-        }
-
-        [StructLayout(LayoutKind.Explicit)]
-        internal unsafe partial struct _Anonymous_e__Union
-        {
-            [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L582_C5")]
-            public _Anonymous1_e__Struct Anonymous1;
-
-            [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L586_C5")]
-            public _Anonymous2_e__Struct Anonymous2;
-
-            internal partial struct _Anonymous1_e__Struct
-            {
-                [NativeTypeName("uint32_t")]
-                public uint simple_maximum;
-            }
-
-            internal partial struct _Anonymous2_e__Struct
-            {
-                [NativeTypeName("struct PollerBehaviorAutoscaling")]
-                public PollerBehaviorAutoscaling autoscaling;
-            }
-        }
-    }
-
+    
     internal partial struct FixedSizeSlotSupplier
     {
         [NativeTypeName("uintptr_t")]
@@ -1058,6 +1004,33 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("size_t")]
         public UIntPtr size;
     }
+    
+        internal unsafe partial struct PollerBehavior
+    {
+        [NativeTypeName("const struct PollerAutoscaling *")]
+        public PollerAutoscaling* autoscaling;
+
+        [NativeTypeName("const struct PollerSimpleMaximum *")]
+        public PollerSimpleMaximum* simple_maximum;
+    }
+
+    internal partial struct PollerSimpleMaximum
+    {
+        [NativeTypeName("uint32_t")]
+        public uint maximum;
+    }
+
+    internal partial struct PollerAutoscaling
+    {
+        [NativeTypeName("uint32_t")]
+        public uint minimum;
+
+        [NativeTypeName("uint32_t")]
+        public uint maximum;
+
+        [NativeTypeName("uint32_t")]
+        public uint initial;
+    }
 
     internal partial struct WorkerOptions
     {
@@ -1067,8 +1040,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef task_queue;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
+        [NativeTypeName("struct WorkerVersioningStrategy")]
+        public WorkerVersioningStrategy versioning_strategy;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef identity_override;
