@@ -31,18 +31,6 @@ namespace Temporalio.Worker.Tuning
             /// Gets maximum number of polls.
             /// </summary>
             public uint Maximum { get; }
-
-            // /// <summary>
-            // /// Converts this poller behavior to a bridge poller behavior.
-            // /// </summary>
-            // /// <returns>Returns the bridge PollerBehavior.</returns>
-            // public Bridge.Interop.PollerBehavior ToBridge()
-            // {
-            //     return new Bridge.PollerBehaviorSimpleMaximum
-            //     {
-            //         Maximum = Maximum,
-            //     };
-            // }
         }
 
         /// <summary>
@@ -80,20 +68,6 @@ namespace Temporalio.Worker.Tuning
             /// between `minimum` and `maximum`.
             /// </summary>
             public uint Initial { get; }
-
-            // /// <summary>
-            // /// Converts this poller behavior to a bridge poller behavior.
-            // /// </summary>
-            // /// <returns>Returns Bridge PollerBehavior.</returns>
-            // public Bridge.Interop.PollerBehavior ToBridge()
-            // {
-            //     return new Bridge.PollerBehaviorAutoscaling
-            //     {
-            //         Minimum = Minimum,
-            //         Maximum = Maximum,
-            //         Initial = Initial,
-            //     };
-            // }
         }
     }
 }

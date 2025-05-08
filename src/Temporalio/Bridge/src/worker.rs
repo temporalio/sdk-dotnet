@@ -11,7 +11,6 @@ use temporal_sdk_core::replay::ReplayWorkerInput;
 use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollError;
 use temporal_sdk_core_api::errors::WorkflowErrorType;
-use temporal_sdk_core_api::worker::PollerBehavior;
 use temporal_sdk_core_api::worker::SlotInfoTrait;
 use temporal_sdk_core_api::worker::SlotKind;
 use temporal_sdk_core_api::worker::SlotMarkUsedContext;
@@ -66,26 +65,32 @@ pub struct PollerAutoscaling {
     pub initial: usize,
 }
 
-/// Only one of simple_maximum and autoscaling can be present.
+// Only one of simple_maximum and autoscaling can be present.
 #[repr(C)]
 pub struct PollerBehavior {
     simple_maximum: *const PollerSimpleMaximum,
     autoscaling: *const PollerAutoscaling,
 }
 
-impl From<PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior {
-    fn from(value: PollerBehavior) -> Self {
-        match value {
-            PollerBehavior::SimpleMaximum(simple) => {
-                temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum(simple.simple_maximum)
+impl TryFrom<&PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior {
+    type Error = anyhow::Error;
+    fn try_from(value: &PollerBehavior) -> Result<Self, Self::Error> {
+        if !value.simple_maximum.is_null() && !value.autoscaling.is_null() {
+            bail!("simple_maximum and autoscaling cannot both be non-null values");
+        }
+        println!("value.simple_maximum: {:?} \n\t{:?}", value.simple_maximum, value.simple_maximum.is_null());
+        println!("value.autoscaling: {:?} \n\t{:?}", value.autoscaling, value.autoscaling.is_null());
+        unsafe {
+            if !value.simple_maximum.is_null() {
+                println!("hi");
+                return Ok(temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum((*value.simple_maximum).simple_maximum));
             }
-            PollerBehavior::Autoscaling(auto) => {
-                temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
-                    minimum: auto.minimum,
-                    maximum: auto.maximum,
-                    initial: auto.initial,
-                }
-            }
+            println!("hi2");
+            return Ok(temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
+                minimum: (*value.autoscaling).minimum,
+                maximum: (*value.autoscaling).maximum,
+                initial: (*value.autoscaling).initial,
+            })
         }
     }
 }
@@ -931,9 +936,10 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             // auto-cancel-activity behavior or shutdown will not occur, so we
             // always set it even if 0.
             .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
-            .workflow_task_poller_behavior(opt.max_concurrent_workflow_task_polls)
+            // TODO: opt.max_concurrent_workflow_task_polls is the wrong type here
+            .workflow_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.max_concurrent_workflow_task_polls)?)
             .nonsticky_to_sticky_poll_ratio(opt.nonsticky_to_sticky_poll_ratio)
-            .activity_task_poller_behavior(opt.max_concurrent_activity_task_polls)
+            .activity_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.max_concurrent_activity_task_polls)?)
             .workflow_failure_errors(if opt.nondeterminism_as_workflow_fail {
                 HashSet::from([WorkflowErrorType::Nondeterminism])
             } else {

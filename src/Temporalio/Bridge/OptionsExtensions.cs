@@ -16,7 +16,6 @@ namespace Temporalio.Bridge
     internal static class OptionsExtensions
     {
         private static readonly ByteArrayRef ClientName = ByteArrayRef.FromUTF8("temporal-dotnet");
-
         private static readonly ByteArrayRef ClientVersion = ByteArrayRef.FromUTF8(
             Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "<unknown>");
 
@@ -75,7 +74,6 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("OpenTelemetry URL is required");
             }
-
             Interop.OpenTelemetryMetricTemporality temporality;
             switch (options.MetricTemporality)
             {
@@ -88,7 +86,6 @@ namespace Temporalio.Bridge
                 default:
                     throw new ArgumentException("Unrecognized temporality");
             }
-
             Interop.OpenTelemetryProtocol protocol;
             switch (options.Protocol)
             {
@@ -101,7 +98,6 @@ namespace Temporalio.Bridge
                 default:
                     throw new ArgumentException("Unrecognized protocol");
             }
-
             return new Interop.OpenTelemetryOptions()
             {
                 url = scope.ByteArray(options.Url.ToString()),
@@ -132,7 +128,6 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("Prometheus options must have bind address");
             }
-
             return new Interop.PrometheusOptions()
             {
                 bind_address = scope.ByteArray(options.BindAddress),
@@ -158,7 +153,6 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("Logging filter string is required");
             }
-
             return new Interop.LoggingOptions()
             {
                 filter = scope.ByteArray(options.Filter.FilterString),
@@ -187,12 +181,10 @@ namespace Temporalio.Bridge
                     throw new ArgumentException(
                         "Cannot have Prometheus and OpenTelemetry/CustomMetricMeter metrics options");
                 }
-
                 if (string.IsNullOrEmpty(options.Prometheus.BindAddress))
                 {
                     throw new ArgumentException("Prometheus options must have bind address");
                 }
-
                 prometheus = scope.Pointer(options.Prometheus.ToInteropOptions(scope));
             }
             else if (options.OpenTelemetry != null)
@@ -202,7 +194,6 @@ namespace Temporalio.Bridge
                     throw new ArgumentException(
                         "Cannot have OpenTelemetry and CustomMetricMeter metrics options");
                 }
-
                 openTelemetry = scope.Pointer(options.OpenTelemetry.ToInteropOptions(scope));
             }
             else if (options.CustomMetricMeter != null)
@@ -216,7 +207,6 @@ namespace Temporalio.Bridge
                 throw new ArgumentException(
                     "Must have either Prometheus or OpenTelemetry metrics options");
             }
-
             // WARNING: It is important that nothing after this point throws, because we have
             // allocated a pointer for the custom meter which can only be freed on the Rust side
             return new Interop.MetricsOptions()
@@ -252,7 +242,6 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("Identity missing from options.");
             }
-
             var scheme = options.Tls == null ? "http" : "https";
             return new Interop.ClientOptions()
             {
@@ -297,7 +286,6 @@ namespace Temporalio.Bridge
                 throw new ArgumentException(
                     "Client cert and private key must both be present or neither");
             }
-
             return new Interop.ClientTlsOptions()
             {
                 server_root_ca_cert = scope.ByteArray(options.ServerRootCACert),
@@ -383,8 +371,10 @@ namespace Temporalio.Bridge
             var args = options.DevServerOptions.ExtraArgs;
             if (options.SearchAttributes is { } attrs && attrs.Count > 0)
             {
-                args = attrs.SelectMany(v => new[] { "--search-attribute", $"{v.Name}={v.ValueType}" })
-                    .Concat(args ?? Enumerable.Empty<string>()).ToArray();
+                args = attrs.
+                    SelectMany(v => new[] { "--search-attribute", $"{v.Name}={v.ValueType}" }).
+                    Concat(args ?? Enumerable.Empty<string>()).
+                    ToArray();
             }
 
             return new Interop.DevServerOptions()
@@ -429,7 +419,6 @@ namespace Temporalio.Bridge
                 throw new InvalidOperationException(
                     "TargetHost can only specify empty, localhost, or 127.0.0.1 host");
             }
-
             return new()
             {
                 existing_path = scope.ByteArray(options.TestServer.ExistingPath),
@@ -469,11 +458,10 @@ namespace Temporalio.Bridge
             if (buildId == null)
             {
                 var entryAssembly = Assembly.GetEntryAssembly() ??
-                                    throw new ArgumentException("Unable to get assembly manifest ID for build ID");
+                    throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
                 buildIdAutoDetermined = true;
             }
-
             Interop.WorkerVersioningStrategy versioningStrategy;
             if (options.DeploymentOptions != null)
             {
@@ -484,14 +472,11 @@ namespace Temporalio.Bridge
 #pragma warning disable 0618
                 if (options.UseWorkerVersioning)
                 {
-                    throw new ArgumentException(
-                        "DeploymentOptions and UseWorkerVersioning cannot be used together in worker options");
+                    throw new ArgumentException("DeploymentOptions and UseWorkerVersioning cannot be used together in worker options");
                 }
-
                 if (options.BuildId != null)
                 {
-                    throw new ArgumentException(
-                        "DeploymentOptions and BuildId cannot be used together in worker options");
+                    throw new ArgumentException("DeploymentOptions and BuildId cannot be used together in worker options");
                 }
 #pragma warning restore 0618
                 // Assign default build ID if not provided
@@ -503,8 +488,7 @@ namespace Temporalio.Bridge
                         version = new()
                         {
                             build_id = scope.ByteArray(options.DeploymentOptions.Version.BuildId),
-                            deployment_name =
-                                scope.ByteArray(options.DeploymentOptions.Version.DeploymentName),
+                            deployment_name = scope.ByteArray(options.DeploymentOptions.Version.DeploymentName),
                         },
                         default_versioning_behavior = (int)options.DeploymentOptions.DefaultVersioningBehavior,
                         use_worker_versioning = (byte)(options.DeploymentOptions.UseWorkerVersioning ? 1 : 0),
@@ -519,11 +503,13 @@ namespace Temporalio.Bridge
                 {
                     throw new ArgumentException("BuildId must be explicitly set when UseWorkerVersioning is true");
                 }
-
                 versioningStrategy = new()
                 {
                     tag = Interop.WorkerVersioningStrategy_Tag.LegacyBuildIdBased,
-                    legacy_build_id_based = new() { build_id = scope.ByteArray(buildId), },
+                    legacy_build_id_based = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
                 };
             }
             else
@@ -531,10 +517,12 @@ namespace Temporalio.Bridge
                 versioningStrategy = new()
                 {
                     tag = Interop.WorkerVersioningStrategy_Tag.None,
-                    none = new() { build_id = scope.ByteArray(buildId), },
+                    none = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
                 };
             }
-
             // We have to disable remote activities if a user asks _or_ if we are not running an
             // activity worker at all. Otherwise shutdown will not proceed properly.
             var noRemoteActivities = options.LocalActivityWorkerOnly || options.Activities.Count == 0;
@@ -557,7 +545,6 @@ namespace Temporalio.Bridge
                         "MaxConcurrentActivities, or MaxConcurrentLocalActivities.");
                 }
             }
-
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -600,25 +587,24 @@ namespace Temporalio.Bridge
             if (buildId == null)
             {
                 var entryAssembly = Assembly.GetEntryAssembly() ??
-                                    throw new ArgumentException("Unable to get assembly manifest ID for build ID");
+                    throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
-
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),
                 task_queue = scope.ByteArray(options.TaskQueue),
-                versioning_strategy =
-                    new()
+                versioning_strategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.None,
+                    none = new()
                     {
-                        tag = Interop.WorkerVersioningStrategy_Tag.None,
-                        none = new() { build_id = scope.ByteArray(buildId), },
+                        build_id = scope.ByteArray(buildId),
                     },
+                },
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
-                tuner =
-                    Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1)
-                        .ToInteropTuner(scope, options.LoggerFactory),
+                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope, options.LoggerFactory),
                 no_remote_activities = 1,
                 sticky_queue_schedule_to_start_timeout_millis = 1000,
                 max_heartbeat_throttle_interval_millis = 1000,
@@ -650,7 +636,8 @@ namespace Temporalio.Bridge
             Temporalio.Worker.Tuning.ResourceBasedTunerOptions? lastTunerOptions = null;
             Temporalio.Worker.Tuning.SlotSupplier[] suppliers =
             {
-                tuner.WorkflowTaskSlotSupplier, tuner.ActivityTaskSlotSupplier, tuner.LocalActivitySlotSupplier,
+                tuner.WorkflowTaskSlotSupplier, tuner.ActivityTaskSlotSupplier,
+                tuner.LocalActivitySlotSupplier,
             };
             foreach (var supplier in suppliers)
             {
@@ -689,7 +676,6 @@ namespace Temporalio.Bridge
                     throw new ArgumentException(
                         "FixedSizeSlotSupplier must have at least one slot");
                 }
-
                 return new()
                 {
                     tag = Interop.SlotSupplier_Tag.FixedSize,
@@ -748,8 +734,11 @@ namespace Temporalio.Bridge
 
         private static string[] AllNonDeterminismFailureTypeWorkflows(
             IList<Workflows.WorkflowDefinition> workflows) =>
-            workflows.Where(w => AnyNonDeterminismFailureTypes(w.FailureExceptionTypes)).Select(w =>
-                w.Name ?? throw new ArgumentException("Dynamic workflows cannot trap non-determinism")).ToArray();
+            workflows.
+                Where(w => AnyNonDeterminismFailureTypes(w.FailureExceptionTypes)).
+                Select(w =>
+                    w.Name ?? throw new ArgumentException("Dynamic workflows cannot trap non-determinism")).
+                ToArray();
 
         private static Interop.PollerBehavior ToInteropPollerBehavior(
             this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior)

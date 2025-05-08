@@ -560,25 +560,25 @@ typedef struct TunerHolder {
   struct SlotSupplier local_activity_slot_supplier;
 } TunerHolder;
 
+typedef struct PollerSimpleMaximum {
+  uintptr_t simple_maximum;
+} PollerSimpleMaximum;
+
+typedef struct PollerAutoscaling {
+  uintptr_t minimum;
+  uintptr_t maximum;
+  uintptr_t initial;
+} PollerAutoscaling;
+
+typedef struct PollerBehavior {
+  const struct PollerSimpleMaximum *simple_maximum;
+  const struct PollerAutoscaling *autoscaling;
+} PollerBehavior;
+
 typedef struct ByteArrayRefArray {
   const struct ByteArrayRef *data;
   size_t size;
 } ByteArrayRefArray;
-
-typedef struct PollerBehavior {
-  const struct PollerAutoscaling *autoscaling;
-  const struct PollerSimpleMaximum *simple_maximum;
-};
-
-typedef struct PollerSimpleMaximum {
-  uint32_t maximum;
-};
-
-typedef struct PollerAutoscaling {
-  uint32_t minimum;
-  uint32_t maximum;
-  uint32_t initial;
-} PollerAutoscaling;
 
 typedef struct WorkerOptions {
   struct ByteArrayRef namespace_;

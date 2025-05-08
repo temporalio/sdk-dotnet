@@ -7319,6 +7319,66 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions().AddAllActivities<WorkflowUsingPriorities>(null));
     }
 
+    [Fact]
+    public async Task AutoscallingPollingWorker()
+    {
+        await ExecuteWorkerAsync<WaitOnSignalWorkflow>(
+        async worker =>
+        {
+            var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
+            var client = await TemporalClient.ConnectAsync(
+                new()
+                {
+                    TargetHost = Client.Connection.Options.TargetHost,
+                    Namespace = Client.Options.Namespace,
+                    Runtime = new(
+                        new() { Telemetry = new() { Metrics = new() { Prometheus = new(promAddr) } } }),
+                });
+            await client.WorkflowService.GetSystemInfoAsync(new());
+
+            // Give pollers a beat to start
+            await Task.Delay(TimeSpan.FromMilliseconds(300));
+
+            using var httpClient = new HttpClient();
+            var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
+            var body = await resp.Content.ReadAsStringAsync();
+            var bodyLines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+            var matches = bodyLines.Where(l => l.Contains("temporal_num_pollers")).ToList();
+            var activityPollers = matches.Where(l => l.Contains("activity_task")).ToList();
+            Assert.Single(activityPollers, "Should have exactly one activity poller metric");
+            Assert.True(activityPollers[0].EndsWith('2'), "Activity poller count should be 2");
+            var workflowPollers = matches.Where(l => l.Contains("workflow_task")).ToList();
+            // Should have exactly two workflow poller metrics (sticky and non-sticky)
+            Assert.Equal(2, workflowPollers.Count);
+
+            // There's sticky & non-sticky pollers, and they may have a count of 1 or 2 depending on initialization timing
+            Assert.True(
+                workflowPollers[0].EndsWith('2') || workflowPollers[0].EndsWith('1'),
+                "First workflow poller count should be 1 or 2");
+            Assert.True(
+                workflowPollers[1].EndsWith('2') || workflowPollers[1].EndsWith('1'),
+                "Second workflow poller count should be 1 or 2");
+
+            // Run multiple workflow instances concurrently
+            var workflowTasks = Enumerable.Range(0, 20).Select(async _ =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (WaitOnSignalWorkflow wf) => wf.RunAsync(),
+                    new($"resource-based-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await handle.SignalAsync(wf => wf.CompleteAsync());
+                await handle.GetResultAsync();
+            });
+
+            await Task.WhenAll(workflowTasks);
+        },
+        new($"tq-{Guid.NewGuid()}")
+        {
+            MaxConcurrentWorkflowTaskPolls = new PollerBehavior.Autoscaling(initial: 2),
+            MaxConcurrentActivityTaskPolls = new PollerBehavior.Autoscaling(initial: 2),
+        });
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
