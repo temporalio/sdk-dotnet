@@ -34,7 +34,7 @@ namespace Temporalio.Common
         /// <summary>
         /// Gets the default Priority instance.
         /// </summary>
-        public static Priority Default => new();
+        public static Priority Default { get; } = new();
 
         /// <summary>
         /// Gets the priority key, which is a positive integer from 1 to n, where smaller integers
