@@ -175,10 +175,13 @@ namespace Temporalio.Extensions.Hosting
             this ITemporalWorkerServiceOptionsBuilder builder,
             bool disallowDuplicates = false)
         {
-            // To ensure the user isn't accidentally registering a duplicate task queue + build ID
+            // To ensure the user isn't accidentally registering a duplicate task queue + version
             // worker, we check here that there aren't duplicate options
+#pragma warning disable 0618
+            var version = builder.BuildId ?? builder.DeploymentOptions?.Version?.ToCanonicalString();
+#pragma warning restore 0618
             var optionsName = TemporalWorkerServiceOptions.GetUniqueOptionsName(
-                    builder.TaskQueue, builder.BuildId);
+                    builder.TaskQueue, version);
             if (disallowDuplicates)
             {
                 var any = builder.Services.Any(s =>
@@ -202,7 +205,7 @@ namespace Temporalio.Extensions.Hosting
                 if (any)
                 {
                     throw new InvalidOperationException(
-                        $"Worker service for task queue '{builder.TaskQueue}' and build ID '{builder.BuildId ?? "<unset>"}' already on collection");
+                        $"Worker service for task queue '{builder.TaskQueue}' and version '{version ?? "<unset>"}' already on collection");
                 }
             }
 

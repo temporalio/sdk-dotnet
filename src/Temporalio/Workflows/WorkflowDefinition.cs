@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Temporalio.Common;
 using Temporalio.Runtime;
 
 namespace Temporalio.Workflows
@@ -28,7 +29,9 @@ namespace Temporalio.Workflows
             IReadOnlyDictionary<string, WorkflowQueryDefinition> queries,
             WorkflowQueryDefinition? dynamicQuery,
             IReadOnlyDictionary<string, WorkflowUpdateDefinition> updates,
-            WorkflowUpdateDefinition? dynamicUpdate)
+            WorkflowUpdateDefinition? dynamicUpdate,
+            VersioningBehavior? versioningBehavior,
+            Func<object?, WorkflowDefinitionOptions>? dynamicOptionsMethod)
         {
             Name = name;
             Type = type;
@@ -41,6 +44,8 @@ namespace Temporalio.Workflows
             DynamicQuery = dynamicQuery;
             Updates = updates;
             DynamicUpdate = dynamicUpdate;
+            VersioningBehavior = versioningBehavior;
+            DynamicOptionsGetter = dynamicOptionsMethod;
         }
 
         /// <summary>
@@ -105,6 +110,16 @@ namespace Temporalio.Workflows
         public Type[]? FailureExceptionTypes { get; private init; }
 
         /// <summary>
+        /// Gets the versioning behavior.
+        /// </summary>
+        public VersioningBehavior? VersioningBehavior { get; private init; }
+
+        /// <summary>
+        /// Gets the dynamic options method.
+        /// </summary>
+        public Func<object?, WorkflowDefinitionOptions>? DynamicOptionsGetter { get; private init; }
+
+        /// <summary>
         /// Create a workflow definition for the given type or fail. The result is cached by type.
         /// </summary>
         /// <typeparam name="T">Type to get definition for.</typeparam>
@@ -164,6 +179,8 @@ namespace Temporalio.Workflows
             {
                 errs.Add($"{type} has generic type arguments");
             }
+
+            var versioningBehavior = attr.VersioningBehavior;
 
             // Check constructors. We intentionally fetch non-public too to make sure the init
             // attribute isn't set on them.
@@ -236,6 +253,7 @@ namespace Temporalio.Workflows
             // Find and validate run, signal, query, and update methods. We intentionally fetch
             // non-public too to make sure attributes aren't set on them.
             MethodInfo? runMethod = null;
+            Func<object?, WorkflowDefinitionOptions>? dynamicOptionsMethod = null;
             var signals = new Dictionary<string, WorkflowSignalDefinition>();
             WorkflowSignalDefinition? dynamicSignal = null;
             var queries = new Dictionary<string, WorkflowQueryDefinition>();
@@ -285,6 +303,35 @@ namespace Temporalio.Workflows
                     {
                         runMethod = method;
                     }
+                }
+                if (method.IsDefined(typeof(WorkflowDynamicOptionsAttribute), false))
+                {
+                    if (!method.IsPublic)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} must be public");
+                    }
+                    if (method.IsStatic)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} cannot be static");
+                    }
+                    if (method.ReturnType != typeof(WorkflowDefinitionOptions))
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} must return WorkflowDefinitionOptions");
+                    }
+                    if (name != null)
+                    {
+                        throw new ArgumentException("WorkflowDynamicOptions can only be used in dynamic workflows");
+                    }
+                    var parameters = method.GetParameters();
+                    if (parameters.Length != 0)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} must take no parameters");
+                    }
+                    if (dynamicOptionsMethod != null)
+                    {
+                        throw new ArgumentException($"WorkflowDynamicOptions method {method} cannot be used more than once");
+                    }
+                    dynamicOptionsMethod = instance => (WorkflowDefinitionOptions)method.Invoke(instance, null)!;
                 }
                 if (method.IsDefined(typeof(WorkflowSignalAttribute), false))
                 {
@@ -451,7 +498,9 @@ namespace Temporalio.Workflows
                 queries: queries,
                 dynamicQuery: dynamicQuery,
                 updates: updates,
-                dynamicUpdate: dynamicUpdate);
+                dynamicUpdate: dynamicUpdate,
+                versioningBehavior: versioningBehavior,
+                dynamicOptionsMethod: dynamicOptionsMethod);
         }
 
         /// <summary>

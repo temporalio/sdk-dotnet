@@ -107,6 +107,11 @@ namespace Temporalio.Workflows
         public bool DisableEagerActivityExecution { get; set; }
 
         /// <summary>
+        /// Gets or sets the priority that will be used when executing the activity.
+        /// </summary>
+        public Priority? Priority { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

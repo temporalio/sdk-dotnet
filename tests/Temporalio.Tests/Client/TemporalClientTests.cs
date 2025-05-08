@@ -114,7 +114,7 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         var sortedActualCalls = actualCalls.Where(c => !skip.Contains(c)).ToList();
         sortedActualCalls.Sort();
         expectedCalls.Sort();
-        Assert.Equal(expectedCalls, actualCalls);
+        Assert.Equal(expectedCalls, sortedActualCalls);
     }
 
     private class CaptureRpcCallsMeter : ICustomMetricMeter

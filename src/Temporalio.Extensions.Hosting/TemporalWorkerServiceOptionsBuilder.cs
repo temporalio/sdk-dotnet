@@ -1,4 +1,6 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
+using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Hosting
 {
@@ -14,7 +16,7 @@ namespace Temporalio.Extensions.Hosting
         /// <param name="taskQueue">Task queue for the worker.</param>
         /// <param name="services">Service collection being configured.</param>
         public TemporalWorkerServiceOptionsBuilder(string taskQueue, IServiceCollection services)
-            : this(taskQueue, null, services)
+                    : this(taskQueue, (string?)null, services)
         {
         }
 
@@ -28,7 +30,23 @@ namespace Temporalio.Extensions.Hosting
         public TemporalWorkerServiceOptionsBuilder(string taskQueue, string? buildId, IServiceCollection services)
         {
             TaskQueue = taskQueue;
+#pragma warning disable 0618
             BuildId = buildId;
+#pragma warning restore 0618
+            Services = services;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalWorkerServiceOptionsBuilder" />
+        /// class.
+        /// </summary>
+        /// <param name="taskQueue">Task queue for the worker.</param>
+        /// <param name="deploymentOptions">Deployment options for the worker.</param>
+        /// <param name="services">Service collection being configured.</param>
+        public TemporalWorkerServiceOptionsBuilder(string taskQueue, WorkerDeploymentOptions? deploymentOptions, IServiceCollection services)
+        {
+            TaskQueue = taskQueue;
+            DeploymentOptions = deploymentOptions;
             Services = services;
         }
 
@@ -36,7 +54,11 @@ namespace Temporalio.Extensions.Hosting
         public string TaskQueue { get; private init; }
 
         /// <inheritdoc />
+        [Obsolete("Use DeploymentOptions instead")]
         public string? BuildId { get; private init; }
+
+        /// <inheritdoc />
+        public WorkerDeploymentOptions? DeploymentOptions { get; private init; }
 
         /// <inheritdoc />
         public IServiceCollection Services { get; private init; }

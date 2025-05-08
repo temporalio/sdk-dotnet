@@ -32,6 +32,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateWorkflowRule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateWorkflowRuleResponse> CreateWorkflowRuleAsync(CreateWorkflowRuleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateWorkflowRule", req, CreateWorkflowRuleResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke DeleteSchedule.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -73,6 +84,17 @@ namespace Temporalio.Client
         public Task<DeleteWorkflowExecutionResponse> DeleteWorkflowExecutionAsync(DeleteWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DeleteWorkflowExecution", req, DeleteWorkflowExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteWorkflowRule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteWorkflowRuleResponse> DeleteWorkflowRuleAsync(DeleteWorkflowRuleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteWorkflowRule", req, DeleteWorkflowRuleResponse.Parser, options);
         }
 
         /// <summary>
@@ -172,6 +194,17 @@ namespace Temporalio.Client
         public Task<DescribeWorkflowExecutionResponse> DescribeWorkflowExecutionAsync(DescribeWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DescribeWorkflowExecution", req, DescribeWorkflowExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DescribeWorkflowRule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DescribeWorkflowRuleResponse> DescribeWorkflowRuleAsync(DescribeWorkflowRuleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DescribeWorkflowRule", req, DescribeWorkflowRuleResponse.Parser, options);
         }
 
         /// <summary>
@@ -414,6 +447,17 @@ namespace Temporalio.Client
         public Task<ListWorkflowExecutionsResponse> ListWorkflowExecutionsAsync(ListWorkflowExecutionsRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("ListWorkflowExecutions", req, ListWorkflowExecutionsResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke ListWorkflowRules.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ListWorkflowRulesResponse> ListWorkflowRulesAsync(ListWorkflowRulesRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ListWorkflowRules", req, ListWorkflowRulesResponse.Parser, options);
         }
 
         /// <summary>
@@ -810,6 +854,17 @@ namespace Temporalio.Client
         public Task<TerminateWorkflowExecutionResponse> TerminateWorkflowExecutionAsync(TerminateWorkflowExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("TerminateWorkflowExecution", req, TerminateWorkflowExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke TriggerWorkflowRule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<TriggerWorkflowRuleResponse> TriggerWorkflowRuleAsync(TriggerWorkflowRuleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("TriggerWorkflowRule", req, TriggerWorkflowRuleResponse.Parser, options);
         }
 
         /// <summary>

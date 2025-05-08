@@ -2,6 +2,7 @@
 
 namespace Temporalio.Tests.Workflows;
 
+using Temporalio.Common;
 using Temporalio.Converters;
 using Temporalio.Workflows;
 using Xunit;
@@ -244,6 +245,14 @@ public class WorkflowDefinitionTests
         AssertBad<Bad.BadHandlerNames>("Query handler name __enhanced_stack_trace cannot start with __enhanced_stack_trace");
         AssertBad<Bad.BadHandlerNames>("Update handler name __temporal_dumb_update cannot start with __temporal");
     }
+
+    [Fact]
+    public void NoDynamicOptionsOnNonDynamicWorkflow() =>
+        AssertBad<Bad.DynamicOptionsOnNonDynamicWorkflow>("can only be used in dynamic workflows");
+
+    [Fact]
+    public void NoDynamicOptionsMultiplySpecified() =>
+        AssertBad<Bad.DynamicOptionsMultiplySpecified>("cannot be used more than once");
 
     private static void AssertBad<T>(string errContains)
     {
@@ -563,6 +572,38 @@ public class WorkflowDefinitionTests
 
             [WorkflowUpdate("__temporal_dumb_update")]
             public Task UpdateAsync() => Task.CompletedTask;
+        }
+
+        [Workflow]
+        public class DynamicOptionsOnNonDynamicWorkflow
+        {
+            [WorkflowRun]
+            public async Task<string> RunAsync(IRawValue[] args) => "dynamic";
+
+            [WorkflowDynamicOptions]
+            public WorkflowDefinitionOptions DynamicOptions() => new()
+            {
+                VersioningBehavior = VersioningBehavior.AutoUpgrade,
+            };
+        }
+
+        [Workflow(Dynamic = true)]
+        public class DynamicOptionsMultiplySpecified
+        {
+            [WorkflowRun]
+            public async Task<string> RunAsync(IRawValue[] args) => "dynamic";
+
+            [WorkflowDynamicOptions]
+            public WorkflowDefinitionOptions DynamicOptions() => new()
+            {
+                VersioningBehavior = VersioningBehavior.AutoUpgrade,
+            };
+
+            [WorkflowDynamicOptions]
+            public WorkflowDefinitionOptions DynamicOptions2() => new()
+            {
+                VersioningBehavior = VersioningBehavior.AutoUpgrade,
+            };
         }
     }
 

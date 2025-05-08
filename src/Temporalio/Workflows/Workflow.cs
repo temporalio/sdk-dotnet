@@ -60,6 +60,18 @@ namespace Temporalio.Workflows
         public static string CurrentBuildId => Context.CurrentBuildId;
 
         /// <summary>
+        /// Gets the current deployment version of the worker which executed the current Workflow
+        /// Task.
+        /// </summary>
+        /// <remarks>
+        /// May be unset if the task was completed by a worker without a deployment version or build
+        /// id. If this worker is the one executing this task for the first time and has a
+        /// deployment version set, then its ID will be used. This value may change over the
+        /// lifetime of the workflow run, but is deterministic and safe to use for branching.
+        /// </remarks>
+        public static WorkerDeploymentVersion? CurrentDeploymentVersion => Context.CurrentDeploymentVersion;
+
+        /// <summary>
         /// Gets or sets the current details for this workflow that may appear in UI/CLI. Unlike
         /// static details set at start, this value can be updated throughout the life of the
         /// workflow. This can be in Temporal markdown format and can span multiple lines.

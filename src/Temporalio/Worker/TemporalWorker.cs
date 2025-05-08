@@ -97,7 +97,9 @@ namespace Temporalio.Worker
                                 throw new InvalidOperationException(
                                     $"Activity {activityType} is not registered on this worker," +
                                     $" no available activities."))
-                                .AssertValidActivity(activityType)));
+                                .AssertValidActivity(activityType),
+                    DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior,
+                    DeploymentOptions: options.DeploymentOptions));
             }
         }
 

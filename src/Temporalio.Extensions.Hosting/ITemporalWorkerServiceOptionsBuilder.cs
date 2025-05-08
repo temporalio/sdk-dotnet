@@ -1,4 +1,6 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
+using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Hosting
 {
@@ -16,8 +18,16 @@ namespace Temporalio.Extensions.Hosting
 
         /// <summary>
         /// Gets the build ID for this worker service.
+        /// Exclusive with DeploymentOptions.
         /// </summary>
+        [Obsolete("Use DeploymentOptions instead")]
         string? BuildId { get; }
+
+        /// <summary>
+        /// Gets the deployment options for this worker service.
+        /// Exclusive with BuildId.
+        /// </summary>
+        WorkerDeploymentOptions? DeploymentOptions { get; }
 
         /// <summary>
         /// Gets the service collection being configured.

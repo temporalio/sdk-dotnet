@@ -54,14 +54,20 @@ namespace Temporalio.Api.Enums.V1 {
             "SU9OX0NBTkNFTExBVElPTl9TVEFURV9TVUNDRUVERUQQAxItCilORVhVU19P",
             "UEVSQVRJT05fQ0FOQ0VMTEFUSU9OX1NUQVRFX0ZBSUxFRBAEEjAKLE5FWFVT",
             "X09QRVJBVElPTl9DQU5DRUxMQVRJT05fU1RBVEVfVElNRURfT1VUEAUSLgoq",
-            "TkVYVVNfT1BFUkFUSU9OX0NBTkNFTExBVElPTl9TVEFURV9CTE9DS0VEEAZC",
-            "gwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUILQ29tbW9uUHJvdG9QAVoh",
-            "Z28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxp",
-            "by5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIG",
-            "cHJvdG8z"));
+            "TkVYVVNfT1BFUkFUSU9OX0NBTkNFTExBVElPTl9TVEFURV9CTE9DS0VEEAYq",
+            "lwEKF1dvcmtmbG93UnVsZUFjdGlvblNjb3BlEioKJldPUktGTE9XX1JVTEVf",
+            "QUNUSU9OX1NDT1BFX1VOU1BFQ0lGSUVEEAASJwojV09SS0ZMT1dfUlVMRV9B",
+            "Q1RJT05fU0NPUEVfV09SS0ZMT1cQARInCiNXT1JLRkxPV19SVUxFX0FDVElP",
+            "Tl9TQ09QRV9BQ1RJVklUWRACKm0KGEFwcGxpY2F0aW9uRXJyb3JDYXRlZ29y",
+            "eRIqCiZBUFBMSUNBVElPTl9FUlJPUl9DQVRFR09SWV9VTlNQRUNJRklFRBAA",
+            "EiUKIUFQUExJQ0FUSU9OX0VSUk9SX0NBVEVHT1JZX0JFTklHThABQoMBChhp",
+            "by50ZW1wb3JhbC5hcGkuZW51bXMudjFCC0NvbW1vblByb3RvUAFaIWdvLnRl",
+            "bXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBp",
+            "LkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), typeof(global::Temporalio.Api.Enums.V1.CallbackState), typeof(global::Temporalio.Api.Enums.V1.PendingNexusOperationState), typeof(global::Temporalio.Api.Enums.V1.NexusOperationCancellationState), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), typeof(global::Temporalio.Api.Enums.V1.CallbackState), typeof(global::Temporalio.Api.Enums.V1.PendingNexusOperationState), typeof(global::Temporalio.Api.Enums.V1.NexusOperationCancellationState), typeof(global::Temporalio.Api.Enums.V1.WorkflowRuleActionScope), typeof(global::Temporalio.Api.Enums.V1.ApplicationErrorCategory), }, null, null));
     }
     #endregion
 
@@ -183,6 +189,29 @@ namespace Temporalio.Api.Enums.V1 {
     /// Cancellation request is blocked (eg: by circuit breaker).
     /// </summary>
     [pbr::OriginalName("NEXUS_OPERATION_CANCELLATION_STATE_BLOCKED")] Blocked = 6,
+  }
+
+  public enum WorkflowRuleActionScope {
+    /// <summary>
+    /// Default value, unspecified scope.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_RULE_ACTION_SCOPE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// The action will be applied to the entire workflow.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_RULE_ACTION_SCOPE_WORKFLOW")] Workflow = 1,
+    /// <summary>
+    /// The action will be applied to a specific activity.
+    /// </summary>
+    [pbr::OriginalName("WORKFLOW_RULE_ACTION_SCOPE_ACTIVITY")] Activity = 2,
+  }
+
+  public enum ApplicationErrorCategory {
+    [pbr::OriginalName("APPLICATION_ERROR_CATEGORY_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Expected application error with little/no severity.
+    /// </summary>
+    [pbr::OriginalName("APPLICATION_ERROR_CATEGORY_BENIGN")] Benign = 1,
   }
 
   #endregion

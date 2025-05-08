@@ -19,6 +19,7 @@ namespace Temporalio.Activities
     /// <param name="HeartbeatDetails">Details from the last heartbeat of the last attempt.</param>
     /// <param name="HeartbeatTimeout">Heartbeat timeout set by the caller.</param>
     /// <param name="IsLocal">Whether the activity is a local activity or not.</param>
+    /// <param name="Priority">The Priority of this activity.</param>
     /// <param name="ScheduleToCloseTimeout">Schedule to close timeout set by the caller.</param>
     /// <param name="ScheduledTime">When the activity was scheduled.</param>
     /// <param name="StartToCloseTimeout">Start to close timeout set by the caller.</param>
@@ -42,6 +43,7 @@ namespace Temporalio.Activities
         IReadOnlyCollection<Payload> HeartbeatDetails,
         TimeSpan? HeartbeatTimeout,
         bool IsLocal,
+        Temporalio.Common.Priority Priority,
         TimeSpan? ScheduleToCloseTimeout,
         DateTime ScheduledTime,
         TimeSpan? StartToCloseTimeout,

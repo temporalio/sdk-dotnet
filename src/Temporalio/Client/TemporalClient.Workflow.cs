@@ -782,6 +782,7 @@ namespace Temporalio.Client
                     UserMetadata = await dataConverter.ToUserMetadataAsync(
                         options.StaticSummary, options.StaticDetails).
                         ConfigureAwait(false),
+                    Priority = options.Priority?.ToProto(),
                 };
                 if (args.Count > 0)
                 {

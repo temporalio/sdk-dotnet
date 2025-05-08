@@ -53,15 +53,15 @@ namespace Temporalio.Extensions.Hosting
         /// Get an options name for the given task queue and build ID.
         /// </summary>
         /// <param name="taskQueue">Task queue.</param>
-        /// <param name="buildId">Build ID.</param>
+        /// <param name="version">Worker Deployment version or Build ID.</param>
         /// <returns>Unique string name for the options.</returns>
-        internal static string GetUniqueOptionsName(string taskQueue, string? buildId)
+        internal static string GetUniqueOptionsName(string taskQueue, string? version)
         {
-            if (buildId == null)
+            if (version == null)
             {
                 return taskQueue;
             }
-            return taskQueue + "!!__temporal__!!" + buildId;
+            return taskQueue + "!!__temporal__!!" + version;
         }
     }
 }
