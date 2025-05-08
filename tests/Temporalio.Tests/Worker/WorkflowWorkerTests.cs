@@ -7226,14 +7226,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_LocalActivityMissing()
     {
-        var err = await ExecuteWorkerAsync<LocalActivityMissingWorkflow, WorkflowHandle>(
+        await ExecuteWorkerAsync<LocalActivityMissingWorkflow>(
             async worker =>
             {
                 var handle = await Client.StartWorkflowAsync(
                     (LocalActivityMissingWorkflow wf) => wf.RunAsync(),
                     new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
                 await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered on this worker, available activities: DoSomething");
-                return handle;
             },
             new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingWorkflow>(null));
     }
@@ -7254,7 +7253,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_LocalActivityMissing_Dynamic()
     {
-        var err = await ExecuteWorkerAsync<LocalActivityMissingDynamicWorkflow>(
+        await ExecuteWorkerAsync<LocalActivityMissingDynamicWorkflow>(
             async worker =>
             {
                 var result = await Client.ExecuteWorkflowAsync(
@@ -7278,16 +7277,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteWorkflowAsync_LocalActivityMissing_NoActivities()
     {
-        var err = await ExecuteWorkerAsync<LocalActivityMissingNoActivitiesWorkflow, WorkflowHandle>(
+        await ExecuteWorkerAsync<LocalActivityMissingNoActivitiesWorkflow>(
             async worker =>
             {
                 var handle = await Client.StartWorkflowAsync(
                     (LocalActivityMissingNoActivitiesWorkflow wf) => wf.RunAsync(),
                     new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
                 await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered on this worker, no available activities.");
-                return handle;
-            },
-            new TemporalWorkerOptions());
+            });
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(
