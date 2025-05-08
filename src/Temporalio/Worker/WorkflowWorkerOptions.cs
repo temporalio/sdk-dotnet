@@ -23,5 +23,5 @@ namespace Temporalio.Worker
         Lazy<MetricMeter> RuntimeMetricMeter,
         IReadOnlyCollection<Type>? WorkerLevelFailureExceptionTypes,
         bool DisableEagerActivityExecution,
-        Action<string> AssertValidActivity);
+        Action<string> AssertValidLocalActivity);
 }

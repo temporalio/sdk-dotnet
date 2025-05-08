@@ -7232,7 +7232,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Client.StartWorkflowAsync(
                     (LocalActivityMissingWorkflow wf) => wf.RunAsync(),
                     new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
-                await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered");
+                await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered on this worker, available activities: DoSomething");
                 return handle;
             },
             new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingWorkflow>(null));
@@ -7263,6 +7263,31 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Equal("hello", result);
             },
             new TemporalWorkerOptions().AddAllActivities<LocalActivityMissingDynamicWorkflow>(null));
+    }
+
+    [Workflow]
+    public class LocalActivityMissingNoActivitiesWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string?> RunAsync()
+        {
+            return await Workflow.ExecuteLocalActivityAsync<string?>("invalid_activity", Array.Empty<object>(), new() { ScheduleToCloseTimeout = TimeSpan.FromHours(1) });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityMissing_NoActivities()
+    {
+        var err = await ExecuteWorkerAsync<LocalActivityMissingNoActivitiesWorkflow, WorkflowHandle>(
+            async worker =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (LocalActivityMissingNoActivitiesWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered on this worker, no available activities.");
+                return handle;
+            },
+            new TemporalWorkerOptions());
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(
