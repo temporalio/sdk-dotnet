@@ -988,6 +988,33 @@ namespace Temporalio.Bridge.Interop
         public UIntPtr size;
     }
 
+    internal unsafe partial struct PollerBehavior
+    {
+        [NativeTypeName("const struct PollerSimpleMaximum *")]
+        public PollerSimpleMaximum* simple_maximum;
+
+        [NativeTypeName("const struct PollerAutoscaling *")]
+        public PollerAutoscaling* autoscaling;
+    }
+
+    internal partial struct PollerSimpleMaximum
+    {
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr maximum;
+    }
+
+    internal partial struct PollerAutoscaling
+    {
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr minimum;
+
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr maximum;
+
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr initial;
+    }
+
     internal partial struct WorkerOptions
     {
         [NativeTypeName("struct ByteArrayRef")]
@@ -1027,13 +1054,13 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint64_t")]
         public ulong graceful_shutdown_period_millis;
 
-        [NativeTypeName("uint32_t")]
-        public uint max_concurrent_workflow_task_polls;
+        [NativeTypeName("struct PollerBehavior")]
+        public PollerBehavior max_concurrent_workflow_task_polls;
 
         public float nonsticky_to_sticky_poll_ratio;
 
-        [NativeTypeName("uint32_t")]
-        public uint max_concurrent_activity_task_polls;
+        [NativeTypeName("struct PollerBehavior")]
+        public PollerBehavior max_concurrent_activity_task_polls;
 
         [NativeTypeName("bool")]
         public byte nondeterminism_as_workflow_fail;

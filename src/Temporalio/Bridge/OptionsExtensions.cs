@@ -563,9 +563,9 @@ namespace Temporalio.Bridge
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
-                max_concurrent_workflow_task_polls = (uint)options.MaxConcurrentWorkflowTaskPolls,
+                max_concurrent_workflow_task_polls = options.MaxConcurrentWorkflowTaskPolls.ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
-                max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
+                max_concurrent_activity_task_polls = options.MaxConcurrentActivityTaskPolls.ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -611,9 +611,9 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                max_concurrent_workflow_task_polls = 1,
+                max_concurrent_workflow_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = 1,
-                max_concurrent_activity_task_polls = 1,
+                max_concurrent_activity_task_polls = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -738,5 +738,35 @@ namespace Temporalio.Bridge
                 Select(w =>
                     w.Name ?? throw new ArgumentException("Dynamic workflows cannot trap non-determinism")).
                 ToArray();
+
+        private static Interop.PollerBehavior ToInteropPollerBehavior(
+            this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior, Scope scope)
+        {
+            if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum simpleMax)
+            {
+                var max = new PollerSimpleMaximum { maximum = new UIntPtr(simpleMax.Maximum), };
+                unsafe
+                {
+                    return new Interop.PollerBehavior { simple_maximum = scope.Pointer(max), };
+                }
+            }
+            else if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.Autoscaling autoscaling)
+            {
+                var autoscale = new PollerAutoscaling
+                {
+                    minimum = new UIntPtr(autoscaling.Minimum),
+                    maximum = new UIntPtr(autoscaling.Maximum),
+                    initial = new UIntPtr(autoscaling.Initial),
+                };
+                unsafe
+                {
+                    return new Interop.PollerBehavior { autoscaling = scope.Pointer(autoscale), };
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"Unsupported poller behavior type: {pollerBehavior.GetType().Name}");
+            }
+        }
     }
 }
