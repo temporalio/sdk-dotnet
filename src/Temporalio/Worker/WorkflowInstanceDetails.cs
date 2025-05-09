@@ -27,6 +27,7 @@ namespace Temporalio.Worker
     /// <param name="RuntimeMetricMeter">Lazy runtime-level metric meter.</param>
     /// <param name="WorkerLevelFailureExceptionTypes">Failure exception types at worker level.</param>
     /// <param name="DisableEagerActivityExecution">Whether to disable eager at the worker level.</param>
+    /// <param name="AssertValidLocalActivity">Checks the validity of the local activity and throws if it is invalid.</param>
     internal record WorkflowInstanceDetails(
         string Namespace,
         string TaskQueue,
@@ -43,5 +44,6 @@ namespace Temporalio.Worker
         Action<WorkflowInstance, Exception?> OnTaskCompleted,
         Lazy<MetricMeter> RuntimeMetricMeter,
         IReadOnlyCollection<Type>? WorkerLevelFailureExceptionTypes,
-        bool DisableEagerActivityExecution);
+        bool DisableEagerActivityExecution,
+        Action<string> AssertValidLocalActivity);
 }

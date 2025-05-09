@@ -345,7 +345,8 @@ namespace Temporalio.Worker
                     OnTaskCompleted: options.OnTaskCompleted,
                     RuntimeMetricMeter: options.RuntimeMetricMeter,
                     WorkerLevelFailureExceptionTypes: options.WorkerLevelFailureExceptionTypes,
-                    DisableEagerActivityExecution: options.DisableEagerActivityExecution));
+                    DisableEagerActivityExecution: options.DisableEagerActivityExecution,
+                    AssertValidLocalActivity: options.AssertValidLocalActivity));
         }
     }
 }

@@ -209,6 +209,7 @@ namespace Temporalio.Worker
             TracingEventsEnabled = !details.DisableTracingEvents;
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
             disableEagerActivityExecution = details.DisableEagerActivityExecution;
+            AssertValidLocalActivity = details.AssertValidLocalActivity;
             definitionOptions = new()
             {
                 FailureExceptionTypes = Definition.FailureExceptionTypes,
@@ -374,6 +375,11 @@ namespace Temporalio.Worker
         /// Gets the workflow definition.
         /// </summary>
         internal WorkflowDefinition Definition { get; private init; }
+
+        /// <summary>
+        /// Gets the activity lookup function.
+        /// </summary>
+        internal Action<string> AssertValidLocalActivity { get; private init; }
 
         /// <inheritdoc/>
         public ContinueAsNewException CreateContinueAsNewException(
@@ -2118,6 +2124,8 @@ namespace Temporalio.Worker
                 {
                     throw new ArgumentException("Activity options must have StartToCloseTimeout or ScheduleToCloseTimeout");
                 }
+
+                instance.AssertValidLocalActivity(input.Activity);
 
                 // Get payload converter with context
                 var serializationContext = new ISerializationContext.Activity(

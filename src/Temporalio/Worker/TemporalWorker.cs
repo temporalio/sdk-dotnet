@@ -93,6 +93,12 @@ namespace Temporalio.Worker
                     RuntimeMetricMeter: MetricMeter,
                     WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
                     DisableEagerActivityExecution: options.DisableEagerActivityExecution,
+                    AssertValidLocalActivity: (activityType) => (activityWorker ??
+                                throw new InvalidOperationException(
+                                    $"Activity {activityType} is not registered on this worker," +
+                                    $" no available activities."))
+                                .AssertValidActivity(activityType),
+                    DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior,
                     DeploymentOptions: options.DeploymentOptions));
             }
         }

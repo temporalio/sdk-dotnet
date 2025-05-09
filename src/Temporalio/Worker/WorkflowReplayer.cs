@@ -175,6 +175,8 @@ namespace Temporalio.Worker
                             RuntimeMetricMeter: new(() => runtime.MetricMeter),
                             WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
                             DisableEagerActivityExecution: false,
+                            AssertValidLocalActivity: _ => { },
+                            DefaultVersioningBehavior: null,
                             DeploymentOptions: null),
                         (runId, removeFromCache) => SetResult(removeFromCache));
                 }
