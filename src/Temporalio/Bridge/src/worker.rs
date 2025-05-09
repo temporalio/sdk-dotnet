@@ -78,16 +78,16 @@ impl TryFrom<&PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior 
         if !value.simple_maximum.is_null() && !value.autoscaling.is_null() {
             bail!("simple_maximum and autoscaling cannot both be non-null values");
         }
-        unsafe {
-            if !value.simple_maximum.is_null() {
-                return Ok(temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum((*value.simple_maximum).simple_maximum));
-            }
+        if let Some(value) = unsafe { value.simple_maximum.as_ref() }{
+            return Ok(temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum(value.simple_maximum));
+        } else if let Some(value) = unsafe { value.autoscaling.as_ref() } {
             return Ok(temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
-                minimum: (*value.autoscaling).minimum,
-                maximum: (*value.autoscaling).maximum,
-                initial: (*value.autoscaling).initial,
-            })
+                minimum: value.minimum,
+                maximum: value.maximum,
+                initial: value.initial,
+            });
         }
+        bail!("simple_maximum and autoscaling cannot both be null values");
     }
 }
 
@@ -869,6 +869,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
 
     fn try_from(opt: &WorkerOptions) -> anyhow::Result<Self> {
         let converted_tuner: temporal_sdk_core::TunerHolder = (&opt.tuner).try_into()?;
+        println!("opt.max_concurrent_workflow_task_polls {:?} {:?}", opt.max_concurrent_activity_task_polls.autoscaling, opt.max_concurrent_activity_task_polls.simple_maximum);
         WorkerConfigBuilder::default()
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())

@@ -7319,6 +7319,28 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions().AddAllActivities<WorkflowUsingPriorities>(null));
     }
 
+    [Workflow]
+    public class WaitOnSignalWorkflowThenActivity
+    {
+        private bool complete;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            await Workflow.WaitConditionAsync(() => complete);
+            await Workflow.ExecuteActivityAsync(() => SomeActivity(), new()
+            {
+                StartToCloseTimeout = TimeSpan.FromSeconds(10),
+            });
+        }
+
+        [WorkflowSignal]
+        public async Task CompleteAsync() => complete = true;
+
+        [Activity]
+        public static string SomeActivity() => "activity-result";
+    }
+
     [Fact]
     public async Task AutoscallingPollingWorker()
     {
@@ -7338,25 +7360,22 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Runtime = runtime,
             });
 
-        await ExecuteWorkerAsync<WaitOnSignalWorkflow>(
+        await ExecuteWorkerAsync<WaitOnSignalWorkflowThenActivity>(
         async worker =>
         {
             await client.WorkflowService.GetSystemInfoAsync(new());
 
             // Give pollers a beat to start
-            await Task.Delay(TimeSpan.FromMilliseconds(10000));
+            await Task.Delay(TimeSpan.FromMilliseconds(300));
 
             using var httpClient = new HttpClient();
             var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
             var body = await resp.Content.ReadAsStringAsync();
-            Console.WriteLine("body: " + body);
             var bodyLines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
-            // Console.WriteLine("bodyLines: " + string.Join(", ", bodyLines));
             var matches = bodyLines.Where(l => l.Contains("temporal_num_pollers")).ToList();
-            // Console.WriteLine("matches: " + string.Join(", ", matches));
             var activityPollers = matches.Where(l => l.Contains("activity_task")).ToList();
-            Console.WriteLine("activityPollers: " + string.Join(", ", activityPollers));
-            Assert.Single(activityPollers, "Should have exactly one activity poller metric");
+
+            Assert.Single(activityPollers);
             Assert.True(activityPollers[0].EndsWith('2'), "Activity poller count should be 2");
             var workflowPollers = matches.Where(l => l.Contains("workflow_task")).ToList();
             // Should have exactly two workflow poller metrics (sticky and non-sticky)
@@ -7375,18 +7394,18 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 var handle = await client.StartWorkflowAsync(
                     (WaitOnSignalWorkflow wf) => wf.RunAsync(),
-                    new($"resource-based-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
                 await handle.SignalAsync(wf => wf.CompleteAsync());
-                await handle.GetResultAsync();
             });
 
             await Task.WhenAll(workflowTasks);
         },
-        new($"tq-{Guid.NewGuid()}")
+        new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
         {
             MaxConcurrentWorkflowTaskPolls = new PollerBehavior.Autoscaling(initial: 2),
             MaxConcurrentActivityTaskPolls = new PollerBehavior.Autoscaling(initial: 2),
-        });
+        }.AddAllActivities<WaitOnSignalWorkflowThenActivity>(null),
+        client);
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(
