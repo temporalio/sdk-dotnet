@@ -207,7 +207,7 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll workflow task requests we will
-        /// perform at a time on this worker's task queue. Default is SimpleMaximum 5.
+        /// perform at a time on this worker's task queue. Default is SimpleMaximum(5).
         /// </summary>
         public PollerBehavior MaxConcurrentWorkflowTaskPolls { get; set; } = new PollerBehavior.SimpleMaximum(5);
 
@@ -223,7 +223,7 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll activity task requests we will
-        /// perform at a time on this worker's task queue. Default is 5.
+        /// perform at a time on this worker's task queue. Default is SimpleMaximum(5).
         /// </summary>
         public PollerBehavior MaxConcurrentActivityTaskPolls { get; set; } = new PollerBehavior.SimpleMaximum(5);
 
