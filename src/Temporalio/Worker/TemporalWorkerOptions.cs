@@ -207,9 +207,11 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll workflow task requests we will
-        /// perform at a time on this worker's task queue. Default is SimpleMaximum(5).
+        /// perform at a time on this worker's task queue.
         /// </summary>
-        public PollerBehavior MaxConcurrentWorkflowTaskPolls { get; set; } = new PollerBehavior.SimpleMaximum(5);
+        /// <remarks>If set, will override any value set in <see cref="WorkflowTaskPollerBehavior"/>.</remarks>
+        // [Obsolete("Use WorkflowTaskPollerBehavior instead")]
+        public int? MaxConcurrentWorkflowTaskPolls { get; set; }
 
         /// <summary>
         /// Gets or sets the sticky poll ratio. <see cref="MaxConcurrentWorkflowTaskPolls" /> times
@@ -223,9 +225,21 @@ namespace Temporalio.Worker
 
         /// <summary>
         /// Gets or sets the maximum number of concurrent poll activity task requests we will
-        /// perform at a time on this worker's task queue. Default is SimpleMaximum(5).
+        /// perform at a time on this worker's task queue.
         /// </summary>
-        public PollerBehavior MaxConcurrentActivityTaskPolls { get; set; } = new PollerBehavior.SimpleMaximum(5);
+        /// <remarks>If set, will override any value set in <see cref="ActivityTaskPollerBehavior"/>.</remarks>
+        // [Obsolete("Use ActivityTaskPollerBehavior instead")]
+        public int? MaxConcurrentActivityTaskPolls { get; set; }
+
+        /// <summary>
+        /// Gets or sets the behavior of the workflow task poller. Default is SimpleMaximum(5).
+        /// </summary>
+        public PollerBehavior WorkflowTaskPollerBehavior { get; set; } = new PollerBehavior.SimpleMaximum(5);
+
+        /// <summary>
+        /// Gets or sets the behavior of the activity task poller. Default is SimpleMaximum(5).
+        /// </summary>
+        public PollerBehavior ActivityTaskPollerBehavior { get; set; } = new PollerBehavior.SimpleMaximum(5);
 
         /// <summary>
         /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will

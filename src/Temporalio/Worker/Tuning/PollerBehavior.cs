@@ -1,3 +1,5 @@
+using System;
+
 namespace Temporalio.Worker.Tuning
 {
     /// <summary>
@@ -22,15 +24,19 @@ namespace Temporalio.Worker.Tuning
             /// Initializes a new instance of the <see cref="PollerBehavior.SimpleMaximum"/> class.
             /// </summary>
             /// <param name="maximum">The maximum number of pollers at a time.</param>
-            public SimpleMaximum(uint maximum = 5)
+            public SimpleMaximum(int maximum)
             {
+                if (maximum < 0)
+                {
+                    throw new ArgumentException("Maximum must be >= 0");
+                }
                 Maximum = maximum;
             }
 
             /// <summary>
             /// Gets maximum number of polls.
             /// </summary>
-            public uint Maximum { get; }
+            public int Maximum { get; }
         }
 
         /// <summary>
@@ -46,8 +52,12 @@ namespace Temporalio.Worker.Tuning
             /// <param name="maximum">At most this many poll calls will ever be open at once. Must be >= `minimum`.</param>
             /// <param name="initial">This many polls will be attempted initially before scaling kicks in. Must be between
             /// `minimum` and `maximum`.</param>
-            public Autoscaling(uint minimum = 1, uint maximum = 100, uint initial = 5)
+            public Autoscaling(int minimum, int maximum, int initial)
             {
+                if (minimum < 0 || maximum < 0 || initial < 0)
+                {
+                    throw new ArgumentException("Minimum, maximum, and initial must be >= 0");
+                }
                 Minimum = minimum;
                 Maximum = maximum;
                 Initial = initial;
@@ -56,18 +66,18 @@ namespace Temporalio.Worker.Tuning
             /// <summary>
             /// Gets the least number of poll calls that will be attempted (assuming slots are available).
             /// </summary>
-            public uint Minimum { get; }
+            public int Minimum { get; }
 
             /// <summary>
             /// Gets the maximum number of poll calls that will ever be open at once. Must be >= `minimum`.
             /// </summary>
-            public uint Maximum { get; }
+            public int Maximum { get; }
 
             /// <summary>
             /// Gets the number of polls that will be attempted initially before scaling kicks in. Must be
             /// between `minimum` and `maximum`.
             /// </summary>
-            public uint Initial { get; }
+            public int Initial { get; }
         }
     }
 }

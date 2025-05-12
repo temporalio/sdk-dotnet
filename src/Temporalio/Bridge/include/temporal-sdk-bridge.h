@@ -594,9 +594,9 @@ typedef struct WorkerOptions {
   double max_activities_per_second;
   double max_task_queue_activities_per_second;
   uint64_t graceful_shutdown_period_millis;
-  struct PollerBehavior max_concurrent_workflow_task_polls;
+  struct PollerBehavior workflow_task_poller_behavior;
   float nonsticky_to_sticky_poll_ratio;
-  struct PollerBehavior max_concurrent_activity_task_polls;
+  struct PollerBehavior activity_task_poller_behavior;
   bool nondeterminism_as_workflow_fail;
   struct ByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
 } WorkerOptions;

@@ -4635,7 +4635,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         new(taskQueue)
         {
             MaxCachedWorkflows = 0,
-            MaxConcurrentWorkflowTaskPolls = new PollerBehavior.SimpleMaximum(1),
+            MaxConcurrentWorkflowTaskPolls = 1,
         });
     }
 
@@ -7397,7 +7397,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
-    public class WaitOnSignalWorkflowThenActivity
+    public class WaitOnSignalThenActivityWorkflow
     {
         private bool complete;
 
@@ -7419,7 +7419,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task AutoscallingPollingWorker()
+    public async Task ExecuteWorkflowAsync_PollingBehavior_Autoscaling()
     {
         var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
         var runtime = new TemporalRuntime(new()
@@ -7437,14 +7437,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Runtime = runtime,
             });
 
-        await ExecuteWorkerAsync<WaitOnSignalWorkflowThenActivity>(
+        await ExecuteWorkerAsync<WaitOnSignalThenActivityWorkflow>(
         async worker =>
         {
-            await client.WorkflowService.GetSystemInfoAsync(new());
-
-            // Give pollers a beat to start
-            await Task.Delay(TimeSpan.FromMilliseconds(300));
-
             using var httpClient = new HttpClient();
             var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
             var body = await resp.Content.ReadAsStringAsync();
@@ -7455,33 +7450,38 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Single(activityPollers);
             Assert.True(activityPollers[0].EndsWith('2'), "Activity poller count should be 2");
             var workflowPollers = matches.Where(l => l.Contains("workflow_task")).ToList();
-            // Should have exactly two workflow poller metrics (sticky and non-sticky)
-            Assert.Equal(2, workflowPollers.Count);
 
-            // There's sticky & non-sticky pollers, and they may have a count of 1 or 2 depending on initialization timing
-            Assert.True(
-                workflowPollers[0].EndsWith('2') || workflowPollers[0].EndsWith('1'),
-                "First workflow poller count should be 1 or 2");
-            Assert.True(
-                workflowPollers[1].EndsWith('2') || workflowPollers[1].EndsWith('1'),
-                "Second workflow poller count should be 1 or 2");
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                // Should have exactly two workflow poller metrics (sticky and non-sticky)
+                Assert.Equal(2, workflowPollers.Count);
+
+                // There's sticky & non-sticky pollers, and they may have a count of 1 or 2 depending on initialization timing
+                Assert.True(
+                    workflowPollers[0].EndsWith('2') || workflowPollers[0].EndsWith('1'),
+                    "First workflow poller count should be 1 or 2");
+                Assert.True(
+                    workflowPollers[1].EndsWith('2') || workflowPollers[1].EndsWith('1'),
+                    "Second workflow poller count should be 1 or 2");
+            });
 
             // Run multiple workflow instances concurrently
             var workflowTasks = Enumerable.Range(0, 20).Select(async _ =>
             {
                 var handle = await client.StartWorkflowAsync(
-                    (WaitOnSignalWorkflow wf) => wf.RunAsync(),
+                    (WaitOnSignalThenActivityWorkflow wf) => wf.RunAsync(),
                     new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
                 await handle.SignalAsync(wf => wf.CompleteAsync());
+                await handle.GetResultAsync();
             });
 
             await Task.WhenAll(workflowTasks);
         },
         new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
         {
-            MaxConcurrentWorkflowTaskPolls = new PollerBehavior.Autoscaling(initial: 2),
-            MaxConcurrentActivityTaskPolls = new PollerBehavior.Autoscaling(initial: 2),
-        }.AddAllActivities<WaitOnSignalWorkflowThenActivity>(null),
+            WorkflowTaskPollerBehavior = new PollerBehavior.Autoscaling(minimum: 1, maximum: 100, initial: 2),
+            ActivityTaskPollerBehavior = new PollerBehavior.Autoscaling(minimum: 1, maximum: 100, initial: 2),
+        }.AddAllActivities<WaitOnSignalThenActivityWorkflow>(null),
         client);
     }
 

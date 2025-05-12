@@ -1055,12 +1055,12 @@ namespace Temporalio.Bridge.Interop
         public ulong graceful_shutdown_period_millis;
 
         [NativeTypeName("struct PollerBehavior")]
-        public PollerBehavior max_concurrent_workflow_task_polls;
+        public PollerBehavior workflow_task_poller_behavior;
 
         public float nonsticky_to_sticky_poll_ratio;
 
         [NativeTypeName("struct PollerBehavior")]
-        public PollerBehavior max_concurrent_activity_task_polls;
+        public PollerBehavior activity_task_poller_behavior;
 
         [NativeTypeName("bool")]
         public byte nondeterminism_as_workflow_fail;
