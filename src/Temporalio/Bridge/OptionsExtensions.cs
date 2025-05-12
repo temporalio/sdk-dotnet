@@ -746,7 +746,7 @@ namespace Temporalio.Bridge
         {
             if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum simpleMax)
             {
-                var max = new PollerSimpleMaximum { maximum = new UIntPtr((uint)simpleMax.Maximum), };
+                var max = new PollerBehaviorSimpleMaximum { simple_maximum = new UIntPtr((uint)simpleMax.Maximum), };
                 unsafe
                 {
                     return new Interop.PollerBehavior { simple_maximum = scope.Pointer(max), };
@@ -754,7 +754,7 @@ namespace Temporalio.Bridge
             }
             else if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.Autoscaling autoscaling)
             {
-                var autoscale = new PollerAutoscaling
+                var autoscale = new PollerBehaviorAutoscaling
                 {
                     minimum = new UIntPtr((uint)autoscaling.Minimum),
                     maximum = new UIntPtr((uint)autoscaling.Maximum),

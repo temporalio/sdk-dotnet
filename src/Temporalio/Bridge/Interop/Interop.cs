@@ -979,31 +979,13 @@ namespace Temporalio.Bridge.Interop
         public SlotSupplier local_activity_slot_supplier;
     }
 
-    internal unsafe partial struct ByteArrayRefArray
-    {
-        [NativeTypeName("const struct ByteArrayRef *")]
-        public ByteArrayRef* data;
-
-        [NativeTypeName("size_t")]
-        public UIntPtr size;
-    }
-
-    internal unsafe partial struct PollerBehavior
-    {
-        [NativeTypeName("const struct PollerSimpleMaximum *")]
-        public PollerSimpleMaximum* simple_maximum;
-
-        [NativeTypeName("const struct PollerAutoscaling *")]
-        public PollerAutoscaling* autoscaling;
-    }
-
-    internal partial struct PollerSimpleMaximum
+    internal partial struct PollerBehaviorSimpleMaximum
     {
         [NativeTypeName("uintptr_t")]
-        public UIntPtr maximum;
+        public UIntPtr simple_maximum;
     }
 
-    internal partial struct PollerAutoscaling
+    internal partial struct PollerBehaviorAutoscaling
     {
         [NativeTypeName("uintptr_t")]
         public UIntPtr minimum;
@@ -1013,6 +995,24 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("uintptr_t")]
         public UIntPtr initial;
+    }
+
+    internal unsafe partial struct PollerBehavior
+    {
+        [NativeTypeName("const struct PollerBehaviorSimpleMaximum *")]
+        public PollerBehaviorSimpleMaximum* simple_maximum;
+
+        [NativeTypeName("const struct PollerBehaviorAutoscaling *")]
+        public PollerBehaviorAutoscaling* autoscaling;
+    }
+
+    internal unsafe partial struct ByteArrayRefArray
+    {
+        [NativeTypeName("const struct ByteArrayRef *")]
+        public ByteArrayRef* data;
+
+        [NativeTypeName("size_t")]
+        public UIntPtr size;
     }
 
     internal partial struct WorkerOptions
