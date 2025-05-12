@@ -9,6 +9,7 @@ using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Extensions.Hosting;
 using Temporalio.Worker;
+using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
@@ -260,7 +261,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             {
                 options.WorkerClientUpdater = updater;
                 options.MaxCachedWorkflows = 0;
-                options.MaxConcurrentWorkflowTaskPolls = 1;
+                options.WorkflowTaskPollerBehavior = new PollerBehavior.SimpleMaximum(1);
             });
 
         // Start the host

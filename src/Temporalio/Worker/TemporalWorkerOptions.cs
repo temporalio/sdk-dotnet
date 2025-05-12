@@ -210,7 +210,7 @@ namespace Temporalio.Worker
         /// perform at a time on this worker's task queue.
         /// </summary>
         /// <remarks>If set, will override any value set in <see cref="WorkflowTaskPollerBehavior"/>.</remarks>
-        // [Obsolete("Use WorkflowTaskPollerBehavior instead")]
+        [Obsolete("Use WorkflowTaskPollerBehavior instead")]
         public int? MaxConcurrentWorkflowTaskPolls { get; set; }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace Temporalio.Worker
         /// perform at a time on this worker's task queue.
         /// </summary>
         /// <remarks>If set, will override any value set in <see cref="ActivityTaskPollerBehavior"/>.</remarks>
-        // [Obsolete("Use ActivityTaskPollerBehavior instead")]
+        [Obsolete("Use ActivityTaskPollerBehavior instead")]
         public int? MaxConcurrentActivityTaskPolls { get; set; }
 
         /// <summary>

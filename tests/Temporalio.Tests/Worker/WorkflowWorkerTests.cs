@@ -4635,7 +4635,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         new(taskQueue)
         {
             MaxCachedWorkflows = 0,
-            MaxConcurrentWorkflowTaskPolls = 1,
+            WorkflowTaskPollerBehavior = new PollerBehavior.SimpleMaximum(1),
         });
     }
 
