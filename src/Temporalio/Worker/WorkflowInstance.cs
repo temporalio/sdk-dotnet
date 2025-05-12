@@ -192,6 +192,7 @@ namespace Temporalio.Worker
                 TaskQueue: details.TaskQueue,
                 TaskTimeout: start.WorkflowTaskTimeout.ToTimeSpan(),
                 WorkflowId: start.WorkflowId,
+                WorkflowStartTime: start.StartTime.ToDateTime(),
                 WorkflowType: start.WorkflowType);
             workflowStackTrace = details.WorkflowStackTrace;
             pendingTaskStackTraces = workflowStackTrace == WorkflowStackTrace.None ? null : new();

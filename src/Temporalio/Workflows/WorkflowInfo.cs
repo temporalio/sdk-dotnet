@@ -22,10 +22,11 @@ namespace Temporalio.Workflows
     /// versions or if there is no root (i.e. the root is itself).</param>
     /// <param name="RunId">Run ID for the workflow.</param>
     /// <param name="RunTimeout">Run timeout for the workflow.</param>
-    /// <param name="StartTime">Time when the workflow started.</param>
+    /// <param name="StartTime">Time when the first workflow task started.</param>
     /// <param name="TaskQueue">Task queue for the workflow.</param>
     /// <param name="TaskTimeout">Task timeout for the workflow.</param>
     /// <param name="WorkflowId">ID for the workflow.</param>
+    /// <param name="WorkflowStartTime">Time when the workflow started on the server.</param>
     /// <param name="WorkflowType">Workflow type name.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
@@ -49,6 +50,7 @@ namespace Temporalio.Workflows
         string TaskQueue,
         TimeSpan TaskTimeout,
         string WorkflowId,
+        DateTime WorkflowStartTime,
         string WorkflowType)
     {
         /// <summary>

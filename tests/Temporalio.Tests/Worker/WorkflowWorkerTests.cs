@@ -389,6 +389,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (InfoWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var result = await handle.GetResultAsync();
+            var history = await handle.FetchHistoryAsync();
             Assert.Equal(1, result.Attempt);
             Assert.Null(result.ContinuedRunId);
             Assert.Null(result.CronSchedule);
@@ -399,15 +400,19 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Null(result.Root);
             Assert.Equal(handle.ResultRunId, result.RunId);
             Assert.Null(result.RunTimeout);
-            Assert.InRange(
-                result.StartTime,
-                DateTime.UtcNow - TimeSpan.FromMinutes(5),
-                DateTime.UtcNow + TimeSpan.FromMinutes(5));
             Assert.Equal(worker.Options.TaskQueue, result.TaskQueue);
             // TODO(cretz): Can assume default 10 in all test servers?
             Assert.Equal(TimeSpan.FromSeconds(10), result.TaskTimeout);
             Assert.Equal(handle.Id, result.WorkflowId);
             Assert.Equal("InfoWorkflow", result.WorkflowType);
+            // Start time is the first task start time, but workflow start time is the actual start
+            // time
+            var workflowStartTime = history.Events.
+                Single(e => e.WorkflowExecutionStartedEventAttributes != null).EventTime.ToDateTime();
+            Assert.Equal(workflowStartTime, result.WorkflowStartTime);
+            var firstTaskStartTime = history.Events.
+                First(e => e.WorkflowTaskStartedEventAttributes != null).EventTime.ToDateTime();
+            Assert.Equal(firstTaskStartTime, result.StartTime);
         });
         // Child info
         await ExecuteWorkerAsync<InfoFromChildWorkflow>(
