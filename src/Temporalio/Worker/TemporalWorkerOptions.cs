@@ -234,11 +234,13 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets or sets the behavior of the workflow task poller. Default is SimpleMaximum(5).
         /// </summary>
+        /// <remarks>WARNING: This property is experimental.</remarks>
         public PollerBehavior WorkflowTaskPollerBehavior { get; set; } = new PollerBehavior.SimpleMaximum(5);
 
         /// <summary>
         /// Gets or sets the behavior of the activity task poller. Default is SimpleMaximum(5).
         /// </summary>
+        /// <remarks>WARNING: This property is experimental.</remarks>
         public PollerBehavior ActivityTaskPollerBehavior { get; set; } = new PollerBehavior.SimpleMaximum(5);
 
         /// <summary>
