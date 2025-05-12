@@ -544,16 +544,8 @@ namespace Temporalio.Bridge
                         "MaxConcurrentActivities, or MaxConcurrentLocalActivities.");
                 }
             }
-#pragma warning disable 0618
-            if (options.MaxConcurrentWorkflowTaskPolls.HasValue)
-            {
-                options.WorkflowTaskPollerBehavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls.Value);
-            }
-#pragma warning disable 0618
-            if (options.MaxConcurrentActivityTaskPolls.HasValue)
-            {
-                options.ActivityTaskPollerBehavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls.Value);
-            }
+            options.WorkflowTaskPollerBehavior ??= new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
+            options.ActivityTaskPollerBehavior ??= new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),

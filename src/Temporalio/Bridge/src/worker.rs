@@ -54,12 +54,12 @@ pub struct WorkerOptions {
 }
 
 #[repr(C)]
-pub struct PollerSimpleMaximum {
+pub struct PollerBehaviorSimpleMaximum {
     pub simple_maximum: usize,
 }
 
 #[repr(C)]
-pub struct PollerAutoscaling {
+pub struct PollerBehaviorAutoscaling {
     pub minimum: usize,
     pub maximum: usize,
     pub initial: usize,
@@ -68,8 +68,8 @@ pub struct PollerAutoscaling {
 // Only one of simple_maximum and autoscaling can be present.
 #[repr(C)]
 pub struct PollerBehavior {
-    simple_maximum: *const PollerSimpleMaximum,
-    autoscaling: *const PollerAutoscaling,
+    simple_maximum: *const PollerBehaviorSimpleMaximum,
+    autoscaling: *const PollerBehaviorAutoscaling,
 }
 
 impl TryFrom<&PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior {

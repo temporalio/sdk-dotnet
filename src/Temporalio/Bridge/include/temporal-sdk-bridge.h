@@ -560,19 +560,19 @@ typedef struct TunerHolder {
   struct SlotSupplier local_activity_slot_supplier;
 } TunerHolder;
 
-typedef struct PollerSimpleMaximum {
+typedef struct PollerBehaviorSimpleMaximum {
   uintptr_t simple_maximum;
-} PollerSimpleMaximum;
+} PollerBehaviorSimpleMaximum;
 
-typedef struct PollerAutoscaling {
+typedef struct PollerBehaviorAutoscaling {
   uintptr_t minimum;
   uintptr_t maximum;
   uintptr_t initial;
-} PollerAutoscaling;
+} PollerBehaviorAutoscaling;
 
 typedef struct PollerBehavior {
-  const struct PollerSimpleMaximum *simple_maximum;
-  const struct PollerAutoscaling *autoscaling;
+  const struct PollerBehaviorSimpleMaximum *simple_maximum;
+  const struct PollerBehaviorAutoscaling *autoscaling;
 } PollerBehavior;
 
 typedef struct ByteArrayRefArray {
