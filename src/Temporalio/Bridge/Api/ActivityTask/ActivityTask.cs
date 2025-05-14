@@ -52,18 +52,25 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             "MS5SZXRyeVBvbGljeRIyCghwcmlvcml0eRgSIAEoCzIgLnRlbXBvcmFsLmFw",
             "aS5jb21tb24udjEuUHJpb3JpdHkSEAoIaXNfbG9jYWwYESABKAgaVAoRSGVh",
             "ZGVyRmllbGRzRW50cnkSCwoDa2V5GAEgASgJEi4KBXZhbHVlGAIgASgLMh8u",
-            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkOgI4ASJFCgZDYW5jZWwS",
-            "OwoGcmVhc29uGAEgASgOMisuY29yZXNkay5hY3Rpdml0eV90YXNrLkFjdGl2",
-            "aXR5Q2FuY2VsUmVhc29uKlgKFEFjdGl2aXR5Q2FuY2VsUmVhc29uEg0KCU5P",
-            "VF9GT1VORBAAEg0KCUNBTkNFTExFRBABEg0KCVRJTUVEX09VVBACEhMKD1dP",
-            "UktFUl9TSFVURE9XThADQjLqAi9UZW1wb3JhbGlvOjpJbnRlcm5hbDo6QnJp",
-            "ZGdlOjpBcGk6OkFjdGl2aXR5VGFza2IGcHJvdG8z"));
+            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkOgI4ASKKAQoGQ2FuY2Vs",
+            "EjsKBnJlYXNvbhgBIAEoDjIrLmNvcmVzZGsuYWN0aXZpdHlfdGFzay5BY3Rp",
+            "dml0eUNhbmNlbFJlYXNvbhJDCgdkZXRhaWxzGAIgASgLMjIuY29yZXNkay5h",
+            "Y3Rpdml0eV90YXNrLkFjdGl2aXR5Q2FuY2VsbGF0aW9uRGV0YWlscyKgAQob",
+            "QWN0aXZpdHlDYW5jZWxsYXRpb25EZXRhaWxzEhQKDGlzX25vdF9mb3VuZBgB",
+            "IAEoCBIUCgxpc19jYW5jZWxsZWQYAiABKAgSEQoJaXNfcGF1c2VkGAMgASgI",
+            "EhQKDGlzX3RpbWVkX291dBgEIAEoCBIaChJpc193b3JrZXJfc2h1dGRvd24Y",
+            "BSABKAgSEAoIaXNfcmVzZXQYBiABKAgqbwoUQWN0aXZpdHlDYW5jZWxSZWFz",
+            "b24SDQoJTk9UX0ZPVU5EEAASDQoJQ0FOQ0VMTEVEEAESDQoJVElNRURfT1VU",
+            "EAISEwoPV09SS0VSX1NIVVRET1dOEAMSCgoGUEFVU0VEEAQSCQoFUkVTRVQQ",
+            "BUIy6gIvVGVtcG9yYWxpbzo6SW50ZXJuYWw6OkJyaWRnZTo6QXBpOjpBY3Rp",
+            "dml0eVRhc2tiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityTask), global::Temporalio.Bridge.Api.ActivityTask.ActivityTask.Parser, new[]{ "TaskToken", "Start", "Cancel" }, new[]{ "Variant" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Start), global::Temporalio.Bridge.Api.ActivityTask.Start.Parser, new[]{ "WorkflowNamespace", "WorkflowType", "WorkflowExecution", "ActivityId", "ActivityType", "HeaderFields", "Input", "HeartbeatDetails", "ScheduledTime", "CurrentAttemptScheduledTime", "StartedTime", "Attempt", "ScheduleToCloseTimeout", "StartToCloseTimeout", "HeartbeatTimeout", "RetryPolicy", "Priority", "IsLocal" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Cancel), global::Temporalio.Bridge.Api.ActivityTask.Cancel.Parser, new[]{ "Reason" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.Cancel), global::Temporalio.Bridge.Api.ActivityTask.Cancel.Parser, new[]{ "Reason", "Details" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails), global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails.Parser, new[]{ "IsNotFound", "IsCancelled", "IsPaused", "IsTimedOut", "IsWorkerShutdown", "IsReset" }, null, null, null, null)
           }));
     }
     #endregion
@@ -87,6 +94,14 @@ namespace Temporalio.Bridge.Api.ActivityTask {
     /// Core is shutting down and the graceful timeout has elapsed
     /// </summary>
     [pbr::OriginalName("WORKER_SHUTDOWN")] WorkerShutdown = 3,
+    /// <summary>
+    /// Activity was paused
+    /// </summary>
+    [pbr::OriginalName("PAUSED")] Paused = 4,
+    /// <summary>
+    /// Activity was reset
+    /// </summary>
+    [pbr::OriginalName("RESET")] Reset = 5,
   }
 
   #endregion
@@ -1381,6 +1396,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public Cancel(Cancel other) : this() {
       reason_ = other.reason_;
+      details_ = other.details_ != null ? other.details_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1393,12 +1409,30 @@ namespace Temporalio.Bridge.Api.ActivityTask {
     /// <summary>Field number for the "reason" field.</summary>
     public const int ReasonFieldNumber = 1;
     private global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason reason_ = global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason.NotFound;
+    /// <summary>
+    /// Primary cancellation reason
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason Reason {
       get { return reason_; }
       set {
         reason_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "details" field.</summary>
+    public const int DetailsFieldNumber = 2;
+    private global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails details_;
+    /// <summary>
+    /// Activity cancellation details, surfaces all cancellation reasons.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails Details {
+      get { return details_; }
+      set {
+        details_ = value;
       }
     }
 
@@ -1418,6 +1452,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
         return true;
       }
       if (Reason != other.Reason) return false;
+      if (!object.Equals(Details, other.Details)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1426,6 +1461,7 @@ namespace Temporalio.Bridge.Api.ActivityTask {
     public override int GetHashCode() {
       int hash = 1;
       if (Reason != global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason.NotFound) hash ^= Reason.GetHashCode();
+      if (details_ != null) hash ^= Details.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1448,6 +1484,10 @@ namespace Temporalio.Bridge.Api.ActivityTask {
         output.WriteRawTag(8);
         output.WriteEnum((int) Reason);
       }
+      if (details_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Details);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1462,6 +1502,10 @@ namespace Temporalio.Bridge.Api.ActivityTask {
         output.WriteRawTag(8);
         output.WriteEnum((int) Reason);
       }
+      if (details_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Details);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1474,6 +1518,9 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       int size = 0;
       if (Reason != global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason.NotFound) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Reason);
+      }
+      if (details_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Details);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1489,6 +1536,12 @@ namespace Temporalio.Bridge.Api.ActivityTask {
       }
       if (other.Reason != global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason.NotFound) {
         Reason = other.Reason;
+      }
+      if (other.details_ != null) {
+        if (details_ == null) {
+          Details = new global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails();
+        }
+        Details.MergeFrom(other.Details);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1509,6 +1562,13 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             Reason = (global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason) input.ReadEnum();
             break;
           }
+          case 18: {
+            if (details_ == null) {
+              Details = new global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails();
+            }
+            input.ReadMessage(Details);
+            break;
+          }
         }
       }
     #endif
@@ -1526,6 +1586,387 @@ namespace Temporalio.Bridge.Api.ActivityTask {
             break;
           case 8: {
             Reason = (global::Temporalio.Bridge.Api.ActivityTask.ActivityCancelReason) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            if (details_ == null) {
+              Details = new global::Temporalio.Bridge.Api.ActivityTask.ActivityCancellationDetails();
+            }
+            input.ReadMessage(Details);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  internal sealed partial class ActivityCancellationDetails : pb::IMessage<ActivityCancellationDetails>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ActivityCancellationDetails> _parser = new pb::MessageParser<ActivityCancellationDetails>(() => new ActivityCancellationDetails());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ActivityCancellationDetails> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Bridge.Api.ActivityTask.ActivityTaskReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityCancellationDetails() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityCancellationDetails(ActivityCancellationDetails other) : this() {
+      isNotFound_ = other.isNotFound_;
+      isCancelled_ = other.isCancelled_;
+      isPaused_ = other.isPaused_;
+      isTimedOut_ = other.isTimedOut_;
+      isWorkerShutdown_ = other.isWorkerShutdown_;
+      isReset_ = other.isReset_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityCancellationDetails Clone() {
+      return new ActivityCancellationDetails(this);
+    }
+
+    /// <summary>Field number for the "is_not_found" field.</summary>
+    public const int IsNotFoundFieldNumber = 1;
+    private bool isNotFound_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsNotFound {
+      get { return isNotFound_; }
+      set {
+        isNotFound_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_cancelled" field.</summary>
+    public const int IsCancelledFieldNumber = 2;
+    private bool isCancelled_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsCancelled {
+      get { return isCancelled_; }
+      set {
+        isCancelled_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_paused" field.</summary>
+    public const int IsPausedFieldNumber = 3;
+    private bool isPaused_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsPaused {
+      get { return isPaused_; }
+      set {
+        isPaused_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_timed_out" field.</summary>
+    public const int IsTimedOutFieldNumber = 4;
+    private bool isTimedOut_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsTimedOut {
+      get { return isTimedOut_; }
+      set {
+        isTimedOut_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_worker_shutdown" field.</summary>
+    public const int IsWorkerShutdownFieldNumber = 5;
+    private bool isWorkerShutdown_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsWorkerShutdown {
+      get { return isWorkerShutdown_; }
+      set {
+        isWorkerShutdown_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "is_reset" field.</summary>
+    public const int IsResetFieldNumber = 6;
+    private bool isReset_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsReset {
+      get { return isReset_; }
+      set {
+        isReset_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ActivityCancellationDetails);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ActivityCancellationDetails other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (IsNotFound != other.IsNotFound) return false;
+      if (IsCancelled != other.IsCancelled) return false;
+      if (IsPaused != other.IsPaused) return false;
+      if (IsTimedOut != other.IsTimedOut) return false;
+      if (IsWorkerShutdown != other.IsWorkerShutdown) return false;
+      if (IsReset != other.IsReset) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (IsNotFound != false) hash ^= IsNotFound.GetHashCode();
+      if (IsCancelled != false) hash ^= IsCancelled.GetHashCode();
+      if (IsPaused != false) hash ^= IsPaused.GetHashCode();
+      if (IsTimedOut != false) hash ^= IsTimedOut.GetHashCode();
+      if (IsWorkerShutdown != false) hash ^= IsWorkerShutdown.GetHashCode();
+      if (IsReset != false) hash ^= IsReset.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (IsNotFound != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(IsNotFound);
+      }
+      if (IsCancelled != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(IsCancelled);
+      }
+      if (IsPaused != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(IsPaused);
+      }
+      if (IsTimedOut != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(IsTimedOut);
+      }
+      if (IsWorkerShutdown != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(IsWorkerShutdown);
+      }
+      if (IsReset != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(IsReset);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (IsNotFound != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(IsNotFound);
+      }
+      if (IsCancelled != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(IsCancelled);
+      }
+      if (IsPaused != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(IsPaused);
+      }
+      if (IsTimedOut != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(IsTimedOut);
+      }
+      if (IsWorkerShutdown != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(IsWorkerShutdown);
+      }
+      if (IsReset != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(IsReset);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (IsNotFound != false) {
+        size += 1 + 1;
+      }
+      if (IsCancelled != false) {
+        size += 1 + 1;
+      }
+      if (IsPaused != false) {
+        size += 1 + 1;
+      }
+      if (IsTimedOut != false) {
+        size += 1 + 1;
+      }
+      if (IsWorkerShutdown != false) {
+        size += 1 + 1;
+      }
+      if (IsReset != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ActivityCancellationDetails other) {
+      if (other == null) {
+        return;
+      }
+      if (other.IsNotFound != false) {
+        IsNotFound = other.IsNotFound;
+      }
+      if (other.IsCancelled != false) {
+        IsCancelled = other.IsCancelled;
+      }
+      if (other.IsPaused != false) {
+        IsPaused = other.IsPaused;
+      }
+      if (other.IsTimedOut != false) {
+        IsTimedOut = other.IsTimedOut;
+      }
+      if (other.IsWorkerShutdown != false) {
+        IsWorkerShutdown = other.IsWorkerShutdown;
+      }
+      if (other.IsReset != false) {
+        IsReset = other.IsReset;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            IsNotFound = input.ReadBool();
+            break;
+          }
+          case 16: {
+            IsCancelled = input.ReadBool();
+            break;
+          }
+          case 24: {
+            IsPaused = input.ReadBool();
+            break;
+          }
+          case 32: {
+            IsTimedOut = input.ReadBool();
+            break;
+          }
+          case 40: {
+            IsWorkerShutdown = input.ReadBool();
+            break;
+          }
+          case 48: {
+            IsReset = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            IsNotFound = input.ReadBool();
+            break;
+          }
+          case 16: {
+            IsCancelled = input.ReadBool();
+            break;
+          }
+          case 24: {
+            IsPaused = input.ReadBool();
+            break;
+          }
+          case 32: {
+            IsTimedOut = input.ReadBool();
+            break;
+          }
+          case 40: {
+            IsWorkerShutdown = input.ReadBool();
+            break;
+          }
+          case 48: {
+            IsReset = input.ReadBool();
             break;
           }
         }

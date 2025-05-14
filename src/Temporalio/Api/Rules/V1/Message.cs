@@ -9,177 +9,201 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace Temporalio.Api.Rules.V1 {
+namespace Temporalio.Api.Rules.V1
+{
 
-  /// <summary>Holder for reflection information generated from temporal/api/rules/v1/message.proto</summary>
-  public static partial class MessageReflection {
+    /// <summary>Holder for reflection information generated from temporal/api/rules/v1/message.proto</summary>
+    public static partial class MessageReflection
+    {
 
-    #region Descriptor
-    /// <summary>File descriptor for temporal/api/rules/v1/message.proto</summary>
-    public static pbr::FileDescriptor Descriptor {
-      get { return descriptor; }
-    }
-    private static pbr::FileDescriptor descriptor;
+        #region Descriptor
+        /// <summary>File descriptor for temporal/api/rules/v1/message.proto</summary>
+        public static pbr::FileDescriptor Descriptor
+        {
+            get { return descriptor; }
+        }
+        private static pbr::FileDescriptor descriptor;
 
-    static MessageReflection() {
-      byte[] descriptorData = global::System.Convert.FromBase64String(
-          string.Concat(
-            "CiN0ZW1wb3JhbC9hcGkvcnVsZXMvdjEvbWVzc2FnZS5wcm90bxIVdGVtcG9y",
-            "YWwuYXBpLnJ1bGVzLnYxGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1wLnBy",
-            "b3RvIo8BChJXb3JrZmxvd1J1bGVBY3Rpb24SVwoOYWN0aXZpdHlfcGF1c2UY",
-            "ASABKAsyPS50ZW1wb3JhbC5hcGkucnVsZXMudjEuV29ya2Zsb3dSdWxlQWN0",
-            "aW9uLkFjdGlvbkFjdGl2aXR5UGF1c2VIABoVChNBY3Rpb25BY3Rpdml0eVBh",
-            "dXNlQgkKB3ZhcmlhbnQivQIKEFdvcmtmbG93UnVsZVNwZWMSCgoCaWQYASAB",
-            "KAkSWQoOYWN0aXZpdHlfc3RhcnQYAiABKAsyPy50ZW1wb3JhbC5hcGkucnVs",
-            "ZXMudjEuV29ya2Zsb3dSdWxlU3BlYy5BY3Rpdml0eVN0YXJ0aW5nVHJpZ2dl",
-            "ckgAEhgKEHZpc2liaWxpdHlfcXVlcnkYAyABKAkSOgoHYWN0aW9ucxgEIAMo",
-            "CzIpLnRlbXBvcmFsLmFwaS5ydWxlcy52MS5Xb3JrZmxvd1J1bGVBY3Rpb24S",
-            "MwoPZXhwaXJhdGlvbl90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp",
-            "bWVzdGFtcBosChdBY3Rpdml0eVN0YXJ0aW5nVHJpZ2dlchIRCglwcmVkaWNh",
-            "dGUYASABKAlCCQoHdHJpZ2dlciJ2CgxXb3JrZmxvd1J1bGUSLwoLY3JlYXRl",
-            "X3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjUKBHNw",
-            "ZWMYAiABKAsyJy50ZW1wb3JhbC5hcGkucnVsZXMudjEuV29ya2Zsb3dSdWxl",
-            "U3BlY0KEAQoYaW8udGVtcG9yYWwuYXBpLnJ1bGVzLnYxQgxNZXNzYWdlUHJv",
-            "dG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL3J1bGVzL3YxO3J1bGVzqgIXVGVt",
-            "cG9yYWxpby5BcGkuUnVsZXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OlJ1bGVz",
-            "OjpWMWIGcHJvdG8z"));
-      descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+        static MessageReflection()
+        {
+            byte[] descriptorData = global::System.Convert.FromBase64String(
+                string.Concat(
+                  "CiN0ZW1wb3JhbC9hcGkvcnVsZXMvdjEvbWVzc2FnZS5wcm90bxIVdGVtcG9y",
+                  "YWwuYXBpLnJ1bGVzLnYxGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1wLnBy",
+                  "b3RvIo8BChJXb3JrZmxvd1J1bGVBY3Rpb24SVwoOYWN0aXZpdHlfcGF1c2UY",
+                  "ASABKAsyPS50ZW1wb3JhbC5hcGkucnVsZXMudjEuV29ya2Zsb3dSdWxlQWN0",
+                  "aW9uLkFjdGlvbkFjdGl2aXR5UGF1c2VIABoVChNBY3Rpb25BY3Rpdml0eVBh",
+                  "dXNlQgkKB3ZhcmlhbnQivQIKEFdvcmtmbG93UnVsZVNwZWMSCgoCaWQYASAB",
+                  "KAkSWQoOYWN0aXZpdHlfc3RhcnQYAiABKAsyPy50ZW1wb3JhbC5hcGkucnVs",
+                  "ZXMudjEuV29ya2Zsb3dSdWxlU3BlYy5BY3Rpdml0eVN0YXJ0aW5nVHJpZ2dl",
+                  "ckgAEhgKEHZpc2liaWxpdHlfcXVlcnkYAyABKAkSOgoHYWN0aW9ucxgEIAMo",
+                  "CzIpLnRlbXBvcmFsLmFwaS5ydWxlcy52MS5Xb3JrZmxvd1J1bGVBY3Rpb24S",
+                  "MwoPZXhwaXJhdGlvbl90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp",
+                  "bWVzdGFtcBosChdBY3Rpdml0eVN0YXJ0aW5nVHJpZ2dlchIRCglwcmVkaWNh",
+                  "dGUYASABKAlCCQoHdHJpZ2dlciKoAQoMV29ya2Zsb3dSdWxlEi8KC2NyZWF0",
+                  "ZV90aW1lGAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI1CgRz",
+                  "cGVjGAIgASgLMicudGVtcG9yYWwuYXBpLnJ1bGVzLnYxLldvcmtmbG93UnVs",
+                  "ZVNwZWMSGwoTY3JlYXRlZF9ieV9pZGVudGl0eRgDIAEoCRITCgtkZXNjcmlw",
+                  "dGlvbhgEIAEoCUKEAQoYaW8udGVtcG9yYWwuYXBpLnJ1bGVzLnYxQgxNZXNz",
+                  "YWdlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL3J1bGVzL3YxO3J1bGVz",
+                  "qgIXVGVtcG9yYWxpby5BcGkuUnVsZXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6",
+                  "OlJ1bGVzOjpWMWIGcHJvdG8z"));
+            descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
+                new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
+                new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleAction), global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Parser, new[]{ "ActivityPause" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause), global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause.Parser, null, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleSpec), global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Parser, new[]{ "Id", "ActivityStart", "VisibilityQuery", "Actions", "ExpirationTime" }, new[]{ "Trigger" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger), global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger.Parser, new[]{ "Predicate" }, null, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRule), global::Temporalio.Api.Rules.V1.WorkflowRule.Parser, new[]{ "CreateTime", "Spec" }, null, null, null, null)
-          }));
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRule), global::Temporalio.Api.Rules.V1.WorkflowRule.Parser, new[]{ "CreateTime", "Spec", "CreatedByIdentity", "Description" }, null, null, null, null)
+                }));
+        }
+        #endregion
+
     }
-    #endregion
+    #region Messages
+    public sealed partial class WorkflowRuleAction : pb::IMessage<WorkflowRuleAction>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        , pb::IBufferMessage
+#endif
+    {
+        private static readonly pb::MessageParser<WorkflowRuleAction> _parser = new pb::MessageParser<WorkflowRuleAction>(() => new WorkflowRuleAction());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<WorkflowRuleAction> Parser { get { return _parser; } }
 
-  }
-  #region Messages
-  public sealed partial class WorkflowRuleAction : pb::IMessage<WorkflowRuleAction>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<WorkflowRuleAction> _parser = new pb::MessageParser<WorkflowRuleAction>(() => new WorkflowRuleAction());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<WorkflowRuleAction> Parser { get { return _parser; } }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor
+        {
+            get { return global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor.MessageTypes[0]; }
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor.MessageTypes[0]; }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor
+        {
+            get { return Descriptor; }
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRuleAction()
+        {
+            OnConstruction();
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRuleAction() {
-      OnConstruction();
-    }
+        partial void OnConstruction();
 
-    partial void OnConstruction();
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRuleAction(WorkflowRuleAction other) : this()
+        {
+            switch (other.VariantCase)
+            {
+                case VariantOneofCase.ActivityPause:
+                    ActivityPause = other.ActivityPause.Clone();
+                    break;
+            }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRuleAction(WorkflowRuleAction other) : this() {
-      switch (other.VariantCase) {
-        case VariantOneofCase.ActivityPause:
-          ActivityPause = other.ActivityPause.Clone();
-          break;
-      }
+            _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
 
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRuleAction Clone()
+        {
+            return new WorkflowRuleAction(this);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRuleAction Clone() {
-      return new WorkflowRuleAction(this);
-    }
+        /// <summary>Field number for the "activity_pause" field.</summary>
+        public const int ActivityPauseFieldNumber = 1;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause ActivityPause
+        {
+            get { return variantCase_ == VariantOneofCase.ActivityPause ? (global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause)variant_ : null; }
+            set
+            {
+                variant_ = value;
+                variantCase_ = value == null ? VariantOneofCase.None : VariantOneofCase.ActivityPause;
+            }
+        }
 
-    /// <summary>Field number for the "activity_pause" field.</summary>
-    public const int ActivityPauseFieldNumber = 1;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause ActivityPause {
-      get { return variantCase_ == VariantOneofCase.ActivityPause ? (global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause) variant_ : null; }
-      set {
-        variant_ = value;
-        variantCase_ = value == null ? VariantOneofCase.None : VariantOneofCase.ActivityPause;
-      }
-    }
+        private object variant_;
+        /// <summary>Enum of possible cases for the "variant" oneof.</summary>
+        public enum VariantOneofCase
+        {
+            None = 0,
+            ActivityPause = 1,
+        }
+        private VariantOneofCase variantCase_ = VariantOneofCase.None;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public VariantOneofCase VariantCase
+        {
+            get { return variantCase_; }
+        }
 
-    private object variant_;
-    /// <summary>Enum of possible cases for the "variant" oneof.</summary>
-    public enum VariantOneofCase {
-      None = 0,
-      ActivityPause = 1,
-    }
-    private VariantOneofCase variantCase_ = VariantOneofCase.None;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public VariantOneofCase VariantCase {
-      get { return variantCase_; }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearVariant()
+        {
+            variantCase_ = VariantOneofCase.None;
+            variant_ = null;
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void ClearVariant() {
-      variantCase_ = VariantOneofCase.None;
-      variant_ = null;
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other)
+        {
+            return Equals(other as WorkflowRuleAction);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override bool Equals(object other) {
-      return Equals(other as WorkflowRuleAction);
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(WorkflowRuleAction other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+            if (!object.Equals(ActivityPause, other.ActivityPause)) return false;
+            if (VariantCase != other.VariantCase) return false;
+            return Equals(_unknownFields, other._unknownFields);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(WorkflowRuleAction other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(ActivityPause, other.ActivityPause)) return false;
-      if (VariantCase != other.VariantCase) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode()
+        {
+            int hash = 1;
+            if (variantCase_ == VariantOneofCase.ActivityPause) hash ^= ActivityPause.GetHashCode();
+            hash ^= (int)variantCase_;
+            if (_unknownFields != null)
+            {
+                hash ^= _unknownFields.GetHashCode();
+            }
+            return hash;
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (variantCase_ == VariantOneofCase.ActivityPause) hash ^= ActivityPause.GetHashCode();
-      hash ^= (int) variantCase_;
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString()
+        {
+            return pb::JsonFormatter.ToDiagnosticString(this);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output)
+        {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+            output.WriteRawMessage(this);
+#else
       if (variantCase_ == VariantOneofCase.ActivityPause) {
         output.WriteRawTag(10);
         output.WriteMessage(ActivityPause);
@@ -187,60 +211,71 @@ namespace Temporalio.Api.Rules.V1 {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
-    #endif
-    }
+#endif
+        }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (variantCase_ == VariantOneofCase.ActivityPause) {
-        output.WriteRawTag(10);
-        output.WriteMessage(ActivityPause);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output)
+        {
+            if (variantCase_ == VariantOneofCase.ActivityPause)
+            {
+                output.WriteRawTag(10);
+                output.WriteMessage(ActivityPause);
+            }
+            if (_unknownFields != null)
+            {
+                _unknownFields.WriteTo(ref output);
+            }
+        }
+#endif
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int CalculateSize() {
-      int size = 0;
-      if (variantCase_ == VariantOneofCase.ActivityPause) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ActivityPause);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize()
+        {
+            int size = 0;
+            if (variantCase_ == VariantOneofCase.ActivityPause)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeMessageSize(ActivityPause);
+            }
+            if (_unknownFields != null)
+            {
+                size += _unknownFields.CalculateSize();
+            }
+            return size;
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(WorkflowRuleAction other) {
-      if (other == null) {
-        return;
-      }
-      switch (other.VariantCase) {
-        case VariantOneofCase.ActivityPause:
-          if (ActivityPause == null) {
-            ActivityPause = new global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause();
-          }
-          ActivityPause.MergeFrom(other.ActivityPause);
-          break;
-      }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(WorkflowRuleAction other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            switch (other.VariantCase)
+            {
+                case VariantOneofCase.ActivityPause:
+                    if (ActivityPause == null)
+                    {
+                        ActivityPause = new global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause();
+                    }
+                    ActivityPause.MergeFrom(other.ActivityPause);
+                    break;
+            }
 
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
+            _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input)
+        {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+            input.ReadRawMessage(this);
+#else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -258,162 +293,188 @@ namespace Temporalio.Api.Rules.V1 {
           }
         }
       }
-    #endif
-    }
+#endif
+        }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause subBuilder = new global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause();
-            if (variantCase_ == VariantOneofCase.ActivityPause) {
-              subBuilder.MergeFrom(ActivityPause);
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input)
+        {
+            uint tag;
+            while ((tag = input.ReadTag()) != 0)
+            {
+                switch (tag)
+                {
+                    default:
+                        _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                        break;
+                    case 10:
+                        {
+                            global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause subBuilder = new global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause();
+                            if (variantCase_ == VariantOneofCase.ActivityPause)
+                            {
+                                subBuilder.MergeFrom(ActivityPause);
+                            }
+                            input.ReadMessage(subBuilder);
+                            ActivityPause = subBuilder;
+                            break;
+                        }
+                }
             }
-            input.ReadMessage(subBuilder);
-            ActivityPause = subBuilder;
-            break;
-          }
         }
-      }
-    }
-    #endif
+#endif
 
-    #region Nested types
-    /// <summary>Container for nested types declared in the WorkflowRuleAction message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static partial class Types {
-      public sealed partial class ActionActivityPause : pb::IMessage<ActionActivityPause>
-      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-          , pb::IBufferMessage
-      #endif
-      {
-        private static readonly pb::MessageParser<ActionActivityPause> _parser = new pb::MessageParser<ActionActivityPause>(() => new ActionActivityPause());
-        private pb::UnknownFieldSet _unknownFields;
+        #region Nested types
+        /// <summary>Container for nested types declared in the WorkflowRuleAction message type.</summary>
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public static pb::MessageParser<ActionActivityPause> Parser { get { return _parser; } }
+        public static partial class Types
+        {
+            public sealed partial class ActionActivityPause : pb::IMessage<ActionActivityPause>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                , pb::IBufferMessage
+#endif
+            {
+                private static readonly pb::MessageParser<ActionActivityPause> _parser = new pb::MessageParser<ActionActivityPause>(() => new ActionActivityPause());
+                private pb::UnknownFieldSet _unknownFields;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public static pb::MessageParser<ActionActivityPause> Parser { get { return _parser; } }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public static pbr::MessageDescriptor Descriptor {
-          get { return global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Descriptor.NestedTypes[0]; }
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public static pbr::MessageDescriptor Descriptor
+                {
+                    get { return global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Descriptor.NestedTypes[0]; }
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        pbr::MessageDescriptor pb::IMessage.Descriptor {
-          get { return Descriptor; }
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                pbr::MessageDescriptor pb::IMessage.Descriptor
+                {
+                    get { return Descriptor; }
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public ActionActivityPause() {
-          OnConstruction();
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public ActionActivityPause()
+                {
+                    OnConstruction();
+                }
 
-        partial void OnConstruction();
+                partial void OnConstruction();
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public ActionActivityPause(ActionActivityPause other) : this() {
-          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public ActionActivityPause(ActionActivityPause other) : this()
+                {
+                    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public ActionActivityPause Clone() {
-          return new ActionActivityPause(this);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public ActionActivityPause Clone()
+                {
+                    return new ActionActivityPause(this);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public override bool Equals(object other) {
-          return Equals(other as ActionActivityPause);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public override bool Equals(object other)
+                {
+                    return Equals(other as ActionActivityPause);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public bool Equals(ActionActivityPause other) {
-          if (ReferenceEquals(other, null)) {
-            return false;
-          }
-          if (ReferenceEquals(other, this)) {
-            return true;
-          }
-          return Equals(_unknownFields, other._unknownFields);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public bool Equals(ActionActivityPause other)
+                {
+                    if (ReferenceEquals(other, null))
+                    {
+                        return false;
+                    }
+                    if (ReferenceEquals(other, this))
+                    {
+                        return true;
+                    }
+                    return Equals(_unknownFields, other._unknownFields);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public override int GetHashCode() {
-          int hash = 1;
-          if (_unknownFields != null) {
-            hash ^= _unknownFields.GetHashCode();
-          }
-          return hash;
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public override int GetHashCode()
+                {
+                    int hash = 1;
+                    if (_unknownFields != null)
+                    {
+                        hash ^= _unknownFields.GetHashCode();
+                    }
+                    return hash;
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public override string ToString() {
-          return pb::JsonFormatter.ToDiagnosticString(this);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public override string ToString()
+                {
+                    return pb::JsonFormatter.ToDiagnosticString(this);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public void WriteTo(pb::CodedOutputStream output) {
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-          output.WriteRawMessage(this);
-        #else
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public void WriteTo(pb::CodedOutputStream output)
+                {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                    output.WriteRawMessage(this);
+#else
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
-        #endif
-        }
+#endif
+                }
 
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-          if (_unknownFields != null) {
-            _unknownFields.WriteTo(ref output);
-          }
-        }
-        #endif
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output)
+                {
+                    if (_unknownFields != null)
+                    {
+                        _unknownFields.WriteTo(ref output);
+                    }
+                }
+#endif
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public int CalculateSize() {
-          int size = 0;
-          if (_unknownFields != null) {
-            size += _unknownFields.CalculateSize();
-          }
-          return size;
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public int CalculateSize()
+                {
+                    int size = 0;
+                    if (_unknownFields != null)
+                    {
+                        size += _unknownFields.CalculateSize();
+                    }
+                    return size;
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public void MergeFrom(ActionActivityPause other) {
-          if (other == null) {
-            return;
-          }
-          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public void MergeFrom(ActionActivityPause other)
+                {
+                    if (other == null)
+                    {
+                        return;
+                    }
+                    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public void MergeFrom(pb::CodedInputStream input) {
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-          input.ReadRawMessage(this);
-        #else
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public void MergeFrom(pb::CodedInputStream input)
+                {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                    input.ReadRawMessage(this);
+#else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
             switch(tag) {
@@ -422,236 +483,265 @@ namespace Temporalio.Api.Rules.V1 {
                 break;
             }
           }
-        #endif
-        }
+#endif
+                }
 
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input)
+                {
+                    uint tag;
+                    while ((tag = input.ReadTag()) != 0)
+                    {
+                        switch (tag)
+                        {
+                            default:
+                                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                                break;
+                        }
+                    }
+                }
+#endif
+
+            }
+
+        }
+        #endregion
+
+    }
+
+    public sealed partial class WorkflowRuleSpec : pb::IMessage<WorkflowRuleSpec>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        , pb::IBufferMessage
+#endif
+    {
+        private static readonly pb::MessageParser<WorkflowRuleSpec> _parser = new pb::MessageParser<WorkflowRuleSpec>(() => new WorkflowRuleSpec());
+        private pb::UnknownFieldSet _unknownFields;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-          uint tag;
-          while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
-              default:
-                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-                break;
-            }
-          }
+        public static pb::MessageParser<WorkflowRuleSpec> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor
+        {
+            get { return global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor.MessageTypes[1]; }
         }
-        #endif
 
-      }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor
+        {
+            get { return Descriptor; }
+        }
 
-    }
-    #endregion
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRuleSpec()
+        {
+            OnConstruction();
+        }
 
-  }
+        partial void OnConstruction();
 
-  public sealed partial class WorkflowRuleSpec : pb::IMessage<WorkflowRuleSpec>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<WorkflowRuleSpec> _parser = new pb::MessageParser<WorkflowRuleSpec>(() => new WorkflowRuleSpec());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<WorkflowRuleSpec> Parser { get { return _parser; } }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRuleSpec(WorkflowRuleSpec other) : this()
+        {
+            id_ = other.id_;
+            visibilityQuery_ = other.visibilityQuery_;
+            actions_ = other.actions_.Clone();
+            expirationTime_ = other.expirationTime_ != null ? other.expirationTime_.Clone() : null;
+            switch (other.TriggerCase)
+            {
+                case TriggerOneofCase.ActivityStart:
+                    ActivityStart = other.ActivityStart.Clone();
+                    break;
+            }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor.MessageTypes[1]; }
-    }
+            _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRuleSpec Clone()
+        {
+            return new WorkflowRuleSpec(this);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRuleSpec() {
-      OnConstruction();
-    }
+        /// <summary>Field number for the "id" field.</summary>
+        public const int IdFieldNumber = 1;
+        private string id_ = "";
+        /// <summary>
+        /// The id of the new workflow rule. Must be unique within the namespace.
+        /// Can be set by the user, and can have business meaning.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Id
+        {
+            get { return id_; }
+            set
+            {
+                id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+            }
+        }
 
-    partial void OnConstruction();
+        /// <summary>Field number for the "activity_start" field.</summary>
+        public const int ActivityStartFieldNumber = 2;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger ActivityStart
+        {
+            get { return triggerCase_ == TriggerOneofCase.ActivityStart ? (global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger)trigger_ : null; }
+            set
+            {
+                trigger_ = value;
+                triggerCase_ = value == null ? TriggerOneofCase.None : TriggerOneofCase.ActivityStart;
+            }
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRuleSpec(WorkflowRuleSpec other) : this() {
-      id_ = other.id_;
-      visibilityQuery_ = other.visibilityQuery_;
-      actions_ = other.actions_.Clone();
-      expirationTime_ = other.expirationTime_ != null ? other.expirationTime_.Clone() : null;
-      switch (other.TriggerCase) {
-        case TriggerOneofCase.ActivityStart:
-          ActivityStart = other.ActivityStart.Clone();
-          break;
-      }
+        /// <summary>Field number for the "visibility_query" field.</summary>
+        public const int VisibilityQueryFieldNumber = 3;
+        private string visibilityQuery_ = "";
+        /// <summary>
+        /// Restricted Visibility query.
+        /// This query is used to filter workflows in this namespace to which this rule should apply.
+        /// It is applied to any running workflow each time a triggering event occurs, before the trigger predicate is evaluated.
+        /// The following workflow attributes are supported:
+        /// - WorkflowType
+        /// - WorkflowId
+        /// - StartTime
+        /// - ExecutionStatus
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string VisibilityQuery
+        {
+            get { return visibilityQuery_; }
+            set
+            {
+                visibilityQuery_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+            }
+        }
 
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
+        /// <summary>Field number for the "actions" field.</summary>
+        public const int ActionsFieldNumber = 4;
+        private static readonly pb::FieldCodec<global::Temporalio.Api.Rules.V1.WorkflowRuleAction> _repeated_actions_codec
+            = pb::FieldCodec.ForMessage(34, global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Parser);
+        private readonly pbc::RepeatedField<global::Temporalio.Api.Rules.V1.WorkflowRuleAction> actions_ = new pbc::RepeatedField<global::Temporalio.Api.Rules.V1.WorkflowRuleAction>();
+        /// <summary>
+        /// WorkflowRuleAction to be taken when the rule is triggered and predicate is matched.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public pbc::RepeatedField<global::Temporalio.Api.Rules.V1.WorkflowRuleAction> Actions
+        {
+            get { return actions_; }
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRuleSpec Clone() {
-      return new WorkflowRuleSpec(this);
-    }
+        /// <summary>Field number for the "expiration_time" field.</summary>
+        public const int ExpirationTimeFieldNumber = 5;
+        private global::Google.Protobuf.WellKnownTypes.Timestamp expirationTime_;
+        /// <summary>
+        /// Expiration time of the rule. After this time, the rule will be deleted.
+        /// Can be empty if the rule should never expire.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Google.Protobuf.WellKnownTypes.Timestamp ExpirationTime
+        {
+            get { return expirationTime_; }
+            set
+            {
+                expirationTime_ = value;
+            }
+        }
 
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private string id_ = "";
-    /// <summary>
-    /// The id of the new workflow rule. Must be unique within the namespace.
-    /// Can be set by the user, and can have business meaning.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Id {
-      get { return id_; }
-      set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
+        private object trigger_;
+        /// <summary>Enum of possible cases for the "trigger" oneof.</summary>
+        public enum TriggerOneofCase
+        {
+            None = 0,
+            ActivityStart = 2,
+        }
+        private TriggerOneofCase triggerCase_ = TriggerOneofCase.None;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public TriggerOneofCase TriggerCase
+        {
+            get { return triggerCase_; }
+        }
 
-    /// <summary>Field number for the "activity_start" field.</summary>
-    public const int ActivityStartFieldNumber = 2;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger ActivityStart {
-      get { return triggerCase_ == TriggerOneofCase.ActivityStart ? (global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger) trigger_ : null; }
-      set {
-        trigger_ = value;
-        triggerCase_ = value == null ? TriggerOneofCase.None : TriggerOneofCase.ActivityStart;
-      }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void ClearTrigger()
+        {
+            triggerCase_ = TriggerOneofCase.None;
+            trigger_ = null;
+        }
 
-    /// <summary>Field number for the "visibility_query" field.</summary>
-    public const int VisibilityQueryFieldNumber = 3;
-    private string visibilityQuery_ = "";
-    /// <summary>
-    /// Restricted Visibility query.
-    /// This query is used to filter workflows in this namespace to which this rule should apply.
-    /// It is applied to any running workflow each time a triggering event occurs, before the trigger predicate is evaluated.
-    /// The following workflow attributes are supported:
-    /// - WorkflowType
-    /// - WorkflowId
-    /// - StartTime
-    /// - ExecutionStatus
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string VisibilityQuery {
-      get { return visibilityQuery_; }
-      set {
-        visibilityQuery_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other)
+        {
+            return Equals(other as WorkflowRuleSpec);
+        }
 
-    /// <summary>Field number for the "actions" field.</summary>
-    public const int ActionsFieldNumber = 4;
-    private static readonly pb::FieldCodec<global::Temporalio.Api.Rules.V1.WorkflowRuleAction> _repeated_actions_codec
-        = pb::FieldCodec.ForMessage(34, global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Parser);
-    private readonly pbc::RepeatedField<global::Temporalio.Api.Rules.V1.WorkflowRuleAction> actions_ = new pbc::RepeatedField<global::Temporalio.Api.Rules.V1.WorkflowRuleAction>();
-    /// <summary>
-    /// WorkflowRuleAction to be taken when the rule is triggered and predicate is matched.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::Temporalio.Api.Rules.V1.WorkflowRuleAction> Actions {
-      get { return actions_; }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(WorkflowRuleSpec other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+            if (Id != other.Id) return false;
+            if (!object.Equals(ActivityStart, other.ActivityStart)) return false;
+            if (VisibilityQuery != other.VisibilityQuery) return false;
+            if (!actions_.Equals(other.actions_)) return false;
+            if (!object.Equals(ExpirationTime, other.ExpirationTime)) return false;
+            if (TriggerCase != other.TriggerCase) return false;
+            return Equals(_unknownFields, other._unknownFields);
+        }
 
-    /// <summary>Field number for the "expiration_time" field.</summary>
-    public const int ExpirationTimeFieldNumber = 5;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp expirationTime_;
-    /// <summary>
-    /// Expiration time of the rule. After this time, the rule will be deleted.
-    /// Can be empty if the rule should never expire.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp ExpirationTime {
-      get { return expirationTime_; }
-      set {
-        expirationTime_ = value;
-      }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode()
+        {
+            int hash = 1;
+            if (Id.Length != 0) hash ^= Id.GetHashCode();
+            if (triggerCase_ == TriggerOneofCase.ActivityStart) hash ^= ActivityStart.GetHashCode();
+            if (VisibilityQuery.Length != 0) hash ^= VisibilityQuery.GetHashCode();
+            hash ^= actions_.GetHashCode();
+            if (expirationTime_ != null) hash ^= ExpirationTime.GetHashCode();
+            hash ^= (int)triggerCase_;
+            if (_unknownFields != null)
+            {
+                hash ^= _unknownFields.GetHashCode();
+            }
+            return hash;
+        }
 
-    private object trigger_;
-    /// <summary>Enum of possible cases for the "trigger" oneof.</summary>
-    public enum TriggerOneofCase {
-      None = 0,
-      ActivityStart = 2,
-    }
-    private TriggerOneofCase triggerCase_ = TriggerOneofCase.None;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public TriggerOneofCase TriggerCase {
-      get { return triggerCase_; }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString()
+        {
+            return pb::JsonFormatter.ToDiagnosticString(this);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void ClearTrigger() {
-      triggerCase_ = TriggerOneofCase.None;
-      trigger_ = null;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override bool Equals(object other) {
-      return Equals(other as WorkflowRuleSpec);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(WorkflowRuleSpec other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (Id != other.Id) return false;
-      if (!object.Equals(ActivityStart, other.ActivityStart)) return false;
-      if (VisibilityQuery != other.VisibilityQuery) return false;
-      if(!actions_.Equals(other.actions_)) return false;
-      if (!object.Equals(ExpirationTime, other.ExpirationTime)) return false;
-      if (TriggerCase != other.TriggerCase) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (triggerCase_ == TriggerOneofCase.ActivityStart) hash ^= ActivityStart.GetHashCode();
-      if (VisibilityQuery.Length != 0) hash ^= VisibilityQuery.GetHashCode();
-      hash ^= actions_.GetHashCode();
-      if (expirationTime_ != null) hash ^= ExpirationTime.GetHashCode();
-      hash ^= (int) triggerCase_;
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output)
+        {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+            output.WriteRawMessage(this);
+#else
       if (Id.Length != 0) {
         output.WriteRawTag(10);
         output.WriteString(Id);
@@ -672,96 +762,117 @@ namespace Temporalio.Api.Rules.V1 {
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Id.Length != 0) {
-        output.WriteRawTag(10);
-        output.WriteString(Id);
-      }
-      if (triggerCase_ == TriggerOneofCase.ActivityStart) {
-        output.WriteRawTag(18);
-        output.WriteMessage(ActivityStart);
-      }
-      if (VisibilityQuery.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(VisibilityQuery);
-      }
-      actions_.WriteTo(ref output, _repeated_actions_codec);
-      if (expirationTime_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(ExpirationTime);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int CalculateSize() {
-      int size = 0;
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
-      }
-      if (triggerCase_ == TriggerOneofCase.ActivityStart) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ActivityStart);
-      }
-      if (VisibilityQuery.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(VisibilityQuery);
-      }
-      size += actions_.CalculateSize(_repeated_actions_codec);
-      if (expirationTime_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ExpirationTime);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(WorkflowRuleSpec other) {
-      if (other == null) {
-        return;
-      }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
-      }
-      if (other.VisibilityQuery.Length != 0) {
-        VisibilityQuery = other.VisibilityQuery;
-      }
-      actions_.Add(other.actions_);
-      if (other.expirationTime_ != null) {
-        if (expirationTime_ == null) {
-          ExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+#endif
         }
-        ExpirationTime.MergeFrom(other.ExpirationTime);
-      }
-      switch (other.TriggerCase) {
-        case TriggerOneofCase.ActivityStart:
-          if (ActivityStart == null) {
-            ActivityStart = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger();
-          }
-          ActivityStart.MergeFrom(other.ActivityStart);
-          break;
-      }
 
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output)
+        {
+            if (Id.Length != 0)
+            {
+                output.WriteRawTag(10);
+                output.WriteString(Id);
+            }
+            if (triggerCase_ == TriggerOneofCase.ActivityStart)
+            {
+                output.WriteRawTag(18);
+                output.WriteMessage(ActivityStart);
+            }
+            if (VisibilityQuery.Length != 0)
+            {
+                output.WriteRawTag(26);
+                output.WriteString(VisibilityQuery);
+            }
+            actions_.WriteTo(ref output, _repeated_actions_codec);
+            if (expirationTime_ != null)
+            {
+                output.WriteRawTag(42);
+                output.WriteMessage(ExpirationTime);
+            }
+            if (_unknownFields != null)
+            {
+                _unknownFields.WriteTo(ref output);
+            }
+        }
+#endif
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize()
+        {
+            int size = 0;
+            if (Id.Length != 0)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+            }
+            if (triggerCase_ == TriggerOneofCase.ActivityStart)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeMessageSize(ActivityStart);
+            }
+            if (VisibilityQuery.Length != 0)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeStringSize(VisibilityQuery);
+            }
+            size += actions_.CalculateSize(_repeated_actions_codec);
+            if (expirationTime_ != null)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeMessageSize(ExpirationTime);
+            }
+            if (_unknownFields != null)
+            {
+                size += _unknownFields.CalculateSize();
+            }
+            return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(WorkflowRuleSpec other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            if (other.Id.Length != 0)
+            {
+                Id = other.Id;
+            }
+            if (other.VisibilityQuery.Length != 0)
+            {
+                VisibilityQuery = other.VisibilityQuery;
+            }
+            actions_.Add(other.actions_);
+            if (other.expirationTime_ != null)
+            {
+                if (expirationTime_ == null)
+                {
+                    ExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+                }
+                ExpirationTime.MergeFrom(other.ExpirationTime);
+            }
+            switch (other.TriggerCase)
+            {
+                case TriggerOneofCase.ActivityStart:
+                    if (ActivityStart == null)
+                    {
+                        ActivityStart = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger();
+                    }
+                    ActivityStart.MergeFrom(other.ActivityStart);
+                    break;
+            }
+
+            _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input)
+        {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+            input.ReadRawMessage(this);
+#else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -798,174 +909,200 @@ namespace Temporalio.Api.Rules.V1 {
           }
         }
       }
-    #endif
-    }
+#endif
+        }
 
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            Id = input.ReadString();
-            break;
-          }
-          case 18: {
-            global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger subBuilder = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger();
-            if (triggerCase_ == TriggerOneofCase.ActivityStart) {
-              subBuilder.MergeFrom(ActivityStart);
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input)
+        {
+            uint tag;
+            while ((tag = input.ReadTag()) != 0)
+            {
+                switch (tag)
+                {
+                    default:
+                        _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                        break;
+                    case 10:
+                        {
+                            Id = input.ReadString();
+                            break;
+                        }
+                    case 18:
+                        {
+                            global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger subBuilder = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger();
+                            if (triggerCase_ == TriggerOneofCase.ActivityStart)
+                            {
+                                subBuilder.MergeFrom(ActivityStart);
+                            }
+                            input.ReadMessage(subBuilder);
+                            ActivityStart = subBuilder;
+                            break;
+                        }
+                    case 26:
+                        {
+                            VisibilityQuery = input.ReadString();
+                            break;
+                        }
+                    case 34:
+                        {
+                            actions_.AddEntriesFrom(ref input, _repeated_actions_codec);
+                            break;
+                        }
+                    case 42:
+                        {
+                            if (expirationTime_ == null)
+                            {
+                                ExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+                            }
+                            input.ReadMessage(ExpirationTime);
+                            break;
+                        }
+                }
             }
-            input.ReadMessage(subBuilder);
-            ActivityStart = subBuilder;
-            break;
-          }
-          case 26: {
-            VisibilityQuery = input.ReadString();
-            break;
-          }
-          case 34: {
-            actions_.AddEntriesFrom(ref input, _repeated_actions_codec);
-            break;
-          }
-          case 42: {
-            if (expirationTime_ == null) {
-              ExpirationTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(ExpirationTime);
-            break;
-          }
         }
-      }
-    }
-    #endif
+#endif
 
-    #region Nested types
-    /// <summary>Container for nested types declared in the WorkflowRuleSpec message type.</summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static partial class Types {
-      /// <summary>
-      /// Activity trigger will be triggered when an activity is about to start.
-      /// </summary>
-      public sealed partial class ActivityStartingTrigger : pb::IMessage<ActivityStartingTrigger>
-      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-          , pb::IBufferMessage
-      #endif
-      {
-        private static readonly pb::MessageParser<ActivityStartingTrigger> _parser = new pb::MessageParser<ActivityStartingTrigger>(() => new ActivityStartingTrigger());
-        private pb::UnknownFieldSet _unknownFields;
+        #region Nested types
+        /// <summary>Container for nested types declared in the WorkflowRuleSpec message type.</summary>
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public static pb::MessageParser<ActivityStartingTrigger> Parser { get { return _parser; } }
+        public static partial class Types
+        {
+            /// <summary>
+            /// Activity trigger will be triggered when an activity is about to start.
+            /// </summary>
+            public sealed partial class ActivityStartingTrigger : pb::IMessage<ActivityStartingTrigger>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                , pb::IBufferMessage
+#endif
+            {
+                private static readonly pb::MessageParser<ActivityStartingTrigger> _parser = new pb::MessageParser<ActivityStartingTrigger>(() => new ActivityStartingTrigger());
+                private pb::UnknownFieldSet _unknownFields;
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public static pb::MessageParser<ActivityStartingTrigger> Parser { get { return _parser; } }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public static pbr::MessageDescriptor Descriptor {
-          get { return global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Descriptor.NestedTypes[0]; }
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public static pbr::MessageDescriptor Descriptor
+                {
+                    get { return global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Descriptor.NestedTypes[0]; }
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        pbr::MessageDescriptor pb::IMessage.Descriptor {
-          get { return Descriptor; }
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                pbr::MessageDescriptor pb::IMessage.Descriptor
+                {
+                    get { return Descriptor; }
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public ActivityStartingTrigger() {
-          OnConstruction();
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public ActivityStartingTrigger()
+                {
+                    OnConstruction();
+                }
 
-        partial void OnConstruction();
+                partial void OnConstruction();
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public ActivityStartingTrigger(ActivityStartingTrigger other) : this() {
-          predicate_ = other.predicate_;
-          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public ActivityStartingTrigger(ActivityStartingTrigger other) : this()
+                {
+                    predicate_ = other.predicate_;
+                    _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public ActivityStartingTrigger Clone() {
-          return new ActivityStartingTrigger(this);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public ActivityStartingTrigger Clone()
+                {
+                    return new ActivityStartingTrigger(this);
+                }
 
-        /// <summary>Field number for the "predicate" field.</summary>
-        public const int PredicateFieldNumber = 1;
-        private string predicate_ = "";
-        /// <summary>
-        /// Activity predicate is a SQL-like string filter parameter.
-        /// It is used to match against workflow data.
-        /// The following activity attributes are supported as part of the predicate:
-        /// - ActivityType: An Activity Type is the mapping of a name to an Activity Definition..
-        /// - ActivityId: The ID of the activity.
-        /// - ActivityAttempt: The number attempts of the activity.
-        /// - BackoffInterval: The current amount of time between scheduled attempts of the activity.
-        /// - ActivityStatus: The status of the activity. Can be one of "Scheduled", "Started", "Paused".
-        /// - TaskQueue: The name of the task queue the workflow specified that the activity should run on.
-        /// Activity predicate support the following operators:
-        ///  * =, !=, >, >=, &lt;, &lt;=
-        ///  * AND, OR, ()
-        ///  * BETWEEN ... AND
-        ///    STARTS_WITH
-        /// </summary>
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public string Predicate {
-          get { return predicate_; }
-          set {
-            predicate_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-          }
-        }
+                /// <summary>Field number for the "predicate" field.</summary>
+                public const int PredicateFieldNumber = 1;
+                private string predicate_ = "";
+                /// <summary>
+                /// Activity predicate is a SQL-like string filter parameter.
+                /// It is used to match against workflow data.
+                /// The following activity attributes are supported as part of the predicate:
+                /// - ActivityType: An Activity Type is the mapping of a name to an Activity Definition..
+                /// - ActivityId: The ID of the activity.
+                /// - ActivityAttempt: The number attempts of the activity.
+                /// - BackoffInterval: The current amount of time between scheduled attempts of the activity.
+                /// - ActivityStatus: The status of the activity. Can be one of "Scheduled", "Started", "Paused".
+                /// - TaskQueue: The name of the task queue the workflow specified that the activity should run on.
+                /// Activity predicate support the following operators:
+                ///  * =, !=, >, >=, &lt;, &lt;=
+                ///  * AND, OR, ()
+                ///  * BETWEEN ... AND
+                ///    STARTS_WITH
+                /// </summary>
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public string Predicate
+                {
+                    get { return predicate_; }
+                    set
+                    {
+                        predicate_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+                    }
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public override bool Equals(object other) {
-          return Equals(other as ActivityStartingTrigger);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public override bool Equals(object other)
+                {
+                    return Equals(other as ActivityStartingTrigger);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public bool Equals(ActivityStartingTrigger other) {
-          if (ReferenceEquals(other, null)) {
-            return false;
-          }
-          if (ReferenceEquals(other, this)) {
-            return true;
-          }
-          if (Predicate != other.Predicate) return false;
-          return Equals(_unknownFields, other._unknownFields);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public bool Equals(ActivityStartingTrigger other)
+                {
+                    if (ReferenceEquals(other, null))
+                    {
+                        return false;
+                    }
+                    if (ReferenceEquals(other, this))
+                    {
+                        return true;
+                    }
+                    if (Predicate != other.Predicate) return false;
+                    return Equals(_unknownFields, other._unknownFields);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public override int GetHashCode() {
-          int hash = 1;
-          if (Predicate.Length != 0) hash ^= Predicate.GetHashCode();
-          if (_unknownFields != null) {
-            hash ^= _unknownFields.GetHashCode();
-          }
-          return hash;
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public override int GetHashCode()
+                {
+                    int hash = 1;
+                    if (Predicate.Length != 0) hash ^= Predicate.GetHashCode();
+                    if (_unknownFields != null)
+                    {
+                        hash ^= _unknownFields.GetHashCode();
+                    }
+                    return hash;
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public override string ToString() {
-          return pb::JsonFormatter.ToDiagnosticString(this);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public override string ToString()
+                {
+                    return pb::JsonFormatter.ToDiagnosticString(this);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public void WriteTo(pb::CodedOutputStream output) {
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-          output.WriteRawMessage(this);
-        #else
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public void WriteTo(pb::CodedOutputStream output)
+                {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                    output.WriteRawMessage(this);
+#else
           if (Predicate.Length != 0) {
             output.WriteRawTag(10);
             output.WriteString(Predicate);
@@ -973,54 +1110,64 @@ namespace Temporalio.Api.Rules.V1 {
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
-        #endif
-        }
+#endif
+                }
 
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-          if (Predicate.Length != 0) {
-            output.WriteRawTag(10);
-            output.WriteString(Predicate);
-          }
-          if (_unknownFields != null) {
-            _unknownFields.WriteTo(ref output);
-          }
-        }
-        #endif
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output)
+                {
+                    if (Predicate.Length != 0)
+                    {
+                        output.WriteRawTag(10);
+                        output.WriteString(Predicate);
+                    }
+                    if (_unknownFields != null)
+                    {
+                        _unknownFields.WriteTo(ref output);
+                    }
+                }
+#endif
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public int CalculateSize() {
-          int size = 0;
-          if (Predicate.Length != 0) {
-            size += 1 + pb::CodedOutputStream.ComputeStringSize(Predicate);
-          }
-          if (_unknownFields != null) {
-            size += _unknownFields.CalculateSize();
-          }
-          return size;
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public int CalculateSize()
+                {
+                    int size = 0;
+                    if (Predicate.Length != 0)
+                    {
+                        size += 1 + pb::CodedOutputStream.ComputeStringSize(Predicate);
+                    }
+                    if (_unknownFields != null)
+                    {
+                        size += _unknownFields.CalculateSize();
+                    }
+                    return size;
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public void MergeFrom(ActivityStartingTrigger other) {
-          if (other == null) {
-            return;
-          }
-          if (other.Predicate.Length != 0) {
-            Predicate = other.Predicate;
-          }
-          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-        }
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public void MergeFrom(ActivityStartingTrigger other)
+                {
+                    if (other == null)
+                    {
+                        return;
+                    }
+                    if (other.Predicate.Length != 0)
+                    {
+                        Predicate = other.Predicate;
+                    }
+                    _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+                }
 
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        public void MergeFrom(pb::CodedInputStream input) {
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-          input.ReadRawMessage(this);
-        #else
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                public void MergeFrom(pb::CodedInputStream input)
+                {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                    input.ReadRawMessage(this);
+#else
           uint tag;
           while ((tag = input.ReadTag()) != 0) {
             switch(tag) {
@@ -1033,157 +1180,222 @@ namespace Temporalio.Api.Rules.V1 {
               }
             }
           }
-        #endif
-        }
+#endif
+                }
 
-        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+                [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+                [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+                void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input)
+                {
+                    uint tag;
+                    while ((tag = input.ReadTag()) != 0)
+                    {
+                        switch (tag)
+                        {
+                            default:
+                                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                                break;
+                            case 10:
+                                {
+                                    Predicate = input.ReadString();
+                                    break;
+                                }
+                        }
+                    }
+                }
+#endif
+
+            }
+
+        }
+        #endregion
+
+    }
+
+    /// <summary>
+    /// WorkflowRule describes a rule that can be applied to any workflow in this namespace.
+    /// </summary>
+    public sealed partial class WorkflowRule : pb::IMessage<WorkflowRule>
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        , pb::IBufferMessage
+#endif
+    {
+        private static readonly pb::MessageParser<WorkflowRule> _parser = new pb::MessageParser<WorkflowRule>(() => new WorkflowRule());
+        private pb::UnknownFieldSet _unknownFields;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-          uint tag;
-          while ((tag = input.ReadTag()) != 0) {
-            switch(tag) {
-              default:
-                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-                break;
-              case 10: {
-                Predicate = input.ReadString();
-                break;
-              }
-            }
-          }
+        public static pb::MessageParser<WorkflowRule> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor
+        {
+            get { return global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor.MessageTypes[2]; }
         }
-        #endif
 
-      }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor
+        {
+            get { return Descriptor; }
+        }
 
-    }
-    #endregion
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRule()
+        {
+            OnConstruction();
+        }
 
-  }
+        partial void OnConstruction();
 
-  /// <summary>
-  /// WorkflowRule describes a rule that can be applied to any workflow in this namespace.
-  /// </summary>
-  public sealed partial class WorkflowRule : pb::IMessage<WorkflowRule>
-  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      , pb::IBufferMessage
-  #endif
-  {
-    private static readonly pb::MessageParser<WorkflowRule> _parser = new pb::MessageParser<WorkflowRule>(() => new WorkflowRule());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<WorkflowRule> Parser { get { return _parser; } }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRule(WorkflowRule other) : this()
+        {
+            createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
+            spec_ = other.spec_ != null ? other.spec_.Clone() : null;
+            createdByIdentity_ = other.createdByIdentity_;
+            description_ = other.description_;
+            _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor.MessageTypes[2]; }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public WorkflowRule Clone()
+        {
+            return new WorkflowRule(this);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
+        /// <summary>Field number for the "create_time" field.</summary>
+        public const int CreateTimeFieldNumber = 1;
+        private global::Google.Protobuf.WellKnownTypes.Timestamp createTime_;
+        /// <summary>
+        /// Rule creation time.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Google.Protobuf.WellKnownTypes.Timestamp CreateTime
+        {
+            get { return createTime_; }
+            set
+            {
+                createTime_ = value;
+            }
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRule() {
-      OnConstruction();
-    }
+        /// <summary>Field number for the "spec" field.</summary>
+        public const int SpecFieldNumber = 2;
+        private global::Temporalio.Api.Rules.V1.WorkflowRuleSpec spec_;
+        /// <summary>
+        /// Rule specification
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public global::Temporalio.Api.Rules.V1.WorkflowRuleSpec Spec
+        {
+            get { return spec_; }
+            set
+            {
+                spec_ = value;
+            }
+        }
 
-    partial void OnConstruction();
+        /// <summary>Field number for the "created_by_identity" field.</summary>
+        public const int CreatedByIdentityFieldNumber = 3;
+        private string createdByIdentity_ = "";
+        /// <summary>
+        /// Identity of the actor that created the rule
+        /// (-- api-linter: core::0140::prepositions=disabled
+        ///     aip.dev/not-precedent: It is better reflect the intent this way, we will also have updated_by. --)
+        /// (-- api-linter: core::0142::time-field-names=disabled
+        ///     aip.dev/not-precedent: Same as above. All other options sounds clumsy --)
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string CreatedByIdentity
+        {
+            get { return createdByIdentity_; }
+            set
+            {
+                createdByIdentity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+            }
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRule(WorkflowRule other) : this() {
-      createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
-      spec_ = other.spec_ != null ? other.spec_.Clone() : null;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
+        /// <summary>Field number for the "description" field.</summary>
+        public const int DescriptionFieldNumber = 4;
+        private string description_ = "";
+        /// <summary>
+        /// Rule description.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public string Description
+        {
+            get { return description_; }
+            set
+            {
+                description_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+            }
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public WorkflowRule Clone() {
-      return new WorkflowRule(this);
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other)
+        {
+            return Equals(other as WorkflowRule);
+        }
 
-    /// <summary>Field number for the "create_time" field.</summary>
-    public const int CreateTimeFieldNumber = 1;
-    private global::Google.Protobuf.WellKnownTypes.Timestamp createTime_;
-    /// <summary>
-    /// Rule creation time.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.WellKnownTypes.Timestamp CreateTime {
-      get { return createTime_; }
-      set {
-        createTime_ = value;
-      }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(WorkflowRule other)
+        {
+            if (ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(other, this))
+            {
+                return true;
+            }
+            if (!object.Equals(CreateTime, other.CreateTime)) return false;
+            if (!object.Equals(Spec, other.Spec)) return false;
+            if (CreatedByIdentity != other.CreatedByIdentity) return false;
+            if (Description != other.Description) return false;
+            return Equals(_unknownFields, other._unknownFields);
+        }
 
-    /// <summary>Field number for the "spec" field.</summary>
-    public const int SpecFieldNumber = 2;
-    private global::Temporalio.Api.Rules.V1.WorkflowRuleSpec spec_;
-    /// <summary>
-    /// Rule specification
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Temporalio.Api.Rules.V1.WorkflowRuleSpec Spec {
-      get { return spec_; }
-      set {
-        spec_ = value;
-      }
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode()
+        {
+            int hash = 1;
+            if (createTime_ != null) hash ^= CreateTime.GetHashCode();
+            if (spec_ != null) hash ^= Spec.GetHashCode();
+            if (CreatedByIdentity.Length != 0) hash ^= CreatedByIdentity.GetHashCode();
+            if (Description.Length != 0) hash ^= Description.GetHashCode();
+            if (_unknownFields != null)
+            {
+                hash ^= _unknownFields.GetHashCode();
+            }
+            return hash;
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override bool Equals(object other) {
-      return Equals(other as WorkflowRule);
-    }
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString()
+        {
+            return pb::JsonFormatter.ToDiagnosticString(this);
+        }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(WorkflowRule other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!object.Equals(CreateTime, other.CreateTime)) return false;
-      if (!object.Equals(Spec, other.Spec)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (createTime_ != null) hash ^= CreateTime.GetHashCode();
-      if (spec_ != null) hash ^= Spec.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void WriteTo(pb::CodedOutputStream output) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      output.WriteRawMessage(this);
-    #else
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output)
+        {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+            output.WriteRawMessage(this);
+#else
       if (createTime_ != null) {
         output.WriteRawTag(10);
         output.WriteMessage(CreateTime);
@@ -1191,74 +1403,123 @@ namespace Temporalio.Api.Rules.V1 {
       if (spec_ != null) {
         output.WriteRawTag(18);
         output.WriteMessage(Spec);
+      }
+      if (CreatedByIdentity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(CreatedByIdentity);
+      }
+      if (Description.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Description);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (createTime_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(CreateTime);
-      }
-      if (spec_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Spec);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(ref output);
-      }
-    }
-    #endif
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int CalculateSize() {
-      int size = 0;
-      if (createTime_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTime);
-      }
-      if (spec_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Spec);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(WorkflowRule other) {
-      if (other == null) {
-        return;
-      }
-      if (other.createTime_ != null) {
-        if (createTime_ == null) {
-          CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+#endif
         }
-        CreateTime.MergeFrom(other.CreateTime);
-      }
-      if (other.spec_ != null) {
-        if (spec_ == null) {
-          Spec = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec();
-        }
-        Spec.MergeFrom(other.Spec);
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
 
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(pb::CodedInputStream input) {
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-      input.ReadRawMessage(this);
-    #else
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output)
+        {
+            if (createTime_ != null)
+            {
+                output.WriteRawTag(10);
+                output.WriteMessage(CreateTime);
+            }
+            if (spec_ != null)
+            {
+                output.WriteRawTag(18);
+                output.WriteMessage(Spec);
+            }
+            if (CreatedByIdentity.Length != 0)
+            {
+                output.WriteRawTag(26);
+                output.WriteString(CreatedByIdentity);
+            }
+            if (Description.Length != 0)
+            {
+                output.WriteRawTag(34);
+                output.WriteString(Description);
+            }
+            if (_unknownFields != null)
+            {
+                _unknownFields.WriteTo(ref output);
+            }
+        }
+#endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize()
+        {
+            int size = 0;
+            if (createTime_ != null)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateTime);
+            }
+            if (spec_ != null)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeMessageSize(Spec);
+            }
+            if (CreatedByIdentity.Length != 0)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeStringSize(CreatedByIdentity);
+            }
+            if (Description.Length != 0)
+            {
+                size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
+            }
+            if (_unknownFields != null)
+            {
+                size += _unknownFields.CalculateSize();
+            }
+            return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(WorkflowRule other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+            if (other.createTime_ != null)
+            {
+                if (createTime_ == null)
+                {
+                    CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+                }
+                CreateTime.MergeFrom(other.CreateTime);
+            }
+            if (other.spec_ != null)
+            {
+                if (spec_ == null)
+                {
+                    Spec = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec();
+                }
+                Spec.MergeFrom(other.Spec);
+            }
+            if (other.CreatedByIdentity.Length != 0)
+            {
+                CreatedByIdentity = other.CreatedByIdentity;
+            }
+            if (other.Description.Length != 0)
+            {
+                Description = other.Description;
+            }
+            _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input)
+        {
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+            input.ReadRawMessage(this);
+#else
       uint tag;
       while ((tag = input.ReadTag()) != 0) {
         switch(tag) {
@@ -1279,43 +1540,68 @@ namespace Temporalio.Api.Rules.V1 {
             input.ReadMessage(Spec);
             break;
           }
-        }
-      }
-    #endif
-    }
-
-    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
-            break;
-          case 10: {
-            if (createTime_ == null) {
-              CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
-            }
-            input.ReadMessage(CreateTime);
+          case 26: {
+            CreatedByIdentity = input.ReadString();
             break;
           }
-          case 18: {
-            if (spec_ == null) {
-              Spec = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec();
-            }
-            input.ReadMessage(Spec);
+          case 34: {
+            Description = input.ReadString();
             break;
           }
         }
       }
+#endif
+        }
+
+#if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input)
+        {
+            uint tag;
+            while ((tag = input.ReadTag()) != 0)
+            {
+                switch (tag)
+                {
+                    default:
+                        _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                        break;
+                    case 10:
+                        {
+                            if (createTime_ == null)
+                            {
+                                CreateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+                            }
+                            input.ReadMessage(CreateTime);
+                            break;
+                        }
+                    case 18:
+                        {
+                            if (spec_ == null)
+                            {
+                                Spec = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec();
+                            }
+                            input.ReadMessage(Spec);
+                            break;
+                        }
+                    case 26:
+                        {
+                            CreatedByIdentity = input.ReadString();
+                            break;
+                        }
+                    case 34:
+                        {
+                            Description = input.ReadString();
+                            break;
+                        }
+                }
+            }
+        }
+#endif
+
     }
-    #endif
 
-  }
-
-  #endregion
+    #endregion
 
 }
 

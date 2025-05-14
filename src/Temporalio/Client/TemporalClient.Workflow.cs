@@ -739,6 +739,8 @@ namespace Temporalio.Client
                     SignalName = input.Options.StartSignal,
                     WorkflowIdConflictPolicy = input.Options.IdConflictPolicy,
                     UserMetadata = req.UserMetadata,
+                    Priority = req.Priority,
+                    VersioningOverride = req.VersioningOverride,
                 };
                 if (input.Options.StartSignalArgs != null && input.Options.StartSignalArgs.Count > 0)
                 {
@@ -783,6 +785,7 @@ namespace Temporalio.Client
                         options.StaticSummary, options.StaticDetails).
                         ConfigureAwait(false),
                     Priority = options.Priority?.ToProto(),
+                    VersioningOverride = options.VersioningOverride?.ToProto(),
                 };
                 if (args.Count > 0)
                 {

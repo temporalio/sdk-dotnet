@@ -42,5 +42,15 @@ namespace Temporalio.Common
         internal static WorkerDeploymentVersion FromBridge(
             Temporalio.Bridge.Api.Common.WorkerDeploymentVersion bridgeVersion) =>
         new(bridgeVersion.DeploymentName, bridgeVersion.BuildId);
+
+        /// <summary>
+        /// Converts this version to a proto.
+        /// </summary>
+        /// <returns>The proto representation.</returns>
+        internal Temporalio.Api.Deployment.V1.WorkerDeploymentVersion ToProto() => new()
+        {
+            BuildId = BuildId,
+            DeploymentName = DeploymentName,
+        };
     }
 }
