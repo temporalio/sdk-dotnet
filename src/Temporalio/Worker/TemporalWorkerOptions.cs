@@ -228,6 +228,20 @@ namespace Temporalio.Worker
         public int MaxConcurrentActivityTaskPolls { get; set; } = 5;
 
         /// <summary>
+        /// Gets or sets the behavior of the workflow task poller.
+        /// </summary>
+        /// <remarks>If set, will override any value set in <see cref="MaxConcurrentWorkflowTaskPolls"/>.</remarks>
+        /// <remarks>WARNING: This property is experimental.</remarks>
+        public PollerBehavior? WorkflowTaskPollerBehavior { get; set; }
+
+        /// <summary>
+        /// Gets or sets the behavior of the activity task poller.
+        /// </summary>
+        /// <remarks>WARNING: This property is experimental.</remarks>
+        /// <remarks>If set, will override any value set in <see cref="MaxConcurrentActivityTaskPolls"/>.</remarks>
+        public PollerBehavior? ActivityTaskPollerBehavior { get; set; }
+
+        /// <summary>
         /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will
         /// cause the workflow/update to fail instead of suspending the workflow via task failure.
         /// These are applied in addition to <see cref="WorkflowAttribute.FailureExceptionTypes" />

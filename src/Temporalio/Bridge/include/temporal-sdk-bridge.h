@@ -560,6 +560,21 @@ typedef struct TunerHolder {
   struct SlotSupplier local_activity_slot_supplier;
 } TunerHolder;
 
+typedef struct PollerBehaviorSimpleMaximum {
+  uintptr_t simple_maximum;
+} PollerBehaviorSimpleMaximum;
+
+typedef struct PollerBehaviorAutoscaling {
+  uintptr_t minimum;
+  uintptr_t maximum;
+  uintptr_t initial;
+} PollerBehaviorAutoscaling;
+
+typedef struct PollerBehavior {
+  const struct PollerBehaviorSimpleMaximum *simple_maximum;
+  const struct PollerBehaviorAutoscaling *autoscaling;
+} PollerBehavior;
+
 typedef struct ByteArrayRefArray {
   const struct ByteArrayRef *data;
   size_t size;
@@ -579,9 +594,9 @@ typedef struct WorkerOptions {
   double max_activities_per_second;
   double max_task_queue_activities_per_second;
   uint64_t graceful_shutdown_period_millis;
-  uint32_t max_concurrent_workflow_task_polls;
+  struct PollerBehavior workflow_task_poller_behavior;
   float nonsticky_to_sticky_poll_ratio;
-  uint32_t max_concurrent_activity_task_polls;
+  struct PollerBehavior activity_task_poller_behavior;
   bool nondeterminism_as_workflow_fail;
   struct ByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
 } WorkerOptions;
