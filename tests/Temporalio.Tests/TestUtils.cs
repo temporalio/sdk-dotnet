@@ -238,7 +238,9 @@ public static class TestUtils
             {
                 Namespace = client.Options.Namespace,
                 DeploymentName = version.DeploymentName,
+#pragma warning disable CS0612
                 Version = version.ToCanonicalString(),
+#pragma warning restore CS0612
                 ConflictToken = conflictToken,
                 Percentage = rampPercentage,
             });
@@ -259,7 +261,9 @@ public static class TestUtils
 
                 Assert.Contains(
                     response.WorkerDeploymentInfo.VersionSummaries,
+#pragma warning disable CS0612
                     vs => vs.Version == version.ToCanonicalString());
+#pragma warning restore CS0612
                 return response;
             }
             catch (RpcException)
@@ -277,7 +281,9 @@ public static class TestUtils
             {
                 Namespace = client.Options.Namespace,
                 DeploymentName = version.DeploymentName,
+#pragma warning disable CS0612
                 Version = version.ToCanonicalString(),
+#pragma warning restore CS0612
                 ConflictToken = conflictToken,
             });
     }

@@ -432,4 +432,46 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
         Assert.Contains("UseWorkerVersioning cannot be used together", ex2.Message);
 #pragma warning restore 0618
     }
+
+    [Fact]
+    public async Task WorkflowsCanUseVersioningOverride()
+    {
+        var deploymentName = $"deployment-default-versioning-{Guid.NewGuid()}";
+        var workerV1 = new WorkerDeploymentVersion(deploymentName, "1.0");
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(workerV1, true),
+            }.AddWorkflow<DeploymentVersioningWorkflowV1AutoUpgrade>());
+
+        await worker.ExecuteAsync(async () =>
+        {
+            var describeResp = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describeResp.ConflictToken, workerV1);
+
+            var handle = await Client.StartWorkflowAsync(
+                (DeploymentVersioningWorkflowV1AutoUpgrade wf) => wf.RunAsync(),
+                new(id: $"override-versioning-behavior-{Guid.NewGuid()}", taskQueue: taskQueue)
+                {
+                    VersioningOverride = new VersioningOverride.PinnedVersioningOverride(workerV1),
+                });
+
+            await handle.SignalAsync(wf => wf.DoFinishAsync());
+            await handle.GetResultAsync();
+
+            var history = await handle.FetchHistoryAsync();
+            Assert.Contains(history.Events, evt =>
+                evt.WorkflowExecutionStartedEventAttributes != null &&
+                (
+#pragma warning disable CS0612
+                   evt.WorkflowExecutionStartedEventAttributes.VersioningOverride.Behavior ==
+                   Temporalio.Api.Enums.V1.VersioningBehavior.Pinned ||
+#pragma warning restore CS0612
+                   evt.WorkflowExecutionStartedEventAttributes.VersioningOverride.OverrideCase ==
+                   Temporalio.Api.Workflow.V1.VersioningOverride.OverrideOneofCase.Pinned));
+        });
+    }
 }
