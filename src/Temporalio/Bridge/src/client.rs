@@ -301,12 +301,14 @@ async fn call_workflow_service(
     match rpc {
         "CountWorkflowExecutions" => rpc_call!(client, call, count_workflow_executions),
         "CreateSchedule" => rpc_call!(client, call, create_schedule),
+        "CreateWorkflowRule" => rpc_call!(client, call, create_workflow_rule),
         "DeleteSchedule" => rpc_call!(client, call, delete_schedule),
         "DeleteWorkerDeployment" => rpc_call!(client, call, delete_worker_deployment),
         "DeleteWorkerDeploymentVersion" => {
             rpc_call!(client, call, delete_worker_deployment_version)
         }
         "DeleteWorkflowExecution" => rpc_call!(client, call, delete_workflow_execution),
+        "DeleteWorkflowRule" => rpc_call!(client, call, delete_workflow_rule),
         "DeprecateNamespace" => rpc_call!(client, call, deprecate_namespace),
         "DescribeBatchOperation" => rpc_call!(client, call, describe_batch_operation),
         "DescribeDeployment" => rpc_call!(client, call, describe_deployment),
@@ -318,6 +320,7 @@ async fn call_workflow_service(
             rpc_call!(client, call, describe_worker_deployment_version)
         }
         "DescribeWorkflowExecution" => rpc_call!(client, call, describe_workflow_execution),
+        "DescribeWorkflowRule" => rpc_call!(client, call, describe_workflow_rule),
         "ExecuteMultiOperation" => rpc_call!(client, call, execute_multi_operation),
         "GetClusterInfo" => rpc_call!(client, call, get_cluster_info),
         "GetCurrentDeployment" => rpc_call!(client, call, get_current_deployment),
@@ -348,6 +351,7 @@ async fn call_workflow_service(
         "ListTaskQueuePartitions" => rpc_call!(client, call, list_task_queue_partitions),
         "ListWorkerDeployments" => rpc_call!(client, call, list_worker_deployments),
         "ListWorkflowExecutions" => rpc_call!(client, call, list_workflow_executions),
+        "ListWorkflowRules" => rpc_call!(client, call, list_workflow_rules),
         "PatchSchedule" => rpc_call!(client, call, patch_schedule),
         "PauseActivity" => rpc_call!(client, call, pause_activity),
         "PollActivityTaskQueue" => rpc_call!(client, call, poll_activity_task_queue),
@@ -400,6 +404,7 @@ async fn call_workflow_service(
         "StartBatchOperation" => rpc_call!(client, call, start_batch_operation),
         "StopBatchOperation" => rpc_call!(client, call, stop_batch_operation),
         "TerminateWorkflowExecution" => rpc_call!(client, call, terminate_workflow_execution),
+        "TriggerWorkflowRule" => rpc_call!(client, call, trigger_workflow_rule),
         "UnpauseActivity" => {
             rpc_call_on_trait!(client, call, WorkflowService, unpause_activity)
         }

@@ -140,6 +140,16 @@ namespace Temporalio.Client
         public RpcOptions? Rpc { get; set; }
 
         /// <summary>
+        /// Gets or sets the priority to use when starting this workflow.
+        /// </summary>
+        public Priority? Priority { get; set; }
+
+        /// <summary>
+        /// Gets or sets the versioning override to use when starting this workflow.
+        /// </summary>
+        public VersioningOverride? VersioningOverride { get; set; }
+
+        /// <summary>
         /// Perform a signal-with-start which will only start the workflow if it's not already
         /// running, but send a signal to it regardless. This is just sugar for manually setting
         /// <see cref="StartSignal" /> and <see cref="StartSignalArgs" /> directly.

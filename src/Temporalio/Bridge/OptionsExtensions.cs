@@ -450,16 +450,77 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("Task queue must be provided in worker options");
             }
-            var buildId = options.BuildId;
+#pragma warning disable 0618
+            var buildId = options.DeploymentOptions?.Version?.BuildId ?? options.BuildId;
+#pragma warning restore 0618
+            var buildIdAutoDetermined = false;
             if (buildId == null)
             {
-                if (options.UseWorkerVersioning)
-                {
-                    throw new ArgumentException("BuildId must be explicitly set when UseWorkerVersioning is true");
-                }
                 var entryAssembly = Assembly.GetEntryAssembly() ??
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
+                buildIdAutoDetermined = true;
+            }
+            Interop.WorkerVersioningStrategy versioningStrategy;
+            if (options.DeploymentOptions != null)
+            {
+                if (options.DeploymentOptions.Version == null)
+                {
+                    throw new ArgumentException("Worker options DeploymentOptions.Version must be set");
+                }
+#pragma warning disable 0618
+                if (options.UseWorkerVersioning)
+                {
+                    throw new ArgumentException("DeploymentOptions and UseWorkerVersioning cannot be used together in worker options");
+                }
+                if (options.BuildId != null)
+                {
+                    throw new ArgumentException("DeploymentOptions and BuildId cannot be used together in worker options");
+                }
+#pragma warning restore 0618
+                // Assign default build ID if not provided
+                versioningStrategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.DeploymentBased,
+                    deployment_based = new()
+                    {
+                        version = new()
+                        {
+                            build_id = scope.ByteArray(options.DeploymentOptions.Version.BuildId),
+                            deployment_name = scope.ByteArray(options.DeploymentOptions.Version.DeploymentName),
+                        },
+                        default_versioning_behavior = (int)options.DeploymentOptions.DefaultVersioningBehavior,
+                        use_worker_versioning = (byte)(options.DeploymentOptions.UseWorkerVersioning ? 1 : 0),
+                    },
+                };
+            }
+#pragma warning disable 0618
+            else if (options.UseWorkerVersioning)
+#pragma warning restore 0618
+            {
+                if (buildIdAutoDetermined)
+                {
+                    throw new ArgumentException("BuildId must be explicitly set when UseWorkerVersioning is true");
+                }
+                versioningStrategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.LegacyBuildIdBased,
+                    legacy_build_id_based = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
+                };
+            }
+            else
+            {
+                versioningStrategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.None,
+                    none = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
+                };
             }
             // We have to disable remote activities if a user asks _or_ if we are not running an
             // activity worker at all. Otherwise shutdown will not proceed properly.
@@ -487,7 +548,7 @@ namespace Temporalio.Bridge
             {
                 namespace_ = scope.ByteArray(namespace_),
                 task_queue = scope.ByteArray(options.TaskQueue),
-                build_id = scope.ByteArray(buildId),
+                versioning_strategy = versioningStrategy,
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = (uint)options.MaxCachedWorkflows,
                 tuner = tuner.ToInteropTuner(scope, loggerFactory),
@@ -502,7 +563,6 @@ namespace Temporalio.Bridge
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
-                use_worker_versioning = (byte)(options.UseWorkerVersioning ? 1 : 0),
                 max_concurrent_workflow_task_polls = (uint)options.MaxConcurrentWorkflowTaskPolls,
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
                 max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
@@ -533,7 +593,14 @@ namespace Temporalio.Bridge
             {
                 namespace_ = scope.ByteArray(options.Namespace),
                 task_queue = scope.ByteArray(options.TaskQueue),
-                build_id = scope.ByteArray(buildId),
+                versioning_strategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.None,
+                    none = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
+                },
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
                 tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope, options.LoggerFactory),

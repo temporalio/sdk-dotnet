@@ -34,72 +34,76 @@ namespace Temporalio.Api.TaskQueue.V1 {
             "BGtpbmQYAiABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFza1F1ZXVl",
             "S2luZBITCgtub3JtYWxfbmFtZRgDIAEoCSJPChFUYXNrUXVldWVNZXRhZGF0",
             "YRI6ChRtYXhfdGFza3NfcGVyX3NlY29uZBgBIAEoCzIcLmdvb2dsZS5wcm90",
-            "b2J1Zi5Eb3VibGVWYWx1ZSKgAQoXVGFza1F1ZXVlVmVyc2lvbmluZ0luZm8S",
-            "FwoPY3VycmVudF92ZXJzaW9uGAEgASgJEhcKD3JhbXBpbmdfdmVyc2lvbhgC",
-            "IAEoCRIiChpyYW1waW5nX3ZlcnNpb25fcGVyY2VudGFnZRgDIAEoAhIvCgt1",
-            "cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi",
-            "VwoZVGFza1F1ZXVlVmVyc2lvblNlbGVjdGlvbhIRCglidWlsZF9pZHMYASAD",
-            "KAkSEwoLdW52ZXJzaW9uZWQYAiABKAgSEgoKYWxsX2FjdGl2ZRgDIAEoCCKV",
-            "AgoUVGFza1F1ZXVlVmVyc2lvbkluZm8SUgoKdHlwZXNfaW5mbxgBIAMoCzI+",
-            "LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlVmVyc2lvbklu",
-            "Zm8uVHlwZXNJbmZvRW50cnkSSQoRdGFza19yZWFjaGFiaWxpdHkYAiABKA4y",
-            "Li50ZW1wb3JhbC5hcGkuZW51bXMudjEuQnVpbGRJZFRhc2tSZWFjaGFiaWxp",
-            "dHkaXgoOVHlwZXNJbmZvRW50cnkSCwoDa2V5GAEgASgFEjsKBXZhbHVlGAIg",
-            "ASgLMiwudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWVUeXBl",
-            "SW5mbzoCOAEihQEKEVRhc2tRdWV1ZVR5cGVJbmZvEjYKB3BvbGxlcnMYASAD",
-            "KAsyJS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlBvbGxlckluZm8SOAoF",
-            "c3RhdHMYAiABKAsyKS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tR",
-            "dWV1ZVN0YXRzIqQBCg5UYXNrUXVldWVTdGF0cxIhChlhcHByb3hpbWF0ZV9i",
-            "YWNrbG9nX2NvdW50GAEgASgDEjoKF2FwcHJveGltYXRlX2JhY2tsb2dfYWdl",
-            "GAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEhYKDnRhc2tzX2Fk",
-            "ZF9yYXRlGAMgASgCEhsKE3Rhc2tzX2Rpc3BhdGNoX3JhdGUYBCABKAIirAEK",
-            "D1Rhc2tRdWV1ZVN0YXR1cxIaChJiYWNrbG9nX2NvdW50X2hpbnQYASABKAMS",
-            "EgoKcmVhZF9sZXZlbBgCIAEoAxIRCglhY2tfbGV2ZWwYAyABKAMSFwoPcmF0",
-            "ZV9wZXJfc2Vjb25kGAQgASgBEj0KDXRhc2tfaWRfYmxvY2sYBSABKAsyJi50",
-            "ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tJZEJsb2NrIi8KC1Rhc2tJ",
-            "ZEJsb2NrEhAKCHN0YXJ0X2lkGAEgASgDEg4KBmVuZF9pZBgCIAEoAyJCChpU",
-            "YXNrUXVldWVQYXJ0aXRpb25NZXRhZGF0YRILCgNrZXkYASABKAkSFwoPb3du",
-            "ZXJfaG9zdF9uYW1lGAIgASgJIpoCCgpQb2xsZXJJbmZvEjQKEGxhc3RfYWNj",
-            "ZXNzX3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAK",
-            "CGlkZW50aXR5GAIgASgJEhcKD3JhdGVfcGVyX3NlY29uZBgDIAEoARJaCht3",
-            "b3JrZXJfdmVyc2lvbl9jYXBhYmlsaXRpZXMYBCABKAsyMS50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25DYXBhYmlsaXRpZXNCAhgBEk8K",
-            "EmRlcGxveW1lbnRfb3B0aW9ucxgFIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBs",
-            "b3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRPcHRpb25zIpoBChlTdGlja3lF",
-            "eGVjdXRpb25BdHRyaWJ1dGVzEj8KEXdvcmtlcl90YXNrX3F1ZXVlGAEgASgL",
-            "MiQudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUSPAoZc2No",
-            "ZWR1bGVfdG9fc3RhcnRfdGltZW91dBgCIAEoCzIZLmdvb2dsZS5wcm90b2J1",
-            "Zi5EdXJhdGlvbiIpChRDb21wYXRpYmxlVmVyc2lvblNldBIRCglidWlsZF9p",
-            "ZHMYASADKAkiagoVVGFza1F1ZXVlUmVhY2hhYmlsaXR5EhIKCnRhc2tfcXVl",
-            "dWUYASABKAkSPQoMcmVhY2hhYmlsaXR5GAIgAygOMicudGVtcG9yYWwuYXBp",
-            "LmVudW1zLnYxLlRhc2tSZWFjaGFiaWxpdHkiegoTQnVpbGRJZFJlYWNoYWJp",
-            "bGl0eRIQCghidWlsZF9pZBgBIAEoCRJRChd0YXNrX3F1ZXVlX3JlYWNoYWJp",
-            "bGl0eRgCIAMoCzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1",
-            "ZXVlUmVhY2hhYmlsaXR5IisKEFJhbXBCeVBlcmNlbnRhZ2USFwoPcmFtcF9w",
-            "ZXJjZW50YWdlGAEgASgCIoABChVCdWlsZElkQXNzaWdubWVudFJ1bGUSFwoP",
-            "dGFyZ2V0X2J1aWxkX2lkGAEgASgJEkYKD3BlcmNlbnRhZ2VfcmFtcBgDIAEo",
-            "CzIrLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUmFtcEJ5UGVyY2VudGFn",
-            "ZUgAQgYKBHJhbXAiUQodQ29tcGF0aWJsZUJ1aWxkSWRSZWRpcmVjdFJ1bGUS",
-            "FwoPc291cmNlX2J1aWxkX2lkGAEgASgJEhcKD3RhcmdldF9idWlsZF9pZBgC",
-            "IAEoCSKTAQogVGltZXN0YW1wZWRCdWlsZElkQXNzaWdubWVudFJ1bGUSPgoE",
-            "cnVsZRgBIAEoCzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuQnVpbGRJ",
-            "ZEFzc2lnbm1lbnRSdWxlEi8KC2NyZWF0ZV90aW1lGAIgASgLMhouZ29vZ2xl",
-            "LnByb3RvYnVmLlRpbWVzdGFtcCKjAQooVGltZXN0YW1wZWRDb21wYXRpYmxl",
-            "QnVpbGRJZFJlZGlyZWN0UnVsZRJGCgRydWxlGAEgASgLMjgudGVtcG9yYWwu",
-            "YXBpLnRhc2txdWV1ZS52MS5Db21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVs",
-            "ZRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
-            "c3RhbXAiPgoVUG9sbGVyU2NhbGluZ0RlY2lzaW9uEiUKHXBvbGxfcmVxdWVz",
-            "dF9kZWx0YV9zdWdnZXN0aW9uGAEgASgFQpgBChxpby50ZW1wb3JhbC5hcGku",
-            "dGFza3F1ZXVlLnYxQgxNZXNzYWdlUHJvdG9QAVopZ28udGVtcG9yYWwuaW8v",
-            "YXBpL3Rhc2txdWV1ZS92MTt0YXNrcXVldWWqAhtUZW1wb3JhbGlvLkFwaS5U",
-            "YXNrUXVldWUuVjHqAh5UZW1wb3JhbGlvOjpBcGk6OlRhc2tRdWV1ZTo6VjFi",
-            "BnByb3RvMw=="));
+            "b2J1Zi5Eb3VibGVWYWx1ZSLaAgoXVGFza1F1ZXVlVmVyc2lvbmluZ0luZm8S",
+            "VwoaY3VycmVudF9kZXBsb3ltZW50X3ZlcnNpb24YByABKAsyMy50ZW1wb3Jh",
+            "bC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvbhIb",
+            "Cg9jdXJyZW50X3ZlcnNpb24YASABKAlCAhgBElcKGnJhbXBpbmdfZGVwbG95",
+            "bWVudF92ZXJzaW9uGAkgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQu",
+            "djEuV29ya2VyRGVwbG95bWVudFZlcnNpb24SGwoPcmFtcGluZ192ZXJzaW9u",
+            "GAIgASgJQgIYARIiChpyYW1waW5nX3ZlcnNpb25fcGVyY2VudGFnZRgDIAEo",
+            "AhIvCgt1cGRhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
+            "c3RhbXAiVwoZVGFza1F1ZXVlVmVyc2lvblNlbGVjdGlvbhIRCglidWlsZF9p",
+            "ZHMYASADKAkSEwoLdW52ZXJzaW9uZWQYAiABKAgSEgoKYWxsX2FjdGl2ZRgD",
+            "IAEoCCKVAgoUVGFza1F1ZXVlVmVyc2lvbkluZm8SUgoKdHlwZXNfaW5mbxgB",
+            "IAMoCzI+LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlVmVy",
+            "c2lvbkluZm8uVHlwZXNJbmZvRW50cnkSSQoRdGFza19yZWFjaGFiaWxpdHkY",
+            "AiABKA4yLi50ZW1wb3JhbC5hcGkuZW51bXMudjEuQnVpbGRJZFRhc2tSZWFj",
+            "aGFiaWxpdHkaXgoOVHlwZXNJbmZvRW50cnkSCwoDa2V5GAEgASgFEjsKBXZh",
+            "bHVlGAIgASgLMiwudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVl",
+            "dWVUeXBlSW5mbzoCOAEihQEKEVRhc2tRdWV1ZVR5cGVJbmZvEjYKB3BvbGxl",
+            "cnMYASADKAsyJS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlBvbGxlcklu",
+            "Zm8SOAoFc3RhdHMYAiABKAsyKS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYx",
+            "LlRhc2tRdWV1ZVN0YXRzIqQBCg5UYXNrUXVldWVTdGF0cxIhChlhcHByb3hp",
+            "bWF0ZV9iYWNrbG9nX2NvdW50GAEgASgDEjoKF2FwcHJveGltYXRlX2JhY2ts",
+            "b2dfYWdlGAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEhYKDnRh",
+            "c2tzX2FkZF9yYXRlGAMgASgCEhsKE3Rhc2tzX2Rpc3BhdGNoX3JhdGUYBCAB",
+            "KAIirAEKD1Rhc2tRdWV1ZVN0YXR1cxIaChJiYWNrbG9nX2NvdW50X2hpbnQY",
+            "ASABKAMSEgoKcmVhZF9sZXZlbBgCIAEoAxIRCglhY2tfbGV2ZWwYAyABKAMS",
+            "FwoPcmF0ZV9wZXJfc2Vjb25kGAQgASgBEj0KDXRhc2tfaWRfYmxvY2sYBSAB",
+            "KAsyJi50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tJZEJsb2NrIi8K",
+            "C1Rhc2tJZEJsb2NrEhAKCHN0YXJ0X2lkGAEgASgDEg4KBmVuZF9pZBgCIAEo",
+            "AyJCChpUYXNrUXVldWVQYXJ0aXRpb25NZXRhZGF0YRILCgNrZXkYASABKAkS",
+            "FwoPb3duZXJfaG9zdF9uYW1lGAIgASgJIpoCCgpQb2xsZXJJbmZvEjQKEGxh",
+            "c3RfYWNjZXNzX3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
+            "YW1wEhAKCGlkZW50aXR5GAIgASgJEhcKD3JhdGVfcGVyX3NlY29uZBgDIAEo",
+            "ARJaCht3b3JrZXJfdmVyc2lvbl9jYXBhYmlsaXRpZXMYBCABKAsyMS50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25DYXBhYmlsaXRpZXNC",
+            "AhgBEk8KEmRlcGxveW1lbnRfb3B0aW9ucxgFIAEoCzIzLnRlbXBvcmFsLmFw",
+            "aS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRPcHRpb25zIpoBChlT",
+            "dGlja3lFeGVjdXRpb25BdHRyaWJ1dGVzEj8KEXdvcmtlcl90YXNrX3F1ZXVl",
+            "GAEgASgLMiQudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUS",
+            "PAoZc2NoZWR1bGVfdG9fc3RhcnRfdGltZW91dBgCIAEoCzIZLmdvb2dsZS5w",
+            "cm90b2J1Zi5EdXJhdGlvbiIpChRDb21wYXRpYmxlVmVyc2lvblNldBIRCgli",
+            "dWlsZF9pZHMYASADKAkiagoVVGFza1F1ZXVlUmVhY2hhYmlsaXR5EhIKCnRh",
+            "c2tfcXVldWUYASABKAkSPQoMcmVhY2hhYmlsaXR5GAIgAygOMicudGVtcG9y",
+            "YWwuYXBpLmVudW1zLnYxLlRhc2tSZWFjaGFiaWxpdHkiegoTQnVpbGRJZFJl",
+            "YWNoYWJpbGl0eRIQCghidWlsZF9pZBgBIAEoCRJRChd0YXNrX3F1ZXVlX3Jl",
+            "YWNoYWJpbGl0eRgCIAMoCzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEu",
+            "VGFza1F1ZXVlUmVhY2hhYmlsaXR5IisKEFJhbXBCeVBlcmNlbnRhZ2USFwoP",
+            "cmFtcF9wZXJjZW50YWdlGAEgASgCIoABChVCdWlsZElkQXNzaWdubWVudFJ1",
+            "bGUSFwoPdGFyZ2V0X2J1aWxkX2lkGAEgASgJEkYKD3BlcmNlbnRhZ2VfcmFt",
+            "cBgDIAEoCzIrLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUmFtcEJ5UGVy",
+            "Y2VudGFnZUgAQgYKBHJhbXAiUQodQ29tcGF0aWJsZUJ1aWxkSWRSZWRpcmVj",
+            "dFJ1bGUSFwoPc291cmNlX2J1aWxkX2lkGAEgASgJEhcKD3RhcmdldF9idWls",
+            "ZF9pZBgCIAEoCSKTAQogVGltZXN0YW1wZWRCdWlsZElkQXNzaWdubWVudFJ1",
+            "bGUSPgoEcnVsZRgBIAEoCzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEu",
+            "QnVpbGRJZEFzc2lnbm1lbnRSdWxlEi8KC2NyZWF0ZV90aW1lGAIgASgLMhou",
+            "Z29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKjAQooVGltZXN0YW1wZWRDb21w",
+            "YXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRJGCgRydWxlGAEgASgLMjgudGVt",
+            "cG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Db21wYXRpYmxlQnVpbGRJZFJlZGly",
+            "ZWN0UnVsZRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1",
+            "Zi5UaW1lc3RhbXAiPgoVUG9sbGVyU2NhbGluZ0RlY2lzaW9uEiUKHXBvbGxf",
+            "cmVxdWVzdF9kZWx0YV9zdWdnZXN0aW9uGAEgASgFQpgBChxpby50ZW1wb3Jh",
+            "bC5hcGkudGFza3F1ZXVlLnYxQgxNZXNzYWdlUHJvdG9QAVopZ28udGVtcG9y",
+            "YWwuaW8vYXBpL3Rhc2txdWV1ZS92MTt0YXNrcXVldWWqAhtUZW1wb3JhbGlv",
+            "LkFwaS5UYXNrUXVldWUuVjHqAh5UZW1wb3JhbGlvOjpBcGk6OlRhc2tRdWV1",
+            "ZTo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueue), global::Temporalio.Api.TaskQueue.V1.TaskQueue.Parser, new[]{ "Name", "Kind", "NormalName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueMetadata), global::Temporalio.Api.TaskQueue.V1.TaskQueueMetadata.Parser, new[]{ "MaxTasksPerSecond" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersioningInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersioningInfo.Parser, new[]{ "CurrentVersion", "RampingVersion", "RampingVersionPercentage", "UpdateTime" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersioningInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersioningInfo.Parser, new[]{ "CurrentDeploymentVersion", "CurrentVersion", "RampingDeploymentVersion", "RampingVersion", "RampingVersionPercentage", "UpdateTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionSelection.Parser, new[]{ "BuildIds", "Unversioned", "AllActive" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueVersionInfo.Parser, new[]{ "TypesInfo", "TaskReachability" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo), global::Temporalio.Api.TaskQueue.V1.TaskQueueTypeInfo.Parser, new[]{ "Pollers", "Stats" }, null, null, null, null),
@@ -637,7 +641,9 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public TaskQueueVersioningInfo(TaskQueueVersioningInfo other) : this() {
+      currentDeploymentVersion_ = other.currentDeploymentVersion_ != null ? other.currentDeploymentVersion_.Clone() : null;
       currentVersion_ = other.currentVersion_;
+      rampingDeploymentVersion_ = other.rampingDeploymentVersion_ != null ? other.rampingDeploymentVersion_.Clone() : null;
       rampingVersion_ = other.rampingVersion_;
       rampingVersionPercentage_ = other.rampingVersionPercentage_;
       updateTime_ = other.updateTime_ != null ? other.updateTime_.Clone() : null;
@@ -650,19 +656,32 @@ namespace Temporalio.Api.TaskQueue.V1 {
       return new TaskQueueVersioningInfo(this);
     }
 
+    /// <summary>Field number for the "current_deployment_version" field.</summary>
+    public const int CurrentDeploymentVersionFieldNumber = 7;
+    private global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion currentDeploymentVersion_;
+    /// <summary>
+    /// Specifies which Deployment Version should receive new workflow executions and tasks of
+    /// existing unversioned or AutoUpgrade workflows.
+    /// Nil value represents all the unversioned workers (those with `UNVERSIONED` (or unspecified) `WorkerVersioningMode`.)
+    /// Note: Current Version is overridden by the Ramping Version for a portion of traffic when ramp percentage
+    /// is non-zero (see `ramping_deployment_version` and `ramping_version_percentage`).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion CurrentDeploymentVersion {
+      get { return currentDeploymentVersion_; }
+      set {
+        currentDeploymentVersion_ = value;
+      }
+    }
+
     /// <summary>Field number for the "current_version" field.</summary>
     public const int CurrentVersionFieldNumber = 1;
     private string currentVersion_ = "";
     /// <summary>
-    /// Always present. Specifies which Deployment Version should receive new workflow
-    /// executions and tasks of existing unversioned or AutoUpgrade workflows.
-    /// Can be one of the following:
-    /// - A Deployment Version identifier in the form "&lt;deployment_name>.&lt;build_id>".
-    /// - Or, the "__unversioned__" special value, to represent all the unversioned workers (those
-    ///   with `UNVERSIONED` (or unspecified) `WorkerVersioningMode`.)
-    /// Note: Current Version is overridden by the Ramping Version for a portion of traffic when a ramp
-    /// is set (see `ramping_version`.)
+    /// Deprecated. Use `current_deployment_version`.
     /// </summary>
+    [global::System.ObsoleteAttribute]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string CurrentVersion {
@@ -672,19 +691,32 @@ namespace Temporalio.Api.TaskQueue.V1 {
       }
     }
 
+    /// <summary>Field number for the "ramping_deployment_version" field.</summary>
+    public const int RampingDeploymentVersionFieldNumber = 9;
+    private global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion rampingDeploymentVersion_;
+    /// <summary>
+    /// When ramp percentage is non-zero, that portion of traffic is shifted from the Current Version to the Ramping Version.
+    /// Must always be different from `current_deployment_version` unless both are nil.
+    /// Nil value represents all the unversioned workers (those with `UNVERSIONED` (or unspecified) `WorkerVersioningMode`.)
+    /// Note that it is possible to ramp from one Version to another Version, or from unversioned
+    /// workers to a particular Version, or from a particular Version to unversioned workers.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion RampingDeploymentVersion {
+      get { return rampingDeploymentVersion_; }
+      set {
+        rampingDeploymentVersion_ = value;
+      }
+    }
+
     /// <summary>Field number for the "ramping_version" field.</summary>
     public const int RampingVersionFieldNumber = 2;
     private string rampingVersion_ = "";
     /// <summary>
-    /// When present, it means the traffic is being shifted from the Current Version to the Ramping
-    /// Version.
-    /// Must always be different from `current_version`. Can be one of the following:
-    /// - A Deployment Version identifier in the form "&lt;deployment_name>.&lt;build_id>".
-    /// - Or, the "__unversioned__" special value, to represent all the unversioned workers (those
-    ///   with `UNVERSIONED` (or unspecified) `WorkerVersioningMode`.)
-    /// Note that it is possible to ramp from one Version to another Version, or from unversioned
-    /// workers to a particular Version, or from a particular Version to unversioned workers.
+    /// Deprecated. Use `ramping_deployment_version`.
     /// </summary>
+    [global::System.ObsoleteAttribute]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string RampingVersion {
@@ -701,6 +733,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     /// Percentage of tasks that are routed to the Ramping Version instead of the Current Version.
     /// Valid range: [0, 100]. A 100% value means the Ramping Version is receiving full traffic but
     /// not yet "promoted" to be the Current Version, likely due to pending validations.
+    /// A 0% value means the Ramping Version is receiving no traffic.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -741,7 +774,9 @@ namespace Temporalio.Api.TaskQueue.V1 {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (!object.Equals(CurrentDeploymentVersion, other.CurrentDeploymentVersion)) return false;
       if (CurrentVersion != other.CurrentVersion) return false;
+      if (!object.Equals(RampingDeploymentVersion, other.RampingDeploymentVersion)) return false;
       if (RampingVersion != other.RampingVersion) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RampingVersionPercentage, other.RampingVersionPercentage)) return false;
       if (!object.Equals(UpdateTime, other.UpdateTime)) return false;
@@ -752,7 +787,9 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (currentDeploymentVersion_ != null) hash ^= CurrentDeploymentVersion.GetHashCode();
       if (CurrentVersion.Length != 0) hash ^= CurrentVersion.GetHashCode();
+      if (rampingDeploymentVersion_ != null) hash ^= RampingDeploymentVersion.GetHashCode();
       if (RampingVersion.Length != 0) hash ^= RampingVersion.GetHashCode();
       if (RampingVersionPercentage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RampingVersionPercentage);
       if (updateTime_ != null) hash ^= UpdateTime.GetHashCode();
@@ -790,6 +827,14 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteRawTag(34);
         output.WriteMessage(UpdateTime);
       }
+      if (currentDeploymentVersion_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(CurrentDeploymentVersion);
+      }
+      if (rampingDeploymentVersion_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(RampingDeploymentVersion);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -816,6 +861,14 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteRawTag(34);
         output.WriteMessage(UpdateTime);
       }
+      if (currentDeploymentVersion_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(CurrentDeploymentVersion);
+      }
+      if (rampingDeploymentVersion_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(RampingDeploymentVersion);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -826,8 +879,14 @@ namespace Temporalio.Api.TaskQueue.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (currentDeploymentVersion_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CurrentDeploymentVersion);
+      }
       if (CurrentVersion.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(CurrentVersion);
+      }
+      if (rampingDeploymentVersion_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(RampingDeploymentVersion);
       }
       if (RampingVersion.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(RampingVersion);
@@ -850,8 +909,20 @@ namespace Temporalio.Api.TaskQueue.V1 {
       if (other == null) {
         return;
       }
+      if (other.currentDeploymentVersion_ != null) {
+        if (currentDeploymentVersion_ == null) {
+          CurrentDeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+        }
+        CurrentDeploymentVersion.MergeFrom(other.CurrentDeploymentVersion);
+      }
       if (other.CurrentVersion.Length != 0) {
         CurrentVersion = other.CurrentVersion;
+      }
+      if (other.rampingDeploymentVersion_ != null) {
+        if (rampingDeploymentVersion_ == null) {
+          RampingDeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+        }
+        RampingDeploymentVersion.MergeFrom(other.RampingDeploymentVersion);
       }
       if (other.RampingVersion.Length != 0) {
         RampingVersion = other.RampingVersion;
@@ -899,6 +970,20 @@ namespace Temporalio.Api.TaskQueue.V1 {
             input.ReadMessage(UpdateTime);
             break;
           }
+          case 58: {
+            if (currentDeploymentVersion_ == null) {
+              CurrentDeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(CurrentDeploymentVersion);
+            break;
+          }
+          case 74: {
+            if (rampingDeploymentVersion_ == null) {
+              RampingDeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(RampingDeploymentVersion);
+            break;
+          }
         }
       }
     #endif
@@ -931,6 +1016,20 @@ namespace Temporalio.Api.TaskQueue.V1 {
               UpdateTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(UpdateTime);
+            break;
+          }
+          case 58: {
+            if (currentDeploymentVersion_ == null) {
+              CurrentDeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(CurrentDeploymentVersion);
+            break;
+          }
+          case 74: {
+            if (rampingDeploymentVersion_ == null) {
+              RampingDeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(RampingDeploymentVersion);
             break;
           }
         }
