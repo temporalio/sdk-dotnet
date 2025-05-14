@@ -43,27 +43,29 @@ namespace Temporalio.Api.Batch.V1 {
             "bW1vbi52MS5QYXlsb2FkcxIuCgZoZWFkZXIYAyABKAsyHi50ZW1wb3JhbC5h",
             "cGkuY29tbW9uLnYxLkhlYWRlchIQCghpZGVudGl0eRgEIAEoCSIuChpCYXRj",
             "aE9wZXJhdGlvbkNhbmNlbGxhdGlvbhIQCghpZGVudGl0eRgBIAEoCSIqChZC",
-            "YXRjaE9wZXJhdGlvbkRlbGV0aW9uEhAKCGlkZW50aXR5GAEgASgJItkBChNC",
+            "YXRjaE9wZXJhdGlvbkRlbGV0aW9uEhAKCGlkZW50aXR5GAEgASgJIqYCChNC",
             "YXRjaE9wZXJhdGlvblJlc2V0EhAKCGlkZW50aXR5GAMgASgJEjUKB29wdGlv",
             "bnMYBCABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJlc2V0T3B0aW9u",
             "cxI0CgpyZXNldF90eXBlGAEgASgOMiAudGVtcG9yYWwuYXBpLmVudW1zLnYx",
             "LlJlc2V0VHlwZRJDChJyZXNldF9yZWFwcGx5X3R5cGUYAiABKA4yJy50ZW1w",
-            "b3JhbC5hcGkuZW51bXMudjEuUmVzZXRSZWFwcGx5VHlwZSLJAQosQmF0Y2hP",
-            "cGVyYXRpb25VcGRhdGVXb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnMSEAoIaWRl",
-            "bnRpdHkYASABKAkSVgoad29ya2Zsb3dfZXhlY3V0aW9uX29wdGlvbnMYAiAB",
-            "KAsyMi50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuV29ya2Zsb3dFeGVjdXRp",
-            "b25PcHRpb25zEi8KC3VwZGF0ZV9tYXNrGAMgASgLMhouZ29vZ2xlLnByb3Rv",
-            "YnVmLkZpZWxkTWFzayLAAQofQmF0Y2hPcGVyYXRpb25VbnBhdXNlQWN0aXZp",
-            "dGllcxIQCghpZGVudGl0eRgBIAEoCRIOCgR0eXBlGAIgASgJSAASEwoJbWF0",
-            "Y2hfYWxsGAMgASgISAASFgoOcmVzZXRfYXR0ZW1wdHMYBCABKAgSFwoPcmVz",
-            "ZXRfaGVhcnRiZWF0GAUgASgIEikKBmppdHRlchgGIAEoCzIZLmdvb2dsZS5w",
-            "cm90b2J1Zi5EdXJhdGlvbkIKCghhY3Rpdml0eSKEAQohQmF0Y2hPcGVyYXRp",
-            "b25UcmlnZ2VyV29ya2Zsb3dSdWxlEhAKCGlkZW50aXR5GAEgASgJEgwKAmlk",
-            "GAIgASgJSAASNwoEc3BlYxgDIAEoCzInLnRlbXBvcmFsLmFwaS5ydWxlcy52",
-            "MS5Xb3JrZmxvd1J1bGVTcGVjSABCBgoEcnVsZUKEAQoYaW8udGVtcG9yYWwu",
-            "YXBpLmJhdGNoLnYxQgxNZXNzYWdlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8v",
-            "YXBpL2JhdGNoL3YxO2JhdGNoqgIXVGVtcG9yYWxpby5BcGkuQmF0Y2guVjHq",
-            "AhpUZW1wb3JhbGlvOjpBcGk6OkJhdGNoOjpWMWIGcHJvdG8z"));
+            "b3JhbC5hcGkuZW51bXMudjEuUmVzZXRSZWFwcGx5VHlwZRJLChVwb3N0X3Jl",
+            "c2V0X29wZXJhdGlvbnMYBSADKAsyLC50ZW1wb3JhbC5hcGkud29ya2Zsb3cu",
+            "djEuUG9zdFJlc2V0T3BlcmF0aW9uIskBCixCYXRjaE9wZXJhdGlvblVwZGF0",
+            "ZVdvcmtmbG93RXhlY3V0aW9uT3B0aW9ucxIQCghpZGVudGl0eRgBIAEoCRJW",
+            "Chp3b3JrZmxvd19leGVjdXRpb25fb3B0aW9ucxgCIAEoCzIyLnRlbXBvcmFs",
+            "LmFwaS53b3JrZmxvdy52MS5Xb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnMSLwoL",
+            "dXBkYXRlX21hc2sYAyABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNr",
+            "IsABCh9CYXRjaE9wZXJhdGlvblVucGF1c2VBY3Rpdml0aWVzEhAKCGlkZW50",
+            "aXR5GAEgASgJEg4KBHR5cGUYAiABKAlIABITCgltYXRjaF9hbGwYAyABKAhI",
+            "ABIWCg5yZXNldF9hdHRlbXB0cxgEIAEoCBIXCg9yZXNldF9oZWFydGJlYXQY",
+            "BSABKAgSKQoGaml0dGVyGAYgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0",
+            "aW9uQgoKCGFjdGl2aXR5IoQBCiFCYXRjaE9wZXJhdGlvblRyaWdnZXJXb3Jr",
+            "Zmxvd1J1bGUSEAoIaWRlbnRpdHkYASABKAkSDAoCaWQYAiABKAlIABI3CgRz",
+            "cGVjGAMgASgLMicudGVtcG9yYWwuYXBpLnJ1bGVzLnYxLldvcmtmbG93UnVs",
+            "ZVNwZWNIAEIGCgRydWxlQoQBChhpby50ZW1wb3JhbC5hcGkuYmF0Y2gudjFC",
+            "DE1lc3NhZ2VQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvYmF0Y2gvdjE7",
+            "YmF0Y2iqAhdUZW1wb3JhbGlvLkFwaS5CYXRjaC5WMeoCGlRlbXBvcmFsaW86",
+            "OkFwaTo6QmF0Y2g6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -72,7 +74,7 @@ namespace Temporalio.Api.Batch.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationSignal), global::Temporalio.Api.Batch.V1.BatchOperationSignal.Parser, new[]{ "Signal", "Input", "Header", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationCancellation), global::Temporalio.Api.Batch.V1.BatchOperationCancellation.Parser, new[]{ "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationDeletion), global::Temporalio.Api.Batch.V1.BatchOperationDeletion.Parser, new[]{ "Identity" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationReset), global::Temporalio.Api.Batch.V1.BatchOperationReset.Parser, new[]{ "Identity", "Options", "ResetType", "ResetReapplyType" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationReset), global::Temporalio.Api.Batch.V1.BatchOperationReset.Parser, new[]{ "Identity", "Options", "ResetType", "ResetReapplyType", "PostResetOperations" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationUpdateWorkflowExecutionOptions), global::Temporalio.Api.Batch.V1.BatchOperationUpdateWorkflowExecutionOptions.Parser, new[]{ "Identity", "WorkflowExecutionOptions", "UpdateMask" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationUnpauseActivities), global::Temporalio.Api.Batch.V1.BatchOperationUnpauseActivities.Parser, new[]{ "Identity", "Type", "MatchAll", "ResetAttempts", "ResetHeartbeat", "Jitter" }, new[]{ "Activity" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationTriggerWorkflowRule), global::Temporalio.Api.Batch.V1.BatchOperationTriggerWorkflowRule.Parser, new[]{ "Identity", "Id", "Spec" }, new[]{ "Rule" }, null, null, null)
@@ -1428,6 +1430,7 @@ namespace Temporalio.Api.Batch.V1 {
       options_ = other.options_ != null ? other.options_.Clone() : null;
       resetType_ = other.resetType_;
       resetReapplyType_ = other.resetReapplyType_;
+      postResetOperations_ = other.postResetOperations_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1497,6 +1500,22 @@ namespace Temporalio.Api.Batch.V1 {
       }
     }
 
+    /// <summary>Field number for the "post_reset_operations" field.</summary>
+    public const int PostResetOperationsFieldNumber = 5;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Workflow.V1.PostResetOperation> _repeated_postResetOperations_codec
+        = pb::FieldCodec.ForMessage(42, global::Temporalio.Api.Workflow.V1.PostResetOperation.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Workflow.V1.PostResetOperation> postResetOperations_ = new pbc::RepeatedField<global::Temporalio.Api.Workflow.V1.PostResetOperation>();
+    /// <summary>
+    /// Operations to perform after the workflow has been reset. These operations will be applied
+    /// to the *new* run of the workflow execution in the order they are provided.
+    /// All operations are applied to the workflow before the first new workflow task is generated
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Workflow.V1.PostResetOperation> PostResetOperations {
+      get { return postResetOperations_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1516,6 +1535,7 @@ namespace Temporalio.Api.Batch.V1 {
       if (!object.Equals(Options, other.Options)) return false;
       if (ResetType != other.ResetType) return false;
       if (ResetReapplyType != other.ResetReapplyType) return false;
+      if(!postResetOperations_.Equals(other.postResetOperations_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1527,6 +1547,7 @@ namespace Temporalio.Api.Batch.V1 {
       if (options_ != null) hash ^= Options.GetHashCode();
       if (ResetType != global::Temporalio.Api.Enums.V1.ResetType.Unspecified) hash ^= ResetType.GetHashCode();
       if (ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) hash ^= ResetReapplyType.GetHashCode();
+      hash ^= postResetOperations_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1561,6 +1582,7 @@ namespace Temporalio.Api.Batch.V1 {
         output.WriteRawTag(34);
         output.WriteMessage(Options);
       }
+      postResetOperations_.WriteTo(output, _repeated_postResetOperations_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1587,6 +1609,7 @@ namespace Temporalio.Api.Batch.V1 {
         output.WriteRawTag(34);
         output.WriteMessage(Options);
       }
+      postResetOperations_.WriteTo(ref output, _repeated_postResetOperations_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1609,6 +1632,7 @@ namespace Temporalio.Api.Batch.V1 {
       if (ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) ResetReapplyType);
       }
+      size += postResetOperations_.CalculateSize(_repeated_postResetOperations_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1636,6 +1660,7 @@ namespace Temporalio.Api.Batch.V1 {
       if (other.ResetReapplyType != global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified) {
         ResetReapplyType = other.ResetReapplyType;
       }
+      postResetOperations_.Add(other.postResetOperations_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1670,6 +1695,10 @@ namespace Temporalio.Api.Batch.V1 {
             input.ReadMessage(Options);
             break;
           }
+          case 42: {
+            postResetOperations_.AddEntriesFrom(input, _repeated_postResetOperations_codec);
+            break;
+          }
         }
       }
     #endif
@@ -1702,6 +1731,10 @@ namespace Temporalio.Api.Batch.V1 {
               Options = new global::Temporalio.Api.Common.V1.ResetOptions();
             }
             input.ReadMessage(Options);
+            break;
+          }
+          case 42: {
+            postResetOperations_.AddEntriesFrom(ref input, _repeated_postResetOperations_codec);
             break;
           }
         }
@@ -1780,7 +1813,7 @@ namespace Temporalio.Api.Batch.V1 {
     public const int WorkflowExecutionOptionsFieldNumber = 2;
     private global::Temporalio.Api.Workflow.V1.WorkflowExecutionOptions workflowExecutionOptions_;
     /// <summary>
-    /// Workflow Execution options. Partial updates are accepted and controlled by update_mask.
+    /// Update Workflow options that were originally specified via StartWorkflowExecution. Partial updates are accepted and controlled by update_mask.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

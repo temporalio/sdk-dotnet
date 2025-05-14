@@ -36,19 +36,20 @@ namespace Temporalio.Api.Rules.V1 {
             "CzIpLnRlbXBvcmFsLmFwaS5ydWxlcy52MS5Xb3JrZmxvd1J1bGVBY3Rpb24S",
             "MwoPZXhwaXJhdGlvbl90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp",
             "bWVzdGFtcBosChdBY3Rpdml0eVN0YXJ0aW5nVHJpZ2dlchIRCglwcmVkaWNh",
-            "dGUYASABKAlCCQoHdHJpZ2dlciJ2CgxXb3JrZmxvd1J1bGUSLwoLY3JlYXRl",
-            "X3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjUKBHNw",
-            "ZWMYAiABKAsyJy50ZW1wb3JhbC5hcGkucnVsZXMudjEuV29ya2Zsb3dSdWxl",
-            "U3BlY0KEAQoYaW8udGVtcG9yYWwuYXBpLnJ1bGVzLnYxQgxNZXNzYWdlUHJv",
-            "dG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL3J1bGVzL3YxO3J1bGVzqgIXVGVt",
-            "cG9yYWxpby5BcGkuUnVsZXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OlJ1bGVz",
-            "OjpWMWIGcHJvdG8z"));
+            "dGUYASABKAlCCQoHdHJpZ2dlciKoAQoMV29ya2Zsb3dSdWxlEi8KC2NyZWF0",
+            "ZV90aW1lGAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI1CgRz",
+            "cGVjGAIgASgLMicudGVtcG9yYWwuYXBpLnJ1bGVzLnYxLldvcmtmbG93UnVs",
+            "ZVNwZWMSGwoTY3JlYXRlZF9ieV9pZGVudGl0eRgDIAEoCRITCgtkZXNjcmlw",
+            "dGlvbhgEIAEoCUKEAQoYaW8udGVtcG9yYWwuYXBpLnJ1bGVzLnYxQgxNZXNz",
+            "YWdlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL3J1bGVzL3YxO3J1bGVz",
+            "qgIXVGVtcG9yYWxpby5BcGkuUnVsZXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6",
+            "OlJ1bGVzOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleAction), global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Parser, new[]{ "ActivityPause" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause), global::Temporalio.Api.Rules.V1.WorkflowRuleAction.Types.ActionActivityPause.Parser, null, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleSpec), global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Parser, new[]{ "Id", "ActivityStart", "VisibilityQuery", "Actions", "ExpirationTime" }, new[]{ "Trigger" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger), global::Temporalio.Api.Rules.V1.WorkflowRuleSpec.Types.ActivityStartingTrigger.Parser, new[]{ "Predicate" }, null, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRule), global::Temporalio.Api.Rules.V1.WorkflowRule.Parser, new[]{ "CreateTime", "Spec" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Rules.V1.WorkflowRule), global::Temporalio.Api.Rules.V1.WorkflowRule.Parser, new[]{ "CreateTime", "Spec", "CreatedByIdentity", "Description" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1101,6 +1102,8 @@ namespace Temporalio.Api.Rules.V1 {
     public WorkflowRule(WorkflowRule other) : this() {
       createTime_ = other.createTime_ != null ? other.createTime_.Clone() : null;
       spec_ = other.spec_ != null ? other.spec_.Clone() : null;
+      createdByIdentity_ = other.createdByIdentity_;
+      description_ = other.description_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1140,6 +1143,40 @@ namespace Temporalio.Api.Rules.V1 {
       }
     }
 
+    /// <summary>Field number for the "created_by_identity" field.</summary>
+    public const int CreatedByIdentityFieldNumber = 3;
+    private string createdByIdentity_ = "";
+    /// <summary>
+    /// Identity of the actor that created the rule
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: It is better reflect the intent this way, we will also have updated_by. --)
+    /// (-- api-linter: core::0142::time-field-names=disabled
+    ///     aip.dev/not-precedent: Same as above. All other options sounds clumsy --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string CreatedByIdentity {
+      get { return createdByIdentity_; }
+      set {
+        createdByIdentity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "description" field.</summary>
+    public const int DescriptionFieldNumber = 4;
+    private string description_ = "";
+    /// <summary>
+    /// Rule description.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Description {
+      get { return description_; }
+      set {
+        description_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1157,6 +1194,8 @@ namespace Temporalio.Api.Rules.V1 {
       }
       if (!object.Equals(CreateTime, other.CreateTime)) return false;
       if (!object.Equals(Spec, other.Spec)) return false;
+      if (CreatedByIdentity != other.CreatedByIdentity) return false;
+      if (Description != other.Description) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1166,6 +1205,8 @@ namespace Temporalio.Api.Rules.V1 {
       int hash = 1;
       if (createTime_ != null) hash ^= CreateTime.GetHashCode();
       if (spec_ != null) hash ^= Spec.GetHashCode();
+      if (CreatedByIdentity.Length != 0) hash ^= CreatedByIdentity.GetHashCode();
+      if (Description.Length != 0) hash ^= Description.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1192,6 +1233,14 @@ namespace Temporalio.Api.Rules.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Spec);
       }
+      if (CreatedByIdentity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(CreatedByIdentity);
+      }
+      if (Description.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Description);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1210,6 +1259,14 @@ namespace Temporalio.Api.Rules.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Spec);
       }
+      if (CreatedByIdentity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(CreatedByIdentity);
+      }
+      if (Description.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Description);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1225,6 +1282,12 @@ namespace Temporalio.Api.Rules.V1 {
       }
       if (spec_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Spec);
+      }
+      if (CreatedByIdentity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(CreatedByIdentity);
+      }
+      if (Description.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1249,6 +1312,12 @@ namespace Temporalio.Api.Rules.V1 {
           Spec = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec();
         }
         Spec.MergeFrom(other.Spec);
+      }
+      if (other.CreatedByIdentity.Length != 0) {
+        CreatedByIdentity = other.CreatedByIdentity;
+      }
+      if (other.Description.Length != 0) {
+        Description = other.Description;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1279,6 +1348,14 @@ namespace Temporalio.Api.Rules.V1 {
             input.ReadMessage(Spec);
             break;
           }
+          case 26: {
+            CreatedByIdentity = input.ReadString();
+            break;
+          }
+          case 34: {
+            Description = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1306,6 +1383,14 @@ namespace Temporalio.Api.Rules.V1 {
               Spec = new global::Temporalio.Api.Rules.V1.WorkflowRuleSpec();
             }
             input.ReadMessage(Spec);
+            break;
+          }
+          case 26: {
+            CreatedByIdentity = input.ReadString();
+            break;
+          }
+          case 34: {
+            Description = input.ReadString();
             break;
           }
         }
