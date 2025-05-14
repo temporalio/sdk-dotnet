@@ -31,7 +31,7 @@ namespace Temporalio.Common
         internal Temporalio.Api.Workflow.V1.VersioningOverride ToProto()
         {
             // TODO: Remove deprecated field setting after they've been removed from server
-            if (this is PinnedVersioningOverride pv)
+            if (this is Pinned pv)
             {
                 Console.WriteLine("Converting pinned versioning override to proto");
                 return new()
@@ -65,7 +65,7 @@ namespace Temporalio.Common
         /// </summary>
         /// <param name="Version">The worker deployment version to pin the workflow to.</param>
         /// <param name="Behavior">The behavior of the pinned override.</param>
-        public sealed record PinnedVersioningOverride(
+        public sealed record Pinned(
             WorkerDeploymentVersion Version,
             PinnedOverrideBehavior Behavior = PinnedOverrideBehavior.Pinned) : VersioningOverride;
 
@@ -73,6 +73,6 @@ namespace Temporalio.Common
         /// The workflow will auto-upgrade to the current deployment version on the next workflow
         /// task.
         /// </summary>
-        public sealed record AutoUpgradeVersioningOverride() : VersioningOverride;
+        public sealed record AutoUpgrade() : VersioningOverride;
     }
 }

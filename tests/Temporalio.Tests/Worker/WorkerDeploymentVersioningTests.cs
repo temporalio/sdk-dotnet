@@ -456,7 +456,7 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
                 (DeploymentVersioningWorkflowV1AutoUpgrade wf) => wf.RunAsync(),
                 new(id: $"override-versioning-behavior-{Guid.NewGuid()}", taskQueue: taskQueue)
                 {
-                    VersioningOverride = new VersioningOverride.PinnedVersioningOverride(workerV1),
+                    VersioningOverride = new VersioningOverride.Pinned(workerV1),
                 });
 
             await handle.SignalAsync(wf => wf.DoFinishAsync());
