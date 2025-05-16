@@ -18,6 +18,7 @@ use temporal_sdk_core_api::worker::SlotReleaseContext;
 use temporal_sdk_core_api::worker::SlotReservationContext;
 use temporal_sdk_core_api::worker::SlotSupplierPermit;
 use temporal_sdk_core_api::Worker as CoreWorker;
+use temporal_sdk_core_protos::coresdk::nexus::NexusTaskCompletion;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
 use temporal_sdk_core_protos::coresdk::ActivityTaskCompletion;
@@ -49,6 +50,7 @@ pub struct WorkerOptions {
     workflow_task_poller_behavior: PollerBehavior,
     nonsticky_to_sticky_poll_ratio: f32,
     activity_task_poller_behavior: PollerBehavior,
+    nexus_task_poller_behavior: PollerBehavior,
     nondeterminism_as_workflow_fail: bool,
     nondeterminism_as_workflow_fail_for_types: ByteArrayRefArray,
 }
@@ -78,8 +80,10 @@ impl TryFrom<&PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior 
         if !value.simple_maximum.is_null() && !value.autoscaling.is_null() {
             bail!("simple_maximum and autoscaling cannot both be non-null values");
         }
-        if let Some(value) = unsafe { value.simple_maximum.as_ref() }{
-            return Ok(temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum(value.simple_maximum));
+        if let Some(value) = unsafe { value.simple_maximum.as_ref() } {
+            return Ok(
+                temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum(value.simple_maximum),
+            );
         } else if let Some(value) = unsafe { value.autoscaling.as_ref() } {
             return Ok(temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
                 minimum: value.minimum,
@@ -123,9 +127,10 @@ pub struct WorkerDeploymentVersion {
 
 #[repr(C)]
 pub struct TunerHolder {
-    workflow_slot_supplier: SlotSupplier,
-    activity_slot_supplier: SlotSupplier,
-    local_activity_slot_supplier: SlotSupplier,
+    pub workflow_slot_supplier: SlotSupplier,
+    pub activity_slot_supplier: SlotSupplier,
+    pub local_activity_slot_supplier: SlotSupplier,
+    pub nexus_task_slot_supplier: SlotSupplier,
 }
 
 #[repr(C)]
@@ -589,6 +594,40 @@ pub extern "C" fn worker_poll_activity_task(
 }
 
 #[no_mangle]
+pub extern "C" fn worker_poll_nexus_task(
+    worker: *mut Worker,
+    user_data: *mut libc::c_void,
+    callback: WorkerPollCallback,
+) {
+    let worker = unsafe { &*worker };
+    let user_data = UserDataHandle(user_data);
+    let core_worker = worker.worker.as_ref().unwrap().clone();
+    worker.runtime.core.tokio_handle().spawn(async move {
+        let (success, fail) = match core_worker.poll_nexus_task().await {
+            Ok(task) => (
+                ByteArray::from_vec(task.encode_to_vec())
+                    .into_raw()
+                    .cast_const(),
+                std::ptr::null(),
+            ),
+            Err(PollError::ShutDown) => (std::ptr::null(), std::ptr::null()),
+            Err(err) => (
+                std::ptr::null(),
+                worker
+                    .runtime
+                    .clone()
+                    .alloc_utf8(&format!("Poll failure: {}", err))
+                    .into_raw()
+                    .cast_const(),
+            ),
+        };
+        unsafe {
+            callback(user_data.into(), success, fail);
+        }
+    });
+}
+
+#[no_mangle]
 pub extern "C" fn worker_complete_workflow_activation(
     worker: *mut Worker,
     completion: ByteArrayRef,
@@ -658,6 +697,48 @@ pub extern "C" fn worker_complete_activity_task(
     let core_worker = worker.worker.as_ref().unwrap().clone();
     worker.runtime.core.tokio_handle().spawn(async move {
         let fail = match core_worker.complete_activity_task(completion).await {
+            Ok(_) => std::ptr::null(),
+            Err(err) => worker
+                .runtime
+                .clone()
+                .alloc_utf8(&format!("Completion failure: {}", err))
+                .into_raw()
+                .cast_const(),
+        };
+        unsafe {
+            callback(user_data.into(), fail);
+        }
+    });
+}
+
+#[no_mangle]
+pub extern "C" fn worker_complete_nexus_task(
+    worker: *mut Worker,
+    completion: ByteArrayRef,
+    user_data: *mut libc::c_void,
+    callback: WorkerCallback,
+) {
+    let worker = unsafe { &*worker };
+    let completion = match NexusTaskCompletion::decode(completion.to_slice()) {
+        Ok(completion) => completion,
+        Err(err) => {
+            unsafe {
+                callback(
+                    user_data.into(),
+                    worker
+                        .runtime
+                        .clone()
+                        .alloc_utf8(&format!("Decode failure: {}", err))
+                        .into_raw(),
+                );
+            }
+            return;
+        }
+    };
+    let user_data = UserDataHandle(user_data);
+    let core_worker = worker.worker.as_ref().unwrap().clone();
+    worker.runtime.core.tokio_handle().spawn(async move {
+        let fail = match core_worker.complete_nexus_task(completion).await {
             Ok(_) => std::ptr::null(),
             Err(err) => worker
                 .runtime
@@ -935,6 +1016,7 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             .workflow_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.workflow_task_poller_behavior)?)
             .nonsticky_to_sticky_poll_ratio(opt.nonsticky_to_sticky_poll_ratio)
             .activity_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.activity_task_poller_behavior)?)
+            .nexus_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.nexus_task_poller_behavior)?)
             .workflow_failure_errors(if opt.nondeterminism_as_workflow_fail {
                 HashSet::from([WorkflowErrorType::Nondeterminism])
             } else {
@@ -980,10 +1062,18 @@ impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
             } else {
                 None
             };
+        let maybe_nexus_resource_opts =
+            if let SlotSupplier::ResourceBased(ref ss) = holder.nexus_task_slot_supplier {
+                Some(&ss.tuner_options)
+            } else {
+                None
+            };
+
         let all_resource_opts = [
             maybe_wf_resource_opts,
             maybe_act_resource_opts,
             maybe_local_act_resource_opts,
+            maybe_nexus_resource_opts,
         ];
         let mut set_resource_opts = all_resource_opts.iter().flatten();
         let first = set_resource_opts.next();
@@ -1009,7 +1099,8 @@ impl TryFrom<&TunerHolder> for temporal_sdk_core::TunerHolder {
         options
             .workflow_slot_options(holder.workflow_slot_supplier.try_into()?)
             .activity_slot_options(holder.activity_slot_supplier.try_into()?)
-            .local_activity_slot_options(holder.local_activity_slot_supplier.try_into()?);
+            .local_activity_slot_options(holder.local_activity_slot_supplier.try_into()?)
+            .nexus_slot_options(holder.nexus_task_slot_supplier.try_into()?);
         Ok(options
             .build()
             .context("Invalid tuner holder options")?

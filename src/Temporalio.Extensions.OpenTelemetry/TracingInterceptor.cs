@@ -75,6 +75,10 @@ namespace Temporalio.Extensions.OpenTelemetry
             ActivityInboundInterceptor nextInterceptor) =>
             new ActivityInbound(this, nextInterceptor);
 
+        // TODO(cretz): Tracing for Nexus operations
+        public NexusOperationInboundInterceptor InterceptNexusOperation(
+            NexusOperationInboundInterceptor nextInterceptor) => nextInterceptor;
+
         /// <summary>
         /// Serialize an OTel context to Temporal headers.
         /// </summary>

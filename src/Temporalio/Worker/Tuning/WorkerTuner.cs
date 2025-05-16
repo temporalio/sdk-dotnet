@@ -17,10 +17,25 @@ namespace Temporalio.Worker.Tuning
             SlotSupplier workflowTaskSlotSupplier,
             SlotSupplier activityTaskSlotSupplier,
             SlotSupplier localActivitySlotSupplier)
+            : this(
+                workflowTaskSlotSupplier,
+                activityTaskSlotSupplier,
+                localActivitySlotSupplier,
+                // Default Nexus to 100 if not provided explicitly
+                new FixedSizeSlotSupplier(100))
+        {
+        }
+
+        public WorkerTuner(
+            SlotSupplier workflowTaskSlotSupplier,
+            SlotSupplier activityTaskSlotSupplier,
+            SlotSupplier localActivitySlotSupplier,
+            SlotSupplier nexusTaskSlotSupplier)
         {
             WorkflowTaskSlotSupplier = workflowTaskSlotSupplier;
             ActivityTaskSlotSupplier = activityTaskSlotSupplier;
             LocalActivitySlotSupplier = localActivitySlotSupplier;
+            NexusTaskSlotSupplier = nexusTaskSlotSupplier;
         }
 
         /// <summary>
@@ -40,6 +55,8 @@ namespace Temporalio.Worker.Tuning
         /// </summary>
         /// <returns>A slot supplier for local activities.</returns>
         public SlotSupplier LocalActivitySlotSupplier { get; init; }
+
+        public SlotSupplier NexusTaskSlotSupplier { get; init; }
 
         /// <summary>
         /// Create a resource based tuner with the provided options.
@@ -63,7 +80,8 @@ namespace Temporalio.Worker.Tuning
             double targetCpuUsage,
             ResourceBasedSlotSupplierOptions? workflowOptions = null,
             ResourceBasedSlotSupplierOptions? activityOptions = null,
-            ResourceBasedSlotSupplierOptions? localActivityOptions = null)
+            ResourceBasedSlotSupplierOptions? localActivityOptions = null,
+            ResourceBasedSlotSupplierOptions? nexusOptions = null)
         {
             ResourceBasedTunerOptions tunerOpts =
                 new ResourceBasedTunerOptions(targetMemoryUsage, targetCpuUsage);
@@ -82,6 +100,11 @@ namespace Temporalio.Worker.Tuning
                     localActivityOptions == null
                         ? new ResourceBasedSlotSupplierOptions()
                         : localActivityOptions,
+                    tunerOpts),
+                new ResourceBasedSlotSupplier(
+                    nexusOptions == null
+                        ? new ResourceBasedSlotSupplierOptions()
+                        : nexusOptions,
                     tunerOpts));
         }
 
@@ -101,6 +124,19 @@ namespace Temporalio.Worker.Tuning
                 new FixedSizeSlotSupplier(workflowTaskSlots),
                 new FixedSizeSlotSupplier(activityTaskSlots),
                 new FixedSizeSlotSupplier(localActivitySlots));
+        }
+
+        public static WorkerTuner CreateFixedSize(
+            int workflowTaskSlots,
+            int activityTaskSlots,
+            int localActivitySlots,
+            int nexusTaskSlots)
+        {
+            return new(
+                new FixedSizeSlotSupplier(workflowTaskSlots),
+                new FixedSizeSlotSupplier(activityTaskSlots),
+                new FixedSizeSlotSupplier(localActivitySlots),
+                new FixedSizeSlotSupplier(nexusTaskSlots));
         }
     }
 }

@@ -28,5 +28,12 @@ namespace Temporalio.Worker.Interceptors
 #else
         ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor);
 #endif
+
+#if NETCOREAPP3_0_OR_GREATER
+        NexusOperationInboundInterceptor InterceptNexusOperation(NexusOperationInboundInterceptor nextInterceptor) =>
+            nextInterceptor;
+#else
+        NexusOperationInboundInterceptor InterceptNexusOperation(NexusOperationInboundInterceptor nextInterceptor);
+#endif
     }
 }

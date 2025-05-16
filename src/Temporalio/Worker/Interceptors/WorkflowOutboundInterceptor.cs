@@ -100,5 +100,8 @@ namespace Temporalio.Worker.Interceptors
         /// <returns>Child handle.</returns>
         public virtual Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             StartChildWorkflowInput input) => Next.StartChildWorkflowAsync<TWorkflow, TResult>(input);
+
+        public virtual Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+            StartNexusOperationInput input) => Next.StartNexusOperationAsync<TResult>(input);
     }
 }

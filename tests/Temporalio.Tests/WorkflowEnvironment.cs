@@ -23,6 +23,9 @@ public class WorkflowEnvironment : IAsyncLifetime
     public ITemporalClient Client =>
         env?.Client ?? throw new InvalidOperationException("Environment not created");
 
+    public Temporalio.Testing.WorkflowEnvironment TestEnv =>
+        env ?? throw new InvalidOperationException("Environment not created");
+
     public string KitchenSinkWorkerTaskQueue => kitchenSinkWorker.Value.TaskQueue;
 
     public async Task InitializeAsync()
@@ -56,6 +59,7 @@ public class WorkflowEnvironment : IAsyncLifetime
             // Otherwise, local server is good
             env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
             {
+                UI = true,
                 DevServerOptions = new()
                 {
                     ExtraArgs = new List<string>
@@ -78,8 +82,6 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "--dynamic-config-value",
                         "system.enableDeploymentVersions=true",
                     },
-                    // TODO: Remove after next CLI release
-                    DownloadVersion = "v1.3.1-persistence-fix.0",
                 },
             });
         }

@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
 
@@ -310,6 +311,18 @@ namespace Temporalio.Workflows
             IReadOnlyCollection<object?> args,
             ContinueAsNewOptions? options = null) =>
             Context.CreateContinueAsNewException(workflow, args, options);
+
+        public static NexusClient CreateNexusClient(string service, string endpoint) =>
+            CreateNexusClient(service, new NexusClientOptions(endpoint));
+
+        public static NexusClient CreateNexusClient(string service, NexusClientOptions options) =>
+            Context.CreateNexusClient(service, options);
+
+        public static NexusClient<TService> CreateNexusClient<TService>(string endpoint) =>
+            CreateNexusClient<TService>(new NexusClientOptions(endpoint));
+
+        public static NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
+            Context.CreateNexusClient<TService>(options);
 
         /// <summary>
         /// Sleep in a workflow for the given time. See documentation of

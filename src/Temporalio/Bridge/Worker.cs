@@ -218,6 +218,40 @@ namespace Temporalio.Bridge
             }
         }
 
+        public virtual async Task<Api.Nexus.NexusTask?> PollNexusTaskAsync()
+        {
+            using (var scope = new Scope())
+            {
+                var completion = new TaskCompletionSource<ByteArray?>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                unsafe
+                {
+                    Interop.Methods.worker_poll_nexus_task(
+                        Ptr,
+                        null,
+                        scope.FunctionPointer<Interop.WorkerPollCallback>(
+                            (userData, success, fail) =>
+                            {
+                                if (fail != null)
+                                {
+                                    completion.TrySetException(new InvalidOperationException(
+                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                }
+                                else if (success == null)
+                                {
+                                    completion.TrySetResult(null);
+                                }
+                                else
+                                {
+                                    completion.TrySetResult(new ByteArray(Runtime, success));
+                                }
+                            }));
+                }
+                return (await completion.Task.ConfigureAwait(false))?.ToProto(
+                    Api.Nexus.NexusTask.Parser);
+            }
+        }
+
         /// <summary>
         /// Complete a workflow activation.
         /// </summary>
@@ -268,6 +302,36 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.worker_complete_activity_task(
+                        Ptr,
+                        scope.ByteArray(comp.ToByteArray()),
+                        null,
+                        scope.FunctionPointer<Interop.WorkerCallback>(
+                            (userData, fail) =>
+                            {
+                                if (fail != null)
+                                {
+                                    completion.TrySetException(new InvalidOperationException(
+                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                }
+                                else
+                                {
+                                    completion.TrySetResult(true);
+                                }
+                            }));
+                }
+                await completion.Task.ConfigureAwait(false);
+            }
+        }
+
+        public async Task CompleteNexusTaskAsync(Api.Nexus.NexusTaskCompletion comp)
+        {
+            using (var scope = new Scope())
+            {
+                var completion = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                unsafe
+                {
+                    Interop.Methods.worker_complete_nexus_task(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,

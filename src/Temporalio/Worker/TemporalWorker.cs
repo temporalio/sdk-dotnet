@@ -18,6 +18,7 @@ namespace Temporalio.Worker
         private readonly object clientLock = new();
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
+        private readonly NexusWorker? nexusWorker;
         private readonly bool workflowTracingEventListenerEnabled;
         private IWorkerClient client;
         private int started;
@@ -100,6 +101,10 @@ namespace Temporalio.Worker
                                 .AssertValidActivity(activityType),
                     DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior,
                     DeploymentOptions: options.DeploymentOptions));
+            }
+            if (options.NexusServices.Count > 0)
+            {
+                nexusWorker = new(this);
             }
         }
 
@@ -316,6 +321,13 @@ namespace Temporalio.Worker
                 tasks.Add(workflowWorkerTask);
                 pollTasks.Add(workflowWorkerTask);
             }
+            Task? nexusWorkerTask = null;
+            if (nexusWorker != null)
+            {
+                nexusWorkerTask = nexusWorker.ExecuteAsync();
+                tasks.Add(nexusWorkerTask);
+                pollTasks.Add(nexusWorkerTask);
+            }
 
             // Wait until any of the tasks complete including cancellation
             var task = await Task.WhenAny(tasks).ConfigureAwait(false);
@@ -325,7 +337,7 @@ namespace Temporalio.Worker
                 ["TaskQueue"] = Options.TaskQueue!,
             }))
             {
-                if (task == tasks[0])
+                if (pollTasks.Contains(task))
                 {
                     logger.LogInformation("Worker cancelled, shutting down");
                 }
@@ -353,6 +365,10 @@ namespace Temporalio.Worker
             if (workflowWorkerTask?.Exception != null)
             {
                 pollTasks.Add(workflowWorker!.ExecuteAsync());
+            }
+            if (nexusWorkerTask?.Exception != null)
+            {
+                pollTasks.Add(nexusWorker!.ExecuteAsync());
             }
 
             // Tell all activities the worker is shutting down

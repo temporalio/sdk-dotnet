@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Temporalio.Api.Nexus.V1;
 using Temporalio.Client;
 using Temporalio.Runtime;
 
@@ -208,6 +210,23 @@ namespace Temporalio.Testing
         /// non-time-skipping environments), so the function just runs.
         /// </remarks>
         public virtual Task<T> WithAutoTimeSkippingDisabledAsync<T>(Func<Task<T>> func) => func();
+
+        // TODO(cretz): Clarify this is experimental
+        public async Task<Endpoint> CreateNexusEndpointAsync(string name, string taskQueue)
+        {
+            var resp = await Client.OperatorService.CreateNexusEndpointAsync(new()
+            {
+                Spec = new()
+                {
+                    Name = name,
+                    Target = new()
+                    {
+                        Worker = new() { Namespace = Client.Options.Namespace, TaskQueue = taskQueue },
+                    },
+                },
+            }).ConfigureAwait(false);
+            return resp.Endpoint;
+        }
 
         /// <summary>
         /// Shutdown this server.

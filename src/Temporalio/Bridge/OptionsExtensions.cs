@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using Temporalio.Bridge.Interop;
 using Temporalio.Exceptions;
+using Temporalio.Worker.Tuning;
 
 namespace Temporalio.Bridge
 {
@@ -344,7 +344,7 @@ namespace Temporalio.Bridge
                 throw new ArgumentException("TargetHost is required");
             }
 
-            return new ClientHttpConnectProxyOptions
+            return new Interop.ClientHttpConnectProxyOptions
             {
                 target_host = scope.ByteArray(options.TargetHost),
                 username = scope.ByteArray(options.BasicAuth?.Username),
@@ -531,21 +531,24 @@ namespace Temporalio.Bridge
                 var maxWF = options.MaxConcurrentWorkflowTasks ?? 100;
                 var maxAct = options.MaxConcurrentActivities ?? 100;
                 var maxLocalAct = options.MaxConcurrentLocalActivities ?? 100;
-                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(maxWF, maxAct, maxLocalAct);
+                var maxNexus = options.MaxConcurrentNexusTasks ?? 100;
+                tuner = WorkerTuner.CreateFixedSize(maxWF, maxAct, maxLocalAct, maxNexus);
             }
             else
             {
                 if (options.MaxConcurrentWorkflowTasks.HasValue ||
                     options.MaxConcurrentActivities.HasValue ||
-                    options.MaxConcurrentLocalActivities.HasValue)
+                    options.MaxConcurrentLocalActivities.HasValue ||
+                    options.MaxConcurrentNexusTasks.HasValue)
                 {
                     throw new ArgumentException(
                         "Cannot set both Tuner and any of MaxConcurrentWorkflowTasks, " +
-                        "MaxConcurrentActivities, or MaxConcurrentLocalActivities.");
+                        "MaxConcurrentActivities, MaxConcurrentLocalActivities, or MaxConcurrentNexusTasks.");
                 }
             }
-            options.WorkflowTaskPollerBehavior ??= new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
-            options.ActivityTaskPollerBehavior ??= new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
+            options.WorkflowTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
+            options.ActivityTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
+            options.NexusTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentNexusTaskPolls);
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -568,6 +571,7 @@ namespace Temporalio.Bridge
                 workflow_task_poller_behavior = options.WorkflowTaskPollerBehavior.ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
                 activity_task_poller_behavior = options.ActivityTaskPollerBehavior.ToInteropPollerBehavior(scope),
+                nexus_task_poller_behavior = options.NexusTaskPollerBehavior.ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -605,7 +609,7 @@ namespace Temporalio.Bridge
                 },
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
-                tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope, options.LoggerFactory),
+                tuner = WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope, options.LoggerFactory),
                 no_remote_activities = 1,
                 sticky_queue_schedule_to_start_timeout_millis = 1000,
                 max_heartbeat_throttle_interval_millis = 1000,
@@ -613,9 +617,10 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                workflow_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
+                workflow_task_poller_behavior = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = 1,
-                activity_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
+                activity_task_poller_behavior = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
+                nexus_task_poller_behavior = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -630,19 +635,21 @@ namespace Temporalio.Bridge
                     kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))));
 
         private static Interop.TunerHolder ToInteropTuner(
-            this Temporalio.Worker.Tuning.WorkerTuner tuner,
+            this WorkerTuner tuner,
             Scope scope,
             ILoggerFactory loggerFactory)
         {
-            Temporalio.Worker.Tuning.ResourceBasedTunerOptions? lastTunerOptions = null;
-            Temporalio.Worker.Tuning.SlotSupplier[] suppliers =
+            ResourceBasedTunerOptions? lastTunerOptions = null;
+            SlotSupplier[] suppliers =
             {
-                tuner.WorkflowTaskSlotSupplier, tuner.ActivityTaskSlotSupplier,
+                tuner.WorkflowTaskSlotSupplier,
+                tuner.ActivityTaskSlotSupplier,
                 tuner.LocalActivitySlotSupplier,
+                tuner.NexusTaskSlotSupplier,
             };
             foreach (var supplier in suppliers)
             {
-                if (supplier is Temporalio.Worker.Tuning.ResourceBasedSlotSupplier resourceBased)
+                if (supplier is ResourceBasedSlotSupplier resourceBased)
                 {
                     if (lastTunerOptions != null && lastTunerOptions != resourceBased.TunerOptions)
                     {
@@ -662,15 +669,17 @@ namespace Temporalio.Bridge
                     tuner.ActivityTaskSlotSupplier.ToInteropSlotSupplier(false, loggerFactory),
                 local_activity_slot_supplier =
                     tuner.LocalActivitySlotSupplier.ToInteropSlotSupplier(false, loggerFactory),
+                nexus_task_slot_supplier =
+                    tuner.NexusTaskSlotSupplier.ToInteropSlotSupplier(false, loggerFactory),
             };
         }
 
         private static Interop.SlotSupplier ToInteropSlotSupplier(
-            this Temporalio.Worker.Tuning.SlotSupplier supplier,
+            this SlotSupplier supplier,
             bool isWorkflow,
             ILoggerFactory loggerFactory)
         {
-            if (supplier is Temporalio.Worker.Tuning.FixedSizeSlotSupplier fixedSize)
+            if (supplier is FixedSizeSlotSupplier fixedSize)
             {
                 if (fixedSize.SlotCount < 1)
                 {
@@ -686,7 +695,7 @@ namespace Temporalio.Bridge
                     },
                 };
             }
-            else if (supplier is Temporalio.Worker.Tuning.ResourceBasedSlotSupplier resourceBased)
+            else if (supplier is ResourceBasedSlotSupplier resourceBased)
             {
                 var defaultMinimum = isWorkflow ? 5 : 1;
                 var defaultThrottle = isWorkflow ? 0 : 50;
@@ -742,19 +751,22 @@ namespace Temporalio.Bridge
                 ToArray();
 
         private static Interop.PollerBehavior ToInteropPollerBehavior(
-            this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior, Scope scope)
+            this PollerBehavior pollerBehavior, Scope scope)
         {
-            if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum simpleMax)
+            if (pollerBehavior is PollerBehavior.SimpleMaximum simpleMax)
             {
-                var max = new PollerBehaviorSimpleMaximum { simple_maximum = new UIntPtr((uint)simpleMax.Maximum), };
+                var max = new Interop.PollerBehaviorSimpleMaximum
+                {
+                    simple_maximum = new UIntPtr((uint)simpleMax.Maximum),
+                };
                 unsafe
                 {
                     return new Interop.PollerBehavior { simple_maximum = scope.Pointer(max), };
                 }
             }
-            else if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.Autoscaling autoscaling)
+            else if (pollerBehavior is PollerBehavior.Autoscaling autoscaling)
             {
-                var autoscale = new PollerBehaviorAutoscaling
+                var autoscale = new Interop.PollerBehaviorAutoscaling
                 {
                     minimum = new UIntPtr((uint)autoscaling.Minimum),
                     maximum = new UIntPtr((uint)autoscaling.Maximum),

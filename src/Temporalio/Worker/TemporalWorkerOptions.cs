@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using NexusRpc.Handler;
 using Temporalio.Activities;
 using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
@@ -24,6 +25,7 @@ namespace Temporalio.Worker
 
         private IList<ActivityDefinition> activities = new List<ActivityDefinition>();
         private IList<WorkflowDefinition> workflows = new List<WorkflowDefinition>();
+        private IList<ServiceHandlerInstance> nexusServices = new List<ServiceHandlerInstance>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorkerOptions"/> class.
@@ -91,10 +93,14 @@ namespace Temporalio.Worker
         /// </summary>
         public IList<WorkflowDefinition> Workflows => workflows;
 
+        public IList<ServiceHandlerInstance> NexusServices => nexusServices;
+
         /// <summary>
         /// Gets or sets the task queue for activities. Default is <see cref="Task.Factory" />.
         /// </summary>
         public TaskFactory ActivityTaskFactory { get; set; } = Task.Factory;
+
+        public TaskFactory NexusTaskFactory { get; set; } = Task.Factory;
 
         /// <summary>
         /// Gets or sets the interceptors. Note this automatically includes any
@@ -192,6 +198,8 @@ namespace Temporalio.Worker
         /// </summary>
         public int? MaxConcurrentLocalActivities { get; set; }
 
+        public int? MaxConcurrentNexusTasks { get; set; }
+
         /// <summary>
         /// Gets or sets a value indicating whether the worker will only handle workflows and local
         /// activities.
@@ -227,6 +235,8 @@ namespace Temporalio.Worker
         /// </summary>
         public int MaxConcurrentActivityTaskPolls { get; set; } = 5;
 
+        public int MaxConcurrentNexusTaskPolls { get; set; } = 5;
+
         /// <summary>
         /// Gets or sets the behavior of the workflow task poller.
         /// </summary>
@@ -240,6 +250,8 @@ namespace Temporalio.Worker
         /// <remarks>WARNING: This property is experimental.</remarks>
         /// <remarks>If set, will override any value set in <see cref="MaxConcurrentActivityTaskPolls"/>.</remarks>
         public PollerBehavior? ActivityTaskPollerBehavior { get; set; }
+
+        public PollerBehavior? NexusTaskPollerBehavior { get; set; }
 
         /// <summary>
         /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will
@@ -413,6 +425,12 @@ namespace Temporalio.Worker
             return this;
         }
 
+        public TemporalWorkerOptions AddNexusService(object serviceHandler)
+        {
+            NexusServices.Add(ServiceHandlerInstance.FromInstance(serviceHandler));
+            return this;
+        }
+
         /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
@@ -423,6 +441,7 @@ namespace Temporalio.Worker
             var options = (TemporalWorkerOptions)MemberwiseClone();
             options.activities = new List<ActivityDefinition>(Activities);
             options.workflows = new List<WorkflowDefinition>(Workflows);
+            options.nexusServices = new List<ServiceHandlerInstance>(NexusServices);
             if (options.DeploymentOptions != null)
             {
                 options.DeploymentOptions = (WorkerDeploymentOptions)options.DeploymentOptions.Clone();

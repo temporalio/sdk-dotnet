@@ -977,6 +977,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("struct SlotSupplier")]
         public SlotSupplier local_activity_slot_supplier;
+
+        [NativeTypeName("struct SlotSupplier")]
+        public SlotSupplier nexus_task_slot_supplier;
     }
 
     internal partial struct PollerBehaviorSimpleMaximum
@@ -1061,6 +1064,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("struct PollerBehavior")]
         public PollerBehavior activity_task_poller_behavior;
+
+        [NativeTypeName("struct PollerBehavior")]
+        public PollerBehavior nexus_task_poller_behavior;
 
         [NativeTypeName("bool")]
         public byte nondeterminism_as_workflow_fail;
@@ -1229,10 +1235,16 @@ namespace Temporalio.Bridge.Interop
         public static extern void worker_poll_activity_task([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerPollCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_poll_nexus_task([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerPollCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void worker_complete_workflow_activation([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef completion, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void worker_complete_activity_task([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef completion, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void worker_complete_nexus_task([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef completion, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("const struct ByteArray *")]

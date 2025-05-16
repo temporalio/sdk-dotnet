@@ -558,6 +558,7 @@ typedef struct TunerHolder {
   struct SlotSupplier workflow_slot_supplier;
   struct SlotSupplier activity_slot_supplier;
   struct SlotSupplier local_activity_slot_supplier;
+  struct SlotSupplier nexus_task_slot_supplier;
 } TunerHolder;
 
 typedef struct PollerBehaviorSimpleMaximum {
@@ -597,6 +598,7 @@ typedef struct WorkerOptions {
   struct PollerBehavior workflow_task_poller_behavior;
   float nonsticky_to_sticky_poll_ratio;
   struct PollerBehavior activity_task_poller_behavior;
+  struct PollerBehavior nexus_task_poller_behavior;
   bool nondeterminism_as_workflow_fail;
   struct ByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
 } WorkerOptions;
@@ -750,6 +752,8 @@ void worker_poll_workflow_activation(struct Worker *worker,
 
 void worker_poll_activity_task(struct Worker *worker, void *user_data, WorkerPollCallback callback);
 
+void worker_poll_nexus_task(struct Worker *worker, void *user_data, WorkerPollCallback callback);
+
 void worker_complete_workflow_activation(struct Worker *worker,
                                          struct ByteArrayRef completion,
                                          void *user_data,
@@ -759,6 +763,11 @@ void worker_complete_activity_task(struct Worker *worker,
                                    struct ByteArrayRef completion,
                                    void *user_data,
                                    WorkerCallback callback);
+
+void worker_complete_nexus_task(struct Worker *worker,
+                                struct ByteArrayRef completion,
+                                void *user_data,
+                                WorkerCallback callback);
 
 /**
  * Returns error if any. Must be freed if returned.
