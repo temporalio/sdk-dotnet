@@ -150,7 +150,7 @@ namespace Temporalio.Bridge
         {
             if (string.IsNullOrEmpty(options.Filter.FilterString))
             {
-                throw new ArgumentException($"FilterString is required when {nameof(Temporalio.Runtime.LoggingOptions)} is configured");
+                throw new ArgumentException($"FilterString is required when {nameof(Temporalio.Runtime.TelemetryFilterOptions)} is configured");
             }
             return new Interop.LoggingOptions()
             {
