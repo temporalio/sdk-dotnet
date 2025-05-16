@@ -1,8 +1,6 @@
 #pragma warning disable xUnit1013 // We want instance methods as activities sometimes
 namespace Temporalio.Tests.Worker;
 
-using System.Formats.Asn1;
-using System.Security.Cryptography.X509Certificates;
 using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
