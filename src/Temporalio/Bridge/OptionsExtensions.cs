@@ -71,7 +71,7 @@ namespace Temporalio.Bridge
         {
             if (options.Url == null)
             {
-                throw new ArgumentException("OpenTelemetry URL is required");
+                throw new ArgumentException($"OpenTelemetry URL is required when {nameof(Temporalio.Runtime.OpenTelemetryOptions)} is configured");
             }
             Interop.OpenTelemetryMetricTemporality temporality;
             switch (options.MetricTemporality)
@@ -125,7 +125,7 @@ namespace Temporalio.Bridge
         {
             if (string.IsNullOrEmpty(options.BindAddress))
             {
-                throw new ArgumentException("Prometheus options must have bind address");
+                throw new ArgumentException($"BindAddress is required when {nameof(Temporalio.Runtime.PrometheusOptions)} is configured");
             }
             return new Interop.PrometheusOptions()
             {
@@ -150,7 +150,7 @@ namespace Temporalio.Bridge
         {
             if (string.IsNullOrEmpty(options.Filter.FilterString))
             {
-                throw new ArgumentException("Logging filter string is required");
+                throw new ArgumentException($"FilterString is required when {nameof(Temporalio.Runtime.TelemetryFilterOptions)} is configured");
             }
             return new Interop.LoggingOptions()
             {
@@ -283,7 +283,7 @@ namespace Temporalio.Bridge
             if (hasClientCert != hasClientKey)
             {
                 throw new ArgumentException(
-                    "Client cert and private key must both be present or neither");
+                    $"Client cert and private key must both be present or neither when {nameof(Temporalio.Client.TlsOptions)} is configured");
             }
             return new Interop.ClientTlsOptions()
             {
@@ -341,7 +341,7 @@ namespace Temporalio.Bridge
         {
             if (string.IsNullOrEmpty(options.TargetHost))
             {
-                throw new ArgumentException("TargetHost is required");
+                throw new ArgumentException($"{nameof(options.TargetHost)} is required when {nameof(Temporalio.Client.HttpConnectProxyOptions)} is configured");
             }
 
             return new ClientHttpConnectProxyOptions
@@ -448,18 +448,79 @@ namespace Temporalio.Bridge
         {
             if (options.TaskQueue == null)
             {
-                throw new ArgumentException("Task queue must be provided in worker options");
+                throw new ArgumentException($"Task queue must be provided when {nameof(Temporalio.Worker.TemporalWorkerOptions)} is configured");
             }
-            var buildId = options.BuildId;
+#pragma warning disable 0618
+            var buildId = options.DeploymentOptions?.Version?.BuildId ?? options.BuildId;
+#pragma warning restore 0618
+            var buildIdAutoDetermined = false;
             if (buildId == null)
             {
-                if (options.UseWorkerVersioning)
-                {
-                    throw new ArgumentException("BuildId must be explicitly set when UseWorkerVersioning is true");
-                }
                 var entryAssembly = Assembly.GetEntryAssembly() ??
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
+                buildIdAutoDetermined = true;
+            }
+            Interop.WorkerVersioningStrategy versioningStrategy;
+            if (options.DeploymentOptions != null)
+            {
+                if (options.DeploymentOptions.Version == null)
+                {
+                    throw new ArgumentException("Worker options DeploymentOptions.Version must be set");
+                }
+#pragma warning disable 0618
+                if (options.UseWorkerVersioning)
+                {
+                    throw new ArgumentException("DeploymentOptions and UseWorkerVersioning cannot be used together in worker options");
+                }
+                if (options.BuildId != null)
+                {
+                    throw new ArgumentException("DeploymentOptions and BuildId cannot be used together in worker options");
+                }
+#pragma warning restore 0618
+                // Assign default build ID if not provided
+                versioningStrategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.DeploymentBased,
+                    deployment_based = new()
+                    {
+                        version = new()
+                        {
+                            build_id = scope.ByteArray(options.DeploymentOptions.Version.BuildId),
+                            deployment_name = scope.ByteArray(options.DeploymentOptions.Version.DeploymentName),
+                        },
+                        default_versioning_behavior = (int)options.DeploymentOptions.DefaultVersioningBehavior,
+                        use_worker_versioning = (byte)(options.DeploymentOptions.UseWorkerVersioning ? 1 : 0),
+                    },
+                };
+            }
+#pragma warning disable 0618
+            else if (options.UseWorkerVersioning)
+#pragma warning restore 0618
+            {
+                if (buildIdAutoDetermined)
+                {
+                    throw new ArgumentException("BuildId must be explicitly set when UseWorkerVersioning is true");
+                }
+                versioningStrategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.LegacyBuildIdBased,
+                    legacy_build_id_based = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
+                };
+            }
+            else
+            {
+                versioningStrategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.None,
+                    none = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
+                };
             }
             // We have to disable remote activities if a user asks _or_ if we are not running an
             // activity worker at all. Otherwise shutdown will not proceed properly.
@@ -483,11 +544,13 @@ namespace Temporalio.Bridge
                         "MaxConcurrentActivities, or MaxConcurrentLocalActivities.");
                 }
             }
+            options.WorkflowTaskPollerBehavior ??= new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
+            options.ActivityTaskPollerBehavior ??= new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
                 task_queue = scope.ByteArray(options.TaskQueue),
-                build_id = scope.ByteArray(buildId),
+                versioning_strategy = versioningStrategy,
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = (uint)options.MaxCachedWorkflows,
                 tuner = tuner.ToInteropTuner(scope, loggerFactory),
@@ -502,10 +565,9 @@ namespace Temporalio.Bridge
                 max_task_queue_activities_per_second = options.MaxTaskQueueActivitiesPerSecond ?? 0,
                 graceful_shutdown_period_millis =
                     (ulong)options.GracefulShutdownTimeout.TotalMilliseconds,
-                use_worker_versioning = (byte)(options.UseWorkerVersioning ? 1 : 0),
-                max_concurrent_workflow_task_polls = (uint)options.MaxConcurrentWorkflowTaskPolls,
+                workflow_task_poller_behavior = options.WorkflowTaskPollerBehavior.ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = options.NonStickyToStickyPollRatio,
-                max_concurrent_activity_task_polls = (uint)options.MaxConcurrentActivityTaskPolls,
+                activity_task_poller_behavior = options.ActivityTaskPollerBehavior.ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -533,7 +595,14 @@ namespace Temporalio.Bridge
             {
                 namespace_ = scope.ByteArray(options.Namespace),
                 task_queue = scope.ByteArray(options.TaskQueue),
-                build_id = scope.ByteArray(buildId),
+                versioning_strategy = new()
+                {
+                    tag = Interop.WorkerVersioningStrategy_Tag.None,
+                    none = new()
+                    {
+                        build_id = scope.ByteArray(buildId),
+                    },
+                },
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
                 tuner = Temporalio.Worker.Tuning.WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope, options.LoggerFactory),
@@ -544,9 +613,9 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                max_concurrent_workflow_task_polls = 1,
+                workflow_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = 1,
-                max_concurrent_activity_task_polls = 1,
+                activity_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -671,5 +740,35 @@ namespace Temporalio.Bridge
                 Select(w =>
                     w.Name ?? throw new ArgumentException("Dynamic workflows cannot trap non-determinism")).
                 ToArray();
+
+        private static Interop.PollerBehavior ToInteropPollerBehavior(
+            this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior, Scope scope)
+        {
+            if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum simpleMax)
+            {
+                var max = new PollerBehaviorSimpleMaximum { simple_maximum = new UIntPtr((uint)simpleMax.Maximum), };
+                unsafe
+                {
+                    return new Interop.PollerBehavior { simple_maximum = scope.Pointer(max), };
+                }
+            }
+            else if (pollerBehavior is Temporalio.Worker.Tuning.PollerBehavior.Autoscaling autoscaling)
+            {
+                var autoscale = new PollerBehaviorAutoscaling
+                {
+                    minimum = new UIntPtr((uint)autoscaling.Minimum),
+                    maximum = new UIntPtr((uint)autoscaling.Maximum),
+                    initial = new UIntPtr((uint)autoscaling.Initial),
+                };
+                unsafe
+                {
+                    return new Interop.PollerBehavior { autoscaling = scope.Pointer(autoscale), };
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"Unsupported poller behavior type: {pollerBehavior.GetType().Name}");
+            }
+        }
     }
 }

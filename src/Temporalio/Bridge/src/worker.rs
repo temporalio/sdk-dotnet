@@ -11,14 +11,12 @@ use temporal_sdk_core::replay::ReplayWorkerInput;
 use temporal_sdk_core::WorkerConfigBuilder;
 use temporal_sdk_core_api::errors::PollError;
 use temporal_sdk_core_api::errors::WorkflowErrorType;
-use temporal_sdk_core_api::worker::PollerBehavior;
 use temporal_sdk_core_api::worker::SlotInfoTrait;
 use temporal_sdk_core_api::worker::SlotKind;
 use temporal_sdk_core_api::worker::SlotMarkUsedContext;
 use temporal_sdk_core_api::worker::SlotReleaseContext;
 use temporal_sdk_core_api::worker::SlotReservationContext;
 use temporal_sdk_core_api::worker::SlotSupplierPermit;
-use temporal_sdk_core_api::worker::WorkerVersioningStrategy;
 use temporal_sdk_core_api::Worker as CoreWorker;
 use temporal_sdk_core_protos::coresdk::workflow_completion::WorkflowActivationCompletion;
 use temporal_sdk_core_protos::coresdk::ActivityHeartbeat;
@@ -37,7 +35,7 @@ use std::time::Duration;
 pub struct WorkerOptions {
     namespace: ByteArrayRef,
     task_queue: ByteArrayRef,
-    build_id: ByteArrayRef,
+    versioning_strategy: WorkerVersioningStrategy,
     identity_override: ByteArrayRef,
     max_cached_workflows: u32,
     tuner: TunerHolder,
@@ -48,12 +46,79 @@ pub struct WorkerOptions {
     max_activities_per_second: f64,
     max_task_queue_activities_per_second: f64,
     graceful_shutdown_period_millis: u64,
-    use_worker_versioning: bool,
-    max_concurrent_workflow_task_polls: u32,
+    workflow_task_poller_behavior: PollerBehavior,
     nonsticky_to_sticky_poll_ratio: f32,
-    max_concurrent_activity_task_polls: u32,
+    activity_task_poller_behavior: PollerBehavior,
     nondeterminism_as_workflow_fail: bool,
     nondeterminism_as_workflow_fail_for_types: ByteArrayRefArray,
+}
+
+#[repr(C)]
+pub struct PollerBehaviorSimpleMaximum {
+    pub simple_maximum: usize,
+}
+
+#[repr(C)]
+pub struct PollerBehaviorAutoscaling {
+    pub minimum: usize,
+    pub maximum: usize,
+    pub initial: usize,
+}
+
+// Only one of simple_maximum and autoscaling can be present.
+#[repr(C)]
+pub struct PollerBehavior {
+    simple_maximum: *const PollerBehaviorSimpleMaximum,
+    autoscaling: *const PollerBehaviorAutoscaling,
+}
+
+impl TryFrom<&PollerBehavior> for temporal_sdk_core_api::worker::PollerBehavior {
+    type Error = anyhow::Error;
+    fn try_from(value: &PollerBehavior) -> Result<Self, Self::Error> {
+        if !value.simple_maximum.is_null() && !value.autoscaling.is_null() {
+            bail!("simple_maximum and autoscaling cannot both be non-null values");
+        }
+        if let Some(value) = unsafe { value.simple_maximum.as_ref() }{
+            return Ok(temporal_sdk_core_api::worker::PollerBehavior::SimpleMaximum(value.simple_maximum));
+        } else if let Some(value) = unsafe { value.autoscaling.as_ref() } {
+            return Ok(temporal_sdk_core_api::worker::PollerBehavior::Autoscaling {
+                minimum: value.minimum,
+                maximum: value.maximum,
+                initial: value.initial,
+            });
+        }
+        bail!("simple_maximum and autoscaling cannot both be null values");
+    }
+}
+
+#[repr(C)]
+pub enum WorkerVersioningStrategy {
+    None(WorkerVersioningNone),
+    DeploymentBased(WorkerDeploymentOptions),
+    LegacyBuildIdBased(LegacyBuildIdBasedStrategy),
+}
+
+#[repr(C)]
+pub struct WorkerVersioningNone {
+    pub build_id: ByteArrayRef,
+}
+
+#[repr(C)]
+pub struct WorkerDeploymentOptions {
+    pub version: WorkerDeploymentVersion,
+    pub use_worker_versioning: bool,
+    pub default_versioning_behavior: i32,
+}
+
+#[repr(C)]
+pub struct LegacyBuildIdBasedStrategy {
+    pub build_id: ByteArrayRef,
+}
+
+#[repr(C)]
+pub struct WorkerDeploymentVersion {
+    pub deployment_name: ByteArrayRef,
+    pub build_id: ByteArrayRef,
 }
 
 #[repr(C)]
@@ -807,13 +872,35 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
         WorkerConfigBuilder::default()
             .namespace(opt.namespace.to_str())
             .task_queue(opt.task_queue.to_str())
-            .versioning_strategy(if opt.use_worker_versioning {
-                WorkerVersioningStrategy::LegacyBuildIdBased {
-                    build_id: opt.build_id.to_string(),
-                }
-            } else {
-                WorkerVersioningStrategy::None {
-                    build_id: opt.build_id.to_string(),
+            .versioning_strategy({
+                match &opt.versioning_strategy {
+                    WorkerVersioningStrategy::None(n) => {
+                        temporal_sdk_core_api::worker::WorkerVersioningStrategy::None {
+                            build_id: n.build_id.to_string(),
+                        }
+                    }
+                    WorkerVersioningStrategy::DeploymentBased(dopts) => {
+                        let dvb = if let Ok(v) = dopts.default_versioning_behavior.try_into() {
+                            Some(v)
+                        } else {
+                            bail!("Invalid default versioning behavior {}", dopts.default_versioning_behavior)
+                        };
+                        temporal_sdk_core_api::worker::WorkerVersioningStrategy::WorkerDeploymentBased(
+                            temporal_sdk_core_api::worker::WorkerDeploymentOptions {
+                                version: temporal_sdk_core_api::worker::WorkerDeploymentVersion {
+                                    deployment_name: dopts.version.deployment_name.to_string(),
+                                    build_id: dopts.version.build_id.to_string(),
+                                },
+                                use_worker_versioning: dopts.use_worker_versioning,
+                                default_versioning_behavior: dvb,
+                            }
+                        )
+                    }
+                    WorkerVersioningStrategy::LegacyBuildIdBased(l) => {
+                        temporal_sdk_core_api::worker::WorkerVersioningStrategy::LegacyBuildIdBased {
+                            build_id: l.build_id.to_string(),
+                        }
+                    }
                 }
             })
             .client_identity_override(opt.identity_override.to_option_string())
@@ -845,13 +932,9 @@ impl TryFrom<&WorkerOptions> for temporal_sdk_core::WorkerConfig {
             // auto-cancel-activity behavior or shutdown will not occur, so we
             // always set it even if 0.
             .graceful_shutdown_period(Duration::from_millis(opt.graceful_shutdown_period_millis))
-            .workflow_task_poller_behavior(PollerBehavior::SimpleMaximum(
-                opt.max_concurrent_workflow_task_polls as usize,
-            ))
+            .workflow_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.workflow_task_poller_behavior)?)
             .nonsticky_to_sticky_poll_ratio(opt.nonsticky_to_sticky_poll_ratio)
-            .activity_task_poller_behavior(PollerBehavior::SimpleMaximum(
-                opt.max_concurrent_activity_task_polls as usize,
-            ))
+            .activity_task_poller_behavior(temporal_sdk_core_api::worker::PollerBehavior::try_from(&opt.activity_task_poller_behavior)?)
             .workflow_failure_errors(if opt.nondeterminism_as_workflow_fail {
                 HashSet::from([WorkflowErrorType::Nondeterminism])
             } else {

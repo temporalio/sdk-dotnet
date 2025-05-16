@@ -1,4 +1,5 @@
 using System;
+using Temporalio.Common;
 
 namespace Temporalio.Workflows
 {
@@ -41,8 +42,8 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Gets or sets a value indicating whether the workflow is dynamic. If a workflow is
-        /// dynamic, it cannot be given a name in this attribute and the run method must an array of
-        /// <see cref="Converters.IRawValue" />.
+        /// dynamic, it cannot be given a name in this attribute and the run method must be an array
+        /// of <see cref="Converters.IRawValue" />.
         /// </summary>
         public bool Dynamic { get; set; }
 
@@ -61,5 +62,12 @@ namespace Temporalio.Workflows
         /// all others. But this default may change in the future.
         /// </remarks>
         public Type[]? FailureExceptionTypes { get; set; }
+
+        /// <summary>
+        /// Gets or sets the versioning behavior to use for this workflow.
+        /// </summary>
+        /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
+        /// change.</remarks>
+        public VersioningBehavior VersioningBehavior { get; set; }
     }
 }

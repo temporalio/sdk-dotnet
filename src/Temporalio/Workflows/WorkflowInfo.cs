@@ -17,6 +17,7 @@ namespace Temporalio.Workflows
     /// <param name="LastResult">Successful result if this workflow is a continuation of a success.</param>
     /// <param name="Namespace">Namespace for the workflow.</param>
     /// <param name="Parent">Parent information for the workflow if this is a child.</param>
+    /// <param name="Priority">The Priority of this workflow.</param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
     /// <param name="Root">Root information for the workflow. This is nil in pre-1.27.0 server
     /// versions or if there is no root (i.e. the root is itself).</param>
@@ -42,6 +43,7 @@ namespace Temporalio.Workflows
         IReadOnlyCollection<IRawValue>? LastResult,
         string Namespace,
         WorkflowInfo.ParentInfo? Parent,
+        Priority Priority,
         RetryPolicy? RetryPolicy,
         WorkflowInfo.RootInfo? Root,
         string RunId,

@@ -72,6 +72,7 @@ namespace Temporalio.Worker
         private readonly IReadOnlyCollection<Type>? workerLevelFailureExceptionTypes;
         private readonly bool disableEagerActivityExecution;
         private readonly Handlers inProgressHandlers = new();
+        private readonly WorkflowDefinitionOptions definitionOptions;
         private WorkflowActivationCompletion? completion;
         // Will be set to null after last use (i.e. when workflow actually started)
         private Lazy<object?[]>? startArgs;
@@ -87,6 +88,7 @@ namespace Temporalio.Worker
         private WorkflowUpdateDefinition? dynamicUpdate;
         private bool workflowInitialized;
         private bool applyModernEventLoopLogic;
+        private bool dynamicOptionsGetterInvoked;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -137,7 +139,10 @@ namespace Temporalio.Worker
                     SearchAttributeCollection.FromProto(initialSearchAttributes),
                 false);
             var act = details.InitialActivation;
-            CurrentBuildId = act.DeploymentVersionForCurrentTask?.BuildId ?? string.Empty;
+            if (act.DeploymentVersionForCurrentTask != null)
+            {
+                CurrentDeploymentVersion = WorkerDeploymentVersion.FromBridge(act.DeploymentVersionForCurrentTask);
+            }
             var start = details.Init;
             startArgs = new(
                 () => DecodeArgs(
@@ -184,6 +189,7 @@ namespace Temporalio.Worker
                 LastResult: lastResult,
                 Namespace: details.Namespace,
                 Parent: parent,
+                Priority: start.Priority is { } p ? new(p) : Common.Priority.Default,
                 RetryPolicy: start.RetryPolicy == null ? null : Common.RetryPolicy.FromProto(start.RetryPolicy),
                 Root: root,
                 RunId: act.RunId,
@@ -205,6 +211,11 @@ namespace Temporalio.Worker
             workerLevelFailureExceptionTypes = details.WorkerLevelFailureExceptionTypes;
             disableEagerActivityExecution = details.DisableEagerActivityExecution;
             AssertValidLocalActivity = details.AssertValidLocalActivity;
+            definitionOptions = new()
+            {
+                FailureExceptionTypes = Definition.FailureExceptionTypes,
+                VersioningBehavior = Definition.VersioningBehavior ?? VersioningBehavior.Unspecified,
+            };
         }
 
         /// <summary>
@@ -230,7 +241,10 @@ namespace Temporalio.Worker
         public bool ContinueAsNewSuggested { get; private set; }
 
         /// <inheritdoc />
-        public string CurrentBuildId { get; private set; }
+        public string CurrentBuildId => CurrentDeploymentVersion?.BuildId ?? string.Empty;
+
+        /// <inheritdoc />
+        public WorkerDeploymentVersion? CurrentDeploymentVersion { get; private set; }
 
         /// <inheritdoc />
         public string CurrentDetails { get; set; } = string.Empty;
@@ -306,6 +320,21 @@ namespace Temporalio.Worker
             {
                 // We create this lazily because we want the constructor in a workflow context
                 instance ??= Definition.CreateWorkflowInstance(startArgs!.Value);
+                // Dynamic options method needs to be invoked at this point, after initting the
+                // workflow instance but before performing any activations.
+                if (!dynamicOptionsGetterInvoked && Definition.DynamicOptionsGetter != null)
+                {
+                    dynamicOptionsGetterInvoked = true;
+                    var dynOptions = Definition.DynamicOptionsGetter.Invoke(Instance);
+                    if (dynOptions.FailureExceptionTypes != null)
+                    {
+                        definitionOptions.FailureExceptionTypes = dynOptions.FailureExceptionTypes;
+                    }
+                    if (dynOptions.VersioningBehavior != VersioningBehavior.Unspecified)
+                    {
+                        definitionOptions.VersioningBehavior = dynOptions.VersioningBehavior;
+                    }
+                }
                 return instance;
             }
         }
@@ -573,7 +602,10 @@ namespace Temporalio.Worker
                 ContinueAsNewSuggested = act.ContinueAsNewSuggested;
                 CurrentHistoryLength = checked((int)act.HistoryLength);
                 CurrentHistorySize = checked((int)act.HistorySizeBytes);
-                CurrentBuildId = act.DeploymentVersionForCurrentTask?.BuildId ?? string.Empty;
+                if (act.DeploymentVersionForCurrentTask != null)
+                {
+                    CurrentDeploymentVersion = WorkerDeploymentVersion.FromBridge(act.DeploymentVersionForCurrentTask);
+                }
                 IsReplaying = act.IsReplaying;
                 UtcNow = act.Timestamp.ToDateTime();
 
@@ -658,6 +690,9 @@ namespace Temporalio.Worker
                             var checkConditions = jobs.Any(j => j.VariantCase != WorkflowActivationJob.VariantOneofCase.QueryWorkflow);
                             RunOnce(checkConditions);
                         }
+
+                        completion.Successful.VersioningBehavior =
+                            (Temporalio.Api.Enums.V1.VersioningBehavior)definitionOptions.VersioningBehavior;
                     }
                     finally
                     {
@@ -990,7 +1025,7 @@ namespace Temporalio.Worker
             // reusing cancellation tokens if the workflow fails.
             e is FailureException ||
                 e is OperationCanceledException ||
-                Definition.FailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
+                definitionOptions.FailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
                 workerLevelFailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true;
 
         private void Apply(WorkflowActivationJob job)
@@ -2071,6 +2106,10 @@ namespace Temporalio.Worker
                                 Summary = payloadConverter.ToPayload(summary),
                             };
                         }
+                        if (input.Options.Priority is { } priority)
+                        {
+                            cmd.Priority = priority.ToProto();
+                        }
                         instance.AddCommand(workflowCommand);
                         return seq;
                     },
@@ -2284,6 +2323,10 @@ namespace Temporalio.Worker
                 if (input.Options?.VersioningIntent is { } vi)
                 {
                     cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
+                }
+                if (input.Options?.Priority is { } priority)
+                {
+                    cmd.Priority = priority.ToProto();
                 }
                 var workflowCommand = new WorkflowCommand() { StartChildWorkflowExecution = cmd };
                 if (input.Options?.StaticSummary != null || input.Options?.StaticDetails != null)
