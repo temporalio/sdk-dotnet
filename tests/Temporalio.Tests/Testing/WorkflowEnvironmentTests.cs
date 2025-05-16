@@ -199,6 +199,48 @@ public class WorkflowEnvironmentTests : TestBase
         });
     }
 
+    [Workflow]
+    public class LongSleepWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            await Workflow.DelayAsync(TimeSpan.FromSeconds(30));
+            return "all done";
+        }
+
+        [WorkflowSignal]
+        public async Task SomeSignalAsync()
+        {
+        }
+    }
+
+    [OnlyIntelFact]
+    public async Task StartTimeSkippingAsync_AutoTimeSkippingDisabled_RestoresAfterCall()
+    {
+        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddWorkflow<LongSleepWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var watch = Stopwatch.StartNew();
+            var handle = await env.Client.StartWorkflowAsync(
+                (LongSleepWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+            // Do a signal and confirm that it starts skipping again after the signal. This used to
+            // not restore auto-skipping when we didn't properly restore behavior.
+            await env.WithAutoTimeSkippingDisabledAsync(async () =>
+            {
+                await handle.SignalAsync(wf => wf.SomeSignalAsync());
+            });
+            // Wait for result
+            await handle.GetResultAsync();
+            Assert.True(watch.Elapsed < TimeSpan.FromSeconds(5));
+        });
+    }
+
     [Fact]
     public async Task StartLocal_SearchAttributes_ProperlyRegistered()
     {
