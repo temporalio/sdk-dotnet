@@ -83,15 +83,36 @@ namespace Temporalio.Activities
         public ILogger Logger { get; private init; }
 
         /// <summary>
-        /// Gets why the activity was cancelled. This value is inaccurate until
-        /// <see cref="CancellationToken" /> is cancelled.
+        /// Gets why the activity was cancelled.
         /// </summary>
-        public ActivityCancelReason CancelReason => CancelReasonRef.CancelReason;
+        /// <remarks>
+        /// This value may be inaccurate until <see cref="CancellationToken" /> is cancelled.
+        /// </remarks>
+        /// <remarks>
+        /// In some cases there may be multiple reasons an activity is cancelled. For this, use
+        /// <see cref="CancellationDetails"/>.
+        /// </remarks>
+        public ActivityCancelReason CancelReason => CancelRef.CancelReason;
+
+        /// <summary>
+        /// Gets the details of why a cancellation was performed.
+        /// </summary>
+        /// <remarks>
+        /// This value may be inaccurate until <see cref="CancellationToken" /> is cancelled.
+        /// </remarks>
+        /// <remarks>
+        /// These details only represent when the cancel was first performed. Once set, this object
+        /// is never mutated. Therefore, the situation on the server may have changed
+        /// (e.g. unpause), but this still represents the case when cancellation first occurred for
+        /// this attempt.
+        /// </remarks>
+        public ActivityCancellationDetails? CancellationDetails => CancelRef.CancellationDetails;
 
         /// <summary>
         /// Gets the cancellation token that is cancelled when the activity is cancelled.
         /// </summary>
-        public CancellationToken CancellationToken { get; private init; }
+        public CancellationToken CancellationToken
+        { get; private init; }
 
         /// <summary>
         /// Gets the cancellation token that is cancelled when the worker is shutdown. This can be
@@ -137,9 +158,9 @@ namespace Temporalio.Activities
         internal Action<object?[]>? Heartbeater { get; set; }
 
         /// <summary>
-        /// Gets a reference to the reason enum.
+        /// Gets a reference to update cancel values.
         /// </summary>
-        internal ActivityCancelReasonRef CancelReasonRef { get; init; } = new();
+        internal ActivityCancelRef CancelRef { get; init; } = new();
 
         /// <summary>
         /// Gets the raw proto task token for this activity.
