@@ -71,7 +71,7 @@ namespace Temporalio.Bridge
         {
             if (options.Url == null)
             {
-                throw new ArgumentException("OpenTelemetry URL is required");
+                throw new ArgumentException($"OpenTelemetry URL is required when {nameof(Temporalio.Runtime.OpenTelemetryOptions)} is configured");
             }
             Interop.OpenTelemetryMetricTemporality temporality;
             switch (options.MetricTemporality)
@@ -125,7 +125,7 @@ namespace Temporalio.Bridge
         {
             if (string.IsNullOrEmpty(options.BindAddress))
             {
-                throw new ArgumentException("Prometheus options must have bind address");
+                throw new ArgumentException($"BindAddress is required when {nameof(Temporalio.Runtime.PrometheusOptions)} is configured");
             }
             return new Interop.PrometheusOptions()
             {
@@ -150,7 +150,7 @@ namespace Temporalio.Bridge
         {
             if (string.IsNullOrEmpty(options.Filter.FilterString))
             {
-                throw new ArgumentException("Logging filter string is required");
+                throw new ArgumentException($"FilterString is required when {nameof(Temporalio.Runtime.TelemetryFilterOptions)} is configured");
             }
             return new Interop.LoggingOptions()
             {
@@ -283,7 +283,7 @@ namespace Temporalio.Bridge
             if (hasClientCert != hasClientKey)
             {
                 throw new ArgumentException(
-                    "Client cert and private key must both be present or neither");
+                    $"Client cert and private key must both be present or neither when {nameof(Temporalio.Client.TlsOptions)} is configured");
             }
             return new Interop.ClientTlsOptions()
             {
@@ -341,7 +341,7 @@ namespace Temporalio.Bridge
         {
             if (string.IsNullOrEmpty(options.TargetHost))
             {
-                throw new ArgumentException("TargetHost is required");
+                throw new ArgumentException($"{nameof(options.TargetHost)} is required when {nameof(Temporalio.Client.HttpConnectProxyOptions)} is configured");
             }
 
             return new ClientHttpConnectProxyOptions
@@ -448,7 +448,7 @@ namespace Temporalio.Bridge
         {
             if (options.TaskQueue == null)
             {
-                throw new ArgumentException("Task queue must be provided in worker options");
+                throw new ArgumentException($"Task queue must be provided when {nameof(Temporalio.Worker.TemporalWorkerOptions)} is configured");
             }
 #pragma warning disable 0618
             var buildId = options.DeploymentOptions?.Version?.BuildId ?? options.BuildId;
