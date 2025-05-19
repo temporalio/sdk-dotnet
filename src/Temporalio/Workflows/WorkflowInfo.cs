@@ -17,15 +17,17 @@ namespace Temporalio.Workflows
     /// <param name="LastResult">Successful result if this workflow is a continuation of a success.</param>
     /// <param name="Namespace">Namespace for the workflow.</param>
     /// <param name="Parent">Parent information for the workflow if this is a child.</param>
+    /// <param name="Priority">The Priority of this workflow.</param>
     /// <param name="RetryPolicy">Retry policy for the workflow.</param>
     /// <param name="Root">Root information for the workflow. This is nil in pre-1.27.0 server
     /// versions or if there is no root (i.e. the root is itself).</param>
     /// <param name="RunId">Run ID for the workflow.</param>
     /// <param name="RunTimeout">Run timeout for the workflow.</param>
-    /// <param name="StartTime">Time when the workflow started.</param>
+    /// <param name="StartTime">Time when the first workflow task started.</param>
     /// <param name="TaskQueue">Task queue for the workflow.</param>
     /// <param name="TaskTimeout">Task timeout for the workflow.</param>
     /// <param name="WorkflowId">ID for the workflow.</param>
+    /// <param name="WorkflowStartTime">Time when the workflow started on the server.</param>
     /// <param name="WorkflowType">Workflow type name.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
@@ -41,6 +43,7 @@ namespace Temporalio.Workflows
         IReadOnlyCollection<IRawValue>? LastResult,
         string Namespace,
         WorkflowInfo.ParentInfo? Parent,
+        Priority Priority,
         RetryPolicy? RetryPolicy,
         WorkflowInfo.RootInfo? Root,
         string RunId,
@@ -49,6 +52,7 @@ namespace Temporalio.Workflows
         string TaskQueue,
         TimeSpan TaskTimeout,
         string WorkflowId,
+        DateTime WorkflowStartTime,
         string WorkflowType)
     {
         /// <summary>

@@ -75,7 +75,11 @@ public class WorkflowEnvironment : IAsyncLifetime
                         // Enable multi-op
                         "--dynamic-config-value",
                         "frontend.enableExecuteMultiOperation=true",
+                        "--dynamic-config-value",
+                        "system.enableDeploymentVersions=true",
                     },
+                    // TODO: Remove after next CLI release
+                    DownloadVersion = "v1.3.1-persistence-fix.0",
                 },
             });
         }

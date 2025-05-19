@@ -552,6 +552,121 @@ namespace Temporalio.Bridge.Interop
         public ByteArray* fail;
     }
 
+    internal partial struct WorkerVersioningNone
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef build_id;
+    }
+
+    internal partial struct WorkerDeploymentVersion
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef deployment_name;
+
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef build_id;
+    }
+
+    internal partial struct WorkerDeploymentOptions
+    {
+        [NativeTypeName("struct WorkerDeploymentVersion")]
+        public WorkerDeploymentVersion version;
+
+        [NativeTypeName("bool")]
+        public byte use_worker_versioning;
+
+        [NativeTypeName("int32_t")]
+        public int default_versioning_behavior;
+    }
+
+    internal partial struct LegacyBuildIdBasedStrategy
+    {
+        [NativeTypeName("struct ByteArrayRef")]
+        public ByteArrayRef build_id;
+    }
+
+    internal enum WorkerVersioningStrategy_Tag
+    {
+        None,
+        DeploymentBased,
+        LegacyBuildIdBased,
+    }
+
+    internal unsafe partial struct WorkerVersioningStrategy
+    {
+        public WorkerVersioningStrategy_Tag tag;
+
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L419_C3")]
+        public _Anonymous_e__Union Anonymous;
+
+        internal ref WorkerVersioningNone none
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
+                {
+                    return ref pField->none;
+                }
+            }
+        }
+
+        internal ref WorkerDeploymentOptions deployment_based
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
+                {
+                    return ref pField->deployment_based;
+                }
+            }
+        }
+
+        internal ref LegacyBuildIdBasedStrategy legacy_build_id_based
+        {
+            get
+            {
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                {
+                    return ref pField->legacy_build_id_based;
+                }
+            }
+        }
+
+        [StructLayout(LayoutKind.Explicit)]
+        internal unsafe partial struct _Anonymous_e__Union
+        {
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L420_C5")]
+            public _Anonymous1_e__Struct Anonymous1;
+
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L423_C5")]
+            public _Anonymous2_e__Struct Anonymous2;
+
+            [FieldOffset(0)]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L426_C5")]
+            public _Anonymous3_e__Struct Anonymous3;
+
+            internal partial struct _Anonymous1_e__Struct
+            {
+                [NativeTypeName("struct WorkerVersioningNone")]
+                public WorkerVersioningNone none;
+            }
+
+            internal partial struct _Anonymous2_e__Struct
+            {
+                [NativeTypeName("struct WorkerDeploymentOptions")]
+                public WorkerDeploymentOptions deployment_based;
+            }
+
+            internal partial struct _Anonymous3_e__Struct
+            {
+                [NativeTypeName("struct LegacyBuildIdBasedStrategy")]
+                public LegacyBuildIdBasedStrategy legacy_build_id_based;
+            }
+        }
+    }
+
     internal partial struct FixedSizeSlotSupplier
     {
         [NativeTypeName("uintptr_t")]
@@ -652,7 +767,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L453_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L493_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref WorkflowSlotInfo_Body workflow_slot_info
@@ -781,7 +896,7 @@ namespace Temporalio.Bridge.Interop
     {
         public SlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L504_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L544_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref FixedSizeSlotSupplier fixed_size
@@ -821,15 +936,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L505_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L545_C5")]
             public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L508_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L548_C5")]
             public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L511_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L551_C5")]
             public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct
@@ -864,6 +979,33 @@ namespace Temporalio.Bridge.Interop
         public SlotSupplier local_activity_slot_supplier;
     }
 
+    internal partial struct PollerBehaviorSimpleMaximum
+    {
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr simple_maximum;
+    }
+
+    internal partial struct PollerBehaviorAutoscaling
+    {
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr minimum;
+
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr maximum;
+
+        [NativeTypeName("uintptr_t")]
+        public UIntPtr initial;
+    }
+
+    internal unsafe partial struct PollerBehavior
+    {
+        [NativeTypeName("const struct PollerBehaviorSimpleMaximum *")]
+        public PollerBehaviorSimpleMaximum* simple_maximum;
+
+        [NativeTypeName("const struct PollerBehaviorAutoscaling *")]
+        public PollerBehaviorAutoscaling* autoscaling;
+    }
+
     internal unsafe partial struct ByteArrayRefArray
     {
         [NativeTypeName("const struct ByteArrayRef *")]
@@ -881,8 +1023,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef task_queue;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
+        [NativeTypeName("struct WorkerVersioningStrategy")]
+        public WorkerVersioningStrategy versioning_strategy;
 
         [NativeTypeName("struct ByteArrayRef")]
         public ByteArrayRef identity_override;
@@ -912,16 +1054,13 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint64_t")]
         public ulong graceful_shutdown_period_millis;
 
-        [NativeTypeName("bool")]
-        public byte use_worker_versioning;
-
-        [NativeTypeName("uint32_t")]
-        public uint max_concurrent_workflow_task_polls;
+        [NativeTypeName("struct PollerBehavior")]
+        public PollerBehavior workflow_task_poller_behavior;
 
         public float nonsticky_to_sticky_poll_ratio;
 
-        [NativeTypeName("uint32_t")]
-        public uint max_concurrent_activity_task_polls;
+        [NativeTypeName("struct PollerBehavior")]
+        public PollerBehavior activity_task_poller_behavior;
 
         [NativeTypeName("bool")]
         public byte nondeterminism_as_workflow_fail;

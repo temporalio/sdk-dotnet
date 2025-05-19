@@ -1,14 +1,15 @@
-namespace Temporalio.Tests;
-
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 using Temporalio.Client;
+using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Runtime;
+using Xunit;
+
+namespace Temporalio.Tests;
 
 public static class TestUtils
 {
@@ -223,5 +224,67 @@ public static class TestUtils
         public void Record(T value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
 
         public void Set(T value, object tags) => Values.Enqueue((value, (Dictionary<string, object>)tags));
+    }
+
+    public static async Task<Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionResponse>
+    SetRampingVersionAsync(
+        ITemporalClient client,
+        Google.Protobuf.ByteString conflictToken,
+        WorkerDeploymentVersion version,
+        int rampPercentage)
+    {
+        return await client.WorkflowService.SetWorkerDeploymentRampingVersionAsync(
+            new()
+            {
+                Namespace = client.Options.Namespace,
+                DeploymentName = version.DeploymentName,
+#pragma warning disable CS0612
+                Version = version.ToCanonicalString(),
+#pragma warning restore CS0612
+                ConflictToken = conflictToken,
+                Percentage = rampPercentage,
+            });
+    }
+
+    public static async Task<Temporalio.Api.WorkflowService.V1.DescribeWorkerDeploymentResponse>
+    WaitUntilWorkerDeploymentVisibleAsync(ITemporalClient client, WorkerDeploymentVersion version) =>
+        await AssertMore.EventuallyAsync(async () =>
+        {
+            try
+            {
+                var response = await client.WorkflowService.DescribeWorkerDeploymentAsync(
+                    new()
+                    {
+                        Namespace = client.Options.Namespace,
+                        DeploymentName = version.DeploymentName,
+                    });
+
+                Assert.Contains(
+                    response.WorkerDeploymentInfo.VersionSummaries,
+#pragma warning disable CS0612
+                    vs => vs.Version == version.ToCanonicalString());
+#pragma warning restore CS0612
+                return response;
+            }
+            catch (RpcException)
+            {
+                throw new Xunit.Sdk.XunitException("Failed to describe worker deployment");
+            }
+        });
+
+    public static async Task<Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionResponse>
+    SetCurrentDeploymentVersionAsync(
+        ITemporalClient client, Google.Protobuf.ByteString conflictToken, WorkerDeploymentVersion version)
+    {
+        return await client.WorkflowService.SetWorkerDeploymentCurrentVersionAsync(
+            new()
+            {
+                Namespace = client.Options.Namespace,
+                DeploymentName = version.DeploymentName,
+#pragma warning disable CS0612
+                Version = version.ToCanonicalString(),
+#pragma warning restore CS0612
+                ConflictToken = conflictToken,
+            });
     }
 }

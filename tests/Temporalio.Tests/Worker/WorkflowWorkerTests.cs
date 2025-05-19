@@ -21,6 +21,7 @@ using Temporalio.Exceptions;
 using Temporalio.Runtime;
 using Temporalio.Tests.Converters;
 using Temporalio.Worker;
+using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
@@ -389,6 +390,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (InfoWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var result = await handle.GetResultAsync();
+            var history = await handle.FetchHistoryAsync();
             Assert.Equal(1, result.Attempt);
             Assert.Null(result.ContinuedRunId);
             Assert.Null(result.CronSchedule);
@@ -399,15 +401,19 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Null(result.Root);
             Assert.Equal(handle.ResultRunId, result.RunId);
             Assert.Null(result.RunTimeout);
-            Assert.InRange(
-                result.StartTime,
-                DateTime.UtcNow - TimeSpan.FromMinutes(5),
-                DateTime.UtcNow + TimeSpan.FromMinutes(5));
             Assert.Equal(worker.Options.TaskQueue, result.TaskQueue);
             // TODO(cretz): Can assume default 10 in all test servers?
             Assert.Equal(TimeSpan.FromSeconds(10), result.TaskTimeout);
             Assert.Equal(handle.Id, result.WorkflowId);
             Assert.Equal("InfoWorkflow", result.WorkflowType);
+            // Start time is the first task start time, but workflow start time is the actual start
+            // time
+            var workflowStartTime = history.Events.
+                Single(e => e.WorkflowExecutionStartedEventAttributes != null).EventTime.ToDateTime();
+            Assert.Equal(workflowStartTime, result.WorkflowStartTime);
+            var firstTaskStartTime = history.Events.
+                First(e => e.WorkflowTaskStartedEventAttributes != null).EventTime.ToDateTime();
+            Assert.Equal(firstTaskStartTime, result.StartTime);
         });
         // Child info
         await ExecuteWorkerAsync<InfoFromChildWorkflow>(
@@ -4285,7 +4291,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Equal("1.0", await handle.QueryAsync(wf => wf.GetBuildId()));
                 return handle;
             },
+#pragma warning disable 0618
             new(tq) { BuildId = "1.0" });
+#pragma warning restore 0618
 
         await Env.Client.WorkflowService.ResetStickyTaskQueueAsync(new()
         {
@@ -4303,7 +4311,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 await handle.GetResultAsync();
                 Assert.Equal("1.1", await handle.QueryAsync(wf => wf.GetBuildId()));
             },
+#pragma warning disable 0618
             new(tq) { BuildId = "1.1" });
+#pragma warning restore 0618
     }
 
     public abstract class FailureTypesWorkflow
@@ -4564,7 +4574,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Client.ExecuteWorkflowAsync(
                     "FailOnBadInputWorkflow",
                     new object?[] { 1234 },
-                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)));
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        ExecutionTimeout = TimeSpan.FromSeconds(10),
+                    }));
             Assert.Contains(
                 "failure decoding parameters",
                 Assert.IsType<ApplicationFailureException>(wfExc.InnerException).Message);
@@ -7285,6 +7298,196 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
                 await AssertTaskFailureContainsEventuallyAsync(handle, "Activity invalid_activity is not registered on this worker, no available activities.");
             });
+    }
+
+    [Workflow]
+    public class WorkflowUsingPriorities
+    {
+        [Activity]
+        public static string CheckPriorityActivity(int shouldHavePriority)
+        {
+            Assert.Equal(shouldHavePriority, ActivityExecutionContext.Current.Info.Priority?.PriorityKey);
+            return "Done!";
+        }
+
+        [Activity]
+        public static string SayHello(string name) => $"Hello, {name}!";
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(int? expectedPriority, bool stopAfterCheck)
+        {
+            Assert.Equal(expectedPriority, Workflow.Info.Priority?.PriorityKey);
+            if (stopAfterCheck)
+            {
+                return "Done!";
+            }
+
+            // Execute child workflow with priority 4
+            await Workflow.ExecuteChildWorkflowAsync(
+                (WorkflowUsingPriorities wf) => wf.RunAsync(4, true),
+                new() { Priority = new(4) });
+
+            // Start child workflow with priority 2
+            var handle = await Workflow.StartChildWorkflowAsync(
+                (WorkflowUsingPriorities wf) => wf.RunAsync(2, true),
+                new() { Priority = new(2) });
+
+            await handle.GetResultAsync();
+
+            // Execute activity with priority 5
+            await Workflow.ExecuteActivityAsync(
+                () => SayHello("hi"),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromSeconds(5),
+                    Priority = new(5),
+                });
+
+            return "Done!";
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_Priorities_HandlesPriorityProperly()
+    {
+        await ExecuteWorkerAsync<WorkflowUsingPriorities>(
+            async worker =>
+            {
+                // Start workflow with priority 1
+                var handle = await Client.StartWorkflowAsync(
+                    (WorkflowUsingPriorities wf) => wf.RunAsync(1, false),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        Priority = new(1),
+                    });
+
+                await handle.GetResultAsync();
+
+                // Check history for priority values
+                var history = await handle.FetchHistoryAsync();
+                bool firstChild = true;
+
+                foreach (var evt in history.Events)
+                {
+                    if (evt.WorkflowExecutionStartedEventAttributes != null)
+                    {
+                        Assert.Equal(1, evt.WorkflowExecutionStartedEventAttributes.Priority?.PriorityKey);
+                    }
+                    else if (evt.StartChildWorkflowExecutionInitiatedEventAttributes != null)
+                    {
+                        if (firstChild)
+                        {
+                            Assert.Equal(4, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.PriorityKey);
+                            firstChild = false;
+                        }
+                        else
+                        {
+                            Assert.Equal(2, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.PriorityKey);
+                        }
+                    }
+                    else if (evt.ActivityTaskScheduledEventAttributes != null)
+                    {
+                        Assert.Equal(5, evt.ActivityTaskScheduledEventAttributes.Priority?.PriorityKey);
+                    }
+                }
+
+                // Verify a workflow started without priorities sees null for the key
+                handle = await Client.StartWorkflowAsync(
+                    (WorkflowUsingPriorities wf) => wf.RunAsync(null, true),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+
+                await handle.GetResultAsync();
+            },
+            new TemporalWorkerOptions().AddAllActivities<WorkflowUsingPriorities>(null));
+    }
+
+    [Workflow]
+    public class WaitOnSignalThenActivityWorkflow
+    {
+        private bool complete;
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            await Workflow.WaitConditionAsync(() => complete);
+            await Workflow.ExecuteActivityAsync(() => SomeActivity(), new()
+            {
+                StartToCloseTimeout = TimeSpan.FromSeconds(10),
+            });
+        }
+
+        [WorkflowSignal]
+        public async Task CompleteAsync() => complete = true;
+
+        [Activity]
+        public static string SomeActivity() => "activity-result";
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PollingBehavior_Autoscaling()
+    {
+        var promAddr = $"127.0.0.1:{TestUtils.FreePort()}";
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                Metrics = new() { Prometheus = new(promAddr), },
+            },
+        });
+        var client = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = runtime,
+            });
+
+        await ExecuteWorkerAsync<WaitOnSignalThenActivityWorkflow>(
+        async worker =>
+        {
+            using var httpClient = new HttpClient();
+            var resp = await httpClient.GetAsync(new Uri($"http://{promAddr}/metrics"));
+            var body = await resp.Content.ReadAsStringAsync();
+            var bodyLines = body.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+            var matches = bodyLines.Where(l => l.Contains("temporal_num_pollers")).ToList();
+            var activityPollers = matches.Where(l => l.Contains("activity_task")).ToList();
+
+            Assert.Single(activityPollers);
+            Assert.True(activityPollers[0].EndsWith('2'), "Activity poller count should be 2");
+            var workflowPollers = matches.Where(l => l.Contains("workflow_task")).ToList();
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                // Should have exactly two workflow poller metrics (sticky and non-sticky)
+                Assert.Equal(2, workflowPollers.Count);
+
+                // There's sticky & non-sticky pollers, and they may have a count of 1 or 2 depending on initialization timing
+                Assert.True(
+                    workflowPollers[0].EndsWith('2') || workflowPollers[0].EndsWith('1'),
+                    "First workflow poller count should be 1 or 2");
+                Assert.True(
+                    workflowPollers[1].EndsWith('2') || workflowPollers[1].EndsWith('1'),
+                    "Second workflow poller count should be 1 or 2");
+            });
+
+            // Run multiple workflow instances concurrently
+            var workflowTasks = Enumerable.Range(0, 20).Select(async _ =>
+            {
+                var handle = await client.StartWorkflowAsync(
+                    (WaitOnSignalThenActivityWorkflow wf) => wf.RunAsync(),
+                    new($"workflow-{Guid.NewGuid()}", worker.Options.TaskQueue!));
+                await handle.SignalAsync(wf => wf.CompleteAsync());
+                await handle.GetResultAsync();
+            });
+
+            await Task.WhenAll(workflowTasks);
+        },
+        new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+        {
+            WorkflowTaskPollerBehavior = new PollerBehavior.Autoscaling(minimum: 1, maximum: 100, initial: 2),
+            ActivityTaskPollerBehavior = new PollerBehavior.Autoscaling(minimum: 1, maximum: 100, initial: 2),
+        }.AddAllActivities<WaitOnSignalThenActivityWorkflow>(null),
+        client);
     }
 
     internal static Task AssertTaskFailureContainsEventuallyAsync(

@@ -34,6 +34,11 @@ namespace Temporalio.Workflows
         string CurrentBuildId { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.CurrentDeploymentVersion" />.
+        /// </summary>
+        WorkerDeploymentVersion? CurrentDeploymentVersion { get; }
+
+        /// <summary>
         /// Gets or sets value for <see cref="Workflow.CurrentDetails" />.
         /// </summary>
         string CurrentDetails { get; set; }

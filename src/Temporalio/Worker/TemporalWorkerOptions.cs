@@ -109,6 +109,8 @@ namespace Temporalio.Worker
         /// If unset, the default is
         /// <c>Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId</c>.
         /// </summary>
+        /// <remarks>Exclusive with <see cref="DeploymentOptions"/>.</remarks>
+        [Obsolete("Use DeploymentOptions instead")]
         public string? BuildId { get; set; }
 
         /// <summary>
@@ -116,7 +118,17 @@ namespace Temporalio.Worker
         /// only receives workflow tasks for workflows which it claims to be compatible with. The
         /// <see cref="BuildId"/> field is used as this worker's version when enabled, and must be set.
         /// </summary>
+        /// <remarks>Exclusive with <see cref="DeploymentOptions"/>.</remarks>
+        [Obsolete("Use DeploymentOptions instead")]
         public bool UseWorkerVersioning { get; set; }
+
+        /// <summary>
+        /// Gets or sets the deployment options for this worker.
+        /// </summary>
+        /// <remarks>Exclusive with <see cref="DeploymentOptions"/> and <see cref="UseWorkerVersioning"/>.</remarks>
+        /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
+        /// change.</remarks>
+        public WorkerDeploymentOptions? DeploymentOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the identity for this worker. If unset, defaults to the client's identity.
@@ -214,6 +226,20 @@ namespace Temporalio.Worker
         /// perform at a time on this worker's task queue. Default is 5.
         /// </summary>
         public int MaxConcurrentActivityTaskPolls { get; set; } = 5;
+
+        /// <summary>
+        /// Gets or sets the behavior of the workflow task poller.
+        /// </summary>
+        /// <remarks>If set, will override any value set in <see cref="MaxConcurrentWorkflowTaskPolls"/>.</remarks>
+        /// <remarks>WARNING: This property is experimental.</remarks>
+        public PollerBehavior? WorkflowTaskPollerBehavior { get; set; }
+
+        /// <summary>
+        /// Gets or sets the behavior of the activity task poller.
+        /// </summary>
+        /// <remarks>WARNING: This property is experimental.</remarks>
+        /// <remarks>If set, will override any value set in <see cref="MaxConcurrentActivityTaskPolls"/>.</remarks>
+        public PollerBehavior? ActivityTaskPollerBehavior { get; set; }
 
         /// <summary>
         /// Gets or sets the types of exceptions that, if a workflow-thrown exception extends, will
@@ -397,6 +423,10 @@ namespace Temporalio.Worker
             var options = (TemporalWorkerOptions)MemberwiseClone();
             options.activities = new List<ActivityDefinition>(Activities);
             options.workflows = new List<WorkflowDefinition>(Workflows);
+            if (options.DeploymentOptions != null)
+            {
+                options.DeploymentOptions = (WorkerDeploymentOptions)options.DeploymentOptions.Clone();
+            }
             return options;
         }
 
