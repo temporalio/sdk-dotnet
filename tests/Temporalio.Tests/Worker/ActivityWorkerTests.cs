@@ -258,6 +258,115 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ExecuteActivityAsync_CaughtPause_Succeeds()
+    {
+        var activityReached = new TaskCompletionSource();
+        [Activity]
+        async Task<string> CatchPauseAsync()
+        {
+            activityReached.SetResult();
+            var ctx = ActivityExecutionContext.Current;
+            while (!ctx.CancellationToken.IsCancellationRequested)
+            {
+                ctx.Heartbeat();
+                await Task.Delay(300);
+            }
+            return $"Cancel reason: {ctx.CancelReason}, paused: {ctx.CancellationDetails?.IsPaused}";
+        }
+        var res = await ExecuteActivityAsync(
+            CatchPauseAsync,
+            waitForCancellation: true,
+            heartbeatTimeout: TimeSpan.FromSeconds(1),
+            afterStarted: async handle =>
+            {
+                // Wait for activity to be reached, then pause the activity
+                await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
+                await Client.WorkflowService.PauseActivityAsync(new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Execution = new()
+                    {
+                        WorkflowId = handle.Id,
+                        RunId = handle.ResultRunId,
+                    },
+                    Identity = Client.Connection.Options.Identity ?? string.Empty,
+                    Type = "CatchPause",
+                    Reason = "my reason",
+                });
+            });
+        Assert.Equal("Cancel reason: Paused, paused: True", res);
+    }
+
+    [Fact]
+    public async Task ExecuteActivityAsync_UncaughtPause_Fails()
+    {
+        var activityReached = new TaskCompletionSource();
+        [Activity]
+        async Task<string> PauseFailAsync()
+        {
+            var ctx = ActivityExecutionContext.Current;
+            // Exit early if we've already executed
+            if (activityReached.Task.IsCompleted)
+            {
+                return $"Done, last details: {ctx.Info.HeartbeatDetails.FirstOrDefault()?.Data?.ToStringUtf8()}";
+            }
+
+            // Run until pause
+            activityReached.SetResult();
+            while (true)
+            {
+                // Send details on heartbeat to confirm we have them post pause
+                ctx.Heartbeat("some-detail-pre-finally");
+                // Sleep and let cancellation token do interruption
+                try
+                {
+                    await Task.Delay(300, ctx.CancellationToken);
+                }
+                finally
+                {
+                    ctx.Heartbeat("some-detail-post-finally");
+                }
+            }
+        }
+        var res = await ExecuteActivityAsync(
+            PauseFailAsync,
+            waitForCancellation: true,
+            heartbeatTimeout: TimeSpan.FromSeconds(1),
+            afterStarted: async handle =>
+            {
+                // Wait for activity to be reached, then pause the activity
+                await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
+                await Client.WorkflowService.PauseActivityAsync(new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Execution = new() { WorkflowId = handle.Id, RunId = handle.ResultRunId },
+                    Identity = Client.Connection.Options.Identity ?? string.Empty,
+                    Type = "PauseFail",
+                    Reason = "my reason",
+                });
+                // Confirm the pending activity is paused and the heartbeat is recorded
+                await AssertMore.EventuallyAsync(async () =>
+                {
+                    var desc = await handle.DescribeAsync();
+                    var act = Assert.Single(desc.RawDescription.PendingActivities);
+                    Assert.True(act.Paused);
+                    Assert.Equal(
+                        "\"some-detail-post-finally\"",
+                        act.HeartbeatDetails?.Payloads_?.SingleOrDefault()?.Data?.ToStringUtf8());
+                });
+                // Now unpause it
+                await Client.WorkflowService.UnpauseActivityAsync(new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Execution = new() { WorkflowId = handle.Id, RunId = handle.ResultRunId },
+                    Identity = Client.Connection.Options.Identity ?? string.Empty,
+                    Type = "PauseFail",
+                });
+            });
+        Assert.Equal("Done, last details: \"some-detail-post-finally\"", res);
+    }
+
+    [Fact]
     public async Task ExecuteActivityAsync_WorkerShutdown_ReportsFailure()
     {
         using var workerStoppingSource = new CancellationTokenSource();
