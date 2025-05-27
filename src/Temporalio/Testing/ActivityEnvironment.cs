@@ -69,12 +69,23 @@ namespace Temporalio.Testing
         public ITemporalClient? TemporalClient { get; init; }
 
         /// <summary>
-        /// Gets or sets the cancel reason. Callers may prefer <see cref="Cancel" /> instead.
+        /// Gets or sets the cancel reason. Callers should use one of the overloads of
+        /// <see cref="Cancel()" /> instead.
         /// </summary>
         public ActivityCancelReason CancelReason
         {
-            get => CancelReasonRef.CancelReason;
-            set => CancelReasonRef.CancelReason = value;
+            get => CancelRef.CancelReason;
+            set => CancelRef.CancelReason = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the cancellation details. Callers should use one of the overloads of
+        /// <see cref="Cancel()" /> instead.
+        /// </summary>
+        public ActivityCancellationDetails? CancellationDetails
+        {
+            get => CancelRef.CancellationDetails;
+            set => CancelRef.CancellationDetails = value;
         }
 
         /// <summary>
@@ -93,9 +104,9 @@ namespace Temporalio.Testing
         public Action<object?[]> Heartbeater { get; init; } = details => { };
 
         /// <summary>
-        /// Gets the cancel reason reference.
+        /// Gets the cancel reference.
         /// </summary>
-        internal ActivityCancelReasonRef CancelReasonRef { get; } = new();
+        internal ActivityCancelRef CancelRef { get; } = new();
 
         /// <summary>
         /// Run the given activity with a context.
@@ -146,7 +157,7 @@ namespace Temporalio.Testing
                     temporalClient: TemporalClient)
                 {
                     Heartbeater = Heartbeater,
-                    CancelReasonRef = CancelReasonRef,
+                    CancelRef = CancelRef,
                 };
                 return await activity().ConfigureAwait(false);
             }
@@ -157,11 +168,27 @@ namespace Temporalio.Testing
         }
 
         /// <summary>
-        /// If cancellation not already requested, set the cancel reason and cancel the token
-        /// source.
+        /// If cancellation not already requested, set the cancel reason/details and cancel the
+        /// token source.
+        /// </summary>
+        public void Cancel() =>
+            Cancel(ActivityCancelReason.CancelRequested);
+
+        /// <summary>
+        /// If cancellation not already requested, set the cancel reason/details and cancel the
+        /// token source.
         /// </summary>
         /// <param name="reason">Cancel reason.</param>
-        public void Cancel(ActivityCancelReason reason = ActivityCancelReason.CancelRequested)
+        public void Cancel(ActivityCancelReason reason) =>
+            Cancel(reason, new() { IsCancelRequested = true });
+
+        /// <summary>
+        /// If cancellation not already requested, set the cancel reason/details and cancel the
+        /// token source.
+        /// </summary>
+        /// <param name="reason">Cancel reason.</param>
+        /// <param name="details">Cancellation details.</param>
+        public void Cancel(ActivityCancelReason reason, ActivityCancellationDetails details)
         {
             // This is intentionally not an atomic operation same as it's not in the real worker.
             // It is documented for callers not to expect reason to be valid until cancellation
@@ -169,6 +196,7 @@ namespace Temporalio.Testing
             if (!CancellationTokenSource.IsCancellationRequested)
             {
                 CancelReason = reason;
+                CancellationDetails = details;
                 CancellationTokenSource.Cancel();
             }
         }
