@@ -322,7 +322,7 @@ namespace Temporalio.Testing
             /// <inheritdoc/>
             public override async Task<T> WithAutoTimeSkippingDisabledAsync<T>(Func<Task<T>> func)
             {
-                var alreadyDisabled = autoTimeSkipping;
+                var alreadyDisabled = !autoTimeSkipping;
                 autoTimeSkipping = false;
                 try
                 {
