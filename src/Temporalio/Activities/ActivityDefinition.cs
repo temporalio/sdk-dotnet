@@ -57,6 +57,7 @@ namespace Temporalio.Activities
         /// <summary>
         /// Gets a value indicating whether the activity is dynamic.
         /// </summary>
+        [MemberNotNullWhen(true, nameof(Name))]
         public bool Dynamic => Name == null;
 
         /// <summary>
