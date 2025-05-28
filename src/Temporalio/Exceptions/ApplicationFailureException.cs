@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Api.Failure.V1;
 
 namespace Temporalio.Exceptions
@@ -25,18 +26,21 @@ namespace Temporalio.Exceptions
         /// <param name="nonRetryable">If true, marks the exception as non-retryable.</param>
         /// <param name="details">Collection of details to serialize into the exception.</param>
         /// <param name="nextRetryDelay">Override the next retry delay with this value.</param>
+        /// <param name="category">Error category.</param>
         public ApplicationFailureException(
             string message,
             string? errorType = null,
             bool nonRetryable = false,
             IReadOnlyCollection<object?>? details = null,
-            TimeSpan? nextRetryDelay = null)
+            TimeSpan? nextRetryDelay = null,
+            ApplicationErrorCategory category = ApplicationErrorCategory.Unspecified)
             : base(message)
         {
             ErrorType = errorType;
             NonRetryable = nonRetryable;
             Details = new OutboundFailureDetails(details ?? Array.Empty<object?>());
             NextRetryDelay = nextRetryDelay;
+            Category = category;
         }
 
         /// <summary>
@@ -50,19 +54,22 @@ namespace Temporalio.Exceptions
         /// <param name="nonRetryable">If true, marks the exception as non-retryable.</param>
         /// <param name="details">Collection of details to serialize into the exception.</param>
         /// <param name="nextRetryDelay">Override the next retry delay with this value.</param>
+        /// <param name="category">Error category.</param>
         public ApplicationFailureException(
             string message,
             Exception? inner,
             string? errorType = null,
             bool nonRetryable = false,
             IReadOnlyCollection<object?>? details = null,
-            TimeSpan? nextRetryDelay = null)
+            TimeSpan? nextRetryDelay = null,
+            ApplicationErrorCategory category = ApplicationErrorCategory.Unspecified)
             : base(message, inner)
         {
             ErrorType = errorType;
             NonRetryable = nonRetryable;
             Details = new OutboundFailureDetails(details);
             NextRetryDelay = nextRetryDelay;
+            Category = category;
         }
 
         /// <summary>
@@ -84,6 +91,7 @@ namespace Temporalio.Exceptions
             NonRetryable = info.NonRetryable;
             Details = new InboundFailureDetails(converter, info.Details?.Payloads_);
             NextRetryDelay = info.NextRetryDelay?.ToTimeSpan();
+            Category = info.Category;
         }
 
         /// <summary>
@@ -109,5 +117,10 @@ namespace Temporalio.Exceptions
         /// Gets the next retry delay override if any was set.
         /// </summary>
         public TimeSpan? NextRetryDelay { get; protected init; }
+
+        /// <summary>
+        /// Gets the error category.
+        /// </summary>
+        public ApplicationErrorCategory Category { get; protected init; }
     }
 }

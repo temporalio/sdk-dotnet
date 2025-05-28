@@ -10,6 +10,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
@@ -459,10 +460,22 @@ namespace Temporalio.Worker
             }
             catch (Exception e)
             {
-                act.Context.Logger.LogWarning(
-                    e,
-                    "Completing activity {ActivityType} as failed",
-                    act.Context.Info.ActivityType);
+                // Downgrade log level to DEBUG for benign application errors.
+                if ((e as ApplicationFailureException)?.Category == ApplicationErrorCategory.Benign)
+                {
+                    act.Context.Logger.LogDebug(
+                        e,
+                        "Completing activity {ActivityType} as failed (benign)",
+                        act.Context.Info.ActivityType);
+                }
+                else
+                {
+                    act.Context.Logger.LogWarning(
+                        e,
+                        "Completing activity {ActivityType} as failed",
+                        act.Context.Info.ActivityType);
+                }
+
                 completion.Result.Failed = new()
                 {
                     Failure_ = await dataConverter.ToFailureAsync(e).ConfigureAwait(false),
