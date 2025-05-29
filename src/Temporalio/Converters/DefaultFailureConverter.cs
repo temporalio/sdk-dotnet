@@ -155,6 +155,7 @@ namespace Temporalio.Converters
                             appDet.Count == 0
                                 ? null
                                 : new() { Payloads_ = { appDet.Details.Select(conv.ToPayload) } },
+                        Category = appExc.Category,
                     };
                     if (appExc.NextRetryDelay != null)
                     {

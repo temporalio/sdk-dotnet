@@ -46,6 +46,23 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task GetResultAsync_BenignFailure_Throws()
+    {
+        var err = await Assert.ThrowsAsync<Exceptions.WorkflowFailedException>(async () =>
+        {
+            var arg = new KSWorkflowParams(new KSAction(
+                Error: new(Message: "Some Message", Details: "Some Details", IsBenign: true)));
+            await Client.ExecuteWorkflowAsync(
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        });
+        var appErr = Assert.IsType<Exceptions.ApplicationFailureException>(err.InnerException);
+        Assert.Equal("Some Message", appErr.Message);
+        Assert.Equal("Some Details", appErr.Details.ElementAt<string>(0));
+        Assert.Equal(ApplicationErrorCategory.Benign, appErr.Category);
+    }
+
+    [Fact]
     public async Task GetResultAsync_NotFoundWorkflow_Throws()
     {
         var err = await Assert.ThrowsAsync<Exceptions.RpcException>(async () =>

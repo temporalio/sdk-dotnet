@@ -1,3 +1,5 @@
+using Temporalio.Api.Enums.V1;
+
 namespace Temporalio.Tests;
 
 using System.Threading.Tasks;
@@ -76,7 +78,9 @@ public class KitchenSinkWorkflow
                 details = new[] { action.Error.Details };
             }
             throw new ApplicationFailureException(
-                action.Error.Message ?? string.Empty, details: details);
+                action.Error.Message ?? string.Empty,
+                details: details,
+                category: action.Error.IsBenign ? ApplicationErrorCategory.Benign : ApplicationErrorCategory.Unspecified);
         }
         else if (action.ContinueAsNew != null)
         {
