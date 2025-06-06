@@ -25,36 +25,38 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cil0ZW1wb3JhbC9hcGkvY2xvdWQvbmV4dXMvdjEvbWVzc2FnZS5wcm90bxIb",
-            "dGVtcG9yYWwuYXBpLmNsb3VkLm5leHVzLnYxGix0ZW1wb3JhbC9hcGkvY2xv",
-            "dWQvcmVzb3VyY2UvdjEvbWVzc2FnZS5wcm90bxofZ29vZ2xlL3Byb3RvYnVm",
-            "L3RpbWVzdGFtcC5wcm90byK+AQoMRW5kcG9pbnRTcGVjEgwKBG5hbWUYASAB",
-            "KAkSRAoLdGFyZ2V0X3NwZWMYAiABKAsyLy50ZW1wb3JhbC5hcGkuY2xvdWQu",
-            "bmV4dXMudjEuRW5kcG9pbnRUYXJnZXRTcGVjEkUKDHBvbGljeV9zcGVjcxgD",
-            "IAMoCzIvLnRlbXBvcmFsLmFwaS5jbG91ZC5uZXh1cy52MS5FbmRwb2ludFBv",
-            "bGljeVNwZWMSEwoLZGVzY3JpcHRpb24YBCABKAkibAoSRW5kcG9pbnRUYXJn",
-            "ZXRTcGVjEksKEndvcmtlcl90YXJnZXRfc3BlYxgBIAEoCzItLnRlbXBvcmFs",
-            "LmFwaS5jbG91ZC5uZXh1cy52MS5Xb3JrZXJUYXJnZXRTcGVjSABCCQoHdmFy",
-            "aWFudCI8ChBXb3JrZXJUYXJnZXRTcGVjEhQKDG5hbWVzcGFjZV9pZBgBIAEo",
-            "CRISCgp0YXNrX3F1ZXVlGAIgASgJIowBChJFbmRwb2ludFBvbGljeVNwZWMS",
-            "awojYWxsb3dlZF9jbG91ZF9uYW1lc3BhY2VfcG9saWN5X3NwZWMYASABKAsy",
-            "PC50ZW1wb3JhbC5hcGkuY2xvdWQubmV4dXMudjEuQWxsb3dlZENsb3VkTmFt",
-            "ZXNwYWNlUG9saWN5U3BlY0gAQgkKB3ZhcmlhbnQiNwofQWxsb3dlZENsb3Vk",
-            "TmFtZXNwYWNlUG9saWN5U3BlYxIUCgxuYW1lc3BhY2VfaWQYASABKAkirQIK",
-            "CEVuZHBvaW50EgoKAmlkGAEgASgJEhgKEHJlc291cmNlX3ZlcnNpb24YAiAB",
-            "KAkSNwoEc3BlYxgDIAEoCzIpLnRlbXBvcmFsLmFwaS5jbG91ZC5uZXh1cy52",
-            "MS5FbmRwb2ludFNwZWMSPAoFc3RhdGUYBCABKA4yLS50ZW1wb3JhbC5hcGku",
-            "Y2xvdWQucmVzb3VyY2UudjEuUmVzb3VyY2VTdGF0ZRIaChJhc3luY19vcGVy",
-            "YXRpb25faWQYBSABKAkSMAoMY3JlYXRlZF90aW1lGAYgASgLMhouZ29vZ2xl",
-            "LnByb3RvYnVmLlRpbWVzdGFtcBI2ChJsYXN0X21vZGlmaWVkX3RpbWUYByAB",
-            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQp0BCh5pby50ZW1wb3Jh",
-            "bC5hcGkuY2xvdWQubmV4dXMudjFCDE1lc3NhZ2VQcm90b1ABWidnby50ZW1w",
-            "b3JhbC5pby9hcGkvY2xvdWQvbmV4dXMvdjE7bmV4dXOqAh1UZW1wb3JhbGlv",
-            "LkFwaS5DbG91ZC5OZXh1cy5WMeoCIVRlbXBvcmFsaW86OkFwaTo6Q2xvdWQ6",
-            "Ok5leHVzOjpWMWIGcHJvdG8z"));
+            "dGVtcG9yYWwuYXBpLmNsb3VkLm5leHVzLnYxGiR0ZW1wb3JhbC9hcGkvY29t",
+            "bW9uL3YxL21lc3NhZ2UucHJvdG8aLHRlbXBvcmFsL2FwaS9jbG91ZC9yZXNv",
+            "dXJjZS92MS9tZXNzYWdlLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0",
+            "YW1wLnByb3RvIoMCCgxFbmRwb2ludFNwZWMSDAoEbmFtZRgBIAEoCRJECgt0",
+            "YXJnZXRfc3BlYxgCIAEoCzIvLnRlbXBvcmFsLmFwaS5jbG91ZC5uZXh1cy52",
+            "MS5FbmRwb2ludFRhcmdldFNwZWMSRQoMcG9saWN5X3NwZWNzGAMgAygLMi8u",
+            "dGVtcG9yYWwuYXBpLmNsb3VkLm5leHVzLnYxLkVuZHBvaW50UG9saWN5U3Bl",
+            "YxIiChZkZXNjcmlwdGlvbl9kZXByZWNhdGVkGAQgASgJQgIYARI0CgtkZXNj",
+            "cmlwdGlvbhgFIAEoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9h",
+            "ZCJsChJFbmRwb2ludFRhcmdldFNwZWMSSwoSd29ya2VyX3RhcmdldF9zcGVj",
+            "GAEgASgLMi0udGVtcG9yYWwuYXBpLmNsb3VkLm5leHVzLnYxLldvcmtlclRh",
+            "cmdldFNwZWNIAEIJCgd2YXJpYW50IjwKEFdvcmtlclRhcmdldFNwZWMSFAoM",
+            "bmFtZXNwYWNlX2lkGAEgASgJEhIKCnRhc2tfcXVldWUYAiABKAkijAEKEkVu",
+            "ZHBvaW50UG9saWN5U3BlYxJrCiNhbGxvd2VkX2Nsb3VkX25hbWVzcGFjZV9w",
+            "b2xpY3lfc3BlYxgBIAEoCzI8LnRlbXBvcmFsLmFwaS5jbG91ZC5uZXh1cy52",
+            "MS5BbGxvd2VkQ2xvdWROYW1lc3BhY2VQb2xpY3lTcGVjSABCCQoHdmFyaWFu",
+            "dCI3Ch9BbGxvd2VkQ2xvdWROYW1lc3BhY2VQb2xpY3lTcGVjEhQKDG5hbWVz",
+            "cGFjZV9pZBgBIAEoCSKtAgoIRW5kcG9pbnQSCgoCaWQYASABKAkSGAoQcmVz",
+            "b3VyY2VfdmVyc2lvbhgCIAEoCRI3CgRzcGVjGAMgASgLMikudGVtcG9yYWwu",
+            "YXBpLmNsb3VkLm5leHVzLnYxLkVuZHBvaW50U3BlYxI8CgVzdGF0ZRgEIAEo",
+            "DjItLnRlbXBvcmFsLmFwaS5jbG91ZC5yZXNvdXJjZS52MS5SZXNvdXJjZVN0",
+            "YXRlEhoKEmFzeW5jX29wZXJhdGlvbl9pZBgFIAEoCRIwCgxjcmVhdGVkX3Rp",
+            "bWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKEmxhc3Rf",
+            "bW9kaWZpZWRfdGltZRgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3Rh",
+            "bXBCnQEKHmlvLnRlbXBvcmFsLmFwaS5jbG91ZC5uZXh1cy52MUIMTWVzc2Fn",
+            "ZVByb3RvUAFaJ2dvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9uZXh1cy92MTtu",
+            "ZXh1c6oCHVRlbXBvcmFsaW8uQXBpLkNsb3VkLk5leHVzLlYx6gIhVGVtcG9y",
+            "YWxpbzo6QXBpOjpDbG91ZDo6TmV4dXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.EndpointSpec), global::Temporalio.Api.Cloud.Nexus.V1.EndpointSpec.Parser, new[]{ "Name", "TargetSpec", "PolicySpecs", "Description" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.EndpointSpec), global::Temporalio.Api.Cloud.Nexus.V1.EndpointSpec.Parser, new[]{ "Name", "TargetSpec", "PolicySpecs", "DescriptionDeprecated", "Description" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.EndpointTargetSpec), global::Temporalio.Api.Cloud.Nexus.V1.EndpointTargetSpec.Parser, new[]{ "WorkerTargetSpec" }, new[]{ "Variant" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.WorkerTargetSpec), global::Temporalio.Api.Cloud.Nexus.V1.WorkerTargetSpec.Parser, new[]{ "NamespaceId", "TaskQueue" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Nexus.V1.EndpointPolicySpec), global::Temporalio.Api.Cloud.Nexus.V1.EndpointPolicySpec.Parser, new[]{ "AllowedCloudNamespacePolicySpec" }, new[]{ "Variant" }, null, null, null),
@@ -103,7 +105,8 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       name_ = other.name_;
       targetSpec_ = other.targetSpec_ != null ? other.targetSpec_.Clone() : null;
       policySpecs_ = other.policySpecs_.Clone();
-      description_ = other.description_;
+      descriptionDeprecated_ = other.descriptionDeprecated_;
+      description_ = other.description_ != null ? other.description_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -161,18 +164,36 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       get { return policySpecs_; }
     }
 
+    /// <summary>Field number for the "description_deprecated" field.</summary>
+    public const int DescriptionDeprecatedFieldNumber = 4;
+    private string descriptionDeprecated_ = "";
+    /// <summary>
+    /// Deprecated: Not supported after v0.4.0 api version. Use description instead.
+    /// temporal:versioning:max_version=v0.4.0
+    /// </summary>
+    [global::System.ObsoleteAttribute]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DescriptionDeprecated {
+      get { return descriptionDeprecated_; }
+      set {
+        descriptionDeprecated_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "description" field.</summary>
-    public const int DescriptionFieldNumber = 4;
-    private string description_ = "";
+    public const int DescriptionFieldNumber = 5;
+    private global::Temporalio.Api.Common.V1.Payload description_;
     /// <summary>
     /// The markdown description of the endpoint - optional.
+    /// temporal:versioning:min_version=v0.4.0
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Description {
+    public global::Temporalio.Api.Common.V1.Payload Description {
       get { return description_; }
       set {
-        description_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        description_ = value;
       }
     }
 
@@ -194,7 +215,8 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       if (Name != other.Name) return false;
       if (!object.Equals(TargetSpec, other.TargetSpec)) return false;
       if(!policySpecs_.Equals(other.policySpecs_)) return false;
-      if (Description != other.Description) return false;
+      if (DescriptionDeprecated != other.DescriptionDeprecated) return false;
+      if (!object.Equals(Description, other.Description)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -205,7 +227,8 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
       if (Name.Length != 0) hash ^= Name.GetHashCode();
       if (targetSpec_ != null) hash ^= TargetSpec.GetHashCode();
       hash ^= policySpecs_.GetHashCode();
-      if (Description.Length != 0) hash ^= Description.GetHashCode();
+      if (DescriptionDeprecated.Length != 0) hash ^= DescriptionDeprecated.GetHashCode();
+      if (description_ != null) hash ^= Description.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -233,9 +256,13 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
         output.WriteMessage(TargetSpec);
       }
       policySpecs_.WriteTo(output, _repeated_policySpecs_codec);
-      if (Description.Length != 0) {
+      if (DescriptionDeprecated.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteString(Description);
+        output.WriteString(DescriptionDeprecated);
+      }
+      if (description_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Description);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -256,9 +283,13 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
         output.WriteMessage(TargetSpec);
       }
       policySpecs_.WriteTo(ref output, _repeated_policySpecs_codec);
-      if (Description.Length != 0) {
+      if (DescriptionDeprecated.Length != 0) {
         output.WriteRawTag(34);
-        output.WriteString(Description);
+        output.WriteString(DescriptionDeprecated);
+      }
+      if (description_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Description);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -277,8 +308,11 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(TargetSpec);
       }
       size += policySpecs_.CalculateSize(_repeated_policySpecs_codec);
-      if (Description.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Description);
+      if (DescriptionDeprecated.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DescriptionDeprecated);
+      }
+      if (description_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Description);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -302,8 +336,14 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
         TargetSpec.MergeFrom(other.TargetSpec);
       }
       policySpecs_.Add(other.policySpecs_);
-      if (other.Description.Length != 0) {
-        Description = other.Description;
+      if (other.DescriptionDeprecated.Length != 0) {
+        DescriptionDeprecated = other.DescriptionDeprecated;
+      }
+      if (other.description_ != null) {
+        if (description_ == null) {
+          Description = new global::Temporalio.Api.Common.V1.Payload();
+        }
+        Description.MergeFrom(other.Description);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -336,7 +376,14 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
             break;
           }
           case 34: {
-            Description = input.ReadString();
+            DescriptionDeprecated = input.ReadString();
+            break;
+          }
+          case 42: {
+            if (description_ == null) {
+              Description = new global::Temporalio.Api.Common.V1.Payload();
+            }
+            input.ReadMessage(Description);
             break;
           }
         }
@@ -370,7 +417,14 @@ namespace Temporalio.Api.Cloud.Nexus.V1 {
             break;
           }
           case 34: {
-            Description = input.ReadString();
+            DescriptionDeprecated = input.ReadString();
+            break;
+          }
+          case 42: {
+            if (description_ == null) {
+              Description = new global::Temporalio.Api.Common.V1.Payload();
+            }
+            input.ReadMessage(Description);
             break;
           }
         }

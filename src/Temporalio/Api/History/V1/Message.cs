@@ -802,7 +802,7 @@ namespace Temporalio.Api.History.V1 {
     public const int ParentInitiatedEventIdFieldNumber = 4;
     private long parentInitiatedEventId_;
     /// <summary>
-    /// EventID of the child execution initiated event in parent workflow 
+    /// EventID of the child execution initiated event in parent workflow
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -10243,7 +10243,7 @@ namespace Temporalio.Api.History.V1 {
     private string cause_ = "";
     /// <summary>
     /// User provided reason for requesting cancellation
-    /// TODO: shall we create a new field with name "reason" and deprecate this one? 
+    /// TODO: shall we create a new field with name "reason" and deprecate this one?
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -11202,7 +11202,7 @@ namespace Temporalio.Api.History.V1 {
     public const int HeaderFieldNumber = 4;
     private global::Temporalio.Api.Common.V1.Header header_;
     /// <summary>
-    /// Headers that were passed by the sender of the signal and copied by temporal 
+    /// Headers that were passed by the sender of the signal and copied by temporal
     /// server into the workflow task.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

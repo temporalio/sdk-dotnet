@@ -613,9 +613,9 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                workflow_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
+                workflow_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = 1,
-                activity_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
+                activity_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
