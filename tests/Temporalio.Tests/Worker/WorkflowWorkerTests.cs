@@ -6258,8 +6258,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
                 // Check description has summary/details
                 var desc = await handle.DescribeAsync();
-                Assert.Equal("my-workflow", desc.StaticSummary);
-                Assert.Equal("my-workflow-details", desc.StaticDetails);
+                Assert.Equal("my-workflow", await desc.GetStaticSummaryAsync());
+                Assert.Equal("my-workflow-details", await desc.GetStaticDetailsAsync());
 
                 // Check history for timer (x2), activity, and child metadata
                 var history = await handle.FetchHistoryAsync();
@@ -6277,8 +6277,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var child = history.Events.Single(evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null);
                 desc = await Client.GetWorkflowHandle(
                     child.StartChildWorkflowExecutionInitiatedEventAttributes.WorkflowId).DescribeAsync();
-                Assert.Equal("my-child", desc.StaticSummary);
-                Assert.Equal("my-child-details", desc.StaticDetails);
+                Assert.Equal("my-child", await desc.GetStaticSummaryAsync());
+                Assert.Equal("my-child-details", await desc.GetStaticDetailsAsync());
             },
             new TemporalWorkerOptions().AddAllActivities<UserMetadataWorkflow>(null));
     }
