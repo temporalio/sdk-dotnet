@@ -21,6 +21,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke AddUserGroupMember.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<AddUserGroupMemberResponse> AddUserGroupMemberAsync(AddUserGroupMemberRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("AddUserGroupMember", req, AddUserGroupMemberResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CreateApiKey.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -128,6 +139,17 @@ namespace Temporalio.Client
         public Task<DeleteNamespaceExportSinkResponse> DeleteNamespaceExportSinkAsync(DeleteNamespaceExportSinkRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DeleteNamespaceExportSink", req, DeleteNamespaceExportSinkResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteNamespaceRegion.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteNamespaceRegionResponse> DeleteNamespaceRegionAsync(DeleteNamespaceRegionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteNamespaceRegion", req, DeleteNamespaceRegionResponse.Parser, options);
         }
 
         /// <summary>
@@ -373,6 +395,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke GetUserGroupMembers.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetUserGroupMembersResponse> GetUserGroupMembersAsync(GetUserGroupMembersRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetUserGroupMembers", req, GetUserGroupMembersResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetUserGroups.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -392,6 +425,17 @@ namespace Temporalio.Client
         public Task<GetUsersResponse> GetUsersAsync(GetUsersRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetUsers", req, GetUsersResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke RemoveUserGroupMember.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<RemoveUserGroupMemberResponse> RemoveUserGroupMemberAsync(RemoveUserGroupMemberRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("RemoveUserGroupMember", req, RemoveUserGroupMemberResponse.Parser, options);
         }
 
         /// <summary>

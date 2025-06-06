@@ -46,11 +46,14 @@ namespace Temporalio.Bridge.Api.Nexus {
             "Cg9DYW5jZWxOZXh1c1Rhc2sSEgoKdGFza190b2tlbhgBIAEoDBI0CgZyZWFz",
             "b24YAiABKA4yJC5jb3Jlc2RrLm5leHVzLk5leHVzVGFza0NhbmNlbFJlYXNv",
             "bio7ChVOZXh1c1Rhc2tDYW5jZWxSZWFzb24SDQoJVElNRURfT1VUEAASEwoP",
-            "V09SS0VSX1NIVVRET1dOEAFCK+oCKFRlbXBvcmFsaW86OkludGVybmFsOjpC",
-            "cmlkZ2U6OkFwaTo6TmV4dXNiBnByb3RvMw=="));
+            "V09SS0VSX1NIVVRET1dOEAEqfwoeTmV4dXNPcGVyYXRpb25DYW5jZWxsYXRp",
+            "b25UeXBlEgsKB0FCQU5ET04QABIOCgpUUllfQ0FOQ0VMEAESHwobV0FJVF9D",
+            "QU5DRUxMQVRJT05fUkVRVUVTVEVEEAISHwobV0FJVF9DQU5DRUxMQVRJT05f",
+            "Q09NUExFVEVEEANCK+oCKFRlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6",
+            "OkFwaTo6TmV4dXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCancelReason), }, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCancelReason), typeof(global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusOperationResult), global::Temporalio.Bridge.Api.Nexus.NexusOperationResult.Parser, new[]{ "Completed", "Failed", "Cancelled", "TimedOut" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion), global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion.Parser, new[]{ "TaskToken", "Completed", "Error", "AckCancel" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTask), global::Temporalio.Bridge.Api.Nexus.NexusTask.Parser, new[]{ "Task", "CancelTask" }, new[]{ "Variant" }, null, null, null),
@@ -70,6 +73,30 @@ namespace Temporalio.Bridge.Api.Nexus {
     /// The worker is shutting down
     /// </summary>
     [pbr::OriginalName("WORKER_SHUTDOWN")] WorkerShutdown = 1,
+  }
+
+  /// <summary>
+  /// Controls at which point to report back to lang when a nexus operation is cancelled
+  /// </summary>
+  internal enum NexusOperationCancellationType {
+    /// <summary>
+    /// Do not request cancellation of the nexus operation if already scheduled
+    /// </summary>
+    [pbr::OriginalName("ABANDON")] Abandon = 0,
+    /// <summary>
+    /// Initiate a cancellation request for the Nexus operation and immediately report cancellation
+    /// to the caller. Note that it doesn't guarantee that cancellation is delivered to the operation if calling workflow exits before the delivery is done.
+    /// If you want to ensure that cancellation is delivered to the operation, use WAIT_CANCELLATION_REQUESTED.
+    /// </summary>
+    [pbr::OriginalName("TRY_CANCEL")] TryCancel = 1,
+    /// <summary>
+    /// Request cancellation of the operation and wait for confirmation that the request was received.
+    /// </summary>
+    [pbr::OriginalName("WAIT_CANCELLATION_REQUESTED")] WaitCancellationRequested = 2,
+    /// <summary>
+    /// Wait for operation cancellation completion. Default.
+    /// </summary>
+    [pbr::OriginalName("WAIT_CANCELLATION_COMPLETED")] WaitCancellationCompleted = 3,
   }
 
   #endregion

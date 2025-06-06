@@ -466,6 +466,7 @@ async fn call_cloud_service<'p>(
     let mut client = client.clone();
     match rpc {
         "AddNamespaceRegion" => rpc_call!(client, call, add_namespace_region),
+        "AddUserGroupMember" => rpc_call!(client, call, add_user_group_member),
         "CreateApiKey" => rpc_call!(client, call, create_api_key),
         "CreateNamespace" => rpc_call!(client, call, create_namespace),
         "CreateNamespaceExportSink" => rpc_call!(client, call, create_namespace_export_sink),
@@ -478,6 +479,7 @@ async fn call_cloud_service<'p>(
         "DeleteApiKey" => rpc_call!(client, call, delete_api_key),
         "DeleteNamespace" => rpc_call_on_trait!(client, call, CloudService, delete_namespace),
         "DeleteNamespaceExportSink" => rpc_call!(client, call, delete_namespace_export_sink),
+        "DeleteNamespaceRegion" => rpc_call!(client, call, delete_namespace_region),
         "DeleteNexusEndpoint" => {
             rpc_call_on_trait!(client, call, CloudService, delete_nexus_endpoint)
         }
@@ -501,9 +503,11 @@ async fn call_cloud_service<'p>(
         "GetServiceAccounts" => rpc_call!(client, call, get_service_accounts),
         "GetUsage" => rpc_call!(client, call, get_usage),
         "GetUserGroup" => rpc_call!(client, call, get_user_group),
+        "GetUserGroupMembers" => rpc_call!(client, call, get_user_group_members),
         "GetUserGroups" => rpc_call!(client, call, get_user_groups),
         "GetUser" => rpc_call!(client, call, get_user),
         "GetUsers" => rpc_call!(client, call, get_users),
+        "RemoveUserGroupMember" => rpc_call!(client, call, remove_user_group_member),
         "RenameCustomSearchAttribute" => rpc_call!(client, call, rename_custom_search_attribute),
         "SetUserGroupNamespaceAccess" => rpc_call!(client, call, set_user_group_namespace_access),
         "SetUserNamespaceAccess" => rpc_call!(client, call, set_user_namespace_access),
