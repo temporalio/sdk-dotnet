@@ -3,7 +3,7 @@ compatible-codegen
 --with-access-specifier
 *=internal
 --file
-src/Temporalio/Bridge/include/temporal-sdk-bridge.h
+src/Temporalio/Bridge/sdk-core/core-c-bridge/include/temporal-sdk-bridge.h
 --namespace
 Temporalio.Bridge.Interop
 --libraryPath
