@@ -48,11 +48,11 @@ namespace Temporalio.Bridge
                     // Set log forwarding if enabled
                     if (forwardLogger != null)
                     {
-                        forwardLoggerCallback = GCHandle.Alloc(new Interop.ForwardedLogCallback(OnLog));
+                        forwardLoggerCallback = GCHandle.Alloc(new Interop.TemporalCoreForwardedLogCallback(OnLog));
                         runtimeOptions.telemetry->logging->forward_to =
                             Marshal.GetFunctionPointerForDelegate(forwardLoggerCallback.Value.Target!);
                     }
-                    var res = Interop.Methods.runtime_new(scope.Pointer(runtimeOptions));
+                    var res = Interop.Methods.temporal_core_runtime_new(scope.Pointer(runtimeOptions));
                     // If it failed, copy byte array, free runtime and byte array. Otherwise just
                     // return runtime.
                     if (res.fail != null)
@@ -60,8 +60,8 @@ namespace Temporalio.Bridge
                         var message = ByteArrayRef.StrictUTF8.GetString(
                             res.fail->data,
                             (int)res.fail->size);
-                        Interop.Methods.byte_array_free(res.runtime, res.fail);
-                        Interop.Methods.runtime_free(res.runtime);
+                        Interop.Methods.temporal_core_byte_array_free(res.runtime, res.fail);
+                        Interop.Methods.temporal_core_runtime_free(res.runtime);
                         throw new InvalidOperationException(message);
                     }
                     Ptr = res.runtime;
@@ -77,7 +77,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets the pointer to the runtime.
         /// </summary>
-        internal unsafe Interop.Runtime* Ptr { get; private init; }
+        internal unsafe Interop.TemporalCoreRuntime* Ptr { get; private init; }
 
         /// <summary>
         /// Gets the lazy metric meter for this runtime. Can be null.
@@ -127,9 +127,9 @@ namespace Temporalio.Bridge
         /// Free a byte array.
         /// </summary>
         /// <param name="byteArray">Byte array to free.</param>
-        internal unsafe void FreeByteArray(Interop.ByteArray* byteArray)
+        internal unsafe void FreeByteArray(Interop.TemporalCoreByteArray* byteArray)
         {
-            Interop.Methods.byte_array_free(Ptr, byteArray);
+            Interop.Methods.temporal_core_byte_array_free(Ptr, byteArray);
         }
 
         /// <inheritdoc />
@@ -137,14 +137,14 @@ namespace Temporalio.Bridge
         {
             forwardLogger = null;
             forwardLoggerCallback?.Free();
-            Interop.Methods.runtime_free(Ptr);
+            Interop.Methods.temporal_core_runtime_free(Ptr);
             return true;
         }
 
         private static string LogMessageFormatter(ForwardedLog state, Exception? error) =>
             state.ToString();
 
-        private unsafe void OnLog(Interop.ForwardedLogLevel coreLevel, Interop.ForwardedLog* coreLog)
+        private unsafe void OnLog(Interop.TemporalCoreForwardedLogLevel coreLevel, Interop.TemporalCoreForwardedLog* coreLog)
         {
             if (forwardLogger is not { } logger)
             {
@@ -163,7 +163,7 @@ namespace Temporalio.Bridge
             {
                 try
                 {
-                    var fieldBytes = Interop.Methods.forwarded_log_fields_json(coreLog);
+                    var fieldBytes = Interop.Methods.temporal_core_forwarded_log_fields_json(coreLog);
                     jsonFields = ReadJsonObjectToRawValues(new(fieldBytes.data, (int)fieldBytes.size));
                 }
 #pragma warning disable CA1031 // We are ok swallowing all exceptions
@@ -174,9 +174,9 @@ namespace Temporalio.Bridge
             }
             var log = new ForwardedLog(
                 Level: level,
-                Target: ByteArrayRef.ToUtf8(Interop.Methods.forwarded_log_target(coreLog)),
-                Message: ByteArrayRef.ToUtf8(Interop.Methods.forwarded_log_message(coreLog)),
-                TimestampMilliseconds: Interop.Methods.forwarded_log_timestamp_millis(coreLog),
+                Target: ByteArrayRef.ToUtf8(Interop.Methods.temporal_core_forwarded_log_target(coreLog)),
+                Message: ByteArrayRef.ToUtf8(Interop.Methods.temporal_core_forwarded_log_message(coreLog)),
+                TimestampMilliseconds: Interop.Methods.temporal_core_forwarded_log_timestamp_millis(coreLog),
                 JsonFields: jsonFields);
             logger.Log(level, 0, log, null, ForwardLogMessageFormatter);
         }

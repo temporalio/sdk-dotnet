@@ -31,8 +31,8 @@ namespace Temporalio.Common
             }
             return new Counter<T>(
                 new(name, unit, description),
-                new(meter, Bridge.Interop.MetricKind.CounterInteger, name, unit, description),
-                Bridge.Interop.MetricKind.CounterInteger,
+                new(meter, Bridge.Interop.TemporalCoreMetricKind.CounterInteger, name, unit, description),
+                Bridge.Interop.TemporalCoreMetricKind.CounterInteger,
                 attributes);
         }
 
@@ -41,18 +41,18 @@ namespace Temporalio.Common
             string name, string? unit = null, string? description = null)
             where T : struct
         {
-            Bridge.Interop.MetricKind kind;
+            Bridge.Interop.TemporalCoreMetricKind kind;
             if (IsInteger<T>())
             {
-                kind = Bridge.Interop.MetricKind.HistogramInteger;
+                kind = Bridge.Interop.TemporalCoreMetricKind.HistogramInteger;
             }
             else if (IsFloat<T>())
             {
-                kind = Bridge.Interop.MetricKind.HistogramFloat;
+                kind = Bridge.Interop.TemporalCoreMetricKind.HistogramFloat;
             }
             else if (typeof(T) == typeof(TimeSpan))
             {
-                kind = Bridge.Interop.MetricKind.HistogramDuration;
+                kind = Bridge.Interop.TemporalCoreMetricKind.HistogramDuration;
             }
             else
             {
@@ -70,14 +70,14 @@ namespace Temporalio.Common
             string name, string? unit = null, string? description = null)
             where T : struct
         {
-            Bridge.Interop.MetricKind kind;
+            Bridge.Interop.TemporalCoreMetricKind kind;
             if (IsInteger<T>())
             {
-                kind = Bridge.Interop.MetricKind.GaugeInteger;
+                kind = Bridge.Interop.TemporalCoreMetricKind.GaugeInteger;
             }
             else if (IsFloat<T>())
             {
-                kind = Bridge.Interop.MetricKind.GaugeFloat;
+                kind = Bridge.Interop.TemporalCoreMetricKind.GaugeFloat;
             }
             else
             {
@@ -280,13 +280,13 @@ namespace Temporalio.Common
             where T : struct
         {
             private readonly Bridge.Metric metric;
-            private readonly Bridge.Interop.MetricKind kind;
+            private readonly Bridge.Interop.TemporalCoreMetricKind kind;
             private readonly Bridge.MetricAttributes attributes;
 
             internal Counter(
                 MetricDetails details,
                 Bridge.Metric metric,
-                Bridge.Interop.MetricKind kind,
+                Bridge.Interop.TemporalCoreMetricKind kind,
                 Bridge.MetricAttributes attributes)
                 : base(details)
             {
@@ -309,13 +309,13 @@ namespace Temporalio.Common
             where T : struct
         {
             private readonly Bridge.Metric metric;
-            private readonly Bridge.Interop.MetricKind kind;
+            private readonly Bridge.Interop.TemporalCoreMetricKind kind;
             private readonly Bridge.MetricAttributes attributes;
 
             internal Histogram(
                 MetricDetails details,
                 Bridge.Metric metric,
-                Bridge.Interop.MetricKind kind,
+                Bridge.Interop.TemporalCoreMetricKind kind,
                 Bridge.MetricAttributes attributes)
                 : base(details)
             {
@@ -329,13 +329,13 @@ namespace Temporalio.Common
             {
                 switch (kind)
                 {
-                    case Bridge.Interop.MetricKind.HistogramInteger:
+                    case Bridge.Interop.TemporalCoreMetricKind.HistogramInteger:
                         RecordInteger(metric, attributes, value, extraTags);
                         break;
-                    case Bridge.Interop.MetricKind.HistogramFloat:
+                    case Bridge.Interop.TemporalCoreMetricKind.HistogramFloat:
                         RecordFloat(metric, attributes, value, extraTags);
                         break;
-                    case Bridge.Interop.MetricKind.HistogramDuration:
+                    case Bridge.Interop.TemporalCoreMetricKind.HistogramDuration:
                         RecordDuration(metric, attributes, value, extraTags);
                         break;
                 }
@@ -349,13 +349,13 @@ namespace Temporalio.Common
             where T : struct
         {
             private readonly Bridge.Metric metric;
-            private readonly Bridge.Interop.MetricKind kind;
+            private readonly Bridge.Interop.TemporalCoreMetricKind kind;
             private readonly Bridge.MetricAttributes attributes;
 
             internal Gauge(
                 MetricDetails details,
                 Bridge.Metric metric,
-                Bridge.Interop.MetricKind kind,
+                Bridge.Interop.TemporalCoreMetricKind kind,
                 Bridge.MetricAttributes attributes)
                 : base(details)
             {
@@ -370,10 +370,10 @@ namespace Temporalio.Common
             {
                 switch (kind)
                 {
-                    case Bridge.Interop.MetricKind.GaugeInteger:
+                    case Bridge.Interop.TemporalCoreMetricKind.GaugeInteger:
                         RecordInteger(metric, attributes, value, extraTags);
                         break;
-                    case Bridge.Interop.MetricKind.GaugeFloat:
+                    case Bridge.Interop.TemporalCoreMetricKind.GaugeFloat:
                         RecordFloat(metric, attributes, value, extraTags);
                         break;
                 }

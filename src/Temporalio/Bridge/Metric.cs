@@ -8,7 +8,7 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class Metric : SafeHandle
     {
-        private readonly unsafe Interop.Metric* ptr;
+        private readonly unsafe Interop.TemporalCoreMetric* ptr;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Metric"/> class.
@@ -20,7 +20,7 @@ namespace Temporalio.Bridge
         /// <param name="description">Metric description.</param>
         public Metric(
             MetricMeter meter,
-            Interop.MetricKind kind,
+            Interop.TemporalCoreMetricKind kind,
             string name,
             string? unit,
             string? description)
@@ -30,14 +30,14 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    var options = new Interop.MetricOptions()
+                    var options = new Interop.TemporalCoreMetricOptions()
                     {
                         name = scope.ByteArray(name),
                         description = scope.ByteArray(description ?? string.Empty),
                         unit = scope.ByteArray(unit ?? string.Empty),
                         kind = kind,
                     };
-                    ptr = Interop.Methods.metric_new(meter.Ptr, scope.Pointer(options));
+                    ptr = Interop.Methods.temporal_core_metric_new(meter.Ptr, scope.Pointer(options));
                     SetHandle((IntPtr)ptr);
                 }
             }
@@ -55,7 +55,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                Interop.Methods.metric_record_integer(ptr, value, attributes.Ptr);
+                Interop.Methods.temporal_core_metric_record_integer(ptr, value, attributes.Ptr);
             }
         }
 
@@ -68,7 +68,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                Interop.Methods.metric_record_float(ptr, value, attributes.Ptr);
+                Interop.Methods.temporal_core_metric_record_float(ptr, value, attributes.Ptr);
             }
         }
 
@@ -81,14 +81,14 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                Interop.Methods.metric_record_duration(ptr, valueMs, attributes.Ptr);
+                Interop.Methods.temporal_core_metric_record_duration(ptr, valueMs, attributes.Ptr);
             }
         }
 
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.metric_free(ptr);
+            Interop.Methods.temporal_core_metric_free(ptr);
             return true;
         }
     }

@@ -34,7 +34,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    var workerOrFail = Interop.Methods.worker_new(
+                    var workerOrFail = Interop.Methods.temporal_core_worker_new(
                         client.Ptr,
                         scope.Pointer(options.ToInteropOptions(scope, namespace_, loggerFactory)));
                     if (workerOrFail.fail != null)
@@ -58,7 +58,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="runtime">Runtime.</param>
         /// <param name="ptr">Pointer.</param>
-        internal unsafe Worker(Runtime runtime, Interop.Worker* ptr)
+        internal unsafe Worker(Runtime runtime, Interop.TemporalCoreWorker* ptr)
             : base(IntPtr.Zero, true)
         {
             Runtime = runtime;
@@ -93,7 +93,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets a pointer to the worker.
         /// </summary>
-        internal unsafe Interop.Worker* Ptr { get; private set; }
+        internal unsafe Interop.TemporalCoreWorker* Ptr { get; private set; }
 
         /// <summary>
         /// Validate the worker.
@@ -107,10 +107,10 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_validate(
+                    Interop.Methods.temporal_core_worker_validate(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.WorkerCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
                                 if (fail != null)
@@ -136,7 +136,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                Interop.Methods.worker_replace_client(Ptr, client.Ptr);
+                Interop.Methods.temporal_core_worker_replace_client(Ptr, client.Ptr);
             }
         }
 
@@ -153,10 +153,10 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_poll_workflow_activation(
+                    Interop.Methods.temporal_core_worker_poll_workflow_activation(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.WorkerPollCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
                             {
                                 if (fail != null)
@@ -192,10 +192,10 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_poll_activity_task(
+                    Interop.Methods.temporal_core_worker_poll_activity_task(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.WorkerPollCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
                             {
                                 if (fail != null)
@@ -232,11 +232,11 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_complete_workflow_activation(
+                    Interop.Methods.temporal_core_worker_complete_workflow_activation(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,
-                        scope.FunctionPointer<Interop.WorkerCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
                                 if (fail != null)
@@ -267,11 +267,11 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_complete_activity_task(
+                    Interop.Methods.temporal_core_worker_complete_activity_task(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,
-                        scope.FunctionPointer<Interop.WorkerCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
                                 if (fail != null)
@@ -299,7 +299,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    var fail = Interop.Methods.worker_record_activity_heartbeat(
+                    var fail = Interop.Methods.temporal_core_worker_record_activity_heartbeat(
                         Ptr, scope.ByteArray(heartbeat.ToByteArray()));
                     if (fail != null)
                     {
@@ -324,7 +324,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    Interop.Methods.worker_request_workflow_eviction(
+                    Interop.Methods.temporal_core_worker_request_workflow_eviction(
                         Ptr, scope.ByteArray(runId));
                 }
             }
@@ -337,7 +337,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                Interop.Methods.worker_initiate_shutdown(Ptr);
+                Interop.Methods.temporal_core_worker_initiate_shutdown(Ptr);
             }
         }
 
@@ -354,10 +354,10 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_finalize_shutdown(
+                    Interop.Methods.temporal_core_worker_finalize_shutdown(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.WorkerCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
                                 if (fail != null)
@@ -378,7 +378,7 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.worker_free(Ptr);
+            Interop.Methods.temporal_core_worker_free(Ptr);
             return true;
         }
     }

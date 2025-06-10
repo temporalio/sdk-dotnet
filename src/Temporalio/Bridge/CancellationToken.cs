@@ -16,7 +16,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                Ptr = Interop.Methods.cancellation_token_new();
+                Ptr = Interop.Methods.temporal_core_cancellation_token_new();
                 SetHandle((IntPtr)Ptr);
             }
         }
@@ -27,7 +27,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets internal token pointer.
         /// </summary>
-        internal unsafe Interop.CancellationToken* Ptr { get; private init; }
+        internal unsafe Interop.TemporalCoreCancellationToken* Ptr { get; private init; }
 
         /// <summary>
         /// Create a core cancellation token from the given cancellation token.
@@ -48,14 +48,14 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                Interop.Methods.cancellation_token_cancel(Ptr);
+                Interop.Methods.temporal_core_cancellation_token_cancel(Ptr);
             }
         }
 
         /// <inheritdoc/>
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.cancellation_token_free(Ptr);
+            Interop.Methods.temporal_core_cancellation_token_free(Ptr);
             return true;
         }
     }

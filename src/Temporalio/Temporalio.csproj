@@ -33,13 +33,13 @@
   <!-- Build/copy debug/release bridge DLL -->
 
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-    <BridgeLibraryFile>temporal_sdk_bridge.dll</BridgeLibraryFile>
+    <BridgeLibraryFile>temporal_sdk_core_c_bridge.dll</BridgeLibraryFile>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-    <BridgeLibraryFile>libtemporal_sdk_bridge.so</BridgeLibraryFile>
+    <BridgeLibraryFile>libtemporal_sdk_core_c_bridge.so</BridgeLibraryFile>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <BridgeLibraryFile>libtemporal_sdk_bridge.dylib</BridgeLibraryFile>
+    <BridgeLibraryFile>libtemporal_sdk_core_c_bridge.dylib</BridgeLibraryFile>
   </PropertyGroup>
 
   <Target Name="CargoBuildDebug" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Debug'">

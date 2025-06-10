@@ -26,14 +26,14 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     var attrs = ConvertKeyValuePairs(scope, attributes);
-                    Ptr = Interop.Methods.metric_attributes_new(
+                    Ptr = Interop.Methods.temporal_core_metric_attributes_new(
                         meter.Ptr, scope.ArrayPointer(attrs), (UIntPtr)attrs.Length);
                     SetHandle((IntPtr)Ptr);
                 }
             }
         }
 
-        private unsafe MetricAttributes(MetricMeter meter, Interop.MetricAttributes* ptr)
+        private unsafe MetricAttributes(MetricMeter meter, Interop.TemporalCoreMetricAttributes* ptr)
             : base((IntPtr)ptr, true)
         {
             this.meter = meter;
@@ -49,7 +49,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets the pointer to the attributes.
         /// </summary>
-        internal unsafe Interop.MetricAttributes* Ptr { get; private init; }
+        internal unsafe Interop.TemporalCoreMetricAttributes* Ptr { get; private init; }
 
         /// <summary>
         /// Create a new instance with the given attributes appended.
@@ -63,7 +63,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     var attrs = ConvertKeyValuePairs(scope, attributes);
-                    var newAttrs = Interop.Methods.metric_attributes_new_append(
+                    var newAttrs = Interop.Methods.temporal_core_metric_attributes_new_append(
                         meter.Ptr, Ptr, scope.ArrayPointer(attrs), (UIntPtr)attrs.Length);
                     return new(meter, newAttrs);
                 }
@@ -73,15 +73,15 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.metric_attributes_free(Ptr);
+            Interop.Methods.temporal_core_metric_attributes_free(Ptr);
             return true;
         }
 
-        private static Interop.MetricAttribute[] ConvertKeyValuePairs(
+        private static Interop.TemporalCoreMetricAttribute[] ConvertKeyValuePairs(
             Scope scope, IEnumerable<KeyValuePair<string, object>> attributes) =>
             attributes.Select(pair => ConvertKeyValuePair(scope, pair)).ToArray();
 
-        private static Interop.MetricAttribute ConvertKeyValuePair(
+        private static Interop.TemporalCoreMetricAttribute ConvertKeyValuePair(
             Scope scope, KeyValuePair<string, object> pair)
         {
             var key = scope.ByteArray(pair.Key);
@@ -92,42 +92,42 @@ namespace Temporalio.Bridge
                     {
                         key = key,
                         value = new() { int_value = value },
-                        value_type = Interop.MetricAttributeValueType.Int,
+                        value_type = Interop.TemporalCoreMetricAttributeValueType.Int,
                     };
                 case long value:
                     return new()
                     {
                         key = key,
                         value = new() { int_value = value },
-                        value_type = Interop.MetricAttributeValueType.Int,
+                        value_type = Interop.TemporalCoreMetricAttributeValueType.Int,
                     };
                 case float value:
                     return new()
                     {
                         key = key,
                         value = new() { float_value = value },
-                        value_type = Interop.MetricAttributeValueType.Float,
+                        value_type = Interop.TemporalCoreMetricAttributeValueType.Float,
                     };
                 case double value:
                     return new()
                     {
                         key = key,
                         value = new() { float_value = value },
-                        value_type = Interop.MetricAttributeValueType.Float,
+                        value_type = Interop.TemporalCoreMetricAttributeValueType.Float,
                     };
                 case bool value:
                     return new()
                     {
                         key = key,
                         value = new() { bool_value = (byte)(value ? 1 : 0) },
-                        value_type = Interop.MetricAttributeValueType.Bool,
+                        value_type = Interop.TemporalCoreMetricAttributeValueType.Bool,
                     };
                 default:
                     return new()
                     {
                         key = key,
                         value = new() { string_value = scope.ByteArray(Convert.ToString(pair.Value)) },
-                        value_type = Interop.MetricAttributeValueType.String,
+                        value_type = Interop.TemporalCoreMetricAttributeValueType.String,
                     };
             }
         }

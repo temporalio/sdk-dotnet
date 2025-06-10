@@ -174,7 +174,7 @@ namespace Temporalio.Client
             var client = await GetBridgeClientAsync().ConfigureAwait(false);
             var serviceName = service?.FullName ?? "temporal.api.workflowservice.v1.WorkflowService";
             var resp = await client.CallAsync(
-                Bridge.Interop.RpcService.Health,
+                Bridge.Interop.TemporalCoreRpcService.Health,
                 "Check",
                 new HealthCheckRequest() { Service = serviceName },
                 HealthCheckResponse.Parser,

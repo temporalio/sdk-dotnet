@@ -7,7 +7,7 @@ namespace Temporalio.Bridge
     /// <summary>
     /// Core wrapper for a custom metric meter implementation.
     /// </summary>
-    internal class CustomMetricMeter : NativeInvokeableClass<Interop.CustomMetricMeter>
+    internal class CustomMetricMeter : NativeInvokeableClass<Interop.TemporalCoreCustomMetricMeter>
     {
         private readonly Temporalio.Runtime.ICustomMetricMeter meter;
         private readonly Temporalio.Runtime.CustomMetricMeterOptions options;
@@ -25,35 +25,35 @@ namespace Temporalio.Bridge
             this.options = options;
 
             // Create metric meter struct
-            var interopMeter = new Interop.CustomMetricMeter()
+            var interopMeter = new Interop.TemporalCoreCustomMetricMeter()
             {
-                metric_new = FunctionPointer<Interop.CustomMetricMeterMetricNewCallback>(CreateMetric),
-                metric_free = FunctionPointer<Interop.CustomMetricMeterMetricFreeCallback>(FreeMetric),
-                metric_record_integer = FunctionPointer<Interop.CustomMetricMeterMetricRecordIntegerCallback>(RecordMetricInteger),
-                metric_record_float = FunctionPointer<Interop.CustomMetricMeterMetricRecordFloatCallback>(RecordMetricFloat),
-                metric_record_duration = FunctionPointer<Interop.CustomMetricMeterMetricRecordDurationCallback>(RecordMetricDuration),
-                attributes_new = FunctionPointer<Interop.CustomMetricMeterAttributesNewCallback>(CreateAttributes),
-                attributes_free = FunctionPointer<Interop.CustomMetricMeterAttributesFreeCallback>(FreeAttributes),
-                meter_free = FunctionPointer<Interop.CustomMetricMeterMeterFreeCallback>(Free),
+                metric_new = FunctionPointer<Interop.TemporalCoreCustomMetricMeterMetricNewCallback>(CreateMetric),
+                metric_free = FunctionPointer<Interop.TemporalCoreCustomMetricMeterMetricFreeCallback>(FreeMetric),
+                metric_record_integer = FunctionPointer<Interop.TemporalCoreCustomMetricMeterMetricRecordIntegerCallback>(RecordMetricInteger),
+                metric_record_float = FunctionPointer<Interop.TemporalCoreCustomMetricMeterMetricRecordFloatCallback>(RecordMetricFloat),
+                metric_record_duration = FunctionPointer<Interop.TemporalCoreCustomMetricMeterMetricRecordDurationCallback>(RecordMetricDuration),
+                attributes_new = FunctionPointer<Interop.TemporalCoreCustomMetricMeterAttributesNewCallback>(CreateAttributes),
+                attributes_free = FunctionPointer<Interop.TemporalCoreCustomMetricMeterAttributesFreeCallback>(FreeAttributes),
+                meter_free = FunctionPointer<Interop.TemporalCoreCustomMetricMeterMeterFreeCallback>(Free),
             };
 
             PinCallbackHolder(interopMeter);
         }
 
-        private static unsafe string? GetStringOrNull(Interop.ByteArrayRef bytes) =>
+        private static unsafe string? GetStringOrNull(Interop.TemporalCoreByteArrayRef bytes) =>
             (int)bytes.size == 0 ? null : GetString(bytes);
 
-        private static unsafe string GetString(Interop.ByteArrayRef bytes) =>
+        private static unsafe string GetString(Interop.TemporalCoreByteArrayRef bytes) =>
             GetString(bytes.data, bytes.size);
 
         private static unsafe string GetString(byte* bytes, UIntPtr size) =>
             (int)size == 0 ? string.Empty : ByteArrayRef.StrictUTF8.GetString(bytes, (int)size);
 
         private unsafe void* CreateMetric(
-            Interop.ByteArrayRef name,
-            Interop.ByteArrayRef description,
-            Interop.ByteArrayRef unit,
-            Interop.MetricKind kind)
+            Interop.TemporalCoreByteArrayRef name,
+            Interop.TemporalCoreByteArrayRef description,
+            Interop.TemporalCoreByteArrayRef unit,
+            Interop.TemporalCoreMetricKind kind)
         {
             GCHandle metric;
             var nameStr = GetString(name);
@@ -61,16 +61,16 @@ namespace Temporalio.Bridge
             var descStr = GetStringOrNull(description);
             switch (kind)
             {
-                case Interop.MetricKind.CounterInteger:
+                case Interop.TemporalCoreMetricKind.CounterInteger:
                     metric = GCHandle.Alloc(meter.CreateCounter<long>(nameStr, unitStr, descStr));
                     break;
-                case Interop.MetricKind.HistogramInteger:
+                case Interop.TemporalCoreMetricKind.HistogramInteger:
                     metric = GCHandle.Alloc(meter.CreateHistogram<long>(nameStr, unitStr, descStr));
                     break;
-                case Interop.MetricKind.HistogramFloat:
+                case Interop.TemporalCoreMetricKind.HistogramFloat:
                     metric = GCHandle.Alloc(meter.CreateHistogram<double>(nameStr, unitStr, descStr));
                     break;
-                case Interop.MetricKind.HistogramDuration:
+                case Interop.TemporalCoreMetricKind.HistogramDuration:
                     switch (options.HistogramDurationFormat)
                     {
                         case Temporalio.Runtime.CustomMetricMeterOptions.DurationFormat.IntegerMilliseconds:
@@ -96,10 +96,10 @@ namespace Temporalio.Bridge
                             throw new InvalidOperationException($"Unknown format: {options.HistogramDurationFormat}");
                     }
                     break;
-                case Interop.MetricKind.GaugeInteger:
+                case Interop.TemporalCoreMetricKind.GaugeInteger:
                     metric = GCHandle.Alloc(meter.CreateGauge<long>(nameStr, unitStr, descStr));
                     break;
-                case Interop.MetricKind.GaugeFloat:
+                case Interop.TemporalCoreMetricKind.GaugeFloat:
                     metric = GCHandle.Alloc(meter.CreateGauge<double>(nameStr, unitStr, descStr));
                     break;
                 default:
@@ -176,7 +176,7 @@ namespace Temporalio.Bridge
         }
 
         private unsafe void* CreateAttributes(
-            void* appendFrom, Interop.CustomMetricAttribute* attributes, UIntPtr attributesSize)
+            void* appendFrom, Interop.TemporalCoreCustomMetricAttribute* attributes, UIntPtr attributesSize)
         {
             var appendFromObject = appendFrom == null ? null : GCHandle.FromIntPtr(new(appendFrom)).Target;
             var tags = new KeyValuePair<string, object>[(int)attributesSize];
@@ -186,16 +186,16 @@ namespace Temporalio.Bridge
                 var key = GetString(attribute.key);
                 switch (attribute.value_type)
                 {
-                    case Interop.MetricAttributeValueType.String:
+                    case Interop.TemporalCoreMetricAttributeValueType.String:
                         tags[i] = new(key, GetString(attribute.value.string_value.data, attribute.value.string_value.size));
                         break;
-                    case Interop.MetricAttributeValueType.Int:
+                    case Interop.TemporalCoreMetricAttributeValueType.Int:
                         tags[i] = new(key, attribute.value.int_value);
                         break;
-                    case Interop.MetricAttributeValueType.Float:
+                    case Interop.TemporalCoreMetricAttributeValueType.Float:
                         tags[i] = new(key, attribute.value.float_value);
                         break;
-                    case Interop.MetricAttributeValueType.Bool:
+                    case Interop.TemporalCoreMetricAttributeValueType.Bool:
                         tags[i] = new(key, attribute.value.bool_value != 0);
                         break;
                     default:
