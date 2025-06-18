@@ -101,6 +101,7 @@ namespace Temporalio.Workflows
         /// Gets or sets whether this Child Workflow should run on a worker with a compatible Build Id or not when using
         /// the Worker Versioning feature.
         /// </summary>
+        [Obsolete("Worker Build Id versioning is deprecated in favor of Worker Deployment versioning")]
         public VersioningIntent VersioningIntent { get; set; } = VersioningIntent.Unspecified;
 
         /// <summary>

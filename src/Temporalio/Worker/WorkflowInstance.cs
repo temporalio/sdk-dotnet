@@ -986,10 +986,12 @@ namespace Temporalio.Worker
                     {
                         cmd.Headers.Add(headers);
                     }
+#pragma warning disable CS0618
                     if (e.Input.Options?.VersioningIntent is { } vi)
                     {
                         cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                     }
+#pragma warning restore CS0618
                     AddCommand(new() { ContinueAsNewWorkflowExecution = cmd });
                 }
                 catch (Exception e) when (
@@ -2094,10 +2096,12 @@ namespace Temporalio.Worker
                         {
                             cmd.HeartbeatTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(heartbeat);
                         }
+#pragma warning disable CS0618
                         if (input.Options.VersioningIntent is { } vi)
                         {
                             cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                         }
+#pragma warning restore CS0618
                         var workflowCommand = new WorkflowCommand() { ScheduleActivity = cmd };
                         if (input.Options.Summary is { } summary)
                         {
@@ -2320,10 +2324,12 @@ namespace Temporalio.Worker
                 {
                     cmd.Headers.Add(headers);
                 }
+#pragma warning disable CS0618
                 if (input.Options?.VersioningIntent is { } vi)
                 {
                     cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                 }
+#pragma warning restore CS0618
                 if (input.Options?.Priority is { } priority)
                 {
                     cmd.Priority = priority.ToProto();
