@@ -7490,6 +7490,105 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         client);
     }
 
+    [Workflow]
+    public class StartCompleteSameTaskParentWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            // Execute child in background with a specific task queue and shutdown the worker
+            var childTask = Workflow.RunTaskAsync(() => Workflow.ExecuteChildWorkflowAsync(
+                (StartCompleteSameTaskChildWorkflow wf) => wf.RunAsync(),
+                new()
+                {
+                    Id = $"{Workflow.Info.WorkflowId}_child",
+                    TaskQueue = $"{Workflow.Info.TaskQueue}_child",
+                }));
+            await Workflow.ExecuteLocalActivityAsync(
+                (StartCompleteSameTaskActivities acts) => acts.ShutdownWorkerAsync(),
+                new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(15) });
+
+            // Return child result
+            return await childTask;
+        }
+    }
+
+    [Workflow]
+    public class StartCompleteSameTaskChildWorkflow
+    {
+        // Complete immediately
+        [WorkflowRun]
+        public async Task<string> RunAsync() => "done";
+    }
+
+    public class StartCompleteSameTaskActivities
+    {
+        public TaskCompletionSource StartWorkerShutdownSource { get; } = new();
+
+        [Activity]
+        public async Task ShutdownWorkerAsync()
+        {
+            StartWorkerShutdownSource.SetResult();
+            // Wait for cancellation due to worker shutdown
+            try
+            {
+                await Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.WorkerShutdownToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_StartCompleteSameTask_ChildWorks()
+    {
+        // This test confirms behavior of a child workflow being initiated and completing in the
+        // same event. Before the fix that precipitated this issue, a child initiated and completed
+        // in the same event (rare) would cause a sequencing issue. To replicate this, we have to
+        // stop the parent worker right after it sends the task w/ the child start. Then we have to
+        // complete the child so the child initiated, child started, and child completed all happen
+        // in the same task.
+
+        // Start parent workflow and then stop worker
+        var acts = new StartCompleteSameTaskActivities();
+        var parentTaskQueue = $"tq-{Guid.NewGuid()}";
+        WorkflowHandle<StartCompleteSameTaskParentWorkflow, string>? parentHandle = null;
+        await ExecuteWorkerAsync<StartCompleteSameTaskParentWorkflow>(
+            async worker =>
+            {
+                // Start parent and wait for worker shutdown request
+                parentHandle = await Client.StartWorkflowAsync(
+                    (StartCompleteSameTaskParentWorkflow wf) => wf.RunAsync(),
+                    new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await acts.StartWorkerShutdownSource.Task;
+            },
+            new TemporalWorkerOptions(parentTaskQueue)
+            {
+                // Disable sticky to avoid penalty when stopping worker
+                MaxCachedWorkflows = 0,
+            }.AddAllActivities(acts));
+        // Run child workflow to completion
+        await ExecuteWorkerAsync<StartCompleteSameTaskChildWorkflow>(
+            async worker =>
+            {
+                var result = await Client.
+                    GetWorkflowHandle<StartCompleteSameTaskChildWorkflow, string>($"{parentHandle!.Id}_child").
+                    GetResultAsync();
+                Assert.Equal("done", result);
+            },
+            new TemporalWorkerOptions($"{parentTaskQueue}_child"));
+        // Run parent to completion again. This used to have task failure because of child sequence
+        // issues when a child
+        await ExecuteWorkerAsync<StartCompleteSameTaskParentWorkflow>(
+            async worker =>
+            {
+                Assert.Equal("done", await parentHandle!.GetResultAsync());
+            },
+            new TemporalWorkerOptions(parentTaskQueue).AddAllActivities(acts));
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
