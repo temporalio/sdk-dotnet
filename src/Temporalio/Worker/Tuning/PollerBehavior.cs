@@ -24,7 +24,7 @@ namespace Temporalio.Worker.Tuning
             /// Initializes a new instance of the <see cref="PollerBehavior.SimpleMaximum"/> class.
             /// </summary>
             /// <param name="maximum">The maximum number of pollers at a time.</param>
-            public SimpleMaximum(int maximum)
+            public SimpleMaximum(int maximum = 5)
             {
                 if (maximum < 0)
                 {
@@ -52,7 +52,7 @@ namespace Temporalio.Worker.Tuning
             /// <param name="maximum">At most this many poll calls will ever be open at once. Must be >= `minimum`.</param>
             /// <param name="initial">This many polls will be attempted initially before scaling kicks in. Must be between
             /// `minimum` and `maximum`.</param>
-            public Autoscaling(int minimum, int maximum, int initial)
+            public Autoscaling(int minimum = 1, int maximum = 100, int initial = 5)
             {
                 if (minimum < 0 || maximum < 0 || initial < 0)
                 {
