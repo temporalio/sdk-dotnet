@@ -24,7 +24,7 @@ namespace Temporalio.Worker.Tuning
             /// Initializes a new instance of the <see cref="PollerBehavior.SimpleMaximum"/> class.
             /// </summary>
             /// <param name="maximum">The maximum number of pollers at a time.</param>
-            public SimpleMaximum(int maximum = 5)
+            public SimpleMaximum(int maximum)
             {
                 if (maximum < 0)
                 {
