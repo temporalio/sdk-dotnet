@@ -51,8 +51,7 @@ namespace Temporalio.Worker
         private readonly Dictionary<Task, LinkedListNode<Task>> scheduledTaskNodes = new();
         private readonly Dictionary<uint, TaskCompletionSource<object?>> timersPending = new();
         private readonly Dictionary<uint, PendingActivityInfo> activitiesPending = new();
-        private readonly Dictionary<uint, PendingChildInfo> childWorkflowsPendingStart = new();
-        private readonly Dictionary<uint, PendingChildInfo> childWorkflowsPendingCompletion = new();
+        private readonly Dictionary<uint, PendingChildInfo> childWorkflowsPending = new();
         private readonly Dictionary<uint, PendingExternalSignal> externalSignalsPending = new();
         private readonly Dictionary<uint, PendingExternalCancel> externalCancelsPending = new();
         // Buffered signals have to be a list instead of a dictionary because when a dynamic signal
@@ -764,10 +763,7 @@ namespace Temporalio.Worker
         /// <inheritdoc/>
         public ISerializationContext.Workflow? GetPendingChildSerializationContext(uint seq)
         {
-            if (!childWorkflowsPendingStart.TryGetValue(seq, out var pending))
-            {
-                childWorkflowsPendingCompletion.TryGetValue(seq, out pending);
-            }
+            childWorkflowsPending.TryGetValue(seq, out var pending);
             return pending?.SerializationContext;
         }
 
@@ -1432,7 +1428,7 @@ namespace Temporalio.Worker
 
         private void ApplyResolveChildWorkflowExecution(ResolveChildWorkflowExecution resolve)
         {
-            if (!childWorkflowsPendingCompletion.TryGetValue(resolve.Seq, out var pending))
+            if (!childWorkflowsPending.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
                     $"Failed finding child for sequence {resolve.Seq}");
@@ -1443,7 +1439,7 @@ namespace Temporalio.Worker
         private void ApplyResolveChildWorkflowExecutionStart(
             ResolveChildWorkflowExecutionStart resolve)
         {
-            if (!childWorkflowsPendingStart.TryGetValue(resolve.Seq, out var pending))
+            if (!childWorkflowsPending.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
                     $"Failed finding child for sequence {resolve.Seq}");
@@ -2353,103 +2349,104 @@ namespace Temporalio.Worker
                     SerializationContext: serializationContext,
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
-                instance.childWorkflowsPendingStart[seq] = pending;
-
+                instance.childWorkflowsPending[seq] = pending;
                 _ = instance.QueueNewTaskAsync(async () =>
                 {
-                    using (token.Register(() =>
+                    try
                     {
-                        // Send cancel if in either pending dict
-                        if (instance.childWorkflowsPendingStart.ContainsKey(seq) ||
-                            instance.childWorkflowsPendingCompletion.ContainsKey(seq))
+                        using (token.Register(() =>
                         {
-                            instance.AddCommand(new()
+                            // Send cancel if it's pending
+                            if (instance.childWorkflowsPending.ContainsKey(seq))
                             {
-                                CancelChildWorkflowExecution = new() { ChildWorkflowSeq = seq },
-                            });
+                                instance.AddCommand(new()
+                                {
+                                    CancelChildWorkflowExecution = new() { ChildWorkflowSeq = seq },
+                                });
+                            }
+                        }))
+                        {
+                            // Wait for start
+                            var startRes = await pending.StartCompletionSource.Task.ConfigureAwait(true);
+                            // Handle the start result
+                            ChildWorkflowHandleImpl<TWorkflow, TResult> handle;
+                            switch (startRes.StatusCase)
+                            {
+                                case ResolveChildWorkflowExecutionStart.StatusOneofCase.Succeeded:
+                                    // Create handle
+                                    handle = new(instance, payloadConverter, cmd.WorkflowId, startRes.Succeeded.RunId);
+                                    break;
+                                case ResolveChildWorkflowExecutionStart.StatusOneofCase.Failed:
+                                    switch (startRes.Failed.Cause)
+                                    {
+                                        case StartChildWorkflowExecutionFailedCause.WorkflowAlreadyExists:
+                                            handleSource.SetException(
+                                                new WorkflowAlreadyStartedException(
+                                                    "Child workflow already started",
+                                                    workflowId: startRes.Failed.WorkflowId,
+                                                    workflowType: startRes.Failed.WorkflowType,
+                                                    // Pending https://github.com/temporalio/temporal/issues/6961
+                                                    runId: "<unknown>"));
+                                            return;
+                                        default:
+                                            handleSource.SetException(new InvalidOperationException(
+                                                $"Unknown child start failed cause: {startRes.Failed.Cause}"));
+                                            return;
+                                    }
+                                case ResolveChildWorkflowExecutionStart.StatusOneofCase.Cancelled:
+                                    // Failure converter with context
+                                    var failureConverter = instance.failureConverter;
+                                    if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
+                                    {
+                                        failureConverter = withContext.WithSerializationContext(serializationContext);
+                                    }
+                                    handleSource.SetException(
+                                        failureConverter.ToException(startRes.Cancelled.Failure, payloadConverter));
+                                    return;
+                                default:
+                                    throw new InvalidOperationException("Unrecognized child start case");
+                            }
+
+                            // Resolve handle source
+                            handleSource.SetResult(handle);
+
+                            // Wait for completion
+                            var completeRes = await pending.ResultCompletionSource.Task.ConfigureAwait(true);
+
+                            // Handle completion
+                            switch (completeRes.StatusCase)
+                            {
+                                case ChildWorkflowResult.StatusOneofCase.Completed:
+                                    handle.CompletionSource.SetResult(completeRes.Completed.Result);
+                                    break;
+                                case ChildWorkflowResult.StatusOneofCase.Failed:
+                                    // Failure converter with context
+                                    var failureConverter = instance.failureConverter;
+                                    if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
+                                    {
+                                        failureConverter = withContext.WithSerializationContext(serializationContext);
+                                    }
+                                    handle.CompletionSource.SetException(failureConverter.ToException(
+                                        completeRes.Failed.Failure_, payloadConverter));
+                                    break;
+                                case ChildWorkflowResult.StatusOneofCase.Cancelled:
+                                    // Failure converter with context
+                                    var failureConverter2 = instance.failureConverter;
+                                    if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
+                                    {
+                                        failureConverter2 = withContext2.WithSerializationContext(serializationContext);
+                                    }
+                                    handle.CompletionSource.SetException(failureConverter2.ToException(
+                                        completeRes.Cancelled.Failure, payloadConverter));
+                                    break;
+                                default:
+                                    throw new InvalidOperationException("Unrecognized child complete case");
+                            }
                         }
-                    }))
+                    }
+                    finally
                     {
-                        // Wait for start
-                        var startRes = await pending.StartCompletionSource.Task.ConfigureAwait(true);
-                        // Remove pending
-                        instance.childWorkflowsPendingStart.Remove(seq);
-                        // Handle the start result
-                        ChildWorkflowHandleImpl<TWorkflow, TResult> handle;
-                        switch (startRes.StatusCase)
-                        {
-                            case ResolveChildWorkflowExecutionStart.StatusOneofCase.Succeeded:
-                                // Create handle
-                                handle = new(instance, payloadConverter, cmd.WorkflowId, startRes.Succeeded.RunId);
-                                break;
-                            case ResolveChildWorkflowExecutionStart.StatusOneofCase.Failed:
-                                switch (startRes.Failed.Cause)
-                                {
-                                    case StartChildWorkflowExecutionFailedCause.WorkflowAlreadyExists:
-                                        handleSource.SetException(
-                                            new WorkflowAlreadyStartedException(
-                                                "Child workflow already started",
-                                                workflowId: startRes.Failed.WorkflowId,
-                                                workflowType: startRes.Failed.WorkflowType,
-                                                // Pending https://github.com/temporalio/temporal/issues/6961
-                                                runId: "<unknown>"));
-                                        return;
-                                    default:
-                                        handleSource.SetException(new InvalidOperationException(
-                                            $"Unknown child start failed cause: {startRes.Failed.Cause}"));
-                                        return;
-                                }
-                            case ResolveChildWorkflowExecutionStart.StatusOneofCase.Cancelled:
-                                // Failure converter with context
-                                var failureConverter = instance.failureConverter;
-                                if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
-                                {
-                                    failureConverter = withContext.WithSerializationContext(serializationContext);
-                                }
-                                handleSource.SetException(
-                                    failureConverter.ToException(startRes.Cancelled.Failure, payloadConverter));
-                                return;
-                            default:
-                                throw new InvalidOperationException("Unrecognized child start case");
-                        }
-
-                        // Create task for waiting for pending result, then resolve handle source
-                        instance.childWorkflowsPendingCompletion[seq] = pending;
-                        handleSource.SetResult(handle);
-
-                        // Wait for completion
-                        var completeRes = await pending.ResultCompletionSource.Task.ConfigureAwait(true);
-                        instance.childWorkflowsPendingCompletion.Remove(seq);
-
-                        // Handle completion
-                        switch (completeRes.StatusCase)
-                        {
-                            case ChildWorkflowResult.StatusOneofCase.Completed:
-                                handle.CompletionSource.SetResult(completeRes.Completed.Result);
-                                break;
-                            case ChildWorkflowResult.StatusOneofCase.Failed:
-                                // Failure converter with context
-                                var failureConverter = instance.failureConverter;
-                                if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
-                                {
-                                    failureConverter = withContext.WithSerializationContext(serializationContext);
-                                }
-                                handle.CompletionSource.SetException(failureConverter.ToException(
-                                    completeRes.Failed.Failure_, payloadConverter));
-                                break;
-                            case ChildWorkflowResult.StatusOneofCase.Cancelled:
-                                // Failure converter with context
-                                var failureConverter2 = instance.failureConverter;
-                                if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
-                                {
-                                    failureConverter2 = withContext2.WithSerializationContext(serializationContext);
-                                }
-                                handle.CompletionSource.SetException(failureConverter2.ToException(
-                                    completeRes.Cancelled.Failure, payloadConverter));
-                                break;
-                            default:
-                                throw new InvalidOperationException("Unrecognized child complete case");
-                        }
+                        instance.childWorkflowsPending.Remove(seq);
                     }
                 });
                 return handleSource.Task;
