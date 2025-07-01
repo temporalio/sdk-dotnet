@@ -73,9 +73,9 @@ namespace Temporalio.Api.Enums.V1 {
   }
 
   /// <summary>
-  /// Event types to include when reapplying events. Deprecated: applications
-  /// should use ResetReapplyExcludeType to specify exclusions from this set, and
-  /// new event types should be added to ResetReapplyExcludeType instead of here.
+  /// Deprecated: applications should use ResetReapplyExcludeType to specify
+  /// exclusions from this set, and new event types should be added to ResetReapplyExcludeType
+  /// instead of here.
   /// </summary>
   public enum ResetReapplyType {
     [pbr::OriginalName("RESET_REAPPLY_TYPE_UNSPECIFIED")] Unspecified = 0,
@@ -94,7 +94,7 @@ namespace Temporalio.Api.Enums.V1 {
   }
 
   /// <summary>
-  /// Reset type options. Deprecated, see temporal.api.common.v1.ResetOptions.
+  /// Deprecated, see temporal.api.common.v1.ResetOptions.
   /// </summary>
   public enum ResetType {
     [pbr::OriginalName("RESET_TYPE_UNSPECIFIED")] Unspecified = 0,
