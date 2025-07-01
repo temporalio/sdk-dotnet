@@ -514,7 +514,7 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreByteArrayRef extra_args;
 
         [NativeTypeName("uint64_t")]
-        public ulong download_ttl_ms;
+        public ulong download_ttl_seconds;
     }
 
     internal unsafe partial struct TemporalCoreDevServerOptions
@@ -611,7 +611,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
+                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
                 {
                     return ref pField->none;
                 }
@@ -622,7 +622,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
+                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
                 {
                     return ref pField->deployment_based;
                 }
@@ -633,7 +633,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
                 {
                     return ref pField->legacy_build_id_based;
                 }
@@ -645,29 +645,29 @@ namespace Temporalio.Bridge.Interop
         {
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L422_C5")]
-            public _Anonymous1_1_e__Struct Anonymous1_1;
+            public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L425_C5")]
-            public _Anonymous2_1_e__Struct Anonymous2_1;
+            public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L428_C5")]
-            public _Anonymous3_1_e__Struct Anonymous3_1;
+            public _Anonymous3_e__Struct Anonymous3;
 
-            internal partial struct _Anonymous1_1_e__Struct
+            internal partial struct _Anonymous1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreWorkerVersioningNone")]
                 public TemporalCoreWorkerVersioningNone none;
             }
 
-            internal partial struct _Anonymous2_1_e__Struct
+            internal partial struct _Anonymous2_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreWorkerDeploymentOptions")]
                 public TemporalCoreWorkerDeploymentOptions deployment_based;
             }
 
-            internal partial struct _Anonymous3_1_e__Struct
+            internal partial struct _Anonymous3_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreLegacyBuildIdBasedStrategy")]
                 public TemporalCoreLegacyBuildIdBasedStrategy legacy_build_id_based;
@@ -913,7 +913,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
+                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
                 {
                     return ref pField->fixed_size;
                 }
@@ -924,7 +924,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
+                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
                 {
                     return ref pField->resource_based;
                 }
@@ -935,7 +935,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
                 {
                     return ref pField->custom;
                 }
@@ -947,29 +947,29 @@ namespace Temporalio.Bridge.Interop
         {
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L548_C5")]
-            public _Anonymous1_1_e__Struct Anonymous1_1;
+            public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L551_C5")]
-            public _Anonymous2_1_e__Struct Anonymous2_1;
+            public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L554_C5")]
-            public _Anonymous3_1_e__Struct Anonymous3_1;
+            public _Anonymous3_e__Struct Anonymous3;
 
-            internal partial struct _Anonymous1_1_e__Struct
+            internal partial struct _Anonymous1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreFixedSizeSlotSupplier")]
                 public TemporalCoreFixedSizeSlotSupplier fixed_size;
             }
 
-            internal partial struct _Anonymous2_1_e__Struct
+            internal partial struct _Anonymous2_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreResourceBasedSlotSupplier")]
                 public TemporalCoreResourceBasedSlotSupplier resource_based;
             }
 
-            internal partial struct _Anonymous3_1_e__Struct
+            internal partial struct _Anonymous3_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreCustomSlotSupplierCallbacksImpl")]
                 public TemporalCoreCustomSlotSupplierCallbacksImpl custom;
