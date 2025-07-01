@@ -56,12 +56,12 @@
   </Target>
 
   <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
-    <Exec Command="cargo build --release" WorkingDirectory="Bridge/sdk-core/core-c-bridge" />
+    <Exec Command="cargo build --profile release-lto" WorkingDirectory="Bridge/sdk-core/core-c-bridge" />
   </Target>
   <Target Name="CopyBridgeDLLRelease" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
-    <Exec Command="cargo build --release" WorkingDirectory="Bridge/sdk-core/core-c-bridge" />
+    <Exec Command="cargo build --profile release-lto" WorkingDirectory="Bridge/sdk-core/core-c-bridge" />
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
-      <Content Include="Bridge/sdk-core/target/release/$(BridgeLibraryFile)">
+      <Content Include="Bridge/sdk-core/target/release-lto/$(BridgeLibraryFile)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Link>$(BridgeLibraryFile)</Link>
         <PublishState>Included</PublishState>
