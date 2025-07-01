@@ -1145,8 +1145,8 @@ Redistributable installation).
 
 If the native shared library is not loading for whatever reason, the following error may appear:
 
-> System.DllNotFoundException: Unable to load DLL 'temporal_sdk_bridge' or one of its dependencies: The specified module
-could not be found.
+> System.DllNotFoundException: Unable to load DLL 'temporal_sdk_core_c_bridge' or one of its dependencies: The specified
+> module could not be found.
 
 See the earlier part of this section for details on what environments are supported.
 

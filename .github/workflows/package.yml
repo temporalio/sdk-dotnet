@@ -43,7 +43,7 @@ jobs:
             out-prefix: osx-arm64
             runsOn: macos-14
           - os: windows-latest
-            out-file: temporal_sdk_bridge.dll
+            out-file: libtemporal_sdk_core_c_bridge.dll
             out-prefix: win-x64
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
