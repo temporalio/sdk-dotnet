@@ -1129,7 +1129,7 @@ See the
 ### Built-in Native Shared Library
 
 This SDK requires a built-in unmanaged, native shared library built in Rust. It is named
-`libtemporal_sdk_core_c_bridge.dll` on Windows, `libtemporal_sdk_core_c_bridge.so` on Linux, and
+`temporal_sdk_core_c_bridge.dll` on Windows, `libtemporal_sdk_core_c_bridge.so` on Linux, and
 `libtemporal_sdk_core_c_bridge.dylib` on macOS. This is automatically included when using modern versions of .NET
 on a common platform. If you are using .NET framework, you may have to explicitly set the platform to `x64` or `arm64`
 because `AnyCPU` will not choose the proper library.

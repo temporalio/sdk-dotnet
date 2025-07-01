@@ -99,8 +99,8 @@
       <Content Include="$(BridgeLibraryRoot)/osx-arm64-bridge/libtemporal_sdk_core_c_bridge.dylib">
         <PackagePath>runtimes/osx-arm64/native/libtemporal_sdk_core_c_bridge.dylib</PackagePath>
       </Content>
-      <Content Include="$(BridgeLibraryRoot)/win-x64-bridge/libtemporal_sdk_core_c_bridge.dll">
-        <PackagePath>runtimes/win-x64/native/libtemporal_sdk_core_c_bridge.dll</PackagePath>
+      <Content Include="$(BridgeLibraryRoot)/win-x64-bridge/temporal_sdk_core_c_bridge.dll">
+        <PackagePath>runtimes/win-x64/native/temporal_sdk_core_c_bridge.dll</PackagePath>
       </Content>
     </ItemGroup>
   </Target>

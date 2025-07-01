@@ -20,9 +20,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-$(Platform)\native\libtemporal_sdk_core_c_bridge.dll">
+    <Content Include="$(MSBuildThisFileDirectory)..\..\runtimes\win-$(Platform)\native\temporal_sdk_core_c_bridge.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>libtemporal_sdk_core_c_bridge.dll</Link>
+      <Link>temporal_sdk_core_c_bridge.dll</Link>
       <Visible>false</Visible>
       <NuGetPackageId>Temporalio</NuGetPackageId>
     </Content>
