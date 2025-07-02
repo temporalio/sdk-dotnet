@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge.Interop
 {
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreForwardedLogLevel : uint
+    internal enum TemporalCoreForwardedLogLevel
     {
         Trace = 0,
         Debug,
@@ -13,8 +12,7 @@ namespace Temporalio.Bridge.Interop
         Error,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreMetricAttributeValueType : uint
+    internal enum TemporalCoreMetricAttributeValueType
     {
         String = 1,
         Int,
@@ -22,8 +20,7 @@ namespace Temporalio.Bridge.Interop
         Bool,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreMetricKind : uint
+    internal enum TemporalCoreMetricKind
     {
         CounterInteger = 1,
         HistogramInteger,
@@ -33,22 +30,19 @@ namespace Temporalio.Bridge.Interop
         GaugeFloat,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreOpenTelemetryMetricTemporality : uint
+    internal enum TemporalCoreOpenTelemetryMetricTemporality
     {
         Cumulative = 1,
         Delta,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreOpenTelemetryProtocol : uint
+    internal enum TemporalCoreOpenTelemetryProtocol
     {
         Grpc = 1,
         Http,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreRpcService : uint
+    internal enum TemporalCoreRpcService
     {
         Workflow = 1,
         Operator,
@@ -57,8 +51,7 @@ namespace Temporalio.Bridge.Interop
         Health,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreSlotKindType : uint
+    internal enum TemporalCoreSlotKindType
     {
         WorkflowSlotKindType,
         ActivitySlotKindType,
@@ -592,8 +585,7 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreByteArrayRef build_id;
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreWorkerVersioningStrategy_Tag : uint
+    internal enum TemporalCoreWorkerVersioningStrategy_Tag
     {
         None,
         DeploymentBased,
@@ -733,8 +725,7 @@ namespace Temporalio.Bridge.Interop
     [return: NativeTypeName("uintptr_t")]
     internal unsafe delegate UIntPtr TemporalCoreCustomTryReserveSlotCallback([NativeTypeName("const struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx);
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreSlotInfo_Tag : uint
+    internal enum TemporalCoreSlotInfo_Tag
     {
         WorkflowSlotInfo,
         ActivitySlotInfo,
@@ -894,8 +885,7 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreCustomSlotSupplierCallbacks* _0;
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreSlotSupplier_Tag : uint
+    internal enum TemporalCoreSlotSupplier_Tag
     {
         FixedSize,
         ResourceBased,
