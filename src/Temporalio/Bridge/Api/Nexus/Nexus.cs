@@ -47,9 +47,9 @@ namespace Temporalio.Bridge.Api.Nexus {
             "b24YAiABKA4yJC5jb3Jlc2RrLm5leHVzLk5leHVzVGFza0NhbmNlbFJlYXNv",
             "bio7ChVOZXh1c1Rhc2tDYW5jZWxSZWFzb24SDQoJVElNRURfT1VUEAASEwoP",
             "V09SS0VSX1NIVVRET1dOEAEqfwoeTmV4dXNPcGVyYXRpb25DYW5jZWxsYXRp",
-            "b25UeXBlEgsKB0FCQU5ET04QABIOCgpUUllfQ0FOQ0VMEAESHwobV0FJVF9D",
-            "QU5DRUxMQVRJT05fUkVRVUVTVEVEEAISHwobV0FJVF9DQU5DRUxMQVRJT05f",
-            "Q09NUExFVEVEEANCK+oCKFRlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6",
+            "b25UeXBlEh8KG1dBSVRfQ0FOQ0VMTEFUSU9OX0NPTVBMRVRFRBAAEgsKB0FC",
+            "QU5ET04QARIOCgpUUllfQ0FOQ0VMEAISHwobV0FJVF9DQU5DRUxMQVRJT05f",
+            "UkVRVUVTVEVEEANCK+oCKFRlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6",
             "OkFwaTo6TmV4dXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
@@ -80,23 +80,23 @@ namespace Temporalio.Bridge.Api.Nexus {
   /// </summary>
   internal enum NexusOperationCancellationType {
     /// <summary>
+    /// Wait for operation cancellation completion. Default.
+    /// </summary>
+    [pbr::OriginalName("WAIT_CANCELLATION_COMPLETED")] WaitCancellationCompleted = 0,
+    /// <summary>
     /// Do not request cancellation of the nexus operation if already scheduled
     /// </summary>
-    [pbr::OriginalName("ABANDON")] Abandon = 0,
+    [pbr::OriginalName("ABANDON")] Abandon = 1,
     /// <summary>
     /// Initiate a cancellation request for the Nexus operation and immediately report cancellation
     /// to the caller. Note that it doesn't guarantee that cancellation is delivered to the operation if calling workflow exits before the delivery is done.
     /// If you want to ensure that cancellation is delivered to the operation, use WAIT_CANCELLATION_REQUESTED.
     /// </summary>
-    [pbr::OriginalName("TRY_CANCEL")] TryCancel = 1,
+    [pbr::OriginalName("TRY_CANCEL")] TryCancel = 2,
     /// <summary>
     /// Request cancellation of the operation and wait for confirmation that the request was received.
     /// </summary>
-    [pbr::OriginalName("WAIT_CANCELLATION_REQUESTED")] WaitCancellationRequested = 2,
-    /// <summary>
-    /// Wait for operation cancellation completion. Default.
-    /// </summary>
-    [pbr::OriginalName("WAIT_CANCELLATION_COMPLETED")] WaitCancellationCompleted = 3,
+    [pbr::OriginalName("WAIT_CANCELLATION_REQUESTED")] WaitCancellationRequested = 3,
   }
 
   #endregion

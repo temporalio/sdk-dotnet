@@ -151,22 +151,22 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
             "b1VwZGF0ZS5IZWFkZXJzRW50cnkSKgoEbWV0YRgGIAEoCzIcLnRlbXBvcmFs",
             "LmFwaS51cGRhdGUudjEuTWV0YRIVCg1ydW5fdmFsaWRhdG9yGAcgASgIGk8K",
             "DEhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSLgoFdmFsdWUYAiABKAsyHy50",
-            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQ6AjgBIqcBChpSZXNvbHZl",
-            "TmV4dXNPcGVyYXRpb25TdGFydBILCgNzZXEYASABKA0SFgoMb3BlcmF0aW9u",
-            "X2lkGAIgASgJSAASFgoMc3RhcnRlZF9zeW5jGAMgASgISAASQgoWY2FuY2Vs",
-            "bGVkX2JlZm9yZV9zdGFydBgEIAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJl",
-            "LnYxLkZhaWx1cmVIAEIICgZzdGF0dXMiWQoVUmVzb2x2ZU5leHVzT3BlcmF0",
-            "aW9uEgsKA3NlcRgBIAEoDRIzCgZyZXN1bHQYAiABKAsyIy5jb3Jlc2RrLm5l",
-            "eHVzLk5leHVzT3BlcmF0aW9uUmVzdWx0IuACCg9SZW1vdmVGcm9tQ2FjaGUS",
-            "DwoHbWVzc2FnZRgBIAEoCRJLCgZyZWFzb24YAiABKA4yOy5jb3Jlc2RrLndv",
-            "cmtmbG93X2FjdGl2YXRpb24uUmVtb3ZlRnJvbUNhY2hlLkV2aWN0aW9uUmVh",
-            "c29uIu4BCg5FdmljdGlvblJlYXNvbhIPCgtVTlNQRUNJRklFRBAAEg4KCkNB",
-            "Q0hFX0ZVTEwQARIOCgpDQUNIRV9NSVNTEAISEgoOTk9OREVURVJNSU5JU00Q",
-            "AxINCglMQU5HX0ZBSUwQBBISCg5MQU5HX1JFUVVFU1RFRBAFEhIKDlRBU0tf",
-            "Tk9UX0ZPVU5EEAYSFQoRVU5IQU5ETEVEX0NPTU1BTkQQBxIJCgVGQVRBTBAI",
-            "Eh8KG1BBR0lOQVRJT05fT1JfSElTVE9SWV9GRVRDSBAJEh0KGVdPUktGTE9X",
-            "X0VYRUNVVElPTl9FTkRJTkcQCkI46gI1VGVtcG9yYWxpbzo6SW50ZXJuYWw6",
-            "OkJyaWRnZTo6QXBpOjpXb3JrZmxvd0FjdGl2YXRpb25iBnByb3RvMw=="));
+            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQ6AjgBIqoBChpSZXNvbHZl",
+            "TmV4dXNPcGVyYXRpb25TdGFydBILCgNzZXEYASABKA0SGQoPb3BlcmF0aW9u",
+            "X3Rva2VuGAIgASgJSAASFgoMc3RhcnRlZF9zeW5jGAMgASgISAASQgoWY2Fu",
+            "Y2VsbGVkX2JlZm9yZV9zdGFydBgEIAEoCzIgLnRlbXBvcmFsLmFwaS5mYWls",
+            "dXJlLnYxLkZhaWx1cmVIAEIICgZzdGF0dXMiWQoVUmVzb2x2ZU5leHVzT3Bl",
+            "cmF0aW9uEgsKA3NlcRgBIAEoDRIzCgZyZXN1bHQYAiABKAsyIy5jb3Jlc2Rr",
+            "Lm5leHVzLk5leHVzT3BlcmF0aW9uUmVzdWx0IuACCg9SZW1vdmVGcm9tQ2Fj",
+            "aGUSDwoHbWVzc2FnZRgBIAEoCRJLCgZyZWFzb24YAiABKA4yOy5jb3Jlc2Rr",
+            "LndvcmtmbG93X2FjdGl2YXRpb24uUmVtb3ZlRnJvbUNhY2hlLkV2aWN0aW9u",
+            "UmVhc29uIu4BCg5FdmljdGlvblJlYXNvbhIPCgtVTlNQRUNJRklFRBAAEg4K",
+            "CkNBQ0hFX0ZVTEwQARIOCgpDQUNIRV9NSVNTEAISEgoOTk9OREVURVJNSU5J",
+            "U00QAxINCglMQU5HX0ZBSUwQBBISCg5MQU5HX1JFUVVFU1RFRBAFEhIKDlRB",
+            "U0tfTk9UX0ZPVU5EEAYSFQoRVU5IQU5ETEVEX0NPTU1BTkQQBxIJCgVGQVRB",
+            "TBAIEh8KG1BBR0lOQVRJT05fT1JfSElTVE9SWV9GRVRDSBAJEh0KGVdPUktG",
+            "TE9XX0VYRUNVVElPTl9FTkRJTkcQCkI46gI1VGVtcG9yYWxpbzo6SW50ZXJu",
+            "YWw6OkJyaWRnZTo6QXBpOjpXb3JrZmxvd0FjdGl2YXRpb25iBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Update.V1.MessageReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.ActivityResult.ActivityResultReflection.Descriptor, global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, global::Temporalio.Bridge.Api.Nexus.NexusReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -188,7 +188,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.ResolveSignalExternalWorkflow), global::Temporalio.Bridge.Api.WorkflowActivation.ResolveSignalExternalWorkflow.Parser, new[]{ "Seq", "Failure" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.ResolveRequestCancelExternalWorkflow), global::Temporalio.Bridge.Api.WorkflowActivation.ResolveRequestCancelExternalWorkflow.Parser, new[]{ "Seq", "Failure" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.DoUpdate), global::Temporalio.Bridge.Api.WorkflowActivation.DoUpdate.Parser, new[]{ "Id", "ProtocolInstanceId", "Name", "Input", "Headers", "Meta", "RunValidator" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperationStart), global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperationStart.Parser, new[]{ "Seq", "OperationId", "StartedSync", "CancelledBeforeStart" }, new[]{ "Status" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperationStart), global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperationStart.Parser, new[]{ "Seq", "OperationToken", "StartedSync", "CancelledBeforeStart" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperation), global::Temporalio.Bridge.Api.WorkflowActivation.ResolveNexusOperation.Parser, new[]{ "Seq", "Result" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowActivation.RemoveFromCache), global::Temporalio.Bridge.Api.WorkflowActivation.RemoveFromCache.Parser, new[]{ "Message", "Reason" }, null, new[]{ typeof(global::Temporalio.Bridge.Api.WorkflowActivation.RemoveFromCache.Types.EvictionReason) }, null, null)
           }));
@@ -6987,8 +6987,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public ResolveNexusOperationStart(ResolveNexusOperationStart other) : this() {
       seq_ = other.seq_;
       switch (other.StatusCase) {
-        case StatusOneofCase.OperationId:
-          OperationId = other.OperationId;
+        case StatusOneofCase.OperationToken:
+          OperationToken = other.OperationToken;
           break;
         case StatusOneofCase.StartedSync:
           StartedSync = other.StartedSync;
@@ -7022,33 +7022,33 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
       }
     }
 
-    /// <summary>Field number for the "operation_id" field.</summary>
-    public const int OperationIdFieldNumber = 2;
+    /// <summary>Field number for the "operation_token" field.</summary>
+    public const int OperationTokenFieldNumber = 2;
     /// <summary>
-    /// The operation started asynchronously. Contains an ID that can be used to perform
+    /// The operation started asynchronously. Contains a token that can be used to perform
     /// operations on the started operation by, ex, clients. A `ResolveNexusOperation` job will
     /// follow at some point.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string OperationId {
-      get { return HasOperationId ? (string) status_ : ""; }
+    public string OperationToken {
+      get { return HasOperationToken ? (string) status_ : ""; }
       set {
         status_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-        statusCase_ = StatusOneofCase.OperationId;
+        statusCase_ = StatusOneofCase.OperationToken;
       }
     }
-    /// <summary>Gets whether the "operation_id" field is set</summary>
+    /// <summary>Gets whether the "operation_token" field is set</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool HasOperationId {
-      get { return statusCase_ == StatusOneofCase.OperationId; }
+    public bool HasOperationToken {
+      get { return statusCase_ == StatusOneofCase.OperationToken; }
     }
-    /// <summary> Clears the value of the oneof if it's currently set to "operation_id" </summary>
+    /// <summary> Clears the value of the oneof if it's currently set to "operation_token" </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void ClearOperationId() {
-      if (HasOperationId) {
+    public void ClearOperationToken() {
+      if (HasOperationToken) {
         ClearStatus();
       }
     }
@@ -7104,7 +7104,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     /// <summary>Enum of possible cases for the "status" oneof.</summary>
     public enum StatusOneofCase {
       None = 0,
-      OperationId = 2,
+      OperationToken = 2,
       StartedSync = 3,
       CancelledBeforeStart = 4,
     }
@@ -7138,7 +7138,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         return true;
       }
       if (Seq != other.Seq) return false;
-      if (OperationId != other.OperationId) return false;
+      if (OperationToken != other.OperationToken) return false;
       if (StartedSync != other.StartedSync) return false;
       if (!object.Equals(CancelledBeforeStart, other.CancelledBeforeStart)) return false;
       if (StatusCase != other.StatusCase) return false;
@@ -7150,7 +7150,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
     public override int GetHashCode() {
       int hash = 1;
       if (Seq != 0) hash ^= Seq.GetHashCode();
-      if (HasOperationId) hash ^= OperationId.GetHashCode();
+      if (HasOperationToken) hash ^= OperationToken.GetHashCode();
       if (HasStartedSync) hash ^= StartedSync.GetHashCode();
       if (statusCase_ == StatusOneofCase.CancelledBeforeStart) hash ^= CancelledBeforeStart.GetHashCode();
       hash ^= (int) statusCase_;
@@ -7176,9 +7176,9 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         output.WriteRawTag(8);
         output.WriteUInt32(Seq);
       }
-      if (HasOperationId) {
+      if (HasOperationToken) {
         output.WriteRawTag(18);
-        output.WriteString(OperationId);
+        output.WriteString(OperationToken);
       }
       if (HasStartedSync) {
         output.WriteRawTag(24);
@@ -7202,9 +7202,9 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         output.WriteRawTag(8);
         output.WriteUInt32(Seq);
       }
-      if (HasOperationId) {
+      if (HasOperationToken) {
         output.WriteRawTag(18);
-        output.WriteString(OperationId);
+        output.WriteString(OperationToken);
       }
       if (HasStartedSync) {
         output.WriteRawTag(24);
@@ -7227,8 +7227,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
       if (Seq != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Seq);
       }
-      if (HasOperationId) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      if (HasOperationToken) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationToken);
       }
       if (HasStartedSync) {
         size += 1 + 1;
@@ -7252,8 +7252,8 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
         Seq = other.Seq;
       }
       switch (other.StatusCase) {
-        case StatusOneofCase.OperationId:
-          OperationId = other.OperationId;
+        case StatusOneofCase.OperationToken:
+          OperationToken = other.OperationToken;
           break;
         case StatusOneofCase.StartedSync:
           StartedSync = other.StartedSync;
@@ -7286,7 +7286,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
             break;
           }
           case 18: {
-            OperationId = input.ReadString();
+            OperationToken = input.ReadString();
             break;
           }
           case 24: {
@@ -7322,7 +7322,7 @@ namespace Temporalio.Bridge.Api.WorkflowActivation {
             break;
           }
           case 18: {
-            OperationId = input.ReadString();
+            OperationToken = input.ReadString();
             break;
           }
           case 24: {

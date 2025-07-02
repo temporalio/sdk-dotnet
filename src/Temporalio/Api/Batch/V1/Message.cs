@@ -43,29 +43,29 @@ namespace Temporalio.Api.Batch.V1 {
             "bW1vbi52MS5QYXlsb2FkcxIuCgZoZWFkZXIYAyABKAsyHi50ZW1wb3JhbC5h",
             "cGkuY29tbW9uLnYxLkhlYWRlchIQCghpZGVudGl0eRgEIAEoCSIuChpCYXRj",
             "aE9wZXJhdGlvbkNhbmNlbGxhdGlvbhIQCghpZGVudGl0eRgBIAEoCSIqChZC",
-            "YXRjaE9wZXJhdGlvbkRlbGV0aW9uEhAKCGlkZW50aXR5GAEgASgJIqYCChNC",
+            "YXRjaE9wZXJhdGlvbkRlbGV0aW9uEhAKCGlkZW50aXR5GAEgASgJIq4CChNC",
             "YXRjaE9wZXJhdGlvblJlc2V0EhAKCGlkZW50aXR5GAMgASgJEjUKB29wdGlv",
             "bnMYBCABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJlc2V0T3B0aW9u",
-            "cxI0CgpyZXNldF90eXBlGAEgASgOMiAudGVtcG9yYWwuYXBpLmVudW1zLnYx",
-            "LlJlc2V0VHlwZRJDChJyZXNldF9yZWFwcGx5X3R5cGUYAiABKA4yJy50ZW1w",
-            "b3JhbC5hcGkuZW51bXMudjEuUmVzZXRSZWFwcGx5VHlwZRJLChVwb3N0X3Jl",
-            "c2V0X29wZXJhdGlvbnMYBSADKAsyLC50ZW1wb3JhbC5hcGkud29ya2Zsb3cu",
-            "djEuUG9zdFJlc2V0T3BlcmF0aW9uIskBCixCYXRjaE9wZXJhdGlvblVwZGF0",
-            "ZVdvcmtmbG93RXhlY3V0aW9uT3B0aW9ucxIQCghpZGVudGl0eRgBIAEoCRJW",
-            "Chp3b3JrZmxvd19leGVjdXRpb25fb3B0aW9ucxgCIAEoCzIyLnRlbXBvcmFs",
-            "LmFwaS53b3JrZmxvdy52MS5Xb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnMSLwoL",
-            "dXBkYXRlX21hc2sYAyABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNr",
-            "IsABCh9CYXRjaE9wZXJhdGlvblVucGF1c2VBY3Rpdml0aWVzEhAKCGlkZW50",
-            "aXR5GAEgASgJEg4KBHR5cGUYAiABKAlIABITCgltYXRjaF9hbGwYAyABKAhI",
-            "ABIWCg5yZXNldF9hdHRlbXB0cxgEIAEoCBIXCg9yZXNldF9oZWFydGJlYXQY",
-            "BSABKAgSKQoGaml0dGVyGAYgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0",
-            "aW9uQgoKCGFjdGl2aXR5IoQBCiFCYXRjaE9wZXJhdGlvblRyaWdnZXJXb3Jr",
-            "Zmxvd1J1bGUSEAoIaWRlbnRpdHkYASABKAkSDAoCaWQYAiABKAlIABI3CgRz",
-            "cGVjGAMgASgLMicudGVtcG9yYWwuYXBpLnJ1bGVzLnYxLldvcmtmbG93UnVs",
-            "ZVNwZWNIAEIGCgRydWxlQoQBChhpby50ZW1wb3JhbC5hcGkuYmF0Y2gudjFC",
-            "DE1lc3NhZ2VQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvYmF0Y2gvdjE7",
-            "YmF0Y2iqAhdUZW1wb3JhbGlvLkFwaS5CYXRjaC5WMeoCGlRlbXBvcmFsaW86",
-            "OkFwaTo6QmF0Y2g6OlYxYgZwcm90bzM="));
+            "cxI4CgpyZXNldF90eXBlGAEgASgOMiAudGVtcG9yYWwuYXBpLmVudW1zLnYx",
+            "LlJlc2V0VHlwZUICGAESRwoScmVzZXRfcmVhcHBseV90eXBlGAIgASgOMicu",
+            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLlJlc2V0UmVhcHBseVR5cGVCAhgBEksK",
+            "FXBvc3RfcmVzZXRfb3BlcmF0aW9ucxgFIAMoCzIsLnRlbXBvcmFsLmFwaS53",
+            "b3JrZmxvdy52MS5Qb3N0UmVzZXRPcGVyYXRpb24iyQEKLEJhdGNoT3BlcmF0",
+            "aW9uVXBkYXRlV29ya2Zsb3dFeGVjdXRpb25PcHRpb25zEhAKCGlkZW50aXR5",
+            "GAEgASgJElYKGndvcmtmbG93X2V4ZWN1dGlvbl9vcHRpb25zGAIgASgLMjIu",
+            "dGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLldvcmtmbG93RXhlY3V0aW9uT3B0",
+            "aW9ucxIvCgt1cGRhdGVfbWFzaxgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5G",
+            "aWVsZE1hc2siwAEKH0JhdGNoT3BlcmF0aW9uVW5wYXVzZUFjdGl2aXRpZXMS",
+            "EAoIaWRlbnRpdHkYASABKAkSDgoEdHlwZRgCIAEoCUgAEhMKCW1hdGNoX2Fs",
+            "bBgDIAEoCEgAEhYKDnJlc2V0X2F0dGVtcHRzGAQgASgIEhcKD3Jlc2V0X2hl",
+            "YXJ0YmVhdBgFIAEoCBIpCgZqaXR0ZXIYBiABKAsyGS5nb29nbGUucHJvdG9i",
+            "dWYuRHVyYXRpb25CCgoIYWN0aXZpdHkihAEKIUJhdGNoT3BlcmF0aW9uVHJp",
+            "Z2dlcldvcmtmbG93UnVsZRIQCghpZGVudGl0eRgBIAEoCRIMCgJpZBgCIAEo",
+            "CUgAEjcKBHNwZWMYAyABKAsyJy50ZW1wb3JhbC5hcGkucnVsZXMudjEuV29y",
+            "a2Zsb3dSdWxlU3BlY0gAQgYKBHJ1bGVChAEKGGlvLnRlbXBvcmFsLmFwaS5i",
+            "YXRjaC52MUIMTWVzc2FnZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9i",
+            "YXRjaC92MTtiYXRjaKoCF1RlbXBvcmFsaW8uQXBpLkJhdGNoLlYx6gIaVGVt",
+            "cG9yYWxpbzo6QXBpOjpCYXRjaDo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -1474,8 +1474,9 @@ namespace Temporalio.Api.Batch.V1 {
     public const int ResetTypeFieldNumber = 1;
     private global::Temporalio.Api.Enums.V1.ResetType resetType_ = global::Temporalio.Api.Enums.V1.ResetType.Unspecified;
     /// <summary>
-    /// Reset type (deprecated, use `options`).
+    /// Deprecated. Use `options`.
     /// </summary>
+    [global::System.ObsoleteAttribute]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Temporalio.Api.Enums.V1.ResetType ResetType {
@@ -1489,8 +1490,9 @@ namespace Temporalio.Api.Batch.V1 {
     public const int ResetReapplyTypeFieldNumber = 2;
     private global::Temporalio.Api.Enums.V1.ResetReapplyType resetReapplyType_ = global::Temporalio.Api.Enums.V1.ResetReapplyType.Unspecified;
     /// <summary>
-    /// History event reapply options (deprecated, use `options`).
+    /// Deprecated. Use `options`.
     /// </summary>
+    [global::System.ObsoleteAttribute]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Temporalio.Api.Enums.V1.ResetReapplyType ResetReapplyType {

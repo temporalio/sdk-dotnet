@@ -34,7 +34,7 @@ namespace Temporalio.Bridge
             bytesHandle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
             unsafe
             {
-                Ref = new Interop.ByteArrayRef()
+                Ref = new Interop.TemporalCoreByteArrayRef()
                 {
                     data = (byte*)bytesHandle.AddrOfPinnedObject(),
                     size = (UIntPtr)length,
@@ -63,7 +63,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets internal ref.
         /// </summary>
-        public Interop.ByteArrayRef Ref { get; private init; }
+        public Interop.TemporalCoreByteArrayRef Ref { get; private init; }
 
         /// <summary>
         /// Gets strict UTF-8 encoding.
@@ -90,7 +90,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="byteArray">Byte array ref.</param>
         /// <returns>String.</returns>
-        public static unsafe string ToUtf8(Interop.ByteArrayRef byteArray) =>
+        public static unsafe string ToUtf8(Interop.TemporalCoreByteArrayRef byteArray) =>
             StrictUTF8.GetString(byteArray.data, (int)byteArray.size);
 
         /// <summary>

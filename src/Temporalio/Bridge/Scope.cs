@@ -17,7 +17,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="bytes">Bytes to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.ByteArrayRef ByteArray(byte[]? bytes)
+        public Interop.TemporalCoreByteArrayRef ByteArray(byte[]? bytes)
         {
             if (bytes == null || bytes.Length == 0)
             {
@@ -33,7 +33,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="str">String to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.ByteArrayRef ByteArray(string? str)
+        public Interop.TemporalCoreByteArrayRef ByteArray(string? str)
         {
             if (str == null || str.Length == 0)
             {
@@ -49,7 +49,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="metadata">Metadata to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.ByteArrayRef Metadata(IEnumerable<KeyValuePair<string, string>>? metadata)
+        public Interop.TemporalCoreByteArrayRef Metadata(IEnumerable<KeyValuePair<string, string>>? metadata)
         {
             if (metadata == null)
             {
@@ -65,7 +65,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="values">Values to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.ByteArrayRef NewlineDelimited(IEnumerable<string>? values)
+        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IEnumerable<string>? values)
         {
             if (values == null)
             {
@@ -81,7 +81,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="strings">Strings.</param>
         /// <returns>Created byte array array.</returns>
-        public Interop.ByteArrayRefArray ByteArrayArray(IEnumerable<string> strings)
+        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IEnumerable<string> strings)
         {
             var arr = strings.Select(ByteArray).ToArray();
             unsafe
@@ -99,7 +99,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="token">Cancellation token to create from.</param>
         /// <returns>Created cancellation token.</returns>
-        public unsafe Interop.CancellationToken* CancellationToken(
+        public unsafe Interop.TemporalCoreCancellationToken* CancellationToken(
             System.Threading.CancellationToken? token)
         {
             if (token == null)

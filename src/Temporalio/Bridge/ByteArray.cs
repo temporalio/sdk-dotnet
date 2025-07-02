@@ -11,14 +11,14 @@ namespace Temporalio.Bridge
     internal class ByteArray : SafeHandle
     {
         private readonly Runtime runtime;
-        private readonly unsafe Interop.ByteArray* byteArray;
+        private readonly unsafe Interop.TemporalCoreByteArray* byteArray;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ByteArray"/> class.
         /// </summary>
         /// <param name="runtime">Runtime to use to free the byte array.</param>
         /// <param name="byteArray">Byte array pointer.</param>
-        public unsafe ByteArray(Runtime runtime, Interop.ByteArray* byteArray)
+        public unsafe ByteArray(Runtime runtime, Interop.TemporalCoreByteArray* byteArray)
             : base((IntPtr)byteArray, true)
         {
             this.runtime = runtime;

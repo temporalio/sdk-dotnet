@@ -10,7 +10,7 @@ namespace Temporalio.Bridge
     /// <summary>
     /// Core wrapper for a user-defined custom slot supplier.
     /// </summary>
-    internal class CustomSlotSupplier : NativeInvokeableClass<Interop.CustomSlotSupplierCallbacks>
+    internal class CustomSlotSupplier : NativeInvokeableClass<Interop.TemporalCoreCustomSlotSupplierCallbacks>
     {
         private readonly ILogger logger;
         private readonly Temporalio.Worker.Tuning.CustomSlotSupplier userSupplier;
@@ -29,37 +29,37 @@ namespace Temporalio.Bridge
             this.logger = loggerFactory.CreateLogger<CustomSlotSupplier>();
             this.userSupplier = userSupplier;
 
-            var interopCallbacks = new Interop.CustomSlotSupplierCallbacks
+            var interopCallbacks = new Interop.TemporalCoreCustomSlotSupplierCallbacks
             {
-                reserve = FunctionPointer<Interop.CustomReserveSlotCallback>(Reserve),
-                cancel_reserve = FunctionPointer<Interop.CustomCancelReserveCallback>(CancelReserve),
-                try_reserve = FunctionPointer<Interop.CustomTryReserveSlotCallback>(TryReserve),
-                mark_used = FunctionPointer<Interop.CustomMarkSlotUsedCallback>(MarkUsed),
-                release = FunctionPointer<Interop.CustomReleaseSlotCallback>(Release),
-                free = FunctionPointer<Interop.CustomSlotImplFreeCallback>(Free),
+                reserve = FunctionPointer<Interop.TemporalCoreCustomReserveSlotCallback>(Reserve),
+                cancel_reserve = FunctionPointer<Interop.TemporalCoreCustomCancelReserveCallback>(CancelReserve),
+                try_reserve = FunctionPointer<Interop.TemporalCoreCustomTryReserveSlotCallback>(TryReserve),
+                mark_used = FunctionPointer<Interop.TemporalCoreCustomMarkSlotUsedCallback>(MarkUsed),
+                release = FunctionPointer<Interop.TemporalCoreCustomReleaseSlotCallback>(Release),
+                free = FunctionPointer<Interop.TemporalCoreCustomSlotImplFreeCallback>(Free),
             };
 
             PinCallbackHolder(interopCallbacks);
         }
 
-        private static Temporalio.Worker.Tuning.SlotInfo SlotInfoFromBridge(Interop.SlotInfo slotInfo)
+        private static Temporalio.Worker.Tuning.SlotInfo SlotInfoFromBridge(Interop.TemporalCoreSlotInfo slotInfo)
         {
             return slotInfo.tag switch
             {
-                Interop.SlotInfo_Tag.WorkflowSlotInfo =>
+                Interop.TemporalCoreSlotInfo_Tag.WorkflowSlotInfo =>
                     new Temporalio.Worker.Tuning.SlotInfo.WorkflowSlotInfo(
                         ByteArrayRef.ToUtf8(slotInfo.workflow_slot_info.workflow_type), slotInfo.workflow_slot_info.is_sticky != 0),
-                Interop.SlotInfo_Tag.ActivitySlotInfo =>
+                Interop.TemporalCoreSlotInfo_Tag.ActivitySlotInfo =>
                     new Temporalio.Worker.Tuning.SlotInfo.ActivitySlotInfo(
                         ByteArrayRef.ToUtf8(slotInfo.activity_slot_info.activity_type)),
-                Interop.SlotInfo_Tag.LocalActivitySlotInfo =>
+                Interop.TemporalCoreSlotInfo_Tag.LocalActivitySlotInfo =>
                     new Temporalio.Worker.Tuning.SlotInfo.LocalActivitySlotInfo(
                         ByteArrayRef.ToUtf8(slotInfo.local_activity_slot_info.activity_type)),
                 _ => throw new System.ArgumentOutOfRangeException(nameof(slotInfo)),
             };
         }
 
-        private unsafe void Reserve(Interop.SlotReserveCtx* ctx, void* sender)
+        private unsafe void Reserve(Interop.TemporalCoreSlotReserveCtx* ctx, void* sender)
         {
             SafeReserve(new IntPtr(ctx), new IntPtr(sender));
         }
@@ -83,8 +83,8 @@ namespace Temporalio.Bridge
                     unsafe
                     {
                         var srcHandle = GCHandle.Alloc(cancelTokenSrc);
-                        Interop.Methods.set_reserve_cancel_target(
-                            (Interop.SlotReserveCtx*)ctx.ToPointer(),
+                        Interop.Methods.temporal_core_set_reserve_cancel_target(
+                            (Interop.TemporalCoreSlotReserveCtx*)ctx.ToPointer(),
                             GCHandle.ToIntPtr(srcHandle).ToPointer());
                     }
                     while (true)
@@ -95,14 +95,14 @@ namespace Temporalio.Bridge
                             unsafe
                             {
                                 reserveTask = userSupplier.ReserveSlotAsync(
-                                    ReserveCtxFromBridge((Interop.SlotReserveCtx*)ctx.ToPointer()),
+                                    ReserveCtxFromBridge((Interop.TemporalCoreSlotReserveCtx*)ctx.ToPointer()),
                                     cancelTokenSrc.Token);
                             }
                             var permit = await reserveTask.ConfigureAwait(false);
                             unsafe
                             {
                                 var usedPermitId = AddPermitToMap(permit);
-                                Interop.Methods.complete_async_reserve(sender.ToPointer(), new(usedPermitId));
+                                Interop.Methods.temporal_core_complete_async_reserve(sender.ToPointer(), new(usedPermitId));
                             }
                             return;
                         }
@@ -111,7 +111,7 @@ namespace Temporalio.Bridge
                             unsafe
                             {
                                 // Always call this to ensure the sender is freed
-                                Interop.Methods.complete_async_reserve(sender.ToPointer(), new(0));
+                                Interop.Methods.temporal_core_complete_async_reserve(sender.ToPointer(), new(0));
                             }
                             return;
                         }
@@ -128,7 +128,7 @@ namespace Temporalio.Bridge
             });
         }
 
-        private unsafe UIntPtr TryReserve(Interop.SlotReserveCtx* ctx)
+        private unsafe UIntPtr TryReserve(Interop.TemporalCoreSlotReserveCtx* ctx)
         {
             Temporalio.Worker.Tuning.SlotPermit? maybePermit;
             try
@@ -151,7 +151,7 @@ namespace Temporalio.Bridge
             return new(usedPermitId);
         }
 
-        private unsafe void MarkUsed(Interop.SlotMarkUsedCtx* ctx)
+        private unsafe void MarkUsed(Interop.TemporalCoreSlotMarkUsedCtx* ctx)
         {
             try
             {
@@ -170,7 +170,7 @@ namespace Temporalio.Bridge
             }
         }
 
-        private unsafe void Release(Interop.SlotReleaseCtx* ctx)
+        private unsafe void Release(Interop.TemporalCoreSlotReleaseCtx* ctx)
         {
             var permitId = (*ctx).slot_permit.ToUInt32();
             Temporalio.Worker.Tuning.SlotPermit permit;
@@ -208,14 +208,14 @@ namespace Temporalio.Bridge
             }
         }
 
-        private unsafe Temporalio.Worker.Tuning.SlotReserveContext ReserveCtxFromBridge(Interop.SlotReserveCtx* ctx)
+        private unsafe Temporalio.Worker.Tuning.SlotReserveContext ReserveCtxFromBridge(Interop.TemporalCoreSlotReserveCtx* ctx)
         {
             return new(
                 SlotType: (*ctx).slot_type switch
                 {
-                    Interop.SlotKindType.WorkflowSlotKindType => Temporalio.Worker.Tuning.SlotType.Workflow,
-                    Interop.SlotKindType.ActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.Activity,
-                    Interop.SlotKindType.LocalActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.LocalActivity,
+                    Interop.TemporalCoreSlotKindType.WorkflowSlotKindType => Temporalio.Worker.Tuning.SlotType.Workflow,
+                    Interop.TemporalCoreSlotKindType.ActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.Activity,
+                    Interop.TemporalCoreSlotKindType.LocalActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.LocalActivity,
                     _ => throw new System.ArgumentOutOfRangeException(nameof(ctx)),
                 },
                 TaskQueue: ByteArrayRef.ToUtf8((*ctx).task_queue),
@@ -225,7 +225,7 @@ namespace Temporalio.Bridge
         }
 
         private unsafe Temporalio.Worker.Tuning.SlotReleaseContext ReleaseCtxFromBridge(
-            Interop.SlotReleaseCtx* ctx,
+            Interop.TemporalCoreSlotReleaseCtx* ctx,
             Temporalio.Worker.Tuning.SlotPermit permit)
         {
             return new(
@@ -234,7 +234,7 @@ namespace Temporalio.Bridge
         }
 
         private unsafe Temporalio.Worker.Tuning.SlotMarkUsedContext MarkUsedCtxFromBridge(
-            Interop.SlotMarkUsedCtx* ctx,
+            Interop.TemporalCoreSlotMarkUsedCtx* ctx,
             Temporalio.Worker.Tuning.SlotPermit permit)
         {
             return new(

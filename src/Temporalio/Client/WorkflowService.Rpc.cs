@@ -439,6 +439,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke ListWorkers.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ListWorkersResponse> ListWorkersAsync(ListWorkersRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ListWorkers", req, ListWorkersResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke ListWorkflowExecutions.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -557,6 +568,17 @@ namespace Temporalio.Client
         public Task<RecordActivityTaskHeartbeatByIdResponse> RecordActivityTaskHeartbeatByIdAsync(RecordActivityTaskHeartbeatByIdRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("RecordActivityTaskHeartbeatById", req, RecordActivityTaskHeartbeatByIdResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke RecordWorkerHeartbeat.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<RecordWorkerHeartbeatResponse> RecordWorkerHeartbeatAsync(RecordWorkerHeartbeatRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("RecordWorkerHeartbeat", req, RecordWorkerHeartbeatResponse.Parser, options);
         }
 
         /// <summary>

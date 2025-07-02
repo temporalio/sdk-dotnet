@@ -36,13 +36,20 @@ namespace Temporalio.Api.Enums.V1 {
             "jAEKFFdvcmtlclZlcnNpb25pbmdNb2RlEiYKIldPUktFUl9WRVJTSU9OSU5H",
             "X01PREVfVU5TUEVDSUZJRUQQABImCiJXT1JLRVJfVkVSU0lPTklOR19NT0RF",
             "X1VOVkVSU0lPTkVEEAESJAogV09SS0VSX1ZFUlNJT05JTkdfTU9ERV9WRVJT",
-            "SU9ORUQQAkKHAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQg9EZXBsb3lt",
-            "ZW50UHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1z",
-            "qgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6",
-            "OkVudW1zOjpWMWIGcHJvdG8z"));
+            "SU9ORUQQAiq5AgodV29ya2VyRGVwbG95bWVudFZlcnNpb25TdGF0dXMSMAos",
+            "V09SS0VSX0RFUExPWU1FTlRfVkVSU0lPTl9TVEFUVVNfVU5TUEVDSUZJRUQQ",
+            "ABItCilXT1JLRVJfREVQTE9ZTUVOVF9WRVJTSU9OX1NUQVRVU19JTkFDVElW",
+            "RRABEiwKKFdPUktFUl9ERVBMT1lNRU5UX1ZFUlNJT05fU1RBVFVTX0NVUlJF",
+            "TlQQAhIsCihXT1JLRVJfREVQTE9ZTUVOVF9WRVJTSU9OX1NUQVRVU19SQU1Q",
+            "SU5HEAMSLQopV09SS0VSX0RFUExPWU1FTlRfVkVSU0lPTl9TVEFUVVNfRFJB",
+            "SU5JTkcQBBIsCihXT1JLRVJfREVQTE9ZTUVOVF9WRVJTSU9OX1NUQVRVU19E",
+            "UkFJTkVEEAVChwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIPRGVwbG95",
+            "bWVudFByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
+            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
+            "OjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.DeploymentReachability), typeof(global::Temporalio.Api.Enums.V1.VersionDrainageStatus), typeof(global::Temporalio.Api.Enums.V1.WorkerVersioningMode), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.DeploymentReachability), typeof(global::Temporalio.Api.Enums.V1.VersionDrainageStatus), typeof(global::Temporalio.Api.Enums.V1.WorkerVersioningMode), typeof(global::Temporalio.Api.Enums.V1.WorkerDeploymentVersionStatus), }, null, null));
     }
     #endregion
 
@@ -134,6 +141,44 @@ namespace Temporalio.Api.Enums.V1 {
     /// VersioningBehavior enum.)
     /// </summary>
     [pbr::OriginalName("WORKER_VERSIONING_MODE_VERSIONED")] Versioned = 2,
+  }
+
+  /// <summary>
+  /// (-- api-linter: core::0216::synonyms=disabled
+  ///     aip.dev/not-precedent: Call this status because it is . --)
+  /// Specify the status of a Worker Deployment Version.
+  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
+  /// </summary>
+  public enum WorkerDeploymentVersionStatus {
+    [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// The Worker Deployment Version has been created inside the Worker Deployment but is not used by any
+    /// workflow executions. These Versions can still have workflows if they have an explicit Versioning Override targeting
+    /// this Version. Such Versioning Override could be set at workflow start time, or at a later time via `UpdateWorkflowExecutionOptions`.
+    /// </summary>
+    [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_INACTIVE")] Inactive = 1,
+    /// <summary>
+    /// The Worker Deployment Version is the current version of the Worker Deployment. All new workflow executions 
+    /// and tasks of existing unversioned or AutoUpgrade workflows are routed to this version.
+    /// </summary>
+    [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_CURRENT")] Current = 2,
+    /// <summary>
+    /// The Worker Deployment Version is the ramping version of the Worker Deployment. A subset of new Pinned workflow executions are 
+    /// routed to this version. Moreover, a portion of existing unversioned or AutoUpgrade workflow executions are also routed to this version.
+    /// </summary>
+    [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_RAMPING")] Ramping = 3,
+    /// <summary>
+    /// The Worker Deployment Version is not used by new workflows but is still used by
+    /// open pinned workflows. The version cannot be decommissioned safely.
+    /// </summary>
+    [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_DRAINING")] Draining = 4,
+    /// <summary>
+    /// The Worker Deployment Version is not used by new or open workflows, but might be still needed by
+    /// Queries sent to closed workflows. The version can be decommissioned safely if user does
+    /// not query closed workflows. If the user does query closed workflows for some time x after
+    /// workflows are closed, they should decommission the version after it has been drained for that duration.
+    /// </summary>
+    [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_DRAINED")] Drained = 5,
   }
 
   #endregion

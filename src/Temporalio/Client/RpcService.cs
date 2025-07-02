@@ -11,7 +11,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the service.
         /// </summary>
-        internal abstract Bridge.Interop.RpcService Service { get; }
+        internal abstract Bridge.Interop.TemporalCoreRpcService Service { get; }
 
         /// <summary>
         /// Gets the full name of the gRPC service.

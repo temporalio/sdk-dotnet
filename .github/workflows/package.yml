@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - "releases/*"
+  workflow_dispatch: {}
 
 jobs:
   build-bridge-libraries:
@@ -13,35 +14,35 @@ jobs:
         os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest]
         include:
           - os: ubuntu-latest
-            out-file: libtemporal_sdk_bridge.so
+            out-file: libtemporal_sdk_core_c_bridge.so
             out-prefix: linux-x64
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_x86_64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
           - os: ubuntu-arm
-            out-file: libtemporal_sdk_bridge.so
+            out-file: libtemporal_sdk_core_c_bridge.so
             out-prefix: linux-arm64
             runsOn: ubuntu-24.04-arm64-2-core
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_aarch64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
           - os: alpine-latest
-            out-file: libtemporal_sdk_bridge.so
+            out-file: libtemporal_sdk_core_c_bridge.so
             out-prefix: linux-musl-x64
             # Need Alpine container since GH runner doesn't have one
             container: mcr.microsoft.com/dotnet/sdk:8.0-alpine
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
             runsOn: ubuntu-latest
           - os: macos-intel
-            out-file: libtemporal_sdk_bridge.dylib
+            out-file: libtemporal_sdk_core_c_bridge.dylib
             out-prefix: osx-x64
             runsOn: macos-13
           - os: macos-arm
-            out-file: libtemporal_sdk_bridge.dylib
+            out-file: libtemporal_sdk_core_c_bridge.dylib
             out-prefix: osx-arm64
             runsOn: macos-14
           - os: windows-latest
-            out-file: temporal_sdk_bridge.dll
+            out-file: temporal_sdk_core_c_bridge.dll
             out-prefix: win-x64
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
@@ -73,7 +74,7 @@ jobs:
 
       - name: Build (non-Docker)
         if: ${{ !matrix.container }}
-        run: cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release
+        run: cargo build --manifest-path src/Temporalio/Bridge/sdk-core/core-c-bridge/Cargo.toml --profile release-lto
 
       - name: Build (Docker non-Alpine)
         if: ${{ matrix.container && matrix.os != 'alpine-latest' }}
@@ -86,7 +87,7 @@ jobs:
              && curl -LO ${{ matrix.protobuf-url }} \
              && unzip protoc-*.zip -d /usr/local/protobuf \
              && export PATH="$PATH:/usr/local/protobuf/bin" \
-             && cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release \
+             && cargo build --manifest-path src/Temporalio/Bridge/sdk-core/core-c-bridge/Cargo.toml --profile release-lto \
             '
 
       - name: Build (Docker Alpine)
@@ -101,14 +102,14 @@ jobs:
              && curl -LO ${{ matrix.protobuf-url }} \
              && unzip protoc-*.zip -d /usr/local/protobuf \
              && export PATH="$PATH:/usr/local/protobuf/bin" \
-             && RUSTFLAGS="-C target-feature=-crt-static" cargo build --manifest-path src/Temporalio/Bridge/Cargo.toml --release \
+             && RUSTFLAGS="-C target-feature=-crt-static" cargo build --manifest-path src/Temporalio/Bridge/sdk-core/core-c-bridge/Cargo.toml --profile release-lto \
             '
 
       - name: Upload bridge library
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.out-prefix }}-bridge
-          path: src/Temporalio/Bridge/target/release/${{ matrix.out-file }}
+          path: src/Temporalio/Bridge/sdk-core/target/release-lto/${{ matrix.out-file }}
           if-no-files-found: error
 
   build-nuget-package:

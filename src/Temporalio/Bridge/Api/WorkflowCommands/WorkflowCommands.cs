@@ -8840,7 +8840,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
 
     /// <summary>Field number for the "cancellation_type" field.</summary>
     public const int CancellationTypeFieldNumber = 8;
-    private global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType cancellationType_ = global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.Abandon;
+    private global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType cancellationType_ = global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted;
     /// <summary>
     /// Defines behaviour of the underlying nexus operation when operation cancellation has been requested.
     /// </summary>
@@ -8890,7 +8890,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
       if (input_ != null) hash ^= Input.GetHashCode();
       if (scheduleToCloseTimeout_ != null) hash ^= ScheduleToCloseTimeout.GetHashCode();
       hash ^= NexusHeader.GetHashCode();
-      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.Abandon) hash ^= CancellationType.GetHashCode();
+      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) hash ^= CancellationType.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -8934,7 +8934,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         output.WriteMessage(ScheduleToCloseTimeout);
       }
       nexusHeader_.WriteTo(output, _map_nexusHeader_codec);
-      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.Abandon) {
+      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) {
         output.WriteRawTag(64);
         output.WriteEnum((int) CancellationType);
       }
@@ -8973,7 +8973,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         output.WriteMessage(ScheduleToCloseTimeout);
       }
       nexusHeader_.WriteTo(ref output, _map_nexusHeader_codec);
-      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.Abandon) {
+      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) {
         output.WriteRawTag(64);
         output.WriteEnum((int) CancellationType);
       }
@@ -9006,7 +9006,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(ScheduleToCloseTimeout);
       }
       size += nexusHeader_.CalculateSize(_map_nexusHeader_codec);
-      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.Abandon) {
+      if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CancellationType);
       }
       if (_unknownFields != null) {
@@ -9046,7 +9046,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         ScheduleToCloseTimeout.MergeFrom(other.ScheduleToCloseTimeout);
       }
       nexusHeader_.MergeFrom(other.nexusHeader_);
-      if (other.CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.Abandon) {
+      if (other.CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) {
         CancellationType = other.CancellationType;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);

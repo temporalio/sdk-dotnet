@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge.Interop
 {
-    internal enum ForwardedLogLevel
+    internal enum TemporalCoreForwardedLogLevel
     {
         Trace = 0,
         Debug,
@@ -12,7 +12,7 @@ namespace Temporalio.Bridge.Interop
         Error,
     }
 
-    internal enum MetricAttributeValueType
+    internal enum TemporalCoreMetricAttributeValueType
     {
         String = 1,
         Int,
@@ -20,7 +20,7 @@ namespace Temporalio.Bridge.Interop
         Bool,
     }
 
-    internal enum MetricKind
+    internal enum TemporalCoreMetricKind
     {
         CounterInteger = 1,
         HistogramInteger,
@@ -30,19 +30,19 @@ namespace Temporalio.Bridge.Interop
         GaugeFloat,
     }
 
-    internal enum OpenTelemetryMetricTemporality
+    internal enum TemporalCoreOpenTelemetryMetricTemporality
     {
         Cumulative = 1,
         Delta,
     }
 
-    internal enum OpenTelemetryProtocol
+    internal enum TemporalCoreOpenTelemetryProtocol
     {
         Grpc = 1,
         Http,
     }
 
-    internal enum RpcService
+    internal enum TemporalCoreRpcService
     {
         Workflow = 1,
         Operator,
@@ -51,7 +51,7 @@ namespace Temporalio.Bridge.Interop
         Health,
     }
 
-    internal enum SlotKindType
+    internal enum TemporalCoreSlotKindType
     {
         WorkflowSlotKindType,
         ActivitySlotKindType,
@@ -59,51 +59,51 @@ namespace Temporalio.Bridge.Interop
         NexusSlotKindType,
     }
 
-    internal partial struct CancellationToken
+    internal partial struct TemporalCoreCancellationToken
     {
     }
 
-    internal partial struct Client
+    internal partial struct TemporalCoreClient
     {
     }
 
-    internal partial struct EphemeralServer
+    internal partial struct TemporalCoreEphemeralServer
     {
     }
 
-    internal partial struct ForwardedLog
+    internal partial struct TemporalCoreForwardedLog
     {
     }
 
-    internal partial struct Metric
+    internal partial struct TemporalCoreMetric
     {
     }
 
-    internal partial struct MetricAttributes
+    internal partial struct TemporalCoreMetricAttributes
     {
     }
 
-    internal partial struct MetricMeter
+    internal partial struct TemporalCoreMetricMeter
     {
     }
 
-    internal partial struct Random
+    internal partial struct TemporalCoreRandom
     {
     }
 
-    internal partial struct Runtime
+    internal partial struct TemporalCoreRuntime
     {
     }
 
-    internal partial struct Worker
+    internal partial struct TemporalCoreWorker
     {
     }
 
-    internal partial struct WorkerReplayPusher
+    internal partial struct TemporalCoreWorkerReplayPusher
     {
     }
 
-    internal unsafe partial struct ByteArrayRef
+    internal unsafe partial struct TemporalCoreByteArrayRef
     {
         [NativeTypeName("const uint8_t *")]
         public byte* data;
@@ -112,22 +112,22 @@ namespace Temporalio.Bridge.Interop
         public UIntPtr size;
     }
 
-    internal partial struct ClientTlsOptions
+    internal partial struct TemporalCoreClientTlsOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef server_root_ca_cert;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef server_root_ca_cert;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef domain;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef domain;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef client_cert;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef client_cert;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef client_private_key;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef client_private_key;
     }
 
-    internal partial struct ClientRetryOptions
+    internal partial struct TemporalCoreClientRetryOptions
     {
         [NativeTypeName("uint64_t")]
         public ulong initial_interval_millis;
@@ -146,7 +146,7 @@ namespace Temporalio.Bridge.Interop
         public UIntPtr max_retries;
     }
 
-    internal partial struct ClientKeepAliveOptions
+    internal partial struct TemporalCoreClientKeepAliveOptions
     {
         [NativeTypeName("uint64_t")]
         public ulong interval_millis;
@@ -155,52 +155,52 @@ namespace Temporalio.Bridge.Interop
         public ulong timeout_millis;
     }
 
-    internal partial struct ClientHttpConnectProxyOptions
+    internal partial struct TemporalCoreClientHttpConnectProxyOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef target_host;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef target_host;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef username;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef username;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef password;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef password;
     }
 
-    internal unsafe partial struct ClientOptions
+    internal unsafe partial struct TemporalCoreClientOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef target_url;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef target_url;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef client_name;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef client_name;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef client_version;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef client_version;
 
-        [NativeTypeName("MetadataRef")]
-        public ByteArrayRef metadata;
+        [NativeTypeName("TemporalCoreMetadataRef")]
+        public TemporalCoreByteArrayRef metadata;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef api_key;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef api_key;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef identity;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef identity;
 
-        [NativeTypeName("const struct ClientTlsOptions *")]
-        public ClientTlsOptions* tls_options;
+        [NativeTypeName("const struct TemporalCoreClientTlsOptions *")]
+        public TemporalCoreClientTlsOptions* tls_options;
 
-        [NativeTypeName("const struct ClientRetryOptions *")]
-        public ClientRetryOptions* retry_options;
+        [NativeTypeName("const struct TemporalCoreClientRetryOptions *")]
+        public TemporalCoreClientRetryOptions* retry_options;
 
-        [NativeTypeName("const struct ClientKeepAliveOptions *")]
-        public ClientKeepAliveOptions* keep_alive_options;
+        [NativeTypeName("const struct TemporalCoreClientKeepAliveOptions *")]
+        public TemporalCoreClientKeepAliveOptions* keep_alive_options;
 
-        [NativeTypeName("const struct ClientHttpConnectProxyOptions *")]
-        public ClientHttpConnectProxyOptions* http_connect_proxy_options;
+        [NativeTypeName("const struct TemporalCoreClientHttpConnectProxyOptions *")]
+        public TemporalCoreClientHttpConnectProxyOptions* http_connect_proxy_options;
     }
 
-    internal unsafe partial struct ByteArray
+    internal unsafe partial struct TemporalCoreByteArray
     {
         [NativeTypeName("const uint8_t *")]
         public byte* data;
@@ -216,41 +216,41 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ClientConnectCallback(void* user_data, [NativeTypeName("struct Client *")] Client* success, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void TemporalCoreClientConnectCallback(void* user_data, [NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* success, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
 
-    internal unsafe partial struct RpcCallOptions
+    internal unsafe partial struct TemporalCoreRpcCallOptions
     {
-        [NativeTypeName("enum RpcService")]
-        public RpcService service;
+        [NativeTypeName("enum TemporalCoreRpcService")]
+        public TemporalCoreRpcService service;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef rpc;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef rpc;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef req;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef req;
 
         [NativeTypeName("bool")]
         public byte retry;
 
-        [NativeTypeName("MetadataRef")]
-        public ByteArrayRef metadata;
+        [NativeTypeName("TemporalCoreMetadataRef")]
+        public TemporalCoreByteArrayRef metadata;
 
         [NativeTypeName("uint32_t")]
         public uint timeout_millis;
 
-        [NativeTypeName("const struct CancellationToken *")]
-        public CancellationToken* cancellation_token;
+        [NativeTypeName("const struct TemporalCoreCancellationToken *")]
+        public TemporalCoreCancellationToken* cancellation_token;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ClientRpcCallCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_message, [NativeTypeName("const struct ByteArray *")] ByteArray* failure_details);
+    internal unsafe delegate void TemporalCoreClientRpcCallCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_message, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_details);
 
     [StructLayout(LayoutKind.Explicit)]
-    internal partial struct MetricAttributeValue
+    internal partial struct TemporalCoreMetricAttributeValue
     {
         [FieldOffset(0)]
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef string_value;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef string_value;
 
         [FieldOffset(0)]
         [NativeTypeName("int64_t")]
@@ -264,82 +264,82 @@ namespace Temporalio.Bridge.Interop
         public byte bool_value;
     }
 
-    internal partial struct MetricAttribute
+    internal partial struct TemporalCoreMetricAttribute
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef key;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef key;
 
-        [NativeTypeName("union MetricAttributeValue")]
-        public MetricAttributeValue value;
+        [NativeTypeName("union TemporalCoreMetricAttributeValue")]
+        public TemporalCoreMetricAttributeValue value;
 
-        [NativeTypeName("enum MetricAttributeValueType")]
-        public MetricAttributeValueType value_type;
+        [NativeTypeName("enum TemporalCoreMetricAttributeValueType")]
+        public TemporalCoreMetricAttributeValueType value_type;
     }
 
-    internal partial struct MetricOptions
+    internal partial struct TemporalCoreMetricOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef name;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef name;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef description;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef description;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef unit;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef unit;
 
-        [NativeTypeName("enum MetricKind")]
-        public MetricKind kind;
+        [NativeTypeName("enum TemporalCoreMetricKind")]
+        public TemporalCoreMetricKind kind;
     }
 
-    internal unsafe partial struct RuntimeOrFail
+    internal unsafe partial struct TemporalCoreRuntimeOrFail
     {
-        [NativeTypeName("struct Runtime *")]
-        public Runtime* runtime;
+        [NativeTypeName("struct TemporalCoreRuntime *")]
+        public TemporalCoreRuntime* runtime;
 
-        [NativeTypeName("const struct ByteArray *")]
-        public ByteArray* fail;
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void ForwardedLogCallback([NativeTypeName("enum ForwardedLogLevel")] ForwardedLogLevel level, [NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+    internal unsafe delegate void TemporalCoreForwardedLogCallback([NativeTypeName("enum TemporalCoreForwardedLogLevel")] TemporalCoreForwardedLogLevel level, [NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-    internal partial struct LoggingOptions
+    internal partial struct TemporalCoreLoggingOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef filter;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef filter;
 
-        [NativeTypeName("ForwardedLogCallback")]
+        [NativeTypeName("TemporalCoreForwardedLogCallback")]
         public IntPtr forward_to;
     }
 
-    internal partial struct OpenTelemetryOptions
+    internal partial struct TemporalCoreOpenTelemetryOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef url;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef url;
 
-        [NativeTypeName("MetadataRef")]
-        public ByteArrayRef headers;
+        [NativeTypeName("TemporalCoreMetadataRef")]
+        public TemporalCoreByteArrayRef headers;
 
         [NativeTypeName("uint32_t")]
         public uint metric_periodicity_millis;
 
-        [NativeTypeName("enum OpenTelemetryMetricTemporality")]
-        public OpenTelemetryMetricTemporality metric_temporality;
+        [NativeTypeName("enum TemporalCoreOpenTelemetryMetricTemporality")]
+        public TemporalCoreOpenTelemetryMetricTemporality metric_temporality;
 
         [NativeTypeName("bool")]
         public byte durations_as_seconds;
 
-        [NativeTypeName("enum OpenTelemetryProtocol")]
-        public OpenTelemetryProtocol protocol;
+        [NativeTypeName("enum TemporalCoreOpenTelemetryProtocol")]
+        public TemporalCoreOpenTelemetryProtocol protocol;
 
-        [NativeTypeName("MetadataRef")]
-        public ByteArrayRef histogram_bucket_overrides;
+        [NativeTypeName("TemporalCoreMetadataRef")]
+        public TemporalCoreByteArrayRef histogram_bucket_overrides;
     }
 
-    internal partial struct PrometheusOptions
+    internal partial struct TemporalCorePrometheusOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef bind_address;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef bind_address;
 
         [NativeTypeName("bool")]
         public byte counters_total_suffix;
@@ -350,27 +350,27 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("bool")]
         public byte durations_as_seconds;
 
-        [NativeTypeName("MetadataRef")]
-        public ByteArrayRef histogram_bucket_overrides;
+        [NativeTypeName("TemporalCoreMetadataRef")]
+        public TemporalCoreByteArrayRef histogram_bucket_overrides;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("const void *")]
-    internal unsafe delegate void* CustomMetricMeterMetricNewCallback([NativeTypeName("struct ByteArrayRef")] ByteArrayRef name, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef description, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef unit, [NativeTypeName("enum MetricKind")] MetricKind kind);
+    internal unsafe delegate void* TemporalCoreCustomMetricMeterMetricNewCallback([NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef name, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef description, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef unit, [NativeTypeName("enum TemporalCoreMetricKind")] TemporalCoreMetricKind kind);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricFreeCallback([NativeTypeName("const void *")] void* metric);
+    internal unsafe delegate void TemporalCoreCustomMetricMeterMetricFreeCallback([NativeTypeName("const void *")] void* metric);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricRecordIntegerCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void TemporalCoreCustomMetricMeterMetricRecordIntegerCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const void *")] void* attributes);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricRecordFloatCallback([NativeTypeName("const void *")] void* metric, double value, [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void TemporalCoreCustomMetricMeterMetricRecordFloatCallback([NativeTypeName("const void *")] void* metric, double value, [NativeTypeName("const void *")] void* attributes);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMetricRecordDurationCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void TemporalCoreCustomMetricMeterMetricRecordDurationCallback([NativeTypeName("const void *")] void* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const void *")] void* attributes);
 
-    internal unsafe partial struct CustomMetricAttributeValueString
+    internal unsafe partial struct TemporalCoreCustomMetricAttributeValueString
     {
         [NativeTypeName("const uint8_t *")]
         public byte* data;
@@ -380,11 +380,11 @@ namespace Temporalio.Bridge.Interop
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    internal partial struct CustomMetricAttributeValue
+    internal partial struct TemporalCoreCustomMetricAttributeValue
     {
         [FieldOffset(0)]
-        [NativeTypeName("struct CustomMetricAttributeValueString")]
-        public CustomMetricAttributeValueString string_value;
+        [NativeTypeName("struct TemporalCoreCustomMetricAttributeValueString")]
+        public TemporalCoreCustomMetricAttributeValueString string_value;
 
         [FieldOffset(0)]
         [NativeTypeName("int64_t")]
@@ -398,131 +398,131 @@ namespace Temporalio.Bridge.Interop
         public byte bool_value;
     }
 
-    internal partial struct CustomMetricAttribute
+    internal partial struct TemporalCoreCustomMetricAttribute
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef key;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef key;
 
-        [NativeTypeName("union CustomMetricAttributeValue")]
-        public CustomMetricAttributeValue value;
+        [NativeTypeName("union TemporalCoreCustomMetricAttributeValue")]
+        public TemporalCoreCustomMetricAttributeValue value;
 
-        [NativeTypeName("enum MetricAttributeValueType")]
-        public MetricAttributeValueType value_type;
+        [NativeTypeName("enum TemporalCoreMetricAttributeValueType")]
+        public TemporalCoreMetricAttributeValueType value_type;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("const void *")]
-    internal unsafe delegate void* CustomMetricMeterAttributesNewCallback([NativeTypeName("const void *")] void* append_from, [NativeTypeName("const struct CustomMetricAttribute *")] CustomMetricAttribute* attributes, [NativeTypeName("size_t")] UIntPtr attributes_size);
+    internal unsafe delegate void* TemporalCoreCustomMetricMeterAttributesNewCallback([NativeTypeName("const void *")] void* append_from, [NativeTypeName("const struct TemporalCoreCustomMetricAttribute *")] TemporalCoreCustomMetricAttribute* attributes, [NativeTypeName("size_t")] UIntPtr attributes_size);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterAttributesFreeCallback([NativeTypeName("const void *")] void* attributes);
+    internal unsafe delegate void TemporalCoreCustomMetricMeterAttributesFreeCallback([NativeTypeName("const void *")] void* attributes);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMetricMeterMeterFreeCallback([NativeTypeName("const struct CustomMetricMeter *")] CustomMetricMeter* meter);
+    internal unsafe delegate void TemporalCoreCustomMetricMeterMeterFreeCallback([NativeTypeName("const struct TemporalCoreCustomMetricMeter *")] TemporalCoreCustomMetricMeter* meter);
 
-    internal partial struct CustomMetricMeter
+    internal partial struct TemporalCoreCustomMetricMeter
     {
-        [NativeTypeName("CustomMetricMeterMetricNewCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterMetricNewCallback")]
         public IntPtr metric_new;
 
-        [NativeTypeName("CustomMetricMeterMetricFreeCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterMetricFreeCallback")]
         public IntPtr metric_free;
 
-        [NativeTypeName("CustomMetricMeterMetricRecordIntegerCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterMetricRecordIntegerCallback")]
         public IntPtr metric_record_integer;
 
-        [NativeTypeName("CustomMetricMeterMetricRecordFloatCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterMetricRecordFloatCallback")]
         public IntPtr metric_record_float;
 
-        [NativeTypeName("CustomMetricMeterMetricRecordDurationCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterMetricRecordDurationCallback")]
         public IntPtr metric_record_duration;
 
-        [NativeTypeName("CustomMetricMeterAttributesNewCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterAttributesNewCallback")]
         public IntPtr attributes_new;
 
-        [NativeTypeName("CustomMetricMeterAttributesFreeCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterAttributesFreeCallback")]
         public IntPtr attributes_free;
 
-        [NativeTypeName("CustomMetricMeterMeterFreeCallback")]
+        [NativeTypeName("TemporalCoreCustomMetricMeterMeterFreeCallback")]
         public IntPtr meter_free;
     }
 
-    internal unsafe partial struct MetricsOptions
+    internal unsafe partial struct TemporalCoreMetricsOptions
     {
-        [NativeTypeName("const struct OpenTelemetryOptions *")]
-        public OpenTelemetryOptions* opentelemetry;
+        [NativeTypeName("const struct TemporalCoreOpenTelemetryOptions *")]
+        public TemporalCoreOpenTelemetryOptions* opentelemetry;
 
-        [NativeTypeName("const struct PrometheusOptions *")]
-        public PrometheusOptions* prometheus;
+        [NativeTypeName("const struct TemporalCorePrometheusOptions *")]
+        public TemporalCorePrometheusOptions* prometheus;
 
-        [NativeTypeName("const struct CustomMetricMeter *")]
-        public CustomMetricMeter* custom_meter;
+        [NativeTypeName("const struct TemporalCoreCustomMetricMeter *")]
+        public TemporalCoreCustomMetricMeter* custom_meter;
 
         [NativeTypeName("bool")]
         public byte attach_service_name;
 
-        [NativeTypeName("MetadataRef")]
-        public ByteArrayRef global_tags;
+        [NativeTypeName("TemporalCoreMetadataRef")]
+        public TemporalCoreByteArrayRef global_tags;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef metric_prefix;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef metric_prefix;
     }
 
-    internal unsafe partial struct TelemetryOptions
+    internal unsafe partial struct TemporalCoreTelemetryOptions
     {
-        [NativeTypeName("const struct LoggingOptions *")]
-        public LoggingOptions* logging;
+        [NativeTypeName("const struct TemporalCoreLoggingOptions *")]
+        public TemporalCoreLoggingOptions* logging;
 
-        [NativeTypeName("const struct MetricsOptions *")]
-        public MetricsOptions* metrics;
+        [NativeTypeName("const struct TemporalCoreMetricsOptions *")]
+        public TemporalCoreMetricsOptions* metrics;
     }
 
-    internal unsafe partial struct RuntimeOptions
+    internal unsafe partial struct TemporalCoreRuntimeOptions
     {
-        [NativeTypeName("const struct TelemetryOptions *")]
-        public TelemetryOptions* telemetry;
+        [NativeTypeName("const struct TemporalCoreTelemetryOptions *")]
+        public TemporalCoreTelemetryOptions* telemetry;
     }
 
-    internal partial struct TestServerOptions
+    internal partial struct TemporalCoreTestServerOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef existing_path;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef existing_path;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef sdk_name;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef sdk_name;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef sdk_version;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef sdk_version;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef download_version;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef download_version;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef download_dest_dir;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef download_dest_dir;
 
         [NativeTypeName("uint16_t")]
         public ushort port;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef extra_args;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef extra_args;
 
         [NativeTypeName("uint64_t")]
-        public ulong download_ttl_ms;
+        public ulong download_ttl_seconds;
     }
 
-    internal unsafe partial struct DevServerOptions
+    internal unsafe partial struct TemporalCoreDevServerOptions
     {
-        [NativeTypeName("const struct TestServerOptions *")]
-        public TestServerOptions* test_server;
+        [NativeTypeName("const struct TemporalCoreTestServerOptions *")]
+        public TemporalCoreTestServerOptions* test_server;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef namespace_;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef namespace_;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef ip;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef ip;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef database_filename;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef database_filename;
 
         [NativeTypeName("bool")]
         public byte ui;
@@ -530,47 +530,47 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint16_t")]
         public ushort ui_port;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef log_format;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef log_format;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef log_level;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef log_level;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void EphemeralServerStartCallback(void* user_data, [NativeTypeName("struct EphemeralServer *")] EphemeralServer* success, [NativeTypeName("const struct ByteArray *")] ByteArray* success_target, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void TemporalCoreEphemeralServerStartCallback(void* user_data, [NativeTypeName("struct TemporalCoreEphemeralServer *")] TemporalCoreEphemeralServer* success, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* success_target, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void EphemeralServerShutdownCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void TemporalCoreEphemeralServerShutdownCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
 
-    internal unsafe partial struct WorkerOrFail
+    internal unsafe partial struct TemporalCoreWorkerOrFail
     {
-        [NativeTypeName("struct Worker *")]
-        public Worker* worker;
+        [NativeTypeName("struct TemporalCoreWorker *")]
+        public TemporalCoreWorker* worker;
 
-        [NativeTypeName("const struct ByteArray *")]
-        public ByteArray* fail;
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
     }
 
-    internal partial struct WorkerVersioningNone
+    internal partial struct TemporalCoreWorkerVersioningNone
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef build_id;
     }
 
-    internal partial struct WorkerDeploymentVersion
+    internal partial struct TemporalCoreWorkerDeploymentVersion
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef deployment_name;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef deployment_name;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef build_id;
     }
 
-    internal partial struct WorkerDeploymentOptions
+    internal partial struct TemporalCoreWorkerDeploymentOptions
     {
-        [NativeTypeName("struct WorkerDeploymentVersion")]
-        public WorkerDeploymentVersion version;
+        [NativeTypeName("struct TemporalCoreWorkerDeploymentVersion")]
+        public TemporalCoreWorkerDeploymentVersion version;
 
         [NativeTypeName("bool")]
         public byte use_worker_versioning;
@@ -579,53 +579,53 @@ namespace Temporalio.Bridge.Interop
         public int default_versioning_behavior;
     }
 
-    internal partial struct LegacyBuildIdBasedStrategy
+    internal partial struct TemporalCoreLegacyBuildIdBasedStrategy
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef build_id;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef build_id;
     }
 
-    internal enum WorkerVersioningStrategy_Tag
+    internal enum TemporalCoreWorkerVersioningStrategy_Tag
     {
         None,
         DeploymentBased,
         LegacyBuildIdBased,
     }
 
-    internal unsafe partial struct WorkerVersioningStrategy
+    internal unsafe partial struct TemporalCoreWorkerVersioningStrategy
     {
-        public WorkerVersioningStrategy_Tag tag;
+        public TemporalCoreWorkerVersioningStrategy_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L419_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L421_C3")]
         public _Anonymous_e__Union Anonymous;
 
-        internal ref WorkerVersioningNone none
+        internal ref TemporalCoreWorkerVersioningNone none
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
+                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
                 {
                     return ref pField->none;
                 }
             }
         }
 
-        internal ref WorkerDeploymentOptions deployment_based
+        internal ref TemporalCoreWorkerDeploymentOptions deployment_based
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
+                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
                 {
                     return ref pField->deployment_based;
                 }
             }
         }
 
-        internal ref LegacyBuildIdBasedStrategy legacy_build_id_based
+        internal ref TemporalCoreLegacyBuildIdBasedStrategy legacy_build_id_based
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
                 {
                     return ref pField->legacy_build_id_based;
                 }
@@ -636,51 +636,51 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L420_C5")]
-            public _Anonymous1_e__Struct Anonymous1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L422_C5")]
+            public _Anonymous1_1_e__Struct Anonymous1_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L423_C5")]
-            public _Anonymous2_e__Struct Anonymous2;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L425_C5")]
+            public _Anonymous2_1_e__Struct Anonymous2_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L426_C5")]
-            public _Anonymous3_e__Struct Anonymous3;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L428_C5")]
+            public _Anonymous3_1_e__Struct Anonymous3_1;
 
-            internal partial struct _Anonymous1_e__Struct
+            internal partial struct _Anonymous1_1_e__Struct
             {
-                [NativeTypeName("struct WorkerVersioningNone")]
-                public WorkerVersioningNone none;
+                [NativeTypeName("struct TemporalCoreWorkerVersioningNone")]
+                public TemporalCoreWorkerVersioningNone none;
             }
 
-            internal partial struct _Anonymous2_e__Struct
+            internal partial struct _Anonymous2_1_e__Struct
             {
-                [NativeTypeName("struct WorkerDeploymentOptions")]
-                public WorkerDeploymentOptions deployment_based;
+                [NativeTypeName("struct TemporalCoreWorkerDeploymentOptions")]
+                public TemporalCoreWorkerDeploymentOptions deployment_based;
             }
 
-            internal partial struct _Anonymous3_e__Struct
+            internal partial struct _Anonymous3_1_e__Struct
             {
-                [NativeTypeName("struct LegacyBuildIdBasedStrategy")]
-                public LegacyBuildIdBasedStrategy legacy_build_id_based;
+                [NativeTypeName("struct TemporalCoreLegacyBuildIdBasedStrategy")]
+                public TemporalCoreLegacyBuildIdBasedStrategy legacy_build_id_based;
             }
         }
     }
 
-    internal partial struct FixedSizeSlotSupplier
+    internal partial struct TemporalCoreFixedSizeSlotSupplier
     {
         [NativeTypeName("uintptr_t")]
         public UIntPtr num_slots;
     }
 
-    internal partial struct ResourceBasedTunerOptions
+    internal partial struct TemporalCoreResourceBasedTunerOptions
     {
         public double target_memory_usage;
 
         public double target_cpu_usage;
     }
 
-    internal partial struct ResourceBasedSlotSupplier
+    internal partial struct TemporalCoreResourceBasedSlotSupplier
     {
         [NativeTypeName("uintptr_t")]
         public UIntPtr minimum_slots;
@@ -691,23 +691,23 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint64_t")]
         public ulong ramp_throttle_ms;
 
-        [NativeTypeName("struct ResourceBasedTunerOptions")]
-        public ResourceBasedTunerOptions tuner_options;
+        [NativeTypeName("struct TemporalCoreResourceBasedTunerOptions")]
+        public TemporalCoreResourceBasedTunerOptions tuner_options;
     }
 
-    internal unsafe partial struct SlotReserveCtx
+    internal unsafe partial struct TemporalCoreSlotReserveCtx
     {
-        [NativeTypeName("enum SlotKindType")]
-        public SlotKindType slot_type;
+        [NativeTypeName("enum TemporalCoreSlotKindType")]
+        public TemporalCoreSlotKindType slot_type;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef task_queue;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef task_queue;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef worker_identity;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef worker_identity;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef worker_build_id;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef worker_build_id;
 
         [NativeTypeName("bool")]
         public byte is_sticky;
@@ -716,16 +716,16 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* sender);
+    internal unsafe delegate void TemporalCoreCustomReserveSlotCallback([NativeTypeName("const struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx, void* sender);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomCancelReserveCallback(void* token_source);
+    internal unsafe delegate void TemporalCoreCustomCancelReserveCallback(void* token_source);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("uintptr_t")]
-    internal unsafe delegate UIntPtr CustomTryReserveSlotCallback([NativeTypeName("const struct SlotReserveCtx *")] SlotReserveCtx* ctx);
+    internal unsafe delegate UIntPtr TemporalCoreCustomTryReserveSlotCallback([NativeTypeName("const struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx);
 
-    internal enum SlotInfo_Tag
+    internal enum TemporalCoreSlotInfo_Tag
     {
         WorkflowSlotInfo,
         ActivitySlotInfo,
@@ -733,44 +733,44 @@ namespace Temporalio.Bridge.Interop
         NexusSlotInfo,
     }
 
-    internal partial struct WorkflowSlotInfo_Body
+    internal partial struct TemporalCoreWorkflowSlotInfo_Body
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef workflow_type;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef workflow_type;
 
         [NativeTypeName("bool")]
         public byte is_sticky;
     }
 
-    internal partial struct ActivitySlotInfo_Body
+    internal partial struct TemporalCoreActivitySlotInfo_Body
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef activity_type;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef activity_type;
     }
 
-    internal partial struct LocalActivitySlotInfo_Body
+    internal partial struct TemporalCoreLocalActivitySlotInfo_Body
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef activity_type;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef activity_type;
     }
 
-    internal partial struct NexusSlotInfo_Body
+    internal partial struct TemporalCoreNexusSlotInfo_Body
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef operation;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef operation;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef service;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef service;
     }
 
-    internal unsafe partial struct SlotInfo
+    internal unsafe partial struct TemporalCoreSlotInfo
     {
-        public SlotInfo_Tag tag;
+        public TemporalCoreSlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L493_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L496_C3")]
         public _Anonymous_e__Union Anonymous;
 
-        internal ref WorkflowSlotInfo_Body workflow_slot_info
+        internal ref TemporalCoreWorkflowSlotInfo_Body workflow_slot_info
         {
             get
             {
@@ -781,7 +781,7 @@ namespace Temporalio.Bridge.Interop
             }
         }
 
-        internal ref ActivitySlotInfo_Body activity_slot_info
+        internal ref TemporalCoreActivitySlotInfo_Body activity_slot_info
         {
             get
             {
@@ -792,7 +792,7 @@ namespace Temporalio.Bridge.Interop
             }
         }
 
-        internal ref LocalActivitySlotInfo_Body local_activity_slot_info
+        internal ref TemporalCoreLocalActivitySlotInfo_Body local_activity_slot_info
         {
             get
             {
@@ -803,7 +803,7 @@ namespace Temporalio.Bridge.Interop
             }
         }
 
-        internal ref NexusSlotInfo_Body nexus_slot_info
+        internal ref TemporalCoreNexusSlotInfo_Body nexus_slot_info
         {
             get
             {
@@ -818,114 +818,114 @@ namespace Temporalio.Bridge.Interop
         internal partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            public WorkflowSlotInfo_Body workflow_slot_info;
+            public TemporalCoreWorkflowSlotInfo_Body workflow_slot_info;
 
             [FieldOffset(0)]
-            public ActivitySlotInfo_Body activity_slot_info;
+            public TemporalCoreActivitySlotInfo_Body activity_slot_info;
 
             [FieldOffset(0)]
-            public LocalActivitySlotInfo_Body local_activity_slot_info;
+            public TemporalCoreLocalActivitySlotInfo_Body local_activity_slot_info;
 
             [FieldOffset(0)]
-            public NexusSlotInfo_Body nexus_slot_info;
+            public TemporalCoreNexusSlotInfo_Body nexus_slot_info;
         }
     }
 
-    internal partial struct SlotMarkUsedCtx
+    internal partial struct TemporalCoreSlotMarkUsedCtx
     {
-        [NativeTypeName("struct SlotInfo")]
-        public SlotInfo slot_info;
+        [NativeTypeName("struct TemporalCoreSlotInfo")]
+        public TemporalCoreSlotInfo slot_info;
 
         [NativeTypeName("uintptr_t")]
         public UIntPtr slot_permit;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomMarkSlotUsedCallback([NativeTypeName("const struct SlotMarkUsedCtx *")] SlotMarkUsedCtx* ctx);
+    internal unsafe delegate void TemporalCoreCustomMarkSlotUsedCallback([NativeTypeName("const struct TemporalCoreSlotMarkUsedCtx *")] TemporalCoreSlotMarkUsedCtx* ctx);
 
-    internal unsafe partial struct SlotReleaseCtx
+    internal unsafe partial struct TemporalCoreSlotReleaseCtx
     {
-        [NativeTypeName("const struct SlotInfo *")]
-        public SlotInfo* slot_info;
+        [NativeTypeName("const struct TemporalCoreSlotInfo *")]
+        public TemporalCoreSlotInfo* slot_info;
 
         [NativeTypeName("uintptr_t")]
         public UIntPtr slot_permit;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomReleaseSlotCallback([NativeTypeName("const struct SlotReleaseCtx *")] SlotReleaseCtx* ctx);
+    internal unsafe delegate void TemporalCoreCustomReleaseSlotCallback([NativeTypeName("const struct TemporalCoreSlotReleaseCtx *")] TemporalCoreSlotReleaseCtx* ctx);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void CustomSlotImplFreeCallback([NativeTypeName("const struct CustomSlotSupplierCallbacks *")] CustomSlotSupplierCallbacks* userimpl);
+    internal unsafe delegate void TemporalCoreCustomSlotImplFreeCallback([NativeTypeName("const struct TemporalCoreCustomSlotSupplierCallbacks *")] TemporalCoreCustomSlotSupplierCallbacks* userimpl);
 
-    internal partial struct CustomSlotSupplierCallbacks
+    internal partial struct TemporalCoreCustomSlotSupplierCallbacks
     {
-        [NativeTypeName("CustomReserveSlotCallback")]
+        [NativeTypeName("TemporalCoreCustomReserveSlotCallback")]
         public IntPtr reserve;
 
-        [NativeTypeName("CustomCancelReserveCallback")]
+        [NativeTypeName("TemporalCoreCustomCancelReserveCallback")]
         public IntPtr cancel_reserve;
 
-        [NativeTypeName("CustomTryReserveSlotCallback")]
+        [NativeTypeName("TemporalCoreCustomTryReserveSlotCallback")]
         public IntPtr try_reserve;
 
-        [NativeTypeName("CustomMarkSlotUsedCallback")]
+        [NativeTypeName("TemporalCoreCustomMarkSlotUsedCallback")]
         public IntPtr mark_used;
 
-        [NativeTypeName("CustomReleaseSlotCallback")]
+        [NativeTypeName("TemporalCoreCustomReleaseSlotCallback")]
         public IntPtr release;
 
-        [NativeTypeName("CustomSlotImplFreeCallback")]
+        [NativeTypeName("TemporalCoreCustomSlotImplFreeCallback")]
         public IntPtr free;
     }
 
-    internal unsafe partial struct CustomSlotSupplierCallbacksImpl
+    internal unsafe partial struct TemporalCoreCustomSlotSupplierCallbacksImpl
     {
-        [NativeTypeName("const struct CustomSlotSupplierCallbacks *")]
-        public CustomSlotSupplierCallbacks* _0;
+        [NativeTypeName("const struct TemporalCoreCustomSlotSupplierCallbacks *")]
+        public TemporalCoreCustomSlotSupplierCallbacks* _0;
     }
 
-    internal enum SlotSupplier_Tag
+    internal enum TemporalCoreSlotSupplier_Tag
     {
         FixedSize,
         ResourceBased,
         Custom,
     }
 
-    internal unsafe partial struct SlotSupplier
+    internal unsafe partial struct TemporalCoreSlotSupplier
     {
-        public SlotSupplier_Tag tag;
+        public TemporalCoreSlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L544_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L547_C3")]
         public _Anonymous_e__Union Anonymous;
 
-        internal ref FixedSizeSlotSupplier fixed_size
+        internal ref TemporalCoreFixedSizeSlotSupplier fixed_size
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
+                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
                 {
                     return ref pField->fixed_size;
                 }
             }
         }
 
-        internal ref ResourceBasedSlotSupplier resource_based
+        internal ref TemporalCoreResourceBasedSlotSupplier resource_based
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
+                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
                 {
                     return ref pField->resource_based;
                 }
             }
         }
 
-        internal ref CustomSlotSupplierCallbacksImpl custom
+        internal ref TemporalCoreCustomSlotSupplierCallbacksImpl custom
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
                 {
                     return ref pField->custom;
                 }
@@ -936,56 +936,56 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L545_C5")]
-            public _Anonymous1_e__Struct Anonymous1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L548_C5")]
+            public _Anonymous1_1_e__Struct Anonymous1_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L548_C5")]
-            public _Anonymous2_e__Struct Anonymous2;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L551_C5")]
+            public _Anonymous2_1_e__Struct Anonymous2_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-bridge_L551_C5")]
-            public _Anonymous3_e__Struct Anonymous3;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L554_C5")]
+            public _Anonymous3_1_e__Struct Anonymous3_1;
 
-            internal partial struct _Anonymous1_e__Struct
+            internal partial struct _Anonymous1_1_e__Struct
             {
-                [NativeTypeName("struct FixedSizeSlotSupplier")]
-                public FixedSizeSlotSupplier fixed_size;
+                [NativeTypeName("struct TemporalCoreFixedSizeSlotSupplier")]
+                public TemporalCoreFixedSizeSlotSupplier fixed_size;
             }
 
-            internal partial struct _Anonymous2_e__Struct
+            internal partial struct _Anonymous2_1_e__Struct
             {
-                [NativeTypeName("struct ResourceBasedSlotSupplier")]
-                public ResourceBasedSlotSupplier resource_based;
+                [NativeTypeName("struct TemporalCoreResourceBasedSlotSupplier")]
+                public TemporalCoreResourceBasedSlotSupplier resource_based;
             }
 
-            internal partial struct _Anonymous3_e__Struct
+            internal partial struct _Anonymous3_1_e__Struct
             {
-                [NativeTypeName("struct CustomSlotSupplierCallbacksImpl")]
-                public CustomSlotSupplierCallbacksImpl custom;
+                [NativeTypeName("struct TemporalCoreCustomSlotSupplierCallbacksImpl")]
+                public TemporalCoreCustomSlotSupplierCallbacksImpl custom;
             }
         }
     }
 
-    internal partial struct TunerHolder
+    internal partial struct TemporalCoreTunerHolder
     {
-        [NativeTypeName("struct SlotSupplier")]
-        public SlotSupplier workflow_slot_supplier;
+        [NativeTypeName("struct TemporalCoreSlotSupplier")]
+        public TemporalCoreSlotSupplier workflow_slot_supplier;
 
-        [NativeTypeName("struct SlotSupplier")]
-        public SlotSupplier activity_slot_supplier;
+        [NativeTypeName("struct TemporalCoreSlotSupplier")]
+        public TemporalCoreSlotSupplier activity_slot_supplier;
 
-        [NativeTypeName("struct SlotSupplier")]
-        public SlotSupplier local_activity_slot_supplier;
+        [NativeTypeName("struct TemporalCoreSlotSupplier")]
+        public TemporalCoreSlotSupplier local_activity_slot_supplier;
     }
 
-    internal partial struct PollerBehaviorSimpleMaximum
+    internal partial struct TemporalCorePollerBehaviorSimpleMaximum
     {
         [NativeTypeName("uintptr_t")]
         public UIntPtr simple_maximum;
     }
 
-    internal partial struct PollerBehaviorAutoscaling
+    internal partial struct TemporalCorePollerBehaviorAutoscaling
     {
         [NativeTypeName("uintptr_t")]
         public UIntPtr minimum;
@@ -997,43 +997,43 @@ namespace Temporalio.Bridge.Interop
         public UIntPtr initial;
     }
 
-    internal unsafe partial struct PollerBehavior
+    internal unsafe partial struct TemporalCorePollerBehavior
     {
-        [NativeTypeName("const struct PollerBehaviorSimpleMaximum *")]
-        public PollerBehaviorSimpleMaximum* simple_maximum;
+        [NativeTypeName("const struct TemporalCorePollerBehaviorSimpleMaximum *")]
+        public TemporalCorePollerBehaviorSimpleMaximum* simple_maximum;
 
-        [NativeTypeName("const struct PollerBehaviorAutoscaling *")]
-        public PollerBehaviorAutoscaling* autoscaling;
+        [NativeTypeName("const struct TemporalCorePollerBehaviorAutoscaling *")]
+        public TemporalCorePollerBehaviorAutoscaling* autoscaling;
     }
 
-    internal unsafe partial struct ByteArrayRefArray
+    internal unsafe partial struct TemporalCoreByteArrayRefArray
     {
-        [NativeTypeName("const struct ByteArrayRef *")]
-        public ByteArrayRef* data;
+        [NativeTypeName("const struct TemporalCoreByteArrayRef *")]
+        public TemporalCoreByteArrayRef* data;
 
         [NativeTypeName("size_t")]
         public UIntPtr size;
     }
 
-    internal partial struct WorkerOptions
+    internal partial struct TemporalCoreWorkerOptions
     {
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef namespace_;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef namespace_;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef task_queue;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef task_queue;
 
-        [NativeTypeName("struct WorkerVersioningStrategy")]
-        public WorkerVersioningStrategy versioning_strategy;
+        [NativeTypeName("struct TemporalCoreWorkerVersioningStrategy")]
+        public TemporalCoreWorkerVersioningStrategy versioning_strategy;
 
-        [NativeTypeName("struct ByteArrayRef")]
-        public ByteArrayRef identity_override;
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef identity_override;
 
         [NativeTypeName("uint32_t")]
         public uint max_cached_workflows;
 
-        [NativeTypeName("struct TunerHolder")]
-        public TunerHolder tuner;
+        [NativeTypeName("struct TemporalCoreTunerHolder")]
+        public TemporalCoreTunerHolder tuner;
 
         [NativeTypeName("bool")]
         public byte no_remote_activities;
@@ -1054,214 +1054,214 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("uint64_t")]
         public ulong graceful_shutdown_period_millis;
 
-        [NativeTypeName("struct PollerBehavior")]
-        public PollerBehavior workflow_task_poller_behavior;
+        [NativeTypeName("struct TemporalCorePollerBehavior")]
+        public TemporalCorePollerBehavior workflow_task_poller_behavior;
 
         public float nonsticky_to_sticky_poll_ratio;
 
-        [NativeTypeName("struct PollerBehavior")]
-        public PollerBehavior activity_task_poller_behavior;
+        [NativeTypeName("struct TemporalCorePollerBehavior")]
+        public TemporalCorePollerBehavior activity_task_poller_behavior;
 
         [NativeTypeName("bool")]
         public byte nondeterminism_as_workflow_fail;
 
-        [NativeTypeName("struct ByteArrayRefArray")]
-        public ByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
+        [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
+        public TemporalCoreByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void WorkerCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void TemporalCoreWorkerCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void WorkerPollCallback(void* user_data, [NativeTypeName("const struct ByteArray *")] ByteArray* success, [NativeTypeName("const struct ByteArray *")] ByteArray* fail);
+    internal unsafe delegate void TemporalCoreWorkerPollCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* success, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
 
-    internal unsafe partial struct WorkerReplayerOrFail
+    internal unsafe partial struct TemporalCoreWorkerReplayerOrFail
     {
-        [NativeTypeName("struct Worker *")]
-        public Worker* worker;
+        [NativeTypeName("struct TemporalCoreWorker *")]
+        public TemporalCoreWorker* worker;
 
-        [NativeTypeName("struct WorkerReplayPusher *")]
-        public WorkerReplayPusher* worker_replay_pusher;
+        [NativeTypeName("struct TemporalCoreWorkerReplayPusher *")]
+        public TemporalCoreWorkerReplayPusher* worker_replay_pusher;
 
-        [NativeTypeName("const struct ByteArray *")]
-        public ByteArray* fail;
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
     }
 
-    internal unsafe partial struct WorkerReplayPushResult
+    internal unsafe partial struct TemporalCoreWorkerReplayPushResult
     {
-        [NativeTypeName("const struct ByteArray *")]
-        public ByteArray* fail;
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
     }
 
     internal static unsafe partial class Methods
     {
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct CancellationToken *")]
-        public static extern CancellationToken* cancellation_token_new();
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreCancellationToken *")]
+        public static extern TemporalCoreCancellationToken* temporal_core_cancellation_token_new();
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void cancellation_token_cancel([NativeTypeName("struct CancellationToken *")] CancellationToken* token);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_cancellation_token_cancel([NativeTypeName("struct TemporalCoreCancellationToken *")] TemporalCoreCancellationToken* token);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void cancellation_token_free([NativeTypeName("struct CancellationToken *")] CancellationToken* token);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_cancellation_token_free([NativeTypeName("struct TemporalCoreCancellationToken *")] TemporalCoreCancellationToken* token);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void client_connect([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ClientOptions *")] ClientOptions* options, void* user_data, [NativeTypeName("ClientConnectCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_client_connect([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreClientOptions *")] TemporalCoreClientOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientConnectCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void client_free([NativeTypeName("struct Client *")] Client* client);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_client_free([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void client_update_metadata([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef metadata);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_client_update_metadata([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef metadata);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void client_update_api_key([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef api_key);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_client_update_api_key([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef api_key);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void client_rpc_call([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct RpcCallOptions *")] RpcCallOptions* options, void* user_data, [NativeTypeName("ClientRpcCallCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_client_rpc_call([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreRpcCallOptions *")] TemporalCoreRpcCallOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientRpcCallCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct MetricMeter *")]
-        public static extern MetricMeter* metric_meter_new([NativeTypeName("struct Runtime *")] Runtime* runtime);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreMetricMeter *")]
+        public static extern TemporalCoreMetricMeter* temporal_core_metric_meter_new([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_meter_free([NativeTypeName("struct MetricMeter *")] MetricMeter* meter);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_metric_meter_free([NativeTypeName("struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct MetricAttributes *")]
-        public static extern MetricAttributes* metric_attributes_new([NativeTypeName("const struct MetricMeter *")] MetricMeter* meter, [NativeTypeName("const struct MetricAttribute *")] MetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreMetricAttributes *")]
+        public static extern TemporalCoreMetricAttributes* temporal_core_metric_attributes_new([NativeTypeName("const struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter, [NativeTypeName("const struct TemporalCoreMetricAttribute *")] TemporalCoreMetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct MetricAttributes *")]
-        public static extern MetricAttributes* metric_attributes_new_append([NativeTypeName("const struct MetricMeter *")] MetricMeter* meter, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* orig, [NativeTypeName("const struct MetricAttribute *")] MetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreMetricAttributes *")]
+        public static extern TemporalCoreMetricAttributes* temporal_core_metric_attributes_new_append([NativeTypeName("const struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* orig, [NativeTypeName("const struct TemporalCoreMetricAttribute *")] TemporalCoreMetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_attributes_free([NativeTypeName("struct MetricAttributes *")] MetricAttributes* attrs);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_metric_attributes_free([NativeTypeName("struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct Metric *")]
-        public static extern Metric* metric_new([NativeTypeName("const struct MetricMeter *")] MetricMeter* meter, [NativeTypeName("const struct MetricOptions *")] MetricOptions* options);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreMetric *")]
+        public static extern TemporalCoreMetric* temporal_core_metric_new([NativeTypeName("const struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter, [NativeTypeName("const struct TemporalCoreMetricOptions *")] TemporalCoreMetricOptions* options);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_free([NativeTypeName("struct Metric *")] Metric* metric);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_metric_free([NativeTypeName("struct TemporalCoreMetric *")] TemporalCoreMetric* metric);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_record_integer([NativeTypeName("const struct Metric *")] Metric* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_metric_record_integer([NativeTypeName("const struct TemporalCoreMetric *")] TemporalCoreMetric* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_record_float([NativeTypeName("const struct Metric *")] Metric* metric, double value, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_metric_record_float([NativeTypeName("const struct TemporalCoreMetric *")] TemporalCoreMetric* metric, double value, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void metric_record_duration([NativeTypeName("const struct Metric *")] Metric* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const struct MetricAttributes *")] MetricAttributes* attrs);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_metric_record_duration([NativeTypeName("const struct TemporalCoreMetric *")] TemporalCoreMetric* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct Random *")]
-        public static extern Random* random_new([NativeTypeName("uint64_t")] ulong seed);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreRandom *")]
+        public static extern TemporalCoreRandom* temporal_core_random_new([NativeTypeName("uint64_t")] ulong seed);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void random_free([NativeTypeName("struct Random *")] Random* random);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_random_free([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("int32_t")]
-        public static extern int random_int32_range([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("int32_t")] int min, [NativeTypeName("int32_t")] int max, [NativeTypeName("bool")] byte max_inclusive);
+        public static extern int temporal_core_random_int32_range([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random, [NativeTypeName("int32_t")] int min, [NativeTypeName("int32_t")] int max, [NativeTypeName("bool")] byte max_inclusive);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern double random_double_range([NativeTypeName("struct Random *")] Random* random, double min, double max, [NativeTypeName("bool")] byte max_inclusive);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern double temporal_core_random_double_range([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random, double min, double max, [NativeTypeName("bool")] byte max_inclusive);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void random_fill_bytes([NativeTypeName("struct Random *")] Random* random, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef bytes);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_random_fill_bytes([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef bytes);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct RuntimeOrFail")]
-        public static extern RuntimeOrFail runtime_new([NativeTypeName("const struct RuntimeOptions *")] RuntimeOptions* options);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreRuntimeOrFail")]
+        public static extern TemporalCoreRuntimeOrFail temporal_core_runtime_new([NativeTypeName("const struct TemporalCoreRuntimeOptions *")] TemporalCoreRuntimeOptions* options);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void runtime_free([NativeTypeName("struct Runtime *")] Runtime* runtime);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_runtime_free([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void byte_array_free([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct ByteArray *")] ByteArray* bytes);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_byte_array_free([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* bytes);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct ByteArrayRef")]
-        public static extern ByteArrayRef forwarded_log_target([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public static extern TemporalCoreByteArrayRef temporal_core_forwarded_log_target([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct ByteArrayRef")]
-        public static extern ByteArrayRef forwarded_log_message([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public static extern TemporalCoreByteArrayRef temporal_core_forwarded_log_message([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("uint64_t")]
-        public static extern ulong forwarded_log_timestamp_millis([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+        public static extern ulong temporal_core_forwarded_log_timestamp_millis([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct ByteArrayRef")]
-        public static extern ByteArrayRef forwarded_log_fields_json([NativeTypeName("const struct ForwardedLog *")] ForwardedLog* log);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public static extern TemporalCoreByteArrayRef temporal_core_forwarded_log_fields_json([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ephemeral_server_start_dev_server([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct DevServerOptions *")] DevServerOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_ephemeral_server_start_dev_server([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreDevServerOptions *")] TemporalCoreDevServerOptions* options, void* user_data, [NativeTypeName("TemporalCoreEphemeralServerStartCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ephemeral_server_start_test_server([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct TestServerOptions *")] TestServerOptions* options, void* user_data, [NativeTypeName("EphemeralServerStartCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_ephemeral_server_start_test_server([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreTestServerOptions *")] TemporalCoreTestServerOptions* options, void* user_data, [NativeTypeName("TemporalCoreEphemeralServerStartCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ephemeral_server_free([NativeTypeName("struct EphemeralServer *")] EphemeralServer* server);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_ephemeral_server_free([NativeTypeName("struct TemporalCoreEphemeralServer *")] TemporalCoreEphemeralServer* server);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void ephemeral_server_shutdown([NativeTypeName("struct EphemeralServer *")] EphemeralServer* server, void* user_data, [NativeTypeName("EphemeralServerShutdownCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_ephemeral_server_shutdown([NativeTypeName("struct TemporalCoreEphemeralServer *")] TemporalCoreEphemeralServer* server, void* user_data, [NativeTypeName("TemporalCoreEphemeralServerShutdownCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct WorkerOrFail")]
-        public static extern WorkerOrFail worker_new([NativeTypeName("struct Client *")] Client* client, [NativeTypeName("const struct WorkerOptions *")] WorkerOptions* options);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreWorkerOrFail")]
+        public static extern TemporalCoreWorkerOrFail temporal_core_worker_new([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreWorkerOptions *")] TemporalCoreWorkerOptions* options);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_free([NativeTypeName("struct Worker *")] Worker* worker);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_free([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_validate([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_validate([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_replace_client([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct Client *")] Client* new_client);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_replace_client([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* new_client);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_poll_workflow_activation([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerPollCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_poll_workflow_activation([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_poll_activity_task([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerPollCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_poll_activity_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_complete_workflow_activation([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef completion, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_complete_workflow_activation([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_complete_activity_task([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef completion, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_complete_activity_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("const struct ByteArray *")]
-        public static extern ByteArray* worker_record_activity_heartbeat([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef heartbeat);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("const struct TemporalCoreByteArray *")]
+        public static extern TemporalCoreByteArray* temporal_core_worker_record_activity_heartbeat([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef heartbeat);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_request_workflow_eviction([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef run_id);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_request_workflow_eviction([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef run_id);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_initiate_shutdown([NativeTypeName("struct Worker *")] Worker* worker);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_initiate_shutdown([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_finalize_shutdown([NativeTypeName("struct Worker *")] Worker* worker, void* user_data, [NativeTypeName("WorkerCallback")] IntPtr callback);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_finalize_shutdown([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct WorkerReplayerOrFail")]
-        public static extern WorkerReplayerOrFail worker_replayer_new([NativeTypeName("struct Runtime *")] Runtime* runtime, [NativeTypeName("const struct WorkerOptions *")] WorkerOptions* options);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreWorkerReplayerOrFail")]
+        public static extern TemporalCoreWorkerReplayerOrFail temporal_core_worker_replayer_new([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreWorkerOptions *")] TemporalCoreWorkerOptions* options);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void worker_replay_pusher_free([NativeTypeName("struct WorkerReplayPusher *")] WorkerReplayPusher* worker_replay_pusher);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_replay_pusher_free([NativeTypeName("struct TemporalCoreWorkerReplayPusher *")] TemporalCoreWorkerReplayPusher* worker_replay_pusher);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        [return: NativeTypeName("struct WorkerReplayPushResult")]
-        public static extern WorkerReplayPushResult worker_replay_push([NativeTypeName("struct Worker *")] Worker* worker, [NativeTypeName("struct WorkerReplayPusher *")] WorkerReplayPusher* worker_replay_pusher, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef workflow_id, [NativeTypeName("struct ByteArrayRef")] ByteArrayRef history);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreWorkerReplayPushResult")]
+        public static extern TemporalCoreWorkerReplayPushResult temporal_core_worker_replay_push([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreWorkerReplayPusher *")] TemporalCoreWorkerReplayPusher* worker_replay_pusher, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef workflow_id, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef history);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void complete_async_reserve(void* sender, [NativeTypeName("uintptr_t")] UIntPtr permit_id);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_complete_async_reserve(void* sender, [NativeTypeName("uintptr_t")] UIntPtr permit_id);
 
-        [DllImport("temporal_sdk_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void set_reserve_cancel_target([NativeTypeName("struct SlotReserveCtx *")] SlotReserveCtx* ctx, void* token_ptr);
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_set_reserve_cancel_target([NativeTypeName("struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx, void* token_ptr);
     }
 }
