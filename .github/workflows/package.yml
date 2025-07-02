@@ -4,8 +4,7 @@ on:
     branches:
       - main
       - "releases/*"
-      - core-c-bridge
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
   build-bridge-libraries:
