@@ -46,6 +46,8 @@ namespace Temporalio.Client
         public Converters.DataConverter DataConverter { get; set; } =
             Converters.DataConverter.Default;
 
+        public IReadOnlyCollection<Interceptors.IClientPlugin>? Plugins { get; set; }
+
         /// <summary>
         /// Gets or sets the interceptors to intercept client calls.
         /// </summary>
@@ -76,6 +78,7 @@ namespace Temporalio.Client
             {
                 Namespace = Namespace,
                 DataConverter = DataConverter,
+                Plugins = Plugins,
                 Interceptors = Interceptors,
                 LoggerFactory = LoggerFactory,
                 QueryRejectCondition = QueryRejectCondition,
