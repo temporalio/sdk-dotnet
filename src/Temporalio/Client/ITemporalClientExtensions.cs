@@ -154,8 +154,6 @@ namespace Temporalio.Client
         /// Workflow update failed, but the with-start operation still got a workflow handle.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public static async Task ExecuteUpdateWithStartWorkflowAsync<TWorkflow>(
             this ITemporalClient client,
             Expression<Func<TWorkflow, Task>> updateCall,
@@ -188,8 +186,6 @@ namespace Temporalio.Client
         /// Workflow update failed, but the with-start operation still got a workflow handle.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public static async Task<TUpdateResult> ExecuteUpdateWithStartWorkflowAsync<TWorkflow, TUpdateResult>(
             this ITemporalClient client,
             Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
@@ -221,8 +217,6 @@ namespace Temporalio.Client
         /// Workflow update failed, but the with-start operation still got a workflow handle.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public static async Task ExecuteUpdateWithStartWorkflowAsync(
             this ITemporalClient client,
             string update,
@@ -256,8 +250,6 @@ namespace Temporalio.Client
         /// Workflow update failed, but the with-start operation still got a workflow handle.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public static async Task<TUpdateResult> ExecuteUpdateWithStartWorkflowAsync<TUpdateResult>(
             this ITemporalClient client,
             string update,

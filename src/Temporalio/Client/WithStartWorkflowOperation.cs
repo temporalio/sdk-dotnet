@@ -14,7 +14,6 @@ namespace Temporalio.Client
     /// <see cref="WorkflowStartUpdateWithStartOptions"/> and
     /// <see cref="WorkflowUpdateWithStartOptions"/> for update with start calls.
     /// </summary>
-    /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.</remarks>
     public abstract class WithStartWorkflowOperation : ICloneable
     {
         // Atomic integer used to check if used yet (0 if unused, 1 if used)
@@ -79,8 +78,6 @@ namespace Temporalio.Client
         /// <c>IdConflictPolicy</c> are required. <c>StartSignal</c>, <c>StartSignalArgs</c>,
         /// <c>RequestEagerStart</c>, and <c>Rpc</c> are disallowed.</param>
         /// <returns>Start workflow operation.</returns>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public static WithStartWorkflowOperation<WorkflowHandle<TWorkflow, TResult>> Create<TWorkflow, TResult>(
             Expression<Func<TWorkflow, Task<TResult>>> workflowRunCall, WorkflowOptions options)
         {
@@ -100,8 +97,6 @@ namespace Temporalio.Client
         /// <c>IdConflictPolicy</c> are required. <c>StartSignal</c>, <c>StartSignalArgs</c>,
         /// <c>RequestEagerStart</c>, and <c>Rpc</c> are disallowed.</param>
         /// <returns>Start workflow operation.</returns>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public static WithStartWorkflowOperation<WorkflowHandle<TWorkflow>> Create<TWorkflow>(
             Expression<Func<TWorkflow, Task>> workflowRunCall, WorkflowOptions options)
         {
@@ -121,8 +116,6 @@ namespace Temporalio.Client
         /// <c>IdConflictPolicy</c> are required. <c>StartSignal</c>, <c>StartSignalArgs</c>,
         /// <c>RequestEagerStart</c>, and <c>Rpc</c> are disallowed.</param>
         /// <returns>Start workflow operation.</returns>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public static WithStartWorkflowOperation<WorkflowHandle> Create(
             string workflow, IReadOnlyCollection<object?> args, WorkflowOptions options) =>
             new(workflow, args, options);
@@ -161,7 +154,6 @@ namespace Temporalio.Client
     /// <see cref="WorkflowUpdateWithStartOptions"/> for update with start calls.
     /// </summary>
     /// <typeparam name="THandle">Workflow handle type.</typeparam>
-    /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.</remarks>
     public sealed class WithStartWorkflowOperation<THandle> : WithStartWorkflowOperation
     where THandle : WorkflowHandle
     {
@@ -219,8 +211,6 @@ namespace Temporalio.Client
         /// Workflow was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         public Task<THandle> GetHandleAsync() => handleCompletionSource.Task;
 
         /// <inheritdoc/>
