@@ -106,8 +106,6 @@ namespace Temporalio.Client
         /// Workflow was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         Task<WorkflowUpdateHandle> StartUpdateWithStartWorkflowAsync<TWorkflow>(
             Expression<Func<TWorkflow, Task>> updateCall,
             WorkflowStartUpdateWithStartOptions options);
@@ -127,8 +125,6 @@ namespace Temporalio.Client
         /// Workflow was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TWorkflow, TUpdateResult>(
             Expression<Func<TWorkflow, Task<TUpdateResult>>> updateCall,
             WorkflowStartUpdateWithStartOptions options);
@@ -146,8 +142,6 @@ namespace Temporalio.Client
         /// Workflow was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         Task<WorkflowUpdateHandle> StartUpdateWithStartWorkflowAsync(
             string update, IReadOnlyCollection<object?> args, WorkflowStartUpdateWithStartOptions options);
 
@@ -165,8 +159,6 @@ namespace Temporalio.Client
         /// Workflow was already started according to ID reuse and conflict policy.
         /// </exception>
         /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
-        /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.
-        /// </remarks>
         Task<WorkflowUpdateHandle<TUpdateResult>> StartUpdateWithStartWorkflowAsync<TUpdateResult>(
             string update, IReadOnlyCollection<object?> args, WorkflowStartUpdateWithStartOptions options);
 

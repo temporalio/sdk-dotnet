@@ -16,7 +16,6 @@ namespace Temporalio.Client.Interceptors
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>
-    /// <remarks>WARNING: Workflow update with start is experimental and APIs may change.</remarks>
     public record StartUpdateWithStartWorkflowInput(
         string Update,
         IReadOnlyCollection<object?> Args,
