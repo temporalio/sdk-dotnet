@@ -18,6 +18,7 @@ namespace Temporalio.Worker
         private readonly object clientLock = new();
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
+        private readonly IWorkerPlugin plugin;
         private readonly bool workflowTracingEventListenerEnabled;
         private IWorkerClient client;
         private int started;
@@ -34,16 +35,40 @@ namespace Temporalio.Worker
         public TemporalWorker(IWorkerClient client, TemporalWorkerOptions options)
         {
             this.client = client;
-            var loggerFactory = options.LoggerFactory ?? client.Options.LoggerFactory;
             // Clone the options to discourage mutation (but we aren't completely disabling mutation
             // on the Options field herein).
             Options = (TemporalWorkerOptions)options.Clone();
+
+            var plugins = client.Options.Plugins?.OfType<IWorkerPlugin>() ?? Enumerable.Empty<IWorkerPlugin>();
+            if (Options.Plugins != null)
+            {
+                plugins = plugins.Concat(Options.Plugins);
+            }
+
+#pragma warning disable CA1851
+            plugins = plugins.Reverse();
+            Options = plugins
+                .Aggregate(Options, (workerOptions, plugin) => plugin.OnCreateWorker(workerOptions));
+
+            IWorkerPlugin rootPlugin = new RootPlugin();
+            foreach (var plugin in plugins)
+            {
+                plugin.InitWorkerPlugin(rootPlugin);
+                rootPlugin = plugin;
+            }
+            plugin = rootPlugin;
+#pragma warning restore CA1851
+
+            // Ensure later accesses use the plugin modified options
+            options = Options;
+
+            var loggerFactory = options.LoggerFactory ?? client.Options.LoggerFactory;
             var bridgeClient = client.BridgeClientProvider.BridgeClient ??
                 throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
             BridgeWorker = new(
                 (Bridge.Client)bridgeClient,
                 client.Options.Namespace,
-                options,
+                Options,
                 loggerFactory);
             if (options.Activities.Count == 0 && options.Workflows.Count == 0)
             {
@@ -277,6 +302,12 @@ namespace Temporalio.Worker
         private async Task ExecuteInternalAsync(
             Func<Task>? untilComplete, CancellationToken stoppingToken)
         {
+            await plugin.ExecuteAsync(this, untilComplete, stoppingToken).ConfigureAwait(false);
+        }
+
+        private async Task ExecuteFromPluginAsync(
+            Func<Task>? untilComplete, CancellationToken stoppingToken)
+        {
             if (Interlocked.Exchange(ref started, 1) != 0)
             {
                 throw new InvalidOperationException("Already started");
@@ -406,6 +437,17 @@ namespace Temporalio.Worker
                     logger.LogWarning(e, "Worker finalization failed");
                 }
 #pragma warning restore CA1031
+            }
+        }
+
+        internal class RootPlugin : Plugin
+        {
+            public new async Task ExecuteAsync(
+                TemporalWorker worker, Func<Task>? untilComplete, CancellationToken stoppingToken = default)
+            {
+                await worker.ExecuteFromPluginAsync(
+                    untilComplete,
+                    stoppingToken).ConfigureAwait(false);
             }
         }
     }

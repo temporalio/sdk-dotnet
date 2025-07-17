@@ -24,6 +24,11 @@ namespace Temporalio.Client
             Converters.DataConverter.Default;
 
         /// <summary>
+        /// Gets or sets the plugins.
+        /// </summary>
+        public IReadOnlyCollection<Interceptors.IClientPlugin>? Plugins { get; set; }
+
+        /// <summary>
         /// Gets or sets the interceptors to intercept client calls.
         /// </summary>
         /// <remarks>

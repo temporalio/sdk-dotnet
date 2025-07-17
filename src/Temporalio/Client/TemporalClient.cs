@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Temporalio.Client.Interceptors;
+using Temporalio.Common;
 
 namespace Temporalio.Client
 {
@@ -21,6 +23,13 @@ namespace Temporalio.Client
         /// <param name="options">Options for this client.</param>
         public TemporalClient(ITemporalConnection connection, TemporalClientOptions options)
         {
+            // Apply plugin modifications to options
+            if (options.Plugins != null)
+            {
+                options = options.Plugins.Reverse().Aggregate(
+                    options, (clientOptions, plugin) => plugin.OnCreateClient(options));
+            }
+
             Connection = connection;
             Options = options;
             OutboundInterceptor = new Impl(this);
@@ -61,10 +70,21 @@ namespace Temporalio.Client
         /// <param name="options">Options for connecting.</param>
         /// <returns>The connected client.</returns>
         public static async Task<TemporalClient> ConnectAsync(
-            TemporalClientConnectOptions options) =>
-            new(
-                await TemporalConnection.ConnectAsync(options).ConfigureAwait(false),
+            TemporalClientConnectOptions options)
+        {
+            IClientPlugin rootPlugin = new RootPlugin();
+            if (options.Plugins != null)
+            {
+                foreach (var plugin in options.Plugins)
+                {
+                    plugin.InitClientPlugin(rootPlugin);
+                    rootPlugin = plugin;
+                }
+            }
+            return new(
+                await rootPlugin.TemporalConnectAsync(options).ConfigureAwait(false),
                 options.ToClientOptions());
+        }
 
         /// <summary>
         /// Create a client to a Temporal namespace that does not connect until first call.
@@ -73,8 +93,19 @@ namespace Temporalio.Client
         /// </summary>
         /// <param name="options">Options for connecting.</param>
         /// <returns>The not-yet-connected client.</returns>
-        public static TemporalClient CreateLazy(TemporalClientConnectOptions options) =>
-            new(TemporalConnection.CreateLazy(options), options.ToClientOptions());
+        public static TemporalClient CreateLazy(TemporalClientConnectOptions options)
+        {
+            IClientPlugin rootPlugin = new RootPlugin();
+            if (options.Plugins != null)
+            {
+                foreach (var plugin in options.Plugins)
+                {
+                    plugin.InitClientPlugin(rootPlugin);
+                    rootPlugin = plugin;
+                }
+            }
+            return new(rootPlugin.TemporalConnect(options), options.ToClientOptions());
+        }
 
         /// <summary>
         /// Get a default set of retry options given the optional options. This will not mutate the
@@ -112,5 +143,33 @@ namespace Temporalio.Client
             /// </summary>
             internal TemporalClient Client { get; init; }
         }
+
+#pragma warning disable CA1822 // We don't want to force plugin methods to be static
+        /// <summary>
+        /// Placeholder.
+        /// </summary>
+        internal class RootPlugin : Plugin
+        {
+            /// <summary>
+            /// Place.
+            /// </summary>
+            /// <param name="options">holder.</param>
+            /// <returns>Connection.</returns>
+            public new async Task<TemporalConnection> TemporalConnectAsync(TemporalClientConnectOptions options)
+            {
+                return await TemporalConnection.ConnectAsync(options).ConfigureAwait(false);
+            }
+
+            /// <summary>
+            /// Place.
+            /// </summary>
+            /// <param name="options">Holder.</param>
+            /// <returns>Connection.</returns>
+            public new TemporalConnection TemporalConnect(TemporalClientConnectOptions options)
+            {
+                return TemporalConnection.CreateLazy(options);
+            }
+        }
+#pragma warning restore CA1822
     }
 }
