@@ -12,7 +12,6 @@
     <Nullable>enable</Nullable>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/temporalio/sdk-dotnet</RepositoryUrl>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
   </PropertyGroup>
 

@@ -96,6 +96,8 @@ namespace Temporalio.Worker
         /// </summary>
         public TaskFactory ActivityTaskFactory { get; set; } = Task.Factory;
 
+        public IReadOnlyCollection<Interceptors.IWorkerPlugin>? Plugins { get; set; }
+
         /// <summary>
         /// Gets or sets the interceptors. Note this automatically includes any
         /// <see cref="Client.TemporalClientOptions.Interceptors" /> that implement
