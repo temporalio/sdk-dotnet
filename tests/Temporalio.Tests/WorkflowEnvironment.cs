@@ -80,8 +80,6 @@ public class WorkflowEnvironment : IAsyncLifetime
                         // Enable activity pause
                         "--dynamic-config-value", "frontend.activityAPIsEnabled=true",
                     },
-                    // TODO: Remove after next CLI release
-                    DownloadVersion = "v1.3.1-persistence-fix.0",
                 },
             });
         }
