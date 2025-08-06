@@ -7594,7 +7594,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteWorkflowAsync_PrematureDispose_WorkflowCompletes()
     {
         using var waitEvent = new AutoResetEvent(false);
-        var worker = new TemporalWorker(Client, PrepareOptions<SimpleWorkflow>(new()));
+        var worker = new TemporalWorker(Client, PrepareWorkerOptions<SimpleWorkflow>(new()));
         Task task = worker.ExecuteAsync(async () =>
         {
             waitEvent.WaitOne();
@@ -7634,12 +7634,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         TemporalWorkerOptions? options = null,
         IWorkerClient? client = null)
     {
-        options = PrepareOptions<TWorkflow>((TemporalWorkerOptions?)options?.Clone() ?? new());
+        options = PrepareWorkerOptions<TWorkflow>((TemporalWorkerOptions?)options?.Clone() ?? new());
         using var worker = new TemporalWorker(client ?? Client, options);
         return await worker.ExecuteAsync(() => action(worker));
     }
 
-    private static TemporalWorkerOptions PrepareOptions<TWorkflow>(TemporalWorkerOptions options)
+    private static TemporalWorkerOptions PrepareWorkerOptions<TWorkflow>(TemporalWorkerOptions options)
     {
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
         options.AddWorkflow<TWorkflow>();

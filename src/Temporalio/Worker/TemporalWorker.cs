@@ -281,10 +281,9 @@ namespace Temporalio.Worker
         /// <param name="disposing">Whether disposing.</param>
         protected virtual void Dispose(bool disposing)
         {
-            var disposer = Interlocked.Exchange(ref this.disposer, null);
-            if (disposing && disposer != null)
+            if (disposing)
             {
-                disposer.Dispose();
+                Interlocked.Exchange(ref disposer, null)?.Dispose();
             }
         }
 
