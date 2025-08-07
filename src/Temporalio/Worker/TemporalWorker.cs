@@ -15,12 +15,14 @@ namespace Temporalio.Worker
     /// </summary>
     public class TemporalWorker : IDisposable
     {
+#pragma warning disable CA2213 // disposing is done inside disposer
         private readonly object clientLock = new();
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
-        private readonly bool workflowTracingEventListenerEnabled;
         private IWorkerClient client;
         private int started;
+        private Disposer? disposer;
+#pragma warning restore CA2213
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalWorker"/> class. The options must
@@ -33,73 +35,91 @@ namespace Temporalio.Worker
         /// <param name="options">Options for the worker.</param>
         public TemporalWorker(IWorkerClient client, TemporalWorkerOptions options)
         {
-            this.client = client;
-            var loggerFactory = options.LoggerFactory ?? client.Options.LoggerFactory;
-            // Clone the options to discourage mutation (but we aren't completely disabling mutation
-            // on the Options field herein).
-            Options = (TemporalWorkerOptions)options.Clone();
-            var bridgeClient = client.BridgeClientProvider.BridgeClient ??
-                throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
-            BridgeWorker = new(
-                (Bridge.Client)bridgeClient,
-                client.Options.Namespace,
-                options,
-                loggerFactory);
-            if (options.Activities.Count == 0 && options.Workflows.Count == 0)
+            bool workflowTracingEventListenerEnabled = false;
+            try
             {
-                throw new ArgumentException("Must have at least one workflow and/or activity");
-            }
-            MetricMeter = MetricMeterBridge.LazyFromRuntime(BridgeWorker.Runtime);
+                this.client = client;
+                var loggerFactory = options.LoggerFactory ?? client.Options.LoggerFactory;
+                // Clone the options to discourage mutation (but we aren't completely disabling mutation
+                // on the Options field herein).
+                Options = (TemporalWorkerOptions)options.Clone();
+                var bridgeClient = client.BridgeClientProvider.BridgeClient ??
+                                   throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
+                BridgeWorker = new(
+                    (Bridge.Client)bridgeClient,
+                    client.Options.Namespace,
+                    options,
+                    loggerFactory);
+                if (options.Activities.Count == 0 && options.Workflows.Count == 0)
+                {
+                    throw new ArgumentException("Must have at least one workflow and/or activity");
+                }
 
-            // Interceptors are the client interceptors that implement IWorkerInterceptor followed
-            // by the explicitly provided ones in options.
-            var interceptors = client.Options.Interceptors?.OfType<IWorkerInterceptor>() ??
-                Enumerable.Empty<IWorkerInterceptor>();
-            if (Options.Interceptors != null)
-            {
-                interceptors = interceptors.Concat(Options.Interceptors);
-            }
-            Interceptors = interceptors.ToList();
+                MetricMeter = MetricMeterBridge.LazyFromRuntime(BridgeWorker.Runtime);
 
-            // Enable workflow task tracing if needed
-            workflowTracingEventListenerEnabled =
-                !options.DisableWorkflowTracingEventListener && options.Workflows.Count > 0;
-            if (workflowTracingEventListenerEnabled)
-            {
-                WorkflowTracingEventListener.Instance.Register();
-            }
+                // Interceptors are the client interceptors that implement IWorkerInterceptor followed
+                // by the explicitly provided ones in options.
+                var interceptors = client.Options.Interceptors?.OfType<IWorkerInterceptor>() ??
+                                   Enumerable.Empty<IWorkerInterceptor>();
+                if (Options.Interceptors != null)
+                {
+                    interceptors = interceptors.Concat(Options.Interceptors);
+                }
 
-            // Create workers
-            if (options.Activities.Count > 0)
-            {
-                activityWorker = new(this);
+                Interceptors = interceptors.ToList();
+
+                // Enable workflow task tracing if needed
+                if (!options.DisableWorkflowTracingEventListener && options.Workflows.Count > 0)
+                {
+                    WorkflowTracingEventListener.Instance.Register();
+                    workflowTracingEventListenerEnabled = true;
+                }
+
+                // Create workers
+                if (options.Activities.Count > 0)
+                {
+                    activityWorker = new(this);
+                }
+
+                if (options.Workflows.Count > 0)
+                {
+                    workflowWorker = new(new(
+                        BridgeWorker: BridgeWorker,
+                        Namespace: client.Options.Namespace,
+                        TaskQueue: options.TaskQueue!,
+                        Workflows: options.Workflows,
+                        DataConverter: client.Options.DataConverter,
+                        Interceptors: Interceptors,
+                        LoggerFactory: loggerFactory,
+                        WorkflowInstanceFactory: options.WorkflowInstanceFactory,
+                        DebugMode: options.DebugMode,
+                        DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
+                        WorkflowStackTrace: options.WorkflowStackTrace,
+                        OnTaskStarting: options.OnTaskStarting,
+                        OnTaskCompleted: options.OnTaskCompleted,
+                        RuntimeMetricMeter: MetricMeter,
+                        WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
+                        DisableEagerActivityExecution: options.DisableEagerActivityExecution,
+                        AssertValidLocalActivity: (activityType) => (activityWorker ??
+                                                                     throw new InvalidOperationException(
+                                                                         $"Activity {activityType} is not registered on this worker," +
+                                                                         $" no available activities."))
+                            .AssertValidActivity(activityType),
+                        DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior,
+                        DeploymentOptions: options.DeploymentOptions));
+                }
+
+                disposer = new Disposer(activityWorker, BridgeWorker, workflowTracingEventListenerEnabled);
             }
-            if (options.Workflows.Count > 0)
+            catch (Exception)
             {
-                workflowWorker = new(new(
-                    BridgeWorker: BridgeWorker,
-                    Namespace: client.Options.Namespace,
-                    TaskQueue: options.TaskQueue!,
-                    Workflows: options.Workflows,
-                    DataConverter: client.Options.DataConverter,
-                    Interceptors: Interceptors,
-                    LoggerFactory: loggerFactory,
-                    WorkflowInstanceFactory: options.WorkflowInstanceFactory,
-                    DebugMode: options.DebugMode,
-                    DisableWorkflowTracingEventListener: options.DisableWorkflowTracingEventListener,
-                    WorkflowStackTrace: options.WorkflowStackTrace,
-                    OnTaskStarting: options.OnTaskStarting,
-                    OnTaskCompleted: options.OnTaskCompleted,
-                    RuntimeMetricMeter: MetricMeter,
-                    WorkerLevelFailureExceptionTypes: options.WorkflowFailureExceptionTypes,
-                    DisableEagerActivityExecution: options.DisableEagerActivityExecution,
-                    AssertValidLocalActivity: (activityType) => (activityWorker ??
-                                throw new InvalidOperationException(
-                                    $"Activity {activityType} is not registered on this worker," +
-                                    $" no available activities."))
-                                .AssertValidActivity(activityType),
-                    DefaultVersioningBehavior: options.DeploymentOptions?.DefaultVersioningBehavior,
-                    DeploymentOptions: options.DeploymentOptions));
+                activityWorker?.Dispose();
+                BridgeWorker?.Dispose();
+                if (workflowTracingEventListenerEnabled)
+                {
+                    WorkflowTracingEventListener.Instance.Unregister();
+                }
+                throw;
             }
         }
 
@@ -111,7 +131,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets the options this worker was created with.
         /// </summary>
-        public TemporalWorkerOptions Options { get; private init; }
+        public TemporalWorkerOptions Options { get; }
 
         /// <summary>
         /// Gets or sets the client for this worker.
@@ -159,7 +179,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets the set of interceptors in the order they should be applied.
         /// </summary>
-        internal IReadOnlyCollection<IWorkerInterceptor> Interceptors { get; private init; }
+        internal IReadOnlyCollection<IWorkerInterceptor> Interceptors { get; }
 
         /// <summary>
         /// Gets the logger factory.
@@ -170,7 +190,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets the lazy metric meter.
         /// </summary>
-        internal Lazy<MetricMeter> MetricMeter { get; private init; }
+        internal Lazy<MetricMeter> MetricMeter { get; }
 
         /// <summary>
         /// Run this worker until failure or cancelled.
@@ -263,14 +283,7 @@ namespace Temporalio.Worker
         {
             if (disposing)
             {
-                activityWorker?.Dispose();
-                BridgeWorker.Dispose();
-
-                // Remove task tracing if not disabled and there are workflows present
-                if (workflowTracingEventListenerEnabled)
-                {
-                    WorkflowTracingEventListener.Instance.Unregister();
-                }
+                Interlocked.Exchange(ref disposer, null)?.Dispose();
             }
         }
 
@@ -280,6 +293,13 @@ namespace Temporalio.Worker
             if (Interlocked.Exchange(ref started, 1) != 0)
             {
                 throw new InvalidOperationException("Already started");
+            }
+
+            // Take ownership of the disposer to make sure the workers aren't disposed before completion of this function
+            using var disposer = Interlocked.Exchange(ref this.disposer, null);
+            if (disposer == null)
+            {
+                throw new ObjectDisposedException(GetType().Name);
             }
 
             // Check that the worker is valid
@@ -406,6 +426,48 @@ namespace Temporalio.Worker
                     logger.LogWarning(e, "Worker finalization failed");
                 }
 #pragma warning restore CA1031
+            }
+        }
+
+        // This class encapsulates dispose work so we can decide to do it either on Dispose() or the end of ExecuteInternalAsync().
+        private class Disposer : IDisposable
+        {
+            private readonly ActivityWorker? activityWorker;
+            private readonly Bridge.Worker bridgeWorker;
+            private readonly bool workflowTracingEventListenerEnabled;
+            private int isDisposed;
+
+            public Disposer(ActivityWorker? activityWorker, Bridge.Worker bridgeWorker, bool workflowTracingEventListenerEnabled)
+            {
+                this.activityWorker = activityWorker;
+                this.bridgeWorker = bridgeWorker;
+                this.workflowTracingEventListenerEnabled = workflowTracingEventListenerEnabled;
+            }
+
+            ~Disposer() => Dispose(false);
+
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (Interlocked.Exchange(ref isDisposed, 1) == 0)
+                {
+                    if (disposing)
+                    {
+                        activityWorker?.Dispose();
+                        bridgeWorker.Dispose();
+                    }
+
+                    // Remove task tracing if not disabled and there are workflows present
+                    if (workflowTracingEventListenerEnabled)
+                    {
+                        WorkflowTracingEventListener.Instance.Unregister();
+                    }
+                }
             }
         }
     }

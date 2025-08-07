@@ -7589,6 +7589,25 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorkerOptions(parentTaskQueue).AddAllActivities(acts));
     }
 
+    // See https://github.com/temporalio/sdk-dotnet/issues/500
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PrematureDispose_WorkflowCompletes()
+    {
+        using var waitEvent = new AutoResetEvent(false);
+        var worker = new TemporalWorker(Client, PrepareWorkerOptions<SimpleWorkflow>(new()));
+        Task task = worker.ExecuteAsync(async () =>
+        {
+            waitEvent.WaitOne();
+            var result = await Client.ExecuteWorkflowAsync(
+                (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
+                new(id: $"dotnet-workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("Hello, Temporal!", result);
+        });
+        worker.Dispose();
+        waitEvent.Set();
+        await task;
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
@@ -7615,12 +7634,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         TemporalWorkerOptions? options = null,
         IWorkerClient? client = null)
     {
-        options ??= new();
-        options = (TemporalWorkerOptions)options.Clone();
+        options = PrepareWorkerOptions<TWorkflow>((TemporalWorkerOptions?)options?.Clone() ?? new());
+        using var worker = new TemporalWorker(client ?? Client, options);
+        return await worker.ExecuteAsync(() => action(worker));
+    }
+
+    private static TemporalWorkerOptions PrepareWorkerOptions<TWorkflow>(TemporalWorkerOptions options)
+    {
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
         options.AddWorkflow<TWorkflow>();
         options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
-        using var worker = new TemporalWorker(client ?? Client, options);
-        return await worker.ExecuteAsync(() => action(worker));
+        return options;
     }
 }
