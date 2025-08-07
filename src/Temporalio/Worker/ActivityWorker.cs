@@ -399,7 +399,7 @@ namespace Temporalio.Worker
                     (ActivityInboundInterceptor)new InboundImpl(),
                     (v, impl) => impl.InterceptActivity(v));
                 // Initialize with outbound
-                inbound.Init(new OutboundImpl(this));
+                inbound.Init(new OutboundImpl(this, act.Context.TaskToken));
 
                 // Execute and put result on completed
                 var result = await inbound.ExecuteActivityAsync(new(
@@ -781,18 +781,23 @@ namespace Temporalio.Worker
         internal class OutboundImpl : ActivityOutboundInterceptor
         {
             private readonly ActivityWorker worker;
+            private readonly ByteString taskToken;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="OutboundImpl"/> class.
             /// </summary>
             /// <param name="worker">Activity worker.</param>
-            public OutboundImpl(ActivityWorker worker) => this.worker = worker;
+            /// <param name="taskToken">Activity task token.</param>
+            public OutboundImpl(ActivityWorker worker, ByteString taskToken)
+            {
+                this.worker = worker;
+                this.taskToken = taskToken;
+            }
 
             /// <inheritdoc />
             public override void Heartbeat(HeartbeatInput input)
             {
-                if (worker.runningActivities.TryGetValue(
-                    ActivityExecutionContext.Current.TaskToken, out var act))
+                if (worker.runningActivities.TryGetValue(taskToken, out var act))
                 {
                     act.Heartbeat(worker.worker, input.Details);
                 }

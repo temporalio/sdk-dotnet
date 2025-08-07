@@ -823,6 +823,39 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             await ExecuteAsyncActivityAsync(UseTemporalClientActivity));
     }
 
+    [Fact]
+    public async Task ExecuteActivityAsync_BackgroundThreadHeartbeat_Received()
+    {
+        using var heartbeatStartEvent = new AutoResetEvent(false);
+        using var heartbeatDoneEvent = new AutoResetEvent(false);
+        ActivityExecutionContext? context = null;
+        var heartbeadThread = new Thread(() =>
+        {
+            heartbeatStartEvent.WaitOne();
+            Assert.False(ActivityExecutionContext.HasCurrent);
+            context!.Heartbeat("Heartbeat details");
+            heartbeatDoneEvent.Set();
+        });
+        heartbeadThread.Start();
+
+        [Activity]
+        async Task<string> BackgroundThreadHeartbeat()
+        {
+            context = ActivityExecutionContext.Current;
+            if (context.Info.Attempt == 1)
+            {
+                heartbeatStartEvent.Set();
+                heartbeatDoneEvent.WaitOne();
+                throw new InvalidOperationException("Failing first attempt");
+            }
+            return (string)context.PayloadConverter.ToValue(context.Info.HeartbeatDetails.Single(), typeof(string))!;
+        }
+
+        var result = await ExecuteActivityAsync(BackgroundThreadHeartbeat, maxAttempts: 2);
+        heartbeadThread.Join();
+        Assert.Equal("Heartbeat details", result);
+    }
+
     internal async Task ExecuteActivityAsync(
         Action activity)
     {
@@ -881,6 +914,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Func<WorkflowHandle, Task>? afterStarted = null,
         bool waitForCancellation = false,
         TimeSpan? heartbeatTimeout = null,
+        int? maxAttempts = null,
         CancellationToken workerStoppingToken = default)
     {
         return ExecuteActivityInternalAsync<TResult>(
@@ -888,6 +922,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             afterStarted: afterStarted,
             workerStoppingToken: workerStoppingToken,
             waitForCancellation: waitForCancellation,
+            maxAttempts: maxAttempts,
             heartbeatTimeout: heartbeatTimeout);
     }
 
