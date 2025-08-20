@@ -135,13 +135,7 @@ namespace Temporalio.Tests
                 }
                 if (!found)
                 {
-                    Console.WriteLine($"Failed to match item: {item}");
-                    Console.WriteLine("Attempted matches and their failures:");
-                    for (int i = 0; i < exceptions.Count; i++)
-                    {
-                        Console.WriteLine($"  Match {i + 1}: {exceptions[i].Message}");
-                    }
-                    Assert.True(found, $"Item {item} had no match");
+                    throw new AggregateException($"Item {item} had no match", exceptions);
                 }
             }
         }
