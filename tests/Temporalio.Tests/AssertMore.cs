@@ -119,6 +119,7 @@ namespace Temporalio.Tests
             foreach (var item in items)
             {
                 var found = false;
+                var exceptions = new List<Exception>();
                 foreach (var action in actions)
                 {
                     try
@@ -127,11 +128,21 @@ namespace Temporalio.Tests
                         found = true;
                         break;
                     }
-                    catch (Xunit.Sdk.XunitException)
+                    catch (Xunit.Sdk.XunitException ex)
                     {
+                        exceptions.Add(ex);
                     }
                 }
-                Assert.True(found, $"Item {item} had no match");
+                if (!found)
+                {
+                    Console.WriteLine($"Failed to match item: {item}");
+                    Console.WriteLine("Attempted matches and their failures:");
+                    for (int i = 0; i < exceptions.Count; i++)
+                    {
+                        Console.WriteLine($"  Match {i + 1}: {exceptions[i].Message}");
+                    }
+                    Assert.True(found, $"Item {item} had no match");
+                }
             }
         }
 

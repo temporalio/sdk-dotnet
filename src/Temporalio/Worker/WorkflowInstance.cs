@@ -2764,7 +2764,7 @@ namespace Temporalio.Worker
                     0,
                     "[TMPRL1102] Workflow {Id} finished while update handlers are still running. This may " +
                     "have interrupted work that the update handler was doing, and the client " +
-                    "that sent the update will receive a 'workflow execution already completed' " +
+                    "that sent the update will receive a 'workflow update was aborted by closing workflow'" +
                     "RpcException instead of the update result. You can wait for all update and " +
                     "signal handlers to complete by using `await " +
                     "Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)`. " +
