@@ -115,8 +115,8 @@ namespace Temporalio.Api.Cloud.Region.V1 {
     /// <summary>
     /// The name of the cloud provider that's hosting the region.
     /// Currently only "aws" is supported.
-    /// Deprecated: Not supported after 2024-10-01-00 api version. Use cloud_provider instead. 
-    /// temporal:versioning:max_version=2024-10-01-00
+    /// Deprecated: Not supported after v0.3.0 api version. Use cloud_provider instead. 
+    /// temporal:versioning:max_version=v0.3.0
     /// </summary>
     [global::System.ObsoleteAttribute]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -133,7 +133,7 @@ namespace Temporalio.Api.Cloud.Region.V1 {
     private global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider cloudProvider_ = global::Temporalio.Api.Cloud.Region.V1.Region.Types.CloudProvider.Unspecified;
     /// <summary>
     /// The cloud provider that's hosting the region.
-    /// temporal:versioning:min_version=2024-10-01-00
+    /// temporal:versioning:min_version=v0.3.0
     /// temporal:enums:replaces=cloud_provider_deprecated
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

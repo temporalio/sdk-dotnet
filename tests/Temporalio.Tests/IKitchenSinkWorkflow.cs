@@ -66,7 +66,8 @@ public record KSResultAction(
 public record KSErrorAction(
     [property: JsonPropertyName("message")] string? Message = null,
     [property: JsonPropertyName("details")] object? Details = null,
-    [property: JsonPropertyName("attempt")] bool Attempt = false);
+    [property: JsonPropertyName("attempt")] bool Attempt = false,
+    [property: JsonPropertyName("is_benign")] bool IsBenign = false);
 
 public record KSContinueAsNewAction(
     [property: JsonPropertyName("while_above_zero")] int? WhileAboveZero = null,

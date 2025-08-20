@@ -523,8 +523,7 @@ namespace Temporalio.Client
                         },
                     },
                     DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
-                return await WorkflowExecutionDescription.FromProtoAsync(
-                    resp, dataConverter).ConfigureAwait(false);
+                return new(resp, dataConverter);
             }
 
             /// <inheritdoc />

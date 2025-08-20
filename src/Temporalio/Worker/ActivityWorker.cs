@@ -10,6 +10,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.Extensions.Logging;
 using Temporalio.Activities;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
@@ -100,7 +101,7 @@ namespace Temporalio.Worker
                             }
                             else
                             {
-                                act.Cancel(task.Cancel.Reason);
+                                act.Cancel(task.Cancel);
                             }
                             break;
                         case null:
@@ -398,7 +399,7 @@ namespace Temporalio.Worker
                     (ActivityInboundInterceptor)new InboundImpl(),
                     (v, impl) => impl.InterceptActivity(v));
                 // Initialize with outbound
-                inbound.Init(new OutboundImpl(this));
+                inbound.Init(new OutboundImpl(this, act.Context.TaskToken));
 
                 // Execute and put result on completed
                 var result = await inbound.ExecuteActivityAsync(new(
@@ -422,10 +423,23 @@ namespace Temporalio.Worker
                     act.Context.Info.ActivityType);
                 completion.Result.WillCompleteAsync = new();
             }
+            catch (OperationCanceledException e) when (
+                act.ServerRequestedCancel && act.Context.CancellationDetails?.IsPaused == true)
+            {
+                act.Context.Logger.LogDebug(
+                    "Completing activity {ActivityType} as failed due cancel exception caused by pause",
+                    act.Context.Info.ActivityType);
+                completion.Result.Failed = new()
+                {
+                    Failure_ = await dataConverter.ToFailureAsync(
+                        new ApplicationFailureException(
+                            "Activity paused", e, "ActivityPause")).ConfigureAwait(false),
+                };
+            }
             catch (OperationCanceledException) when (act.ServerRequestedCancel)
             {
                 act.Context.Logger.LogDebug(
-                    "Completing activity {ActivityType} as cancelled",
+                    "Completing activity {ActivityType} as cancelled, reason: ",
                     act.Context.Info.ActivityType);
                 completion.Result.Cancelled = new()
                 {
@@ -446,10 +460,22 @@ namespace Temporalio.Worker
             }
             catch (Exception e)
             {
-                act.Context.Logger.LogWarning(
-                    e,
-                    "Completing activity {ActivityType} as failed",
-                    act.Context.Info.ActivityType);
+                // Downgrade log level to DEBUG for benign application errors.
+                if ((e as ApplicationFailureException)?.Category == ApplicationErrorCategory.Benign)
+                {
+                    act.Context.Logger.LogDebug(
+                        e,
+                        "Completing activity {ActivityType} as failed (benign)",
+                        act.Context.Info.ActivityType);
+                }
+                else
+                {
+                    act.Context.Logger.LogWarning(
+                        e,
+                        "Completing activity {ActivityType} as failed",
+                        act.Context.Info.ActivityType);
+                }
+
                 completion.Result.Failed = new()
                 {
                     Failure_ = await dataConverter.ToFailureAsync(e).ConfigureAwait(false),
@@ -557,7 +583,8 @@ namespace Temporalio.Worker
             /// Cancel this activity for the given reason if not already cancelled.
             /// </summary>
             /// <param name="reason">Cancel reason.</param>
-            public void Cancel(ActivityCancelReason reason)
+            /// <param name="details">Cancellation details.</param>
+            public void Cancel(ActivityCancelReason reason, ActivityCancellationDetails details)
             {
                 // Ignore if already cancelled
                 if (cancelTokenSource.IsCancellationRequested)
@@ -570,37 +597,49 @@ namespace Temporalio.Worker
                         "Cancelling activity {TaskToken}, reason {Reason}",
                         Context.TaskToken,
                         reason);
-                    Context.CancelReasonRef.CancelReason = reason;
+                    Context.CancelRef.CancelReason = reason;
+                    Context.CancelRef.CancellationDetails = details;
                     cancelTokenSource.Cancel();
                 }
             }
 
             /// <summary>
-            /// Cancel this activity for the given upstream reason.
+            /// Cancel this activity with the given upstream info.
             /// </summary>
-            /// <param name="reason">Cancel reason.</param>
-            public void Cancel(Bridge.Api.ActivityTask.ActivityCancelReason reason)
+            /// <param name="cancel">Cancel.</param>
+            public void Cancel(Bridge.Api.ActivityTask.Cancel cancel)
             {
                 lock (mutex)
                 {
                     serverRequestedCancel = true;
                 }
-                switch (reason)
+                var details = new ActivityCancellationDetails()
+                {
+                    IsGoneFromServer = cancel.Details?.IsNotFound ?? false,
+                    IsCancelRequested = cancel.Details?.IsCancelled ?? false,
+                    IsTimedOut = cancel.Details?.IsTimedOut ?? false,
+                    IsWorkerShutdown = cancel.Details?.IsWorkerShutdown ?? false,
+                    IsPaused = cancel.Details?.IsPaused ?? false,
+                };
+                switch (cancel.Reason)
                 {
                     case Bridge.Api.ActivityTask.ActivityCancelReason.NotFound:
-                        Cancel(ActivityCancelReason.GoneFromServer);
+                        Cancel(ActivityCancelReason.GoneFromServer, details);
                         break;
                     case Bridge.Api.ActivityTask.ActivityCancelReason.Cancelled:
-                        Cancel(ActivityCancelReason.CancelRequested);
+                        Cancel(ActivityCancelReason.CancelRequested, details);
                         break;
                     case Bridge.Api.ActivityTask.ActivityCancelReason.TimedOut:
-                        Cancel(ActivityCancelReason.Timeout);
+                        Cancel(ActivityCancelReason.Timeout, details);
                         break;
                     case Bridge.Api.ActivityTask.ActivityCancelReason.WorkerShutdown:
-                        Cancel(ActivityCancelReason.WorkerShutdown);
+                        Cancel(ActivityCancelReason.WorkerShutdown, details);
+                        break;
+                    case Bridge.Api.ActivityTask.ActivityCancelReason.Paused:
+                        Cancel(ActivityCancelReason.Paused, details);
                         break;
                     default:
-                        Cancel(ActivityCancelReason.None);
+                        Cancel(ActivityCancelReason.None, details);
                         break;
                 }
             }
@@ -702,7 +741,9 @@ namespace Temporalio.Worker
                             Context.Logger.LogWarning(
                                 e, "Cancelling activity because failed recording heartbeat");
                         }
-                        Cancel(ActivityCancelReason.HeartbeatRecordFailure);
+                        Cancel(
+                            ActivityCancelReason.HeartbeatRecordFailure,
+                            new() { IsHeartbeatRecordFailure = true });
                     }
                 }
             }
@@ -740,18 +781,23 @@ namespace Temporalio.Worker
         internal class OutboundImpl : ActivityOutboundInterceptor
         {
             private readonly ActivityWorker worker;
+            private readonly ByteString taskToken;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="OutboundImpl"/> class.
             /// </summary>
             /// <param name="worker">Activity worker.</param>
-            public OutboundImpl(ActivityWorker worker) => this.worker = worker;
+            /// <param name="taskToken">Activity task token.</param>
+            public OutboundImpl(ActivityWorker worker, ByteString taskToken)
+            {
+                this.worker = worker;
+                this.taskToken = taskToken;
+            }
 
             /// <inheritdoc />
             public override void Heartbeat(HeartbeatInput input)
             {
-                if (worker.runningActivities.TryGetValue(
-                    ActivityExecutionContext.Current.TaskToken, out var act))
+                if (worker.runningActivities.TryGetValue(taskToken, out var act))
                 {
                     act.Heartbeat(worker.worker, input.Details);
                 }

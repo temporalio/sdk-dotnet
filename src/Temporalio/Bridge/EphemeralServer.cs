@@ -11,11 +11,11 @@ namespace Temporalio.Bridge
     {
         private readonly Runtime runtime;
 
-        private readonly unsafe Interop.EphemeralServer* ptr;
+        private readonly unsafe Interop.TemporalCoreEphemeralServer* ptr;
 
         private unsafe EphemeralServer(
             Runtime runtime,
-            Interop.EphemeralServer* ptr,
+            Interop.TemporalCoreEphemeralServer* ptr,
             string target,
             bool hasTestService)
             : base((IntPtr)ptr, true)
@@ -55,7 +55,7 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.ephemeral_server_start_dev_server(
+                    Interop.Methods.temporal_core_ephemeral_server_start_dev_server(
                         runtime.Ptr,
                         scope.Pointer(options.ToInteropOptions(scope)),
                         null,
@@ -81,7 +81,7 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.ephemeral_server_start_test_server(
+                    Interop.Methods.temporal_core_ephemeral_server_start_test_server(
                         runtime.Ptr,
                         scope.Pointer(options.ToInteropOptions(scope)),
                         null,
@@ -103,10 +103,10 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.ephemeral_server_shutdown(
+                    Interop.Methods.temporal_core_ephemeral_server_shutdown(
                         ptr,
                         null,
-                        scope.FunctionPointer<Interop.EphemeralServerShutdownCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreEphemeralServerShutdownCallback>(
                             (userData, fail) =>
                             {
                                 if (fail != null)
@@ -128,7 +128,7 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.ephemeral_server_free(ptr);
+            Interop.Methods.temporal_core_ephemeral_server_free(ptr);
             return true;
         }
 
@@ -138,7 +138,7 @@ namespace Temporalio.Bridge
             bool hasTestService,
             TaskCompletionSource<EphemeralServer> completion)
         {
-            return scope.FunctionPointer<Interop.EphemeralServerStartCallback>(
+            return scope.FunctionPointer<Interop.TemporalCoreEphemeralServerStartCallback>(
                 (userData, success, successTarget, fail) =>
                 {
                     if (fail != null)

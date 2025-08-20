@@ -1,12 +1,15 @@
 --config
 compatible-codegen
+windows-types
 --with-access-specifier
 *=internal
 --file
-src/Temporalio/Bridge/include/temporal-sdk-bridge.h
+src/Temporalio/Bridge/sdk-core/core-c-bridge/include/temporal-sdk-core-c-bridge.h
 --namespace
 Temporalio.Bridge.Interop
 --libraryPath
-temporal_sdk_bridge
+temporal_sdk_core_c_bridge
 --output
 src/Temporalio/Bridge/Interop/Interop.cs
+--additional
+--target=x86_64-pc-windows-msvc

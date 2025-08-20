@@ -81,6 +81,8 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "frontend.enableExecuteMultiOperation=true",
                         "--dynamic-config-value",
                         "system.enableDeploymentVersions=true",
+                        // Enable activity pause
+                        "--dynamic-config-value", "frontend.activityAPIsEnabled=true",
                     },
                 },
             });

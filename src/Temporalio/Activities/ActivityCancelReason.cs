@@ -36,5 +36,10 @@ namespace Temporalio.Activities
         /// to payloads.
         /// </summary>
         HeartbeatRecordFailure,
+
+        /// <summary>
+        /// Activity was explicitly paused.
+        /// </summary>
+        Paused,
     }
 }

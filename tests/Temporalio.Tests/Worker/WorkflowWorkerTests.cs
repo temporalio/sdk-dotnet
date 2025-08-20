@@ -390,6 +390,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 (InfoWorkflow wf) => wf.RunAsync(),
                 new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
             var result = await handle.GetResultAsync();
+            var history = await handle.FetchHistoryAsync();
             Assert.Equal(1, result.Attempt);
             Assert.Null(result.ContinuedRunId);
             Assert.Null(result.CronSchedule);
@@ -400,15 +401,19 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Assert.Null(result.Root);
             Assert.Equal(handle.ResultRunId, result.RunId);
             Assert.Null(result.RunTimeout);
-            Assert.InRange(
-                result.StartTime,
-                DateTime.UtcNow - TimeSpan.FromMinutes(5),
-                DateTime.UtcNow + TimeSpan.FromMinutes(5));
             Assert.Equal(worker.Options.TaskQueue, result.TaskQueue);
             // TODO(cretz): Can assume default 10 in all test servers?
             Assert.Equal(TimeSpan.FromSeconds(10), result.TaskTimeout);
             Assert.Equal(handle.Id, result.WorkflowId);
             Assert.Equal("InfoWorkflow", result.WorkflowType);
+            // Start time is the first task start time, but workflow start time is the actual start
+            // time
+            var workflowStartTime = history.Events.
+                Single(e => e.WorkflowExecutionStartedEventAttributes != null).EventTime.ToDateTime();
+            Assert.Equal(workflowStartTime, result.WorkflowStartTime);
+            var firstTaskStartTime = history.Events.
+                First(e => e.WorkflowTaskStartedEventAttributes != null).EventTime.ToDateTime();
+            Assert.Equal(firstTaskStartTime, result.StartTime);
         });
         // Child info
         await ExecuteWorkerAsync<InfoFromChildWorkflow>(
@@ -6253,8 +6258,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
                 // Check description has summary/details
                 var desc = await handle.DescribeAsync();
-                Assert.Equal("my-workflow", desc.StaticSummary);
-                Assert.Equal("my-workflow-details", desc.StaticDetails);
+                Assert.Equal("my-workflow", await desc.GetStaticSummaryAsync());
+                Assert.Equal("my-workflow-details", await desc.GetStaticDetailsAsync());
 
                 // Check history for timer (x2), activity, and child metadata
                 var history = await handle.FetchHistoryAsync();
@@ -6272,8 +6277,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var child = history.Events.Single(evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null);
                 desc = await Client.GetWorkflowHandle(
                     child.StartChildWorkflowExecutionInitiatedEventAttributes.WorkflowId).DescribeAsync();
-                Assert.Equal("my-child", desc.StaticSummary);
-                Assert.Equal("my-child-details", desc.StaticDetails);
+                Assert.Equal("my-child", await desc.GetStaticSummaryAsync());
+                Assert.Equal("my-child-details", await desc.GetStaticDetailsAsync());
             },
             new TemporalWorkerOptions().AddAllActivities<UserMetadataWorkflow>(null));
     }
@@ -7485,6 +7490,124 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         client);
     }
 
+    [Workflow]
+    public class StartCompleteSameTaskParentWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            // Execute child in background with a specific task queue and shutdown the worker
+            var childTask = Workflow.RunTaskAsync(() => Workflow.ExecuteChildWorkflowAsync(
+                (StartCompleteSameTaskChildWorkflow wf) => wf.RunAsync(),
+                new()
+                {
+                    Id = $"{Workflow.Info.WorkflowId}_child",
+                    TaskQueue = $"{Workflow.Info.TaskQueue}_child",
+                }));
+            await Workflow.ExecuteLocalActivityAsync(
+                (StartCompleteSameTaskActivities acts) => acts.ShutdownWorkerAsync(),
+                new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(15) });
+
+            // Return child result
+            return await childTask;
+        }
+    }
+
+    [Workflow]
+    public class StartCompleteSameTaskChildWorkflow
+    {
+        // Complete immediately
+        [WorkflowRun]
+        public async Task<string> RunAsync() => "done";
+    }
+
+    public class StartCompleteSameTaskActivities
+    {
+        public TaskCompletionSource StartWorkerShutdownSource { get; } = new();
+
+        [Activity]
+        public async Task ShutdownWorkerAsync()
+        {
+            StartWorkerShutdownSource.SetResult();
+            // Wait for cancellation due to worker shutdown
+            try
+            {
+                await Task.Delay(Timeout.Infinite, ActivityExecutionContext.Current.WorkerShutdownToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_StartCompleteSameTask_ChildWorks()
+    {
+        // This test confirms behavior of a child workflow being initiated and completing in the
+        // same event. Before the fix that precipitated this issue, a child initiated and completed
+        // in the same event (rare) would cause a sequencing issue. To replicate this, we have to
+        // stop the parent worker right after it sends the task w/ the child start. Then we have to
+        // complete the child so the child initiated, child started, and child completed all happen
+        // in the same task.
+
+        // Start parent workflow and then stop worker
+        var acts = new StartCompleteSameTaskActivities();
+        var parentTaskQueue = $"tq-{Guid.NewGuid()}";
+        WorkflowHandle<StartCompleteSameTaskParentWorkflow, string>? parentHandle = null;
+        await ExecuteWorkerAsync<StartCompleteSameTaskParentWorkflow>(
+            async worker =>
+            {
+                // Start parent and wait for worker shutdown request
+                parentHandle = await Client.StartWorkflowAsync(
+                    (StartCompleteSameTaskParentWorkflow wf) => wf.RunAsync(),
+                    new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                await acts.StartWorkerShutdownSource.Task;
+            },
+            new TemporalWorkerOptions(parentTaskQueue)
+            {
+                // Disable sticky to avoid penalty when stopping worker
+                MaxCachedWorkflows = 0,
+            }.AddAllActivities(acts));
+        // Run child workflow to completion
+        await ExecuteWorkerAsync<StartCompleteSameTaskChildWorkflow>(
+            async worker =>
+            {
+                var result = await Client.
+                    GetWorkflowHandle<StartCompleteSameTaskChildWorkflow, string>($"{parentHandle!.Id}_child").
+                    GetResultAsync();
+                Assert.Equal("done", result);
+            },
+            new TemporalWorkerOptions($"{parentTaskQueue}_child"));
+        // Run parent to completion again. This used to have task failure because of child sequence
+        // issues when a child
+        await ExecuteWorkerAsync<StartCompleteSameTaskParentWorkflow>(
+            async worker =>
+            {
+                Assert.Equal("done", await parentHandle!.GetResultAsync());
+            },
+            new TemporalWorkerOptions(parentTaskQueue).AddAllActivities(acts));
+    }
+
+    // See https://github.com/temporalio/sdk-dotnet/issues/500
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PrematureDispose_WorkflowCompletes()
+    {
+        using var waitEvent = new AutoResetEvent(false);
+        var worker = new TemporalWorker(Client, PrepareWorkerOptions<SimpleWorkflow>(new()));
+        Task task = worker.ExecuteAsync(async () =>
+        {
+            waitEvent.WaitOne();
+            var result = await Client.ExecuteWorkflowAsync(
+                (SimpleWorkflow wf) => wf.RunAsync("Temporal"),
+                new(id: $"dotnet-workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            Assert.Equal("Hello, Temporal!", result);
+        });
+        worker.Dispose();
+        waitEvent.Set();
+        await task;
+    }
+
     internal static Task AssertTaskFailureContainsEventuallyAsync(
         WorkflowHandle handle, string messageContains)
     {
@@ -7511,12 +7634,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         TemporalWorkerOptions? options = null,
         IWorkerClient? client = null)
     {
-        options ??= new();
-        options = (TemporalWorkerOptions)options.Clone();
+        options = PrepareWorkerOptions<TWorkflow>((TemporalWorkerOptions?)options?.Clone() ?? new());
+        using var worker = new TemporalWorker(client ?? Client, options);
+        return await worker.ExecuteAsync(() => action(worker));
+    }
+
+    private static TemporalWorkerOptions PrepareWorkerOptions<TWorkflow>(TemporalWorkerOptions options)
+    {
         options.TaskQueue ??= $"tq-{Guid.NewGuid()}";
         options.AddWorkflow<TWorkflow>();
         options.Interceptors ??= new[] { new XunitExceptionInterceptor() };
-        using var worker = new TemporalWorker(client ?? Client, options);
-        return await worker.ExecuteAsync(() => action(worker));
+        return options;
     }
 }

@@ -24,7 +24,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    var replayerOrFail = Interop.Methods.worker_replayer_new(
+                    var replayerOrFail = Interop.Methods.temporal_core_worker_replayer_new(
                         runtime.Ptr, scope.Pointer(options.ToInteropOptions(scope)));
                     if (replayerOrFail.fail != null)
                     {
@@ -58,7 +58,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets a pointer to the pusher.
         /// </summary>
-        internal unsafe Interop.WorkerReplayPusher* Ptr { get; private init; }
+        internal unsafe Interop.TemporalCoreWorkerReplayPusher* Ptr { get; private init; }
 
         /// <summary>
         /// Push history to the replayer.
@@ -71,7 +71,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    Interop.Methods.worker_replay_push(
+                    Interop.Methods.temporal_core_worker_replay_push(
                         Worker.Ptr,
                         Ptr,
                         scope.ByteArray(workflowId),
@@ -83,7 +83,7 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.worker_replay_pusher_free(Ptr);
+            Interop.Methods.temporal_core_worker_replay_pusher_free(Ptr);
             return true;
         }
     }

@@ -34,21 +34,21 @@
   <!-- Build/copy debug/release bridge DLL -->
 
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-    <BridgeLibraryFile>temporal_sdk_bridge.dll</BridgeLibraryFile>
+    <BridgeLibraryFile>temporal_sdk_core_c_bridge.dll</BridgeLibraryFile>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-    <BridgeLibraryFile>libtemporal_sdk_bridge.so</BridgeLibraryFile>
+    <BridgeLibraryFile>libtemporal_sdk_core_c_bridge.so</BridgeLibraryFile>
   </PropertyGroup>
   <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX'))">
-    <BridgeLibraryFile>libtemporal_sdk_bridge.dylib</BridgeLibraryFile>
+    <BridgeLibraryFile>libtemporal_sdk_core_c_bridge.dylib</BridgeLibraryFile>
   </PropertyGroup>
 
   <Target Name="CargoBuildDebug" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Debug'">
-    <Exec Command="cargo build" WorkingDirectory="Bridge" ConsoleToMSBuild="true" />
+    <Exec Command="cargo build" WorkingDirectory="Bridge/sdk-core/core-c-bridge" />
   </Target>
   <Target Name="CopyBridgeDLLDebug" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Debug'">
     <ItemGroup Condition="'$(Configuration)' == 'Debug'">
-      <Content Include="Bridge/target/debug/$(BridgeLibraryFile)">
+      <Content Include="Bridge/sdk-core/target/debug/$(BridgeLibraryFile)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Link>$(BridgeLibraryFile)</Link>
         <PublishState>Included</PublishState>
@@ -57,12 +57,12 @@
   </Target>
 
   <Target Name="CargoBuildRelease" BeforeTargets="DispatchToInnerBuilds" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
-    <Exec Command="cargo build --release" WorkingDirectory="Bridge" ConsoleToMSBuild="true" />
+    <Exec Command="cargo build --profile release-lto" WorkingDirectory="Bridge/sdk-core/core-c-bridge" />
   </Target>
   <Target Name="CopyBridgeDLLRelease" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Release' AND '$(BridgeLibraryRoot)' == ''">
-    <Exec Command="cargo build --release" WorkingDirectory="Bridge" ConsoleToMSBuild="true" />
+    <Exec Command="cargo build --profile release-lto" WorkingDirectory="Bridge/sdk-core/core-c-bridge" />
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
-      <Content Include="Bridge/target/release/$(BridgeLibraryFile)">
+      <Content Include="Bridge/sdk-core/target/release-lto/$(BridgeLibraryFile)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         <Link>$(BridgeLibraryFile)</Link>
         <PublishState>Included</PublishState>
@@ -85,23 +85,23 @@
   <!-- Pack the runtime if BridgeLibraryRoot property set -->
   <Target Name="PackBridgeRuntimes" BeforeTargets="DispatchToInnerBuilds" Condition="'$(BridgeLibraryRoot)' != ''">
     <ItemGroup>
-      <Content Include="$(BridgeLibraryRoot)/linux-x64-bridge/libtemporal_sdk_bridge.so">
-        <PackagePath>runtimes/linux-x64/native/libtemporal_sdk_bridge.so</PackagePath>
+      <Content Include="$(BridgeLibraryRoot)/linux-x64-bridge/libtemporal_sdk_core_c_bridge.so">
+        <PackagePath>runtimes/linux-x64/native/libtemporal_sdk_core_c_bridge.so</PackagePath>
       </Content>
-      <Content Include="$(BridgeLibraryRoot)/linux-arm64-bridge/libtemporal_sdk_bridge.so">
-        <PackagePath>runtimes/linux-arm64/native/libtemporal_sdk_bridge.so</PackagePath>
+      <Content Include="$(BridgeLibraryRoot)/linux-arm64-bridge/libtemporal_sdk_core_c_bridge.so">
+        <PackagePath>runtimes/linux-arm64/native/libtemporal_sdk_core_c_bridge.so</PackagePath>
       </Content>
-      <Content Include="$(BridgeLibraryRoot)/linux-musl-x64-bridge/libtemporal_sdk_bridge.so">
-        <PackagePath>runtimes/linux-musl-x64/native/libtemporal_sdk_bridge.so</PackagePath>
+      <Content Include="$(BridgeLibraryRoot)/linux-musl-x64-bridge/libtemporal_sdk_core_c_bridge.so">
+        <PackagePath>runtimes/linux-musl-x64/native/libtemporal_sdk_core_c_bridge.so</PackagePath>
       </Content>
-      <Content Include="$(BridgeLibraryRoot)/osx-x64-bridge/libtemporal_sdk_bridge.dylib">
-        <PackagePath>runtimes/osx-x64/native/libtemporal_sdk_bridge.dylib</PackagePath>
+      <Content Include="$(BridgeLibraryRoot)/osx-x64-bridge/libtemporal_sdk_core_c_bridge.dylib">
+        <PackagePath>runtimes/osx-x64/native/libtemporal_sdk_core_c_bridge.dylib</PackagePath>
       </Content>
-      <Content Include="$(BridgeLibraryRoot)/osx-arm64-bridge/libtemporal_sdk_bridge.dylib">
-        <PackagePath>runtimes/osx-arm64/native/libtemporal_sdk_bridge.dylib</PackagePath>
+      <Content Include="$(BridgeLibraryRoot)/osx-arm64-bridge/libtemporal_sdk_core_c_bridge.dylib">
+        <PackagePath>runtimes/osx-arm64/native/libtemporal_sdk_core_c_bridge.dylib</PackagePath>
       </Content>
-      <Content Include="$(BridgeLibraryRoot)/win-x64-bridge/temporal_sdk_bridge.dll">
-        <PackagePath>runtimes/win-x64/native/temporal_sdk_bridge.dll</PackagePath>
+      <Content Include="$(BridgeLibraryRoot)/win-x64-bridge/temporal_sdk_core_c_bridge.dll">
+        <PackagePath>runtimes/win-x64/native/temporal_sdk_core_c_bridge.dll</PackagePath>
       </Content>
     </ItemGroup>
   </Target>

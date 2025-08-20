@@ -8,7 +8,7 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class DeterministicRandom : SafeHandle
     {
-        private readonly unsafe Interop.Random* ptr;
+        private readonly unsafe Interop.TemporalCoreRandom* ptr;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeterministicRandom" /> class.
@@ -19,7 +19,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                ptr = Interop.Methods.random_new(seed);
+                ptr = Interop.Methods.temporal_core_random_new(seed);
                 SetHandle((IntPtr)ptr);
             }
         }
@@ -38,7 +38,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                return Interop.Methods.random_int32_range(
+                return Interop.Methods.temporal_core_random_int32_range(
                     ptr, min, max, (byte)(maxInclusive ? 1 : 0));
             }
         }
@@ -54,7 +54,7 @@ namespace Temporalio.Bridge
         {
             unsafe
             {
-                return Interop.Methods.random_double_range(
+                return Interop.Methods.temporal_core_random_double_range(
                     ptr, min, max, (byte)(maxInclusive ? 1 : 0));
             }
         }
@@ -69,7 +69,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    Interop.Methods.random_fill_bytes(ptr, scope.ByteArray(bytes));
+                    Interop.Methods.temporal_core_random_fill_bytes(ptr, scope.ByteArray(bytes));
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.random_free(ptr);
+            Interop.Methods.temporal_core_random_free(ptr);
             return true;
         }
     }

@@ -1,3 +1,5 @@
+using System;
+
 namespace Temporalio.Workflows
 {
     /// <summary>
@@ -8,6 +10,7 @@ namespace Temporalio.Workflows
     /// most sensible default behavior for the type of command, accounting for whether the command will
     /// be run on the same task queue as the current worker.
     /// </summary>
+    [Obsolete("Worker Build Id versioning is deprecated in favor of Worker Deployment versioning")]
     public enum VersioningIntent
     {
         /// <summary>

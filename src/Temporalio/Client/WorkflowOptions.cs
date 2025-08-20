@@ -131,7 +131,6 @@ namespace Temporalio.Client
         /// potentially reduces the latency to start the workflow by encouraging the server to
         /// start it on a local worker running this same client.
         /// </summary>
-        /// <remarks>WARNING: Eager workflow start is experimental.</remarks>
         public bool RequestEagerStart { get; set; }
 
         /// <summary>

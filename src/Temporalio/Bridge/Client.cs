@@ -11,7 +11,7 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class Client : SafeHandle
     {
-        private unsafe Client(Runtime runtime, Interop.Client* ptr)
+        private unsafe Client(Runtime runtime, Interop.TemporalCoreClient* ptr)
             : base((IntPtr)ptr, true)
         {
             Runtime = runtime;
@@ -29,7 +29,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets the pointer to the client.
         /// </summary>
-        internal unsafe Interop.Client* Ptr { get; private init; }
+        internal unsafe Interop.TemporalCoreClient* Ptr { get; private init; }
 
         /// <summary>
         /// Connect to Temporal.
@@ -47,11 +47,11 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.client_connect(
+                    Interop.Methods.temporal_core_client_connect(
                         runtime.Ptr,
                         scope.Pointer(options.ToInteropOptions(scope)),
                         null,
-                        scope.FunctionPointer<Interop.ClientConnectCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreClientConnectCallback>(
                             (userData, success, fail) =>
                             {
                                 if (fail != null)
@@ -80,7 +80,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    Interop.Methods.client_update_metadata(Ptr, scope.Metadata(metadata));
+                    Interop.Methods.temporal_core_client_update_metadata(Ptr, scope.Metadata(metadata));
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace Temporalio.Bridge
             {
                 unsafe
                 {
-                    Interop.Methods.client_update_api_key(Ptr, scope.ByteArray(apiKey));
+                    Interop.Methods.temporal_core_client_update_api_key(Ptr, scope.ByteArray(apiKey));
                 }
             }
         }
@@ -114,7 +114,7 @@ namespace Temporalio.Bridge
         /// <param name="cancellationToken">Cancellation token for the call.</param>
         /// <returns>Response proto.</returns>
         public async Task<T> CallAsync<T>(
-            Interop.RpcService service,
+            Interop.TemporalCoreRpcService service,
             string rpc,
             IMessage req,
             MessageParser<T> resp,
@@ -130,10 +130,10 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.client_rpc_call(
+                    Interop.Methods.temporal_core_client_rpc_call(
                         Ptr,
                         scope.Pointer(
-                            new Interop.RpcCallOptions()
+                            new Interop.TemporalCoreRpcCallOptions()
                             {
                                 service = service,
                                 rpc = scope.ByteArray(rpc),
@@ -144,7 +144,7 @@ namespace Temporalio.Bridge
                                 cancellation_token = scope.CancellationToken(cancellationToken),
                             }),
                         null,
-                        scope.FunctionPointer<Interop.ClientRpcCallCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreClientRpcCallCallback>(
                             (userData, success, statusCode, failureMessage, failureDetails) =>
                             {
                                 if (failureMessage != null && statusCode > 0)
@@ -189,7 +189,7 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
-            Interop.Methods.client_free(Ptr);
+            Interop.Methods.temporal_core_client_free(Ptr);
             return true;
         }
     }

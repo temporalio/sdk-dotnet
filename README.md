@@ -1128,10 +1128,11 @@ See the
 
 ### Built-in Native Shared Library
 
-This SDK requires a built-in unmanaged, native shared library built in Rust. It is named `temporal_sdk_bridge.dll` on
-Windows, `libtemporal_sdk_bridge.so` on Linux, and `libtemporal_sdk_bridge.dylib` on macOS. This is automatically
-included when using modern versions of .NET on a common platform. If you are using .NET framework, you may have to
-explicitly set the platform to `x64` or `arm64` because `AnyCPU` will not choose the proper library.
+This SDK requires a built-in unmanaged, native shared library built in Rust. It is named
+`temporal_sdk_core_c_bridge.dll` on Windows, `libtemporal_sdk_core_c_bridge.so` on Linux, and
+`libtemporal_sdk_core_c_bridge.dylib` on macOS. This is automatically included when using modern versions of .NET
+on a common platform. If you are using .NET framework, you may have to explicitly set the platform to `x64` or `arm64`
+because `AnyCPU` will not choose the proper library.
 
 Currently we only support [RIDs](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog) `linux-arm64`,
 `linux-x64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, and `win-x64`. Any other platforms needed (e.g. `linux-musl-x64`
@@ -1144,8 +1145,8 @@ Redistributable installation).
 
 If the native shared library is not loading for whatever reason, the following error may appear:
 
-> System.DllNotFoundException: Unable to load DLL 'temporal_sdk_bridge' or one of its dependencies: The specified module
-could not be found.
+> System.DllNotFoundException: Unable to load DLL 'temporal_sdk_core_c_bridge' or one of its dependencies: The specified
+> module could not be found.
 
 See the earlier part of this section for details on what environments are supported.
 

@@ -11,7 +11,7 @@ namespace Temporalio.Client
     public abstract partial class OperatorService : RpcService
     {
         /// <inheritdoc/>
-        internal override Bridge.Interop.RpcService Service => Bridge.Interop.RpcService.Operator;
+        internal override Bridge.Interop.TemporalCoreRpcService Service => Bridge.Interop.TemporalCoreRpcService.Operator;
 
         /// <inheritdoc/>
         internal override string FullName => "temporal.api.operatorservice.v1.OperatorService";

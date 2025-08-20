@@ -26,11 +26,11 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.RuntimeOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreRuntimeOptions ToInteropOptions(
             this Temporalio.Runtime.TemporalRuntimeOptions options,
             Scope scope)
         {
-            return new Interop.RuntimeOptions()
+            return new Interop.TemporalCoreRuntimeOptions()
             {
                 telemetry = scope.Pointer(options.Telemetry.ToInteropOptions(scope)),
             };
@@ -42,11 +42,11 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.TelemetryOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreTelemetryOptions ToInteropOptions(
             this Temporalio.Runtime.TelemetryOptions options,
             Scope scope)
         {
-            return new Interop.TelemetryOptions()
+            return new Interop.TemporalCoreTelemetryOptions()
             {
                 logging =
                     options.Logging == null
@@ -65,39 +65,39 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.OpenTelemetryOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreOpenTelemetryOptions ToInteropOptions(
             this Temporalio.Runtime.OpenTelemetryOptions options,
             Scope scope)
         {
             if (options.Url == null)
             {
-                throw new ArgumentException("OpenTelemetry URL is required");
+                throw new ArgumentException($"OpenTelemetry URL is required when {nameof(Temporalio.Runtime.OpenTelemetryOptions)} is configured");
             }
-            Interop.OpenTelemetryMetricTemporality temporality;
+            Interop.TemporalCoreOpenTelemetryMetricTemporality temporality;
             switch (options.MetricTemporality)
             {
                 case Temporalio.Runtime.OpenTelemetryMetricTemporality.Cumulative:
-                    temporality = Interop.OpenTelemetryMetricTemporality.Cumulative;
+                    temporality = Interop.TemporalCoreOpenTelemetryMetricTemporality.Cumulative;
                     break;
                 case Temporalio.Runtime.OpenTelemetryMetricTemporality.Delta:
-                    temporality = Interop.OpenTelemetryMetricTemporality.Delta;
+                    temporality = Interop.TemporalCoreOpenTelemetryMetricTemporality.Delta;
                     break;
                 default:
                     throw new ArgumentException("Unrecognized temporality");
             }
-            Interop.OpenTelemetryProtocol protocol;
+            Interop.TemporalCoreOpenTelemetryProtocol protocol;
             switch (options.Protocol)
             {
                 case Temporalio.Runtime.OpenTelemetryProtocol.Grpc:
-                    protocol = Interop.OpenTelemetryProtocol.Grpc;
+                    protocol = Interop.TemporalCoreOpenTelemetryProtocol.Grpc;
                     break;
                 case Temporalio.Runtime.OpenTelemetryProtocol.Http:
-                    protocol = Interop.OpenTelemetryProtocol.Http;
+                    protocol = Interop.TemporalCoreOpenTelemetryProtocol.Http;
                     break;
                 default:
                     throw new ArgumentException("Unrecognized protocol");
             }
-            return new Interop.OpenTelemetryOptions()
+            return new Interop.TemporalCoreOpenTelemetryOptions()
             {
                 url = scope.ByteArray(options.Url.ToString()),
                 headers = scope.Metadata(options.Headers),
@@ -119,15 +119,15 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.PrometheusOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCorePrometheusOptions ToInteropOptions(
             this Temporalio.Runtime.PrometheusOptions options,
             Scope scope)
         {
             if (string.IsNullOrEmpty(options.BindAddress))
             {
-                throw new ArgumentException("Prometheus options must have bind address");
+                throw new ArgumentException($"BindAddress is required when {nameof(Temporalio.Runtime.PrometheusOptions)} is configured");
             }
-            return new Interop.PrometheusOptions()
+            return new Interop.TemporalCorePrometheusOptions()
             {
                 bind_address = scope.ByteArray(options.BindAddress),
                 counters_total_suffix = (byte)(options.HasCounterTotalSuffix ? 1 : 0),
@@ -144,15 +144,15 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.LoggingOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreLoggingOptions ToInteropOptions(
             this Temporalio.Runtime.LoggingOptions options,
             Scope scope)
         {
             if (string.IsNullOrEmpty(options.Filter.FilterString))
             {
-                throw new ArgumentException("Logging filter string is required");
+                throw new ArgumentException($"FilterString is required when {nameof(Temporalio.Runtime.TelemetryFilterOptions)} is configured");
             }
-            return new Interop.LoggingOptions()
+            return new Interop.TemporalCoreLoggingOptions()
             {
                 filter = scope.ByteArray(options.Filter.FilterString),
                 // Forward callback is set in the Runtime constructor
@@ -166,13 +166,13 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.MetricsOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreMetricsOptions ToInteropOptions(
             this Temporalio.Runtime.MetricsOptions options,
             Scope scope)
         {
-            Interop.PrometheusOptions* prometheus = null;
-            Interop.OpenTelemetryOptions* openTelemetry = null;
-            Interop.CustomMetricMeter* customMeter = null;
+            Interop.TemporalCorePrometheusOptions* prometheus = null;
+            Interop.TemporalCoreOpenTelemetryOptions* openTelemetry = null;
+            Interop.TemporalCoreCustomMetricMeter* customMeter = null;
             if (options.Prometheus != null)
             {
                 if (options.OpenTelemetry != null || options.CustomMetricMeter != null)
@@ -208,7 +208,7 @@ namespace Temporalio.Bridge
             }
             // WARNING: It is important that nothing after this point throws, because we have
             // allocated a pointer for the custom meter which can only be freed on the Rust side
-            return new Interop.MetricsOptions()
+            return new Interop.TemporalCoreMetricsOptions()
             {
                 prometheus = prometheus,
                 opentelemetry = openTelemetry,
@@ -225,7 +225,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.ClientOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreClientOptions ToInteropOptions(
             this Temporalio.Client.TemporalConnectionOptions options,
             Scope scope)
         {
@@ -242,7 +242,7 @@ namespace Temporalio.Bridge
                 throw new ArgumentException("Identity missing from options.");
             }
             var scheme = options.Tls == null ? "http" : "https";
-            return new Interop.ClientOptions()
+            return new Interop.TemporalCoreClientOptions()
             {
                 target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
                 client_name = ClientName.Ref,
@@ -273,7 +273,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.ClientTlsOptions ToInteropOptions(
+        public static Interop.TemporalCoreClientTlsOptions ToInteropOptions(
             this Temporalio.Client.TlsOptions options,
             Scope scope)
         {
@@ -283,9 +283,9 @@ namespace Temporalio.Bridge
             if (hasClientCert != hasClientKey)
             {
                 throw new ArgumentException(
-                    "Client cert and private key must both be present or neither");
+                    $"Client cert and private key must both be present or neither when {nameof(Temporalio.Client.TlsOptions)} is configured");
             }
-            return new Interop.ClientTlsOptions()
+            return new Interop.TemporalCoreClientTlsOptions()
             {
                 server_root_ca_cert = scope.ByteArray(options.ServerRootCACert),
                 domain = scope.ByteArray(options.Domain),
@@ -299,10 +299,10 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="options">Options to convert.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.ClientRetryOptions ToInteropOptions(
+        public static Interop.TemporalCoreClientRetryOptions ToInteropOptions(
             this Temporalio.Client.RpcRetryOptions options)
         {
-            return new Interop.ClientRetryOptions()
+            return new Interop.TemporalCoreClientRetryOptions()
             {
                 initial_interval_millis = (ulong)options.InitialInterval.TotalMilliseconds,
                 randomization_factor = options.RandomizationFactor,
@@ -321,7 +321,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="options">Options to convert.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.ClientKeepAliveOptions ToInteropOptions(
+        public static Interop.TemporalCoreClientKeepAliveOptions ToInteropOptions(
             this Temporalio.Client.KeepAliveOptions options) =>
             new()
             {
@@ -335,16 +335,16 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.ClientHttpConnectProxyOptions ToInteropOptions(
+        public static Interop.TemporalCoreClientHttpConnectProxyOptions ToInteropOptions(
             this Temporalio.Client.HttpConnectProxyOptions options,
             Scope scope)
         {
             if (string.IsNullOrEmpty(options.TargetHost))
             {
-                throw new ArgumentException("TargetHost is required");
+                throw new ArgumentException($"{nameof(options.TargetHost)} is required when {nameof(Temporalio.Client.HttpConnectProxyOptions)} is configured");
             }
 
-            return new Interop.ClientHttpConnectProxyOptions
+            return new Interop.TemporalCoreClientHttpConnectProxyOptions
             {
                 target_host = scope.ByteArray(options.TargetHost),
                 username = scope.ByteArray(options.BasicAuth?.Username),
@@ -358,7 +358,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.DevServerOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreDevServerOptions ToInteropOptions(
             this Testing.WorkflowEnvironmentStartLocalOptions options,
             Scope scope)
         {
@@ -376,10 +376,10 @@ namespace Temporalio.Bridge
                     ToArray();
             }
 
-            return new Interop.DevServerOptions()
+            return new Interop.TemporalCoreDevServerOptions()
             {
                 test_server = scope.Pointer(
-                    new Interop.TestServerOptions()
+                    new Interop.TemporalCoreTestServerOptions()
                     {
                         existing_path = scope.ByteArray(options.DevServerOptions.ExistingPath),
                         sdk_name = SdkName.Ref,
@@ -388,8 +388,8 @@ namespace Temporalio.Bridge
                         download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                         port = (ushort)(port ?? 0),
                         extra_args = scope.NewlineDelimited(args),
-                        download_ttl_ms =
-                            (ulong)(options.DevServerOptions.DownloadTtl?.TotalMilliseconds ?? 0),
+                        download_ttl_seconds =
+                            (ulong)(options.DevServerOptions.DownloadTtl?.TotalSeconds ?? 0),
                     }),
                 namespace_ = scope.ByteArray(options.Namespace),
                 ip = scope.ByteArray(ip),
@@ -407,7 +407,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.TestServerOptions ToInteropOptions(
+        public static Interop.TemporalCoreTestServerOptions ToInteropOptions(
             this Testing.WorkflowEnvironmentStartTimeSkippingOptions options,
             Scope scope)
         {
@@ -418,7 +418,7 @@ namespace Temporalio.Bridge
                 throw new InvalidOperationException(
                     "TargetHost can only specify empty, localhost, or 127.0.0.1 host");
             }
-            return new()
+            return new Interop.TemporalCoreTestServerOptions()
             {
                 existing_path = scope.ByteArray(options.TestServer.ExistingPath),
                 sdk_name = SdkName.Ref,
@@ -427,8 +427,8 @@ namespace Temporalio.Bridge
                 download_dest_dir = scope.ByteArray(options.DownloadDirectory),
                 port = (ushort)(port ?? 0),
                 extra_args = scope.NewlineDelimited(options.TestServer.ExtraArgs),
-                download_ttl_ms =
-                    (ulong)(options.TestServer.DownloadTtl?.TotalMilliseconds ?? 0),
+                download_ttl_seconds =
+                    (ulong)(options.TestServer.DownloadTtl?.TotalSeconds ?? 0),
             };
         }
 
@@ -440,7 +440,7 @@ namespace Temporalio.Bridge
         /// <param name="namespace_">Namespace for the worker.</param>
         /// <param name="loggerFactory">Logger factory.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.WorkerOptions ToInteropOptions(
+        public static Interop.TemporalCoreWorkerOptions ToInteropOptions(
             this Temporalio.Worker.TemporalWorkerOptions options,
             Scope scope,
             string namespace_,
@@ -448,7 +448,7 @@ namespace Temporalio.Bridge
         {
             if (options.TaskQueue == null)
             {
-                throw new ArgumentException("Task queue must be provided in worker options");
+                throw new ArgumentException($"Task queue must be provided when {nameof(Temporalio.Worker.TemporalWorkerOptions)} is configured");
             }
 #pragma warning disable 0618
             var buildId = options.DeploymentOptions?.Version?.BuildId ?? options.BuildId;
@@ -461,7 +461,7 @@ namespace Temporalio.Bridge
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
                 buildIdAutoDetermined = true;
             }
-            Interop.WorkerVersioningStrategy versioningStrategy;
+            Interop.TemporalCoreWorkerVersioningStrategy versioningStrategy;
             if (options.DeploymentOptions != null)
             {
                 if (options.DeploymentOptions.Version == null)
@@ -481,7 +481,7 @@ namespace Temporalio.Bridge
                 // Assign default build ID if not provided
                 versioningStrategy = new()
                 {
-                    tag = Interop.WorkerVersioningStrategy_Tag.DeploymentBased,
+                    tag = Interop.TemporalCoreWorkerVersioningStrategy_Tag.DeploymentBased,
                     deployment_based = new()
                     {
                         version = new()
@@ -504,7 +504,7 @@ namespace Temporalio.Bridge
                 }
                 versioningStrategy = new()
                 {
-                    tag = Interop.WorkerVersioningStrategy_Tag.LegacyBuildIdBased,
+                    tag = Interop.TemporalCoreWorkerVersioningStrategy_Tag.LegacyBuildIdBased,
                     legacy_build_id_based = new()
                     {
                         build_id = scope.ByteArray(buildId),
@@ -515,7 +515,7 @@ namespace Temporalio.Bridge
             {
                 versioningStrategy = new()
                 {
-                    tag = Interop.WorkerVersioningStrategy_Tag.None,
+                    tag = Interop.TemporalCoreWorkerVersioningStrategy_Tag.None,
                     none = new()
                     {
                         build_id = scope.ByteArray(buildId),
@@ -585,7 +585,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static Interop.WorkerOptions ToInteropOptions(
+        public static Interop.TemporalCoreWorkerOptions ToInteropOptions(
             this Temporalio.Worker.WorkflowReplayerOptions options, Scope scope)
         {
             var buildId = options.BuildId;
@@ -601,7 +601,7 @@ namespace Temporalio.Bridge
                 task_queue = scope.ByteArray(options.TaskQueue),
                 versioning_strategy = new()
                 {
-                    tag = Interop.WorkerVersioningStrategy_Tag.None,
+                    tag = Interop.TemporalCoreWorkerVersioningStrategy_Tag.None,
                     none = new()
                     {
                         build_id = scope.ByteArray(buildId),
@@ -617,10 +617,10 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                workflow_task_poller_behavior = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
+                workflow_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = 1,
-                activity_task_poller_behavior = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
-                nexus_task_poller_behavior = new PollerBehavior.SimpleMaximum(1).ToInteropPollerBehavior(scope),
+                activity_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
+                nexus_task_poller_behavior = new PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
@@ -628,14 +628,14 @@ namespace Temporalio.Bridge
             };
         }
 
-        private static Interop.ByteArrayRef ToHistogramBucketOverrides(
+        private static Interop.TemporalCoreByteArrayRef ToHistogramBucketOverrides(
             IReadOnlyDictionary<string, IReadOnlyCollection<double>>? overrides, Scope scope) =>
             scope.Metadata(overrides?.Select(kvp =>
                 new KeyValuePair<string, string>(
                     kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))));
 
-        private static Interop.TunerHolder ToInteropTuner(
-            this WorkerTuner tuner,
+        private static Interop.TemporalCoreTunerHolder ToInteropTuner(
+            this Temporalio.Worker.Tuning.WorkerTuner tuner,
             Scope scope,
             ILoggerFactory loggerFactory)
         {
@@ -674,8 +674,8 @@ namespace Temporalio.Bridge
             };
         }
 
-        private static Interop.SlotSupplier ToInteropSlotSupplier(
-            this SlotSupplier supplier,
+        private static Interop.TemporalCoreSlotSupplier ToInteropSlotSupplier(
+            this Temporalio.Worker.Tuning.SlotSupplier supplier,
             bool isWorkflow,
             ILoggerFactory loggerFactory)
         {
@@ -688,8 +688,8 @@ namespace Temporalio.Bridge
                 }
                 return new()
                 {
-                    tag = Interop.SlotSupplier_Tag.FixedSize,
-                    fixed_size = new Interop.FixedSizeSlotSupplier()
+                    tag = Interop.TemporalCoreSlotSupplier_Tag.FixedSize,
+                    fixed_size = new Interop.TemporalCoreFixedSizeSlotSupplier()
                     {
                         num_slots = new UIntPtr((uint)fixedSize.SlotCount),
                     },
@@ -701,8 +701,8 @@ namespace Temporalio.Bridge
                 var defaultThrottle = isWorkflow ? 0 : 50;
                 return new()
                 {
-                    tag = Interop.SlotSupplier_Tag.ResourceBased,
-                    resource_based = new Interop.ResourceBasedSlotSupplier()
+                    tag = Interop.TemporalCoreSlotSupplier_Tag.ResourceBased,
+                    resource_based = new Interop.TemporalCoreResourceBasedSlotSupplier()
                     {
                         minimum_slots =
                             new UIntPtr(
@@ -712,7 +712,7 @@ namespace Temporalio.Bridge
                         ramp_throttle_ms =
                             (ulong)(resourceBased.Options.RampThrottle?.TotalMilliseconds ??
                                     defaultThrottle),
-                        tuner_options = new Interop.ResourceBasedTunerOptions()
+                        tuner_options = new Interop.TemporalCoreResourceBasedTunerOptions()
                         {
                             target_memory_usage = resourceBased.TunerOptions.TargetMemoryUsage,
                             target_cpu_usage = resourceBased.TunerOptions.TargetCpuUsage,
@@ -727,8 +727,8 @@ namespace Temporalio.Bridge
                 {
                     return new()
                     {
-                        tag = Interop.SlotSupplier_Tag.Custom,
-                        custom = new Interop.CustomSlotSupplierCallbacksImpl() { _0 = wrapped.Ptr },
+                        tag = Interop.TemporalCoreSlotSupplier_Tag.Custom,
+                        custom = new Interop.TemporalCoreCustomSlotSupplierCallbacksImpl() { _0 = wrapped.Ptr },
                     };
                 }
             }
@@ -750,23 +750,20 @@ namespace Temporalio.Bridge
                     w.Name ?? throw new ArgumentException("Dynamic workflows cannot trap non-determinism")).
                 ToArray();
 
-        private static Interop.PollerBehavior ToInteropPollerBehavior(
-            this PollerBehavior pollerBehavior, Scope scope)
+        private static Interop.TemporalCorePollerBehavior ToInteropPollerBehavior(
+            this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior, Scope scope)
         {
             if (pollerBehavior is PollerBehavior.SimpleMaximum simpleMax)
             {
-                var max = new Interop.PollerBehaviorSimpleMaximum
-                {
-                    simple_maximum = new UIntPtr((uint)simpleMax.Maximum),
-                };
+                var max = new Interop.TemporalCorePollerBehaviorSimpleMaximum { simple_maximum = new UIntPtr((uint)simpleMax.Maximum), };
                 unsafe
                 {
-                    return new Interop.PollerBehavior { simple_maximum = scope.Pointer(max), };
+                    return new Interop.TemporalCorePollerBehavior { simple_maximum = scope.Pointer(max), };
                 }
             }
             else if (pollerBehavior is PollerBehavior.Autoscaling autoscaling)
             {
-                var autoscale = new Interop.PollerBehaviorAutoscaling
+                var autoscale = new Interop.TemporalCorePollerBehaviorAutoscaling
                 {
                     minimum = new UIntPtr((uint)autoscaling.Minimum),
                     maximum = new UIntPtr((uint)autoscaling.Maximum),
@@ -774,7 +771,7 @@ namespace Temporalio.Bridge
                 };
                 unsafe
                 {
-                    return new Interop.PollerBehavior { autoscaling = scope.Pointer(autoscale), };
+                    return new Interop.TemporalCorePollerBehavior { autoscaling = scope.Pointer(autoscale), };
                 }
             }
             else

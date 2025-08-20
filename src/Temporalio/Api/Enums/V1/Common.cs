@@ -60,14 +60,17 @@ namespace Temporalio.Api.Enums.V1 {
             "Q1RJT05fU0NPUEVfV09SS0ZMT1cQARInCiNXT1JLRkxPV19SVUxFX0FDVElP",
             "Tl9TQ09QRV9BQ1RJVklUWRACKm0KGEFwcGxpY2F0aW9uRXJyb3JDYXRlZ29y",
             "eRIqCiZBUFBMSUNBVElPTl9FUlJPUl9DQVRFR09SWV9VTlNQRUNJRklFRBAA",
-            "EiUKIUFQUExJQ0FUSU9OX0VSUk9SX0NBVEVHT1JZX0JFTklHThABQoMBChhp",
-            "by50ZW1wb3JhbC5hcGkuZW51bXMudjFCC0NvbW1vblByb3RvUAFaIWdvLnRl",
-            "bXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBp",
-            "LkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpFbnVtczo6VjFiBnByb3Rv",
-            "Mw=="));
+            "EiUKIUFQUExJQ0FUSU9OX0VSUk9SX0NBVEVHT1JZX0JFTklHThABKoUBCgxX",
+            "b3JrZXJTdGF0dXMSHQoZV09SS0VSX1NUQVRVU19VTlNQRUNJRklFRBAAEhkK",
+            "FVdPUktFUl9TVEFUVVNfUlVOTklORxABEh8KG1dPUktFUl9TVEFUVVNfU0hV",
+            "VFRJTkdfRE9XThACEhoKFldPUktFUl9TVEFUVVNfU0hVVERPV04QA0KDAQoY",
+            "aW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQgtDb21tb25Qcm90b1ABWiFnby50",
+            "ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFw",
+            "aS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), typeof(global::Temporalio.Api.Enums.V1.CallbackState), typeof(global::Temporalio.Api.Enums.V1.PendingNexusOperationState), typeof(global::Temporalio.Api.Enums.V1.NexusOperationCancellationState), typeof(global::Temporalio.Api.Enums.V1.WorkflowRuleActionScope), typeof(global::Temporalio.Api.Enums.V1.ApplicationErrorCategory), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EncodingType), typeof(global::Temporalio.Api.Enums.V1.IndexedValueType), typeof(global::Temporalio.Api.Enums.V1.Severity), typeof(global::Temporalio.Api.Enums.V1.CallbackState), typeof(global::Temporalio.Api.Enums.V1.PendingNexusOperationState), typeof(global::Temporalio.Api.Enums.V1.NexusOperationCancellationState), typeof(global::Temporalio.Api.Enums.V1.WorkflowRuleActionScope), typeof(global::Temporalio.Api.Enums.V1.ApplicationErrorCategory), typeof(global::Temporalio.Api.Enums.V1.WorkerStatus), }, null, null));
     }
     #endregion
 
@@ -212,6 +215,17 @@ namespace Temporalio.Api.Enums.V1 {
     /// Expected application error with little/no severity.
     /// </summary>
     [pbr::OriginalName("APPLICATION_ERROR_CATEGORY_BENIGN")] Benign = 1,
+  }
+
+  /// <summary>
+  /// (-- api-linter: core::0216::synonyms=disabled
+  ///     aip.dev/not-precedent: It seems we have both state and status, and status is a better fit for workers. --)
+  /// </summary>
+  public enum WorkerStatus {
+    [pbr::OriginalName("WORKER_STATUS_UNSPECIFIED")] Unspecified = 0,
+    [pbr::OriginalName("WORKER_STATUS_RUNNING")] Running = 1,
+    [pbr::OriginalName("WORKER_STATUS_SHUTTING_DOWN")] ShuttingDown = 2,
+    [pbr::OriginalName("WORKER_STATUS_SHUTDOWN")] Shutdown = 3,
   }
 
   #endregion

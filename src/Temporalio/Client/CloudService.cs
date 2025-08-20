@@ -14,7 +14,7 @@ namespace Temporalio.Client
     public abstract partial class CloudService : RpcService
     {
         /// <inheritdoc/>
-        internal override Bridge.Interop.RpcService Service => Bridge.Interop.RpcService.Cloud;
+        internal override Bridge.Interop.TemporalCoreRpcService Service => Bridge.Interop.TemporalCoreRpcService.Cloud;
 
         /// <inheritdoc/>
         internal override string FullName => "temporal.api.cloud.cloudservice.v1.CloudService";
