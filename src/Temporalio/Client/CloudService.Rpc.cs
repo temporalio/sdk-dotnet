@@ -43,6 +43,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateConnectivityRule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateConnectivityRuleResponse> CreateConnectivityRuleAsync(CreateConnectivityRuleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateConnectivityRule", req, CreateConnectivityRuleResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CreateNamespace.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -117,6 +128,17 @@ namespace Temporalio.Client
         public Task<DeleteApiKeyResponse> DeleteApiKeyAsync(DeleteApiKeyRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DeleteApiKey", req, DeleteApiKeyResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteConnectivityRule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteConnectivityRuleResponse> DeleteConnectivityRuleAsync(DeleteConnectivityRuleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteConnectivityRule", req, DeleteConnectivityRuleResponse.Parser, options);
         }
 
         /// <summary>
@@ -249,6 +271,28 @@ namespace Temporalio.Client
         public Task<GetAsyncOperationResponse> GetAsyncOperationAsync(GetAsyncOperationRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetAsyncOperation", req, GetAsyncOperationResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetConnectivityRule.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetConnectivityRuleResponse> GetConnectivityRuleAsync(GetConnectivityRuleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetConnectivityRule", req, GetConnectivityRuleResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetConnectivityRules.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetConnectivityRulesResponse> GetConnectivityRulesAsync(GetConnectivityRulesRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetConnectivityRules", req, GetConnectivityRulesResponse.Parser, options);
         }
 
         /// <summary>
@@ -513,6 +557,17 @@ namespace Temporalio.Client
         public Task<UpdateNamespaceExportSinkResponse> UpdateNamespaceExportSinkAsync(UpdateNamespaceExportSinkRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateNamespaceExportSink", req, UpdateNamespaceExportSinkResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateNamespaceTags.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateNamespaceTagsResponse> UpdateNamespaceTagsAsync(UpdateNamespaceTagsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateNamespaceTags", req, UpdateNamespaceTagsResponse.Parser, options);
         }
 
         /// <summary>

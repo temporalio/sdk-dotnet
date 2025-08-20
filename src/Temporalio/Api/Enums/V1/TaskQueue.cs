@@ -42,13 +42,16 @@ namespace Temporalio.Api.Enums.V1 {
             "S0ZMT1dTX09OTFkQAhIqCiZCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9V",
             "TlJFQUNIQUJMRRADKmgKFURlc2NyaWJlVGFza1F1ZXVlTW9kZRIoCiRERVND",
             "UklCRV9UQVNLX1FVRVVFX01PREVfVU5TUEVDSUZJRUQQABIlCiFERVNDUklC",
-            "RV9UQVNLX1FVRVVFX01PREVfRU5IQU5DRUQQAUKGAQoYaW8udGVtcG9yYWwu",
-            "YXBpLmVudW1zLnYxQg5UYXNrUXVldWVQcm90b1ABWiFnby50ZW1wb3JhbC5p",
-            "by9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5W",
-            "MeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "RV9UQVNLX1FVRVVFX01PREVfRU5IQU5DRUQQASqLAQoPUmF0ZUxpbWl0U291",
+            "cmNlEiEKHVJBVEVfTElNSVRfU09VUkNFX1VOU1BFQ0lGSUVEEAASGQoVUkFU",
+            "RV9MSU1JVF9TT1VSQ0VfQVBJEAESHAoYUkFURV9MSU1JVF9TT1VSQ0VfV09S",
+            "S0VSEAISHAoYUkFURV9MSU1JVF9TT1VSQ0VfU1lTVEVNEANChgEKGGlvLnRl",
+            "bXBvcmFsLmFwaS5lbnVtcy52MUIOVGFza1F1ZXVlUHJvdG9QAVohZ28udGVt",
+            "cG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGku",
+            "RW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), typeof(global::Temporalio.Api.Enums.V1.BuildIdTaskReachability), typeof(global::Temporalio.Api.Enums.V1.DescribeTaskQueueMode), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), typeof(global::Temporalio.Api.Enums.V1.BuildIdTaskReachability), typeof(global::Temporalio.Api.Enums.V1.DescribeTaskQueueMode), typeof(global::Temporalio.Api.Enums.V1.RateLimitSource), }, null, null));
     }
     #endregion
 
@@ -167,6 +170,25 @@ namespace Temporalio.Api.Enums.V1 {
     /// Enhanced mode reports aggregated results for all partitions, supports Build IDs, and reports richer info.
     /// </summary>
     [pbr::OriginalName("DESCRIBE_TASK_QUEUE_MODE_ENHANCED")] Enhanced = 1,
+  }
+
+  /// <summary>
+  /// Source for the effective rate limit.
+  /// </summary>
+  public enum RateLimitSource {
+    [pbr::OriginalName("RATE_LIMIT_SOURCE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// The value was set by the API.
+    /// </summary>
+    [pbr::OriginalName("RATE_LIMIT_SOURCE_API")] Api = 1,
+    /// <summary>
+    /// The value was set by a worker.
+    /// </summary>
+    [pbr::OriginalName("RATE_LIMIT_SOURCE_WORKER")] Worker = 2,
+    /// <summary>
+    /// The value was set as the system default.
+    /// </summary>
+    [pbr::OriginalName("RATE_LIMIT_SOURCE_SYSTEM")] System = 3,
   }
 
   #endregion
