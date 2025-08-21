@@ -133,10 +133,7 @@ namespace Temporalio.Tests
                         exceptions.Add(ex);
                     }
                 }
-                if (!found)
-                {
-                    throw new AggregateException($"Item {item} had no match", exceptions);
-                }
+                Assert.True(found, $"Item {item} had no match");
             }
         }
 
