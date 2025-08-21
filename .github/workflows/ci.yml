@@ -69,10 +69,10 @@ jobs:
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
           npx doctoc README.md
-          git add src/Temporalio/Api
+          git add src/Temporalio/Api src/Temporalio/Bridge/Api
           git config --global core.safecrlf false
           git diff --cached > generator.diff
-          git diff --exit-code
+          git diff --cached --exit-code
 
       - name: Upload generator diff
         uses: actions/upload-artifact@v4
