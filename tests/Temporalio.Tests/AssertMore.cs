@@ -119,7 +119,6 @@ namespace Temporalio.Tests
             foreach (var item in items)
             {
                 var found = false;
-                var exceptions = new List<Exception>();
                 foreach (var action in actions)
                 {
                     try
@@ -128,9 +127,8 @@ namespace Temporalio.Tests
                         found = true;
                         break;
                     }
-                    catch (Xunit.Sdk.XunitException ex)
+                    catch (Xunit.Sdk.XunitException)
                     {
-                        exceptions.Add(ex);
                     }
                 }
                 Assert.True(found, $"Item {item} had no match");
