@@ -129,10 +129,10 @@ namespace Temporalio.Worker
                         }
                         break;
                     case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
-                        if (job.ResolveNexusOperationStart.CancelledBeforeStart != null)
+                        if (job.ResolveNexusOperationStart.Failed != null)
                         {
                             await codec.DecodeFailureAsync(
-                                job.ResolveNexusOperationStart.CancelledBeforeStart).
+                                job.ResolveNexusOperationStart.Failed).
                                 ConfigureAwait(false);
                         }
                         break;

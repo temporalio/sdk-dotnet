@@ -7304,9 +7304,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public class WorkflowUsingPriorities
     {
         [Activity]
-        public static string CheckPriorityActivity(int shouldHavePriority)
+        public static string CheckPriorityActivity(int shouldHavePriority, string? expectedFairnessKey = null, float? expectedFairnessWeight = null)
         {
             Assert.Equal(shouldHavePriority, ActivityExecutionContext.Current.Info.Priority?.PriorityKey);
+            Assert.Equal(expectedFairnessKey, ActivityExecutionContext.Current.Info.Priority?.FairnessKey);
+            Assert.Equal(expectedFairnessWeight, ActivityExecutionContext.Current.Info.Priority?.FairnessWeight);
             return "Done!";
         }
 
@@ -7314,33 +7316,35 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public static string SayHello(string name) => $"Hello, {name}!";
 
         [WorkflowRun]
-        public async Task<string> RunAsync(int? expectedPriority, bool stopAfterCheck)
+        public async Task<string> RunAsync(int? expectedPriority, string? expectedFairnessKey = null, float? expectedFairnessWeight = null, bool stopAfterCheck = false)
         {
             Assert.Equal(expectedPriority, Workflow.Info.Priority?.PriorityKey);
+            Assert.Equal(expectedFairnessKey, Workflow.Info.Priority?.FairnessKey);
+            Assert.Equal(expectedFairnessWeight, Workflow.Info.Priority?.FairnessWeight);
             if (stopAfterCheck)
             {
                 return "Done!";
             }
 
-            // Execute child workflow with priority 4
+            // Execute child workflow with priority 4 and fairness key "high" with weight 2.5
             await Workflow.ExecuteChildWorkflowAsync(
-                (WorkflowUsingPriorities wf) => wf.RunAsync(4, true),
-                new() { Priority = new(4) });
+                (WorkflowUsingPriorities wf) => wf.RunAsync(4, "high", 2.5f, true),
+                new() { Priority = new(4, "high", 2.5f) });
 
-            // Start child workflow with priority 2
+            // Start child workflow with priority 2, fairness key "low" and weight 0.8
             var handle = await Workflow.StartChildWorkflowAsync(
-                (WorkflowUsingPriorities wf) => wf.RunAsync(2, true),
-                new() { Priority = new(2) });
+                (WorkflowUsingPriorities wf) => wf.RunAsync(2, "low", 0.8f, true),
+                new() { Priority = new(2, "low", 0.8f) });
 
             await handle.GetResultAsync();
 
-            // Execute activity with priority 5
+            // Execute activity with priority 5, fairness key "tenant-abc", and weight 1.5
             await Workflow.ExecuteActivityAsync(
-                () => SayHello("hi"),
+                () => CheckPriorityActivity(5, "tenant-abc", 1.5f),
                 new()
                 {
                     StartToCloseTimeout = TimeSpan.FromSeconds(5),
-                    Priority = new(5),
+                    Priority = new(5, "tenant-abc", 1.5f),
                 });
 
             return "Done!";
@@ -7353,17 +7357,17 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await ExecuteWorkerAsync<WorkflowUsingPriorities>(
             async worker =>
             {
-                // Start workflow with priority 1
+                // Start workflow with priority 1, fairness key "tenant-xyz", and weight 3.2
                 var handle = await Client.StartWorkflowAsync(
-                    (WorkflowUsingPriorities wf) => wf.RunAsync(1, false),
+                    (WorkflowUsingPriorities wf) => wf.RunAsync(1, "tenant-xyz", 3.2f, false),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
                     {
-                        Priority = new(1),
+                        Priority = new(1, "tenant-xyz", 3.2f),
                     });
 
                 await handle.GetResultAsync();
 
-                // Check history for priority values
+                // Check history for priority values including fairness fields
                 var history = await handle.FetchHistoryAsync();
                 bool firstChild = true;
 
@@ -7372,28 +7376,36 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     if (evt.WorkflowExecutionStartedEventAttributes != null)
                     {
                         Assert.Equal(1, evt.WorkflowExecutionStartedEventAttributes.Priority?.PriorityKey);
+                        Assert.Equal("tenant-xyz", evt.WorkflowExecutionStartedEventAttributes.Priority?.FairnessKey);
+                        Assert.Equal(3.2f, evt.WorkflowExecutionStartedEventAttributes.Priority?.FairnessWeight);
                     }
                     else if (evt.StartChildWorkflowExecutionInitiatedEventAttributes != null)
                     {
                         if (firstChild)
                         {
                             Assert.Equal(4, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.PriorityKey);
+                            Assert.Equal("high", evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.FairnessKey);
+                            Assert.Equal(2.5f, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.FairnessWeight);
                             firstChild = false;
                         }
                         else
                         {
                             Assert.Equal(2, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.PriorityKey);
+                            Assert.Equal("low", evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.FairnessKey);
+                            Assert.Equal(0.8f, evt.StartChildWorkflowExecutionInitiatedEventAttributes.Priority?.FairnessWeight);
                         }
                     }
                     else if (evt.ActivityTaskScheduledEventAttributes != null)
                     {
                         Assert.Equal(5, evt.ActivityTaskScheduledEventAttributes.Priority?.PriorityKey);
+                        Assert.Equal("tenant-abc", evt.ActivityTaskScheduledEventAttributes.Priority?.FairnessKey);
+                        Assert.Equal(1.5f, evt.ActivityTaskScheduledEventAttributes.Priority?.FairnessWeight);
                     }
                 }
 
-                // Verify a workflow started without priorities sees null for the key
+                // Verify a workflow started without priorities sees null for all priority fields
                 handle = await Client.StartWorkflowAsync(
-                    (WorkflowUsingPriorities wf) => wf.RunAsync(null, true),
+                    (WorkflowUsingPriorities wf) => wf.RunAsync(null, null, null, true),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
 
                 await handle.GetResultAsync();

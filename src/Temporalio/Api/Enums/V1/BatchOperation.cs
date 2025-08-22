@@ -25,20 +25,23 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cit0ZW1wb3JhbC9hcGkvZW51bXMvdjEvYmF0Y2hfb3BlcmF0aW9uLnByb3Rv",
-            "EhV0ZW1wb3JhbC5hcGkuZW51bXMudjEqlAIKEkJhdGNoT3BlcmF0aW9uVHlw",
+            "EhV0ZW1wb3JhbC5hcGkuZW51bXMudjEqmgMKEkJhdGNoT3BlcmF0aW9uVHlw",
             "ZRIkCiBCQVRDSF9PUEVSQVRJT05fVFlQRV9VTlNQRUNJRklFRBAAEiIKHkJB",
             "VENIX09QRVJBVElPTl9UWVBFX1RFUk1JTkFURRABEh8KG0JBVENIX09QRVJB",
             "VElPTl9UWVBFX0NBTkNFTBACEh8KG0JBVENIX09QRVJBVElPTl9UWVBFX1NJ",
             "R05BTBADEh8KG0JBVENIX09QRVJBVElPTl9UWVBFX0RFTEVURRAEEh4KGkJB",
             "VENIX09QRVJBVElPTl9UWVBFX1JFU0VUEAUSMQotQkFUQ0hfT1BFUkFUSU9O",
-            "X1RZUEVfVVBEQVRFX0VYRUNVVElPTl9PUFRJT05TEAYqpgEKE0JhdGNoT3Bl",
-            "cmF0aW9uU3RhdGUSJQohQkFUQ0hfT1BFUkFUSU9OX1NUQVRFX1VOU1BFQ0lG",
-            "SUVEEAASIQodQkFUQ0hfT1BFUkFUSU9OX1NUQVRFX1JVTk5JTkcQARIjCh9C",
-            "QVRDSF9PUEVSQVRJT05fU1RBVEVfQ09NUExFVEVEEAISIAocQkFUQ0hfT1BF",
-            "UkFUSU9OX1NUQVRFX0ZBSUxFRBADQosBChhpby50ZW1wb3JhbC5hcGkuZW51",
-            "bXMudjFCE0JhdGNoT3BlcmF0aW9uUHJvdG9QAVohZ28udGVtcG9yYWwuaW8v",
-            "YXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHq",
-            "AhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "X1RZUEVfVVBEQVRFX0VYRUNVVElPTl9PUFRJT05TEAYSKQolQkFUQ0hfT1BF",
+            "UkFUSU9OX1RZUEVfVU5QQVVTRV9BQ1RJVklUWRAHEjAKLEJBVENIX09QRVJB",
+            "VElPTl9UWVBFX1VQREFURV9BQ1RJVklUWV9PUFRJT05TEAgSJwojQkFUQ0hf",
+            "T1BFUkFUSU9OX1RZUEVfUkVTRVRfQUNUSVZJVFkQCSqmAQoTQmF0Y2hPcGVy",
+            "YXRpb25TdGF0ZRIlCiFCQVRDSF9PUEVSQVRJT05fU1RBVEVfVU5TUEVDSUZJ",
+            "RUQQABIhCh1CQVRDSF9PUEVSQVRJT05fU1RBVEVfUlVOTklORxABEiMKH0JB",
+            "VENIX09QRVJBVElPTl9TVEFURV9DT01QTEVURUQQAhIgChxCQVRDSF9PUEVS",
+            "QVRJT05fU1RBVEVfRkFJTEVEEANCiwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVt",
+            "cy52MUITQmF0Y2hPcGVyYXRpb25Qcm90b1ABWiFnby50ZW1wb3JhbC5pby9h",
+            "cGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoC",
+            "GlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.BatchOperationType), typeof(global::Temporalio.Api.Enums.V1.BatchOperationState), }, null, null));
@@ -55,6 +58,9 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("BATCH_OPERATION_TYPE_DELETE")] Delete = 4,
     [pbr::OriginalName("BATCH_OPERATION_TYPE_RESET")] Reset = 5,
     [pbr::OriginalName("BATCH_OPERATION_TYPE_UPDATE_EXECUTION_OPTIONS")] UpdateExecutionOptions = 6,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_UNPAUSE_ACTIVITY")] UnpauseActivity = 7,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_UPDATE_ACTIVITY_OPTIONS")] UpdateActivityOptions = 8,
+    [pbr::OriginalName("BATCH_OPERATION_TYPE_RESET_ACTIVITY")] ResetActivity = 9,
   }
 
   public enum BatchOperationState {

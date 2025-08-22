@@ -89,11 +89,13 @@ namespace Temporalio.Api.Common.V1 {
             "ZXN0SWRSZWZlcmVuY2USEgoKcmVxdWVzdF9pZBgBIAEoCRI0CgpldmVudF90",
             "eXBlGAIgASgOMiAudGVtcG9yYWwuYXBpLmVudW1zLnYxLkV2ZW50VHlwZUIL",
             "CglyZWZlcmVuY2UaGgoIQmF0Y2hKb2ISDgoGam9iX2lkGAEgASgJQgkKB3Zh",
-            "cmlhbnQiIAoIUHJpb3JpdHkSFAoMcHJpb3JpdHlfa2V5GAEgASgFQokBChlp",
-            "by50ZW1wb3JhbC5hcGkuY29tbW9uLnYxQgxNZXNzYWdlUHJvdG9QAVojZ28u",
-            "dGVtcG9yYWwuaW8vYXBpL2NvbW1vbi92MTtjb21tb26qAhhUZW1wb3JhbGlv",
-            "LkFwaS5Db21tb24uVjHqAhtUZW1wb3JhbGlvOjpBcGk6OkNvbW1vbjo6VjFi",
-            "BnByb3RvMw=="));
+            "cmlhbnQiTwoIUHJpb3JpdHkSFAoMcHJpb3JpdHlfa2V5GAEgASgFEhQKDGZh",
+            "aXJuZXNzX2tleRgCIAEoCRIXCg9mYWlybmVzc193ZWlnaHQYAyABKAIiOwoO",
+            "V29ya2VyU2VsZWN0b3ISHQoTd29ya2VyX2luc3RhbmNlX2tleRgBIAEoCUgA",
+            "QgoKCHNlbGVjdG9yQokBChlpby50ZW1wb3JhbC5hcGkuY29tbW9uLnYxQgxN",
+            "ZXNzYWdlUHJvdG9QAVojZ28udGVtcG9yYWwuaW8vYXBpL2NvbW1vbi92MTtj",
+            "b21tb26qAhhUZW1wb3JhbGlvLkFwaS5Db21tb24uVjHqAhtUZW1wb3JhbGlv",
+            "OjpBcGk6OkNvbW1vbjo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.EventTypeReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -116,7 +118,8 @@ namespace Temporalio.Api.Common.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link), global::Temporalio.Api.Common.V1.Link.Parser, new[]{ "WorkflowEvent", "BatchJob" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent), global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Parser, new[]{ "Namespace", "WorkflowId", "RunId", "EventRef", "RequestIdRef" }, new[]{ "Reference" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Types.EventReference), global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Types.EventReference.Parser, new[]{ "EventId", "EventType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Types.RequestIdReference), global::Temporalio.Api.Common.V1.Link.Types.WorkflowEvent.Types.RequestIdReference.Parser, new[]{ "RequestId", "EventType" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Link.Types.BatchJob), global::Temporalio.Api.Common.V1.Link.Types.BatchJob.Parser, new[]{ "JobId" }, null, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Priority), global::Temporalio.Api.Common.V1.Priority.Parser, new[]{ "PriorityKey" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.Priority), global::Temporalio.Api.Common.V1.Priority.Parser, new[]{ "PriorityKey", "FairnessKey", "FairnessWeight" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Common.V1.WorkerSelector), global::Temporalio.Api.Common.V1.WorkerSelector.Parser, new[]{ "WorkerInstanceKey" }, new[]{ "Selector" }, null, null, null)
           }));
     }
     #endregion
@@ -5627,24 +5630,37 @@ namespace Temporalio.Api.Common.V1 {
 
   /// <summary>
   /// Priority contains metadata that controls relative ordering of task processing
-  /// when tasks are backlogged in a queue. Initially, Priority will be used in
-  /// activity and workflow task queues, which are typically where backlogs exist.
-  /// Other queues in the server (such as transfer and timer queues) and rate
-  /// limiting decisions do not use Priority, but may in the future.
+  /// when tasks are backed up in a queue. Initially, Priority will be used in
+  /// matching (workflow and activity) task queues. Later it may be used in history
+  /// task queues and in rate limiting decisions.
   ///
-  /// Priority is attached to workflows and activities. Activities and child
-  /// workflows inherit Priority from the workflow that created them, but may
-  /// override fields when they are started or modified. For each field of a
-  /// Priority on an activity/workflow, not present or equal to zero/empty string
-  /// means to inherit the value from the calling workflow, or if there is no
-  /// calling workflow, then use the default (documented below).
+  /// Priority is attached to workflows and activities. By default, activities
+  /// inherit Priority from the workflow that created them, but may override fields
+  /// when an activity is started or modified.
   ///
-  /// Despite being named "Priority", this message will also contains fields that
+  /// Despite being named "Priority", this message also contains fields that
   /// control "fairness" mechanisms.
   ///
+  /// For all fields, the field not present or equal to zero/empty string means to
+  /// inherit the value from the calling workflow, or if there is no calling
+  /// workflow, then use the default value.
+  ///
+  /// For all fields other than fairness_key, the zero value isn't meaningful so
+  /// there's no confusion between inherit/default and a meaningful value. For
+  /// fairness_key, the empty string will be interpreted as "inherit". This means
+  /// that if a workflow has a non-empty fairness key, you can't override the
+  /// fairness key of its activity to the empty string.
+  ///
   /// The overall semantics of Priority are:
-  /// 1. First, consider "priority_key": lower number goes first.
-  /// (more will be added here later)
+  /// 1. First, consider "priority": higher priority (lower number) goes first.
+  /// 2. Then, consider fairness: try to dispatch tasks for different fairness keys
+  ///    in proportion to their weight.
+  ///
+  /// Applications may use any subset of mechanisms that are useful to them and
+  /// leave the other fields to use default values.
+  ///
+  /// Not all queues in the system may support the "full" semantics of all priority
+  /// fields. (Currently only support in matching task queues is planned.)
   /// </summary>
   public sealed partial class Priority : pb::IMessage<Priority>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -5681,6 +5697,8 @@ namespace Temporalio.Api.Common.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public Priority(Priority other) : this() {
       priorityKey_ = other.priorityKey_;
+      fairnessKey_ = other.fairnessKey_;
+      fairnessWeight_ = other.fairnessWeight_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5702,8 +5720,9 @@ namespace Temporalio.Api.Common.V1 {
     /// The maximum priority value (minimum priority) is determined by server
     /// configuration, and defaults to 5.
     ///
-    /// The default priority is (min+max)/2. With the default max of 5 and min of
-    /// 1, that comes out to 3.
+    /// If priority is not present (or zero), then the effective priority will be
+    /// the default priority, which is is calculated by (min+max)/2. With the
+    /// default max of 5, and min of 1, that comes out to 3.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -5711,6 +5730,66 @@ namespace Temporalio.Api.Common.V1 {
       get { return priorityKey_; }
       set {
         priorityKey_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "fairness_key" field.</summary>
+    public const int FairnessKeyFieldNumber = 2;
+    private string fairnessKey_ = "";
+    /// <summary>
+    /// Fairness key is a short string that's used as a key for a fairness
+    /// balancing mechanism. It may correspond to a tenant id, or to a fixed
+    /// string like "high" or "low". The default is the empty string.
+    ///
+    /// The fairness mechanism attempts to dispatch tasks for a given key in
+    /// proportion to its weight. For example, using a thousand distinct tenant
+    /// ids, each with a weight of 1.0 (the default) will result in each tenant
+    /// getting a roughly equal share of task dispatch throughput.
+    ///
+    /// (Note: this does not imply equal share of worker capacity! Fairness
+    /// decisions are made based on queue statistics, not
+    /// current worker load.)
+    ///
+    /// As another example, using keys "high" and "low" with weight 9.0 and 1.0
+    /// respectively will prefer dispatching "high" tasks over "low" tasks at a
+    /// 9:1 ratio, while allowing either key to use all worker capacity if the
+    /// other is not present.
+    ///
+    /// All fairness mechanisms, including rate limits, are best-effort and
+    /// probabilistic. The results may not match what a "perfect" algorithm with
+    /// infinite resources would produce. The more unique keys are used, the less
+    /// accurate the results will be.
+    ///
+    /// Fairness keys are limited to 64 bytes.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string FairnessKey {
+      get { return fairnessKey_; }
+      set {
+        fairnessKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "fairness_weight" field.</summary>
+    public const int FairnessWeightFieldNumber = 3;
+    private float fairnessWeight_;
+    /// <summary>
+    /// Fairness weight for a task can come from multiple sources for
+    /// flexibility. From highest to lowest precedence:
+    /// 1. Weights for a small set of keys can be overridden in task queue
+    ///    configuration with an API.
+    /// 2. It can be attached to the workflow/activity in this field.
+    /// 3. The default weight of 1.0 will be used.
+    ///
+    /// Weight values are clamped to the range [0.001, 1000].
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float FairnessWeight {
+      get { return fairnessWeight_; }
+      set {
+        fairnessWeight_ = value;
       }
     }
 
@@ -5730,6 +5809,8 @@ namespace Temporalio.Api.Common.V1 {
         return true;
       }
       if (PriorityKey != other.PriorityKey) return false;
+      if (FairnessKey != other.FairnessKey) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FairnessWeight, other.FairnessWeight)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -5738,6 +5819,8 @@ namespace Temporalio.Api.Common.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (PriorityKey != 0) hash ^= PriorityKey.GetHashCode();
+      if (FairnessKey.Length != 0) hash ^= FairnessKey.GetHashCode();
+      if (FairnessWeight != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FairnessWeight);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5760,6 +5843,14 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(8);
         output.WriteInt32(PriorityKey);
       }
+      if (FairnessKey.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(FairnessKey);
+      }
+      if (FairnessWeight != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(FairnessWeight);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5774,6 +5865,14 @@ namespace Temporalio.Api.Common.V1 {
         output.WriteRawTag(8);
         output.WriteInt32(PriorityKey);
       }
+      if (FairnessKey.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(FairnessKey);
+      }
+      if (FairnessWeight != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(FairnessWeight);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -5786,6 +5885,12 @@ namespace Temporalio.Api.Common.V1 {
       int size = 0;
       if (PriorityKey != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(PriorityKey);
+      }
+      if (FairnessKey.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(FairnessKey);
+      }
+      if (FairnessWeight != 0F) {
+        size += 1 + 4;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5801,6 +5906,12 @@ namespace Temporalio.Api.Common.V1 {
       }
       if (other.PriorityKey != 0) {
         PriorityKey = other.PriorityKey;
+      }
+      if (other.FairnessKey.Length != 0) {
+        FairnessKey = other.FairnessKey;
+      }
+      if (other.FairnessWeight != 0F) {
+        FairnessWeight = other.FairnessWeight;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5821,6 +5932,14 @@ namespace Temporalio.Api.Common.V1 {
             PriorityKey = input.ReadInt32();
             break;
           }
+          case 18: {
+            FairnessKey = input.ReadString();
+            break;
+          }
+          case 29: {
+            FairnessWeight = input.ReadFloat();
+            break;
+          }
         }
       }
     #endif
@@ -5838,6 +5957,255 @@ namespace Temporalio.Api.Common.V1 {
             break;
           case 8: {
             PriorityKey = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            FairnessKey = input.ReadString();
+            break;
+          }
+          case 29: {
+            FairnessWeight = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// This is used to send commands to a specific worker or a group of workers.
+  /// Right now, it is used to send commands to a specific worker instance.
+  /// Will be extended to be able to send command to multiple workers.
+  /// </summary>
+  public sealed partial class WorkerSelector : pb::IMessage<WorkerSelector>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkerSelector> _parser = new pb::MessageParser<WorkerSelector>(() => new WorkerSelector());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkerSelector> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Common.V1.MessageReflection.Descriptor.MessageTypes[17]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerSelector() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerSelector(WorkerSelector other) : this() {
+      switch (other.SelectorCase) {
+        case SelectorOneofCase.WorkerInstanceKey:
+          WorkerInstanceKey = other.WorkerInstanceKey;
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerSelector Clone() {
+      return new WorkerSelector(this);
+    }
+
+    /// <summary>Field number for the "worker_instance_key" field.</summary>
+    public const int WorkerInstanceKeyFieldNumber = 1;
+    /// <summary>
+    /// Worker instance key to which the command should be sent.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string WorkerInstanceKey {
+      get { return HasWorkerInstanceKey ? (string) selector_ : ""; }
+      set {
+        selector_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        selectorCase_ = SelectorOneofCase.WorkerInstanceKey;
+      }
+    }
+    /// <summary>Gets whether the "worker_instance_key" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasWorkerInstanceKey {
+      get { return selectorCase_ == SelectorOneofCase.WorkerInstanceKey; }
+    }
+    /// <summary> Clears the value of the oneof if it's currently set to "worker_instance_key" </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearWorkerInstanceKey() {
+      if (HasWorkerInstanceKey) {
+        ClearSelector();
+      }
+    }
+
+    private object selector_;
+    /// <summary>Enum of possible cases for the "selector" oneof.</summary>
+    public enum SelectorOneofCase {
+      None = 0,
+      WorkerInstanceKey = 1,
+    }
+    private SelectorOneofCase selectorCase_ = SelectorOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public SelectorOneofCase SelectorCase {
+      get { return selectorCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSelector() {
+      selectorCase_ = SelectorOneofCase.None;
+      selector_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkerSelector);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkerSelector other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (WorkerInstanceKey != other.WorkerInstanceKey) return false;
+      if (SelectorCase != other.SelectorCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (HasWorkerInstanceKey) hash ^= WorkerInstanceKey.GetHashCode();
+      hash ^= (int) selectorCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (HasWorkerInstanceKey) {
+        output.WriteRawTag(10);
+        output.WriteString(WorkerInstanceKey);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (HasWorkerInstanceKey) {
+        output.WriteRawTag(10);
+        output.WriteString(WorkerInstanceKey);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (HasWorkerInstanceKey) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(WorkerInstanceKey);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkerSelector other) {
+      if (other == null) {
+        return;
+      }
+      switch (other.SelectorCase) {
+        case SelectorOneofCase.WorkerInstanceKey:
+          WorkerInstanceKey = other.WorkerInstanceKey;
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            WorkerInstanceKey = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            WorkerInstanceKey = input.ReadString();
             break;
           }
         }

@@ -411,7 +411,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "UpdateWorkflow:UpdateTaskFailure",
                 Parent: null,
                 Tags: workflowTags,
-                Events: new[] { ActivityAssertion.ExceptionEvent("workflow execution already completed") }));
+                Events: new[] { ActivityAssertion.ExceptionEvent("workflow update was aborted by closing workflow") }));
     }
 
     [Fact]

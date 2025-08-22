@@ -27,47 +27,59 @@ namespace Temporalio.Api.Batch.V1 {
             "CiN0ZW1wb3JhbC9hcGkvYmF0Y2gvdjEvbWVzc2FnZS5wcm90bxIVdGVtcG9y",
             "YWwuYXBpLmJhdGNoLnYxGh5nb29nbGUvcHJvdG9idWYvZHVyYXRpb24ucHJv",
             "dG8aIGdvb2dsZS9wcm90b2J1Zi9maWVsZF9tYXNrLnByb3RvGh9nb29nbGUv",
-            "cHJvdG9idWYvdGltZXN0YW1wLnByb3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9u",
-            "L3YxL21lc3NhZ2UucHJvdG8aK3RlbXBvcmFsL2FwaS9lbnVtcy92MS9iYXRj",
-            "aF9vcGVyYXRpb24ucHJvdG8aIXRlbXBvcmFsL2FwaS9lbnVtcy92MS9yZXNl",
-            "dC5wcm90bxojdGVtcG9yYWwvYXBpL3J1bGVzL3YxL21lc3NhZ2UucHJvdG8a",
-            "JnRlbXBvcmFsL2FwaS93b3JrZmxvdy92MS9tZXNzYWdlLnByb3RvIr8BChJC",
-            "YXRjaE9wZXJhdGlvbkluZm8SDgoGam9iX2lkGAEgASgJEjkKBXN0YXRlGAIg",
-            "ASgOMioudGVtcG9yYWwuYXBpLmVudW1zLnYxLkJhdGNoT3BlcmF0aW9uU3Rh",
-            "dGUSLgoKc3RhcnRfdGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
-            "c3RhbXASLgoKY2xvc2VfdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5U",
-            "aW1lc3RhbXAiYAoZQmF0Y2hPcGVyYXRpb25UZXJtaW5hdGlvbhIxCgdkZXRh",
-            "aWxzGAEgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxIQ",
-            "CghpZGVudGl0eRgCIAEoCSKZAQoUQmF0Y2hPcGVyYXRpb25TaWduYWwSDgoG",
-            "c2lnbmFsGAEgASgJEi8KBWlucHV0GAIgASgLMiAudGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5QYXlsb2FkcxIuCgZoZWFkZXIYAyABKAsyHi50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLkhlYWRlchIQCghpZGVudGl0eRgEIAEoCSIuChpCYXRj",
-            "aE9wZXJhdGlvbkNhbmNlbGxhdGlvbhIQCghpZGVudGl0eRgBIAEoCSIqChZC",
-            "YXRjaE9wZXJhdGlvbkRlbGV0aW9uEhAKCGlkZW50aXR5GAEgASgJIq4CChNC",
-            "YXRjaE9wZXJhdGlvblJlc2V0EhAKCGlkZW50aXR5GAMgASgJEjUKB29wdGlv",
-            "bnMYBCABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJlc2V0T3B0aW9u",
-            "cxI4CgpyZXNldF90eXBlGAEgASgOMiAudGVtcG9yYWwuYXBpLmVudW1zLnYx",
-            "LlJlc2V0VHlwZUICGAESRwoScmVzZXRfcmVhcHBseV90eXBlGAIgASgOMicu",
-            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLlJlc2V0UmVhcHBseVR5cGVCAhgBEksK",
-            "FXBvc3RfcmVzZXRfb3BlcmF0aW9ucxgFIAMoCzIsLnRlbXBvcmFsLmFwaS53",
-            "b3JrZmxvdy52MS5Qb3N0UmVzZXRPcGVyYXRpb24iyQEKLEJhdGNoT3BlcmF0",
-            "aW9uVXBkYXRlV29ya2Zsb3dFeGVjdXRpb25PcHRpb25zEhAKCGlkZW50aXR5",
-            "GAEgASgJElYKGndvcmtmbG93X2V4ZWN1dGlvbl9vcHRpb25zGAIgASgLMjIu",
-            "dGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLldvcmtmbG93RXhlY3V0aW9uT3B0",
-            "aW9ucxIvCgt1cGRhdGVfbWFzaxgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5G",
-            "aWVsZE1hc2siwAEKH0JhdGNoT3BlcmF0aW9uVW5wYXVzZUFjdGl2aXRpZXMS",
-            "EAoIaWRlbnRpdHkYASABKAkSDgoEdHlwZRgCIAEoCUgAEhMKCW1hdGNoX2Fs",
-            "bBgDIAEoCEgAEhYKDnJlc2V0X2F0dGVtcHRzGAQgASgIEhcKD3Jlc2V0X2hl",
-            "YXJ0YmVhdBgFIAEoCBIpCgZqaXR0ZXIYBiABKAsyGS5nb29nbGUucHJvdG9i",
-            "dWYuRHVyYXRpb25CCgoIYWN0aXZpdHkihAEKIUJhdGNoT3BlcmF0aW9uVHJp",
-            "Z2dlcldvcmtmbG93UnVsZRIQCghpZGVudGl0eRgBIAEoCRIMCgJpZBgCIAEo",
-            "CUgAEjcKBHNwZWMYAyABKAsyJy50ZW1wb3JhbC5hcGkucnVsZXMudjEuV29y",
-            "a2Zsb3dSdWxlU3BlY0gAQgYKBHJ1bGVChAEKGGlvLnRlbXBvcmFsLmFwaS5i",
-            "YXRjaC52MUIMTWVzc2FnZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9i",
-            "YXRjaC92MTtiYXRjaKoCF1RlbXBvcmFsaW8uQXBpLkJhdGNoLlYx6gIaVGVt",
-            "cG9yYWxpbzo6QXBpOjpCYXRjaDo6VjFiBnByb3RvMw=="));
+            "cHJvdG9idWYvdGltZXN0YW1wLnByb3RvGiZ0ZW1wb3JhbC9hcGkvYWN0aXZp",
+            "dHkvdjEvbWVzc2FnZS5wcm90bxokdGVtcG9yYWwvYXBpL2NvbW1vbi92MS9t",
+            "ZXNzYWdlLnByb3RvGit0ZW1wb3JhbC9hcGkvZW51bXMvdjEvYmF0Y2hfb3Bl",
+            "cmF0aW9uLnByb3RvGiF0ZW1wb3JhbC9hcGkvZW51bXMvdjEvcmVzZXQucHJv",
+            "dG8aI3RlbXBvcmFsL2FwaS9ydWxlcy92MS9tZXNzYWdlLnByb3RvGiZ0ZW1w",
+            "b3JhbC9hcGkvd29ya2Zsb3cvdjEvbWVzc2FnZS5wcm90byK/AQoSQmF0Y2hP",
+            "cGVyYXRpb25JbmZvEg4KBmpvYl9pZBgBIAEoCRI5CgVzdGF0ZRgCIAEoDjIq",
+            "LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5CYXRjaE9wZXJhdGlvblN0YXRlEi4K",
+            "CnN0YXJ0X3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
+            "Ei4KCmNsb3NlX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
+            "YW1wImAKGUJhdGNoT3BlcmF0aW9uVGVybWluYXRpb24SMQoHZGV0YWlscxgB",
+            "IAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSEAoIaWRl",
+            "bnRpdHkYAiABKAkimQEKFEJhdGNoT3BlcmF0aW9uU2lnbmFsEg4KBnNpZ25h",
+            "bBgBIAEoCRIvCgVpbnB1dBgCIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24u",
+            "djEuUGF5bG9hZHMSLgoGaGVhZGVyGAMgASgLMh4udGVtcG9yYWwuYXBpLmNv",
+            "bW1vbi52MS5IZWFkZXISEAoIaWRlbnRpdHkYBCABKAkiLgoaQmF0Y2hPcGVy",
+            "YXRpb25DYW5jZWxsYXRpb24SEAoIaWRlbnRpdHkYASABKAkiKgoWQmF0Y2hP",
+            "cGVyYXRpb25EZWxldGlvbhIQCghpZGVudGl0eRgBIAEoCSKuAgoTQmF0Y2hP",
+            "cGVyYXRpb25SZXNldBIQCghpZGVudGl0eRgDIAEoCRI1CgdvcHRpb25zGAQg",
+            "ASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5SZXNldE9wdGlvbnMSOAoK",
+            "cmVzZXRfdHlwZRgBIAEoDjIgLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5SZXNl",
+            "dFR5cGVCAhgBEkcKEnJlc2V0X3JlYXBwbHlfdHlwZRgCIAEoDjInLnRlbXBv",
+            "cmFsLmFwaS5lbnVtcy52MS5SZXNldFJlYXBwbHlUeXBlQgIYARJLChVwb3N0",
+            "X3Jlc2V0X29wZXJhdGlvbnMYBSADKAsyLC50ZW1wb3JhbC5hcGkud29ya2Zs",
+            "b3cudjEuUG9zdFJlc2V0T3BlcmF0aW9uIskBCixCYXRjaE9wZXJhdGlvblVw",
+            "ZGF0ZVdvcmtmbG93RXhlY3V0aW9uT3B0aW9ucxIQCghpZGVudGl0eRgBIAEo",
+            "CRJWChp3b3JrZmxvd19leGVjdXRpb25fb3B0aW9ucxgCIAEoCzIyLnRlbXBv",
+            "cmFsLmFwaS53b3JrZmxvdy52MS5Xb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnMS",
+            "LwoLdXBkYXRlX21hc2sYAyABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRN",
+            "YXNrIsABCh9CYXRjaE9wZXJhdGlvblVucGF1c2VBY3Rpdml0aWVzEhAKCGlk",
+            "ZW50aXR5GAEgASgJEg4KBHR5cGUYAiABKAlIABITCgltYXRjaF9hbGwYAyAB",
+            "KAhIABIWCg5yZXNldF9hdHRlbXB0cxgEIAEoCBIXCg9yZXNldF9oZWFydGJl",
+            "YXQYBSABKAgSKQoGaml0dGVyGAYgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1",
+            "cmF0aW9uQgoKCGFjdGl2aXR5IoQBCiFCYXRjaE9wZXJhdGlvblRyaWdnZXJX",
+            "b3JrZmxvd1J1bGUSEAoIaWRlbnRpdHkYASABKAkSDAoCaWQYAiABKAlIABI3",
+            "CgRzcGVjGAMgASgLMicudGVtcG9yYWwuYXBpLnJ1bGVzLnYxLldvcmtmbG93",
+            "UnVsZVNwZWNIAEIGCgRydWxlIvUBCh1CYXRjaE9wZXJhdGlvblJlc2V0QWN0",
+            "aXZpdGllcxIQCghpZGVudGl0eRgBIAEoCRIOCgR0eXBlGAIgASgJSAASEwoJ",
+            "bWF0Y2hfYWxsGAMgASgISAASFgoOcmVzZXRfYXR0ZW1wdHMYBCABKAgSFwoP",
+            "cmVzZXRfaGVhcnRiZWF0GAUgASgIEhMKC2tlZXBfcGF1c2VkGAYgASgIEikK",
+            "BmppdHRlchgHIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIgChhy",
+            "ZXN0b3JlX29yaWdpbmFsX29wdGlvbnMYCCABKAhCCgoIYWN0aXZpdHki+AEK",
+            "I0JhdGNoT3BlcmF0aW9uVXBkYXRlQWN0aXZpdHlPcHRpb25zEhAKCGlkZW50",
+            "aXR5GAEgASgJEg4KBHR5cGUYAiABKAlIABITCgltYXRjaF9hbGwYAyABKAhI",
+            "ABJDChBhY3Rpdml0eV9vcHRpb25zGAQgASgLMikudGVtcG9yYWwuYXBpLmFj",
+            "dGl2aXR5LnYxLkFjdGl2aXR5T3B0aW9ucxIvCgt1cGRhdGVfbWFzaxgFIAEo",
+            "CzIaLmdvb2dsZS5wcm90b2J1Zi5GaWVsZE1hc2sSGAoQcmVzdG9yZV9vcmln",
+            "aW5hbBgGIAEoCEIKCghhY3Rpdml0eUKEAQoYaW8udGVtcG9yYWwuYXBpLmJh",
+            "dGNoLnYxQgxNZXNzYWdlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2Jh",
+            "dGNoL3YxO2JhdGNoqgIXVGVtcG9yYWxpby5BcGkuQmF0Y2guVjHqAhpUZW1w",
+            "b3JhbGlvOjpBcGk6OkJhdGNoOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Activity.V1.MessageReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationInfo), global::Temporalio.Api.Batch.V1.BatchOperationInfo.Parser, new[]{ "JobId", "State", "StartTime", "CloseTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationTermination), global::Temporalio.Api.Batch.V1.BatchOperationTermination.Parser, new[]{ "Details", "Identity" }, null, null, null, null),
@@ -77,7 +89,9 @@ namespace Temporalio.Api.Batch.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationReset), global::Temporalio.Api.Batch.V1.BatchOperationReset.Parser, new[]{ "Identity", "Options", "ResetType", "ResetReapplyType", "PostResetOperations" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationUpdateWorkflowExecutionOptions), global::Temporalio.Api.Batch.V1.BatchOperationUpdateWorkflowExecutionOptions.Parser, new[]{ "Identity", "WorkflowExecutionOptions", "UpdateMask" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationUnpauseActivities), global::Temporalio.Api.Batch.V1.BatchOperationUnpauseActivities.Parser, new[]{ "Identity", "Type", "MatchAll", "ResetAttempts", "ResetHeartbeat", "Jitter" }, new[]{ "Activity" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationTriggerWorkflowRule), global::Temporalio.Api.Batch.V1.BatchOperationTriggerWorkflowRule.Parser, new[]{ "Identity", "Id", "Spec" }, new[]{ "Rule" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationTriggerWorkflowRule), global::Temporalio.Api.Batch.V1.BatchOperationTriggerWorkflowRule.Parser, new[]{ "Identity", "Id", "Spec" }, new[]{ "Rule" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationResetActivities), global::Temporalio.Api.Batch.V1.BatchOperationResetActivities.Parser, new[]{ "Identity", "Type", "MatchAll", "ResetAttempts", "ResetHeartbeat", "KeepPaused", "Jitter", "RestoreOriginalOptions" }, new[]{ "Activity" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Batch.V1.BatchOperationUpdateActivityOptions), global::Temporalio.Api.Batch.V1.BatchOperationUpdateActivityOptions.Parser, new[]{ "Identity", "Type", "MatchAll", "ActivityOptions", "UpdateMask", "RestoreOriginal" }, new[]{ "Activity" }, null, null, null)
           }));
     }
     #endregion
@@ -2171,7 +2185,7 @@ namespace Temporalio.Api.Batch.V1 {
     public const int ResetAttemptsFieldNumber = 4;
     private bool resetAttempts_;
     /// <summary>
-    /// Providing this flag will also reset the number of attempts.
+    /// Setting this flag will also reset the number of attempts.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2186,7 +2200,7 @@ namespace Temporalio.Api.Batch.V1 {
     public const int ResetHeartbeatFieldNumber = 5;
     private bool resetHeartbeat_;
     /// <summary>
-    /// Providing this flag will also reset the heartbeat details.
+    /// Setting this flag will also reset the heartbeat details.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2827,6 +2841,1022 @@ namespace Temporalio.Api.Batch.V1 {
             }
             input.ReadMessage(subBuilder);
             Spec = subBuilder;
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// BatchOperationResetActivities sends activity reset requests in a batch.
+  /// NOTE: keep in sync with temporal.api.workflowservice.v1.ResetActivityRequest
+  /// </summary>
+  public sealed partial class BatchOperationResetActivities : pb::IMessage<BatchOperationResetActivities>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<BatchOperationResetActivities> _parser = new pb::MessageParser<BatchOperationResetActivities>(() => new BatchOperationResetActivities());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<BatchOperationResetActivities> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Batch.V1.MessageReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationResetActivities() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationResetActivities(BatchOperationResetActivities other) : this() {
+      identity_ = other.identity_;
+      resetAttempts_ = other.resetAttempts_;
+      resetHeartbeat_ = other.resetHeartbeat_;
+      keepPaused_ = other.keepPaused_;
+      jitter_ = other.jitter_ != null ? other.jitter_.Clone() : null;
+      restoreOriginalOptions_ = other.restoreOriginalOptions_;
+      switch (other.ActivityCase) {
+        case ActivityOneofCase.Type:
+          Type = other.Type;
+          break;
+        case ActivityOneofCase.MatchAll:
+          MatchAll = other.MatchAll;
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationResetActivities Clone() {
+      return new BatchOperationResetActivities(this);
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 1;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the worker/client.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 2;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Type {
+      get { return HasType ? (string) activity_ : ""; }
+      set {
+        activity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        activityCase_ = ActivityOneofCase.Type;
+      }
+    }
+    /// <summary>Gets whether the "type" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasType {
+      get { return activityCase_ == ActivityOneofCase.Type; }
+    }
+    /// <summary> Clears the value of the oneof if it's currently set to "type" </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearType() {
+      if (HasType) {
+        ClearActivity();
+      }
+    }
+
+    /// <summary>Field number for the "match_all" field.</summary>
+    public const int MatchAllFieldNumber = 3;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool MatchAll {
+      get { return HasMatchAll ? (bool) activity_ : false; }
+      set {
+        activity_ = value;
+        activityCase_ = ActivityOneofCase.MatchAll;
+      }
+    }
+    /// <summary>Gets whether the "match_all" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMatchAll {
+      get { return activityCase_ == ActivityOneofCase.MatchAll; }
+    }
+    /// <summary> Clears the value of the oneof if it's currently set to "match_all" </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMatchAll() {
+      if (HasMatchAll) {
+        ClearActivity();
+      }
+    }
+
+    /// <summary>Field number for the "reset_attempts" field.</summary>
+    public const int ResetAttemptsFieldNumber = 4;
+    private bool resetAttempts_;
+    /// <summary>
+    /// Setting this flag will also reset the number of attempts.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool ResetAttempts {
+      get { return resetAttempts_; }
+      set {
+        resetAttempts_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "reset_heartbeat" field.</summary>
+    public const int ResetHeartbeatFieldNumber = 5;
+    private bool resetHeartbeat_;
+    /// <summary>
+    /// Setting this flag will also reset the heartbeat details.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool ResetHeartbeat {
+      get { return resetHeartbeat_; }
+      set {
+        resetHeartbeat_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "keep_paused" field.</summary>
+    public const int KeepPausedFieldNumber = 6;
+    private bool keepPaused_;
+    /// <summary>
+    /// If activity is paused, it will remain paused after reset
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool KeepPaused {
+      get { return keepPaused_; }
+      set {
+        keepPaused_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "jitter" field.</summary>
+    public const int JitterFieldNumber = 7;
+    private global::Google.Protobuf.WellKnownTypes.Duration jitter_;
+    /// <summary>
+    /// If set, the activity will start at a random time within the specified jitter
+    /// duration, introducing variability to the start time.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration Jitter {
+      get { return jitter_; }
+      set {
+        jitter_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "restore_original_options" field.</summary>
+    public const int RestoreOriginalOptionsFieldNumber = 8;
+    private bool restoreOriginalOptions_;
+    /// <summary>
+    /// If set, the activity options will be restored to the defaults.
+    /// Default options are then options activity was created with.
+    /// They are part of the first ActivityTaskScheduled event.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool RestoreOriginalOptions {
+      get { return restoreOriginalOptions_; }
+      set {
+        restoreOriginalOptions_ = value;
+      }
+    }
+
+    private object activity_;
+    /// <summary>Enum of possible cases for the "activity" oneof.</summary>
+    public enum ActivityOneofCase {
+      None = 0,
+      Type = 2,
+      MatchAll = 3,
+    }
+    private ActivityOneofCase activityCase_ = ActivityOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityOneofCase ActivityCase {
+      get { return activityCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearActivity() {
+      activityCase_ = ActivityOneofCase.None;
+      activity_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as BatchOperationResetActivities);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(BatchOperationResetActivities other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Identity != other.Identity) return false;
+      if (Type != other.Type) return false;
+      if (MatchAll != other.MatchAll) return false;
+      if (ResetAttempts != other.ResetAttempts) return false;
+      if (ResetHeartbeat != other.ResetHeartbeat) return false;
+      if (KeepPaused != other.KeepPaused) return false;
+      if (!object.Equals(Jitter, other.Jitter)) return false;
+      if (RestoreOriginalOptions != other.RestoreOriginalOptions) return false;
+      if (ActivityCase != other.ActivityCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (HasType) hash ^= Type.GetHashCode();
+      if (HasMatchAll) hash ^= MatchAll.GetHashCode();
+      if (ResetAttempts != false) hash ^= ResetAttempts.GetHashCode();
+      if (ResetHeartbeat != false) hash ^= ResetHeartbeat.GetHashCode();
+      if (KeepPaused != false) hash ^= KeepPaused.GetHashCode();
+      if (jitter_ != null) hash ^= Jitter.GetHashCode();
+      if (RestoreOriginalOptions != false) hash ^= RestoreOriginalOptions.GetHashCode();
+      hash ^= (int) activityCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (HasType) {
+        output.WriteRawTag(18);
+        output.WriteString(Type);
+      }
+      if (HasMatchAll) {
+        output.WriteRawTag(24);
+        output.WriteBool(MatchAll);
+      }
+      if (ResetAttempts != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(ResetAttempts);
+      }
+      if (ResetHeartbeat != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(ResetHeartbeat);
+      }
+      if (KeepPaused != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(KeepPaused);
+      }
+      if (jitter_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(Jitter);
+      }
+      if (RestoreOriginalOptions != false) {
+        output.WriteRawTag(64);
+        output.WriteBool(RestoreOriginalOptions);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (HasType) {
+        output.WriteRawTag(18);
+        output.WriteString(Type);
+      }
+      if (HasMatchAll) {
+        output.WriteRawTag(24);
+        output.WriteBool(MatchAll);
+      }
+      if (ResetAttempts != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(ResetAttempts);
+      }
+      if (ResetHeartbeat != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(ResetHeartbeat);
+      }
+      if (KeepPaused != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(KeepPaused);
+      }
+      if (jitter_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(Jitter);
+      }
+      if (RestoreOriginalOptions != false) {
+        output.WriteRawTag(64);
+        output.WriteBool(RestoreOriginalOptions);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (HasType) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
+      }
+      if (HasMatchAll) {
+        size += 1 + 1;
+      }
+      if (ResetAttempts != false) {
+        size += 1 + 1;
+      }
+      if (ResetHeartbeat != false) {
+        size += 1 + 1;
+      }
+      if (KeepPaused != false) {
+        size += 1 + 1;
+      }
+      if (jitter_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Jitter);
+      }
+      if (RestoreOriginalOptions != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(BatchOperationResetActivities other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.ResetAttempts != false) {
+        ResetAttempts = other.ResetAttempts;
+      }
+      if (other.ResetHeartbeat != false) {
+        ResetHeartbeat = other.ResetHeartbeat;
+      }
+      if (other.KeepPaused != false) {
+        KeepPaused = other.KeepPaused;
+      }
+      if (other.jitter_ != null) {
+        if (jitter_ == null) {
+          Jitter = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        Jitter.MergeFrom(other.Jitter);
+      }
+      if (other.RestoreOriginalOptions != false) {
+        RestoreOriginalOptions = other.RestoreOriginalOptions;
+      }
+      switch (other.ActivityCase) {
+        case ActivityOneofCase.Type:
+          Type = other.Type;
+          break;
+        case ActivityOneofCase.MatchAll:
+          MatchAll = other.MatchAll;
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Type = input.ReadString();
+            break;
+          }
+          case 24: {
+            MatchAll = input.ReadBool();
+            break;
+          }
+          case 32: {
+            ResetAttempts = input.ReadBool();
+            break;
+          }
+          case 40: {
+            ResetHeartbeat = input.ReadBool();
+            break;
+          }
+          case 48: {
+            KeepPaused = input.ReadBool();
+            break;
+          }
+          case 58: {
+            if (jitter_ == null) {
+              Jitter = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(Jitter);
+            break;
+          }
+          case 64: {
+            RestoreOriginalOptions = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Type = input.ReadString();
+            break;
+          }
+          case 24: {
+            MatchAll = input.ReadBool();
+            break;
+          }
+          case 32: {
+            ResetAttempts = input.ReadBool();
+            break;
+          }
+          case 40: {
+            ResetHeartbeat = input.ReadBool();
+            break;
+          }
+          case 48: {
+            KeepPaused = input.ReadBool();
+            break;
+          }
+          case 58: {
+            if (jitter_ == null) {
+              Jitter = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(Jitter);
+            break;
+          }
+          case 64: {
+            RestoreOriginalOptions = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// BatchOperationUpdateActivityOptions sends an update-activity-options requests in a batch.
+  /// NOTE: keep in sync with temporal.api.workflowservice.v1.UpdateActivityRequest
+  /// </summary>
+  public sealed partial class BatchOperationUpdateActivityOptions : pb::IMessage<BatchOperationUpdateActivityOptions>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<BatchOperationUpdateActivityOptions> _parser = new pb::MessageParser<BatchOperationUpdateActivityOptions>(() => new BatchOperationUpdateActivityOptions());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<BatchOperationUpdateActivityOptions> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Batch.V1.MessageReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationUpdateActivityOptions() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationUpdateActivityOptions(BatchOperationUpdateActivityOptions other) : this() {
+      identity_ = other.identity_;
+      activityOptions_ = other.activityOptions_ != null ? other.activityOptions_.Clone() : null;
+      updateMask_ = other.updateMask_ != null ? other.updateMask_.Clone() : null;
+      restoreOriginal_ = other.restoreOriginal_;
+      switch (other.ActivityCase) {
+        case ActivityOneofCase.Type:
+          Type = other.Type;
+          break;
+        case ActivityOneofCase.MatchAll:
+          MatchAll = other.MatchAll;
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BatchOperationUpdateActivityOptions Clone() {
+      return new BatchOperationUpdateActivityOptions(this);
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 1;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the worker/client.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 2;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Type {
+      get { return HasType ? (string) activity_ : ""; }
+      set {
+        activity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        activityCase_ = ActivityOneofCase.Type;
+      }
+    }
+    /// <summary>Gets whether the "type" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasType {
+      get { return activityCase_ == ActivityOneofCase.Type; }
+    }
+    /// <summary> Clears the value of the oneof if it's currently set to "type" </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearType() {
+      if (HasType) {
+        ClearActivity();
+      }
+    }
+
+    /// <summary>Field number for the "match_all" field.</summary>
+    public const int MatchAllFieldNumber = 3;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool MatchAll {
+      get { return HasMatchAll ? (bool) activity_ : false; }
+      set {
+        activity_ = value;
+        activityCase_ = ActivityOneofCase.MatchAll;
+      }
+    }
+    /// <summary>Gets whether the "match_all" field is set</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool HasMatchAll {
+      get { return activityCase_ == ActivityOneofCase.MatchAll; }
+    }
+    /// <summary> Clears the value of the oneof if it's currently set to "match_all" </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearMatchAll() {
+      if (HasMatchAll) {
+        ClearActivity();
+      }
+    }
+
+    /// <summary>Field number for the "activity_options" field.</summary>
+    public const int ActivityOptionsFieldNumber = 4;
+    private global::Temporalio.Api.Activity.V1.ActivityOptions activityOptions_;
+    /// <summary>
+    /// Update Activity options. Partial updates are accepted and controlled by update_mask.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Activity.V1.ActivityOptions ActivityOptions {
+      get { return activityOptions_; }
+      set {
+        activityOptions_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "update_mask" field.</summary>
+    public const int UpdateMaskFieldNumber = 5;
+    private global::Google.Protobuf.WellKnownTypes.FieldMask updateMask_;
+    /// <summary>
+    /// Controls which fields from `activity_options` will be applied
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.FieldMask UpdateMask {
+      get { return updateMask_; }
+      set {
+        updateMask_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "restore_original" field.</summary>
+    public const int RestoreOriginalFieldNumber = 6;
+    private bool restoreOriginal_;
+    /// <summary>
+    /// If set, the activity options will be restored to the default.
+    /// Default options are then options activity was created with.
+    /// They are part of the first ActivityTaskScheduled event.
+    /// This flag cannot be combined with any other option; if you supply
+    /// restore_original together with other options, the request will be rejected.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool RestoreOriginal {
+      get { return restoreOriginal_; }
+      set {
+        restoreOriginal_ = value;
+      }
+    }
+
+    private object activity_;
+    /// <summary>Enum of possible cases for the "activity" oneof.</summary>
+    public enum ActivityOneofCase {
+      None = 0,
+      Type = 2,
+      MatchAll = 3,
+    }
+    private ActivityOneofCase activityCase_ = ActivityOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ActivityOneofCase ActivityCase {
+      get { return activityCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearActivity() {
+      activityCase_ = ActivityOneofCase.None;
+      activity_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as BatchOperationUpdateActivityOptions);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(BatchOperationUpdateActivityOptions other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Identity != other.Identity) return false;
+      if (Type != other.Type) return false;
+      if (MatchAll != other.MatchAll) return false;
+      if (!object.Equals(ActivityOptions, other.ActivityOptions)) return false;
+      if (!object.Equals(UpdateMask, other.UpdateMask)) return false;
+      if (RestoreOriginal != other.RestoreOriginal) return false;
+      if (ActivityCase != other.ActivityCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (HasType) hash ^= Type.GetHashCode();
+      if (HasMatchAll) hash ^= MatchAll.GetHashCode();
+      if (activityOptions_ != null) hash ^= ActivityOptions.GetHashCode();
+      if (updateMask_ != null) hash ^= UpdateMask.GetHashCode();
+      if (RestoreOriginal != false) hash ^= RestoreOriginal.GetHashCode();
+      hash ^= (int) activityCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (HasType) {
+        output.WriteRawTag(18);
+        output.WriteString(Type);
+      }
+      if (HasMatchAll) {
+        output.WriteRawTag(24);
+        output.WriteBool(MatchAll);
+      }
+      if (activityOptions_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(ActivityOptions);
+      }
+      if (updateMask_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(UpdateMask);
+      }
+      if (RestoreOriginal != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(RestoreOriginal);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (HasType) {
+        output.WriteRawTag(18);
+        output.WriteString(Type);
+      }
+      if (HasMatchAll) {
+        output.WriteRawTag(24);
+        output.WriteBool(MatchAll);
+      }
+      if (activityOptions_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(ActivityOptions);
+      }
+      if (updateMask_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(UpdateMask);
+      }
+      if (RestoreOriginal != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(RestoreOriginal);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (HasType) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
+      }
+      if (HasMatchAll) {
+        size += 1 + 1;
+      }
+      if (activityOptions_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ActivityOptions);
+      }
+      if (updateMask_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UpdateMask);
+      }
+      if (RestoreOriginal != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(BatchOperationUpdateActivityOptions other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.activityOptions_ != null) {
+        if (activityOptions_ == null) {
+          ActivityOptions = new global::Temporalio.Api.Activity.V1.ActivityOptions();
+        }
+        ActivityOptions.MergeFrom(other.ActivityOptions);
+      }
+      if (other.updateMask_ != null) {
+        if (updateMask_ == null) {
+          UpdateMask = new global::Google.Protobuf.WellKnownTypes.FieldMask();
+        }
+        UpdateMask.MergeFrom(other.UpdateMask);
+      }
+      if (other.RestoreOriginal != false) {
+        RestoreOriginal = other.RestoreOriginal;
+      }
+      switch (other.ActivityCase) {
+        case ActivityOneofCase.Type:
+          Type = other.Type;
+          break;
+        case ActivityOneofCase.MatchAll:
+          MatchAll = other.MatchAll;
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Type = input.ReadString();
+            break;
+          }
+          case 24: {
+            MatchAll = input.ReadBool();
+            break;
+          }
+          case 34: {
+            if (activityOptions_ == null) {
+              ActivityOptions = new global::Temporalio.Api.Activity.V1.ActivityOptions();
+            }
+            input.ReadMessage(ActivityOptions);
+            break;
+          }
+          case 42: {
+            if (updateMask_ == null) {
+              UpdateMask = new global::Google.Protobuf.WellKnownTypes.FieldMask();
+            }
+            input.ReadMessage(UpdateMask);
+            break;
+          }
+          case 48: {
+            RestoreOriginal = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Type = input.ReadString();
+            break;
+          }
+          case 24: {
+            MatchAll = input.ReadBool();
+            break;
+          }
+          case 34: {
+            if (activityOptions_ == null) {
+              ActivityOptions = new global::Temporalio.Api.Activity.V1.ActivityOptions();
+            }
+            input.ReadMessage(ActivityOptions);
+            break;
+          }
+          case 42: {
+            if (updateMask_ == null) {
+              UpdateMask = new global::Google.Protobuf.WellKnownTypes.FieldMask();
+            }
+            input.ReadMessage(UpdateMask);
+            break;
+          }
+          case 48: {
+            RestoreOriginal = input.ReadBool();
             break;
           }
         }
