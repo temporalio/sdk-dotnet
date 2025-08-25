@@ -29,6 +29,12 @@ namespace Temporalio.Worker.Interceptors
         ActivityInboundInterceptor InterceptActivity(ActivityInboundInterceptor nextInterceptor);
 #endif
 
+        /// <summary>
+        /// Create a Nexus operation inbound interceptor to intercept calls.
+        /// </summary>
+        /// <param name="nextInterceptor">The next interceptor in the chain to call.</param>
+        /// <returns>Created interceptor.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
 #if NETCOREAPP3_0_OR_GREATER
         NexusOperationInboundInterceptor InterceptNexusOperation(NexusOperationInboundInterceptor nextInterceptor) =>
             nextInterceptor;

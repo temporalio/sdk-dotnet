@@ -8,27 +8,35 @@ using Temporalio.Api.Enums.V1;
 
 namespace Temporalio.Nexus
 {
+    /// <summary>
+    /// Helpers for Nexus links.
+    /// </summary>
     internal static class ProtoLinkExtensions
     {
         // Need to map PascalCase enum names and original enum names to the event type
-        private static readonly Dictionary<string, EventType> stringToEventType =
+        private static readonly Dictionary<string, EventType> StringToEventType =
             Enum.GetValues(typeof(EventType)).
                 Cast<EventType>().
                 SelectMany(e =>
                     new[]
                     {
                         (e.ToString(), e),
-                        (typeof(EventType).GetField(e.ToString()).
-                            GetCustomAttribute<OriginalNameAttribute>().Name, e),
+                        (typeof(EventType).GetField(e.ToString())!.
+                            GetCustomAttribute<OriginalNameAttribute>()!.Name, e),
                     }).
                 ToDictionary(kv => kv.Item1, kv => kv.e);
 
-        private static readonly EnumDescriptor eventTypeDescriptor =
+        private static readonly EnumDescriptor EventTypeDescriptor =
             EventTypeReflection.Descriptor.FindTypeByName<EnumDescriptor>("EventType");
 
-        private static readonly char[] querySeparator = new[] { '&' };
-        private static readonly char[] queryValueSeparator = new[] { '=' };
+        private static readonly char[] QuerySeparator = new[] { '&' };
+        private static readonly char[] QueryValueSeparator = new[] { '=' };
 
+        /// <summary>
+        /// Convert a workflow event to a Nexus link.
+        /// </summary>
+        /// <param name="evt">Event to convert.</param>
+        /// <returns>Nexus link.</returns>
         public static NexusLink ToNexusLink(this Api.Common.V1.Link.Types.WorkflowEvent evt)
         {
             // Set some query params
@@ -36,7 +44,7 @@ namespace Temporalio.Nexus
             if (evt.EventRef is { } evtRef)
             {
                 queryParams["referenceType"] = "EventReference";
-                queryParams["eventType"] = eventTypeDescriptor.FindValueByNumber((int)evtRef.EventType).Name;
+                queryParams["eventType"] = EventTypeDescriptor.FindValueByNumber((int)evtRef.EventType).Name;
                 if (evtRef.EventId > 0)
                 {
                     queryParams["eventID"] = evtRef.EventId.ToString();
@@ -45,7 +53,7 @@ namespace Temporalio.Nexus
             else if (evt.RequestIdRef is { } reqIdRef)
             {
                 queryParams["referenceType"] = "RequestIdReference";
-                queryParams["eventType"] = eventTypeDescriptor.FindValueByNumber((int)reqIdRef.EventType).Name;
+                queryParams["eventType"] = EventTypeDescriptor.FindValueByNumber((int)reqIdRef.EventType).Name;
                 queryParams["requestID"] = reqIdRef.RequestId;
             }
 
@@ -62,6 +70,12 @@ namespace Temporalio.Nexus
             return new(builder.Uri, Api.Common.V1.Link.Types.WorkflowEvent.Descriptor.FullName);
         }
 
+        /// <summary>
+        /// Convert a Nexus link to a workflow event.
+        /// </summary>
+        /// <param name="link">Nexus link.</param>
+        /// <returns>Workflow event.</returns>
+        /// <exception cref="ArgumentException">If the link is invalid.</exception>
         public static Api.Common.V1.Link.Types.WorkflowEvent ToWorkflowEvent(this NexusLink link)
         {
             if (link.Uri.Scheme != "temporal")
@@ -90,8 +104,8 @@ namespace Temporalio.Nexus
             // Simple query param parser because .NET stdlib doesn't have one in all versions
             var query = link.Uri.Query.
                 TrimStart('?').
-                Split(querySeparator, StringSplitOptions.RemoveEmptyEntries).
-                Select(v => v.Split(queryValueSeparator, 2)).
+                Split(QuerySeparator, StringSplitOptions.RemoveEmptyEntries).
+                Select(v => v.Split(QueryValueSeparator, 2)).
                 ToDictionary(
                     kv => Uri.UnescapeDataString(kv[0]),
                     kv => kv.Length > 1 ? Uri.UnescapeDataString(kv[1]) : string.Empty);
@@ -105,7 +119,7 @@ namespace Temporalio.Nexus
                 evt.EventRef = new();
                 if (query.TryGetValue("eventType", out var evtType))
                 {
-                    if (stringToEventType.TryGetValue(evtType, out var evtTypeEnum))
+                    if (StringToEventType.TryGetValue(evtType, out var evtTypeEnum))
                     {
                         evt.EventRef.EventType = evtTypeEnum;
                     }
@@ -131,7 +145,7 @@ namespace Temporalio.Nexus
                 evt.RequestIdRef = new();
                 if (query.TryGetValue("eventType", out var evtType))
                 {
-                    if (stringToEventType.TryGetValue(evtType, out var evtTypeEnum))
+                    if (StringToEventType.TryGetValue(evtType, out var evtTypeEnum))
                     {
                         evt.RequestIdRef.EventType = evtTypeEnum;
                     }

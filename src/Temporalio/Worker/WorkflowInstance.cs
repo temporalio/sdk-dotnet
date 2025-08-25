@@ -394,9 +394,11 @@ namespace Temporalio.Worker
                 Options: options,
                 Headers: null));
 
+        /// <inheritdoc/>
         public NexusClient CreateNexusClient(string service, NexusClientOptions options) =>
             new NexusClientImpl(this, service, options);
 
+        /// <inheritdoc/>
         public NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
             new NexusClientImpl<TService>(this, options);
 
@@ -1072,20 +1074,7 @@ namespace Temporalio.Worker
                     ApplyResolveNexusOperation(job.ResolveNexusOperation);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
-                    // TODO(cretz): There is an issue with current Core where start always succeeds
-                    // even if the operation failed immediately. It is followed up in the same job
-                    // with the resolve job that actually has the failure. If that is the situation
-                    // here, we will mutate the start to set the failure of the complete. Fix when
-                    // https://github.com/temporalio/sdk-core/issues/965 is fixed.
-                    ResolveNexusOperation? syncStartFail = null;
-                    if (job.ResolveNexusOperationStart.StartedSync &&
-                        act.Jobs.SingleOrDefault(j =>
-                            j.ResolveNexusOperation?.Seq == job.ResolveNexusOperationStart.Seq) is { } resolveSync &&
-                        resolveSync.ResolveNexusOperation.Result.Completed == null)
-                    {
-                        syncStartFail = resolveSync.ResolveNexusOperation;
-                    }
-                    ApplyResolveNexusOperationStart(new(job.ResolveNexusOperationStart, syncStartFail));
+                    ApplyResolveNexusOperationStart(job.ResolveNexusOperationStart);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.ResolveRequestCancelExternalWorkflow:
                     ApplyResolveRequestCancelExternalWorkflow(job.ResolveRequestCancelExternalWorkflow);
@@ -1486,12 +1475,12 @@ namespace Temporalio.Worker
             pending.ResultCompletionSource.TrySetResult(resolve.Result);
         }
 
-        private void ApplyResolveNexusOperationStart(ResolveNexusOperationStartInfo resolve)
+        private void ApplyResolveNexusOperationStart(ResolveNexusOperationStart resolve)
         {
-            if (!nexusOperationsPending.TryGetValue(resolve.Start.Seq, out var pending))
+            if (!nexusOperationsPending.TryGetValue(resolve.Seq, out var pending))
             {
                 throw new InvalidOperationException(
-                    $"Failed finding Nexus operation for sequence {resolve.Start.Seq}");
+                    $"Failed finding Nexus operation for sequence {resolve.Seq}");
             }
             pending.StartCompletionSource.TrySetResult(resolve);
         }
@@ -2501,6 +2490,7 @@ namespace Temporalio.Worker
                 return handleSource.Task;
             }
 
+            /// <inheritdoc/>
             public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 StartNexusOperationInput input)
             {
@@ -2566,15 +2556,16 @@ namespace Temporalio.Worker
                             // Wait for start
                             var startRes = await pending.StartCompletionSource.Task.ConfigureAwait(true);
 
-                            // If there is a start sync fail, we have to fail the handle ask and there's
-                            // nothing more we can do here
+                            // If there is a start sync fail, we have to fail the handle task and
+                            // there's nothing more we can do here
                             var handle = new NexusOperationHandleImpl<TResult>(
                                 instance.PayloadConverter,
                                 instance.failureConverter,
-                                startRes.Start.HasOperationId ? startRes.Start.OperationId : null);
-                            if (startRes.SyncStartFail is { } syncStartFail)
+                                startRes.HasOperationToken ? startRes.OperationToken : null);
+                            if (startRes.Failed is { } syncStartFail)
                             {
-                                handleSource.SetException(handle.CreateResultFailure(syncStartFail.Result));
+                                handleSource.SetException(
+                                    instance.failureConverter.ToException(syncStartFail, instance.PayloadConverter));
                                 return;
                             }
 
@@ -2583,13 +2574,16 @@ namespace Temporalio.Worker
 
                             // Wait for completion and set on handle
                             var completeRes = await pending.ResultCompletionSource.Task.ConfigureAwait(true);
-                            instance.nexusOperationsPending.Remove(seq);
                             handle.CompletionSource.SetResult(completeRes);
                         }
                         catch (Exception e)
                         {
                             instance.Logger.LogWarning(e, "Unexpected issue setting Nexus result");
                             instance.SetCurrentActivationException(e);
+                        }
+                        finally
+                        {
+                            instance.nexusOperationsPending.Remove(seq);
                         }
                     }
                 });
@@ -2954,7 +2948,7 @@ namespace Temporalio.Worker
                 throw CreateResultFailure(res);
             }
 
-            internal Exception CreateResultFailure(NexusOperationResult res)
+            private Exception CreateResultFailure(NexusOperationResult res)
             {
                 // Return if completed or extract failure if failed
                 Api.Failure.V1.Failure failure;
@@ -2996,11 +2990,8 @@ namespace Temporalio.Worker
             TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
 
         private record PendingNexusOperationInfo(
-            TaskCompletionSource<ResolveNexusOperationStartInfo> StartCompletionSource,
+            TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
             TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
-
-        private record ResolveNexusOperationStartInfo(
-            ResolveNexusOperationStart Start, ResolveNexusOperation? SyncStartFail);
 
         private class Handlers : LinkedList<Handlers.Handler>
         {

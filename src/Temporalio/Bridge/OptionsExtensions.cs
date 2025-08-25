@@ -617,9 +617,9 @@ namespace Temporalio.Bridge
                 max_activities_per_second = 0,
                 max_task_queue_activities_per_second = 0,
                 graceful_shutdown_period_millis = 0,
-                workflow_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
+                workflow_task_poller_behavior = new PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
                 nonsticky_to_sticky_poll_ratio = 1,
-                activity_task_poller_behavior = new Temporalio.Worker.Tuning.PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
+                activity_task_poller_behavior = new PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
                 nexus_task_poller_behavior = new PollerBehavior.SimpleMaximum(2).ToInteropPollerBehavior(scope),
                 nondeterminism_as_workflow_fail =
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
@@ -635,7 +635,7 @@ namespace Temporalio.Bridge
                     kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))));
 
         private static Interop.TemporalCoreTunerHolder ToInteropTuner(
-            this Temporalio.Worker.Tuning.WorkerTuner tuner,
+            this WorkerTuner tuner,
             Scope scope,
             ILoggerFactory loggerFactory)
         {
@@ -675,7 +675,7 @@ namespace Temporalio.Bridge
         }
 
         private static Interop.TemporalCoreSlotSupplier ToInteropSlotSupplier(
-            this Temporalio.Worker.Tuning.SlotSupplier supplier,
+            this SlotSupplier supplier,
             bool isWorkflow,
             ILoggerFactory loggerFactory)
         {
@@ -751,11 +751,14 @@ namespace Temporalio.Bridge
                 ToArray();
 
         private static Interop.TemporalCorePollerBehavior ToInteropPollerBehavior(
-            this Temporalio.Worker.Tuning.PollerBehavior pollerBehavior, Scope scope)
+            this PollerBehavior pollerBehavior, Scope scope)
         {
             if (pollerBehavior is PollerBehavior.SimpleMaximum simpleMax)
             {
-                var max = new Interop.TemporalCorePollerBehaviorSimpleMaximum { simple_maximum = new UIntPtr((uint)simpleMax.Maximum), };
+                var max = new Interop.TemporalCorePollerBehaviorSimpleMaximum
+                {
+                    simple_maximum = new UIntPtr((uint)simpleMax.Maximum),
+                };
                 unsafe
                 {
                     return new Interop.TemporalCorePollerBehavior { simple_maximum = scope.Pointer(max), };

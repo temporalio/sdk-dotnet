@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Converters;
 
@@ -312,15 +311,47 @@ namespace Temporalio.Workflows
             ContinueAsNewOptions? options = null) =>
             Context.CreateContinueAsNewException(workflow, args, options);
 
+        /// <summary>
+        /// Create an untyped Nexus client with a string service name and endpoint. This is a
+        /// shortcut for <see cref="CreateNexusClient(string, NexusClientOptions)"/>.
+        /// </summary>
+        /// <param name="service">Service name.</param>
+        /// <param name="endpoint">Endpoint.</param>
+        /// <returns>Nexus client.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusClient CreateNexusClient(string service, string endpoint) =>
             CreateNexusClient(service, new NexusClientOptions(endpoint));
 
+        /// <summary>
+        /// Create an untyped Nexus client with a string service name and client options.
+        /// </summary>
+        /// <param name="service">Service name.</param>
+        /// <param name="options">Client options.</param>
+        /// <returns>Nexus client.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusClient CreateNexusClient(string service, NexusClientOptions options) =>
             Context.CreateNexusClient(service, options);
 
+        /// <summary>
+        /// Create a typed Nexus client from a service interface and endpoint. This is a shortcut
+        /// for <see cref="CreateNexusClient{TService}(NexusClientOptions)"/>.
+        /// </summary>
+        /// <typeparam name="TService">Service interface type with the
+        /// <see cref="NexusRpc.NexusServiceAttribute"/> attribute.</typeparam>
+        /// <param name="endpoint">Endpoint.</param>
+        /// <returns>Nexus client.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusClient<TService> CreateNexusClient<TService>(string endpoint) =>
             CreateNexusClient<TService>(new NexusClientOptions(endpoint));
 
+        /// <summary>
+        /// Create a typed Nexus client from a service interface and endpoint.
+        /// </summary>
+        /// <typeparam name="TService">Service interface type with the
+        /// <see cref="NexusRpc.NexusServiceAttribute"/> attribute.</typeparam>
+        /// <param name="options">Client options.</param>
+        /// <returns>Nexus client.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
             Context.CreateNexusClient<TService>(options);
 

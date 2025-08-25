@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -211,7 +210,13 @@ namespace Temporalio.Testing
         /// </remarks>
         public virtual Task<T> WithAutoTimeSkippingDisabledAsync<T>(Func<Task<T>> func) => func();
 
-        // TODO(cretz): Clarify this is experimental
+        /// <summary>
+        /// Create Nexus endpoint on this test environment.
+        /// </summary>
+        /// <param name="name">Endpoint name.</param>
+        /// <param name="taskQueue">Task queue.</param>
+        /// <returns>Created endpoint.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public async Task<Endpoint> CreateNexusEndpointAsync(string name, string taskQueue)
         {
             var resp = await Client.OperatorService.CreateNexusEndpointAsync(new()

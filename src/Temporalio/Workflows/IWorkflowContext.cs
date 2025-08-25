@@ -149,8 +149,20 @@ namespace Temporalio.Workflows
         ContinueAsNewException CreateContinueAsNewException(
             string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options);
 
+        /// <summary>
+        /// Backing call for <see cref="Workflow.CreateNexusClient(string, NexusClientOptions)"/>.
+        /// </summary>
+        /// <param name="service">Service name.</param>
+        /// <param name="options">Options.</param>
+        /// <returns>Nexus client.</returns>
         NexusClient CreateNexusClient(string service, NexusClientOptions options);
 
+        /// <summary>
+        /// Backing call for <see cref="Workflow.CreateNexusClient{TService}(NexusClientOptions)"/>.
+        /// </summary>
+        /// <typeparam name="TService">Service type.</typeparam>
+        /// <param name="options">Options.</param>
+        /// <returns>Nexus client.</returns>
         NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options);
 
         /// <summary>

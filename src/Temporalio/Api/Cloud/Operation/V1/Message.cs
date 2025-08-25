@@ -27,7 +27,7 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
             "Ci10ZW1wb3JhbC9hcGkvY2xvdWQvb3BlcmF0aW9uL3YxL21lc3NhZ2UucHJv",
             "dG8SH3RlbXBvcmFsLmFwaS5jbG91ZC5vcGVyYXRpb24udjEaHmdvb2dsZS9w",
             "cm90b2J1Zi9kdXJhdGlvbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVz",
-            "dGFtcC5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90byL+AwoOQXN5",
+            "dGFtcC5wcm90bxoZZ29vZ2xlL3Byb3RvYnVmL2FueS5wcm90byKSBAoOQXN5",
             "bmNPcGVyYXRpb24SCgoCaWQYASABKAkSHAoQc3RhdGVfZGVwcmVjYXRlZBgC",
             "IAEoCUICGAESRAoFc3RhdGUYCSABKA4yNS50ZW1wb3JhbC5hcGkuY2xvdWQu",
             "b3BlcmF0aW9uLnYxLkFzeW5jT3BlcmF0aW9uLlN0YXRlEjEKDmNoZWNrX2R1",
@@ -36,14 +36,14 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
             "Lmdvb2dsZS5wcm90b2J1Zi5BbnkSFgoOZmFpbHVyZV9yZWFzb24YBiABKAkS",
             "MAoMc3RhcnRlZF90aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
             "dGFtcBIxCg1maW5pc2hlZF90aW1lGAggASgLMhouZ29vZ2xlLnByb3RvYnVm",
-            "LlRpbWVzdGFtcCKEAQoFU3RhdGUSFQoRU1RBVEVfVU5TUEVDSUZJRUQQABIR",
+            "LlRpbWVzdGFtcCKYAQoFU3RhdGUSFQoRU1RBVEVfVU5TUEVDSUZJRUQQABIR",
             "Cg1TVEFURV9QRU5ESU5HEAESFQoRU1RBVEVfSU5fUFJPR1JFU1MQAhIQCgxT",
             "VEFURV9GQUlMRUQQAxITCg9TVEFURV9DQU5DRUxMRUQQBBITCg9TVEFURV9G",
-            "VUxGSUxMRUQQBUKxAQoiaW8udGVtcG9yYWwuYXBpLmNsb3VkLm9wZXJhdGlv",
-            "bi52MUIMTWVzc2FnZVByb3RvUAFaL2dvLnRlbXBvcmFsLmlvL2FwaS9jbG91",
-            "ZC9vcGVyYXRpb24vdjE7b3BlcmF0aW9uqgIhVGVtcG9yYWxpby5BcGkuQ2xv",
-            "dWQuT3BlcmF0aW9uLlYx6gIlVGVtcG9yYWxpbzo6QXBpOjpDbG91ZDo6T3Bl",
-            "cmF0aW9uOjpWMWIGcHJvdG8z"));
+            "VUxGSUxMRUQQBRISCg5TVEFURV9SRUpFQ1RFRBAGQrEBCiJpby50ZW1wb3Jh",
+            "bC5hcGkuY2xvdWQub3BlcmF0aW9uLnYxQgxNZXNzYWdlUHJvdG9QAVovZ28u",
+            "dGVtcG9yYWwuaW8vYXBpL2Nsb3VkL29wZXJhdGlvbi92MTtvcGVyYXRpb26q",
+            "AiFUZW1wb3JhbGlvLkFwaS5DbG91ZC5PcGVyYXRpb24uVjHqAiVUZW1wb3Jh",
+            "bGlvOjpBcGk6OkNsb3VkOjpPcGVyYXRpb246OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.AnyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -635,6 +635,10 @@ namespace Temporalio.Api.Cloud.Operation.V1 {
         /// The operation was fulfilled.
         /// </summary>
         [pbr::OriginalName("STATE_FULFILLED")] Fulfilled = 5,
+        /// <summary>
+        /// The operation was rejected.
+        /// </summary>
+        [pbr::OriginalName("STATE_REJECTED")] Rejected = 6,
       }
 
     }

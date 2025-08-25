@@ -1,7 +1,7 @@
 namespace Temporalio.Tests.Worker;
 
 using NexusRpc;
-using NexusRpc.Handler;
+using NexusRpc.Handlers;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Exceptions;
@@ -11,7 +11,6 @@ using Temporalio.Worker.Interceptors;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
-using Xunit.Runner.Reporters;
 
 public class NexusWorkerTests : WorkflowEnvironmentTestBase
 {
@@ -51,7 +50,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
 
         [NexusOperationHandler]
         public IOperationHandler<string, string> DoSomething() => handler;
-
 
         private class AsyncFuncOperationHandler : IOperationHandler<string, string>
         {
@@ -375,7 +373,377 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 results.Add(await handle2.GetResultAsync());
             });
         // Confirm results are for only the first param sets
-        Assert.Equal(new List<string> { "Hello, some-name1!", "Hello, some-name2!" }, results);
+        Assert.Equal(new List<string> { "Hello, some-name1!", "Hello, some-name1!" }, results);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_BadArgs_FailsOperation()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, name) => "never reached")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(
+            workerOptions,
+            // Use int as arg
+            async () => await Workflow.CreateNexusClient("StringService", endpoint).
+                ExecuteNexusOperationAsync<string>("DoSomething", 1234),
+            // Wait for one Nexus op to be failing
+            checkResultFunc: async handle =>
+                await AssertMore.EventuallyAsync(async () => Assert.Equal(
+                    1,
+                    (await handle.DescribeAsync()).RawDescription.
+                        PendingNexusOperations.Count(op => op.LastAttemptFailure != null))));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_Untyped_Succeeds()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, name) => $"Hello, {name}")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(
+            workerOptions,
+            async () => await Workflow.CreateNexusClient("StringService", endpoint).
+                ExecuteNexusOperationAsync<string>("DoSomething", "some-name"),
+            checkResultFunc: async handle =>
+                Assert.Equal("Hello, some-name", await handle.GetResultAsync()));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_InputManip_Succeeds()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                WorkflowRunOperationHandler.FromHandleFactory(
+                    async (WorkflowRunOperationContext context, string input) =>
+                        await context.StartWorkflowAsync(
+                            (SimpleWorkflow wf) => wf.RunAsync($"{input}-suffixed"),
+                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal("Hello from workflow, some-name-suffixed", result);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ApplicationFailure_NonRetryable()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) =>
+                // WorkflowRunOperationHandler.FromHandleFactory<string, string>(async (context, input) =>
+                    throw new ApplicationFailureException("Intentional failure", nonRetryable: true)))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (INTERNAL): Handler failed with non-retryable application error
+        // ------------ Temporalio.Exceptions.ApplicationFailureException : Handler failed with non-retryable application error
+        // ---------------- Temporalio.Exceptions.ApplicationFailureException : Intentional failure
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.Internal, exc3.ErrorType);
+        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
+        var exc5 = Assert.IsType<ApplicationFailureException>(exc4.InnerException);
+        Assert.Equal("Intentional failure", exc5.Message);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_OperationException_ProperlyFails()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) =>
+                    throw OperationException.CreateFailure("Intentional failure")))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.ApplicationFailureException : Intentional failure
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<ApplicationFailureException>(exc2.InnerException);
+        Assert.Equal("Intentional failure", exc3.Message);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_HandlerException_ProperlyFails()
+    {
+        // Non-retryable
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) =>
+                    throw new HandlerException(HandlerErrorType.BadRequest, "Intentional failure")))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (BAD_REQUEST): Intentional failure
+        // ------------ Temporalio.Exceptions.ApplicationFailureException : Intentional failure
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.BadRequest, exc3.ErrorType);
+        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
+        Assert.Equal("Intentional failure", exc4.Message);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ManualDefinition_Succeeds()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddWorkflow<SimpleWorkflow>();
+        var svcDefn = new ServiceDefinition(
+            "my-service",
+            new Dictionary<string, OperationDefinition>
+            {
+                ["my-operation"] = new OperationDefinition("my-operation", typeof(string), typeof(string)),
+            });
+        workerOptions.NexusServices.Add(new ServiceHandlerInstance(
+            new ServiceDefinition(
+                "my-service",
+                new Dictionary<string, OperationDefinition>
+                {
+                    ["my-operation"] = new OperationDefinition("my-operation", typeof(string), typeof(string)),
+                }),
+            new Dictionary<string, IOperationHandler<object?, object?>>
+            {
+                ["my-operation"] = OperationHandler.Sync<object?, object?>(
+                    (context, input) => $"manual-handler, param: {input}"),
+            }));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusClient("my-service", endpoint).
+                ExecuteNexusOperationAsync<string>("my-operation", "some-param");
+            Assert.Equal("manual-handler, param: some-param", result);
+        });
+    }
+
+    public class EventCaptureWorkerInterceptor : IWorkerInterceptor
+    {
+        public List<string> Events { get; } = new();
+
+        public NexusOperationInboundInterceptor InterceptNexusOperation(
+            NexusOperationInboundInterceptor nextInterceptor) =>
+            new NexusInbound(Events, nextInterceptor);
+
+        private class NexusInbound : NexusOperationInboundInterceptor
+        {
+            private readonly List<string> events;
+
+            public NexusInbound(List<string> events, NexusOperationInboundInterceptor next)
+                : base(next) => this.events = events;
+
+            public override Task<OperationStartResult<object?>> ExecuteNexusOperationStartAsync(
+                ExecuteNexusOperationStartInput input)
+            {
+                events.Add($"start-operation: {input.Context.Operation}");
+                return base.ExecuteNexusOperationStartAsync(input);
+            }
+
+            public override Task ExecuteNexusOperationCancelAsync(ExecuteNexusOperationCancelInput input)
+            {
+                events.Add($"cancel-operation: {input.Context.Operation}");
+                return base.ExecuteNexusOperationCancelAsync(input);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_Interceptor_Reached()
+    {
+        var workflowId = $"wf-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                WorkflowRunOperationHandler.FromHandleFactory(
+                    (WorkflowRunOperationContext context, string input) =>
+                        context.StartWorkflowAsync(
+                            (WaitForSignalWorkflow wf) => wf.RunAsync(input),
+                            new() { Id = workflowId })))).
+            AddWorkflow<WaitForSignalWorkflow>();
+        var interceptor = new EventCaptureWorkerInterceptor();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { interceptor };
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(
+                workerOptions,
+                () => Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name")),
+                beforeGetResultFunc: async handle =>
+                {
+                    // Wait for Nexus operation to get started
+                    await AssertMore.HasEventEventuallyAsync(
+                        handle, evt => evt.NexusOperationStartedEventAttributes != null);
+                    // Now cancel entire workflow
+                    await handle.CancelAsync();
+                }));
+        Assert.IsType<CanceledFailureException>(exc.InnerException);
+        Assert.Equal(
+            new List<string> { "start-operation: DoSomething", "cancel-operation: DoSomething" },
+            interceptor.Events);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ServiceNotFound_ProperlyFails()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) => "never reached"))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (NOT_FOUND): Unrecognized service missing-service or operation unknown-operation
+        // ------------ Temporalio.Exceptions.ApplicationFailureException : Unrecognized service missing-service or operation unknown-operation
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusClient("missing-service", endpoint).
+                    ExecuteNexusOperationAsync("unknown-operation", "some-param")));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.NotFound, exc3.ErrorType);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_OperationNotFound_ProperlyFails()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) => "never reached"))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (NOT_FOUND): Unrecognized service StringService or operation unknown-operation
+        // ------------ Temporalio.Exceptions.ApplicationFailureException : Unrecognized service StringService or operation unknown-operation
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusClient("StringService", endpoint).
+                    ExecuteNexusOperationAsync("unknown-operation", "some-param")));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.NotFound, exc3.ErrorType);
+    }
+
+    [Workflow]
+    public class NoReturnWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync(string param)
+        {
+            // Do nothing
+        }
+    }
+
+    [Workflow]
+    public class NoParamWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync() => "done";
+    }
+
+    [Workflow]
+    public class NoReturnOrParamWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            // Do nothing
+        }
+    }
+
+    [NexusService]
+    public interface IVoidService
+    {
+        [NexusOperation]
+        void NoReturn(string param);
+
+        [NexusOperation]
+        string NoParam();
+
+        [NexusOperation]
+        void NoReturnOrParam();
+    }
+
+    [NexusServiceHandler(typeof(IVoidService))]
+    public class VoidService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, NoValue> NoReturn() =>
+            WorkflowRunOperationHandler.FromHandleFactory<string>((context, param) =>
+                context.StartWorkflowAsync(
+                    (NoReturnWorkflow wf) => wf.RunAsync(param),
+                    new() { Id = $"wf-{Guid.NewGuid()}" }));
+
+        [NexusOperationHandler]
+        public IOperationHandler<NoValue, string> NoParam() =>
+            WorkflowRunOperationHandler.FromHandleFactory(context =>
+                context.StartWorkflowAsync(
+                    (NoParamWorkflow wf) => wf.RunAsync(),
+                    new() { Id = $"wf-{Guid.NewGuid()}" }));
+
+        [NexusOperationHandler]
+        public IOperationHandler<NoValue, NoValue> NoReturnOrParam() =>
+            WorkflowRunOperationHandler.FromHandleFactory(context =>
+                context.StartWorkflowAsync(
+                    (NoReturnOrParamWorkflow wf) => wf.RunAsync(),
+                    new() { Id = $"wf-{Guid.NewGuid()}" }));
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_VoidTypes_Succeeds()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new VoidService()).
+            AddWorkflow<NoReturnWorkflow>().
+            AddWorkflow<NoParamWorkflow>().
+            AddWorkflow<NoReturnOrParamWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var handle = await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var client = Workflow.CreateNexusClient<IVoidService>(endpoint);
+            await client.ExecuteNexusOperationAsync(svc => svc.NoReturn("some-param"));
+            var result = await client.ExecuteNexusOperationAsync(svc => svc.NoParam());
+            Assert.Equal("done", result);
+            await client.ExecuteNexusOperationAsync(svc => svc.NoReturnOrParam());
+        });
+        // Collect the linked Nexus workflows
+        var workflowIds = (await handle.FetchHistoryAsync()).Events.SelectMany(evt =>
+            evt.Links.Select(link => link.WorkflowEvent?.WorkflowId).OfType<string>()).ToList();
+        Assert.Equal(3, workflowIds.Count);
+        // Check each is the proper type
+        Assert.Equal(
+            "NoReturnWorkflow",
+            (await Client.GetWorkflowHandle(workflowIds[0]).DescribeAsync()).WorkflowType);
+        Assert.Equal(
+            "NoParamWorkflow",
+            (await Client.GetWorkflowHandle(workflowIds[1]).DescribeAsync()).WorkflowType);
+        Assert.Equal(
+            "NoReturnOrParamWorkflow",
+            (await Client.GetWorkflowHandle(workflowIds[2]).DescribeAsync()).WorkflowType);
     }
 
     private async Task<string> CreateNexusEndpointAsync(string taskQueue)
@@ -388,18 +756,34 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     [Workflow]
     public class CustomFuncWorkflow
     {
-        private readonly Func<Task> func;
+        private readonly Func<Task<object?>> func;
 
-        public CustomFuncWorkflow(Func<Task> func) => this.func = func;
+        public CustomFuncWorkflow(Func<Task<object?>> func) => this.func = func;
 
         [WorkflowRun]
-        public Task RunAsync() => func();
+        public Task<object?> RunAsync() => func();
     }
 
     private async Task<WorkflowHandle> RunInWorkflowAsync(
         TemporalWorkerOptions workerOptions,
         Func<Task> inWorkflowFunc,
-        Func<WorkflowHandle, Task>? beforeGetResultFunc = null)
+        Func<WorkflowHandle, Task>? beforeGetResultFunc = null,
+        Func<WorkflowHandle, Task>? checkResultFunc = null) =>
+        await RunInWorkflowAsync<object?>(
+            workerOptions,
+            async () =>
+            {
+                await inWorkflowFunc();
+                return null;
+            },
+            beforeGetResultFunc,
+            checkResultFunc);
+
+    private async Task<WorkflowHandle<CustomFuncWorkflow, TResult>> RunInWorkflowAsync<TResult>(
+        TemporalWorkerOptions workerOptions,
+        Func<Task<TResult>> inWorkflowFunc,
+        Func<WorkflowHandle<CustomFuncWorkflow, TResult>, Task>? beforeGetResultFunc = null,
+        Func<WorkflowHandle<CustomFuncWorkflow, TResult>, Task>? checkResultFunc = null)
     {
         workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
         // We want xUnit assertions to fail the workflow
@@ -408,38 +792,32 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         workerOptions.AddWorkflow(WorkflowDefinition.Create(
             typeof(CustomFuncWorkflow),
             null,
-            _args => new CustomFuncWorkflow(inWorkflowFunc)));
+            _args => new CustomFuncWorkflow(async () => await inWorkflowFunc())));
         using var worker = new TemporalWorker(Client, workerOptions);
         return await worker.ExecuteAsync(async () =>
         {
-            var handle = await Client.StartWorkflowAsync(
+            var untypedHandle = await Client.StartWorkflowAsync(
                 (CustomFuncWorkflow wf) => wf.RunAsync(),
                 new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+            var handle = new WorkflowHandle<CustomFuncWorkflow, TResult>(
+                Client: Client,
+                Id: untypedHandle.Id,
+                RunId: untypedHandle.RunId,
+                ResultRunId: untypedHandle.ResultRunId,
+                FirstExecutionRunId: untypedHandle.FirstExecutionRunId);
             if (beforeGetResultFunc is { } beforeFunc)
             {
                 await beforeFunc(handle);
             }
-            await handle.GetResultAsync();
-            return handle as WorkflowHandle;
+            if (checkResultFunc is { } checkFunc)
+            {
+                await checkFunc(handle);
+            }
+            else
+            {
+                await handle.GetResultAsync();
+            }
+            return handle;
         });
     }
-    
-    /*
-    TODO:
-
-    * Worker-based workflow:
-        * Custom conflict type
-        * Custom input manip
-        * Bad args
-        * String name
-        * Handler error vs operation error
-        * Application error inside of handler/operation error
-        * Workflow already exists
-    * Manual service and operation definition
-    * Operation handler error retryability
-    * Internal error
-    * Bad args
-    * Interceptors
-    * Not found service
-    */
 }

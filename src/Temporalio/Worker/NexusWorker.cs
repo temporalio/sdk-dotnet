@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Google.Protobuf.Collections;
 using Microsoft.Extensions.Logging;
 using NexusRpc;
-using NexusRpc.Handler;
+using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.Nexus.V1;
-using Temporalio.Api.Protocol.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Bridge.Api.Nexus;
 using Temporalio.Client;
@@ -21,6 +21,9 @@ using Temporalio.Nexus;
 
 namespace Temporalio.Worker
 {
+    /// <summary>
+    /// Worker for Nexus operations.
+    /// </summary>
     internal class NexusWorker
     {
         private static readonly Dictionary<RpcException.StatusCode, HandlerErrorType> RpcStatusCodeErrorTypes = new()
@@ -46,40 +49,35 @@ namespace Temporalio.Worker
         private readonly NexusOperationInfo operationInfo;
         private readonly ConcurrentDictionary<ByteString, RunningTask> runningTasks = new();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NexusWorker"/> class.
+        /// </summary>
+        /// <param name="worker">Parent worker.</param>
         public NexusWorker(TemporalWorker worker)
         {
             this.worker = worker;
             logger = worker.LoggerFactory.CreateLogger<NexusWorker>();
 
-            // Create instances from services
-            var instances = new Dictionary<string, ServiceHandlerInstance>(
-                worker.Options.NexusServices.Count);
-            foreach (var instance in worker.Options.NexusServices)
-            {
-                if (instances.ContainsKey(instance.Definition.Name))
-                {
-                    throw new ArgumentException($"Duplicate Nexus service named {instance.Definition.Name}");
-                }
-                instances[instance.Definition.Name] = instance;
-            }
-
             // Create middleware from interceptors
             var middleware = Array.Empty<IOperationMiddleware>();
             if (worker.Interceptors is { } interceptors && interceptors.Count > 0)
             {
-                middleware = new IOperationMiddleware[]
-                {
-                    new NexusMiddlewareForInterceptors(interceptors),
-                };
+                middleware = new[] { new NexusMiddlewareForInterceptors(interceptors) };
             }
 
             handler = new Handler(
-                instances,
+                worker.Options.NexusServices,
                 new NexusPayloadSerializer(worker.Client.Options.DataConverter),
                 middleware);
             operationInfo = new(worker.Client.Options.Namespace, worker.Options.TaskQueue!);
         }
 
+        /// <summary>
+        /// Execute the Nexus worker until poller shutdown or failure. If there is a failure, this
+        /// may need to be called a second time after shutdown initiated to ensure Nexus tasks are
+        /// drained.
+        /// </summary>
+        /// <returns>Task that only completes successfully on poller shutdown.</returns>
         public async Task ExecuteAsync()
         {
             // Run poll loop until there is no poll left
@@ -136,6 +134,14 @@ namespace Temporalio.Worker
             }
         }
 
+        private static void RemoveInvalidHeaders(MapField<string, string> headers)
+        {
+            // TODO(cretz): Duplicate other-case headers for this key are sent by server for
+            // compatibility reasons. Remove when https://github.com/temporalio/sdk-core/issues/993
+            // is available in Core.
+            headers.Remove("Request-Timeout");
+        }
+
         private async Task HandlePollTaskAsync(RunningTask running, PollNexusTaskQueueResponse task)
         {
             try
@@ -163,6 +169,7 @@ namespace Temporalio.Worker
             RunningTask running, PollNexusTaskQueueResponse task)
         {
             // Create context
+            RemoveInvalidHeaders(task.Request.Header);
             var startOp = task.Request.StartOperation;
             var context = new OperationStartContext(
                 Service: startOp.Service,
@@ -170,7 +177,8 @@ namespace Temporalio.Worker
                 CancellationToken: running.CancellationTokenSource.Token,
                 RequestId: startOp.RequestId)
             {
-                Headers = task.Request.Header,
+                Headers = task.Request.Header.Count == 0 ? null :
+                    new Dictionary<string, string>(task.Request.Header, StringComparer.OrdinalIgnoreCase),
                 CallbackUrl = string.IsNullOrEmpty(startOp.Callback) ? null : startOp.Callback,
                 CallbackHeaders = startOp.CallbackHeader.Count == 0 ? null :
                     new Dictionary<string, string>(startOp.CallbackHeader, StringComparer.OrdinalIgnoreCase),
@@ -206,7 +214,9 @@ namespace Temporalio.Worker
                     {
                         AsyncSuccess = new()
                         {
+#pragma warning disable CS0612 // We set this anyways even though deprecated
                             OperationId = asyncOperationToken,
+#pragma warning restore CS0612
                             OperationToken = asyncOperationToken,
                             Links = { links },
                         },
@@ -246,6 +256,7 @@ namespace Temporalio.Worker
             RunningTask running, PollNexusTaskQueueResponse task)
         {
             // Create context
+            RemoveInvalidHeaders(task.Request.Header);
             var cancelOp = task.Request.CancelOperation;
             var context = new OperationCancelContext(
                 Service: cancelOp.Service,
@@ -253,7 +264,8 @@ namespace Temporalio.Worker
                 CancellationToken: running.CancellationTokenSource.Token,
                 OperationToken: cancelOp.OperationToken)
             {
-                Headers = task.Request.Header,
+                Headers = task.Request.Header.Count == 0 ? null :
+                    new Dictionary<string, string>(task.Request.Header, StringComparer.OrdinalIgnoreCase),
             };
             running.OnCancelReason = reason => context.CancellationReason = reason;
 
@@ -323,7 +335,6 @@ namespace Temporalio.Worker
             new(
                 handlerContext: handlerContext,
                 info: operationInfo,
-                // TODO(cretz): Good logger
                 logger: worker.LoggerFactory.CreateLogger($"Temporalio.Nexus:{handlerContext.Operation}"),
                 runtimeMetricMeter: worker.MetricMeter,
                 temporalClient: worker.Client as ITemporalClient);
@@ -357,6 +368,10 @@ namespace Temporalio.Worker
 
         private HandlerException ConvertToHandlerException(Exception exc)
         {
+            if (exc is HandlerException handlerExc)
+            {
+                return handlerExc;
+            }
             if (exc is WorkflowFailedException)
             {
                 return new(HandlerErrorType.BadRequest, "Workflow failed", exc);

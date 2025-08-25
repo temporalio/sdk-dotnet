@@ -218,6 +218,11 @@ namespace Temporalio.Bridge
             }
         }
 
+        /// <summary>
+        /// Poll for the next Nexus task.
+        /// </summary>
+        /// <remarks>Only virtual for testing.</remarks>
+        /// <returns>The task or null if poller is shut down.</returns>
         public virtual async Task<Api.Nexus.NexusTask?> PollNexusTaskAsync()
         {
             using (var scope = new Scope())
@@ -226,10 +231,10 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_poll_nexus_task(
+                    Interop.Methods.temporal_core_worker_poll_nexus_task(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.WorkerPollCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
                             {
                                 if (fail != null)
@@ -323,6 +328,11 @@ namespace Temporalio.Bridge
             }
         }
 
+        /// <summary>
+        /// Complete a Nexus task.
+        /// </summary>
+        /// <param name="comp">Task completion.</param>
+        /// <returns>Completion task.</returns>
         public async Task CompleteNexusTaskAsync(Api.Nexus.NexusTaskCompletion comp)
         {
             using (var scope = new Scope())
@@ -331,11 +341,11 @@ namespace Temporalio.Bridge
                     TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
-                    Interop.Methods.worker_complete_nexus_task(
+                    Interop.Methods.temporal_core_worker_complete_nexus_task(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,
-                        scope.FunctionPointer<Interop.WorkerCallback>(
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
                                 if (fail != null)

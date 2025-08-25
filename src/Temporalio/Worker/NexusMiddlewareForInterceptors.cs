@@ -2,19 +2,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NexusRpc;
-using NexusRpc.Handler;
+using NexusRpc.Handlers;
 using Temporalio.Worker.Interceptors;
 
 namespace Temporalio.Worker
 {
+    /// <summary>
+    /// Nexus middleware that delegates to Temporal interceptors.
+    /// </summary>
     internal class NexusMiddlewareForInterceptors : IOperationMiddleware
     {
         private readonly IReadOnlyCollection<IWorkerInterceptor> interceptors;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NexusMiddlewareForInterceptors"/> class.
+        /// </summary>
+        /// <param name="interceptors">Temporal interceptors to delegate to.</param>
         public NexusMiddlewareForInterceptors(
             IReadOnlyCollection<IWorkerInterceptor> interceptors) =>
             this.interceptors = interceptors;
 
+        /// <inheritdoc/>
         public IOperationHandler<object?, object?> Intercept(
             OperationContext context, IOperationHandler<object?, object?> nextHandler)
         {
