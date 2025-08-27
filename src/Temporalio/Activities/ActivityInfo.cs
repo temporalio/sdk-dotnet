@@ -20,6 +20,10 @@ namespace Temporalio.Activities
     /// <param name="HeartbeatTimeout">Heartbeat timeout set by the caller.</param>
     /// <param name="IsLocal">Whether the activity is a local activity or not.</param>
     /// <param name="Priority">The Priority of this activity.</param>
+    /// <param name="RetryPolicy">
+    /// The retry policy of this activity.
+    /// The server may set a different policy than the one provided when scheduling the activity.
+    /// </param>
     /// <param name="ScheduleToCloseTimeout">Schedule to close timeout set by the caller.</param>
     /// <param name="ScheduledTime">When the activity was scheduled.</param>
     /// <param name="StartToCloseTimeout">Start to close timeout set by the caller.</param>
@@ -44,6 +48,7 @@ namespace Temporalio.Activities
         TimeSpan? HeartbeatTimeout,
         bool IsLocal,
         Temporalio.Common.Priority Priority,
+        Temporalio.Common.RetryPolicy? RetryPolicy,
         TimeSpan? ScheduleToCloseTimeout,
         DateTime ScheduledTime,
         TimeSpan? StartToCloseTimeout,

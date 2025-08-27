@@ -126,6 +126,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal(1, info.Attempt);
         Assert.InRange(info.CurrentAttemptScheduledTime, beforeNow, afterNow);
         Assert.False(info.IsLocal);
+        Assert.Equal(KitchenSinkWorkflow.CreateRetryPolicy(), info.RetryPolicy);
     }
 
     [Fact]

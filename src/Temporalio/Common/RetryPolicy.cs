@@ -65,7 +65,7 @@ namespace Temporalio.Common
         {
             return new()
             {
-                InitialInterval = proto.InitialInterval.ToTimeSpan(),
+                InitialInterval = (proto.InitialInterval ?? new Duration()).ToTimeSpan(),
                 BackoffCoefficient = (float)proto.BackoffCoefficient,
                 MaximumInterval = proto.MaximumInterval?.ToTimeSpan(),
                 MaximumAttempts = proto.MaximumAttempts,

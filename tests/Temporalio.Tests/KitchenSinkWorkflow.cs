@@ -1,4 +1,5 @@
 using Temporalio.Api.Enums.V1;
+using Temporalio.Common;
 
 namespace Temporalio.Tests;
 
@@ -54,6 +55,16 @@ public class KitchenSinkWorkflow
     public string SomeQuery(string arg) => throw new NotImplementedException();
 
     public Task SomeSignalAsync(string arg) => Task.CompletedTask;
+
+    public static RetryPolicy CreateRetryPolicy(int? maximumAttempts = null, IReadOnlyCollection<string>? nonRetryableErrorTypes = null) =>
+        new()
+        {
+            InitialInterval = TimeSpan.FromMilliseconds(1),
+            BackoffCoefficient = 1.01F,
+            MaximumInterval = TimeSpan.FromMilliseconds(2),
+            MaximumAttempts = maximumAttempts ?? 1,
+            NonRetryableErrorTypes = nonRetryableErrorTypes,
+        };
 
     private async Task<(bool ShouldReturn, object? Value)> HandleActionAsync(
         KSWorkflowParams args, KSAction action)
@@ -144,14 +155,7 @@ public class KitchenSinkWorkflow
             var opts = new ActivityOptions()
             {
                 TaskQueue = action.ExecuteActivity.TaskQueue,
-                RetryPolicy = new()
-                {
-                    InitialInterval = TimeSpan.FromMilliseconds(1),
-                    BackoffCoefficient = 1.01F,
-                    MaximumInterval = TimeSpan.FromMilliseconds(2),
-                    MaximumAttempts = 1,
-                    NonRetryableErrorTypes = action.ExecuteActivity.NonRetryableErrorTypes ?? Array.Empty<string>(),
-                },
+                RetryPolicy = CreateRetryPolicy(action.ExecuteActivity.RetryMaxAttempts, action.ExecuteActivity.NonRetryableErrorTypes),
             };
             if (action.ExecuteActivity.ScheduleToCloseTimeoutMS != null)
             {
@@ -181,10 +185,6 @@ public class KitchenSinkWorkflow
                 action.ExecuteActivity.ScheduleToCloseTimeoutMS == null)
             {
                 opts.ScheduleToCloseTimeout = TimeSpan.FromMinutes(3);
-            }
-            if (action.ExecuteActivity.RetryMaxAttempts != null)
-            {
-                opts.RetryPolicy.MaximumAttempts = action.ExecuteActivity.RetryMaxAttempts.Value;
             }
             // Build cancellation token source for delayed cancelling
             using var cancelSource = CancellationTokenSource.CreateLinkedTokenSource(
