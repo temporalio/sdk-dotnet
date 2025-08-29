@@ -70,8 +70,7 @@ public record KSErrorAction(
     [property: JsonPropertyName("is_benign")] bool IsBenign = false);
 
 public record KSContinueAsNewAction(
-    [property: JsonPropertyName("while_above_zero")] int? WhileAboveZero = null,
-    [property: JsonPropertyName("result")] object? Result = null);
+    [property: JsonPropertyName("while_above_zero")] int? WhileAboveZero = null);
 
 public record KSSleepAction(
     [property: JsonPropertyName("millis")] long Millis);

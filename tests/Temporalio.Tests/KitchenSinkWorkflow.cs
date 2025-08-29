@@ -104,7 +104,7 @@ public class KitchenSinkWorkflow
                 throw Workflow.CreateContinueAsNewException(
                     (IKitchenSinkWorkflow wf) => wf.RunAsync(args));
             }
-            return (true, action.ContinueAsNew.Result);
+            return (true, Workflow.Info.FirstExecutionRunId);
         }
         else if (action.Sleep != null)
         {
