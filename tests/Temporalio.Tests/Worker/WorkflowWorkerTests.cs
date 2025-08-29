@@ -6234,6 +6234,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Summary = "my-activity",
             });
 
+            // Local activity
+            await Workflow.ExecuteLocalActivityAsync(() => DoNothing(), new()
+            {
+                StartToCloseTimeout = TimeSpan.FromSeconds(30),
+                Summary = "my-local-activity",
+            });
+
             // Child
             await Workflow.ExecuteChildWorkflowAsync(
                 (UserMetadataWorkflow wf) => wf.RunAsync(true),
@@ -6269,6 +6276,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-wait-condition-timer\"");
                 Assert.Contains(history.Events, evt => evt.ActivityTaskScheduledEventAttributes != null &&
                     evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-activity\"");
+                Assert.Contains(history.Events, evt => evt.MarkerRecordedEventAttributes != null &&
+                    evt.MarkerRecordedEventAttributes.MarkerName == "core_local_activity" &&
+                    evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-local-activity\"");
                 Assert.Contains(history.Events, evt => evt.StartChildWorkflowExecutionInitiatedEventAttributes != null &&
                     evt.UserMetadata?.Summary?.Data?.ToStringUtf8() == "\"my-child\"" &&
                     evt.UserMetadata?.Details?.Data?.ToStringUtf8() == "\"my-child-details\"");
