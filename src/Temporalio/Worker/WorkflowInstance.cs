@@ -183,6 +183,7 @@ namespace Temporalio.Worker
                 ContinuedRunId: NonEmptyOrNull(start.ContinuedFromExecutionRunId),
                 CronSchedule: NonEmptyOrNull(start.CronSchedule),
                 ExecutionTimeout: start.WorkflowExecutionTimeout?.ToTimeSpan(),
+                FirstExecutionRunId: start.FirstExecutionRunId,
                 Headers: start.Headers,
                 LastFailure: lastFailure,
                 LastResult: lastResult,
