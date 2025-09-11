@@ -2496,7 +2496,7 @@ namespace Temporalio.Worker
             {
                 var token = input.Options.CancellationToken ?? instance.CancellationToken;
                 // We do not even want to schedule if the cancellation token is already cancelled.
-                // We choose to use cancelled failure instead of wrapping in child failure which is
+                // We choose to use cancelled failure instead of wrapping in Nexus failure which is
                 // similar to what Java and TypeScript do, with the accepted tradeoff that it makes
                 // catch clauses more difficult (hence the presence of
                 // TemporalException.IsCanceledException helper).

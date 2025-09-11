@@ -84,13 +84,23 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>((ctx, name) => $"Hello, {name}")));
-        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-        await RunInWorkflowAsync(workerOptions, async () =>
+        var endpointName = $"nexus-endpoint-{workerOptions.TaskQueue}";
+        var endpoint = await Env.TestEnv.CreateNexusEndpointAsync(
+            endpointName, workerOptions.TaskQueue!);
+        try
         {
-            var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
-                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
-            Assert.Equal("Hello, some-name", result);
-        });
+            await RunInWorkflowAsync(workerOptions, async () =>
+            {
+                var result = await Workflow.CreateNexusClient<IStringService>(endpointName).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("Hello, some-name", result);
+            });
+        }
+        finally
+        {
+            // We'll delete the endpoint on just this test to confirm that works
+            await Env.TestEnv.DeleteNexusEndpointAsync(endpoint);
+        }
     }
 
     [Workflow]
@@ -437,7 +447,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (context, input) =>
-                // WorkflowRunOperationHandler.FromHandleFactory<string, string>(async (context, input) =>
                     throw new ApplicationFailureException("Intentional failure", nonRetryable: true)))).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);

@@ -234,6 +234,16 @@ namespace Temporalio.Testing
         }
 
         /// <summary>
+        /// Delete Nexus endpoint on this test environment.
+        /// </summary>
+        /// <param name="endpoint">Endpoint.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public Task DeleteNexusEndpointAsync(Endpoint endpoint) =>
+            Client.OperatorService.DeleteNexusEndpointAsync(
+                new() { Id = endpoint.Id, Version = endpoint.Version });
+
+        /// <summary>
         /// Shutdown this server.
         /// </summary>
         /// <returns>Completion task.</returns>
