@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using Temporalio.Client.Configuration;
+using Temporalio.Client.EnvConfig;
 
 namespace Temporalio.Bridge
 {
@@ -27,12 +27,12 @@ namespace Temporalio.Bridge
         /// <param name="configFileStrict">If true, fail if configuration file is invalid.</param>
         /// <param name="overrideEnvVars">Environment variables to use, or null to use system environment.</param>
         /// <returns>Dictionary of profile name to client configuration profile.</returns>
-        public static Dictionary<string, ClientConfigProfile> LoadClientConfig(
+        public static Dictionary<string, ClientEnvConfig.ConfigProfile> LoadClientConfig(
             Runtime runtime,
-            DataSource source,
+            DataSource? source,
             bool disableFile = false,
             bool configFileStrict = false,
-            Dictionary<string, string>? overrideEnvVars = null)
+            IReadOnlyDictionary<string, string>? overrideEnvVars = null)
         {
             using var scope = new Scope();
             var strings = new List<IntPtr>();
@@ -40,85 +40,29 @@ namespace Temporalio.Bridge
             try
             {
                 var pathPtr = IntPtr.Zero;
-                if (!string.IsNullOrEmpty(source.Path))
+                if (source != null && !string.IsNullOrEmpty(source.Path))
                 {
                     pathPtr = Marshal.StringToHGlobalAnsi(source.Path);
                     strings.Add(pathPtr);
                 }
 
-                // Convert envVars to JSON format if provided
                 var envVarsRef = overrideEnvVars?.Count > 0
                     ? scope.ByteArray(JsonSerializer.Serialize(overrideEnvVars, JsonOptions))
                     : ByteArrayRef.Empty.Ref;
 
-                // Create the options struct
                 unsafe
                 {
                     var options = new Interop.TemporalCoreClientConfigLoadOptions
                     {
                         path = (sbyte*)pathPtr,
-                        data = source.Data != null ? scope.ByteArray(source.Data) : ByteArrayRef.Empty.Ref,
+                        data = source?.Data != null ? scope.ByteArray(source.Data) : ByteArrayRef.Empty.Ref,
                         disable_file = Convert.ToByte(disableFile),
                         config_file_strict = Convert.ToByte(configFileStrict),
                         env_vars = envVarsRef,
                     };
 
                     var result = Interop.Methods.temporal_core_client_config_load(&options);
-
-                    if (result.fail != null)
-                    {
-                        string errorMessage;
-                        using (var byteArray = new ByteArray(runtime, result.fail))
-                        {
-                            errorMessage = byteArray.ToUTF8();
-                        }
-                        throw new InvalidOperationException($"Configuration loading error: {errorMessage}");
-                    }
-
-                    if (result.success == null)
-                    {
-                        throw new InvalidOperationException("Failed to load client config: no success or failure result");
-                    }
-
-                    string json;
-                    using (var byteArray = new ByteArray(runtime, result.success))
-                    {
-                        json = byteArray.ToUTF8();
-                    }
-
-                    var configDict = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object?>>>(
-                        json, JsonOptions) ?? new Dictionary<string, Dictionary<string, object?>>();
-
-                    // Extract profiles from the config structure
-                    if (configDict.TryGetValue("profiles", out var profilesObj))
-                    {
-                        var typedProfiles = new Dictionary<string, ClientConfigProfile>();
-
-                        if (profilesObj is Dictionary<string, object?> profiles)
-                        {
-                            foreach (var kvp in profiles)
-                            {
-                                if (kvp.Value is Dictionary<string, object?> profile)
-                                {
-                                    typedProfiles[kvp.Key] = CreateClientConfigProfile(profile);
-                                }
-                                else if (kvp.Value is JsonElement profileElement)
-                                {
-                                    var profileDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(
-                                        profileElement.GetRawText(), JsonOptions);
-                                    if (profileDict != null)
-                                    {
-                                        typedProfiles[kvp.Key] = CreateClientConfigProfile(profileDict);
-                                    }
-                                }
-                            }
-                        }
-
-                        return typedProfiles;
-                    }
-
-                    // If no profiles found, return empty dictionary
-                    return new Dictionary<string, ClientConfigProfile>();
+                    return ProcessAllProfilesResult(runtime, result);
                 }
             }
             catch (JsonException ex)
@@ -145,43 +89,44 @@ namespace Temporalio.Bridge
         /// <param name="configFileStrict">If true, fail if configuration file is invalid.</param>
         /// <param name="overrideEnvVars">Environment variables to use, or null to use system environment.</param>
         /// <returns>Client configuration for the specified profile.</returns>
-        public static ClientConfigProfile LoadClientConfigProfile(
+        public static ClientEnvConfig.ConfigProfile LoadClientConfigProfile(
             Runtime runtime,
-            string profile,
-            DataSource source,
+            string? profile,
+            DataSource? source,
             bool disableFile = false,
             bool disableEnv = false,
             bool configFileStrict = false,
-            Dictionary<string, string>? overrideEnvVars = null)
+            IReadOnlyDictionary<string, string>? overrideEnvVars = null)
         {
             using var scope = new Scope();
             var strings = new List<IntPtr>();
 
             try
             {
-                var profilePtr = Marshal.StringToHGlobalAnsi(profile);
-                strings.Add(profilePtr);
+                var profilePtr = profile != null ? Marshal.StringToHGlobalAnsi(profile) : IntPtr.Zero;
+                if (profilePtr != IntPtr.Zero)
+                {
+                    strings.Add(profilePtr);
+                }
 
                 var pathPtr = IntPtr.Zero;
-                if (!string.IsNullOrEmpty(source.Path))
+                if (source != null && !string.IsNullOrEmpty(source.Path))
                 {
                     pathPtr = Marshal.StringToHGlobalAnsi(source.Path);
                     strings.Add(pathPtr);
                 }
 
-                // Convert envVars to JSON format if provided
                 var envVarsRef = overrideEnvVars?.Count > 0
                     ? scope.ByteArray(JsonSerializer.Serialize(overrideEnvVars, JsonOptions))
                     : ByteArrayRef.Empty.Ref;
 
-                // Create the options struct
                 unsafe
                 {
                     var options = new Interop.TemporalCoreClientConfigProfileLoadOptions
                     {
                         profile = (sbyte*)profilePtr,
                         path = (sbyte*)pathPtr,
-                        data = source.Data != null ? scope.ByteArray(source.Data) : ByteArrayRef.Empty.Ref,
+                        data = source?.Data != null ? scope.ByteArray(source.Data) : ByteArrayRef.Empty.Ref,
                         disable_file = Convert.ToByte(disableFile),
                         disable_env = Convert.ToByte(disableEnv),
                         config_file_strict = Convert.ToByte(configFileStrict),
@@ -189,32 +134,7 @@ namespace Temporalio.Bridge
                     };
 
                     var result = Interop.Methods.temporal_core_client_config_profile_load(&options);
-
-                    if (result.fail != null)
-                    {
-                        string errorMessage;
-                        using (var byteArray = new ByteArray(runtime, result.fail))
-                        {
-                            errorMessage = byteArray.ToUTF8();
-                        }
-                        throw new InvalidOperationException($"Configuration loading error: {errorMessage}");
-                    }
-
-                    if (result.success == null)
-                    {
-                        throw new InvalidOperationException("Failed to load client config profile: no success or failure result");
-                    }
-
-                    string json;
-                    using (var byteArray = new ByteArray(runtime, result.success))
-                    {
-                        json = byteArray.ToUTF8();
-                    }
-
-                    var profileDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(
-                        json, JsonOptions) ?? new Dictionary<string, object?>();
-
-                    return CreateClientConfigProfile(profileDict);
+                    return ProcessSingleProfileResult(runtime, result);
                 }
             }
             catch (JsonException ex)
@@ -235,9 +155,9 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="profileData">The profile data dictionary.</param>
         /// <returns>A new ClientConfigProfile instance.</returns>
-        private static ClientConfigProfile CreateClientConfigProfile(Dictionary<string, object?> profileData)
+        private static ClientEnvConfig.ConfigProfile CreateClientConfigProfile(Dictionary<string, object?> profileData)
         {
-            return new ClientConfigProfile(
+            return new ClientEnvConfig.ConfigProfile(
                 GetString(profileData, "address"),
                 GetString(profileData, "namespace"),
                 GetString(profileData, "api_key"),
@@ -248,7 +168,7 @@ namespace Temporalio.Bridge
         private static string? GetString(Dictionary<string, object?> data, string key) =>
             data.TryGetValue(key, out var value) ? value?.ToString() : null;
 
-        private static ClientConfigTls? CreateTlsConfig(Dictionary<string, object?> profileData)
+        private static ClientEnvConfig.Tls? CreateTlsConfig(Dictionary<string, object?> profileData)
         {
             if (!profileData.TryGetValue("tls", out var tlsObj))
             {
@@ -267,14 +187,18 @@ namespace Temporalio.Bridge
                 return null;
             }
 
-            var disabled = tlsData.TryGetValue("disabled", out var disabledObj) && disabledObj switch
+            bool? disabled = null;
+            if (tlsData.TryGetValue("disabled", out var disabledObj))
             {
-                JsonElement el => el.GetBoolean(),
-                bool b => b,
-                _ => Convert.ToBoolean(disabledObj),
-            };
+                disabled = disabledObj switch
+                {
+                    JsonElement el => el.GetBoolean(),
+                    bool b => b,
+                    _ => Convert.ToBoolean(disabledObj),
+                };
+            }
 
-            return new ClientConfigTls(
+            return new ClientEnvConfig.Tls(
                 GetString(tlsData, "server_name"),
                 GetDataSource(tlsData, "server_ca_cert"),
                 GetDataSource(tlsData, "client_cert"),
@@ -300,6 +224,95 @@ namespace Temporalio.Bridge
 
             return metaData?.Where(kv => kv.Value != null)
                 .ToDictionary(kv => kv.Key, kv => kv.Value!.ToString() ?? string.Empty);
+        }
+
+        private static unsafe Dictionary<string, ClientEnvConfig.ConfigProfile> ProcessAllProfilesResult(
+            Runtime runtime,
+            Interop.TemporalCoreClientConfigOrFail result)
+        {
+            if (result.fail != null)
+            {
+                string errorMessage;
+                using (var byteArray = new ByteArray(runtime, result.fail))
+                {
+                    errorMessage = byteArray.ToUTF8();
+                }
+                throw new InvalidOperationException($"Configuration loading error: {errorMessage}");
+            }
+
+            if (result.success == null)
+            {
+                throw new InvalidOperationException("Failed to load client config: no success or failure result");
+            }
+
+            string json;
+            using (var byteArray = new ByteArray(runtime, result.success))
+            {
+                json = byteArray.ToUTF8();
+            }
+
+            var configDict = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object?>>>(
+                json, JsonOptions) ?? new Dictionary<string, Dictionary<string, object?>>();
+
+            if (configDict.TryGetValue("profiles", out var profilesObj))
+            {
+                var typedProfiles = new Dictionary<string, ClientEnvConfig.ConfigProfile>();
+
+                if (profilesObj is Dictionary<string, object?> profiles)
+                {
+                    foreach (var kvp in profiles)
+                    {
+                        if (kvp.Value is Dictionary<string, object?> profile)
+                        {
+                            typedProfiles[kvp.Key] = CreateClientConfigProfile(profile);
+                        }
+                        else if (kvp.Value is JsonElement profileElement)
+                        {
+                            var profileDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(
+                                profileElement.GetRawText(), JsonOptions);
+                            if (profileDict != null)
+                            {
+                                typedProfiles[kvp.Key] = CreateClientConfigProfile(profileDict);
+                            }
+                        }
+                    }
+                }
+
+                return typedProfiles;
+            }
+
+            return new Dictionary<string, ClientEnvConfig.ConfigProfile>();
+        }
+
+        private static unsafe ClientEnvConfig.ConfigProfile ProcessSingleProfileResult(
+            Runtime runtime,
+            Interop.TemporalCoreClientConfigProfileOrFail result)
+        {
+            if (result.fail != null)
+            {
+                string errorMessage;
+                using (var byteArray = new ByteArray(runtime, result.fail))
+                {
+                    errorMessage = byteArray.ToUTF8();
+                }
+                throw new InvalidOperationException($"Configuration loading error: {errorMessage}");
+            }
+
+            if (result.success == null)
+            {
+                throw new InvalidOperationException("Failed to load client config profile: no success or failure result");
+            }
+
+            string json;
+            using (var byteArray = new ByteArray(runtime, result.success))
+            {
+                json = byteArray.ToUTF8();
+            }
+
+            var profileDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(
+                json, JsonOptions) ?? new Dictionary<string, object?>();
+
+            return CreateClientConfigProfile(profileDict);
         }
 
         private static DataSource? GetDataSource(Dictionary<string, object?> data, string key) =>

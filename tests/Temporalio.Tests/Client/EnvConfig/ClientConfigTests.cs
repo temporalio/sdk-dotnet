@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Temporalio.Client.Configuration;
+using Temporalio.Client.EnvConfig;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Temporalio.Tests.Client.Configuration
+namespace Temporalio.Tests.Client.EnvConfig
 {
     /// <summary>
     /// Environment configuration tests following Python/TypeScript patterns for cross-SDK consistency.
@@ -62,7 +62,7 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_File_Default()
         {
             var source = DataSource.FromString(TomlConfigBase);
-            var profile = ClientConfigProfile.Load("default", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source);
 
             Assert.Equal("default-address", profile.Address);
             Assert.Equal("default-namespace", profile.Namespace);
@@ -70,7 +70,7 @@ client_key_data = ""client-key-data""
             Assert.Null(profile.Tls);
             Assert.Null(profile.GrpcMeta);
 
-            var options = profile.ToConnectionOptions();
+            var options = profile.ToClientConnectionOptions();
             Assert.Equal("default-address", options.TargetHost);
         }
 
@@ -78,7 +78,7 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_File_Custom()
         {
             var source = DataSource.FromString(TomlConfigBase);
-            var profile = ClientConfigProfile.Load("custom", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("custom", configSource: source);
 
             Assert.Equal("custom-address", profile.Address);
             Assert.Equal("custom-namespace", profile.Namespace);
@@ -88,7 +88,7 @@ client_key_data = ""client-key-data""
             Assert.NotNull(profile.GrpcMeta);
             Assert.Equal("custom-value", profile.GrpcMeta["custom-header"]);
 
-            var options = profile.ToConnectionOptions();
+            var options = profile.ToClientConnectionOptions();
             Assert.Equal("custom-address", options.TargetHost);
             Assert.Equal("custom-api-key", options.ApiKey);
         }
@@ -97,13 +97,13 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_Data_Default()
         {
             var source = DataSource.FromString(TomlConfigBase);
-            var profile = ClientConfigProfile.Load("default", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source);
 
             Assert.Equal("default-address", profile.Address);
             Assert.Equal("default-namespace", profile.Namespace);
             Assert.Null(profile.Tls);
 
-            var options = profile.ToConnectionOptions();
+            var options = profile.ToClientConnectionOptions();
             Assert.Equal("default-address", options.TargetHost);
         }
 
@@ -111,7 +111,7 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_Data_Custom()
         {
             var source = DataSource.FromString(TomlConfigBase);
-            var profile = ClientConfigProfile.Load("custom", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("custom", configSource: source);
 
             Assert.Equal("custom-address", profile.Address);
             Assert.Equal("custom-namespace", profile.Namespace);
@@ -131,7 +131,7 @@ client_key_data = ""client-key-data""
                 ["TEMPORAL_NAMESPACE"] = "env-override-namespace",
             };
 
-            var profile = ClientConfigProfile.Load("default", configSource: source, overrideEnvVars: envVars);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source, overrideEnvVars: envVars);
 
             Assert.Equal("env-override-address", profile.Address);
             Assert.Equal("env-override-namespace", profile.Namespace);
@@ -149,7 +149,7 @@ client_key_data = ""client-key-data""
                 ["TEMPORAL_TLS_SERVER_NAME"] = "env-server-name",
             };
 
-            var profile = ClientConfigProfile.Load("custom", configSource: source, overrideEnvVars: envVars);
+            var profile = ClientEnvConfig.ConfigProfile.Load("custom", configSource: source, overrideEnvVars: envVars);
 
             Assert.Equal("env-address", profile.Address);
             Assert.Equal("env-namespace", profile.Namespace);
@@ -169,7 +169,7 @@ client_key_data = ""client-key-data""
                 ["TEMPORAL_GRPC_META_ANOTHER_HEADER"] = "another-value",
             };
 
-            var profile = ClientConfigProfile.Load("custom", configSource: source, overrideEnvVars: envVars);
+            var profile = ClientEnvConfig.ConfigProfile.Load("custom", configSource: source, overrideEnvVars: envVars);
 
             Assert.NotNull(profile.GrpcMeta);
             Assert.Equal("env-value", profile.GrpcMeta["custom-header"]);
@@ -187,7 +187,7 @@ authorization = ""Bearer token""
 x-custom-header = ""custom-value""
 ";
             var source = DataSource.FromString(toml);
-            var profile = ClientConfigProfile.Load("default", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source);
 
             Assert.NotNull(profile.GrpcMeta);
             Assert.Equal("Bearer token", profile.GrpcMeta["authorization"]);
@@ -203,7 +203,7 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_GRPC_META_CUSTOM_HEADER"] = string.Empty,
             };
 
-            var profile = ClientConfigProfile.Load("custom", configSource: source, overrideEnvVars: envVars);
+            var profile = ClientEnvConfig.ConfigProfile.Load("custom", configSource: source, overrideEnvVars: envVars);
 
             // Empty env var should either delete the header or keep original value
             // Current implementation may not support deletion, so test for reasonable behavior
@@ -224,7 +224,7 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_ADDRESS"] = "env-address",
             };
 
-            var profile = ClientConfigProfile.Load("default", configSource: source, disableEnv: true, overrideEnvVars: envVars);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source, disableEnv: true, overrideEnvVars: envVars);
 
             Assert.Equal("default-address", profile.Address);
         }
@@ -239,7 +239,7 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_NAMESPACE"] = "env-namespace",
             };
 
-            var profile = ClientConfigProfile.Load("default", disableFile: true, overrideEnvVars: envVars);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", disableFile: true, overrideEnvVars: envVars);
 
             Assert.Equal("env-address", profile.Address);
             Assert.Equal("env-namespace", profile.Namespace);
@@ -254,7 +254,7 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_ADDRESS"] = "env-override",
             };
 
-            var config = ClientConfig.Load(configSource: source, overrideEnvVars: envVars);
+            var config = ClientEnvConfig.Load(configSource: source, overrideEnvVars: envVars);
 
             Assert.Equal("default-address", config.Profiles["default"].Address);
         }
@@ -265,7 +265,7 @@ x-custom-header = ""custom-value""
             var source = DataSource.FromString(TomlConfigBase);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfigProfile.Load("default", configSource: source, disableFile: true, disableEnv: true));
+                ClientEnvConfig.ConfigProfile.Load("default", configSource: source, disableFile: true, disableEnv: true));
             Assert.Contains("Cannot disable both", ex.Message);
         }
 
@@ -274,7 +274,7 @@ x-custom-header = ""custom-value""
         public void Test_Load_Profiles_From_File_All()
         {
             var source = DataSource.FromString(TomlConfigBase);
-            var config = ClientConfig.Load(configSource: source);
+            var config = ClientEnvConfig.Load(configSource: source);
 
             Assert.Equal(2, config.Profiles.Count);
             Assert.Contains("default", config.Profiles.Keys);
@@ -287,7 +287,7 @@ x-custom-header = ""custom-value""
         public void Test_Load_Profiles_From_Data_All()
         {
             var source = DataSource.FromString(TomlConfigBase);
-            var config = ClientConfig.Load(configSource: source);
+            var config = ClientEnvConfig.Load(configSource: source);
 
             Assert.Equal(2, config.Profiles.Count);
             var defaultProfile = config.Profiles["default"];
@@ -300,7 +300,7 @@ x-custom-header = ""custom-value""
         [Fact]
         public void Test_Load_Profiles_No_Config_File()
         {
-            var config = ClientConfig.Load(disableFile: true, overrideEnvVars: new Dictionary<string, string>());
+            var config = ClientEnvConfig.Load(disableFile: true, overrideEnvVars: new Dictionary<string, string>());
 
             Assert.True(config.Profiles.Count <= 1);
         }
@@ -314,14 +314,14 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_CONFIG_FILE"] = "/path/to/config.toml",
             };
 
-            var config = ClientConfig.Load(configSource: source, overrideEnvVars: envVars);
+            var config = ClientEnvConfig.Load(configSource: source, overrideEnvVars: envVars);
             Assert.Contains("default", config.Profiles.Keys);
         }
 
         [Fact]
         public void Test_Load_Profiles_Disable_File()
         {
-            var config = ClientConfig.Load(disableFile: true, overrideEnvVars: new Dictionary<string, string>());
+            var config = ClientEnvConfig.Load(disableFile: true, overrideEnvVars: new Dictionary<string, string>());
 
             Assert.True(config.Profiles.Count <= 1);
         }
@@ -335,9 +335,13 @@ address = ""other-address""
 ";
             var source = DataSource.FromString(toml);
 
-            var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfigProfile.Load("default", configSource: source));
-            Assert.Contains("Profile 'default' not found", ex.Message);
+            // When profile is null (defaults to "default"), should return empty profile if "default" not found
+            var profile = ClientEnvConfig.ConfigProfile.Load(profile: null, configSource: source);
+            Assert.Null(profile.Address);
+            Assert.Null(profile.Namespace);
+            Assert.Null(profile.ApiKey);
+            Assert.Null(profile.Tls);
+            Assert.Null(profile.GrpcMeta);
         }
 
         // === TLS CONFIGURATION TESTS (7 tests) ===
@@ -350,12 +354,12 @@ address = ""my-address""
 api_key = ""my-api-key""
 ";
             var source = DataSource.FromString(toml);
-            var profile = ClientConfigProfile.Load("default", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source);
 
             Assert.Equal("my-api-key", profile.ApiKey);
             Assert.NotNull(profile.Tls);
 
-            var options = profile.ToConnectionOptions();
+            var options = profile.ToClientConnectionOptions();
             Assert.NotNull(options.Tls);
             Assert.Equal("my-api-key", options.ApiKey);
         }
@@ -366,22 +370,22 @@ api_key = ""my-api-key""
             var source = DataSource.FromString(TomlConfigTlsDetailed);
 
             // Test disabled TLS
-            var profileDisabled = ClientConfigProfile.Load("tls_disabled", configSource: source);
+            var profileDisabled = ClientEnvConfig.ConfigProfile.Load("tls_disabled", configSource: source);
             Assert.NotNull(profileDisabled.Tls);
             Assert.True(profileDisabled.Tls.Disabled);
 
-            var optionsDisabled = profileDisabled.ToConnectionOptions();
+            var optionsDisabled = profileDisabled.ToClientConnectionOptions();
             Assert.Null(optionsDisabled.Tls);
 
             // Test TLS with certs
-            var profileCerts = ClientConfigProfile.Load("tls_with_certs", configSource: source);
+            var profileCerts = ClientEnvConfig.ConfigProfile.Load("tls_with_certs", configSource: source);
             Assert.NotNull(profileCerts.Tls);
             Assert.Equal("custom-server", profileCerts.Tls.ServerName);
             Assert.NotNull(profileCerts.Tls.ServerRootCACert);
             Assert.NotNull(profileCerts.Tls.ClientCert);
             Assert.NotNull(profileCerts.Tls.ClientPrivateKey);
 
-            var optionsCerts = profileCerts.ToConnectionOptions();
+            var optionsCerts = profileCerts.ToClientConnectionOptions();
             Assert.NotNull(optionsCerts.Tls);
             Assert.Equal("custom-server", optionsCerts.Tls.Domain);
         }
@@ -410,7 +414,7 @@ client_cert_path = ""{certPath}""
 client_key_path = ""{keyPath}""
 ";
                 var source = DataSource.FromString(toml);
-                var profile = ClientConfigProfile.Load("default", configSource: source);
+                var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source);
 
                 Assert.NotNull(profile.Tls);
                 Assert.Equal("custom-server", profile.Tls.ServerName);
@@ -418,7 +422,7 @@ client_key_path = ""{keyPath}""
                 Assert.Equal(certPath, profile.Tls.ClientCert!.Path);
                 Assert.Equal(keyPath, profile.Tls.ClientPrivateKey!.Path);
 
-                var options = profile.ToConnectionOptions();
+                var options = profile.ToClientConnectionOptions();
                 Assert.NotNull(options.Tls);
                 Assert.Equal("custom-server", options.Tls.Domain);
             }
@@ -443,7 +447,7 @@ client_cert_data = ""cert-data""
             var source = DataSource.FromString(toml);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfigProfile.Load("default", configSource: source));
+                ClientEnvConfig.ConfigProfile.Load("default", configSource: source));
             Assert.Contains("Cannot specify both", ex.Message);
         }
 
@@ -463,7 +467,7 @@ client_cert_path = ""some-path""
             };
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfigProfile.Load("default", configSource: source, overrideEnvVars: envVars));
+                ClientEnvConfig.ConfigProfile.Load("default", configSource: source, overrideEnvVars: envVars));
             Assert.Contains("path", ex.Message, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -483,7 +487,7 @@ client_cert_data = ""some-data""
             };
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfigProfile.Load("default", configSource: source, overrideEnvVars: envVars));
+                ClientEnvConfig.ConfigProfile.Load("default", configSource: source, overrideEnvVars: envVars));
             Assert.Contains("data", ex.Message, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -498,11 +502,52 @@ server_name = ""custom-server""
 client_key_data = ""client-key-data""
 ";
             var source = DataSource.FromString(toml);
-            var profile = ClientConfigProfile.Load("default", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("default", configSource: source);
 
             Assert.NotNull(profile.Tls);
             Assert.NotNull(profile.Tls.ClientPrivateKey);
             Assert.Equal("client-key-data", System.Text.Encoding.UTF8.GetString(profile.Tls.ClientPrivateKey.Data!));
+        }
+
+        [Fact]
+        public void Test_Tls_Disabled_Tri_State_Behavior()
+        {
+            // Test 1: disabled=null (unset) with API key -> TLS enabled
+            var tomlNull = @"
+[profile.default]
+address = ""my-address""
+api_key = ""my-api-key""
+[profile.default.tls]
+server_name = ""my-server""
+";
+            var profileNull = ClientEnvConfig.ConfigProfile.Load("default", configSource: DataSource.FromString(tomlNull));
+            Assert.Null(profileNull.Tls!.Disabled); // disabled is null (unset)
+            Assert.NotNull(profileNull.ToClientConnectionOptions().Tls); // TLS enabled
+
+            // Test 2: disabled=false (explicitly enabled) -> TLS enabled
+            var tomlFalse = @"
+[profile.default]
+address = ""my-address""
+[profile.default.tls]
+disabled = false
+server_name = ""my-server""
+";
+            var profileFalse = ClientEnvConfig.ConfigProfile.Load("default", configSource: DataSource.FromString(tomlFalse));
+            Assert.False(profileFalse.Tls!.Disabled); // explicitly disabled=false
+            Assert.NotNull(profileFalse.ToClientConnectionOptions().Tls); // TLS enabled
+
+            // Test 3: disabled=true (explicitly disabled) -> TLS disabled even with API key
+            var tomlTrue = @"
+[profile.default]
+address = ""my-address""
+api_key = ""my-api-key""
+[profile.default.tls]
+disabled = true
+server_name = ""should-be-ignored""
+";
+            var profileTrue = ClientEnvConfig.ConfigProfile.Load("default", configSource: DataSource.FromString(tomlTrue));
+            Assert.True(profileTrue.Tls!.Disabled); // explicitly disabled=true
+            Assert.Null(profileTrue.ToClientConnectionOptions().Tls); // TLS disabled even with API key
         }
 
         // === ERROR HANDLING TESTS (4 tests) ===
@@ -512,7 +557,7 @@ client_key_data = ""client-key-data""
             var source = DataSource.FromString(TomlConfigBase);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfigProfile.Load("nonexistent", configSource: source));
+                ClientEnvConfig.ConfigProfile.Load("nonexistent", configSource: source));
             Assert.Contains("Profile 'nonexistent' not found", ex.Message);
         }
 
@@ -522,7 +567,7 @@ client_key_data = ""client-key-data""
             var source = DataSource.FromString(TomlConfigStrictFail);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfig.Load(configSource: source, configFileStrict: true));
+                ClientEnvConfig.Load(configSource: source, configFileStrict: true));
             Assert.Contains("unrecognized", ex.Message, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -532,7 +577,7 @@ client_key_data = ""client-key-data""
             var source = DataSource.FromString(TomlConfigStrictFail);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfigProfile.Load("default", configSource: source, configFileStrict: true));
+                ClientEnvConfig.ConfigProfile.Load("default", configSource: source, configFileStrict: true));
             Assert.Contains("unrecognized", ex.Message, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -543,7 +588,7 @@ client_key_data = ""client-key-data""
             var source = DataSource.FromString(malformedToml);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientConfig.Load(configSource: source));
+                ClientEnvConfig.Load(configSource: source));
             Assert.Contains("TOML", ex.Message, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -551,21 +596,21 @@ client_key_data = ""client-key-data""
         [Fact]
         public void Test_Client_Config_Profile_To_From_Dict()
         {
-            var tls = new ClientConfigTls(
+            var tls = new ClientEnvConfig.Tls(
                 serverName: "some-server",
                 serverRootCaCert: DataSource.FromString("ca-data"),
                 clientCert: DataSource.FromString("cert-data"),
                 clientPrivateKey: DataSource.FromString("key-data"));
 
-            var profile = new ClientConfigProfile(
+            var profile = new ClientEnvConfig.ConfigProfile(
                 address: "some-address",
                 @namespace: "some-namespace",
                 apiKey: "some-api-key",
                 tls: tls,
                 grpcMeta: new Dictionary<string, string> { ["header"] = "value" });
 
-            var json = profile.ToJson();
-            var restored = ClientConfigProfile.FromJson(json);
+            var record = profile.ToRecord();
+            var restored = ClientEnvConfig.ConfigProfile.FromRecord(record);
 
             Assert.Equal("some-address", restored.Address);
             Assert.Equal("some-namespace", restored.Namespace);
@@ -579,18 +624,18 @@ client_key_data = ""client-key-data""
         [Fact]
         public void Test_Client_Config_To_From_Dict()
         {
-            var profiles = new Dictionary<string, ClientConfigProfile>
+            var profiles = new Dictionary<string, ClientEnvConfig.ConfigProfile>
             {
-                ["default"] = new ClientConfigProfile(address: "addr1", @namespace: "ns1"),
-                ["custom"] = new ClientConfigProfile(
+                ["default"] = new ClientEnvConfig.ConfigProfile(address: "addr1", @namespace: "ns1"),
+                ["custom"] = new ClientEnvConfig.ConfigProfile(
                     address: "addr2",
                     apiKey: "key2",
                     grpcMeta: new Dictionary<string, string> { ["h"] = "v" }),
             };
 
-            var config = new ClientConfig(profiles);
-            var json = config.ToJson();
-            var restored = ClientConfig.FromJson(json);
+            var config = new ClientEnvConfig(profiles);
+            var record = config.ToRecord();
+            var restored = ClientEnvConfig.FromRecord(record);
 
             Assert.Equal(2, restored.Profiles.Count);
             Assert.Equal("addr1", restored.Profiles["default"].Address);
@@ -603,13 +648,13 @@ client_key_data = ""client-key-data""
         [Fact]
         public void Test_Read_Source_From_String_Content()
         {
-            var profile = new ClientConfigProfile(
+            var profile = new ClientEnvConfig.ConfigProfile(
                 address: "some-address",
                 @namespace: "some-namespace",
                 apiKey: "some-api-key");
 
-            var json = profile.ToJson();
-            var restored = ClientConfigProfile.FromJson(json);
+            var record = profile.ToRecord();
+            var restored = ClientEnvConfig.ConfigProfile.FromRecord(record);
 
             Assert.Equal("some-address", restored.Address);
             Assert.Equal("some-namespace", restored.Namespace);
@@ -623,7 +668,7 @@ client_key_data = ""client-key-data""
             var source = DataSource.FromString(TomlConfigBase);
 
             // Test default profile
-            var options1 = ClientConfig.LoadClientConnectOptions(configSource: source);
+            var options1 = ClientEnvConfig.LoadClientConnectOptions(configSource: source);
             Assert.Equal("default-address", options1.TargetHost);
             Assert.Equal("default-namespace", options1.Namespace);
 
@@ -632,7 +677,7 @@ client_key_data = ""client-key-data""
             {
                 ["TEMPORAL_NAMESPACE"] = "env-namespace-override",
             };
-            var options2 = ClientConfig.LoadClientConnectOptions(configSource: source, overrideEnvVars: envVars);
+            var options2 = ClientEnvConfig.LoadClientConnectOptions(configSource: source, overrideEnvVars: envVars);
             Assert.Equal("default-address", options2.TargetHost);
             Assert.Equal("env-namespace-override", options2.Namespace);
         }
@@ -656,14 +701,14 @@ authorization = ""Bearer test-token""
             var source = DataSource.FromString(toml);
 
             // Test default profile integration
-            var defaultOptions = ClientConfig.LoadClientConnectOptions(configSource: source);
+            var defaultOptions = ClientEnvConfig.LoadClientConnectOptions(configSource: source);
             Assert.Equal("localhost:7233", defaultOptions.TargetHost);
             Assert.Equal("integration-test", defaultOptions.Namespace);
             Assert.Null(defaultOptions.ApiKey);
             Assert.Null(defaultOptions.Tls);
 
             // Test custom profile with full integration
-            var integrationOptions = ClientConfig.LoadClientConnectOptions(
+            var integrationOptions = ClientEnvConfig.LoadClientConnectOptions(
                 profile: "integration", configSource: source);
             Assert.Equal("integration.example.com:7233", integrationOptions.TargetHost);
             Assert.Equal("integration-namespace", integrationOptions.Namespace);
@@ -685,7 +730,7 @@ address = ""localhost:7233""
 namespace = ""development""
 ";
             var source = DataSource.FromString(toml);
-            var profile = ClientConfigProfile.Load("development", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("development", configSource: source);
 
             // Validate profile configuration
             Assert.Equal("localhost:7233", profile.Address);
@@ -694,7 +739,7 @@ namespace = ""development""
             Assert.Null(profile.Tls);
 
             // Test connection options creation
-            var options = profile.ToConnectionOptions();
+            var options = profile.ToClientConnectionOptions();
             Assert.Equal("localhost:7233", options.TargetHost);
             Assert.Equal("development", options.Namespace);
             Assert.Null(options.ApiKey);
@@ -719,7 +764,7 @@ api_key = ""prod-api-key-12345""
 server_name = ""production.temporal.cloud""
 ";
             var source = DataSource.FromString(toml);
-            var profile = ClientConfigProfile.Load("production", configSource: source);
+            var profile = ClientEnvConfig.ConfigProfile.Load("production", configSource: source);
 
             // Validate profile configuration
             Assert.Equal("production.temporal.cloud:7233", profile.Address);
@@ -727,10 +772,10 @@ server_name = ""production.temporal.cloud""
             Assert.Equal("prod-api-key-12345", profile.ApiKey);
             Assert.NotNull(profile.Tls);
             Assert.Equal("production.temporal.cloud", profile.Tls.ServerName);
-            Assert.False(profile.Tls.Disabled);
+            Assert.Null(profile.Tls.Disabled); // TLS disabled not explicitly set, so should be null
 
             // Test connection options creation
-            var options = profile.ToConnectionOptions();
+            var options = profile.ToClientConnectionOptions();
             Assert.Equal("production.temporal.cloud:7233", options.TargetHost);
             Assert.Equal("production-namespace", options.Namespace);
             Assert.Equal("prod-api-key-12345", options.ApiKey);
@@ -763,7 +808,7 @@ api_key = ""default-api-key""
                 ["TEMPORAL_TLS_SERVER_NAME"] = "override.temporal.cloud",
             };
 
-            var profile = ClientConfigProfile.Load("configurable", configSource: source, overrideEnvVars: envVars);
+            var profile = ClientEnvConfig.ConfigProfile.Load("configurable", configSource: source, overrideEnvVars: envVars);
 
             // Validate environment variables override file configuration
             Assert.Equal("override.temporal.cloud:7233", profile.Address);
@@ -773,7 +818,7 @@ api_key = ""default-api-key""
             Assert.Equal("override.temporal.cloud", profile.Tls.ServerName);
 
             // Test connection options with overrides
-            var options = profile.ToConnectionOptions();
+            var options = profile.ToClientConnectionOptions();
             Assert.Equal("override.temporal.cloud:7233", options.TargetHost);
             Assert.Equal("override-namespace", options.Namespace);
             Assert.Equal("override-api-key-67890", options.ApiKey);
@@ -811,25 +856,25 @@ environment = ""production""
             var source = DataSource.FromString(toml);
 
             // Load all profiles
-            var config = ClientConfig.Load(configSource: source);
+            var config = ClientEnvConfig.Load(configSource: source);
             Assert.Equal(3, config.Profiles.Count);
 
             // Test development profile (no security)
-            var devOptions = ClientConfig.LoadClientConnectOptions("development", configSource: source);
+            var devOptions = ClientEnvConfig.LoadClientConnectOptions("development", configSource: source);
             Assert.Equal("localhost:7233", devOptions.TargetHost);
             Assert.Equal("dev", devOptions.Namespace);
             Assert.Null(devOptions.ApiKey);
             Assert.Null(devOptions.Tls);
 
             // Test staging profile (API key, no TLS config)
-            var stagingOptions = ClientConfig.LoadClientConnectOptions("staging", configSource: source);
+            var stagingOptions = ClientEnvConfig.LoadClientConnectOptions("staging", configSource: source);
             Assert.Equal("staging.temporal.io:7233", stagingOptions.TargetHost);
             Assert.Equal("staging", stagingOptions.Namespace);
             Assert.Equal("staging-api-key", stagingOptions.ApiKey);
             Assert.NotNull(stagingOptions.Tls); // Auto-enabled due to API key
 
             // Test production profile (full security with metadata)
-            var prodOptions = ClientConfig.LoadClientConnectOptions("production", configSource: source);
+            var prodOptions = ClientEnvConfig.LoadClientConnectOptions("production", configSource: source);
             Assert.Equal("production.temporal.cloud:7233", prodOptions.TargetHost);
             Assert.Equal("production", prodOptions.Namespace);
             Assert.Equal("production-api-key", prodOptions.ApiKey);
