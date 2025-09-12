@@ -279,11 +279,73 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreCancellationToken* cancellation_token;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal unsafe partial struct TemporalCoreClientConfigOrFail
+    {
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* success;
+
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal unsafe partial struct TemporalCoreClientConfigLoadOptions
+    {
+        [NativeTypeName("const char *")]
+        public sbyte* path;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef data;
+
+        [NativeTypeName("bool")]
+        public byte disable_file;
+
+        [NativeTypeName("bool")]
+        public byte config_file_strict;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef env_vars;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal unsafe partial struct TemporalCoreClientConfigProfileOrFail
+    {
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* success;
+
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal unsafe partial struct TemporalCoreClientConfigProfileLoadOptions
+    {
+        [NativeTypeName("const char *")]
+        public sbyte* profile;
+
+        [NativeTypeName("const char *")]
+        public sbyte* path;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef data;
+
+        [NativeTypeName("bool")]
+        public byte disable_file;
+
+        [NativeTypeName("bool")]
+        public byte disable_env;
+
+        [NativeTypeName("bool")]
+        public byte config_file_strict;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef env_vars;
+    }
+
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void TemporalCoreClientRpcCallCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_message, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_details);
 
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void TemporalCoreClientConfigCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* success, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
 
     [StructLayout(LayoutKind.Explicit)]
     internal partial struct TemporalCoreMetricAttributeValue
@@ -1183,10 +1245,12 @@ namespace Temporalio.Bridge.Interop
         public static extern void temporal_core_client_rpc_call([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreRpcCallOptions *")] TemporalCoreRpcCallOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientRpcCallCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_config_load([NativeTypeName("const char *")] sbyte* path, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef data, [NativeTypeName("bool")] byte disable_file, [NativeTypeName("bool")] byte config_file_strict, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef env_vars, void* user_data, [NativeTypeName("TemporalCoreClientConfigCallback")] IntPtr callback);
+        [return: NativeTypeName("struct TemporalCoreClientConfigOrFail")]
+        public static extern TemporalCoreClientConfigOrFail temporal_core_client_config_load([NativeTypeName("const struct TemporalCoreClientConfigLoadOptions *")] TemporalCoreClientConfigLoadOptions* options);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_config_profile_load([NativeTypeName("const char *")] sbyte* profile, [NativeTypeName("const char *")] sbyte* path, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef data, [NativeTypeName("bool")] byte disable_file, [NativeTypeName("bool")] byte disable_env, [NativeTypeName("bool")] byte config_file_strict, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef env_vars, void* user_data, [NativeTypeName("TemporalCoreClientConfigCallback")] IntPtr callback);
+        [return: NativeTypeName("struct TemporalCoreClientConfigProfileOrFail")]
+        public static extern TemporalCoreClientConfigProfileOrFail temporal_core_client_config_profile_load([NativeTypeName("const struct TemporalCoreClientConfigProfileLoadOptions *")] TemporalCoreClientConfigProfileLoadOptions* options);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreMetricMeter *")]
