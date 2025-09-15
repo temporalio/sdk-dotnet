@@ -300,7 +300,7 @@ x-custom-header = ""custom-value""
         [Fact]
         public void Test_Load_Profiles_No_Config_File()
         {
-            var config = ClientEnvConfig.Load(disableFile: true, overrideEnvVars: new Dictionary<string, string>());
+            var config = ClientEnvConfig.Load(overrideEnvVars: new Dictionary<string, string>());
 
             Assert.True(config.Profiles.Count <= 1);
         }
@@ -316,14 +316,6 @@ x-custom-header = ""custom-value""
 
             var config = ClientEnvConfig.Load(configSource: source, overrideEnvVars: envVars);
             Assert.Contains("default", config.Profiles.Keys);
-        }
-
-        [Fact]
-        public void Test_Load_Profiles_Disable_File()
-        {
-            var config = ClientEnvConfig.Load(disableFile: true, overrideEnvVars: new Dictionary<string, string>());
-
-            Assert.True(config.Profiles.Count <= 1);
         }
 
         [Fact]

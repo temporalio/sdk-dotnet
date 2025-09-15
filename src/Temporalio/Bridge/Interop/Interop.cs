@@ -299,9 +299,6 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreByteArrayRef data;
 
         [NativeTypeName("bool")]
-        public byte disable_file;
-
-        [NativeTypeName("bool")]
         public byte config_file_strict;
 
         [NativeTypeName("struct TemporalCoreByteArrayRef")]

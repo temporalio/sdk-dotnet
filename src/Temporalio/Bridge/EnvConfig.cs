@@ -23,14 +23,12 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="runtime">Runtime to use for the operation.</param>
         /// <param name="source">Data source to load configuration from.</param>
-        /// <param name="disableFile">If true, do not load from file (only from environment).</param>
         /// <param name="configFileStrict">If true, fail if configuration file is invalid.</param>
         /// <param name="overrideEnvVars">Environment variables to use, or null to use system environment.</param>
         /// <returns>Dictionary of profile name to client configuration profile.</returns>
         public static Dictionary<string, ClientEnvConfig.ConfigProfile> LoadClientConfig(
             Runtime runtime,
             DataSource? source,
-            bool disableFile = false,
             bool configFileStrict = false,
             IReadOnlyDictionary<string, string>? overrideEnvVars = null)
         {
@@ -56,7 +54,6 @@ namespace Temporalio.Bridge
                     {
                         path = (sbyte*)pathPtr,
                         data = source?.Data != null ? scope.ByteArray(source.Data) : ByteArrayRef.Empty.Ref,
-                        disable_file = Convert.ToByte(disableFile),
                         config_file_strict = Convert.ToByte(configFileStrict),
                         env_vars = envVarsRef,
                     };
@@ -333,9 +330,19 @@ namespace Temporalio.Bridge
                 {
                     return DataSource.FromPath(path);
                 }
-                if (dataSourceDict.TryGetValue("data", out var dataObj) && dataObj?.ToString() is string data)
+                if (dataSourceDict.TryGetValue("data", out var dataObj) && dataObj != null)
                 {
-                    return DataSource.FromString(data);
+                    // Handle both string data and byte array data from Rust Vec<u8>
+                    return dataObj switch
+                    {
+                        JsonElement el when el.ValueKind == JsonValueKind.Array =>
+                            DataSource.FromBytes(el.EnumerateArray().Select(x => (byte)x.GetInt32()).ToArray()),
+                        JsonElement el when el.ValueKind == JsonValueKind.String =>
+                            DataSource.FromString(el.GetString() ?? string.Empty),
+                        string str => DataSource.FromString(str),
+                        byte[] bytes => DataSource.FromBytes(bytes),
+                        _ => dataObj.ToString() is string dataStr ? DataSource.FromString(dataStr) : null,
+                    };
                 }
             }
 

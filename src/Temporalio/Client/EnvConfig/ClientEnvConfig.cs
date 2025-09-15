@@ -15,13 +15,11 @@ namespace Temporalio.Client.EnvConfig
         /// Load client configuration from environment variables and configuration files.
         /// </summary>
         /// <param name="configSource">The data source to load from.</param>
-        /// <param name="disableFile">If true, do not load from file (only from environment).</param>
         /// <param name="configFileStrict">If true, fail if configuration file is invalid.</param>
         /// <param name="overrideEnvVars">Environment variables to use, or null to use system environment.</param>
         /// <returns>Loaded configuration data.</returns>
         public static ClientEnvConfig Load(
             DataSource? configSource = null,
-            bool disableFile = false,
             bool configFileStrict = false,
             IReadOnlyDictionary<string, string>? overrideEnvVars = null)
         {
@@ -29,7 +27,6 @@ namespace Temporalio.Client.EnvConfig
             var profiles = Bridge.EnvConfig.LoadClientConfig(
                 runtime,
                 configSource,
-                disableFile,
                 configFileStrict,
                 overrideEnvVars);
             return new ClientEnvConfig(profiles);
