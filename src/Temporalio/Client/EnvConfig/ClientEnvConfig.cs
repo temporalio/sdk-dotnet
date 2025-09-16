@@ -14,50 +14,23 @@ namespace Temporalio.Client.EnvConfig
         /// <summary>
         /// Load client configuration from environment variables and configuration files.
         /// </summary>
-        /// <param name="configSource">The data source to load from.</param>
-        /// <param name="configFileStrict">If true, fail if configuration file is invalid.</param>
-        /// <param name="overrideEnvVars">Environment variables to use, or null to use system environment.</param>
+        /// <param name="options">Options for loading the configuration.</param>
         /// <returns>Loaded configuration data.</returns>
-        public static ClientEnvConfig Load(
-            DataSource? configSource = null,
-            bool configFileStrict = false,
-            IReadOnlyDictionary<string, string>? overrideEnvVars = null)
+        public static ClientEnvConfig Load(ConfigLoadOptions options)
         {
             var runtime = Runtime.TemporalRuntime.Default.Runtime;
-            var profiles = Bridge.EnvConfig.LoadClientConfig(
-                runtime,
-                configSource,
-                configFileStrict,
-                overrideEnvVars);
+            var profiles = Bridge.EnvConfig.LoadClientConfig(runtime, options);
             return new ClientEnvConfig(profiles);
         }
 
         /// <summary>
         /// Load client connection options directly from configuration.
         /// </summary>
-        /// <param name="profile">Name of the profile to load. If null, "default" is used.</param>
-        /// <param name="configSource">The data source to load from.</param>
-        /// <param name="disableFile">If true, do not load from file (only from environment).</param>
-        /// <param name="disableEnv">If true, disable environment variable overrides.</param>
-        /// <param name="configFileStrict">If true, fail if configuration file is invalid.</param>
-        /// <param name="overrideEnvVars">Environment variables to use, or null to use system environment.</param>
+        /// <param name="options">Options for loading the configuration profile.</param>
         /// <returns>Client connection options.</returns>
-        public static TemporalClientConnectOptions LoadClientConnectOptions(
-            string? profile = null,
-            DataSource? configSource = null,
-            bool disableFile = false,
-            bool disableEnv = false,
-            bool configFileStrict = false,
-            IReadOnlyDictionary<string, string>? overrideEnvVars = null)
+        public static TemporalClientConnectOptions LoadClientConnectOptions(ProfileLoadOptions options)
         {
-            var profileName = profile ?? "default";
-            var clientProfile = ConfigProfile.Load(
-                profileName,
-                configSource,
-                disableFile,
-                disableEnv,
-                configFileStrict,
-                overrideEnvVars);
+            var clientProfile = ConfigProfile.Load(options);
             return clientProfile.ToClientConnectionOptions();
         }
 
@@ -89,82 +62,27 @@ namespace Temporalio.Client.EnvConfig
         /// <summary>
         /// Represents a client configuration profile.
         /// </summary>
-        public sealed record ConfigProfile
+        /// <param name="Address">Client address.</param>
+        /// <param name="Namespace">Client namespace.</param>
+        /// <param name="ApiKey">Client API key.</param>
+        /// <param name="Tls">TLS configuration.</param>
+        /// <param name="GrpcMeta">gRPC metadata.</param>
+        public sealed record ConfigProfile(
+            string? Address = null,
+            string? Namespace = null,
+            string? ApiKey = null,
+            Tls? Tls = null,
+            IReadOnlyDictionary<string, string>? GrpcMeta = null)
         {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ConfigProfile"/> class.
-            /// </summary>
-            /// <param name="address">Client address.</param>
-            /// <param name="namespace">Client namespace.</param>
-            /// <param name="apiKey">Client API key.</param>
-            /// <param name="tls">TLS configuration.</param>
-            /// <param name="grpcMeta">gRPC metadata.</param>
-            public ConfigProfile(
-                string? address = null,
-                string? @namespace = null,
-                string? apiKey = null,
-                Tls? tls = null,
-                IReadOnlyDictionary<string, string>? grpcMeta = null)
-            {
-                Address = address;
-                Namespace = @namespace;
-                ApiKey = apiKey;
-                Tls = tls;
-                GrpcMeta = grpcMeta;
-            }
-
-            /// <summary>
-            /// Gets the client address.
-            /// </summary>
-            public string? Address { get; private init; }
-
-            /// <summary>
-            /// Gets the client namespace.
-            /// </summary>
-            public string? Namespace { get; private init; }
-
-            /// <summary>
-            /// Gets the client API key.
-            /// </summary>
-            public string? ApiKey { get; private init; }
-
-            /// <summary>
-            /// Gets the TLS configuration.
-            /// </summary>
-            public Tls? Tls { get; private init; }
-
-            /// <summary>
-            /// Gets the gRPC metadata.
-            /// </summary>
-            public IReadOnlyDictionary<string, string>? GrpcMeta { get; private init; }
-
             /// <summary>
             /// Loads a specific profile with environment variable overrides.
             /// </summary>
-            /// <param name="profile">Name of the profile to load. Defaults to "default" if not specified.</param>
-            /// <param name="configSource">The data source to load from.</param>
-            /// <param name="disableFile">If true, do not load from file (only from environment).</param>
-            /// <param name="disableEnv">If true, disable environment variable overrides.</param>
-            /// <param name="configFileStrict">If true, fail if configuration file is invalid.</param>
-            /// <param name="overrideEnvVars">Environment variables to use, or null to use system environment.</param>
+            /// <param name="options">Options for loading the configuration profile.</param>
             /// <returns>The loaded profile.</returns>
-            public static ConfigProfile Load(
-                string? profile = null,
-                DataSource? configSource = null,
-                bool disableFile = false,
-                bool disableEnv = false,
-                bool configFileStrict = false,
-                IReadOnlyDictionary<string, string>? overrideEnvVars = null)
+            public static ConfigProfile Load(ProfileLoadOptions options)
             {
                 var runtime = Runtime.TemporalRuntime.Default.Runtime;
-                return Bridge.EnvConfig.LoadClientConfigProfile(
-                    runtime,
-                    profile,
-                    configSource,
-                    disableFile,
-                    disableEnv,
-                    configFileStrict,
-                    overrideEnvVars);
+                return Bridge.EnvConfig.LoadClientConfigProfile(runtime, options);
             }
 
             /// <summary>
@@ -175,11 +93,11 @@ namespace Temporalio.Client.EnvConfig
             public static ConfigProfile FromRecord(ProfileRecord record)
             {
                 return new ConfigProfile(
-                    address: record.Address,
-                    @namespace: record.Namespace,
-                    apiKey: record.ApiKey,
-                    tls: record.Tls != null ? Tls.FromRecord(record.Tls) : null,
-                    grpcMeta: record.GrpcMeta);
+                    Address: record.Address,
+                    Namespace: record.Namespace,
+                    ApiKey: record.ApiKey,
+                    Tls: record.Tls != null ? Tls.FromRecord(record.Tls) : null,
+                    GrpcMeta: record.GrpcMeta);
             }
 
             /// <summary>
@@ -203,19 +121,6 @@ namespace Temporalio.Client.EnvConfig
                 if (Tls != null && Tls.Disabled != true)
                 {
                     options.Tls = Tls.ToTlsOptions();
-
-                    // If API key is present and TLS doesn't have a domain, extract it from address
-                    if (ApiKey != null && string.IsNullOrEmpty(options.Tls.Domain) && Address != null)
-                    {
-                        var domain = Address.Split(':')[0];
-                        options.Tls.Domain = domain;
-                    }
-                }
-                else if (ApiKey != null && (Tls == null || Tls.Disabled != true) && Address != null)
-                {
-                    // If API key is provided but no TLS config (or TLS is not disabled), set up default TLS with domain from address
-                    var domain = Address.Split(':')[0];
-                    options.Tls = new TlsOptions { Domain = domain };
                 }
 
                 // Add gRPC metadata if present
@@ -245,53 +150,22 @@ namespace Temporalio.Client.EnvConfig
         /// <summary>
         /// TLS configuration as specified as part of client configuration.
         /// </summary>
-        public sealed record Tls
+        /// <param name="ServerName">SNI override.</param>
+        /// <param name="ServerRootCACert">Server CA certificate source.</param>
+        /// <param name="ClientCert">Client certificate source.</param>
+        /// <param name="ClientPrivateKey">Client key source.</param>
+        public sealed record Tls(
+            string? ServerName = null,
+            DataSource? ServerRootCACert = null,
+            DataSource? ClientCert = null,
+            DataSource? ClientPrivateKey = null)
         {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="Tls"/> class.
-            /// </summary>
-            /// <param name="serverName">SNI override.</param>
-            /// <param name="serverRootCaCert">Server CA certificate source.</param>
-            /// <param name="clientCert">Client certificate source.</param>
-            /// <param name="clientPrivateKey">Client key source.</param>
-            public Tls(
-                string? serverName = null,
-                DataSource? serverRootCaCert = null,
-                DataSource? clientCert = null,
-                DataSource? clientPrivateKey = null)
-            {
-                ServerName = serverName;
-                ServerRootCACert = serverRootCaCert;
-                ClientCert = clientCert;
-                ClientPrivateKey = clientPrivateKey;
-            }
-
             /// <summary>
             /// Gets a value indicating whether TLS is explicitly disabled.
             /// If null, TLS behavior depends on other factors (API key presence, etc.).
             /// If true, TLS is explicitly disabled. If false, TLS is explicitly enabled.
             /// </summary>
             public bool? Disabled { get; internal init; }
-
-            /// <summary>
-            /// Gets the SNI override.
-            /// </summary>
-            public string? ServerName { get; private init; }
-
-            /// <summary>
-            /// Gets the server CA certificate source.
-            /// </summary>
-            public DataSource? ServerRootCACert { get; private init; }
-
-            /// <summary>
-            /// Gets the client certificate source.
-            /// </summary>
-            public DataSource? ClientCert { get; private init; }
-
-            /// <summary>
-            /// Gets the client key source.
-            /// </summary>
-            public DataSource? ClientPrivateKey { get; private init; }
 
             /// <summary>
             /// Create a Tls from a record structure.
@@ -301,10 +175,10 @@ namespace Temporalio.Client.EnvConfig
             public static Tls FromRecord(TlsRecord record)
             {
                 var tls = new Tls(
-                    serverName: record.ServerName,
-                    serverRootCaCert: DataSource.FromDictionary(record.ServerCaCert),
-                    clientCert: DataSource.FromDictionary(record.ClientCert),
-                    clientPrivateKey: DataSource.FromDictionary(record.ClientKey))
+                    ServerName: record.ServerName,
+                    ServerRootCACert: DataSource.FromDictionary(record.ServerCaCert),
+                    ClientCert: DataSource.FromDictionary(record.ClientCert),
+                    ClientPrivateKey: DataSource.FromDictionary(record.ClientKey))
                 {
                     Disabled = record.Disabled,
                 };
@@ -341,10 +215,99 @@ namespace Temporalio.Client.EnvConfig
                 return new TlsRecord(
                     Disabled: Disabled,
                     ServerName: ServerName,
-                    ServerCaCert: DataSource.ToDictionary(ServerRootCACert),
-                    ClientCert: DataSource.ToDictionary(ClientCert),
-                    ClientKey: DataSource.ToDictionary(ClientPrivateKey));
+                    ServerCaCert: ServerRootCACert?.ToDictionary(),
+                    ClientCert: ClientCert?.ToDictionary(),
+                    ClientKey: ClientPrivateKey?.ToDictionary());
             }
+        }
+
+        /// <summary>
+        /// Options for loading a specific client configuration profile.
+        /// </summary>
+        public class ProfileLoadOptions : ICloneable
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ProfileLoadOptions"/> class.
+            /// </summary>
+            public ProfileLoadOptions()
+            {
+            }
+
+            /// <summary>
+            /// Gets or sets the name of the profile to load. If null, "default" is used.
+            /// </summary>
+            public string? Profile { get; set; }
+
+            /// <summary>
+            /// Gets or sets the data source to load configuration from. If null, the configuration
+            /// will be loaded from the default file path: os-specific-config-dir/temporalio/temporal.toml.
+            /// </summary>
+            public DataSource? ConfigSource { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether to disable loading from file (only from environment).
+            /// Default is false.
+            /// </summary>
+            public bool DisableFile { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether to disable environment variable overrides.
+            /// Default is false.
+            /// </summary>
+            public bool DisableEnv { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether to fail if configuration file is invalid.
+            /// Default is false.
+            /// </summary>
+            public bool ConfigFileStrict { get; set; }
+
+            /// <summary>
+            /// Gets or sets environment variables to use, or null to use system environment.
+            /// </summary>
+            public IReadOnlyDictionary<string, string>? OverrideEnvVars { get; set; }
+
+            /// <summary>
+            /// Create a shallow copy of these options.
+            /// </summary>
+            /// <returns>A shallow copy of these options.</returns>
+            public virtual object Clone() => MemberwiseClone();
+        }
+
+        /// <summary>
+        /// Options for loading client environment configuration.
+        /// </summary>
+        public class ConfigLoadOptions : ICloneable
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ConfigLoadOptions"/> class.
+            /// </summary>
+            public ConfigLoadOptions()
+            {
+            }
+
+            /// <summary>
+            /// Gets or sets the data source to load configuration from. If null, the configuration
+            /// will be loaded from the default file path: os-specific-config-dir/temporalio/temporal.toml.
+            /// </summary>
+            public DataSource? ConfigSource { get; set; }
+
+            /// <summary>
+            /// Gets or sets a value indicating whether to fail if configuration file is invalid.
+            /// Default is false.
+            /// </summary>
+            public bool ConfigFileStrict { get; set; }
+
+            /// <summary>
+            /// Gets or sets environment variables to use, or null to use system environment.
+            /// </summary>
+            public IReadOnlyDictionary<string, string>? OverrideEnvVars { get; set; }
+
+            /// <summary>
+            /// Create a shallow copy of these options.
+            /// </summary>
+            /// <returns>A shallow copy of these options.</returns>
+            public virtual object Clone() => MemberwiseClone();
         }
     }
 
@@ -390,7 +353,7 @@ namespace Temporalio.Client.EnvConfig
         /// <param name="content">Configuration data as a UTF-8 string.</param>
         /// <returns>A new data source for the specified data.</returns>
         /// <exception cref="ArgumentException">Thrown when content is null.</exception>
-        public static DataSource FromString(string content)
+        public static DataSource FromUTF8String(string content)
         {
             if (content == null)
             {
@@ -430,7 +393,7 @@ namespace Temporalio.Client.EnvConfig
 
             if (dictionary.ContainsKey("data"))
             {
-                return DataSource.FromString(dictionary["data"]);
+                return DataSource.FromUTF8String(dictionary["data"]);
             }
 
             if (dictionary.ContainsKey("path"))
@@ -444,23 +407,17 @@ namespace Temporalio.Client.EnvConfig
         /// <summary>
         /// Convert a data source to a dictionary for TOML serialization.
         /// </summary>
-        /// <param name="source">The data source to convert.</param>
-        /// <returns>A dictionary with either "path" or "data" key, or null if source is null.</returns>
-        public static Dictionary<string, string>? ToDictionary(DataSource? source)
+        /// <returns>A dictionary with either "path" or "data" key, or null if neither key exists.</returns>
+        public Dictionary<string, string>? ToDictionary()
         {
-            if (source == null)
+            if (!string.IsNullOrEmpty(this.Path))
             {
-                return null;
+                return new Dictionary<string, string> { ["path"] = this.Path! };
             }
 
-            if (!string.IsNullOrEmpty(source.Path))
+            if (this.Data != null)
             {
-                return new Dictionary<string, string> { ["path"] = source.Path! };
-            }
-
-            if (source.Data != null)
-            {
-                return new Dictionary<string, string> { ["data"] = Encoding.UTF8.GetString(source.Data) };
+                return new Dictionary<string, string> { ["data"] = Encoding.UTF8.GetString(this.Data) };
             }
 
             return null;
