@@ -23,17 +23,9 @@ namespace Temporalio.Bridge
             ClientEnvConfig.ConfigLoadOptions options)
         {
             using var scope = new Scope();
-            var strings = new List<IntPtr>();
 
             try
             {
-                var pathPtr = IntPtr.Zero;
-                if (!string.IsNullOrEmpty(options.ConfigSource?.Path))
-                {
-                    pathPtr = Marshal.StringToHGlobalAnsi(options.ConfigSource?.Path);
-                    strings.Add(pathPtr);
-                }
-
                 var envVarsRef = options.OverrideEnvVars?.Count > 0
                     ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
                     : ByteArrayRef.Empty.Ref;
@@ -42,7 +34,7 @@ namespace Temporalio.Bridge
                 {
                     var coreOptions = new Interop.TemporalCoreClientConfigLoadOptions
                     {
-                        path = (sbyte*)pathPtr,
+                        path = scope.ByteArray(options.ConfigSource?.Path),
                         data = scope.ByteArray(options.ConfigSource?.Data),
                         config_file_strict = Convert.ToByte(options.ConfigFileStrict),
                         env_vars = envVarsRef,
@@ -55,13 +47,6 @@ namespace Temporalio.Bridge
             catch (JsonException ex)
             {
                 throw new InvalidOperationException($"Failed to deserialize client config: {ex.Message}", ex);
-            }
-            finally
-            {
-                foreach (var ptr in strings)
-                {
-                    Marshal.FreeHGlobal(ptr);
-                }
             }
         }
 
@@ -76,23 +61,9 @@ namespace Temporalio.Bridge
             ClientEnvConfig.ProfileLoadOptions options)
         {
             using var scope = new Scope();
-            var strings = new List<IntPtr>();
 
             try
             {
-                var profilePtr = options.Profile != null ? Marshal.StringToHGlobalAnsi(options.Profile) : IntPtr.Zero;
-                if (profilePtr != IntPtr.Zero)
-                {
-                    strings.Add(profilePtr);
-                }
-
-                var pathPtr = IntPtr.Zero;
-                if (!string.IsNullOrEmpty(options.ConfigSource?.Path))
-                {
-                    pathPtr = Marshal.StringToHGlobalAnsi(options.ConfigSource?.Path);
-                    strings.Add(pathPtr);
-                }
-
                 var envVarsRef = options.OverrideEnvVars?.Count > 0
                     ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
                     : ByteArrayRef.Empty.Ref;
@@ -101,8 +72,8 @@ namespace Temporalio.Bridge
                 {
                     var coreOptions = new Interop.TemporalCoreClientConfigProfileLoadOptions
                     {
-                        profile = (sbyte*)profilePtr,
-                        path = (sbyte*)pathPtr,
+                        profile = scope.ByteArray(options.Profile),
+                        path = scope.ByteArray(options.ConfigSource?.Path),
                         data = scope.ByteArray(options.ConfigSource?.Data),
                         disable_file = Convert.ToByte(options.DisableFile),
                         disable_env = Convert.ToByte(options.DisableEnv),
@@ -117,13 +88,6 @@ namespace Temporalio.Bridge
             catch (JsonException ex)
             {
                 throw new InvalidOperationException($"Failed to deserialize client config profile: {ex.Message}", ex);
-            }
-            finally
-            {
-                foreach (var ptr in strings)
-                {
-                    Marshal.FreeHGlobal(ptr);
-                }
             }
         }
 

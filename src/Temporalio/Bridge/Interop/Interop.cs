@@ -293,7 +293,7 @@ namespace Temporalio.Bridge.Interop
     internal unsafe partial struct TemporalCoreClientConfigLoadOptions
     {
         [NativeTypeName("const char *")]
-        public sbyte* path;
+        public TemporalCoreByteArrayRef path;
 
         [NativeTypeName("struct TemporalCoreByteArrayRef")]
         public TemporalCoreByteArrayRef data;
@@ -319,10 +319,10 @@ namespace Temporalio.Bridge.Interop
     internal unsafe partial struct TemporalCoreClientConfigProfileLoadOptions
     {
         [NativeTypeName("const char *")]
-        public sbyte* profile;
+        public TemporalCoreByteArrayRef profile;
 
         [NativeTypeName("const char *")]
-        public sbyte* path;
+        public TemporalCoreByteArrayRef path;
 
         [NativeTypeName("struct TemporalCoreByteArrayRef")]
         public TemporalCoreByteArrayRef data;
