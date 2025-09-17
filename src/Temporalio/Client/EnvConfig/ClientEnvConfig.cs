@@ -38,19 +38,17 @@ namespace Temporalio.Client.EnvConfig
         /// Convert to a record structure that can be used for TOML serialization.
         /// </summary>
         /// <returns>Dictionary mapping profile names to their record representations.</returns>
-        public IReadOnlyDictionary<string, ProfileRecord> ToRecord()
-        {
-            return Profiles.ToDictionary(
+        public IReadOnlyDictionary<string, ProfileRecord> ToDictionary() =>
+            Profiles.ToDictionary(
                 kvp => kvp.Key,
                 kvp => kvp.Value.ToRecord());
-        }
 
         /// <summary>
         /// Create a ClientEnvConfig from a record structure.
         /// </summary>
         /// <param name="profileRecords">Dictionary of profile name to profile record.</param>
         /// <returns>Client configuration instance.</returns>
-        public static ClientEnvConfig FromRecord(IReadOnlyDictionary<string, ProfileRecord> profileRecords)
+        public static ClientEnvConfig FromDictionary(IReadOnlyDictionary<string, ProfileRecord> profileRecords)
         {
             var profiles = profileRecords.ToDictionary(
                 kvp => kvp.Key,
@@ -90,15 +88,13 @@ namespace Temporalio.Client.EnvConfig
             /// </summary>
             /// <param name="record">The record to convert from.</param>
             /// <returns>Profile configuration instance.</returns>
-            public static ConfigProfile FromRecord(ProfileRecord record)
-            {
-                return new ConfigProfile(
+            public static ConfigProfile FromRecord(ProfileRecord record) =>
+                new(
                     Address: record.Address,
                     Namespace: record.Namespace,
                     ApiKey: record.ApiKey,
                     Tls: record.Tls != null ? Tls.FromRecord(record.Tls) : null,
                     GrpcMeta: record.GrpcMeta);
-            }
 
             /// <summary>
             /// Create a <see cref="TemporalClientConnectOptions"/> from this profile.
@@ -136,37 +132,30 @@ namespace Temporalio.Client.EnvConfig
             /// Convert to a record structure that can be used for TOML serialization.
             /// </summary>
             /// <returns>Record representation of this profile.</returns>
-            public ProfileRecord ToRecord()
-            {
-                return new ProfileRecord(
+            public ProfileRecord ToRecord() =>
+                new(
                     Address: Address,
                     Namespace: Namespace,
                     ApiKey: ApiKey,
                     Tls: Tls?.ToRecord(),
                     GrpcMeta: GrpcMeta);
-            }
         }
 
         /// <summary>
         /// TLS configuration as specified as part of client configuration.
         /// </summary>
+        /// <param name="Disabled">Flag that determines if TLS is enabled. If null, TLS behavior depends on other factors (API key presence, etc.)</param>
         /// <param name="ServerName">SNI override.</param>
         /// <param name="ServerRootCACert">Server CA certificate source.</param>
         /// <param name="ClientCert">Client certificate source.</param>
         /// <param name="ClientPrivateKey">Client key source.</param>
         public sealed record Tls(
+            bool? Disabled = null,
             string? ServerName = null,
             DataSource? ServerRootCACert = null,
             DataSource? ClientCert = null,
             DataSource? ClientPrivateKey = null)
         {
-            /// <summary>
-            /// Gets a value indicating whether TLS is explicitly disabled.
-            /// If null, TLS behavior depends on other factors (API key presence, etc.).
-            /// If true, TLS is explicitly disabled. If false, TLS is explicitly enabled.
-            /// </summary>
-            public bool? Disabled { get; internal init; }
-
             /// <summary>
             /// Create a Tls from a record structure.
             /// </summary>
@@ -210,15 +199,13 @@ namespace Temporalio.Client.EnvConfig
             /// Convert to a record structure that can be used for TOML serialization.
             /// </summary>
             /// <returns>Record representation of this TLS config.</returns>
-            public TlsRecord ToRecord()
-            {
-                return new TlsRecord(
+            public TlsRecord ToRecord() =>
+                new(
                     Disabled: Disabled,
                     ServerName: ServerName,
                     ServerCaCert: ServerRootCACert?.ToDictionary(),
                     ClientCert: ClientCert?.ToDictionary(),
                     ClientKey: ClientPrivateKey?.ToDictionary());
-            }
         }
 
         /// <summary>

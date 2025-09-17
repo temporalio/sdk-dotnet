@@ -759,8 +759,8 @@ server_name = ""should-be-ignored""
             };
 
             var config = new ClientEnvConfig(profiles);
-            var record = config.ToRecord();
-            var restored = ClientEnvConfig.FromRecord(record);
+            var record = config.ToDictionary();
+            var restored = ClientEnvConfig.FromDictionary(record);
 
             Assert.Equal(2, restored.Profiles.Count);
             Assert.Equal("addr1", restored.Profiles["default"].Address);
