@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Temporalio.Client.EnvConfig;
 
 namespace Temporalio.Bridge
@@ -92,79 +93,62 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Creates a ClientConfigProfile from a dictionary of configuration values.
+        /// Creates a ClientConfigProfile from typed JSON data.
         /// </summary>
-        /// <param name="profileData">The profile data dictionary.</param>
+        /// <param name="profileJson">The profile JSON data.</param>
         /// <returns>A new ClientConfigProfile instance.</returns>
-        private static ClientEnvConfig.ConfigProfile CreateClientConfigProfile(Dictionary<string, object?> profileData)
+        private static ClientEnvConfig.ConfigProfile CreateClientConfigProfile(ProfileJson profileJson)
         {
             return new ClientEnvConfig.ConfigProfile(
-                GetString(profileData, "address"),
-                GetString(profileData, "namespace"),
-                GetString(profileData, "api_key"),
-                CreateTlsConfig(profileData),
-                CreateGrpcMeta(profileData));
+                profileJson.Address,
+                profileJson.Namespace,
+                profileJson.ApiKey,
+                CreateTlsConfig(profileJson.Tls),
+                profileJson.GrpcMeta);
         }
 
-        private static string? GetString(Dictionary<string, object?> data, string key) =>
-            data.TryGetValue(key, out var value) ? value?.ToString() : null;
-
-        private static ClientEnvConfig.Tls? CreateTlsConfig(Dictionary<string, object?> profileData)
+        private static ClientEnvConfig.Tls? CreateTlsConfig(TlsJson? tlsJson)
         {
-            if (!profileData.TryGetValue("tls", out var tlsObj))
+            if (tlsJson == null)
             {
                 return null;
-            }
-
-            var tlsData = tlsObj switch
-            {
-                Dictionary<string, object?> dict => dict,
-                JsonElement el => JsonSerializer.Deserialize<Dictionary<string, object?>>(el.GetRawText()),
-                _ => null,
-            };
-
-            if (tlsData == null)
-            {
-                return null;
-            }
-
-            bool? disabled = null;
-            if (tlsData.TryGetValue("disabled", out var disabledObj))
-            {
-                disabled = disabledObj switch
-                {
-                    JsonElement el => el.GetBoolean(),
-                    bool b => b,
-                    _ => Convert.ToBoolean(disabledObj),
-                };
             }
 
             return new ClientEnvConfig.Tls(
-                ServerName: GetString(tlsData, "server_name"),
-                ServerRootCACert: GetDataSource(tlsData, "server_ca_cert"),
-                ClientCert: GetDataSource(tlsData, "client_cert"),
-                ClientPrivateKey: GetDataSource(tlsData, "client_private_key") ?? GetDataSource(tlsData, "client_key"))
+                ServerName: tlsJson.ServerName,
+                ServerRootCACert: CreateDataSource(tlsJson.ServerCaCert),
+                ClientCert: CreateDataSource(tlsJson.ClientCert),
+                ClientPrivateKey: CreateDataSource(tlsJson.ClientKey))
             {
-                Disabled = disabled,
+                Disabled = tlsJson.Disabled,
             };
         }
 
-        private static Dictionary<string, string>? CreateGrpcMeta(Dictionary<string, object?> profileData)
+        /// <summary>
+        /// Creates a DataSource from typed JSON data.
+        /// </summary>
+        /// <param name="dataSourceJson">The data source JSON data.</param>
+        /// <returns>A new DataSource instance, or null if the input is null.</returns>
+        private static DataSource? CreateDataSource(DataSourceJson? dataSourceJson)
         {
-            if (!profileData.TryGetValue("grpc_meta", out var metaObj) || metaObj == null)
+            if (dataSourceJson == null)
             {
                 return null;
             }
 
-            var metaData = metaObj switch
+            if (!string.IsNullOrEmpty(dataSourceJson.Path))
             {
-                Dictionary<string, object?> dict => dict,
-                JsonElement el => JsonSerializer.Deserialize<Dictionary<string, object?>>(el.GetRawText()),
-                _ => null,
-            };
+                return DataSource.FromPath(dataSourceJson.Path!);
+            }
 
-            return metaData?.Where(kv => kv.Value != null)
-                .ToDictionary(kv => kv.Key, kv => kv.Value!.ToString() ?? string.Empty);
+            if (dataSourceJson.Data != null && dataSourceJson.Data.Length > 0)
+            {
+                // Convert int[] from Rust Vec<u8> to byte[]
+                var bytes = dataSourceJson.Data.Select(x => (byte)x).ToArray();
+                return DataSource.FromBytes(bytes);
+            }
+
+            return null;
         }
 
         private static unsafe Dictionary<string, ClientEnvConfig.ConfigProfile> ProcessAllProfilesResult(
@@ -192,31 +176,16 @@ namespace Temporalio.Bridge
                 json = byteArray.ToUTF8();
             }
 
-            var configDict = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, object?>>>(
-                json) ?? new Dictionary<string, Dictionary<string, object?>>();
+            var configDict = JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, ProfileJson>>>(
+                json) ?? new Dictionary<string, Dictionary<string, ProfileJson>>();
 
-            if (configDict.TryGetValue("profiles", out var profilesObj))
+            if (configDict.TryGetValue("profiles", out var profiles))
             {
                 var typedProfiles = new Dictionary<string, ClientEnvConfig.ConfigProfile>();
 
-                if (profilesObj is Dictionary<string, object?> profiles)
+                foreach (var kvp in profiles)
                 {
-                    foreach (var kvp in profiles)
-                    {
-                        if (kvp.Value is Dictionary<string, object?> profile)
-                        {
-                            typedProfiles[kvp.Key] = CreateClientConfigProfile(profile);
-                        }
-                        else if (kvp.Value is JsonElement profileElement)
-                        {
-                            var profileDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(
-                                profileElement.GetRawText());
-                            if (profileDict != null)
-                            {
-                                typedProfiles[kvp.Key] = CreateClientConfigProfile(profileDict);
-                            }
-                        }
-                    }
+                    typedProfiles[kvp.Key] = CreateClientConfigProfile(kvp.Value);
                 }
 
                 return typedProfiles;
@@ -250,48 +219,36 @@ namespace Temporalio.Bridge
                 json = byteArray.ToUTF8();
             }
 
-            var profileDict = JsonSerializer.Deserialize<Dictionary<string, object?>>(
-                json) ?? new Dictionary<string, object?>();
+            var profileJson = JsonSerializer.Deserialize<ProfileJson>(json) ?? new ProfileJson(null, null, null, null, null);
 
-            return CreateClientConfigProfile(profileDict);
+            return CreateClientConfigProfile(profileJson);
         }
 
-        private static DataSource? GetDataSource(Dictionary<string, object?> data, string key) =>
-            data.TryGetValue(key, out var value) && value != null ? ParseDataSource(value) : null;
+        /// <summary>
+        /// JSON DTO for client configuration profile from Rust core.
+        /// </summary>
+        internal record ProfileJson(
+            [property: JsonPropertyName("address")] string? Address,
+            [property: JsonPropertyName("namespace")] string? Namespace,
+            [property: JsonPropertyName("api_key")] string? ApiKey,
+            [property: JsonPropertyName("tls")] TlsJson? Tls,
+            [property: JsonPropertyName("grpc_meta")] Dictionary<string, string>? GrpcMeta);
 
-        private static DataSource? ParseDataSource(object dataSourceObj)
-        {
-            var dataSourceDict = dataSourceObj switch
-            {
-                Dictionary<string, object?> dict => dict,
-                JsonElement el => JsonSerializer.Deserialize<Dictionary<string, object?>>(el.GetRawText()),
-                _ => null,
-            };
+        /// <summary>
+        /// JSON DTO for TLS configuration from Rust core.
+        /// </summary>
+        internal record TlsJson(
+            [property: JsonPropertyName("disabled")] bool? Disabled,
+            [property: JsonPropertyName("server_name")] string? ServerName,
+            [property: JsonPropertyName("server_ca_cert")] DataSourceJson? ServerCaCert,
+            [property: JsonPropertyName("client_cert")] DataSourceJson? ClientCert,
+            [property: JsonPropertyName("client_key")] DataSourceJson? ClientKey);
 
-            if (dataSourceDict != null)
-            {
-                if (dataSourceDict.TryGetValue("path", out var pathObj) && pathObj?.ToString() is string path)
-                {
-                    return DataSource.FromPath(path);
-                }
-                if (dataSourceDict.TryGetValue("data", out var dataObj) && dataObj != null)
-                {
-                    // Handle both string data and byte array data from Rust Vec<u8>
-                    return dataObj switch
-                    {
-                        JsonElement el when el.ValueKind == JsonValueKind.Array =>
-                            DataSource.FromBytes(el.EnumerateArray().Select(x => (byte)x.GetInt32()).ToArray()),
-                        JsonElement el when el.ValueKind == JsonValueKind.String =>
-                            DataSource.FromUTF8String(el.GetString() ?? string.Empty),
-                        string str => DataSource.FromUTF8String(str),
-                        byte[] bytes => DataSource.FromBytes(bytes),
-                        _ => dataObj.ToString() is string dataStr ? DataSource.FromUTF8String(dataStr) : null,
-                    };
-                }
-            }
-
-            var stringValue = dataSourceObj.ToString();
-            return !string.IsNullOrEmpty(stringValue) ? DataSource.FromUTF8String(stringValue) : null;
-        }
+        /// <summary>
+        /// JSON DTO for data source from Rust core.
+        /// </summary>
+        internal record DataSourceJson(
+            [property: JsonPropertyName("path")] string? Path,
+            [property: JsonPropertyName("data")] int[]? Data);
     }
 }
