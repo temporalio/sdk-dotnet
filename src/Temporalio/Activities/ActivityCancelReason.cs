@@ -41,5 +41,10 @@ namespace Temporalio.Activities
         /// Activity was explicitly paused.
         /// </summary>
         Paused,
+
+        /// <summary>
+        /// Activity was explicitly reset.
+        /// </summary>
+        Reset,
     }
 }
