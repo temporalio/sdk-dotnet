@@ -68,7 +68,7 @@ namespace Temporalio.Converters
                 {
                     throw new ArgumentException(
                         $"Payload has protobuf message type {messageType} "
-                            + "but given type's message type is {desc.FullName}");
+                            + $"but given type's message type is {desc.FullName}");
                 }
             }
             else
