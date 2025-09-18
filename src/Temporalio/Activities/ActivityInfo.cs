@@ -22,7 +22,11 @@ namespace Temporalio.Activities
     /// <param name="Priority">The Priority of this activity.</param>
     /// <param name="RetryPolicy">
     /// The retry policy of this activity.
-    /// The server may set a different policy than the one provided when scheduling the activity.
+    /// <para>
+    /// Note that the server may have set a different policy than the one provided when scheduling the activity.
+    /// If the value is null, it means the server didn't send information about retry policy (e.g. due to old server
+    /// version), but it may still be defined server-side.
+    /// </para>
     /// </param>
     /// <param name="ScheduleToCloseTimeout">Schedule to close timeout set by the caller.</param>
     /// <param name="ScheduledTime">When the activity was scheduled.</param>
