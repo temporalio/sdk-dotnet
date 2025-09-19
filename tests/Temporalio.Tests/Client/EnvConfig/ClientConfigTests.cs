@@ -737,8 +737,8 @@ server_name = ""should-be-ignored""
                 Tls: tls,
                 GrpcMeta: new Dictionary<string, string> { ["header"] = "value" });
 
-            var record = profile.ToRecord();
-            var restored = ClientEnvConfig.Profile.FromRecord(record);
+            var dictionary = profile.ToDictionary();
+            var restored = ClientEnvConfig.Profile.FromDictionary(dictionary);
 
             Assert.Equal("some-address", restored.Address);
             Assert.Equal("some-namespace", restored.Namespace);
@@ -781,8 +781,8 @@ server_name = ""should-be-ignored""
                 Namespace: "some-namespace",
                 ApiKey: "some-api-key");
 
-            var record = profile.ToRecord();
-            var restored = ClientEnvConfig.Profile.FromRecord(record);
+            var dictionary = profile.ToDictionary();
+            var restored = ClientEnvConfig.Profile.FromDictionary(dictionary);
 
             Assert.Equal("some-address", restored.Address);
             Assert.Equal("some-namespace", restored.Namespace);

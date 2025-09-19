@@ -35,24 +35,24 @@ namespace Temporalio.Client.EnvConfig
         }
 
         /// <summary>
-        /// Convert to a record structure that can be used for TOML serialization.
+        /// Convert to a dictionary structure that can be used for TOML serialization.
         /// </summary>
-        /// <returns>Dictionary mapping profile names to their record representations.</returns>
-        public IReadOnlyDictionary<string, ProfileRecord> ToDictionary() =>
+        /// <returns>Dictionary mapping profile names to their dictionary representations.</returns>
+        public IReadOnlyDictionary<string, Dictionary<string, object?>> ToDictionary() =>
             Profiles.ToDictionary(
                 kvp => kvp.Key,
-                kvp => kvp.Value.ToRecord());
+                kvp => kvp.Value.ToDictionary());
 
         /// <summary>
-        /// Create a ClientEnvConfig from a record structure.
+        /// Create a ClientEnvConfig from a dictionary structure.
         /// </summary>
-        /// <param name="profileRecords">Dictionary of profile name to profile record.</param>
+        /// <param name="profileDictionaries">Dictionary of profile name to profile dictionary.</param>
         /// <returns>Client configuration instance.</returns>
-        public static ClientEnvConfig FromDictionary(IReadOnlyDictionary<string, ProfileRecord> profileRecords)
+        public static ClientEnvConfig FromDictionary(IReadOnlyDictionary<string, Dictionary<string, object?>> profileDictionaries)
         {
-            var profiles = profileRecords.ToDictionary(
+            var profiles = profileDictionaries.ToDictionary(
                 kvp => kvp.Key,
-                kvp => Profile.FromRecord(kvp.Value));
+                kvp => Profile.FromDictionary(kvp.Value));
 
             return new ClientEnvConfig(profiles);
         }
@@ -85,17 +85,17 @@ namespace Temporalio.Client.EnvConfig
             }
 
             /// <summary>
-            /// Create a Profile from a record structure.
+            /// Create a Profile from a dictionary structure.
             /// </summary>
-            /// <param name="record">The record to convert from.</param>
+            /// <param name="dictionary">The dictionary to convert from.</param>
             /// <returns>Profile configuration instance.</returns>
-            public static Profile FromRecord(ProfileRecord record) =>
+            public static Profile FromDictionary(IReadOnlyDictionary<string, object?> dictionary) =>
                 new(
-                    Address: record.Address,
-                    Namespace: record.Namespace,
-                    ApiKey: record.ApiKey,
-                    Tls: record.Tls != null ? Tls.FromRecord(record.Tls) : null,
-                    GrpcMeta: record.GrpcMeta);
+                    Address: dictionary.TryGetValue("address", out var address) ? (string?)address : null,
+                    Namespace: dictionary.TryGetValue("namespace", out var nameSpace) ? (string?)nameSpace : null,
+                    ApiKey: dictionary.TryGetValue("api_key", out var apiKey) ? (string?)apiKey : null,
+                    Tls: dictionary.TryGetValue("tls", out var tls) && tls is IReadOnlyDictionary<string, object?> tlsDict ? Tls.FromDictionary(tlsDict) : null,
+                    GrpcMeta: dictionary.TryGetValue("grpc_meta", out var grpcMeta) ? (IReadOnlyDictionary<string, string>?)grpcMeta : null);
 
             /// <summary>
             /// Create a <see cref="TemporalClientConnectOptions"/> from this profile.
@@ -133,16 +133,18 @@ namespace Temporalio.Client.EnvConfig
             }
 
             /// <summary>
-            /// Convert to a record structure that can be used for TOML serialization.
+            /// Convert to a dictionary structure that can be used for TOML serialization.
             /// </summary>
-            /// <returns>Record representation of this profile.</returns>
-            public ProfileRecord ToRecord() =>
-                new(
-                    Address: Address,
-                    Namespace: Namespace,
-                    ApiKey: ApiKey,
-                    Tls: Tls?.ToRecord(),
-                    GrpcMeta: GrpcMeta);
+            /// <returns>Dictionary representation of this profile.</returns>
+            public Dictionary<string, object?> ToDictionary() =>
+                new()
+                {
+                    ["address"] = Address,
+                    ["namespace"] = Namespace,
+                    ["api_key"] = ApiKey,
+                    ["tls"] = Tls?.ToDictionary(),
+                    ["grpc_meta"] = GrpcMeta,
+                };
         }
 
         /// <summary>
@@ -161,23 +163,16 @@ namespace Temporalio.Client.EnvConfig
             DataSource? ClientPrivateKey = null)
         {
             /// <summary>
-            /// Create a Tls from a record structure.
+            /// Create a Tls from a dictionary structure.
             /// </summary>
-            /// <param name="record">The record to convert from.</param>
+            /// <param name="dictionary">The dictionary to convert from.</param>
             /// <returns>TLS configuration instance.</returns>
-            public static Tls FromRecord(TlsRecord record)
-            {
-                var tls = new Tls(
-                    ServerName: record.ServerName,
-                    ServerRootCACert: DataSource.FromDictionary(record.ServerCaCert),
-                    ClientCert: DataSource.FromDictionary(record.ClientCert),
-                    ClientPrivateKey: DataSource.FromDictionary(record.ClientKey))
-                {
-                    Disabled = record.Disabled,
-                };
-
-                return tls;
-            }
+            public static Tls FromDictionary(IReadOnlyDictionary<string, object?> dictionary) => new(
+                    ServerName: dictionary.TryGetValue("server_name", out var serverName) ? (string?)serverName : null,
+                    ServerRootCACert: dictionary.TryGetValue("server_ca_cert", out var serverCaCert) ? DataSource.FromDictionary((IReadOnlyDictionary<string, string>?)serverCaCert) : null,
+                    ClientCert: dictionary.TryGetValue("client_cert", out var clientCert) ? DataSource.FromDictionary((IReadOnlyDictionary<string, string>?)clientCert) : null,
+                    ClientPrivateKey: dictionary.TryGetValue("client_key", out var clientKey) ? DataSource.FromDictionary((IReadOnlyDictionary<string, string>?)clientKey) : null,
+                    Disabled: dictionary.TryGetValue("disabled", out var disabled) ? (bool?)disabled : null);
 
             /// <summary>
             /// Create a <see cref="TlsOptions"/> from this configuration.
@@ -200,16 +195,18 @@ namespace Temporalio.Client.EnvConfig
             }
 
             /// <summary>
-            /// Convert to a record structure that can be used for TOML serialization.
+            /// Convert to a dictionary structure that can be used for TOML serialization.
             /// </summary>
-            /// <returns>Record representation of this TLS config.</returns>
-            public TlsRecord ToRecord() =>
-                new(
-                    Disabled: Disabled,
-                    ServerName: ServerName,
-                    ServerCaCert: ServerRootCACert?.ToDictionary(),
-                    ClientCert: ClientCert?.ToDictionary(),
-                    ClientKey: ClientPrivateKey?.ToDictionary());
+            /// <returns>Dictionary representation of this TLS config.</returns>
+            public Dictionary<string, object?> ToDictionary() =>
+                new()
+                {
+                    ["disabled"] = Disabled,
+                    ["server_name"] = ServerName,
+                    ["server_ca_cert"] = ServerRootCACert?.ToDictionary(),
+                    ["client_cert"] = ClientCert?.ToDictionary(),
+                    ["client_key"] = ClientPrivateKey?.ToDictionary(),
+                };
         }
 
         /// <summary>
@@ -414,24 +411,4 @@ namespace Temporalio.Client.EnvConfig
             return null;
         }
     }
-
-    /// <summary>
-    /// Record representation of TLS config for TOML serialization.
-    /// </summary>
-    public sealed record TlsRecord(
-        bool? Disabled = null,
-        string? ServerName = null,
-        IReadOnlyDictionary<string, string>? ServerCaCert = null,
-        IReadOnlyDictionary<string, string>? ClientCert = null,
-        IReadOnlyDictionary<string, string>? ClientKey = null);
-
-    /// <summary>
-    /// Record representation of a client config profile for TOML serialization.
-    /// </summary>
-    public sealed record ProfileRecord(
-        string? Address = null,
-        string? Namespace = null,
-        string? ApiKey = null,
-        TlsRecord? Tls = null,
-        IReadOnlyDictionary<string, string>? GrpcMeta = null);
 }
