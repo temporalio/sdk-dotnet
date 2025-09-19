@@ -58,7 +58,7 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_File_Default()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = source,
@@ -78,7 +78,7 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_File_Custom()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "custom",
                 ConfigSource = source,
@@ -101,7 +101,7 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_Data_Default()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = source,
@@ -119,7 +119,7 @@ client_key_data = ""client-key-data""
         public void Test_Load_Profile_From_Data_Custom()
         {
             var source = DataSource.FromUTF8String(TomlConfigBase);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "custom",
                 ConfigSource = source,
@@ -143,7 +143,7 @@ client_key_data = ""client-key-data""
                 ["TEMPORAL_NAMESPACE"] = "env-override-namespace",
             };
 
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = source,
@@ -166,7 +166,7 @@ client_key_data = ""client-key-data""
                 ["TEMPORAL_TLS_SERVER_NAME"] = "env-server-name",
             };
 
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "custom",
                 ConfigSource = source,
@@ -191,7 +191,7 @@ client_key_data = ""client-key-data""
                 ["TEMPORAL_GRPC_META_ANOTHER_HEADER"] = "another-value",
             };
 
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "custom",
                 ConfigSource = source,
@@ -214,7 +214,7 @@ authorization = ""Bearer token""
 x-custom-header = ""custom-value""
 ";
             var source = DataSource.FromUTF8String(toml);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = source,
@@ -234,7 +234,7 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_GRPC_META_CUSTOM_HEADER"] = string.Empty,
             };
 
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "custom",
                 ConfigSource = source,
@@ -260,7 +260,7 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_ADDRESS"] = "env-address",
             };
 
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = source,
@@ -281,7 +281,7 @@ x-custom-header = ""custom-value""
                 ["TEMPORAL_NAMESPACE"] = "env-namespace",
             };
 
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 DisableFile = true,
@@ -316,7 +316,7 @@ x-custom-header = ""custom-value""
             var source = DataSource.FromUTF8String(TomlConfigBase);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+                ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
                 {
                     Profile = "default",
                     ConfigSource = source,
@@ -395,7 +395,7 @@ address = ""other-address""
             var source = DataSource.FromUTF8String(toml);
 
             // When profile is null (defaults to "default"), should return empty profile if "default" not found
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = null,
                 ConfigSource = source,
@@ -417,7 +417,7 @@ address = ""my-address""
 api_key = ""my-api-key""
 ";
             var source = DataSource.FromUTF8String(toml);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = source,
@@ -440,7 +440,7 @@ api_key = ""my-api-key""
             var source = DataSource.FromUTF8String(TomlConfigTlsDetailed);
 
             // Test disabled TLS
-            var profileDisabled = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profileDisabled = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "tls_disabled",
                 ConfigSource = source,
@@ -452,7 +452,7 @@ api_key = ""my-api-key""
             Assert.Null(optionsDisabled.Tls);
 
             // Test TLS with certs
-            var profileCerts = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profileCerts = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "tls_with_certs",
                 ConfigSource = source,
@@ -492,7 +492,7 @@ client_cert_path = ""{certPath}""
 client_key_path = ""{keyPath}""
 ";
                 var source = DataSource.FromUTF8String(toml);
-                var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+                var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
                 {
                     Profile = "default",
                     ConfigSource = source,
@@ -529,7 +529,7 @@ client_cert_data = ""cert-data""
             var source = DataSource.FromUTF8String(toml);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+                ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
                 {
                     Profile = "default",
                     ConfigSource = source,
@@ -553,7 +553,7 @@ client_cert_path = ""some-path""
             };
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+                ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
                 {
                     Profile = "default",
                     ConfigSource = source,
@@ -578,7 +578,7 @@ client_cert_data = ""some-data""
             };
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+                ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
                 {
                     Profile = "default",
                     ConfigSource = source,
@@ -598,7 +598,7 @@ server_name = ""custom-server""
 client_key_data = ""client-key-data""
 ";
             var source = DataSource.FromUTF8String(toml);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = source,
@@ -620,7 +620,7 @@ api_key = ""my-api-key""
 [profile.default.tls]
 server_name = ""my-server""
 ";
-            var profileNull = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profileNull = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = DataSource.FromUTF8String(tomlNull),
@@ -636,7 +636,7 @@ address = ""my-address""
 disabled = false
 server_name = ""my-server""
 ";
-            var profileFalse = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profileFalse = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = DataSource.FromUTF8String(tomlFalse),
@@ -653,7 +653,7 @@ api_key = ""my-api-key""
 disabled = true
 server_name = ""should-be-ignored""
 ";
-            var profileTrue = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profileTrue = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "default",
                 ConfigSource = DataSource.FromUTF8String(tomlTrue),
@@ -669,7 +669,7 @@ server_name = ""should-be-ignored""
             var source = DataSource.FromUTF8String(TomlConfigBase);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+                ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
                 {
                     Profile = "nonexistent",
                     ConfigSource = source,
@@ -697,7 +697,7 @@ server_name = ""should-be-ignored""
             var source = DataSource.FromUTF8String(TomlConfigStrictFail);
 
             var ex = Assert.Throws<InvalidOperationException>(() =>
-                ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+                ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
                 {
                     Profile = "default",
                     ConfigSource = source,
@@ -730,7 +730,7 @@ server_name = ""should-be-ignored""
                 ClientCert: DataSource.FromUTF8String("cert-data"),
                 ClientPrivateKey: DataSource.FromUTF8String("key-data"));
 
-            var profile = new ClientEnvConfig.ConfigProfile(
+            var profile = new ClientEnvConfig.Profile(
                 Address: "some-address",
                 Namespace: "some-namespace",
                 ApiKey: "some-api-key",
@@ -738,7 +738,7 @@ server_name = ""should-be-ignored""
                 GrpcMeta: new Dictionary<string, string> { ["header"] = "value" });
 
             var record = profile.ToRecord();
-            var restored = ClientEnvConfig.ConfigProfile.FromRecord(record);
+            var restored = ClientEnvConfig.Profile.FromRecord(record);
 
             Assert.Equal("some-address", restored.Address);
             Assert.Equal("some-namespace", restored.Namespace);
@@ -752,10 +752,10 @@ server_name = ""should-be-ignored""
         [Fact]
         public void Test_Client_Config_To_From_Dict()
         {
-            var profiles = new Dictionary<string, ClientEnvConfig.ConfigProfile>
+            var profiles = new Dictionary<string, ClientEnvConfig.Profile>
             {
-                ["default"] = new ClientEnvConfig.ConfigProfile(Address: "addr1", Namespace: "ns1"),
-                ["custom"] = new ClientEnvConfig.ConfigProfile(
+                ["default"] = new ClientEnvConfig.Profile(Address: "addr1", Namespace: "ns1"),
+                ["custom"] = new ClientEnvConfig.Profile(
                     Address: "addr2",
                     ApiKey: "key2",
                     GrpcMeta: new Dictionary<string, string> { ["h"] = "v" }),
@@ -776,13 +776,13 @@ server_name = ""should-be-ignored""
         [Fact]
         public void Test_Read_Source_From_String_Content()
         {
-            var profile = new ClientEnvConfig.ConfigProfile(
+            var profile = new ClientEnvConfig.Profile(
                 Address: "some-address",
                 Namespace: "some-namespace",
                 ApiKey: "some-api-key");
 
             var record = profile.ToRecord();
-            var restored = ClientEnvConfig.ConfigProfile.FromRecord(record);
+            var restored = ClientEnvConfig.Profile.FromRecord(record);
 
             Assert.Equal("some-address", restored.Address);
             Assert.Equal("some-namespace", restored.Namespace);
@@ -871,7 +871,7 @@ address = ""localhost:7233""
 namespace = ""development""
 ";
             var source = DataSource.FromUTF8String(toml);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "development",
                 ConfigSource = source,
@@ -909,7 +909,7 @@ api_key = ""prod-api-key-12345""
 server_name = ""production.temporal.cloud""
 ";
             var source = DataSource.FromUTF8String(toml);
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "production",
                 ConfigSource = source,
@@ -957,7 +957,7 @@ api_key = ""default-api-key""
                 ["TEMPORAL_TLS_SERVER_NAME"] = "override.temporal.cloud",
             };
 
-            var profile = ClientEnvConfig.ConfigProfile.Load(new ClientEnvConfig.ProfileLoadOptions
+            var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
             {
                 Profile = "configurable",
                 ConfigSource = source,

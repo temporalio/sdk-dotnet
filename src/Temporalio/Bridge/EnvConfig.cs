@@ -19,7 +19,7 @@ namespace Temporalio.Bridge
         /// <param name="runtime">Runtime to use for the operation.</param>
         /// <param name="options">Options for loading the configuration.</param>
         /// <returns>Dictionary of profile name to client configuration profile.</returns>
-        public static Dictionary<string, ClientEnvConfig.ConfigProfile> LoadClientConfig(
+        public static Dictionary<string, ClientEnvConfig.Profile> LoadClientConfig(
             Runtime runtime,
             ClientEnvConfig.ConfigLoadOptions options)
         {
@@ -57,7 +57,7 @@ namespace Temporalio.Bridge
         /// <param name="runtime">Runtime to use.</param>
         /// <param name="options">Options for loading the configuration profile.</param>
         /// <returns>Client configuration for the specified profile.</returns>
-        public static ClientEnvConfig.ConfigProfile LoadClientConfigProfile(
+        public static ClientEnvConfig.Profile LoadClientConfigProfile(
             Runtime runtime,
             ClientEnvConfig.ProfileLoadOptions options)
         {
@@ -97,9 +97,9 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="profileJson">The profile JSON data.</param>
         /// <returns>A new ClientConfigProfile instance.</returns>
-        private static ClientEnvConfig.ConfigProfile CreateClientConfigProfile(ProfileJson profileJson)
+        private static ClientEnvConfig.Profile CreateClientConfigProfile(ProfileJson profileJson)
         {
-            return new ClientEnvConfig.ConfigProfile(
+            return new ClientEnvConfig.Profile(
                 profileJson.Address,
                 profileJson.Namespace,
                 profileJson.ApiKey,
@@ -151,7 +151,7 @@ namespace Temporalio.Bridge
             return null;
         }
 
-        private static unsafe Dictionary<string, ClientEnvConfig.ConfigProfile> ProcessAllProfilesResult(
+        private static unsafe Dictionary<string, ClientEnvConfig.Profile> ProcessAllProfilesResult(
             Runtime runtime,
             Interop.TemporalCoreClientEnvConfigOrFail result)
         {
@@ -181,7 +181,7 @@ namespace Temporalio.Bridge
 
             if (configDict.TryGetValue("profiles", out var profiles))
             {
-                var typedProfiles = new Dictionary<string, ClientEnvConfig.ConfigProfile>();
+                var typedProfiles = new Dictionary<string, ClientEnvConfig.Profile>();
 
                 foreach (var kvp in profiles)
                 {
@@ -191,10 +191,10 @@ namespace Temporalio.Bridge
                 return typedProfiles;
             }
 
-            return new Dictionary<string, ClientEnvConfig.ConfigProfile>();
+            return new Dictionary<string, ClientEnvConfig.Profile>();
         }
 
-        private static unsafe ClientEnvConfig.ConfigProfile ProcessSingleProfileResult(
+        private static unsafe ClientEnvConfig.Profile ProcessSingleProfileResult(
             Runtime runtime,
             Interop.TemporalCoreClientEnvConfigProfileOrFail result)
         {

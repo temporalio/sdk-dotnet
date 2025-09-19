@@ -9,7 +9,7 @@ namespace Temporalio.Client.EnvConfig
     /// Represents the overall client configuration.
     /// </summary>
     /// <param name="Profiles">The configuration profiles.</param>
-    public sealed record ClientEnvConfig(IReadOnlyDictionary<string, ClientEnvConfig.ConfigProfile> Profiles)
+    public sealed record ClientEnvConfig(IReadOnlyDictionary<string, ClientEnvConfig.Profile> Profiles)
     {
         /// <summary>
         /// Load client configuration from environment variables and configuration files.
@@ -30,7 +30,7 @@ namespace Temporalio.Client.EnvConfig
         /// <returns>Client connection options.</returns>
         public static TemporalClientConnectOptions LoadClientConnectOptions(ProfileLoadOptions options)
         {
-            var clientProfile = ConfigProfile.Load(options);
+            var clientProfile = Profile.Load(options);
             return clientProfile.ToClientConnectionOptions();
         }
 
@@ -52,7 +52,7 @@ namespace Temporalio.Client.EnvConfig
         {
             var profiles = profileRecords.ToDictionary(
                 kvp => kvp.Key,
-                kvp => ConfigProfile.FromRecord(kvp.Value));
+                kvp => Profile.FromRecord(kvp.Value));
 
             return new ClientEnvConfig(profiles);
         }
@@ -65,7 +65,8 @@ namespace Temporalio.Client.EnvConfig
         /// <param name="ApiKey">Client API key.</param>
         /// <param name="Tls">TLS configuration.</param>
         /// <param name="GrpcMeta">gRPC metadata.</param>
-        public sealed record ConfigProfile(
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1724:Type names should not match namespaces", Justification = "Profile is appropriate name in this context and unlikely to cause confusion")]
+        public sealed record Profile(
             string? Address = null,
             string? Namespace = null,
             string? ApiKey = null,
@@ -77,7 +78,7 @@ namespace Temporalio.Client.EnvConfig
             /// </summary>
             /// <param name="options">Options for loading the configuration profile.</param>
             /// <returns>The loaded profile.</returns>
-            public static ConfigProfile Load(ProfileLoadOptions options)
+            public static Profile Load(ProfileLoadOptions options)
             {
                 var runtime = Runtime.TemporalRuntime.Default.Runtime;
                 return Bridge.EnvConfig.LoadClientConfigProfile(runtime, options);
@@ -88,7 +89,7 @@ namespace Temporalio.Client.EnvConfig
             /// </summary>
             /// <param name="record">The record to convert from.</param>
             /// <returns>Profile configuration instance.</returns>
-            public static ConfigProfile FromRecord(ProfileRecord record) =>
+            public static Profile FromRecord(ProfileRecord record) =>
                 new(
                     Address: record.Address,
                     Namespace: record.Namespace,
