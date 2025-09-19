@@ -424,9 +424,12 @@ api_key = ""my-api-key""
             });
 
             Assert.Equal("my-api-key", profile.ApiKey);
-            Assert.NotNull(profile.Tls);
+            // No TLS object should have been created
+            Assert.Null(profile.Tls);
 
             var options = profile.ToClientConnectionOptions();
+            // Expect ToClientConnectionOptions call to set TLS to default object
+            // due to presence of api key.
             Assert.NotNull(options.Tls);
             Assert.Equal("my-api-key", options.ApiKey);
         }

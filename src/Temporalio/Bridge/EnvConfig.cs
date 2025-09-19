@@ -33,7 +33,7 @@ namespace Temporalio.Bridge
 
                 unsafe
                 {
-                    var coreOptions = new Interop.TemporalCoreClientConfigLoadOptions
+                    var coreOptions = new Interop.TemporalCoreClientEnvConfigLoadOptions
                     {
                         path = scope.ByteArray(options.ConfigSource?.Path),
                         data = scope.ByteArray(options.ConfigSource?.Data),
@@ -41,7 +41,7 @@ namespace Temporalio.Bridge
                         env_vars = envVarsRef,
                     };
 
-                    var result = Interop.Methods.temporal_core_client_config_load(&coreOptions);
+                    var result = Interop.Methods.temporal_core_client_env_config_load(&coreOptions);
                     return ProcessAllProfilesResult(runtime, result);
                 }
             }
@@ -71,7 +71,7 @@ namespace Temporalio.Bridge
 
                 unsafe
                 {
-                    var coreOptions = new Interop.TemporalCoreClientConfigProfileLoadOptions
+                    var coreOptions = new Interop.TemporalCoreClientEnvConfigProfileLoadOptions
                     {
                         profile = scope.ByteArray(options.Profile),
                         path = scope.ByteArray(options.ConfigSource?.Path),
@@ -82,7 +82,7 @@ namespace Temporalio.Bridge
                         env_vars = envVarsRef,
                     };
 
-                    var result = Interop.Methods.temporal_core_client_config_profile_load(&coreOptions);
+                    var result = Interop.Methods.temporal_core_client_env_config_profile_load(&coreOptions);
                     return ProcessSingleProfileResult(runtime, result);
                 }
             }
@@ -153,7 +153,7 @@ namespace Temporalio.Bridge
 
         private static unsafe Dictionary<string, ClientEnvConfig.ConfigProfile> ProcessAllProfilesResult(
             Runtime runtime,
-            Interop.TemporalCoreClientConfigOrFail result)
+            Interop.TemporalCoreClientEnvConfigOrFail result)
         {
             if (result.fail != null)
             {
@@ -196,7 +196,7 @@ namespace Temporalio.Bridge
 
         private static unsafe ClientEnvConfig.ConfigProfile ProcessSingleProfileResult(
             Runtime runtime,
-            Interop.TemporalCoreClientConfigProfileOrFail result)
+            Interop.TemporalCoreClientEnvConfigProfileOrFail result)
         {
             if (result.fail != null)
             {

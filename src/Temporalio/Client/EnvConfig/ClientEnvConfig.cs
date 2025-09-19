@@ -102,19 +102,22 @@ namespace Temporalio.Client.EnvConfig
             /// <returns>Connection options for a client.</returns>
             public TemporalClientConnectOptions ToClientConnectionOptions()
             {
-                var options = new TemporalClientConnectOptions(Address ?? string.Empty)
-                {
-                    ApiKey = ApiKey,
-                };
-
+                var options = new TemporalClientConnectOptions(Address ?? string.Empty);
                 // Set namespace if provided
                 if (Namespace != null)
                 {
                     options.Namespace = Namespace;
                 }
 
-                // Configure TLS options
-                if (Tls != null && Tls.Disabled != true)
+                // Set default TLS options if API key exists
+                if (ApiKey != null)
+                {
+                    options.ApiKey = ApiKey;
+                    options.Tls = new TlsOptions();
+                }
+
+                // Override with explicit TLS configuration if provided
+                if (Tls != null)
                 {
                     options.Tls = Tls.ToTlsOptions();
                 }
@@ -179,11 +182,11 @@ namespace Temporalio.Client.EnvConfig
             /// Create a <see cref="TlsOptions"/> from this configuration.
             /// </summary>
             /// <returns>TLS options for a client.</returns>
-            public TlsOptions ToTlsOptions()
+            public TlsOptions? ToTlsOptions()
             {
                 if (Disabled == true)
                 {
-                    return new TlsOptions();
+                    return null;
                 }
 
                 return new TlsOptions
