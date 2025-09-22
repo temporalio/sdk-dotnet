@@ -12,26 +12,6 @@ namespace Temporalio.Worker.Tuning
         /// <param name="workflowTaskSlotSupplier">The supplier of workflow task slots.</param>
         /// <param name="activityTaskSlotSupplier">The supplier of activity task slots.</param>
         /// <param name="localActivitySlotSupplier">The supplier of local activity slots.</param>
-        public WorkerTuner(
-            SlotSupplier workflowTaskSlotSupplier,
-            SlotSupplier activityTaskSlotSupplier,
-            SlotSupplier localActivitySlotSupplier)
-            : this(
-                workflowTaskSlotSupplier,
-                activityTaskSlotSupplier,
-                localActivitySlotSupplier,
-                // Default Nexus to 100 if not provided explicitly
-                new FixedSizeSlotSupplier(100))
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WorkerTuner"/> class composed of the
-        /// provided slot suppliers.
-        /// </summary>
-        /// <param name="workflowTaskSlotSupplier">The supplier of workflow task slots.</param>
-        /// <param name="activityTaskSlotSupplier">The supplier of activity task slots.</param>
-        /// <param name="localActivitySlotSupplier">The supplier of local activity slots.</param>
         /// <param name="nexusTaskSlotSupplier">The supplier of Nexus operation slots.</param>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public WorkerTuner(
@@ -129,24 +109,6 @@ namespace Temporalio.Worker.Tuning
         /// <param name="workflowTaskSlots">The number of available workflow task slots.</param>
         /// <param name="activityTaskSlots">The number of available activity task slots.</param>
         /// <param name="localActivitySlots">The number of available local activity slots.</param>
-        /// <returns>The tuner.</returns>
-        public static WorkerTuner CreateFixedSize(
-            int workflowTaskSlots,
-            int activityTaskSlots,
-            int localActivitySlots)
-        {
-            return new(
-                new FixedSizeSlotSupplier(workflowTaskSlots),
-                new FixedSizeSlotSupplier(activityTaskSlots),
-                new FixedSizeSlotSupplier(localActivitySlots));
-        }
-
-        /// <summary>
-        /// Create a fixed-size tuner with the given slot capacities.
-        /// </summary>
-        /// <param name="workflowTaskSlots">The number of available workflow task slots.</param>
-        /// <param name="activityTaskSlots">The number of available activity task slots.</param>
-        /// <param name="localActivitySlots">The number of available local activity slots.</param>
         /// <param name="nexusTaskSlots">The number of available Nexus operation slots.</param>
         /// <returns>The tuner.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
@@ -154,7 +116,7 @@ namespace Temporalio.Worker.Tuning
             int workflowTaskSlots,
             int activityTaskSlots,
             int localActivitySlots,
-            int nexusTaskSlots)
+            int nexusTaskSlots = 100)
         {
             return new(
                 new FixedSizeSlotSupplier(workflowTaskSlots),

@@ -16,7 +16,7 @@
     <PackageReference Include="Google.Protobuf" Version="3.26.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <ProjectReference Include="..\..\..\nexus-sdk-dotnet\src\NexusRpc\NexusRpc.csproj" />
+    <PackageReference Include="NexusRpc" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'netstandard2.0'">
