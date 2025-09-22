@@ -275,6 +275,63 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void TemporalCoreClientRpcCallCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_message, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_details);
 
+    internal unsafe partial struct TemporalCoreClientEnvConfigOrFail
+    {
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* success;
+
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
+    }
+
+    internal partial struct TemporalCoreClientEnvConfigLoadOptions
+    {
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef path;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef data;
+
+        [NativeTypeName("bool")]
+        public byte config_file_strict;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef env_vars;
+    }
+
+    internal unsafe partial struct TemporalCoreClientEnvConfigProfileOrFail
+    {
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* success;
+
+        [NativeTypeName("const struct TemporalCoreByteArray *")]
+        public TemporalCoreByteArray* fail;
+    }
+
+    internal partial struct TemporalCoreClientEnvConfigProfileLoadOptions
+    {
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef profile;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef path;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef data;
+
+        [NativeTypeName("bool")]
+        public byte disable_file;
+
+        [NativeTypeName("bool")]
+        public byte disable_env;
+
+        [NativeTypeName("bool")]
+        public byte config_file_strict;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRef")]
+        public TemporalCoreByteArrayRef env_vars;
+    }
+
     [StructLayout(LayoutKind.Explicit)]
     internal partial struct TemporalCoreMetricAttributeValue
     {
@@ -626,14 +683,14 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreWorkerVersioningStrategy_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L491_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L538_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreWorkerVersioningNone none
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
+                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
                 {
                     return ref pField->none;
                 }
@@ -644,7 +701,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
+                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
                 {
                     return ref pField->deployment_based;
                 }
@@ -655,7 +712,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
                 {
                     return ref pField->legacy_build_id_based;
                 }
@@ -666,30 +723,30 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L492_C5")]
-            public _Anonymous1_1_e__Struct Anonymous1_1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L539_C5")]
+            public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L495_C5")]
-            public _Anonymous2_1_e__Struct Anonymous2_1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L542_C5")]
+            public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L498_C5")]
-            public _Anonymous3_1_e__Struct Anonymous3_1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L545_C5")]
+            public _Anonymous3_e__Struct Anonymous3;
 
-            internal partial struct _Anonymous1_1_e__Struct
+            internal partial struct _Anonymous1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreWorkerVersioningNone")]
                 public TemporalCoreWorkerVersioningNone none;
             }
 
-            internal partial struct _Anonymous2_1_e__Struct
+            internal partial struct _Anonymous2_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreWorkerDeploymentOptions")]
                 public TemporalCoreWorkerDeploymentOptions deployment_based;
             }
 
-            internal partial struct _Anonymous3_1_e__Struct
+            internal partial struct _Anonymous3_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreLegacyBuildIdBasedStrategy")]
                 public TemporalCoreLegacyBuildIdBasedStrategy legacy_build_id_based;
@@ -797,7 +854,7 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreSlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L566_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L613_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreWorkflowSlotInfo_Body workflow_slot_info
@@ -926,14 +983,14 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreSlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L617_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L664_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreFixedSizeSlotSupplier fixed_size
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
+                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
                 {
                     return ref pField->fixed_size;
                 }
@@ -944,7 +1001,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
+                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
                 {
                     return ref pField->resource_based;
                 }
@@ -955,7 +1012,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
+                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
                 {
                     return ref pField->custom;
                 }
@@ -966,30 +1023,30 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L618_C5")]
-            public _Anonymous1_1_e__Struct Anonymous1_1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L665_C5")]
+            public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L621_C5")]
-            public _Anonymous2_1_e__Struct Anonymous2_1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L668_C5")]
+            public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L624_C5")]
-            public _Anonymous3_1_e__Struct Anonymous3_1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L671_C5")]
+            public _Anonymous3_e__Struct Anonymous3;
 
-            internal partial struct _Anonymous1_1_e__Struct
+            internal partial struct _Anonymous1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreFixedSizeSlotSupplier")]
                 public TemporalCoreFixedSizeSlotSupplier fixed_size;
             }
 
-            internal partial struct _Anonymous2_1_e__Struct
+            internal partial struct _Anonymous2_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreResourceBasedSlotSupplier")]
                 public TemporalCoreResourceBasedSlotSupplier resource_based;
             }
 
-            internal partial struct _Anonymous3_1_e__Struct
+            internal partial struct _Anonymous3_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreCustomSlotSupplierCallbacksImpl")]
                 public TemporalCoreCustomSlotSupplierCallbacksImpl custom;
@@ -1007,6 +1064,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("struct TemporalCoreSlotSupplier")]
         public TemporalCoreSlotSupplier local_activity_slot_supplier;
+
+        [NativeTypeName("struct TemporalCoreSlotSupplier")]
+        public TemporalCoreSlotSupplier nexus_task_slot_supplier;
     }
 
     internal partial struct TemporalCorePollerBehaviorSimpleMaximum
@@ -1092,6 +1152,9 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct TemporalCorePollerBehavior")]
         public TemporalCorePollerBehavior activity_task_poller_behavior;
 
+        [NativeTypeName("struct TemporalCorePollerBehavior")]
+        public TemporalCorePollerBehavior nexus_task_poller_behavior;
+
         [NativeTypeName("bool")]
         public byte nondeterminism_as_workflow_fail;
 
@@ -1168,6 +1231,14 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_client_rpc_call([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreRpcCallOptions *")] TemporalCoreRpcCallOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientRpcCallCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreClientEnvConfigOrFail")]
+        public static extern TemporalCoreClientEnvConfigOrFail temporal_core_client_env_config_load([NativeTypeName("const struct TemporalCoreClientEnvConfigLoadOptions *")] TemporalCoreClientEnvConfigLoadOptions* options);
+
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [return: NativeTypeName("struct TemporalCoreClientEnvConfigProfileOrFail")]
+        public static extern TemporalCoreClientEnvConfigProfileOrFail temporal_core_client_env_config_profile_load([NativeTypeName("const struct TemporalCoreClientEnvConfigProfileLoadOptions *")] TemporalCoreClientEnvConfigProfileLoadOptions* options);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreMetricMeter *")]
@@ -1278,10 +1349,16 @@ namespace Temporalio.Bridge.Interop
         public static extern void temporal_core_worker_poll_activity_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_poll_nexus_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_complete_workflow_activation([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_complete_activity_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
+
+        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        public static extern void temporal_core_worker_complete_nexus_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("const struct TemporalCoreByteArray *")]
