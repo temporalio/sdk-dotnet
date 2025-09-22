@@ -209,6 +209,7 @@ namespace Temporalio.Worker
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
                 Priority: start.Priority is { } p ? new(p) : Priority.Default,
+                RetryPolicy: start.RetryPolicy is { } rp ? RetryPolicy.FromProto(rp) : null,
                 ScheduleToCloseTimeout: OptionalTimeSpan(start.ScheduleToCloseTimeout),
                 ScheduledTime: start.ScheduledTime.ToDateTime(),
                 StartToCloseTimeout: OptionalTimeSpan(start.StartToCloseTimeout),
