@@ -487,9 +487,9 @@ api_key = ""my-api-key""
 address = ""localhost:5678""
 [profile.default.tls]
 server_name = ""custom-server""
-server_ca_cert_path = ""{caPath}""
-client_cert_path = ""{certPath}""
-client_key_path = ""{keyPath}""
+server_ca_cert_path = ""{caPath.Replace('\\', '/')}""
+client_cert_path = ""{certPath.Replace('\\', '/')}""
+client_key_path = ""{keyPath.Replace('\\', '/')}""
 ";
                 var source = DataSource.FromUTF8String(toml);
                 var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
@@ -500,9 +500,9 @@ client_key_path = ""{keyPath}""
 
                 Assert.NotNull(profile.Tls);
                 Assert.Equal("custom-server", profile.Tls.ServerName);
-                Assert.Equal(caPath, profile.Tls.ServerRootCACert!.Path);
-                Assert.Equal(certPath, profile.Tls.ClientCert!.Path);
-                Assert.Equal(keyPath, profile.Tls.ClientPrivateKey!.Path);
+                Assert.Equal(caPath.Replace('\\', '/'), profile.Tls.ServerRootCACert!.Path);
+                Assert.Equal(certPath.Replace('\\', '/'), profile.Tls.ClientCert!.Path);
+                Assert.Equal(keyPath.Replace('\\', '/'), profile.Tls.ClientPrivateKey!.Path);
 
                 var options = profile.ToClientConnectionOptions();
                 Assert.NotNull(options.Tls);
