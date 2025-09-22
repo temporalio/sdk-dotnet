@@ -15,10 +15,6 @@ jobs:
         include:
           - os: windows-latest
             checkTarget: true
-            # We want to use one version for most things and this latest for
-            # others. This is an ok way to test both without requiring a
-            # separate matrix permutation.
-            dotNetVersionOverride: 8.x
           - os: ubuntu-latest
             docsTarget: true
             cloudTestTarget: true
