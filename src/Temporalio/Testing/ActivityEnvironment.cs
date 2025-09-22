@@ -31,7 +31,7 @@ namespace Temporalio.Testing
             HeartbeatTimeout: null,
             IsLocal: false,
             Priority: new(),
-            RetryPolicy: null,
+            RetryPolicy: new(),
             ScheduleToCloseTimeout: TimeSpan.FromSeconds(1),
             ScheduledTime: new(1970, 1, 1, 1, 1, 1, DateTimeKind.Utc),
             StartToCloseTimeout: TimeSpan.FromSeconds(1),
