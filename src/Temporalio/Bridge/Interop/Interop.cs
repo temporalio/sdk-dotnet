@@ -279,67 +279,6 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreCancellationToken* cancellation_token;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    internal unsafe partial struct TemporalCoreClientEnvConfigOrFail
-    {
-        [NativeTypeName("const struct TemporalCoreByteArray *")]
-        public TemporalCoreByteArray* success;
-
-        [NativeTypeName("const struct TemporalCoreByteArray *")]
-        public TemporalCoreByteArray* fail;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal unsafe partial struct TemporalCoreClientEnvConfigLoadOptions
-    {
-        [NativeTypeName("const char *")]
-        public TemporalCoreByteArrayRef path;
-
-        [NativeTypeName("struct TemporalCoreByteArrayRef")]
-        public TemporalCoreByteArrayRef data;
-
-        [NativeTypeName("bool")]
-        public byte config_file_strict;
-
-        [NativeTypeName("struct TemporalCoreByteArrayRef")]
-        public TemporalCoreByteArrayRef env_vars;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal unsafe partial struct TemporalCoreClientEnvConfigProfileOrFail
-    {
-        [NativeTypeName("const struct TemporalCoreByteArray *")]
-        public TemporalCoreByteArray* success;
-
-        [NativeTypeName("const struct TemporalCoreByteArray *")]
-        public TemporalCoreByteArray* fail;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    internal unsafe partial struct TemporalCoreClientEnvConfigProfileLoadOptions
-    {
-        [NativeTypeName("const char *")]
-        public TemporalCoreByteArrayRef profile;
-
-        [NativeTypeName("const char *")]
-        public TemporalCoreByteArrayRef path;
-
-        [NativeTypeName("struct TemporalCoreByteArrayRef")]
-        public TemporalCoreByteArrayRef data;
-
-        [NativeTypeName("bool")]
-        public byte disable_file;
-
-        [NativeTypeName("bool")]
-        public byte disable_env;
-
-        [NativeTypeName("bool")]
-        public byte config_file_strict;
-
-        [NativeTypeName("struct TemporalCoreByteArrayRef")]
-        public TemporalCoreByteArrayRef env_vars;
-    }
-
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void TemporalCoreClientRpcCallCallback(void* user_data, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* success, [NativeTypeName("uint32_t")] uint status_code, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_message, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* failure_details);
 
@@ -794,15 +733,15 @@ namespace Temporalio.Bridge.Interop
         {
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L432_C5")]
-            public _Anonymous1_1_e__Struct Anonymous1_1;
+            public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L435_C5")]
-            public _Anonymous2_1_e__Struct Anonymous2_1;
+            public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L438_C5")]
-            public _Anonymous3_1_e__Struct Anonymous3_1;
+            public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct
             {
@@ -1098,15 +1037,15 @@ namespace Temporalio.Bridge.Interop
         {
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L558_C5")]
-            public _Anonymous1_1_e__Struct Anonymous1_1;
+            public _Anonymous1_e__Struct Anonymous1;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L561_C5")]
-            public _Anonymous2_1_e__Struct Anonymous2_1;
+            public _Anonymous2_e__Struct Anonymous2;
 
             [FieldOffset(0)]
             [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L564_C5")]
-            public _Anonymous3_1_e__Struct Anonymous3_1;
+            public _Anonymous3_e__Struct Anonymous3;
 
             internal partial struct _Anonymous1_e__Struct
             {
