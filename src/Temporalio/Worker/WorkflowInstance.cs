@@ -2221,7 +2221,15 @@ namespace Temporalio.Worker
                             cmd.Attempt = doBackoff.Attempt;
                             cmd.OriginalScheduleTime = doBackoff.OriginalScheduleTime;
                         }
-                        instance.AddCommand(new() { ScheduleLocalActivity = cmd });
+                        var workflowCommand = new WorkflowCommand { ScheduleLocalActivity = cmd };
+                        if (input.Options.Summary is { } summary)
+                        {
+                            workflowCommand.UserMetadata = new()
+                            {
+                                Summary = payloadConverter.ToPayload(summary),
+                            };
+                        }
+                        instance.AddCommand(workflowCommand);
                         return seq;
                     },
                     input.Options.CancellationToken ?? instance.CancellationToken);
