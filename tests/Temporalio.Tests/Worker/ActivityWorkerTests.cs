@@ -126,6 +126,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal(1, info.Attempt);
         Assert.InRange(info.CurrentAttemptScheduledTime, beforeNow, afterNow);
         Assert.False(info.IsLocal);
+        Assert.Equal(KitchenSinkWorkflow.CreateRetryPolicy(), info.RetryPolicy);
     }
 
     [Fact]
@@ -364,6 +365,45 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
                 });
             });
         Assert.Equal("Done, last details: \"some-detail-post-finally\"", res);
+    }
+
+    [Fact]
+    public async Task ExecuteActivityAsync_CaughtReset()
+    {
+        var activityReached = new TaskCompletionSource();
+        [Activity]
+        async Task<string> CatchResetAsync()
+        {
+            activityReached.SetResult();
+            var ctx = ActivityExecutionContext.Current;
+            while (!ctx.CancellationToken.IsCancellationRequested)
+            {
+                ctx.Heartbeat("some-heartbeat-details");
+                await Task.Delay(300);
+            }
+            return $"Cancel reason: {ctx.CancelReason}, reset: {ctx.CancellationDetails?.IsReset}, heartbeat details: {ctx.Info.HeartbeatDetails}";
+        }
+        var res = await ExecuteActivityAsync(
+            CatchResetAsync,
+            waitForCancellation: true,
+            heartbeatTimeout: TimeSpan.FromSeconds(1),
+            afterStarted: async handle =>
+            {
+                // Wait for activity to be reached, then reset the activity
+                await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
+                await Client.WorkflowService.ResetActivityAsync(new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Execution = new()
+                    {
+                        WorkflowId = handle.Id,
+                        RunId = handle.ResultRunId,
+                    },
+                    Identity = Client.Connection.Options.Identity ?? string.Empty,
+                    Type = "CatchReset",
+                });
+            });
+        Assert.Equal("Cancel reason: Reset, reset: True, heartbeat details: [ ]", res);
     }
 
     [Fact]

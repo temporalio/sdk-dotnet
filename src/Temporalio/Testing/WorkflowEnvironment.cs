@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Temporalio.Api.Nexus.V1;
 using Temporalio.Client;
 using Temporalio.Runtime;
 
@@ -208,6 +209,39 @@ namespace Temporalio.Testing
         /// non-time-skipping environments), so the function just runs.
         /// </remarks>
         public virtual Task<T> WithAutoTimeSkippingDisabledAsync<T>(Func<Task<T>> func) => func();
+
+        /// <summary>
+        /// Create Nexus endpoint on this test environment.
+        /// </summary>
+        /// <param name="name">Endpoint name.</param>
+        /// <param name="taskQueue">Task queue.</param>
+        /// <returns>Created endpoint.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public async Task<Endpoint> CreateNexusEndpointAsync(string name, string taskQueue)
+        {
+            var resp = await Client.OperatorService.CreateNexusEndpointAsync(new()
+            {
+                Spec = new()
+                {
+                    Name = name,
+                    Target = new()
+                    {
+                        Worker = new() { Namespace = Client.Options.Namespace, TaskQueue = taskQueue },
+                    },
+                },
+            }).ConfigureAwait(false);
+            return resp.Endpoint;
+        }
+
+        /// <summary>
+        /// Delete Nexus endpoint on this test environment.
+        /// </summary>
+        /// <param name="endpoint">Endpoint.</param>
+        /// <returns>Task for completion.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public Task DeleteNexusEndpointAsync(Endpoint endpoint) =>
+            Client.OperatorService.DeleteNexusEndpointAsync(
+                new() { Id = endpoint.Id, Version = endpoint.Version });
 
         /// <summary>
         /// Shutdown this server.
