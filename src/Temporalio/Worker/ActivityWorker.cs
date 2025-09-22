@@ -436,6 +436,19 @@ namespace Temporalio.Worker
                             "Activity paused", e, "ActivityPause")).ConfigureAwait(false),
                 };
             }
+            catch (OperationCanceledException e) when (
+                act.ServerRequestedCancel && act.Context.CancellationDetails?.IsReset == true)
+            {
+                act.Context.Logger.LogDebug(
+                    "Completing activity {ActivityType} as failed due cancel exception caused by reset",
+                    act.Context.Info.ActivityType);
+                completion.Result.Failed = new()
+                {
+                    Failure_ = await dataConverter.ToFailureAsync(
+                        new ApplicationFailureException(
+                            "Activity reset", e, "ActivityReset")).ConfigureAwait(false),
+                };
+            }
             catch (OperationCanceledException) when (act.ServerRequestedCancel)
             {
                 act.Context.Logger.LogDebug(
@@ -620,6 +633,7 @@ namespace Temporalio.Worker
                     IsTimedOut = cancel.Details?.IsTimedOut ?? false,
                     IsWorkerShutdown = cancel.Details?.IsWorkerShutdown ?? false,
                     IsPaused = cancel.Details?.IsPaused ?? false,
+                    IsReset = cancel.Details?.IsReset ?? false,
                 };
                 switch (cancel.Reason)
                 {
@@ -637,6 +651,9 @@ namespace Temporalio.Worker
                         break;
                     case Bridge.Api.ActivityTask.ActivityCancelReason.Paused:
                         Cancel(ActivityCancelReason.Paused, details);
+                        break;
+                    case Bridge.Api.ActivityTask.ActivityCancelReason.Reset:
+                        Cancel(ActivityCancelReason.Reset, details);
                         break;
                     default:
                         Cancel(ActivityCancelReason.None, details);

@@ -12,6 +12,7 @@ namespace Temporalio.Workflows
     /// <param name="ContinuedRunId">Run ID if this was continued.</param>
     /// <param name="CronSchedule">Cron schedule if applicable.</param>
     /// <param name="ExecutionTimeout">Execution timeout for the workflow.</param>
+    /// <param name="FirstExecutionRunId">The very first run ID the workflow ever had, following continuation chains.</param>
     /// <param name="Headers">Headers from when the workflow was started.</param>
     /// <param name="LastFailure">Failure if this workflow run is a continuation of a failure.</param>
     /// <param name="LastResult">Successful result if this workflow is a continuation of a success.</param>
@@ -38,6 +39,7 @@ namespace Temporalio.Workflows
         string? ContinuedRunId,
         string? CronSchedule,
         TimeSpan? ExecutionTimeout,
+        string FirstExecutionRunId,
         IReadOnlyDictionary<string, Api.Common.V1.Payload>? Headers,
         Exception? LastFailure,
         IReadOnlyCollection<IRawValue>? LastResult,
@@ -64,6 +66,7 @@ namespace Temporalio.Workflows
         {
             ["Attempt"] = Attempt,
             ["Namespace"] = Namespace,
+            ["FirstExecutionRunId"] = FirstExecutionRunId,
             ["RunId"] = RunId,
             ["TaskQueue"] = TaskQueue,
             ["WorkflowId"] = WorkflowId,

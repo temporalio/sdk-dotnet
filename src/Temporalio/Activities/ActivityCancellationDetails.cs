@@ -34,6 +34,11 @@ namespace Temporalio.Activities
         public bool IsPaused { get; init; }
 
         /// <summary>
+        /// Gets a value indicating whether the activity was explicitly reset.
+        /// </summary>
+        public bool IsReset { get; init; }
+
+        /// <summary>
         /// Gets a value indicating whether the activity failed to record heartbeat. This usually
         /// only happens if the details cannot be converted to payloads.
         /// </summary>

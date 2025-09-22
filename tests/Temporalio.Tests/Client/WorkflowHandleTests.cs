@@ -18,15 +18,24 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
     {
         // Start with a single round of continue as new
         var arg = new KSWorkflowParams(
-            new KSAction(ContinueAsNew: new(WhileAboveZero: 1, Result: "Some String")));
+            new KSAction(ContinueAsNew: new(WhileAboveZero: 1)));
         var handle = await Client.StartWorkflowAsync(
             (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
             new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue));
 
         // Check result with and without following
-        Assert.Equal("Some String", await handle.GetResultAsync());
-        await Assert.ThrowsAsync<Exceptions.WorkflowContinuedAsNewException>(
-            async () => await handle.GetResultAsync(followRuns: false));
+        Assert.Equal(handle.ResultRunId, await handle.GetResultAsync());
+        try
+        {
+            await handle.GetResultAsync(followRuns: false);
+            Assert.Fail("Should have thrown an exception");
+        }
+        catch (Exceptions.WorkflowContinuedAsNewException ex)
+        {
+            Assert.NotEqual(handle.ResultRunId, ex.NewRunId);
+            var continuedHandle = Client.GetWorkflowHandle<IKitchenSinkWorkflow, string>(handle.Id, runId: ex.NewRunId);
+            Assert.Equal(handle.ResultRunId, await continuedHandle.GetResultAsync(followRuns: false));
+        }
     }
 
     [Fact]

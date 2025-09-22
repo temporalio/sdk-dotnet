@@ -83,6 +83,8 @@ public class WorkflowEnvironment : IAsyncLifetime
                         // Enable activity pause
                         "--dynamic-config-value", "frontend.activityAPIsEnabled=true",
                     },
+                    // TODO: Remove when fairness works in a release
+                    DownloadVersion = "v1.4.1-cloud-v1-29-0-139-2.0",
                 },
             });
         }
