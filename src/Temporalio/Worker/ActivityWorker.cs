@@ -70,9 +70,9 @@ namespace Temporalio.Worker
         ~ActivityWorker() => Dispose(false);
 
         /// <summary>
-        /// Execute the activity until poller shutdown or failure. If there is a failure, this may
-        /// need to be called a second time after shutdown initiated to ensure activity tasks are
-        /// drained.
+        /// Execute the activity worker until poller shutdown or failure. If there is a failure,
+        /// this may need to be called a second time after shutdown initiated to ensure activity
+        /// tasks are drained.
         /// </summary>
         /// <returns>Task that only completes successfully on poller shutdown.</returns>
         public async Task ExecuteAsync()

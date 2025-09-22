@@ -149,6 +149,26 @@ namespace Temporalio.Client
         public VersioningOverride? VersioningOverride { get; set; }
 
         /// <summary>
+        /// Gets or sets the conflict options.
+        /// </summary>
+        internal Api.Workflow.V1.OnConflictOptions? OnConflictOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the completion callbacks.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Callback>? CompletionCallbacks { get; set; }
+
+        /// <summary>
+        /// Gets or sets the links.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Link>? Links { get; set; }
+
+        /// <summary>
+        /// Gets or sets the request ID.
+        /// </summary>
+        internal string? RequestId { get; set; }
+
+        /// <summary>
         /// Perform a signal-with-start which will only start the workflow if it's not already
         /// running, but send a signal to it regardless. This is just sugar for manually setting
         /// <see cref="StartSignal" /> and <see cref="StartSignalArgs" /> directly.

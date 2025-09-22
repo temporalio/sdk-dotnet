@@ -72,6 +72,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
                     new ResourceBasedSlotSupplier(
                         new ResourceBasedSlotSupplierOptions(),
                         new ResourceBasedTunerOptions(0.5, 0.5)),
+                    new FixedSizeSlotSupplier(20),
                     new FixedSizeSlotSupplier(20)),
             }.AddWorkflow<SimpleWorkflow>().AddActivity(SimpleWorkflow.SomeActivity));
         await worker.ExecuteAsync(async () =>
@@ -96,6 +97,9 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
                         new ResourceBasedSlotSupplier(
                             new ResourceBasedSlotSupplierOptions(),
                             new ResourceBasedTunerOptions(0.5, 0.5)),
+                        new ResourceBasedSlotSupplier(
+                            new ResourceBasedSlotSupplierOptions(),
+                            new ResourceBasedTunerOptions(0.2, 0.2)),
                         new ResourceBasedSlotSupplier(
                             new ResourceBasedSlotSupplierOptions(),
                             new ResourceBasedTunerOptions(0.2, 0.2))),
@@ -211,7 +215,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier),
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
             }.AddWorkflow<SimpleWorkflow>().AddActivity(SimpleWorkflow.SomeActivity));
         await worker.ExecuteAsync(async () =>
         {
@@ -264,7 +268,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier),
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
             }.AddWorkflow<OneTaskWf>());
         await worker.ExecuteAsync(async () =>
         {
@@ -305,7 +309,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier),
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
             }.AddWorkflow<OneTaskWf>());
         await worker.ExecuteAsync(async () =>
         {

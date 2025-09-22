@@ -23,6 +23,9 @@ public class WorkflowEnvironment : IAsyncLifetime
     public ITemporalClient Client =>
         env?.Client ?? throw new InvalidOperationException("Environment not created");
 
+    public Temporalio.Testing.WorkflowEnvironment TestEnv =>
+        env ?? throw new InvalidOperationException("Environment not created");
+
     public string KitchenSinkWorkerTaskQueue => kitchenSinkWorker.Value.TaskQueue;
 
     public async Task InitializeAsync()

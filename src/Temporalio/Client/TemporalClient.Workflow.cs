@@ -740,6 +740,7 @@ namespace Temporalio.Client
                     UserMetadata = req.UserMetadata,
                     Priority = req.Priority,
                     VersioningOverride = req.VersioningOverride,
+                    Links = { req.Links },
                 };
                 if (input.Options.StartSignalArgs != null && input.Options.StartSignalArgs.Count > 0)
                 {
@@ -775,7 +776,7 @@ namespace Temporalio.Client
                             throw new ArgumentException("Task queue required to start workflow"),
                     },
                     Identity = Client.Connection.Options.Identity,
-                    RequestId = Guid.NewGuid().ToString(),
+                    RequestId = options.RequestId ?? Guid.NewGuid().ToString(),
                     WorkflowIdReusePolicy = options.IdReusePolicy,
                     WorkflowIdConflictPolicy = options.IdConflictPolicy,
                     RetryPolicy = options.RetryPolicy?.ToProto(),
@@ -785,6 +786,7 @@ namespace Temporalio.Client
                         ConfigureAwait(false),
                     Priority = options.Priority?.ToProto(),
                     VersioningOverride = options.VersioningOverride?.ToProto(),
+                    OnConflictOptions = options.OnConflictOptions,
                 };
                 if (args.Count > 0)
                 {
@@ -846,6 +848,14 @@ namespace Temporalio.Client
                                 await codec.EncodeSingleAsync(kvp.Value).ConfigureAwait(false);
                         }
                     }
+                }
+                if (options.CompletionCallbacks is { } completionCallbacks)
+                {
+                    req.CompletionCallbacks.AddRange(completionCallbacks);
+                }
+                if (options.Links is { } links)
+                {
+                    req.Links.AddRange(links);
                 }
                 return req;
             }

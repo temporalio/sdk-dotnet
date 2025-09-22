@@ -47,6 +47,7 @@ Extensions:
     - [Running Workflows](#running-workflows)
     - [Invoking Activities](#invoking-activities)
     - [Invoking Child Workflows](#invoking-child-workflows)
+    - [Invoking Nexus Operations](#invoking-nexus-operations)
     - [Timers and Conditions](#timers-and-conditions)
     - [Workflow Task Scheduling and Cancellation](#workflow-task-scheduling-and-cancellation)
     - [Workflow Utilities](#workflow-utilities)
@@ -66,6 +67,8 @@ Extensions:
     - [Activity Heartbeating and Cancellation](#activity-heartbeating-and-cancellation)
     - [Activity Worker Shutdown](#activity-worker-shutdown)
     - [Activity Testing](#activity-testing)
+  - [Nexus](#nexus)
+    - [Nexus Operations Backed by Workflows](#nexus-operations-backed-by-workflows)
   - [OpenTelemetry Tracing Support](#opentelemetry-tracing-support)
   - [Built-in Native Shared Library](#built-in-native-shared-library)
   - [TLS/CA Loading Issues](#tlsca-loading-issues)
@@ -325,7 +328,7 @@ var client = await TemporalClient.ConnectAsync(new()
 
 ### Workers
 
-Workers host workflows and/or activities. Here's how to run a worker:
+Workers host workflows, activities, and Nexus services. Here's how to run a worker:
 
 ```csharp
 using MyNamespace;
@@ -570,7 +573,7 @@ Some things to note about the above code:
 * Child workflows are started with `Workflow.StartChildWorkflowAsync` which accepts a lambda expression whose parameter
   is the child workflow to call and the expression is a call to its run method with arguments.
 * A non-type-safe form of `StartChildWorkflowAsync` exists that just accepts a string workflow name.
-* Child workflow options are a simple class set after after the lambda expression or name.
+* Child workflow options are a simple class set after the lambda expression or name.
   * These options are optional.
   * Retry policy, ID, etc can also be set on the options.
   * Cancellation token is defaulted as the workflow cancellation token, but an alternative can be given in options.
@@ -581,6 +584,19 @@ Some things to note about the above code:
 * The task for starting a child workflow does not complete until the start has been accepted by the server.
 * A shortcut of `Workflow.ExecuteChildWorkflowAsync` is available which is `StartChildWorkflowAsync` + `GetResultAsync`
   for those only needing to wait on its result.
+
+#### Invoking Nexus Operations
+
+* Nexus operations are started by first obtaining a Nexus client for a service via `Workflow.CreateNexusClient`, then
+  invoking `StartNexusOperationAsync` on it which accepts a lambda expression for the call on the service.
+* Non-type-safe forms of `Workflow.CreateNexusClient` and `StartNexusOperationAsync` exist that just accept string
+  service and operation names.
+* Nexus client and operation options are simple classes optionally provided as the last parameter.
+* Result of a Nexus operation starting is a `NexusOperationHandle` which has the operation token and `GetResultAsync`
+  for getting the result.
+* The task for starting a Nexus operation does not complete until the operation has actually started.
+* A shortcut of `ExecuteNexusOperationAsync` is available which is `StartNexusOperationAsync` + `GetResultAsync` for
+  those only needing to wait on its result.
 
 #### Timers and Conditions
 
@@ -1120,6 +1136,59 @@ activity context:
 * `WorkerShutdownTokenSource` - Token source for issuing worker shutdown.
 * `PayloadConverter` - Defaulted to default payload converter.
 * `MetricMeter` - Defaulted to noop meter.
+
+### Nexus
+
+This covers Temporal-specific Nexus extensions. For general Nexus information/documentation, see
+[the Nexus .NET SDK repository](https://github.com/nexus-rpc/sdk-dotnet)
+
+#### Nexus Operations Backed by Workflows
+
+To create a Nexus service with operations backed by workflows, first there needs to be a service contract, like so:
+
+```csharp
+using NexusRpc;
+
+[NexusService]
+public interface IGreetingService
+{
+    [NexusOperation]
+    string SayHello(string name);
+}
+```
+
+A service implementation can make this call backed by a workflow like so:
+
+```csharp
+using NexusRpc.Handlers;
+using Temporalio.Nexus;
+
+[NexusServiceHandler(typeof(IGreetingService))]
+public class GreetingService
+{
+    [NexusOperationHandler]
+    public IOperationHandler<string, string> SayHello() =>
+        // Creates an operation handler backed by a workflow handle factory
+        WorkflowRunOperationHandler.FromHandleFactory<string, string>((context, name) =>
+            // Context of the handle factory is used to start the workflow and
+            // return a handle
+            context.StartWorkflowAsync(
+                (MyGreetingWorkflow wf) => wf.RunAsync(name),
+                // ID is required
+                new() { Id = $"wf-{Guid.NewGuid()}" }));
+}
+```
+
+Notes about Nexus operations backed by workflows:
+
+* `WorkflowRunOperationHandler.FromHandleFactory` will create an operation handler that invokes the handle factory on
+  start and wires up operation token and cancellation properly.
+* The context provided to the handle factory has `StartWorkflowAsync` calls that mimic the same ones on the Temporal
+  client. The context also provides access to the general Nexus start context.
+* Users can mutate the input before sending to the workflow in the handle factory, but mutating the output is not
+  supported at this time and should be done in the workflow logic.
+* For general Nexus service and operation handler information/documentation, see
+  [the Nexus .NET SDK repository](https://github.com/nexus-rpc/sdk-dotnet).
 
 ### OpenTelemetry Tracing Support
 

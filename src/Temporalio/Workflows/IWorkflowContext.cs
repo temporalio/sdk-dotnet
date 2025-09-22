@@ -150,6 +150,22 @@ namespace Temporalio.Workflows
             string workflow, IReadOnlyCollection<object?> args, ContinueAsNewOptions? options);
 
         /// <summary>
+        /// Backing call for <see cref="Workflow.CreateNexusClient(string, NexusClientOptions)"/>.
+        /// </summary>
+        /// <param name="service">Service name.</param>
+        /// <param name="options">Options.</param>
+        /// <returns>Nexus client.</returns>
+        NexusClient CreateNexusClient(string service, NexusClientOptions options);
+
+        /// <summary>
+        /// Backing call for <see cref="Workflow.CreateNexusClient{TService}(NexusClientOptions)"/>.
+        /// </summary>
+        /// <typeparam name="TService">Service type.</typeparam>
+        /// <param name="options">Options.</param>
+        /// <returns>Nexus client.</returns>
+        NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options);
+
+        /// <summary>
         /// Backing call for <see cref="Workflow.DelayWithOptionsAsync(DelayOptions)" /> and
         /// overloads.
         /// </summary>
