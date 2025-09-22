@@ -16,10 +16,10 @@ namespace Temporalio.Client.EnvConfig
         /// </summary>
         /// <param name="options">Options for loading the configuration.</param>
         /// <returns>Loaded configuration data.</returns>
-        public static ClientEnvConfig Load(ConfigLoadOptions options)
+        public static ClientEnvConfig Load(ConfigLoadOptions? options = null)
         {
             var runtime = Runtime.TemporalRuntime.Default.Runtime;
-            var profiles = Bridge.EnvConfig.LoadClientConfig(runtime, options);
+            var profiles = Bridge.EnvConfig.LoadClientConfig(runtime, options ?? new ConfigLoadOptions());
             return new ClientEnvConfig(profiles);
         }
 
@@ -28,7 +28,7 @@ namespace Temporalio.Client.EnvConfig
         /// </summary>
         /// <param name="options">Options for loading the configuration profile.</param>
         /// <returns>Client connection options.</returns>
-        public static TemporalClientConnectOptions LoadClientConnectOptions(ProfileLoadOptions options)
+        public static TemporalClientConnectOptions LoadClientConnectOptions(ProfileLoadOptions? options = null)
         {
             var clientProfile = Profile.Load(options);
             return clientProfile.ToClientConnectionOptions();
@@ -38,7 +38,7 @@ namespace Temporalio.Client.EnvConfig
         /// Convert to a dictionary structure that can be used for TOML serialization.
         /// </summary>
         /// <returns>Dictionary mapping profile names to their dictionary representations.</returns>
-        public IReadOnlyDictionary<string, Dictionary<string, object?>> ToDictionary() =>
+        public IReadOnlyDictionary<string, Dictionary<string, object>> ToDictionary() =>
             Profiles.ToDictionary(
                 kvp => kvp.Key,
                 kvp => kvp.Value.ToDictionary());
@@ -48,7 +48,7 @@ namespace Temporalio.Client.EnvConfig
         /// </summary>
         /// <param name="profileDictionaries">Dictionary of profile name to profile dictionary.</param>
         /// <returns>Client configuration instance.</returns>
-        public static ClientEnvConfig FromDictionary(IReadOnlyDictionary<string, Dictionary<string, object?>> profileDictionaries)
+        public static ClientEnvConfig FromDictionary(IReadOnlyDictionary<string, Dictionary<string, object>> profileDictionaries)
         {
             var profiles = profileDictionaries.ToDictionary(
                 kvp => kvp.Key,
@@ -65,8 +65,9 @@ namespace Temporalio.Client.EnvConfig
         /// <param name="ApiKey">Client API key.</param>
         /// <param name="Tls">TLS configuration.</param>
         /// <param name="GrpcMeta">gRPC metadata.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1724:Type names should not match namespaces", Justification = "Profile is appropriate name in this context and unlikely to cause confusion")]
+        #pragma warning disable CA1724 // We're ok with the Profile name since it's a nested class
         public sealed record Profile(
+        #pragma warning restore CA1724
             string? Address = null,
             string? Namespace = null,
             string? ApiKey = null,
@@ -78,10 +79,10 @@ namespace Temporalio.Client.EnvConfig
             /// </summary>
             /// <param name="options">Options for loading the configuration profile.</param>
             /// <returns>The loaded profile.</returns>
-            public static Profile Load(ProfileLoadOptions options)
+            public static Profile Load(ProfileLoadOptions? options = null)
             {
                 var runtime = Runtime.TemporalRuntime.Default.Runtime;
-                return Bridge.EnvConfig.LoadClientConfigProfile(runtime, options);
+                return Bridge.EnvConfig.LoadClientConfigProfile(runtime, options ?? new ProfileLoadOptions());
             }
 
             /// <summary>
@@ -89,12 +90,12 @@ namespace Temporalio.Client.EnvConfig
             /// </summary>
             /// <param name="dictionary">The dictionary to convert from.</param>
             /// <returns>Profile configuration instance.</returns>
-            public static Profile FromDictionary(IReadOnlyDictionary<string, object?> dictionary) =>
+            public static Profile FromDictionary(IReadOnlyDictionary<string, object> dictionary) =>
                 new(
                     Address: dictionary.TryGetValue("address", out var address) ? (string?)address : null,
                     Namespace: dictionary.TryGetValue("namespace", out var nameSpace) ? (string?)nameSpace : null,
                     ApiKey: dictionary.TryGetValue("api_key", out var apiKey) ? (string?)apiKey : null,
-                    Tls: dictionary.TryGetValue("tls", out var tls) && tls is IReadOnlyDictionary<string, object?> tlsDict ? Tls.FromDictionary(tlsDict) : null,
+                    Tls: dictionary.TryGetValue("tls", out var tls) && tls is IReadOnlyDictionary<string, object> tlsDict ? Tls.FromDictionary(tlsDict) : null,
                     GrpcMeta: dictionary.TryGetValue("grpc_meta", out var grpcMeta) ? (IReadOnlyDictionary<string, string>?)grpcMeta : null);
 
             /// <summary>
@@ -136,15 +137,38 @@ namespace Temporalio.Client.EnvConfig
             /// Convert to a dictionary structure that can be used for TOML serialization.
             /// </summary>
             /// <returns>Dictionary representation of this profile.</returns>
-            public Dictionary<string, object?> ToDictionary() =>
-                new()
+            public Dictionary<string, object> ToDictionary()
+            {
+                var result = new Dictionary<string, object>();
+
+                if (Address != null)
                 {
-                    ["address"] = Address,
-                    ["namespace"] = Namespace,
-                    ["api_key"] = ApiKey,
-                    ["tls"] = Tls?.ToDictionary(),
-                    ["grpc_meta"] = GrpcMeta,
-                };
+                    result["address"] = Address;
+                }
+
+                if (Namespace != null)
+                {
+                    result["namespace"] = Namespace;
+                }
+
+                if (ApiKey != null)
+                {
+                    result["api_key"] = ApiKey;
+                }
+
+                var tlsDict = Tls?.ToDictionary();
+                if (tlsDict != null)
+                {
+                    result["tls"] = tlsDict;
+                }
+
+                if (GrpcMeta != null)
+                {
+                    result["grpc_meta"] = GrpcMeta;
+                }
+
+                return result;
+            }
         }
 
         /// <summary>
@@ -167,7 +191,7 @@ namespace Temporalio.Client.EnvConfig
             /// </summary>
             /// <param name="dictionary">The dictionary to convert from.</param>
             /// <returns>TLS configuration instance.</returns>
-            public static Tls FromDictionary(IReadOnlyDictionary<string, object?> dictionary) => new(
+            public static Tls FromDictionary(IReadOnlyDictionary<string, object> dictionary) => new(
                     ServerName: dictionary.TryGetValue("server_name", out var serverName) ? (string?)serverName : null,
                     ServerRootCACert: dictionary.TryGetValue("server_ca_cert", out var serverCaCert) ? DataSource.FromDictionary((IReadOnlyDictionary<string, string>?)serverCaCert) : null,
                     ClientCert: dictionary.TryGetValue("client_cert", out var clientCert) ? DataSource.FromDictionary((IReadOnlyDictionary<string, string>?)clientCert) : null,
@@ -198,15 +222,40 @@ namespace Temporalio.Client.EnvConfig
             /// Convert to a dictionary structure that can be used for TOML serialization.
             /// </summary>
             /// <returns>Dictionary representation of this TLS config.</returns>
-            public Dictionary<string, object?> ToDictionary() =>
-                new()
+            public Dictionary<string, object> ToDictionary()
+            {
+                var result = new Dictionary<string, object>();
+
+                if (Disabled != null)
                 {
-                    ["disabled"] = Disabled,
-                    ["server_name"] = ServerName,
-                    ["server_ca_cert"] = ServerRootCACert?.ToDictionary(),
-                    ["client_cert"] = ClientCert?.ToDictionary(),
-                    ["client_key"] = ClientPrivateKey?.ToDictionary(),
-                };
+                    result["disabled"] = Disabled;
+                }
+
+                if (ServerName != null)
+                {
+                    result["server_name"] = ServerName;
+                }
+
+                var serverCaCertDict = ServerRootCACert?.ToDictionary();
+                if (serverCaCertDict != null)
+                {
+                    result["server_ca_cert"] = serverCaCertDict;
+                }
+
+                var clientCertDict = ClientCert?.ToDictionary();
+                if (clientCertDict != null)
+                {
+                    result["client_cert"] = clientCertDict;
+                }
+
+                var clientKeyDict = ClientPrivateKey?.ToDictionary();
+                if (clientKeyDict != null)
+                {
+                    result["client_key"] = clientKeyDict;
+                }
+
+                return result;
+            }
         }
 
         /// <summary>
@@ -214,13 +263,6 @@ namespace Temporalio.Client.EnvConfig
         /// </summary>
         public class ProfileLoadOptions : ICloneable
         {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ProfileLoadOptions"/> class.
-            /// </summary>
-            public ProfileLoadOptions()
-            {
-            }
-
             /// <summary>
             /// Gets or sets the name of the profile to load. If null, "default" is used.
             /// </summary>
@@ -267,13 +309,6 @@ namespace Temporalio.Client.EnvConfig
         /// </summary>
         public class ConfigLoadOptions : ICloneable
         {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="ConfigLoadOptions"/> class.
-            /// </summary>
-            public ConfigLoadOptions()
-            {
-            }
-
             /// <summary>
             /// Gets or sets the data source to load configuration from. If null, the configuration
             /// will be loaded from the default file path: os-specific-config-dir/temporalio/temporal.toml.
@@ -398,14 +433,14 @@ namespace Temporalio.Client.EnvConfig
         /// <returns>A dictionary with either "path" or "data" key, or null if neither key exists.</returns>
         public Dictionary<string, string>? ToDictionary()
         {
-            if (!string.IsNullOrEmpty(this.Path))
+            if (!string.IsNullOrEmpty(Path))
             {
-                return new Dictionary<string, string> { ["path"] = this.Path! };
+                return new Dictionary<string, string> { ["path"] = Path! };
             }
 
-            if (this.Data != null)
+            if (Data != null)
             {
-                return new Dictionary<string, string> { ["data"] = Encoding.UTF8.GetString(this.Data) };
+                return new Dictionary<string, string> { ["data"] = Encoding.UTF8.GetString(Data) };
             }
 
             return null;
