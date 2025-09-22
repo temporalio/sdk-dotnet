@@ -16,11 +16,9 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Load client configuration from environment variables and configuration files.
         /// </summary>
-        /// <param name="runtime">Runtime to use for the operation.</param>
         /// <param name="options">Options for loading the configuration.</param>
         /// <returns>Dictionary of profile name to client configuration profile.</returns>
         public static Dictionary<string, ClientEnvConfig.Profile> LoadClientConfig(
-            Runtime runtime,
             ClientEnvConfig.ConfigLoadOptions options)
         {
             using var scope = new Scope();
@@ -42,7 +40,7 @@ namespace Temporalio.Bridge
                     };
 
                     var result = Interop.Methods.temporal_core_client_env_config_load(&coreOptions);
-                    return ProcessAllProfilesResult(runtime, result);
+                    return ProcessAllProfilesResult(result);
                 }
             }
             catch (JsonException ex)
@@ -54,11 +52,9 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Loads a specific client configuration profile.
         /// </summary>
-        /// <param name="runtime">Runtime to use.</param>
         /// <param name="options">Options for loading the configuration profile.</param>
         /// <returns>Client configuration for the specified profile.</returns>
         public static ClientEnvConfig.Profile LoadClientConfigProfile(
-            Runtime runtime,
             ClientEnvConfig.ProfileLoadOptions options)
         {
             using var scope = new Scope();
@@ -83,7 +79,7 @@ namespace Temporalio.Bridge
                     };
 
                     var result = Interop.Methods.temporal_core_client_env_config_profile_load(&coreOptions);
-                    return ProcessSingleProfileResult(runtime, result);
+                    return ProcessSingleProfileResult(result);
                 }
             }
             catch (JsonException ex)
@@ -152,13 +148,12 @@ namespace Temporalio.Bridge
         }
 
         private static unsafe Dictionary<string, ClientEnvConfig.Profile> ProcessAllProfilesResult(
-            Runtime runtime,
             Interop.TemporalCoreClientEnvConfigOrFail result)
         {
             if (result.fail != null)
             {
                 string errorMessage;
-                using (var byteArray = new ByteArray(runtime, result.fail))
+                using (var byteArray = new ByteArray(null, result.fail))
                 {
                     errorMessage = byteArray.ToUTF8();
                 }
@@ -171,7 +166,7 @@ namespace Temporalio.Bridge
             }
 
             string json;
-            using (var byteArray = new ByteArray(runtime, result.success))
+            using (var byteArray = new ByteArray(null, result.success))
             {
                 json = byteArray.ToUTF8();
             }
@@ -195,13 +190,12 @@ namespace Temporalio.Bridge
         }
 
         private static unsafe ClientEnvConfig.Profile ProcessSingleProfileResult(
-            Runtime runtime,
             Interop.TemporalCoreClientEnvConfigProfileOrFail result)
         {
             if (result.fail != null)
             {
                 string errorMessage;
-                using (var byteArray = new ByteArray(runtime, result.fail))
+                using (var byteArray = new ByteArray(null, result.fail))
                 {
                     errorMessage = byteArray.ToUTF8();
                 }
@@ -214,7 +208,7 @@ namespace Temporalio.Bridge
             }
 
             string json;
-            using (var byteArray = new ByteArray(runtime, result.success))
+            using (var byteArray = new ByteArray(null, result.success))
             {
                 json = byteArray.ToUTF8();
             }

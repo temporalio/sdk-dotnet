@@ -18,8 +18,7 @@ namespace Temporalio.Client.EnvConfig
         /// <returns>Loaded configuration data.</returns>
         public static ClientEnvConfig Load(ConfigLoadOptions? options = null)
         {
-            var runtime = Runtime.TemporalRuntime.Default.Runtime;
-            var profiles = Bridge.EnvConfig.LoadClientConfig(runtime, options ?? new ConfigLoadOptions());
+            var profiles = Bridge.EnvConfig.LoadClientConfig(options ?? new ConfigLoadOptions());
             return new ClientEnvConfig(profiles);
         }
 
@@ -81,8 +80,7 @@ namespace Temporalio.Client.EnvConfig
             /// <returns>The loaded profile.</returns>
             public static Profile Load(ProfileLoadOptions? options = null)
             {
-                var runtime = Runtime.TemporalRuntime.Default.Runtime;
-                return Bridge.EnvConfig.LoadClientConfigProfile(runtime, options ?? new ProfileLoadOptions());
+                return Bridge.EnvConfig.LoadClientConfigProfile(options ?? new ProfileLoadOptions());
             }
 
             /// <summary>
