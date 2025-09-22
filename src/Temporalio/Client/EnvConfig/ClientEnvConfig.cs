@@ -64,9 +64,9 @@ namespace Temporalio.Client.EnvConfig
         /// <param name="ApiKey">Client API key.</param>
         /// <param name="Tls">TLS configuration.</param>
         /// <param name="GrpcMeta">gRPC metadata.</param>
-        #pragma warning disable CA1724 // We're ok with the Profile name since it's a nested class
+#pragma warning disable CA1724 // We're ok with the Profile name since it's a nested class
         public sealed record Profile(
-        #pragma warning restore CA1724
+#pragma warning restore CA1724
             string? Address = null,
             string? Namespace = null,
             string? ApiKey = null,
