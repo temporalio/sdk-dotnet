@@ -10,15 +10,15 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class ByteArray : SafeHandle
     {
-        private readonly Runtime runtime;
+        private readonly Runtime? runtime;
         private readonly unsafe Interop.TemporalCoreByteArray* byteArray;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ByteArray"/> class.
         /// </summary>
-        /// <param name="runtime">Runtime to use to free the byte array.</param>
+        /// <param name="runtime">Runtime to use to free the byte array, or null to use no runtime.</param>
         /// <param name="byteArray">Byte array pointer.</param>
-        public unsafe ByteArray(Runtime runtime, Interop.TemporalCoreByteArray* byteArray)
+        public unsafe ByteArray(Runtime? runtime, Interop.TemporalCoreByteArray* byteArray)
             : base((IntPtr)byteArray, true)
         {
             this.runtime = runtime;
@@ -75,7 +75,8 @@ namespace Temporalio.Bridge
         /// <inheritdoc/>
         protected override unsafe bool ReleaseHandle()
         {
-            runtime.FreeByteArray(byteArray);
+            var runtimePtr = runtime != null ? runtime.Ptr : (Interop.TemporalCoreRuntime*)null;
+            Interop.Methods.temporal_core_byte_array_free(runtimePtr, byteArray);
             return true;
         }
     }
