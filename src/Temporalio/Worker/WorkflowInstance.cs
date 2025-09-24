@@ -37,7 +37,10 @@ namespace Temporalio.Worker
         private static readonly AsyncLocal<WorkflowUpdateInfo> CurrentUpdateInfoLocal = new();
 
         private readonly TaskFactory taskFactory;
-        private readonly IFailureConverter failureConverter;
+        private readonly IPayloadConverter payloadConverterNoContext;
+        private readonly IPayloadConverter payloadConverterWorkflowContext;
+        private readonly IFailureConverter failureConverterNoContext;
+        private readonly IFailureConverter failureConverterWorkflowContext;
         private readonly Lazy<MetricMeter> metricMeter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
@@ -104,8 +107,10 @@ namespace Temporalio.Worker
             dynamicQuery = Definition.DynamicQuery;
             dynamicSignal = Definition.DynamicSignal;
             dynamicUpdate = Definition.DynamicUpdate;
-            PayloadConverter = details.PayloadConverter;
-            failureConverter = details.FailureConverter;
+            payloadConverterNoContext = details.PayloadConverterNoContext;
+            payloadConverterWorkflowContext = details.PayloadConverterWorkflowContext;
+            failureConverterNoContext = details.FailureConverterNoContext;
+            failureConverterWorkflowContext = details.FailureConverterWorkflowContext;
             var rootInbound = new InboundImpl(this);
             // Lazy so it can have the context when instantiating
             inbound = new(
@@ -179,7 +184,8 @@ namespace Temporalio.Worker
                     WorkflowId: start.RootWorkflow.WorkflowId);
             }
             var lastFailure = start.ContinuedFailure == null ?
-                null : failureConverter.ToException(start.ContinuedFailure, PayloadConverter);
+                null : failureConverterWorkflowContext.ToException(
+                    start.ContinuedFailure, payloadConverterWorkflowContext);
             var lastResult = start.LastCompletionResult?.Payloads_.Select(v => new RawValue(v)).ToArray();
             static string? NonEmptyOrNull(string s) => string.IsNullOrEmpty(s) ? null : s;
             Info = new(
@@ -356,7 +362,7 @@ namespace Temporalio.Worker
         public MetricMeter MetricMeter => metricMeter.Value;
 
         /// <inheritdoc />
-        public IPayloadConverter PayloadConverter { get; private init; }
+        public IPayloadConverter PayloadConverter => payloadConverterWorkflowContext;
 
         /// <inheritdoc />
         public IDictionary<string, WorkflowQueryDefinition> Queries => mutableQueries.Value;
@@ -469,7 +475,7 @@ namespace Temporalio.Worker
                 try
                 {
                     // Unset is null
-                    upsertedMemo.Fields[update.UntypedKey] = PayloadConverter.ToPayload(
+                    upsertedMemo.Fields[update.UntypedKey] = payloadConverterWorkflowContext.ToPayload(
                         update.HasValue ? update.UntypedValue : null);
                 }
                 catch (Exception e)
@@ -724,7 +730,8 @@ namespace Temporalio.Worker
                     {
                         completion.Failed = new()
                         {
-                            Failure_ = failureConverter.ToFailure(e, PayloadConverter),
+                            Failure_ = failureConverterWorkflowContext.ToFailure(
+                                e, payloadConverterWorkflowContext),
                         };
                     }
                     catch (Exception inner)
@@ -971,7 +978,7 @@ namespace Temporalio.Worker
                     {
                         WorkflowType = e.Input.Workflow,
                         TaskQueue = e.Input.Options?.TaskQueue ?? string.Empty,
-                        Arguments = { PayloadConverter.ToPayloads(e.Input.Args) },
+                        Arguments = { payloadConverterWorkflowContext.ToPayloads(e.Input.Args) },
                         RetryPolicy = e.Input.Options?.RetryPolicy?.ToProto(),
                     };
                     if (e.Input.Options?.RunTimeout is TimeSpan runTimeout)
@@ -985,7 +992,7 @@ namespace Temporalio.Worker
                     if (e.Input.Options?.Memo is IReadOnlyDictionary<string, object> memo)
                     {
                         cmd.Memo.Add(memo.ToDictionary(
-                            kvp => kvp.Key, kvp => PayloadConverter.ToPayload(kvp.Value)));
+                            kvp => kvp.Key, kvp => payloadConverterWorkflowContext.ToPayload(kvp.Value)));
                     }
                     if (e.Input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
                     {
@@ -1018,7 +1025,8 @@ namespace Temporalio.Worker
                 {
                     // We let this failure conversion throw if it cannot convert the failure
                     logger.LogDebug(e, "Workflow raised failure with run ID {RunId}", Info.RunId);
-                    var failure = failureConverter.ToFailure(e, PayloadConverter);
+                    var failure = failureConverterWorkflowContext.ToFailure(
+                        e, payloadConverterWorkflowContext);
                     AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } });
                 }
             }
@@ -1146,7 +1154,8 @@ namespace Temporalio.Worker
                         UpdateResponse = new()
                         {
                             ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverter.ToFailure(failure, PayloadConverter),
+                            Rejected = failureConverterWorkflowContext.ToFailure(
+                                failure, payloadConverterWorkflowContext),
                         },
                     });
                     return Task.CompletedTask;
@@ -1218,7 +1227,8 @@ namespace Temporalio.Worker
                     UpdateResponse = new()
                     {
                         ProtocolInstanceId = update.ProtocolInstanceId,
-                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                        Rejected = failureConverterWorkflowContext.ToFailure(
+                            e, payloadConverterWorkflowContext),
                     },
                 });
                 return Task.CompletedTask;
@@ -1265,7 +1275,8 @@ namespace Temporalio.Worker
                                     UpdateResponse = new()
                                     {
                                         ProtocolInstanceId = update.ProtocolInstanceId,
-                                        Rejected = failureConverter.ToFailure(exc, PayloadConverter),
+                                        Rejected = failureConverterWorkflowContext.ToFailure(
+                                            exc, payloadConverterWorkflowContext),
                                     },
                                 });
                             }
@@ -1288,7 +1299,7 @@ namespace Temporalio.Worker
                                         UpdateResponse = new()
                                         {
                                             ProtocolInstanceId = update.ProtocolInstanceId,
-                                            Completed = PayloadConverter.ToPayload(result),
+                                            Completed = payloadConverterWorkflowContext.ToPayload(result),
                                         },
                                     });
                                 }
@@ -1302,7 +1313,8 @@ namespace Temporalio.Worker
                                         UpdateResponse = new()
                                         {
                                             ProtocolInstanceId = update.ProtocolInstanceId,
-                                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                                            Rejected = failureConverterWorkflowContext.ToFailure(
+                                                e, payloadConverterWorkflowContext),
                                         },
                                     });
                                 }
@@ -1323,7 +1335,8 @@ namespace Temporalio.Worker
                     UpdateResponse = new()
                     {
                         ProtocolInstanceId = update.ProtocolInstanceId,
-                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                        Rejected = failureConverterWorkflowContext.ToFailure(
+                            e, payloadConverterWorkflowContext),
                     },
                 });
                 return Task.CompletedTask;
@@ -1407,7 +1420,7 @@ namespace Temporalio.Worker
                         RespondToQuery = new()
                         {
                             QueryId = query.QueryId,
-                            Succeeded = new() { Response = PayloadConverter.ToPayload(resultObj) },
+                            Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
                         },
                     });
                 }
@@ -1418,7 +1431,8 @@ namespace Temporalio.Worker
                         RespondToQuery = new()
                         {
                             QueryId = query.QueryId,
-                            Failed = failureConverter.ToFailure(e, PayloadConverter),
+                            Failed = failureConverterWorkflowContext.ToFailure(
+                                e, payloadConverterWorkflowContext),
                         },
                     });
                     return Task.CompletedTask;
@@ -1586,7 +1600,7 @@ namespace Temporalio.Worker
                 // We no longer need start args after this point, so we are unsetting them
                 startArgs = null;
                 var resultObj = await inbound.Value.ExecuteWorkflowAsync(input).ConfigureAwait(true);
-                var result = PayloadConverter.ToPayload(resultObj);
+                var result = payloadConverterWorkflowContext.ToPayload(resultObj);
                 AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } });
             }));
         }
@@ -1674,7 +1688,7 @@ namespace Temporalio.Worker
             {
                 paramVals.AddRange(
                     payloads.Zip(paramInfos, (payload, paramInfo) =>
-                        PayloadConverter.ToValue(payload, paramInfo.ParameterType)));
+                        payloadConverterWorkflowContext.ToValue(payload, paramInfo.ParameterType)));
             }
             catch (Exception e)
             {
@@ -1992,12 +2006,12 @@ namespace Temporalio.Worker
                     if (res.Failure != null)
                     {
                         // Payload and failure converter with context
-                        var payloadConverter = instance.PayloadConverter;
+                        var payloadConverter = instance.payloadConverterNoContext;
                         if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                         {
                             payloadConverter = withContext.WithSerializationContext(pending.SerializationContext);
                         }
-                        var failureConverter = instance.failureConverter;
+                        var failureConverter = instance.failureConverterNoContext;
                         if (failureConverter is IWithSerializationContext<IFailureConverter> withContext2)
                         {
                             failureConverter = withContext2.WithSerializationContext(pending.SerializationContext);
@@ -2050,7 +2064,7 @@ namespace Temporalio.Worker
                         UserMetadata = new()
                         {
                             Summary = input.Summary == null ?
-                                null : instance.PayloadConverter.ToPayload(input.Summary),
+                                null : instance.payloadConverterWorkflowContext.ToPayload(input.Summary),
                         },
                     });
                 }
@@ -2088,7 +2102,7 @@ namespace Temporalio.Worker
                     ActivityType: input.Activity,
                     ActivityTaskQueue: input.Options.TaskQueue ?? instance.Info.TaskQueue,
                     IsLocal: false);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2175,7 +2189,7 @@ namespace Temporalio.Worker
                     ActivityType: input.Activity,
                     ActivityTaskQueue: instance.Info.TaskQueue,
                     IsLocal: true);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2242,7 +2256,7 @@ namespace Temporalio.Worker
                 var serializationContext = new ISerializationContext.Workflow(
                     Namespace: instance.Info.Namespace,
                     WorkflowId: input.Id);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2272,7 +2286,7 @@ namespace Temporalio.Worker
                 var serializationContext = new ISerializationContext.Workflow(
                     Namespace: instance.Info.Namespace,
                     WorkflowId: input.Id);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2320,7 +2334,7 @@ namespace Temporalio.Worker
                 var serializationContext = new ISerializationContext.Workflow(
                     Namespace: instance.Info.Namespace,
                     WorkflowId: input.Options.Id ?? Workflow.NewGuid().ToString());
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2442,7 +2456,7 @@ namespace Temporalio.Worker
                                     }
                                 case ResolveChildWorkflowExecutionStart.StatusOneofCase.Cancelled:
                                     // Failure converter with context
-                                    var failureConverter = instance.failureConverter;
+                                    var failureConverter = instance.failureConverterNoContext;
                                     if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                                     {
                                         failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2468,7 +2482,7 @@ namespace Temporalio.Worker
                                     break;
                                 case ChildWorkflowResult.StatusOneofCase.Failed:
                                     // Failure converter with context
-                                    var failureConverter = instance.failureConverter;
+                                    var failureConverter = instance.failureConverterNoContext;
                                     if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                                     {
                                         failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2478,7 +2492,7 @@ namespace Temporalio.Worker
                                     break;
                                 case ChildWorkflowResult.StatusOneofCase.Cancelled:
                                     // Failure converter with context
-                                    var failureConverter2 = instance.failureConverter;
+                                    var failureConverter2 = instance.failureConverterNoContext;
                                     if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
                                     {
                                         failureConverter2 = withContext2.WithSerializationContext(serializationContext);
@@ -2515,6 +2529,9 @@ namespace Temporalio.Worker
                         new CanceledFailureException("Nexus operation cancelled before scheduled"));
                 }
 
+                // TODO(cretz): Support Nexus serialization context
+                var payloadConverter = instance.payloadConverterNoContext;
+
                 var seq = ++instance.nexusOperationCounter;
                 var cmd = new ScheduleNexusOperation()
                 {
@@ -2522,7 +2539,7 @@ namespace Temporalio.Worker
                     Endpoint = input.ClientOptions.Endpoint,
                     Service = input.Service,
                     Operation = input.OperationName,
-                    Input = input.Arg == null ? null : instance.PayloadConverter.ToPayload(input.Arg),
+                    Input = input.Arg == null ? null : payloadConverter.ToPayload(input.Arg),
                 };
                 if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToCloseTimeout)
                 {
@@ -2535,7 +2552,7 @@ namespace Temporalio.Worker
                 var workflowCommand = new WorkflowCommand() { ScheduleNexusOperation = cmd };
                 if (input.Options.Summary is { } summary)
                 {
-                    workflowCommand.UserMetadata = new() { Summary = instance.PayloadConverter.ToPayload(summary) };
+                    workflowCommand.UserMetadata = new() { Summary = payloadConverter.ToPayload(summary) };
                 }
                 instance.AddCommand(workflowCommand);
 
@@ -2568,13 +2585,17 @@ namespace Temporalio.Worker
                             // If there is a start sync fail, we have to fail the handle task and
                             // there's nothing more we can do here
                             var handle = new NexusOperationHandleImpl<TResult>(
-                                instance.PayloadConverter,
-                                instance.failureConverter,
+                                payloadConverter,
+                                // TODO(cretz): Support Nexus serialization context, ideally not
+                                // creating failure converter with context until actually needed
+                                instance.failureConverterNoContext,
                                 startRes.HasOperationToken ? startRes.OperationToken : null);
                             if (startRes.Failed is { } syncStartFail)
                             {
+                                // TODO(cretz): Support Nexus serialization context
                                 handleSource.SetException(
-                                    instance.failureConverter.ToException(syncStartFail, instance.PayloadConverter));
+                                    instance.failureConverterNoContext.ToException(
+                                        syncStartFail, payloadConverter));
                                 return;
                             }
 
@@ -2641,7 +2662,7 @@ namespace Temporalio.Worker
                         if (res.Failure != null)
                         {
                             // Failure converter with context
-                            var failureConverter = instance.failureConverter;
+                            var failureConverter = instance.failureConverterNoContext;
                             if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                             {
                                 failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2720,7 +2741,7 @@ namespace Temporalio.Worker
                                 return payloadConverter.ToValue<TResult>(res.Completed.Result);
                             case ActivityResolution.StatusOneofCase.Failed:
                                 // Failure converter with context
-                                var failureConverter = instance.failureConverter;
+                                var failureConverter = instance.failureConverterNoContext;
                                 if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                                 {
                                     failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2728,7 +2749,7 @@ namespace Temporalio.Worker
                                 throw failureConverter.ToException(res.Failed.Failure_, payloadConverter);
                             case ActivityResolution.StatusOneofCase.Cancelled:
                                 // Failure converter with context
-                                var failureConverter2 = instance.failureConverter;
+                                var failureConverter2 = instance.failureConverterNoContext;
                                 if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
                                 {
                                     failureConverter2 = withContext2.WithSerializationContext(serializationContext);
