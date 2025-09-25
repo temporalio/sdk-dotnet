@@ -140,43 +140,50 @@ namespace Temporalio.Worker
             }
 
             WorkflowActivationCompletion comp;
-            DataConverter dataConverter = options.DataConverter;
+            DataConverter dataConverterNoContext = options.DataConverter;
+            DataConverter? dataConverterWorkflowContext = null;
             WorkflowCodecHelper.WorkflowCodecContext? codecContext = null;
 
             // Catch any exception as a completion failure
             try
             {
                 // Create data converter with context before doing any work
+                string workflowId, workflowType;
+                IWorkflowCodecHelperInstance? instanceForCodec;
                 if (runningWorkflows.TryGetValue(act.RunId, out var inst))
                 {
-                    codecContext = new(
-                        Namespace: options.Namespace,
-                        WorkflowId: inst.Info.WorkflowId,
-                        WorkflowType: inst.Info.WorkflowType,
-                        TaskQueue: options.TaskQueue,
-                        Instance: inst);
+                    workflowId = inst.Info.WorkflowId;
+                    workflowType = inst.Info.WorkflowType;
+                    instanceForCodec = inst;
                 }
                 else if (act.Jobs.Select(j => j.InitializeWorkflow).FirstOrDefault(s => s != null) is { } initJob)
                 {
-                    codecContext = new(
-                        Namespace: options.Namespace,
-                        WorkflowId: initJob.WorkflowId,
-                        WorkflowType: initJob.WorkflowType,
-                        TaskQueue: options.TaskQueue,
-                        Instance: null);
+                    workflowId = initJob.WorkflowId;
+                    workflowType = initJob.WorkflowType;
+                    instanceForCodec = null;
                 }
                 else
                 {
                     throw new InvalidOperationException("Missing workflow start (unexpectedly evicted?)");
                 }
-                dataConverter = dataConverter.WithSerializationContext(
-                    new ISerializationContext.Workflow(
-                        Namespace: codecContext.Namespace, WorkflowId: codecContext.WorkflowId));
-
-                // Decode the activation if there is a codec
-                if (dataConverter.PayloadCodec is { } decodeCodec)
+                dataConverterWorkflowContext = dataConverterNoContext.WithSerializationContext(
+                    new ISerializationContext.Workflow(options.Namespace, WorkflowId: workflowId));
+                // We'll only apply codec if one of the two converters has one
+                if (dataConverterNoContext.PayloadCodec != null ||
+                    dataConverterWorkflowContext.PayloadCodec != null)
                 {
-                    await WorkflowCodecHelper.DecodeAsync(decodeCodec, codecContext, act).ConfigureAwait(false);
+                    codecContext = new(
+                        CodecNoContext: dataConverterNoContext.PayloadCodec,
+                        CodecWorkflowContext: dataConverterWorkflowContext.PayloadCodec,
+                        Namespace: options.Namespace,
+                        WorkflowId: workflowId,
+                        WorkflowType: workflowType,
+                        TaskQueue: options.TaskQueue,
+                        Instance: instanceForCodec);
+                }
+                if (codecContext != null)
+                {
+                    await WorkflowCodecHelper.DecodeAsync(codecContext, act).ConfigureAwait(false);
                 }
 
                 // Log proto at trace level
@@ -191,8 +198,12 @@ namespace Temporalio.Worker
 
                 // If the workflow is not yet running, create it. We know that we will only get
                 // one activation per workflow at a time, so GetOrAdd is safe for our use.
-                var workflow = runningWorkflows.GetOrAdd(act.RunId, _ => CreateInstance(act, dataConverter));
-                codecContext = codecContext with { Instance = workflow };
+                var workflow = runningWorkflows.GetOrAdd(act.RunId, _ => CreateInstance(
+                    act, dataConverterNoContext, dataConverterWorkflowContext));
+                if (codecContext != null)
+                {
+                    codecContext = codecContext with { Instance = workflow };
+                }
 
                 // Activate or timeout with deadlock timeout
                 // TODO(cretz): Any reason for users to need to customize factory here?
@@ -230,9 +241,10 @@ namespace Temporalio.Worker
                 comp = new() { Failed = new() };
                 try
                 {
-                    // Failure converter needs to be in workflow context
-                    comp.Failed.Failure_ = dataConverter.FailureConverter.ToFailure(
-                        e, dataConverter.PayloadConverter);
+                    // Failure converter needs to be in workflow context if available
+                    var dataConverterForFailure = dataConverterWorkflowContext ?? dataConverterNoContext;
+                    comp.Failed.Failure_ = dataConverterForFailure.FailureConverter.ToFailure(
+                        e, dataConverterForFailure.PayloadConverter);
                 }
                 catch (Exception inner)
                 {
@@ -244,12 +256,12 @@ namespace Temporalio.Worker
             // Always set the run ID of the completion
             comp.RunId = act.RunId;
 
-            // Encode the completion if there is a codec
-            if (dataConverter.PayloadCodec is { } encodeCodec && codecContext is { } encodeContext)
+            // Encode the completion if there is a codec context
+            if (codecContext != null)
             {
                 try
                 {
-                    await WorkflowCodecHelper.EncodeAsync(encodeCodec, encodeContext, comp).ConfigureAwait(false);
+                    await WorkflowCodecHelper.EncodeAsync(codecContext, comp).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
@@ -313,7 +325,10 @@ namespace Temporalio.Worker
             }
         }
 
-        private IWorkflowInstance CreateInstance(WorkflowActivation act, DataConverter dataConverter)
+        private IWorkflowInstance CreateInstance(
+            WorkflowActivation act,
+            DataConverter dataConverterNoContext,
+            DataConverter dataConverterWorkflowContext)
         {
             var init = act.Jobs.Select(j => j.InitializeWorkflow).FirstOrDefault(s => s != null) ??
                 throw new InvalidOperationException("Missing workflow start (unexpectedly evicted?)");
@@ -336,8 +351,10 @@ namespace Temporalio.Worker
                     InitialActivation: act,
                     Init: init,
                     Interceptors: options.Interceptors,
-                    PayloadConverter: dataConverter.PayloadConverter,
-                    FailureConverter: dataConverter.FailureConverter,
+                    PayloadConverterNoContext: dataConverterNoContext.PayloadConverter,
+                    PayloadConverterWorkflowContext: dataConverterWorkflowContext.PayloadConverter,
+                    FailureConverterNoContext: dataConverterNoContext.FailureConverter,
+                    FailureConverterWorkflowContext: dataConverterWorkflowContext.FailureConverter,
                     LoggerFactory: options.LoggerFactory,
                     DisableTracingEvents: options.DisableWorkflowTracingEventListener,
                     WorkflowStackTrace: options.WorkflowStackTrace,

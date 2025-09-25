@@ -17,8 +17,10 @@ namespace Temporalio.Worker
     /// <param name="InitialActivation">Initial activation for the workflow.</param>
     /// <param name="Init">Start attributes for the workflow.</param>
     /// <param name="Interceptors">Interceptors.</param>
-    /// <param name="PayloadConverter">Payload converter.</param>
-    /// <param name="FailureConverter">Failure converter.</param>
+    /// <param name="PayloadConverterNoContext">Payload converter with no context.</param>
+    /// <param name="PayloadConverterWorkflowContext">Payload converter with workflow context.</param>
+    /// <param name="FailureConverterNoContext">Failure converter with no context.</param>
+    /// <param name="FailureConverterWorkflowContext">Failure converter with workflow context.</param>
     /// <param name="LoggerFactory">Logger factory.</param>
     /// <param name="DisableTracingEvents">Whether tracing events are disabled.</param>
     /// <param name="WorkflowStackTrace">Option for workflow stack trace.</param>
@@ -35,8 +37,10 @@ namespace Temporalio.Worker
         WorkflowActivation InitialActivation,
         InitializeWorkflow Init,
         IReadOnlyCollection<Interceptors.IWorkerInterceptor> Interceptors,
-        IPayloadConverter PayloadConverter,
-        IFailureConverter FailureConverter,
+        IPayloadConverter PayloadConverterNoContext,
+        IPayloadConverter PayloadConverterWorkflowContext,
+        IFailureConverter FailureConverterNoContext,
+        IFailureConverter FailureConverterWorkflowContext,
         ILoggerFactory LoggerFactory,
         bool DisableTracingEvents,
         WorkflowStackTrace WorkflowStackTrace,
