@@ -25,7 +25,7 @@ namespace Temporalio.Common
         /// <summary>
         /// An empty search attribute collection.
         /// </summary>
-        public static readonly SearchAttributeCollection Empty = new(new());
+        public static readonly SearchAttributeCollection Empty = new();
 
         private static readonly Dictionary<ByteString, IndexedValueType> NameToIndexType =
             Enum.GetValues(typeof(IndexedValueType)).Cast<IndexedValueType>().ToDictionary(
@@ -41,9 +41,12 @@ namespace Temporalio.Common
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchAttributeCollection"/> class.
         /// </summary>
-        /// <param name="values">The values that are actually used. Warning, this is not copied.
-        /// </param>
-        internal SearchAttributeCollection(SortedDictionary<SearchAttributeKey, object> values) =>
+        internal SearchAttributeCollection()
+            : this(new())
+        {
+        }
+
+        private SearchAttributeCollection(SortedDictionary<SearchAttributeKey, object> values) =>
             this.values = values;
 
         /// <summary>
@@ -200,7 +203,7 @@ namespace Temporalio.Common
             static object JsonElementToObject(JsonElement elem, IndexedValueType valueType) => elem.ValueKind switch
             {
                 JsonValueKind.Array =>
-                    elem.EnumerateArray().Select(j => JsonElementToObject(j, valueType)).ToList(),
+                    elem.EnumerateArray().Select(j => JsonElementToObject(j, valueType)).OfType<string>().ToList(),
                 JsonValueKind.False or JsonValueKind.True =>
                     elem.GetBoolean(),
                 JsonValueKind.Number when valueType == IndexedValueType.Int =>
@@ -369,7 +372,8 @@ namespace Temporalio.Common
                 {
                     values.Remove(existingKey);
                 }
-                values[key] = value ?? throw new ArgumentException("Null value", nameof(value));
+                values[key] = key.NormalizeValue(
+                    value ?? throw new ArgumentException("Null value", nameof(value)));
                 return this;
             }
         }
