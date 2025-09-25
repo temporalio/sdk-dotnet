@@ -728,6 +728,30 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "UpdateWithStartWorkflow:TracingWorkflow", null));
     }
 
+    [Fact]
+    public async Task TracingInterceptor_BenignExceptions_DoNotHaveErrorStatus()
+    {
+        // Confirm non-benign fail shows up as error status
+        var (_, activities) = await ExecuteTracingWorkflowAsync(
+            new(new[] { new TracingWorkflowAction(AppFail: "Non-benign fail") }),
+            expectFail: true);
+        var act = activities.Single(act => act.OperationName == "CompleteWorkflow:TracingWorkflow");
+        Assert.EndsWith(
+            "Non-benign fail",
+            act.Events.Single().Tags.Single(t => t.Key == "exception.message").Value!.ToString());
+        Assert.Equal(ActivityStatusCode.Error, act.Status);
+
+        // Confirm benign fail is not error status
+        (_, activities) = await ExecuteTracingWorkflowAsync(
+            new(new[] { new TracingWorkflowAction(BenignAppFail: "Benign fail") }),
+            expectFail: true);
+        act = activities.Single(act => act.OperationName == "CompleteWorkflow:TracingWorkflow");
+        Assert.EndsWith(
+            "Benign fail",
+            act.Events.Single().Tags.Single(t => t.Key == "exception.message").Value!.ToString());
+        Assert.NotEqual(ActivityStatusCode.Error, act.Status);
+    }
+
     private static void AssertActivities(
         IReadOnlyCollection<Activity> activities, params ActivityAssertion[] assertions)
     {
@@ -907,6 +931,11 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 {
                     throw new ApplicationFailureException(action.AppFail);
                 }
+                if (action.BenignAppFail != null)
+                {
+                    throw new ApplicationFailureException(
+                        action.BenignAppFail, category: ApplicationErrorCategory.Benign);
+                }
                 if (action.FailOnNonReplay != null)
                 {
                     await RaiseOnNonReplayAsync(action.FailOnNonReplay);
@@ -1078,6 +1107,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
 
     public record TracingWorkflowAction(
         string? AppFail = null,
+        string? BenignAppFail = null,
         string? FailOnNonReplay = null,
         TracingWorkflowActionChildWorkflow? ChildWorkflow = null,
         TracingWorkflowActionActivity? Activity = null,

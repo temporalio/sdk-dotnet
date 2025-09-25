@@ -8,6 +8,7 @@ using OpenTelemetry.Context.Propagation;
 using OpenTelemetry.Trace;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
+using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Client.Interceptors;
 using Temporalio.Converters;
@@ -198,7 +199,16 @@ namespace Temporalio.Extensions.OpenTelemetry
 
         private static void RecordExceptionWithStatus(Activity? activity, Exception exception)
         {
-            activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
+            // If the exception is a benign exception, we do not consider the status an error. Note,
+            // we intentionally only consider benign exceptions as not errors directly, not
+            // transitively. So when a client uses this helper for a benign exception from a
+            // workflow, or when a workflow uses this helper for a benign exception from an activity
+            // bubbled out, this will still be considered an error status because those are wrapped
+            // forms given to callers.
+            if ((exception as ApplicationFailureException)?.Category != ApplicationErrorCategory.Benign)
+            {
+                activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
+            }
             activity?.RecordException(exception);
         }
 
