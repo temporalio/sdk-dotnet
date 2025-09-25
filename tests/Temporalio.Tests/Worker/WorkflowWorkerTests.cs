@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks.Dataflow;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
+using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
@@ -1402,8 +1404,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Set(AttrDateTime, new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeSpan.Zero)).
             Set(AttrDouble, 123.45).
             Set(AttrKeyword, "SomeKeyword").
-            // TODO(cretz): Fix after Temporal dev server upgraded
-            // Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
+            Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
             Set(AttrLong, 678).
             Set(AttrText, "SomeText").
             ToSearchAttributeCollection();
@@ -1422,6 +1423,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public static readonly SearchAttributeCollection AttributesFirstUpdated = new SearchAttributeCollection.Builder().
             Set(AttrBool, false).
             Set(AttrDateTime, new DateTimeOffset(2002, 1, 1, 0, 0, 0, TimeSpan.Zero)).
+            Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
             Set(AttrDouble, 234.56).
             ToSearchAttributeCollection();
 
@@ -1432,21 +1434,27 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             AttrDateTime.ValueUnset(),
             AttrDouble.ValueUnset(),
             AttrKeyword.ValueSet("AnotherKeyword"),
+            AttrKeywordList.ValueSet(new[] { "SomeKeyword3", "SomeKeyword4" }),
             AttrLong.ValueSet(789),
             AttrText.ValueSet("SomeOtherText"),
         };
 
         public static readonly SearchAttributeCollection AttributesSecondUpdated = new SearchAttributeCollection.Builder().
             Set(AttrKeyword, "AnotherKeyword").
+            Set(AttrKeywordList, new[] { "SomeKeyword3", "SomeKeyword4" }).
             Set(AttrLong, 789).
             Set(AttrText, "SomeOtherText").
             ToSearchAttributeCollection();
 
         public static void AssertAttributesEqual(
             SearchAttributeCollection expected, SearchAttributeCollection actual) =>
+            // xUnit compares dictionaries using Equals on key and value properly even if they have
+            // differing subtypes
             Assert.Equal(
-                expected.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")),
-                actual.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")));
+                expected.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")).
+                    ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                actual.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")).
+                    ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
 
         private bool proceed;
 
@@ -6796,9 +6804,9 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
     public class ContextJsonPlainConverter : JsonPlainConverter, IWithSerializationContext<IEncodingConverter>
     {
-        private readonly ContextInfo contextInfo;
+        private readonly ContextInfo? contextInfo;
 
-        public ContextJsonPlainConverter(ContextInfo contextInfo)
+        public ContextJsonPlainConverter(ContextInfo? contextInfo = null)
             : base(new()) => this.contextInfo = contextInfo;
 
         public IEncodingConverter WithSerializationContext(ISerializationContext context) =>
@@ -6806,7 +6814,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
         public override bool TryToPayload(object? value, out Payload? payload)
         {
-            if (value is ContextValue contextValue)
+            // Do not add an event if we're not context specific
+            if (contextInfo != null && value is ContextValue contextValue)
             {
                 contextValue.Events.Add(new(true, contextInfo));
             }
@@ -6816,7 +6825,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public override object? ToValue(Payload payload, Type type)
         {
             var value = base.ToValue(payload, type);
-            if (value is ContextValue contextValue)
+            // Do not add an event if we're not context specific
+            if (contextInfo != null && value is ContextValue contextValue)
             {
                 contextValue.Events.Add(new(false, contextInfo));
             }
@@ -6826,14 +6836,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
     public class ContextFailureConverter : DefaultFailureConverter, IWithSerializationContext<IFailureConverter>
     {
-        private readonly ContextInfo contextInfo;
+        private readonly ContextInfo? contextInfo;
 
-        public ContextFailureConverter(ContextInfo contextInfo) => this.contextInfo = contextInfo;
+        public ContextFailureConverter(ContextInfo? contextInfo = null) => this.contextInfo = contextInfo;
 
         public override Failure ToFailure(Exception exception, IPayloadConverter payloadConverter)
         {
             var failure = base.ToFailure(exception, payloadConverter);
-            if (failure.ApplicationFailureInfo != null && !failure.Message.Contains("[activity:"))
+            // Do not adjust the failure if we're not context specific
+            if (contextInfo != null &&
+                failure.ApplicationFailureInfo != null && !failure.Message.Contains("[activity:"))
             {
                 var activity = contextInfo.Activity ? "true" : "false";
                 failure.Message += $" [activity: {activity}, workflow-id: {contextInfo.WorkflowId}]";
@@ -6848,37 +6860,52 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public class ContextPayloadCodec : IPayloadCodec, IWithSerializationContext<IPayloadCodec>
     {
         public const string EncodingName = "context-encoding";
-        private readonly ContextInfo contextInfo;
+        private readonly ContextInfo? contextInfo;
 
-        public ContextPayloadCodec(ContextInfo contextInfo) => this.contextInfo = contextInfo;
+        public ContextPayloadCodec(ContextInfo? contextInfo = null) => this.contextInfo = contextInfo;
 
-        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
-            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
+        public async Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads)
+        {
+            // If there is no context info, do not add extra metadata
+            var metadata = new Dictionary<string, ByteString>
+            {
+                ["encoding"] = ByteString.CopyFromUtf8(EncodingName),
+            };
+            if (contextInfo != null)
+            {
+                metadata["activity"] = ByteString.CopyFromUtf8(contextInfo.Activity ? "true" : "false");
+                metadata["workflow-id"] = ByteString.CopyFromUtf8(contextInfo.WorkflowId);
+            }
+            return payloads.Select(p =>
                 new Payload()
                 {
                     Data = ByteString.CopyFrom(
                         Convert.ToBase64String(p.ToByteArray()),
                         Encoding.ASCII),
-                    Metadata =
-                    {
-                        new Dictionary<string, ByteString>
-                        {
-                            ["encoding"] = ByteString.CopyFromUtf8(EncodingName),
-                            ["activity"] = ByteString.CopyFromUtf8(contextInfo.Activity ? "true" : "false"),
-                            ["workflow-id"] = ByteString.CopyFromUtf8(contextInfo.WorkflowId),
-                        },
-                    },
-                }).ToList());
+                    Metadata = { metadata },
+                }).ToList();
+        }
 
-        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads) =>
-            Task.FromResult<IReadOnlyCollection<Payload>>(payloads.Select(p =>
+        public async Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
+        {
+            return payloads.Select(p =>
             {
                 Assert.Equal(EncodingName, p.Metadata["encoding"].ToStringUtf8());
-                Assert.Equal(contextInfo.Activity, p.Metadata["activity"].ToStringUtf8() == "true");
-                Assert.Equal(contextInfo.WorkflowId, p.Metadata["workflow-id"].ToStringUtf8());
+                // If there is no context info, this is not context specific
+                if (contextInfo == null)
+                {
+                    Assert.False(p.Metadata.ContainsKey("activity"));
+                    Assert.False(p.Metadata.ContainsKey("workflow-id"));
+                }
+                else
+                {
+                    Assert.Equal(contextInfo.Activity, p.Metadata["activity"].ToStringUtf8() == "true");
+                    Assert.Equal(contextInfo.WorkflowId, p.Metadata["workflow-id"].ToStringUtf8());
+                }
                 return Payload.Parser.ParseFrom(
-                    Convert.FromBase64String(p.Data.ToString(Encoding.ASCII)));
-            }).ToList());
+                        Convert.FromBase64String(p.Data.ToString(Encoding.ASCII)));
+            }).ToList();
+        }
 
         public IPayloadCodec WithSerializationContext(ISerializationContext context) =>
             new ContextPayloadCodec(ContextInfo.Create(context));
@@ -6887,7 +6914,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     public record ContextHistoryExpectation(
         string Name,
         Func<HistoryEvent, Payload?> Predicate,
-        bool Activity = false)
+        bool Activity = false,
+        bool NoContextMetadataExpected = false)
     {
         public async Task AssertInHistoryAsync(WorkflowHistory history)
         {
@@ -6910,8 +6938,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 }
                 Assert.NotNull(payload);
                 Assert.Equal(ContextPayloadCodec.EncodingName, payload.Metadata["encoding"].ToStringUtf8());
-                Assert.Equal(Activity ? "true" : "false", payload.Metadata["activity"].ToStringUtf8());
-                Assert.Equal(history.Id, payload.Metadata["workflow-id"].ToStringUtf8());
+                if (NoContextMetadataExpected)
+                {
+                    Assert.False(payload.Metadata.ContainsKey("activity"));
+                    Assert.False(payload.Metadata.ContainsKey("workflow-id"));
+                }
+                else
+                {
+                    Assert.Equal(Activity ? "true" : "false", payload.Metadata["activity"].ToStringUtf8());
+                    Assert.Equal(history.Id, payload.Metadata["workflow-id"].ToStringUtf8());
+                }
             }
             catch (Exception e)
             {
@@ -7050,6 +7086,33 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             });
             throw new CompleteAsyncException();
         }
+
+        [NexusService]
+        public interface INexusService
+        {
+            [NexusOperation]
+            ContextValue DoSomething(ContextValue value);
+        }
+
+        [NexusServiceHandler(typeof(INexusService))]
+        public class NexusService
+        {
+            [NexusOperationHandler]
+            public IOperationHandler<ContextValue, ContextValue> DoSomething() =>
+                OperationHandler.Sync<ContextValue, ContextValue>(
+                    async (_, _) => new("nexus-result", new()));
+        }
+
+        [WorkflowUpdate]
+        public async Task DoNexusOperationAsync(string endpoint)
+        {
+            // Call Nexus and confirm no events are on the value because Nexus doesn't go through
+            // context converters at this time
+            var res = await Workflow.CreateNexusClient<INexusService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething(new("nexus-input", new())));
+            Assert.Equal("nexus-result", res.Name);
+            Assert.Empty(res.Events);
+        }
     }
 
     [Fact]
@@ -7058,17 +7121,25 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         // It is accepted that this does not test every pemutation of every way a payload converter,
         // failure converter, and codec are used in clients, workflows, and activities.
 
-        // Context-aware data converter
+        // Context-aware data converter and client
         var dataConverter = new DataConverter(
             PayloadConverter: new DefaultPayloadConverter(
                 ((DefaultPayloadConverter)Client.Options.DataConverter.PayloadConverter).EncodingConverters.Select(e =>
-                    e is JsonPlainConverter ? new ContextJsonPlainConverter(new()) : e).ToArray()),
-            FailureConverter: new ContextFailureConverter(new()),
-            PayloadCodec: new ContextPayloadCodec(new()));
+                    e is JsonPlainConverter ? new ContextJsonPlainConverter() : e).ToArray()),
+            FailureConverter: new ContextFailureConverter(),
+            PayloadCodec: new ContextPayloadCodec());
+        var newClientOptions = (TemporalClientOptions)Client.Options.Clone();
+        newClientOptions.DataConverter = dataConverter;
+        var client = new TemporalClient(Client.Connection, newClientOptions);
 
-        var newOptions = (TemporalClientOptions)Client.Options.Clone();
-        newOptions.DataConverter = dataConverter;
-        var client = new TemporalClient(Client.Connection, newOptions);
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new ConverterContextWorkflow.NexusService()).
+            AddAllActivities<ConverterContextWorkflow>(null);
+
+        // Nexus endpoint
+        var nexusEndpointName = $"nexus-endpoint-{workerOptions.TaskQueue}";
+        var nexusEndpoint = await Env.TestEnv.CreateNexusEndpointAsync(
+            nexusEndpointName, workerOptions.TaskQueue!);
 
         await ExecuteWorkerAsync<ConverterContextWorkflow>(
             async worker =>
@@ -7151,6 +7222,17 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     e => e.ActivityTaskCompletedEventAttributes?.Result?.Payloads_?.FirstOrDefault(),
                     Activity: true));
 
+                // Nexus service call
+                await handle.ExecuteUpdateAsync(wf => wf.DoNexusOperationAsync(nexusEndpointName));
+                historyExpects.Add(new(
+                    "nexus-input",
+                    e => e.NexusOperationScheduledEventAttributes?.Input,
+                    NoContextMetadataExpected: true));
+                historyExpects.Add(new(
+                    "nexus-result",
+                    e => e.NexusOperationCompletedEventAttributes?.Result,
+                    NoContextMetadataExpected: true));
+
                 // Complete, check result
                 await handle.SignalAsync(wf => wf.CompleteAsync());
                 res = await handle.GetResultAsync();
@@ -7163,8 +7245,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     await historyExpect.AssertInHistoryAsync(history);
                 }
             },
-            new TemporalWorkerOptions().AddAllActivities<ConverterContextWorkflow>(null),
+            workerOptions,
             client);
+
+        await Env.TestEnv.DeleteNexusEndpointAsync(nexusEndpoint);
     }
 
     [Workflow]

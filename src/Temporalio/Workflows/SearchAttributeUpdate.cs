@@ -90,7 +90,7 @@ namespace Temporalio.Workflows
         internal SearchAttributeUpdate(SearchAttributeKey<T> key, T value)
         {
             Key = key;
-            this.value = value;
+            this.value = key.NormalizeValue(value);
             HasValue = true;
         }
 

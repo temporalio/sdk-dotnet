@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Temporalio.Api.Enums.V1;
 
 namespace Temporalio.Common
@@ -166,6 +167,24 @@ namespace Temporalio.Common
         /// <returns>Whether equal.</returns>
         public bool Equals(SearchAttributeKey? other) =>
             other != null && other.Name == Name && other.ValueType == ValueType;
+
+        /// <summary>
+        /// Normalize value into a canonical representation based on its value type.
+        /// </summary>
+        /// <typeparam name="T">Expected return type.</typeparam>
+        /// <param name="value">Value to normalize.</param>
+        /// <returns>Normalized value.</returns>
+        internal T NormalizeValue<T>(T value)
+            where T : notnull
+        {
+            // For keyword list, it will always be IReadOnlyCollection<string>, but we need to
+            // normalize as a list of strings
+            if (ValueType == IndexedValueType.KeywordList && value is IReadOnlyCollection<string> strColl)
+            {
+                return (T)(object)strColl.ToList();
+            }
+            return value;
+        }
     }
 
     /// <summary>
