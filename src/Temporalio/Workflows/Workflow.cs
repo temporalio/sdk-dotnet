@@ -182,6 +182,10 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets the payload converter for the workflow.
         /// </summary>
+        /// <remarks>
+        /// If the original converter supported serialization contexts, this is the converter with
+        /// the workflow serialization context applied.
+        /// </remarks>
         public static IPayloadConverter PayloadConverter => Context.PayloadConverter;
 
         /// <summary>
