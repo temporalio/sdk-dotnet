@@ -143,7 +143,7 @@ namespace Temporalio.Worker
                 false);
             var initialSearchAttributes = details.Init.SearchAttributes;
             typedSearchAttributes = new(
-                () => initialSearchAttributes == null ? new(new()) :
+                () => initialSearchAttributes == null ? new() :
                     SearchAttributeCollection.FromProto(initialSearchAttributes),
                 false);
             var act = details.InitialActivation;

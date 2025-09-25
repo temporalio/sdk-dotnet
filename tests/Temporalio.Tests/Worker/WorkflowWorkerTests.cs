@@ -1404,8 +1404,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Set(AttrDateTime, new DateTimeOffset(2001, 1, 1, 0, 0, 0, TimeSpan.Zero)).
             Set(AttrDouble, 123.45).
             Set(AttrKeyword, "SomeKeyword").
-            // TODO(cretz): Fix after Temporal dev server upgraded
-            // Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
+            Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
             Set(AttrLong, 678).
             Set(AttrText, "SomeText").
             ToSearchAttributeCollection();
@@ -1424,6 +1423,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public static readonly SearchAttributeCollection AttributesFirstUpdated = new SearchAttributeCollection.Builder().
             Set(AttrBool, false).
             Set(AttrDateTime, new DateTimeOffset(2002, 1, 1, 0, 0, 0, TimeSpan.Zero)).
+            Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
             Set(AttrDouble, 234.56).
             ToSearchAttributeCollection();
 
@@ -1434,21 +1434,27 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             AttrDateTime.ValueUnset(),
             AttrDouble.ValueUnset(),
             AttrKeyword.ValueSet("AnotherKeyword"),
+            AttrKeywordList.ValueSet(new[] { "SomeKeyword3", "SomeKeyword4" }),
             AttrLong.ValueSet(789),
             AttrText.ValueSet("SomeOtherText"),
         };
 
         public static readonly SearchAttributeCollection AttributesSecondUpdated = new SearchAttributeCollection.Builder().
             Set(AttrKeyword, "AnotherKeyword").
+            Set(AttrKeywordList, new[] { "SomeKeyword3", "SomeKeyword4" }).
             Set(AttrLong, 789).
             Set(AttrText, "SomeOtherText").
             ToSearchAttributeCollection();
 
         public static void AssertAttributesEqual(
             SearchAttributeCollection expected, SearchAttributeCollection actual) =>
+            // xUnit compares dictionaries using Equals on key and value properly even if they have
+            // differing subtypes
             Assert.Equal(
-                expected.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")),
-                actual.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")));
+                expected.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")).
+                    ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                actual.UntypedValues.Where(kvp => kvp.Key.Name.StartsWith("DotNet")).
+                    ToDictionary(kvp => kvp.Key, kvp => kvp.Value));
 
         private bool proceed;
 

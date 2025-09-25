@@ -84,8 +84,7 @@ public abstract class WorkflowEnvironmentTestBase : TestBase
                     [AttrDateTime.Name] = AttrDateTime.ValueType,
                     [AttrDouble.Name] = AttrDouble.ValueType,
                     [AttrKeyword.Name] = AttrKeyword.ValueType,
-                    // TODO(cretz): Fix after Temporal dev server upgraded
-                    // [AttrKeywordList.Name] = AttrKeywordList.ValueType,
+                    [AttrKeywordList.Name] = AttrKeywordList.ValueType,
                     [AttrLong.Name] = AttrLong.ValueType,
                     [AttrText.Name] = AttrText.ValueType,
                 },
