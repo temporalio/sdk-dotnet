@@ -74,5 +74,21 @@ namespace Temporalio.Worker.Tuning
         /// </remarks>
         /// <param name="ctx">The context for releasing a slot.</param>
         public abstract void ReleaseSlot(SlotReleaseContext ctx);
+
+        /// <summary>
+        /// Returns the number of available slots at the moment of the call if known, or null if the number is unknown.
+        /// The default implementation always returns null.
+        /// </summary>
+        /// <remarks>
+        /// This method will be called concurrently from multiple threads, so it must be thread-safe.
+        /// </remarks>
+        /// <remarks>
+        /// Any exceptions thrown will be logged and ignored.
+        /// </remarks>
+        /// <returns>Number of available slots at the moment of the call if known, or null if the number is unknown.</returns>
+        public virtual uint? AvailableSlots()
+        {
+            return null;
+        }
     }
 }
