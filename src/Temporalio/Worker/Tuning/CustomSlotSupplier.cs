@@ -13,6 +13,18 @@ namespace Temporalio.Worker.Tuning
     public abstract class CustomSlotSupplier : SlotSupplier
     {
         /// <summary>
+        /// Gets the number of available slots at the moment of the call if known. Null value indicates unknown number
+        /// of available slots. This call should be non-blocking. The default implementation always returns null.
+        /// </summary>
+        /// <remarks>
+        /// This property will be accessed concurrently from multiple threads, so it must be thread-safe.
+        /// </remarks>
+        /// <remarks>
+        /// Any exceptions thrown will be logged and ignored.
+        /// </remarks>
+        public virtual uint? AvailableSlots => null;
+
+        /// <summary>
         /// This function is called before polling for new tasks. Your implementation must block
         /// until a slot is available then return a permit to use that slot.
         /// The only acceptable exception to throw is <see cref="OperationCanceledException"/>, as
@@ -74,21 +86,5 @@ namespace Temporalio.Worker.Tuning
         /// </remarks>
         /// <param name="ctx">The context for releasing a slot.</param>
         public abstract void ReleaseSlot(SlotReleaseContext ctx);
-
-        /// <summary>
-        /// Returns the number of available slots at the moment of the call if known, or null if the number is unknown.
-        /// The default implementation always returns null.
-        /// </summary>
-        /// <remarks>
-        /// This method will be called concurrently from multiple threads, so it must be thread-safe.
-        /// </remarks>
-        /// <remarks>
-        /// Any exceptions thrown will be logged and ignored.
-        /// </remarks>
-        /// <returns>Number of available slots at the moment of the call if known, or null if the number is unknown.</returns>
-        public virtual uint? AvailableSlots()
-        {
-            return null;
-        }
     }
 }

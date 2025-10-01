@@ -38,6 +38,7 @@ namespace Temporalio.Bridge
                 try_reserve = FunctionPointer<Interop.TemporalCoreCustomSlotSupplierTryReserveCallback>(TryReserve),
                 mark_used = FunctionPointer<Interop.TemporalCoreCustomSlotSupplierMarkUsedCallback>(MarkUsed),
                 release = FunctionPointer<Interop.TemporalCoreCustomSlotSupplierReleaseCallback>(Release),
+                available_slots = FunctionPointer<Interop.TemporalCoreCustomSlotSupplierAvailableSlotsCallback>(AvailableSlots),
                 free = FunctionPointer<Interop.TemporalCoreCustomSlotSupplierFreeCallback>(Free),
             };
 
@@ -265,6 +266,26 @@ namespace Temporalio.Bridge
                     permits.Remove(permitId);
                 }
             }
+        }
+
+        private unsafe bool AvailableSlots(UIntPtr* availableSlots, void* userData)
+        {
+            try
+            {
+                if (userSupplier.AvailableSlots is { } slots)
+                {
+                    *availableSlots = new(slots);
+                    return true;
+                }
+            }
+#pragma warning disable CA1031 // We are ok catching all exceptions here
+            catch (Exception e)
+            {
+#pragma warning restore CA1031
+                logger.LogError(e, "Error querying available slots");
+            }
+
+            return false;
         }
 
         // this method must be called under a lock
