@@ -3,8 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Temporalio.Bridge.Interop
 {
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreForwardedLogLevel : uint
+    internal enum TemporalCoreForwardedLogLevel
     {
         Trace = 0,
         Debug,
@@ -13,8 +12,7 @@ namespace Temporalio.Bridge.Interop
         Error,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreMetricAttributeValueType : uint
+    internal enum TemporalCoreMetricAttributeValueType
     {
         String = 1,
         Int,
@@ -22,8 +20,7 @@ namespace Temporalio.Bridge.Interop
         Bool,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreMetricKind : uint
+    internal enum TemporalCoreMetricKind
     {
         CounterInteger = 1,
         HistogramInteger,
@@ -33,22 +30,19 @@ namespace Temporalio.Bridge.Interop
         GaugeFloat,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreOpenTelemetryMetricTemporality : uint
+    internal enum TemporalCoreOpenTelemetryMetricTemporality
     {
         Cumulative = 1,
         Delta,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreOpenTelemetryProtocol : uint
+    internal enum TemporalCoreOpenTelemetryProtocol
     {
         Grpc = 1,
         Http,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreRpcService : uint
+    internal enum TemporalCoreRpcService
     {
         Workflow = 1,
         Operator,
@@ -57,8 +51,7 @@ namespace Temporalio.Bridge.Interop
         Health,
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreSlotKindType : uint
+    internal enum TemporalCoreSlotKindType
     {
         WorkflowSlotKindType,
         ActivitySlotKindType,
@@ -103,6 +96,10 @@ namespace Temporalio.Bridge.Interop
     }
 
     internal partial struct TemporalCoreRuntime
+    {
+    }
+
+    internal partial struct TemporalCoreSlotReserveCompletionCtx
     {
     }
 
@@ -679,8 +676,7 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreByteArrayRef build_id;
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreWorkerVersioningStrategy_Tag : uint
+    internal enum TemporalCoreWorkerVersioningStrategy_Tag
     {
         None,
         DeploymentBased,
@@ -691,15 +687,14 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreWorkerVersioningStrategy_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L431_C3")]
-  
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L540_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreWorkerVersioningNone none
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
+                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
                 {
                     return ref pField->none;
                 }
@@ -710,7 +705,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
+                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
                 {
                     return ref pField->deployment_based;
                 }
@@ -721,7 +716,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
                 {
                     return ref pField->legacy_build_id_based;
                 }
@@ -732,30 +727,30 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L432_C5")]
-            public _Anonymous1_e__Struct Anonymous1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L541_C5")]
+            public _Anonymous1_1_e__Struct Anonymous1_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L435_C5")]
-            public _Anonymous2_e__Struct Anonymous2;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L544_C5")]
+            public _Anonymous2_1_e__Struct Anonymous2_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L438_C5")]
-            public _Anonymous3_e__Struct Anonymous3;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L547_C5")]
+            public _Anonymous3_1_e__Struct Anonymous3_1;
 
-            internal partial struct _Anonymous1_e__Struct
+            internal partial struct _Anonymous1_1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreWorkerVersioningNone")]
                 public TemporalCoreWorkerVersioningNone none;
             }
 
-            internal partial struct _Anonymous2_e__Struct
+            internal partial struct _Anonymous2_1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreWorkerDeploymentOptions")]
                 public TemporalCoreWorkerDeploymentOptions deployment_based;
             }
 
-            internal partial struct _Anonymous3_e__Struct
+            internal partial struct _Anonymous3_1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreLegacyBuildIdBasedStrategy")]
                 public TemporalCoreLegacyBuildIdBasedStrategy legacy_build_id_based;
@@ -791,7 +786,7 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreResourceBasedTunerOptions tuner_options;
     }
 
-    internal unsafe partial struct TemporalCoreSlotReserveCtx
+    internal partial struct TemporalCoreSlotReserveCtx
     {
         [NativeTypeName("enum TemporalCoreSlotKindType")]
         public TemporalCoreSlotKindType slot_type;
@@ -807,22 +802,19 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("bool")]
         public byte is_sticky;
-
-        public void* token_src;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void TemporalCoreCustomReserveSlotCallback([NativeTypeName("const struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx, void* sender);
+    internal unsafe delegate void TemporalCoreCustomSlotSupplierReserveCallback([NativeTypeName("const struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx, [NativeTypeName("const struct TemporalCoreSlotReserveCompletionCtx *")] TemporalCoreSlotReserveCompletionCtx* completion_ctx, void* user_data);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void TemporalCoreCustomCancelReserveCallback(void* token_source);
+    internal unsafe delegate void TemporalCoreCustomSlotSupplierCancelReserveCallback([NativeTypeName("const struct TemporalCoreSlotReserveCompletionCtx *")] TemporalCoreSlotReserveCompletionCtx* completion_ctx, void* user_data);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     [return: NativeTypeName("uintptr_t")]
-    internal unsafe delegate UIntPtr TemporalCoreCustomTryReserveSlotCallback([NativeTypeName("const struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx);
+    internal unsafe delegate UIntPtr TemporalCoreCustomSlotSupplierTryReserveCallback([NativeTypeName("const struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx, void* user_data);
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreSlotInfo_Tag : uint
+    internal enum TemporalCoreSlotInfo_Tag
     {
         WorkflowSlotInfo,
         ActivitySlotInfo,
@@ -864,8 +856,7 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreSlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L506_C3")]
-
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L614_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreWorkflowSlotInfo_Body workflow_slot_info
@@ -939,7 +930,7 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void TemporalCoreCustomMarkSlotUsedCallback([NativeTypeName("const struct TemporalCoreSlotMarkUsedCtx *")] TemporalCoreSlotMarkUsedCtx* ctx);
+    internal unsafe delegate void TemporalCoreCustomSlotSupplierMarkUsedCallback([NativeTypeName("const struct TemporalCoreSlotMarkUsedCtx *")] TemporalCoreSlotMarkUsedCtx* ctx, void* user_data);
 
     internal unsafe partial struct TemporalCoreSlotReleaseCtx
     {
@@ -951,30 +942,38 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void TemporalCoreCustomReleaseSlotCallback([NativeTypeName("const struct TemporalCoreSlotReleaseCtx *")] TemporalCoreSlotReleaseCtx* ctx);
+    internal unsafe delegate void TemporalCoreCustomSlotSupplierReleaseCallback([NativeTypeName("const struct TemporalCoreSlotReleaseCtx *")] TemporalCoreSlotReleaseCtx* ctx, void* user_data);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void TemporalCoreCustomSlotImplFreeCallback([NativeTypeName("const struct TemporalCoreCustomSlotSupplierCallbacks *")] TemporalCoreCustomSlotSupplierCallbacks* userimpl);
+    internal unsafe delegate bool TemporalCoreCustomSlotSupplierAvailableSlotsCallback([NativeTypeName("uintptr_t *")] UIntPtr* available_slots, void* user_data);
 
-    internal partial struct TemporalCoreCustomSlotSupplierCallbacks
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    internal unsafe delegate void TemporalCoreCustomSlotSupplierFreeCallback([NativeTypeName("const struct TemporalCoreCustomSlotSupplierCallbacks *")] TemporalCoreCustomSlotSupplierCallbacks* userimpl);
+
+    internal unsafe partial struct TemporalCoreCustomSlotSupplierCallbacks
     {
-        [NativeTypeName("TemporalCoreCustomReserveSlotCallback")]
+        [NativeTypeName("TemporalCoreCustomSlotSupplierReserveCallback")]
         public IntPtr reserve;
 
-        [NativeTypeName("TemporalCoreCustomCancelReserveCallback")]
+        [NativeTypeName("TemporalCoreCustomSlotSupplierCancelReserveCallback")]
         public IntPtr cancel_reserve;
 
-        [NativeTypeName("TemporalCoreCustomTryReserveSlotCallback")]
+        [NativeTypeName("TemporalCoreCustomSlotSupplierTryReserveCallback")]
         public IntPtr try_reserve;
 
-        [NativeTypeName("TemporalCoreCustomMarkSlotUsedCallback")]
+        [NativeTypeName("TemporalCoreCustomSlotSupplierMarkUsedCallback")]
         public IntPtr mark_used;
 
-        [NativeTypeName("TemporalCoreCustomReleaseSlotCallback")]
+        [NativeTypeName("TemporalCoreCustomSlotSupplierReleaseCallback")]
         public IntPtr release;
 
-        [NativeTypeName("TemporalCoreCustomSlotImplFreeCallback")]
+        [NativeTypeName("TemporalCoreCustomSlotSupplierAvailableSlotsCallback")]
+        public IntPtr available_slots;
+
+        [NativeTypeName("TemporalCoreCustomSlotSupplierFreeCallback")]
         public IntPtr free;
+
+        public void* user_data;
     }
 
     internal unsafe partial struct TemporalCoreCustomSlotSupplierCallbacksImpl
@@ -983,8 +982,7 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreCustomSlotSupplierCallbacks* _0;
     }
 
-    [NativeTypeName("unsigned int")]
-    internal enum TemporalCoreSlotSupplier_Tag : uint
+    internal enum TemporalCoreSlotSupplier_Tag
     {
         FixedSize,
         ResourceBased,
@@ -995,15 +993,14 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreSlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L557_C3")]
-
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L720_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreFixedSizeSlotSupplier fixed_size
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous1_e__Struct* pField = &Anonymous.Anonymous1)
+                fixed (_Anonymous_e__Union._Anonymous1_1_e__Struct* pField = &Anonymous.Anonymous1_1)
                 {
                     return ref pField->fixed_size;
                 }
@@ -1014,7 +1011,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous2_e__Struct* pField = &Anonymous.Anonymous2)
+                fixed (_Anonymous_e__Union._Anonymous2_1_e__Struct* pField = &Anonymous.Anonymous2_1)
                 {
                     return ref pField->resource_based;
                 }
@@ -1025,7 +1022,7 @@ namespace Temporalio.Bridge.Interop
         {
             get
             {
-                fixed (_Anonymous_e__Union._Anonymous3_e__Struct* pField = &Anonymous.Anonymous3)
+                fixed (_Anonymous_e__Union._Anonymous3_1_e__Struct* pField = &Anonymous.Anonymous3_1)
                 {
                     return ref pField->custom;
                 }
@@ -1036,30 +1033,30 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L558_C5")]
-            public _Anonymous1_e__Struct Anonymous1;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L721_C5")]
+            public _Anonymous1_1_e__Struct Anonymous1_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L561_C5")]
-            public _Anonymous2_e__Struct Anonymous2;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L724_C5")]
+            public _Anonymous2_1_e__Struct Anonymous2_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L564_C5")]
-            public _Anonymous3_e__Struct Anonymous3;
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L727_C5")]
+            public _Anonymous3_1_e__Struct Anonymous3_1;
 
-            internal partial struct _Anonymous1_e__Struct
+            internal partial struct _Anonymous1_1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreFixedSizeSlotSupplier")]
                 public TemporalCoreFixedSizeSlotSupplier fixed_size;
             }
 
-            internal partial struct _Anonymous2_e__Struct
+            internal partial struct _Anonymous2_1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreResourceBasedSlotSupplier")]
                 public TemporalCoreResourceBasedSlotSupplier resource_based;
             }
 
-            internal partial struct _Anonymous3_e__Struct
+            internal partial struct _Anonymous3_1_e__Struct
             {
                 [NativeTypeName("struct TemporalCoreCustomSlotSupplierCallbacksImpl")]
                 public TemporalCoreCustomSlotSupplierCallbacksImpl custom;
@@ -1398,9 +1395,11 @@ namespace Temporalio.Bridge.Interop
         public static extern TemporalCoreWorkerReplayPushResult temporal_core_worker_replay_push([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreWorkerReplayPusher *")] TemporalCoreWorkerReplayPusher* worker_replay_pusher, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef workflow_id, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef history);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_complete_async_reserve(void* sender, [NativeTypeName("uintptr_t")] UIntPtr permit_id);
+        [return: NativeTypeName("bool")]
+        public static extern byte temporal_core_complete_async_reserve([NativeTypeName("const struct TemporalCoreSlotReserveCompletionCtx *")] TemporalCoreSlotReserveCompletionCtx* completion_ctx, [NativeTypeName("uintptr_t")] UIntPtr permit_id);
 
         [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_set_reserve_cancel_target([NativeTypeName("struct TemporalCoreSlotReserveCtx *")] TemporalCoreSlotReserveCtx* ctx, void* token_ptr);
+        [return: NativeTypeName("bool")]
+        public static extern byte temporal_core_complete_async_cancel_reserve([NativeTypeName("const struct TemporalCoreSlotReserveCompletionCtx *")] TemporalCoreSlotReserveCompletionCtx* completion_ctx);
     }
 }
