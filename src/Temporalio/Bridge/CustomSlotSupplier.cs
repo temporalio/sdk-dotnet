@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Temporalio.Worker.Tuning;
 
 namespace Temporalio.Bridge
 {
@@ -15,7 +16,7 @@ namespace Temporalio.Bridge
         private readonly ILogger logger;
         private readonly Temporalio.Worker.Tuning.CustomSlotSupplier userSupplier;
         private readonly ConcurrentDictionary<IntPtr, CancellationTokenSource> reservationCancelSources = new();
-        private readonly ConcurrentDictionary<IntPtr, Temporalio.Worker.Tuning.SlotPermit> permits = new();
+        private readonly ConcurrentDictionary<IntPtr, SlotPermit> permits = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomSlotSupplier" /> class.
@@ -44,32 +45,32 @@ namespace Temporalio.Bridge
             PinCallbackHolder(interopCallbacks);
         }
 
-        private static Temporalio.Worker.Tuning.SlotInfo SlotInfoFromBridge(Interop.TemporalCoreSlotInfo slotInfo)
+        private static SlotInfo SlotInfoFromBridge(Interop.TemporalCoreSlotInfo slotInfo)
         {
             return slotInfo.tag switch
             {
                 Interop.TemporalCoreSlotInfo_Tag.WorkflowSlotInfo =>
-                    new Temporalio.Worker.Tuning.SlotInfo.WorkflowSlotInfo(
+                    new SlotInfo.WorkflowSlotInfo(
                         ByteArrayRef.ToUtf8(slotInfo.workflow_slot_info.workflow_type), slotInfo.workflow_slot_info.is_sticky != 0),
                 Interop.TemporalCoreSlotInfo_Tag.ActivitySlotInfo =>
-                    new Temporalio.Worker.Tuning.SlotInfo.ActivitySlotInfo(
+                    new SlotInfo.ActivitySlotInfo(
                         ByteArrayRef.ToUtf8(slotInfo.activity_slot_info.activity_type)),
                 Interop.TemporalCoreSlotInfo_Tag.LocalActivitySlotInfo =>
-                    new Temporalio.Worker.Tuning.SlotInfo.LocalActivitySlotInfo(
+                    new SlotInfo.LocalActivitySlotInfo(
                         ByteArrayRef.ToUtf8(slotInfo.local_activity_slot_info.activity_type)),
-                _ => throw new System.ArgumentOutOfRangeException(nameof(slotInfo)),
+                _ => throw new ArgumentOutOfRangeException(nameof(slotInfo)),
             };
         }
 
-        private static unsafe Temporalio.Worker.Tuning.SlotReserveContext ReserveCtxFromBridge(Interop.TemporalCoreSlotReserveCtx* ctx)
+        private static unsafe SlotReserveContext ReserveCtxFromBridge(Interop.TemporalCoreSlotReserveCtx* ctx)
         {
             return new(
                 SlotType: (*ctx).slot_type switch
                 {
-                    Interop.TemporalCoreSlotKindType.WorkflowSlotKindType => Temporalio.Worker.Tuning.SlotType.Workflow,
-                    Interop.TemporalCoreSlotKindType.ActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.Activity,
-                    Interop.TemporalCoreSlotKindType.LocalActivitySlotKindType => Temporalio.Worker.Tuning.SlotType.LocalActivity,
-                    _ => throw new System.ArgumentOutOfRangeException(nameof(ctx)),
+                    Interop.TemporalCoreSlotKindType.WorkflowSlotKindType => SlotType.Workflow,
+                    Interop.TemporalCoreSlotKindType.ActivitySlotKindType => SlotType.Activity,
+                    Interop.TemporalCoreSlotKindType.LocalActivitySlotKindType => SlotType.LocalActivity,
+                    _ => throw new ArgumentOutOfRangeException(nameof(ctx)),
                 },
                 TaskQueue: ByteArrayRef.ToUtf8((*ctx).task_queue),
                 WorkerIdentity: ByteArrayRef.ToUtf8((*ctx).worker_identity),
@@ -90,7 +91,7 @@ namespace Temporalio.Bridge
             }
         }
 
-        private void SafeReserve(Temporalio.Worker.Tuning.SlotReserveContext ctx, IntPtr completionCtx)
+        private void SafeReserve(SlotReserveContext ctx, IntPtr completionCtx)
         {
             var cancelTokenSrc = new CancellationTokenSource();
             if (!reservationCancelSources.TryAdd(completionCtx, cancelTokenSrc))
@@ -104,61 +105,62 @@ namespace Temporalio.Bridge
             {
                 try
                 {
+                    SlotPermit permit;
                     while (true)
                     {
                         try
                         {
                             cancelTokenSrc.Token.ThrowIfCancellationRequested();
-                            var permit = await userSupplier.ReserveSlotAsync(ctx, cancelTokenSrc.Token)
+                            permit = await userSupplier.ReserveSlotAsync(ctx, cancelTokenSrc.Token)
                                 .ConfigureAwait(false);
-                            var permitId = StorePermit(permit);
-
-                            byte result;
-                            unsafe
-                            {
-                                result = Interop.Methods.temporal_core_complete_async_reserve(
-                                    (Interop.TemporalCoreSlotReserveCompletionCtx*)completionCtx.ToPointer(),
-                                    new(permitId.ToPointer()));
-                            }
-
-                            if (result == 0)
-                            {
-                                // We need to undo the reservation
-                                CompleteCancelReserve(completionCtx);
-                                Release(null, permitId);
-                            }
-
                             break;
                         }
                         catch (OperationCanceledException) when (cancelTokenSrc.Token.IsCancellationRequested)
                         {
                             CompleteCancelReserve(completionCtx);
-                            break;
+                            return;
                         }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
                         catch (Exception e)
                         {
 #pragma warning restore CA1031
                             logger.LogError(e, "Error reserving slot");
+                            // Wait for a bit to avoid spamming errors
+                            try
+                            {
+                                await Task.Delay(1000, cancelTokenSrc.Token).ConfigureAwait(false);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                CompleteCancelReserve(completionCtx);
+                                return;
+                            }
                         }
+                    }
 
-                        // Wait for a bit to avoid spamming errors
-                        try
-                        {
-                            await Task.Delay(1000, cancelTokenSrc.Token).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            CompleteCancelReserve(completionCtx);
-                            break;
-                        }
+                    // There should be no exceptions possible from here onward
+                    var permitId = StorePermit(permit);
+
+                    byte result;
+                    unsafe
+                    {
+                        result = Interop.Methods.temporal_core_complete_async_reserve(
+                            (Interop.TemporalCoreSlotReserveCompletionCtx*)completionCtx.ToPointer(),
+                            new(permitId.ToPointer()));
+                    }
+
+                    if (result == 0)
+                    {
+                        CompleteCancelReserve(completionCtx);
+                        // We need to undo the reservation
+                        Release(null, permitId);
                     }
                 }
 #pragma warning disable CA1031 // The task is detached, logging here is the only way to observe exceptions.
                 catch (Exception e)
                 {
 #pragma warning restore CA1031
-                    logger.LogError(e, "Exception escaped reserve slot retry loop");
+                    logger.LogError(e, "Exception happened outside of retry loop when reserving slot");
                 }
                 finally
                 {
@@ -216,7 +218,7 @@ namespace Temporalio.Bridge
             Release(slotInfo, permitId);
         }
 
-        private void Release(Temporalio.Worker.Tuning.SlotInfo? slotInfo, IntPtr permitId)
+        private void Release(SlotInfo? slotInfo, IntPtr permitId)
         {
             try
             {
@@ -226,7 +228,7 @@ namespace Temporalio.Bridge
                     return;
                 }
 
-                GCHandle.FromIntPtr(permitId).Free();
+                Marshal.FreeHGlobal(permitId);
                 userSupplier.ReleaseSlot(new(slotInfo, permit));
             }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
@@ -239,9 +241,9 @@ namespace Temporalio.Bridge
 
         private IntPtr StorePermit(Temporalio.Worker.Tuning.SlotPermit permit)
         {
-            // We use an address of a newly created pinned object as a unique permit ID.
-            // We cannot pin the permit itself because the type of permit may be unpinnable.
-            var permitId = GCHandle.ToIntPtr(GCHandle.Alloc(new byte[1], GCHandleType.Pinned));
+            // We use an address of a fresh allocation as a unique permit ID.
+            // We cannot use the address of the permit itself because the type of permit may be unpinnable.
+            var permitId = Marshal.AllocHGlobal(1);
             permits[permitId] = permit;
             return permitId;
         }
