@@ -215,7 +215,8 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
+                // TODO: change Nexus to custom slot supplier after it's implemented: https://github.com/temporalio/sdk-dotnet/issues/528
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, new FixedSizeSlotSupplier(10)),
             }.AddWorkflow<SimpleWorkflow>().AddActivity(SimpleWorkflow.SomeActivity));
         await worker.ExecuteAsync(async () =>
         {
@@ -268,7 +269,8 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
+                // TODO: change Nexus to custom slot supplier after it's implemented: https://github.com/temporalio/sdk-dotnet/issues/528
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, new FixedSizeSlotSupplier(10)),
             }.AddWorkflow<OneTaskWf>());
         await worker.ExecuteAsync(async () =>
         {
@@ -309,7 +311,8 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
+                // TODO: change Nexus to custom slot supplier after it's implemented: https://github.com/temporalio/sdk-dotnet/issues/528
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, new FixedSizeSlotSupplier(10)),
             }.AddWorkflow<OneTaskWf>());
         await worker.ExecuteAsync(async () =>
         {
