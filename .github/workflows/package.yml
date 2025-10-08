@@ -36,7 +36,7 @@ jobs:
           - os: macos-intel
             out-file: libtemporal_sdk_core_c_bridge.dylib
             out-prefix: osx-x64
-            runsOn: macos-13
+            runsOn: macos-15-intel
           - os: macos-arm
             out-file: libtemporal_sdk_core_c_bridge.dylib
             out-prefix: osx-arm64
