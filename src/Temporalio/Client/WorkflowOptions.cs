@@ -131,7 +131,6 @@ namespace Temporalio.Client
         /// potentially reduces the latency to start the workflow by encouraging the server to
         /// start it on a local worker running this same client.
         /// </summary>
-        /// <remarks>WARNING: Eager workflow start is experimental.</remarks>
         public bool RequestEagerStart { get; set; }
 
         /// <summary>
@@ -148,6 +147,26 @@ namespace Temporalio.Client
         /// Gets or sets the versioning override to use when starting this workflow.
         /// </summary>
         public VersioningOverride? VersioningOverride { get; set; }
+
+        /// <summary>
+        /// Gets or sets the conflict options.
+        /// </summary>
+        internal Api.Workflow.V1.OnConflictOptions? OnConflictOptions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the completion callbacks.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Callback>? CompletionCallbacks { get; set; }
+
+        /// <summary>
+        /// Gets or sets the links.
+        /// </summary>
+        internal IReadOnlyCollection<Api.Common.V1.Link>? Links { get; set; }
+
+        /// <summary>
+        /// Gets or sets the request ID.
+        /// </summary>
+        internal string? RequestId { get; set; }
 
         /// <summary>
         /// Perform a signal-with-start which will only start the workflow if it's not already

@@ -28,102 +28,109 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             "dG8SH3RlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEaLHRlbXBvcmFs",
             "L2FwaS9jbG91ZC9yZXNvdXJjZS92MS9tZXNzYWdlLnByb3RvGh9nb29nbGUv",
             "cHJvdG9idWYvdGltZXN0YW1wLnByb3RvGih0ZW1wb3JhbC9hcGkvY2xvdWQv",
-            "c2luay92MS9tZXNzYWdlLnByb3RvIoEBChVDZXJ0aWZpY2F0ZUZpbHRlclNw",
-            "ZWMSEwoLY29tbW9uX25hbWUYASABKAkSFAoMb3JnYW5pemF0aW9uGAIgASgJ",
-            "EhsKE29yZ2FuaXphdGlvbmFsX3VuaXQYAyABKAkSIAoYc3ViamVjdF9hbHRl",
-            "cm5hdGl2ZV9uYW1lGAQgASgJIrcBCgxNdGxzQXV0aFNwZWMSJQodYWNjZXB0",
-            "ZWRfY2xpZW50X2NhX2RlcHJlY2F0ZWQYASABKAkSGgoSYWNjZXB0ZWRfY2xp",
-            "ZW50X2NhGAQgASgMElMKE2NlcnRpZmljYXRlX2ZpbHRlcnMYAiADKAsyNi50",
-            "ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkNlcnRpZmljYXRlRmls",
-            "dGVyU3BlYxIPCgdlbmFibGVkGAMgASgIIiEKDkFwaUtleUF1dGhTcGVjEg8K",
-            "B2VuYWJsZWQYASABKAgi9AIKD0NvZGVjU2VydmVyU3BlYxIQCghlbmRwb2lu",
-            "dBgBIAEoCRIZChFwYXNzX2FjY2Vzc190b2tlbhgCIAEoCBIoCiBpbmNsdWRl",
-            "X2Nyb3NzX29yaWdpbl9jcmVkZW50aWFscxgDIAEoCBJhChRjdXN0b21fZXJy",
-            "b3JfbWVzc2FnZRgEIAEoCzJDLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3Bh",
-            "Y2UudjEuQ29kZWNTZXJ2ZXJTcGVjLkN1c3RvbUVycm9yTWVzc2FnZRqmAQoS",
-            "Q3VzdG9tRXJyb3JNZXNzYWdlEmEKB2RlZmF1bHQYASABKAsyUC50ZW1wb3Jh",
-            "bC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkNvZGVjU2VydmVyU3BlYy5DdXN0",
-            "b21FcnJvck1lc3NhZ2UuRXJyb3JNZXNzYWdlGi0KDEVycm9yTWVzc2FnZRIP",
-            "CgdtZXNzYWdlGAEgASgJEgwKBGxpbmsYAiABKAkiMQoNTGlmZWN5Y2xlU3Bl",
-            "YxIgChhlbmFibGVfZGVsZXRlX3Byb3RlY3Rpb24YASABKAgiOAoUSGlnaEF2",
-            "YWlsYWJpbGl0eVNwZWMSIAoYZGlzYWJsZV9tYW5hZ2VkX2ZhaWxvdmVyGAEg",
-            "ASgIIuoICg1OYW1lc3BhY2VTcGVjEgwKBG5hbWUYASABKAkSDwoHcmVnaW9u",
-            "cxgCIAMoCRIWCg5yZXRlbnRpb25fZGF5cxgDIAEoBRJACgltdGxzX2F1dGgY",
-            "BCABKAsyLS50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLk10bHNB",
-            "dXRoU3BlYxJFCgxhcGlfa2V5X2F1dGgYByABKAsyLy50ZW1wb3JhbC5hcGku",
-            "Y2xvdWQubmFtZXNwYWNlLnYxLkFwaUtleUF1dGhTcGVjEnAKGGN1c3RvbV9z",
-            "ZWFyY2hfYXR0cmlidXRlcxgFIAMoCzJKLnRlbXBvcmFsLmFwaS5jbG91ZC5u",
-            "YW1lc3BhY2UudjEuTmFtZXNwYWNlU3BlYy5DdXN0b21TZWFyY2hBdHRyaWJ1",
-            "dGVzRW50cnlCAhgBEl8KEXNlYXJjaF9hdHRyaWJ1dGVzGAggAygLMkQudGVt",
-            "cG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5OYW1lc3BhY2VTcGVjLlNl",
-            "YXJjaEF0dHJpYnV0ZXNFbnRyeRJGCgxjb2RlY19zZXJ2ZXIYBiABKAsyMC50",
-            "ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkNvZGVjU2VydmVyU3Bl",
-            "YxJBCglsaWZlY3ljbGUYCSABKAsyLi50ZW1wb3JhbC5hcGkuY2xvdWQubmFt",
-            "ZXNwYWNlLnYxLkxpZmVjeWNsZVNwZWMSUAoRaGlnaF9hdmFpbGFiaWxpdHkY",
-            "CiABKAsyNS50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkhpZ2hB",
-            "dmFpbGFiaWxpdHlTcGVjGj0KG0N1c3RvbVNlYXJjaEF0dHJpYnV0ZXNFbnRy",
-            "eRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGnsKFVNlYXJjaEF0",
-            "dHJpYnV0ZXNFbnRyeRILCgNrZXkYASABKAkSUQoFdmFsdWUYAiABKA4yQi50",
-            "ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLk5hbWVzcGFjZVNwZWMu",
-            "U2VhcmNoQXR0cmlidXRlVHlwZToCOAEirAIKE1NlYXJjaEF0dHJpYnV0ZVR5",
-            "cGUSJQohU0VBUkNIX0FUVFJJQlVURV9UWVBFX1VOU1BFQ0lGSUVEEAASHgoa",
-            "U0VBUkNIX0FUVFJJQlVURV9UWVBFX1RFWFQQARIhCh1TRUFSQ0hfQVRUUklC",
-            "VVRFX1RZUEVfS0VZV09SRBACEh0KGVNFQVJDSF9BVFRSSUJVVEVfVFlQRV9J",
-            "TlQQAxIgChxTRUFSQ0hfQVRUUklCVVRFX1RZUEVfRE9VQkxFEAQSHgoaU0VB",
-            "UkNIX0FUVFJJQlVURV9UWVBFX0JPT0wQBRIiCh5TRUFSQ0hfQVRUUklCVVRF",
-            "X1RZUEVfREFURVRJTUUQBhImCiJTRUFSQ0hfQVRUUklCVVRFX1RZUEVfS0VZ",
-            "V09SRF9MSVNUEAciUQoJRW5kcG9pbnRzEhMKC3dlYl9hZGRyZXNzGAEgASgJ",
-            "EhkKEW10bHNfZ3JwY19hZGRyZXNzGAIgASgJEhQKDGdycGNfYWRkcmVzcxgD",
-            "IAEoCSIqCgZMaW1pdHMSIAoYYWN0aW9uc19wZXJfc2Vjb25kX2xpbWl0GAEg",
-            "ASgFIlgKEkFXU1ByaXZhdGVMaW5rSW5mbxIeChZhbGxvd2VkX3ByaW5jaXBh",
-            "bF9hcm5zGAEgAygJEiIKGnZwY19lbmRwb2ludF9zZXJ2aWNlX25hbWVzGAIg",
-            "AygJInQKE1ByaXZhdGVDb25uZWN0aXZpdHkSDgoGcmVnaW9uGAEgASgJEk0K",
-            "EGF3c19wcml2YXRlX2xpbmsYAiABKAsyMy50ZW1wb3JhbC5hcGkuY2xvdWQu",
-            "bmFtZXNwYWNlLnYxLkFXU1ByaXZhdGVMaW5rSW5mbyL/BQoJTmFtZXNwYWNl",
-            "EhEKCW5hbWVzcGFjZRgBIAEoCRIYChByZXNvdXJjZV92ZXJzaW9uGAIgASgJ",
-            "EjwKBHNwZWMYAyABKAsyLi50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNl",
-            "LnYxLk5hbWVzcGFjZVNwZWMSHAoQc3RhdGVfZGVwcmVjYXRlZBgEIAEoCUIC",
-            "GAESPAoFc3RhdGUYDSABKA4yLS50ZW1wb3JhbC5hcGkuY2xvdWQucmVzb3Vy",
-            "Y2UudjEuUmVzb3VyY2VTdGF0ZRIaChJhc3luY19vcGVyYXRpb25faWQYBSAB",
-            "KAkSPQoJZW5kcG9pbnRzGAYgASgLMioudGVtcG9yYWwuYXBpLmNsb3VkLm5h",
-            "bWVzcGFjZS52MS5FbmRwb2ludHMSFQoNYWN0aXZlX3JlZ2lvbhgHIAEoCRI3",
-            "CgZsaW1pdHMYCCABKAsyJy50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNl",
-            "LnYxLkxpbWl0cxJUChZwcml2YXRlX2Nvbm5lY3Rpdml0aWVzGAkgAygLMjQu",
-            "dGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5Qcml2YXRlQ29ubmVj",
-            "dGl2aXR5EjAKDGNyZWF0ZWRfdGltZRgKIAEoCzIaLmdvb2dsZS5wcm90b2J1",
-            "Zi5UaW1lc3RhbXASNgoSbGFzdF9tb2RpZmllZF90aW1lGAsgASgLMhouZ29v",
-            "Z2xlLnByb3RvYnVmLlRpbWVzdGFtcBJTCg1yZWdpb25fc3RhdHVzGAwgAygL",
-            "MjwudGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5OYW1lc3BhY2Uu",
-            "UmVnaW9uU3RhdHVzRW50cnkaawoRUmVnaW9uU3RhdHVzRW50cnkSCwoDa2V5",
-            "GAEgASgJEkUKBXZhbHVlGAIgASgLMjYudGVtcG9yYWwuYXBpLmNsb3VkLm5h",
-            "bWVzcGFjZS52MS5OYW1lc3BhY2VSZWdpb25TdGF0dXM6AjgBIpsCChVOYW1l",
-            "c3BhY2VSZWdpb25TdGF0dXMSHAoQc3RhdGVfZGVwcmVjYXRlZBgBIAEoCUIC",
-            "GAESSwoFc3RhdGUYAyABKA4yPC50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNw",
-            "YWNlLnYxLk5hbWVzcGFjZVJlZ2lvblN0YXR1cy5TdGF0ZRIaChJhc3luY19v",
-            "cGVyYXRpb25faWQYAiABKAkiewoFU3RhdGUSFQoRU1RBVEVfVU5TUEVDSUZJ",
-            "RUQQABIQCgxTVEFURV9BRERJTkcQARIQCgxTVEFURV9BQ1RJVkUQAhIRCg1T",
-            "VEFURV9QQVNTSVZFEAMSEgoOU1RBVEVfUkVNT1ZJTkcQBBIQCgxTVEFURV9G",
-            "QUlMRUQQBSKRAQoORXhwb3J0U2lua1NwZWMSDAoEbmFtZRgBIAEoCRIPCgdl",
-            "bmFibGVkGAIgASgIEi4KAnMzGAMgASgLMiIudGVtcG9yYWwuYXBpLmNsb3Vk",
-            "LnNpbmsudjEuUzNTcGVjEjAKA2djcxgEIAEoCzIjLnRlbXBvcmFsLmFwaS5j",
-            "bG91ZC5zaW5rLnYxLkdDU1NwZWMi9gMKCkV4cG9ydFNpbmsSDAoEbmFtZRgB",
-            "IAEoCRIYChByZXNvdXJjZV92ZXJzaW9uGAIgASgJEjwKBXN0YXRlGAMgASgO",
-            "Mi0udGVtcG9yYWwuYXBpLmNsb3VkLnJlc291cmNlLnYxLlJlc291cmNlU3Rh",
-            "dGUSPQoEc3BlYxgEIAEoCzIvLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3Bh",
-            "Y2UudjEuRXhwb3J0U2lua1NwZWMSQgoGaGVhbHRoGAUgASgOMjIudGVtcG9y",
-            "YWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5FeHBvcnRTaW5rLkhlYWx0aBIV",
-            "Cg1lcnJvcl9tZXNzYWdlGAYgASgJEjsKF2xhdGVzdF9kYXRhX2V4cG9ydF90",
-            "aW1lGAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI6ChZsYXN0",
-            "X2hlYWx0aF9jaGVja190aW1lGAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRp",
-            "bWVzdGFtcCJvCgZIZWFsdGgSFgoSSEVBTFRIX1VOU1BFQ0lGSUVEEAASDQoJ",
-            "SEVBTFRIX09LEAESGQoVSEVBTFRIX0VSUk9SX0lOVEVSTkFMEAISIwofSEVB",
-            "TFRIX0VSUk9SX1VTRVJfQ09ORklHVVJBVElPThADQrEBCiJpby50ZW1wb3Jh",
-            "bC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxQgxNZXNzYWdlUHJvdG9QAVovZ28u",
-            "dGVtcG9yYWwuaW8vYXBpL2Nsb3VkL25hbWVzcGFjZS92MTtuYW1lc3BhY2Wq",
-            "AiFUZW1wb3JhbGlvLkFwaS5DbG91ZC5OYW1lc3BhY2UuVjHqAiVUZW1wb3Jh",
-            "bGlvOjpBcGk6OkNsb3VkOjpOYW1lc3BhY2U6OlYxYgZwcm90bzM="));
+            "c2luay92MS9tZXNzYWdlLnByb3RvGjR0ZW1wb3JhbC9hcGkvY2xvdWQvY29u",
+            "bmVjdGl2aXR5cnVsZS92MS9tZXNzYWdlLnByb3RvIoEBChVDZXJ0aWZpY2F0",
+            "ZUZpbHRlclNwZWMSEwoLY29tbW9uX25hbWUYASABKAkSFAoMb3JnYW5pemF0",
+            "aW9uGAIgASgJEhsKE29yZ2FuaXphdGlvbmFsX3VuaXQYAyABKAkSIAoYc3Vi",
+            "amVjdF9hbHRlcm5hdGl2ZV9uYW1lGAQgASgJIrcBCgxNdGxzQXV0aFNwZWMS",
+            "JQodYWNjZXB0ZWRfY2xpZW50X2NhX2RlcHJlY2F0ZWQYASABKAkSGgoSYWNj",
+            "ZXB0ZWRfY2xpZW50X2NhGAQgASgMElMKE2NlcnRpZmljYXRlX2ZpbHRlcnMY",
+            "AiADKAsyNi50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkNlcnRp",
+            "ZmljYXRlRmlsdGVyU3BlYxIPCgdlbmFibGVkGAMgASgIIiEKDkFwaUtleUF1",
+            "dGhTcGVjEg8KB2VuYWJsZWQYASABKAgi9AIKD0NvZGVjU2VydmVyU3BlYxIQ",
+            "CghlbmRwb2ludBgBIAEoCRIZChFwYXNzX2FjY2Vzc190b2tlbhgCIAEoCBIo",
+            "CiBpbmNsdWRlX2Nyb3NzX29yaWdpbl9jcmVkZW50aWFscxgDIAEoCBJhChRj",
+            "dXN0b21fZXJyb3JfbWVzc2FnZRgEIAEoCzJDLnRlbXBvcmFsLmFwaS5jbG91",
+            "ZC5uYW1lc3BhY2UudjEuQ29kZWNTZXJ2ZXJTcGVjLkN1c3RvbUVycm9yTWVz",
+            "c2FnZRqmAQoSQ3VzdG9tRXJyb3JNZXNzYWdlEmEKB2RlZmF1bHQYASABKAsy",
+            "UC50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkNvZGVjU2VydmVy",
+            "U3BlYy5DdXN0b21FcnJvck1lc3NhZ2UuRXJyb3JNZXNzYWdlGi0KDEVycm9y",
+            "TWVzc2FnZRIPCgdtZXNzYWdlGAEgASgJEgwKBGxpbmsYAiABKAkiMQoNTGlm",
+            "ZWN5Y2xlU3BlYxIgChhlbmFibGVfZGVsZXRlX3Byb3RlY3Rpb24YASABKAgi",
+            "OAoUSGlnaEF2YWlsYWJpbGl0eVNwZWMSIAoYZGlzYWJsZV9tYW5hZ2VkX2Zh",
+            "aWxvdmVyGAEgASgIIokJCg1OYW1lc3BhY2VTcGVjEgwKBG5hbWUYASABKAkS",
+            "DwoHcmVnaW9ucxgCIAMoCRIWCg5yZXRlbnRpb25fZGF5cxgDIAEoBRJACglt",
+            "dGxzX2F1dGgYBCABKAsyLS50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNl",
+            "LnYxLk10bHNBdXRoU3BlYxJFCgxhcGlfa2V5X2F1dGgYByABKAsyLy50ZW1w",
+            "b3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkFwaUtleUF1dGhTcGVjEnAK",
+            "GGN1c3RvbV9zZWFyY2hfYXR0cmlidXRlcxgFIAMoCzJKLnRlbXBvcmFsLmFw",
+            "aS5jbG91ZC5uYW1lc3BhY2UudjEuTmFtZXNwYWNlU3BlYy5DdXN0b21TZWFy",
+            "Y2hBdHRyaWJ1dGVzRW50cnlCAhgBEl8KEXNlYXJjaF9hdHRyaWJ1dGVzGAgg",
+            "AygLMkQudGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5OYW1lc3Bh",
+            "Y2VTcGVjLlNlYXJjaEF0dHJpYnV0ZXNFbnRyeRJGCgxjb2RlY19zZXJ2ZXIY",
+            "BiABKAsyMC50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkNvZGVj",
+            "U2VydmVyU3BlYxJBCglsaWZlY3ljbGUYCSABKAsyLi50ZW1wb3JhbC5hcGku",
+            "Y2xvdWQubmFtZXNwYWNlLnYxLkxpZmVjeWNsZVNwZWMSUAoRaGlnaF9hdmFp",
+            "bGFiaWxpdHkYCiABKAsyNS50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNl",
+            "LnYxLkhpZ2hBdmFpbGFiaWxpdHlTcGVjEh0KFWNvbm5lY3Rpdml0eV9ydWxl",
+            "X2lkcxgLIAMoCRo9ChtDdXN0b21TZWFyY2hBdHRyaWJ1dGVzRW50cnkSCwoD",
+            "a2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ARp7ChVTZWFyY2hBdHRyaWJ1",
+            "dGVzRW50cnkSCwoDa2V5GAEgASgJElEKBXZhbHVlGAIgASgOMkIudGVtcG9y",
+            "YWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5OYW1lc3BhY2VTcGVjLlNlYXJj",
+            "aEF0dHJpYnV0ZVR5cGU6AjgBIqwCChNTZWFyY2hBdHRyaWJ1dGVUeXBlEiUK",
+            "IVNFQVJDSF9BVFRSSUJVVEVfVFlQRV9VTlNQRUNJRklFRBAAEh4KGlNFQVJD",
+            "SF9BVFRSSUJVVEVfVFlQRV9URVhUEAESIQodU0VBUkNIX0FUVFJJQlVURV9U",
+            "WVBFX0tFWVdPUkQQAhIdChlTRUFSQ0hfQVRUUklCVVRFX1RZUEVfSU5UEAMS",
+            "IAocU0VBUkNIX0FUVFJJQlVURV9UWVBFX0RPVUJMRRAEEh4KGlNFQVJDSF9B",
+            "VFRSSUJVVEVfVFlQRV9CT09MEAUSIgoeU0VBUkNIX0FUVFJJQlVURV9UWVBF",
+            "X0RBVEVUSU1FEAYSJgoiU0VBUkNIX0FUVFJJQlVURV9UWVBFX0tFWVdPUkRf",
+            "TElTVBAHIlEKCUVuZHBvaW50cxITCgt3ZWJfYWRkcmVzcxgBIAEoCRIZChFt",
+            "dGxzX2dycGNfYWRkcmVzcxgCIAEoCRIUCgxncnBjX2FkZHJlc3MYAyABKAki",
+            "KgoGTGltaXRzEiAKGGFjdGlvbnNfcGVyX3NlY29uZF9saW1pdBgBIAEoBSJY",
+            "ChJBV1NQcml2YXRlTGlua0luZm8SHgoWYWxsb3dlZF9wcmluY2lwYWxfYXJu",
+            "cxgBIAMoCRIiChp2cGNfZW5kcG9pbnRfc2VydmljZV9uYW1lcxgCIAMoCSJ0",
+            "ChNQcml2YXRlQ29ubmVjdGl2aXR5Eg4KBnJlZ2lvbhgBIAEoCRJNChBhd3Nf",
+            "cHJpdmF0ZV9saW5rGAIgASgLMjMudGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVz",
+            "cGFjZS52MS5BV1NQcml2YXRlTGlua0luZm8ixgcKCU5hbWVzcGFjZRIRCglu",
+            "YW1lc3BhY2UYASABKAkSGAoQcmVzb3VyY2VfdmVyc2lvbhgCIAEoCRI8CgRz",
+            "cGVjGAMgASgLMi4udGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5O",
+            "YW1lc3BhY2VTcGVjEhwKEHN0YXRlX2RlcHJlY2F0ZWQYBCABKAlCAhgBEjwK",
+            "BXN0YXRlGA0gASgOMi0udGVtcG9yYWwuYXBpLmNsb3VkLnJlc291cmNlLnYx",
+            "LlJlc291cmNlU3RhdGUSGgoSYXN5bmNfb3BlcmF0aW9uX2lkGAUgASgJEj0K",
+            "CWVuZHBvaW50cxgGIAEoCzIqLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3Bh",
+            "Y2UudjEuRW5kcG9pbnRzEhUKDWFjdGl2ZV9yZWdpb24YByABKAkSNwoGbGlt",
+            "aXRzGAggASgLMicudGVtcG9yYWwuYXBpLmNsb3VkLm5hbWVzcGFjZS52MS5M",
+            "aW1pdHMSVAoWcHJpdmF0ZV9jb25uZWN0aXZpdGllcxgJIAMoCzI0LnRlbXBv",
+            "cmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuUHJpdmF0ZUNvbm5lY3Rpdml0",
+            "eRIwCgxjcmVhdGVkX3RpbWUYCiABKAsyGi5nb29nbGUucHJvdG9idWYuVGlt",
+            "ZXN0YW1wEjYKEmxhc3RfbW9kaWZpZWRfdGltZRgLIAEoCzIaLmdvb2dsZS5w",
+            "cm90b2J1Zi5UaW1lc3RhbXASUwoNcmVnaW9uX3N0YXR1cxgMIAMoCzI8LnRl",
+            "bXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjEuTmFtZXNwYWNlLlJlZ2lv",
+            "blN0YXR1c0VudHJ5ElQKEmNvbm5lY3Rpdml0eV9ydWxlcxgOIAMoCzI4LnRl",
+            "bXBvcmFsLmFwaS5jbG91ZC5jb25uZWN0aXZpdHlydWxlLnYxLkNvbm5lY3Rp",
+            "dml0eVJ1bGUSQgoEdGFncxgPIAMoCzI0LnRlbXBvcmFsLmFwaS5jbG91ZC5u",
+            "YW1lc3BhY2UudjEuTmFtZXNwYWNlLlRhZ3NFbnRyeRprChFSZWdpb25TdGF0",
+            "dXNFbnRyeRILCgNrZXkYASABKAkSRQoFdmFsdWUYAiABKAsyNi50ZW1wb3Jh",
+            "bC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLk5hbWVzcGFjZVJlZ2lvblN0YXR1",
+            "czoCOAEaKwoJVGFnc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEo",
+            "CToCOAEimwIKFU5hbWVzcGFjZVJlZ2lvblN0YXR1cxIcChBzdGF0ZV9kZXBy",
+            "ZWNhdGVkGAEgASgJQgIYARJLCgVzdGF0ZRgDIAEoDjI8LnRlbXBvcmFsLmFw",
+            "aS5jbG91ZC5uYW1lc3BhY2UudjEuTmFtZXNwYWNlUmVnaW9uU3RhdHVzLlN0",
+            "YXRlEhoKEmFzeW5jX29wZXJhdGlvbl9pZBgCIAEoCSJ7CgVTdGF0ZRIVChFT",
+            "VEFURV9VTlNQRUNJRklFRBAAEhAKDFNUQVRFX0FERElORxABEhAKDFNUQVRF",
+            "X0FDVElWRRACEhEKDVNUQVRFX1BBU1NJVkUQAxISCg5TVEFURV9SRU1PVklO",
+            "RxAEEhAKDFNUQVRFX0ZBSUxFRBAFIpEBCg5FeHBvcnRTaW5rU3BlYxIMCgRu",
+            "YW1lGAEgASgJEg8KB2VuYWJsZWQYAiABKAgSLgoCczMYAyABKAsyIi50ZW1w",
+            "b3JhbC5hcGkuY2xvdWQuc2luay52MS5TM1NwZWMSMAoDZ2NzGAQgASgLMiMu",
+            "dGVtcG9yYWwuYXBpLmNsb3VkLnNpbmsudjEuR0NTU3BlYyL2AwoKRXhwb3J0",
+            "U2luaxIMCgRuYW1lGAEgASgJEhgKEHJlc291cmNlX3ZlcnNpb24YAiABKAkS",
+            "PAoFc3RhdGUYAyABKA4yLS50ZW1wb3JhbC5hcGkuY2xvdWQucmVzb3VyY2Uu",
+            "djEuUmVzb3VyY2VTdGF0ZRI9CgRzcGVjGAQgASgLMi8udGVtcG9yYWwuYXBp",
+            "LmNsb3VkLm5hbWVzcGFjZS52MS5FeHBvcnRTaW5rU3BlYxJCCgZoZWFsdGgY",
+            "BSABKA4yMi50ZW1wb3JhbC5hcGkuY2xvdWQubmFtZXNwYWNlLnYxLkV4cG9y",
+            "dFNpbmsuSGVhbHRoEhUKDWVycm9yX21lc3NhZ2UYBiABKAkSOwoXbGF0ZXN0",
+            "X2RhdGFfZXhwb3J0X3RpbWUYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGlt",
+            "ZXN0YW1wEjoKFmxhc3RfaGVhbHRoX2NoZWNrX3RpbWUYCCABKAsyGi5nb29n",
+            "bGUucHJvdG9idWYuVGltZXN0YW1wIm8KBkhlYWx0aBIWChJIRUFMVEhfVU5T",
+            "UEVDSUZJRUQQABINCglIRUFMVEhfT0sQARIZChVIRUFMVEhfRVJST1JfSU5U",
+            "RVJOQUwQAhIjCh9IRUFMVEhfRVJST1JfVVNFUl9DT05GSUdVUkFUSU9OEANC",
+            "sQEKImlvLnRlbXBvcmFsLmFwaS5jbG91ZC5uYW1lc3BhY2UudjFCDE1lc3Nh",
+            "Z2VQcm90b1ABWi9nby50ZW1wb3JhbC5pby9hcGkvY2xvdWQvbmFtZXNwYWNl",
+            "L3YxO25hbWVzcGFjZaoCIVRlbXBvcmFsaW8uQXBpLkNsb3VkLk5hbWVzcGFj",
+            "ZS5WMeoCJVRlbXBvcmFsaW86OkFwaTo6Q2xvdWQ6Ok5hbWVzcGFjZTo6VjFi",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor, global::Temporalio.Api.Cloud.ConnectivityRule.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.CertificateFilterSpec), global::Temporalio.Api.Cloud.Namespace.V1.CertificateFilterSpec.Parser, new[]{ "CommonName", "Organization", "OrganizationalUnit", "SubjectAlternativeName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.MtlsAuthSpec), global::Temporalio.Api.Cloud.Namespace.V1.MtlsAuthSpec.Parser, new[]{ "AcceptedClientCaDeprecated", "AcceptedClientCa", "CertificateFilters", "Enabled" }, null, null, null, null),
@@ -131,12 +138,12 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec), global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec.Parser, new[]{ "Endpoint", "PassAccessToken", "IncludeCrossOriginCredentials", "CustomErrorMessage" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec.Types.CustomErrorMessage), global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec.Types.CustomErrorMessage.Parser, new[]{ "Default" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec.Types.CustomErrorMessage.Types.ErrorMessage), global::Temporalio.Api.Cloud.Namespace.V1.CodecServerSpec.Types.CustomErrorMessage.Types.ErrorMessage.Parser, new[]{ "Message", "Link" }, null, null, null, null)})}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.LifecycleSpec), global::Temporalio.Api.Cloud.Namespace.V1.LifecycleSpec.Parser, new[]{ "EnableDeleteProtection" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.HighAvailabilitySpec), global::Temporalio.Api.Cloud.Namespace.V1.HighAvailabilitySpec.Parser, new[]{ "DisableManagedFailover" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec), global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Parser, new[]{ "Name", "Regions", "RetentionDays", "MtlsAuth", "ApiKeyAuth", "CustomSearchAttributes", "SearchAttributes", "CodecServer", "Lifecycle", "HighAvailability" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType) }, null, new pbr::GeneratedClrTypeInfo[] { null, null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec), global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Parser, new[]{ "Name", "Regions", "RetentionDays", "MtlsAuth", "ApiKeyAuth", "CustomSearchAttributes", "SearchAttributes", "CodecServer", "Lifecycle", "HighAvailability", "ConnectivityRuleIds" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceSpec.Types.SearchAttributeType) }, null, new pbr::GeneratedClrTypeInfo[] { null, null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Endpoints), global::Temporalio.Api.Cloud.Namespace.V1.Endpoints.Parser, new[]{ "WebAddress", "MtlsGrpcAddress", "GrpcAddress" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Limits), global::Temporalio.Api.Cloud.Namespace.V1.Limits.Parser, new[]{ "ActionsPerSecondLimit" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.AWSPrivateLinkInfo), global::Temporalio.Api.Cloud.Namespace.V1.AWSPrivateLinkInfo.Parser, new[]{ "AllowedPrincipalArns", "VpcEndpointServiceNames" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.PrivateConnectivity), global::Temporalio.Api.Cloud.Namespace.V1.PrivateConnectivity.Parser, new[]{ "Region", "AwsPrivateLink" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Namespace), global::Temporalio.Api.Cloud.Namespace.V1.Namespace.Parser, new[]{ "Namespace_", "ResourceVersion", "Spec", "StateDeprecated", "State", "AsyncOperationId", "Endpoints", "ActiveRegion", "Limits", "PrivateConnectivities", "CreatedTime", "LastModifiedTime", "RegionStatus" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.Namespace), global::Temporalio.Api.Cloud.Namespace.V1.Namespace.Parser, new[]{ "Namespace_", "ResourceVersion", "Spec", "StateDeprecated", "State", "AsyncOperationId", "Endpoints", "ActiveRegion", "Limits", "PrivateConnectivities", "CreatedTime", "LastModifiedTime", "RegionStatus", "ConnectivityRules", "Tags" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus), global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Parser, new[]{ "StateDeprecated", "State", "AsyncOperationId" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Namespace.V1.NamespaceRegionStatus.Types.State) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec), global::Temporalio.Api.Cloud.Namespace.V1.ExportSinkSpec.Parser, new[]{ "Name", "Enabled", "S3", "Gcs" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Namespace.V1.ExportSink), global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Parser, new[]{ "Name", "ResourceVersion", "State", "Spec", "Health", "ErrorMessage", "LatestDataExportTime", "LastHealthCheckTime" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Namespace.V1.ExportSink.Types.Health) }, null, null)
@@ -2166,6 +2173,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       codecServer_ = other.codecServer_ != null ? other.codecServer_.Clone() : null;
       lifecycle_ = other.lifecycle_ != null ? other.lifecycle_.Clone() : null;
       highAvailability_ = other.highAvailability_ != null ? other.highAvailability_.Clone() : null;
+      connectivityRuleIds_ = other.connectivityRuleIds_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2351,6 +2359,22 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       }
     }
 
+    /// <summary>Field number for the "connectivity_rule_ids" field.</summary>
+    public const int ConnectivityRuleIdsFieldNumber = 11;
+    private static readonly pb::FieldCodec<string> _repeated_connectivityRuleIds_codec
+        = pb::FieldCodec.ForString(90);
+    private readonly pbc::RepeatedField<string> connectivityRuleIds_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// The private connectivity configuration for the namespace.
+    /// This will apply the connectivity rules specified to the namespace.
+    /// temporal:versioning:min_version=v0.6.0
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> ConnectivityRuleIds {
+      get { return connectivityRuleIds_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -2376,6 +2400,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (!object.Equals(CodecServer, other.CodecServer)) return false;
       if (!object.Equals(Lifecycle, other.Lifecycle)) return false;
       if (!object.Equals(HighAvailability, other.HighAvailability)) return false;
+      if(!connectivityRuleIds_.Equals(other.connectivityRuleIds_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2393,6 +2418,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (codecServer_ != null) hash ^= CodecServer.GetHashCode();
       if (lifecycle_ != null) hash ^= Lifecycle.GetHashCode();
       if (highAvailability_ != null) hash ^= HighAvailability.GetHashCode();
+      hash ^= connectivityRuleIds_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2442,6 +2468,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(82);
         output.WriteMessage(HighAvailability);
       }
+      connectivityRuleIds_.WriteTo(output, _repeated_connectivityRuleIds_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2483,6 +2510,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(82);
         output.WriteMessage(HighAvailability);
       }
+      connectivityRuleIds_.WriteTo(ref output, _repeated_connectivityRuleIds_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2517,6 +2545,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (highAvailability_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(HighAvailability);
       }
+      size += connectivityRuleIds_.CalculateSize(_repeated_connectivityRuleIds_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -2568,6 +2597,7 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         }
         HighAvailability.MergeFrom(other.HighAvailability);
       }
+      connectivityRuleIds_.Add(other.connectivityRuleIds_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -2638,6 +2668,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             input.ReadMessage(HighAvailability);
             break;
           }
+          case 90: {
+            connectivityRuleIds_.AddEntriesFrom(input, _repeated_connectivityRuleIds_codec);
+            break;
+          }
         }
       }
     #endif
@@ -2706,6 +2740,10 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
               HighAvailability = new global::Temporalio.Api.Cloud.Namespace.V1.HighAvailabilitySpec();
             }
             input.ReadMessage(HighAvailability);
+            break;
+          }
+          case 90: {
+            connectivityRuleIds_.AddEntriesFrom(ref input, _repeated_connectivityRuleIds_codec);
             break;
           }
         }
@@ -3698,6 +3736,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       createdTime_ = other.createdTime_ != null ? other.createdTime_.Clone() : null;
       lastModifiedTime_ = other.lastModifiedTime_ != null ? other.lastModifiedTime_.Clone() : null;
       regionStatus_ = other.regionStatus_.Clone();
+      connectivityRules_ = other.connectivityRules_.Clone();
+      tags_ = other.tags_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3909,6 +3949,34 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       get { return regionStatus_; }
     }
 
+    /// <summary>Field number for the "connectivity_rules" field.</summary>
+    public const int ConnectivityRulesFieldNumber = 14;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule> _repeated_connectivityRules_codec
+        = pb::FieldCodec.ForMessage(114, global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule> connectivityRules_ = new pbc::RepeatedField<global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule>();
+    /// <summary>
+    /// The connectivity rules that are set on this namespace.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule> ConnectivityRules {
+      get { return connectivityRules_; }
+    }
+
+    /// <summary>Field number for the "tags" field.</summary>
+    public const int TagsFieldNumber = 15;
+    private static readonly pbc::MapField<string, string>.Codec _map_tags_codec
+        = new pbc::MapField<string, string>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForString(18, ""), 122);
+    private readonly pbc::MapField<string, string> tags_ = new pbc::MapField<string, string>();
+    /// <summary>
+    /// The tags for the namespace.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, string> Tags {
+      get { return tags_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -3937,6 +4005,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (!object.Equals(CreatedTime, other.CreatedTime)) return false;
       if (!object.Equals(LastModifiedTime, other.LastModifiedTime)) return false;
       if (!RegionStatus.Equals(other.RegionStatus)) return false;
+      if(!connectivityRules_.Equals(other.connectivityRules_)) return false;
+      if (!Tags.Equals(other.Tags)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3957,6 +4027,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
       if (createdTime_ != null) hash ^= CreatedTime.GetHashCode();
       if (lastModifiedTime_ != null) hash ^= LastModifiedTime.GetHashCode();
       hash ^= RegionStatus.GetHashCode();
+      hash ^= connectivityRules_.GetHashCode();
+      hash ^= Tags.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4021,6 +4093,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(104);
         output.WriteEnum((int) State);
       }
+      connectivityRules_.WriteTo(output, _repeated_connectivityRules_codec);
+      tags_.WriteTo(output, _map_tags_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4077,6 +4151,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         output.WriteRawTag(104);
         output.WriteEnum((int) State);
       }
+      connectivityRules_.WriteTo(ref output, _repeated_connectivityRules_codec);
+      tags_.WriteTo(ref output, _map_tags_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4122,6 +4198,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastModifiedTime);
       }
       size += regionStatus_.CalculateSize(_map_regionStatus_codec);
+      size += connectivityRules_.CalculateSize(_repeated_connectivityRules_codec);
+      size += tags_.CalculateSize(_map_tags_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -4184,6 +4262,8 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
         LastModifiedTime.MergeFrom(other.LastModifiedTime);
       }
       regionStatus_.MergeFrom(other.regionStatus_);
+      connectivityRules_.Add(other.connectivityRules_);
+      tags_.MergeFrom(other.tags_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -4266,6 +4346,14 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
             State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
             break;
           }
+          case 114: {
+            connectivityRules_.AddEntriesFrom(input, _repeated_connectivityRules_codec);
+            break;
+          }
+          case 122: {
+            tags_.AddEntriesFrom(input, _map_tags_codec);
+            break;
+          }
         }
       }
     #endif
@@ -4346,6 +4434,14 @@ namespace Temporalio.Api.Cloud.Namespace.V1 {
           }
           case 104: {
             State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
+            break;
+          }
+          case 114: {
+            connectivityRules_.AddEntriesFrom(ref input, _repeated_connectivityRules_codec);
+            break;
+          }
+          case 122: {
+            tags_.AddEntriesFrom(ref input, _map_tags_codec);
             break;
           }
         }

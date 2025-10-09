@@ -23,6 +23,9 @@ public class WorkflowEnvironment : IAsyncLifetime
     public ITemporalClient Client =>
         env?.Client ?? throw new InvalidOperationException("Environment not created");
 
+    public Temporalio.Testing.WorkflowEnvironment TestEnv =>
+        env ?? throw new InvalidOperationException("Environment not created");
+
     public string KitchenSinkWorkerTaskQueue => kitchenSinkWorker.Value.TaskQueue;
 
     public async Task InitializeAsync()
@@ -80,8 +83,8 @@ public class WorkflowEnvironment : IAsyncLifetime
                         // Enable activity pause
                         "--dynamic-config-value", "frontend.activityAPIsEnabled=true",
                     },
-                    // TODO: Remove after next CLI release
-                    DownloadVersion = "v1.3.1-persistence-fix.0",
+                    // TODO: Remove when fairness works in a release
+                    DownloadVersion = "v1.4.1-cloud-v1-29-0-139-2.0",
                 },
             });
         }

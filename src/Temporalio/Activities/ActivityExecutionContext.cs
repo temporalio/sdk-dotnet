@@ -125,6 +125,10 @@ namespace Temporalio.Activities
         /// <summary>
         /// Gets the payload converter in use by this activity worker.
         /// </summary>
+        /// <remarks>
+        /// If the original converter supported serialization contexts, this is the converter with
+        /// the activity serialization context applied.
+        /// </remarks>
         public IPayloadConverter PayloadConverter { get; private init; }
 
         /// <summary>

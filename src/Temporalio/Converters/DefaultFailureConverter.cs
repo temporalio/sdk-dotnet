@@ -119,6 +119,10 @@ namespace Temporalio.Converters
                     return new ActivityFailureException(failure, inner);
                 case Failure.FailureInfoOneofCase.ChildWorkflowExecutionFailureInfo:
                     return new ChildWorkflowFailureException(failure, inner);
+                case Failure.FailureInfoOneofCase.NexusOperationExecutionFailureInfo:
+                    return new NexusOperationFailureException(failure, inner);
+                case Failure.FailureInfoOneofCase.NexusHandlerFailureInfo:
+                    return new NexusHandlerFailureException(failure, inner);
                 default:
                     return new FailureException(failure, inner);
             }

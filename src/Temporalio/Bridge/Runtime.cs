@@ -123,15 +123,6 @@ namespace Temporalio.Bridge
             return ret;
         }
 
-        /// <summary>
-        /// Free a byte array.
-        /// </summary>
-        /// <param name="byteArray">Byte array to free.</param>
-        internal unsafe void FreeByteArray(Interop.TemporalCoreByteArray* byteArray)
-        {
-            Interop.Methods.temporal_core_byte_array_free(Ptr, byteArray);
-        }
-
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {

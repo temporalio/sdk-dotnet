@@ -15,10 +15,6 @@ jobs:
         include:
           - os: windows-latest
             checkTarget: true
-            # We want to use one version for most things and this latest for
-            # others. This is an ok way to test both without requiring a
-            # separate matrix permutation.
-            dotNetVersionOverride: 8.x
           - os: ubuntu-latest
             docsTarget: true
             cloudTestTarget: true
@@ -69,9 +65,10 @@ jobs:
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
           npx doctoc README.md
+          git add src/Temporalio/Api src/Temporalio/Bridge/Api
           git config --global core.safecrlf false
-          git diff > generator.diff
-          git diff --exit-code
+          git diff --cached > generator.diff
+          git diff --cached --exit-code
 
       - name: Upload generator diff
         uses: actions/upload-artifact@v4

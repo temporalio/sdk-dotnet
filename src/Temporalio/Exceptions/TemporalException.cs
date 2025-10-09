@@ -51,6 +51,7 @@ namespace Temporalio.Exceptions
             e is OperationCanceledException ||
             e is CanceledFailureException ||
             (e as ActivityFailureException)?.InnerException is CanceledFailureException ||
-            (e as ChildWorkflowFailureException)?.InnerException is CanceledFailureException;
+            (e as ChildWorkflowFailureException)?.InnerException is CanceledFailureException ||
+            (e as NexusOperationFailureException)?.InnerException is CanceledFailureException;
     }
 }

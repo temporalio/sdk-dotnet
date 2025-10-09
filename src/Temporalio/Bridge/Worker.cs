@@ -219,6 +219,45 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Poll for the next Nexus task.
+        /// </summary>
+        /// <remarks>Only virtual for testing.</remarks>
+        /// <returns>The task or null if poller is shut down.</returns>
+        public virtual async Task<Api.Nexus.NexusTask?> PollNexusTaskAsync()
+        {
+            using (var scope = new Scope())
+            {
+                var completion = new TaskCompletionSource<ByteArray?>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                unsafe
+                {
+                    Interop.Methods.temporal_core_worker_poll_nexus_task(
+                        Ptr,
+                        null,
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
+                            (userData, success, fail) =>
+                            {
+                                if (fail != null)
+                                {
+                                    completion.TrySetException(new InvalidOperationException(
+                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                }
+                                else if (success == null)
+                                {
+                                    completion.TrySetResult(null);
+                                }
+                                else
+                                {
+                                    completion.TrySetResult(new ByteArray(Runtime, success));
+                                }
+                            }));
+                }
+                return (await completion.Task.ConfigureAwait(false))?.ToProto(
+                    Api.Nexus.NexusTask.Parser);
+            }
+        }
+
+        /// <summary>
         /// Complete a workflow activation.
         /// </summary>
         /// <param name="comp">Activation completion.</param>
@@ -268,6 +307,41 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_complete_activity_task(
+                        Ptr,
+                        scope.ByteArray(comp.ToByteArray()),
+                        null,
+                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
+                            (userData, fail) =>
+                            {
+                                if (fail != null)
+                                {
+                                    completion.TrySetException(new InvalidOperationException(
+                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                }
+                                else
+                                {
+                                    completion.TrySetResult(true);
+                                }
+                            }));
+                }
+                await completion.Task.ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Complete a Nexus task.
+        /// </summary>
+        /// <param name="comp">Task completion.</param>
+        /// <returns>Completion task.</returns>
+        public async Task CompleteNexusTaskAsync(Api.Nexus.NexusTaskCompletion comp)
+        {
+            using (var scope = new Scope())
+            {
+                var completion = new TaskCompletionSource<bool>(
+                    TaskCreationOptions.RunContinuationsAsynchronously);
+                unsafe
+                {
+                    Interop.Methods.temporal_core_worker_complete_nexus_task(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,

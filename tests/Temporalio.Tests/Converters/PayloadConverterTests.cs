@@ -92,6 +92,21 @@ public class PayloadConverterTests : TestBase
         Assert.Throws<NotSupportedException>(() => AssertPayload(action, "json/plain"));
     }
 
+    [Fact]
+    public void ToValue_WrongProtoType_Fails()
+    {
+        var proto = new WorkflowType { Name = "WorkflowName" };
+        var payload = AssertPayload(
+            proto,
+            "json/protobuf",
+            expectedJson: "{\"name\":\"WorkflowName\"}");
+        IPayloadConverter converter = DataConverter.Default.PayloadConverter;
+        Assert.Equal(proto, converter.ToValue(payload, typeof(WorkflowType)));
+        var e = Assert.Throws<ArgumentException>(() => converter.ToValue(payload, typeof(ActivityType)));
+        Assert.Contains(WorkflowType.Descriptor.FullName, e.Message);
+        Assert.Contains(ActivityType.Descriptor.FullName, e.Message);
+    }
+
     private static Payload AssertPayload(
         object? value,
         string expectedEncoding,

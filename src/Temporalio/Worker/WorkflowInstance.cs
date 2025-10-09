@@ -11,9 +11,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Microsoft.Extensions.Logging;
+using NexusRpc;
 using Temporalio.Api.Common.V1;
 using Temporalio.Bridge.Api.ActivityResult;
 using Temporalio.Bridge.Api.ChildWorkflow;
+using Temporalio.Bridge.Api.Nexus;
 using Temporalio.Bridge.Api.WorkflowActivation;
 using Temporalio.Bridge.Api.WorkflowCommands;
 using Temporalio.Bridge.Api.WorkflowCompletion;
@@ -35,7 +37,10 @@ namespace Temporalio.Worker
         private static readonly AsyncLocal<WorkflowUpdateInfo> CurrentUpdateInfoLocal = new();
 
         private readonly TaskFactory taskFactory;
-        private readonly IFailureConverter failureConverter;
+        private readonly IPayloadConverter payloadConverterNoContext;
+        private readonly IPayloadConverter payloadConverterWorkflowContext;
+        private readonly IFailureConverter failureConverterNoContext;
+        private readonly IFailureConverter failureConverterWorkflowContext;
         private readonly Lazy<MetricMeter> metricMeter;
         private readonly Lazy<WorkflowInboundInterceptor> inbound;
         private readonly Lazy<WorkflowOutboundInterceptor> outbound;
@@ -54,6 +59,7 @@ namespace Temporalio.Worker
         private readonly Dictionary<uint, PendingChildInfo> childWorkflowsPending = new();
         private readonly Dictionary<uint, PendingExternalSignal> externalSignalsPending = new();
         private readonly Dictionary<uint, PendingExternalCancel> externalCancelsPending = new();
+        private readonly Dictionary<uint, PendingNexusOperationInfo> nexusOperationsPending = new();
         // Buffered signals have to be a list instead of a dictionary because when a dynamic signal
         // handler is added, we need to traverse in insertion order
         private readonly List<SignalWorkflow> bufferedSignals = new();
@@ -80,6 +86,7 @@ namespace Temporalio.Worker
         private uint timerCounter;
         private uint activityCounter;
         private uint childWorkflowCounter;
+        private uint nexusOperationCounter;
         private uint externalSignalsCounter;
         private uint externalCancelsCounter;
         private WorkflowQueryDefinition? dynamicQuery;
@@ -100,8 +107,10 @@ namespace Temporalio.Worker
             dynamicQuery = Definition.DynamicQuery;
             dynamicSignal = Definition.DynamicSignal;
             dynamicUpdate = Definition.DynamicUpdate;
-            PayloadConverter = details.PayloadConverter;
-            failureConverter = details.FailureConverter;
+            payloadConverterNoContext = details.PayloadConverterNoContext;
+            payloadConverterWorkflowContext = details.PayloadConverterWorkflowContext;
+            failureConverterNoContext = details.FailureConverterNoContext;
+            failureConverterWorkflowContext = details.FailureConverterWorkflowContext;
             var rootInbound = new InboundImpl(this);
             // Lazy so it can have the context when instantiating
             inbound = new(
@@ -134,7 +143,7 @@ namespace Temporalio.Worker
                 false);
             var initialSearchAttributes = details.Init.SearchAttributes;
             typedSearchAttributes = new(
-                () => initialSearchAttributes == null ? new(new()) :
+                () => initialSearchAttributes == null ? new() :
                     SearchAttributeCollection.FromProto(initialSearchAttributes),
                 false);
             var act = details.InitialActivation;
@@ -175,7 +184,8 @@ namespace Temporalio.Worker
                     WorkflowId: start.RootWorkflow.WorkflowId);
             }
             var lastFailure = start.ContinuedFailure == null ?
-                null : failureConverter.ToException(start.ContinuedFailure, PayloadConverter);
+                null : failureConverterWorkflowContext.ToException(
+                    start.ContinuedFailure, payloadConverterWorkflowContext);
             var lastResult = start.LastCompletionResult?.Payloads_.Select(v => new RawValue(v)).ToArray();
             static string? NonEmptyOrNull(string s) => string.IsNullOrEmpty(s) ? null : s;
             Info = new(
@@ -183,6 +193,7 @@ namespace Temporalio.Worker
                 ContinuedRunId: NonEmptyOrNull(start.ContinuedFromExecutionRunId),
                 CronSchedule: NonEmptyOrNull(start.CronSchedule),
                 ExecutionTimeout: start.WorkflowExecutionTimeout?.ToTimeSpan(),
+                FirstExecutionRunId: start.FirstExecutionRunId,
                 Headers: start.Headers,
                 LastFailure: lastFailure,
                 LastResult: lastResult,
@@ -351,7 +362,7 @@ namespace Temporalio.Worker
         public MetricMeter MetricMeter => metricMeter.Value;
 
         /// <inheritdoc />
-        public IPayloadConverter PayloadConverter { get; private init; }
+        public IPayloadConverter PayloadConverter => payloadConverterWorkflowContext;
 
         /// <inheritdoc />
         public IDictionary<string, WorkflowQueryDefinition> Queries => mutableQueries.Value;
@@ -389,6 +400,14 @@ namespace Temporalio.Worker
                 Args: args,
                 Options: options,
                 Headers: null));
+
+        /// <inheritdoc/>
+        public NexusClient CreateNexusClient(string service, NexusClientOptions options) =>
+            new NexusClientImpl(this, service, options);
+
+        /// <inheritdoc/>
+        public NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
+            new NexusClientImpl<TService>(this, options);
 
         /// <inheritdoc/>
         public Task DelayWithOptionsAsync(DelayOptions options) =>
@@ -456,7 +475,7 @@ namespace Temporalio.Worker
                 try
                 {
                     // Unset is null
-                    upsertedMemo.Fields[update.UntypedKey] = PayloadConverter.ToPayload(
+                    upsertedMemo.Fields[update.UntypedKey] = payloadConverterWorkflowContext.ToPayload(
                         update.HasValue ? update.UntypedValue : null);
                 }
                 catch (Exception e)
@@ -664,7 +683,7 @@ namespace Temporalio.Worker
                         // Apply each job
                         foreach (var job in jobs)
                         {
-                            Apply(job);
+                            Apply(job, act);
                             // We only run the scheduler after each job in legacy event loop logic
                             if (!applyModernEventLoopLogic)
                             {
@@ -711,7 +730,8 @@ namespace Temporalio.Worker
                     {
                         completion.Failed = new()
                         {
-                            Failure_ = failureConverter.ToFailure(e, PayloadConverter),
+                            Failure_ = failureConverterWorkflowContext.ToFailure(
+                                e, payloadConverterWorkflowContext),
                         };
                     }
                     catch (Exception inner)
@@ -958,7 +978,7 @@ namespace Temporalio.Worker
                     {
                         WorkflowType = e.Input.Workflow,
                         TaskQueue = e.Input.Options?.TaskQueue ?? string.Empty,
-                        Arguments = { PayloadConverter.ToPayloads(e.Input.Args) },
+                        Arguments = { payloadConverterWorkflowContext.ToPayloads(e.Input.Args) },
                         RetryPolicy = e.Input.Options?.RetryPolicy?.ToProto(),
                     };
                     if (e.Input.Options?.RunTimeout is TimeSpan runTimeout)
@@ -972,7 +992,7 @@ namespace Temporalio.Worker
                     if (e.Input.Options?.Memo is IReadOnlyDictionary<string, object> memo)
                     {
                         cmd.Memo.Add(memo.ToDictionary(
-                            kvp => kvp.Key, kvp => PayloadConverter.ToPayload(kvp.Value)));
+                            kvp => kvp.Key, kvp => payloadConverterWorkflowContext.ToPayload(kvp.Value)));
                     }
                     if (e.Input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
                     {
@@ -1005,7 +1025,8 @@ namespace Temporalio.Worker
                 {
                     // We let this failure conversion throw if it cannot convert the failure
                     logger.LogDebug(e, "Workflow raised failure with run ID {RunId}", Info.RunId);
-                    var failure = failureConverter.ToFailure(e, PayloadConverter);
+                    var failure = failureConverterWorkflowContext.ToFailure(
+                        e, payloadConverterWorkflowContext);
                     AddCommand(new() { FailWorkflowExecution = new() { Failure = failure } });
                 }
             }
@@ -1026,7 +1047,7 @@ namespace Temporalio.Worker
                 definitionOptions.FailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true ||
                 workerLevelFailureExceptionTypes?.Any(t => t.IsAssignableFrom(e.GetType())) == true;
 
-        private void Apply(WorkflowActivationJob job)
+        private void Apply(WorkflowActivationJob job, WorkflowActivation act)
         {
             switch (job.VariantCase)
             {
@@ -1057,6 +1078,12 @@ namespace Temporalio.Worker
                     break;
                 case WorkflowActivationJob.VariantOneofCase.ResolveChildWorkflowExecutionStart:
                     ApplyResolveChildWorkflowExecutionStart(job.ResolveChildWorkflowExecutionStart);
+                    break;
+                case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperation:
+                    ApplyResolveNexusOperation(job.ResolveNexusOperation);
+                    break;
+                case WorkflowActivationJob.VariantOneofCase.ResolveNexusOperationStart:
+                    ApplyResolveNexusOperationStart(job.ResolveNexusOperationStart);
                     break;
                 case WorkflowActivationJob.VariantOneofCase.ResolveRequestCancelExternalWorkflow:
                     ApplyResolveRequestCancelExternalWorkflow(job.ResolveRequestCancelExternalWorkflow);
@@ -1127,7 +1154,8 @@ namespace Temporalio.Worker
                         UpdateResponse = new()
                         {
                             ProtocolInstanceId = update.ProtocolInstanceId,
-                            Rejected = failureConverter.ToFailure(failure, PayloadConverter),
+                            Rejected = failureConverterWorkflowContext.ToFailure(
+                                failure, payloadConverterWorkflowContext),
                         },
                     });
                     return Task.CompletedTask;
@@ -1199,7 +1227,8 @@ namespace Temporalio.Worker
                     UpdateResponse = new()
                     {
                         ProtocolInstanceId = update.ProtocolInstanceId,
-                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                        Rejected = failureConverterWorkflowContext.ToFailure(
+                            e, payloadConverterWorkflowContext),
                     },
                 });
                 return Task.CompletedTask;
@@ -1246,7 +1275,8 @@ namespace Temporalio.Worker
                                     UpdateResponse = new()
                                     {
                                         ProtocolInstanceId = update.ProtocolInstanceId,
-                                        Rejected = failureConverter.ToFailure(exc, PayloadConverter),
+                                        Rejected = failureConverterWorkflowContext.ToFailure(
+                                            exc, payloadConverterWorkflowContext),
                                     },
                                 });
                             }
@@ -1269,7 +1299,7 @@ namespace Temporalio.Worker
                                         UpdateResponse = new()
                                         {
                                             ProtocolInstanceId = update.ProtocolInstanceId,
-                                            Completed = PayloadConverter.ToPayload(result),
+                                            Completed = payloadConverterWorkflowContext.ToPayload(result),
                                         },
                                     });
                                 }
@@ -1283,7 +1313,8 @@ namespace Temporalio.Worker
                                         UpdateResponse = new()
                                         {
                                             ProtocolInstanceId = update.ProtocolInstanceId,
-                                            Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                                            Rejected = failureConverterWorkflowContext.ToFailure(
+                                                e, payloadConverterWorkflowContext),
                                         },
                                     });
                                 }
@@ -1304,7 +1335,8 @@ namespace Temporalio.Worker
                     UpdateResponse = new()
                     {
                         ProtocolInstanceId = update.ProtocolInstanceId,
-                        Rejected = failureConverter.ToFailure(e, PayloadConverter),
+                        Rejected = failureConverterWorkflowContext.ToFailure(
+                            e, payloadConverterWorkflowContext),
                     },
                 });
                 return Task.CompletedTask;
@@ -1388,7 +1420,7 @@ namespace Temporalio.Worker
                         RespondToQuery = new()
                         {
                             QueryId = query.QueryId,
-                            Succeeded = new() { Response = PayloadConverter.ToPayload(resultObj) },
+                            Succeeded = new() { Response = payloadConverterWorkflowContext.ToPayload(resultObj) },
                         },
                     });
                 }
@@ -1399,7 +1431,8 @@ namespace Temporalio.Worker
                         RespondToQuery = new()
                         {
                             QueryId = query.QueryId,
-                            Failed = failureConverter.ToFailure(e, PayloadConverter),
+                            Failed = failureConverterWorkflowContext.ToFailure(
+                                e, payloadConverterWorkflowContext),
                         },
                     });
                     return Task.CompletedTask;
@@ -1443,6 +1476,26 @@ namespace Temporalio.Worker
             {
                 throw new InvalidOperationException(
                     $"Failed finding child for sequence {resolve.Seq}");
+            }
+            pending.StartCompletionSource.TrySetResult(resolve);
+        }
+
+        private void ApplyResolveNexusOperation(ResolveNexusOperation resolve)
+        {
+            if (!nexusOperationsPending.TryGetValue(resolve.Seq, out var pending))
+            {
+                throw new InvalidOperationException(
+                    $"Failed finding Nexus operation for sequence {resolve.Seq}");
+            }
+            pending.ResultCompletionSource.TrySetResult(resolve.Result);
+        }
+
+        private void ApplyResolveNexusOperationStart(ResolveNexusOperationStart resolve)
+        {
+            if (!nexusOperationsPending.TryGetValue(resolve.Seq, out var pending))
+            {
+                throw new InvalidOperationException(
+                    $"Failed finding Nexus operation for sequence {resolve.Seq}");
             }
             pending.StartCompletionSource.TrySetResult(resolve);
         }
@@ -1547,7 +1600,7 @@ namespace Temporalio.Worker
                 // We no longer need start args after this point, so we are unsetting them
                 startArgs = null;
                 var resultObj = await inbound.Value.ExecuteWorkflowAsync(input).ConfigureAwait(true);
-                var result = PayloadConverter.ToPayload(resultObj);
+                var result = payloadConverterWorkflowContext.ToPayload(resultObj);
                 AddCommand(new() { CompleteWorkflowExecution = new() { Result = result } });
             }));
         }
@@ -1635,7 +1688,7 @@ namespace Temporalio.Worker
             {
                 paramVals.AddRange(
                     payloads.Zip(paramInfos, (payload, paramInfo) =>
-                        PayloadConverter.ToValue(payload, paramInfo.ParameterType)));
+                        payloadConverterWorkflowContext.ToValue(payload, paramInfo.ParameterType)));
             }
             catch (Exception e)
             {
@@ -1953,12 +2006,12 @@ namespace Temporalio.Worker
                     if (res.Failure != null)
                     {
                         // Payload and failure converter with context
-                        var payloadConverter = instance.PayloadConverter;
+                        var payloadConverter = instance.payloadConverterNoContext;
                         if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                         {
                             payloadConverter = withContext.WithSerializationContext(pending.SerializationContext);
                         }
-                        var failureConverter = instance.failureConverter;
+                        var failureConverter = instance.failureConverterNoContext;
                         if (failureConverter is IWithSerializationContext<IFailureConverter> withContext2)
                         {
                             failureConverter = withContext2.WithSerializationContext(pending.SerializationContext);
@@ -2011,7 +2064,7 @@ namespace Temporalio.Worker
                         UserMetadata = new()
                         {
                             Summary = input.Summary == null ?
-                                null : instance.PayloadConverter.ToPayload(input.Summary),
+                                null : instance.payloadConverterWorkflowContext.ToPayload(input.Summary),
                         },
                     });
                 }
@@ -2049,7 +2102,7 @@ namespace Temporalio.Worker
                     ActivityType: input.Activity,
                     ActivityTaskQueue: input.Options.TaskQueue ?? instance.Info.TaskQueue,
                     IsLocal: false);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2136,7 +2189,7 @@ namespace Temporalio.Worker
                     ActivityType: input.Activity,
                     ActivityTaskQueue: instance.Info.TaskQueue,
                     IsLocal: true);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2182,7 +2235,15 @@ namespace Temporalio.Worker
                             cmd.Attempt = doBackoff.Attempt;
                             cmd.OriginalScheduleTime = doBackoff.OriginalScheduleTime;
                         }
-                        instance.AddCommand(new() { ScheduleLocalActivity = cmd });
+                        var workflowCommand = new WorkflowCommand { ScheduleLocalActivity = cmd };
+                        if (input.Options.Summary is { } summary)
+                        {
+                            workflowCommand.UserMetadata = new()
+                            {
+                                Summary = payloadConverter.ToPayload(summary),
+                            };
+                        }
+                        instance.AddCommand(workflowCommand);
                         return seq;
                     },
                     input.Options.CancellationToken ?? instance.CancellationToken);
@@ -2195,7 +2256,7 @@ namespace Temporalio.Worker
                 var serializationContext = new ISerializationContext.Workflow(
                     Namespace: instance.Info.Namespace,
                     WorkflowId: input.Id);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2225,7 +2286,7 @@ namespace Temporalio.Worker
                 var serializationContext = new ISerializationContext.Workflow(
                     Namespace: instance.Info.Namespace,
                     WorkflowId: input.Id);
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2273,7 +2334,7 @@ namespace Temporalio.Worker
                 var serializationContext = new ISerializationContext.Workflow(
                     Namespace: instance.Info.Namespace,
                     WorkflowId: input.Options.Id ?? Workflow.NewGuid().ToString());
-                var payloadConverter = instance.PayloadConverter;
+                var payloadConverter = instance.payloadConverterNoContext;
                 if (payloadConverter is IWithSerializationContext<IPayloadConverter> withContext)
                 {
                     payloadConverter = withContext.WithSerializationContext(serializationContext);
@@ -2395,7 +2456,7 @@ namespace Temporalio.Worker
                                     }
                                 case ResolveChildWorkflowExecutionStart.StatusOneofCase.Cancelled:
                                     // Failure converter with context
-                                    var failureConverter = instance.failureConverter;
+                                    var failureConverter = instance.failureConverterNoContext;
                                     if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                                     {
                                         failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2421,7 +2482,7 @@ namespace Temporalio.Worker
                                     break;
                                 case ChildWorkflowResult.StatusOneofCase.Failed:
                                     // Failure converter with context
-                                    var failureConverter = instance.failureConverter;
+                                    var failureConverter = instance.failureConverterNoContext;
                                     if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                                     {
                                         failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2431,7 +2492,7 @@ namespace Temporalio.Worker
                                     break;
                                 case ChildWorkflowResult.StatusOneofCase.Cancelled:
                                     // Failure converter with context
-                                    var failureConverter2 = instance.failureConverter;
+                                    var failureConverter2 = instance.failureConverterNoContext;
                                     if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
                                     {
                                         failureConverter2 = withContext2.WithSerializationContext(serializationContext);
@@ -2447,6 +2508,113 @@ namespace Temporalio.Worker
                     finally
                     {
                         instance.childWorkflowsPending.Remove(seq);
+                    }
+                });
+                return handleSource.Task;
+            }
+
+            /// <inheritdoc/>
+            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+                StartNexusOperationInput input)
+            {
+                var token = input.Options.CancellationToken ?? instance.CancellationToken;
+                // We do not even want to schedule if the cancellation token is already cancelled.
+                // We choose to use cancelled failure instead of wrapping in Nexus failure which is
+                // similar to what Java and TypeScript do, with the accepted tradeoff that it makes
+                // catch clauses more difficult (hence the presence of
+                // TemporalException.IsCanceledException helper).
+                if (token.IsCancellationRequested)
+                {
+                    return Task.FromException<NexusOperationHandle<TResult>>(
+                        new CanceledFailureException("Nexus operation cancelled before scheduled"));
+                }
+
+                // TODO(cretz): Support Nexus serialization context
+                var payloadConverter = instance.payloadConverterNoContext;
+
+                var seq = ++instance.nexusOperationCounter;
+                var cmd = new ScheduleNexusOperation()
+                {
+                    Seq = seq,
+                    Endpoint = input.ClientOptions.Endpoint,
+                    Service = input.Service,
+                    Operation = input.OperationName,
+                    Input = input.Arg == null ? null : payloadConverter.ToPayload(input.Arg),
+                };
+                if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToCloseTimeout)
+                {
+                    cmd.ScheduleToCloseTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(schedToCloseTimeout);
+                }
+                if (input.Headers is IDictionary<string, string> headers)
+                {
+                    cmd.NexusHeader.Add(headers);
+                }
+                var workflowCommand = new WorkflowCommand() { ScheduleNexusOperation = cmd };
+                if (input.Options.Summary is { } summary)
+                {
+                    workflowCommand.UserMetadata = new() { Summary = payloadConverter.ToPayload(summary) };
+                }
+                instance.AddCommand(workflowCommand);
+
+                var handleSource = new TaskCompletionSource<NexusOperationHandle<TResult>>();
+                var pending = new PendingNexusOperationInfo(
+                    StartCompletionSource: new(),
+                    ResultCompletionSource: new());
+                instance.nexusOperationsPending[seq] = pending;
+
+                // Wait for start and result inside of task
+                _ = instance.QueueNewTaskAsync(async () =>
+                {
+                    using (token.Register(() =>
+                    {
+                        // Send cancel if pending
+                        if (instance.nexusOperationsPending.ContainsKey(seq))
+                        {
+                            instance.AddCommand(new()
+                            {
+                                RequestCancelNexusOperation = new() { Seq = seq },
+                            });
+                        }
+                    }))
+                    {
+                        try
+                        {
+                            // Wait for start
+                            var startRes = await pending.StartCompletionSource.Task.ConfigureAwait(true);
+
+                            // If there is a start sync fail, we have to fail the handle task and
+                            // there's nothing more we can do here
+                            var handle = new NexusOperationHandleImpl<TResult>(
+                                payloadConverter,
+                                // TODO(cretz): Support Nexus serialization context, ideally not
+                                // creating failure converter with context until actually needed
+                                instance.failureConverterNoContext,
+                                startRes.HasOperationToken ? startRes.OperationToken : null);
+                            if (startRes.Failed is { } syncStartFail)
+                            {
+                                // TODO(cretz): Support Nexus serialization context
+                                handleSource.SetException(
+                                    instance.failureConverterNoContext.ToException(
+                                        syncStartFail, payloadConverter));
+                                return;
+                            }
+
+                            // Set start result
+                            handleSource.SetResult(handle);
+
+                            // Wait for completion and set on handle
+                            var completeRes = await pending.ResultCompletionSource.Task.ConfigureAwait(true);
+                            handle.CompletionSource.SetResult(completeRes);
+                        }
+                        catch (Exception e)
+                        {
+                            instance.Logger.LogWarning(e, "Unexpected issue setting Nexus result");
+                            instance.SetCurrentActivationException(e);
+                        }
+                        finally
+                        {
+                            instance.nexusOperationsPending.Remove(seq);
+                        }
                     }
                 });
                 return handleSource.Task;
@@ -2494,7 +2662,7 @@ namespace Temporalio.Worker
                         if (res.Failure != null)
                         {
                             // Failure converter with context
-                            var failureConverter = instance.failureConverter;
+                            var failureConverter = instance.failureConverterNoContext;
                             if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                             {
                                 failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2573,7 +2741,7 @@ namespace Temporalio.Worker
                                 return payloadConverter.ToValue<TResult>(res.Completed.Result);
                             case ActivityResolution.StatusOneofCase.Failed:
                                 // Failure converter with context
-                                var failureConverter = instance.failureConverter;
+                                var failureConverter = instance.failureConverterNoContext;
                                 if (failureConverter is IWithSerializationContext<IFailureConverter> withContext)
                                 {
                                     failureConverter = withContext.WithSerializationContext(serializationContext);
@@ -2581,7 +2749,7 @@ namespace Temporalio.Worker
                                 throw failureConverter.ToException(res.Failed.Failure_, payloadConverter);
                             case ActivityResolution.StatusOneofCase.Cancelled:
                                 // Failure converter with context
-                                var failureConverter2 = instance.failureConverter;
+                                var failureConverter2 = instance.failureConverterNoContext;
                                 if (failureConverter2 is IWithSerializationContext<IFailureConverter> withContext2)
                                 {
                                     failureConverter2 = withContext2.WithSerializationContext(serializationContext);
@@ -2722,6 +2890,118 @@ namespace Temporalio.Worker
                 instance.outbound.Value.CancelExternalWorkflowAsync(new(Id: Id, RunId: RunId));
         }
 
+        private class NexusClientImpl : NexusClient
+        {
+            private readonly WorkflowInstance instance;
+
+            public NexusClientImpl(WorkflowInstance instance, string service, NexusClientOptions options)
+            {
+                this.instance = instance;
+                Service = service;
+                Options = options;
+            }
+
+            public override string Service { get; }
+
+            public override NexusClientOptions Options { get; }
+
+            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+                string operationName, object? arg, NexusOperationOptions? options = null) =>
+                instance.outbound.Value.StartNexusOperationAsync<TResult>(new(
+                    Service: Service,
+                    ClientOptions: Options,
+                    OperationName: operationName,
+                    Arg: arg,
+                    Options: options ?? new(),
+                    Headers: null));
+        }
+
+        private class NexusClientImpl<TService> : NexusClient<TService>
+        {
+            private readonly WorkflowInstance instance;
+
+            public NexusClientImpl(WorkflowInstance instance, NexusClientOptions options)
+            {
+                this.instance = instance;
+                ServiceDefinition = ServiceDefinition.FromType<TService>();
+                Options = options;
+            }
+
+            public override ServiceDefinition ServiceDefinition { get; }
+
+            public override NexusClientOptions Options { get; }
+
+            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+                string operationName, object? arg, NexusOperationOptions? options = null) =>
+                instance.outbound.Value.StartNexusOperationAsync<TResult>(new(
+                    Service: Service,
+                    ClientOptions: Options,
+                    OperationName: operationName,
+                    Arg: arg,
+                    Options: options ?? new(),
+                    Headers: null));
+        }
+
+        private class NexusOperationHandleImpl<TResult> : NexusOperationHandle<TResult>
+        {
+            private readonly IPayloadConverter payloadConverter;
+            private readonly IFailureConverter failureConverter;
+
+            public NexusOperationHandleImpl(
+                IPayloadConverter payloadConverter,
+                IFailureConverter failureConverter,
+                string? operationToken)
+            {
+                this.payloadConverter = payloadConverter;
+                this.failureConverter = failureConverter;
+                OperationToken = operationToken;
+            }
+
+            public override string? OperationToken { get; }
+
+            internal TaskCompletionSource<NexusOperationResult> CompletionSource { get; } = new();
+
+            public override async Task<TLocalResult> GetResultAsync<TLocalResult>()
+            {
+                var res = await CompletionSource.Task.ConfigureAwait(true);
+                // If completed, return that
+                if (res.Completed is { } completed)
+                {
+                    // Use default if they are ignoring result or payload not present
+                    if (typeof(TLocalResult) == typeof(ValueTuple))
+                    {
+                        return default!;
+                    }
+                    return payloadConverter.ToValue<TLocalResult>(completed);
+                }
+                // Throw failure
+                throw CreateResultFailure(res);
+            }
+
+            private Exception CreateResultFailure(NexusOperationResult res)
+            {
+                // Return if completed or extract failure if failed
+                Api.Failure.V1.Failure failure;
+                switch (res.StatusCase)
+                {
+                    case NexusOperationResult.StatusOneofCase.Failed:
+                        failure = res.Failed;
+                        break;
+                    case NexusOperationResult.StatusOneofCase.Cancelled:
+                        failure = res.Cancelled;
+                        break;
+                    case NexusOperationResult.StatusOneofCase.TimedOut:
+                        failure = res.TimedOut;
+                        break;
+                    default:
+                        throw new InvalidOperationException(
+                            $"Unrecognized operation result status {res.StatusCase}");
+                }
+                // Convert failure
+                return failureConverter.ToException(failure, payloadConverter);
+            }
+        }
+
         private record PendingActivityInfo(
             ISerializationContext.Activity SerializationContext,
             TaskCompletionSource<ActivityResolution> CompletionSource);
@@ -2738,6 +3018,10 @@ namespace Temporalio.Worker
         private record PendingExternalCancel(
             ISerializationContext.Workflow SerializationContext,
             TaskCompletionSource<ResolveRequestCancelExternalWorkflow> CompletionSource);
+
+        private record PendingNexusOperationInfo(
+            TaskCompletionSource<ResolveNexusOperationStart> StartCompletionSource,
+            TaskCompletionSource<NexusOperationResult> ResultCompletionSource);
 
         private class Handlers : LinkedList<Handlers.Handler>
         {
@@ -2764,7 +3048,7 @@ namespace Temporalio.Worker
                     0,
                     "[TMPRL1102] Workflow {Id} finished while update handlers are still running. This may " +
                     "have interrupted work that the update handler was doing, and the client " +
-                    "that sent the update will receive a 'workflow execution already completed' " +
+                    "that sent the update will receive a 'workflow update was aborted by closing workflow'" +
                     "RpcException instead of the update result. You can wait for all update and " +
                     "signal handlers to complete by using `await " +
                     "Workflow.WaitConditionAsync(() => Workflow.AllHandlersFinished)`. " +

@@ -70,9 +70,9 @@ namespace Temporalio.Worker
         ~ActivityWorker() => Dispose(false);
 
         /// <summary>
-        /// Execute the activity until poller shutdown or failure. If there is a failure, this may
-        /// need to be called a second time after shutdown initiated to ensure activity tasks are
-        /// drained.
+        /// Execute the activity worker until poller shutdown or failure. If there is a failure,
+        /// this may need to be called a second time after shutdown initiated to ensure activity
+        /// tasks are drained.
         /// </summary>
         /// <returns>Task that only completes successfully on poller shutdown.</returns>
         public async Task ExecuteAsync()
@@ -209,6 +209,7 @@ namespace Temporalio.Worker
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
                 Priority: start.Priority is { } p ? new(p) : Priority.Default,
+                RetryPolicy: start.RetryPolicy is { } rp ? RetryPolicy.FromProto(rp) : null,
                 ScheduleToCloseTimeout: OptionalTimeSpan(start.ScheduleToCloseTimeout),
                 ScheduledTime: start.ScheduledTime.ToDateTime(),
                 StartToCloseTimeout: OptionalTimeSpan(start.StartToCloseTimeout),
@@ -399,7 +400,7 @@ namespace Temporalio.Worker
                     (ActivityInboundInterceptor)new InboundImpl(),
                     (v, impl) => impl.InterceptActivity(v));
                 // Initialize with outbound
-                inbound.Init(new OutboundImpl(this));
+                inbound.Init(new OutboundImpl(this, act.Context.TaskToken));
 
                 // Execute and put result on completed
                 var result = await inbound.ExecuteActivityAsync(new(
@@ -434,6 +435,19 @@ namespace Temporalio.Worker
                     Failure_ = await dataConverter.ToFailureAsync(
                         new ApplicationFailureException(
                             "Activity paused", e, "ActivityPause")).ConfigureAwait(false),
+                };
+            }
+            catch (OperationCanceledException e) when (
+                act.ServerRequestedCancel && act.Context.CancellationDetails?.IsReset == true)
+            {
+                act.Context.Logger.LogDebug(
+                    "Completing activity {ActivityType} as failed due cancel exception caused by reset",
+                    act.Context.Info.ActivityType);
+                completion.Result.Failed = new()
+                {
+                    Failure_ = await dataConverter.ToFailureAsync(
+                        new ApplicationFailureException(
+                            "Activity reset", e, "ActivityReset")).ConfigureAwait(false),
                 };
             }
             catch (OperationCanceledException) when (act.ServerRequestedCancel)
@@ -620,6 +634,7 @@ namespace Temporalio.Worker
                     IsTimedOut = cancel.Details?.IsTimedOut ?? false,
                     IsWorkerShutdown = cancel.Details?.IsWorkerShutdown ?? false,
                     IsPaused = cancel.Details?.IsPaused ?? false,
+                    IsReset = cancel.Details?.IsReset ?? false,
                 };
                 switch (cancel.Reason)
                 {
@@ -637,6 +652,9 @@ namespace Temporalio.Worker
                         break;
                     case Bridge.Api.ActivityTask.ActivityCancelReason.Paused:
                         Cancel(ActivityCancelReason.Paused, details);
+                        break;
+                    case Bridge.Api.ActivityTask.ActivityCancelReason.Reset:
+                        Cancel(ActivityCancelReason.Reset, details);
                         break;
                     default:
                         Cancel(ActivityCancelReason.None, details);
@@ -781,18 +799,23 @@ namespace Temporalio.Worker
         internal class OutboundImpl : ActivityOutboundInterceptor
         {
             private readonly ActivityWorker worker;
+            private readonly ByteString taskToken;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="OutboundImpl"/> class.
             /// </summary>
             /// <param name="worker">Activity worker.</param>
-            public OutboundImpl(ActivityWorker worker) => this.worker = worker;
+            /// <param name="taskToken">Activity task token.</param>
+            public OutboundImpl(ActivityWorker worker, ByteString taskToken)
+            {
+                this.worker = worker;
+                this.taskToken = taskToken;
+            }
 
             /// <inheritdoc />
             public override void Heartbeat(HeartbeatInput input)
             {
-                if (worker.runningActivities.TryGetValue(
-                    ActivityExecutionContext.Current.TaskToken, out var act))
+                if (worker.runningActivities.TryGetValue(taskToken, out var act))
                 {
                     act.Heartbeat(worker.worker, input.Details);
                 }

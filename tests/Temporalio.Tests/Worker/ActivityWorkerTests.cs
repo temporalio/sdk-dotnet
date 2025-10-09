@@ -126,6 +126,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal(1, info.Attempt);
         Assert.InRange(info.CurrentAttemptScheduledTime, beforeNow, afterNow);
         Assert.False(info.IsLocal);
+        Assert.Equal(KitchenSinkWorkflow.CreateRetryPolicy(), info.RetryPolicy);
     }
 
     [Fact]
@@ -364,6 +365,45 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
                 });
             });
         Assert.Equal("Done, last details: \"some-detail-post-finally\"", res);
+    }
+
+    [Fact]
+    public async Task ExecuteActivityAsync_CaughtReset()
+    {
+        var activityReached = new TaskCompletionSource();
+        [Activity]
+        async Task<string> CatchResetAsync()
+        {
+            activityReached.SetResult();
+            var ctx = ActivityExecutionContext.Current;
+            while (!ctx.CancellationToken.IsCancellationRequested)
+            {
+                ctx.Heartbeat("some-heartbeat-details");
+                await Task.Delay(300);
+            }
+            return $"Cancel reason: {ctx.CancelReason}, reset: {ctx.CancellationDetails?.IsReset}, heartbeat details: {ctx.Info.HeartbeatDetails}";
+        }
+        var res = await ExecuteActivityAsync(
+            CatchResetAsync,
+            waitForCancellation: true,
+            heartbeatTimeout: TimeSpan.FromSeconds(1),
+            afterStarted: async handle =>
+            {
+                // Wait for activity to be reached, then reset the activity
+                await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
+                await Client.WorkflowService.ResetActivityAsync(new()
+                {
+                    Namespace = Client.Options.Namespace,
+                    Execution = new()
+                    {
+                        WorkflowId = handle.Id,
+                        RunId = handle.ResultRunId,
+                    },
+                    Identity = Client.Connection.Options.Identity ?? string.Empty,
+                    Type = "CatchReset",
+                });
+            });
+        Assert.Equal("Cancel reason: Reset, reset: True, heartbeat details: [ ]", res);
     }
 
     [Fact]
@@ -823,6 +863,39 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             await ExecuteAsyncActivityAsync(UseTemporalClientActivity));
     }
 
+    [Fact]
+    public async Task ExecuteActivityAsync_BackgroundThreadHeartbeat_Received()
+    {
+        using var heartbeatStartEvent = new AutoResetEvent(false);
+        using var heartbeatDoneEvent = new AutoResetEvent(false);
+        ActivityExecutionContext? context = null;
+        var heartbeadThread = new Thread(() =>
+        {
+            heartbeatStartEvent.WaitOne();
+            Assert.False(ActivityExecutionContext.HasCurrent);
+            context!.Heartbeat("Heartbeat details");
+            heartbeatDoneEvent.Set();
+        });
+        heartbeadThread.Start();
+
+        [Activity]
+        async Task<string> BackgroundThreadHeartbeat()
+        {
+            context = ActivityExecutionContext.Current;
+            if (context.Info.Attempt == 1)
+            {
+                heartbeatStartEvent.Set();
+                heartbeatDoneEvent.WaitOne();
+                throw new InvalidOperationException("Failing first attempt");
+            }
+            return (string)context.PayloadConverter.ToValue(context.Info.HeartbeatDetails.Single(), typeof(string))!;
+        }
+
+        var result = await ExecuteActivityAsync(BackgroundThreadHeartbeat, maxAttempts: 2);
+        heartbeadThread.Join();
+        Assert.Equal("Heartbeat details", result);
+    }
+
     internal async Task ExecuteActivityAsync(
         Action activity)
     {
@@ -881,6 +954,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
         Func<WorkflowHandle, Task>? afterStarted = null,
         bool waitForCancellation = false,
         TimeSpan? heartbeatTimeout = null,
+        int? maxAttempts = null,
         CancellationToken workerStoppingToken = default)
     {
         return ExecuteActivityInternalAsync<TResult>(
@@ -888,6 +962,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
             afterStarted: afterStarted,
             workerStoppingToken: workerStoppingToken,
             waitForCancellation: waitForCancellation,
+            maxAttempts: maxAttempts,
             heartbeatTimeout: heartbeatTimeout);
     }
 

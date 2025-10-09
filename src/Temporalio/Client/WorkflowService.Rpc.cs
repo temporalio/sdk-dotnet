@@ -219,6 +219,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke FetchWorkerConfig.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<FetchWorkerConfigResponse> FetchWorkerConfigAsync(FetchWorkerConfigRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("FetchWorkerConfig", req, FetchWorkerConfigResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke GetClusterInfo.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -934,6 +945,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke UpdateTaskQueueConfig.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateTaskQueueConfigResponse> UpdateTaskQueueConfigAsync(UpdateTaskQueueConfigRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateTaskQueueConfig", req, UpdateTaskQueueConfigResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke UpdateWorkerBuildIdCompatibility.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -942,6 +964,17 @@ namespace Temporalio.Client
         public Task<UpdateWorkerBuildIdCompatibilityResponse> UpdateWorkerBuildIdCompatibilityAsync(UpdateWorkerBuildIdCompatibilityRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateWorkerBuildIdCompatibility", req, UpdateWorkerBuildIdCompatibilityResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateWorkerConfig.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateWorkerConfigResponse> UpdateWorkerConfigAsync(UpdateWorkerConfigRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateWorkerConfig", req, UpdateWorkerConfigResponse.Parser, options);
         }
 
         /// <summary>

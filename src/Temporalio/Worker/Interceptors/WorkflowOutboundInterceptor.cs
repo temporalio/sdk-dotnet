@@ -100,5 +100,16 @@ namespace Temporalio.Worker.Interceptors
         /// <returns>Child handle.</returns>
         public virtual Task<ChildWorkflowHandle<TWorkflow, TResult>> StartChildWorkflowAsync<TWorkflow, TResult>(
             StartChildWorkflowInput input) => Next.StartChildWorkflowAsync<TWorkflow, TResult>(input);
+
+        /// <summary>
+        /// Intercept starting a Nexus operation. To intercept other Nexus calls, the handle can be
+        /// extended/customized.
+        /// </summary>
+        /// <typeparam name="TResult">Result type of the operation.</typeparam>
+        /// <param name="input">Input details of the call.</param>
+        /// <returns>Operation handle.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public virtual Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+            StartNexusOperationInput input) => Next.StartNexusOperationAsync<TResult>(input);
     }
 }
