@@ -207,7 +207,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         }
     }
 
-    [Fact]
+    [Fact(Timeout = 10000)]
     public async Task CanRunWith_CustomSlotSupplier()
     {
         var mySlotSupplier = new MySlotSupplier();

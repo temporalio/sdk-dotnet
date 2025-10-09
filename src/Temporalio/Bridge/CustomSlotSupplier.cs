@@ -85,15 +85,26 @@ namespace Temporalio.Bridge
 
         private unsafe void CancelReserve(Interop.TemporalCoreSlotReserveCompletionCtx* completionCtx, void* userData)
         {
+            // Failed lookup is OK because cancellation is checked by Core too.
             if (reservationCancelSources.TryGetValue(new(completionCtx), out var source))
             {
-                source.Cancel();
+                try
+                {
+                    source.Cancel();
+                }
+#pragma warning disable CA1031 // We are ok catching all exceptions here
+                catch (Exception)
+                {
+                }
+#pragma warning restore CA1031
             }
         }
 
         private void SafeReserve(SlotReserveContext ctx, IntPtr completionCtx)
         {
             var cancelTokenSrc = new CancellationTokenSource();
+            // Invariant: if `completionCtx` is present in `reservationCancelSources`, then neither
+            // `complete_async_reserve` nor `complete_async_cancel_reserve` have been called yet.
             if (!reservationCancelSources.TryAdd(completionCtx, cancelTokenSrc))
             {
                 logger.LogError("Duplicate slot reservation - CompletionCtx = {CompletionCtx:X}", completionCtx);
@@ -101,6 +112,7 @@ namespace Temporalio.Bridge
                 return;
             }
 
+            logger.LogDebug("Slot reservation started - CompletionCtx = {CompletionCtx:X}", completionCtx);
             var x = Task.Run(async () =>
             {
                 try
@@ -124,7 +136,7 @@ namespace Temporalio.Bridge
                         catch (Exception e)
                         {
 #pragma warning restore CA1031
-                            logger.LogError(e, "Error reserving slot");
+                            logger.LogError(e, "Error reserving slot - CompletionCtx = {CompletionCtx:X}", completionCtx);
                             // Wait for a bit to avoid spamming errors
                             try
                             {
@@ -138,7 +150,12 @@ namespace Temporalio.Bridge
                         }
                     }
 
-                    // There should be no exceptions possible from here onward
+                    // There should be no exceptions possible from here onward.
+                    //
+                    // User handler completed, so we don't need the cancellation source anymore. It needs to be removed
+                    // from the map before calling `complete_async_reserve` to avoid race condition. Final cancellation
+                    // check is done inside `complete_async_reserve`.
+                    reservationCancelSources.TryRemove(completionCtx, out _);
                     var permitId = StorePermit(permit);
 
                     byte result;
@@ -155,15 +172,21 @@ namespace Temporalio.Bridge
                         // We need to undo the reservation
                         Release(null, permitId);
                     }
+                    else
+                    {
+                        logger.LogDebug("Slot reservation completed - CompletionCtx = {CompletionCtx:X}, PermitId = {PermitId:X}", completionCtx, permitId);
+                    }
                 }
 #pragma warning disable CA1031 // The task is detached, logging here is the only way to observe exceptions.
                 catch (Exception e)
                 {
 #pragma warning restore CA1031
-                    logger.LogError(e, "Exception happened outside of retry loop when reserving slot");
+                    logger.LogError(e, "Exception happened outside of retry loop when reserving slot - CompletionCtx = {CompletionCtx:X}", completionCtx);
                 }
                 finally
                 {
+                    // Normally the cancellation source will be already removed by this point, but it may still be
+                    // present if there was an exception.
                     reservationCancelSources.TryRemove(completionCtx, out _);
                     cancelTokenSrc.Dispose();
                 }
@@ -177,7 +200,9 @@ namespace Temporalio.Bridge
                 var permit = userSupplier.TryReserveSlot(ReserveCtxFromBridge(ctx));
                 if (permit != null)
                 {
-                    return new(StorePermit(permit).ToPointer());
+                    var permitId = StorePermit(permit);
+                    logger.LogDebug("Slot reservation completed (TryReserve) - PermitId = {PermitId:X}", permitId);
+                    return new(permitId.ToPointer());
                 }
             }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
@@ -192,22 +217,23 @@ namespace Temporalio.Bridge
 
         private unsafe void MarkUsed(Interop.TemporalCoreSlotMarkUsedCtx* ctx, void* userData)
         {
+            IntPtr permitId = new(ctx->slot_permit.ToPointer());
             try
             {
-                IntPtr permitId = new(ctx->slot_permit.ToPointer());
                 if (!permits.TryGetValue(permitId, out var permit))
                 {
-                    logger.LogError("Error marking slot used: slot permit not found: {PermitId:X}", permitId);
+                    logger.LogError("Error marking slot used: slot permit not found - PermitId = {PermitId:X}", permitId);
                     return;
                 }
 
                 userSupplier.MarkSlotUsed(new(SlotInfoFromBridge(ctx->slot_info), permit));
+                logger.LogDebug("Slot marked used - PermitId = {PermitId:X}", permitId);
             }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
             catch (Exception e)
             {
 #pragma warning restore CA1031
-                logger.LogError(e, "Error marking slot used");
+                logger.LogError(e, "Error marking slot used - PermitId = {PermitId:X}", permitId);
             }
         }
 
@@ -224,18 +250,19 @@ namespace Temporalio.Bridge
             {
                 if (!permits.TryRemove(permitId, out var permit))
                 {
-                    logger.LogError("Error releasing slot: slot permit not found for ID {PermitId:X}", permitId);
+                    logger.LogError("Error releasing slot: slot permit not found - PermitId = {PermitId:X}", permitId);
                     return;
                 }
 
                 Marshal.FreeHGlobal(permitId);
                 userSupplier.ReleaseSlot(new(slotInfo, permit));
+                logger.LogDebug("Slot released - PermitId = {PermitId:X}", permitId);
             }
 #pragma warning disable CA1031 // We are ok catching all exceptions here
             catch (Exception e)
             {
 #pragma warning restore CA1031
-                logger.LogError(e, "Error releasing slot");
+                logger.LogError(e, "Error releasing slot - PermitId = {PermitId:X}", permitId);
             }
         }
 
@@ -250,6 +277,9 @@ namespace Temporalio.Bridge
 
         private void CompleteCancelReserve(IntPtr completionCtx)
         {
+            logger.LogDebug("Slot reservation cancelled - CompletionCtx = {CompletionCtx:X}", completionCtx);
+            reservationCancelSources.TryRemove(completionCtx, out _);
+
             byte result;
             unsafe
             {
@@ -258,7 +288,7 @@ namespace Temporalio.Bridge
             }
             if (result == 0)
             {
-                logger.LogError("Error trying to complete reserve slot cancellation");
+                logger.LogError("Error trying to complete reserve slot cancellation - CompletionCtx = {CompletionCtx:X}", completionCtx);
                 // Nothing we can do here
             }
         }
