@@ -86,7 +86,7 @@ jobs:
         run: dotnet build
 
       - name: Test
-        run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n
+        run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n --blame-hang-timeout 10m
 
       - name: Upload test failure
         if: ${{ failure() }}
