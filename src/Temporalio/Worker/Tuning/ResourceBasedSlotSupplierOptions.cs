@@ -16,9 +16,6 @@ namespace Temporalio.Worker.Tuning
     /// time, and thus the system should wait to see how much resources are used before issuing more
     /// slots.
     /// </param>
-    /// <remarks>
-    /// WARNING: Resource based tuning is currently experimental.
-    /// </remarks>
     public sealed record ResourceBasedSlotSupplierOptions(
         int? MinimumSlots = null,
         int? MaximumSlots = null,

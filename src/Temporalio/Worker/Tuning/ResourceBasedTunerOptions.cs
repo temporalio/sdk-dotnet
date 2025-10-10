@@ -10,9 +10,6 @@ namespace Temporalio.Worker.Tuning
     /// <param name="TargetCpuUsage">A value between 0 and 1 that represents the target (system)
     /// CPU usage. This can be set to 1.0 if desired, but it's recommended to leave some
     /// headroom for other processes.</param>
-    /// <remarks>
-    /// WARNING: Resource based tuning is currently experimental.
-    /// </remarks>
     public sealed record ResourceBasedTunerOptions(
         double TargetMemoryUsage,
         double TargetCpuUsage);

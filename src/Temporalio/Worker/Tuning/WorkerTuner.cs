@@ -66,9 +66,6 @@ namespace Temporalio.Worker.Tuning
         /// <param name="localActivityOptions">Options for the local activity slot supplier.</param>
         /// <param name="nexusOptions">Options for the Nexus operation slot supplier.</param>
         /// <returns>The tuner.</returns>
-        /// <remarks>
-        /// WARNING: Resource based tuning is currently experimental.
-        /// </remarks>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static WorkerTuner CreateResourceBased(
             double targetMemoryUsage,
