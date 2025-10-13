@@ -3,9 +3,6 @@ namespace Temporalio.Worker.Tuning
     /// <summary>
     /// Info about a task slot usage.
     /// </summary>
-    /// <remarks>
-    /// WARNING: Custom slot suppliers are currently experimental.
-    /// </remarks>
     public record SlotInfo
     {
         private SlotInfo()

@@ -7,9 +7,6 @@ namespace Temporalio.Worker.Tuning
     /// <summary>
     /// This class can be implemented to provide custom slot supplier behavior.
     /// </summary>
-    /// <remarks>
-    /// WARNING: Custom slot suppliers are currently experimental.
-    /// </remarks>
     public abstract class CustomSlotSupplier : SlotSupplier
     {
         /// <summary>
