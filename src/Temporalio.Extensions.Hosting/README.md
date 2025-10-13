@@ -85,6 +85,8 @@ For registering workflows on the worker, `AddWorkflow` extension method is avail
 collection because the construction and lifecycle of workflows is managed by Temporal. Dependency injection for
 workflows is intentionally not supported.
 
+The `AddNexusService` extension method is also available. 
+
 Other worker and client options can be configured on the builder via the `ConfigureOptions` extension method. With no
 parameters, this returns an `OptionsBuilder<TemporalWorkerServiceOptions>` to use. When provided an action, the options
 are available as parameters that can be configured. `TemporalWorkerServiceOptions` simply extends
