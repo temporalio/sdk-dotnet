@@ -165,6 +165,16 @@ namespace Temporalio.Extensions.Hosting
             builder.ConfigureOptions(options => options.AddWorkflow(type));
 
         /// <summary>
+        /// Add the given Nexus service on this worker service.
+        /// </summary>
+        /// <param name="builder">Builder to use.</param>
+        /// <param name="serviceHandler">Service handler.</param>
+        /// <returns>Same builder instance.</returns>
+        public static ITemporalWorkerServiceOptionsBuilder AddNexusService(
+            this ITemporalWorkerServiceOptionsBuilder builder, object serviceHandler) =>
+            builder.ConfigureOptions(options => options.AddNexusService(serviceHandler));
+
+        /// <summary>
         /// Get an options builder to configure worker service options.
         /// </summary>
         /// <param name="builder">Builder to use.</param>
