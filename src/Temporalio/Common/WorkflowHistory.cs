@@ -70,7 +70,7 @@ namespace Temporalio.Common
 
         private static WorkflowHistory FromJson(string workflowId, Dictionary<string, object?> historyObj)
         {
-            // Unfortunately due to enum incorrectness in UI/tctl/Go, we have to parse, alter,
+            // Unfortunately due to enum incorrectness in UI/CLI/Go, we have to parse, alter,
             // serialize the altered, then deserialize again using Proto JSON
             HistoryJsonFixer.Fix(historyObj);
             var fixedJson = JsonSerializer.Serialize(historyObj);
