@@ -7,12 +7,15 @@ using System.Diagnostics;
 using System.Text;
 using global::OpenTelemetry.Trace;
 using Microsoft.Extensions.Logging;
+using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Exceptions;
 using Temporalio.Extensions.OpenTelemetry;
+using Temporalio.Nexus;
 using Temporalio.Tests.Worker;
 using Temporalio.Worker;
 using Temporalio.Workflows;
@@ -752,6 +755,48 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         Assert.NotEqual(ActivityStatusCode.Error, act.Status);
     }
 
+    [Fact]
+    public async Task TracingInterceptor_Nexus_HasTracing()
+    {
+        // Create Nexus endpoint
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var endpoint = $"nexus-endpoint-{taskQueue}";
+        await Env.TestEnv.CreateNexusEndpointAsync(endpoint, taskQueue);
+
+        // Run Nexus operation
+        var (_, activities) = await ExecuteTracingWorkflowAsync(
+            new(new[] { new TracingWorkflowAction(CallNexusEndpoint: endpoint) }),
+            prepareWorkerOptions: workerOptions =>
+            {
+                workerOptions.TaskQueue = taskQueue;
+                workerOptions.AddNexusService(new NexusTracingService());
+            });
+        // Confirm spans through Nexus operation into Nexus-started workflow
+        AssertActivities(
+            activities,
+            ActivityAssertion.NameAndParent(
+                "StartWorkflow:TracingWorkflow",
+                null),
+            ActivityAssertion.NameAndParent(
+                "RunWorkflow:TracingWorkflow",
+                "StartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "StartNexusOperation:NexusTracingService/DoSomething",
+                "RunWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "RunStartNexusOperationHandler:NexusTracingService/DoSomething",
+                "StartNexusOperation:NexusTracingService/DoSomething"),
+            ActivityAssertion.NameAndParent(
+                "StartWorkflow:TracingWorkflow",
+                "RunStartNexusOperationHandler:NexusTracingService/DoSomething"),
+            ActivityAssertion.NameAndParent(
+                "RunWorkflow:TracingWorkflow",
+                "StartWorkflow:TracingWorkflow"),
+            ActivityAssertion.NameAndParent(
+                "CompleteWorkflow:TracingWorkflow",
+                "RunWorkflow:TracingWorkflow"));
+    }
+
     private static void AssertActivities(
         IReadOnlyCollection<Activity> activities, params ActivityAssertion[] assertions)
     {
@@ -800,39 +845,43 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
     private async Task<(WorkflowHandle<TracingWorkflow> Handle, IReadOnlyCollection<Activity> Activities)> ExecuteTracingWorkflowAsync(
         TracingWorkflowParam param,
         Func<WorkflowHandle<TracingWorkflow>, Task>? afterStart = null,
+        Action<TemporalWorkerOptions>? prepareWorkerOptions = null,
         bool expectFail = false,
         bool terminate = false)
     {
         WorkflowHandle<TracingWorkflow>? handle = null;
-        var activities = await WithTracingWorkerAsync(async (client, worker) =>
-        {
-            // Start
-            var options = new WorkflowOptions(id: $"wf-{Guid.NewGuid()}", worker.Options.TaskQueue!);
-            handle = await client.StartWorkflowAsync((TracingWorkflow wf) => wf.RunAsync(param), options);
+        var activities = await WithTracingWorkerAsync(
+            async (client, worker) =>
+            {
+                // Start
+                var options = new WorkflowOptions(id: $"wf-{Guid.NewGuid()}", worker.Options.TaskQueue!);
+                handle = await client.StartWorkflowAsync((TracingWorkflow wf) => wf.RunAsync(param), options);
 
-            // Run after-start, then wait for complete
-            if (afterStart != null)
-            {
-                await afterStart.Invoke(handle);
-            }
-            if (terminate)
-            {
-                await handle.TerminateAsync();
-            }
-            if (expectFail)
-            {
-                await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
-            }
-            else
-            {
-                await handle.GetResultAsync();
-            }
-        });
+                // Run after-start, then wait for complete
+                if (afterStart != null)
+                {
+                    await afterStart.Invoke(handle);
+                }
+                if (terminate)
+                {
+                    await handle.TerminateAsync();
+                }
+                if (expectFail)
+                {
+                    await Assert.ThrowsAsync<WorkflowFailedException>(() => handle.GetResultAsync());
+                }
+                else
+                {
+                    await handle.GetResultAsync();
+                }
+            },
+            prepareWorkerOptions);
         return (handle!, activities);
     }
 
     private async Task<IReadOnlyCollection<Activity>> WithTracingWorkerAsync(
-        Func<ITemporalClient, TemporalWorker, Task> run)
+        Func<ITemporalClient, TemporalWorker, Task> run,
+        Action<TemporalWorkerOptions>? prepareWorkerOptions = null)
     {
         var activities = new List<Activity>();
 
@@ -855,6 +904,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         var workerOptions = new TemporalWorkerOptions(taskQueue: $"tq-{Guid.NewGuid()}").
                 AddAllActivities<TracingActivities>(null).
                 AddWorkflow<TracingWorkflow>();
+        prepareWorkerOptions?.Invoke(workerOptions);
         using var worker = new TemporalWorker(client, workerOptions);
         await worker.ExecuteAsync(() => run(client, worker));
         logger.LogDebug(
@@ -1008,6 +1058,11 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 {
                     await Workflow.WaitConditionAsync(() => updateCount >= action.WaitUntilUpdateCount);
                 }
+                if (action.CallNexusEndpoint is { } nexusEndpoint)
+                {
+                    await Workflow.CreateNexusClient<INexusTracingService>(nexusEndpoint).
+                        ExecuteNexusOperationAsync(svc => svc.DoSomething());
+                }
             }
         }
 
@@ -1102,6 +1157,25 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         }
     }
 
+    [NexusService]
+    public interface INexusTracingService
+    {
+        [NexusOperation]
+        void DoSomething();
+    }
+
+    [NexusServiceHandler(typeof(INexusTracingService))]
+    public class NexusTracingService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<NoValue, NoValue> DoSomething() =>
+            WorkflowRunOperationHandler.FromHandleFactory(context =>
+                context.StartWorkflowAsync(
+                    (TracingWorkflow wf) =>
+                        wf.RunAsync(new TracingWorkflowParam(Array.Empty<TracingWorkflowAction>())),
+                    new() { Id = $"wf-{Guid.NewGuid()}" }));
+    }
+
     public record TracingWorkflowParam(
         TracingWorkflowAction[] Actions);
 
@@ -1114,7 +1188,8 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         TracingWorkflowActionContinueAsNew? ContinueAsNew = null,
         int WaitUntilSignalCount = 0,
         string? CreateCustomActivity = null,
-        int WaitUntilUpdateCount = 0);
+        int WaitUntilUpdateCount = 0,
+        string? CallNexusEndpoint = null);
 
     public record TracingWorkflowActionChildWorkflow(
         TracingWorkflowParam Param,
