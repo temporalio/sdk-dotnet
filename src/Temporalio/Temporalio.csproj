@@ -103,6 +103,9 @@
       <Content Include="$(BridgeLibraryRoot)/win-x64-bridge/temporal_sdk_core_c_bridge.dll">
         <PackagePath>runtimes/win-x64/native/temporal_sdk_core_c_bridge.dll</PackagePath>
       </Content>
+      <Content Include="$(BridgeLibraryRoot)/win-arm64-bridge/temporal_sdk_core_c_bridge.dll">
+        <PackagePath>runtimes/win-arm64/native/temporal_sdk_core_c_bridge.dll</PackagePath>
+      </Content>
     </ItemGroup>
   </Target>
 </Project>
