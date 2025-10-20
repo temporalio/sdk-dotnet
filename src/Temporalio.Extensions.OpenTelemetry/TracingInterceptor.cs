@@ -51,6 +51,11 @@ namespace Temporalio.Extensions.OpenTelemetry
         public static readonly ActivitySource ActivitiesSource = new("Temporalio.Extensions.OpenTelemetry.Activity");
 
         /// <summary>
+        /// Source used for all Nexus operation inbound diagnostic activities.
+        /// </summary>
+        public static readonly ActivitySource NexusSource = new("Temporalio.Extensions.OpenTelemetry.Nexus");
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="TracingInterceptor"/> class.
         /// </summary>
         /// <param name="options">Optional options.</param>
@@ -792,7 +797,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 }
                 try
                 {
-                    using (var activity = ActivitiesSource.StartActivity(
+                    using (var activity = NexusSource.StartActivity(
                         $"RunStartNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
                         kind: ActivityKind.Server,
                         parentContext: parentContext))
