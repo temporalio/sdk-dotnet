@@ -831,7 +831,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 }
                 try
                 {
-                    using (var activity = ActivitiesSource.StartActivity(
+                    using (var activity = NexusSource.StartActivity(
                         $"RunCancelNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
                         kind: ActivityKind.Server,
                         parentContext: parentContext))
