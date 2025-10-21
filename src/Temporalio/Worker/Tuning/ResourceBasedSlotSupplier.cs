@@ -3,9 +3,6 @@ namespace Temporalio.Worker.Tuning
     /// <summary>
     /// A slot supplier that will dynamically adjust the number of slots based on resource usage.
     /// </summary>
-    /// <remarks>
-    /// WARNING: Resource based tuning is currently experimental.
-    /// </remarks>
     public sealed class ResourceBasedSlotSupplier : SlotSupplier
     {
         /// <summary>

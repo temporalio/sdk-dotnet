@@ -342,9 +342,6 @@ namespace Temporalio.Worker
         /// cref="MaxConcurrentActivities"/>, <see cref="MaxConcurrentWorkflowTasks"/> and <see
         /// cref="MaxConcurrentLocalActivities"/>.
         /// </summary>
-        /// <remarks>
-        /// WARNING: WorkerTuners are experimental.
-        /// </remarks>
         public WorkerTuner? Tuner { get; set; }
 
         /// <summary>

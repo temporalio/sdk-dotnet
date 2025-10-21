@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest]
+        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest, windows-arm]
         include:
           - os: ubuntu-latest
             out-file: libtemporal_sdk_core_c_bridge.so
@@ -44,6 +44,10 @@ jobs:
           - os: windows-latest
             out-file: temporal_sdk_core_c_bridge.dll
             out-prefix: win-x64
+          - os: windows-arm
+            out-file: temporal_sdk_core_c_bridge.dll
+            out-prefix: win-arm64
+            runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
@@ -153,7 +157,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest]
+        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest, windows-arm]
         include:
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
@@ -164,6 +168,8 @@ jobs:
             runsOn: macos-13
           - os: macos-arm
             runsOn: macos-14
+          - os: windows-arm
+            runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
     container: ${{ matrix.container }}
     steps:
@@ -191,22 +197,22 @@ jobs:
         run: apk add dotnet6-sdk
 
       - name: Run smoke test (non-Windows)
-        if: ${{ matrix.os != 'windows-latest' }}
+        if: ${{ matrix.os != 'windows-latest' && matrix.os != 'windows-arm' }}
         run: |
           dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
 
       - name: Run smoke test (Windows)
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ matrix.os == 'windows-latest' || matrix.os == 'windows-arm' }}
         run: |
           dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
 
-      - name: Setup msbuild (Windows only)
+      - name: Setup msbuild (Windows x64 only)
         if: ${{ matrix.os == 'windows-latest' }}
         uses: microsoft/setup-msbuild@v2
 
-      - name: Run .NET framework smoke test (Windows only)
+      - name: Run .NET framework smoke test (Windows x64 only)
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           dotnet add tests/Temporalio.SmokeTestDotNetFramework package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease

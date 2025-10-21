@@ -4,9 +4,6 @@ namespace Temporalio.Worker.Tuning
     /// A permit to use a slot for a workflow/activity/local activity task. This class can be
     /// extended if desired.
     /// </summary>
-    /// <remarks>
-    /// WARNING: Custom slot suppliers are currently experimental.
-    /// </remarks>
     public class SlotPermit
     {
         /// <summary>

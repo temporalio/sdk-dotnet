@@ -9,9 +9,6 @@ namespace Temporalio.Worker.Tuning
     /// <param name="WorkerBuildId">The build id of the worker that is requesting the reservation.</param>
     /// <param name="IsSticky">True iff this is a reservation for a sticky poll for a workflow task.</param>
     /// <remarks>
-    /// WARNING: Custom slot suppliers are currently experimental.
-    /// </remarks>
-    /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>
