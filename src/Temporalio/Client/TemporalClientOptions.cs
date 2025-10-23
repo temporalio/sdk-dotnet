@@ -44,6 +44,11 @@ namespace Temporalio.Client
         public QueryRejectCondition? QueryRejectCondition { get; set; }
 
         /// <summary>
+        /// Gets or sets the plugins.
+        /// </summary>
+        public IReadOnlyCollection<ITemporalClientPlugin>? Plugins { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>

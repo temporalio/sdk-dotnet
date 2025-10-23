@@ -21,6 +21,11 @@ namespace Temporalio.Client
         /// <param name="options">Options for this client.</param>
         public TemporalClient(ITemporalConnection connection, TemporalClientOptions options)
         {
+            if (options.Plugins != null)
+            {
+                options = options.Plugins.Aggregate(
+                    options, (clientOptions, plugin) => plugin.ConfigureClient(clientOptions));
+            }
             Connection = connection;
             Options = options;
             OutboundInterceptor = new Impl(this);
@@ -61,10 +66,21 @@ namespace Temporalio.Client
         /// <param name="options">Options for connecting.</param>
         /// <returns>The connected client.</returns>
         public static async Task<TemporalClient> ConnectAsync(
-            TemporalClientConnectOptions options) =>
-            new(
-                await TemporalConnection.ConnectAsync(options).ConfigureAwait(false),
+            TemporalClientConnectOptions options)
+        {
+            Func<TemporalClientConnectOptions, Task<TemporalConnection>> connect = TemporalConnection.ConnectAsync;
+            if (options.Plugins != null)
+            {
+                foreach (var plugin in options.Plugins.Reverse())
+                {
+                    var localConnect = connect;
+                    connect = connectOptions => plugin.TemporalConnectAsync(connectOptions, localConnect);
+                }
+            }
+            return new(
+                await connect(options).ConfigureAwait(false),
                 options.ToClientOptions());
+        }
 
         /// <summary>
         /// Create a client to a Temporal namespace that does not connect until first call.

@@ -20,6 +20,7 @@ namespace Temporalio.Worker
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
         private readonly NexusWorker? nexusWorker;
+        private readonly IReadOnlyCollection<ITemporalWorkerPlugin> plugins;
         private IWorkerClient client;
         private int started;
         private Disposer? disposer;
@@ -44,6 +45,19 @@ namespace Temporalio.Worker
                 // Clone the options to discourage mutation (but we aren't completely disabling mutation
                 // on the Options field herein).
                 Options = (TemporalWorkerOptions)options.Clone();
+
+                var localPlugins = client.Options.Plugins?.OfType<ITemporalWorkerPlugin>() ?? Enumerable.Empty<ITemporalWorkerPlugin>();
+                if (Options.Plugins != null)
+                {
+                    localPlugins = localPlugins.Concat(Options.Plugins);
+                }
+                plugins = localPlugins.ToList();
+
+                Options = plugins.Aggregate(Options, (workerOptions, plugin) => plugin.ConfigureWorker(workerOptions));
+
+                // Ensure later accesses use the modified version of options.
+                options = Options;
+
                 var bridgeClient = client.BridgeClientProvider.BridgeClient ??
                                    throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
                 BridgeWorker = new(
@@ -292,7 +306,20 @@ namespace Temporalio.Worker
             }
         }
 
-        private async Task ExecuteInternalAsync(
+        private Task ExecuteInternalAsync(
+            Func<Task>? untilComplete, CancellationToken stoppingToken)
+        {
+            Func<TemporalWorker, Task> execute = worker => worker.ExecuteWithPluginsAsync(untilComplete, stoppingToken);
+            foreach (var plugin in plugins.Reverse())
+            {
+                var localExecute = execute;
+                execute = worker => plugin.RunWorker(worker, localExecute);
+            }
+
+            return execute(this);
+        }
+
+        private async Task ExecuteWithPluginsAsync(
             Func<Task>? untilComplete, CancellationToken stoppingToken)
         {
             if (Interlocked.Exchange(ref started, 1) != 0)

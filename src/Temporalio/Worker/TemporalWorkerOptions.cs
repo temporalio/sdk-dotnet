@@ -360,6 +360,11 @@ namespace Temporalio.Worker
         public bool DisableEagerActivityExecution { get; set; }
 
         /// <summary>
+        /// Gets or sets the plugins.
+        /// </summary>
+        public IReadOnlyCollection<ITemporalWorkerPlugin>? Plugins { get; set; }
+
+        /// <summary>
         /// Gets the TEMPORAL_DEBUG environment variable.
         /// </summary>
         internal static string? DebugModeEnvironmentVariable { get; } = Environment.GetEnvironmentVariable("TEMPORAL_DEBUG");

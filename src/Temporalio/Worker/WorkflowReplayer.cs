@@ -20,6 +20,8 @@ namespace Temporalio.Worker
     /// </summary>
     public class WorkflowReplayer
     {
+        private readonly IReadOnlyCollection<ITemporalWorkerPlugin> plugins;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowReplayer"/> class. Note, some
         /// options validation is deferred until replay is attempted.
@@ -27,6 +29,10 @@ namespace Temporalio.Worker
         /// <param name="options">Replayer options.</param>
         public WorkflowReplayer(WorkflowReplayerOptions options)
         {
+            plugins = options.Plugins ?? new List<ITemporalWorkerPlugin>();
+
+            options = plugins.Aggregate(options, (replayerOptions, plugin) => plugin.ConfigureReplayer(replayerOptions));
+
             if (options.Workflows.Count == 0)
             {
                 throw new ArgumentException("Must have at least one workflow");
@@ -61,31 +67,17 @@ namespace Temporalio.Worker
         /// (e.g. non-determinism) as soon as it's encountered. This has no effect on workflow
         /// failures which are not reported as part of replay.</param>
         /// <returns>Results of the replay runs.</returns>
-        public async Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
+        public Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
             IEnumerable<WorkflowHistory> histories, bool throwOnReplayFailure = false)
         {
-            // We could stream the results, but since the method wants them all anyways, a list is
-            // ok
-            using (var runner = new WorkflowHistoryRunner(Options, throwOnReplayFailure))
-            using (var cts = new CancellationTokenSource())
+            Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> execute = replayer => replayer.ReplayWorkflowsInternalAsync(histories, throwOnReplayFailure);
+            foreach (var plugin in plugins.Reverse())
             {
-                var workerTask = Task.Run(() => runner.RunWorkerAsync(cts.Token));
-                try
-                {
-                    var results = new List<WorkflowReplayResult>();
-                    foreach (var history in histories)
-                    {
-                        results.Add(await runner.RunWorkflowAsync(history).ConfigureAwait(false));
-                    }
-                    return results;
-                }
-                finally
-                {
-                    // Cancel and wait on complete
-                    cts.Cancel();
-                    await workerTask.ConfigureAwait(false);
-                }
+                var localExecute = execute;
+                execute = replayer => plugin.RunReplayer(replayer, localExecute);
             }
+
+            return execute(this);
         }
 
 #if NETCOREAPP3_0_OR_GREATER
@@ -132,6 +124,33 @@ namespace Temporalio.Worker
             }
         }
 #endif
+
+        private async Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsInternalAsync(
+            IEnumerable<WorkflowHistory> histories, bool throwOnReplayFailure = false)
+        {
+            // We could stream the results, but since the method wants them all anyways, a list is
+            // ok
+            using (var runner = new WorkflowHistoryRunner(Options, throwOnReplayFailure))
+            using (var cts = new CancellationTokenSource())
+            {
+                var workerTask = Task.Run(() => runner.RunWorkerAsync(cts.Token));
+                try
+                {
+                    var results = new List<WorkflowReplayResult>();
+                    foreach (var history in histories)
+                    {
+                        results.Add(await runner.RunWorkflowAsync(history).ConfigureAwait(false));
+                    }
+                    return results;
+                }
+                finally
+                {
+                    // Cancel and wait on complete
+                    cts.Cancel();
+                    await workerTask.ConfigureAwait(false);
+                }
+            }
+        }
 
         /// <summary>
         /// Runner for workflow history.
