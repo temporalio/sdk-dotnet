@@ -123,9 +123,9 @@ namespace Temporalio.Client
             OutboundInterceptor.CountWorkflowsAsync(new(Query: query, Options: options));
 
         /// <inheritdoc />
-        public Task<ListWorkflowsPage> GetListWorkflowsPageAsync(
-            string query, byte[]? nextPageToken, GetListWorkflowsPageOptions? options = null) =>
-            OutboundInterceptor.FetchListWorkflowsPageAsync(new(Query: query, NextPageToken: nextPageToken, Options: options));
+        public Task<WorkflowListPage> ListWorkflowsPaginatedAsync(
+            string query, byte[]? nextPageToken, ListWorkflowsPaginatedOptions? options = null) =>
+            OutboundInterceptor.ListWorkflowsPaginatedAsync(new(Query: query, NextPageToken: nextPageToken, Options: options));
 
         internal partial class Impl
         {
@@ -651,7 +651,7 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
-            public override async Task<ListWorkflowsPage> FetchListWorkflowsPageAsync(FetchListWorkflowsPageInput input)
+            public override async Task<WorkflowListPage> ListWorkflowsPaginatedAsync(ListWorkflowsPaginatedInput input)
             {
                 var req = new ListWorkflowExecutionsRequest
                 {
@@ -691,12 +691,12 @@ namespace Temporalio.Client
                     WithAdditionalCancellationToken(cancellationToken);
                 try
                 {
-                    var pageOpts = new GetListWorkflowsPageOptions { Rpc = rpcOptsAndCancelSource.Item1 };
+                    var pageOpts = new ListWorkflowsPaginatedOptions { Rpc = rpcOptsAndCancelSource.Item1 };
                     byte[]? nextPageToken = null;
                     var yielded = 0;
                     do
                     {
-                        var page = await Client.GetListWorkflowsPageAsync(input.Query, nextPageToken, pageOpts).ConfigureAwait(false);
+                        var page = await Client.ListWorkflowsPaginatedAsync(input.Query, nextPageToken, pageOpts).ConfigureAwait(false);
                         foreach (var exec in page.Workflows)
                         {
                             yield return exec;
