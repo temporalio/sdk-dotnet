@@ -6,11 +6,19 @@ using System.Runtime.InteropServices;
 namespace Temporalio.Bridge
 {
     /// <summary>
-    /// Disposable collection of items we need to keep alive while this object is in scope.
+    /// Disposable collection of items we need to keep alive while this object is in scope. NOT threadsafe.
     /// </summary>
     internal sealed class Scope : IDisposable
     {
-        private readonly List<object> toKeepAlive = new();
+        private readonly List<ByteArrayRef> byteArrayRefs = new();
+        private readonly List<GCHandle> gcHandles = new();
+        private readonly List<IDisposable> disposables = new();
+        private bool disposed;
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="Scope"/> class.
+        /// </summary>
+        ~Scope() => Dispose(false);
 
         /// <summary>
         /// Create a byte array ref.
@@ -24,7 +32,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = new ByteArrayRef(bytes);
-            toKeepAlive.Add(val);
+            byteArrayRefs.Add(val);
             return val.Ref;
         }
 
@@ -40,7 +48,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = ByteArrayRef.FromUTF8(str);
-            toKeepAlive.Add(val);
+            byteArrayRefs.Add(val);
             return val.Ref;
         }
 
@@ -56,7 +64,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = ByteArrayRef.FromMetadata(metadata);
-            toKeepAlive.Add(val);
+            byteArrayRefs.Add(val);
             return val.Ref;
         }
 
@@ -72,7 +80,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = ByteArrayRef.FromNewlineDelimited(values);
-            toKeepAlive.Add(val);
+            byteArrayRefs.Add(val);
             return val.Ref;
         }
 
@@ -107,7 +115,7 @@ namespace Temporalio.Bridge
                 return null;
             }
             var val = Temporalio.Bridge.CancellationToken.FromThreading(token.Value);
-            toKeepAlive.Add(val);
+            disposables.Add(val);
             return val.Ptr;
         }
 
@@ -121,7 +129,7 @@ namespace Temporalio.Bridge
             where T : unmanaged
         {
             var handle = GCHandle.Alloc(value, GCHandleType.Pinned);
-            toKeepAlive.Add(handle);
+            gcHandles.Add(handle);
             return (T*)handle.AddrOfPinnedObject();
         }
 
@@ -135,7 +143,7 @@ namespace Temporalio.Bridge
             where T : unmanaged
         {
             var handle = GCHandle.Alloc(value, GCHandleType.Pinned);
-            toKeepAlive.Add(handle);
+            gcHandles.Add(handle);
             return (T*)handle.AddrOfPinnedObject();
         }
 
@@ -152,24 +160,42 @@ namespace Temporalio.Bridge
             // the keep alive list. Delegates are supposed to be reference types, but their pointers
             // seem unstable. So we're going to alloc a handle for it. We can't pin it though.
             var handle = GCHandle.Alloc(func);
-            toKeepAlive.Add(handle);
+            gcHandles.Add(handle);
             return Marshal.GetFunctionPointerForDelegate(handle.Target!);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (var v in toKeepAlive)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
             {
-                if (v is GCHandle handle)
+                return;
+            }
+
+            byteArrayRefs.Clear();
+
+            foreach (var handle in gcHandles)
+            {
+                handle.Free();
+            }
+            gcHandles.Clear();
+
+            if (disposing)
+            {
+                foreach (var disposable in disposables)
                 {
-                    handle.Free();
+                    disposable.Dispose();
                 }
             }
-            // This keep alive does nothing obviously, but it's good documentation to understand the
-            // purpose of this separate dispose call
-            GC.KeepAlive(toKeepAlive);
-            GC.SuppressFinalize(this);
+            disposables.Clear();
+
+            disposed = true;
         }
     }
 }
