@@ -101,9 +101,9 @@ namespace Temporalio.Client.Interceptors
         /// <returns>Async enumerator for the workflows.</returns>
         /// <remarks>
         /// This method only gets called by <see cref="ITemporalClient.ListWorkflowsAsync"/>.
-        /// It does not get called by <see cref="ITemporalClient.GetListWorkflowsPageAsync"/>.
+        /// It does not get called by <see cref="ITemporalClient.ListWorkflowsPaginatedAsync"/>.
         /// This method is called before the first page is fetched. Afterwards, before each page fetched
-        /// (including before the first page), <see cref="FetchListWorkflowsPageAsync"/> is called.
+        /// (including before the first page), <see cref="ListWorkflowsPaginatedAsync"/> is called.
         /// </remarks>
         public virtual IAsyncEnumerable<WorkflowExecution> ListWorkflowsAsync(
             ListWorkflowsInput input) =>
@@ -126,12 +126,12 @@ namespace Temporalio.Client.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>A single page of query results.</returns>
         /// <remarks>
-        /// This method is called each time <see cref="ITemporalClient.GetListWorkflowsPageAsync"/> is called.
+        /// This method is called each time <see cref="ITemporalClient.ListWorkflowsPaginatedAsync"/> is called.
         /// It also gets called for each page fetched when iterating the enumerable returned by <see cref="ITemporalClient.ListWorkflowsAsync"/>.
         /// </remarks>
 #pragma warning restore CS1574
-        public virtual Task<ListWorkflowsPage> FetchListWorkflowsPageAsync(
-            FetchListWorkflowsPageInput input) =>
-            Next.FetchListWorkflowsPageAsync(input);
+        public virtual Task<WorkflowListPage> ListWorkflowsPaginatedAsync(
+            ListWorkflowsPaginatedInput input) =>
+            Next.ListWorkflowsPaginatedAsync(input);
     }
 }

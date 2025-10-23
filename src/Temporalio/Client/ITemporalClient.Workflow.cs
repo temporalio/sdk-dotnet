@@ -192,15 +192,15 @@ namespace Temporalio.Client
         /// </param>
         /// <param name="nextPageToken">
         /// Set to null for the initial call to retrieve the first page.
-        /// Set to <see cref="ListWorkflowsPage.NextPageToken"/> returned by a previous call to retrieve the next page.
+        /// Set to <see cref="WorkflowListPage.NextPageToken"/> returned by a previous call to retrieve the next page.
         /// </param>
         /// <param name="options">Options for the list call.</param>
         /// <returns>
         /// A single page of a list of workflows.
-        /// Repeat the call using <see cref="ListWorkflowsPage.NextPageToken"/> to get more pages.
+        /// Repeat the call using <see cref="WorkflowListPage.NextPageToken"/> to get more pages.
         /// </returns>
         /// <seealso href="https://docs.temporal.io/visibility">Visibility docs.</seealso>
-        Task<ListWorkflowsPage> GetListWorkflowsPageAsync(
-            string query, byte[]? nextPageToken, GetListWorkflowsPageOptions? options = null);
+        Task<WorkflowListPage> ListWorkflowsPaginatedAsync(
+            string query, byte[]? nextPageToken, ListWorkflowsPaginatedOptions? options = null);
     }
 }

@@ -342,17 +342,17 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
                 new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         }
 
-        var firstPage = await Client.GetListWorkflowsPageAsync($"WorkflowId = '{workflowId}'", null, new(PageSize: 2));
+        var firstPage = await Client.ListWorkflowsPaginatedAsync($"WorkflowId = '{workflowId}'", null, new(PageSize: 2));
         Assert.Equal(2, firstPage.Workflows.Count);
         Assert.NotNull(firstPage.NextPageToken);
         Assert.NotEmpty(firstPage.NextPageToken);
 
-        var secondPage = await Client.GetListWorkflowsPageAsync($"WorkflowId = '{workflowId}'", firstPage.NextPageToken, new(PageSize: 2));
+        var secondPage = await Client.ListWorkflowsPaginatedAsync($"WorkflowId = '{workflowId}'", firstPage.NextPageToken, new(PageSize: 2));
         Assert.Equal(2, secondPage.Workflows.Count);
         Assert.NotNull(secondPage.NextPageToken);
         Assert.NotEmpty(secondPage.NextPageToken);
 
-        var thirdPage = await Client.GetListWorkflowsPageAsync($"WorkflowId = '{workflowId}'", secondPage.NextPageToken, new(PageSize: 2));
+        var thirdPage = await Client.ListWorkflowsPaginatedAsync($"WorkflowId = '{workflowId}'", secondPage.NextPageToken, new(PageSize: 2));
         Assert.Equal(1, thirdPage.Workflows.Count);
         Assert.Null(thirdPage.NextPageToken);
     }
