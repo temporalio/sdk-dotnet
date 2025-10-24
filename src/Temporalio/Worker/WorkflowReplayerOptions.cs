@@ -120,6 +120,11 @@ namespace Temporalio.Worker
         public IReadOnlyCollection<Type>? WorkflowFailureExceptionTypes { get; set; }
 
         /// <summary>
+        /// Gets or sets the plugins.
+        /// </summary>
+        public IReadOnlyCollection<ITemporalWorkerPlugin>? Plugins { get; set; }
+
+        /// <summary>
         /// Gets or sets a function to create workflow instances.
         /// </summary>
         /// <remarks>
