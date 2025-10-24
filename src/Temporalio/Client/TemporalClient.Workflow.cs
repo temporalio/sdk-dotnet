@@ -124,7 +124,7 @@ namespace Temporalio.Client
 
         /// <inheritdoc />
         public Task<WorkflowListPage> ListWorkflowsPaginatedAsync(
-            string query, byte[]? nextPageToken, ListWorkflowsPaginatedOptions? options = null) =>
+            string query, byte[]? nextPageToken, WorkflowListPaginatedOptions? options = null) =>
             OutboundInterceptor.ListWorkflowsPaginatedAsync(new(Query: query, NextPageToken: nextPageToken, Options: options));
 
         internal partial class Impl
@@ -691,7 +691,7 @@ namespace Temporalio.Client
                     WithAdditionalCancellationToken(cancellationToken);
                 try
                 {
-                    var pageOpts = new ListWorkflowsPaginatedOptions { Rpc = rpcOptsAndCancelSource.Item1 };
+                    var pageOpts = new WorkflowListPaginatedOptions { Rpc = rpcOptsAndCancelSource.Item1 };
                     byte[]? nextPageToken = null;
                     var yielded = 0;
                     do

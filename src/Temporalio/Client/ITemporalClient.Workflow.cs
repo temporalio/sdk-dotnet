@@ -201,6 +201,6 @@ namespace Temporalio.Client
         /// </returns>
         /// <seealso href="https://docs.temporal.io/visibility">Visibility docs.</seealso>
         Task<WorkflowListPage> ListWorkflowsPaginatedAsync(
-            string query, byte[]? nextPageToken, ListWorkflowsPaginatedOptions? options = null);
+            string query, byte[]? nextPageToken, WorkflowListPaginatedOptions? options = null);
     }
 }
