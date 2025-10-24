@@ -330,6 +330,35 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Fact]
+    public async Task ListWorkflowsAsync_ManualPaging_IsAccurate()
+    {
+        var workflowId = $"workflow-{Guid.NewGuid()}";
+        for (var i = 0; i < 5; i++)
+        {
+            var arg = new KSWorkflowParams(new KSAction(Result: new(Value: string.Empty)));
+            await Client.ExecuteWorkflowAsync(
+                (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
+                new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
+        }
+
+        var options = new WorkflowListPaginatedOptions { PageSize = 2 };
+
+        var firstPage = await Client.ListWorkflowsPaginatedAsync($"WorkflowId = '{workflowId}'", null, options);
+        Assert.Equal(2, firstPage.Workflows.Count);
+        Assert.NotNull(firstPage.NextPageToken);
+        Assert.NotEmpty(firstPage.NextPageToken);
+
+        var secondPage = await Client.ListWorkflowsPaginatedAsync($"WorkflowId = '{workflowId}'", firstPage.NextPageToken, options);
+        Assert.Equal(2, secondPage.Workflows.Count);
+        Assert.NotNull(secondPage.NextPageToken);
+        Assert.NotEmpty(secondPage.NextPageToken);
+
+        var thirdPage = await Client.ListWorkflowsPaginatedAsync($"WorkflowId = '{workflowId}'", secondPage.NextPageToken, options);
+        Assert.Equal(1, thirdPage.Workflows.Count);
+        Assert.Null(thirdPage.NextPageToken);
+    }
+
     internal record TracingEvent(string Name, object Input);
 
     internal class TracingClientInterceptor : IClientInterceptor
