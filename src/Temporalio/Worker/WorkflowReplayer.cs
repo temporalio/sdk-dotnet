@@ -30,8 +30,10 @@ namespace Temporalio.Worker
         public WorkflowReplayer(WorkflowReplayerOptions options)
         {
             plugins = options.Plugins ?? new List<ITemporalWorkerPlugin>();
-
-            options = plugins.Aggregate(options, (replayerOptions, plugin) => plugin.ConfigureReplayer(replayerOptions));
+            foreach (var plugin in plugins)
+            {
+                plugin.ConfigureReplayer(options);
+            }
 
             if (options.Workflows.Count == 0)
             {
@@ -74,7 +76,7 @@ namespace Temporalio.Worker
             foreach (var plugin in plugins.Reverse())
             {
                 var localExecute = execute;
-                execute = replayer => plugin.RunReplayer(replayer, localExecute);
+                execute = replayer => plugin.RunReplayerAsync(replayer, localExecute);
             }
 
             return execute(this);

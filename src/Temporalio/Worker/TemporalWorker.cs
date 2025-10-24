@@ -53,7 +53,10 @@ namespace Temporalio.Worker
                 }
                 plugins = localPlugins.ToList();
 
-                Options = plugins.Aggregate(Options, (workerOptions, plugin) => plugin.ConfigureWorker(workerOptions));
+                foreach (var plugin in plugins)
+                {
+                    plugin.ConfigureWorker(Options);
+                }
 
                 // Ensure later accesses use the modified version of options.
                 options = Options;
@@ -313,7 +316,7 @@ namespace Temporalio.Worker
             foreach (var plugin in plugins.Reverse())
             {
                 var localExecute = execute;
-                execute = worker => plugin.RunWorker(worker, localExecute);
+                execute = worker => plugin.RunWorkerAsync(worker, localExecute);
             }
 
             return execute(this);

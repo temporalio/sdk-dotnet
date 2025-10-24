@@ -21,11 +21,11 @@ namespace Temporalio.Client
         /// <param name="options">Options for this client.</param>
         public TemporalClient(ITemporalConnection connection, TemporalClientOptions options)
         {
-            if (options.Plugins != null)
+            foreach (var plugin in options.Plugins ?? Enumerable.Empty<ITemporalClientPlugin>())
             {
-                options = options.Plugins.Aggregate(
-                    options, (clientOptions, plugin) => plugin.ConfigureClient(clientOptions));
+                plugin.ConfigureClient(options);
             }
+
             Connection = connection;
             Options = options;
             OutboundInterceptor = new Impl(this);

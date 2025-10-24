@@ -2,18 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Temporalio.Activities;
 using Temporalio.Client;
 using Temporalio.Worker;
 
 namespace Temporalio.Common
 {
-    public class SimplePlugin: ITemporalClientPlugin, ITemporalWorkerPlugin
+    /// <summary>
+    /// A simple plugin that implements both client and worker plugin interfaces.
+    /// </summary>
+    /// <remarks>
+    /// WARNING: This API is experimental and may change in the future.
+    /// </remarks>
+    public class SimplePlugin : ITemporalClientPlugin, ITemporalWorkerPlugin
     {
+        /// <summary>
+        /// The plugin options.
+        /// </summary>
         private readonly SimplePluginOptions pluginOptions;
 
-        public string Name { get; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SimplePlugin"/> class.
+        /// </summary>
+        /// <param name="name">The plugin name.</param>
+        /// <param name="options">The plugin options.</param>
         public SimplePlugin(
             string name,
             SimplePluginOptions options)
@@ -22,15 +33,39 @@ namespace Temporalio.Common
             pluginOptions = options;
         }
 
-        public void ConfigureClient(TemporalClientOptions options)
+        /// <summary>
+        /// Gets the plugin name.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// Configures the client options.
+        /// </summary>
+        /// <param name="options">The client options to configure.</param>
+        public virtual void ConfigureClient(TemporalClientOptions options)
         {
             options.DataConverter = Resolve(options.DataConverter, pluginOptions.DataConverterOption);
             options.Interceptors = ResolveAppend(options.Interceptors, pluginOptions.ClientInterceptorsOption);
         }
 
-        public Task<TemporalConnection> TemporalConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) => throw new NotImplementedException();
+        /// <summary>
+        /// Handles temporal connection asynchronously.
+        /// </summary>
+        /// <param name="options">The connection options.</param>
+        /// <param name="continuation">The continuation function.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public virtual Task<TemporalConnection> TemporalConnectAsync(
+            TemporalClientConnectOptions options,
+            Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation)
+        {
+            return continuation(options);
+        }
 
-        public void ConfigureWorker(TemporalWorkerOptions options)
+        /// <summary>
+        /// Configures the worker options.
+        /// </summary>
+        /// <param name="options">The worker options to configure.</param>
+        public virtual void ConfigureWorker(TemporalWorkerOptions options)
         {
             DoAppend(options.Activities, pluginOptions.Activities);
             DoAppend(options.Workflows, pluginOptions.Workflows);
@@ -39,16 +74,22 @@ namespace Temporalio.Common
             options.WorkflowFailureExceptionTypes = ResolveAppend(options.WorkflowFailureExceptionTypes, pluginOptions.WorkflowFailureExceptionTypesOption);
         }
 
-        public Task RunWorker(TemporalWorker worker, Func<TemporalWorker, Task> continuation)
+        /// <summary>
+        /// Runs the worker asynchronously.
+        /// </summary>
+        /// <param name="worker">The worker to run.</param>
+        /// <param name="continuation">The continuation function.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public virtual Task RunWorkerAsync(TemporalWorker worker, Func<TemporalWorker, Task> continuation)
         {
-            if (pluginOptions.RunContext != null)
-            {
-                return pluginOptions.RunContext(() => continuation(worker) as Task);
-            }
             return continuation(worker);
         }
 
-        public void ConfigureReplayer(WorkflowReplayerOptions options)
+        /// <summary>
+        /// Configures the replayer options.
+        /// </summary>
+        /// <param name="options">The replayer options to configure.</param>
+        public virtual void ConfigureReplayer(WorkflowReplayerOptions options)
         {
             options.DataConverter = Resolve(options.DataConverter, pluginOptions.DataConverterOption);
             DoAppend(options.Workflows, pluginOptions.Workflows);
@@ -56,16 +97,17 @@ namespace Temporalio.Common
             options.WorkflowFailureExceptionTypes = ResolveAppend(options.WorkflowFailureExceptionTypes, pluginOptions.WorkflowFailureExceptionTypesOption);
         }
 
-        public async Task<IEnumerable<WorkflowReplayResult>> RunReplayer(
+        /// <summary>
+        /// Runs the replayer asynchronously.
+        /// </summary>
+        /// <param name="replayer">The replayer to run.</param>
+        /// <param name="continuation">The continuation function.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public virtual Task<IEnumerable<WorkflowReplayResult>> RunReplayerAsync(
             WorkflowReplayer replayer,
             Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> continuation)
         {
-            if (pluginOptions.RunContext != null)
-            {
-                var result = await pluginOptions.RunContext(async () => await continuation(replayer).ConfigureAwait(false)).ConfigureAwait(false);
-                return result as IEnumerable<WorkflowReplayResult>;
-            }
-            return await continuation(replayer).ConfigureAwait(false);
+            return continuation(replayer);
         }
 
         private static T Resolve<T>(T existing, SimplePluginOptions.SimplePluginRequiredOption<T>? parameter)

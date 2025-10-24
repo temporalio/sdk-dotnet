@@ -46,6 +46,9 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets or sets the plugins.
         /// </summary>
+        /// <remarks>
+        /// WARNING: This API is experimental and may change in the future.
+        /// </remarks>
         public IReadOnlyCollection<ITemporalClientPlugin>? Plugins { get; set; }
 
         /// <summary>
