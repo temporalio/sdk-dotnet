@@ -114,7 +114,7 @@ namespace Temporalio.Bridge
             {
                 return null;
             }
-            var val = Temporalio.Bridge.CancellationToken.FromThreading(token.Value);
+            var val = new CancellationToken(token.Value);
             disposables.Add(val);
             return val.Ptr;
         }

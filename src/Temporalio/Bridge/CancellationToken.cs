@@ -4,16 +4,17 @@ using System.Runtime.InteropServices;
 namespace Temporalio.Bridge
 {
     /// <summary>
-    /// Core-owned cancellation token.
+    /// Core-owned cancellation token that's bound to the given .NET cancellation token.
     /// </summary>
     internal class CancellationToken : SafeHandle
     {
-        private System.Threading.CancellationTokenRegistration? registration;
+        private readonly System.Threading.CancellationTokenRegistration registration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CancellationToken"/> class.
         /// </summary>
-        public CancellationToken()
+        /// <param name="token">.NET cancellation token to bind.</param>
+        public CancellationToken(System.Threading.CancellationToken token)
             : base(IntPtr.Zero, true)
         {
             unsafe
@@ -21,6 +22,7 @@ namespace Temporalio.Bridge
                 Ptr = Interop.Methods.temporal_core_cancellation_token_new();
                 SetHandle((IntPtr)Ptr);
             }
+            registration = token.Register(Cancel);
         }
 
         /// <inheritdoc/>
@@ -32,20 +34,12 @@ namespace Temporalio.Bridge
         internal unsafe Interop.TemporalCoreCancellationToken* Ptr { get; }
 
         /// <summary>
-        /// Create a core cancellation token from the given cancellation token.
+        /// Cancels the Core-owned token. Does not cancel the bound .NET token.
         /// </summary>
-        /// <param name="token">Threading token.</param>
-        /// <returns>Created cancellation token.</returns>
-        public static CancellationToken FromThreading(System.Threading.CancellationToken token)
-        {
-            var ret = new CancellationToken();
-            ret.registration = token.Register(ret.Cancel);
-            return ret;
-        }
-
-        /// <summary>
-        /// Cancel this token.
-        /// </summary>
+        /// <remarks>
+        /// Cancelling the bound .NET token automatically cancels the Core-owned token,
+        /// but not the other way around.
+        /// </remarks>
         public void Cancel()
         {
             if (!IsClosed)
@@ -60,7 +54,7 @@ namespace Temporalio.Bridge
         /// <inheritdoc/>
         protected override unsafe bool ReleaseHandle()
         {
-            registration?.Dispose();
+            registration.Dispose();
             Interop.Methods.temporal_core_cancellation_token_free(Ptr);
             return true;
         }
