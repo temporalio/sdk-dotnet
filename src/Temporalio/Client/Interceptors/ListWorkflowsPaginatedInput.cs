@@ -13,5 +13,5 @@ namespace Temporalio.Client.Interceptors
     public record ListWorkflowsPaginatedInput(
         string Query,
         byte[]? NextPageToken,
-        ListWorkflowsPaginatedOptions? Options);
+        WorkflowListPaginatedOptions? Options);
 }
