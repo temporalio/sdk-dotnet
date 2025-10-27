@@ -76,7 +76,7 @@ namespace Temporalio.Worker
             foreach (var plugin in plugins.Reverse())
             {
                 var localExecute = execute;
-                execute = replayer => plugin.RunReplayerAsync(replayer, localExecute);
+                execute = replayer => plugin.ReplayWorkflowsAsync(replayer, localExecute);
             }
 
             return execute(this);

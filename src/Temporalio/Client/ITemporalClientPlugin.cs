@@ -14,13 +14,13 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets the plugin name.
         /// </summary>
-        public string Name { get; }
+        string Name { get; }
 
         /// <summary>
         /// Configures the client options.
         /// </summary>
         /// <param name="options">The client options to configure.</param>
-        public void ConfigureClient(TemporalClientOptions options);
+        void ConfigureClient(TemporalClientOptions options);
 
         /// <summary>
         /// Handles temporal connection asynchronously.
@@ -28,6 +28,6 @@ namespace Temporalio.Client
         /// <param name="options">The connection options.</param>
         /// <param name="continuation">The continuation function.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public Task<TemporalConnection> TemporalConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation);
+        Task<TemporalConnection> ConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation);
     }
 }

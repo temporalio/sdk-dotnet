@@ -74,7 +74,7 @@ namespace Temporalio.Client
                 foreach (var plugin in options.Plugins.Reverse())
                 {
                     var localConnect = connect;
-                    connect = connectOptions => plugin.TemporalConnectAsync(connectOptions, localConnect);
+                    connect = connectOptions => plugin.ConnectAsync(connectOptions, localConnect);
                 }
             }
             return new(

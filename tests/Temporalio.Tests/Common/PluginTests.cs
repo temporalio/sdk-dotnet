@@ -26,7 +26,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
             options.Namespace = "NewNamespace";
         }
 
-        public Task<TemporalConnection> TemporalConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) => throw new NotImplementedException();
+        public Task<TemporalConnection> ConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) => throw new NotImplementedException();
     }
 
     private class WorkerPlugin : ITemporalWorkerPlugin
@@ -42,7 +42,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
         public void ConfigureReplayer(WorkflowReplayerOptions options) => throw new NotImplementedException();
 
-        public Task<IEnumerable<WorkflowReplayResult>> RunReplayerAsync(WorkflowReplayer replayer, Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> continuation) => throw new NotImplementedException();
+        public Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(WorkflowReplayer replayer, Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> continuation) => throw new NotImplementedException();
     }
 
     private class CombinedPlugin : WorkerPlugin, ITemporalClientPlugin
@@ -54,7 +54,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
             options.Namespace = "NewNamespace";
         }
 
-        public Task<TemporalConnection> TemporalConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) => throw new NotImplementedException();
+        public Task<TemporalConnection> ConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) => throw new NotImplementedException();
     }
 
     [Fact]
@@ -131,7 +131,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
     {
         var plugin = new SimplePlugin("SimplePlugin", new SimplePluginOptions()
         {
-            DataConverterOption = new SimplePluginOptions.SimplePluginRequiredOption<DataConverter>(
+            DataConverterOption = new SimplePluginOptions.SimplePluginOption<DataConverter>(
                 (converter) => converter with { PayloadCodec = new Codec() }),
         }.AddWorkflow<SimpleWorkflow>());
         var newOptions = (TemporalClientOptions)Client.Options.Clone();

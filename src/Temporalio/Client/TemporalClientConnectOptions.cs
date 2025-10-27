@@ -87,6 +87,7 @@ namespace Temporalio.Client
                 Interceptors = Interceptors,
                 LoggerFactory = LoggerFactory,
                 QueryRejectCondition = QueryRejectCondition,
+                Plugins = Plugins,
             };
     }
 }
