@@ -31,7 +31,7 @@ namespace Temporalio.Common
         /// <summary>
         /// Gets the plugin options.
         /// </summary>
-        public SimplePluginOptions PluginOptions { get; init; }
+        public SimplePluginOptions PluginOptions { get; }
 
         /// <summary>
         /// Gets the plugin name.
@@ -100,12 +100,13 @@ namespace Temporalio.Common
         /// <summary>
         /// Runs the replayer asynchronously.
         /// </summary>
+        /// <typeparam name="T">Result type.</typeparam>
         /// <param name="replayer">The replayer to run.</param>
         /// <param name="continuation">The continuation function.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public virtual Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
+        public virtual T ReplayWorkflows<T>(
             WorkflowReplayer replayer,
-            Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> continuation)
+            Func<WorkflowReplayer, T> continuation)
         {
             return continuation(replayer);
         }

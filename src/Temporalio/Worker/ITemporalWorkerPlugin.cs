@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Temporalio.Worker
@@ -40,9 +39,10 @@ namespace Temporalio.Worker
         /// <summary>
         /// Runs the replayer asynchronously.
         /// </summary>
+        /// <typeparam name="T">Result type.</typeparam>
         /// <param name="replayer">The replayer to run.</param>
         /// <param name="continuation">The continuation function.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(WorkflowReplayer replayer, Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> continuation);
+        T ReplayWorkflows<T>(WorkflowReplayer replayer, Func<WorkflowReplayer, T> continuation);
     }
 }

@@ -29,7 +29,7 @@ namespace Temporalio.Worker
         /// <param name="options">Replayer options.</param>
         public WorkflowReplayer(WorkflowReplayerOptions options)
         {
-            plugins = options.Plugins ?? new List<ITemporalWorkerPlugin>();
+            plugins = options.Plugins ?? Array.Empty<ITemporalWorkerPlugin>();
             foreach (var plugin in plugins)
             {
                 plugin.ConfigureReplayer(options);
@@ -76,7 +76,7 @@ namespace Temporalio.Worker
             foreach (var plugin in plugins.Reverse())
             {
                 var localExecute = execute;
-                execute = replayer => plugin.ReplayWorkflowsAsync(replayer, localExecute);
+                execute = replayer => plugin.ReplayWorkflows(replayer, localExecute);
             }
 
             return execute(this);
@@ -93,7 +93,32 @@ namespace Temporalio.Worker
         /// failures which are not reported as part of replay.</param>
         /// <param name="cancellationToken">Cancellation token to stop replaying.</param>
         /// <returns>Results of the replay runs.</returns>
-        public async IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+        public IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+            IAsyncEnumerable<WorkflowHistory> histories,
+            bool throwOnReplayFailure = false,
+            CancellationToken cancellationToken = default)
+        {
+            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> execute = replayer => replayer.ReplayWorkflowsInternalAsync(histories, throwOnReplayFailure, cancellationToken);
+            foreach (var plugin in plugins.Reverse())
+            {
+                var localExecute = execute;
+                execute = replayer => plugin.ReplayWorkflows(replayer, localExecute);
+            }
+
+            return execute(this);
+        }
+
+        /// <summary>
+        /// Replay multiple workflows from the given histories.
+        /// </summary>
+        /// <param name="histories">Histories to replay.</param>
+        /// <param name="throwOnReplayFailure">If true, which is not the default, this will throw
+        /// <see cref="InvalidWorkflowOperationException" /> on a workflow task failure
+        /// (e.g. non-determinism) as soon as it's encountered. This has no effect on workflow
+        /// failures which are not reported as part of replay.</param>
+        /// <param name="cancellationToken">Cancellation token to stop replaying.</param>
+        /// <returns>Results of the replay runs.</returns>
+        public async IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsInternalAsync(
             IAsyncEnumerable<WorkflowHistory> histories,
             bool throwOnReplayFailure = false,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)

@@ -42,7 +42,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
         public void ConfigureReplayer(WorkflowReplayerOptions options) => throw new NotImplementedException();
 
-        public Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(WorkflowReplayer replayer, Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> continuation) => throw new NotImplementedException();
+        public T ReplayWorkflows<T>(WorkflowReplayer replayer, Func<WorkflowReplayer, T> continuation) => throw new NotImplementedException();
     }
 
     private class CombinedPlugin : WorkerPlugin, ITemporalClientPlugin
