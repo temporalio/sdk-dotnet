@@ -1,5 +1,3 @@
-using NexusRpc.Handlers;
-using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Client;
 using Temporalio.Common;
@@ -69,7 +67,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
         Assert.Equal("NewNamespace", client.Options.Namespace);
     }
 
-    #pragma warning disable CA1812
+#pragma warning disable CA1812
     [Workflow]
     private class SimpleWorkflow
     {
