@@ -54,31 +54,21 @@ namespace Temporalio.Common
         }
 
         /// <summary>
-        /// Gets the activities for the plugin.
+        /// Gets the activity definitions. Most users will use AddActivity to add to this list.
         /// </summary>
-        public IList<ActivityDefinition>? Activities
-        {
-            get;
-            init;
-        }
+        public IList<ActivityDefinition> Activities { get; } = new List<ActivityDefinition>();
 
         /// <summary>
-        /// Gets the workflows for the plugin.
+        /// Gets the workflow definitions. Most users will use AddWorkflow to add to this list.
         /// </summary>
-        public IList<WorkflowDefinition>? Workflows
-        {
-            get;
-            init;
-        }
+        public IList<WorkflowDefinition> Workflows { get; } = new List<WorkflowDefinition>();
 
         /// <summary>
-        /// Gets the nexus services for the plugin.
+        /// Gets the Nexus service instances. Most users will use AddNexusService to add to this
+        /// list.
         /// </summary>
-        public IList<ServiceHandlerInstance>? NexusServices
-        {
-            get;
-            init;
-        }
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public IList<ServiceHandlerInstance> NexusServices { get; } = new List<ServiceHandlerInstance>();
 
         /// <summary>
         /// Gets or sets the worker interceptors for the plugin.
@@ -123,6 +113,93 @@ namespace Temporalio.Common
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is
+        /// usually a method reference.
+        /// </summary>
+        /// <param name="del">Delegate to add.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public SimplePluginOptions AddActivity(Delegate del) =>
+            AddActivity(ActivityDefinition.Create(del));
+
+        /// <summary>
+        /// Add the given activity definition. Most users will use
+        /// <see cref="AddActivity(Delegate)" /> instead.
+        /// </summary>
+        /// <param name="definition">Definition to add.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public SimplePluginOptions AddActivity(ActivityDefinition definition)
+        {
+            Activities.Add(definition);
+            return this;
+        }
+
+        /// <summary>
+        /// Add all methods on the given type with <see cref="ActivityAttribute" />.
+        /// </summary>
+        /// <typeparam name="T">Type to get activities from.</typeparam>
+        /// <param name="instance">Instance to use when invoking. This must be non-null if any
+        /// activities are non-static.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public SimplePluginOptions AddAllActivities<T>(T? instance) =>
+            AddAllActivities(typeof(T), instance);
+
+        /// <summary>
+        /// Add all methods on the given type with <see cref="ActivityAttribute" />.
+        /// </summary>
+        /// <param name="type">Type to get activities from.</param>
+        /// <param name="instance">Instance to use when invoking. This must be non-null if any
+        /// activities are non-static.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public SimplePluginOptions AddAllActivities(Type type, object? instance)
+        {
+            foreach (var defn in ActivityDefinition.CreateAll(type, instance))
+            {
+                AddActivity(defn);
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Add the given type as a workflow.
+        /// </summary>
+        /// <typeparam name="T">Type to add.</typeparam>
+        /// <returns>This options instance for chaining.</returns>
+        public SimplePluginOptions AddWorkflow<T>() => AddWorkflow(typeof(T));
+
+        /// <summary>
+        /// Add the given type as a workflow.
+        /// </summary>
+        /// <param name="type">Type to add.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public SimplePluginOptions AddWorkflow(Type type) =>
+            AddWorkflow(WorkflowDefinition.Create(type));
+
+        /// <summary>
+        /// Add the given workflow definition. Most users will use <see cref="AddWorkflow{T}" />
+        /// instead.
+        /// </summary>
+        /// <param name="definition">Definition to add.</param>
+        /// <returns>This options instance for chaining.</returns>
+        public SimplePluginOptions AddWorkflow(WorkflowDefinition definition)
+        {
+            Workflows.Add(definition);
+            return this;
+        }
+
+        /// <summary>
+        /// Add the given Nexus service handler.
+        /// </summary>
+        /// <param name="serviceHandler">Service handler to add. It is expected to be an instance of
+        /// a class with a <see cref="NexusServiceHandlerAttribute"/> attribute.</param>
+        /// <returns>This options instance for chaining.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public SimplePluginOptions AddNexusService(object serviceHandler)
+        {
+            NexusServices.Add(ServiceHandlerInstance.FromInstance(serviceHandler));
+            return this;
         }
 
         /// <summary>

@@ -69,13 +69,21 @@ public class PluginTests : WorkflowEnvironmentTestBase
         Assert.Equal("NewNamespace", client.Options.Namespace);
     }
 
+    #pragma warning disable CA1812
+    [Workflow]
+    private class SimpleWorkflow
+    {
+        [WorkflowRun]
+        public Task<string> RunAsync(string name) => Task.FromResult($"Hello, {name}!");
+    }
+
     [Fact]
     public void TestWorkerPlugin()
     {
         using var worker = new TemporalWorker(Env.Client, new TemporalWorkerOptions()
         {
             Plugins = new[] { new CombinedPlugin() },
-        });
+        }.AddWorkflow<SimpleWorkflow>());
         Assert.Equal("NewTaskQueue", worker.Options.TaskQueue);
     }
 
@@ -83,10 +91,14 @@ public class PluginTests : WorkflowEnvironmentTestBase
     public void TestWorkerPlugin_Inheritance()
     {
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
-        newOptions.Plugins = new[] { new ClientPlugin() };
+        newOptions.Plugins = new[] { new CombinedPlugin() };
 
         var client = new TemporalClient(Env.Client.Connection, newOptions);
-        Assert.Equal("NewNamespace", client.Options.Namespace);
+        using var worker = new TemporalWorker(client, new TemporalWorkerOptions()
+        {
+            Plugins = new[] { new CombinedPlugin() },
+        }.AddWorkflow<SimpleWorkflow>());
+        Assert.Equal("NewTaskQueue", worker.Options.TaskQueue);
     }
 
     private class Codec : IPayloadCodec
@@ -101,15 +113,39 @@ public class PluginTests : WorkflowEnvironmentTestBase
     {
         var plugin = new SimplePlugin("SimplePlugin", new SimplePluginOptions()
         {
-            Activities = new List<ActivityDefinition>(),
-            Workflows = new List<WorkflowDefinition>(),
-            NexusServices = new List<ServiceHandlerInstance>(),
             DataConverter = new DataConverter(new DefaultPayloadConverter(), new DefaultFailureConverter(), new Codec()),
-        });
+        }.AddWorkflow<SimpleWorkflow>());
         var newOptions = (TemporalClientOptions)Client.Options.Clone();
         newOptions.Plugins = new[] { plugin };
 
         var client = new TemporalClient(Env.Client.Connection, newOptions);
+        Assert.NotNull(client.Options.DataConverter.PayloadCodec);
+
+        using var worker = new TemporalWorker(client, new TemporalWorkerOptions()
+        {
+            TaskQueue = "TestSimplePlugin_Basic",
+        });
+        Assert.NotNull(client.Options.DataConverter.PayloadCodec);
+    }
+
+    [Fact]
+    public void TestSimplePlugin_Function()
+    {
+        var plugin = new SimplePlugin("SimplePlugin", new SimplePluginOptions()
+        {
+            DataConverterOption = new SimplePluginOptions.SimplePluginRequiredOption<DataConverter>(
+                (converter) => converter with { PayloadCodec = new Codec() }),
+        }.AddWorkflow<SimpleWorkflow>());
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Plugins = new[] { plugin };
+
+        var client = new TemporalClient(Env.Client.Connection, newOptions);
+        Assert.NotNull(client.Options.DataConverter.PayloadCodec);
+
+        using var worker = new TemporalWorker(client, new TemporalWorkerOptions()
+        {
+            TaskQueue = "TestSimplePlugin_Function",
+        });
         Assert.NotNull(client.Options.DataConverter.PayloadCodec);
     }
 }
