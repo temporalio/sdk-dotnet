@@ -55,10 +55,14 @@ namespace Temporalio.Worker
         /// <see cref="InvalidWorkflowOperationException" /> on a workflow task failure
         /// (e.g. non-determinism). This has no effect on workflow failures which are not reported
         /// as part of replay.</param>
+        /// <param name="cancellationToken">Cancellation token to stop the replay.</param>
         /// <returns>Result of the replay run.</returns>
         public async Task<WorkflowReplayResult> ReplayWorkflowAsync(
-            WorkflowHistory history, bool throwOnReplayFailure = true) =>
-            (await ReplayWorkflowsAsync(new[] { history }, throwOnReplayFailure).ConfigureAwait(false)).Single();
+            WorkflowHistory history,
+            bool throwOnReplayFailure = true,
+            CancellationToken cancellationToken = default) =>
+            (await ReplayWorkflowsAsync(new[] { history }, throwOnReplayFailure, cancellationToken).
+                ConfigureAwait(false)).Single();
 
         /// <summary>
         /// Replay multiple workflows from the given histories.
@@ -68,18 +72,24 @@ namespace Temporalio.Worker
         /// <see cref="InvalidWorkflowOperationException" /> on a workflow task failure
         /// (e.g. non-determinism) as soon as it's encountered. This has no effect on workflow
         /// failures which are not reported as part of replay.</param>
+        /// <param name="cancellationToken">Cancellation token to stop the replay.</param>
         /// <returns>Results of the replay runs.</returns>
         public Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
-            IEnumerable<WorkflowHistory> histories, bool throwOnReplayFailure = false)
+            IEnumerable<WorkflowHistory> histories,
+            bool throwOnReplayFailure = false,
+            CancellationToken cancellationToken = default)
         {
-            Func<WorkflowReplayer, Task<IEnumerable<WorkflowReplayResult>>> execute = replayer => replayer.ReplayWorkflowsInternalAsync(histories, throwOnReplayFailure);
+            Func<WorkflowReplayer, CancellationToken, Task<IEnumerable<WorkflowReplayResult>>> execute =
+                (replayer, cancellationToken) =>
+                    replayer.ReplayWorkflowsInternalAsync(histories, throwOnReplayFailure, cancellationToken);
             foreach (var plugin in plugins.Reverse())
             {
                 var localExecute = execute;
-                execute = replayer => plugin.ReplayWorkflows(replayer, localExecute);
+                execute = (replayer, cancellationToken) =>
+                    plugin.ReplayWorkflowsAsync(replayer, localExecute, cancellationToken);
             }
 
-            return execute(this);
+            return execute(this, cancellationToken);
         }
 
 #if NETCOREAPP3_0_OR_GREATER
@@ -93,34 +103,31 @@ namespace Temporalio.Worker
         /// failures which are not reported as part of replay.</param>
         /// <param name="cancellationToken">Cancellation token to stop replaying.</param>
         /// <returns>Results of the replay runs.</returns>
-        public IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+        public async IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
             IAsyncEnumerable<WorkflowHistory> histories,
             bool throwOnReplayFailure = false,
-            CancellationToken cancellationToken = default)
+            [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> execute = replayer => replayer.ReplayWorkflowsInternalAsync(histories, throwOnReplayFailure, cancellationToken);
+            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> execute = replayer =>
+                replayer.ReplayWorkflowsInternalAsync(histories, throwOnReplayFailure);
             foreach (var plugin in plugins.Reverse())
             {
                 var localExecute = execute;
-                execute = replayer => plugin.ReplayWorkflows(replayer, localExecute);
+                execute = replayer =>
+                    plugin.ReplayWorkflowsAsync(replayer, localExecute, cancellationToken);
             }
 
-            return execute(this);
+            // We must have await foreach in here to make [EnumeratorCancellation] work
+            var asyncEnum = execute(this);
+            await foreach (var res in asyncEnum.WithCancellation(cancellationToken).ConfigureAwait(false))
+            {
+                yield return res;
+            }
         }
 
-        /// <summary>
-        /// Replay multiple workflows from the given histories.
-        /// </summary>
-        /// <param name="histories">Histories to replay.</param>
-        /// <param name="throwOnReplayFailure">If true, which is not the default, this will throw
-        /// <see cref="InvalidWorkflowOperationException" /> on a workflow task failure
-        /// (e.g. non-determinism) as soon as it's encountered. This has no effect on workflow
-        /// failures which are not reported as part of replay.</param>
-        /// <param name="cancellationToken">Cancellation token to stop replaying.</param>
-        /// <returns>Results of the replay runs.</returns>
-        public async IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsInternalAsync(
+        private async IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsInternalAsync(
             IAsyncEnumerable<WorkflowHistory> histories,
-            bool throwOnReplayFailure = false,
+            bool throwOnReplayFailure,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             using (var runner = new WorkflowHistoryRunner(Options, throwOnReplayFailure))
@@ -153,14 +160,16 @@ namespace Temporalio.Worker
 #endif
 
         private async Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsInternalAsync(
-            IEnumerable<WorkflowHistory> histories, bool throwOnReplayFailure = false)
+            IEnumerable<WorkflowHistory> histories,
+            bool throwOnReplayFailure,
+            CancellationToken cancellationToken)
         {
             // We could stream the results, but since the method wants them all anyways, a list is
             // ok
             using (var runner = new WorkflowHistoryRunner(Options, throwOnReplayFailure))
-            using (var cts = new CancellationTokenSource())
+            using (var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
             {
-                var workerTask = Task.Run(() => runner.RunWorkerAsync(cts.Token));
+                var workerTask = Task.Run(() => runner.RunWorkerAsync(cts.Token), CancellationToken.None);
                 try
                 {
                     var results = new List<WorkflowReplayResult>();

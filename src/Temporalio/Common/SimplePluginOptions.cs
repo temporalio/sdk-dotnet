@@ -107,13 +107,14 @@ namespace Temporalio.Common
         }
 
         /// <summary>
-        /// Gets or sets the run context function for the plugin. Executes around worker and replayers.
+        /// Gets or sets a function to run before running worker/replayer.
         /// </summary>
-        public Func<Func<Task<object?>>, Task<object?>>? RunContext
-        {
-            get;
-            set;
-        }
+        public Func<Task>? RunContextBefore { get; set; }
+
+        /// <summary>
+        /// Gets or sets a function to run after running worker/replayer.
+        /// </summary>
+        public Func<Task>? RunContextAfter { get; set; }
 
         /// <summary>
         /// Add the given delegate with <see cref="ActivityAttribute" /> as an activity. This is

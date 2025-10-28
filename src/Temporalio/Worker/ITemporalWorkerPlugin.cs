@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Temporalio.Worker
@@ -25,10 +27,16 @@ namespace Temporalio.Worker
         /// <summary>
         /// Runs the worker asynchronously.
         /// </summary>
+        /// <typeparam name="TResult">Result type. For most worker run calls, this is
+        /// <see cref="ValueTuple"/>.</typeparam>
         /// <param name="worker">The worker to run.</param>
         /// <param name="continuation">The continuation function.</param>
+        /// <param name="stoppingToken">Cancellation token to stop the worker.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task RunWorkerAsync(TemporalWorker worker, Func<TemporalWorker, Task> continuation);
+        Task<TResult> RunWorkerAsync<TResult>(
+            TemporalWorker worker,
+            Func<TemporalWorker, CancellationToken, Task<TResult>> continuation,
+            CancellationToken stoppingToken);
 
         /// <summary>
         /// Configures the replayer options.
@@ -39,10 +47,27 @@ namespace Temporalio.Worker
         /// <summary>
         /// Runs the replayer asynchronously.
         /// </summary>
-        /// <typeparam name="T">Result type.</typeparam>
         /// <param name="replayer">The replayer to run.</param>
         /// <param name="continuation">The continuation function.</param>
+        /// <param name="cancellationToken">Cancellation token to stop the replay.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        T ReplayWorkflows<T>(WorkflowReplayer replayer, Func<WorkflowReplayer, T> continuation);
+        Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, CancellationToken, Task<IEnumerable<WorkflowReplayResult>>> continuation,
+            CancellationToken cancellationToken);
+
+#if NETCOREAPP3_0_OR_GREATER
+        /// <summary>
+        /// Runs the replayer asynchronously.
+        /// </summary>
+        /// <param name="replayer">The replayer to run.</param>
+        /// <param name="continuation">The continuation function.</param>
+        /// <param name="cancellationToken">Cancellation token to stop the replay.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> continuation,
+            CancellationToken cancellationToken);
+#endif
     }
 }

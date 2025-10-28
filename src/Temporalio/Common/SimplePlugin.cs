@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Temporalio.Client;
 using Temporalio.Worker;
@@ -20,18 +22,16 @@ namespace Temporalio.Common
         /// </summary>
         /// <param name="name">The plugin name.</param>
         /// <param name="options">The plugin options.</param>
-        public SimplePlugin(
-            string name,
-            SimplePluginOptions? options = null)
+        public SimplePlugin(string name, SimplePluginOptions? options = null)
         {
             Name = name;
-            PluginOptions = options ?? new SimplePluginOptions();
+            Options = options ?? new SimplePluginOptions();
         }
 
         /// <summary>
         /// Gets the plugin options.
         /// </summary>
-        public SimplePluginOptions PluginOptions { get; }
+        public SimplePluginOptions Options { get; }
 
         /// <summary>
         /// Gets the plugin name.
@@ -44,8 +44,8 @@ namespace Temporalio.Common
         /// <param name="options">The client options to configure.</param>
         public virtual void ConfigureClient(TemporalClientOptions options)
         {
-            options.DataConverter = Resolve(options.DataConverter, PluginOptions.DataConverterOption);
-            options.Interceptors = ResolveAppend(options.Interceptors, PluginOptions.ClientInterceptorsOption);
+            options.DataConverter = Resolve(options.DataConverter, Options.DataConverterOption);
+            options.Interceptors = ResolveAppend(options.Interceptors, Options.ClientInterceptorsOption);
         }
 
         /// <summary>
@@ -67,22 +67,43 @@ namespace Temporalio.Common
         /// <param name="options">The worker options to configure.</param>
         public virtual void ConfigureWorker(TemporalWorkerOptions options)
         {
-            DoAppend(options.Activities, PluginOptions.Activities);
-            DoAppend(options.Workflows, PluginOptions.Workflows);
-            DoAppend(options.NexusServices, PluginOptions.NexusServices);
-            options.Interceptors = ResolveAppend(options.Interceptors, PluginOptions.WorkerInterceptorsOption);
-            options.WorkflowFailureExceptionTypes = ResolveAppend(options.WorkflowFailureExceptionTypes, PluginOptions.WorkflowFailureExceptionTypesOption);
+            DoAppend(options.Activities, Options.Activities);
+            DoAppend(options.Workflows, Options.Workflows);
+            DoAppend(options.NexusServices, Options.NexusServices);
+            options.Interceptors = ResolveAppend(options.Interceptors, Options.WorkerInterceptorsOption);
+            options.WorkflowFailureExceptionTypes = ResolveAppend(
+                options.WorkflowFailureExceptionTypes, Options.WorkflowFailureExceptionTypesOption);
         }
 
         /// <summary>
         /// Runs the worker asynchronously.
         /// </summary>
+        /// <typeparam name="TResult">Result type. For most worker run calls, this is
+        /// <see cref="ValueTuple"/>.</typeparam>
         /// <param name="worker">The worker to run.</param>
         /// <param name="continuation">The continuation function.</param>
+        /// <param name="stoppingToken">Cancellation token to stop the worker.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public virtual Task RunWorkerAsync(TemporalWorker worker, Func<TemporalWorker, Task> continuation)
+        public virtual async Task<TResult> RunWorkerAsync<TResult>(
+            TemporalWorker worker,
+            Func<TemporalWorker, CancellationToken, Task<TResult>> continuation,
+            CancellationToken stoppingToken)
         {
-            return continuation(worker);
+            if (Options.RunContextBefore is { } before)
+            {
+                await before().ConfigureAwait(false);
+            }
+            try
+            {
+                return await continuation(worker, stoppingToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (Options.RunContextAfter is { } after)
+                {
+                    await after().ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>
@@ -91,25 +112,76 @@ namespace Temporalio.Common
         /// <param name="options">The replayer options to configure.</param>
         public virtual void ConfigureReplayer(WorkflowReplayerOptions options)
         {
-            options.DataConverter = Resolve(options.DataConverter, PluginOptions.DataConverterOption);
-            DoAppend(options.Workflows, PluginOptions.Workflows);
-            options.Interceptors = ResolveAppend(options.Interceptors, PluginOptions.WorkerInterceptorsOption);
-            options.WorkflowFailureExceptionTypes = ResolveAppend(options.WorkflowFailureExceptionTypes, PluginOptions.WorkflowFailureExceptionTypesOption);
+            options.DataConverter = Resolve(options.DataConverter, Options.DataConverterOption);
+            DoAppend(options.Workflows, Options.Workflows);
+            options.Interceptors = ResolveAppend(options.Interceptors, Options.WorkerInterceptorsOption);
+            options.WorkflowFailureExceptionTypes = ResolveAppend(
+                options.WorkflowFailureExceptionTypes, Options.WorkflowFailureExceptionTypesOption);
         }
 
         /// <summary>
         /// Runs the replayer asynchronously.
         /// </summary>
-        /// <typeparam name="T">Result type.</typeparam>
         /// <param name="replayer">The replayer to run.</param>
         /// <param name="continuation">The continuation function.</param>
+        /// <param name="cancellationToken">Cancellation token to stop the replay.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public virtual T ReplayWorkflows<T>(
+        public virtual async Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
             WorkflowReplayer replayer,
-            Func<WorkflowReplayer, T> continuation)
+            Func<WorkflowReplayer, CancellationToken, Task<IEnumerable<WorkflowReplayResult>>> continuation,
+            CancellationToken cancellationToken)
         {
-            return continuation(replayer);
+            if (Options.RunContextBefore is { } before)
+            {
+                await before().ConfigureAwait(false);
+            }
+            try
+            {
+                return await continuation(replayer, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (Options.RunContextAfter is { } after)
+                {
+                    await after().ConfigureAwait(false);
+                }
+            }
         }
+
+#if NETCOREAPP3_0_OR_GREATER
+        /// <summary>
+        /// Runs the replayer asynchronously.
+        /// </summary>
+        /// <param name="replayer">The replayer to run.</param>
+        /// <param name="continuation">The continuation function.</param>
+        /// <param name="cancellationToken">Cancellation token to stop the replay.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public virtual async IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> continuation,
+            [EnumeratorCancellation] CancellationToken cancellationToken)
+        {
+            if (Options.RunContextBefore is { } before)
+            {
+                await before().ConfigureAwait(false);
+            }
+            try
+            {
+                var asyncEnum = continuation(replayer);
+                await foreach (var res in asyncEnum.ConfigureAwait(false).WithCancellation(cancellationToken))
+                {
+                    yield return res;
+                }
+            }
+            finally
+            {
+                if (Options.RunContextAfter is { } after)
+                {
+                    await after().ConfigureAwait(false);
+                }
+            }
+        }
+#endif
 
         private static T Resolve<T>(T existing, SimplePluginOptions.SimplePluginOption<T>? parameter)
         {

@@ -8,6 +8,7 @@ using Xunit.Abstractions;
 
 namespace Temporalio.Tests.Common;
 
+using System.Threading;
 using Xunit;
 
 public class PluginTests : WorkflowEnvironmentTestBase
@@ -38,11 +39,26 @@ public class PluginTests : WorkflowEnvironmentTestBase
             options.TaskQueue = "NewTaskQueue";
         }
 
-        public Task RunWorkerAsync(TemporalWorker worker, Func<TemporalWorker, Task> continuation) => throw new NotImplementedException();
+        public Task<TResult> RunWorkerAsync<TResult>(
+            TemporalWorker worker,
+            Func<TemporalWorker, CancellationToken, Task<TResult>> continuation,
+            CancellationToken stoppingToken) =>
+            throw new NotImplementedException();
 
-        public void ConfigureReplayer(WorkflowReplayerOptions options) => throw new NotImplementedException();
+        public void ConfigureReplayer(WorkflowReplayerOptions options) =>
+            throw new NotImplementedException();
 
-        public T ReplayWorkflows<T>(WorkflowReplayer replayer, Func<WorkflowReplayer, T> continuation) => throw new NotImplementedException();
+        public Task<IEnumerable<WorkflowReplayResult>> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, CancellationToken, Task<IEnumerable<WorkflowReplayResult>>> continuation,
+            CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
+
+        public IAsyncEnumerable<WorkflowReplayResult> ReplayWorkflowsAsync(
+            WorkflowReplayer replayer,
+            Func<WorkflowReplayer, IAsyncEnumerable<WorkflowReplayResult>> continuation,
+            CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     private class CombinedPlugin : WorkerPlugin, ITemporalClientPlugin
