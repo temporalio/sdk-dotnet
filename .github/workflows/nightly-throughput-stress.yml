@@ -24,6 +24,8 @@ on:
         required: false
         default: 360
         type: number
+permissions:
+    contents: read
 
 env:
   # Workflow configuration
