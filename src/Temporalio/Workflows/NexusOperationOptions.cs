@@ -10,11 +10,6 @@ namespace Temporalio.Workflows
     public class NexusOperationOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets the operation name.
-        /// </summary>
-        public string? OperationName { get; set; }
-
-        /// <summary>
         /// Gets or sets the schedule to close timeout.
         /// </summary>
         public TimeSpan? ScheduleToCloseTimeout { get; set; }

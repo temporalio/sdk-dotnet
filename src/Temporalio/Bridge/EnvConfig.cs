@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Temporalio.Client.EnvConfig;
+using Temporalio.Common.EnvConfig;
 
 namespace Temporalio.Bridge
 {
