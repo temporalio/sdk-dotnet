@@ -128,7 +128,6 @@ jobs:
             --version $(pwd)/.. \
             --run-id $RUN_ID \
             --duration $TEST_DURATION \
-            --log-level debug \
             --timeout $TEST_TIMEOUT \
             --max-concurrent 10 \
             --option internal-iterations=10 \
