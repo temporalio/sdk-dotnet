@@ -64,14 +64,14 @@ jobs:
         with:
           repository: ${{ env.OMES_REPO }}
           ref: ${{ env.OMES_REF }}
-          path: omes
+          path: ../omes
           submodules: recursive
 
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: omes/go.mod
-          cache-dependency-path: omes/go.sum
+          go-version-file: ../omes/go.mod
+          cache-dependency-path: ../omes/go.sum
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -110,7 +110,7 @@ jobs:
             --headless &> $WORKER_LOG_DIR/temporal-server.log &
 
       - name: Run throughput stress scenario with local SDK
-        working-directory: omes
+        working-directory: ../omes
         run: |
           # This makes the pipeline return the exit code of the first failing command
           # Otherwise the output of the `tee` command will be used
@@ -125,7 +125,7 @@ jobs:
           go run ./cmd run-scenario-with-worker \
             --scenario throughput_stress \
             --language dotnet \
-            --version $(pwd)/.. \
+            --version $(pwd)/../sdk-dotnet \
             --run-id $RUN_ID \
             --duration $TEST_DURATION \
             --log-level debug \
