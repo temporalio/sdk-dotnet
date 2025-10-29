@@ -27,7 +27,10 @@ public class PluginTests : WorkflowEnvironmentTestBase
             options.Namespace = "NewNamespace";
         }
 
-        public Task<TemporalConnection> ConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) => throw new NotImplementedException();
+        public Task<TemporalConnection> ConnectAsync(
+            TemporalClientConnectOptions options,
+            Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) =>
+            throw new NotImplementedException();
     }
 
     private class WorkerPlugin : ITemporalWorkerPlugin
@@ -70,7 +73,13 @@ public class PluginTests : WorkflowEnvironmentTestBase
             options.Namespace = "NewNamespace";
         }
 
-        public Task<TemporalConnection> ConnectAsync(TemporalClientConnectOptions options, Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation) => throw new NotImplementedException();
+        public Task<TemporalConnection> ConnectAsync(
+            TemporalClientConnectOptions options,
+            Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation)
+        {
+            options.TargetHost = "Invalid";
+            return continuation(options);
+        }
     }
 
     [Fact]
@@ -81,6 +90,39 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
         var client = new TemporalClient(Env.Client.Connection, newOptions);
         Assert.Equal("NewNamespace", client.Options.Namespace);
+    }
+
+    private class FailToConnectPlugin : ITemporalClientPlugin
+    {
+        public string Name => "FailToConnectPlugin";
+
+        public void ConfigureClient(TemporalClientOptions options)
+        {
+        }
+
+        public Task<TemporalConnection> ConnectAsync(
+            TemporalClientConnectOptions options,
+            Func<TemporalClientConnectOptions, Task<TemporalConnection>> continuation)
+        {
+            Assert.Equal("Invalid", options.TargetHost);
+            throw new NotImplementedException();
+        }
+    }
+
+    [Fact]
+    public async Task TestClientPlugin_Connect_Interceptor()
+    {
+        var options = new TemporalClientConnectOptions()
+        {
+            Plugins = new ITemporalClientPlugin[]
+            {
+                new ClientPlugin(),
+                new FailToConnectPlugin(),
+            },
+        };
+
+        // Test the interceptor is invoked, the second one is invoked second as the assert does not fail.
+        await Assert.ThrowsAsync<NotImplementedException>(async () => await TemporalClient.ConnectAsync(options));
     }
 
 #pragma warning disable CA1812
