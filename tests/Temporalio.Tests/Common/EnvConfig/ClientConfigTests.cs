@@ -1,8 +1,8 @@
-using Temporalio.Client.EnvConfig;
+using Temporalio.Common.EnvConfig;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Temporalio.Tests.Client.EnvConfig
+namespace Temporalio.Tests.Common.EnvConfig
 {
     /// <summary>
     /// Environment configuration tests following Python/TypeScript patterns for cross-SDK consistency.

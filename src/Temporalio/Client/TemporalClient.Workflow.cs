@@ -122,9 +122,14 @@ namespace Temporalio.Client
             string query, WorkflowCountOptions? options = null) =>
             OutboundInterceptor.CountWorkflowsAsync(new(Query: query, Options: options));
 
+        /// <inheritdoc />
+        public Task<WorkflowListPage> ListWorkflowsPaginatedAsync(
+            string query, byte[]? nextPageToken, WorkflowListPaginatedOptions? options = null) =>
+            OutboundInterceptor.ListWorkflowsPaginatedAsync(new(Query: query, NextPageToken: nextPageToken, Options: options));
+
         internal partial class Impl
         {
-            private static IReadOnlyCollection<HistoryEvent> emptyEvents = new List<HistoryEvent>(0);
+            private static IReadOnlyCollection<HistoryEvent> emptyEvents = new List<HistoryEvent>(0).AsReadOnly();
 
             /// <inheritdoc />
             public override async Task<WorkflowHandle<TWorkflow, TResult>> StartWorkflowAsync<TWorkflow, TResult>(
@@ -621,7 +626,7 @@ namespace Temporalio.Client
                     if (pageComplete)
                     {
                         return new WorkflowHistoryEventPage(
-                            resp.History?.Events ?? emptyEvents,
+                            resp.History?.Events?.ToList().AsReadOnly() ?? emptyEvents,
                             resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
                     }
                     req.NextPageToken = resp.NextPageToken;
@@ -645,39 +650,65 @@ namespace Temporalio.Client
                 return new(resp);
             }
 
+            /// <inheritdoc />
+            public override async Task<WorkflowListPage> ListWorkflowsPaginatedAsync(ListWorkflowsPaginatedInput input)
+            {
+                var req = new ListWorkflowExecutionsRequest
+                {
+                    Namespace = Client.Options.Namespace,
+                    PageSize = input.Options?.PageSize ?? 0,
+                    Query = input.Query,
+                };
+                if (input.NextPageToken is not null)
+                {
+                    req.NextPageToken = ByteString.CopyFrom(input.NextPageToken);
+                }
+
+                var resp = await Client.Connection.WorkflowService.ListWorkflowExecutionsAsync(
+                    req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
+
+                return new(
+                    Workflows: resp.Executions
+                        .Select(e => new WorkflowExecution(e, Client.Options.DataConverter, Client.Options.Namespace))
+                        .ToList()
+                        .AsReadOnly(),
+                    NextPageToken: resp.NextPageToken.IsEmpty ? null : resp.NextPageToken.ToByteArray());
+            }
+
 #if NETCOREAPP3_0_OR_GREATER
             private async IAsyncEnumerable<WorkflowExecution> ListWorkflowsInternalAsync(
                 ListWorkflowsInput input,
                 [EnumeratorCancellation] CancellationToken cancellationToken = default)
             {
+                var limit = input.Options?.Limit ?? 0;
+                if (limit < 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(input), "Limit cannot be negative");
+                }
+
                 // Need to combine cancellation token
                 var rpcOptsAndCancelSource = DefaultRetryOptions(input.Options?.Rpc).
                     WithAdditionalCancellationToken(cancellationToken);
-                var yielded = 0;
                 try
                 {
-                    var req = new ListWorkflowExecutionsRequest()
-                    {
-                        // TODO(cretz): Allow setting of page size or next page token?
-                        Namespace = Client.Options.Namespace,
-                        Query = input.Query,
-                    };
+                    var pageOpts = new WorkflowListPaginatedOptions { Rpc = rpcOptsAndCancelSource.Item1 };
+                    byte[]? nextPageToken = null;
+                    var yielded = 0;
                     do
                     {
-                        var resp = await Client.Connection.WorkflowService.ListWorkflowExecutionsAsync(
-                            req, rpcOptsAndCancelSource.Item1).ConfigureAwait(false);
-                        foreach (var exec in resp.Executions)
+                        var page = await Client.ListWorkflowsPaginatedAsync(input.Query, nextPageToken, pageOpts).ConfigureAwait(false);
+                        foreach (var exec in page.Workflows)
                         {
-                            if (input.Options != null && input.Options.Limit > 0 &&
-                                yielded++ >= input.Options.Limit)
+                            yield return exec;
+                            yielded++;
+                            if (limit > 0 && yielded >= limit)
                             {
                                 yield break;
                             }
-                            yield return new(exec, Client.Options.DataConverter, Client.Options.Namespace);
                         }
-                        req.NextPageToken = resp.NextPageToken;
+                        nextPageToken = page.NextPageToken;
                     }
-                    while (!req.NextPageToken.IsEmpty);
+                    while (nextPageToken is not null);
                 }
                 finally
                 {

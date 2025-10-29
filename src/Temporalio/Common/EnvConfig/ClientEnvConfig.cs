@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Temporalio.Client;
 
-namespace Temporalio.Client.EnvConfig
+namespace Temporalio.Common.EnvConfig
 {
     /// <summary>
     /// Represents the overall client configuration.
