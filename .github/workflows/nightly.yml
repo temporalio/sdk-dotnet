@@ -4,6 +4,8 @@ on:
   schedule:
     # (12 AM PST)
     - cron: "00 07 * * *"
+permissions:
+  contents: read
 
 jobs:
   nightly:
