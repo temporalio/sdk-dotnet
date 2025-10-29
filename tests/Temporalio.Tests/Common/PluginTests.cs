@@ -20,7 +20,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
     private class ClientPlugin : ITemporalClientPlugin
     {
-        public virtual string Name => "ClientPlugin";
+        public string Name => "ClientPlugin";
 
         public void ConfigureClient(TemporalClientOptions options)
         {
@@ -161,5 +161,37 @@ public class PluginTests : WorkflowEnvironmentTestBase
             TaskQueue = "TestSimplePlugin_Function",
         });
         Assert.NotNull(client.Options.DataConverter.PayloadCodec);
+    }
+
+    [Fact]
+    public async Task TestSimplePlugin_RunContext()
+    {
+        List<string> transitions = new();
+        var plugin = new SimplePlugin("SimplePlugin", new SimplePluginOptions()
+        {
+            RunContextBefore = async () => transitions.Add("Beginning"),
+            RunContextAfter = async () => transitions.Add("Ending"),
+        }.AddWorkflow<SimpleWorkflow>());
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Plugins = new[] { plugin };
+
+        var client = new TemporalClient(Env.Client.Connection, newOptions);
+        using var worker = new TemporalWorker(client, new TemporalWorkerOptions()
+        {
+            TaskQueue = "TestSimplePlugin_Function",
+        });
+        using var cancelToken = new CancellationTokenSource();
+        var execution = worker.ExecuteAsync(cancelToken.Token);
+        cancelToken.CancelAfter(500);
+        try
+        {
+            await execution;
+        }
+        catch (OperationCanceledException)
+        {
+        }
+
+        Assert.Contains("Beginning", transitions);
+        Assert.Contains("Ending", transitions);
     }
 }
