@@ -260,20 +260,17 @@ namespace Temporalio.Worker
         /// Gets or sets the behavior of the workflow task poller.
         /// </summary>
         /// <remarks>If set, will override any value set in <see cref="MaxConcurrentWorkflowTaskPolls"/>.</remarks>
-        /// <remarks>WARNING: This property is experimental.</remarks>
         public PollerBehavior? WorkflowTaskPollerBehavior { get; set; }
 
         /// <summary>
         /// Gets or sets the behavior of the activity task poller.
         /// </summary>
-        /// <remarks>WARNING: This property is experimental.</remarks>
         /// <remarks>If set, will override any value set in <see cref="MaxConcurrentActivityTaskPolls"/>.</remarks>
         public PollerBehavior? ActivityTaskPollerBehavior { get; set; }
 
         /// <summary>
         /// Gets or sets the behavior of the Nexus task poller.
         /// </summary>
-        /// <remarks>WARNING: This property is experimental.</remarks>
         /// <remarks>If set, will override any value set in <see cref="MaxConcurrentNexusTaskPolls"/>.</remarks>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public PollerBehavior? NexusTaskPollerBehavior { get; set; }
