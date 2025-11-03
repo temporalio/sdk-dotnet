@@ -1203,9 +1203,9 @@ This SDK requires a built-in unmanaged, native shared library built in Rust. It 
 on a common platform. If you are using .NET framework, you may have to explicitly set the platform to `x64` or `arm64`
 because `AnyCPU` will not choose the proper library.
 
-Currently we only support [RIDs](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog) `linux-arm64`,
-`linux-x64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, and `win-x64`. Any other platforms needed (e.g. `linux-musl-x64`
-on Alpine) will require a custom build.
+Currently we only support [RIDs](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog)
+`linux-arm64`, `linux-x64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, `win-arm64`, and `win-x64`.
+Any other platforms needed will require a custom build.
 
 The native shared library on Windows does require a Visual C++ runtime. Some containers, such as Windows Nano Server, do
 not include this runtime. If not available, users may have to manually copy this runtime (usually just

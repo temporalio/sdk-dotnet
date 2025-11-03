@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using NexusRpc.Handlers;
 using OpenTelemetry;
 using OpenTelemetry.Context.Propagation;
 using OpenTelemetry.Trace;
@@ -50,6 +51,11 @@ namespace Temporalio.Extensions.OpenTelemetry
         public static readonly ActivitySource ActivitiesSource = new("Temporalio.Extensions.OpenTelemetry.Activity");
 
         /// <summary>
+        /// Source used for all Nexus operation inbound diagnostic activities.
+        /// </summary>
+        public static readonly ActivitySource NexusSource = new("Temporalio.Extensions.OpenTelemetry.Nexus");
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="TracingInterceptor"/> class.
         /// </summary>
         /// <param name="options">Optional options.</param>
@@ -79,8 +85,7 @@ namespace Temporalio.Extensions.OpenTelemetry
         /// <inheritdoc />
         public NexusOperationInboundInterceptor InterceptNexusOperation(
             NexusOperationInboundInterceptor nextInterceptor) =>
-            // TODO(cretz): Tracing for Nexus operations - https://github.com/temporalio/sdk-dotnet/issues/515
-            nextInterceptor;
+            new NexusOperationInbound(this, nextInterceptor);
 
         /// <summary>
         /// Serialize an OTel context to Temporal headers.
@@ -100,6 +105,20 @@ namespace Temporalio.Extensions.OpenTelemetry
         }
 
         /// <summary>
+        /// Serialize an OTel context to Temporal headers.
+        /// </summary>
+        /// <param name="headers">Headers to mutate if present.</param>
+        /// <param name="ctx">OTel context.</param>
+        /// <returns>Created/updated headers.</returns>
+        protected virtual IDictionary<string, string> HeadersFromContext(
+            IDictionary<string, string>? headers, PropagationContext ctx)
+        {
+            headers ??= new Dictionary<string, string>();
+            Options.Propagator.Inject(ctx, headers, (d, k, v) => d[k] = v);
+            return headers;
+        }
+
+        /// <summary>
         /// Deserialize Temporal headers to OTel context.
         /// </summary>
         /// <param name="headers">Headers to deserialize from.</param>
@@ -113,6 +132,22 @@ namespace Temporalio.Extensions.OpenTelemetry
             }
             var carrier = DataConverter.Default.PayloadConverter.ToValue<Dictionary<string, string>>(tracerPayload);
             return Options.Propagator.Extract(default, carrier, (d, k) =>
+                d.TryGetValue(k, out var value) ? new[] { value } : Array.Empty<string>());
+        }
+
+        /// <summary>
+        /// Deserialize Temporal headers to OTel context.
+        /// </summary>
+        /// <param name="headers">Headers to deserialize from.</param>
+        /// <returns>OTel context if any on the headers.</returns>
+        protected virtual PropagationContext? HeadersToContext(
+            IReadOnlyDictionary<string, string>? headers)
+        {
+            if (headers == null)
+            {
+                return null;
+            }
+            return Options.Propagator.Extract(default, headers, (d, k) =>
                 d.TryGetValue(k, out var value) ? new[] { value } : Array.Empty<string>());
         }
 
@@ -665,9 +700,30 @@ namespace Temporalio.Extensions.OpenTelemetry
                 return base.StartChildWorkflowAsync<TWorkflow, TResult>(input);
             }
 
-            // TODO(cretz): Document this only returns non-null headers if changed
+            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+                StartNexusOperationInput input)
+            {
+                var headers = StartWorkflowActivityOnHeaders(
+                    input.Headers, $"StartNexusOperation:{input.Service}/{input.OperationName}");
+                input = input with { Headers = headers };
+                return base.StartNexusOperationAsync<TResult>(input);
+            }
+
             private IDictionary<string, Payload> StartWorkflowActivityOnHeaders(
                 IDictionary<string, Payload>? headers, string name)
+            {
+                using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
+                    name: name,
+                    kind: ActivityKind.Client))
+                {
+                    return root.HeadersFromContext(
+                        headers,
+                        new(WorkflowDiagnosticActivity.Current?.Context ?? default, Baggage.Current));
+                }
+            }
+
+            private IDictionary<string, string> StartWorkflowActivityOnHeaders(
+                IDictionary<string, string>? headers, string name)
             {
                 using (WorkflowsSource.TrackWorkflowDiagnosticActivity(
                     name: name,
@@ -707,6 +763,82 @@ namespace Temporalio.Extensions.OpenTelemetry
                         try
                         {
                             return await base.ExecuteActivityAsync(input).ConfigureAwait(false);
+                        }
+                        catch (Exception e)
+                        {
+                            RecordExceptionWithStatus(activity, e);
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    Baggage.Current = prevBaggage;
+                }
+            }
+        }
+
+        private sealed class NexusOperationInbound : NexusOperationInboundInterceptor
+        {
+            private readonly TracingInterceptor root;
+
+            internal NexusOperationInbound(TracingInterceptor root, NexusOperationInboundInterceptor next)
+                : base(next) => this.root = root;
+
+            public override async Task<OperationStartResult<object?>> ExecuteNexusOperationStartAsync(
+                ExecuteNexusOperationStartInput input)
+            {
+                var prevBaggage = Baggage.Current;
+                ActivityContext parentContext = default;
+                if (root.HeadersToContext(input.Context.Headers) is PropagationContext ctx)
+                {
+                    Baggage.Current = ctx.Baggage;
+                    parentContext = ctx.ActivityContext;
+                }
+                try
+                {
+                    using (var activity = NexusSource.StartActivity(
+                        $"RunStartNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
+                        kind: ActivityKind.Server,
+                        parentContext: parentContext))
+                    {
+                        try
+                        {
+                            return await base.ExecuteNexusOperationStartAsync(input).ConfigureAwait(false);
+                        }
+                        catch (Exception e)
+                        {
+                            RecordExceptionWithStatus(activity, e);
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    Baggage.Current = prevBaggage;
+                }
+            }
+
+            public override async Task ExecuteNexusOperationCancelAsync(
+                ExecuteNexusOperationCancelInput input)
+            {
+                var prevBaggage = Baggage.Current;
+                ActivityContext parentContext = default;
+                if (root.HeadersToContext(input.Context.Headers) is PropagationContext ctx)
+                {
+                    Baggage.Current = ctx.Baggage;
+                    parentContext = ctx.ActivityContext;
+                }
+                try
+                {
+                    using (var activity = NexusSource.StartActivity(
+                        $"RunCancelNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
+                        kind: ActivityKind.Server,
+                        parentContext: parentContext))
+                    {
+                        try
+                        {
+                            await base.ExecuteNexusOperationCancelAsync(input).ConfigureAwait(false);
                         }
                         catch (Exception e)
                         {

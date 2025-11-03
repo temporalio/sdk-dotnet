@@ -5,13 +5,15 @@ on:
     branches:
       - main
       - "releases/*"
+permissions:
+  contents: read
 
 jobs:
   build-lint-test:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest]
+        os: [ubuntu-latest, ubuntu-arm, macos-intel, macos-arm, windows-latest, windows-arm]
         include:
           - os: windows-latest
             checkTarget: true
@@ -29,6 +31,8 @@ jobs:
             runsOn: macos-15-intel
           - os: macos-arm
             runsOn: macos-14
+          - os: windows-arm
+            runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
