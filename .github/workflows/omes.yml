@@ -4,6 +4,8 @@ on:
     branches:
       - main
       - "releases/*"
+permissions:
+  contents: read
 
 jobs:
   omes-image-build:
