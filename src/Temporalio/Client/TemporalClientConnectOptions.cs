@@ -67,6 +67,14 @@ namespace Temporalio.Client
         public QueryRejectCondition? QueryRejectCondition { get; set; }
 
         /// <summary>
+        /// Gets or sets the plugins.
+        /// </summary>
+        /// <remarks>
+        /// WARNING: This API is experimental and may change in the future.
+        /// </remarks>
+        public IReadOnlyCollection<ITemporalClientPlugin>? Plugins { get; set; }
+
+        /// <summary>
         /// Create client options from a subset of these options for use in
         /// <see cref="TemporalClient.TemporalClient" />.
         /// </summary>
@@ -79,6 +87,7 @@ namespace Temporalio.Client
                 Interceptors = Interceptors,
                 LoggerFactory = LoggerFactory,
                 QueryRejectCondition = QueryRejectCondition,
+                Plugins = Plugins,
             };
     }
 }

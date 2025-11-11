@@ -20,6 +20,7 @@ namespace Temporalio.Worker
         private readonly ActivityWorker? activityWorker;
         private readonly WorkflowWorker? workflowWorker;
         private readonly NexusWorker? nexusWorker;
+        private readonly IReadOnlyCollection<ITemporalWorkerPlugin> plugins;
         private IWorkerClient client;
         private int started;
         private Disposer? disposer;
@@ -44,6 +45,22 @@ namespace Temporalio.Worker
                 // Clone the options to discourage mutation (but we aren't completely disabling mutation
                 // on the Options field herein).
                 Options = (TemporalWorkerOptions)options.Clone();
+
+                var localPlugins = client.Options.Plugins?.OfType<ITemporalWorkerPlugin>() ?? Enumerable.Empty<ITemporalWorkerPlugin>();
+                if (Options.Plugins != null)
+                {
+                    localPlugins = localPlugins.Concat(Options.Plugins);
+                }
+                plugins = localPlugins.ToList();
+
+                foreach (var plugin in plugins)
+                {
+                    plugin.ConfigureWorker(Options);
+                }
+
+                // Ensure later accesses use the modified version of options.
+                options = Options;
+
                 var bridgeClient = client.BridgeClientProvider.BridgeClient ??
                                    throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
                 BridgeWorker = new(
@@ -218,7 +235,7 @@ namespace Temporalio.Worker
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         /// <exception cref="Exception">Fatal worker failure.</exception>
         public Task ExecuteAsync(CancellationToken stoppingToken) =>
-            ExecuteInternalAsync(null, stoppingToken);
+            ExecuteInternalAsync<ValueTuple>(null, stoppingToken);
 
         /// <summary>
         /// Run this worker until failure, cancelled, or task from given function completes.
@@ -241,7 +258,13 @@ namespace Temporalio.Worker
         /// <exception cref="Exception">Fatal worker failure.</exception>
         public Task ExecuteAsync(
             Func<Task> untilComplete, CancellationToken stoppingToken = default) =>
-            ExecuteInternalAsync(untilComplete, stoppingToken);
+            ExecuteInternalAsync(
+                () => untilComplete().ContinueWith(
+                    _ => ValueTuple.Create(),
+                    default,
+                    TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion,
+                    TaskScheduler.Current),
+                stoppingToken);
 
         /// <summary>
         /// Run this worker until failure, cancelled, or task from given function completes.
@@ -263,15 +286,9 @@ namespace Temporalio.Worker
         /// <exception cref="InvalidOperationException">Already started.</exception>
         /// <exception cref="OperationCanceledException">Cancellation requested.</exception>
         /// <exception cref="Exception">Fatal worker failure.</exception>
-        public async Task<TResult> ExecuteAsync<TResult>(
-            Func<Task<TResult>> untilComplete, CancellationToken stoppingToken = default)
-        {
-            TResult? ret = default;
-            await ExecuteInternalAsync(
-                async () => ret = await untilComplete.Invoke().ConfigureAwait(false),
-                stoppingToken).ConfigureAwait(false);
-            return ret!;
-        }
+        public Task<TResult> ExecuteAsync<TResult>(
+            Func<Task<TResult>> untilComplete, CancellationToken stoppingToken = default) =>
+            ExecuteInternalAsync(untilComplete, stoppingToken);
 
         /// <inheritdoc/>
         public void Dispose()
@@ -292,8 +309,22 @@ namespace Temporalio.Worker
             }
         }
 
-        private async Task ExecuteInternalAsync(
-            Func<Task>? untilComplete, CancellationToken stoppingToken)
+        private Task<TResult> ExecuteInternalAsync<TResult>(
+            Func<Task<TResult>>? untilComplete, CancellationToken stoppingToken)
+        {
+            Func<TemporalWorker, CancellationToken, Task<TResult>> execute = (worker, token) =>
+                worker.ExecuteWithPluginsAsync(untilComplete, token);
+            foreach (var plugin in plugins.Reverse())
+            {
+                var localExecute = execute;
+                execute = (worker, token) => plugin.RunWorkerAsync(worker, localExecute, token);
+            }
+
+            return execute(this, stoppingToken);
+        }
+
+        private async Task<TResult> ExecuteWithPluginsAsync<TResult>(
+            Func<Task<TResult>>? untilComplete, CancellationToken stoppingToken)
         {
             if (Interlocked.Exchange(ref started, 1) != 0)
             {
@@ -443,6 +474,16 @@ namespace Temporalio.Worker
                 }
 #pragma warning restore CA1031
             }
+            // If there is a user task, return the value, otherwise return a default form of it. We
+            // can trust that the default value is always non-null in no-user-task scenarios based
+            // on the callers in this class using ValueTuple.
+            if (userTask != null)
+            {
+                return await userTask.ConfigureAwait(false);
+            }
+#pragma warning disable CS8603 // We know this is never nullable in a no-user-task scenario
+            return default;
+#pragma warning restore CS8603
         }
 
         // This class encapsulates dispose work so we can decide to do it either on Dispose() or the end of ExecuteInternalAsync().
