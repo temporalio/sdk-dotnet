@@ -39,7 +39,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
         public void ConfigureWorker(TemporalWorkerOptions options)
         {
-            options.TaskQueue = "NewTaskQueue";
+            options.TaskQueue = "NewTaskQueue" + Guid.NewGuid();
         }
 
         public Task<TResult> RunWorkerAsync<TResult>(
@@ -140,7 +140,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
         {
             Plugins = new[] { new CombinedPlugin() },
         }.AddWorkflow<SimpleWorkflow>());
-        Assert.Equal("NewTaskQueue", worker.Options.TaskQueue);
+        Assert.Contains("NewTaskQueue", worker.Options.TaskQueue);
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
         {
             Plugins = new[] { new CombinedPlugin() },
         }.AddWorkflow<SimpleWorkflow>());
-        Assert.Equal("NewTaskQueue", worker.Options.TaskQueue);
+        Assert.Contains("NewTaskQueue", worker.Options.TaskQueue);
     }
 
     private class Codec : IPayloadCodec

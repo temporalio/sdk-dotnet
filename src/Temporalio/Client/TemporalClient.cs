@@ -21,9 +21,12 @@ namespace Temporalio.Client
         /// <param name="options">Options for this client.</param>
         public TemporalClient(ITemporalConnection connection, TemporalClientOptions options)
         {
-            foreach (var plugin in options.Plugins ?? Enumerable.Empty<ITemporalClientPlugin>())
+            if (options.Plugins != null)
             {
-                plugin.ConfigureClient(options);
+                foreach (var plugin in options.Plugins)
+                {
+                    plugin.ConfigureClient(options);
+                }
             }
 
             Connection = connection;
