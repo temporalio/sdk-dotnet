@@ -53,7 +53,7 @@ client_key_data = ""client-key-data""
         {
         }
 
-        // === PROFILE LOADING TESTS (6 tests) ===
+        // === PROFILE LOADING TESTS (7 tests) ===
         [Fact]
         public void Test_Load_Profile_From_File_Default()
         {
@@ -178,6 +178,22 @@ client_key_data = ""client-key-data""
             Assert.Equal("env-api-key", profile.ApiKey);
             Assert.NotNull(profile.Tls);
             Assert.Equal("env-server-name", profile.Tls.ServerName);
+        }
+
+        [Fact]
+        public void Test_Profile_Null_Address_Preserves_Null_In_Connection_Options()
+        {
+            // Create a profile with no address (null)
+            var profile = new ClientEnvConfig.Profile(
+                Address: null,
+                Namespace: "test-namespace");
+
+            // Convert to connection options
+            var options = profile.ToClientConnectionOptions();
+
+            // TargetHost should be null, not empty string
+            Assert.Null(options.TargetHost);
+            Assert.Equal("test-namespace", options.Namespace);
         }
 
         // === ENVIRONMENT VARIABLES TESTS (4 tests) ===
