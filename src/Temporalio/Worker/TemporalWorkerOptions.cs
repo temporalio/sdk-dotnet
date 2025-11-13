@@ -466,6 +466,18 @@ namespace Temporalio.Worker
         }
 
         /// <summary>
+        /// Add the given Nexus service handler.
+        /// </summary>
+        /// <param name="serviceHandler">Service handler to add..</param>
+        /// <returns>This options instance for chaining.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public TemporalWorkerOptions AddNexusService(ServiceHandlerInstance serviceHandler)
+        {
+            NexusServices.Add(serviceHandler);
+            return this;
+        }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.
