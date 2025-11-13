@@ -103,7 +103,7 @@ namespace Temporalio.Common.EnvConfig
             /// <returns>Connection options for a client.</returns>
             public TemporalClientConnectOptions ToClientConnectionOptions()
             {
-                var options = new TemporalClientConnectOptions(Address ?? string.Empty);
+                var options = new TemporalClientConnectOptions() { TargetHost = Address };
                 // Set namespace if provided
                 if (Namespace != null)
                 {
