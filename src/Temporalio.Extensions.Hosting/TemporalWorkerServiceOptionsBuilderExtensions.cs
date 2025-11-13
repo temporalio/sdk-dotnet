@@ -181,7 +181,7 @@ namespace Temporalio.Extensions.Hosting
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
         public static ITemporalWorkerServiceOptionsBuilder AddTransientOperations<T>(
             this ITemporalWorkerServiceOptionsBuilder builder) =>
-            builder.AddScopedOperations(typeof(T));
+            builder.AddTransientOperations(typeof(T));
 
         /// <summary>
         /// Register the given type as transient if not already done and all operations of the
