@@ -197,11 +197,10 @@ namespace Temporalio.Extensions.Hosting
 
             private async Task<T> InvokeWithScopeAsync<T>(Func<IOperationHandler<object?, object?>, Task<T>> handlerInvoker)
             {
-                IServiceScope scope;
 #if NET6_0_OR_GREATER
-                scope = this.serviceProvider.CreateAsyncScope();
+                AsyncServiceScope scope = this.serviceProvider.CreateAsyncScope();
 #else
-                scope = this.serviceProvider.CreateScope();
+                IServiceScope scope = this.serviceProvider.CreateScope();
 #endif
 
                 try
@@ -234,14 +233,7 @@ namespace Temporalio.Extensions.Hosting
                 finally
                 {
 #if NET6_0_OR_GREATER
-                    if (scope is AsyncServiceScope asyncScope)
-                    {
-                        await asyncScope.DisposeAsync().ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        scope.Dispose();
-                    }
+                    await scope.DisposeAsync().ConfigureAwait(false);
 #else
                     scope.Dispose();
 #endif
