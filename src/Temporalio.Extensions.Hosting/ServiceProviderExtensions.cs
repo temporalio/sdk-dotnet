@@ -212,8 +212,7 @@ namespace Temporalio.Extensions.Hosting
                         // Create the instance if not static and not already created
                         var serviceHandlerInstance = this.serviceOperationMethod.IsStatic
                             ? null
-                            : ActivityScope.ScopedInstance ?? scope.ServiceProvider.GetRequiredService(this.serviceHandlerType);
-                        ActivityScope.ScopedInstance = serviceHandlerInstance;
+                            : scope.ServiceProvider.GetRequiredService(this.serviceHandlerType);
 
                         handler = this.serviceOperationMethod.Invoke(serviceHandlerInstance, null) ??
                             throw new ArgumentException("Operation handler was null");
