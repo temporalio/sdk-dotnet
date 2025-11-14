@@ -126,9 +126,7 @@ namespace Temporalio.Extensions.Hosting
                 throw new ArgumentException($"Duplicate operation handler named ${opDef.Name}");
             }
 
-            opHandlers[opDef.Name] = OperationHandler.WrapAsGenericHandler(
-                handlerFactory(method),
-                method.ReturnType);
+            opHandlers[opDef.Name] = handlerFactory(method);
         }
 
         /// <summary>
