@@ -117,7 +117,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
                 return await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
             });
 
-        // Expect to throw exception since scoped dependency cannot be used in singleton service
+        // Expect 2 since the Nexus service is singleton and should hold onto its dependencies.
         Assert.Equal(2, result);
     }
 

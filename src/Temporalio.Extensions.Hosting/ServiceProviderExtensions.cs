@@ -153,9 +153,9 @@ namespace Temporalio.Extensions.Hosting
         /// </summary>
         /// <param name="provider">Service provider for creating the service instance if the
         /// method is non-static.</param>
-        /// <param name="serviceHandlerType">The concrete type of the Nexus service handler.</param>
+        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
         /// <returns>Created <see cref="ServiceHandlerInstance"/>.</returns>
-        public static ServiceHandlerInstance CreateNexusServiceHandlerInstance(
+        internal static ServiceHandlerInstance CreateNexusServiceHandlerInstance(
             this IServiceProvider provider,
             Type serviceHandlerType) =>
             ServiceHandlerInstanceHelper.FromType(
@@ -165,6 +165,10 @@ namespace Temporalio.Extensions.Hosting
                     serviceOperationMethod,
                     provider));
 
+        /// <summary>
+        /// An operation handler that defers the resolution of the Nexus service handler and the invocation
+        /// of a Nexus operation to be within a service scope.
+        /// </summary>
         private sealed class ScopedNexusOperationHandler :
             IOperationHandler<object?, object?>
         {

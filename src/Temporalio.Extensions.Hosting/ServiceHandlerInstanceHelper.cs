@@ -18,7 +18,7 @@ namespace Temporalio.Extensions.Hosting
         /// <summary>
         /// Create a service handler instance from the given service handler type and handler factory.
         /// </summary>
-        /// <param name="serviceHandlerType">The concrete type of the Nexus service handler.</param>
+        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
         /// <param name="handlerFactory">A factory that converts method information into an operation handler.</param>
         /// <returns>A <see cref="ServiceHandlerInstance"/> for the given <paramref name="serviceHandlerType"/> type.</returns>
         public static ServiceHandlerInstance FromType(Type serviceHandlerType, Func<MethodInfo, IOperationHandler<object?, object?>> handlerFactory)
@@ -36,8 +36,8 @@ namespace Temporalio.Extensions.Hosting
         /// <summary>
         /// Creates a <see cref="ServiceDefinition"/> for the given service handler type.
         /// </summary>
-        /// <param name="serviceHandlerType">The concrete type of the Nexus service handler.</param>
-        /// <returns>A <see cref="ServiceDefinition"/> for the given service handler type.</returns>
+        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
+        /// <returns>A <see cref="ServiceDefinition"/> for the given  <paramref name="serviceHandlerType"/> type.</returns>
         private static ServiceDefinition GetServiceDefinition(Type serviceHandlerType)
         {
             // Make sure the attribute is on the declaring type of the instance
@@ -49,7 +49,7 @@ namespace Temporalio.Extensions.Hosting
         /// <summary>
         /// Collects all public methods from the given type and its base types recursively.
         /// </summary>
-        /// <param name="serviceHandlerType">The concrete type of the Nexus service handler.</param>
+        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
         /// <param name="methods">The list to which discovered methods are added.</param>
         private static void CollectTypeMethods(Type serviceHandlerType, List<MethodInfo> methods)
         {
@@ -72,7 +72,7 @@ namespace Temporalio.Extensions.Hosting
         }
 
         /// <summary>
-        /// Validates and adds an operation handler created from the given method.
+        /// Validates and adds an operation handler created from the given operation handler method.
         /// </summary>
         /// <param name="serviceDef">A <see cref="ServiceDefinition"/> for the given service handler type.</param>
         /// <param name="method">The method from which an operation hander is created.</param>
@@ -133,7 +133,7 @@ namespace Temporalio.Extensions.Hosting
         /// Creates a mapping of operation names to operation handlers for the given service handler type.
         /// </summary>
         /// <param name="serviceDef">A <see cref="ServiceDefinition"/> for the given service handler type.</param>
-        /// <param name="serviceHandlerType">The concrete type of the Nexus service handler.</param>
+        /// <param name="serviceHandlerType">The type of the Nexus service handler.</param>
         /// <param name="handlerFactory">A factory that creates an operation handler for a given method.</param>
         /// <returns>A mapping of operation names to operation handlers.</returns>
         private static Dictionary<string, IOperationHandler<object?, object?>> CreateHandlers(
