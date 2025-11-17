@@ -43,6 +43,39 @@ namespace Temporalio.Extensions.Hosting
         }
 
         /// <summary>
+        /// Register the given type as a singleton if not already done and all operations of the
+        /// given type to the worker. Basically
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection)" />
+        /// +
+        /// <see cref="ApplyNexusService{T}(ITemporalWorkerServiceOptionsBuilder)" />.
+        /// </summary>
+        /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
+        /// <param name="builder">Builder to use.</param>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder AddSingletonNexusService<T>(
+            this ITemporalWorkerServiceOptionsBuilder builder) =>
+            builder.AddSingletonNexusService(typeof(T));
+
+        /// <summary>
+        /// Register the given type as a singleton if not already done and all operations of the
+        /// given type to the worker. Basically
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton(IServiceCollection, Type)" />
+        /// +
+        /// <see cref="ApplyNexusService(ITemporalWorkerServiceOptionsBuilder, Type)" />.
+        /// </summary>
+        /// <param name="builder">Builder to use.</param>
+        /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder AddSingletonNexusService(
+            this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
+        {
+            builder.Services.TryAddSingleton(serviceHandlerType);
+            return builder.ApplyNexusService(serviceHandlerType);
+        }
+
+        /// <summary>
         /// Register the given type as scoped if not already done and all activities of the given
         /// type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddScoped{TService}(IServiceCollection)" />
@@ -73,6 +106,39 @@ namespace Temporalio.Extensions.Hosting
         }
 
         /// <summary>
+        /// Register the given type as scoped if not already done and all operations of the
+        /// given type to the worker. Basically
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddScoped{TService}(IServiceCollection)" />
+        /// +
+        /// <see cref="ApplyNexusService{T}(ITemporalWorkerServiceOptionsBuilder)" />.
+        /// </summary>
+        /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
+        /// <param name="builder">Builder to use.</param>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder AddScopedNexusService<T>(
+            this ITemporalWorkerServiceOptionsBuilder builder) =>
+            builder.AddScopedNexusService(typeof(T));
+
+        /// <summary>
+        /// Register the given type as scoped if not already done and all operations of the
+        /// given type to the worker. Basically
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddScoped(IServiceCollection, Type)" />
+        /// +
+        /// <see cref="ApplyNexusService(ITemporalWorkerServiceOptionsBuilder, Type)" />.
+        /// </summary>
+        /// <param name="builder">Builder to use.</param>
+        /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder AddScopedNexusService(
+            this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
+        {
+            builder.Services.TryAddScoped(serviceHandlerType);
+            return builder.ApplyNexusService(serviceHandlerType);
+        }
+
+        /// <summary>
         /// Register the given type as transient if not already done and all activities of the given
         /// type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddTransient{TService}(IServiceCollection)" />
@@ -100,6 +166,39 @@ namespace Temporalio.Extensions.Hosting
         {
             builder.Services.TryAddTransient(type);
             return builder.ApplyTemporalActivities(type);
+        }
+
+        /// <summary>
+        /// Register the given type as transient if not already done and all operations of the
+        /// given type to the worker. Basically
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddTransient{TService}(IServiceCollection)" />
+        /// +
+        /// <see cref="ApplyNexusService{T}(ITemporalWorkerServiceOptionsBuilder)" />.
+        /// </summary>
+        /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
+        /// <param name="builder">Builder to use.</param>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder AddTransientNexusService<T>(
+            this ITemporalWorkerServiceOptionsBuilder builder) =>
+            builder.AddTransientNexusService(typeof(T));
+
+        /// <summary>
+        /// Register the given type as transient if not already done and all operations of the
+        /// given type to the worker. Basically
+        /// <see cref="ServiceCollectionDescriptorExtensions.TryAddTransient(IServiceCollection, Type)" />
+        /// +
+        /// <see cref="ApplyNexusService(ITemporalWorkerServiceOptionsBuilder, Type)" />.
+        /// </summary>
+        /// <param name="builder">Builder to use.</param>
+        /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder AddTransientNexusService(
+            this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
+        {
+            builder.Services.TryAddTransient(serviceHandlerType);
+            return builder.ApplyNexusService(serviceHandlerType);
         }
 
         /// <summary>
@@ -258,6 +357,38 @@ namespace Temporalio.Extensions.Hosting
                 {
                     options.AddActivity(defn);
                 }
+            });
+            return builder;
+        }
+
+        /// <summary>
+        /// Register the given service handler type's operations. This uses the service provider
+        /// to create the instance for non-static methods, but does not register the type/instance
+        /// with the service collection.
+        /// </summary>
+        /// <param name="builder">Builder to use.</param>
+        /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder ApplyNexusService<T>(
+            this ITemporalWorkerServiceOptionsBuilder builder) =>
+            builder.ApplyNexusService(typeof(T));
+
+        /// <summary>
+        /// Register the given service handler type's operations. This uses the service provider
+        /// to create the instance for non-static methods, but does not register the type/instance
+        /// with the service collection.
+        /// </summary>
+        /// <param name="builder">Builder to use.</param>
+        /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
+        /// <returns>Same builder instance.</returns>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public static ITemporalWorkerServiceOptionsBuilder ApplyNexusService(
+            this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
+        {
+            builder.ConfigureOptions().PostConfigure<IServiceProvider>((options, provider) =>
+            {
+                options.AddNexusService(provider.CreateNexusServiceHandlerInstance(serviceHandlerType));
             });
             return builder;
         }

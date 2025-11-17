@@ -85,6 +85,18 @@ For registering workflows on the worker, `AddWorkflow` extension method is avail
 collection because the construction and lifecycle of workflows is managed by Temporal. Dependency injection for
 workflows is intentionally not supported.
 
+⚠️WARNING: Nexus support is experimental.
+
+For adding Nexus service handlers to the service collection and registering operations with the worker, the following
+extensions methods exist on the builder each accepting Nexus service handler type:
+
+* `AddSingletonNexusService` - `TryAddSingleton` + register Nexus service handler on worker
+* `AddScopedNexusService` - `TryAddScoped` + register Nexus service handler on worker
+* `AddTransientNexusService` - `TryAddTransient` + register Nexus service handler on worker
+
+These all expect the Nexus service handler to have the `NexusServiceHandler` attribute that references the service
+interface and the Nexus operation handlers to have the `NexusOperationHandler` attribute.
+
 Other worker and client options can be configured on the builder via the `ConfigureOptions` extension method. With no
 parameters, this returns an `OptionsBuilder<TemporalWorkerServiceOptions>` to use. When provided an action, the options
 are available as parameters that can be configured. `TemporalWorkerServiceOptions` simply extends
