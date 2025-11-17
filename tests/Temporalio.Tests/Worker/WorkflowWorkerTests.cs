@@ -284,16 +284,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             TaskWaitAsync,
             // https://github.com/dotnet/runtime/issues/83159
             DataflowReceiveAsync,
-            // https://github.com/dotnet/runtime/issues/87481
-            TaskWhenAnyWithResultThreeParam,
             ListenerDisabledCreateCommand,
 
             // Good
             TaskFactoryStartNew,
             TaskStart,
             TaskContinueWith,
-            // https://github.com/dotnet/runtime/issues/87481
             TaskWhenAnyWithResultTwoParam,
+            TaskWhenAnyWithResultThreeParam,
             WorkflowWhenAnyWithResultThreeParam,
             WorkflowWhenAll,
             WorkflowRunTask,
@@ -334,9 +332,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             StandardLibraryCallsWorkflow.Scenario.DataflowReceiveAsync,
             "not scheduled on workflow scheduler");
         await AssertScenarioFailsTask(
-            StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultThreeParam,
-            "not scheduled on workflow scheduler");
-        await AssertScenarioFailsTask(
             StandardLibraryCallsWorkflow.Scenario.ListenerDisabledCreateCommand,
             "Function during tracing event listener disabling created workflow commands");
     }
@@ -360,6 +355,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskStart);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskContinueWith);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultTwoParam);
+        // Starting in .NET 8, https://github.com/dotnet/runtime/issues/87481 is fixed
+        await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.TaskWhenAnyWithResultThreeParam);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAnyWithResultThreeParam);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowWhenAll);
         await AssertScenarioSucceeds(StandardLibraryCallsWorkflow.Scenario.WorkflowRunTask);
@@ -551,7 +548,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             using var cancelSource = new CancellationTokenSource();
             if (input.CancelBefore)
             {
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                // https://github.com/temporalio/sdk-dotnet/issues/327
                 cancelSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async method
             }
             else if (input.CancelAfterMS > 0)
             {
@@ -1302,7 +1304,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public async Task ProceedAsync() => shouldProceed = true;
 
         [WorkflowSignal]
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+        // https://github.com/temporalio/sdk-dotnet/issues/327
         public async Task CancelWaitAsync() => cancelSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async method
     }
 
     [Fact]
@@ -2007,7 +2014,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // Cancel before if desired
             if (input.BeforeStart)
             {
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                // https://github.com/temporalio/sdk-dotnet/issues/327
                 tokenSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async method
             }
             Task activity;
             if (input.Local)
@@ -2036,7 +2048,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             if (!input.BeforeStart)
             {
                 await Workflow.DelayAsync(1);
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                // https://github.com/temporalio/sdk-dotnet/issues/327
                 tokenSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async method
             }
             await activity;
         }
@@ -2255,7 +2272,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // Cancel before if desired
             if (beforeStart)
             {
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                // https://github.com/temporalio/sdk-dotnet/issues/327
                 tokenSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async method
             }
             var handle = await Workflow.StartChildWorkflowAsync(
                 (ChildWorkflow wf) => wf.RunAsync(),
@@ -2263,7 +2285,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             // If not cancel before, cancel now
             if (!beforeStart)
             {
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                // https://github.com/temporalio/sdk-dotnet/issues/327
                 tokenSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async methodßß
             }
             await handle.GetResultAsync();
         }
@@ -4088,7 +4115,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             await AssertMore.EqualEventuallyAsync(true, () => handle.QueryAsync(wf => wf.Waiting));
 
             // Cancel and confirm error
-            updateCancelSource.Cancel();
+            await updateCancelSource.CancelAsync();
             await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(() => updateTask);
         });
     }
@@ -5297,7 +5324,12 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         }
 
         [WorkflowSignal]
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+        // https://github.com/temporalio/sdk-dotnet/issues/327
         public async Task CancelUpdateAsync(int number) => cancellations[number].Cancel();
+#pragma warning restore VSTHRD103
+#pragma warning restore CA1849
 
 #pragma warning disable VSTHRD110 // Returning tasks is ok
         private Task WaitAsync(CancellationToken? cancellationToken = null) =>
@@ -6512,7 +6544,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             });
 
             // Now cancel token and confirm update cancellation results in proper cancellation
-            cancelSource.Cancel();
+            await cancelSource.CancelAsync();
             await Assert.ThrowsAsync<WorkflowUpdateRpcTimeoutOrCanceledException>(
                 () => updateTask);
             // Note, currently in this use case the handle isn't set either, the same exception

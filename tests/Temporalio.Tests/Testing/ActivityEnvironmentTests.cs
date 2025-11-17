@@ -23,7 +23,7 @@ public class ActivityEnvironmentTests : TestBase
             Info = ActivityEnvironment.DefaultInfo with { ActivityType = "SomeActivity" },
             Heartbeater = heartbeats.Add,
         };
-        env.WorkerShutdownTokenSource.Cancel();
+        await env.WorkerShutdownTokenSource.CancelAsync();
         env.Cancel(ActivityCancelReason.Timeout);
         var ret = await env.RunAsync(async () =>
         {

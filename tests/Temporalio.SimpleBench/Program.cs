@@ -77,7 +77,7 @@ cmd.SetHandler(async ctx =>
     resultWatch.Stop();
 
     // Cancel worker and wait for cancelled
-    cancelSource.Cancel();
+    await cancelSource.CancelAsync();
     try
     {
         await workerTask;

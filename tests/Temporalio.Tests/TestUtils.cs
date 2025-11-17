@@ -19,7 +19,7 @@ public static class TestUtils
 
     public static int FreePort()
     {
-        var l = new TcpListener(IPAddress.Loopback, 0);
+        using var l = new TcpListener(IPAddress.Loopback, 0);
         l.Start();
         int port = ((IPEndPoint)l.LocalEndpoint).Port;
         l.Stop();

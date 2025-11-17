@@ -216,7 +216,12 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                         svc => svc.DoSomething("some-name"),
                         new() { CancellationToken = cancelSource.Token });
                 // Cancel and wait for result to bubble out cancel
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                // https://github.com/temporalio/sdk-dotnet/issues/327
                 cancelSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async method
                 await handle.GetResultAsync();
             }));
         var inner = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);

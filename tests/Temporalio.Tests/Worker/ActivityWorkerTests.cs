@@ -433,7 +433,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
                 workflowId = handle.Id;
                 // Wait for activity to be reached, then stop the worker
                 await activityReached.Task.WaitAsync(TimeSpan.FromSeconds(20));
-                workerStoppingSource.Cancel();
+                await workerStoppingSource.CancelAsync();
             }));
         Assert.True(gotCancellation);
         // Check the workflow error
