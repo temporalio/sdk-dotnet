@@ -94,7 +94,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddSingleton<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddSingletonOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddSingletonNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -110,7 +110,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddScoped<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddSingletonOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddSingletonNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -126,7 +126,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddTransient<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddSingletonOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddSingletonNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -142,7 +142,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddSingleton<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddScopedOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddScopedNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -158,7 +158,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddScoped<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddScopedOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddScopedNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -174,7 +174,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddTransient<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddScopedOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddScopedNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -190,7 +190,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddSingleton<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddTransientOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddTransientNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -206,7 +206,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddScoped<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddTransientOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddTransientNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
@@ -222,7 +222,7 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     {
         int result = await ExecuteHostedNexusWithWorkflow(
             configureServices: services => services.AddTransient<ITestCounterService, TestCounterService>(),
-            configureBuilder: builder => builder.AddTransientOperations<TestNexusService>(),
+            configureBuilder: builder => builder.AddTransientNexusService<TestNexusService>(),
             workflowFunc: async client =>
             {
                 await client.ExecuteNexusOperationAsync(svc => svc.Increment("unused"));
