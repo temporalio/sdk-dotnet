@@ -90,9 +90,9 @@ workflows is intentionally not supported.
 For adding Nexus service handlers to the service collection and registering operations with the worker, the following
 extensions methods exist on the builder each accepting Nexus service handler type:
 
-* `AddSingletonOperations` - `TryAddSingleton` + register operations on worker
-* `AddScopedOperations` - `TryAddScoped` + register operations on worker
-* `AddTransientOperations` - `TryAddTransient` + register operations on worker
+* `AddSingletonNexusService` - `TryAddSingleton` + register Nexus service handler on worker
+* `AddScopedNexusService` - `TryAddScoped` + register Nexus service handler on worker
+* `AddTransientNexusService` - `TryAddTransient` + register Nexus service handler on worker
 
 These all expect the Nexus service handler to have the `NexusServiceHandler` attribute that references the service
 interface and the Nexus operation handlers to have the `NexusOperationHandler` attribute.
