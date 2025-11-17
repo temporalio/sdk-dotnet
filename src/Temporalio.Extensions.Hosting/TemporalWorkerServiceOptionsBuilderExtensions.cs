@@ -47,7 +47,7 @@ namespace Temporalio.Extensions.Hosting
         /// given type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton{TService}(IServiceCollection)" />
         /// +
-        /// <see cref="ApplyNexusOperations{T}(ITemporalWorkerServiceOptionsBuilder)" />.
+        /// <see cref="ApplyNexusService{T}(ITemporalWorkerServiceOptionsBuilder)" />.
         /// </summary>
         /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
         /// <param name="builder">Builder to use.</param>
@@ -62,7 +62,7 @@ namespace Temporalio.Extensions.Hosting
         /// given type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddSingleton(IServiceCollection, Type)" />
         /// +
-        /// <see cref="ApplyNexusOperations(ITemporalWorkerServiceOptionsBuilder, Type)" />.
+        /// <see cref="ApplyNexusService(ITemporalWorkerServiceOptionsBuilder, Type)" />.
         /// </summary>
         /// <param name="builder">Builder to use.</param>
         /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
@@ -72,7 +72,7 @@ namespace Temporalio.Extensions.Hosting
             this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
         {
             builder.Services.TryAddSingleton(serviceHandlerType);
-            return builder.ApplyNexusOperations(serviceHandlerType);
+            return builder.ApplyNexusService(serviceHandlerType);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Temporalio.Extensions.Hosting
         /// given type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddScoped{TService}(IServiceCollection)" />
         /// +
-        /// <see cref="ApplyNexusOperations{T}(ITemporalWorkerServiceOptionsBuilder)" />.
+        /// <see cref="ApplyNexusService{T}(ITemporalWorkerServiceOptionsBuilder)" />.
         /// </summary>
         /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
         /// <param name="builder">Builder to use.</param>
@@ -125,7 +125,7 @@ namespace Temporalio.Extensions.Hosting
         /// given type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddScoped(IServiceCollection, Type)" />
         /// +
-        /// <see cref="ApplyNexusOperations(ITemporalWorkerServiceOptionsBuilder, Type)" />.
+        /// <see cref="ApplyNexusService(ITemporalWorkerServiceOptionsBuilder, Type)" />.
         /// </summary>
         /// <param name="builder">Builder to use.</param>
         /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
@@ -135,7 +135,7 @@ namespace Temporalio.Extensions.Hosting
             this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
         {
             builder.Services.TryAddScoped(serviceHandlerType);
-            return builder.ApplyNexusOperations(serviceHandlerType);
+            return builder.ApplyNexusService(serviceHandlerType);
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace Temporalio.Extensions.Hosting
         /// given type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddTransient{TService}(IServiceCollection)" />
         /// +
-        /// <see cref="ApplyNexusOperations{T}(ITemporalWorkerServiceOptionsBuilder)" />.
+        /// <see cref="ApplyNexusService{T}(ITemporalWorkerServiceOptionsBuilder)" />.
         /// </summary>
         /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
         /// <param name="builder">Builder to use.</param>
@@ -188,7 +188,7 @@ namespace Temporalio.Extensions.Hosting
         /// given type to the worker. Basically
         /// <see cref="ServiceCollectionDescriptorExtensions.TryAddTransient(IServiceCollection, Type)" />
         /// +
-        /// <see cref="ApplyNexusOperations(ITemporalWorkerServiceOptionsBuilder, Type)" />.
+        /// <see cref="ApplyNexusService(ITemporalWorkerServiceOptionsBuilder, Type)" />.
         /// </summary>
         /// <param name="builder">Builder to use.</param>
         /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
@@ -198,7 +198,7 @@ namespace Temporalio.Extensions.Hosting
             this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
         {
             builder.Services.TryAddTransient(serviceHandlerType);
-            return builder.ApplyNexusOperations(serviceHandlerType);
+            return builder.ApplyNexusService(serviceHandlerType);
         }
 
         /// <summary>
@@ -370,9 +370,9 @@ namespace Temporalio.Extensions.Hosting
         /// <typeparam name="T">Service handler type for which operations are registered.</typeparam>
         /// <returns>Same builder instance.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
-        public static ITemporalWorkerServiceOptionsBuilder ApplyNexusOperations<T>(
+        public static ITemporalWorkerServiceOptionsBuilder ApplyNexusService<T>(
             this ITemporalWorkerServiceOptionsBuilder builder) =>
-            builder.ApplyNexusOperations(typeof(T));
+            builder.ApplyNexusService(typeof(T));
 
         /// <summary>
         /// Register the given service handler type's operations. This uses the service provider
@@ -383,7 +383,7 @@ namespace Temporalio.Extensions.Hosting
         /// <param name="serviceHandlerType">Service handler type for which operations are registered.</param>
         /// <returns>Same builder instance.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
-        public static ITemporalWorkerServiceOptionsBuilder ApplyNexusOperations(
+        public static ITemporalWorkerServiceOptionsBuilder ApplyNexusService(
             this ITemporalWorkerServiceOptionsBuilder builder, Type serviceHandlerType)
         {
             builder.ConfigureOptions().PostConfigure<IServiceProvider>((options, provider) =>
