@@ -32,7 +32,7 @@ jobs:
             out-file: libtemporal_sdk_core_c_bridge.so
             out-prefix: linux-musl-x64
             # Need Alpine container since GH runner doesn't have one
-            container: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
             runsOn: ubuntu-latest
           - os: macos-intel
@@ -135,6 +135,8 @@ jobs:
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.x
 
       - name: Build package
         run: dotnet pack -c Release /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
@@ -164,7 +166,7 @@ jobs:
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
           - os: alpine-latest
-            container: mcr.microsoft.com/dotnet/sdk:6.0-alpine
+            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
             runsOn: ubuntu-latest
           - os: macos-intel
             runsOn: macos-13
@@ -192,11 +194,7 @@ jobs:
         with:
           # Specific .NET version required because GitHub macos ARM image has
           # bad pre-installed .NET version
-          dotnet-version: 6.x
-
-      - name: Setup .NET (Alpine)
-        if: ${{ matrix.os == 'alpine-latest' }}
-        run: apk add dotnet6-sdk
+          dotnet-version: 10.x
 
       - name: Run smoke test (non-Windows)
         if: ${{ matrix.os != 'windows-latest' && matrix.os != 'windows-arm' }}

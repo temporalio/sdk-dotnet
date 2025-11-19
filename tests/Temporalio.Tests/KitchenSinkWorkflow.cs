@@ -195,7 +195,12 @@ public class KitchenSinkWorkflow
                 tasks.Add(Task.Factory.StartNew(async () =>
                 {
                     await Workflow.DelayAsync((int)action.ExecuteActivity.CancelAfterMS);
+#pragma warning disable CA1849 // Call async methods when in an async method
+#pragma warning disable VSTHRD103 // Call async methods when in an async method
+                    // https://github.com/temporalio/sdk-dotnet/issues/327
                     cancelSource.Cancel();
+#pragma warning restore VSTHRD103 // Call async methods when in an async method
+#pragma warning restore CA1849 // Call async methods when in an async method
                 }).Unwrap());
             }
             // Start all activities

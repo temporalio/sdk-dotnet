@@ -34,10 +34,8 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
 
         public int Increment()
         {
-            if (isDisposed)
-            {
-                throw new ObjectDisposedException(nameof(TestCounterService));
-            }
+            ObjectDisposedException.ThrowIf(isDisposed, nameof(TestCounterService));
+
             return ++value;
         }
 

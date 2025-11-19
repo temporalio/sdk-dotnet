@@ -803,6 +803,9 @@ dotnet_diagnostic.CA1024.severity = none
 # Don't force workflows to have static methods
 dotnet_diagnostic.CA1822.severity = none
 
+# Don't force workflows to call async methods
+dotnet_diagnostic.CA1849.severity = none
+
 # Do not need ConfigureAwait for workflows
 dotnet_diagnostic.CA2007.severity = none
 
@@ -814,6 +817,9 @@ dotnet_diagnostic.CA5394.severity = none
 
 # Allow async methods to not have await in them
 dotnet_diagnostic.CS1998.severity = none
+
+# Don't force workflows to call async methods
+dotnet_diagnostic.VSTHRD103.severity = none
 
 # Don't avoid, but rather encourage things using TaskScheduler.Current in workflows
 dotnet_diagnostic.VSTHRD105.severity = none
