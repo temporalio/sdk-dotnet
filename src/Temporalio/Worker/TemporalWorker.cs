@@ -68,9 +68,9 @@ namespace Temporalio.Worker
                     client.Options.Namespace,
                     options,
                     loggerFactory);
-                if (options.Activities.Count == 0 && options.Workflows.Count == 0)
+                if (options.Activities.Count == 0 && options.Workflows.Count == 0 && options.NexusServices.Count == 0)
                 {
-                    throw new ArgumentException("Must have at least one workflow and/or activity");
+                    throw new ArgumentException("Must have at least one workflow, activity, and/or Nexus service");
                 }
 
                 MetricMeter = MetricMeterBridge.LazyFromRuntime(BridgeWorker.Runtime);
@@ -127,6 +127,11 @@ namespace Temporalio.Worker
                         DeploymentOptions: options.DeploymentOptions));
                 }
 
+                if (options.NexusServices.Count > 0)
+                {
+                    nexusWorker = new(this);
+                }
+
                 disposer = new Disposer(activityWorker, BridgeWorker, workflowTracingEventListenerEnabled);
             }
             catch (Exception)
@@ -138,10 +143,6 @@ namespace Temporalio.Worker
                     WorkflowTracingEventListener.Instance.Unregister();
                 }
                 throw;
-            }
-            if (options.NexusServices.Count > 0)
-            {
-                nexusWorker = new(this);
             }
         }
 
