@@ -3,7 +3,9 @@ namespace Temporalio.Tests.Worker;
 using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Api.Enums.V1;
+using Temporalio.Api.History.V1;
 using Temporalio.Client;
+using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Temporalio.Nexus;
 using Temporalio.Worker;
@@ -300,6 +302,39 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var ctx = await contextSource.Task;
         Assert.True(await Task.Run(() => ctx.CancellationToken.WaitHandle.WaitOne(2000)));
         Assert.Equal("timed out", ctx.CancellationReason);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_OperationSummary_FoundInHistory()
+    {
+        string expectedSummary = "custom operation summary";
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, name) => name)));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var handle = await RunInWorkflowAsync(workerOptions, async () =>
+            {
+                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(
+                        svc => svc.DoSomething("some-name"),
+                        new() { Summary = expectedSummary });
+            });
+
+        HistoryEvent? nexusOperationScheduledEvent = null;
+        await foreach (HistoryEvent historyEvent in handle.FetchHistoryEventsAsync())
+        {
+            if (historyEvent.NexusOperationScheduledEventAttributes is not null)
+            {
+                nexusOperationScheduledEvent = historyEvent;
+            }
+        }
+
+        Assert.NotNull(nexusOperationScheduledEvent);
+        string actualSummary = Client.Options.DataConverter.PayloadConverter.ToValue<string>(
+            nexusOperationScheduledEvent.UserMetadata.Summary);
+        Assert.Equal(expectedSummary, actualSummary);
     }
 
     [Workflow]
