@@ -288,17 +288,15 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         var mySlotSupplier = new MySlotSupplier();
 
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
-            {
-                Tuner = new WorkerTuner(
-                    mySlotSupplier,
-                    mySlotSupplier,
-                    mySlotSupplier,
-                    mySlotSupplier),
-            }.
-            AddWorkflow<NexusCallingWorkflow>().
-            AddWorkflow<SimpleWorkflow>().
-            AddActivity(SimpleWorkflow.SomeActivity).
-            AddNexusService(new SimpleService());
+            .AddWorkflow<NexusCallingWorkflow>()
+            .AddWorkflow<SimpleWorkflow>()
+            .AddActivity(SimpleWorkflow.SomeActivity)
+            .AddNexusService(new SimpleService());
+        workerOptions.Tuner = new WorkerTuner(
+            mySlotSupplier,
+            mySlotSupplier,
+            mySlotSupplier,
+            mySlotSupplier);
 
         using var worker = new TemporalWorker(Client, workerOptions);
 
