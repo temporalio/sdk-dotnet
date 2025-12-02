@@ -12,6 +12,7 @@ public unsafe class TemporalConnectionOptionsTests
         var options = new TemporalConnectionOptions("localhost:7233")
         {
             ApiKey = "test-api-key",
+            Identity = "test-identity",
         };
 
         using var scope = new Scope();
@@ -27,6 +28,7 @@ public unsafe class TemporalConnectionOptionsTests
         var options = new TemporalConnectionOptions("localhost:7233")
         {
             ApiKey = "test-api-key",
+            Identity = "test-identity",
             Tls = null, // Explicitly disable TLS
         };
 
