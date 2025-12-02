@@ -21,5 +21,10 @@ namespace Temporalio.Worker.Tuning
         /// Info about a local activity task slot usage.
         /// </summary>
         public record LocalActivitySlotInfo(string ActivityType) : SlotInfo();
+        /// <summary>
+        /// Info about a Nexus operation task slot usage.
+        /// </summary>
+        /// <remarks>WARNING: Nexus support is experimental.</remarks>
+        public record NexusOperationSlotInfo(string ServiceHandlerType, string OperationName) : SlotInfo();
     }
 }
