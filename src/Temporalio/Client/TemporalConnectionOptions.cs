@@ -10,6 +10,8 @@ namespace Temporalio.Client
     /// </summary>
     public class TemporalConnectionOptions : ICloneable
     {
+        private TlsOptions? tls;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TemporalConnectionOptions"/> class.
         /// Create default options.
@@ -38,9 +40,18 @@ namespace Temporalio.Client
         /// Gets or sets the TLS options for connection.
         /// </summary>
         /// <remarks>
-        /// This must be set, even to a default instance, to do any TLS connection.
+        /// This must be set, even to a default instance, to do any TLS connection. If not set and
+        /// <see cref="ApiKey"/> is provided, TLS will be automatically enabled with default options.
         /// </remarks>
-        public TlsOptions? Tls { get; set; }
+        public TlsOptions? Tls
+        {
+            get => tls;
+            set
+            {
+                tls = value;
+                TlsExplicitlySet = true;
+            }
+        }
 
         /// <summary>
         /// Gets or sets retry options for this connection.
@@ -104,6 +115,11 @@ namespace Temporalio.Client
         public TemporalRuntime? Runtime { get; set; }
 
         /// <summary>
+        /// Gets a value indicating whether TLS was explicitly set (even to null).
+        /// </summary>
+        internal bool TlsExplicitlySet { get; private set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>
@@ -113,7 +129,7 @@ namespace Temporalio.Client
             var copy = (TemporalConnectionOptions)MemberwiseClone();
             if (Tls != null)
             {
-                copy.Tls = (TlsOptions)Tls.Clone();
+                copy.tls = (TlsOptions)Tls.Clone();
             }
             if (RpcRetry != null)
             {
