@@ -242,9 +242,13 @@ namespace Temporalio.Bridge
                 throw new ArgumentException("Identity missing from options.");
             }
 
-            // Auto-enable TLS when API key is provided and TLS is not explicitly set
+            // Auto-enable TLS when API key is provided and TLS is not explicitly disabled
             var tls = options.Tls;
-            if (!string.IsNullOrEmpty(options.ApiKey) && !options.TlsExplicitlySet)
+            if (tls?.Disabled == true)
+            {
+                tls = null;
+            }
+            else if (tls == null && !string.IsNullOrEmpty(options.ApiKey))
             {
                 tls = new Temporalio.Client.TlsOptions();
             }

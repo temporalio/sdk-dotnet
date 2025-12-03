@@ -18,37 +18,40 @@ public unsafe class TemporalConnectionOptionsTests
         using var scope = new Scope();
         var interopOptions = options.ToInteropOptions(scope);
 
-        // TLS should be auto-enabled when API key is provided and TLS not explicitly set
-        Assert.NotNull(interopOptions.tls_options);
+        // TLS should be auto-enabled when API key is provided and TLS not set
+        Assert.True(interopOptions.tls_options != null);
     }
 
     [Fact]
-    public void ToInteropOptions_RespectsExplicitTlsNull_WhenApiKeyProvided()
+    public void ToInteropOptions_TlsDisabled_WhenExplicitlyDisabledWithApiKey()
     {
         var options = new TemporalConnectionOptions("localhost:7233")
         {
             ApiKey = "test-api-key",
             Identity = "test-identity",
-            Tls = null, // Explicitly disable TLS
+            Tls = new TlsOptions { Disabled = true },
         };
 
         using var scope = new Scope();
         var interopOptions = options.ToInteropOptions(scope);
 
-        // TLS should remain disabled when explicitly set to null
-        Assert.Null(interopOptions.tls_options);
+        // TLS should remain disabled when explicitly disabled, even with API key
+        Assert.True(interopOptions.tls_options == null);
     }
 
     [Fact]
     public void ToInteropOptions_TlsDisabled_WhenNoApiKeyAndTlsNotSet()
     {
-        var options = new TemporalConnectionOptions("localhost:7233");
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+        };
 
         using var scope = new Scope();
         var interopOptions = options.ToInteropOptions(scope);
 
         // TLS should be disabled when no API key and TLS not set
-        Assert.Null(interopOptions.tls_options);
+        Assert.True(interopOptions.tls_options == null);
     }
 
     [Fact]
@@ -64,6 +67,6 @@ public unsafe class TemporalConnectionOptionsTests
         var interopOptions = options.ToInteropOptions(scope);
 
         // TLS should be enabled when explicitly set
-        Assert.NotNull(interopOptions.tls_options);
+        Assert.True(interopOptions.tls_options != null);
     }
 }
