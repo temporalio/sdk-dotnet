@@ -214,6 +214,9 @@ namespace Temporalio.Bridge.Interop
         public IntPtr grpc_override_callback;
 
         public void* grpc_override_callback_user_data;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
+        public TemporalCoreByteArrayRefArray plugin_names;
     }
 
     internal unsafe partial struct TemporalCoreByteArray
@@ -574,7 +577,7 @@ namespace Temporalio.Bridge.Interop
         public TemporalCoreTelemetryOptions* telemetry;
 
         [NativeTypeName("uint64_t")]
-        public ulong worker_heartbeat_duration_millis;
+        public ulong worker_heartbeat_interval_millis;
     }
 
     internal partial struct TemporalCoreTestServerOptions
@@ -1188,6 +1191,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
         public TemporalCoreByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
+        public TemporalCoreByteArrayRefArray plugins;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]

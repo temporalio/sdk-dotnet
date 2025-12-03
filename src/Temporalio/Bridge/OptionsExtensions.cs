@@ -440,12 +440,14 @@ namespace Temporalio.Bridge
         /// <param name="scope">Scope to use.</param>
         /// <param name="namespace_">Namespace for the worker.</param>
         /// <param name="loggerFactory">Logger factory.</param>
+        /// <param name="clientPlugins">Client plugins to include for worker heartbeat.</param>
         /// <returns>Converted options.</returns>
         public static Interop.TemporalCoreWorkerOptions ToInteropOptions(
             this Temporalio.Worker.TemporalWorkerOptions options,
             Scope scope,
             string namespace_,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null)
         {
             if (options.TaskQueue == null)
             {
@@ -559,6 +561,16 @@ namespace Temporalio.Bridge
             options.WorkflowTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
             options.ActivityTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
             options.NexusTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentNexusTaskPolls);
+            var workerPluginNames = options.Plugins?
+                .Select(p => p.Name)
+                .Where(name => !string.IsNullOrEmpty(name)) ?? Enumerable.Empty<string>();
+            var clientPluginNames = clientPlugins?
+                .Select(p => p.Name)
+                .Where(name => !string.IsNullOrEmpty(name)) ?? Enumerable.Empty<string>();
+            var pluginNames = workerPluginNames
+                .Concat(clientPluginNames)
+                .Distinct()
+                .ToArray();
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -586,6 +598,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
+                plugins = scope.ByteArrayArray(pluginNames),
             };
         }
 
@@ -605,6 +618,11 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
+            var pluginNames = options.Plugins?
+                .Select(p => p.Name)
+                .Where(name => !string.IsNullOrEmpty(name))
+                .Distinct()
+                .ToArray() ?? Array.Empty<string>();
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),
@@ -641,6 +659,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
+                plugins = scope.ByteArrayArray(pluginNames),
             };
         }
 
