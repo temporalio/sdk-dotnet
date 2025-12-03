@@ -38,7 +38,9 @@ namespace Temporalio.Client
         /// Gets or sets the TLS options for connection.
         /// </summary>
         /// <remarks>
-        /// This must be set, even to a default instance, to do any TLS connection.
+        /// This must be set, even to a default instance, to do any TLS connection. If not set and
+        /// <see cref="ApiKey"/> is provided, TLS will be automatically enabled with default options.
+        /// To explicitly disable TLS, set instance with <see cref="TlsOptions.Disabled"/> set to true.
         /// </remarks>
         public TlsOptions? Tls { get; set; }
 

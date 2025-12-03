@@ -40,7 +40,8 @@ public class WorkflowEnvironment : IAsyncLifetime
             };
             var clientCert = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_CERT");
             var clientKey = Environment.GetEnvironmentVariable("TEMPORAL_TEST_CLIENT_KEY");
-            if ((clientCert == null) != (clientKey == null))
+            var apiKey = Environment.GetEnvironmentVariable("TEMPORAL_CLIENT_CLOUD_API_KEY");
+            if (clientCert == null != (clientKey == null))
             {
                 throw new InvalidOperationException("Must have both cert/key or neither");
             }
@@ -51,6 +52,11 @@ public class WorkflowEnvironment : IAsyncLifetime
                     ClientCert = System.Text.Encoding.ASCII.GetBytes(clientCert),
                     ClientPrivateKey = System.Text.Encoding.ASCII.GetBytes(clientKey),
                 };
+            }
+            if (apiKey != null)
+            {
+                // API key auto-enables TLS when Tls is not set
+                options.ApiKey = apiKey;
             }
             env = new(await TemporalClient.ConnectAsync(options));
         }
