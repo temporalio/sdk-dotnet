@@ -33,6 +33,7 @@ namespace Temporalio.Bridge
             return new Interop.TemporalCoreRuntimeOptions()
             {
                 telemetry = scope.Pointer(options.Telemetry.ToInteropOptions(scope)),
+                worker_heartbeat_interval_millis = (ulong)options.WorkerHeartbeatInterval.TotalMilliseconds,
             };
         }
 

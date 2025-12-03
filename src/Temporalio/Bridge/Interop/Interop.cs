@@ -572,6 +572,9 @@ namespace Temporalio.Bridge.Interop
     {
         [NativeTypeName("const struct TemporalCoreTelemetryOptions *")]
         public TemporalCoreTelemetryOptions* telemetry;
+
+        [NativeTypeName("uint64_t")]
+        public ulong worker_heartbeat_duration_millis;
     }
 
     internal partial struct TemporalCoreTestServerOptions
