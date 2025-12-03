@@ -36,7 +36,7 @@ public unsafe class TemporalConnectionOptionsTests
         var interopOptions = options.ToInteropOptions(scope);
 
         // TLS should remain disabled when explicitly set to null
-        Assert.NotNull(interopOptions.tls_options);
+        Assert.Null(interopOptions.tls_options);
     }
 
     [Fact]
