@@ -661,12 +661,6 @@ namespace Temporalio.Bridge
                 }
             }
 
-            // TODO: remove when implemented: https://github.com/temporalio/sdk-dotnet/issues/528
-            if (tuner.NexusTaskSlotSupplier is Temporalio.Worker.Tuning.CustomSlotSupplier)
-            {
-                throw new ArgumentException("Custom Nexus task slot suppliers are unsupported");
-            }
-
             return new()
             {
                 workflow_slot_supplier =
