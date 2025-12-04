@@ -18,6 +18,16 @@ namespace Temporalio.Runtime
         /// Initializes a new instance of the <see cref="TemporalRuntimeOptions"/> class.
         /// </summary>
         /// <param name="telemetry"><see cref="Telemetry" />.</param>
+        public TemporalRuntimeOptions(TelemetryOptions telemetry)
+            : this(telemetry, TimeSpan.FromSeconds(60))
+        {
+            Telemetry = telemetry;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TemporalRuntimeOptions"/> class.
+        /// </summary>
+        /// <param name="telemetry"><see cref="Telemetry" />.</param>
         /// <param name="workerHeartbeatInterval">Worker heartbeat interval. If 0 is specified, heartbeat is disabled.</param>
         public TemporalRuntimeOptions(TelemetryOptions telemetry, TimeSpan workerHeartbeatInterval)
         {
