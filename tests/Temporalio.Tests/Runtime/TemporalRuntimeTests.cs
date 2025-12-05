@@ -214,6 +214,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
             var runtime = new TemporalRuntime(new()
             {
                 Telemetry = new() { Logging = new() { Forwarding = options } },
+                WorkerHeartbeatInterval = null,
             });
 
             // Connect client with different runtime
@@ -245,14 +246,14 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
         // Try with fields included
         var entry = await RunWorkerUntilFailLogAsync(new());
         Assert.Equal(LogLevel.Warning, entry.Level);
-        Assert.StartsWith("[sdk_core::temporal_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
+        Assert.StartsWith("[sdk_core::temporalio_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
         Assert.Contains("Intentional error", entry.Formatted);
         Assert.IsType<ForwardedLog>(entry.State);
         var state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
         var dict = new Dictionary<string, object?>(state);
         Assert.Equal(5, dict.Count);
         Assert.Equal(LogLevel.Warning, dict["Level"]);
-        Assert.Equal("temporal_sdk_core::worker::workflow", dict["Target"]);
+        Assert.Equal("temporalio_sdk_core::worker::workflow", dict["Target"]);
         Assert.Equal("Failing workflow task", dict["Message"]);
         Assert.True(DateTime.UtcNow.Subtract((DateTime)dict["Timestamp"]!).Duration() < TimeSpan.FromMinutes(5));
         var fields = Assert.IsAssignableFrom<IReadOnlyDictionary<string, string>>(dict["JsonFields"]);
@@ -261,7 +262,7 @@ public class TemporalRuntimeTests : WorkflowEnvironmentTestBase
 
         // Now without fields included
         entry = await RunWorkerUntilFailLogAsync(new() { IncludeFields = false });
-        Assert.Equal("[sdk_core::temporal_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
+        Assert.Equal("[sdk_core::temporalio_sdk_core::worker::workflow] Failing workflow task", entry.Formatted);
         state = Assert.IsAssignableFrom<IEnumerable<KeyValuePair<string, object?>>>(entry.State);
         dict = new Dictionary<string, object?>(state);
         Assert.Null(dict["JsonFields"]);

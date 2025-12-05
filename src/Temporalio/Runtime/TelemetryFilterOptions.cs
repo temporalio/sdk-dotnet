@@ -24,7 +24,7 @@ namespace Temporalio.Runtime
             var coreLevel = core.ToString().ToUpper();
             var otherLevel = other.ToString().ToUpper();
             FilterString =
-                $"{otherLevel},temporal_sdk_core={coreLevel},temporal_client={coreLevel},temporal_sdk={coreLevel}";
+                $"{otherLevel},temporalio_sdk_core={coreLevel},temporalio_client={coreLevel},temporalio_sdk={coreLevel}";
         }
 
         /// <summary>
@@ -62,8 +62,8 @@ namespace Temporalio.Runtime
         /// Gets or sets the filter string for telemetry filters.
         /// </summary>
         /// <remarks>
-        /// This is in the Rust log format. For example, "temporal_sdk_core=DEBUG" sets the level
-        /// to <c>DEBUG</c> for the <c>temporal_sdk_core</c> Rust crate.
+        /// This is in the Rust log format. For example, "temporalio_sdk_core=DEBUG" sets the level
+        /// to <c>DEBUG</c> for the <c>temporalio_sdk_core</c> Rust crate.
         /// </remarks>
         public string? FilterString { get; set; }
 

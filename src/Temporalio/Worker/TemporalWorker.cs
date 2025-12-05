@@ -67,7 +67,8 @@ namespace Temporalio.Worker
                     (Bridge.Client)bridgeClient,
                     client.Options.Namespace,
                     options,
-                    loggerFactory);
+                    loggerFactory,
+                    client.Options.Plugins);
                 if (options.Activities.Count == 0 && options.Workflows.Count == 0)
                 {
                     throw new ArgumentException("Must have at least one workflow and/or activity");

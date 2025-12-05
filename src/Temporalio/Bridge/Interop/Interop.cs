@@ -214,6 +214,9 @@ namespace Temporalio.Bridge.Interop
         public IntPtr grpc_override_callback;
 
         public void* grpc_override_callback_user_data;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
+        public TemporalCoreByteArrayRefArray plugin_names;
     }
 
     internal unsafe partial struct TemporalCoreByteArray
@@ -572,6 +575,9 @@ namespace Temporalio.Bridge.Interop
     {
         [NativeTypeName("const struct TemporalCoreTelemetryOptions *")]
         public TemporalCoreTelemetryOptions* telemetry;
+
+        [NativeTypeName("uint64_t")]
+        public ulong worker_heartbeat_interval_millis;
     }
 
     internal partial struct TemporalCoreTestServerOptions
@@ -1115,6 +1121,21 @@ namespace Temporalio.Bridge.Interop
         public UIntPtr size;
     }
 
+    internal partial struct TemporalCoreWorkerTaskTypes
+    {
+        [NativeTypeName("bool")]
+        public byte enable_workflows;
+
+        [NativeTypeName("bool")]
+        public byte enable_local_activities;
+
+        [NativeTypeName("bool")]
+        public byte enable_remote_activities;
+
+        [NativeTypeName("bool")]
+        public byte enable_nexus;
+    }
+
     internal partial struct TemporalCoreWorkerOptions
     {
         [NativeTypeName("struct TemporalCoreByteArrayRef")]
@@ -1135,8 +1156,8 @@ namespace Temporalio.Bridge.Interop
         [NativeTypeName("struct TemporalCoreTunerHolder")]
         public TemporalCoreTunerHolder tuner;
 
-        [NativeTypeName("bool")]
-        public byte no_remote_activities;
+        [NativeTypeName("struct TemporalCoreWorkerTaskTypes")]
+        public TemporalCoreWorkerTaskTypes task_types;
 
         [NativeTypeName("uint64_t")]
         public ulong sticky_queue_schedule_to_start_timeout_millis;
@@ -1170,6 +1191,9 @@ namespace Temporalio.Bridge.Interop
 
         [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
         public TemporalCoreByteArrayRefArray nondeterminism_as_workflow_fail_for_types;
+
+        [NativeTypeName("struct TemporalCoreByteArrayRefArray")]
+        public TemporalCoreByteArrayRefArray plugins;
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -1198,207 +1222,207 @@ namespace Temporalio.Bridge.Interop
 
     internal static unsafe partial class Methods
     {
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreCancellationToken *")]
         public static extern TemporalCoreCancellationToken* temporal_core_cancellation_token_new();
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_cancellation_token_cancel([NativeTypeName("struct TemporalCoreCancellationToken *")] TemporalCoreCancellationToken* token);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_cancellation_token_free([NativeTypeName("struct TemporalCoreCancellationToken *")] TemporalCoreCancellationToken* token);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_client_connect([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreClientOptions *")] TemporalCoreClientOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientConnectCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_client_free([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_client_update_metadata([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef metadata);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_client_update_api_key([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef api_key);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
         public static extern TemporalCoreByteArrayRef temporal_core_client_grpc_override_request_service([NativeTypeName("const struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* req);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
         public static extern TemporalCoreByteArrayRef temporal_core_client_grpc_override_request_rpc([NativeTypeName("const struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* req);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("TemporalCoreMetadataRef")]
         public static extern TemporalCoreByteArrayRef temporal_core_client_grpc_override_request_headers([NativeTypeName("const struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* req);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
         public static extern TemporalCoreByteArrayRef temporal_core_client_grpc_override_request_proto([NativeTypeName("const struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* req);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_client_grpc_override_request_respond([NativeTypeName("struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* req, [NativeTypeName("struct TemporalCoreClientGrpcOverrideResponse")] TemporalCoreClientGrpcOverrideResponse resp);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_client_rpc_call([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreRpcCallOptions *")] TemporalCoreRpcCallOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientRpcCallCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreClientEnvConfigOrFail")]
         public static extern TemporalCoreClientEnvConfigOrFail temporal_core_client_env_config_load([NativeTypeName("const struct TemporalCoreClientEnvConfigLoadOptions *")] TemporalCoreClientEnvConfigLoadOptions* options);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreClientEnvConfigProfileOrFail")]
         public static extern TemporalCoreClientEnvConfigProfileOrFail temporal_core_client_env_config_profile_load([NativeTypeName("const struct TemporalCoreClientEnvConfigProfileLoadOptions *")] TemporalCoreClientEnvConfigProfileLoadOptions* options);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreMetricMeter *")]
         public static extern TemporalCoreMetricMeter* temporal_core_metric_meter_new([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_metric_meter_free([NativeTypeName("struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreMetricAttributes *")]
         public static extern TemporalCoreMetricAttributes* temporal_core_metric_attributes_new([NativeTypeName("const struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter, [NativeTypeName("const struct TemporalCoreMetricAttribute *")] TemporalCoreMetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreMetricAttributes *")]
         public static extern TemporalCoreMetricAttributes* temporal_core_metric_attributes_new_append([NativeTypeName("const struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* orig, [NativeTypeName("const struct TemporalCoreMetricAttribute *")] TemporalCoreMetricAttribute* attrs, [NativeTypeName("size_t")] UIntPtr size);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_metric_attributes_free([NativeTypeName("struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreMetric *")]
         public static extern TemporalCoreMetric* temporal_core_metric_new([NativeTypeName("const struct TemporalCoreMetricMeter *")] TemporalCoreMetricMeter* meter, [NativeTypeName("const struct TemporalCoreMetricOptions *")] TemporalCoreMetricOptions* options);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_metric_free([NativeTypeName("struct TemporalCoreMetric *")] TemporalCoreMetric* metric);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_metric_record_integer([NativeTypeName("const struct TemporalCoreMetric *")] TemporalCoreMetric* metric, [NativeTypeName("uint64_t")] ulong value, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_metric_record_float([NativeTypeName("const struct TemporalCoreMetric *")] TemporalCoreMetric* metric, double value, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_metric_record_duration([NativeTypeName("const struct TemporalCoreMetric *")] TemporalCoreMetric* metric, [NativeTypeName("uint64_t")] ulong value_ms, [NativeTypeName("const struct TemporalCoreMetricAttributes *")] TemporalCoreMetricAttributes* attrs);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreRandom *")]
         public static extern TemporalCoreRandom* temporal_core_random_new([NativeTypeName("uint64_t")] ulong seed);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_random_free([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("int32_t")]
         public static extern int temporal_core_random_int32_range([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random, [NativeTypeName("int32_t")] int min, [NativeTypeName("int32_t")] int max, [NativeTypeName("bool")] byte max_inclusive);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern double temporal_core_random_double_range([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random, double min, double max, [NativeTypeName("bool")] byte max_inclusive);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_random_fill_bytes([NativeTypeName("struct TemporalCoreRandom *")] TemporalCoreRandom* random, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef bytes);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreRuntimeOrFail")]
         public static extern TemporalCoreRuntimeOrFail temporal_core_runtime_new([NativeTypeName("const struct TemporalCoreRuntimeOptions *")] TemporalCoreRuntimeOptions* options);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_runtime_free([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_byte_array_free([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* bytes);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
         public static extern TemporalCoreByteArrayRef temporal_core_forwarded_log_target([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
         public static extern TemporalCoreByteArrayRef temporal_core_forwarded_log_message([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("uint64_t")]
         public static extern ulong temporal_core_forwarded_log_timestamp_millis([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
         public static extern TemporalCoreByteArrayRef temporal_core_forwarded_log_fields_json([NativeTypeName("const struct TemporalCoreForwardedLog *")] TemporalCoreForwardedLog* log);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_ephemeral_server_start_dev_server([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreDevServerOptions *")] TemporalCoreDevServerOptions* options, void* user_data, [NativeTypeName("TemporalCoreEphemeralServerStartCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_ephemeral_server_start_test_server([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreTestServerOptions *")] TemporalCoreTestServerOptions* options, void* user_data, [NativeTypeName("TemporalCoreEphemeralServerStartCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_ephemeral_server_free([NativeTypeName("struct TemporalCoreEphemeralServer *")] TemporalCoreEphemeralServer* server);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_ephemeral_server_shutdown([NativeTypeName("struct TemporalCoreEphemeralServer *")] TemporalCoreEphemeralServer* server, void* user_data, [NativeTypeName("TemporalCoreEphemeralServerShutdownCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreWorkerOrFail")]
         public static extern TemporalCoreWorkerOrFail temporal_core_worker_new([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreWorkerOptions *")] TemporalCoreWorkerOptions* options);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_free([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_validate([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_replace_client([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* new_client);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_poll_workflow_activation([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_poll_activity_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_poll_nexus_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_complete_workflow_activation([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_complete_activity_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_complete_nexus_task([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef completion, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("const struct TemporalCoreByteArray *")]
         public static extern TemporalCoreByteArray* temporal_core_worker_record_activity_heartbeat([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef heartbeat);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_request_workflow_eviction([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef run_id);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_initiate_shutdown([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_finalize_shutdown([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerCallback")] IntPtr callback);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreWorkerReplayerOrFail")]
         public static extern TemporalCoreWorkerReplayerOrFail temporal_core_worker_replayer_new([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreWorkerOptions *")] TemporalCoreWorkerOptions* options);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_replay_pusher_free([NativeTypeName("struct TemporalCoreWorkerReplayPusher *")] TemporalCoreWorkerReplayPusher* worker_replay_pusher);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreWorkerReplayPushResult")]
         public static extern TemporalCoreWorkerReplayPushResult temporal_core_worker_replay_push([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreWorkerReplayPusher *")] TemporalCoreWorkerReplayPusher* worker_replay_pusher, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef workflow_id, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef history);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern byte temporal_core_complete_async_reserve([NativeTypeName("const struct TemporalCoreSlotReserveCompletionCtx *")] TemporalCoreSlotReserveCompletionCtx* completion_ctx, [NativeTypeName("uintptr_t")] UIntPtr permit_id);
 
-        [DllImport("temporal_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern byte temporal_core_complete_async_cancel_reserve([NativeTypeName("const struct TemporalCoreSlotReserveCompletionCtx *")] TemporalCoreSlotReserveCompletionCtx* completion_ctx);
     }

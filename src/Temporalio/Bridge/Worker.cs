@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -19,6 +20,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options for the worker.</param>
         /// <param name="loggerFactory">Logger factory, used instead of the one in options by
         ///   anything in the bridge that needs it, since it's guaranteed to be set.</param>
+        /// <param name="clientPlugins">Client plugins to include in heartbeat.</param>
         /// <exception cref="Exception">
         /// If any of the options are invalid including improperly defined workflows/activities.
         /// </exception>
@@ -26,7 +28,8 @@ namespace Temporalio.Bridge
             Client client,
             string namespace_,
             Temporalio.Worker.TemporalWorkerOptions options,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null)
             : base(IntPtr.Zero, true)
         {
             Runtime = client.Runtime;
@@ -36,7 +39,7 @@ namespace Temporalio.Bridge
                 {
                     var workerOrFail = Interop.Methods.temporal_core_worker_new(
                         client.Ptr,
-                        scope.Pointer(options.ToInteropOptions(scope, namespace_, loggerFactory)));
+                        scope.Pointer(options.ToInteropOptions(scope, namespace_, loggerFactory, clientPlugins)));
                     if (workerOrFail.fail != null)
                     {
                         string failStr;
