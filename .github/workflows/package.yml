@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - "releases/*"
+      - worker-heartbeat
   workflow_dispatch: {}
 permissions:
   contents: read
@@ -13,41 +14,50 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest, windows-arm]
+        os:
+          [
+            ubuntu-latest,
+            ubuntu-arm,
+            alpine-latest,
+            macos-intel,
+            macos-arm,
+            windows-latest,
+            windows-arm,
+          ]
         include:
           - os: ubuntu-latest
-            out-file: libtemporal_sdk_core_c_bridge.so
+            out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-x64
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_x86_64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
           - os: ubuntu-arm
-            out-file: libtemporal_sdk_core_c_bridge.so
+            out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-arm64
             runsOn: ubuntu-24.04-arm64-2-core
             # We use the Python manylinux image for glibc compatibility
             container: quay.io/pypa/manylinux2014_aarch64
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
           - os: alpine-latest
-            out-file: libtemporal_sdk_core_c_bridge.so
+            out-file: libtemporalio_sdk_core_c_bridge.so
             out-prefix: linux-musl-x64
             # Need Alpine container since GH runner doesn't have one
             container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
             runsOn: ubuntu-latest
           - os: macos-intel
-            out-file: libtemporal_sdk_core_c_bridge.dylib
+            out-file: libtemporalio_sdk_core_c_bridge.dylib
             out-prefix: osx-x64
             runsOn: macos-15-intel
           - os: macos-arm
-            out-file: libtemporal_sdk_core_c_bridge.dylib
+            out-file: libtemporalio_sdk_core_c_bridge.dylib
             out-prefix: osx-arm64
             runsOn: macos-14
           - os: windows-latest
-            out-file: temporal_sdk_core_c_bridge.dll
+            out-file: temporalio_sdk_core_c_bridge.dll
             out-prefix: win-x64
           - os: windows-arm
-            out-file: temporal_sdk_core_c_bridge.dll
+            out-file: temporalio_sdk_core_c_bridge.dll
             out-prefix: win-arm64
             runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
@@ -161,7 +171,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-arm, alpine-latest, macos-intel, macos-arm, windows-latest, windows-arm]
+        os:
+          [
+            ubuntu-latest,
+            ubuntu-arm,
+            alpine-latest,
+            macos-intel,
+            macos-arm,
+            windows-latest,
+            windows-arm,
+          ]
         include:
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
