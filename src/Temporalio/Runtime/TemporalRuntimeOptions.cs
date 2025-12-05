@@ -18,22 +18,7 @@ namespace Temporalio.Runtime
         /// Initializes a new instance of the <see cref="TemporalRuntimeOptions"/> class.
         /// </summary>
         /// <param name="telemetry"><see cref="Telemetry" />.</param>
-        public TemporalRuntimeOptions(TelemetryOptions telemetry)
-            : this(telemetry, TimeSpan.FromSeconds(60))
-        {
-            Telemetry = telemetry;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TemporalRuntimeOptions"/> class.
-        /// </summary>
-        /// <param name="telemetry"><see cref="Telemetry" />.</param>
-        /// <param name="workerHeartbeatInterval">Worker heartbeat interval. If 0 is specified, heartbeat is disabled.</param>
-        public TemporalRuntimeOptions(TelemetryOptions telemetry, TimeSpan workerHeartbeatInterval)
-        {
-            Telemetry = telemetry;
-            WorkerHeartbeatInterval = workerHeartbeatInterval;
-        }
+        public TemporalRuntimeOptions(TelemetryOptions telemetry) => Telemetry = telemetry;
 
         /// <summary>
         /// Gets or sets the telemetry options.
@@ -43,7 +28,7 @@ namespace Temporalio.Runtime
         /// <summary>
         /// Gets or sets the worker heartbeat duration in milliseconds.
         /// </summary>
-        public TimeSpan WorkerHeartbeatInterval { get; set; } = TimeSpan.FromSeconds(60);
+        public TimeSpan? WorkerHeartbeatInterval { get; set; } = TimeSpan.FromSeconds(60);
 
         /// <summary>
         /// Create a shallow copy of these options.

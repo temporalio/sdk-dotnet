@@ -33,7 +33,8 @@ namespace Temporalio.Bridge
             return new Interop.TemporalCoreRuntimeOptions()
             {
                 telemetry = scope.Pointer(options.Telemetry.ToInteropOptions(scope)),
-                worker_heartbeat_interval_millis = (ulong)options.WorkerHeartbeatInterval.TotalMilliseconds,
+                worker_heartbeat_interval_millis =
+                    (ulong)(options.WorkerHeartbeatInterval?.TotalMilliseconds ?? 0),
             };
         }
 
@@ -563,10 +564,10 @@ namespace Temporalio.Bridge
             options.NexusTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentNexusTaskPolls);
             var workerPluginNames = options.Plugins?
                 .Select(p => p.Name)
-                .Where(name => !string.IsNullOrEmpty(name)) ?? Enumerable.Empty<string>();
+                ?? Enumerable.Empty<string>();
             var clientPluginNames = clientPlugins?
                 .Select(p => p.Name)
-                .Where(name => !string.IsNullOrEmpty(name)) ?? Enumerable.Empty<string>();
+                ?? Enumerable.Empty<string>();
             var pluginNames = workerPluginNames
                 .Concat(clientPluginNames)
                 .Distinct()
