@@ -58,6 +58,10 @@ namespace Temporalio.Bridge
                 Interop.TemporalCoreSlotInfo_Tag.LocalActivitySlotInfo =>
                     new SlotInfo.LocalActivitySlotInfo(
                         ByteArrayRef.ToUtf8(slotInfo.local_activity_slot_info.activity_type)),
+                Interop.TemporalCoreSlotInfo_Tag.NexusSlotInfo =>
+                    new SlotInfo.NexusOperationSlotInfo(
+                        ByteArrayRef.ToUtf8(slotInfo.nexus_slot_info.service),
+                        ByteArrayRef.ToUtf8(slotInfo.nexus_slot_info.operation)),
                 _ => throw new ArgumentOutOfRangeException(nameof(slotInfo)),
             };
         }
@@ -70,6 +74,7 @@ namespace Temporalio.Bridge
                     Interop.TemporalCoreSlotKindType.WorkflowSlotKindType => SlotType.Workflow,
                     Interop.TemporalCoreSlotKindType.ActivitySlotKindType => SlotType.Activity,
                     Interop.TemporalCoreSlotKindType.LocalActivitySlotKindType => SlotType.LocalActivity,
+                    Interop.TemporalCoreSlotKindType.NexusSlotKindType => SlotType.NexusOperation,
                     _ => throw new ArgumentOutOfRangeException(nameof(ctx)),
                 },
                 TaskQueue: ByteArrayRef.ToUtf8((*ctx).task_queue),

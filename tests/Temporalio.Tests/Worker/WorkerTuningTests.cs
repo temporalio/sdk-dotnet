@@ -1,5 +1,8 @@
+using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Client;
+using Temporalio.Nexus;
 using Temporalio.Worker;
 using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
@@ -138,6 +141,8 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
 
         public bool SawActSlotInfo { get; private set; }
 
+        public bool SawNexusSlotInfo { get; private set; }
+
         public HashSet<SlotType> SeenReserveTypes { get; } = new();
 
         public HashSet<string> SeenActivityTypes { get; } = new();
@@ -147,6 +152,10 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         public HashSet<bool> SeenStickyTypes { get; } = new();
 
         public HashSet<bool> SeenReleaseInfoPresence { get; } = new();
+
+        public HashSet<string> SeenNexusServiceHandlerTypes { get; } = new();
+
+        public HashSet<string> SeenNexusOperationNames { get; } = new();
 
         public override async Task<SlotPermit> ReserveSlotAsync(SlotReserveContext ctx, CancellationToken cancellationToken)
         {
@@ -168,16 +177,23 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             {
                 switch (ctx.SlotInfo)
                 {
-                    case Temporalio.Worker.Tuning.SlotInfo.WorkflowSlotInfo wsi:
+                    case SlotInfo.WorkflowSlotInfo wsi:
                         SawWFSlotInfo = true;
                         SeenWorkflowTypes.Add(wsi.WorkflowType);
                         break;
-                    case Temporalio.Worker.Tuning.SlotInfo.ActivitySlotInfo asi:
+                    case SlotInfo.ActivitySlotInfo asi:
                         SawActSlotInfo = true;
                         SeenActivityTypes.Add(asi.ActivityType);
                         break;
-                    case Temporalio.Worker.Tuning.SlotInfo.LocalActivitySlotInfo lasi:
+                    case SlotInfo.LocalActivitySlotInfo lasi:
                         break;
+                    case SlotInfo.NexusOperationSlotInfo nosi:
+                        SawNexusSlotInfo = true;
+                        SeenNexusServiceHandlerTypes.Add(nosi.ServiceHandlerType);
+                        SeenNexusOperationNames.Add(nosi.OperationName);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ctx));
                 }
             }
         }
@@ -208,14 +224,13 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
     }
 
     [Fact(Timeout = 10000)]
-    public async Task CanRunWith_CustomSlotSupplier()
+    public async Task CanRunWith_CustomSlotSupplier_WithoutNexus()
     {
         var mySlotSupplier = new MySlotSupplier();
         using var worker = new TemporalWorker(
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                // TODO: change Nexus to custom slot supplier after it's implemented: https://github.com/temporalio/sdk-dotnet/issues/528
                 Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, new FixedSizeSlotSupplier(10)),
             }.AddWorkflow<SimpleWorkflow>().AddActivity(SimpleWorkflow.SomeActivity));
         await worker.ExecuteAsync(async () =>
@@ -227,9 +242,97 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         Assert.Equal(mySlotSupplier.ReleaseCount, mySlotSupplier.BiggestReleasedPermit);
         Assert.True(mySlotSupplier.SawWFSlotInfo);
         Assert.True(mySlotSupplier.SawActSlotInfo);
-        Assert.Contains("SimpleWorkflow", mySlotSupplier.SeenWorkflowTypes);
-        Assert.Contains("SomeActivity", mySlotSupplier.SeenActivityTypes);
+        Assert.False(mySlotSupplier.SawNexusSlotInfo);
+        Assert.Single(mySlotSupplier.SeenWorkflowTypes);
+        Assert.Contains(nameof(SimpleWorkflow), mySlotSupplier.SeenWorkflowTypes);
+        Assert.Single(mySlotSupplier.SeenActivityTypes);
+        Assert.Contains(nameof(SimpleWorkflow.SomeActivity), mySlotSupplier.SeenActivityTypes);
         Assert.Equal(3, mySlotSupplier.SeenReserveTypes.Count);
+        Assert.Equal(2, mySlotSupplier.SeenReleaseInfoPresence.Count);
+    }
+
+    [NexusService]
+    public interface ISimpleService
+    {
+        [NexusOperation]
+        string Simple(string param);
+    }
+
+    [NexusServiceHandler(typeof(ISimpleService))]
+    public class SimpleService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> Simple() =>
+            WorkflowRunOperationHandler.FromHandleFactory<string, string>((context, name) =>
+                context.StartWorkflowAsync(
+                    (SimpleWorkflow wf) => wf.RunAsync(name),
+                    new() { Id = $"wf-{Guid.NewGuid()}" }));
+    }
+
+    public record class NexusCallingWorkflowInput(string EndpointName, string Name);
+
+    [Workflow]
+    public class NexusCallingWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(NexusCallingWorkflowInput input)
+        {
+            return await Workflow.CreateNexusClient<ISimpleService>(input.EndpointName).
+                ExecuteNexusOperationAsync(svc => svc.Simple(input.Name));
+        }
+    }
+
+    [Fact(Timeout = 10000)]
+    public async Task CanRunWith_CustomSlotSupplier_WithNexus()
+    {
+        var mySlotSupplier = new MySlotSupplier();
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            .AddWorkflow<NexusCallingWorkflow>()
+            .AddWorkflow<SimpleWorkflow>()
+            .AddActivity(SimpleWorkflow.SomeActivity)
+            .AddNexusService(new SimpleService());
+        workerOptions.Tuner = new WorkerTuner(
+            mySlotSupplier,
+            mySlotSupplier,
+            mySlotSupplier,
+            mySlotSupplier);
+
+        using var worker = new TemporalWorker(Client, workerOptions);
+
+        var endpointName = $"nexus-endpoint-{workerOptions.TaskQueue}";
+        var endpoint = await Env.TestEnv.CreateNexusEndpointAsync(
+            endpointName, workerOptions.TaskQueue!);
+        try
+        {
+            await worker.ExecuteAsync(async () =>
+            {
+                var input = new NexusCallingWorkflowInput(endpointName, "Temporal");
+
+                await Env.Client.ExecuteWorkflowAsync(
+                    (NexusCallingWorkflow wf) => wf.RunAsync(input),
+                    new(id: $"wf-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            });
+        }
+        finally
+        {
+            await Env.TestEnv.DeleteNexusEndpointAsync(endpoint);
+        }
+
+        Assert.Equal(mySlotSupplier.ReleaseCount, mySlotSupplier.BiggestReleasedPermit);
+        Assert.True(mySlotSupplier.SawWFSlotInfo);
+        Assert.True(mySlotSupplier.SawActSlotInfo);
+        Assert.True(mySlotSupplier.SawNexusSlotInfo);
+        Assert.Equal(2, mySlotSupplier.SeenWorkflowTypes.Count);
+        Assert.Contains(nameof(NexusCallingWorkflow), mySlotSupplier.SeenWorkflowTypes);
+        Assert.Contains(nameof(SimpleWorkflow), mySlotSupplier.SeenWorkflowTypes);
+        Assert.Single(mySlotSupplier.SeenActivityTypes);
+        Assert.Contains(nameof(SimpleWorkflow.SomeActivity), mySlotSupplier.SeenActivityTypes);
+        Assert.Single(mySlotSupplier.SeenNexusServiceHandlerTypes);
+        Assert.Contains(nameof(SimpleService), mySlotSupplier.SeenNexusServiceHandlerTypes);
+        Assert.Single(mySlotSupplier.SeenNexusOperationNames);
+        Assert.Contains(nameof(ISimpleService.Simple), mySlotSupplier.SeenNexusOperationNames);
+        Assert.Equal(4, mySlotSupplier.SeenReserveTypes.Count);
         Assert.Equal(2, mySlotSupplier.SeenReleaseInfoPresence.Count);
     }
 
@@ -269,8 +372,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                // TODO: change Nexus to custom slot supplier after it's implemented: https://github.com/temporalio/sdk-dotnet/issues/528
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, new FixedSizeSlotSupplier(10)),
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
             }.AddWorkflow<OneTaskWf>());
         await worker.ExecuteAsync(async () =>
         {
@@ -311,8 +413,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
             Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
             {
-                // TODO: change Nexus to custom slot supplier after it's implemented: https://github.com/temporalio/sdk-dotnet/issues/528
-                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, new FixedSizeSlotSupplier(10)),
+                Tuner = new WorkerTuner(mySlotSupplier, mySlotSupplier, mySlotSupplier, mySlotSupplier),
             }.AddWorkflow<OneTaskWf>());
         await worker.ExecuteAsync(async () =>
         {
