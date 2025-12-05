@@ -90,7 +90,7 @@ jobs:
 
       - name: Build (non-Docker)
         if: ${{ !matrix.container }}
-        run: cargo build --manifest-path src/Temporalio/Bridge/sdk-core/core-c-bridge/Cargo.toml --profile release-lto
+        run: cargo build --manifest-path src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/Cargo.toml --profile release-lto
 
       - name: Build (Docker non-Alpine)
         if: ${{ matrix.container && matrix.os != 'alpine-latest' }}
@@ -103,7 +103,7 @@ jobs:
              && curl -LO ${{ matrix.protobuf-url }} \
              && unzip protoc-*.zip -d /usr/local/protobuf \
              && export PATH="$PATH:/usr/local/protobuf/bin" \
-             && cargo build --manifest-path src/Temporalio/Bridge/sdk-core/core-c-bridge/Cargo.toml --profile release-lto \
+             && cargo build --manifest-path src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/Cargo.toml --profile release-lto \
             '
 
       - name: Build (Docker Alpine)
@@ -118,7 +118,7 @@ jobs:
              && curl -LO ${{ matrix.protobuf-url }} \
              && unzip protoc-*.zip -d /usr/local/protobuf \
              && export PATH="$PATH:/usr/local/protobuf/bin" \
-             && RUSTFLAGS="-C target-feature=-crt-static" cargo build --manifest-path src/Temporalio/Bridge/sdk-core/core-c-bridge/Cargo.toml --profile release-lto \
+             && RUSTFLAGS="-C target-feature=-crt-static" cargo build --manifest-path src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/Cargo.toml --profile release-lto \
             '
 
       - name: Upload bridge library
