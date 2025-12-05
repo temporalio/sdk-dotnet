@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - "releases/*"
-      - worker-heartbeat
+  pull_request:
   workflow_dispatch: {}
 permissions:
   contents: read
