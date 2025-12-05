@@ -621,7 +621,6 @@ namespace Temporalio.Bridge
             }
             var pluginNames = options.Plugins?
                 .Select(p => p.Name)
-                .Where(name => !string.IsNullOrEmpty(name))
                 .Distinct()
                 .ToArray() ?? Array.Empty<string>();
             return new()
