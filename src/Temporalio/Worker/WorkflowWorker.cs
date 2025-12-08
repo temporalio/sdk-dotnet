@@ -193,7 +193,7 @@ namespace Temporalio.Worker
                 // deadlocked and just rethrow the same exception as before
                 if (deadlockedWorkflows.ContainsKey(act.RunId))
                 {
-                    throw new InvalidOperationException($"[TMPRL1101] Workflow with ID {act.RunId} deadlocked after {deadlockTimeout}");
+                    throw new InvalidOperationException($"[TMPRL1101] Workflow with run ID {act.RunId} deadlocked after {deadlockTimeout}");
                 }
 
                 // If the workflow is not yet running, create it. We know that we will only get
@@ -227,7 +227,7 @@ namespace Temporalio.Worker
                         // next activation which will be a remove job.
                         deadlockedWorkflows[act.RunId] = workflowTask;
                         throw new InvalidOperationException(
-                            $"[TMPRL1101] Workflow with ID {act.RunId} deadlocked after {deadlockTimeout}");
+                            $"[TMPRL1101] Workflow with run ID {act.RunId} deadlocked after {deadlockTimeout}");
                     }
                     // Cancel deadlock timeout timer since we didn't hit it
                     timeoutCancel.Cancel();
