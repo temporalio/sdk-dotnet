@@ -35,6 +35,15 @@ namespace Temporalio.Client
         public byte[]? ClientPrivateKey { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether TLS should be explicitly disabled.
+        /// </summary>
+        /// <remarks>
+        /// When set to true, TLS will be disabled even when an API key is provided (which normally
+        /// auto-enables TLS).
+        /// </remarks>
+        public bool Disabled { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
