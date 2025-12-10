@@ -243,7 +243,19 @@ namespace Temporalio.Bridge
             {
                 throw new ArgumentException("Identity missing from options.");
             }
-            var scheme = options.Tls == null ? "http" : "https";
+
+            // Auto-enable TLS when API key is provided and TLS is not explicitly disabled
+            var tls = options.Tls;
+            if (tls?.Disabled == true)
+            {
+                tls = null;
+            }
+            else if (tls == null && !string.IsNullOrEmpty(options.ApiKey))
+            {
+                tls = new Temporalio.Client.TlsOptions();
+            }
+
+            var scheme = tls == null ? "http" : "https";
             return new Interop.TemporalCoreClientOptions()
             {
                 target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
@@ -253,7 +265,7 @@ namespace Temporalio.Bridge
                 api_key = scope.ByteArray(options.ApiKey),
                 identity = scope.ByteArray(options.Identity),
                 tls_options =
-                    options.Tls == null ? null : scope.Pointer(options.Tls.ToInteropOptions(scope)),
+                    tls == null ? null : scope.Pointer(tls.ToInteropOptions(scope)),
                 retry_options =
                     options.RpcRetry == null
                         ? null
