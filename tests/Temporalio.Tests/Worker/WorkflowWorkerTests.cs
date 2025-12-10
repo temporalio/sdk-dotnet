@@ -3536,7 +3536,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             v.Tags.Contains(new("my-activity-extra-tag", 12.34D)) &&
             (long)v.Value == 34);
         // Check Temporal metric
-        metric = Assert.Single(meter.Metrics, m => m.Name == "some-prefix_workflow_completed");
+        metric = Assert.Single(
+            meter.Metrics, m => m.Name == "some-prefix_workflow_completed" && !m.Values.IsEmpty);
         Assert.Single(metric.Values, v =>
             v.Tags.Contains(new("workflow_type", "CustomMetricsWorkflow")) &&
             (long)v.Value == 1);
@@ -3588,7 +3589,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         var meter = await DoStuffAsync(CustomMetricMeterOptions.DurationFormat.IntegerMilliseconds);
         Assert.Single(
             Assert.Single(meter.Metrics, v =>
-                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "ms").Values,
+                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "ms"
+                && !v.Values.IsEmpty).Values,
             v => v.Value is long val);
         Assert.Single(
             Assert.Single(meter.Metrics, v => v.Name == "my-histogram-float").Values,
@@ -3605,7 +3607,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         // Took less than 5s
         Assert.Single(
             Assert.Single(meter.Metrics, v =>
-                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "s").Values,
+                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "s"
+                && !v.Values.IsEmpty).Values,
             v => v.Value is double val && val < 5);
         Assert.Single(
             Assert.Single(meter.Metrics, v => v.Name == "my-histogram-duration").Values,
@@ -3616,7 +3619,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         // Took less than 5s
         Assert.Single(
             Assert.Single(meter.Metrics, v =>
-                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "duration").Values,
+                v.Name == "temporal_workflow_task_execution_latency" && v.Unit == "duration"
+                && !v.Values.IsEmpty).Values,
             v => v.Value is TimeSpan val && val < TimeSpan.FromSeconds(5));
         Assert.Single(
             Assert.Single(meter.Metrics, v => v.Name == "my-histogram-duration").Values,

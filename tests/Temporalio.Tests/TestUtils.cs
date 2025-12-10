@@ -171,9 +171,7 @@ public static class TestUtils
 
     public class CaptureMetricMeter : ICustomMetricMeter
     {
-        private readonly ConcurrentDictionary<string, CaptureMetric> metricsByName = new();
-
-        public ICollection<CaptureMetric> Metrics => metricsByName.Values;
+        public ConcurrentQueue<CaptureMetric> Metrics { get; } = new();
 
         public ICustomMetricCounter<T> CreateCounter<T>(
             string name, string? unit, string? description)
@@ -204,9 +202,12 @@ public static class TestUtils
         }
 
         private TMetric CreateMetric<TValue, TMetric>(string name, string? unit, string? description)
-            where TValue : struct =>
-            (TMetric)(object)metricsByName.GetOrAdd(
-                name, _ => new CaptureMetric<TValue>(name, unit, description));
+            where TValue : struct
+        {
+            var metric = new CaptureMetric<TValue>(name, unit, description);
+            Metrics.Enqueue(metric);
+            return (TMetric)(object)metric;
+        }
     }
 
     public abstract record CaptureMetric(string Name, string? Unit, string? Description)
