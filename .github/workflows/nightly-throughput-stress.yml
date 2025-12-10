@@ -37,7 +37,7 @@ env:
   TEST_TIMEOUT: ${{ inputs.timeout || vars.NIGHTLY_TEST_TIMEOUT || '5h30m' }}
 
   # AWS S3 metrics upload ARN
-  AWS_S3_METRICS_UPLOAD_ROLE_ARN: ${{ vars.AWS_S3_METRICS_UPLOAD_ROLE_ARN }}
+  AWS_S3_METRICS_UPLOAD_ROLE_ARN: ${{ secrets.AWS_S3_METRICS_UPLOAD_ROLE_ARN }}
 
   # Logging and artifacts
   WORKER_LOG_DIR: /tmp/throughput-stress-logs
