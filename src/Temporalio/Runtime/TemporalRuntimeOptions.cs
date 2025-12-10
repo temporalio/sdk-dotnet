@@ -26,6 +26,11 @@ namespace Temporalio.Runtime
         public TelemetryOptions Telemetry { get; set; } = new();
 
         /// <summary>
+        /// Gets or sets the worker heartbeat duration in milliseconds.
+        /// </summary>
+        public TimeSpan? WorkerHeartbeatInterval { get; set; } = TimeSpan.FromSeconds(60);
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options and any transitive options fields.</returns>

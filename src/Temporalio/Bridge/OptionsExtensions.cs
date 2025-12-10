@@ -33,6 +33,8 @@ namespace Temporalio.Bridge
             return new Interop.TemporalCoreRuntimeOptions()
             {
                 telemetry = scope.Pointer(options.Telemetry.ToInteropOptions(scope)),
+                worker_heartbeat_interval_millis =
+                    (ulong)(options.WorkerHeartbeatInterval?.TotalMilliseconds ?? 0),
             };
         }
 
@@ -451,12 +453,14 @@ namespace Temporalio.Bridge
         /// <param name="scope">Scope to use.</param>
         /// <param name="namespace_">Namespace for the worker.</param>
         /// <param name="loggerFactory">Logger factory.</param>
+        /// <param name="clientPlugins">Client plugins to include for worker heartbeat.</param>
         /// <returns>Converted options.</returns>
         public static Interop.TemporalCoreWorkerOptions ToInteropOptions(
             this Temporalio.Worker.TemporalWorkerOptions options,
             Scope scope,
             string namespace_,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null)
         {
             if (options.TaskQueue == null)
             {
@@ -534,9 +538,18 @@ namespace Temporalio.Bridge
                     },
                 };
             }
-            // We have to disable remote activities if a user asks _or_ if we are not running an
-            // activity worker at all. Otherwise shutdown will not proceed properly.
-            var noRemoteActivities = options.LocalActivityWorkerOnly || options.Activities.Count == 0;
+            var hasWorkflows = options.Workflows.Count > 0;
+            var hasActivities = options.Activities.Count > 0;
+            var hasNexus = options.NexusServices.Count > 0;
+
+            var taskTypes = new Interop.TemporalCoreWorkerTaskTypes()
+            {
+                enable_workflows = (byte)(hasWorkflows ? 1 : 0),
+                enable_local_activities = (byte)(hasActivities && hasWorkflows ? 1 : 0),
+                enable_remote_activities = (byte)(
+                    hasActivities && !options.LocalActivityWorkerOnly ? 1 : 0),
+                enable_nexus = (byte)(hasNexus ? 1 : 0),
+            };
             var tuner = options.Tuner;
             if (tuner == null)
             {
@@ -561,6 +574,16 @@ namespace Temporalio.Bridge
             options.WorkflowTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentWorkflowTaskPolls);
             options.ActivityTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentActivityTaskPolls);
             options.NexusTaskPollerBehavior ??= new PollerBehavior.SimpleMaximum(options.MaxConcurrentNexusTaskPolls);
+            var workerPluginNames = options.Plugins?
+                .Select(p => p.Name)
+                ?? Enumerable.Empty<string>();
+            var clientPluginNames = clientPlugins?
+                .Select(p => p.Name)
+                ?? Enumerable.Empty<string>();
+            var pluginNames = workerPluginNames
+                .Concat(clientPluginNames)
+                .Distinct()
+                .ToArray();
             return new()
             {
                 namespace_ = scope.ByteArray(namespace_),
@@ -569,7 +592,7 @@ namespace Temporalio.Bridge
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = (uint)options.MaxCachedWorkflows,
                 tuner = tuner.ToInteropTuner(scope, loggerFactory),
-                no_remote_activities = (byte)(noRemoteActivities ? 1 : 0),
+                task_types = taskTypes,
                 sticky_queue_schedule_to_start_timeout_millis =
                     (ulong)options.StickyQueueScheduleToStartTimeout.TotalMilliseconds,
                 max_heartbeat_throttle_interval_millis =
@@ -588,6 +611,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
+                plugins = scope.ByteArrayArray(pluginNames),
             };
         }
 
@@ -607,6 +631,10 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("Unable to get assembly manifest ID for build ID");
                 buildId = entryAssembly.ManifestModule.ModuleVersionId.ToString();
             }
+            var pluginNames = options.Plugins?
+                .Select(p => p.Name)
+                .Distinct()
+                .ToArray() ?? Array.Empty<string>();
             return new()
             {
                 namespace_ = scope.ByteArray(options.Namespace),
@@ -622,7 +650,13 @@ namespace Temporalio.Bridge
                 identity_override = scope.ByteArray(options.Identity),
                 max_cached_workflows = 2,
                 tuner = WorkerTuner.CreateFixedSize(2, 1, 1).ToInteropTuner(scope, options.LoggerFactory),
-                no_remote_activities = 1,
+                task_types = new Interop.TemporalCoreWorkerTaskTypes()
+                {
+                    enable_workflows = 1,
+                    enable_local_activities = 0,
+                    enable_remote_activities = 0,
+                    enable_nexus = 0,
+                },
                 sticky_queue_schedule_to_start_timeout_millis = 1000,
                 max_heartbeat_throttle_interval_millis = 1000,
                 default_heartbeat_throttle_interval_millis = 1000,
@@ -637,6 +671,7 @@ namespace Temporalio.Bridge
                     (byte)(AnyNonDeterminismFailureTypes(options.WorkflowFailureExceptionTypes) ? 1 : 0),
                 nondeterminism_as_workflow_fail_for_types = scope.ByteArrayArray(
                     AllNonDeterminismFailureTypeWorkflows(options.Workflows)),
+                plugins = scope.ByteArrayArray(pluginNames),
             };
         }
 

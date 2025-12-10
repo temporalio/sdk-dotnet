@@ -4,11 +4,11 @@ windows-types
 --with-access-specifier
 *=internal
 --file
-src/Temporalio/Bridge/sdk-core/core-c-bridge/include/temporal-sdk-core-c-bridge.h
+src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/include/temporal-sdk-core-c-bridge.h
 --namespace
 Temporalio.Bridge.Interop
 --libraryPath
-temporal_sdk_core_c_bridge
+temporalio_sdk_core_c_bridge
 --output
 src/Temporalio/Bridge/Interop/Interop.cs
 --additional

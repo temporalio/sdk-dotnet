@@ -179,7 +179,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
         using var worker = new TemporalWorker(client, new TemporalWorkerOptions()
         {
-            TaskQueue = "TestSimplePlugin_Basic",
+            TaskQueue = "TestSimplePlugin_Basic" + Guid.NewGuid(),
         });
         Assert.NotNull(client.Options.DataConverter.PayloadCodec);
     }
@@ -200,7 +200,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
 
         using var worker = new TemporalWorker(client, new TemporalWorkerOptions()
         {
-            TaskQueue = "TestSimplePlugin_Function",
+            TaskQueue = "TestSimplePlugin_Function" + Guid.NewGuid(),
         });
         Assert.NotNull(client.Options.DataConverter.PayloadCodec);
     }
@@ -220,7 +220,7 @@ public class PluginTests : WorkflowEnvironmentTestBase
         var client = new TemporalClient(Env.Client.Connection, newOptions);
         using var worker = new TemporalWorker(client, new TemporalWorkerOptions()
         {
-            TaskQueue = "TestSimplePlugin_Function",
+            TaskQueue = "TestSimplePlugin_Function" + Guid.NewGuid(),
         });
         using var cancelToken = new CancellationTokenSource();
         var execution = worker.ExecuteAsync(cancelToken.Token);
