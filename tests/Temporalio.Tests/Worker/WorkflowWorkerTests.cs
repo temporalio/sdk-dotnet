@@ -3381,7 +3381,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 // We'll also test the metric prefix
                 Metrics = new() { Prometheus = new(promAddr), MetricPrefix = "foo_" },
             },
-            WorkerHeartbeatInterval = null,
         });
         var client = await TemporalClient.ConnectAsync(
             new()
@@ -3487,7 +3486,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             {
                 Metrics = new() { CustomMetricMeter = meter, MetricPrefix = "some-prefix_" },
             },
-            WorkerHeartbeatInterval = null,
         });
         var client = await TemporalClient.ConnectAsync(
             new()
@@ -3561,7 +3559,6 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                         CustomMetricMeterOptions = new() { HistogramDurationFormat = durationFormat },
                     },
                 },
-                WorkerHeartbeatInterval = null,
             });
             var client = await TemporalClient.ConnectAsync(
                 new()
