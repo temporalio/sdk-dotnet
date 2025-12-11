@@ -27,6 +27,15 @@ namespace Temporalio.Client
         public IReadOnlyCollection<KeyValuePair<string, string>>? Metadata { get; set; }
 
         /// <summary>
+        /// Gets or sets the gRPC binary metadata for the call (i.e. the binary headers).
+        /// </summary>
+        /// <remarks>
+        /// Newlines are not allowed in keys. Keys here will override any connection-level
+        /// metadata values for the same keys.
+        /// </remarks>
+        public IReadOnlyCollection<KeyValuePair<string, byte[]>>? BinaryMetadata { get; set; }
+
+        /// <summary>
         /// Gets or sets the timeout for the call. Default timeout is specific to the call (for
         /// normal calls this may be 30s, for long-poll calls it is longer).
         /// </summary>

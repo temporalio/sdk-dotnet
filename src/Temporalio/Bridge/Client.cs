@@ -86,6 +86,21 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Update client gRPC binary metadata (i.e. binary headers).
+        /// </summary>
+        /// <param name="metadata">Binary metadata to set.</param>
+        public void UpdateBinaryMetadata(IEnumerable<KeyValuePair<string, byte[]>> metadata)
+        {
+            using (var scope = new Scope())
+            {
+                unsafe
+                {
+                    Interop.Methods.temporal_core_client_update_binary_metadata(Ptr, scope.Metadata(metadata));
+                }
+            }
+        }
+
+        /// <summary>
         /// Update client API key.
         /// </summary>
         /// <param name="apiKey">API key to set.</param>
@@ -110,6 +125,7 @@ namespace Temporalio.Bridge
         /// <param name="resp">Proto response parser.</param>
         /// <param name="retry">Whether to retry or not.</param>
         /// <param name="metadata">Metadata to include.</param>
+        /// <param name="binaryMetadata">Binary metadata to include.</param>
         /// <param name="timeout">Timeout for the call.</param>
         /// <param name="cancellationToken">Cancellation token for the call.</param>
         /// <returns>Response proto.</returns>
@@ -120,6 +136,7 @@ namespace Temporalio.Bridge
             MessageParser<T> resp,
             bool retry,
             IEnumerable<KeyValuePair<string, string>>? metadata,
+            IEnumerable<KeyValuePair<string, byte[]>>? binaryMetadata,
             TimeSpan? timeout,
             System.Threading.CancellationToken? cancellationToken)
             where T : IMessage<T>
@@ -140,6 +157,7 @@ namespace Temporalio.Bridge
                                 req = scope.ByteArray(req.ToByteArray()),
                                 retry = (byte)(retry ? 1 : 0),
                                 metadata = scope.Metadata(metadata),
+                                binary_metadata = scope.Metadata(binaryMetadata),
                                 timeout_millis = (uint)(timeout?.TotalMilliseconds ?? 0),
                                 cancellation_token = scope.CancellationToken(cancellationToken),
                             }),

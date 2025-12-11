@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Reflection;
+using System.Text;
 using Temporalio.Client;
 using Temporalio.Runtime;
 using Xunit;
@@ -28,6 +29,7 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         // Update some headers and call again
         // TODO(cretz): Find way to confirm this works without running our own gRPC server
         Client.Connection.RpcMetadata = new Dictionary<string, string> { ["header"] = "value" };
+        Client.Connection.RpcBinaryMetadata = new Dictionary<string, byte[]> { ["x-header-bin"] = Encoding.UTF8.GetBytes("client-binary") };
         Client.Connection.ApiKey = "my-api-key";
         resp = await Client.WorkflowService.GetSystemInfoAsync(
             new Api.WorkflowService.V1.GetSystemInfoRequest());
@@ -47,11 +49,14 @@ public class TemporalClientTests : WorkflowEnvironmentTestBase
         Assert.False(client.Connection.IsConnected);
         Assert.Throws<InvalidOperationException>(
             () => client.Connection.RpcMetadata = new Dictionary<string, string>());
+        Assert.Throws<InvalidOperationException>(
+            () => client.Connection.RpcBinaryMetadata = new Dictionary<string, byte[]>());
 
         // Do health check, confirm connected, confirm RPC metadata can be set
         Assert.True(await client.Connection.CheckHealthAsync());
         Assert.True(client.Connection.IsConnected);
         client.Connection.RpcMetadata = new Dictionary<string, string>();
+        client.Connection.RpcBinaryMetadata = new Dictionary<string, byte[]>();
     }
 
     [Fact]

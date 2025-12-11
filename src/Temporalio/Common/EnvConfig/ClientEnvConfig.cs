@@ -124,6 +124,7 @@ namespace Temporalio.Common.EnvConfig
                 }
 
                 // Add gRPC metadata if present
+                // Add support for gRPC binary metadata?
                 if (GrpcMeta != null)
                 {
                     options.RpcMetadata = new List<KeyValuePair<string, string>>(GrpcMeta);
