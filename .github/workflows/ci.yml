@@ -61,6 +61,7 @@ jobs:
       - name: Regen confirm unchanged
         if: ${{ matrix.checkTarget }}
         run: |
+          $ErrorActionPreference = 'Stop'
           dotnet tool install --global --version '[20.1.2.1]' ClangSharpPInvokeGenerator
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
