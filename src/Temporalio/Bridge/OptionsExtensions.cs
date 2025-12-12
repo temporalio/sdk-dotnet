@@ -261,8 +261,8 @@ namespace Temporalio.Bridge
                 target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
                 client_name = ClientName.Ref,
                 client_version = ClientVersion.Ref,
-                metadata = scope.Metadata(options.RpcMetadata),
-                binary_metadata = scope.Metadata(options.RpcBinaryMetadata),
+                metadata = scope.ByteArrayArray(options.RpcMetadata),
+                binary_metadata = scope.ByteArrayArray(options.RpcBinaryMetadata),
                 api_key = scope.ByteArray(options.ApiKey),
                 identity = scope.ByteArray(options.Identity),
                 tls_options =

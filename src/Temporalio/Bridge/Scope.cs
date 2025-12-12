@@ -92,34 +92,6 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Create a metadata byte array ref array.
-        /// </summary>
-        /// <param name="metadata">Metadata to create from.</param>
-        /// <returns>Created byte array ref.</returns>
-        public Interop.TemporalCoreByteArrayRefArray Metadata(IEnumerable<KeyValuePair<string, string>>? metadata)
-        {
-            if (metadata == null || !metadata.Any())
-            {
-                return EmptyByteArrayRefArray;
-            }
-            return ByteArrayArray(metadata);
-        }
-
-        /// <summary>
-        /// Create a metadata byte array ref array.
-        /// </summary>
-        /// <param name="metadata">Metadata to create from.</param>
-        /// <returns>Created byte array ref.</returns>
-        public Interop.TemporalCoreByteArrayRefArray Metadata(IEnumerable<KeyValuePair<string, byte[]>>? metadata)
-        {
-            if (metadata == null || !metadata.Any())
-            {
-                return EmptyByteArrayRefArray;
-            }
-            return ByteArrayArray(metadata);
-        }
-
-        /// <summary>
         /// Create a newline-delimited byte array ref.
         /// </summary>
         /// <param name="values">Values to create from.</param>
@@ -174,8 +146,13 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="values">Values.</param>
         /// <returns>Created byte array array.</returns>
-        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IEnumerable<KeyValuePair<string, string>>? values)
+        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IReadOnlyCollection<KeyValuePair<string, string>>? values)
         {
+            if (values == null || values.Count == 0)
+            {
+                return EmptyByteArrayRefArray;
+            }
+
             var arr = values.Select(ByteArray).ToArray();
             unsafe
             {
@@ -192,8 +169,13 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="values">Values.</param>
         /// <returns>Created byte array array.</returns>
-        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IEnumerable<KeyValuePair<string, byte[]>>? values)
+        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IReadOnlyCollection<KeyValuePair<string, byte[]>>? values)
         {
+            if (values == null || values.Count == 0)
+            {
+                return EmptyByteArrayRefArray;
+            }
+
             var arr = values.Select(ByteArray).ToArray();
             unsafe
             {
