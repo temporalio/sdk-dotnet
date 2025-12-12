@@ -1,4 +1,3 @@
 [submodule "src/Temporalio/Bridge/sdk-core"]
 	path = src/Temporalio/Bridge/sdk-core
-	url = https://github.com/jmaeagle99/temporalio-sdk-core.git
-	branch = bin-headers
+	url = https://github.com/temporalio/sdk-core.git
