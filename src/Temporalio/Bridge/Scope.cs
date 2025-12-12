@@ -66,10 +66,6 @@ namespace Temporalio.Bridge
         /// <returns>Created byte array ref.</returns>
         public Interop.TemporalCoreByteArrayRef ByteArray(KeyValuePair<string, string> pair)
         {
-            if (pair.Key.Length == 0)
-            {
-                return ByteArrayRef.Empty.Ref;
-            }
             var val = ByteArrayRef.FromKeyValuePair(pair);
             byteArrayRefs.Add(val);
             return val.Ref;
@@ -82,10 +78,6 @@ namespace Temporalio.Bridge
         /// <returns>Created byte array ref.</returns>
         public Interop.TemporalCoreByteArrayRef ByteArray(KeyValuePair<string, byte[]> pair)
         {
-            if (pair.Key.Length == 0)
-            {
-                return ByteArrayRef.Empty.Ref;
-            }
             var val = ByteArrayRef.FromKeyValuePair(pair);
             byteArrayRefs.Add(val);
             return val.Ref;
@@ -96,9 +88,9 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="values">Values to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IEnumerable<string>? values)
+        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IReadOnlyCollection<string>? values)
         {
-            if (values == null)
+            if (values == null || values.Count == 0)
             {
                 return ByteArrayRef.Empty.Ref;
             }
@@ -112,9 +104,9 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="values">Values to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IEnumerable<KeyValuePair<string, string>>? values)
+        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IReadOnlyCollection<KeyValuePair<string, string>>? values)
         {
-            if (values == null)
+            if (values == null || values.Count == 0)
             {
                 return ByteArrayRef.Empty.Ref;
             }
@@ -128,8 +120,13 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="strings">Strings.</param>
         /// <returns>Created byte array array.</returns>
-        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IEnumerable<string> strings)
+        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IReadOnlyCollection<string> strings)
         {
+            if (strings == null || strings.Count == 0)
+            {
+                return EmptyByteArrayRefArray;
+            }
+
             var arr = strings.Select(ByteArray).ToArray();
             unsafe
             {

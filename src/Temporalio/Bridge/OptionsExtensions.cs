@@ -680,7 +680,7 @@ namespace Temporalio.Bridge
             IReadOnlyDictionary<string, IReadOnlyCollection<double>>? overrides, Scope scope) =>
             scope.NewlineDelimited(overrides?.Select(kvp =>
                 new KeyValuePair<string, string>(
-                    kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))));
+                    kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))).ToArray());
 
         private static Interop.TemporalCoreTunerHolder ToInteropTuner(
             this WorkerTuner tuner,
