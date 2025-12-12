@@ -26,6 +26,7 @@ namespace Temporalio.Client
         private readonly object apiKeyLock = new();
         private Bridge.Client? client;
         private IReadOnlyCollection<KeyValuePair<string, string>> rpcMetadata;
+        private IReadOnlyCollection<KeyValuePair<string, byte[]>> rpcBinaryMetadata;
         private string? apiKey;
 
         private TemporalConnection(TemporalConnectionOptions options, bool lazy)
@@ -42,6 +43,14 @@ namespace Temporalio.Client
             else
             {
                 rpcMetadata = new List<KeyValuePair<string, string>>(options.RpcMetadata);
+            }
+            if (options.RpcBinaryMetadata == null)
+            {
+                rpcBinaryMetadata = Array.Empty<KeyValuePair<string, byte[]>>();
+            }
+            else
+            {
+                rpcBinaryMetadata = new List<KeyValuePair<string, byte[]>>(options.RpcBinaryMetadata);
             }
             apiKey = options.ApiKey;
             // Set default identity if unset
@@ -85,11 +94,37 @@ namespace Temporalio.Client
                 lock (rpcMetadataLock)
                 {
                     // Set on Rust side first to prevent errors from affecting field
-#pragma warning disable VSTHRD002 // We know it's completed
                     client.UpdateMetadata(value);
-#pragma warning restore VSTHRD002
                     // We copy this every time just to be safe
                     rpcMetadata = new List<KeyValuePair<string, string>>(value);
+                }
+            }
+        }
+
+        /// <inheritdoc />
+        public IReadOnlyCollection<KeyValuePair<string, byte[]>> RpcBinaryMetadata
+        {
+            get
+            {
+                lock (rpcMetadataLock)
+                {
+                    return rpcBinaryMetadata;
+                }
+            }
+
+            set
+            {
+                var client = this.client;
+                if (client == null)
+                {
+                    throw new InvalidOperationException("Cannot set RPC metadata if client never connected");
+                }
+                lock (rpcMetadataLock)
+                {
+                    // Set on Rust side first to prevent errors from affecting field
+                    client.UpdateBinaryMetadata(value);
+                    // We copy this every time just to be safe
+                    rpcBinaryMetadata = new List<KeyValuePair<string, byte[]>>(value);
                 }
             }
         }
@@ -180,6 +215,7 @@ namespace Temporalio.Client
                 HealthCheckResponse.Parser,
                 options?.Retry ?? false,
                 options?.Metadata,
+                options?.BinaryMetadata,
                 options?.Timeout,
                 options?.CancellationToken).ConfigureAwait(false);
             return resp.Status == HealthCheckResponse.Types.ServingStatus.Serving;
@@ -214,6 +250,7 @@ namespace Temporalio.Client
                 resp,
                 options?.Retry ?? false,
                 options?.Metadata,
+                options?.BinaryMetadata,
                 options?.Timeout,
                 options?.CancellationToken).ConfigureAwait(false);
         }

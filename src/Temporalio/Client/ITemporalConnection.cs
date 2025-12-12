@@ -25,6 +25,18 @@ namespace Temporalio.Client
         IReadOnlyCollection<KeyValuePair<string, string>> RpcMetadata { get; set; }
 
         /// <summary>
+        /// Gets or sets the current RPC binary metadata (i.e. the binary headers).
+        /// </summary>
+        /// <remarks>
+        /// This can be updated which will apply to all future calls the client makes including
+        /// inside a worker. Setting this value is thread safe. When setting, this will error if the
+        /// client is not already connected (e.g. a lazy client has not made a call).
+        /// </remarks>
+        /// <exception cref="System.InvalidOperationException">Client is not already
+        /// connected.</exception>
+        IReadOnlyCollection<KeyValuePair<string, byte[]>> RpcBinaryMetadata { get; set; }
+
+        /// <summary>
         /// Gets or sets the current API key.
         /// </summary>
         /// <remarks>

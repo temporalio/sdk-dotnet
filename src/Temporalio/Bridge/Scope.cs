@@ -10,6 +10,13 @@ namespace Temporalio.Bridge
     /// </summary>
     internal sealed class Scope : IDisposable
     {
+        private static readonly Interop.TemporalCoreByteArrayRefArray EmptyByteArrayRefArray =
+            new()
+            {
+                data = null,
+                size = UIntPtr.Zero,
+            };
+
         private readonly List<ByteArrayRef> byteArrayRefs = new();
         private readonly List<GCHandle> gcHandles = new();
         private readonly List<IDisposable> disposables = new();
@@ -53,17 +60,25 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Create a metadata byte array ref.
+        /// Create a key-value pair byte array ref.
         /// </summary>
-        /// <param name="metadata">Metadata to create from.</param>
+        /// <param name="pair">Key-value pair to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.TemporalCoreByteArrayRef Metadata(IEnumerable<KeyValuePair<string, string>>? metadata)
+        public Interop.TemporalCoreByteArrayRef ByteArray(KeyValuePair<string, string> pair)
         {
-            if (metadata == null)
-            {
-                return ByteArrayRef.Empty.Ref;
-            }
-            var val = ByteArrayRef.FromMetadata(metadata);
+            var val = ByteArrayRef.FromKeyValuePair(pair);
+            byteArrayRefs.Add(val);
+            return val.Ref;
+        }
+
+        /// <summary>
+        /// Create a key-value pair byte array ref.
+        /// </summary>
+        /// <param name="pair">Key-value pair to create from.</param>
+        /// <returns>Created byte array ref.</returns>
+        public Interop.TemporalCoreByteArrayRef ByteArray(KeyValuePair<string, byte[]> pair)
+        {
+            var val = ByteArrayRef.FromKeyValuePair(pair);
             byteArrayRefs.Add(val);
             return val.Ref;
         }
@@ -73,9 +88,25 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="values">Values to create from.</param>
         /// <returns>Created byte array ref.</returns>
-        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IEnumerable<string>? values)
+        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IReadOnlyCollection<string>? values)
         {
-            if (values == null)
+            if (values == null || values.Count == 0)
+            {
+                return ByteArrayRef.Empty.Ref;
+            }
+            var val = ByteArrayRef.FromNewlineDelimited(values);
+            byteArrayRefs.Add(val);
+            return val.Ref;
+        }
+
+        /// <summary>
+        /// Create a newline-delimited byte array ref.
+        /// </summary>
+        /// <param name="values">Values to create from.</param>
+        /// <returns>Created byte array ref.</returns>
+        public Interop.TemporalCoreByteArrayRef NewlineDelimited(IReadOnlyCollection<KeyValuePair<string, string>>? values)
+        {
+            if (values == null || values.Count == 0)
             {
                 return ByteArrayRef.Empty.Ref;
             }
@@ -89,9 +120,60 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="strings">Strings.</param>
         /// <returns>Created byte array array.</returns>
-        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IEnumerable<string> strings)
+        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IReadOnlyCollection<string> strings)
         {
+            if (strings == null || strings.Count == 0)
+            {
+                return EmptyByteArrayRefArray;
+            }
+
             var arr = strings.Select(ByteArray).ToArray();
+            unsafe
+            {
+                return new()
+                {
+                    data = ArrayPointer(arr),
+                    size = (UIntPtr)arr.Length,
+                };
+            }
+        }
+
+        /// <summary>
+        /// Create an array of byte arrays from an collection of key-value pairs.
+        /// </summary>
+        /// <param name="values">Values.</param>
+        /// <returns>Created byte array array.</returns>
+        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IReadOnlyCollection<KeyValuePair<string, string>>? values)
+        {
+            if (values == null || values.Count == 0)
+            {
+                return EmptyByteArrayRefArray;
+            }
+
+            var arr = values.Select(ByteArray).ToArray();
+            unsafe
+            {
+                return new()
+                {
+                    data = ArrayPointer(arr),
+                    size = (UIntPtr)arr.Length,
+                };
+            }
+        }
+
+        /// <summary>
+        /// Create an array of byte arrays from an collection of key-value pairs.
+        /// </summary>
+        /// <param name="values">Values.</param>
+        /// <returns>Created byte array array.</returns>
+        public Interop.TemporalCoreByteArrayRefArray ByteArrayArray(IReadOnlyCollection<KeyValuePair<string, byte[]>>? values)
+        {
+            if (values == null || values.Count == 0)
+            {
+                return EmptyByteArrayRefArray;
+            }
+
+            var arr = values.Select(ByteArray).ToArray();
             unsafe
             {
                 return new()

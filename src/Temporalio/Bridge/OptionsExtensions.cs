@@ -102,7 +102,7 @@ namespace Temporalio.Bridge
             return new Interop.TemporalCoreOpenTelemetryOptions()
             {
                 url = scope.ByteArray(options.Url.ToString()),
-                headers = scope.Metadata(options.Headers),
+                headers = scope.NewlineDelimited(options.Headers),
                 metric_periodicity_millis = (uint)(
                     options.MetricsExportInterval == null
                         ? 0
@@ -216,7 +216,7 @@ namespace Temporalio.Bridge
                 opentelemetry = openTelemetry,
                 custom_meter = customMeter,
                 attach_service_name = (byte)(options.AttachServiceName ? 1 : 0),
-                global_tags = scope.Metadata(options.GlobalTags),
+                global_tags = scope.NewlineDelimited(options.GlobalTags),
                 metric_prefix = scope.ByteArray(options.MetricPrefix),
             };
         }
@@ -261,7 +261,8 @@ namespace Temporalio.Bridge
                 target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
                 client_name = ClientName.Ref,
                 client_version = ClientVersion.Ref,
-                metadata = scope.Metadata(options.RpcMetadata),
+                metadata = scope.ByteArrayArray(options.RpcMetadata),
+                binary_metadata = scope.ByteArrayArray(options.RpcBinaryMetadata),
                 api_key = scope.ByteArray(options.ApiKey),
                 identity = scope.ByteArray(options.Identity),
                 tls_options =
@@ -677,9 +678,9 @@ namespace Temporalio.Bridge
 
         private static Interop.TemporalCoreByteArrayRef ToHistogramBucketOverrides(
             IReadOnlyDictionary<string, IReadOnlyCollection<double>>? overrides, Scope scope) =>
-            scope.Metadata(overrides?.Select(kvp =>
+            scope.NewlineDelimited(overrides?.Select(kvp =>
                 new KeyValuePair<string, string>(
-                    kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))));
+                    kvp.Key, string.Join(",", kvp.Value.Select(v => v.ToString("0.###"))))).ToArray());
 
         private static Interop.TemporalCoreTunerHolder ToInteropTuner(
             this WorkerTuner tuner,

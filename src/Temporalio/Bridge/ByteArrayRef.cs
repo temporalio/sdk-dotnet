@@ -86,6 +86,48 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Convert a key-value pair to a byte array with key and value separated by a newline.
+        /// </summary>
+        /// <param name="pair">Key-value pair to convert.</param>
+        /// <returns>Converted key-value pair.</returns>
+        public static ByteArrayRef FromKeyValuePair(KeyValuePair<string, string> pair)
+        {
+            using (var stream = new MemoryStream())
+            using (var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true })
+            {
+                writer.Write(pair.Key);
+                writer.Write('\n');
+                writer.Write(pair.Value);
+
+                return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
+            }
+        }
+
+        /// <summary>
+        /// Convert a key-value pair to a byte array with key and value separated by a newline.
+        /// </summary>
+        /// <param name="pair">Key-value pair to convert.</param>
+        /// <returns>Converted key-value pair.</returns>
+        public static ByteArrayRef FromKeyValuePair(KeyValuePair<string, byte[]> pair)
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(stream, encoding: StrictUTF8, bufferSize: -1, leaveOpen: true) { AutoFlush = true })
+                {
+                    writer.Write(pair.Key);
+                    writer.Write('\n');
+                }
+
+                // StreamWriter does not support writing byte arrays.
+                // BinaryWriter inserts extra bytes when writing strings.
+                // Use stream directly to write the byte array.
+                stream.Write(pair.Value, 0, pair.Value.Length);
+
+                return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
+            }
+        }
+
+        /// <summary>
         /// Copy a byte array ref contents to a UTF8 string.
         /// </summary>
         /// <param name="byteArray">Byte array ref.</param>
@@ -99,7 +141,7 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="metadata">Metadata to convert.</param>
         /// <returns>Converted byte array.</returns>
-        public static ByteArrayRef FromMetadata(IEnumerable<KeyValuePair<string, string>> metadata)
+        public static ByteArrayRef FromNewlineDelimited(IEnumerable<KeyValuePair<string, string>> metadata)
         {
             using (var stream = new MemoryStream())
             using (var writer = new StreamWriter(stream, StrictUTF8) { AutoFlush = true })

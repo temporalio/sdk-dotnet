@@ -74,13 +74,28 @@ namespace Temporalio.Bridge
         /// Update client metadata (i.e. headers).
         /// </summary>
         /// <param name="metadata">Metadata to set.</param>
-        public void UpdateMetadata(IEnumerable<KeyValuePair<string, string>> metadata)
+        public void UpdateMetadata(IReadOnlyCollection<KeyValuePair<string, string>> metadata)
         {
             using (var scope = new Scope())
             {
                 unsafe
                 {
-                    Interop.Methods.temporal_core_client_update_metadata(Ptr, scope.Metadata(metadata));
+                    Interop.Methods.temporal_core_client_update_metadata(Ptr, scope.ByteArrayArray(metadata));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update client gRPC binary metadata (i.e. binary headers).
+        /// </summary>
+        /// <param name="metadata">Binary metadata to set.</param>
+        public void UpdateBinaryMetadata(IReadOnlyCollection<KeyValuePair<string, byte[]>> metadata)
+        {
+            using (var scope = new Scope())
+            {
+                unsafe
+                {
+                    Interop.Methods.temporal_core_client_update_binary_metadata(Ptr, scope.ByteArrayArray(metadata));
                 }
             }
         }
@@ -110,6 +125,7 @@ namespace Temporalio.Bridge
         /// <param name="resp">Proto response parser.</param>
         /// <param name="retry">Whether to retry or not.</param>
         /// <param name="metadata">Metadata to include.</param>
+        /// <param name="binaryMetadata">Binary metadata to include.</param>
         /// <param name="timeout">Timeout for the call.</param>
         /// <param name="cancellationToken">Cancellation token for the call.</param>
         /// <returns>Response proto.</returns>
@@ -119,7 +135,8 @@ namespace Temporalio.Bridge
             IMessage req,
             MessageParser<T> resp,
             bool retry,
-            IEnumerable<KeyValuePair<string, string>>? metadata,
+            IReadOnlyCollection<KeyValuePair<string, string>>? metadata,
+            IReadOnlyCollection<KeyValuePair<string, byte[]>>? binaryMetadata,
             TimeSpan? timeout,
             System.Threading.CancellationToken? cancellationToken)
             where T : IMessage<T>
@@ -139,7 +156,8 @@ namespace Temporalio.Bridge
                                 rpc = scope.ByteArray(rpc),
                                 req = scope.ByteArray(req.ToByteArray()),
                                 retry = (byte)(retry ? 1 : 0),
-                                metadata = scope.Metadata(metadata),
+                                metadata = scope.ByteArrayArray(metadata),
+                                binary_metadata = scope.ByteArrayArray(binaryMetadata),
                                 timeout_millis = (uint)(timeout?.TotalMilliseconds ?? 0),
                                 cancellation_token = scope.CancellationToken(cancellationToken),
                             }),
