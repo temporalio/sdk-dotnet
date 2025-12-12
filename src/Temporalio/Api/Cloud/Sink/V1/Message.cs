@@ -29,16 +29,22 @@ namespace Temporalio.Api.Cloud.Sink.V1 {
             "YW1lGAEgASgJEhMKC2J1Y2tldF9uYW1lGAIgASgJEg4KBnJlZ2lvbhgDIAEo",
             "CRIPCgdrbXNfYXJuGAQgASgJEhYKDmF3c19hY2NvdW50X2lkGAUgASgJIlUK",
             "B0dDU1NwZWMSDQoFc2FfaWQYASABKAkSEwoLYnVja2V0X25hbWUYAiABKAkS",
-            "FgoOZ2NwX3Byb2plY3RfaWQYAyABKAkSDgoGcmVnaW9uGAQgASgJQpgBCh1p",
-            "by50ZW1wb3JhbC5hcGkuY2xvdWQuc2luay52MUIMTWVzc2FnZVByb3RvUAFa",
-            "JWdvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9zaW5rL3YxO3NpbmuqAhxUZW1w",
-            "b3JhbGlvLkFwaS5DbG91ZC5TaW5rLlYx6gIgVGVtcG9yYWxpbzo6QXBpOjpD",
-            "bG91ZDo6U2luazo6VjFiBnByb3RvMw=="));
+            "FgoOZ2NwX3Byb2plY3RfaWQYAyABKAkSDgoGcmVnaW9uGAQgASgJIkkKC0tp",
+            "bmVzaXNTcGVjEhEKCXJvbGVfbmFtZRgBIAEoCRIXCg9kZXN0aW5hdGlvbl91",
+            "cmkYAiABKAkSDgoGcmVnaW9uGAMgASgJIlQKClB1YlN1YlNwZWMSGgoSc2Vy",
+            "dmljZV9hY2NvdW50X2lkGAEgASgJEhIKCnRvcGljX25hbWUYAiABKAkSFgoO",
+            "Z2NwX3Byb2plY3RfaWQYAyABKAlCmAEKHWlvLnRlbXBvcmFsLmFwaS5jbG91",
+            "ZC5zaW5rLnYxQgxNZXNzYWdlUHJvdG9QAVolZ28udGVtcG9yYWwuaW8vYXBp",
+            "L2Nsb3VkL3NpbmsvdjE7c2lua6oCHFRlbXBvcmFsaW8uQXBpLkNsb3VkLlNp",
+            "bmsuVjHqAiBUZW1wb3JhbGlvOjpBcGk6OkNsb3VkOjpTaW5rOjpWMWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.S3Spec), global::Temporalio.Api.Cloud.Sink.V1.S3Spec.Parser, new[]{ "RoleName", "BucketName", "Region", "KmsArn", "AwsAccountId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.GCSSpec), global::Temporalio.Api.Cloud.Sink.V1.GCSSpec.Parser, new[]{ "SaId", "BucketName", "GcpProjectId", "Region" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.GCSSpec), global::Temporalio.Api.Cloud.Sink.V1.GCSSpec.Parser, new[]{ "SaId", "BucketName", "GcpProjectId", "Region" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec), global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec.Parser, new[]{ "RoleName", "DestinationUri", "Region" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec), global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec.Parser, new[]{ "ServiceAccountId", "TopicName", "GcpProjectId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -700,6 +706,550 @@ namespace Temporalio.Api.Cloud.Sink.V1 {
           }
           case 34: {
             Region = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class KinesisSpec : pb::IMessage<KinesisSpec>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<KinesisSpec> _parser = new pb::MessageParser<KinesisSpec>(() => new KinesisSpec());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<KinesisSpec> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public KinesisSpec() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public KinesisSpec(KinesisSpec other) : this() {
+      roleName_ = other.roleName_;
+      destinationUri_ = other.destinationUri_;
+      region_ = other.region_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public KinesisSpec Clone() {
+      return new KinesisSpec(this);
+    }
+
+    /// <summary>Field number for the "role_name" field.</summary>
+    public const int RoleNameFieldNumber = 1;
+    private string roleName_ = "";
+    /// <summary>
+    /// The role Temporal Cloud assumes when writing records to Kinesis
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RoleName {
+      get { return roleName_; }
+      set {
+        roleName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "destination_uri" field.</summary>
+    public const int DestinationUriFieldNumber = 2;
+    private string destinationUri_ = "";
+    /// <summary>
+    /// Destination Kinesis endpoint arn for temporal to send data to.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DestinationUri {
+      get { return destinationUri_; }
+      set {
+        destinationUri_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "region" field.</summary>
+    public const int RegionFieldNumber = 3;
+    private string region_ = "";
+    /// <summary>
+    /// The sink's region.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Region {
+      get { return region_; }
+      set {
+        region_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as KinesisSpec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(KinesisSpec other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoleName != other.RoleName) return false;
+      if (DestinationUri != other.DestinationUri) return false;
+      if (Region != other.Region) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoleName.Length != 0) hash ^= RoleName.GetHashCode();
+      if (DestinationUri.Length != 0) hash ^= DestinationUri.GetHashCode();
+      if (Region.Length != 0) hash ^= Region.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoleName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RoleName);
+      }
+      if (DestinationUri.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DestinationUri);
+      }
+      if (Region.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Region);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoleName.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RoleName);
+      }
+      if (DestinationUri.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DestinationUri);
+      }
+      if (Region.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Region);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoleName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RoleName);
+      }
+      if (DestinationUri.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DestinationUri);
+      }
+      if (Region.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Region);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(KinesisSpec other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoleName.Length != 0) {
+        RoleName = other.RoleName;
+      }
+      if (other.DestinationUri.Length != 0) {
+        DestinationUri = other.DestinationUri;
+      }
+      if (other.Region.Length != 0) {
+        Region = other.Region;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            RoleName = input.ReadString();
+            break;
+          }
+          case 18: {
+            DestinationUri = input.ReadString();
+            break;
+          }
+          case 26: {
+            Region = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            RoleName = input.ReadString();
+            break;
+          }
+          case 18: {
+            DestinationUri = input.ReadString();
+            break;
+          }
+          case 26: {
+            Region = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class PubSubSpec : pb::IMessage<PubSubSpec>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PubSubSpec> _parser = new pb::MessageParser<PubSubSpec>(() => new PubSubSpec());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PubSubSpec> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PubSubSpec() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PubSubSpec(PubSubSpec other) : this() {
+      serviceAccountId_ = other.serviceAccountId_;
+      topicName_ = other.topicName_;
+      gcpProjectId_ = other.gcpProjectId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PubSubSpec Clone() {
+      return new PubSubSpec(this);
+    }
+
+    /// <summary>Field number for the "service_account_id" field.</summary>
+    public const int ServiceAccountIdFieldNumber = 1;
+    private string serviceAccountId_ = "";
+    /// <summary>
+    /// The customer service account id that Temporal Cloud impersonates for writing records to customer's pubsub topic
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ServiceAccountId {
+      get { return serviceAccountId_; }
+      set {
+        serviceAccountId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "topic_name" field.</summary>
+    public const int TopicNameFieldNumber = 2;
+    private string topicName_ = "";
+    /// <summary>
+    /// Destination pubsub topic name for us
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TopicName {
+      get { return topicName_; }
+      set {
+        topicName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "gcp_project_id" field.</summary>
+    public const int GcpProjectIdFieldNumber = 3;
+    private string gcpProjectId_ = "";
+    /// <summary>
+    /// The gcp project id of pubsub topic and service account
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string GcpProjectId {
+      get { return gcpProjectId_; }
+      set {
+        gcpProjectId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PubSubSpec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PubSubSpec other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ServiceAccountId != other.ServiceAccountId) return false;
+      if (TopicName != other.TopicName) return false;
+      if (GcpProjectId != other.GcpProjectId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ServiceAccountId.Length != 0) hash ^= ServiceAccountId.GetHashCode();
+      if (TopicName.Length != 0) hash ^= TopicName.GetHashCode();
+      if (GcpProjectId.Length != 0) hash ^= GcpProjectId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ServiceAccountId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ServiceAccountId);
+      }
+      if (TopicName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(TopicName);
+      }
+      if (GcpProjectId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(GcpProjectId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ServiceAccountId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(ServiceAccountId);
+      }
+      if (TopicName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(TopicName);
+      }
+      if (GcpProjectId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(GcpProjectId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ServiceAccountId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ServiceAccountId);
+      }
+      if (TopicName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TopicName);
+      }
+      if (GcpProjectId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(GcpProjectId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PubSubSpec other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ServiceAccountId.Length != 0) {
+        ServiceAccountId = other.ServiceAccountId;
+      }
+      if (other.TopicName.Length != 0) {
+        TopicName = other.TopicName;
+      }
+      if (other.GcpProjectId.Length != 0) {
+        GcpProjectId = other.GcpProjectId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            ServiceAccountId = input.ReadString();
+            break;
+          }
+          case 18: {
+            TopicName = input.ReadString();
+            break;
+          }
+          case 26: {
+            GcpProjectId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            ServiceAccountId = input.ReadString();
+            break;
+          }
+          case 18: {
+            TopicName = input.ReadString();
+            break;
+          }
+          case 26: {
+            GcpProjectId = input.ReadString();
             break;
           }
         }

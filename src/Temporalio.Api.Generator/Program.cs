@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 var currFile = new StackTrace(true).GetFrame(0)?.GetFileName();
 var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
-var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/sdk-core-protos/protos");
+var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/common/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var apiCloudProtoDir = Path.Join(protoDir, "api_cloud_upstream");
 var testSrvProtoDir = Path.Join(protoDir, "testsrv_upstream");
@@ -245,7 +245,9 @@ static IEnumerable<string> ServiceCalls(string protoFile)
         {
             v = v[(v.IndexOf("rpc") + 3)..].TrimStart();
 #pragma warning disable CA1861 // We don't mind the perf cost here of new array each time
+#pragma warning disable CA1870 // We don't mind the perf cost here of IndexOfAny
             return v[..v.IndexOfAny(new[] { ' ', '(' })];
+#pragma warning restore CA1870
 #pragma warning restore CA1861
         })
         .OrderBy(v => v);

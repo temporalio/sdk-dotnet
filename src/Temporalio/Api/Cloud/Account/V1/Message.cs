@@ -26,27 +26,33 @@ namespace Temporalio.Api.Cloud.Account.V1 {
           string.Concat(
             "Cit0ZW1wb3JhbC9hcGkvY2xvdWQvYWNjb3VudC92MS9tZXNzYWdlLnByb3Rv",
             "Eh10ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3VudC52MRosdGVtcG9yYWwvYXBp",
-            "L2Nsb3VkL3Jlc291cmNlL3YxL21lc3NhZ2UucHJvdG8iKQoLTWV0cmljc1Nw",
-            "ZWMSGgoSYWNjZXB0ZWRfY2xpZW50X2NhGAIgASgMIkoKC0FjY291bnRTcGVj",
-            "EjsKB21ldHJpY3MYASABKAsyKi50ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3Vu",
-            "dC52MS5NZXRyaWNzU3BlYyIWCgdNZXRyaWNzEgsKA3VyaRgBIAEoCSL8AQoH",
-            "QWNjb3VudBIKCgJpZBgBIAEoCRI4CgRzcGVjGAIgASgLMioudGVtcG9yYWwu",
-            "YXBpLmNsb3VkLmFjY291bnQudjEuQWNjb3VudFNwZWMSGAoQcmVzb3VyY2Vf",
-            "dmVyc2lvbhgDIAEoCRI8CgVzdGF0ZRgEIAEoDjItLnRlbXBvcmFsLmFwaS5j",
-            "bG91ZC5yZXNvdXJjZS52MS5SZXNvdXJjZVN0YXRlEhoKEmFzeW5jX29wZXJh",
-            "dGlvbl9pZBgFIAEoCRI3CgdtZXRyaWNzGAYgASgLMiYudGVtcG9yYWwuYXBp",
-            "LmNsb3VkLmFjY291bnQudjEuTWV0cmljc0KnAQogaW8udGVtcG9yYWwuYXBp",
-            "LmNsb3VkLmFjY291bnQudjFCDE1lc3NhZ2VQcm90b1ABWitnby50ZW1wb3Jh",
-            "bC5pby9hcGkvY2xvdWQvYWNjb3VudC92MTthY2NvdW50qgIfVGVtcG9yYWxp",
-            "by5BcGkuQ2xvdWQuQWNjb3VudC5WMeoCI1RlbXBvcmFsaW86OkFwaTo6Q2xv",
-            "dWQ6OkFjY291bnQ6OlYxYgZwcm90bzM="));
+            "L2Nsb3VkL3Jlc291cmNlL3YxL21lc3NhZ2UucHJvdG8aKHRlbXBvcmFsL2Fw",
+            "aS9jbG91ZC9zaW5rL3YxL21lc3NhZ2UucHJvdG8iKQoLTWV0cmljc1NwZWMS",
+            "GgoSYWNjZXB0ZWRfY2xpZW50X2NhGAIgASgMIkoKC0FjY291bnRTcGVjEjsK",
+            "B21ldHJpY3MYASABKAsyKi50ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3VudC52",
+            "MS5NZXRyaWNzU3BlYyIWCgdNZXRyaWNzEgsKA3VyaRgBIAEoCSL8AQoHQWNj",
+            "b3VudBIKCgJpZBgBIAEoCRI4CgRzcGVjGAIgASgLMioudGVtcG9yYWwuYXBp",
+            "LmNsb3VkLmFjY291bnQudjEuQWNjb3VudFNwZWMSGAoQcmVzb3VyY2VfdmVy",
+            "c2lvbhgDIAEoCRI8CgVzdGF0ZRgEIAEoDjItLnRlbXBvcmFsLmFwaS5jbG91",
+            "ZC5yZXNvdXJjZS52MS5SZXNvdXJjZVN0YXRlEhoKEmFzeW5jX29wZXJhdGlv",
+            "bl9pZBgFIAEoCRI3CgdtZXRyaWNzGAYgASgLMiYudGVtcG9yYWwuYXBpLmNs",
+            "b3VkLmFjY291bnQudjEuTWV0cmljcyK/AQoQQXVkaXRMb2dTaW5rU3BlYxIM",
+            "CgRuYW1lGAEgASgJEj8KDGtpbmVzaXNfc2luaxgCIAEoCzInLnRlbXBvcmFs",
+            "LmFwaS5jbG91ZC5zaW5rLnYxLktpbmVzaXNTcGVjSAASPgoMcHViX3N1Yl9z",
+            "aW5rGAMgASgLMiYudGVtcG9yYWwuYXBpLmNsb3VkLnNpbmsudjEuUHViU3Vi",
+            "U3BlY0gAEg8KB2VuYWJsZWQYBCABKAhCCwoJc2lua190eXBlQqcBCiBpby50",
+            "ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3VudC52MUIMTWVzc2FnZVByb3RvUAFa",
+            "K2dvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9hY2NvdW50L3YxO2FjY291bnSq",
+            "Ah9UZW1wb3JhbGlvLkFwaS5DbG91ZC5BY2NvdW50LlYx6gIjVGVtcG9yYWxp",
+            "bzo6QXBpOjpDbG91ZDo6QWNjb3VudDo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.MetricsSpec), global::Temporalio.Api.Cloud.Account.V1.MetricsSpec.Parser, new[]{ "AcceptedClientCa" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.AccountSpec), global::Temporalio.Api.Cloud.Account.V1.AccountSpec.Parser, new[]{ "Metrics" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.Metrics), global::Temporalio.Api.Cloud.Account.V1.Metrics.Parser, new[]{ "Uri" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.Account), global::Temporalio.Api.Cloud.Account.V1.Account.Parser, new[]{ "Id", "Spec", "ResourceVersion", "State", "AsyncOperationId", "Metrics" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.Account), global::Temporalio.Api.Cloud.Account.V1.Account.Parser, new[]{ "Id", "Spec", "ResourceVersion", "State", "AsyncOperationId", "Metrics" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec), global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec.Parser, new[]{ "Name", "KinesisSink", "PubSubSink", "Enabled" }, new[]{ "SinkType" }, null, null, null)
           }));
     }
     #endregion
@@ -1043,6 +1049,380 @@ namespace Temporalio.Api.Cloud.Account.V1 {
               Metrics = new global::Temporalio.Api.Cloud.Account.V1.Metrics();
             }
             input.ReadMessage(Metrics);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// AuditLogSinkSpec is only used by Audit Log
+  /// </summary>
+  public sealed partial class AuditLogSinkSpec : pb::IMessage<AuditLogSinkSpec>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<AuditLogSinkSpec> _parser = new pb::MessageParser<AuditLogSinkSpec>(() => new AuditLogSinkSpec());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<AuditLogSinkSpec> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Account.V1.MessageReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AuditLogSinkSpec() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AuditLogSinkSpec(AuditLogSinkSpec other) : this() {
+      name_ = other.name_;
+      enabled_ = other.enabled_;
+      switch (other.SinkTypeCase) {
+        case SinkTypeOneofCase.KinesisSink:
+          KinesisSink = other.KinesisSink.Clone();
+          break;
+        case SinkTypeOneofCase.PubSubSink:
+          PubSubSink = other.PubSubSink.Clone();
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AuditLogSinkSpec Clone() {
+      return new AuditLogSinkSpec(this);
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
+    /// <summary>
+    /// Name of the sink e.g. "audit_log_01"
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "kinesis_sink" field.</summary>
+    public const int KinesisSinkFieldNumber = 2;
+    /// <summary>
+    /// The KinesisSpec when destination_type is Kinesis
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec KinesisSink {
+      get { return sinkTypeCase_ == SinkTypeOneofCase.KinesisSink ? (global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec) sinkType_ : null; }
+      set {
+        sinkType_ = value;
+        sinkTypeCase_ = value == null ? SinkTypeOneofCase.None : SinkTypeOneofCase.KinesisSink;
+      }
+    }
+
+    /// <summary>Field number for the "pub_sub_sink" field.</summary>
+    public const int PubSubSinkFieldNumber = 3;
+    /// <summary>
+    /// The PubSubSpec when destination_type is PubSub
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec PubSubSink {
+      get { return sinkTypeCase_ == SinkTypeOneofCase.PubSubSink ? (global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec) sinkType_ : null; }
+      set {
+        sinkType_ = value;
+        sinkTypeCase_ = value == null ? SinkTypeOneofCase.None : SinkTypeOneofCase.PubSubSink;
+      }
+    }
+
+    /// <summary>Field number for the "enabled" field.</summary>
+    public const int EnabledFieldNumber = 4;
+    private bool enabled_;
+    /// <summary>
+    /// Enabled indicates whether the sink is enabled or not.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Enabled {
+      get { return enabled_; }
+      set {
+        enabled_ = value;
+      }
+    }
+
+    private object sinkType_;
+    /// <summary>Enum of possible cases for the "sink_type" oneof.</summary>
+    public enum SinkTypeOneofCase {
+      None = 0,
+      KinesisSink = 2,
+      PubSubSink = 3,
+    }
+    private SinkTypeOneofCase sinkTypeCase_ = SinkTypeOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public SinkTypeOneofCase SinkTypeCase {
+      get { return sinkTypeCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearSinkType() {
+      sinkTypeCase_ = SinkTypeOneofCase.None;
+      sinkType_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as AuditLogSinkSpec);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(AuditLogSinkSpec other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Name != other.Name) return false;
+      if (!object.Equals(KinesisSink, other.KinesisSink)) return false;
+      if (!object.Equals(PubSubSink, other.PubSubSink)) return false;
+      if (Enabled != other.Enabled) return false;
+      if (SinkTypeCase != other.SinkTypeCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (sinkTypeCase_ == SinkTypeOneofCase.KinesisSink) hash ^= KinesisSink.GetHashCode();
+      if (sinkTypeCase_ == SinkTypeOneofCase.PubSubSink) hash ^= PubSubSink.GetHashCode();
+      if (Enabled != false) hash ^= Enabled.GetHashCode();
+      hash ^= (int) sinkTypeCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (sinkTypeCase_ == SinkTypeOneofCase.KinesisSink) {
+        output.WriteRawTag(18);
+        output.WriteMessage(KinesisSink);
+      }
+      if (sinkTypeCase_ == SinkTypeOneofCase.PubSubSink) {
+        output.WriteRawTag(26);
+        output.WriteMessage(PubSubSink);
+      }
+      if (Enabled != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(Enabled);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (sinkTypeCase_ == SinkTypeOneofCase.KinesisSink) {
+        output.WriteRawTag(18);
+        output.WriteMessage(KinesisSink);
+      }
+      if (sinkTypeCase_ == SinkTypeOneofCase.PubSubSink) {
+        output.WriteRawTag(26);
+        output.WriteMessage(PubSubSink);
+      }
+      if (Enabled != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(Enabled);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (sinkTypeCase_ == SinkTypeOneofCase.KinesisSink) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(KinesisSink);
+      }
+      if (sinkTypeCase_ == SinkTypeOneofCase.PubSubSink) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PubSubSink);
+      }
+      if (Enabled != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(AuditLogSinkSpec other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.Enabled != false) {
+        Enabled = other.Enabled;
+      }
+      switch (other.SinkTypeCase) {
+        case SinkTypeOneofCase.KinesisSink:
+          if (KinesisSink == null) {
+            KinesisSink = new global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec();
+          }
+          KinesisSink.MergeFrom(other.KinesisSink);
+          break;
+        case SinkTypeOneofCase.PubSubSink:
+          if (PubSubSink == null) {
+            PubSubSink = new global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec();
+          }
+          PubSubSink.MergeFrom(other.PubSubSink);
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec subBuilder = new global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec();
+            if (sinkTypeCase_ == SinkTypeOneofCase.KinesisSink) {
+              subBuilder.MergeFrom(KinesisSink);
+            }
+            input.ReadMessage(subBuilder);
+            KinesisSink = subBuilder;
+            break;
+          }
+          case 26: {
+            global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec subBuilder = new global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec();
+            if (sinkTypeCase_ == SinkTypeOneofCase.PubSubSink) {
+              subBuilder.MergeFrom(PubSubSink);
+            }
+            input.ReadMessage(subBuilder);
+            PubSubSink = subBuilder;
+            break;
+          }
+          case 32: {
+            Enabled = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec subBuilder = new global::Temporalio.Api.Cloud.Sink.V1.KinesisSpec();
+            if (sinkTypeCase_ == SinkTypeOneofCase.KinesisSink) {
+              subBuilder.MergeFrom(KinesisSink);
+            }
+            input.ReadMessage(subBuilder);
+            KinesisSink = subBuilder;
+            break;
+          }
+          case 26: {
+            global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec subBuilder = new global::Temporalio.Api.Cloud.Sink.V1.PubSubSpec();
+            if (sinkTypeCase_ == SinkTypeOneofCase.PubSubSink) {
+              subBuilder.MergeFrom(PubSubSink);
+            }
+            input.ReadMessage(subBuilder);
+            PubSubSink = subBuilder;
+            break;
+          }
+          case 32: {
+            Enabled = input.ReadBool();
             break;
           }
         }
