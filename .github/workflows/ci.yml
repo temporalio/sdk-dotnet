@@ -85,6 +85,28 @@ jobs:
 
       - name: Build
         run: dotnet build
+      
+      - name: Upload native symbols
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: symbols-native
+          if-no-files-found: error
+          path: |
+            src/Temporalio/Bridge/sdk-core/target/debug/*.dll
+            src/Temporalio/Bridge/sdk-core/target/debug/*.dylib
+            src/Temporalio/Bridge/sdk-core/target/debug/*.pdb
+            src/Temporalio/Bridge/sdk-core/target/debug/*.so
+      
+      - name: Upload managed symbols
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: symbols-managed
+          if-no-files-found: error
+          path: |
+            src/**/bin/Debug/*.dll
+            src/**/bin/Debug/*.pdb
 
       - name: Test
         run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n --blame-hang-timeout 10m
