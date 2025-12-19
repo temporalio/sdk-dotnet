@@ -353,4 +353,74 @@ public class CustomMetricMeterTests : WorkflowEnvironmentTestBase
         }
         Assert.Equal(7.89, gaugeFloat.Value);
     }
+
+    [Workflow]
+    public class SimpleCounterWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync() =>
+            Workflow.MetricMeter.CreateCounter<int>("my-counter").Add(10);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task CustomMetricMeter_Workflow_CanDisableTracing(bool disableTracing)
+    {
+        // Create a meter
+        using var meter = new Meter("test-disable-tracing-meter");
+
+        // Create a listener that does a bad thing
+        using var meterListener = new MeterListener();
+        meterListener.InstrumentPublished = (instrument, listener) =>
+        {
+            if (instrument.Meter.Name == "test-disable-tracing-meter")
+            {
+                listener.EnableMeasurementEvents(instrument);
+            }
+        };
+        meterListener.SetMeasurementEventCallback<long>(
+            (inst, value, tags, state) => Task.Run(() => { }));
+        meterListener.Start();
+
+        // Create runtime/client with meter
+        var runtime = new TemporalRuntime(new()
+        {
+            Telemetry = new()
+            {
+                Metrics = new() { CustomMetricMeter = new CustomMetricMeter(meter, disableTracing) },
+            },
+        });
+        var client = await TemporalClient.ConnectAsync(
+            new()
+            {
+                TargetHost = Client.Connection.Options.TargetHost,
+                Namespace = Client.Options.Namespace,
+                Runtime = runtime,
+            });
+
+        // Run workflow
+        using var worker = new TemporalWorker(
+            client,
+            new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+            { Interceptors = new[] { new XunitExceptionInterceptor() } }.
+            AddWorkflow<SimpleCounterWorkflow>());
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await client.StartWorkflowAsync(
+                (SimpleCounterWorkflow wf) => wf.RunAsync(),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+            // If we have disabled tracing, we expect success, but if not, we expect task failure
+            if (disableTracing)
+            {
+                await handle.GetResultAsync();
+            }
+            else
+            {
+                await AssertMore.TaskFailureEventuallyAsync(handle, evt => Assert.Equal(
+                    "InvalidWorkflowSchedulerException",
+                    evt.Failure.ApplicationFailureInfo.Type));
+            }
+        });
+    }
 }
