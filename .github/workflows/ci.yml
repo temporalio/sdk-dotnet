@@ -90,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: symbols-native
+          name: symbols-native-${{ matrix.os }}
           if-no-files-found: error
           path: |
             src/Temporalio/Bridge/sdk-core/target/debug/*.dll
@@ -102,7 +102,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: symbols-managed
+          name: symbols-managed-${{ matrix.os }}
           if-no-files-found: error
           path: |
             src/**/bin/Debug/**/*.dll
