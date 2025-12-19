@@ -105,8 +105,8 @@ jobs:
           name: symbols-managed
           if-no-files-found: error
           path: |
-            src/**/bin/Debug/*.dll
-            src/**/bin/Debug/*.pdb
+            src/**/bin/Debug/**/*.dll
+            src/**/bin/Debug/**/*.pdb
 
       - name: Test
         run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n --blame-hang-timeout 10m
