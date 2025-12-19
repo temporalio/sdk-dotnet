@@ -17,15 +17,9 @@ namespace Temporalio.Bridge
                 size = UIntPtr.Zero,
             };
 
-        private readonly List<ByteArrayRef> byteArrayRefs = new();
         private readonly List<GCHandle> gcHandles = new();
         private readonly List<IDisposable> disposables = new();
         private bool disposed;
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="Scope"/> class.
-        /// </summary>
-        ~Scope() => Dispose(false);
 
         /// <summary>
         /// Create a byte array ref.
@@ -39,7 +33,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = new ByteArrayRef(bytes);
-            byteArrayRefs.Add(val);
+            disposables.Add(val);
             return val.Ref;
         }
 
@@ -55,7 +49,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = ByteArrayRef.FromUTF8(str);
-            byteArrayRefs.Add(val);
+            disposables.Add(val);
             return val.Ref;
         }
 
@@ -67,7 +61,7 @@ namespace Temporalio.Bridge
         public Interop.TemporalCoreByteArrayRef ByteArray(KeyValuePair<string, string> pair)
         {
             var val = ByteArrayRef.FromKeyValuePair(pair);
-            byteArrayRefs.Add(val);
+            disposables.Add(val);
             return val.Ref;
         }
 
@@ -79,7 +73,7 @@ namespace Temporalio.Bridge
         public Interop.TemporalCoreByteArrayRef ByteArray(KeyValuePair<string, byte[]> pair)
         {
             var val = ByteArrayRef.FromKeyValuePair(pair);
-            byteArrayRefs.Add(val);
+            disposables.Add(val);
             return val.Ref;
         }
 
@@ -95,7 +89,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = ByteArrayRef.FromNewlineDelimited(values);
-            byteArrayRefs.Add(val);
+            disposables.Add(val);
             return val.Ref;
         }
 
@@ -111,7 +105,7 @@ namespace Temporalio.Bridge
                 return ByteArrayRef.Empty.Ref;
             }
             var val = ByteArrayRef.FromNewlineDelimited(values);
-            byteArrayRefs.Add(val);
+            disposables.Add(val);
             return val.Ref;
         }
 
@@ -249,34 +243,23 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
+            // Note, we intentionally do not free or call Dispose from a finalizer. When working
+            // with native objects, best practice is to not free in finalizer. On process shutdown,
+            // finalizers can be called even when the object is still referenced.
             if (disposed)
             {
                 return;
             }
-
-            byteArrayRefs.Clear();
-
             foreach (var handle in gcHandles)
             {
                 handle.Free();
             }
             gcHandles.Clear();
-
-            if (disposing)
+            foreach (var disposable in disposables)
             {
-                foreach (var disposable in disposables)
-                {
-                    disposable.Dispose();
-                }
+                disposable.Dispose();
             }
             disposables.Clear();
-
             disposed = true;
         }
     }
