@@ -14,8 +14,8 @@ namespace Temporalio.Bridge
         private static readonly Func<ForwardedLog, Exception?, string> ForwardLogMessageFormatter =
             LogMessageFormatter;
 
-        private readonly bool forwardLoggerIncludeFields;
-        private readonly GCHandle? forwardLoggerCallback;
+        private bool forwardLoggerIncludeFields;
+        private GCHandle? forwardLoggerCallback;
         private ILogger? forwardLogger;
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace Temporalio.Bridge
         public Runtime(Temporalio.Runtime.TemporalRuntimeOptions options)
             : base(IntPtr.Zero, true)
         {
-            using (var scope = new Scope())
+            Scope.WithScope(scope =>
             {
                 unsafe
                 {
@@ -67,7 +67,7 @@ namespace Temporalio.Bridge
                     Ptr = res.runtime;
                     SetHandle((IntPtr)Ptr);
                 }
-            }
+            });
             MetricMeter = new(() => Bridge.MetricMeter.CreateFromRuntime(this));
         }
 
@@ -77,7 +77,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets the pointer to the runtime.
         /// </summary>
-        internal unsafe Interop.TemporalCoreRuntime* Ptr { get; private init; }
+        internal unsafe Interop.TemporalCoreRuntime* Ptr { get; private set; }
 
         /// <summary>
         /// Gets the lazy metric meter for this runtime. Can be null.

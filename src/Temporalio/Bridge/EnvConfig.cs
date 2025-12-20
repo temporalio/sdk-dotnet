@@ -18,35 +18,33 @@ namespace Temporalio.Bridge
         /// <param name="options">Options for loading the configuration.</param>
         /// <returns>Dictionary of profile name to client configuration profile.</returns>
         public static Dictionary<string, ClientEnvConfig.Profile> LoadClientConfig(
-            ClientEnvConfig.ConfigLoadOptions options)
-        {
-            using var scope = new Scope();
-
-            try
+            ClientEnvConfig.ConfigLoadOptions options) => Scope.WithScope(scope =>
             {
-                var envVarsRef = options.OverrideEnvVars?.Count > 0
-                    ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
-                    : ByteArrayRef.Empty.Ref;
-
-                unsafe
+                try
                 {
-                    var coreOptions = new Interop.TemporalCoreClientEnvConfigLoadOptions
-                    {
-                        path = scope.ByteArray(options.ConfigSource?.Path),
-                        data = scope.ByteArray(options.ConfigSource?.Data),
-                        config_file_strict = Convert.ToByte(options.ConfigFileStrict),
-                        env_vars = envVarsRef,
-                    };
+                    var envVarsRef = options.OverrideEnvVars?.Count > 0
+                        ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
+                        : ByteArrayRef.Empty.Ref;
 
-                    var result = Interop.Methods.temporal_core_client_env_config_load(&coreOptions);
-                    return ProcessAllProfilesResult(result);
+                    unsafe
+                    {
+                        var coreOptions = new Interop.TemporalCoreClientEnvConfigLoadOptions
+                        {
+                            path = scope.ByteArray(options.ConfigSource?.Path),
+                            data = scope.ByteArray(options.ConfigSource?.Data),
+                            config_file_strict = Convert.ToByte(options.ConfigFileStrict),
+                            env_vars = envVarsRef,
+                        };
+
+                        var result = Interop.Methods.temporal_core_client_env_config_load(&coreOptions);
+                        return ProcessAllProfilesResult(result);
+                    }
                 }
-            }
-            catch (JsonException ex)
-            {
-                throw new InvalidOperationException($"Failed to deserialize client config: {ex.Message}", ex);
-            }
-        }
+                catch (JsonException ex)
+                {
+                    throw new InvalidOperationException($"Failed to deserialize client config: {ex.Message}", ex);
+                }
+            });
 
         /// <summary>
         /// Loads a specific client configuration profile.
@@ -54,38 +52,36 @@ namespace Temporalio.Bridge
         /// <param name="options">Options for loading the configuration profile.</param>
         /// <returns>Client configuration for the specified profile.</returns>
         public static ClientEnvConfig.Profile LoadClientConfigProfile(
-            ClientEnvConfig.ProfileLoadOptions options)
-        {
-            using var scope = new Scope();
-
-            try
+            ClientEnvConfig.ProfileLoadOptions options) => Scope.WithScope(scope =>
             {
-                var envVarsRef = options.OverrideEnvVars?.Count > 0
-                    ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
-                    : ByteArrayRef.Empty.Ref;
-
-                unsafe
+                try
                 {
-                    var coreOptions = new Interop.TemporalCoreClientEnvConfigProfileLoadOptions
-                    {
-                        profile = scope.ByteArray(options.Profile),
-                        path = scope.ByteArray(options.ConfigSource?.Path),
-                        data = scope.ByteArray(options.ConfigSource?.Data),
-                        disable_file = Convert.ToByte(options.DisableFile),
-                        disable_env = Convert.ToByte(options.DisableEnv),
-                        config_file_strict = Convert.ToByte(options.ConfigFileStrict),
-                        env_vars = envVarsRef,
-                    };
+                    var envVarsRef = options.OverrideEnvVars?.Count > 0
+                        ? scope.ByteArray(JsonSerializer.Serialize(options.OverrideEnvVars))
+                        : ByteArrayRef.Empty.Ref;
 
-                    var result = Interop.Methods.temporal_core_client_env_config_profile_load(&coreOptions);
-                    return ProcessSingleProfileResult(result);
+                    unsafe
+                    {
+                        var coreOptions = new Interop.TemporalCoreClientEnvConfigProfileLoadOptions
+                        {
+                            profile = scope.ByteArray(options.Profile),
+                            path = scope.ByteArray(options.ConfigSource?.Path),
+                            data = scope.ByteArray(options.ConfigSource?.Data),
+                            disable_file = Convert.ToByte(options.DisableFile),
+                            disable_env = Convert.ToByte(options.DisableEnv),
+                            config_file_strict = Convert.ToByte(options.ConfigFileStrict),
+                            env_vars = envVarsRef,
+                        };
+
+                        var result = Interop.Methods.temporal_core_client_env_config_profile_load(&coreOptions);
+                        return ProcessSingleProfileResult(result);
+                    }
                 }
-            }
-            catch (JsonException ex)
-            {
-                throw new InvalidOperationException($"Failed to deserialize client config profile: {ex.Message}", ex);
-            }
-        }
+                catch (JsonException ex)
+                {
+                    throw new InvalidOperationException($"Failed to deserialize client config profile: {ex.Message}", ex);
+                }
+            });
 
         /// <summary>
         /// Creates a ClientConfigProfile from typed JSON data.

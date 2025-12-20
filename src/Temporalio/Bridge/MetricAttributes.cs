@@ -21,7 +21,7 @@ namespace Temporalio.Bridge
             : base(IntPtr.Zero, true)
         {
             this.meter = meter;
-            using (var scope = new Scope())
+            Scope.WithScope(scope =>
             {
                 unsafe
                 {
@@ -30,7 +30,7 @@ namespace Temporalio.Bridge
                         meter.Ptr, scope.ArrayPointer(attrs), (UIntPtr)attrs.Length);
                     SetHandle((IntPtr)Ptr);
                 }
-            }
+            });
         }
 
         private unsafe MetricAttributes(MetricMeter meter, Interop.TemporalCoreMetricAttributes* ptr)
@@ -49,26 +49,24 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets the pointer to the attributes.
         /// </summary>
-        internal unsafe Interop.TemporalCoreMetricAttributes* Ptr { get; private init; }
+        internal unsafe Interop.TemporalCoreMetricAttributes* Ptr { get; private set; }
 
         /// <summary>
         /// Create a new instance with the given attributes appended.
         /// </summary>
         /// <param name="attributes">Attributes to append.</param>
         /// <returns>New attributes with the given ones appended.</returns>
-        public MetricAttributes Append(IEnumerable<KeyValuePair<string, object>> attributes)
-        {
-            using (var scope = new Scope())
+        public MetricAttributes Append(IEnumerable<KeyValuePair<string, object>> attributes) =>
+            Scope.WithScope(scope =>
             {
                 unsafe
                 {
                     var attrs = ConvertKeyValuePairs(scope, attributes);
                     var newAttrs = Interop.Methods.temporal_core_metric_attributes_new_append(
                         meter.Ptr, Ptr, scope.ArrayPointer(attrs), (UIntPtr)attrs.Length);
-                    return new(meter, newAttrs);
+                    return new MetricAttributes(meter, newAttrs);
                 }
-            }
-        }
+            });
 
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()

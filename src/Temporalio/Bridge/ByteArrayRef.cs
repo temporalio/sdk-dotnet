@@ -10,7 +10,7 @@ namespace Temporalio.Bridge
     /// Representation of a byte array owned by .NET. Users should usually use a
     /// <see cref="Scope" /> instead of creating this directly.
     /// </summary>
-    internal class ByteArrayRef
+    internal sealed class ByteArrayRef : IDisposable
     {
         private readonly GCHandle bytesHandle;
 
@@ -43,17 +43,9 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="ByteArrayRef"/> class.
-        /// </summary>
-        ~ByteArrayRef()
-        {
-            bytesHandle.Free();
-        }
-
-        /// <summary>
         /// Gets empty byte array.
         /// </summary>
-        public static ByteArrayRef Empty { get; } = new(Array.Empty<byte>());
+        public static ByteArrayRef Empty { get; } = new(Array.Empty<byte>()) { DisableDispose = true };
 
         /// <summary>
         /// Gets current byte array for this ref.
@@ -69,6 +61,8 @@ namespace Temporalio.Bridge
         /// Gets strict UTF-8 encoding.
         /// </summary>
         internal static UTF8Encoding StrictUTF8 { get; } = new(false, true);
+
+        private bool DisableDispose { get; set; }
 
         /// <summary>
         /// Convert a string to a UTF-8 byte array.
@@ -208,6 +202,21 @@ namespace Temporalio.Bridge
                 }
 
                 return new ByteArrayRef(stream.GetBuffer(), (int)stream.Length);
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            // Note, we intentionally do not free or call Dispose from a finalizer. When working
+            // with native objects, best practice is to not free in finalizer. On process shutdown,
+            // finalizers can be called even when the object is still referenced.
+
+            // Does not need to be thread safe
+            if (!DisableDispose)
+            {
+                DisableDispose = true;
+                bytesHandle.Free();
             }
         }
     }
