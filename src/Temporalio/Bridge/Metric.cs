@@ -8,7 +8,7 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class Metric : SafeHandle
     {
-        private readonly unsafe Interop.TemporalCoreMetric* ptr;
+        private unsafe Interop.TemporalCoreMetric* ptr;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Metric"/> class.
@@ -26,7 +26,7 @@ namespace Temporalio.Bridge
             string? description)
             : base(IntPtr.Zero, true)
         {
-            using (var scope = new Scope())
+            Scope.WithScope(scope =>
             {
                 unsafe
                 {
@@ -40,7 +40,7 @@ namespace Temporalio.Bridge
                     ptr = Interop.Methods.temporal_core_metric_new(meter.Ptr, scope.Pointer(options));
                     SetHandle((IntPtr)ptr);
                 }
-            }
+            });
         }
 
         /// <inheritdoc />

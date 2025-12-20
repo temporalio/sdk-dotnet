@@ -33,7 +33,7 @@ namespace Temporalio.Bridge
             : base(IntPtr.Zero, true)
         {
             Runtime = client.Runtime;
-            using (var scope = new Scope())
+            Scope.WithScope(scope =>
             {
                 unsafe
                 {
@@ -52,7 +52,7 @@ namespace Temporalio.Bridge
                     Ptr = workerOrFail.worker;
                     SetHandle((IntPtr)Ptr);
                 }
-            }
+            });
         }
 
         /// <summary>
@@ -102,34 +102,35 @@ namespace Temporalio.Bridge
         /// Validate the worker.
         /// </summary>
         /// <returns>Validation task.</returns>
-        public async Task ValidateAsync()
+        public Task ValidateAsync() => Scope.WithScopeAsync<bool>(this, scope =>
         {
-            using (var scope = new Scope())
+            unsafe
             {
-                var completion = new TaskCompletionSource<bool>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
-                unsafe
-                {
-                    Interop.Methods.temporal_core_worker_validate(
-                        Ptr,
-                        null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
-                            (userData, fail) =>
+                Interop.Methods.temporal_core_worker_validate(
+                    Ptr,
+                    null,
+                    scope.CallbackPointer<Interop.TemporalCoreWorkerCallback>(
+                        (userData, fail) =>
+                        {
+                            try
                             {
                                 if (fail != null)
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
+                                    scope.Completion.TrySetException(new InvalidOperationException(
                                         new ByteArray(Runtime, fail).ToUTF8()));
                                 }
                                 else
                                 {
-                                    completion.TrySetResult(true);
+                                    scope.Completion.TrySetResult(true);
                                 }
-                            }));
-                }
-                await completion.Task.ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                scope.OnCallbackExit();
+                            }
+                        }));
             }
-        }
+        });
 
         /// <summary>
         /// Replace the client.
@@ -143,43 +144,42 @@ namespace Temporalio.Bridge
             }
         }
 
-        /// <summary>
-        /// Poll for the next workflow activation.
-        /// </summary>
-        /// <remarks>Only virtual for testing.</remarks>
-        /// <returns>The activation or null if poller is shut down.</returns>
         public virtual async Task<Api.WorkflowActivation.WorkflowActivation?> PollWorkflowActivationAsync()
         {
-            using (var scope = new Scope())
+            var result = await Scope.WithScopeAsync<ByteArray?>(this, scope =>
             {
-                var completion = new TaskCompletionSource<ByteArray?>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_poll_workflow_activation(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
+                        scope.CallbackPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
                             {
-                                if (fail != null)
+                                try
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
-                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                    if (fail != null)
+                                    {
+                                        scope.Completion.TrySetException(new InvalidOperationException(
+                                            new ByteArray(Runtime, fail).ToUTF8()));
+                                    }
+                                    else if (success == null)
+                                    {
+                                        scope.Completion.TrySetResult(null);
+                                    }
+                                    else
+                                    {
+                                        scope.Completion.TrySetResult(new ByteArray(Runtime, success));
+                                    }
                                 }
-                                else if (success == null)
+                                finally
                                 {
-                                    completion.TrySetResult(null);
-                                }
-                                else
-                                {
-                                    completion.TrySetResult(new ByteArray(Runtime, success));
+                                    scope.OnCallbackExit();
                                 }
                             }));
                 }
-                return (await completion.Task.ConfigureAwait(false))?.ToProto(
-                    Api.WorkflowActivation.WorkflowActivation.Parser);
-            }
+            }).ConfigureAwait(false);
+            return result?.ToProto(Api.WorkflowActivation.WorkflowActivation.Parser);
         }
 
         /// <summary>
@@ -189,36 +189,40 @@ namespace Temporalio.Bridge
         /// <returns>The task or null if poller is shut down.</returns>
         public virtual async Task<Api.ActivityTask.ActivityTask?> PollActivityTaskAsync()
         {
-            using (var scope = new Scope())
+            var result = await Scope.WithScopeAsync<ByteArray?>(this, scope =>
             {
-                var completion = new TaskCompletionSource<ByteArray?>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_poll_activity_task(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
+                        scope.CallbackPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
                             {
-                                if (fail != null)
+                                try
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
-                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                    if (fail != null)
+                                    {
+                                        scope.Completion.TrySetException(new InvalidOperationException(
+                                            new ByteArray(Runtime, fail).ToUTF8()));
+                                    }
+                                    else if (success == null)
+                                    {
+                                        scope.Completion.TrySetResult(null);
+                                    }
+                                    else
+                                    {
+                                        scope.Completion.TrySetResult(new ByteArray(Runtime, success));
+                                    }
                                 }
-                                else if (success == null)
+                                finally
                                 {
-                                    completion.TrySetResult(null);
-                                }
-                                else
-                                {
-                                    completion.TrySetResult(new ByteArray(Runtime, success));
+                                    scope.OnCallbackExit();
                                 }
                             }));
                 }
-                return (await completion.Task.ConfigureAwait(false))?.ToProto(
-                    Api.ActivityTask.ActivityTask.Parser);
-            }
+            }).ConfigureAwait(false);
+            return result?.ToProto(Api.ActivityTask.ActivityTask.Parser);
         }
 
         /// <summary>
@@ -228,36 +232,40 @@ namespace Temporalio.Bridge
         /// <returns>The task or null if poller is shut down.</returns>
         public virtual async Task<Api.Nexus.NexusTask?> PollNexusTaskAsync()
         {
-            using (var scope = new Scope())
+            var result = await Scope.WithScopeAsync<ByteArray?>(this, scope =>
             {
-                var completion = new TaskCompletionSource<ByteArray?>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_poll_nexus_task(
                         Ptr,
                         null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
+                        scope.CallbackPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
                             {
-                                if (fail != null)
+                                try
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
-                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                    if (fail != null)
+                                    {
+                                        scope.Completion.TrySetException(new InvalidOperationException(
+                                            new ByteArray(Runtime, fail).ToUTF8()));
+                                    }
+                                    else if (success == null)
+                                    {
+                                        scope.Completion.TrySetResult(null);
+                                    }
+                                    else
+                                    {
+                                        scope.Completion.TrySetResult(new ByteArray(Runtime, success));
+                                    }
                                 }
-                                else if (success == null)
+                                finally
                                 {
-                                    completion.TrySetResult(null);
-                                }
-                                else
-                                {
-                                    completion.TrySetResult(new ByteArray(Runtime, success));
+                                    scope.OnCallbackExit();
                                 }
                             }));
                 }
-                return (await completion.Task.ConfigureAwait(false))?.ToProto(
-                    Api.Nexus.NexusTask.Parser);
-            }
+            }).ConfigureAwait(false);
+            return result?.ToProto(Api.Nexus.NexusTask.Parser);
         }
 
         /// <summary>
@@ -265,114 +273,119 @@ namespace Temporalio.Bridge
         /// </summary>
         /// <param name="comp">Activation completion.</param>
         /// <returns>Completion task.</returns>
-        public async Task CompleteWorkflowActivationAsync(
-            Api.WorkflowCompletion.WorkflowActivationCompletion comp)
-        {
-            using (var scope = new Scope())
+        public Task CompleteWorkflowActivationAsync(
+            Api.WorkflowCompletion.WorkflowActivationCompletion comp) =>
+            Scope.WithScopeAsync<bool>(this, scope =>
             {
-                var completion = new TaskCompletionSource<bool>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_complete_workflow_activation(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
+                        scope.CallbackPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
-                                if (fail != null)
+                                try
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
-                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                    if (fail != null)
+                                    {
+                                        scope.Completion.TrySetException(new InvalidOperationException(
+                                            new ByteArray(Runtime, fail).ToUTF8()));
+                                    }
+                                    else
+                                    {
+                                        scope.Completion.TrySetResult(true);
+                                    }
                                 }
-                                else
+                                finally
                                 {
-                                    completion.TrySetResult(true);
+                                    scope.OnCallbackExit();
                                 }
                             }));
                 }
-                await completion.Task.ConfigureAwait(false);
-            }
-        }
+            });
 
         /// <summary>
         /// Complete an activity task.
         /// </summary>
         /// <param name="comp">Task completion.</param>
         /// <returns>Completion task.</returns>
-        public async Task CompleteActivityTaskAsync(Api.ActivityTaskCompletion comp)
-        {
-            using (var scope = new Scope())
+        public Task CompleteActivityTaskAsync(Api.ActivityTaskCompletion comp) =>
+            Scope.WithScopeAsync<bool>(this, scope =>
             {
-                var completion = new TaskCompletionSource<bool>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_complete_activity_task(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
+                        scope.CallbackPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
-                                if (fail != null)
+                                try
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
-                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                    if (fail != null)
+                                    {
+                                        scope.Completion.TrySetException(new InvalidOperationException(
+                                            new ByteArray(Runtime, fail).ToUTF8()));
+                                    }
+                                    else
+                                    {
+                                        scope.Completion.TrySetResult(true);
+                                    }
                                 }
-                                else
+                                finally
                                 {
-                                    completion.TrySetResult(true);
+                                    scope.OnCallbackExit();
                                 }
                             }));
                 }
-                await completion.Task.ConfigureAwait(false);
-            }
-        }
+            });
 
         /// <summary>
         /// Complete a Nexus task.
         /// </summary>
         /// <param name="comp">Task completion.</param>
         /// <returns>Completion task.</returns>
-        public async Task CompleteNexusTaskAsync(Api.Nexus.NexusTaskCompletion comp)
-        {
-            using (var scope = new Scope())
+        public Task CompleteNexusTaskAsync(Api.Nexus.NexusTaskCompletion comp) =>
+            Scope.WithScopeAsync<bool>(this, scope =>
             {
-                var completion = new TaskCompletionSource<bool>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_complete_nexus_task(
                         Ptr,
                         scope.ByteArray(comp.ToByteArray()),
                         null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
+                        scope.CallbackPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
                             {
-                                if (fail != null)
+                                try
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
-                                        new ByteArray(Runtime, fail).ToUTF8()));
+                                    if (fail != null)
+                                    {
+                                        scope.Completion.TrySetException(new InvalidOperationException(
+                                            new ByteArray(Runtime, fail).ToUTF8()));
+                                    }
+                                    else
+                                    {
+                                        scope.Completion.TrySetResult(true);
+                                    }
                                 }
-                                else
+                                finally
                                 {
-                                    completion.TrySetResult(true);
+                                    scope.OnCallbackExit();
                                 }
                             }));
                 }
-                await completion.Task.ConfigureAwait(false);
-            }
-        }
+            });
 
         /// <summary>
         /// Record an activity heartbeat.
         /// </summary>
         /// <param name="heartbeat">Heartbeat to record.</param>
-        public void RecordActivityHeartbeat(Api.ActivityHeartbeat heartbeat)
-        {
-            using (var scope = new Scope())
+        public void RecordActivityHeartbeat(Api.ActivityHeartbeat heartbeat) =>
+            Scope.WithScope(scope =>
             {
                 unsafe
                 {
@@ -388,24 +401,20 @@ namespace Temporalio.Bridge
                         throw new InvalidOperationException(failStr);
                     }
                 }
-            }
-        }
+            });
 
         /// <summary>
         /// Request workflow eviction.
         /// </summary>
         /// <param name="runId">Run ID of the workflow to evict.</param>
-        public void RequestWorkflowEviction(string runId)
+        public void RequestWorkflowEviction(string runId) => Scope.WithScope(scope =>
         {
-            using (var scope = new Scope())
+            unsafe
             {
-                unsafe
-                {
-                    Interop.Methods.temporal_core_worker_request_workflow_eviction(
-                        Ptr, scope.ByteArray(runId));
-                }
+                Interop.Methods.temporal_core_worker_request_workflow_eviction(
+                    Ptr, scope.ByteArray(runId));
             }
-        }
+        });
 
         /// <summary>
         /// Initiate shutdown for this worker.
@@ -423,34 +432,35 @@ namespace Temporalio.Bridge
         /// polling has stopped.
         /// </summary>
         /// <returns>Completion task.</returns>
-        public async Task FinalizeShutdownAsync()
+        public Task FinalizeShutdownAsync() => Scope.WithScopeAsync<bool>(this, scope =>
         {
-            using (var scope = new Scope())
+            unsafe
             {
-                var completion = new TaskCompletionSource<bool>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
-                unsafe
-                {
-                    Interop.Methods.temporal_core_worker_finalize_shutdown(
-                        Ptr,
-                        null,
-                        scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
-                            (userData, fail) =>
+                Interop.Methods.temporal_core_worker_finalize_shutdown(
+                    Ptr,
+                    null,
+                    scope.CallbackPointer<Interop.TemporalCoreWorkerCallback>(
+                        (userData, fail) =>
+                        {
+                            try
                             {
                                 if (fail != null)
                                 {
-                                    completion.TrySetException(new InvalidOperationException(
+                                    scope.Completion.TrySetException(new InvalidOperationException(
                                         new ByteArray(Runtime, fail).ToUTF8()));
                                 }
                                 else
                                 {
-                                    completion.TrySetResult(true);
+                                    scope.Completion.TrySetResult(true);
                                 }
-                            }));
-                }
-                await completion.Task.ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                scope.OnCallbackExit();
+                            }
+                        }));
             }
-        }
+        });
 
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()

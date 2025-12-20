@@ -45,25 +45,23 @@ namespace Temporalio.Bridge
         /// <param name="runtime">Runtime to use.</param>
         /// <param name="options">Options to use.</param>
         /// <returns>Started server.</returns>
-        public static async Task<EphemeralServer> StartDevServerAsync(
+        public static Task<EphemeralServer> StartDevServerAsync(
             Runtime runtime,
-            Testing.WorkflowEnvironmentStartLocalOptions options)
-        {
-            using (var scope = new Scope())
-            {
-                var completion = new TaskCompletionSource<EphemeralServer>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
-                unsafe
+            Testing.WorkflowEnvironmentStartLocalOptions options) =>
+            Scope.WithScopeAsync<EphemeralServer>(
+                runtime,
+                scope =>
                 {
-                    Interop.Methods.temporal_core_ephemeral_server_start_dev_server(
-                        runtime.Ptr,
-                        scope.Pointer(options.ToInteropOptions(scope)),
-                        null,
-                        CallbackForStart(runtime, scope, false, completion));
-                }
-                return await completion.Task.ConfigureAwait(false);
-            }
-        }
+                    unsafe
+                    {
+                        Interop.Methods.temporal_core_ephemeral_server_start_dev_server(
+                            runtime.Ptr,
+                            scope.Pointer(options.ToInteropOptions(scope)),
+                            null,
+                            CallbackForStart(runtime, scope, false));
+                    }
+                },
+                TaskCreationOptions.RunContinuationsAsynchronously);
 
         /// <summary>
         /// Start test server.
@@ -71,59 +69,58 @@ namespace Temporalio.Bridge
         /// <param name="runtime">Runtime to use.</param>
         /// <param name="options">Options to use.</param>
         /// <returns>Started server.</returns>
-        public static async Task<EphemeralServer> StartTestServerAsync(
+        public static Task<EphemeralServer> StartTestServerAsync(
             Runtime runtime,
-            Testing.WorkflowEnvironmentStartTimeSkippingOptions options)
-        {
-            using (var scope = new Scope())
-            {
-                var completion = new TaskCompletionSource<EphemeralServer>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
-                unsafe
+            Testing.WorkflowEnvironmentStartTimeSkippingOptions options) =>
+            Scope.WithScopeAsync<EphemeralServer>(
+                runtime,
+                scope =>
                 {
-                    Interop.Methods.temporal_core_ephemeral_server_start_test_server(
-                        runtime.Ptr,
-                        scope.Pointer(options.ToInteropOptions(scope)),
-                        null,
-                        CallbackForStart(runtime, scope, true, completion));
-                }
-                return await completion.Task.ConfigureAwait(false);
-            }
-        }
+                    unsafe
+                    {
+                        Interop.Methods.temporal_core_ephemeral_server_start_test_server(
+                            runtime.Ptr,
+                            scope.Pointer(options.ToInteropOptions(scope)),
+                            null,
+                            CallbackForStart(runtime, scope, true));
+                    }
+                },
+                TaskCreationOptions.RunContinuationsAsynchronously);
 
         /// <summary>
         /// Shutdown the server.
         /// </summary>
         /// <returns>Task.</returns>
-        public async Task ShutdownAsync()
+        public Task ShutdownAsync() => Scope.WithScopeAsync<bool>(this, scope =>
         {
-            using (var scope = new Scope())
+            unsafe
             {
-                var completion = new TaskCompletionSource<bool>(
-                    TaskCreationOptions.RunContinuationsAsynchronously);
-                unsafe
+                try
                 {
                     Interop.Methods.temporal_core_ephemeral_server_shutdown(
                         ptr,
                         null,
-                        scope.FunctionPointer<Interop.TemporalCoreEphemeralServerShutdownCallback>(
+                        scope.CallbackPointer<Interop.TemporalCoreEphemeralServerShutdownCallback>(
                             (userData, fail) =>
                             {
                                 if (fail != null)
                                 {
-                                    completion.TrySetException(
+                                    scope.Completion.TrySetException(
                                         new InvalidOperationException(
                                             new ByteArray(runtime, fail).ToUTF8()));
                                 }
                                 else
                                 {
-                                    completion.TrySetResult(true);
+                                    scope.Completion.TrySetResult(true);
                                 }
                             }));
                 }
-                await completion.Task.ConfigureAwait(false);
+                finally
+                {
+                    scope.OnCallbackExit();
+                }
             }
-        }
+        });
 
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
@@ -134,28 +131,32 @@ namespace Temporalio.Bridge
 
         private static unsafe IntPtr CallbackForStart(
             Runtime runtime,
-            Scope scope,
-            bool hasTestService,
-            TaskCompletionSource<EphemeralServer> completion)
-        {
-            return scope.FunctionPointer<Interop.TemporalCoreEphemeralServerStartCallback>(
+            Scope.WithCallback<EphemeralServer> scope,
+            bool hasTestService) =>
+            scope.CallbackPointer<Interop.TemporalCoreEphemeralServerStartCallback>(
                 (userData, success, successTarget, fail) =>
                 {
-                    if (fail != null)
+                    try
                     {
-                        completion.TrySetException(
-                            new InvalidOperationException(new ByteArray(runtime, fail).ToUTF8()));
+                        if (fail != null)
+                        {
+                            scope.Completion.TrySetException(
+                                new InvalidOperationException(new ByteArray(runtime, fail).ToUTF8()));
+                        }
+                        else
+                        {
+                            scope.Completion.TrySetResult(
+                                new EphemeralServer(
+                                    runtime,
+                                    success,
+                                    new ByteArray(runtime, successTarget).ToUTF8(),
+                                    hasTestService));
+                        }
                     }
-                    else
+                    finally
                     {
-                        completion.TrySetResult(
-                            new EphemeralServer(
-                                runtime,
-                                success,
-                                new ByteArray(runtime, successTarget).ToUTF8(),
-                                hasTestService));
+                        scope.OnCallbackExit();
                     }
                 });
-        }
     }
 }
