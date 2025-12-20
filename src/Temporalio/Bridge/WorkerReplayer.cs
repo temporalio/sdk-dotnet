@@ -35,7 +35,8 @@ namespace Temporalio.Bridge
                         }
                         throw new InvalidOperationException(failStr);
                     }
-                    Worker = new(runtime, replayerOrFail.worker);
+                    WorkerHandle = new SafeWorkerHandle(replayerOrFail.worker);
+                    Worker = new(runtime, WorkerHandle);
                     Ptr = replayerOrFail.worker_replay_pusher;
                     SetHandle((IntPtr)Ptr);
                 }
@@ -56,6 +57,11 @@ namespace Temporalio.Bridge
         internal Runtime Runtime { get; private init; }
 
         /// <summary>
+        /// Gets the worker handle.
+        /// </summary>
+        internal SafeWorkerHandle WorkerHandle { get; private init; }
+
+        /// <summary>
         /// Gets a pointer to the pusher.
         /// </summary>
         internal unsafe Interop.TemporalCoreWorkerReplayPusher* Ptr { get; private init; }
@@ -72,7 +78,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_replay_push(
-                        Worker.Ptr,
+                        scope.Pointer(WorkerHandle),
                         Ptr,
                         scope.ByteArray(workflowId),
                         scope.ByteArray(history.ToByteArray()));
@@ -83,6 +89,7 @@ namespace Temporalio.Bridge
         /// <inheritdoc />
         protected override unsafe bool ReleaseHandle()
         {
+            WorkerHandle.Dispose();
             Interop.Methods.temporal_core_worker_replay_pusher_free(Ptr);
             return true;
         }
