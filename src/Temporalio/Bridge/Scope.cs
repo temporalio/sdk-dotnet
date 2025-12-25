@@ -216,6 +216,19 @@ namespace Temporalio.Bridge
         }
 
         /// <summary>
+        /// Add a reference to a <see cref="SafeUnmanagedHandle{T}"/> and return its pointer.
+        /// </summary>
+        /// <typeparam name="T">Type of the handle.</typeparam>
+        /// <param name="handle">Handle to add a reference to.</param>
+        /// <returns>Pointer to the handle.</returns>
+        public unsafe T* Pointer<T>(SafeUnmanagedHandle<T> handle)
+            where T : unmanaged
+        {
+            disposables.Add(SafeHandleReference<SafeUnmanagedHandle<T>>.AddRef(handle));
+            return (T*)handle.DangerousGetHandle();
+        }
+
+        /// <summary>
         /// Create a stable pointer to an object.
         /// </summary>
         /// <typeparam name="T">Type of the object.</typeparam>
