@@ -4,11 +4,12 @@ namespace Temporalio.Tests.Worker;
 
 internal class ManualPollCompletionBridgeWorker : Bridge.Worker
 {
-    private readonly Bridge.Worker underlying;
     private Task<ActivityTask?>? leftoverPollTask;
 
     public ManualPollCompletionBridgeWorker(Bridge.Worker underlying)
-        : base(underlying) => this.underlying = underlying;
+        : base(underlying.Runtime, underlying.Handle)
+    {
+    }
 
     public TaskCompletionSource<ActivityTask?> PollActivityCompletion { get; private set; } = new();
 
@@ -27,14 +28,5 @@ internal class ManualPollCompletionBridgeWorker : Bridge.Worker
             PollActivityCompletion = new();
         }
         return await completedTask;
-    }
-
-    protected override bool ReleaseHandle()
-    {
-        // This is only here to remove IDE complain that underlying is never used. We keep a strong
-        // reference to underlying to ensure the handle is not removed before this is collected.
-        GC.KeepAlive(underlying);
-        // Do not call release for underlying one
-        return true;
     }
 }
