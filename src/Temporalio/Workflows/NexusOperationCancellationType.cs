@@ -6,7 +6,7 @@ namespace Temporalio.Workflows
     public enum NexusOperationCancellationType
     {
         /// <summary>
-        /// Wait for operation cancellation completion.
+        /// Wait for operation completion after cancellation requested.
         /// </summary>
         WaitCancellationCompleted = Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted,
 
