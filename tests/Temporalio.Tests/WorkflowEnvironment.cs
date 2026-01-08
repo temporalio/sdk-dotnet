@@ -88,9 +88,10 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "system.enableDeploymentVersions=true",
                         // Enable activity pause
                         "--dynamic-config-value", "frontend.activityAPIsEnabled=true",
+                        // Enable Nexus cancellation types
+                        "--dynamic-config-value",
+                        "component.nexusoperations.recordCancelRequestCompletionEvents=true",
                     },
-                    // TODO: Remove when fairness works in a release
-                    DownloadVersion = "v1.4.1-cloud-v1-29-0-139-2.0",
                 },
             });
         }

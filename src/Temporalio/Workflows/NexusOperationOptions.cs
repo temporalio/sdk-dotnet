@@ -20,6 +20,13 @@ namespace Temporalio.Workflows
         public string? Summary { get; set; }
 
         /// <summary>
+        /// Gets or sets how the workflow will send/wait for cancellation of the Nexus operation.
+        /// Default is <see cref="NexusOperationCancellationType.WaitCancellationCompleted" />.
+        /// </summary>
+        public NexusOperationCancellationType CancellationType { get; set; } =
+            NexusOperationCancellationType.WaitCancellationCompleted;
+
+        /// <summary>
         /// Gets or sets the cancellation token. If unset, defaults to the workflow cancellation
         /// token.
         /// </summary>
