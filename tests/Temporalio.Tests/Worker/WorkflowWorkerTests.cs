@@ -6010,6 +6010,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Workflow.Logger.LogInformation("In update");
             complete.SetResult();
         }
+
+        [WorkflowQuery]
+        public string QueryWithLogging()
+        {
+            Workflow.Logger.LogInformation("In query");
+            return "query-result";
+        }
     }
 
     [Fact]
@@ -6024,6 +6031,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Client.StartWorkflowAsync(
                     (UpdateLogWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Execute query to confirm it logs
+                Assert.Equal("query-result", await handle.QueryAsync(wf => wf.QueryWithLogging()));
                 await handle.ExecuteUpdateAsync(
                     wf => wf.UpdateAsync(), new() { Id = "my-update-id" });
                 await handle.GetResultAsync();
@@ -6042,6 +6051,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal("UpdateLogWorkflow", updateLog.ScopeValues["WorkflowType"]);
         Assert.Equal("my-update-id", updateLog.ScopeValues["UpdateId"]);
         Assert.Equal("Update", updateLog.ScopeValues["UpdateName"]);
+        // Check query log - should be present now with IsReplayingHistoryEvents
+        var queryLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In query");
+        Assert.Equal("UpdateLogWorkflow", queryLog.ScopeValues["WorkflowType"]);
+        Assert.False(queryLog.ScopeValues.ContainsKey("UpdateId"));
     }
 
     [Workflow]
