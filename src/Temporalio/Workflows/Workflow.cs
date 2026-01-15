@@ -1393,10 +1393,20 @@ namespace Temporalio.Workflows
             /// Gets a value indicating whether this workflow is replaying.
             /// </summary>
             /// <remarks>
-            /// This should not be used for most cases. It is only valuable for advanced cases like
-            /// preventing a log or metric from being recorded on replay.
+            /// This returns true during replay, including during queries and update validators that
+            /// are executed during a replaying workflow task. This should not be used for most cases.
             /// </remarks>
             public static bool IsReplaying => Context.IsReplaying;
+
+            /// <summary>
+            /// Gets a value indicating whether this workflow is replaying history events.
+            /// </summary>
+            /// <remarks>
+            /// This returns true during replay, but false during queries and update validators even
+            /// when they are executed during a replaying workflow task. This should not be used for
+            /// most cases.
+            /// </remarks>
+            public static bool IsReplayingHistoryEvents => Context.IsReplayingHistoryEvents;
 
             /// <summary>
             /// Disables the event listener that catches invalid calls and thread operations in

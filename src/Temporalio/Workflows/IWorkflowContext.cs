@@ -89,6 +89,11 @@ namespace Temporalio.Workflows
         bool IsReplaying { get; }
 
         /// <summary>
+        /// Gets a value indicating whether <see cref="Workflow.Unsafe.IsReplayingHistoryEvents" /> is true.
+        /// </summary>
+        bool IsReplayingHistoryEvents { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.Logger" />.
         /// </summary>
         ILogger Logger { get; }

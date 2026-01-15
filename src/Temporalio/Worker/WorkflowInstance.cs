@@ -95,6 +95,7 @@ namespace Temporalio.Worker
         private bool workflowInitialized;
         private bool applyModernEventLoopLogic;
         private bool dynamicOptionsGetterInvoked;
+        private bool inQueryOrValidator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WorkflowInstance"/> class.
@@ -351,6 +352,9 @@ namespace Temporalio.Worker
 
         /// <inheritdoc />
         public bool IsReplaying { get; private set; }
+
+        /// <inheritdoc />
+        public bool IsReplayingHistoryEvents => IsReplaying && !inQueryOrValidator;
 
         /// <inheritdoc />
         public ILogger Logger => replaySafeLogger;
@@ -1188,12 +1192,20 @@ namespace Temporalio.Worker
                     {
                         // Capture command count so we can ensure it is unchanged after call
                         var origCmdCount = completion?.Successful?.Commands?.Count ?? 0;
-                        inbound.Value.ValidateUpdate(new(
-                            Id: update.Id,
-                            Update: update.Name,
-                            Definition: updateDefn,
-                            Args: DecodeUpdateArgs(),
-                            Headers: update.Headers));
+                        try
+                        {
+                            inQueryOrValidator = true;
+                            inbound.Value.ValidateUpdate(new(
+                                Id: update.Id,
+                                Update: update.Name,
+                                Definition: updateDefn,
+                                Args: DecodeUpdateArgs(),
+                                Headers: update.Headers));
+                        }
+                        finally
+                        {
+                            inQueryOrValidator = false;
+                        }
                         // If the command count changed, we need to issue a task failure
                         var newCmdCount = completion?.Successful?.Commands?.Count ?? 0;
                         if (origCmdCount != newCmdCount)
@@ -1367,6 +1379,7 @@ namespace Temporalio.Worker
                 var origCmdCount = completion?.Successful?.Commands?.Count;
                 try
                 {
+                    inQueryOrValidator = true;
                     WorkflowQueryDefinition? queryDefn;
                     object? resultObj;
 
@@ -1436,6 +1449,10 @@ namespace Temporalio.Worker
                         },
                     });
                     return Task.CompletedTask;
+                }
+                finally
+                {
+                    inQueryOrValidator = false;
                 }
                 // Check for commands but don't include null counts in check since Successful is
                 // unset by other completion failures
