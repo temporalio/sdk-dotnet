@@ -2572,6 +2572,14 @@ namespace Temporalio.Worker
                 {
                     cmd.ScheduleToCloseTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(schedToCloseTimeout);
                 }
+                if (input.Options.ScheduleToStartTimeout is TimeSpan schedToStartTimeout)
+                {
+                    cmd.ScheduleToStartTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(schedToStartTimeout);
+                }
+                if (input.Options.StartToCloseTimeout is TimeSpan startToCloseTimeout)
+                {
+                    cmd.StartToCloseTimeout = Google.Protobuf.WellKnownTypes.Duration.FromTimeSpan(startToCloseTimeout);
+                }
                 if (input.Headers is IDictionary<string, string> headers)
                 {
                     cmd.NexusHeader.Add(headers);
