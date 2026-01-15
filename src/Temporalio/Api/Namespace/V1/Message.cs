@@ -27,51 +27,56 @@ namespace Temporalio.Api.Namespace.V1 {
             "Cid0ZW1wb3JhbC9hcGkvbmFtZXNwYWNlL3YxL21lc3NhZ2UucHJvdG8SGXRl",
             "bXBvcmFsLmFwaS5uYW1lc3BhY2UudjEaHmdvb2dsZS9wcm90b2J1Zi9kdXJh",
             "dGlvbi5wcm90bxofZ29vZ2xlL3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90bxol",
-            "dGVtcG9yYWwvYXBpL2VudW1zL3YxL25hbWVzcGFjZS5wcm90byKCBAoNTmFt",
+            "dGVtcG9yYWwvYXBpL2VudW1zL3YxL25hbWVzcGFjZS5wcm90byKjBQoNTmFt",
             "ZXNwYWNlSW5mbxIMCgRuYW1lGAEgASgJEjQKBXN0YXRlGAIgASgOMiUudGVt",
             "cG9yYWwuYXBpLmVudW1zLnYxLk5hbWVzcGFjZVN0YXRlEhMKC2Rlc2NyaXB0",
             "aW9uGAMgASgJEhMKC293bmVyX2VtYWlsGAQgASgJEkAKBGRhdGEYBSADKAsy",
             "Mi50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLk5hbWVzcGFjZUluZm8uRGF0",
             "YUVudHJ5EgoKAmlkGAYgASgJEksKDGNhcGFiaWxpdGllcxgHIAEoCzI1LnRl",
             "bXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuTmFtZXNwYWNlSW5mby5DYXBhYmls",
-            "aXRpZXMSGgoSc3VwcG9ydHNfc2NoZWR1bGVzGGQgASgIGisKCURhdGFFbnRy",
-            "eRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBGp4BCgxDYXBhYmls",
-            "aXRpZXMSHAoUZWFnZXJfd29ya2Zsb3dfc3RhcnQYASABKAgSEwoLc3luY191",
-            "cGRhdGUYAiABKAgSFAoMYXN5bmNfdXBkYXRlGAMgASgIEhkKEXdvcmtlcl9o",
-            "ZWFydGJlYXRzGAQgASgIEioKInJlcG9ydGVkX3Byb2JsZW1zX3NlYXJjaF9h",
-            "dHRyaWJ1dGUYBSABKAgingQKD05hbWVzcGFjZUNvbmZpZxJDCiB3b3JrZmxv",
-            "d19leGVjdXRpb25fcmV0ZW50aW9uX3R0bBgBIAEoCzIZLmdvb2dsZS5wcm90",
-            "b2J1Zi5EdXJhdGlvbhI8CgxiYWRfYmluYXJpZXMYAiABKAsyJi50ZW1wb3Jh",
-            "bC5hcGkubmFtZXNwYWNlLnYxLkJhZEJpbmFyaWVzEkQKFmhpc3RvcnlfYXJj",
-            "aGl2YWxfc3RhdGUYAyABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuQXJj",
-            "aGl2YWxTdGF0ZRIcChRoaXN0b3J5X2FyY2hpdmFsX3VyaRgEIAEoCRJHChl2",
-            "aXNpYmlsaXR5X2FyY2hpdmFsX3N0YXRlGAUgASgOMiQudGVtcG9yYWwuYXBp",
-            "LmVudW1zLnYxLkFyY2hpdmFsU3RhdGUSHwoXdmlzaWJpbGl0eV9hcmNoaXZh",
-            "bF91cmkYBiABKAkSdQofY3VzdG9tX3NlYXJjaF9hdHRyaWJ1dGVfYWxpYXNl",
-            "cxgHIAMoCzJMLnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuTmFtZXNwYWNl",
-            "Q29uZmlnLkN1c3RvbVNlYXJjaEF0dHJpYnV0ZUFsaWFzZXNFbnRyeRpDCiFD",
-            "dXN0b21TZWFyY2hBdHRyaWJ1dGVBbGlhc2VzRW50cnkSCwoDa2V5GAEgASgJ",
-            "Eg0KBXZhbHVlGAIgASgJOgI4ASKwAQoLQmFkQmluYXJpZXMSRgoIYmluYXJp",
-            "ZXMYASADKAsyNC50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLkJhZEJpbmFy",
-            "aWVzLkJpbmFyaWVzRW50cnkaWQoNQmluYXJpZXNFbnRyeRILCgNrZXkYASAB",
-            "KAkSNwoFdmFsdWUYAiABKAsyKC50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYx",
-            "LkJhZEJpbmFyeUluZm86AjgBImIKDUJhZEJpbmFyeUluZm8SDgoGcmVhc29u",
-            "GAEgASgJEhAKCG9wZXJhdG9yGAIgASgJEi8KC2NyZWF0ZV90aW1lGAMgASgL",
-            "MhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLqAQoTVXBkYXRlTmFtZXNw",
-            "YWNlSW5mbxITCgtkZXNjcmlwdGlvbhgBIAEoCRITCgtvd25lcl9lbWFpbBgC",
-            "IAEoCRJGCgRkYXRhGAMgAygLMjgudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52",
-            "MS5VcGRhdGVOYW1lc3BhY2VJbmZvLkRhdGFFbnRyeRI0CgVzdGF0ZRgEIAEo",
-            "DjIlLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5OYW1lc3BhY2VTdGF0ZRorCglE",
-            "YXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASIqCg9O",
-            "YW1lc3BhY2VGaWx0ZXISFwoPaW5jbHVkZV9kZWxldGVkGAEgASgIQpgBChxp",
-            "by50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxQgxNZXNzYWdlUHJvdG9QAVop",
-            "Z28udGVtcG9yYWwuaW8vYXBpL25hbWVzcGFjZS92MTtuYW1lc3BhY2WqAhtU",
-            "ZW1wb3JhbGlvLkFwaS5OYW1lc3BhY2UuVjHqAh5UZW1wb3JhbGlvOjpBcGk6",
-            "Ok5hbWVzcGFjZTo6VjFiBnByb3RvMw=="));
+            "aXRpZXMSPwoGbGltaXRzGAggASgLMi8udGVtcG9yYWwuYXBpLm5hbWVzcGFj",
+            "ZS52MS5OYW1lc3BhY2VJbmZvLkxpbWl0cxIaChJzdXBwb3J0c19zY2hlZHVs",
+            "ZXMYZCABKAgaKwoJRGF0YUVudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgC",
+            "IAEoCToCOAEatgEKDENhcGFiaWxpdGllcxIcChRlYWdlcl93b3JrZmxvd19z",
+            "dGFydBgBIAEoCBITCgtzeW5jX3VwZGF0ZRgCIAEoCBIUCgxhc3luY191cGRh",
+            "dGUYAyABKAgSGQoRd29ya2VyX2hlYXJ0YmVhdHMYBCABKAgSKgoicmVwb3J0",
+            "ZWRfcHJvYmxlbXNfc2VhcmNoX2F0dHJpYnV0ZRgFIAEoCBIWCg53b3JrZmxv",
+            "d19wYXVzZRgGIAEoCBpGCgZMaW1pdHMSHQoVYmxvYl9zaXplX2xpbWl0X2Vy",
+            "cm9yGAEgASgDEh0KFW1lbW9fc2l6ZV9saW1pdF9lcnJvchgCIAEoAyKeBAoP",
+            "TmFtZXNwYWNlQ29uZmlnEkMKIHdvcmtmbG93X2V4ZWN1dGlvbl9yZXRlbnRp",
+            "b25fdHRsGAEgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjwKDGJh",
+            "ZF9iaW5hcmllcxgCIAEoCzImLnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEu",
+            "QmFkQmluYXJpZXMSRAoWaGlzdG9yeV9hcmNoaXZhbF9zdGF0ZRgDIAEoDjIk",
+            "LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5BcmNoaXZhbFN0YXRlEhwKFGhpc3Rv",
+            "cnlfYXJjaGl2YWxfdXJpGAQgASgJEkcKGXZpc2liaWxpdHlfYXJjaGl2YWxf",
+            "c3RhdGUYBSABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuQXJjaGl2YWxT",
+            "dGF0ZRIfChd2aXNpYmlsaXR5X2FyY2hpdmFsX3VyaRgGIAEoCRJ1Ch9jdXN0",
+            "b21fc2VhcmNoX2F0dHJpYnV0ZV9hbGlhc2VzGAcgAygLMkwudGVtcG9yYWwu",
+            "YXBpLm5hbWVzcGFjZS52MS5OYW1lc3BhY2VDb25maWcuQ3VzdG9tU2VhcmNo",
+            "QXR0cmlidXRlQWxpYXNlc0VudHJ5GkMKIUN1c3RvbVNlYXJjaEF0dHJpYnV0",
+            "ZUFsaWFzZXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgB",
+            "IrABCgtCYWRCaW5hcmllcxJGCghiaW5hcmllcxgBIAMoCzI0LnRlbXBvcmFs",
+            "LmFwaS5uYW1lc3BhY2UudjEuQmFkQmluYXJpZXMuQmluYXJpZXNFbnRyeRpZ",
+            "Cg1CaW5hcmllc0VudHJ5EgsKA2tleRgBIAEoCRI3CgV2YWx1ZRgCIAEoCzIo",
+            "LnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuQmFkQmluYXJ5SW5mbzoCOAEi",
+            "YgoNQmFkQmluYXJ5SW5mbxIOCgZyZWFzb24YASABKAkSEAoIb3BlcmF0b3IY",
+            "AiABKAkSLwoLY3JlYXRlX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYu",
+            "VGltZXN0YW1wIuoBChNVcGRhdGVOYW1lc3BhY2VJbmZvEhMKC2Rlc2NyaXB0",
+            "aW9uGAEgASgJEhMKC293bmVyX2VtYWlsGAIgASgJEkYKBGRhdGEYAyADKAsy",
+            "OC50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLlVwZGF0ZU5hbWVzcGFjZUlu",
+            "Zm8uRGF0YUVudHJ5EjQKBXN0YXRlGAQgASgOMiUudGVtcG9yYWwuYXBpLmVu",
+            "dW1zLnYxLk5hbWVzcGFjZVN0YXRlGisKCURhdGFFbnRyeRILCgNrZXkYASAB",
+            "KAkSDQoFdmFsdWUYAiABKAk6AjgBIioKD05hbWVzcGFjZUZpbHRlchIXCg9p",
+            "bmNsdWRlX2RlbGV0ZWQYASABKAhCmAEKHGlvLnRlbXBvcmFsLmFwaS5uYW1l",
+            "c3BhY2UudjFCDE1lc3NhZ2VQcm90b1ABWilnby50ZW1wb3JhbC5pby9hcGkv",
+            "bmFtZXNwYWNlL3YxO25hbWVzcGFjZaoCG1RlbXBvcmFsaW8uQXBpLk5hbWVz",
+            "cGFjZS5WMeoCHlRlbXBvcmFsaW86OkFwaTo6TmFtZXNwYWNlOjpWMWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Parser, new[]{ "Name", "State", "Description", "OwnerEmail", "Data", "Id", "Capabilities", "SupportsSchedules" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities.Parser, new[]{ "EagerWorkflowStart", "SyncUpdate", "AsyncUpdate", "WorkerHeartbeats", "ReportedProblemsSearchAttribute" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Parser, new[]{ "Name", "State", "Description", "OwnerEmail", "Data", "Id", "Capabilities", "Limits", "SupportsSchedules" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities.Parser, new[]{ "EagerWorkflowStart", "SyncUpdate", "AsyncUpdate", "WorkerHeartbeats", "ReportedProblemsSearchAttribute", "WorkflowPause" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits), global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits.Parser, new[]{ "BlobSizeLimitError", "MemoSizeLimitError" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.NamespaceConfig), global::Temporalio.Api.Namespace.V1.NamespaceConfig.Parser, new[]{ "WorkflowExecutionRetentionTtl", "BadBinaries", "HistoryArchivalState", "HistoryArchivalUri", "VisibilityArchivalState", "VisibilityArchivalUri", "CustomSearchAttributeAliases" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.BadBinaries), global::Temporalio.Api.Namespace.V1.BadBinaries.Parser, new[]{ "Binaries" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Namespace.V1.BadBinaryInfo), global::Temporalio.Api.Namespace.V1.BadBinaryInfo.Parser, new[]{ "Reason", "Operator", "CreateTime" }, null, null, null, null),
@@ -124,6 +129,7 @@ namespace Temporalio.Api.Namespace.V1 {
       data_ = other.data_.Clone();
       id_ = other.id_;
       capabilities_ = other.capabilities_ != null ? other.capabilities_.Clone() : null;
+      limits_ = other.limits_ != null ? other.limits_.Clone() : null;
       supportsSchedules_ = other.supportsSchedules_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -223,6 +229,21 @@ namespace Temporalio.Api.Namespace.V1 {
       }
     }
 
+    /// <summary>Field number for the "limits" field.</summary>
+    public const int LimitsFieldNumber = 8;
+    private global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits limits_;
+    /// <summary>
+    /// Namespace configured limits
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits Limits {
+      get { return limits_; }
+      set {
+        limits_ = value;
+      }
+    }
+
     /// <summary>Field number for the "supports_schedules" field.</summary>
     public const int SupportsSchedulesFieldNumber = 100;
     private bool supportsSchedules_;
@@ -261,6 +282,7 @@ namespace Temporalio.Api.Namespace.V1 {
       if (!Data.Equals(other.Data)) return false;
       if (Id != other.Id) return false;
       if (!object.Equals(Capabilities, other.Capabilities)) return false;
+      if (!object.Equals(Limits, other.Limits)) return false;
       if (SupportsSchedules != other.SupportsSchedules) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -276,6 +298,7 @@ namespace Temporalio.Api.Namespace.V1 {
       hash ^= Data.GetHashCode();
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (capabilities_ != null) hash ^= Capabilities.GetHashCode();
+      if (limits_ != null) hash ^= Limits.GetHashCode();
       if (SupportsSchedules != false) hash ^= SupportsSchedules.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -320,6 +343,10 @@ namespace Temporalio.Api.Namespace.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(Capabilities);
       }
+      if (limits_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(Limits);
+      }
       if (SupportsSchedules != false) {
         output.WriteRawTag(160, 6);
         output.WriteBool(SupportsSchedules);
@@ -359,6 +386,10 @@ namespace Temporalio.Api.Namespace.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(Capabilities);
       }
+      if (limits_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(Limits);
+      }
       if (SupportsSchedules != false) {
         output.WriteRawTag(160, 6);
         output.WriteBool(SupportsSchedules);
@@ -391,6 +422,9 @@ namespace Temporalio.Api.Namespace.V1 {
       }
       if (capabilities_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Capabilities);
+      }
+      if (limits_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Limits);
       }
       if (SupportsSchedules != false) {
         size += 2 + 1;
@@ -428,6 +462,12 @@ namespace Temporalio.Api.Namespace.V1 {
           Capabilities = new global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities();
         }
         Capabilities.MergeFrom(other.Capabilities);
+      }
+      if (other.limits_ != null) {
+        if (limits_ == null) {
+          Limits = new global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits();
+        }
+        Limits.MergeFrom(other.Limits);
       }
       if (other.SupportsSchedules != false) {
         SupportsSchedules = other.SupportsSchedules;
@@ -478,6 +518,13 @@ namespace Temporalio.Api.Namespace.V1 {
             input.ReadMessage(Capabilities);
             break;
           }
+          case 66: {
+            if (limits_ == null) {
+              Limits = new global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits();
+            }
+            input.ReadMessage(Limits);
+            break;
+          }
           case 800: {
             SupportsSchedules = input.ReadBool();
             break;
@@ -526,6 +573,13 @@ namespace Temporalio.Api.Namespace.V1 {
               Capabilities = new global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Capabilities();
             }
             input.ReadMessage(Capabilities);
+            break;
+          }
+          case 66: {
+            if (limits_ == null) {
+              Limits = new global::Temporalio.Api.Namespace.V1.NamespaceInfo.Types.Limits();
+            }
+            input.ReadMessage(Limits);
             break;
           }
           case 800: {
@@ -584,6 +638,7 @@ namespace Temporalio.Api.Namespace.V1 {
           asyncUpdate_ = other.asyncUpdate_;
           workerHeartbeats_ = other.workerHeartbeats_;
           reportedProblemsSearchAttribute_ = other.reportedProblemsSearchAttribute_;
+          workflowPause_ = other.workflowPause_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -668,6 +723,21 @@ namespace Temporalio.Api.Namespace.V1 {
           }
         }
 
+        /// <summary>Field number for the "workflow_pause" field.</summary>
+        public const int WorkflowPauseFieldNumber = 6;
+        private bool workflowPause_;
+        /// <summary>
+        /// True if the namespace supports pausing workflows
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool WorkflowPause {
+          get { return workflowPause_; }
+          set {
+            workflowPause_ = value;
+          }
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -688,6 +758,7 @@ namespace Temporalio.Api.Namespace.V1 {
           if (AsyncUpdate != other.AsyncUpdate) return false;
           if (WorkerHeartbeats != other.WorkerHeartbeats) return false;
           if (ReportedProblemsSearchAttribute != other.ReportedProblemsSearchAttribute) return false;
+          if (WorkflowPause != other.WorkflowPause) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -700,6 +771,7 @@ namespace Temporalio.Api.Namespace.V1 {
           if (AsyncUpdate != false) hash ^= AsyncUpdate.GetHashCode();
           if (WorkerHeartbeats != false) hash ^= WorkerHeartbeats.GetHashCode();
           if (ReportedProblemsSearchAttribute != false) hash ^= ReportedProblemsSearchAttribute.GetHashCode();
+          if (WorkflowPause != false) hash ^= WorkflowPause.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -738,6 +810,10 @@ namespace Temporalio.Api.Namespace.V1 {
             output.WriteRawTag(40);
             output.WriteBool(ReportedProblemsSearchAttribute);
           }
+          if (WorkflowPause != false) {
+            output.WriteRawTag(48);
+            output.WriteBool(WorkflowPause);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -768,6 +844,10 @@ namespace Temporalio.Api.Namespace.V1 {
             output.WriteRawTag(40);
             output.WriteBool(ReportedProblemsSearchAttribute);
           }
+          if (WorkflowPause != false) {
+            output.WriteRawTag(48);
+            output.WriteBool(WorkflowPause);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -791,6 +871,9 @@ namespace Temporalio.Api.Namespace.V1 {
             size += 1 + 1;
           }
           if (ReportedProblemsSearchAttribute != false) {
+            size += 1 + 1;
+          }
+          if (WorkflowPause != false) {
             size += 1 + 1;
           }
           if (_unknownFields != null) {
@@ -819,6 +902,9 @@ namespace Temporalio.Api.Namespace.V1 {
           }
           if (other.ReportedProblemsSearchAttribute != false) {
             ReportedProblemsSearchAttribute = other.ReportedProblemsSearchAttribute;
+          }
+          if (other.WorkflowPause != false) {
+            WorkflowPause = other.WorkflowPause;
           }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
@@ -855,6 +941,10 @@ namespace Temporalio.Api.Namespace.V1 {
                 ReportedProblemsSearchAttribute = input.ReadBool();
                 break;
               }
+              case 48: {
+                WorkflowPause = input.ReadBool();
+                break;
+              }
             }
           }
         #endif
@@ -888,6 +978,244 @@ namespace Temporalio.Api.Namespace.V1 {
               }
               case 40: {
                 ReportedProblemsSearchAttribute = input.ReadBool();
+                break;
+              }
+              case 48: {
+                WorkflowPause = input.ReadBool();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+      public sealed partial class Limits : pb::IMessage<Limits>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<Limits> _parser = new pb::MessageParser<Limits>(() => new Limits());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<Limits> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.Namespace.V1.NamespaceInfo.Descriptor.NestedTypes[2]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Limits() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Limits(Limits other) : this() {
+          blobSizeLimitError_ = other.blobSizeLimitError_;
+          memoSizeLimitError_ = other.memoSizeLimitError_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Limits Clone() {
+          return new Limits(this);
+        }
+
+        /// <summary>Field number for the "blob_size_limit_error" field.</summary>
+        public const int BlobSizeLimitErrorFieldNumber = 1;
+        private long blobSizeLimitError_;
+        /// <summary>
+        /// Maximum size in bytes for payload fields in workflow history events
+        /// (e.g., workflow/activity inputs and results, failure details, signal payloads).
+        /// When exceeded, the server will reject the operation with an error.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long BlobSizeLimitError {
+          get { return blobSizeLimitError_; }
+          set {
+            blobSizeLimitError_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "memo_size_limit_error" field.</summary>
+        public const int MemoSizeLimitErrorFieldNumber = 2;
+        private long memoSizeLimitError_;
+        /// <summary>
+        /// Maximum total memo size in bytes per workflow execution.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long MemoSizeLimitError {
+          get { return memoSizeLimitError_; }
+          set {
+            memoSizeLimitError_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as Limits);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(Limits other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (BlobSizeLimitError != other.BlobSizeLimitError) return false;
+          if (MemoSizeLimitError != other.MemoSizeLimitError) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (BlobSizeLimitError != 0L) hash ^= BlobSizeLimitError.GetHashCode();
+          if (MemoSizeLimitError != 0L) hash ^= MemoSizeLimitError.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (BlobSizeLimitError != 0L) {
+            output.WriteRawTag(8);
+            output.WriteInt64(BlobSizeLimitError);
+          }
+          if (MemoSizeLimitError != 0L) {
+            output.WriteRawTag(16);
+            output.WriteInt64(MemoSizeLimitError);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (BlobSizeLimitError != 0L) {
+            output.WriteRawTag(8);
+            output.WriteInt64(BlobSizeLimitError);
+          }
+          if (MemoSizeLimitError != 0L) {
+            output.WriteRawTag(16);
+            output.WriteInt64(MemoSizeLimitError);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (BlobSizeLimitError != 0L) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(BlobSizeLimitError);
+          }
+          if (MemoSizeLimitError != 0L) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(MemoSizeLimitError);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(Limits other) {
+          if (other == null) {
+            return;
+          }
+          if (other.BlobSizeLimitError != 0L) {
+            BlobSizeLimitError = other.BlobSizeLimitError;
+          }
+          if (other.MemoSizeLimitError != 0L) {
+            MemoSizeLimitError = other.MemoSizeLimitError;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                BlobSizeLimitError = input.ReadInt64();
+                break;
+              }
+              case 16: {
+                MemoSizeLimitError = input.ReadInt64();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                BlobSizeLimitError = input.ReadInt64();
+                break;
+              }
+              case 16: {
+                MemoSizeLimitError = input.ReadInt64();
                 break;
               }
             }

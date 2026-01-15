@@ -36,50 +36,50 @@ namespace Temporalio.Api.Worker.V1 {
             "ZWRfc2xvdHMYAiABKAUSGgoSc2xvdF9zdXBwbGllcl9raW5kGAMgASgJEh0K",
             "FXRvdGFsX3Byb2Nlc3NlZF90YXNrcxgEIAEoBRIaChJ0b3RhbF9mYWlsZWRf",
             "dGFza3MYBSABKAUSJQodbGFzdF9pbnRlcnZhbF9wcm9jZXNzZWRfdGFza3MY",
-            "BiABKAUSIwobbGFzdF9pbnRlcnZhbF9mYWlsdXJlX3Rhc2tzGAcgASgFIowB",
-            "Cg5Xb3JrZXJIb3N0SW5mbxIRCglob3N0X25hbWUYASABKAkSEwoLcHJvY2Vz",
-            "c19rZXkYBSABKAkSEgoKcHJvY2Vzc19pZBgCIAEoCRIeChZjdXJyZW50X2hv",
-            "c3RfY3B1X3VzYWdlGAMgASgCEh4KFmN1cnJlbnRfaG9zdF9tZW1fdXNhZ2UY",
-            "BCABKAIizwkKD1dvcmtlckhlYXJ0YmVhdBIbChN3b3JrZXJfaW5zdGFuY2Vf",
-            "a2V5GAEgASgJEhcKD3dvcmtlcl9pZGVudGl0eRgCIAEoCRI5Cglob3N0X2lu",
-            "Zm8YAyABKAsyJi50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtlckhvc3RJ",
-            "bmZvEhIKCnRhc2tfcXVldWUYBCABKAkSTwoSZGVwbG95bWVudF92ZXJzaW9u",
-            "GAUgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVw",
-            "bG95bWVudFZlcnNpb24SEAoIc2RrX25hbWUYBiABKAkSEwoLc2RrX3ZlcnNp",
-            "b24YByABKAkSMwoGc3RhdHVzGAggASgOMiMudGVtcG9yYWwuYXBpLmVudW1z",
-            "LnYxLldvcmtlclN0YXR1cxIuCgpzdGFydF90aW1lGAkgASgLMhouZ29vZ2xl",
-            "LnByb3RvYnVmLlRpbWVzdGFtcBIyCg5oZWFydGJlYXRfdGltZRgKIAEoCzIa",
-            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPwocZWxhcHNlZF9zaW5jZV9s",
-            "YXN0X2hlYXJ0YmVhdBgLIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlv",
-            "bhJJChh3b3JrZmxvd190YXNrX3Nsb3RzX2luZm8YDCABKAsyJy50ZW1wb3Jh",
-            "bC5hcGkud29ya2VyLnYxLldvcmtlclNsb3RzSW5mbxJJChhhY3Rpdml0eV90",
-            "YXNrX3Nsb3RzX2luZm8YDSABKAsyJy50ZW1wb3JhbC5hcGkud29ya2VyLnYx",
-            "LldvcmtlclNsb3RzSW5mbxJGChVuZXh1c190YXNrX3Nsb3RzX2luZm8YDiAB",
-            "KAsyJy50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtlclNsb3RzSW5mbxJK",
-            "Chlsb2NhbF9hY3Rpdml0eV9zbG90c19pbmZvGA8gASgLMicudGVtcG9yYWwu",
-            "YXBpLndvcmtlci52MS5Xb3JrZXJTbG90c0luZm8SRgoUd29ya2Zsb3dfcG9s",
-            "bGVyX2luZm8YECABKAsyKC50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtl",
-            "clBvbGxlckluZm8STQobd29ya2Zsb3dfc3RpY2t5X3BvbGxlcl9pbmZvGBEg",
-            "ASgLMigudGVtcG9yYWwuYXBpLndvcmtlci52MS5Xb3JrZXJQb2xsZXJJbmZv",
-            "EkYKFGFjdGl2aXR5X3BvbGxlcl9pbmZvGBIgASgLMigudGVtcG9yYWwuYXBp",
-            "Lndvcmtlci52MS5Xb3JrZXJQb2xsZXJJbmZvEkMKEW5leHVzX3BvbGxlcl9p",
-            "bmZvGBMgASgLMigudGVtcG9yYWwuYXBpLndvcmtlci52MS5Xb3JrZXJQb2xs",
-            "ZXJJbmZvEh4KFnRvdGFsX3N0aWNreV9jYWNoZV9oaXQYFCABKAUSHwoXdG90",
-            "YWxfc3RpY2t5X2NhY2hlX21pc3MYFSABKAUSIQoZY3VycmVudF9zdGlja3lf",
-            "Y2FjaGVfc2l6ZRgWIAEoBRIzCgdwbHVnaW5zGBcgAygLMiIudGVtcG9yYWwu",
-            "YXBpLndvcmtlci52MS5QbHVnaW5JbmZvIk8KCldvcmtlckluZm8SQQoQd29y",
-            "a2VyX2hlYXJ0YmVhdBgBIAEoCzInLnRlbXBvcmFsLmFwaS53b3JrZXIudjEu",
-            "V29ya2VySGVhcnRiZWF0IisKClBsdWdpbkluZm8SDAoEbmFtZRgBIAEoCRIP",
-            "Cgd2ZXJzaW9uGAIgASgJQokBChlpby50ZW1wb3JhbC5hcGkud29ya2VyLnYx",
-            "QgxNZXNzYWdlUHJvdG9QAVojZ28udGVtcG9yYWwuaW8vYXBpL3dvcmtlci92",
-            "MTt3b3JrZXKqAhhUZW1wb3JhbGlvLkFwaS5Xb3JrZXIuVjHqAhtUZW1wb3Jh",
-            "bGlvOjpBcGk6Oldvcmtlcjo6VjFiBnByb3RvMw=="));
+            "BiABKAUSIwobbGFzdF9pbnRlcnZhbF9mYWlsdXJlX3Rhc2tzGAcgASgFIpQB",
+            "Cg5Xb3JrZXJIb3N0SW5mbxIRCglob3N0X25hbWUYASABKAkSGwoTd29ya2Vy",
+            "X2dyb3VwaW5nX2tleRgFIAEoCRISCgpwcm9jZXNzX2lkGAIgASgJEh4KFmN1",
+            "cnJlbnRfaG9zdF9jcHVfdXNhZ2UYAyABKAISHgoWY3VycmVudF9ob3N0X21l",
+            "bV91c2FnZRgEIAEoAiLPCQoPV29ya2VySGVhcnRiZWF0EhsKE3dvcmtlcl9p",
+            "bnN0YW5jZV9rZXkYASABKAkSFwoPd29ya2VyX2lkZW50aXR5GAIgASgJEjkK",
+            "CWhvc3RfaW5mbxgDIAEoCzImLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuV29y",
+            "a2VySG9zdEluZm8SEgoKdGFza19xdWV1ZRgEIAEoCRJPChJkZXBsb3ltZW50",
+            "X3ZlcnNpb24YBSABKAsyMy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5X",
+            "b3JrZXJEZXBsb3ltZW50VmVyc2lvbhIQCghzZGtfbmFtZRgGIAEoCRITCgtz",
+            "ZGtfdmVyc2lvbhgHIAEoCRIzCgZzdGF0dXMYCCABKA4yIy50ZW1wb3JhbC5h",
+            "cGkuZW51bXMudjEuV29ya2VyU3RhdHVzEi4KCnN0YXJ0X3RpbWUYCSABKAsy",
+            "Gi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjIKDmhlYXJ0YmVhdF90aW1l",
+            "GAogASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI/ChxlbGFwc2Vk",
+            "X3NpbmNlX2xhc3RfaGVhcnRiZWF0GAsgASgLMhkuZ29vZ2xlLnByb3RvYnVm",
+            "LkR1cmF0aW9uEkkKGHdvcmtmbG93X3Rhc2tfc2xvdHNfaW5mbxgMIAEoCzIn",
+            "LnRlbXBvcmFsLmFwaS53b3JrZXIudjEuV29ya2VyU2xvdHNJbmZvEkkKGGFj",
+            "dGl2aXR5X3Rhc2tfc2xvdHNfaW5mbxgNIAEoCzInLnRlbXBvcmFsLmFwaS53",
+            "b3JrZXIudjEuV29ya2VyU2xvdHNJbmZvEkYKFW5leHVzX3Rhc2tfc2xvdHNf",
+            "aW5mbxgOIAEoCzInLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuV29ya2VyU2xv",
+            "dHNJbmZvEkoKGWxvY2FsX2FjdGl2aXR5X3Nsb3RzX2luZm8YDyABKAsyJy50",
+            "ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtlclNsb3RzSW5mbxJGChR3b3Jr",
+            "Zmxvd19wb2xsZXJfaW5mbxgQIAEoCzIoLnRlbXBvcmFsLmFwaS53b3JrZXIu",
+            "djEuV29ya2VyUG9sbGVySW5mbxJNCht3b3JrZmxvd19zdGlja3lfcG9sbGVy",
+            "X2luZm8YESABKAsyKC50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtlclBv",
+            "bGxlckluZm8SRgoUYWN0aXZpdHlfcG9sbGVyX2luZm8YEiABKAsyKC50ZW1w",
+            "b3JhbC5hcGkud29ya2VyLnYxLldvcmtlclBvbGxlckluZm8SQwoRbmV4dXNf",
+            "cG9sbGVyX2luZm8YEyABKAsyKC50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldv",
+            "cmtlclBvbGxlckluZm8SHgoWdG90YWxfc3RpY2t5X2NhY2hlX2hpdBgUIAEo",
+            "BRIfChd0b3RhbF9zdGlja3lfY2FjaGVfbWlzcxgVIAEoBRIhChljdXJyZW50",
+            "X3N0aWNreV9jYWNoZV9zaXplGBYgASgFEjMKB3BsdWdpbnMYFyADKAsyIi50",
+            "ZW1wb3JhbC5hcGkud29ya2VyLnYxLlBsdWdpbkluZm8iTwoKV29ya2VySW5m",
+            "bxJBChB3b3JrZXJfaGVhcnRiZWF0GAEgASgLMicudGVtcG9yYWwuYXBpLndv",
+            "cmtlci52MS5Xb3JrZXJIZWFydGJlYXQiKwoKUGx1Z2luSW5mbxIMCgRuYW1l",
+            "GAEgASgJEg8KB3ZlcnNpb24YAiABKAlCiQEKGWlvLnRlbXBvcmFsLmFwaS53",
+            "b3JrZXIudjFCDE1lc3NhZ2VQcm90b1ABWiNnby50ZW1wb3JhbC5pby9hcGkv",
+            "d29ya2VyL3YxO3dvcmtlcqoCGFRlbXBvcmFsaW8uQXBpLldvcmtlci5WMeoC",
+            "G1RlbXBvcmFsaW86OkFwaTo6V29ya2VyOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerPollerInfo), global::Temporalio.Api.Worker.V1.WorkerPollerInfo.Parser, new[]{ "CurrentPollers", "LastSuccessfulPollTime", "IsAutoscaling" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerSlotsInfo), global::Temporalio.Api.Worker.V1.WorkerSlotsInfo.Parser, new[]{ "CurrentAvailableSlots", "CurrentUsedSlots", "SlotSupplierKind", "TotalProcessedTasks", "TotalFailedTasks", "LastIntervalProcessedTasks", "LastIntervalFailureTasks" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHostInfo), global::Temporalio.Api.Worker.V1.WorkerHostInfo.Parser, new[]{ "HostName", "ProcessKey", "ProcessId", "CurrentHostCpuUsage", "CurrentHostMemUsage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHostInfo), global::Temporalio.Api.Worker.V1.WorkerHostInfo.Parser, new[]{ "HostName", "WorkerGroupingKey", "ProcessId", "CurrentHostCpuUsage", "CurrentHostMemUsage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHeartbeat), global::Temporalio.Api.Worker.V1.WorkerHeartbeat.Parser, new[]{ "WorkerInstanceKey", "WorkerIdentity", "HostInfo", "TaskQueue", "DeploymentVersion", "SdkName", "SdkVersion", "Status", "StartTime", "HeartbeatTime", "ElapsedSinceLastHeartbeat", "WorkflowTaskSlotsInfo", "ActivityTaskSlotsInfo", "NexusTaskSlotsInfo", "LocalActivitySlotsInfo", "WorkflowPollerInfo", "WorkflowStickyPollerInfo", "ActivityPollerInfo", "NexusPollerInfo", "TotalStickyCacheHit", "TotalStickyCacheMiss", "CurrentStickyCacheSize", "Plugins" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerInfo), global::Temporalio.Api.Worker.V1.WorkerInfo.Parser, new[]{ "WorkerHeartbeat" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.PluginInfo), global::Temporalio.Api.Worker.V1.PluginInfo.Parser, new[]{ "Name", "Version" }, null, null, null, null)
@@ -842,7 +842,7 @@ namespace Temporalio.Api.Worker.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public WorkerHostInfo(WorkerHostInfo other) : this() {
       hostName_ = other.hostName_;
-      processKey_ = other.processKey_;
+      workerGroupingKey_ = other.workerGroupingKey_;
       processId_ = other.processId_;
       currentHostCpuUsage_ = other.currentHostCpuUsage_;
       currentHostMemUsage_ = other.currentHostMemUsage_;
@@ -870,22 +870,20 @@ namespace Temporalio.Api.Worker.V1 {
       }
     }
 
-    /// <summary>Field number for the "process_key" field.</summary>
-    public const int ProcessKeyFieldNumber = 5;
-    private string processKey_ = "";
+    /// <summary>Field number for the "worker_grouping_key" field.</summary>
+    public const int WorkerGroupingKeyFieldNumber = 5;
+    private string workerGroupingKey_ = "";
     /// <summary>
-    /// Worker process identifier. This id should be unique for all _processes_
-    /// running workers in the namespace, and should be shared by all workers
-    /// in the same process.
+    /// Worker grouping identifier. A key to group workers that share the same client+namespace+process.
     /// This will be used to build the worker command nexus task queue name:
-    /// "temporal-sys/worker-commands/{process_key}"
+    /// "temporal-sys/worker-commands/{worker_grouping_key}"
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string ProcessKey {
-      get { return processKey_; }
+    public string WorkerGroupingKey {
+      get { return workerGroupingKey_; }
       set {
-        processKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        workerGroupingKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -893,7 +891,7 @@ namespace Temporalio.Api.Worker.V1 {
     public const int ProcessIdFieldNumber = 2;
     private string processId_ = "";
     /// <summary>
-    /// Worker process identifier. Unlike process_key, this id only needs to be unique
+    /// Worker process identifier. This id only needs to be unique
     /// within one host (so using e.g. a unix pid would be appropriate).
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -953,7 +951,7 @@ namespace Temporalio.Api.Worker.V1 {
         return true;
       }
       if (HostName != other.HostName) return false;
-      if (ProcessKey != other.ProcessKey) return false;
+      if (WorkerGroupingKey != other.WorkerGroupingKey) return false;
       if (ProcessId != other.ProcessId) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CurrentHostCpuUsage, other.CurrentHostCpuUsage)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CurrentHostMemUsage, other.CurrentHostMemUsage)) return false;
@@ -965,7 +963,7 @@ namespace Temporalio.Api.Worker.V1 {
     public override int GetHashCode() {
       int hash = 1;
       if (HostName.Length != 0) hash ^= HostName.GetHashCode();
-      if (ProcessKey.Length != 0) hash ^= ProcessKey.GetHashCode();
+      if (WorkerGroupingKey.Length != 0) hash ^= WorkerGroupingKey.GetHashCode();
       if (ProcessId.Length != 0) hash ^= ProcessId.GetHashCode();
       if (CurrentHostCpuUsage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CurrentHostCpuUsage);
       if (CurrentHostMemUsage != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CurrentHostMemUsage);
@@ -1003,9 +1001,9 @@ namespace Temporalio.Api.Worker.V1 {
         output.WriteRawTag(37);
         output.WriteFloat(CurrentHostMemUsage);
       }
-      if (ProcessKey.Length != 0) {
+      if (WorkerGroupingKey.Length != 0) {
         output.WriteRawTag(42);
-        output.WriteString(ProcessKey);
+        output.WriteString(WorkerGroupingKey);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1033,9 +1031,9 @@ namespace Temporalio.Api.Worker.V1 {
         output.WriteRawTag(37);
         output.WriteFloat(CurrentHostMemUsage);
       }
-      if (ProcessKey.Length != 0) {
+      if (WorkerGroupingKey.Length != 0) {
         output.WriteRawTag(42);
-        output.WriteString(ProcessKey);
+        output.WriteString(WorkerGroupingKey);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -1050,8 +1048,8 @@ namespace Temporalio.Api.Worker.V1 {
       if (HostName.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(HostName);
       }
-      if (ProcessKey.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(ProcessKey);
+      if (WorkerGroupingKey.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(WorkerGroupingKey);
       }
       if (ProcessId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ProcessId);
@@ -1077,8 +1075,8 @@ namespace Temporalio.Api.Worker.V1 {
       if (other.HostName.Length != 0) {
         HostName = other.HostName;
       }
-      if (other.ProcessKey.Length != 0) {
-        ProcessKey = other.ProcessKey;
+      if (other.WorkerGroupingKey.Length != 0) {
+        WorkerGroupingKey = other.WorkerGroupingKey;
       }
       if (other.ProcessId.Length != 0) {
         ProcessId = other.ProcessId;
@@ -1121,7 +1119,7 @@ namespace Temporalio.Api.Worker.V1 {
             break;
           }
           case 42: {
-            ProcessKey = input.ReadString();
+            WorkerGroupingKey = input.ReadString();
             break;
           }
         }
@@ -1156,7 +1154,7 @@ namespace Temporalio.Api.Worker.V1 {
             break;
           }
           case 42: {
-            ProcessKey = input.ReadString();
+            WorkerGroupingKey = input.ReadString();
             break;
           }
         }

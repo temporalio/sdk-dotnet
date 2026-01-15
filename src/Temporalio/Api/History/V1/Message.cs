@@ -37,7 +37,7 @@ namespace Temporalio.Api.History.V1 {
             "cG9yYWwvYXBpL3VwZGF0ZS92MS9tZXNzYWdlLnByb3RvGiZ0ZW1wb3JhbC9h",
             "cGkvd29ya2Zsb3cvdjEvbWVzc2FnZS5wcm90bxowdGVtcG9yYWwvYXBpL3Nk",
             "ay92MS90YXNrX2NvbXBsZXRlX21ldGFkYXRhLnByb3RvGid0ZW1wb3JhbC9h",
-            "cGkvc2RrL3YxL3VzZXJfbWV0YWRhdGEucHJvdG8i1g8KJ1dvcmtmbG93RXhl",
+            "cGkvc2RrL3YxL3VzZXJfbWV0YWRhdGEucHJvdG8isRAKJ1dvcmtmbG93RXhl",
             "Y3V0aW9uU3RhcnRlZEV2ZW50QXR0cmlidXRlcxI7Cg13b3JrZmxvd190eXBl",
             "GAEgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd1R5cGUS",
             "IQoZcGFyZW50X3dvcmtmbG93X25hbWVzcGFjZRgCIAEoCRIkChxwYXJlbnRf",
@@ -80,310 +80,322 @@ namespace Temporalio.Api.History.V1 {
             "bG95bWVudF92ZXJzaW9uGCIgASgJQgIYARIyCghwcmlvcml0eRgjIAEoCzIg",
             "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuUHJpb3JpdHkSVQoYaW5oZXJpdGVk",
             "X3Bpbm5lZF92ZXJzaW9uGCUgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1l",
-            "bnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb24SIAoYZWFnZXJfZXhlY3V0",
-            "aW9uX2FjY2VwdGVkGCYgASgISgQIJBAlUiBwYXJlbnRfcGlubmVkX2RlcGxv",
-            "eW1lbnRfdmVyc2lvbiKlAQopV29ya2Zsb3dFeGVjdXRpb25Db21wbGV0ZWRF",
-            "dmVudEF0dHJpYnV0ZXMSMAoGcmVzdWx0GAEgASgLMiAudGVtcG9yYWwuYXBp",
-            "LmNvbW1vbi52MS5QYXlsb2FkcxIoCiB3b3JrZmxvd190YXNrX2NvbXBsZXRl",
-            "ZF9ldmVudF9pZBgCIAEoAxIcChRuZXdfZXhlY3V0aW9uX3J1bl9pZBgDIAEo",
-            "CSLbAQomV29ya2Zsb3dFeGVjdXRpb25GYWlsZWRFdmVudEF0dHJpYnV0ZXMS",
-            "MQoHZmFpbHVyZRgBIAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZh",
-            "aWx1cmUSNgoLcmV0cnlfc3RhdGUYAiABKA4yIS50ZW1wb3JhbC5hcGkuZW51",
-            "bXMudjEuUmV0cnlTdGF0ZRIoCiB3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9l",
-            "dmVudF9pZBgDIAEoAxIcChRuZXdfZXhlY3V0aW9uX3J1bl9pZBgEIAEoCSKA",
-            "AQooV29ya2Zsb3dFeGVjdXRpb25UaW1lZE91dEV2ZW50QXR0cmlidXRlcxI2",
-            "CgtyZXRyeV9zdGF0ZRgBIAEoDjIhLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5S",
-            "ZXRyeVN0YXRlEhwKFG5ld19leGVjdXRpb25fcnVuX2lkGAIgASgJIsgGCi5X",
-            "b3JrZmxvd0V4ZWN1dGlvbkNvbnRpbnVlZEFzTmV3RXZlbnRBdHRyaWJ1dGVz",
-            "EhwKFG5ld19leGVjdXRpb25fcnVuX2lkGAEgASgJEjsKDXdvcmtmbG93X3R5",
-            "cGUYAiABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93VHlw",
-            "ZRI4Cgp0YXNrX3F1ZXVlGAMgASgLMiQudGVtcG9yYWwuYXBpLnRhc2txdWV1",
-            "ZS52MS5UYXNrUXVldWUSLwoFaW5wdXQYBCABKAsyIC50ZW1wb3JhbC5hcGku",
-            "Y29tbW9uLnYxLlBheWxvYWRzEjcKFHdvcmtmbG93X3J1bl90aW1lb3V0GAUg",
-            "ASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjgKFXdvcmtmbG93X3Rh",
-            "c2tfdGltZW91dBgGIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIo",
-            "CiB3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgHIAEoAxI5ChZi",
-            "YWNrb2ZmX3N0YXJ0X2ludGVydmFsGAggASgLMhkuZ29vZ2xlLnByb3RvYnVm",
-            "LkR1cmF0aW9uEkAKCWluaXRpYXRvchgJIAEoDjItLnRlbXBvcmFsLmFwaS5l",
-            "bnVtcy52MS5Db250aW51ZUFzTmV3SW5pdGlhdG9yEjUKB2ZhaWx1cmUYCiAB",
-            "KAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlQgIYARJAChZs",
-            "YXN0X2NvbXBsZXRpb25fcmVzdWx0GAsgASgLMiAudGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5QYXlsb2FkcxIuCgZoZWFkZXIYDCABKAsyHi50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLkhlYWRlchIqCgRtZW1vGA0gASgLMhwudGVtcG9yYWwu",
-            "YXBpLmNvbW1vbi52MS5NZW1vEkMKEXNlYXJjaF9hdHRyaWJ1dGVzGA4gASgL",
-            "MigudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVzEhwK",
-            "EGluaGVyaXRfYnVpbGRfaWQYDyABKAhCAhgBIqwBCiRXb3JrZmxvd1Rhc2tT",
-            "Y2hlZHVsZWRFdmVudEF0dHJpYnV0ZXMSOAoKdGFza19xdWV1ZRgBIAEoCzIk",
-            "LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlEjkKFnN0YXJ0",
-            "X3RvX2Nsb3NlX3RpbWVvdXQYAiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVy",
-            "YXRpb24SDwoHYXR0ZW1wdBgDIAEoBSKSAgoiV29ya2Zsb3dUYXNrU3RhcnRl",
-            "ZEV2ZW50QXR0cmlidXRlcxIaChJzY2hlZHVsZWRfZXZlbnRfaWQYASABKAMS",
-            "EAoIaWRlbnRpdHkYAiABKAkSEgoKcmVxdWVzdF9pZBgDIAEoCRIfChdzdWdn",
-            "ZXN0X2NvbnRpbnVlX2FzX25ldxgEIAEoCBIaChJoaXN0b3J5X3NpemVfYnl0",
-            "ZXMYBSABKAMSRgoOd29ya2VyX3ZlcnNpb24YBiABKAsyKi50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25TdGFtcEICGAESJQoZYnVpbGRf",
-            "aWRfcmVkaXJlY3RfY291bnRlchgHIAEoA0ICGAEiggUKJFdvcmtmbG93VGFz",
-            "a0NvbXBsZXRlZEV2ZW50QXR0cmlidXRlcxIaChJzY2hlZHVsZWRfZXZlbnRf",
-            "aWQYASABKAMSGAoQc3RhcnRlZF9ldmVudF9pZBgCIAEoAxIQCghpZGVudGl0",
-            "eRgDIAEoCRIbCg9iaW5hcnlfY2hlY2tzdW0YBCABKAlCAhgBEkYKDndvcmtl",
-            "cl92ZXJzaW9uGAUgASgLMioudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3Jr",
-            "ZXJWZXJzaW9uU3RhbXBCAhgBEkgKDHNka19tZXRhZGF0YRgGIAEoCzIyLnRl",
-            "bXBvcmFsLmFwaS5zZGsudjEuV29ya2Zsb3dUYXNrQ29tcGxldGVkTWV0YWRh",
-            "dGESQwoRbWV0ZXJpbmdfbWV0YWRhdGEYDSABKAsyKC50ZW1wb3JhbC5hcGku",
-            "Y29tbW9uLnYxLk1ldGVyaW5nTWV0YWRhdGESPgoKZGVwbG95bWVudBgHIAEo",
-            "CzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnRCAhgB",
-            "EkYKE3ZlcnNpb25pbmdfYmVoYXZpb3IYCCABKA4yKS50ZW1wb3JhbC5hcGku",
-            "ZW51bXMudjEuVmVyc2lvbmluZ0JlaGF2aW9yEiUKGXdvcmtlcl9kZXBsb3lt",
-            "ZW50X3ZlcnNpb24YCSABKAlCAhgBEh4KFndvcmtlcl9kZXBsb3ltZW50X25h",
-            "bWUYCiABKAkSTwoSZGVwbG95bWVudF92ZXJzaW9uGAsgASgLMjMudGVtcG9y",
-            "YWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb24i",
-            "lQEKI1dvcmtmbG93VGFza1RpbWVkT3V0RXZlbnRBdHRyaWJ1dGVzEhoKEnNj",
-            "aGVkdWxlZF9ldmVudF9pZBgBIAEoAxIYChBzdGFydGVkX2V2ZW50X2lkGAIg",
-            "ASgDEjgKDHRpbWVvdXRfdHlwZRgDIAEoDjIiLnRlbXBvcmFsLmFwaS5lbnVt",
-            "cy52MS5UaW1lb3V0VHlwZSKHAwohV29ya2Zsb3dUYXNrRmFpbGVkRXZlbnRB",
-            "dHRyaWJ1dGVzEhoKEnNjaGVkdWxlZF9ldmVudF9pZBgBIAEoAxIYChBzdGFy",
-            "dGVkX2V2ZW50X2lkGAIgASgDEj0KBWNhdXNlGAMgASgOMi4udGVtcG9yYWwu",
-            "YXBpLmVudW1zLnYxLldvcmtmbG93VGFza0ZhaWxlZENhdXNlEjEKB2ZhaWx1",
-            "cmUYBCABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEhAK",
-            "CGlkZW50aXR5GAUgASgJEhMKC2Jhc2VfcnVuX2lkGAYgASgJEhIKCm5ld19y",
-            "dW5faWQYByABKAkSGgoSZm9ya19ldmVudF92ZXJzaW9uGAggASgDEhsKD2Jp",
-            "bmFyeV9jaGVja3N1bRgJIAEoCUICGAESRgoOd29ya2VyX3ZlcnNpb24YCiAB",
-            "KAsyKi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25TdGFt",
-            "cEICGAEiwgUKJEFjdGl2aXR5VGFza1NjaGVkdWxlZEV2ZW50QXR0cmlidXRl",
-            "cxITCgthY3Rpdml0eV9pZBgBIAEoCRI7Cg1hY3Rpdml0eV90eXBlGAIgASgL",
-            "MiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5BY3Rpdml0eVR5cGUSOAoKdGFz",
-            "a19xdWV1ZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFz",
-            "a1F1ZXVlEi4KBmhlYWRlchgFIAEoCzIeLnRlbXBvcmFsLmFwaS5jb21tb24u",
-            "djEuSGVhZGVyEi8KBWlucHV0GAYgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1v",
-            "bi52MS5QYXlsb2FkcxI8ChlzY2hlZHVsZV90b19jbG9zZV90aW1lb3V0GAcg",
-            "ASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjwKGXNjaGVkdWxlX3Rv",
-            "X3N0YXJ0X3RpbWVvdXQYCCABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRp",
-            "b24SOQoWc3RhcnRfdG9fY2xvc2VfdGltZW91dBgJIAEoCzIZLmdvb2dsZS5w",
-            "cm90b2J1Zi5EdXJhdGlvbhI0ChFoZWFydGJlYXRfdGltZW91dBgKIAEoCzIZ",
-            "Lmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIoCiB3b3JrZmxvd190YXNrX2Nv",
-            "bXBsZXRlZF9ldmVudF9pZBgLIAEoAxI5CgxyZXRyeV9wb2xpY3kYDCABKAsy",
-            "Iy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5EiEKFXVzZV93",
-            "b3JrZmxvd19idWlsZF9pZBgNIAEoCEICGAESMgoIcHJpb3JpdHkYDiABKAsy",
-            "IC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5SgQIAxAEIp4CCiJB",
-            "Y3Rpdml0eVRhc2tTdGFydGVkRXZlbnRBdHRyaWJ1dGVzEhoKEnNjaGVkdWxl",
-            "ZF9ldmVudF9pZBgBIAEoAxIQCghpZGVudGl0eRgCIAEoCRISCgpyZXF1ZXN0",
-            "X2lkGAMgASgJEg8KB2F0dGVtcHQYBCABKAUSNgoMbGFzdF9mYWlsdXJlGAUg",
-            "ASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRJGCg53b3Jr",
-            "ZXJfdmVyc2lvbhgGIAEoCzIqLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29y",
-            "a2VyVmVyc2lvblN0YW1wQgIYARIlChlidWlsZF9pZF9yZWRpcmVjdF9jb3Vu",
-            "dGVyGAcgASgDQgIYASLoAQokQWN0aXZpdHlUYXNrQ29tcGxldGVkRXZlbnRB",
-            "dHRyaWJ1dGVzEjAKBnJlc3VsdBgBIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21t",
-            "b24udjEuUGF5bG9hZHMSGgoSc2NoZWR1bGVkX2V2ZW50X2lkGAIgASgDEhgK",
-            "EHN0YXJ0ZWRfZXZlbnRfaWQYAyABKAMSEAoIaWRlbnRpdHkYBCABKAkSRgoO",
-            "d29ya2VyX3ZlcnNpb24YBSABKAsyKi50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
-            "LldvcmtlclZlcnNpb25TdGFtcEICGAEingIKIUFjdGl2aXR5VGFza0ZhaWxl",
-            "ZEV2ZW50QXR0cmlidXRlcxIxCgdmYWlsdXJlGAEgASgLMiAudGVtcG9yYWwu",
-            "YXBpLmZhaWx1cmUudjEuRmFpbHVyZRIaChJzY2hlZHVsZWRfZXZlbnRfaWQY",
-            "AiABKAMSGAoQc3RhcnRlZF9ldmVudF9pZBgDIAEoAxIQCghpZGVudGl0eRgE",
-            "IAEoCRI2CgtyZXRyeV9zdGF0ZRgFIAEoDjIhLnRlbXBvcmFsLmFwaS5lbnVt",
-            "cy52MS5SZXRyeVN0YXRlEkYKDndvcmtlcl92ZXJzaW9uGAYgASgLMioudGVt",
-            "cG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9uU3RhbXBCAhgBIsYB",
-            "CiNBY3Rpdml0eVRhc2tUaW1lZE91dEV2ZW50QXR0cmlidXRlcxIxCgdmYWls",
-            "dXJlGAEgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRIa",
-            "ChJzY2hlZHVsZWRfZXZlbnRfaWQYAiABKAMSGAoQc3RhcnRlZF9ldmVudF9p",
-            "ZBgDIAEoAxI2CgtyZXRyeV9zdGF0ZRgEIAEoDjIhLnRlbXBvcmFsLmFwaS5l",
-            "bnVtcy52MS5SZXRyeVN0YXRlInIKKkFjdGl2aXR5VGFza0NhbmNlbFJlcXVl",
-            "c3RlZEV2ZW50QXR0cmlidXRlcxIaChJzY2hlZHVsZWRfZXZlbnRfaWQYASAB",
-            "KAMSKAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQYAiABKAMi",
-            "kgIKI0FjdGl2aXR5VGFza0NhbmNlbGVkRXZlbnRBdHRyaWJ1dGVzEjEKB2Rl",
-            "dGFpbHMYASABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRz",
-            "EigKIGxhdGVzdF9jYW5jZWxfcmVxdWVzdGVkX2V2ZW50X2lkGAIgASgDEhoK",
-            "EnNjaGVkdWxlZF9ldmVudF9pZBgDIAEoAxIYChBzdGFydGVkX2V2ZW50X2lk",
-            "GAQgASgDEhAKCGlkZW50aXR5GAUgASgJEkYKDndvcmtlcl92ZXJzaW9uGAYg",
-            "ASgLMioudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9uU3Rh",
-            "bXBCAhgBIpMBChtUaW1lclN0YXJ0ZWRFdmVudEF0dHJpYnV0ZXMSEAoIdGlt",
-            "ZXJfaWQYASABKAkSOAoVc3RhcnRfdG9fZmlyZV90aW1lb3V0GAIgASgLMhku",
-            "Z29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEigKIHdvcmtmbG93X3Rhc2tfY29t",
-            "cGxldGVkX2V2ZW50X2lkGAMgASgDIkcKGVRpbWVyRmlyZWRFdmVudEF0dHJp",
-            "YnV0ZXMSEAoIdGltZXJfaWQYASABKAkSGAoQc3RhcnRlZF9ldmVudF9pZBgC",
-            "IAEoAyKGAQocVGltZXJDYW5jZWxlZEV2ZW50QXR0cmlidXRlcxIQCgh0aW1l",
-            "cl9pZBgBIAEoCRIYChBzdGFydGVkX2V2ZW50X2lkGAIgASgDEigKIHdvcmtm",
-            "bG93X3Rhc2tfY29tcGxldGVkX2V2ZW50X2lkGAMgASgDEhAKCGlkZW50aXR5",
-            "GAQgASgJIscBCi9Xb3JrZmxvd0V4ZWN1dGlvbkNhbmNlbFJlcXVlc3RlZEV2",
-            "ZW50QXR0cmlidXRlcxINCgVjYXVzZRgBIAEoCRIjChtleHRlcm5hbF9pbml0",
-            "aWF0ZWRfZXZlbnRfaWQYAiABKAMSTgobZXh0ZXJuYWxfd29ya2Zsb3dfZXhl",
-            "Y3V0aW9uGAMgASgLMikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxv",
-            "d0V4ZWN1dGlvbhIQCghpZGVudGl0eRgEIAEoCSKHAQooV29ya2Zsb3dFeGVj",
-            "dXRpb25DYW5jZWxlZEV2ZW50QXR0cmlidXRlcxIoCiB3b3JrZmxvd190YXNr",
-            "X2NvbXBsZXRlZF9ldmVudF9pZBgBIAEoAxIxCgdkZXRhaWxzGAIgASgLMiAu",
-            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcyLpAgodTWFya2VyUmVj",
-            "b3JkZWRFdmVudEF0dHJpYnV0ZXMSEwoLbWFya2VyX25hbWUYASABKAkSVAoH",
-            "ZGV0YWlscxgCIAMoCzJDLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLk1hcmtl",
-            "clJlY29yZGVkRXZlbnRBdHRyaWJ1dGVzLkRldGFpbHNFbnRyeRIoCiB3b3Jr",
-            "Zmxvd190YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgDIAEoAxIuCgZoZWFkZXIY",
-            "BCABKAsyHi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkhlYWRlchIxCgdmYWls",
-            "dXJlGAUgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRpQ",
-            "CgxEZXRhaWxzRW50cnkSCwoDa2V5GAEgASgJEi8KBXZhbHVlGAIgASgLMiAu",
-            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkczoCOAEiqwIKKFdvcmtm",
-            "bG93RXhlY3V0aW9uU2lnbmFsZWRFdmVudEF0dHJpYnV0ZXMSEwoLc2lnbmFs",
-            "X25hbWUYASABKAkSLwoFaW5wdXQYAiABKAsyIC50ZW1wb3JhbC5hcGkuY29t",
-            "bW9uLnYxLlBheWxvYWRzEhAKCGlkZW50aXR5GAMgASgJEi4KBmhlYWRlchgE",
-            "IAEoCzIeLnRlbXBvcmFsLmFwaS5jb21tb24udjEuSGVhZGVyEicKG3NraXBf",
-            "Z2VuZXJhdGVfd29ya2Zsb3dfdGFzaxgFIAEoCEICGAESTgobZXh0ZXJuYWxf",
-            "d29ya2Zsb3dfZXhlY3V0aW9uGAYgASgLMikudGVtcG9yYWwuYXBpLmNvbW1v",
-            "bi52MS5Xb3JrZmxvd0V4ZWN1dGlvbiKBAQoqV29ya2Zsb3dFeGVjdXRpb25U",
-            "ZXJtaW5hdGVkRXZlbnRBdHRyaWJ1dGVzEg4KBnJlYXNvbhgBIAEoCRIxCgdk",
-            "ZXRhaWxzGAIgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2Fk",
-            "cxIQCghpZGVudGl0eRgDIAEoCSKcAgo+UmVxdWVzdENhbmNlbEV4dGVybmFs",
-            "V29ya2Zsb3dFeGVjdXRpb25Jbml0aWF0ZWRFdmVudEF0dHJpYnV0ZXMSKAog",
-            "d29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQYASABKAMSEQoJbmFt",
-            "ZXNwYWNlGAIgASgJEhQKDG5hbWVzcGFjZV9pZBgHIAEoCRJFChJ3b3JrZmxv",
-            "d19leGVjdXRpb24YAyABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldv",
-            "cmtmbG93RXhlY3V0aW9uEhMKB2NvbnRyb2wYBCABKAlCAhgBEhsKE2NoaWxk",
-            "X3dvcmtmbG93X29ubHkYBSABKAgSDgoGcmVhc29uGAYgASgJItoCCjtSZXF1",
-            "ZXN0Q2FuY2VsRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50",
-            "QXR0cmlidXRlcxJQCgVjYXVzZRgBIAEoDjJBLnRlbXBvcmFsLmFwaS5lbnVt",
-            "cy52MS5DYW5jZWxFeHRlcm5hbFdvcmtmbG93RXhlY3V0aW9uRmFpbGVkQ2F1",
-            "c2USKAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQYAiABKAMS",
-            "EQoJbmFtZXNwYWNlGAMgASgJEhQKDG5hbWVzcGFjZV9pZBgHIAEoCRJFChJ3",
-            "b3JrZmxvd19leGVjdXRpb24YBCABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9u",
-            "LnYxLldvcmtmbG93RXhlY3V0aW9uEhoKEmluaXRpYXRlZF9ldmVudF9pZBgF",
-            "IAEoAxITCgdjb250cm9sGAYgASgJQgIYASLFAQo3RXh0ZXJuYWxXb3JrZmxv",
-            "d0V4ZWN1dGlvbkNhbmNlbFJlcXVlc3RlZEV2ZW50QXR0cmlidXRlcxIaChJp",
-            "bml0aWF0ZWRfZXZlbnRfaWQYASABKAMSEQoJbmFtZXNwYWNlGAIgASgJEhQK",
-            "DG5hbWVzcGFjZV9pZBgEIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YAyAB",
+            "bnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb24SWQobaW5oZXJpdGVkX2F1",
+            "dG9fdXBncmFkZV9pbmZvGCcgASgLMjQudGVtcG9yYWwuYXBpLmRlcGxveW1l",
+            "bnQudjEuSW5oZXJpdGVkQXV0b1VwZ3JhZGVJbmZvEiAKGGVhZ2VyX2V4ZWN1",
+            "dGlvbl9hY2NlcHRlZBgmIAEoCEoECCQQJVIgcGFyZW50X3Bpbm5lZF9kZXBs",
+            "b3ltZW50X3ZlcnNpb24ipQEKKVdvcmtmbG93RXhlY3V0aW9uQ29tcGxldGVk",
+            "RXZlbnRBdHRyaWJ1dGVzEjAKBnJlc3VsdBgBIAEoCzIgLnRlbXBvcmFsLmFw",
+            "aS5jb21tb24udjEuUGF5bG9hZHMSKAogd29ya2Zsb3dfdGFza19jb21wbGV0",
+            "ZWRfZXZlbnRfaWQYAiABKAMSHAoUbmV3X2V4ZWN1dGlvbl9ydW5faWQYAyAB",
+            "KAki2wEKJldvcmtmbG93RXhlY3V0aW9uRmFpbGVkRXZlbnRBdHRyaWJ1dGVz",
+            "EjEKB2ZhaWx1cmUYASABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5G",
+            "YWlsdXJlEjYKC3JldHJ5X3N0YXRlGAIgASgOMiEudGVtcG9yYWwuYXBpLmVu",
+            "dW1zLnYxLlJldHJ5U3RhdGUSKAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRf",
+            "ZXZlbnRfaWQYAyABKAMSHAoUbmV3X2V4ZWN1dGlvbl9ydW5faWQYBCABKAki",
+            "gAEKKFdvcmtmbG93RXhlY3V0aW9uVGltZWRPdXRFdmVudEF0dHJpYnV0ZXMS",
+            "NgoLcmV0cnlfc3RhdGUYASABKA4yIS50ZW1wb3JhbC5hcGkuZW51bXMudjEu",
+            "UmV0cnlTdGF0ZRIcChRuZXdfZXhlY3V0aW9uX3J1bl9pZBgCIAEoCSKlBwou",
+            "V29ya2Zsb3dFeGVjdXRpb25Db250aW51ZWRBc05ld0V2ZW50QXR0cmlidXRl",
+            "cxIcChRuZXdfZXhlY3V0aW9uX3J1bl9pZBgBIAEoCRI7Cg13b3JrZmxvd190",
+            "eXBlGAIgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd1R5",
+            "cGUSOAoKdGFza19xdWV1ZRgDIAEoCzIkLnRlbXBvcmFsLmFwaS50YXNrcXVl",
+            "dWUudjEuVGFza1F1ZXVlEi8KBWlucHV0GAQgASgLMiAudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5QYXlsb2FkcxI3ChR3b3JrZmxvd19ydW5fdGltZW91dBgF",
+            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI4ChV3b3JrZmxvd190",
+            "YXNrX3RpbWVvdXQYBiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24S",
+            "KAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQYByABKAMSOQoW",
+            "YmFja29mZl9zdGFydF9pbnRlcnZhbBgIIAEoCzIZLmdvb2dsZS5wcm90b2J1",
+            "Zi5EdXJhdGlvbhJACglpbml0aWF0b3IYCSABKA4yLS50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuQ29udGludWVBc05ld0luaXRpYXRvchI1CgdmYWlsdXJlGAog",
+            "ASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZUICGAESQAoW",
+            "bGFzdF9jb21wbGV0aW9uX3Jlc3VsdBgLIAEoCzIgLnRlbXBvcmFsLmFwaS5j",
+            "b21tb24udjEuUGF5bG9hZHMSLgoGaGVhZGVyGAwgASgLMh4udGVtcG9yYWwu",
+            "YXBpLmNvbW1vbi52MS5IZWFkZXISKgoEbWVtbxgNIAEoCzIcLnRlbXBvcmFs",
+            "LmFwaS5jb21tb24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmlidXRlcxgOIAEo",
+            "CzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmlidXRlcxIc",
+            "ChBpbmhlcml0X2J1aWxkX2lkGA8gASgIQgIYARJbChtpbml0aWFsX3ZlcnNp",
+            "b25pbmdfYmVoYXZpb3IYECABKA4yNi50ZW1wb3JhbC5hcGkuZW51bXMudjEu",
+            "Q29udGludWVBc05ld1ZlcnNpb25pbmdCZWhhdmlvciKsAQokV29ya2Zsb3dU",
+            "YXNrU2NoZWR1bGVkRXZlbnRBdHRyaWJ1dGVzEjgKCnRhc2tfcXVldWUYASAB",
+            "KAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZRI5ChZz",
+            "dGFydF90b19jbG9zZV90aW1lb3V0GAIgASgLMhkuZ29vZ2xlLnByb3RvYnVm",
+            "LkR1cmF0aW9uEg8KB2F0dGVtcHQYAyABKAUi7gIKIldvcmtmbG93VGFza1N0",
+            "YXJ0ZWRFdmVudEF0dHJpYnV0ZXMSGgoSc2NoZWR1bGVkX2V2ZW50X2lkGAEg",
+            "ASgDEhAKCGlkZW50aXR5GAIgASgJEhIKCnJlcXVlc3RfaWQYAyABKAkSHwoX",
+            "c3VnZ2VzdF9jb250aW51ZV9hc19uZXcYBCABKAgSWgofc3VnZ2VzdF9jb250",
+            "aW51ZV9hc19uZXdfcmVhc29ucxgIIAMoDjIxLnRlbXBvcmFsLmFwaS5lbnVt",
+            "cy52MS5TdWdnZXN0Q29udGludWVBc05ld1JlYXNvbhIaChJoaXN0b3J5X3Np",
+            "emVfYnl0ZXMYBSABKAMSRgoOd29ya2VyX3ZlcnNpb24YBiABKAsyKi50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25TdGFtcEICGAESJQoZ",
+            "YnVpbGRfaWRfcmVkaXJlY3RfY291bnRlchgHIAEoA0ICGAEiggUKJFdvcmtm",
+            "bG93VGFza0NvbXBsZXRlZEV2ZW50QXR0cmlidXRlcxIaChJzY2hlZHVsZWRf",
+            "ZXZlbnRfaWQYASABKAMSGAoQc3RhcnRlZF9ldmVudF9pZBgCIAEoAxIQCghp",
+            "ZGVudGl0eRgDIAEoCRIbCg9iaW5hcnlfY2hlY2tzdW0YBCABKAlCAhgBEkYK",
+            "Dndvcmtlcl92ZXJzaW9uGAUgASgLMioudGVtcG9yYWwuYXBpLmNvbW1vbi52",
+            "MS5Xb3JrZXJWZXJzaW9uU3RhbXBCAhgBEkgKDHNka19tZXRhZGF0YRgGIAEo",
+            "CzIyLnRlbXBvcmFsLmFwaS5zZGsudjEuV29ya2Zsb3dUYXNrQ29tcGxldGVk",
+            "TWV0YWRhdGESQwoRbWV0ZXJpbmdfbWV0YWRhdGEYDSABKAsyKC50ZW1wb3Jh",
+            "bC5hcGkuY29tbW9uLnYxLk1ldGVyaW5nTWV0YWRhdGESPgoKZGVwbG95bWVu",
+            "dBgHIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1l",
+            "bnRCAhgBEkYKE3ZlcnNpb25pbmdfYmVoYXZpb3IYCCABKA4yKS50ZW1wb3Jh",
+            "bC5hcGkuZW51bXMudjEuVmVyc2lvbmluZ0JlaGF2aW9yEiUKGXdvcmtlcl9k",
+            "ZXBsb3ltZW50X3ZlcnNpb24YCSABKAlCAhgBEh4KFndvcmtlcl9kZXBsb3lt",
+            "ZW50X25hbWUYCiABKAkSTwoSZGVwbG95bWVudF92ZXJzaW9uGAsgASgLMjMu",
+            "dGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudFZl",
+            "cnNpb24ilQEKI1dvcmtmbG93VGFza1RpbWVkT3V0RXZlbnRBdHRyaWJ1dGVz",
+            "EhoKEnNjaGVkdWxlZF9ldmVudF9pZBgBIAEoAxIYChBzdGFydGVkX2V2ZW50",
+            "X2lkGAIgASgDEjgKDHRpbWVvdXRfdHlwZRgDIAEoDjIiLnRlbXBvcmFsLmFw",
+            "aS5lbnVtcy52MS5UaW1lb3V0VHlwZSKHAwohV29ya2Zsb3dUYXNrRmFpbGVk",
+            "RXZlbnRBdHRyaWJ1dGVzEhoKEnNjaGVkdWxlZF9ldmVudF9pZBgBIAEoAxIY",
+            "ChBzdGFydGVkX2V2ZW50X2lkGAIgASgDEj0KBWNhdXNlGAMgASgOMi4udGVt",
+            "cG9yYWwuYXBpLmVudW1zLnYxLldvcmtmbG93VGFza0ZhaWxlZENhdXNlEjEK",
+            "B2ZhaWx1cmUYBCABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWls",
+            "dXJlEhAKCGlkZW50aXR5GAUgASgJEhMKC2Jhc2VfcnVuX2lkGAYgASgJEhIK",
+            "Cm5ld19ydW5faWQYByABKAkSGgoSZm9ya19ldmVudF92ZXJzaW9uGAggASgD",
+            "EhsKD2JpbmFyeV9jaGVja3N1bRgJIAEoCUICGAESRgoOd29ya2VyX3ZlcnNp",
+            "b24YCiABKAsyKi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtlclZlcnNp",
+            "b25TdGFtcEICGAEiwgUKJEFjdGl2aXR5VGFza1NjaGVkdWxlZEV2ZW50QXR0",
+            "cmlidXRlcxITCgthY3Rpdml0eV9pZBgBIAEoCRI7Cg1hY3Rpdml0eV90eXBl",
+            "GAIgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5BY3Rpdml0eVR5cGUS",
+            "OAoKdGFza19xdWV1ZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS50YXNrcXVldWUu",
+            "djEuVGFza1F1ZXVlEi4KBmhlYWRlchgFIAEoCzIeLnRlbXBvcmFsLmFwaS5j",
+            "b21tb24udjEuSGVhZGVyEi8KBWlucHV0GAYgASgLMiAudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5QYXlsb2FkcxI8ChlzY2hlZHVsZV90b19jbG9zZV90aW1l",
+            "b3V0GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjwKGXNjaGVk",
+            "dWxlX3RvX3N0YXJ0X3RpbWVvdXQYCCABKAsyGS5nb29nbGUucHJvdG9idWYu",
+            "RHVyYXRpb24SOQoWc3RhcnRfdG9fY2xvc2VfdGltZW91dBgJIAEoCzIZLmdv",
+            "b2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI0ChFoZWFydGJlYXRfdGltZW91dBgK",
+            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIoCiB3b3JrZmxvd190",
+            "YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgLIAEoAxI5CgxyZXRyeV9wb2xpY3kY",
+            "DCABKAsyIy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5EiEK",
+            "FXVzZV93b3JrZmxvd19idWlsZF9pZBgNIAEoCEICGAESMgoIcHJpb3JpdHkY",
+            "DiABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5SgQIAxAE",
+            "Ip4CCiJBY3Rpdml0eVRhc2tTdGFydGVkRXZlbnRBdHRyaWJ1dGVzEhoKEnNj",
+            "aGVkdWxlZF9ldmVudF9pZBgBIAEoAxIQCghpZGVudGl0eRgCIAEoCRISCgpy",
+            "ZXF1ZXN0X2lkGAMgASgJEg8KB2F0dGVtcHQYBCABKAUSNgoMbGFzdF9mYWls",
+            "dXJlGAUgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRJG",
+            "Cg53b3JrZXJfdmVyc2lvbhgGIAEoCzIqLnRlbXBvcmFsLmFwaS5jb21tb24u",
+            "djEuV29ya2VyVmVyc2lvblN0YW1wQgIYARIlChlidWlsZF9pZF9yZWRpcmVj",
+            "dF9jb3VudGVyGAcgASgDQgIYASLoAQokQWN0aXZpdHlUYXNrQ29tcGxldGVk",
+            "RXZlbnRBdHRyaWJ1dGVzEjAKBnJlc3VsdBgBIAEoCzIgLnRlbXBvcmFsLmFw",
+            "aS5jb21tb24udjEuUGF5bG9hZHMSGgoSc2NoZWR1bGVkX2V2ZW50X2lkGAIg",
+            "ASgDEhgKEHN0YXJ0ZWRfZXZlbnRfaWQYAyABKAMSEAoIaWRlbnRpdHkYBCAB",
+            "KAkSRgoOd29ya2VyX3ZlcnNpb24YBSABKAsyKi50ZW1wb3JhbC5hcGkuY29t",
+            "bW9uLnYxLldvcmtlclZlcnNpb25TdGFtcEICGAEingIKIUFjdGl2aXR5VGFz",
+            "a0ZhaWxlZEV2ZW50QXR0cmlidXRlcxIxCgdmYWlsdXJlGAEgASgLMiAudGVt",
+            "cG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRIaChJzY2hlZHVsZWRfZXZl",
+            "bnRfaWQYAiABKAMSGAoQc3RhcnRlZF9ldmVudF9pZBgDIAEoAxIQCghpZGVu",
+            "dGl0eRgEIAEoCRI2CgtyZXRyeV9zdGF0ZRgFIAEoDjIhLnRlbXBvcmFsLmFw",
+            "aS5lbnVtcy52MS5SZXRyeVN0YXRlEkYKDndvcmtlcl92ZXJzaW9uGAYgASgL",
+            "MioudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9uU3RhbXBC",
+            "AhgBIsYBCiNBY3Rpdml0eVRhc2tUaW1lZE91dEV2ZW50QXR0cmlidXRlcxIx",
+            "CgdmYWlsdXJlGAEgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFp",
+            "bHVyZRIaChJzY2hlZHVsZWRfZXZlbnRfaWQYAiABKAMSGAoQc3RhcnRlZF9l",
+            "dmVudF9pZBgDIAEoAxI2CgtyZXRyeV9zdGF0ZRgEIAEoDjIhLnRlbXBvcmFs",
+            "LmFwaS5lbnVtcy52MS5SZXRyeVN0YXRlInIKKkFjdGl2aXR5VGFza0NhbmNl",
+            "bFJlcXVlc3RlZEV2ZW50QXR0cmlidXRlcxIaChJzY2hlZHVsZWRfZXZlbnRf",
+            "aWQYASABKAMSKAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQY",
+            "AiABKAMikgIKI0FjdGl2aXR5VGFza0NhbmNlbGVkRXZlbnRBdHRyaWJ1dGVz",
+            "EjEKB2RldGFpbHMYASABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBh",
+            "eWxvYWRzEigKIGxhdGVzdF9jYW5jZWxfcmVxdWVzdGVkX2V2ZW50X2lkGAIg",
+            "ASgDEhoKEnNjaGVkdWxlZF9ldmVudF9pZBgDIAEoAxIYChBzdGFydGVkX2V2",
+            "ZW50X2lkGAQgASgDEhAKCGlkZW50aXR5GAUgASgJEkYKDndvcmtlcl92ZXJz",
+            "aW9uGAYgASgLMioudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJz",
+            "aW9uU3RhbXBCAhgBIpMBChtUaW1lclN0YXJ0ZWRFdmVudEF0dHJpYnV0ZXMS",
+            "EAoIdGltZXJfaWQYASABKAkSOAoVc3RhcnRfdG9fZmlyZV90aW1lb3V0GAIg",
+            "ASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEigKIHdvcmtmbG93X3Rh",
+            "c2tfY29tcGxldGVkX2V2ZW50X2lkGAMgASgDIkcKGVRpbWVyRmlyZWRFdmVu",
+            "dEF0dHJpYnV0ZXMSEAoIdGltZXJfaWQYASABKAkSGAoQc3RhcnRlZF9ldmVu",
+            "dF9pZBgCIAEoAyKGAQocVGltZXJDYW5jZWxlZEV2ZW50QXR0cmlidXRlcxIQ",
+            "Cgh0aW1lcl9pZBgBIAEoCRIYChBzdGFydGVkX2V2ZW50X2lkGAIgASgDEigK",
+            "IHdvcmtmbG93X3Rhc2tfY29tcGxldGVkX2V2ZW50X2lkGAMgASgDEhAKCGlk",
+            "ZW50aXR5GAQgASgJIscBCi9Xb3JrZmxvd0V4ZWN1dGlvbkNhbmNlbFJlcXVl",
+            "c3RlZEV2ZW50QXR0cmlidXRlcxINCgVjYXVzZRgBIAEoCRIjChtleHRlcm5h",
+            "bF9pbml0aWF0ZWRfZXZlbnRfaWQYAiABKAMSTgobZXh0ZXJuYWxfd29ya2Zs",
+            "b3dfZXhlY3V0aW9uGAMgASgLMikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5X",
+            "b3JrZmxvd0V4ZWN1dGlvbhIQCghpZGVudGl0eRgEIAEoCSKHAQooV29ya2Zs",
+            "b3dFeGVjdXRpb25DYW5jZWxlZEV2ZW50QXR0cmlidXRlcxIoCiB3b3JrZmxv",
+            "d190YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgBIAEoAxIxCgdkZXRhaWxzGAIg",
+            "ASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcyLpAgodTWFy",
+            "a2VyUmVjb3JkZWRFdmVudEF0dHJpYnV0ZXMSEwoLbWFya2VyX25hbWUYASAB",
+            "KAkSVAoHZGV0YWlscxgCIAMoCzJDLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYx",
+            "Lk1hcmtlclJlY29yZGVkRXZlbnRBdHRyaWJ1dGVzLkRldGFpbHNFbnRyeRIo",
+            "CiB3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgDIAEoAxIuCgZo",
+            "ZWFkZXIYBCABKAsyHi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkhlYWRlchIx",
+            "CgdmYWlsdXJlGAUgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFp",
+            "bHVyZRpQCgxEZXRhaWxzRW50cnkSCwoDa2V5GAEgASgJEi8KBXZhbHVlGAIg",
+            "ASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkczoCOAEiqwIK",
+            "KFdvcmtmbG93RXhlY3V0aW9uU2lnbmFsZWRFdmVudEF0dHJpYnV0ZXMSEwoL",
+            "c2lnbmFsX25hbWUYASABKAkSLwoFaW5wdXQYAiABKAsyIC50ZW1wb3JhbC5h",
+            "cGkuY29tbW9uLnYxLlBheWxvYWRzEhAKCGlkZW50aXR5GAMgASgJEi4KBmhl",
+            "YWRlchgEIAEoCzIeLnRlbXBvcmFsLmFwaS5jb21tb24udjEuSGVhZGVyEicK",
+            "G3NraXBfZ2VuZXJhdGVfd29ya2Zsb3dfdGFzaxgFIAEoCEICGAESTgobZXh0",
+            "ZXJuYWxfd29ya2Zsb3dfZXhlY3V0aW9uGAYgASgLMikudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbiKBAQoqV29ya2Zsb3dFeGVj",
+            "dXRpb25UZXJtaW5hdGVkRXZlbnRBdHRyaWJ1dGVzEg4KBnJlYXNvbhgBIAEo",
+            "CRIxCgdkZXRhaWxzGAIgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Q",
+            "YXlsb2FkcxIQCghpZGVudGl0eRgDIAEoCSKcAgo+UmVxdWVzdENhbmNlbEV4",
+            "dGVybmFsV29ya2Zsb3dFeGVjdXRpb25Jbml0aWF0ZWRFdmVudEF0dHJpYnV0",
+            "ZXMSKAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQYASABKAMS",
+            "EQoJbmFtZXNwYWNlGAIgASgJEhQKDG5hbWVzcGFjZV9pZBgHIAEoCRJFChJ3",
+            "b3JrZmxvd19leGVjdXRpb24YAyABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9u",
+            "LnYxLldvcmtmbG93RXhlY3V0aW9uEhMKB2NvbnRyb2wYBCABKAlCAhgBEhsK",
+            "E2NoaWxkX3dvcmtmbG93X29ubHkYBSABKAgSDgoGcmVhc29uGAYgASgJItoC",
+            "CjtSZXF1ZXN0Q2FuY2VsRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkZhaWxl",
+            "ZEV2ZW50QXR0cmlidXRlcxJQCgVjYXVzZRgBIAEoDjJBLnRlbXBvcmFsLmFw",
+            "aS5lbnVtcy52MS5DYW5jZWxFeHRlcm5hbFdvcmtmbG93RXhlY3V0aW9uRmFp",
+            "bGVkQ2F1c2USKAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQY",
+            "AiABKAMSEQoJbmFtZXNwYWNlGAMgASgJEhQKDG5hbWVzcGFjZV9pZBgHIAEo",
+            "CRJFChJ3b3JrZmxvd19leGVjdXRpb24YBCABKAsyKS50ZW1wb3JhbC5hcGku",
+            "Y29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEhoKEmluaXRpYXRlZF9ldmVu",
+            "dF9pZBgFIAEoAxITCgdjb250cm9sGAYgASgJQgIYASLFAQo3RXh0ZXJuYWxX",
+            "b3JrZmxvd0V4ZWN1dGlvbkNhbmNlbFJlcXVlc3RlZEV2ZW50QXR0cmlidXRl",
+            "cxIaChJpbml0aWF0ZWRfZXZlbnRfaWQYASABKAMSEQoJbmFtZXNwYWNlGAIg",
+            "ASgJEhQKDG5hbWVzcGFjZV9pZBgEIAEoCRJFChJ3b3JrZmxvd19leGVjdXRp",
+            "b24YAyABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhl",
+            "Y3V0aW9uIvsCCjdTaWduYWxFeHRlcm5hbFdvcmtmbG93RXhlY3V0aW9uSW5p",
+            "dGlhdGVkRXZlbnRBdHRyaWJ1dGVzEigKIHdvcmtmbG93X3Rhc2tfY29tcGxl",
+            "dGVkX2V2ZW50X2lkGAEgASgDEhEKCW5hbWVzcGFjZRgCIAEoCRIUCgxuYW1l",
+            "c3BhY2VfaWQYCSABKAkSRQoSd29ya2Zsb3dfZXhlY3V0aW9uGAMgASgLMiku",
+            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhITCgtz",
+            "aWduYWxfbmFtZRgEIAEoCRIvCgVpbnB1dBgFIAEoCzIgLnRlbXBvcmFsLmFw",
+            "aS5jb21tb24udjEuUGF5bG9hZHMSEwoHY29udHJvbBgGIAEoCUICGAESGwoT",
+            "Y2hpbGRfd29ya2Zsb3dfb25seRgHIAEoCBIuCgZoZWFkZXIYCCABKAsyHi50",
+            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkhlYWRlciLTAgo0U2lnbmFsRXh0ZXJu",
+            "YWxXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50QXR0cmlidXRlcxJQCgVj",
+            "YXVzZRgBIAEoDjJBLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5TaWduYWxFeHRl",
+            "cm5hbFdvcmtmbG93RXhlY3V0aW9uRmFpbGVkQ2F1c2USKAogd29ya2Zsb3df",
+            "dGFza19jb21wbGV0ZWRfZXZlbnRfaWQYAiABKAMSEQoJbmFtZXNwYWNlGAMg",
+            "ASgJEhQKDG5hbWVzcGFjZV9pZBgHIAEoCRJFChJ3b3JrZmxvd19leGVjdXRp",
+            "b24YBCABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhl",
+            "Y3V0aW9uEhoKEmluaXRpYXRlZF9ldmVudF9pZBgFIAEoAxITCgdjb250cm9s",
+            "GAYgASgJQgIYASLTAQowRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvblNpZ25h",
+            "bGVkRXZlbnRBdHRyaWJ1dGVzEhoKEmluaXRpYXRlZF9ldmVudF9pZBgBIAEo",
+            "AxIRCgluYW1lc3BhY2UYAiABKAkSFAoMbmFtZXNwYWNlX2lkGAUgASgJEkUK",
+            "EndvcmtmbG93X2V4ZWN1dGlvbhgDIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21t",
+            "b24udjEuV29ya2Zsb3dFeGVjdXRpb24SEwoHY29udHJvbBgEIAEoCUICGAEi",
+            "ngEKLVVwc2VydFdvcmtmbG93U2VhcmNoQXR0cmlidXRlc0V2ZW50QXR0cmli",
+            "dXRlcxIoCiB3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgBIAEo",
+            "AxJDChFzZWFyY2hfYXR0cmlidXRlcxgCIAEoCzIoLnRlbXBvcmFsLmFwaS5j",
+            "b21tb24udjEuU2VhcmNoQXR0cmlidXRlcyKKAQopV29ya2Zsb3dQcm9wZXJ0",
+            "aWVzTW9kaWZpZWRFdmVudEF0dHJpYnV0ZXMSKAogd29ya2Zsb3dfdGFza19j",
+            "b21wbGV0ZWRfZXZlbnRfaWQYASABKAMSMwoNdXBzZXJ0ZWRfbWVtbxgCIAEo",
+            "CzIcLnRlbXBvcmFsLmFwaS5jb21tb24udjEuTWVtbyLoBwozU3RhcnRDaGls",
+            "ZFdvcmtmbG93RXhlY3V0aW9uSW5pdGlhdGVkRXZlbnRBdHRyaWJ1dGVzEhEK",
+            "CW5hbWVzcGFjZRgBIAEoCRIUCgxuYW1lc3BhY2VfaWQYEiABKAkSEwoLd29y",
+            "a2Zsb3dfaWQYAiABKAkSOwoNd29ya2Zsb3dfdHlwZRgDIAEoCzIkLnRlbXBv",
+            "cmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEjgKCnRhc2tfcXVldWUY",
+            "BCABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZRIv",
+            "CgVpbnB1dBgFIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9h",
+            "ZHMSPQoad29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVvdXQYBiABKAsyGS5nb29n",
+            "bGUucHJvdG9idWYuRHVyYXRpb24SNwoUd29ya2Zsb3dfcnVuX3RpbWVvdXQY",
+            "ByABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SOAoVd29ya2Zsb3df",
+            "dGFza190aW1lb3V0GAggASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9u",
+            "EkUKE3BhcmVudF9jbG9zZV9wb2xpY3kYCSABKA4yKC50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuUGFyZW50Q2xvc2VQb2xpY3kSEwoHY29udHJvbBgKIAEoCUIC",
+            "GAESKAogd29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQYCyABKAMS",
+            "TgoYd29ya2Zsb3dfaWRfcmV1c2VfcG9saWN5GAwgASgOMiwudGVtcG9yYWwu",
+            "YXBpLmVudW1zLnYxLldvcmtmbG93SWRSZXVzZVBvbGljeRI5CgxyZXRyeV9w",
+            "b2xpY3kYDSABKAsyIy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9s",
+            "aWN5EhUKDWNyb25fc2NoZWR1bGUYDiABKAkSLgoGaGVhZGVyGA8gASgLMh4u",
+            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5IZWFkZXISKgoEbWVtbxgQIAEoCzIc",
+            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmli",
+            "dXRlcxgRIAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0",
+            "cmlidXRlcxIcChBpbmhlcml0X2J1aWxkX2lkGBMgASgIQgIYARIyCghwcmlv",
+            "cml0eRgUIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUHJpb3JpdHki",
+            "1gIKMFN0YXJ0Q2hpbGRXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50QXR0",
+            "cmlidXRlcxIRCgluYW1lc3BhY2UYASABKAkSFAoMbmFtZXNwYWNlX2lkGAgg",
+            "ASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEjsKDXdvcmtmbG93X3R5cGUYAyAB",
+            "KAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93VHlwZRJMCgVj",
+            "YXVzZRgEIAEoDjI9LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5TdGFydENoaWxk",
+            "V29ya2Zsb3dFeGVjdXRpb25GYWlsZWRDYXVzZRITCgdjb250cm9sGAUgASgJ",
+            "QgIYARIaChJpbml0aWF0ZWRfZXZlbnRfaWQYBiABKAMSKAogd29ya2Zsb3df",
+            "dGFza19jb21wbGV0ZWRfZXZlbnRfaWQYByABKAMipwIKLENoaWxkV29ya2Zs",
+            "b3dFeGVjdXRpb25TdGFydGVkRXZlbnRBdHRyaWJ1dGVzEhEKCW5hbWVzcGFj",
+            "ZRgBIAEoCRIUCgxuYW1lc3BhY2VfaWQYBiABKAkSGgoSaW5pdGlhdGVkX2V2",
+            "ZW50X2lkGAIgASgDEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgDIAEoCzIpLnRl",
+            "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SOwoNd29y",
+            "a2Zsb3dfdHlwZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29y",
+            "a2Zsb3dUeXBlEi4KBmhlYWRlchgFIAEoCzIeLnRlbXBvcmFsLmFwaS5jb21t",
+            "b24udjEuSGVhZGVyIsUCCi5DaGlsZFdvcmtmbG93RXhlY3V0aW9uQ29tcGxl",
+            "dGVkRXZlbnRBdHRyaWJ1dGVzEjAKBnJlc3VsdBgBIAEoCzIgLnRlbXBvcmFs",
+            "LmFwaS5jb21tb24udjEuUGF5bG9hZHMSEQoJbmFtZXNwYWNlGAIgASgJEhQK",
+            "DG5hbWVzcGFjZV9pZBgHIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YAyAB",
             "KAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9u",
-            "IvsCCjdTaWduYWxFeHRlcm5hbFdvcmtmbG93RXhlY3V0aW9uSW5pdGlhdGVk",
-            "RXZlbnRBdHRyaWJ1dGVzEigKIHdvcmtmbG93X3Rhc2tfY29tcGxldGVkX2V2",
-            "ZW50X2lkGAEgASgDEhEKCW5hbWVzcGFjZRgCIAEoCRIUCgxuYW1lc3BhY2Vf",
-            "aWQYCSABKAkSRQoSd29ya2Zsb3dfZXhlY3V0aW9uGAMgASgLMikudGVtcG9y",
-            "YWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhITCgtzaWduYWxf",
-            "bmFtZRgEIAEoCRIvCgVpbnB1dBgFIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21t",
-            "b24udjEuUGF5bG9hZHMSEwoHY29udHJvbBgGIAEoCUICGAESGwoTY2hpbGRf",
-            "d29ya2Zsb3dfb25seRgHIAEoCBIuCgZoZWFkZXIYCCABKAsyHi50ZW1wb3Jh",
-            "bC5hcGkuY29tbW9uLnYxLkhlYWRlciLTAgo0U2lnbmFsRXh0ZXJuYWxXb3Jr",
-            "Zmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50QXR0cmlidXRlcxJQCgVjYXVzZRgB",
-            "IAEoDjJBLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5TaWduYWxFeHRlcm5hbFdv",
-            "cmtmbG93RXhlY3V0aW9uRmFpbGVkQ2F1c2USKAogd29ya2Zsb3dfdGFza19j",
-            "b21wbGV0ZWRfZXZlbnRfaWQYAiABKAMSEQoJbmFtZXNwYWNlGAMgASgJEhQK",
-            "DG5hbWVzcGFjZV9pZBgHIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YBCAB",
-            "KAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9u",
-            "EhoKEmluaXRpYXRlZF9ldmVudF9pZBgFIAEoAxITCgdjb250cm9sGAYgASgJ",
-            "QgIYASLTAQowRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvblNpZ25hbGVkRXZl",
-            "bnRBdHRyaWJ1dGVzEhoKEmluaXRpYXRlZF9ldmVudF9pZBgBIAEoAxIRCglu",
-            "YW1lc3BhY2UYAiABKAkSFAoMbmFtZXNwYWNlX2lkGAUgASgJEkUKEndvcmtm",
-            "bG93X2V4ZWN1dGlvbhgDIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
-            "V29ya2Zsb3dFeGVjdXRpb24SEwoHY29udHJvbBgEIAEoCUICGAEingEKLVVw",
-            "c2VydFdvcmtmbG93U2VhcmNoQXR0cmlidXRlc0V2ZW50QXR0cmlidXRlcxIo",
-            "CiB3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgBIAEoAxJDChFz",
-            "ZWFyY2hfYXR0cmlidXRlcxgCIAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24u",
-            "djEuU2VhcmNoQXR0cmlidXRlcyKKAQopV29ya2Zsb3dQcm9wZXJ0aWVzTW9k",
-            "aWZpZWRFdmVudEF0dHJpYnV0ZXMSKAogd29ya2Zsb3dfdGFza19jb21wbGV0",
-            "ZWRfZXZlbnRfaWQYASABKAMSMwoNdXBzZXJ0ZWRfbWVtbxgCIAEoCzIcLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuTWVtbyLoBwozU3RhcnRDaGlsZFdvcmtm",
-            "bG93RXhlY3V0aW9uSW5pdGlhdGVkRXZlbnRBdHRyaWJ1dGVzEhEKCW5hbWVz",
-            "cGFjZRgBIAEoCRIUCgxuYW1lc3BhY2VfaWQYEiABKAkSEwoLd29ya2Zsb3df",
-            "aWQYAiABKAkSOwoNd29ya2Zsb3dfdHlwZRgDIAEoCzIkLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuV29ya2Zsb3dUeXBlEjgKCnRhc2tfcXVldWUYBCABKAsy",
-            "JC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZRIvCgVpbnB1",
-            "dBgFIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSPQoa",
-            "d29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVvdXQYBiABKAsyGS5nb29nbGUucHJv",
-            "dG9idWYuRHVyYXRpb24SNwoUd29ya2Zsb3dfcnVuX3RpbWVvdXQYByABKAsy",
-            "GS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SOAoVd29ya2Zsb3dfdGFza190",
-            "aW1lb3V0GAggASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEkUKE3Bh",
-            "cmVudF9jbG9zZV9wb2xpY3kYCSABKA4yKC50ZW1wb3JhbC5hcGkuZW51bXMu",
-            "djEuUGFyZW50Q2xvc2VQb2xpY3kSEwoHY29udHJvbBgKIAEoCUICGAESKAog",
-            "d29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfaWQYCyABKAMSTgoYd29y",
-            "a2Zsb3dfaWRfcmV1c2VfcG9saWN5GAwgASgOMiwudGVtcG9yYWwuYXBpLmVu",
-            "dW1zLnYxLldvcmtmbG93SWRSZXVzZVBvbGljeRI5CgxyZXRyeV9wb2xpY3kY",
-            "DSABKAsyIy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5EhUK",
-            "DWNyb25fc2NoZWR1bGUYDiABKAkSLgoGaGVhZGVyGA8gASgLMh4udGVtcG9y",
-            "YWwuYXBpLmNvbW1vbi52MS5IZWFkZXISKgoEbWVtbxgQIAEoCzIcLnRlbXBv",
-            "cmFsLmFwaS5jb21tb24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmlidXRlcxgR",
-            "IAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmlidXRl",
-            "cxIcChBpbmhlcml0X2J1aWxkX2lkGBMgASgIQgIYARIyCghwcmlvcml0eRgU",
-            "IAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUHJpb3JpdHki1gIKMFN0",
-            "YXJ0Q2hpbGRXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50QXR0cmlidXRl",
-            "cxIRCgluYW1lc3BhY2UYASABKAkSFAoMbmFtZXNwYWNlX2lkGAggASgJEhMK",
-            "C3dvcmtmbG93X2lkGAIgASgJEjsKDXdvcmtmbG93X3R5cGUYAyABKAsyJC50",
-            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93VHlwZRJMCgVjYXVzZRgE",
-            "IAEoDjI9LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5TdGFydENoaWxkV29ya2Zs",
-            "b3dFeGVjdXRpb25GYWlsZWRDYXVzZRITCgdjb250cm9sGAUgASgJQgIYARIa",
-            "ChJpbml0aWF0ZWRfZXZlbnRfaWQYBiABKAMSKAogd29ya2Zsb3dfdGFza19j",
-            "b21wbGV0ZWRfZXZlbnRfaWQYByABKAMipwIKLENoaWxkV29ya2Zsb3dFeGVj",
-            "dXRpb25TdGFydGVkRXZlbnRBdHRyaWJ1dGVzEhEKCW5hbWVzcGFjZRgBIAEo",
-            "CRIUCgxuYW1lc3BhY2VfaWQYBiABKAkSGgoSaW5pdGlhdGVkX2V2ZW50X2lk",
-            "GAIgASgDEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgDIAEoCzIpLnRlbXBvcmFs",
-            "LmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SOwoNd29ya2Zsb3df",
-            "dHlwZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dU",
-            "eXBlEi4KBmhlYWRlchgFIAEoCzIeLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
-            "SGVhZGVyIsUCCi5DaGlsZFdvcmtmbG93RXhlY3V0aW9uQ29tcGxldGVkRXZl",
-            "bnRBdHRyaWJ1dGVzEjAKBnJlc3VsdBgBIAEoCzIgLnRlbXBvcmFsLmFwaS5j",
-            "b21tb24udjEuUGF5bG9hZHMSEQoJbmFtZXNwYWNlGAIgASgJEhQKDG5hbWVz",
-            "cGFjZV9pZBgHIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YAyABKAsyKS50",
-            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEjsKDXdv",
-            "cmtmbG93X3R5cGUYBCABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldv",
-            "cmtmbG93VHlwZRIaChJpbml0aWF0ZWRfZXZlbnRfaWQYBSABKAMSGAoQc3Rh",
-            "cnRlZF9ldmVudF9pZBgGIAEoAyL7AgorQ2hpbGRXb3JrZmxvd0V4ZWN1dGlv",
-            "bkZhaWxlZEV2ZW50QXR0cmlidXRlcxIxCgdmYWlsdXJlGAEgASgLMiAudGVt",
-            "cG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRIRCgluYW1lc3BhY2UYAiAB",
-            "KAkSFAoMbmFtZXNwYWNlX2lkGAggASgJEkUKEndvcmtmbG93X2V4ZWN1dGlv",
-            "bhgDIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVj",
-            "dXRpb24SOwoNd29ya2Zsb3dfdHlwZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS5j",
-            "b21tb24udjEuV29ya2Zsb3dUeXBlEhoKEmluaXRpYXRlZF9ldmVudF9pZBgF",
-            "IAEoAxIYChBzdGFydGVkX2V2ZW50X2lkGAYgASgDEjYKC3JldHJ5X3N0YXRl",
-            "GAcgASgOMiEudGVtcG9yYWwuYXBpLmVudW1zLnYxLlJldHJ5U3RhdGUixQIK",
-            "LUNoaWxkV29ya2Zsb3dFeGVjdXRpb25DYW5jZWxlZEV2ZW50QXR0cmlidXRl",
-            "cxIxCgdkZXRhaWxzGAEgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Q",
-            "YXlsb2FkcxIRCgluYW1lc3BhY2UYAiABKAkSFAoMbmFtZXNwYWNlX2lkGAcg",
-            "ASgJEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgDIAEoCzIpLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SOwoNd29ya2Zsb3dfdHlw",
-            "ZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBl",
-            "EhoKEmluaXRpYXRlZF9ldmVudF9pZBgFIAEoAxIYChBzdGFydGVkX2V2ZW50",
-            "X2lkGAYgASgDIsoCCi1DaGlsZFdvcmtmbG93RXhlY3V0aW9uVGltZWRPdXRF",
-            "dmVudEF0dHJpYnV0ZXMSEQoJbmFtZXNwYWNlGAEgASgJEhQKDG5hbWVzcGFj",
-            "ZV9pZBgHIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YAiABKAsyKS50ZW1w",
-            "b3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEjsKDXdvcmtm",
-            "bG93X3R5cGUYAyABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtm",
-            "bG93VHlwZRIaChJpbml0aWF0ZWRfZXZlbnRfaWQYBCABKAMSGAoQc3RhcnRl",
-            "ZF9ldmVudF9pZBgFIAEoAxI2CgtyZXRyeV9zdGF0ZRgGIAEoDjIhLnRlbXBv",
-            "cmFsLmFwaS5lbnVtcy52MS5SZXRyeVN0YXRlIpQCCi9DaGlsZFdvcmtmbG93",
-            "RXhlY3V0aW9uVGVybWluYXRlZEV2ZW50QXR0cmlidXRlcxIRCgluYW1lc3Bh",
-            "Y2UYASABKAkSFAoMbmFtZXNwYWNlX2lkGAYgASgJEkUKEndvcmtmbG93X2V4",
-            "ZWN1dGlvbhgCIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zs",
-            "b3dFeGVjdXRpb24SOwoNd29ya2Zsb3dfdHlwZRgDIAEoCzIkLnRlbXBvcmFs",
+            "EjsKDXdvcmtmbG93X3R5cGUYBCABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9u",
+            "LnYxLldvcmtmbG93VHlwZRIaChJpbml0aWF0ZWRfZXZlbnRfaWQYBSABKAMS",
+            "GAoQc3RhcnRlZF9ldmVudF9pZBgGIAEoAyL7AgorQ2hpbGRXb3JrZmxvd0V4",
+            "ZWN1dGlvbkZhaWxlZEV2ZW50QXR0cmlidXRlcxIxCgdmYWlsdXJlGAEgASgL",
+            "MiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZRIRCgluYW1lc3Bh",
+            "Y2UYAiABKAkSFAoMbmFtZXNwYWNlX2lkGAggASgJEkUKEndvcmtmbG93X2V4",
+            "ZWN1dGlvbhgDIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zs",
+            "b3dFeGVjdXRpb24SOwoNd29ya2Zsb3dfdHlwZRgEIAEoCzIkLnRlbXBvcmFs",
             "LmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEhoKEmluaXRpYXRlZF9ldmVu",
-            "dF9pZBgEIAEoAxIYChBzdGFydGVkX2V2ZW50X2lkGAUgASgDIoQCCi5Xb3Jr",
-            "Zmxvd0V4ZWN1dGlvbk9wdGlvbnNVcGRhdGVkRXZlbnRBdHRyaWJ1dGVzEkkK",
-            "E3ZlcnNpb25pbmdfb3ZlcnJpZGUYASABKAsyLC50ZW1wb3JhbC5hcGkud29y",
-            "a2Zsb3cudjEuVmVyc2lvbmluZ092ZXJyaWRlEiEKGXVuc2V0X3ZlcnNpb25p",
-            "bmdfb3ZlcnJpZGUYAiABKAgSGwoTYXR0YWNoZWRfcmVxdWVzdF9pZBgDIAEo",
-            "CRJHCh1hdHRhY2hlZF9jb21wbGV0aW9uX2NhbGxiYWNrcxgEIAMoCzIgLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuQ2FsbGJhY2siwAIKM1dvcmtmbG93UHJv",
-            "cGVydGllc01vZGlmaWVkRXh0ZXJuYWxseUV2ZW50QXR0cmlidXRlcxIWCg5u",
-            "ZXdfdGFza19xdWV1ZRgBIAEoCRI8ChluZXdfd29ya2Zsb3dfdGFza190aW1l",
-            "b3V0GAIgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjsKGG5ld193",
-            "b3JrZmxvd19ydW5fdGltZW91dBgDIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5E",
-            "dXJhdGlvbhJBCh5uZXdfd29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVvdXQYBCAB",
-            "KAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SMwoNdXBzZXJ0ZWRfbWVt",
-            "bxgFIAEoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24udjEuTWVtbyKQAQozQWN0",
-            "aXZpdHlQcm9wZXJ0aWVzTW9kaWZpZWRFeHRlcm5hbGx5RXZlbnRBdHRyaWJ1",
-            "dGVzEhoKEnNjaGVkdWxlZF9ldmVudF9pZBgBIAEoAxI9ChBuZXdfcmV0cnlf",
-            "cG9saWN5GAIgASgLMiMudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5SZXRyeVBv",
-            "bGljeSLcAQouV29ya2Zsb3dFeGVjdXRpb25VcGRhdGVBY2NlcHRlZEV2ZW50",
-            "QXR0cmlidXRlcxIcChRwcm90b2NvbF9pbnN0YW5jZV9pZBgBIAEoCRIjChth",
-            "Y2NlcHRlZF9yZXF1ZXN0X21lc3NhZ2VfaWQYAiABKAkSLAokYWNjZXB0ZWRf",
-            "cmVxdWVzdF9zZXF1ZW5jaW5nX2V2ZW50X2lkGAMgASgDEjkKEGFjY2VwdGVk",
-            "X3JlcXVlc3QYBCABKAsyHy50ZW1wb3JhbC5hcGkudXBkYXRlLnYxLlJlcXVl",
-            "c3QiqgEKL1dvcmtmbG93RXhlY3V0aW9uVXBkYXRlQ29tcGxldGVkRXZlbnRB",
-            "dHRyaWJ1dGVzEioKBG1ldGEYASABKAsyHC50ZW1wb3JhbC5hcGkudXBkYXRl",
-            "LnYxLk1ldGESGQoRYWNjZXB0ZWRfZXZlbnRfaWQYAyABKAMSMAoHb3V0Y29t",
-            "ZRgCIAEoCzIfLnRlbXBvcmFsLmFwaS51cGRhdGUudjEuT3V0Y29tZSKPAgou",
-            "V29ya2Zsb3dFeGVjdXRpb25VcGRhdGVSZWplY3RlZEV2ZW50QXR0cmlidXRl",
-            "cxIcChRwcm90b2NvbF9pbnN0YW5jZV9pZBgBIAEoCRIjChtyZWplY3RlZF9y",
-            "ZXF1ZXN0X21lc3NhZ2VfaWQYAiABKAkSLAokcmVqZWN0ZWRfcmVxdWVzdF9z",
-            "ZXF1ZW5jaW5nX2V2ZW50X2lkGAMgASgDEjkKEHJlamVjdGVkX3JlcXVlc3QY",
-            "BCABKAsyHy50ZW1wb3JhbC5hcGkudXBkYXRlLnYxLlJlcXVlc3QSMQoHZmFp",
-            "bHVyZRgFIAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUi",
-            "pAEKLldvcmtmbG93RXhlY3V0aW9uVXBkYXRlQWRtaXR0ZWRFdmVudEF0dHJp",
-            "YnV0ZXMSMAoHcmVxdWVzdBgBIAEoCzIfLnRlbXBvcmFsLmFwaS51cGRhdGUu",
-            "djEuUmVxdWVzdBJACgZvcmlnaW4YAiABKA4yMC50ZW1wb3JhbC5hcGkuZW51",
-            "bXMudjEuVXBkYXRlQWRtaXR0ZWRFdmVudE9yaWdpbiK7AwomTmV4dXNPcGVy",
+            "dF9pZBgFIAEoAxIYChBzdGFydGVkX2V2ZW50X2lkGAYgASgDEjYKC3JldHJ5",
+            "X3N0YXRlGAcgASgOMiEudGVtcG9yYWwuYXBpLmVudW1zLnYxLlJldHJ5U3Rh",
+            "dGUixQIKLUNoaWxkV29ya2Zsb3dFeGVjdXRpb25DYW5jZWxlZEV2ZW50QXR0",
+            "cmlidXRlcxIxCgdkZXRhaWxzGAEgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1v",
+            "bi52MS5QYXlsb2FkcxIRCgluYW1lc3BhY2UYAiABKAkSFAoMbmFtZXNwYWNl",
+            "X2lkGAcgASgJEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgDIAEoCzIpLnRlbXBv",
+            "cmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SOwoNd29ya2Zs",
+            "b3dfdHlwZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zs",
+            "b3dUeXBlEhoKEmluaXRpYXRlZF9ldmVudF9pZBgFIAEoAxIYChBzdGFydGVk",
+            "X2V2ZW50X2lkGAYgASgDIsoCCi1DaGlsZFdvcmtmbG93RXhlY3V0aW9uVGlt",
+            "ZWRPdXRFdmVudEF0dHJpYnV0ZXMSEQoJbmFtZXNwYWNlGAEgASgJEhQKDG5h",
+            "bWVzcGFjZV9pZBgHIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YAiABKAsy",
+            "KS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEjsK",
+            "DXdvcmtmbG93X3R5cGUYAyABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
+            "LldvcmtmbG93VHlwZRIaChJpbml0aWF0ZWRfZXZlbnRfaWQYBCABKAMSGAoQ",
+            "c3RhcnRlZF9ldmVudF9pZBgFIAEoAxI2CgtyZXRyeV9zdGF0ZRgGIAEoDjIh",
+            "LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5SZXRyeVN0YXRlIpQCCi9DaGlsZFdv",
+            "cmtmbG93RXhlY3V0aW9uVGVybWluYXRlZEV2ZW50QXR0cmlidXRlcxIRCglu",
+            "YW1lc3BhY2UYASABKAkSFAoMbmFtZXNwYWNlX2lkGAYgASgJEkUKEndvcmtm",
+            "bG93X2V4ZWN1dGlvbhgCIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "V29ya2Zsb3dFeGVjdXRpb24SOwoNd29ya2Zsb3dfdHlwZRgDIAEoCzIkLnRl",
+            "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEhoKEmluaXRpYXRl",
+            "ZF9ldmVudF9pZBgEIAEoAxIYChBzdGFydGVkX2V2ZW50X2lkGAUgASgDIsoC",
+            "Ci5Xb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnNVcGRhdGVkRXZlbnRBdHRyaWJ1",
+            "dGVzEkkKE3ZlcnNpb25pbmdfb3ZlcnJpZGUYASABKAsyLC50ZW1wb3JhbC5h",
+            "cGkud29ya2Zsb3cudjEuVmVyc2lvbmluZ092ZXJyaWRlEiEKGXVuc2V0X3Zl",
+            "cnNpb25pbmdfb3ZlcnJpZGUYAiABKAgSGwoTYXR0YWNoZWRfcmVxdWVzdF9p",
+            "ZBgDIAEoCRJHCh1hdHRhY2hlZF9jb21wbGV0aW9uX2NhbGxiYWNrcxgEIAMo",
+            "CzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuQ2FsbGJhY2sSEAoIaWRlbnRp",
+            "dHkYBSABKAkSMgoIcHJpb3JpdHkYBiABKAsyIC50ZW1wb3JhbC5hcGkuY29t",
+            "bW9uLnYxLlByaW9yaXR5IsACCjNXb3JrZmxvd1Byb3BlcnRpZXNNb2RpZmll",
+            "ZEV4dGVybmFsbHlFdmVudEF0dHJpYnV0ZXMSFgoObmV3X3Rhc2tfcXVldWUY",
+            "ASABKAkSPAoZbmV3X3dvcmtmbG93X3Rhc2tfdGltZW91dBgCIAEoCzIZLmdv",
+            "b2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI7ChhuZXdfd29ya2Zsb3dfcnVuX3Rp",
+            "bWVvdXQYAyABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SQQoebmV3",
+            "X3dvcmtmbG93X2V4ZWN1dGlvbl90aW1lb3V0GAQgASgLMhkuZ29vZ2xlLnBy",
+            "b3RvYnVmLkR1cmF0aW9uEjMKDXVwc2VydGVkX21lbW8YBSABKAsyHC50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLk1lbW8ikAEKM0FjdGl2aXR5UHJvcGVydGll",
+            "c01vZGlmaWVkRXh0ZXJuYWxseUV2ZW50QXR0cmlidXRlcxIaChJzY2hlZHVs",
+            "ZWRfZXZlbnRfaWQYASABKAMSPQoQbmV3X3JldHJ5X3BvbGljeRgCIAEoCzIj",
+            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuUmV0cnlQb2xpY3ki3AEKLldvcmtm",
+            "bG93RXhlY3V0aW9uVXBkYXRlQWNjZXB0ZWRFdmVudEF0dHJpYnV0ZXMSHAoU",
+            "cHJvdG9jb2xfaW5zdGFuY2VfaWQYASABKAkSIwobYWNjZXB0ZWRfcmVxdWVz",
+            "dF9tZXNzYWdlX2lkGAIgASgJEiwKJGFjY2VwdGVkX3JlcXVlc3Rfc2VxdWVu",
+            "Y2luZ19ldmVudF9pZBgDIAEoAxI5ChBhY2NlcHRlZF9yZXF1ZXN0GAQgASgL",
+            "Mh8udGVtcG9yYWwuYXBpLnVwZGF0ZS52MS5SZXF1ZXN0IqoBCi9Xb3JrZmxv",
+            "d0V4ZWN1dGlvblVwZGF0ZUNvbXBsZXRlZEV2ZW50QXR0cmlidXRlcxIqCgRt",
+            "ZXRhGAEgASgLMhwudGVtcG9yYWwuYXBpLnVwZGF0ZS52MS5NZXRhEhkKEWFj",
+            "Y2VwdGVkX2V2ZW50X2lkGAMgASgDEjAKB291dGNvbWUYAiABKAsyHy50ZW1w",
+            "b3JhbC5hcGkudXBkYXRlLnYxLk91dGNvbWUijwIKLldvcmtmbG93RXhlY3V0",
+            "aW9uVXBkYXRlUmVqZWN0ZWRFdmVudEF0dHJpYnV0ZXMSHAoUcHJvdG9jb2xf",
+            "aW5zdGFuY2VfaWQYASABKAkSIwobcmVqZWN0ZWRfcmVxdWVzdF9tZXNzYWdl",
+            "X2lkGAIgASgJEiwKJHJlamVjdGVkX3JlcXVlc3Rfc2VxdWVuY2luZ19ldmVu",
+            "dF9pZBgDIAEoAxI5ChByZWplY3RlZF9yZXF1ZXN0GAQgASgLMh8udGVtcG9y",
+            "YWwuYXBpLnVwZGF0ZS52MS5SZXF1ZXN0EjEKB2ZhaWx1cmUYBSABKAsyIC50",
+            "ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlIqQBCi5Xb3JrZmxvd0V4",
+            "ZWN1dGlvblVwZGF0ZUFkbWl0dGVkRXZlbnRBdHRyaWJ1dGVzEjAKB3JlcXVl",
+            "c3QYASABKAsyHy50ZW1wb3JhbC5hcGkudXBkYXRlLnYxLlJlcXVlc3QSQAoG",
+            "b3JpZ2luGAIgASgOMjAudGVtcG9yYWwuYXBpLmVudW1zLnYxLlVwZGF0ZUFk",
+            "bWl0dGVkRXZlbnRPcmlnaW4iXgomV29ya2Zsb3dFeGVjdXRpb25QYXVzZWRF",
+            "dmVudEF0dHJpYnV0ZXMSEAoIaWRlbnRpdHkYASABKAkSDgoGcmVhc29uGAIg",
+            "ASgJEhIKCnJlcXVlc3RfaWQYAyABKAkiYAooV29ya2Zsb3dFeGVjdXRpb25V",
+            "bnBhdXNlZEV2ZW50QXR0cmlidXRlcxIQCghpZGVudGl0eRgBIAEoCRIOCgZy",
+            "ZWFzb24YAiABKAkSEgoKcmVxdWVzdF9pZBgDIAEoCSK0BAomTmV4dXNPcGVy",
             "YXRpb25TY2hlZHVsZWRFdmVudEF0dHJpYnV0ZXMSEAoIZW5kcG9pbnQYASAB",
             "KAkSDwoHc2VydmljZRgCIAEoCRIRCglvcGVyYXRpb24YAyABKAkSLgoFaW5w",
             "dXQYBCABKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQSPAoZ",
@@ -392,218 +404,226 @@ namespace Temporalio.Api.History.V1 {
             "bC5hcGkuaGlzdG9yeS52MS5OZXh1c09wZXJhdGlvblNjaGVkdWxlZEV2ZW50",
             "QXR0cmlidXRlcy5OZXh1c0hlYWRlckVudHJ5EigKIHdvcmtmbG93X3Rhc2tf",
             "Y29tcGxldGVkX2V2ZW50X2lkGAcgASgDEhIKCnJlcXVlc3RfaWQYCCABKAkS",
-            "EwoLZW5kcG9pbnRfaWQYCSABKAkaMgoQTmV4dXNIZWFkZXJFbnRyeRILCgNr",
-            "ZXkYASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIokBCiROZXh1c09wZXJhdGlv",
-            "blN0YXJ0ZWRFdmVudEF0dHJpYnV0ZXMSGgoSc2NoZWR1bGVkX2V2ZW50X2lk",
-            "GAEgASgDEhgKDG9wZXJhdGlvbl9pZBgDIAEoCUICGAESEgoKcmVxdWVzdF9p",
-            "ZBgEIAEoCRIXCg9vcGVyYXRpb25fdG9rZW4YBSABKAkiiQEKJk5leHVzT3Bl",
-            "cmF0aW9uQ29tcGxldGVkRXZlbnRBdHRyaWJ1dGVzEhoKEnNjaGVkdWxlZF9l",
-            "dmVudF9pZBgBIAEoAxIvCgZyZXN1bHQYAiABKAsyHy50ZW1wb3JhbC5hcGku",
-            "Y29tbW9uLnYxLlBheWxvYWQSEgoKcmVxdWVzdF9pZBgDIAEoCSKIAQojTmV4",
-            "dXNPcGVyYXRpb25GYWlsZWRFdmVudEF0dHJpYnV0ZXMSGgoSc2NoZWR1bGVk",
-            "X2V2ZW50X2lkGAEgASgDEjEKB2ZhaWx1cmUYAiABKAsyIC50ZW1wb3JhbC5h",
-            "cGkuZmFpbHVyZS52MS5GYWlsdXJlEhIKCnJlcXVlc3RfaWQYAyABKAkiigEK",
-            "JU5leHVzT3BlcmF0aW9uVGltZWRPdXRFdmVudEF0dHJpYnV0ZXMSGgoSc2No",
-            "ZWR1bGVkX2V2ZW50X2lkGAEgASgDEjEKB2ZhaWx1cmUYAiABKAsyIC50ZW1w",
-            "b3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEhIKCnJlcXVlc3RfaWQYAyAB",
-            "KAkiigEKJU5leHVzT3BlcmF0aW9uQ2FuY2VsZWRFdmVudEF0dHJpYnV0ZXMS",
-            "GgoSc2NoZWR1bGVkX2V2ZW50X2lkGAEgASgDEjEKB2ZhaWx1cmUYAiABKAsy",
-            "IC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEhIKCnJlcXVlc3Rf",
-            "aWQYAyABKAkidAosTmV4dXNPcGVyYXRpb25DYW5jZWxSZXF1ZXN0ZWRFdmVu",
-            "dEF0dHJpYnV0ZXMSGgoSc2NoZWR1bGVkX2V2ZW50X2lkGAEgASgDEigKIHdv",
-            "cmtmbG93X3Rhc2tfY29tcGxldGVkX2V2ZW50X2lkGAIgASgDIpcBCjNOZXh1",
-            "c09wZXJhdGlvbkNhbmNlbFJlcXVlc3RDb21wbGV0ZWRFdmVudEF0dHJpYnV0",
-            "ZXMSGgoScmVxdWVzdGVkX2V2ZW50X2lkGAEgASgDEigKIHdvcmtmbG93X3Rh",
-            "c2tfY29tcGxldGVkX2V2ZW50X2lkGAIgASgDEhoKEnNjaGVkdWxlZF9ldmVu",
-            "dF9pZBgDIAEoAyLHAQowTmV4dXNPcGVyYXRpb25DYW5jZWxSZXF1ZXN0RmFp",
-            "bGVkRXZlbnRBdHRyaWJ1dGVzEhoKEnJlcXVlc3RlZF9ldmVudF9pZBgBIAEo",
-            "AxIoCiB3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9ldmVudF9pZBgCIAEoAxIx",
-            "CgdmYWlsdXJlGAMgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFp",
-            "bHVyZRIaChJzY2hlZHVsZWRfZXZlbnRfaWQYBCABKAMivjsKDEhpc3RvcnlF",
-            "dmVudBIQCghldmVudF9pZBgBIAEoAxIuCgpldmVudF90aW1lGAIgASgLMhou",
-            "Z29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI0CgpldmVudF90eXBlGAMgASgO",
-            "MiAudGVtcG9yYWwuYXBpLmVudW1zLnYxLkV2ZW50VHlwZRIPCgd2ZXJzaW9u",
-            "GAQgASgDEg8KB3Rhc2tfaWQYBSABKAMSGgoRd29ya2VyX21heV9pZ25vcmUY",
-            "rAIgASgIEjkKDXVzZXJfbWV0YWRhdGEYrQIgASgLMiEudGVtcG9yYWwuYXBp",
-            "LnNkay52MS5Vc2VyTWV0YWRhdGESLAoFbGlua3MYrgIgAygLMhwudGVtcG9y",
-            "YWwuYXBpLmNvbW1vbi52MS5MaW5rEncKK3dvcmtmbG93X2V4ZWN1dGlvbl9z",
-            "dGFydGVkX2V2ZW50X2F0dHJpYnV0ZXMYBiABKAsyQC50ZW1wb3JhbC5hcGku",
-            "aGlzdG9yeS52MS5Xb3JrZmxvd0V4ZWN1dGlvblN0YXJ0ZWRFdmVudEF0dHJp",
-            "YnV0ZXNIABJ7Ci13b3JrZmxvd19leGVjdXRpb25fY29tcGxldGVkX2V2ZW50",
-            "X2F0dHJpYnV0ZXMYByABKAsyQi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5X",
-            "b3JrZmxvd0V4ZWN1dGlvbkNvbXBsZXRlZEV2ZW50QXR0cmlidXRlc0gAEnUK",
-            "KndvcmtmbG93X2V4ZWN1dGlvbl9mYWlsZWRfZXZlbnRfYXR0cmlidXRlcxgI",
-            "IAEoCzI/LnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtmbG93RXhlY3V0",
-            "aW9uRmFpbGVkRXZlbnRBdHRyaWJ1dGVzSAASegotd29ya2Zsb3dfZXhlY3V0",
-            "aW9uX3RpbWVkX291dF9ldmVudF9hdHRyaWJ1dGVzGAkgASgLMkEudGVtcG9y",
-            "YWwuYXBpLmhpc3RvcnkudjEuV29ya2Zsb3dFeGVjdXRpb25UaW1lZE91dEV2",
-            "ZW50QXR0cmlidXRlc0gAEnEKKHdvcmtmbG93X3Rhc2tfc2NoZWR1bGVkX2V2",
-            "ZW50X2F0dHJpYnV0ZXMYCiABKAsyPS50ZW1wb3JhbC5hcGkuaGlzdG9yeS52",
-            "MS5Xb3JrZmxvd1Rhc2tTY2hlZHVsZWRFdmVudEF0dHJpYnV0ZXNIABJtCiZ3",
-            "b3JrZmxvd190YXNrX3N0YXJ0ZWRfZXZlbnRfYXR0cmlidXRlcxgLIAEoCzI7",
-            "LnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtmbG93VGFza1N0YXJ0ZWRF",
-            "dmVudEF0dHJpYnV0ZXNIABJxCih3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9l",
-            "dmVudF9hdHRyaWJ1dGVzGAwgASgLMj0udGVtcG9yYWwuYXBpLmhpc3Rvcnku",
-            "djEuV29ya2Zsb3dUYXNrQ29tcGxldGVkRXZlbnRBdHRyaWJ1dGVzSAAScAoo",
-            "d29ya2Zsb3dfdGFza190aW1lZF9vdXRfZXZlbnRfYXR0cmlidXRlcxgNIAEo",
-            "CzI8LnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtmbG93VGFza1RpbWVk",
-            "T3V0RXZlbnRBdHRyaWJ1dGVzSAASawold29ya2Zsb3dfdGFza19mYWlsZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxgOIAEoCzI6LnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLldvcmtmbG93VGFza0ZhaWxlZEV2ZW50QXR0cmlidXRlc0gAEnEKKGFj",
-            "dGl2aXR5X3Rhc2tfc2NoZWR1bGVkX2V2ZW50X2F0dHJpYnV0ZXMYDyABKAsy",
-            "PS50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5BY3Rpdml0eVRhc2tTY2hlZHVs",
-            "ZWRFdmVudEF0dHJpYnV0ZXNIABJtCiZhY3Rpdml0eV90YXNrX3N0YXJ0ZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxgQIAEoCzI7LnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLkFjdGl2aXR5VGFza1N0YXJ0ZWRFdmVudEF0dHJpYnV0ZXNIABJxCihh",
-            "Y3Rpdml0eV90YXNrX2NvbXBsZXRlZF9ldmVudF9hdHRyaWJ1dGVzGBEgASgL",
-            "Mj0udGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuQWN0aXZpdHlUYXNrQ29tcGxl",
-            "dGVkRXZlbnRBdHRyaWJ1dGVzSAASawolYWN0aXZpdHlfdGFza19mYWlsZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxgSIAEoCzI6LnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLkFjdGl2aXR5VGFza0ZhaWxlZEV2ZW50QXR0cmlidXRlc0gAEnAKKGFj",
-            "dGl2aXR5X3Rhc2tfdGltZWRfb3V0X2V2ZW50X2F0dHJpYnV0ZXMYEyABKAsy",
-            "PC50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5BY3Rpdml0eVRhc2tUaW1lZE91",
-            "dEV2ZW50QXR0cmlidXRlc0gAEl4KHnRpbWVyX3N0YXJ0ZWRfZXZlbnRfYXR0",
-            "cmlidXRlcxgUIAEoCzI0LnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLlRpbWVy",
-            "U3RhcnRlZEV2ZW50QXR0cmlidXRlc0gAEloKHHRpbWVyX2ZpcmVkX2V2ZW50",
-            "X2F0dHJpYnV0ZXMYFSABKAsyMi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5U",
-            "aW1lckZpcmVkRXZlbnRBdHRyaWJ1dGVzSAASfgovYWN0aXZpdHlfdGFza19j",
-            "YW5jZWxfcmVxdWVzdGVkX2V2ZW50X2F0dHJpYnV0ZXMYFiABKAsyQy50ZW1w",
-            "b3JhbC5hcGkuaGlzdG9yeS52MS5BY3Rpdml0eVRhc2tDYW5jZWxSZXF1ZXN0",
-            "ZWRFdmVudEF0dHJpYnV0ZXNIABJvCidhY3Rpdml0eV90YXNrX2NhbmNlbGVk",
-            "X2V2ZW50X2F0dHJpYnV0ZXMYFyABKAsyPC50ZW1wb3JhbC5hcGkuaGlzdG9y",
-            "eS52MS5BY3Rpdml0eVRhc2tDYW5jZWxlZEV2ZW50QXR0cmlidXRlc0gAEmAK",
-            "H3RpbWVyX2NhbmNlbGVkX2V2ZW50X2F0dHJpYnV0ZXMYGCABKAsyNS50ZW1w",
-            "b3JhbC5hcGkuaGlzdG9yeS52MS5UaW1lckNhbmNlbGVkRXZlbnRBdHRyaWJ1",
-            "dGVzSAASYgogbWFya2VyX3JlY29yZGVkX2V2ZW50X2F0dHJpYnV0ZXMYGSAB",
-            "KAsyNi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5NYXJrZXJSZWNvcmRlZEV2",
-            "ZW50QXR0cmlidXRlc0gAEnkKLHdvcmtmbG93X2V4ZWN1dGlvbl9zaWduYWxl",
-            "ZF9ldmVudF9hdHRyaWJ1dGVzGBogASgLMkEudGVtcG9yYWwuYXBpLmhpc3Rv",
-            "cnkudjEuV29ya2Zsb3dFeGVjdXRpb25TaWduYWxlZEV2ZW50QXR0cmlidXRl",
-            "c0gAEn0KLndvcmtmbG93X2V4ZWN1dGlvbl90ZXJtaW5hdGVkX2V2ZW50X2F0",
-            "dHJpYnV0ZXMYGyABKAsyQy50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3Jr",
-            "Zmxvd0V4ZWN1dGlvblRlcm1pbmF0ZWRFdmVudEF0dHJpYnV0ZXNIABKIAQo0",
-            "d29ya2Zsb3dfZXhlY3V0aW9uX2NhbmNlbF9yZXF1ZXN0ZWRfZXZlbnRfYXR0",
-            "cmlidXRlcxgcIAEoCzJILnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtm",
-            "bG93RXhlY3V0aW9uQ2FuY2VsUmVxdWVzdGVkRXZlbnRBdHRyaWJ1dGVzSAAS",
-            "eQosd29ya2Zsb3dfZXhlY3V0aW9uX2NhbmNlbGVkX2V2ZW50X2F0dHJpYnV0",
-            "ZXMYHSABKAsyQS50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd0V4",
-            "ZWN1dGlvbkNhbmNlbGVkRXZlbnRBdHRyaWJ1dGVzSAASqAEKRXJlcXVlc3Rf",
-            "Y2FuY2VsX2V4dGVybmFsX3dvcmtmbG93X2V4ZWN1dGlvbl9pbml0aWF0ZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxgeIAEoCzJXLnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLlJlcXVlc3RDYW5jZWxFeHRlcm5hbFdvcmtmbG93RXhlY3V0aW9uSW5p",
-            "dGlhdGVkRXZlbnRBdHRyaWJ1dGVzSAASogEKQnJlcXVlc3RfY2FuY2VsX2V4",
-            "dGVybmFsX3dvcmtmbG93X2V4ZWN1dGlvbl9mYWlsZWRfZXZlbnRfYXR0cmli",
-            "dXRlcxgfIAEoCzJULnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLlJlcXVlc3RD",
-            "YW5jZWxFeHRlcm5hbFdvcmtmbG93RXhlY3V0aW9uRmFpbGVkRXZlbnRBdHRy",
-            "aWJ1dGVzSAASmQEKPWV4dGVybmFsX3dvcmtmbG93X2V4ZWN1dGlvbl9jYW5j",
-            "ZWxfcmVxdWVzdGVkX2V2ZW50X2F0dHJpYnV0ZXMYICABKAsyUC50ZW1wb3Jh",
-            "bC5hcGkuaGlzdG9yeS52MS5FeHRlcm5hbFdvcmtmbG93RXhlY3V0aW9uQ2Fu",
-            "Y2VsUmVxdWVzdGVkRXZlbnRBdHRyaWJ1dGVzSAAShwEKNHdvcmtmbG93X2V4",
-            "ZWN1dGlvbl9jb250aW51ZWRfYXNfbmV3X2V2ZW50X2F0dHJpYnV0ZXMYISAB",
-            "KAsyRy50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd0V4ZWN1dGlv",
-            "bkNvbnRpbnVlZEFzTmV3RXZlbnRBdHRyaWJ1dGVzSAASkQEKOXN0YXJ0X2No",
-            "aWxkX3dvcmtmbG93X2V4ZWN1dGlvbl9pbml0aWF0ZWRfZXZlbnRfYXR0cmli",
-            "dXRlcxgiIAEoCzJMLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLlN0YXJ0Q2hp",
-            "bGRXb3JrZmxvd0V4ZWN1dGlvbkluaXRpYXRlZEV2ZW50QXR0cmlidXRlc0gA",
-            "EosBCjZzdGFydF9jaGlsZF93b3JrZmxvd19leGVjdXRpb25fZmFpbGVkX2V2",
-            "ZW50X2F0dHJpYnV0ZXMYIyABKAsySS50ZW1wb3JhbC5hcGkuaGlzdG9yeS52",
-            "MS5TdGFydENoaWxkV29ya2Zsb3dFeGVjdXRpb25GYWlsZWRFdmVudEF0dHJp",
-            "YnV0ZXNIABKCAQoxY2hpbGRfd29ya2Zsb3dfZXhlY3V0aW9uX3N0YXJ0ZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxgkIAEoCzJFLnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLkNoaWxkV29ya2Zsb3dFeGVjdXRpb25TdGFydGVkRXZlbnRBdHRyaWJ1",
-            "dGVzSAAShgEKM2NoaWxkX3dvcmtmbG93X2V4ZWN1dGlvbl9jb21wbGV0ZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxglIAEoCzJHLnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLkNoaWxkV29ya2Zsb3dFeGVjdXRpb25Db21wbGV0ZWRFdmVudEF0dHJp",
-            "YnV0ZXNIABKAAQowY2hpbGRfd29ya2Zsb3dfZXhlY3V0aW9uX2ZhaWxlZF9l",
-            "dmVudF9hdHRyaWJ1dGVzGCYgASgLMkQudGVtcG9yYWwuYXBpLmhpc3Rvcnku",
-            "djEuQ2hpbGRXb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50QXR0cmlidXRl",
-            "c0gAEoQBCjJjaGlsZF93b3JrZmxvd19leGVjdXRpb25fY2FuY2VsZWRfZXZl",
-            "bnRfYXR0cmlidXRlcxgnIAEoCzJGLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYx",
-            "LkNoaWxkV29ya2Zsb3dFeGVjdXRpb25DYW5jZWxlZEV2ZW50QXR0cmlidXRl",
-            "c0gAEoUBCjNjaGlsZF93b3JrZmxvd19leGVjdXRpb25fdGltZWRfb3V0X2V2",
-            "ZW50X2F0dHJpYnV0ZXMYKCABKAsyRi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52",
-            "MS5DaGlsZFdvcmtmbG93RXhlY3V0aW9uVGltZWRPdXRFdmVudEF0dHJpYnV0",
-            "ZXNIABKIAQo0Y2hpbGRfd29ya2Zsb3dfZXhlY3V0aW9uX3Rlcm1pbmF0ZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxgpIAEoCzJILnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLkNoaWxkV29ya2Zsb3dFeGVjdXRpb25UZXJtaW5hdGVkRXZlbnRBdHRy",
-            "aWJ1dGVzSAASmQEKPXNpZ25hbF9leHRlcm5hbF93b3JrZmxvd19leGVjdXRp",
-            "b25faW5pdGlhdGVkX2V2ZW50X2F0dHJpYnV0ZXMYKiABKAsyUC50ZW1wb3Jh",
-            "bC5hcGkuaGlzdG9yeS52MS5TaWduYWxFeHRlcm5hbFdvcmtmbG93RXhlY3V0",
-            "aW9uSW5pdGlhdGVkRXZlbnRBdHRyaWJ1dGVzSAASkwEKOnNpZ25hbF9leHRl",
-            "cm5hbF93b3JrZmxvd19leGVjdXRpb25fZmFpbGVkX2V2ZW50X2F0dHJpYnV0",
-            "ZXMYKyABKAsyTS50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5TaWduYWxFeHRl",
-            "cm5hbFdvcmtmbG93RXhlY3V0aW9uRmFpbGVkRXZlbnRBdHRyaWJ1dGVzSAAS",
-            "igEKNWV4dGVybmFsX3dvcmtmbG93X2V4ZWN1dGlvbl9zaWduYWxlZF9ldmVu",
-            "dF9hdHRyaWJ1dGVzGCwgASgLMkkudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEu",
-            "RXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvblNpZ25hbGVkRXZlbnRBdHRyaWJ1",
-            "dGVzSAAShAEKMnVwc2VydF93b3JrZmxvd19zZWFyY2hfYXR0cmlidXRlc19l",
-            "dmVudF9hdHRyaWJ1dGVzGC0gASgLMkYudGVtcG9yYWwuYXBpLmhpc3Rvcnku",
-            "djEuVXBzZXJ0V29ya2Zsb3dTZWFyY2hBdHRyaWJ1dGVzRXZlbnRBdHRyaWJ1",
-            "dGVzSAAShgEKM3dvcmtmbG93X2V4ZWN1dGlvbl91cGRhdGVfYWNjZXB0ZWRf",
-            "ZXZlbnRfYXR0cmlidXRlcxguIAEoCzJHLnRlbXBvcmFsLmFwaS5oaXN0b3J5",
-            "LnYxLldvcmtmbG93RXhlY3V0aW9uVXBkYXRlQWNjZXB0ZWRFdmVudEF0dHJp",
-            "YnV0ZXNIABKGAQozd29ya2Zsb3dfZXhlY3V0aW9uX3VwZGF0ZV9yZWplY3Rl",
-            "ZF9ldmVudF9hdHRyaWJ1dGVzGC8gASgLMkcudGVtcG9yYWwuYXBpLmhpc3Rv",
-            "cnkudjEuV29ya2Zsb3dFeGVjdXRpb25VcGRhdGVSZWplY3RlZEV2ZW50QXR0",
-            "cmlidXRlc0gAEogBCjR3b3JrZmxvd19leGVjdXRpb25fdXBkYXRlX2NvbXBs",
-            "ZXRlZF9ldmVudF9hdHRyaWJ1dGVzGDAgASgLMkgudGVtcG9yYWwuYXBpLmhp",
-            "c3RvcnkudjEuV29ya2Zsb3dFeGVjdXRpb25VcGRhdGVDb21wbGV0ZWRFdmVu",
-            "dEF0dHJpYnV0ZXNIABKQAQo4d29ya2Zsb3dfcHJvcGVydGllc19tb2RpZmll",
-            "ZF9leHRlcm5hbGx5X2V2ZW50X2F0dHJpYnV0ZXMYMSABKAsyTC50ZW1wb3Jh",
-            "bC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd1Byb3BlcnRpZXNNb2RpZmllZEV4",
-            "dGVybmFsbHlFdmVudEF0dHJpYnV0ZXNIABKQAQo4YWN0aXZpdHlfcHJvcGVy",
-            "dGllc19tb2RpZmllZF9leHRlcm5hbGx5X2V2ZW50X2F0dHJpYnV0ZXMYMiAB",
-            "KAsyTC50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5BY3Rpdml0eVByb3BlcnRp",
-            "ZXNNb2RpZmllZEV4dGVybmFsbHlFdmVudEF0dHJpYnV0ZXNIABJ7Ci13b3Jr",
-            "Zmxvd19wcm9wZXJ0aWVzX21vZGlmaWVkX2V2ZW50X2F0dHJpYnV0ZXMYMyAB",
-            "KAsyQi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd1Byb3BlcnRp",
-            "ZXNNb2RpZmllZEV2ZW50QXR0cmlidXRlc0gAEoYBCjN3b3JrZmxvd19leGVj",
-            "dXRpb25fdXBkYXRlX2FkbWl0dGVkX2V2ZW50X2F0dHJpYnV0ZXMYNCABKAsy",
-            "Ry50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd0V4ZWN1dGlvblVw",
-            "ZGF0ZUFkbWl0dGVkRXZlbnRBdHRyaWJ1dGVzSAASdQoqbmV4dXNfb3BlcmF0",
-            "aW9uX3NjaGVkdWxlZF9ldmVudF9hdHRyaWJ1dGVzGDUgASgLMj8udGVtcG9y",
-            "YWwuYXBpLmhpc3RvcnkudjEuTmV4dXNPcGVyYXRpb25TY2hlZHVsZWRFdmVu",
-            "dEF0dHJpYnV0ZXNIABJxCihuZXh1c19vcGVyYXRpb25fc3RhcnRlZF9ldmVu",
-            "dF9hdHRyaWJ1dGVzGDYgASgLMj0udGVtcG9yYWwuYXBpLmhpc3RvcnkudjEu",
-            "TmV4dXNPcGVyYXRpb25TdGFydGVkRXZlbnRBdHRyaWJ1dGVzSAASdQoqbmV4",
-            "dXNfb3BlcmF0aW9uX2NvbXBsZXRlZF9ldmVudF9hdHRyaWJ1dGVzGDcgASgL",
-            "Mj8udGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuTmV4dXNPcGVyYXRpb25Db21w",
-            "bGV0ZWRFdmVudEF0dHJpYnV0ZXNIABJvCiduZXh1c19vcGVyYXRpb25fZmFp",
-            "bGVkX2V2ZW50X2F0dHJpYnV0ZXMYOCABKAsyPC50ZW1wb3JhbC5hcGkuaGlz",
-            "dG9yeS52MS5OZXh1c09wZXJhdGlvbkZhaWxlZEV2ZW50QXR0cmlidXRlc0gA",
-            "EnMKKW5leHVzX29wZXJhdGlvbl9jYW5jZWxlZF9ldmVudF9hdHRyaWJ1dGVz",
-            "GDkgASgLMj4udGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuTmV4dXNPcGVyYXRp",
-            "b25DYW5jZWxlZEV2ZW50QXR0cmlidXRlc0gAEnQKKm5leHVzX29wZXJhdGlv",
-            "bl90aW1lZF9vdXRfZXZlbnRfYXR0cmlidXRlcxg6IAEoCzI+LnRlbXBvcmFs",
-            "LmFwaS5oaXN0b3J5LnYxLk5leHVzT3BlcmF0aW9uVGltZWRPdXRFdmVudEF0",
-            "dHJpYnV0ZXNIABKCAQoxbmV4dXNfb3BlcmF0aW9uX2NhbmNlbF9yZXF1ZXN0",
-            "ZWRfZXZlbnRfYXR0cmlidXRlcxg7IAEoCzJFLnRlbXBvcmFsLmFwaS5oaXN0",
-            "b3J5LnYxLk5leHVzT3BlcmF0aW9uQ2FuY2VsUmVxdWVzdGVkRXZlbnRBdHRy",
-            "aWJ1dGVzSAAShgEKM3dvcmtmbG93X2V4ZWN1dGlvbl9vcHRpb25zX3VwZGF0",
-            "ZWRfZXZlbnRfYXR0cmlidXRlcxg8IAEoCzJHLnRlbXBvcmFsLmFwaS5oaXN0",
-            "b3J5LnYxLldvcmtmbG93RXhlY3V0aW9uT3B0aW9uc1VwZGF0ZWRFdmVudEF0",
-            "dHJpYnV0ZXNIABKRAQo5bmV4dXNfb3BlcmF0aW9uX2NhbmNlbF9yZXF1ZXN0",
-            "X2NvbXBsZXRlZF9ldmVudF9hdHRyaWJ1dGVzGD0gASgLMkwudGVtcG9yYWwu",
-            "YXBpLmhpc3RvcnkudjEuTmV4dXNPcGVyYXRpb25DYW5jZWxSZXF1ZXN0Q29t",
-            "cGxldGVkRXZlbnRBdHRyaWJ1dGVzSAASiwEKNm5leHVzX29wZXJhdGlvbl9j",
-            "YW5jZWxfcmVxdWVzdF9mYWlsZWRfZXZlbnRfYXR0cmlidXRlcxg+IAEoCzJJ",
-            "LnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLk5leHVzT3BlcmF0aW9uQ2FuY2Vs",
-            "UmVxdWVzdEZhaWxlZEV2ZW50QXR0cmlidXRlc0gAQgwKCmF0dHJpYnV0ZXMi",
-            "QAoHSGlzdG9yeRI1CgZldmVudHMYASADKAsyJS50ZW1wb3JhbC5hcGkuaGlz",
-            "dG9yeS52MS5IaXN0b3J5RXZlbnRCjgEKGmlvLnRlbXBvcmFsLmFwaS5oaXN0",
-            "b3J5LnYxQgxNZXNzYWdlUHJvdG9QAVolZ28udGVtcG9yYWwuaW8vYXBpL2hp",
-            "c3RvcnkvdjE7aGlzdG9yeaoCGVRlbXBvcmFsaW8uQXBpLkhpc3RvcnkuVjHq",
-            "AhxUZW1wb3JhbGlvOjpBcGk6Okhpc3Rvcnk6OlYxYgZwcm90bzM="));
+            "EwoLZW5kcG9pbnRfaWQYCSABKAkSPAoZc2NoZWR1bGVfdG9fc3RhcnRfdGlt",
+            "ZW91dBgKIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI5ChZzdGFy",
+            "dF90b19jbG9zZV90aW1lb3V0GAsgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1",
+            "cmF0aW9uGjIKEE5leHVzSGVhZGVyRW50cnkSCwoDa2V5GAEgASgJEg0KBXZh",
+            "bHVlGAIgASgJOgI4ASKJAQokTmV4dXNPcGVyYXRpb25TdGFydGVkRXZlbnRB",
+            "dHRyaWJ1dGVzEhoKEnNjaGVkdWxlZF9ldmVudF9pZBgBIAEoAxIYCgxvcGVy",
+            "YXRpb25faWQYAyABKAlCAhgBEhIKCnJlcXVlc3RfaWQYBCABKAkSFwoPb3Bl",
+            "cmF0aW9uX3Rva2VuGAUgASgJIokBCiZOZXh1c09wZXJhdGlvbkNvbXBsZXRl",
+            "ZEV2ZW50QXR0cmlidXRlcxIaChJzY2hlZHVsZWRfZXZlbnRfaWQYASABKAMS",
+            "LwoGcmVzdWx0GAIgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXls",
+            "b2FkEhIKCnJlcXVlc3RfaWQYAyABKAkiiAEKI05leHVzT3BlcmF0aW9uRmFp",
+            "bGVkRXZlbnRBdHRyaWJ1dGVzEhoKEnNjaGVkdWxlZF9ldmVudF9pZBgBIAEo",
+            "AxIxCgdmYWlsdXJlGAIgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEu",
+            "RmFpbHVyZRISCgpyZXF1ZXN0X2lkGAMgASgJIooBCiVOZXh1c09wZXJhdGlv",
+            "blRpbWVkT3V0RXZlbnRBdHRyaWJ1dGVzEhoKEnNjaGVkdWxlZF9ldmVudF9p",
+            "ZBgBIAEoAxIxCgdmYWlsdXJlGAIgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1",
+            "cmUudjEuRmFpbHVyZRISCgpyZXF1ZXN0X2lkGAMgASgJIooBCiVOZXh1c09w",
+            "ZXJhdGlvbkNhbmNlbGVkRXZlbnRBdHRyaWJ1dGVzEhoKEnNjaGVkdWxlZF9l",
+            "dmVudF9pZBgBIAEoAxIxCgdmYWlsdXJlGAIgASgLMiAudGVtcG9yYWwuYXBp",
+            "LmZhaWx1cmUudjEuRmFpbHVyZRISCgpyZXF1ZXN0X2lkGAMgASgJInQKLE5l",
+            "eHVzT3BlcmF0aW9uQ2FuY2VsUmVxdWVzdGVkRXZlbnRBdHRyaWJ1dGVzEhoK",
+            "EnNjaGVkdWxlZF9ldmVudF9pZBgBIAEoAxIoCiB3b3JrZmxvd190YXNrX2Nv",
+            "bXBsZXRlZF9ldmVudF9pZBgCIAEoAyKXAQozTmV4dXNPcGVyYXRpb25DYW5j",
+            "ZWxSZXF1ZXN0Q29tcGxldGVkRXZlbnRBdHRyaWJ1dGVzEhoKEnJlcXVlc3Rl",
+            "ZF9ldmVudF9pZBgBIAEoAxIoCiB3b3JrZmxvd190YXNrX2NvbXBsZXRlZF9l",
+            "dmVudF9pZBgCIAEoAxIaChJzY2hlZHVsZWRfZXZlbnRfaWQYAyABKAMixwEK",
+            "ME5leHVzT3BlcmF0aW9uQ2FuY2VsUmVxdWVzdEZhaWxlZEV2ZW50QXR0cmli",
+            "dXRlcxIaChJyZXF1ZXN0ZWRfZXZlbnRfaWQYASABKAMSKAogd29ya2Zsb3df",
+            "dGFza19jb21wbGV0ZWRfZXZlbnRfaWQYAiABKAMSMQoHZmFpbHVyZRgDIAEo",
+            "CzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSGgoSc2NoZWR1",
+            "bGVkX2V2ZW50X2lkGAQgASgDIrA9CgxIaXN0b3J5RXZlbnQSEAoIZXZlbnRf",
+            "aWQYASABKAMSLgoKZXZlbnRfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1",
+            "Zi5UaW1lc3RhbXASNAoKZXZlbnRfdHlwZRgDIAEoDjIgLnRlbXBvcmFsLmFw",
+            "aS5lbnVtcy52MS5FdmVudFR5cGUSDwoHdmVyc2lvbhgEIAEoAxIPCgd0YXNr",
+            "X2lkGAUgASgDEhoKEXdvcmtlcl9tYXlfaWdub3JlGKwCIAEoCBI5Cg11c2Vy",
+            "X21ldGFkYXRhGK0CIAEoCzIhLnRlbXBvcmFsLmFwaS5zZGsudjEuVXNlck1l",
+            "dGFkYXRhEiwKBWxpbmtzGK4CIAMoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24u",
+            "djEuTGluaxJ3Cit3b3JrZmxvd19leGVjdXRpb25fc3RhcnRlZF9ldmVudF9h",
+            "dHRyaWJ1dGVzGAYgASgLMkAudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuV29y",
+            "a2Zsb3dFeGVjdXRpb25TdGFydGVkRXZlbnRBdHRyaWJ1dGVzSAASewotd29y",
+            "a2Zsb3dfZXhlY3V0aW9uX2NvbXBsZXRlZF9ldmVudF9hdHRyaWJ1dGVzGAcg",
+            "ASgLMkIudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuV29ya2Zsb3dFeGVjdXRp",
+            "b25Db21wbGV0ZWRFdmVudEF0dHJpYnV0ZXNIABJ1Cip3b3JrZmxvd19leGVj",
+            "dXRpb25fZmFpbGVkX2V2ZW50X2F0dHJpYnV0ZXMYCCABKAsyPy50ZW1wb3Jh",
+            "bC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50",
+            "QXR0cmlidXRlc0gAEnoKLXdvcmtmbG93X2V4ZWN1dGlvbl90aW1lZF9vdXRf",
+            "ZXZlbnRfYXR0cmlidXRlcxgJIAEoCzJBLnRlbXBvcmFsLmFwaS5oaXN0b3J5",
+            "LnYxLldvcmtmbG93RXhlY3V0aW9uVGltZWRPdXRFdmVudEF0dHJpYnV0ZXNI",
+            "ABJxCih3b3JrZmxvd190YXNrX3NjaGVkdWxlZF9ldmVudF9hdHRyaWJ1dGVz",
+            "GAogASgLMj0udGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuV29ya2Zsb3dUYXNr",
+            "U2NoZWR1bGVkRXZlbnRBdHRyaWJ1dGVzSAASbQomd29ya2Zsb3dfdGFza19z",
+            "dGFydGVkX2V2ZW50X2F0dHJpYnV0ZXMYCyABKAsyOy50ZW1wb3JhbC5hcGku",
+            "aGlzdG9yeS52MS5Xb3JrZmxvd1Rhc2tTdGFydGVkRXZlbnRBdHRyaWJ1dGVz",
+            "SAAScQood29ya2Zsb3dfdGFza19jb21wbGV0ZWRfZXZlbnRfYXR0cmlidXRl",
+            "cxgMIAEoCzI9LnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtmbG93VGFz",
+            "a0NvbXBsZXRlZEV2ZW50QXR0cmlidXRlc0gAEnAKKHdvcmtmbG93X3Rhc2tf",
+            "dGltZWRfb3V0X2V2ZW50X2F0dHJpYnV0ZXMYDSABKAsyPC50ZW1wb3JhbC5h",
+            "cGkuaGlzdG9yeS52MS5Xb3JrZmxvd1Rhc2tUaW1lZE91dEV2ZW50QXR0cmli",
+            "dXRlc0gAEmsKJXdvcmtmbG93X3Rhc2tfZmFpbGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYDiABKAsyOi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd1Rh",
+            "c2tGYWlsZWRFdmVudEF0dHJpYnV0ZXNIABJxCihhY3Rpdml0eV90YXNrX3Nj",
+            "aGVkdWxlZF9ldmVudF9hdHRyaWJ1dGVzGA8gASgLMj0udGVtcG9yYWwuYXBp",
+            "Lmhpc3RvcnkudjEuQWN0aXZpdHlUYXNrU2NoZWR1bGVkRXZlbnRBdHRyaWJ1",
+            "dGVzSAASbQomYWN0aXZpdHlfdGFza19zdGFydGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYECABKAsyOy50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5BY3Rpdml0eVRh",
+            "c2tTdGFydGVkRXZlbnRBdHRyaWJ1dGVzSAAScQooYWN0aXZpdHlfdGFza19j",
+            "b21wbGV0ZWRfZXZlbnRfYXR0cmlidXRlcxgRIAEoCzI9LnRlbXBvcmFsLmFw",
+            "aS5oaXN0b3J5LnYxLkFjdGl2aXR5VGFza0NvbXBsZXRlZEV2ZW50QXR0cmli",
+            "dXRlc0gAEmsKJWFjdGl2aXR5X3Rhc2tfZmFpbGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYEiABKAsyOi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5BY3Rpdml0eVRh",
+            "c2tGYWlsZWRFdmVudEF0dHJpYnV0ZXNIABJwCihhY3Rpdml0eV90YXNrX3Rp",
+            "bWVkX291dF9ldmVudF9hdHRyaWJ1dGVzGBMgASgLMjwudGVtcG9yYWwuYXBp",
+            "Lmhpc3RvcnkudjEuQWN0aXZpdHlUYXNrVGltZWRPdXRFdmVudEF0dHJpYnV0",
+            "ZXNIABJeCh50aW1lcl9zdGFydGVkX2V2ZW50X2F0dHJpYnV0ZXMYFCABKAsy",
+            "NC50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5UaW1lclN0YXJ0ZWRFdmVudEF0",
+            "dHJpYnV0ZXNIABJaChx0aW1lcl9maXJlZF9ldmVudF9hdHRyaWJ1dGVzGBUg",
+            "ASgLMjIudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuVGltZXJGaXJlZEV2ZW50",
+            "QXR0cmlidXRlc0gAEn4KL2FjdGl2aXR5X3Rhc2tfY2FuY2VsX3JlcXVlc3Rl",
+            "ZF9ldmVudF9hdHRyaWJ1dGVzGBYgASgLMkMudGVtcG9yYWwuYXBpLmhpc3Rv",
+            "cnkudjEuQWN0aXZpdHlUYXNrQ2FuY2VsUmVxdWVzdGVkRXZlbnRBdHRyaWJ1",
+            "dGVzSAASbwonYWN0aXZpdHlfdGFza19jYW5jZWxlZF9ldmVudF9hdHRyaWJ1",
+            "dGVzGBcgASgLMjwudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuQWN0aXZpdHlU",
+            "YXNrQ2FuY2VsZWRFdmVudEF0dHJpYnV0ZXNIABJgCh90aW1lcl9jYW5jZWxl",
+            "ZF9ldmVudF9hdHRyaWJ1dGVzGBggASgLMjUudGVtcG9yYWwuYXBpLmhpc3Rv",
+            "cnkudjEuVGltZXJDYW5jZWxlZEV2ZW50QXR0cmlidXRlc0gAEmIKIG1hcmtl",
+            "cl9yZWNvcmRlZF9ldmVudF9hdHRyaWJ1dGVzGBkgASgLMjYudGVtcG9yYWwu",
+            "YXBpLmhpc3RvcnkudjEuTWFya2VyUmVjb3JkZWRFdmVudEF0dHJpYnV0ZXNI",
+            "ABJ5Cix3b3JrZmxvd19leGVjdXRpb25fc2lnbmFsZWRfZXZlbnRfYXR0cmli",
+            "dXRlcxgaIAEoCzJBLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtmbG93",
+            "RXhlY3V0aW9uU2lnbmFsZWRFdmVudEF0dHJpYnV0ZXNIABJ9Ci53b3JrZmxv",
+            "d19leGVjdXRpb25fdGVybWluYXRlZF9ldmVudF9hdHRyaWJ1dGVzGBsgASgL",
+            "MkMudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuV29ya2Zsb3dFeGVjdXRpb25U",
+            "ZXJtaW5hdGVkRXZlbnRBdHRyaWJ1dGVzSAASiAEKNHdvcmtmbG93X2V4ZWN1",
+            "dGlvbl9jYW5jZWxfcmVxdWVzdGVkX2V2ZW50X2F0dHJpYnV0ZXMYHCABKAsy",
+            "SC50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd0V4ZWN1dGlvbkNh",
+            "bmNlbFJlcXVlc3RlZEV2ZW50QXR0cmlidXRlc0gAEnkKLHdvcmtmbG93X2V4",
+            "ZWN1dGlvbl9jYW5jZWxlZF9ldmVudF9hdHRyaWJ1dGVzGB0gASgLMkEudGVt",
+            "cG9yYWwuYXBpLmhpc3RvcnkudjEuV29ya2Zsb3dFeGVjdXRpb25DYW5jZWxl",
+            "ZEV2ZW50QXR0cmlidXRlc0gAEqgBCkVyZXF1ZXN0X2NhbmNlbF9leHRlcm5h",
+            "bF93b3JrZmxvd19leGVjdXRpb25faW5pdGlhdGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYHiABKAsyVy50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5SZXF1ZXN0Q2Fu",
+            "Y2VsRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkluaXRpYXRlZEV2ZW50QXR0",
+            "cmlidXRlc0gAEqIBCkJyZXF1ZXN0X2NhbmNlbF9leHRlcm5hbF93b3JrZmxv",
+            "d19leGVjdXRpb25fZmFpbGVkX2V2ZW50X2F0dHJpYnV0ZXMYHyABKAsyVC50",
+            "ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5SZXF1ZXN0Q2FuY2VsRXh0ZXJuYWxX",
+            "b3JrZmxvd0V4ZWN1dGlvbkZhaWxlZEV2ZW50QXR0cmlidXRlc0gAEpkBCj1l",
+            "eHRlcm5hbF93b3JrZmxvd19leGVjdXRpb25fY2FuY2VsX3JlcXVlc3RlZF9l",
+            "dmVudF9hdHRyaWJ1dGVzGCAgASgLMlAudGVtcG9yYWwuYXBpLmhpc3Rvcnku",
+            "djEuRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkNhbmNlbFJlcXVlc3RlZEV2",
+            "ZW50QXR0cmlidXRlc0gAEocBCjR3b3JrZmxvd19leGVjdXRpb25fY29udGlu",
+            "dWVkX2FzX25ld19ldmVudF9hdHRyaWJ1dGVzGCEgASgLMkcudGVtcG9yYWwu",
+            "YXBpLmhpc3RvcnkudjEuV29ya2Zsb3dFeGVjdXRpb25Db250aW51ZWRBc05l",
+            "d0V2ZW50QXR0cmlidXRlc0gAEpEBCjlzdGFydF9jaGlsZF93b3JrZmxvd19l",
+            "eGVjdXRpb25faW5pdGlhdGVkX2V2ZW50X2F0dHJpYnV0ZXMYIiABKAsyTC50",
+            "ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5TdGFydENoaWxkV29ya2Zsb3dFeGVj",
+            "dXRpb25Jbml0aWF0ZWRFdmVudEF0dHJpYnV0ZXNIABKLAQo2c3RhcnRfY2hp",
+            "bGRfd29ya2Zsb3dfZXhlY3V0aW9uX2ZhaWxlZF9ldmVudF9hdHRyaWJ1dGVz",
+            "GCMgASgLMkkudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuU3RhcnRDaGlsZFdv",
+            "cmtmbG93RXhlY3V0aW9uRmFpbGVkRXZlbnRBdHRyaWJ1dGVzSAASggEKMWNo",
+            "aWxkX3dvcmtmbG93X2V4ZWN1dGlvbl9zdGFydGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYJCABKAsyRS50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5DaGlsZFdvcmtm",
+            "bG93RXhlY3V0aW9uU3RhcnRlZEV2ZW50QXR0cmlidXRlc0gAEoYBCjNjaGls",
+            "ZF93b3JrZmxvd19leGVjdXRpb25fY29tcGxldGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYJSABKAsyRy50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5DaGlsZFdvcmtm",
+            "bG93RXhlY3V0aW9uQ29tcGxldGVkRXZlbnRBdHRyaWJ1dGVzSAASgAEKMGNo",
+            "aWxkX3dvcmtmbG93X2V4ZWN1dGlvbl9mYWlsZWRfZXZlbnRfYXR0cmlidXRl",
+            "cxgmIAEoCzJELnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLkNoaWxkV29ya2Zs",
+            "b3dFeGVjdXRpb25GYWlsZWRFdmVudEF0dHJpYnV0ZXNIABKEAQoyY2hpbGRf",
+            "d29ya2Zsb3dfZXhlY3V0aW9uX2NhbmNlbGVkX2V2ZW50X2F0dHJpYnV0ZXMY",
+            "JyABKAsyRi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5DaGlsZFdvcmtmbG93",
+            "RXhlY3V0aW9uQ2FuY2VsZWRFdmVudEF0dHJpYnV0ZXNIABKFAQozY2hpbGRf",
+            "d29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVkX291dF9ldmVudF9hdHRyaWJ1dGVz",
+            "GCggASgLMkYudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuQ2hpbGRXb3JrZmxv",
+            "d0V4ZWN1dGlvblRpbWVkT3V0RXZlbnRBdHRyaWJ1dGVzSAASiAEKNGNoaWxk",
+            "X3dvcmtmbG93X2V4ZWN1dGlvbl90ZXJtaW5hdGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYKSABKAsySC50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5DaGlsZFdvcmtm",
+            "bG93RXhlY3V0aW9uVGVybWluYXRlZEV2ZW50QXR0cmlidXRlc0gAEpkBCj1z",
+            "aWduYWxfZXh0ZXJuYWxfd29ya2Zsb3dfZXhlY3V0aW9uX2luaXRpYXRlZF9l",
+            "dmVudF9hdHRyaWJ1dGVzGCogASgLMlAudGVtcG9yYWwuYXBpLmhpc3Rvcnku",
+            "djEuU2lnbmFsRXh0ZXJuYWxXb3JrZmxvd0V4ZWN1dGlvbkluaXRpYXRlZEV2",
+            "ZW50QXR0cmlidXRlc0gAEpMBCjpzaWduYWxfZXh0ZXJuYWxfd29ya2Zsb3df",
+            "ZXhlY3V0aW9uX2ZhaWxlZF9ldmVudF9hdHRyaWJ1dGVzGCsgASgLMk0udGVt",
+            "cG9yYWwuYXBpLmhpc3RvcnkudjEuU2lnbmFsRXh0ZXJuYWxXb3JrZmxvd0V4",
+            "ZWN1dGlvbkZhaWxlZEV2ZW50QXR0cmlidXRlc0gAEooBCjVleHRlcm5hbF93",
+            "b3JrZmxvd19leGVjdXRpb25fc2lnbmFsZWRfZXZlbnRfYXR0cmlidXRlcxgs",
+            "IAEoCzJJLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLkV4dGVybmFsV29ya2Zs",
+            "b3dFeGVjdXRpb25TaWduYWxlZEV2ZW50QXR0cmlidXRlc0gAEoQBCjJ1cHNl",
+            "cnRfd29ya2Zsb3dfc2VhcmNoX2F0dHJpYnV0ZXNfZXZlbnRfYXR0cmlidXRl",
+            "cxgtIAEoCzJGLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLlVwc2VydFdvcmtm",
+            "bG93U2VhcmNoQXR0cmlidXRlc0V2ZW50QXR0cmlidXRlc0gAEoYBCjN3b3Jr",
+            "Zmxvd19leGVjdXRpb25fdXBkYXRlX2FjY2VwdGVkX2V2ZW50X2F0dHJpYnV0",
+            "ZXMYLiABKAsyRy50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxvd0V4",
+            "ZWN1dGlvblVwZGF0ZUFjY2VwdGVkRXZlbnRBdHRyaWJ1dGVzSAAShgEKM3dv",
+            "cmtmbG93X2V4ZWN1dGlvbl91cGRhdGVfcmVqZWN0ZWRfZXZlbnRfYXR0cmli",
+            "dXRlcxgvIAEoCzJHLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtmbG93",
+            "RXhlY3V0aW9uVXBkYXRlUmVqZWN0ZWRFdmVudEF0dHJpYnV0ZXNIABKIAQo0",
+            "d29ya2Zsb3dfZXhlY3V0aW9uX3VwZGF0ZV9jb21wbGV0ZWRfZXZlbnRfYXR0",
+            "cmlidXRlcxgwIAEoCzJILnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLldvcmtm",
+            "bG93RXhlY3V0aW9uVXBkYXRlQ29tcGxldGVkRXZlbnRBdHRyaWJ1dGVzSAAS",
+            "kAEKOHdvcmtmbG93X3Byb3BlcnRpZXNfbW9kaWZpZWRfZXh0ZXJuYWxseV9l",
+            "dmVudF9hdHRyaWJ1dGVzGDEgASgLMkwudGVtcG9yYWwuYXBpLmhpc3Rvcnku",
+            "djEuV29ya2Zsb3dQcm9wZXJ0aWVzTW9kaWZpZWRFeHRlcm5hbGx5RXZlbnRB",
+            "dHRyaWJ1dGVzSAASkAEKOGFjdGl2aXR5X3Byb3BlcnRpZXNfbW9kaWZpZWRf",
+            "ZXh0ZXJuYWxseV9ldmVudF9hdHRyaWJ1dGVzGDIgASgLMkwudGVtcG9yYWwu",
+            "YXBpLmhpc3RvcnkudjEuQWN0aXZpdHlQcm9wZXJ0aWVzTW9kaWZpZWRFeHRl",
+            "cm5hbGx5RXZlbnRBdHRyaWJ1dGVzSAASewotd29ya2Zsb3dfcHJvcGVydGll",
+            "c19tb2RpZmllZF9ldmVudF9hdHRyaWJ1dGVzGDMgASgLMkIudGVtcG9yYWwu",
+            "YXBpLmhpc3RvcnkudjEuV29ya2Zsb3dQcm9wZXJ0aWVzTW9kaWZpZWRFdmVu",
+            "dEF0dHJpYnV0ZXNIABKGAQozd29ya2Zsb3dfZXhlY3V0aW9uX3VwZGF0ZV9h",
+            "ZG1pdHRlZF9ldmVudF9hdHRyaWJ1dGVzGDQgASgLMkcudGVtcG9yYWwuYXBp",
+            "Lmhpc3RvcnkudjEuV29ya2Zsb3dFeGVjdXRpb25VcGRhdGVBZG1pdHRlZEV2",
+            "ZW50QXR0cmlidXRlc0gAEnUKKm5leHVzX29wZXJhdGlvbl9zY2hlZHVsZWRf",
+            "ZXZlbnRfYXR0cmlidXRlcxg1IAEoCzI/LnRlbXBvcmFsLmFwaS5oaXN0b3J5",
+            "LnYxLk5leHVzT3BlcmF0aW9uU2NoZWR1bGVkRXZlbnRBdHRyaWJ1dGVzSAAS",
+            "cQoobmV4dXNfb3BlcmF0aW9uX3N0YXJ0ZWRfZXZlbnRfYXR0cmlidXRlcxg2",
+            "IAEoCzI9LnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLk5leHVzT3BlcmF0aW9u",
+            "U3RhcnRlZEV2ZW50QXR0cmlidXRlc0gAEnUKKm5leHVzX29wZXJhdGlvbl9j",
+            "b21wbGV0ZWRfZXZlbnRfYXR0cmlidXRlcxg3IAEoCzI/LnRlbXBvcmFsLmFw",
+            "aS5oaXN0b3J5LnYxLk5leHVzT3BlcmF0aW9uQ29tcGxldGVkRXZlbnRBdHRy",
+            "aWJ1dGVzSAASbwonbmV4dXNfb3BlcmF0aW9uX2ZhaWxlZF9ldmVudF9hdHRy",
+            "aWJ1dGVzGDggASgLMjwudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuTmV4dXNP",
+            "cGVyYXRpb25GYWlsZWRFdmVudEF0dHJpYnV0ZXNIABJzCiluZXh1c19vcGVy",
+            "YXRpb25fY2FuY2VsZWRfZXZlbnRfYXR0cmlidXRlcxg5IAEoCzI+LnRlbXBv",
+            "cmFsLmFwaS5oaXN0b3J5LnYxLk5leHVzT3BlcmF0aW9uQ2FuY2VsZWRFdmVu",
+            "dEF0dHJpYnV0ZXNIABJ0CipuZXh1c19vcGVyYXRpb25fdGltZWRfb3V0X2V2",
+            "ZW50X2F0dHJpYnV0ZXMYOiABKAsyPi50ZW1wb3JhbC5hcGkuaGlzdG9yeS52",
+            "MS5OZXh1c09wZXJhdGlvblRpbWVkT3V0RXZlbnRBdHRyaWJ1dGVzSAASggEK",
+            "MW5leHVzX29wZXJhdGlvbl9jYW5jZWxfcmVxdWVzdGVkX2V2ZW50X2F0dHJp",
+            "YnV0ZXMYOyABKAsyRS50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5OZXh1c09w",
+            "ZXJhdGlvbkNhbmNlbFJlcXVlc3RlZEV2ZW50QXR0cmlidXRlc0gAEoYBCjN3",
+            "b3JrZmxvd19leGVjdXRpb25fb3B0aW9uc191cGRhdGVkX2V2ZW50X2F0dHJp",
+            "YnV0ZXMYPCABKAsyRy50ZW1wb3JhbC5hcGkuaGlzdG9yeS52MS5Xb3JrZmxv",
+            "d0V4ZWN1dGlvbk9wdGlvbnNVcGRhdGVkRXZlbnRBdHRyaWJ1dGVzSAASkQEK",
+            "OW5leHVzX29wZXJhdGlvbl9jYW5jZWxfcmVxdWVzdF9jb21wbGV0ZWRfZXZl",
+            "bnRfYXR0cmlidXRlcxg9IAEoCzJMLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYx",
+            "Lk5leHVzT3BlcmF0aW9uQ2FuY2VsUmVxdWVzdENvbXBsZXRlZEV2ZW50QXR0",
+            "cmlidXRlc0gAEosBCjZuZXh1c19vcGVyYXRpb25fY2FuY2VsX3JlcXVlc3Rf",
+            "ZmFpbGVkX2V2ZW50X2F0dHJpYnV0ZXMYPiABKAsySS50ZW1wb3JhbC5hcGku",
+            "aGlzdG9yeS52MS5OZXh1c09wZXJhdGlvbkNhbmNlbFJlcXVlc3RGYWlsZWRF",
+            "dmVudEF0dHJpYnV0ZXNIABJ1Cip3b3JrZmxvd19leGVjdXRpb25fcGF1c2Vk",
+            "X2V2ZW50X2F0dHJpYnV0ZXMYPyABKAsyPy50ZW1wb3JhbC5hcGkuaGlzdG9y",
+            "eS52MS5Xb3JrZmxvd0V4ZWN1dGlvblBhdXNlZEV2ZW50QXR0cmlidXRlc0gA",
+            "EnkKLHdvcmtmbG93X2V4ZWN1dGlvbl91bnBhdXNlZF9ldmVudF9hdHRyaWJ1",
+            "dGVzGEAgASgLMkEudGVtcG9yYWwuYXBpLmhpc3RvcnkudjEuV29ya2Zsb3dF",
+            "eGVjdXRpb25VbnBhdXNlZEV2ZW50QXR0cmlidXRlc0gAQgwKCmF0dHJpYnV0",
+            "ZXMiQAoHSGlzdG9yeRI1CgZldmVudHMYASADKAsyJS50ZW1wb3JhbC5hcGku",
+            "aGlzdG9yeS52MS5IaXN0b3J5RXZlbnRCjgEKGmlvLnRlbXBvcmFsLmFwaS5o",
+            "aXN0b3J5LnYxQgxNZXNzYWdlUHJvdG9QAVolZ28udGVtcG9yYWwuaW8vYXBp",
+            "L2hpc3RvcnkvdjE7aGlzdG9yeaoCGVRlbXBvcmFsaW8uQXBpLkhpc3Rvcnku",
+            "VjHqAhxUZW1wb3JhbGlvOjpBcGk6Okhpc3Rvcnk6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Enums.V1.EventTypeReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Api.Enums.V1.UpdateReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Update.V1.MessageReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.TaskCompleteMetadataReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionStartedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionStartedEventAttributes.Parser, new[]{ "WorkflowType", "ParentWorkflowNamespace", "ParentWorkflowNamespaceId", "ParentWorkflowExecution", "ParentInitiatedEventId", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "ContinuedExecutionRunId", "Initiator", "ContinuedFailure", "LastCompletionResult", "OriginalExecutionRunId", "Identity", "FirstExecutionRunId", "RetryPolicy", "Attempt", "WorkflowExecutionExpirationTime", "CronSchedule", "FirstWorkflowTaskBackoff", "Memo", "SearchAttributes", "PrevAutoResetPoints", "Header", "ParentInitiatedEventVersion", "WorkflowId", "SourceVersionStamp", "CompletionCallbacks", "RootWorkflowExecution", "InheritedBuildId", "VersioningOverride", "ParentPinnedWorkerDeploymentVersion", "Priority", "InheritedPinnedVersion", "EagerExecutionAccepted" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionStartedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionStartedEventAttributes.Parser, new[]{ "WorkflowType", "ParentWorkflowNamespace", "ParentWorkflowNamespaceId", "ParentWorkflowExecution", "ParentInitiatedEventId", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "ContinuedExecutionRunId", "Initiator", "ContinuedFailure", "LastCompletionResult", "OriginalExecutionRunId", "Identity", "FirstExecutionRunId", "RetryPolicy", "Attempt", "WorkflowExecutionExpirationTime", "CronSchedule", "FirstWorkflowTaskBackoff", "Memo", "SearchAttributes", "PrevAutoResetPoints", "Header", "ParentInitiatedEventVersion", "WorkflowId", "SourceVersionStamp", "CompletionCallbacks", "RootWorkflowExecution", "InheritedBuildId", "VersioningOverride", "ParentPinnedWorkerDeploymentVersion", "Priority", "InheritedPinnedVersion", "InheritedAutoUpgradeInfo", "EagerExecutionAccepted" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionCompletedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionCompletedEventAttributes.Parser, new[]{ "Result", "WorkflowTaskCompletedEventId", "NewExecutionRunId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionFailedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionFailedEventAttributes.Parser, new[]{ "Failure", "RetryState", "WorkflowTaskCompletedEventId", "NewExecutionRunId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionTimedOutEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionTimedOutEventAttributes.Parser, new[]{ "RetryState", "NewExecutionRunId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionContinuedAsNewEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionContinuedAsNewEventAttributes.Parser, new[]{ "NewExecutionRunId", "WorkflowType", "TaskQueue", "Input", "WorkflowRunTimeout", "WorkflowTaskTimeout", "WorkflowTaskCompletedEventId", "BackoffStartInterval", "Initiator", "Failure", "LastCompletionResult", "Header", "Memo", "SearchAttributes", "InheritBuildId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionContinuedAsNewEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionContinuedAsNewEventAttributes.Parser, new[]{ "NewExecutionRunId", "WorkflowType", "TaskQueue", "Input", "WorkflowRunTimeout", "WorkflowTaskTimeout", "WorkflowTaskCompletedEventId", "BackoffStartInterval", "Initiator", "Failure", "LastCompletionResult", "Header", "Memo", "SearchAttributes", "InheritBuildId", "InitialVersioningBehavior" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowTaskScheduledEventAttributes), global::Temporalio.Api.History.V1.WorkflowTaskScheduledEventAttributes.Parser, new[]{ "TaskQueue", "StartToCloseTimeout", "Attempt" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowTaskStartedEventAttributes), global::Temporalio.Api.History.V1.WorkflowTaskStartedEventAttributes.Parser, new[]{ "ScheduledEventId", "Identity", "RequestId", "SuggestContinueAsNew", "HistorySizeBytes", "WorkerVersion", "BuildIdRedirectCounter" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowTaskStartedEventAttributes), global::Temporalio.Api.History.V1.WorkflowTaskStartedEventAttributes.Parser, new[]{ "ScheduledEventId", "Identity", "RequestId", "SuggestContinueAsNew", "SuggestContinueAsNewReasons", "HistorySizeBytes", "WorkerVersion", "BuildIdRedirectCounter" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowTaskCompletedEventAttributes), global::Temporalio.Api.History.V1.WorkflowTaskCompletedEventAttributes.Parser, new[]{ "ScheduledEventId", "StartedEventId", "Identity", "BinaryChecksum", "WorkerVersion", "SdkMetadata", "MeteringMetadata", "Deployment", "VersioningBehavior", "WorkerDeploymentVersion", "WorkerDeploymentName", "DeploymentVersion" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowTaskTimedOutEventAttributes), global::Temporalio.Api.History.V1.WorkflowTaskTimedOutEventAttributes.Parser, new[]{ "ScheduledEventId", "StartedEventId", "TimeoutType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowTaskFailedEventAttributes), global::Temporalio.Api.History.V1.WorkflowTaskFailedEventAttributes.Parser, new[]{ "ScheduledEventId", "StartedEventId", "Cause", "Failure", "Identity", "BaseRunId", "NewRunId", "ForkEventVersion", "BinaryChecksum", "WorkerVersion" }, null, null, null, null),
@@ -638,14 +658,16 @@ namespace Temporalio.Api.History.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.ChildWorkflowExecutionCanceledEventAttributes), global::Temporalio.Api.History.V1.ChildWorkflowExecutionCanceledEventAttributes.Parser, new[]{ "Details", "Namespace", "NamespaceId", "WorkflowExecution", "WorkflowType", "InitiatedEventId", "StartedEventId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.ChildWorkflowExecutionTimedOutEventAttributes), global::Temporalio.Api.History.V1.ChildWorkflowExecutionTimedOutEventAttributes.Parser, new[]{ "Namespace", "NamespaceId", "WorkflowExecution", "WorkflowType", "InitiatedEventId", "StartedEventId", "RetryState" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.ChildWorkflowExecutionTerminatedEventAttributes), global::Temporalio.Api.History.V1.ChildWorkflowExecutionTerminatedEventAttributes.Parser, new[]{ "Namespace", "NamespaceId", "WorkflowExecution", "WorkflowType", "InitiatedEventId", "StartedEventId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes.Parser, new[]{ "VersioningOverride", "UnsetVersioningOverride", "AttachedRequestId", "AttachedCompletionCallbacks" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionOptionsUpdatedEventAttributes.Parser, new[]{ "VersioningOverride", "UnsetVersioningOverride", "AttachedRequestId", "AttachedCompletionCallbacks", "Identity", "Priority" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowPropertiesModifiedExternallyEventAttributes), global::Temporalio.Api.History.V1.WorkflowPropertiesModifiedExternallyEventAttributes.Parser, new[]{ "NewTaskQueue", "NewWorkflowTaskTimeout", "NewWorkflowRunTimeout", "NewWorkflowExecutionTimeout", "UpsertedMemo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.ActivityPropertiesModifiedExternallyEventAttributes), global::Temporalio.Api.History.V1.ActivityPropertiesModifiedExternallyEventAttributes.Parser, new[]{ "ScheduledEventId", "NewRetryPolicy" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionUpdateAcceptedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionUpdateAcceptedEventAttributes.Parser, new[]{ "ProtocolInstanceId", "AcceptedRequestMessageId", "AcceptedRequestSequencingEventId", "AcceptedRequest" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionUpdateCompletedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionUpdateCompletedEventAttributes.Parser, new[]{ "Meta", "AcceptedEventId", "Outcome" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionUpdateRejectedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionUpdateRejectedEventAttributes.Parser, new[]{ "ProtocolInstanceId", "RejectedRequestMessageId", "RejectedRequestSequencingEventId", "RejectedRequest", "Failure" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionUpdateAdmittedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionUpdateAdmittedEventAttributes.Parser, new[]{ "Request", "Origin" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationScheduledEventAttributes), global::Temporalio.Api.History.V1.NexusOperationScheduledEventAttributes.Parser, new[]{ "Endpoint", "Service", "Operation", "Input", "ScheduleToCloseTimeout", "NexusHeader", "WorkflowTaskCompletedEventId", "RequestId", "EndpointId" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes.Parser, new[]{ "Identity", "Reason", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes), global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes.Parser, new[]{ "Identity", "Reason", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationScheduledEventAttributes), global::Temporalio.Api.History.V1.NexusOperationScheduledEventAttributes.Parser, new[]{ "Endpoint", "Service", "Operation", "Input", "ScheduleToCloseTimeout", "NexusHeader", "WorkflowTaskCompletedEventId", "RequestId", "EndpointId", "ScheduleToStartTimeout", "StartToCloseTimeout" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationStartedEventAttributes), global::Temporalio.Api.History.V1.NexusOperationStartedEventAttributes.Parser, new[]{ "ScheduledEventId", "OperationId", "RequestId", "OperationToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationCompletedEventAttributes), global::Temporalio.Api.History.V1.NexusOperationCompletedEventAttributes.Parser, new[]{ "ScheduledEventId", "Result", "RequestId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationFailedEventAttributes), global::Temporalio.Api.History.V1.NexusOperationFailedEventAttributes.Parser, new[]{ "ScheduledEventId", "Failure", "RequestId" }, null, null, null, null),
@@ -654,7 +676,7 @@ namespace Temporalio.Api.History.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationCancelRequestedEventAttributes), global::Temporalio.Api.History.V1.NexusOperationCancelRequestedEventAttributes.Parser, new[]{ "ScheduledEventId", "WorkflowTaskCompletedEventId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationCancelRequestCompletedEventAttributes), global::Temporalio.Api.History.V1.NexusOperationCancelRequestCompletedEventAttributes.Parser, new[]{ "RequestedEventId", "WorkflowTaskCompletedEventId", "ScheduledEventId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.NexusOperationCancelRequestFailedEventAttributes), global::Temporalio.Api.History.V1.NexusOperationCancelRequestFailedEventAttributes.Parser, new[]{ "RequestedEventId", "WorkflowTaskCompletedEventId", "Failure", "ScheduledEventId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.HistoryEvent), global::Temporalio.Api.History.V1.HistoryEvent.Parser, new[]{ "EventId", "EventTime", "EventType", "Version", "TaskId", "WorkerMayIgnore", "UserMetadata", "Links", "WorkflowExecutionStartedEventAttributes", "WorkflowExecutionCompletedEventAttributes", "WorkflowExecutionFailedEventAttributes", "WorkflowExecutionTimedOutEventAttributes", "WorkflowTaskScheduledEventAttributes", "WorkflowTaskStartedEventAttributes", "WorkflowTaskCompletedEventAttributes", "WorkflowTaskTimedOutEventAttributes", "WorkflowTaskFailedEventAttributes", "ActivityTaskScheduledEventAttributes", "ActivityTaskStartedEventAttributes", "ActivityTaskCompletedEventAttributes", "ActivityTaskFailedEventAttributes", "ActivityTaskTimedOutEventAttributes", "TimerStartedEventAttributes", "TimerFiredEventAttributes", "ActivityTaskCancelRequestedEventAttributes", "ActivityTaskCanceledEventAttributes", "TimerCanceledEventAttributes", "MarkerRecordedEventAttributes", "WorkflowExecutionSignaledEventAttributes", "WorkflowExecutionTerminatedEventAttributes", "WorkflowExecutionCancelRequestedEventAttributes", "WorkflowExecutionCanceledEventAttributes", "RequestCancelExternalWorkflowExecutionInitiatedEventAttributes", "RequestCancelExternalWorkflowExecutionFailedEventAttributes", "ExternalWorkflowExecutionCancelRequestedEventAttributes", "WorkflowExecutionContinuedAsNewEventAttributes", "StartChildWorkflowExecutionInitiatedEventAttributes", "StartChildWorkflowExecutionFailedEventAttributes", "ChildWorkflowExecutionStartedEventAttributes", "ChildWorkflowExecutionCompletedEventAttributes", "ChildWorkflowExecutionFailedEventAttributes", "ChildWorkflowExecutionCanceledEventAttributes", "ChildWorkflowExecutionTimedOutEventAttributes", "ChildWorkflowExecutionTerminatedEventAttributes", "SignalExternalWorkflowExecutionInitiatedEventAttributes", "SignalExternalWorkflowExecutionFailedEventAttributes", "ExternalWorkflowExecutionSignaledEventAttributes", "UpsertWorkflowSearchAttributesEventAttributes", "WorkflowExecutionUpdateAcceptedEventAttributes", "WorkflowExecutionUpdateRejectedEventAttributes", "WorkflowExecutionUpdateCompletedEventAttributes", "WorkflowPropertiesModifiedExternallyEventAttributes", "ActivityPropertiesModifiedExternallyEventAttributes", "WorkflowPropertiesModifiedEventAttributes", "WorkflowExecutionUpdateAdmittedEventAttributes", "NexusOperationScheduledEventAttributes", "NexusOperationStartedEventAttributes", "NexusOperationCompletedEventAttributes", "NexusOperationFailedEventAttributes", "NexusOperationCanceledEventAttributes", "NexusOperationTimedOutEventAttributes", "NexusOperationCancelRequestedEventAttributes", "WorkflowExecutionOptionsUpdatedEventAttributes", "NexusOperationCancelRequestCompletedEventAttributes", "NexusOperationCancelRequestFailedEventAttributes" }, new[]{ "Attributes" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.HistoryEvent), global::Temporalio.Api.History.V1.HistoryEvent.Parser, new[]{ "EventId", "EventTime", "EventType", "Version", "TaskId", "WorkerMayIgnore", "UserMetadata", "Links", "WorkflowExecutionStartedEventAttributes", "WorkflowExecutionCompletedEventAttributes", "WorkflowExecutionFailedEventAttributes", "WorkflowExecutionTimedOutEventAttributes", "WorkflowTaskScheduledEventAttributes", "WorkflowTaskStartedEventAttributes", "WorkflowTaskCompletedEventAttributes", "WorkflowTaskTimedOutEventAttributes", "WorkflowTaskFailedEventAttributes", "ActivityTaskScheduledEventAttributes", "ActivityTaskStartedEventAttributes", "ActivityTaskCompletedEventAttributes", "ActivityTaskFailedEventAttributes", "ActivityTaskTimedOutEventAttributes", "TimerStartedEventAttributes", "TimerFiredEventAttributes", "ActivityTaskCancelRequestedEventAttributes", "ActivityTaskCanceledEventAttributes", "TimerCanceledEventAttributes", "MarkerRecordedEventAttributes", "WorkflowExecutionSignaledEventAttributes", "WorkflowExecutionTerminatedEventAttributes", "WorkflowExecutionCancelRequestedEventAttributes", "WorkflowExecutionCanceledEventAttributes", "RequestCancelExternalWorkflowExecutionInitiatedEventAttributes", "RequestCancelExternalWorkflowExecutionFailedEventAttributes", "ExternalWorkflowExecutionCancelRequestedEventAttributes", "WorkflowExecutionContinuedAsNewEventAttributes", "StartChildWorkflowExecutionInitiatedEventAttributes", "StartChildWorkflowExecutionFailedEventAttributes", "ChildWorkflowExecutionStartedEventAttributes", "ChildWorkflowExecutionCompletedEventAttributes", "ChildWorkflowExecutionFailedEventAttributes", "ChildWorkflowExecutionCanceledEventAttributes", "ChildWorkflowExecutionTimedOutEventAttributes", "ChildWorkflowExecutionTerminatedEventAttributes", "SignalExternalWorkflowExecutionInitiatedEventAttributes", "SignalExternalWorkflowExecutionFailedEventAttributes", "ExternalWorkflowExecutionSignaledEventAttributes", "UpsertWorkflowSearchAttributesEventAttributes", "WorkflowExecutionUpdateAcceptedEventAttributes", "WorkflowExecutionUpdateRejectedEventAttributes", "WorkflowExecutionUpdateCompletedEventAttributes", "WorkflowPropertiesModifiedExternallyEventAttributes", "ActivityPropertiesModifiedExternallyEventAttributes", "WorkflowPropertiesModifiedEventAttributes", "WorkflowExecutionUpdateAdmittedEventAttributes", "NexusOperationScheduledEventAttributes", "NexusOperationStartedEventAttributes", "NexusOperationCompletedEventAttributes", "NexusOperationFailedEventAttributes", "NexusOperationCanceledEventAttributes", "NexusOperationTimedOutEventAttributes", "NexusOperationCancelRequestedEventAttributes", "WorkflowExecutionOptionsUpdatedEventAttributes", "NexusOperationCancelRequestCompletedEventAttributes", "NexusOperationCancelRequestFailedEventAttributes", "WorkflowExecutionPausedEventAttributes", "WorkflowExecutionUnpausedEventAttributes" }, new[]{ "Attributes" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.History.V1.History), global::Temporalio.Api.History.V1.History.Parser, new[]{ "Events" }, null, null, null, null)
           }));
     }
@@ -735,6 +757,7 @@ namespace Temporalio.Api.History.V1 {
       parentPinnedWorkerDeploymentVersion_ = other.parentPinnedWorkerDeploymentVersion_;
       priority_ = other.priority_ != null ? other.priority_.Clone() : null;
       inheritedPinnedVersion_ = other.inheritedPinnedVersion_ != null ? other.inheritedPinnedVersion_.Clone() : null;
+      inheritedAutoUpgradeInfo_ = other.inheritedAutoUpgradeInfo_ != null ? other.inheritedAutoUpgradeInfo_.Clone() : null;
       eagerExecutionAccepted_ = other.eagerExecutionAccepted_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -1290,17 +1313,20 @@ namespace Temporalio.Api.History.V1 {
     /// If present, the new workflow should start on this version with pinned base behavior.
     /// Child of pinned parent will inherit the parent's version if the Child's Task Queue belongs to that version.
     ///
-    /// New run initiated by workflow ContinueAsNew of pinned run, will inherit the previous run's version if the
+    /// A new run initiated by workflow ContinueAsNew of pinned run, will inherit the previous run's version if the
     /// new run's Task Queue belongs to that version.
     ///
-    /// New run initiated by workflow Cron will never inherit.
+    /// A new run initiated by workflow Cron will never inherit.
     ///
-    /// New run initiated by workflow Retry will only inherit if the retried run is effectively pinned at the time
+    /// A new run initiated by workflow Retry will only inherit if the retried run is effectively pinned at the time
     /// of retry, and the retried run inherited a pinned version when it started (ie. it is a child of a pinned
     /// parent, or a CaN of a pinned run, and is running on a Task Queue in the inherited version).
     ///
     /// Pinned override is inherited if Task Queue of new run is compatible with the override version.
     /// Override is inherited separately and takes precedence over inherited base version.
+    ///
+    /// Note: This field is mutually exclusive with inherited_auto_upgrade_info.
+    /// Additionaly, versioning_override, if present, overrides this field during routing decisions.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -1308,6 +1334,41 @@ namespace Temporalio.Api.History.V1 {
       get { return inheritedPinnedVersion_; }
       set {
         inheritedPinnedVersion_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "inherited_auto_upgrade_info" field.</summary>
+    public const int InheritedAutoUpgradeInfoFieldNumber = 39;
+    private global::Temporalio.Api.Deployment.V1.InheritedAutoUpgradeInfo inheritedAutoUpgradeInfo_;
+    /// <summary>
+    /// If present, the new workflow begins with AutoUpgrade behavior. Before dispatching the
+    /// first workflow task, this field is set to the deployment version on which the parent/
+    /// previous run was operating. This inheritance only happens when the task queues belong to
+    /// the same deployment version. The first workflow task will then be dispatched to either
+    /// this inherited deployment version, or the current deployment version of the task queue's
+    /// Deployment. After the first workflow task, the effective behavior depends on worker-sent
+    /// values in subsequent workflow tasks.
+    ///
+    /// Inheritance rules:
+    ///   - ContinueAsNew and child workflows: inherit AutoUpgrade behavior and deployment version
+    ///   - Cron: never inherits
+    ///   - Retry: inherits only if the retried run is effectively AutoUpgrade at the time of
+    ///     retry, and inherited AutoUpgrade behavior when it started (i.e. it is a child of an
+    ///     AutoUpgrade parent or ContinueAsNew of an AutoUpgrade run, running on the same
+    ///     deployment as the parent/previous run)
+    ///
+    /// Additional notes:
+    /// - This field is mutually exclusive with `inherited_pinned_version`.
+    /// - `versioning_override`, if present, overrides this field during routing decisions.
+    /// - SDK implementations do not interact with this field and is only used internally by
+    ///   the server to ensure task routing correctness.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.InheritedAutoUpgradeInfo InheritedAutoUpgradeInfo {
+      get { return inheritedAutoUpgradeInfo_; }
+      set {
+        inheritedAutoUpgradeInfo_ = value;
       }
     }
 
@@ -1379,6 +1440,7 @@ namespace Temporalio.Api.History.V1 {
       if (ParentPinnedWorkerDeploymentVersion != other.ParentPinnedWorkerDeploymentVersion) return false;
       if (!object.Equals(Priority, other.Priority)) return false;
       if (!object.Equals(InheritedPinnedVersion, other.InheritedPinnedVersion)) return false;
+      if (!object.Equals(InheritedAutoUpgradeInfo, other.InheritedAutoUpgradeInfo)) return false;
       if (EagerExecutionAccepted != other.EagerExecutionAccepted) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1423,6 +1485,7 @@ namespace Temporalio.Api.History.V1 {
       if (ParentPinnedWorkerDeploymentVersion.Length != 0) hash ^= ParentPinnedWorkerDeploymentVersion.GetHashCode();
       if (priority_ != null) hash ^= Priority.GetHashCode();
       if (inheritedPinnedVersion_ != null) hash ^= InheritedPinnedVersion.GetHashCode();
+      if (inheritedAutoUpgradeInfo_ != null) hash ^= InheritedAutoUpgradeInfo.GetHashCode();
       if (EagerExecutionAccepted != false) hash ^= EagerExecutionAccepted.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1587,6 +1650,10 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(176, 2);
         output.WriteBool(EagerExecutionAccepted);
       }
+      if (inheritedAutoUpgradeInfo_ != null) {
+        output.WriteRawTag(186, 2);
+        output.WriteMessage(InheritedAutoUpgradeInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1742,6 +1809,10 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(176, 2);
         output.WriteBool(EagerExecutionAccepted);
       }
+      if (inheritedAutoUpgradeInfo_ != null) {
+        output.WriteRawTag(186, 2);
+        output.WriteMessage(InheritedAutoUpgradeInfo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1857,6 +1928,9 @@ namespace Temporalio.Api.History.V1 {
       }
       if (inheritedPinnedVersion_ != null) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(InheritedPinnedVersion);
+      }
+      if (inheritedAutoUpgradeInfo_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(InheritedAutoUpgradeInfo);
       }
       if (EagerExecutionAccepted != false) {
         size += 2 + 1;
@@ -2041,6 +2115,12 @@ namespace Temporalio.Api.History.V1 {
           InheritedPinnedVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
         }
         InheritedPinnedVersion.MergeFrom(other.InheritedPinnedVersion);
+      }
+      if (other.inheritedAutoUpgradeInfo_ != null) {
+        if (inheritedAutoUpgradeInfo_ == null) {
+          InheritedAutoUpgradeInfo = new global::Temporalio.Api.Deployment.V1.InheritedAutoUpgradeInfo();
+        }
+        InheritedAutoUpgradeInfo.MergeFrom(other.InheritedAutoUpgradeInfo);
       }
       if (other.EagerExecutionAccepted != false) {
         EagerExecutionAccepted = other.EagerExecutionAccepted;
@@ -2271,6 +2351,13 @@ namespace Temporalio.Api.History.V1 {
             EagerExecutionAccepted = input.ReadBool();
             break;
           }
+          case 314: {
+            if (inheritedAutoUpgradeInfo_ == null) {
+              InheritedAutoUpgradeInfo = new global::Temporalio.Api.Deployment.V1.InheritedAutoUpgradeInfo();
+            }
+            input.ReadMessage(InheritedAutoUpgradeInfo);
+            break;
+          }
         }
       }
     #endif
@@ -2495,6 +2582,13 @@ namespace Temporalio.Api.History.V1 {
           }
           case 304: {
             EagerExecutionAccepted = input.ReadBool();
+            break;
+          }
+          case 314: {
+            if (inheritedAutoUpgradeInfo_ == null) {
+              InheritedAutoUpgradeInfo = new global::Temporalio.Api.Deployment.V1.InheritedAutoUpgradeInfo();
+            }
+            input.ReadMessage(InheritedAutoUpgradeInfo);
             break;
           }
         }
@@ -3381,6 +3475,7 @@ namespace Temporalio.Api.History.V1 {
       memo_ = other.memo_ != null ? other.memo_.Clone() : null;
       searchAttributes_ = other.searchAttributes_ != null ? other.searchAttributes_.Clone() : null;
       inheritBuildId_ = other.inheritBuildId_;
+      initialVersioningBehavior_ = other.initialVersioningBehavior_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3490,7 +3585,9 @@ namespace Temporalio.Api.History.V1 {
     public const int BackoffStartIntervalFieldNumber = 8;
     private global::Google.Protobuf.WellKnownTypes.Duration backoffStartInterval_;
     /// <summary>
-    /// TODO: How and is this used?
+    /// How long the server will wait before scheduling the first workflow task for the new run.
+    /// Used for cron, retry, and other continue-as-new cases that server may enforce some minimal
+    /// delay between new runs for system protection purpose.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3517,7 +3614,6 @@ namespace Temporalio.Api.History.V1 {
     public const int FailureFieldNumber = 10;
     private global::Temporalio.Api.Failure.V1.Failure failure_;
     /// <summary>
-    /// TODO: David are these right?
     /// Deprecated. If a workflow's retry policy would cause a new run to start when the current one
     /// has failed, this field would be populated with that failure. Now (when supported by server
     /// and sdk) the final event will be `WORKFLOW_EXECUTION_FAILED` with `new_execution_run_id` set.
@@ -3536,7 +3632,8 @@ namespace Temporalio.Api.History.V1 {
     public const int LastCompletionResultFieldNumber = 11;
     private global::Temporalio.Api.Common.V1.Payloads lastCompletionResult_;
     /// <summary>
-    /// TODO: Is this the result of *this* workflow as it continued-as-new?
+    /// The result from the most recent completed run of this workflow. The SDK surfaces this to the
+    /// new run via APIs such as `GetLastCompletionResult`.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3601,6 +3698,23 @@ namespace Temporalio.Api.History.V1 {
       }
     }
 
+    /// <summary>Field number for the "initial_versioning_behavior" field.</summary>
+    public const int InitialVersioningBehaviorFieldNumber = 16;
+    private global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior initialVersioningBehavior_ = global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified;
+    /// <summary>
+    /// Experimental. Optionally decide the versioning behavior that the first task of the new run should use.
+    /// For example, choose to AutoUpgrade on continue-as-new instead of inheriting the pinned version
+    /// of the previous run.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior InitialVersioningBehavior {
+      get { return initialVersioningBehavior_; }
+      set {
+        initialVersioningBehavior_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -3631,6 +3745,7 @@ namespace Temporalio.Api.History.V1 {
       if (!object.Equals(Memo, other.Memo)) return false;
       if (!object.Equals(SearchAttributes, other.SearchAttributes)) return false;
       if (InheritBuildId != other.InheritBuildId) return false;
+      if (InitialVersioningBehavior != other.InitialVersioningBehavior) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3653,6 +3768,7 @@ namespace Temporalio.Api.History.V1 {
       if (memo_ != null) hash ^= Memo.GetHashCode();
       if (searchAttributes_ != null) hash ^= SearchAttributes.GetHashCode();
       if (InheritBuildId != false) hash ^= InheritBuildId.GetHashCode();
+      if (InitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) hash ^= InitialVersioningBehavior.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3731,6 +3847,10 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(120);
         output.WriteBool(InheritBuildId);
       }
+      if (InitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        output.WriteRawTag(128, 1);
+        output.WriteEnum((int) InitialVersioningBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3801,6 +3921,10 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(120);
         output.WriteBool(InheritBuildId);
       }
+      if (InitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        output.WriteRawTag(128, 1);
+        output.WriteEnum((int) InitialVersioningBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3855,6 +3979,9 @@ namespace Temporalio.Api.History.V1 {
       }
       if (InheritBuildId != false) {
         size += 1 + 1;
+      }
+      if (InitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        size += 2 + pb::CodedOutputStream.ComputeEnumSize((int) InitialVersioningBehavior);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3945,6 +4072,9 @@ namespace Temporalio.Api.History.V1 {
       }
       if (other.InheritBuildId != false) {
         InheritBuildId = other.InheritBuildId;
+      }
+      if (other.InitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        InitialVersioningBehavior = other.InitialVersioningBehavior;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4054,6 +4184,10 @@ namespace Temporalio.Api.History.V1 {
             InheritBuildId = input.ReadBool();
             break;
           }
+          case 128: {
+            InitialVersioningBehavior = (global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior) input.ReadEnum();
+            break;
+          }
         }
       }
     #endif
@@ -4160,6 +4294,10 @@ namespace Temporalio.Api.History.V1 {
           }
           case 120: {
             InheritBuildId = input.ReadBool();
+            break;
+          }
+          case 128: {
+            InitialVersioningBehavior = (global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior) input.ReadEnum();
             break;
           }
         }
@@ -4500,6 +4638,7 @@ namespace Temporalio.Api.History.V1 {
       identity_ = other.identity_;
       requestId_ = other.requestId_;
       suggestContinueAsNew_ = other.suggestContinueAsNew_;
+      suggestContinueAsNewReasons_ = other.suggestContinueAsNewReasons_.Clone();
       historySizeBytes_ = other.historySizeBytes_;
       workerVersion_ = other.workerVersion_ != null ? other.workerVersion_.Clone() : null;
       buildIdRedirectCounter_ = other.buildIdRedirectCounter_;
@@ -4546,7 +4685,12 @@ namespace Temporalio.Api.History.V1 {
     public const int RequestIdFieldNumber = 3;
     private string requestId_ = "";
     /// <summary>
-    /// TODO: ? Appears unused?
+    /// This field is populated from the RecordWorkflowTaskStartedRequest. Matching service would
+    /// set the request_id on the RecordWorkflowTaskStartedRequest to a new UUID. This is useful
+    /// in case a RecordWorkflowTaskStarted call succeed but matching doesn't get that response,
+    /// so matching could retry and history service would return success if the request_id matches.
+    /// In that case, matching will continue to deliver the task to worker. Without this field, history
+    /// service would return AlreadyStarted error, and matching would drop the task.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -4561,8 +4705,7 @@ namespace Temporalio.Api.History.V1 {
     public const int SuggestContinueAsNewFieldNumber = 4;
     private bool suggestContinueAsNew_;
     /// <summary>
-    /// True if this workflow should continue-as-new soon because its history size (in
-    /// either event count or bytes) is getting large.
+    /// True if this workflow should continue-as-new soon. See `suggest_continue_as_new_reasons` for why.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -4571,6 +4714,21 @@ namespace Temporalio.Api.History.V1 {
       set {
         suggestContinueAsNew_ = value;
       }
+    }
+
+    /// <summary>Field number for the "suggest_continue_as_new_reasons" field.</summary>
+    public const int SuggestContinueAsNewReasonsFieldNumber = 8;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason> _repeated_suggestContinueAsNewReasons_codec
+        = pb::FieldCodec.ForEnum(66, x => (int) x, x => (global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason) x);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason> suggestContinueAsNewReasons_ = new pbc::RepeatedField<global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason>();
+    /// <summary>
+    /// The reason(s) that suggest_continue_as_new is true, if it is.
+    /// Unset if suggest_continue_as_new is false.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason> SuggestContinueAsNewReasons {
+      get { return suggestContinueAsNewReasons_; }
     }
 
     /// <summary>Field number for the "history_size_bytes" field.</summary>
@@ -4644,6 +4802,7 @@ namespace Temporalio.Api.History.V1 {
       if (Identity != other.Identity) return false;
       if (RequestId != other.RequestId) return false;
       if (SuggestContinueAsNew != other.SuggestContinueAsNew) return false;
+      if(!suggestContinueAsNewReasons_.Equals(other.suggestContinueAsNewReasons_)) return false;
       if (HistorySizeBytes != other.HistorySizeBytes) return false;
       if (!object.Equals(WorkerVersion, other.WorkerVersion)) return false;
       if (BuildIdRedirectCounter != other.BuildIdRedirectCounter) return false;
@@ -4658,6 +4817,7 @@ namespace Temporalio.Api.History.V1 {
       if (Identity.Length != 0) hash ^= Identity.GetHashCode();
       if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
       if (SuggestContinueAsNew != false) hash ^= SuggestContinueAsNew.GetHashCode();
+      hash ^= suggestContinueAsNewReasons_.GetHashCode();
       if (HistorySizeBytes != 0L) hash ^= HistorySizeBytes.GetHashCode();
       if (workerVersion_ != null) hash ^= WorkerVersion.GetHashCode();
       if (BuildIdRedirectCounter != 0L) hash ^= BuildIdRedirectCounter.GetHashCode();
@@ -4707,6 +4867,7 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(56);
         output.WriteInt64(BuildIdRedirectCounter);
       }
+      suggestContinueAsNewReasons_.WriteTo(output, _repeated_suggestContinueAsNewReasons_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4745,6 +4906,7 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(56);
         output.WriteInt64(BuildIdRedirectCounter);
       }
+      suggestContinueAsNewReasons_.WriteTo(ref output, _repeated_suggestContinueAsNewReasons_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4767,6 +4929,7 @@ namespace Temporalio.Api.History.V1 {
       if (SuggestContinueAsNew != false) {
         size += 1 + 1;
       }
+      size += suggestContinueAsNewReasons_.CalculateSize(_repeated_suggestContinueAsNewReasons_codec);
       if (HistorySizeBytes != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(HistorySizeBytes);
       }
@@ -4800,6 +4963,7 @@ namespace Temporalio.Api.History.V1 {
       if (other.SuggestContinueAsNew != false) {
         SuggestContinueAsNew = other.SuggestContinueAsNew;
       }
+      suggestContinueAsNewReasons_.Add(other.suggestContinueAsNewReasons_);
       if (other.HistorySizeBytes != 0L) {
         HistorySizeBytes = other.HistorySizeBytes;
       }
@@ -4858,6 +5022,11 @@ namespace Temporalio.Api.History.V1 {
             BuildIdRedirectCounter = input.ReadInt64();
             break;
           }
+          case 66:
+          case 64: {
+            suggestContinueAsNewReasons_.AddEntriesFrom(input, _repeated_suggestContinueAsNewReasons_codec);
+            break;
+          }
         }
       }
     #endif
@@ -4902,6 +5071,11 @@ namespace Temporalio.Api.History.V1 {
           }
           case 56: {
             BuildIdRedirectCounter = input.ReadInt64();
+            break;
+          }
+          case 66:
+          case 64: {
+            suggestContinueAsNewReasons_.AddEntriesFrom(ref input, _repeated_suggestContinueAsNewReasons_codec);
             break;
           }
         }
@@ -5992,7 +6166,8 @@ namespace Temporalio.Api.History.V1 {
     public const int IdentityFieldNumber = 5;
     private string identity_ = "";
     /// <summary>
-    /// If a worker explicitly failed this task, it's identity. TODO: What is this set to if server fails the task?
+    /// If a worker explicitly failed this task, this field contains the worker's identity.
+    /// When the server generates the failure internally this field is set as 'history-service'.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -6037,7 +6212,8 @@ namespace Temporalio.Api.History.V1 {
     public const int ForkEventVersionFieldNumber = 8;
     private long forkEventVersion_;
     /// <summary>
-    /// TODO: ?
+    /// Version of the event where the history branch was forked. Used by multi-cluster replication
+    /// during resets to identify the correct history branch.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -7306,7 +7482,12 @@ namespace Temporalio.Api.History.V1 {
     public const int RequestIdFieldNumber = 3;
     private string requestId_ = "";
     /// <summary>
-    /// TODO ??
+    /// This field is populated from the RecordActivityTaskStartedRequest. Matching service would
+    /// set the request_id on the RecordActivityTaskStartedRequest to a new UUID. This is useful
+    /// in case a RecordActivityTaskStarted call succeed but matching doesn't get that response,
+    /// so matching could retry and history service would return success if the request_id matches.
+    /// In that case, matching will continue to deliver the task to worker. Without this field, history
+    /// service would return AlreadyStarted error, and matching would drop the task.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -10303,7 +10484,6 @@ namespace Temporalio.Api.History.V1 {
     private string cause_ = "";
     /// <summary>
     /// User provided reason for requesting cancellation
-    /// TODO: shall we create a new field with name "reason" and deprecate this one?
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -10318,7 +10498,8 @@ namespace Temporalio.Api.History.V1 {
     public const int ExternalInitiatedEventIdFieldNumber = 2;
     private long externalInitiatedEventId_;
     /// <summary>
-    /// TODO: Is this the ID of the event in the workflow which initiated this cancel, if there was one?
+    /// The ID of the `REQUEST_CANCEL_EXTERNAL_WORKFLOW_EXECUTION_INITIATED` event in the external
+    /// workflow history when the cancellation was requested by another workflow.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -19023,6 +19204,8 @@ namespace Temporalio.Api.History.V1 {
       unsetVersioningOverride_ = other.unsetVersioningOverride_;
       attachedRequestId_ = other.attachedRequestId_;
       attachedCompletionCallbacks_ = other.attachedCompletionCallbacks_.Clone();
+      identity_ = other.identity_;
+      priority_ = other.priority_ != null ? other.priority_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -19067,7 +19250,7 @@ namespace Temporalio.Api.History.V1 {
     public const int AttachedRequestIdFieldNumber = 3;
     private string attachedRequestId_ = "";
     /// <summary>
-    /// Request ID attachedto the running workflow execution so that subsequent requests with same
+    /// Request ID attached to the running workflow execution so that subsequent requests with same
     /// request ID will be deduped.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -19093,6 +19276,37 @@ namespace Temporalio.Api.History.V1 {
       get { return attachedCompletionCallbacks_; }
     }
 
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 5;
+    private string identity_ = "";
+    /// <summary>
+    /// Optional. The identity of the client who initiated the request that created this event.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "priority" field.</summary>
+    public const int PriorityFieldNumber = 6;
+    private global::Temporalio.Api.Common.V1.Priority priority_;
+    /// <summary>
+    /// Priority override upserted in this event. Represents the full priority; not just partial fields.
+    /// Ignored if nil.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.Priority Priority {
+      get { return priority_; }
+      set {
+        priority_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -19112,6 +19326,8 @@ namespace Temporalio.Api.History.V1 {
       if (UnsetVersioningOverride != other.UnsetVersioningOverride) return false;
       if (AttachedRequestId != other.AttachedRequestId) return false;
       if(!attachedCompletionCallbacks_.Equals(other.attachedCompletionCallbacks_)) return false;
+      if (Identity != other.Identity) return false;
+      if (!object.Equals(Priority, other.Priority)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -19123,6 +19339,8 @@ namespace Temporalio.Api.History.V1 {
       if (UnsetVersioningOverride != false) hash ^= UnsetVersioningOverride.GetHashCode();
       if (AttachedRequestId.Length != 0) hash ^= AttachedRequestId.GetHashCode();
       hash ^= attachedCompletionCallbacks_.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (priority_ != null) hash ^= Priority.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -19154,6 +19372,14 @@ namespace Temporalio.Api.History.V1 {
         output.WriteString(AttachedRequestId);
       }
       attachedCompletionCallbacks_.WriteTo(output, _repeated_attachedCompletionCallbacks_codec);
+      if (Identity.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Identity);
+      }
+      if (priority_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(Priority);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -19177,6 +19403,14 @@ namespace Temporalio.Api.History.V1 {
         output.WriteString(AttachedRequestId);
       }
       attachedCompletionCallbacks_.WriteTo(ref output, _repeated_attachedCompletionCallbacks_codec);
+      if (Identity.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Identity);
+      }
+      if (priority_ != null) {
+        output.WriteRawTag(50);
+        output.WriteMessage(Priority);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -19197,6 +19431,12 @@ namespace Temporalio.Api.History.V1 {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(AttachedRequestId);
       }
       size += attachedCompletionCallbacks_.CalculateSize(_repeated_attachedCompletionCallbacks_codec);
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (priority_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Priority);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -19222,6 +19462,15 @@ namespace Temporalio.Api.History.V1 {
         AttachedRequestId = other.AttachedRequestId;
       }
       attachedCompletionCallbacks_.Add(other.attachedCompletionCallbacks_);
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.priority_ != null) {
+        if (priority_ == null) {
+          Priority = new global::Temporalio.Api.Common.V1.Priority();
+        }
+        Priority.MergeFrom(other.Priority);
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -19256,6 +19505,17 @@ namespace Temporalio.Api.History.V1 {
             attachedCompletionCallbacks_.AddEntriesFrom(input, _repeated_attachedCompletionCallbacks_codec);
             break;
           }
+          case 42: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 50: {
+            if (priority_ == null) {
+              Priority = new global::Temporalio.Api.Common.V1.Priority();
+            }
+            input.ReadMessage(Priority);
+            break;
+          }
         }
       }
     #endif
@@ -19288,6 +19548,17 @@ namespace Temporalio.Api.History.V1 {
           }
           case 34: {
             attachedCompletionCallbacks_.AddEntriesFrom(ref input, _repeated_attachedCompletionCallbacks_codec);
+            break;
+          }
+          case 42: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 50: {
+            if (priority_ == null) {
+              Priority = new global::Temporalio.Api.Common.V1.Priority();
+            }
+            input.ReadMessage(Priority);
             break;
           }
         }
@@ -21159,6 +21430,556 @@ namespace Temporalio.Api.History.V1 {
   }
 
   /// <summary>
+  /// Attributes for an event marking that a workflow execution was paused.
+  /// </summary>
+  public sealed partial class WorkflowExecutionPausedEventAttributes : pb::IMessage<WorkflowExecutionPausedEventAttributes>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkflowExecutionPausedEventAttributes> _parser = new pb::MessageParser<WorkflowExecutionPausedEventAttributes>(() => new WorkflowExecutionPausedEventAttributes());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkflowExecutionPausedEventAttributes> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[48]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionPausedEventAttributes() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionPausedEventAttributes(WorkflowExecutionPausedEventAttributes other) : this() {
+      identity_ = other.identity_;
+      reason_ = other.reason_;
+      requestId_ = other.requestId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionPausedEventAttributes Clone() {
+      return new WorkflowExecutionPausedEventAttributes(this);
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 1;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the client who paused the workflow execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "reason" field.</summary>
+    public const int ReasonFieldNumber = 2;
+    private string reason_ = "";
+    /// <summary>
+    /// The reason for pausing the workflow execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Reason {
+      get { return reason_; }
+      set {
+        reason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 3;
+    private string requestId_ = "";
+    /// <summary>
+    /// The request ID of the request that paused the workflow execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkflowExecutionPausedEventAttributes);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkflowExecutionPausedEventAttributes other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Identity != other.Identity) return false;
+      if (Reason != other.Reason) return false;
+      if (RequestId != other.RequestId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (Reason.Length != 0) hash ^= Reason.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Reason);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Reason);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (Reason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Reason);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkflowExecutionPausedEventAttributes other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.Reason.Length != 0) {
+        Reason = other.Reason;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Reason = input.ReadString();
+            break;
+          }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Reason = input.ReadString();
+            break;
+          }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Attributes for an event marking that a workflow execution was unpaused.
+  /// </summary>
+  public sealed partial class WorkflowExecutionUnpausedEventAttributes : pb::IMessage<WorkflowExecutionUnpausedEventAttributes>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkflowExecutionUnpausedEventAttributes> _parser = new pb::MessageParser<WorkflowExecutionUnpausedEventAttributes>(() => new WorkflowExecutionUnpausedEventAttributes());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkflowExecutionUnpausedEventAttributes> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[49]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionUnpausedEventAttributes() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionUnpausedEventAttributes(WorkflowExecutionUnpausedEventAttributes other) : this() {
+      identity_ = other.identity_;
+      reason_ = other.reason_;
+      requestId_ = other.requestId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkflowExecutionUnpausedEventAttributes Clone() {
+      return new WorkflowExecutionUnpausedEventAttributes(this);
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 1;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the client who unpaused the workflow execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "reason" field.</summary>
+    public const int ReasonFieldNumber = 2;
+    private string reason_ = "";
+    /// <summary>
+    /// The reason for unpausing the workflow execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Reason {
+      get { return reason_; }
+      set {
+        reason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 3;
+    private string requestId_ = "";
+    /// <summary>
+    /// The request ID of the request that unpaused the workflow execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkflowExecutionUnpausedEventAttributes);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkflowExecutionUnpausedEventAttributes other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Identity != other.Identity) return false;
+      if (Reason != other.Reason) return false;
+      if (RequestId != other.RequestId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (Reason.Length != 0) hash ^= Reason.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Reason);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Identity.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Identity);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Reason);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (Reason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Reason);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkflowExecutionUnpausedEventAttributes other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.Reason.Length != 0) {
+        Reason = other.Reason;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Reason = input.ReadString();
+            break;
+          }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 18: {
+            Reason = input.ReadString();
+            break;
+          }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// Event marking that an operation was scheduled by a workflow via the ScheduleNexusOperation command.
   /// </summary>
   public sealed partial class NexusOperationScheduledEventAttributes : pb::IMessage<NexusOperationScheduledEventAttributes>
@@ -21175,7 +21996,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[48]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[50]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -21204,6 +22025,8 @@ namespace Temporalio.Api.History.V1 {
       workflowTaskCompletedEventId_ = other.workflowTaskCompletedEventId_;
       requestId_ = other.requestId_;
       endpointId_ = other.endpointId_;
+      scheduleToStartTimeout_ = other.scheduleToStartTimeout_ != null ? other.scheduleToStartTimeout_.Clone() : null;
+      startToCloseTimeout_ = other.startToCloseTimeout_ != null ? other.startToCloseTimeout_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -21358,6 +22181,42 @@ namespace Temporalio.Api.History.V1 {
       }
     }
 
+    /// <summary>Field number for the "schedule_to_start_timeout" field.</summary>
+    public const int ScheduleToStartTimeoutFieldNumber = 10;
+    private global::Google.Protobuf.WellKnownTypes.Duration scheduleToStartTimeout_;
+    /// <summary>
+    /// Schedule-to-start timeout for this operation.
+    /// See ScheduleNexusOperationCommandAttributes.schedule_to_start_timeout for details.
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: "to" is used to indicate interval. --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration ScheduleToStartTimeout {
+      get { return scheduleToStartTimeout_; }
+      set {
+        scheduleToStartTimeout_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "start_to_close_timeout" field.</summary>
+    public const int StartToCloseTimeoutFieldNumber = 11;
+    private global::Google.Protobuf.WellKnownTypes.Duration startToCloseTimeout_;
+    /// <summary>
+    /// Start-to-close timeout for this operation.
+    /// See ScheduleNexusOperationCommandAttributes.start_to_close_timeout for details.
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: "to" is used to indicate interval. --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration StartToCloseTimeout {
+      get { return startToCloseTimeout_; }
+      set {
+        startToCloseTimeout_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -21382,6 +22241,8 @@ namespace Temporalio.Api.History.V1 {
       if (WorkflowTaskCompletedEventId != other.WorkflowTaskCompletedEventId) return false;
       if (RequestId != other.RequestId) return false;
       if (EndpointId != other.EndpointId) return false;
+      if (!object.Equals(ScheduleToStartTimeout, other.ScheduleToStartTimeout)) return false;
+      if (!object.Equals(StartToCloseTimeout, other.StartToCloseTimeout)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -21398,6 +22259,8 @@ namespace Temporalio.Api.History.V1 {
       if (WorkflowTaskCompletedEventId != 0L) hash ^= WorkflowTaskCompletedEventId.GetHashCode();
       if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
       if (EndpointId.Length != 0) hash ^= EndpointId.GetHashCode();
+      if (scheduleToStartTimeout_ != null) hash ^= ScheduleToStartTimeout.GetHashCode();
+      if (startToCloseTimeout_ != null) hash ^= StartToCloseTimeout.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -21449,6 +22312,14 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(74);
         output.WriteString(EndpointId);
       }
+      if (scheduleToStartTimeout_ != null) {
+        output.WriteRawTag(82);
+        output.WriteMessage(ScheduleToStartTimeout);
+      }
+      if (startToCloseTimeout_ != null) {
+        output.WriteRawTag(90);
+        output.WriteMessage(StartToCloseTimeout);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -21492,6 +22363,14 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(74);
         output.WriteString(EndpointId);
       }
+      if (scheduleToStartTimeout_ != null) {
+        output.WriteRawTag(82);
+        output.WriteMessage(ScheduleToStartTimeout);
+      }
+      if (startToCloseTimeout_ != null) {
+        output.WriteRawTag(90);
+        output.WriteMessage(StartToCloseTimeout);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -21526,6 +22405,12 @@ namespace Temporalio.Api.History.V1 {
       }
       if (EndpointId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(EndpointId);
+      }
+      if (scheduleToStartTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ScheduleToStartTimeout);
+      }
+      if (startToCloseTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(StartToCloseTimeout);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -21569,6 +22454,18 @@ namespace Temporalio.Api.History.V1 {
       }
       if (other.EndpointId.Length != 0) {
         EndpointId = other.EndpointId;
+      }
+      if (other.scheduleToStartTimeout_ != null) {
+        if (scheduleToStartTimeout_ == null) {
+          ScheduleToStartTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        ScheduleToStartTimeout.MergeFrom(other.ScheduleToStartTimeout);
+      }
+      if (other.startToCloseTimeout_ != null) {
+        if (startToCloseTimeout_ == null) {
+          StartToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        StartToCloseTimeout.MergeFrom(other.StartToCloseTimeout);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -21625,6 +22522,20 @@ namespace Temporalio.Api.History.V1 {
           }
           case 74: {
             EndpointId = input.ReadString();
+            break;
+          }
+          case 82: {
+            if (scheduleToStartTimeout_ == null) {
+              ScheduleToStartTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ScheduleToStartTimeout);
+            break;
+          }
+          case 90: {
+            if (startToCloseTimeout_ == null) {
+              StartToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(StartToCloseTimeout);
             break;
           }
         }
@@ -21684,6 +22595,20 @@ namespace Temporalio.Api.History.V1 {
             EndpointId = input.ReadString();
             break;
           }
+          case 82: {
+            if (scheduleToStartTimeout_ == null) {
+              ScheduleToStartTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ScheduleToStartTimeout);
+            break;
+          }
+          case 90: {
+            if (startToCloseTimeout_ == null) {
+              StartToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(StartToCloseTimeout);
+            break;
+          }
         }
       }
     }
@@ -21711,7 +22636,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[49]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[51]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -22031,7 +22956,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[50]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[52]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -22316,7 +23241,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[51]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[53]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -22600,7 +23525,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[52]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[54]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -22884,7 +23809,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[53]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[55]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -23165,7 +24090,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[54]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[56]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -23398,7 +24323,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[55]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[57]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -23671,7 +24596,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[56]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[58]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -23997,7 +24922,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[57]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[59]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -24197,6 +25122,12 @@ namespace Temporalio.Api.History.V1 {
         case AttributesOneofCase.NexusOperationCancelRequestFailedEventAttributes:
           NexusOperationCancelRequestFailedEventAttributes = other.NexusOperationCancelRequestFailedEventAttributes.Clone();
           break;
+        case AttributesOneofCase.WorkflowExecutionPausedEventAttributes:
+          WorkflowExecutionPausedEventAttributes = other.WorkflowExecutionPausedEventAttributes.Clone();
+          break;
+        case AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes:
+          WorkflowExecutionUnpausedEventAttributes = other.WorkflowExecutionUnpausedEventAttributes.Clone();
+          break;
       }
 
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -24251,7 +25182,8 @@ namespace Temporalio.Api.History.V1 {
     public const int VersionFieldNumber = 4;
     private long version_;
     /// <summary>
-    /// TODO: What is this? Appears unused by SDKs
+    /// Failover version of the event, used by the server for multi-cluster replication and history
+    /// versioning. SDKs generally ignore this field.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -24266,7 +25198,8 @@ namespace Temporalio.Api.History.V1 {
     public const int TaskIdFieldNumber = 5;
     private long taskId_;
     /// <summary>
-    /// TODO: What is this? Appears unused by SDKs
+    /// Identifier used by the service to order replication and transfer tasks associated with this
+    /// event. SDKs generally ignore this field.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -25015,6 +25948,30 @@ namespace Temporalio.Api.History.V1 {
       }
     }
 
+    /// <summary>Field number for the "workflow_execution_paused_event_attributes" field.</summary>
+    public const int WorkflowExecutionPausedEventAttributesFieldNumber = 63;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes WorkflowExecutionPausedEventAttributes {
+      get { return attributesCase_ == AttributesOneofCase.WorkflowExecutionPausedEventAttributes ? (global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes) attributes_ : null; }
+      set {
+        attributes_ = value;
+        attributesCase_ = value == null ? AttributesOneofCase.None : AttributesOneofCase.WorkflowExecutionPausedEventAttributes;
+      }
+    }
+
+    /// <summary>Field number for the "workflow_execution_unpaused_event_attributes" field.</summary>
+    public const int WorkflowExecutionUnpausedEventAttributesFieldNumber = 64;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes WorkflowExecutionUnpausedEventAttributes {
+      get { return attributesCase_ == AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes ? (global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes) attributes_ : null; }
+      set {
+        attributes_ = value;
+        attributesCase_ = value == null ? AttributesOneofCase.None : AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes;
+      }
+    }
+
     private object attributes_;
     /// <summary>Enum of possible cases for the "attributes" oneof.</summary>
     public enum AttributesOneofCase {
@@ -25076,6 +26033,8 @@ namespace Temporalio.Api.History.V1 {
       WorkflowExecutionOptionsUpdatedEventAttributes = 60,
       NexusOperationCancelRequestCompletedEventAttributes = 61,
       NexusOperationCancelRequestFailedEventAttributes = 62,
+      WorkflowExecutionPausedEventAttributes = 63,
+      WorkflowExecutionUnpausedEventAttributes = 64,
     }
     private AttributesOneofCase attributesCase_ = AttributesOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -25171,6 +26130,8 @@ namespace Temporalio.Api.History.V1 {
       if (!object.Equals(WorkflowExecutionOptionsUpdatedEventAttributes, other.WorkflowExecutionOptionsUpdatedEventAttributes)) return false;
       if (!object.Equals(NexusOperationCancelRequestCompletedEventAttributes, other.NexusOperationCancelRequestCompletedEventAttributes)) return false;
       if (!object.Equals(NexusOperationCancelRequestFailedEventAttributes, other.NexusOperationCancelRequestFailedEventAttributes)) return false;
+      if (!object.Equals(WorkflowExecutionPausedEventAttributes, other.WorkflowExecutionPausedEventAttributes)) return false;
+      if (!object.Equals(WorkflowExecutionUnpausedEventAttributes, other.WorkflowExecutionUnpausedEventAttributes)) return false;
       if (AttributesCase != other.AttributesCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -25244,6 +26205,8 @@ namespace Temporalio.Api.History.V1 {
       if (attributesCase_ == AttributesOneofCase.WorkflowExecutionOptionsUpdatedEventAttributes) hash ^= WorkflowExecutionOptionsUpdatedEventAttributes.GetHashCode();
       if (attributesCase_ == AttributesOneofCase.NexusOperationCancelRequestCompletedEventAttributes) hash ^= NexusOperationCancelRequestCompletedEventAttributes.GetHashCode();
       if (attributesCase_ == AttributesOneofCase.NexusOperationCancelRequestFailedEventAttributes) hash ^= NexusOperationCancelRequestFailedEventAttributes.GetHashCode();
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionPausedEventAttributes) hash ^= WorkflowExecutionPausedEventAttributes.GetHashCode();
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes) hash ^= WorkflowExecutionUnpausedEventAttributes.GetHashCode();
       hash ^= (int) attributesCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -25510,6 +26473,14 @@ namespace Temporalio.Api.History.V1 {
       if (attributesCase_ == AttributesOneofCase.NexusOperationCancelRequestFailedEventAttributes) {
         output.WriteRawTag(242, 3);
         output.WriteMessage(NexusOperationCancelRequestFailedEventAttributes);
+      }
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionPausedEventAttributes) {
+        output.WriteRawTag(250, 3);
+        output.WriteMessage(WorkflowExecutionPausedEventAttributes);
+      }
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes) {
+        output.WriteRawTag(130, 4);
+        output.WriteMessage(WorkflowExecutionUnpausedEventAttributes);
       }
       if (WorkerMayIgnore != false) {
         output.WriteRawTag(224, 18);
@@ -25778,6 +26749,14 @@ namespace Temporalio.Api.History.V1 {
         output.WriteRawTag(242, 3);
         output.WriteMessage(NexusOperationCancelRequestFailedEventAttributes);
       }
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionPausedEventAttributes) {
+        output.WriteRawTag(250, 3);
+        output.WriteMessage(WorkflowExecutionPausedEventAttributes);
+      }
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes) {
+        output.WriteRawTag(130, 4);
+        output.WriteMessage(WorkflowExecutionUnpausedEventAttributes);
+      }
       if (WorkerMayIgnore != false) {
         output.WriteRawTag(224, 18);
         output.WriteBool(WorkerMayIgnore);
@@ -25989,6 +26968,12 @@ namespace Temporalio.Api.History.V1 {
       }
       if (attributesCase_ == AttributesOneofCase.NexusOperationCancelRequestFailedEventAttributes) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(NexusOperationCancelRequestFailedEventAttributes);
+      }
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionPausedEventAttributes) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(WorkflowExecutionPausedEventAttributes);
+      }
+      if (attributesCase_ == AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(WorkflowExecutionUnpausedEventAttributes);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -26372,6 +27357,18 @@ namespace Temporalio.Api.History.V1 {
             NexusOperationCancelRequestFailedEventAttributes = new global::Temporalio.Api.History.V1.NexusOperationCancelRequestFailedEventAttributes();
           }
           NexusOperationCancelRequestFailedEventAttributes.MergeFrom(other.NexusOperationCancelRequestFailedEventAttributes);
+          break;
+        case AttributesOneofCase.WorkflowExecutionPausedEventAttributes:
+          if (WorkflowExecutionPausedEventAttributes == null) {
+            WorkflowExecutionPausedEventAttributes = new global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes();
+          }
+          WorkflowExecutionPausedEventAttributes.MergeFrom(other.WorkflowExecutionPausedEventAttributes);
+          break;
+        case AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes:
+          if (WorkflowExecutionUnpausedEventAttributes == null) {
+            WorkflowExecutionUnpausedEventAttributes = new global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes();
+          }
+          WorkflowExecutionUnpausedEventAttributes.MergeFrom(other.WorkflowExecutionUnpausedEventAttributes);
           break;
       }
 
@@ -26924,6 +27921,24 @@ namespace Temporalio.Api.History.V1 {
             }
             input.ReadMessage(subBuilder);
             NexusOperationCancelRequestFailedEventAttributes = subBuilder;
+            break;
+          }
+          case 506: {
+            global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes subBuilder = new global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes();
+            if (attributesCase_ == AttributesOneofCase.WorkflowExecutionPausedEventAttributes) {
+              subBuilder.MergeFrom(WorkflowExecutionPausedEventAttributes);
+            }
+            input.ReadMessage(subBuilder);
+            WorkflowExecutionPausedEventAttributes = subBuilder;
+            break;
+          }
+          case 514: {
+            global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes subBuilder = new global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes();
+            if (attributesCase_ == AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes) {
+              subBuilder.MergeFrom(WorkflowExecutionUnpausedEventAttributes);
+            }
+            input.ReadMessage(subBuilder);
+            WorkflowExecutionUnpausedEventAttributes = subBuilder;
             break;
           }
           case 2400: {
@@ -27492,6 +28507,24 @@ namespace Temporalio.Api.History.V1 {
             NexusOperationCancelRequestFailedEventAttributes = subBuilder;
             break;
           }
+          case 506: {
+            global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes subBuilder = new global::Temporalio.Api.History.V1.WorkflowExecutionPausedEventAttributes();
+            if (attributesCase_ == AttributesOneofCase.WorkflowExecutionPausedEventAttributes) {
+              subBuilder.MergeFrom(WorkflowExecutionPausedEventAttributes);
+            }
+            input.ReadMessage(subBuilder);
+            WorkflowExecutionPausedEventAttributes = subBuilder;
+            break;
+          }
+          case 514: {
+            global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes subBuilder = new global::Temporalio.Api.History.V1.WorkflowExecutionUnpausedEventAttributes();
+            if (attributesCase_ == AttributesOneofCase.WorkflowExecutionUnpausedEventAttributes) {
+              subBuilder.MergeFrom(WorkflowExecutionUnpausedEventAttributes);
+            }
+            input.ReadMessage(subBuilder);
+            WorkflowExecutionUnpausedEventAttributes = subBuilder;
+            break;
+          }
           case 2400: {
             WorkerMayIgnore = input.ReadBool();
             break;
@@ -27528,7 +28561,7 @@ namespace Temporalio.Api.History.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[58]; }
+      get { return global::Temporalio.Api.History.V1.MessageReflection.Descriptor.MessageTypes[60]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

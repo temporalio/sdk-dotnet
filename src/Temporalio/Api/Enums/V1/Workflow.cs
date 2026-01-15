@@ -25,66 +25,77 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiR0ZW1wb3JhbC9hcGkvZW51bXMvdjEvd29ya2Zsb3cucHJvdG8SFXRlbXBv",
-            "cmFsLmFwaS5lbnVtcy52MSqLAgoVV29ya2Zsb3dJZFJldXNlUG9saWN5EigK",
+            "cmFsLmFwaS5lbnVtcy52MSqPAgoVV29ya2Zsb3dJZFJldXNlUG9saWN5EigK",
             "JFdPUktGTE9XX0lEX1JFVVNFX1BPTElDWV9VTlNQRUNJRklFRBAAEiwKKFdP",
             "UktGTE9XX0lEX1JFVVNFX1BPTElDWV9BTExPV19EVVBMSUNBVEUQARI4CjRX",
             "T1JLRkxPV19JRF9SRVVTRV9QT0xJQ1lfQUxMT1dfRFVQTElDQVRFX0ZBSUxF",
             "RF9PTkxZEAISLQopV09SS0ZMT1dfSURfUkVVU0VfUE9MSUNZX1JFSkVDVF9E",
-            "VVBMSUNBVEUQAxIxCi1XT1JLRkxPV19JRF9SRVVTRV9QT0xJQ1lfVEVSTUlO",
-            "QVRFX0lGX1JVTk5JTkcQBCrPAQoYV29ya2Zsb3dJZENvbmZsaWN0UG9saWN5",
-            "EisKJ1dPUktGTE9XX0lEX0NPTkZMSUNUX1BPTElDWV9VTlNQRUNJRklFRBAA",
-            "EiQKIFdPUktGTE9XX0lEX0NPTkZMSUNUX1BPTElDWV9GQUlMEAESLAooV09S",
-            "S0ZMT1dfSURfQ09ORkxJQ1RfUE9MSUNZX1VTRV9FWElTVElORxACEjIKLldP",
-            "UktGTE9XX0lEX0NPTkZMSUNUX1BPTElDWV9URVJNSU5BVEVfRVhJU1RJTkcQ",
-            "AyqkAQoRUGFyZW50Q2xvc2VQb2xpY3kSIwofUEFSRU5UX0NMT1NFX1BPTElD",
-            "WV9VTlNQRUNJRklFRBAAEiEKHVBBUkVOVF9DTE9TRV9QT0xJQ1lfVEVSTUlO",
-            "QVRFEAESHwobUEFSRU5UX0NMT1NFX1BPTElDWV9BQkFORE9OEAISJgoiUEFS",
-            "RU5UX0NMT1NFX1BPTElDWV9SRVFVRVNUX0NBTkNFTBADKr0BChZDb250aW51",
-            "ZUFzTmV3SW5pdGlhdG9yEikKJUNPTlRJTlVFX0FTX05FV19JTklUSUFUT1Jf",
-            "VU5TUEVDSUZJRUQQABImCiJDT05USU5VRV9BU19ORVdfSU5JVElBVE9SX1dP",
-            "UktGTE9XEAESIwofQ09OVElOVUVfQVNfTkVXX0lOSVRJQVRPUl9SRVRSWRAC",
-            "EisKJ0NPTlRJTlVFX0FTX05FV19JTklUSUFUT1JfQ1JPTl9TQ0hFRFVMRRAD",
-            "KuUCChdXb3JrZmxvd0V4ZWN1dGlvblN0YXR1cxIpCiVXT1JLRkxPV19FWEVD",
-            "VVRJT05fU1RBVFVTX1VOU1BFQ0lGSUVEEAASJQohV09SS0ZMT1dfRVhFQ1VU",
-            "SU9OX1NUQVRVU19SVU5OSU5HEAESJwojV09SS0ZMT1dfRVhFQ1VUSU9OX1NU",
-            "QVRVU19DT01QTEVURUQQAhIkCiBXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVT",
-            "X0ZBSUxFRBADEiYKIldPUktGTE9XX0VYRUNVVElPTl9TVEFUVVNfQ0FOQ0VM",
-            "RUQQBBIoCiRXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX1RFUk1JTkFURUQQ",
-            "BRIuCipXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX0NPTlRJTlVFRF9BU19O",
-            "RVcQBhInCiNXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX1RJTUVEX09VVBAH",
-            "KoQCChRQZW5kaW5nQWN0aXZpdHlTdGF0ZRImCiJQRU5ESU5HX0FDVElWSVRZ",
-            "X1NUQVRFX1VOU1BFQ0lGSUVEEAASJAogUEVORElOR19BQ1RJVklUWV9TVEFU",
-            "RV9TQ0hFRFVMRUQQARIiCh5QRU5ESU5HX0FDVElWSVRZX1NUQVRFX1NUQVJU",
-            "RUQQAhIrCidQRU5ESU5HX0FDVElWSVRZX1NUQVRFX0NBTkNFTF9SRVFVRVNU",
-            "RUQQAxIhCh1QRU5ESU5HX0FDVElWSVRZX1NUQVRFX1BBVVNFRBAEEioKJlBF",
-            "TkRJTkdfQUNUSVZJVFlfU1RBVEVfUEFVU0VfUkVRVUVTVEVEEAUqmwEKGFBl",
-            "bmRpbmdXb3JrZmxvd1Rhc2tTdGF0ZRIrCidQRU5ESU5HX1dPUktGTE9XX1RB",
-            "U0tfU1RBVEVfVU5TUEVDSUZJRUQQABIpCiVQRU5ESU5HX1dPUktGTE9XX1RB",
-            "U0tfU1RBVEVfU0NIRURVTEVEEAESJwojUEVORElOR19XT1JLRkxPV19UQVNL",
-            "X1NUQVRFX1NUQVJURUQQAiqXAQoWSGlzdG9yeUV2ZW50RmlsdGVyVHlwZRIp",
-            "CiVISVNUT1JZX0VWRU5UX0ZJTFRFUl9UWVBFX1VOU1BFQ0lGSUVEEAASJwoj",
-            "SElTVE9SWV9FVkVOVF9GSUxURVJfVFlQRV9BTExfRVZFTlQQARIpCiVISVNU",
-            "T1JZX0VWRU5UX0ZJTFRFUl9UWVBFX0NMT1NFX0VWRU5UEAIqnwIKClJldHJ5",
-            "U3RhdGUSGwoXUkVUUllfU1RBVEVfVU5TUEVDSUZJRUQQABIbChdSRVRSWV9T",
-            "VEFURV9JTl9QUk9HUkVTUxABEiUKIVJFVFJZX1NUQVRFX05PTl9SRVRSWUFC",
-            "TEVfRkFJTFVSRRACEhcKE1JFVFJZX1NUQVRFX1RJTUVPVVQQAxIoCiRSRVRS",
-            "WV9TVEFURV9NQVhJTVVNX0FUVEVNUFRTX1JFQUNIRUQQBBIkCiBSRVRSWV9T",
-            "VEFURV9SRVRSWV9QT0xJQ1lfTk9UX1NFVBAFEiUKIVJFVFJZX1NUQVRFX0lO",
-            "VEVSTkFMX1NFUlZFUl9FUlJPUhAGEiAKHFJFVFJZX1NUQVRFX0NBTkNFTF9S",
-            "RVFVRVNURUQQByqwAQoLVGltZW91dFR5cGUSHAoYVElNRU9VVF9UWVBFX1VO",
-            "U1BFQ0lGSUVEEAASHwobVElNRU9VVF9UWVBFX1NUQVJUX1RPX0NMT1NFEAES",
-            "IgoeVElNRU9VVF9UWVBFX1NDSEVEVUxFX1RPX1NUQVJUEAISIgoeVElNRU9V",
-            "VF9UWVBFX1NDSEVEVUxFX1RPX0NMT1NFEAMSGgoWVElNRU9VVF9UWVBFX0hF",
-            "QVJUQkVBVBAEKn8KElZlcnNpb25pbmdCZWhhdmlvchIjCh9WRVJTSU9OSU5H",
-            "X0JFSEFWSU9SX1VOU1BFQ0lGSUVEEAASHgoaVkVSU0lPTklOR19CRUhBVklP",
-            "Ul9QSU5ORUQQARIkCiBWRVJTSU9OSU5HX0JFSEFWSU9SX0FVVE9fVVBHUkFE",
-            "RRACQoUBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCDVdvcmtmbG93UHJv",
-            "dG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVt",
-            "cG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1z",
-            "OjpWMWIGcHJvdG8z"));
+            "VVBMSUNBVEUQAxI1Ci1XT1JLRkxPV19JRF9SRVVTRV9QT0xJQ1lfVEVSTUlO",
+            "QVRFX0lGX1JVTk5JTkcQBBoCCAEqzwEKGFdvcmtmbG93SWRDb25mbGljdFBv",
+            "bGljeRIrCidXT1JLRkxPV19JRF9DT05GTElDVF9QT0xJQ1lfVU5TUEVDSUZJ",
+            "RUQQABIkCiBXT1JLRkxPV19JRF9DT05GTElDVF9QT0xJQ1lfRkFJTBABEiwK",
+            "KFdPUktGTE9XX0lEX0NPTkZMSUNUX1BPTElDWV9VU0VfRVhJU1RJTkcQAhIy",
+            "Ci5XT1JLRkxPV19JRF9DT05GTElDVF9QT0xJQ1lfVEVSTUlOQVRFX0VYSVNU",
+            "SU5HEAMqpAEKEVBhcmVudENsb3NlUG9saWN5EiMKH1BBUkVOVF9DTE9TRV9Q",
+            "T0xJQ1lfVU5TUEVDSUZJRUQQABIhCh1QQVJFTlRfQ0xPU0VfUE9MSUNZX1RF",
+            "Uk1JTkFURRABEh8KG1BBUkVOVF9DTE9TRV9QT0xJQ1lfQUJBTkRPThACEiYK",
+            "IlBBUkVOVF9DTE9TRV9QT0xJQ1lfUkVRVUVTVF9DQU5DRUwQAyq9AQoWQ29u",
+            "dGludWVBc05ld0luaXRpYXRvchIpCiVDT05USU5VRV9BU19ORVdfSU5JVElB",
+            "VE9SX1VOU1BFQ0lGSUVEEAASJgoiQ09OVElOVUVfQVNfTkVXX0lOSVRJQVRP",
+            "Ul9XT1JLRkxPVxABEiMKH0NPTlRJTlVFX0FTX05FV19JTklUSUFUT1JfUkVU",
+            "UlkQAhIrCidDT05USU5VRV9BU19ORVdfSU5JVElBVE9SX0NST05fU0NIRURV",
+            "TEUQAyqLAwoXV29ya2Zsb3dFeGVjdXRpb25TdGF0dXMSKQolV09SS0ZMT1df",
+            "RVhFQ1VUSU9OX1NUQVRVU19VTlNQRUNJRklFRBAAEiUKIVdPUktGTE9XX0VY",
+            "RUNVVElPTl9TVEFUVVNfUlVOTklORxABEicKI1dPUktGTE9XX0VYRUNVVElP",
+            "Tl9TVEFUVVNfQ09NUExFVEVEEAISJAogV09SS0ZMT1dfRVhFQ1VUSU9OX1NU",
+            "QVRVU19GQUlMRUQQAxImCiJXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX0NB",
+            "TkNFTEVEEAQSKAokV09SS0ZMT1dfRVhFQ1VUSU9OX1NUQVRVU19URVJNSU5B",
+            "VEVEEAUSLgoqV09SS0ZMT1dfRVhFQ1VUSU9OX1NUQVRVU19DT05USU5VRURf",
+            "QVNfTkVXEAYSJwojV09SS0ZMT1dfRVhFQ1VUSU9OX1NUQVRVU19USU1FRF9P",
+            "VVQQBxIkCiBXT1JLRkxPV19FWEVDVVRJT05fU1RBVFVTX1BBVVNFRBAIKoQC",
+            "ChRQZW5kaW5nQWN0aXZpdHlTdGF0ZRImCiJQRU5ESU5HX0FDVElWSVRZX1NU",
+            "QVRFX1VOU1BFQ0lGSUVEEAASJAogUEVORElOR19BQ1RJVklUWV9TVEFURV9T",
+            "Q0hFRFVMRUQQARIiCh5QRU5ESU5HX0FDVElWSVRZX1NUQVRFX1NUQVJURUQQ",
+            "AhIrCidQRU5ESU5HX0FDVElWSVRZX1NUQVRFX0NBTkNFTF9SRVFVRVNURUQQ",
+            "AxIhCh1QRU5ESU5HX0FDVElWSVRZX1NUQVRFX1BBVVNFRBAEEioKJlBFTkRJ",
+            "TkdfQUNUSVZJVFlfU1RBVEVfUEFVU0VfUkVRVUVTVEVEEAUqmwEKGFBlbmRp",
+            "bmdXb3JrZmxvd1Rhc2tTdGF0ZRIrCidQRU5ESU5HX1dPUktGTE9XX1RBU0tf",
+            "U1RBVEVfVU5TUEVDSUZJRUQQABIpCiVQRU5ESU5HX1dPUktGTE9XX1RBU0tf",
+            "U1RBVEVfU0NIRURVTEVEEAESJwojUEVORElOR19XT1JLRkxPV19UQVNLX1NU",
+            "QVRFX1NUQVJURUQQAiqXAQoWSGlzdG9yeUV2ZW50RmlsdGVyVHlwZRIpCiVI",
+            "SVNUT1JZX0VWRU5UX0ZJTFRFUl9UWVBFX1VOU1BFQ0lGSUVEEAASJwojSElT",
+            "VE9SWV9FVkVOVF9GSUxURVJfVFlQRV9BTExfRVZFTlQQARIpCiVISVNUT1JZ",
+            "X0VWRU5UX0ZJTFRFUl9UWVBFX0NMT1NFX0VWRU5UEAIqnwIKClJldHJ5U3Rh",
+            "dGUSGwoXUkVUUllfU1RBVEVfVU5TUEVDSUZJRUQQABIbChdSRVRSWV9TVEFU",
+            "RV9JTl9QUk9HUkVTUxABEiUKIVJFVFJZX1NUQVRFX05PTl9SRVRSWUFCTEVf",
+            "RkFJTFVSRRACEhcKE1JFVFJZX1NUQVRFX1RJTUVPVVQQAxIoCiRSRVRSWV9T",
+            "VEFURV9NQVhJTVVNX0FUVEVNUFRTX1JFQUNIRUQQBBIkCiBSRVRSWV9TVEFU",
+            "RV9SRVRSWV9QT0xJQ1lfTk9UX1NFVBAFEiUKIVJFVFJZX1NUQVRFX0lOVEVS",
+            "TkFMX1NFUlZFUl9FUlJPUhAGEiAKHFJFVFJZX1NUQVRFX0NBTkNFTF9SRVFV",
+            "RVNURUQQByqwAQoLVGltZW91dFR5cGUSHAoYVElNRU9VVF9UWVBFX1VOU1BF",
+            "Q0lGSUVEEAASHwobVElNRU9VVF9UWVBFX1NUQVJUX1RPX0NMT1NFEAESIgoe",
+            "VElNRU9VVF9UWVBFX1NDSEVEVUxFX1RPX1NUQVJUEAISIgoeVElNRU9VVF9U",
+            "WVBFX1NDSEVEVUxFX1RPX0NMT1NFEAMSGgoWVElNRU9VVF9UWVBFX0hFQVJU",
+            "QkVBVBAEKn8KElZlcnNpb25pbmdCZWhhdmlvchIjCh9WRVJTSU9OSU5HX0JF",
+            "SEFWSU9SX1VOU1BFQ0lGSUVEEAASHgoaVkVSU0lPTklOR19CRUhBVklPUl9Q",
+            "SU5ORUQQARIkCiBWRVJTSU9OSU5HX0JFSEFWSU9SX0FVVE9fVVBHUkFERRAC",
+            "KowBCh9Db250aW51ZUFzTmV3VmVyc2lvbmluZ0JlaGF2aW9yEjMKL0NPTlRJ",
+            "TlVFX0FTX05FV19WRVJTSU9OSU5HX0JFSEFWSU9SX1VOU1BFQ0lGSUVEEAAS",
+            "NAowQ09OVElOVUVfQVNfTkVXX1ZFUlNJT05JTkdfQkVIQVZJT1JfQVVUT19V",
+            "UEdSQURFEAEqxQIKGlN1Z2dlc3RDb250aW51ZUFzTmV3UmVhc29uEi4KKlNV",
+            "R0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9VTlNQRUNJRklFRBAAEjkK",
+            "NVNVR0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9ISVNUT1JZX1NJWkVf",
+            "VE9PX0xBUkdFEAESOgo2U1VHR0VTVF9DT05USU5VRV9BU19ORVdfUkVBU09O",
+            "X1RPT19NQU5ZX0hJU1RPUllfRVZFTlRTEAISMwovU1VHR0VTVF9DT05USU5V",
+            "RV9BU19ORVdfUkVBU09OX1RPT19NQU5ZX1VQREFURVMQAxJLCkdTVUdHRVNU",
+            "X0NPTlRJTlVFX0FTX05FV19SRUFTT05fVEFSR0VUX1dPUktFUl9ERVBMT1lN",
+            "RU5UX1ZFUlNJT05fQ0hBTkdFRBAEQoUBChhpby50ZW1wb3JhbC5hcGkuZW51",
+            "bXMudjFCDVdvcmtmbG93UHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2Vu",
+            "dW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1w",
+            "b3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.WorkflowIdConflictPolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), typeof(global::Temporalio.Api.Enums.V1.VersioningBehavior), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.WorkflowIdConflictPolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), typeof(global::Temporalio.Api.Enums.V1.VersioningBehavior), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior), typeof(global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason), }, null, null));
     }
     #endregion
 
@@ -113,11 +124,14 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("WORKFLOW_ID_REUSE_POLICY_REJECT_DUPLICATE")] RejectDuplicate = 3,
     /// <summary>
-    /// This option belongs in WorkflowIdConflictPolicy but is here for backwards compatibility.
-    /// If specified, it acts like ALLOW_DUPLICATE, but also the WorkflowId*Conflict*Policy on
-    /// the request is treated as WORKFLOW_ID_CONFLICT_POLICY_TERMINATE_EXISTING.
-    /// If no running workflow, then the behavior is the same as ALLOW_DUPLICATE.
+    /// Terminate the current Workflow if one is already running; otherwise allow reusing the
+    /// Workflow ID. When using this option, `WorkflowIdConflictPolicy` must be left unspecified.
+    ///
+    /// Deprecated. Instead, set `WorkflowIdReusePolicy` to `ALLOW_DUPLICATE` and
+    /// `WorkflowIdConflictPolicy` to `TERMINATE_EXISTING`. Note that `WorkflowIdConflictPolicy`
+    /// requires Temporal Server v1.24.0 or later.
     /// </summary>
+    [global::System.ObsoleteAttribute]
     [pbr::OriginalName("WORKFLOW_ID_REUSE_POLICY_TERMINATE_IF_RUNNING")] TerminateIfRunning = 4,
   }
 
@@ -194,6 +208,7 @@ namespace Temporalio.Api.Enums.V1 {
     [pbr::OriginalName("WORKFLOW_EXECUTION_STATUS_TERMINATED")] Terminated = 5,
     [pbr::OriginalName("WORKFLOW_EXECUTION_STATUS_CONTINUED_AS_NEW")] ContinuedAsNew = 6,
     [pbr::OriginalName("WORKFLOW_EXECUTION_STATUS_TIMED_OUT")] TimedOut = 7,
+    [pbr::OriginalName("WORKFLOW_EXECUTION_STATUS_PAUSED")] Paused = 8,
   }
 
   public enum PendingActivityState {
@@ -259,9 +274,15 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("VERSIONING_BEHAVIOR_UNSPECIFIED")] Unspecified = 0,
     /// <summary>
-    /// Workflow will start on the Current Deployment Version of its Task Queue, and then
-    /// will be pinned to that same Deployment Version until completion (the Version that
-    /// this Workflow is pinned to is specified in `versioning_info.version`).
+    /// Workflow will start on its Target Version and then will be pinned to that same Deployment
+    /// Version until completion (the Version that this Workflow is pinned to is specified in
+    /// `versioning_info.version` and is the Pinned Version of the Workflow).
+    ///
+    /// The workflow's Target Version is the Current Version of its Task Queue, or, if the
+    /// Task Queue has a Ramping Version with non-zero Ramp Percentage `P`, the workflow's Target
+    /// Version has a P% chance of being the Ramping Version. Whether a workflow falls into the
+    /// Ramping group depends on its Workflow ID and and the Ramp Percentage.
+    ///
     /// This behavior eliminates most of compatibility concerns users face when changing their code.
     /// Patching is not needed when pinned workflows code change.
     /// Can be overridden explicitly via `UpdateWorkflowExecutionOptions` API to move the
@@ -273,8 +294,13 @@ namespace Temporalio.Api.Enums.V1 {
     /// </summary>
     [pbr::OriginalName("VERSIONING_BEHAVIOR_PINNED")] Pinned = 1,
     /// <summary>
-    /// Workflow will automatically move to the Current Deployment Version of its Task Queue when the
-    /// next workflow task is dispatched.
+    /// Workflow will automatically move to its Target Version when the next workflow task is dispatched.
+    ///
+    /// The workflow's Target Version is the Current Version of its Task Queue, or, if the
+    /// Task Queue has a Ramping Version with non-zero Ramp Percentage `P`, the workflow's Target
+    /// Version has a P% chance of being the Ramping Version. Whether a workflow falls into the
+    /// Ramping group depends on its Workflow ID and and the Ramp Percentage.
+    ///
     /// AutoUpgrade behavior is suitable for long-running workflows as it allows them to move to the
     /// latest Deployment Version, but the user still needs to use Patching to keep the new code
     /// compatible with prior versions for changed workflow types.
@@ -282,13 +308,55 @@ namespace Temporalio.Api.Enums.V1 {
     /// execution (as specified in versioning_info.version based on the last completed
     /// workflow task). Exception to this would be when the activity Task Queue workers are not
     /// present in the workflow's Deployment Version, in which case, the activity will be sent to a
-    /// different Deployment Version according to the Current Deployment Version of its own task
-    /// queue.
-    /// Workflows stuck on a backlogged activity will still auto-upgrade if the Current Deployment
-    /// Version of their Task Queue changes, without having to wait for the backlogged activity to
-    /// complete on the old Version.
+    /// different Deployment Version according to the Current or Ramping Deployment Version of its own
+    /// Task Queue.
+    /// Workflows stuck on a backlogged activity will still auto-upgrade if their Target Version
+    /// changes, without having to wait for the backlogged activity to complete on the old Version.
     /// </summary>
     [pbr::OriginalName("VERSIONING_BEHAVIOR_AUTO_UPGRADE")] AutoUpgrade = 2,
+  }
+
+  /// <summary>
+  /// Experimental. Defines the versioning behavior to be used by the first task of a new workflow run in a continue-as-new chain.
+  /// </summary>
+  public enum ContinueAsNewVersioningBehavior {
+    [pbr::OriginalName("CONTINUE_AS_NEW_VERSIONING_BEHAVIOR_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Start the new run with AutoUpgrade behavior. Use the Target Version of the workflow's task queue at
+    /// start-time, as AutoUpgrade workflows do. After the first workflow task completes, use whatever
+    /// Versioning Behavior the workflow is annotated with in the workflow code.
+    ///
+    /// Note that if the previous workflow had a Pinned override, that override will be inherited by the
+    /// new workflow run regardless of the ContinueAsNewVersioningBehavior specified in the continue-as-new
+    /// command. If a Pinned override is inherited by the new run, and the new run starts with AutoUpgrade
+    /// behavior, the base version of the new run will be the Target Version as described above, but the
+    /// effective version will be whatever is specified by the Versioning Override until the override is removed.
+    /// </summary>
+    [pbr::OriginalName("CONTINUE_AS_NEW_VERSIONING_BEHAVIOR_AUTO_UPGRADE")] AutoUpgrade = 1,
+  }
+
+  /// <summary>
+  /// SuggestContinueAsNewReason specifies why SuggestContinueAsNew is true.
+  /// </summary>
+  public enum SuggestContinueAsNewReason {
+    [pbr::OriginalName("SUGGEST_CONTINUE_AS_NEW_REASON_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Workflow History size is getting too large.
+    /// </summary>
+    [pbr::OriginalName("SUGGEST_CONTINUE_AS_NEW_REASON_HISTORY_SIZE_TOO_LARGE")] HistorySizeTooLarge = 1,
+    /// <summary>
+    /// Workflow History event count is getting too large.
+    /// </summary>
+    [pbr::OriginalName("SUGGEST_CONTINUE_AS_NEW_REASON_TOO_MANY_HISTORY_EVENTS")] TooManyHistoryEvents = 2,
+    /// <summary>
+    /// Workflow's count of completed plus in-flight updates is too large.
+    /// </summary>
+    [pbr::OriginalName("SUGGEST_CONTINUE_AS_NEW_REASON_TOO_MANY_UPDATES")] TooManyUpdates = 3,
+    /// <summary>
+    /// Workflow's Target Worker Deployment Version is different from its
+    /// Current Version and the workflow is versioned.
+    /// </summary>
+    [pbr::OriginalName("SUGGEST_CONTINUE_AS_NEW_REASON_TARGET_WORKER_DEPLOYMENT_VERSION_CHANGED")] TargetWorkerDeploymentVersionChanged = 4,
   }
 
   #endregion
