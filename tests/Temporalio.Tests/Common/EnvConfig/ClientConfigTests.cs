@@ -523,6 +523,13 @@ client_key_path = ""{keyPath.Replace('\\', '/')}""
                 var options = profile.ToClientConnectionOptions();
                 Assert.NotNull(options.Tls);
                 Assert.Equal("custom-server", options.Tls.Domain);
+                // Verify certificate data is loaded from files
+                Assert.NotNull(options.Tls.ServerRootCACert);
+                Assert.Equal("ca-pem-data", System.Text.Encoding.UTF8.GetString(options.Tls.ServerRootCACert));
+                Assert.NotNull(options.Tls.ClientCert);
+                Assert.Equal("client-crt-data", System.Text.Encoding.UTF8.GetString(options.Tls.ClientCert));
+                Assert.NotNull(options.Tls.ClientPrivateKey);
+                Assert.Equal("client-key-data", System.Text.Encoding.UTF8.GetString(options.Tls.ClientPrivateKey));
             }
             finally
             {
