@@ -1210,7 +1210,7 @@ on a common platform. If you are using .NET framework, you may have to explicitl
 because `AnyCPU` will not choose the proper library.
 
 Currently we only support [RIDs](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog)
-`linux-arm64`, `linux-x64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, `win-arm64`, and `win-x64`.
+`linux-arm64`, `linux-x64`, `linux-musl-arm64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, `win-arm64`, and `win-x64`.
 Any other platforms needed will require a custom build.
 
 The native shared library on Windows does require a Visual C++ runtime. Some containers, such as Windows Nano Server, do

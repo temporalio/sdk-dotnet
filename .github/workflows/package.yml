@@ -18,6 +18,7 @@ jobs:
             ubuntu-latest,
             ubuntu-arm,
             alpine-latest,
+            alpine-arm,
             macos-intel,
             macos-arm,
             windows-latest,
@@ -44,6 +45,13 @@ jobs:
             container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
             runsOn: ubuntu-latest
+          - os: alpine-arm
+            out-file: libtemporalio_sdk_core_c_bridge.so
+            out-prefix: linux-musl-arm64
+            # Need Alpine container since GH runner doesn't have one
+            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
+            runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
             out-file: libtemporalio_sdk_core_c_bridge.dylib
             out-prefix: osx-x64
@@ -92,7 +100,7 @@ jobs:
         run: cargo build --manifest-path src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/Cargo.toml --profile release-lto
 
       - name: Build (Docker non-Alpine)
-        if: ${{ matrix.container && matrix.os != 'alpine-latest' }}
+        if: ${{ matrix.container && matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
         run: |
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             ${{ matrix.container }} \
@@ -106,7 +114,7 @@ jobs:
             '
 
       - name: Build (Docker Alpine)
-        if: ${{ matrix.container && matrix.os == 'alpine-latest' }}
+        if: ${{ matrix.container && (matrix.os == 'alpine-latest' || matrix.os == 'alpine-arm') }}
         run: |
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             ${{ matrix.container }} \
@@ -175,6 +183,7 @@ jobs:
             ubuntu-latest,
             ubuntu-arm,
             alpine-latest,
+            alpine-arm,
             macos-intel,
             macos-arm,
             windows-latest,
@@ -186,6 +195,9 @@ jobs:
           - os: alpine-latest
             container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
             runsOn: ubuntu-latest
+          - os: alpine-arm
+            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+            runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
             runsOn: macos-15-intel
           - os: macos-arm
@@ -208,7 +220,7 @@ jobs:
 
       - name: Setup .NET (non-Alpine)
         uses: actions/setup-dotnet@v4
-        if: ${{ matrix.os != 'alpine-latest' }}
+        if: ${{ matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
         with:
           # Specific .NET version required because GitHub macos ARM image has
           # bad pre-installed .NET version
