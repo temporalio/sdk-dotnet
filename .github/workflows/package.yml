@@ -4,6 +4,10 @@ on:
     branches:
       - main
       - "releases/*"
+  # TODO: Remove before merging, temporary trigger for PR testing
+  pull_request:
+    branches:
+      - main
   workflow_dispatch: {}
 permissions:
   contents: read
