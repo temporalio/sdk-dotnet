@@ -197,10 +197,10 @@ jobs:
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
           - os: alpine-latest
-            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+            # Run in Docker manually to avoid JS action limitations
             runsOn: ubuntu-latest
           - os: alpine-arm
-            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+            # Run in Docker manually to avoid JS action limitations on ARM64
             runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
             runsOn: macos-15-intel
@@ -209,7 +209,6 @@ jobs:
           - os: windows-arm
             runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
-    container: ${{ matrix.container }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -230,8 +229,18 @@ jobs:
           # bad pre-installed .NET version
           dotnet-version: 10.x
 
-      - name: Run smoke test (non-Windows)
-        if: ${{ matrix.os != 'windows-latest' && matrix.os != 'windows-arm' }}
+      - name: Run smoke test (Alpine)
+        if: ${{ matrix.os == 'alpine-latest' || matrix.os == 'alpine-arm' }}
+        run: |
+          docker run --rm -v "$(pwd):/workspace" -w /workspace \
+            mcr.microsoft.com/dotnet/sdk:10.0-alpine \
+            sh -c ' \
+                dotnet add tests/Temporalio.SmokeTest package Temporalio -s "/workspace/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease \
+             && dotnet run --project tests/Temporalio.SmokeTest \
+            '
+
+      - name: Run smoke test (non-Windows, non-Alpine)
+        if: ${{ matrix.os != 'windows-latest' && matrix.os != 'windows-arm' && matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
         run: |
           dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
