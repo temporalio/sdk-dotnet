@@ -197,7 +197,6 @@ jobs:
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
           - os: alpine-latest
-            # Run in Docker manually to avoid JS action limitations
             runsOn: ubuntu-latest
           - os: alpine-arm
             # Run in Docker manually to avoid JS action limitations on ARM64
@@ -223,14 +222,15 @@ jobs:
 
       - name: Setup .NET (non-Alpine)
         uses: actions/setup-dotnet@v4
-        if: ${{ matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
+        if: ${{ !contains(matrix.os, 'alpine') }}
         with:
           # Specific .NET version required because GitHub macos ARM image has
           # bad pre-installed .NET version
           dotnet-version: 10.x
 
       - name: Run smoke test (Alpine)
-        if: ${{ matrix.os == 'alpine-latest' || matrix.os == 'alpine-arm' }}
+        if: ${{ contains(matrix.os, 'alpine') }}
+        # Use Docker specifically for Alpine ARM 64 to avoid JS action limitations
         run: |
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             mcr.microsoft.com/dotnet/sdk:10.0-alpine \
@@ -239,14 +239,14 @@ jobs:
              && dotnet run --project tests/Temporalio.SmokeTest \
             '
 
-      - name: Run smoke test (non-Windows, non-Alpine)
-        if: ${{ matrix.os != 'windows-latest' && matrix.os != 'windows-arm' && matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
+      - name: Run smoke test (Linux/macOS)
+        if: ${{ !contains(matrix.os, 'alpine') && !contains(matrix.os, 'windows') }}
         run: |
           dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
 
       - name: Run smoke test (Windows)
-        if: ${{ matrix.os == 'windows-latest' || matrix.os == 'windows-arm' }}
+        if: ${{ contains(matrix.os, 'windows') }}
         run: |
           dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
