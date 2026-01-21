@@ -18,6 +18,7 @@ jobs:
             ubuntu-latest,
             ubuntu-arm,
             alpine-latest,
+            alpine-arm,
             macos-intel,
             macos-arm,
             windows-latest,
@@ -44,6 +45,13 @@ jobs:
             container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
             protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-x86_64.zip
             runsOn: ubuntu-latest
+          - os: alpine-arm
+            out-file: libtemporalio_sdk_core_c_bridge.so
+            out-prefix: linux-musl-arm64
+            # Need Alpine container since GH runner doesn't have one
+            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+            protobuf-url: https://github.com/protocolbuffers/protobuf/releases/download/v22.3/protoc-22.3-linux-aarch_64.zip
+            runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
             out-file: libtemporalio_sdk_core_c_bridge.dylib
             out-prefix: osx-x64
@@ -92,7 +100,7 @@ jobs:
         run: cargo build --manifest-path src/Temporalio/Bridge/sdk-core/crates/sdk-core-c-bridge/Cargo.toml --profile release-lto
 
       - name: Build (Docker non-Alpine)
-        if: ${{ matrix.container && matrix.os != 'alpine-latest' }}
+        if: ${{ matrix.container && matrix.os != 'alpine-latest' && matrix.os != 'alpine-arm' }}
         run: |
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             ${{ matrix.container }} \
@@ -106,7 +114,7 @@ jobs:
             '
 
       - name: Build (Docker Alpine)
-        if: ${{ matrix.container && matrix.os == 'alpine-latest' }}
+        if: ${{ matrix.container && (matrix.os == 'alpine-latest' || matrix.os == 'alpine-arm') }}
         run: |
           docker run --rm -v "$(pwd):/workspace" -w /workspace \
             ${{ matrix.container }} \
@@ -175,6 +183,7 @@ jobs:
             ubuntu-latest,
             ubuntu-arm,
             alpine-latest,
+            alpine-arm,
             macos-intel,
             macos-arm,
             windows-latest,
@@ -184,8 +193,10 @@ jobs:
           - os: ubuntu-arm
             runsOn: ubuntu-24.04-arm64-2-core
           - os: alpine-latest
-            container: mcr.microsoft.com/dotnet/sdk:10.0-alpine
             runsOn: ubuntu-latest
+          - os: alpine-arm
+            # Run in Docker manually to avoid JS action limitations on ARM64
+            runsOn: ubuntu-24.04-arm64-2-core
           - os: macos-intel
             runsOn: macos-15-intel
           - os: macos-arm
@@ -193,7 +204,6 @@ jobs:
           - os: windows-arm
             runsOn: windows-11-arm
     runs-on: ${{ matrix.runsOn || matrix.os }}
-    container: ${{ matrix.container }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -208,20 +218,31 @@ jobs:
 
       - name: Setup .NET (non-Alpine)
         uses: actions/setup-dotnet@v4
-        if: ${{ matrix.os != 'alpine-latest' }}
+        if: ${{ !contains(matrix.os, 'alpine') }}
         with:
           # Specific .NET version required because GitHub macos ARM image has
           # bad pre-installed .NET version
           dotnet-version: 10.x
 
-      - name: Run smoke test (non-Windows)
-        if: ${{ matrix.os != 'windows-latest' && matrix.os != 'windows-arm' }}
+      - name: Run smoke test (Alpine)
+        if: ${{ contains(matrix.os, 'alpine') }}
+        # Use Docker specifically for Alpine ARM 64 to avoid JS action limitations
+        run: |
+          docker run --rm -v "$(pwd):/workspace" -w /workspace \
+            mcr.microsoft.com/dotnet/sdk:10.0-alpine \
+            sh -c ' \
+                dotnet add tests/Temporalio.SmokeTest package Temporalio -s "/workspace/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease \
+             && dotnet run --project tests/Temporalio.SmokeTest \
+            '
+
+      - name: Run smoke test (Linux/macOS)
+        if: ${{ !contains(matrix.os, 'alpine') && !contains(matrix.os, 'windows') }}
         run: |
           dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
 
       - name: Run smoke test (Windows)
-        if: ${{ matrix.os == 'windows-latest' || matrix.os == 'windows-arm' }}
+        if: ${{ contains(matrix.os, 'windows') }}
         run: |
           dotnet add tests/Temporalio.SmokeTest package Temporalio -s "$env:GITHUB_WORKSPACE/nuget-package/Temporalio/bin/Release;https://api.nuget.org/v3/index.json" --prerelease
           dotnet run --project tests/Temporalio.SmokeTest
