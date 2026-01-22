@@ -260,11 +260,11 @@ namespace Temporalio.Worker
         public Task ExecuteAsync(
             Func<Task> untilComplete, CancellationToken stoppingToken = default) =>
             ExecuteInternalAsync(
-                () => untilComplete().ContinueWith(
-                    _ => ValueTuple.Create(),
-                    default,
-                    TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion,
-                    TaskScheduler.Current),
+                async () =>
+                {
+                    await untilComplete().ConfigureAwait(false);
+                    return ValueTuple.Create();
+                },
                 stoppingToken);
 
         /// <summary>

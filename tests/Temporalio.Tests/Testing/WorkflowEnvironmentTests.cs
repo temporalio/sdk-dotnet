@@ -50,6 +50,17 @@ public class WorkflowEnvironmentTests : TestBase
         public Task SomeSignalAsync() => Task.CompletedTask;
     }
 
+    [Workflow]
+    public class VoidWorkflowThatFails
+    {
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            await Task.Yield();
+            throw new ApplicationFailureException("Intentional failure", nonRetryable: true);
+        }
+    }
+
     [OnlyIntelFact]
     public async Task StartTimeSkippingAsync_SlowWorkflowAutoSkip_ProperlySkips()
     {
@@ -289,5 +300,28 @@ public class WorkflowEnvironmentTests : TestBase
                 TypedSearchAttributes = attrVals,
             });
         Assert.Equal(attrVals, (await handle.DescribeAsync()).TypedSearchAttributes);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_VoidWorkflowFailure_PropagatesException()
+    {
+        // This test verifies that ExecuteAsync(Func<Task>) properly propagates exceptions
+        // from void-returning workflows. This is a regression test for a bug where
+        // ContinueWith with OnlyOnRanToCompletion caused exceptions to be swallowed.
+        string queue = $"tq-{Guid.NewGuid()}";
+        await using var env = await WorkflowEnvironment.StartLocalAsync();
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions(queue).AddWorkflow<VoidWorkflowThatFails>());
+
+        var exc = await Assert.ThrowsAsync<WorkflowFailedException>(async () =>
+            await worker.ExecuteAsync(async () =>
+                await env.Client.ExecuteWorkflowAsync(
+                    (VoidWorkflowThatFails wf) => wf.RunAsync(),
+                    new(id: $"wf-{Guid.NewGuid()}", taskQueue: queue))));
+
+        Assert.NotNull(exc.InnerException);
+        var appExc = Assert.IsType<ApplicationFailureException>(exc.InnerException);
+        Assert.Equal("Intentional failure", appExc.Message);
     }
 }
