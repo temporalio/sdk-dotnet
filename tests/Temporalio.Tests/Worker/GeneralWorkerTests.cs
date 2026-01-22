@@ -12,7 +12,7 @@ public class GeneralWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
-    public async Task ExecuteAsync_VoidWorkflowFailure_PropagatesException()
+    public async Task ExecuteAsync_PropagatesException()
     {
         // This test verifies that ExecuteAsync(Func<Task>) properly propagates exceptions
         // from void-returning tasks. This is a regression test for a bug where
