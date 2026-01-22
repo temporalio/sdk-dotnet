@@ -186,7 +186,7 @@ namespace Temporalio.Workflows
                         {
                             CurrentCount--;
                             return true;
-                        } 
+                        }
                         return false;
                     },
                     default,
