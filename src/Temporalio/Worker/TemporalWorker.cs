@@ -61,10 +61,15 @@ namespace Temporalio.Worker
                 // Ensure later accesses use the modified version of options.
                 options = Options;
 
-                var bridgeClient = client.BridgeClientProvider.BridgeClient ??
-                                   throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
+                // Get runtime and client handle from bridge client provider
+                var bridgeProvider = client.BridgeClientProvider as Client.IBridgeClientProviderInternal
+                    ?? throw new InvalidOperationException("Client does not support internal bridge access");
+                var runtime = bridgeProvider.Runtime ?? Runtime.TemporalRuntime.Default.Runtime;
+                var clientHandle = bridgeProvider.ClientHandle
+                    ?? throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
                 BridgeWorker = new(
-                    (Bridge.Client)bridgeClient,
+                    runtime,
+                    clientHandle,
                     client.Options.Namespace,
                     options,
                     loggerFactory,
@@ -181,11 +186,13 @@ namespace Temporalio.Worker
 
             set
             {
-                var bridgeClient = value.BridgeClientProvider.BridgeClient ??
-                    throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
+                var bridgeProvider = value.BridgeClientProvider as Client.IBridgeClientProviderInternal
+                    ?? throw new InvalidOperationException("Client does not support internal bridge access");
+                var clientHandle = bridgeProvider.ClientHandle
+                    ?? throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
                 lock (clientLock)
                 {
-                    BridgeWorker.ReplaceClient((Bridge.Client)bridgeClient);
+                    BridgeWorker.ReplaceClient(clientHandle);
                     client = value;
                 }
             }

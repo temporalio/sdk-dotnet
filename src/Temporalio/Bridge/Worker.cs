@@ -16,7 +16,8 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Initializes a new instance of the <see cref="Worker"/> class.
         /// </summary>
-        /// <param name="client">Client for the worker.</param>
+        /// <param name="runtime">Runtime for the worker.</param>
+        /// <param name="clientHandle">Client handle for the worker.</param>
         /// <param name="namespace">Namespace for the worker.</param>
         /// <param name="options">Options for the worker.</param>
         /// <param name="loggerFactory">Logger factory, used instead of the one in options by
@@ -26,12 +27,13 @@ namespace Temporalio.Bridge
         /// If any of the options are invalid including improperly defined workflows/activities.
         /// </exception>
         public Worker(
-            Client client,
+            Runtime runtime,
+            SafeClientHandle clientHandle,
             string @namespace,
             Temporalio.Worker.TemporalWorkerOptions options,
             ILoggerFactory loggerFactory,
             IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null)
-            : this(client.Runtime, CreateWorkerHandle(client, @namespace, options, loggerFactory, clientPlugins))
+            : this(runtime, CreateWorkerHandle(runtime, clientHandle, @namespace, options, loggerFactory, clientPlugins))
         {
         }
 
@@ -98,8 +100,8 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Replace the client.
         /// </summary>
-        /// <param name="client">New client.</param>
-        public void ReplaceClient(Client client)
+        /// <param name="clientHandle">New client handle.</param>
+        public void ReplaceClient(SafeClientHandle clientHandle)
         {
             using (var scope = new Scope())
             {
@@ -107,7 +109,7 @@ namespace Temporalio.Bridge
                 {
                     Interop.Methods.temporal_core_worker_replace_client(
                         scope.Pointer(Handle),
-                        scope.Pointer(client.Handle));
+                        scope.Pointer(clientHandle));
                 }
             }
         }
@@ -434,7 +436,8 @@ namespace Temporalio.Bridge
         }
 
         private static unsafe SafeHandleReference<SafeWorkerHandle> CreateWorkerHandle(
-            Client client,
+            Runtime runtime,
+            SafeClientHandle clientHandle,
             string @namespace,
             Temporalio.Worker.TemporalWorkerOptions options,
             ILoggerFactory loggerFactory,
@@ -443,13 +446,13 @@ namespace Temporalio.Bridge
             using Scope scope = new();
 
             var workerOrFail = Interop.Methods.temporal_core_worker_new(
-                scope.Pointer(client.Handle),
+                scope.Pointer(clientHandle),
                 scope.Pointer(options.ToInteropOptions(scope, @namespace, loggerFactory, clientPlugins)));
 
             if (workerOrFail.fail != null)
             {
                 string failStr;
-                using (var byteArray = new ByteArray(client.Runtime, workerOrFail.fail))
+                using (var byteArray = new ByteArray(runtime, workerOrFail.fail))
                 {
                     failStr = byteArray.ToUTF8();
                 }
