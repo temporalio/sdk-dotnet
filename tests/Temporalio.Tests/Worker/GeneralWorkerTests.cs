@@ -1,3 +1,4 @@
+using Temporalio.Activities;
 using Temporalio.Worker;
 using Xunit;
 using Xunit.Abstractions;
@@ -17,7 +18,9 @@ public class GeneralWorkerTests : WorkflowEnvironmentTestBase
         // This test verifies that ExecuteAsync(Func<Task>) properly propagates exceptions
         // from void-returning tasks. This is a regression test for a bug where
         // ContinueWith with OnlyOnRanToCompletion caused exceptions to be swallowed.
+        [Activity]
         static void Ignored() => throw new NotImplementedException();
+
         using var worker = new TemporalWorker(
             Env.Client,
             new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").AddActivity(Ignored));
