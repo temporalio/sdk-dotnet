@@ -2760,11 +2760,11 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Env.Client.StartWorkflowAsync(
                     (PatchSearchAttributeWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
-                {
-                    TypedSearchAttributes = new SearchAttributeCollection.Builder().
+                    {
+                        TypedSearchAttributes = new SearchAttributeCollection.Builder().
                         Set(AttrKeywordList, new[] { "SomeKeywordA", "SomeKeywordB" }).
                         ToSearchAttributeCollection(),
-                });
+                    });
                 await handle.GetResultAsync();
                 var desc = await handle.DescribeAsync();
                 Assert.Equal(
