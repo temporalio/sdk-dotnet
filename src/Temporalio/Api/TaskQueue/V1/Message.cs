@@ -100,14 +100,18 @@ namespace Temporalio.Api.TaskQueue.V1 {
             "IogBCg9SYXRlTGltaXRDb25maWcSOAoKcmF0ZV9saW1pdBgBIAEoCzIkLnRl",
             "bXBvcmFsLmFwaS50YXNrcXVldWUudjEuUmF0ZUxpbWl0EjsKCG1ldGFkYXRh",
             "GAIgASgLMikudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Db25maWdNZXRh",
-            "ZGF0YSKtAQoPVGFza1F1ZXVlQ29uZmlnEkQKEHF1ZXVlX3JhdGVfbGltaXQY",
+            "ZGF0YSLZAgoPVGFza1F1ZXVlQ29uZmlnEkQKEHF1ZXVlX3JhdGVfbGltaXQY",
             "ASABKAsyKi50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlJhdGVMaW1pdENv",
             "bmZpZxJUCiBmYWlybmVzc19rZXlzX3JhdGVfbGltaXRfZGVmYXVsdBgCIAEo",
             "CzIqLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUmF0ZUxpbWl0Q29uZmln",
-            "QpgBChxpby50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxQgxNZXNzYWdlUHJv",
-            "dG9QAVopZ28udGVtcG9yYWwuaW8vYXBpL3Rhc2txdWV1ZS92MTt0YXNrcXVl",
-            "dWWqAhtUZW1wb3JhbGlvLkFwaS5UYXNrUXVldWUuVjHqAh5UZW1wb3JhbGlv",
-            "OjpBcGk6OlRhc2tRdWV1ZTo6VjFiBnByb3RvMw=="));
+            "EmoKGWZhaXJuZXNzX3dlaWdodF9vdmVycmlkZXMYAyADKAsyRy50ZW1wb3Jh",
+            "bC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZUNvbmZpZy5GYWlybmVzc1dl",
+            "aWdodE92ZXJyaWRlc0VudHJ5Gj4KHEZhaXJuZXNzV2VpZ2h0T3ZlcnJpZGVz",
+            "RW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgCOgI4AUKYAQocaW8u",
+            "dGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MUIMTWVzc2FnZVByb3RvUAFaKWdv",
+            "LnRlbXBvcmFsLmlvL2FwaS90YXNrcXVldWUvdjE7dGFza3F1ZXVlqgIbVGVt",
+            "cG9yYWxpby5BcGkuVGFza1F1ZXVlLlYx6gIeVGVtcG9yYWxpbzo6QXBpOjpU",
+            "YXNrUXVldWU6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.WrappersReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -135,7 +139,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.RateLimit), global::Temporalio.Api.TaskQueue.V1.RateLimit.Parser, new[]{ "RequestsPerSecond" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.ConfigMetadata), global::Temporalio.Api.TaskQueue.V1.ConfigMetadata.Parser, new[]{ "Reason", "UpdateIdentity", "UpdateTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.RateLimitConfig), global::Temporalio.Api.TaskQueue.V1.RateLimitConfig.Parser, new[]{ "RateLimit", "Metadata" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig), global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig.Parser, new[]{ "QueueRateLimit", "FairnessKeysRateLimitDefault" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig), global::Temporalio.Api.TaskQueue.V1.TaskQueueConfig.Parser, new[]{ "QueueRateLimit", "FairnessKeysRateLimitDefault", "FairnessWeightOverrides" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, })
           }));
     }
     #endregion
@@ -6395,6 +6399,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
     public TaskQueueConfig(TaskQueueConfig other) : this() {
       queueRateLimit_ = other.queueRateLimit_ != null ? other.queueRateLimit_.Clone() : null;
       fairnessKeysRateLimitDefault_ = other.fairnessKeysRateLimitDefault_ != null ? other.fairnessKeysRateLimitDefault_.Clone() : null;
+      fairnessWeightOverrides_ = other.fairnessWeightOverrides_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -6434,6 +6439,20 @@ namespace Temporalio.Api.TaskQueue.V1 {
       }
     }
 
+    /// <summary>Field number for the "fairness_weight_overrides" field.</summary>
+    public const int FairnessWeightOverridesFieldNumber = 3;
+    private static readonly pbc::MapField<string, float>.Codec _map_fairnessWeightOverrides_codec
+        = new pbc::MapField<string, float>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForFloat(21, 0F), 26);
+    private readonly pbc::MapField<string, float> fairnessWeightOverrides_ = new pbc::MapField<string, float>();
+    /// <summary>
+    /// If set, overrides the fairness weights for the corresponding fairness keys.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, float> FairnessWeightOverrides {
+      get { return fairnessWeightOverrides_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -6451,6 +6470,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       }
       if (!object.Equals(QueueRateLimit, other.QueueRateLimit)) return false;
       if (!object.Equals(FairnessKeysRateLimitDefault, other.FairnessKeysRateLimitDefault)) return false;
+      if (!FairnessWeightOverrides.Equals(other.FairnessWeightOverrides)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6460,6 +6480,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       int hash = 1;
       if (queueRateLimit_ != null) hash ^= QueueRateLimit.GetHashCode();
       if (fairnessKeysRateLimitDefault_ != null) hash ^= FairnessKeysRateLimitDefault.GetHashCode();
+      hash ^= FairnessWeightOverrides.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6486,6 +6507,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(FairnessKeysRateLimitDefault);
       }
+      fairnessWeightOverrides_.WriteTo(output, _map_fairnessWeightOverrides_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6504,6 +6526,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(FairnessKeysRateLimitDefault);
       }
+      fairnessWeightOverrides_.WriteTo(ref output, _map_fairnessWeightOverrides_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -6520,6 +6543,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
       if (fairnessKeysRateLimitDefault_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(FairnessKeysRateLimitDefault);
       }
+      size += fairnessWeightOverrides_.CalculateSize(_map_fairnessWeightOverrides_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -6544,6 +6568,7 @@ namespace Temporalio.Api.TaskQueue.V1 {
         }
         FairnessKeysRateLimitDefault.MergeFrom(other.FairnessKeysRateLimitDefault);
       }
+      fairnessWeightOverrides_.MergeFrom(other.fairnessWeightOverrides_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -6573,6 +6598,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
             input.ReadMessage(FairnessKeysRateLimitDefault);
             break;
           }
+          case 26: {
+            fairnessWeightOverrides_.AddEntriesFrom(input, _map_fairnessWeightOverrides_codec);
+            break;
+          }
         }
       }
     #endif
@@ -6600,6 +6629,10 @@ namespace Temporalio.Api.TaskQueue.V1 {
               FairnessKeysRateLimitDefault = new global::Temporalio.Api.TaskQueue.V1.RateLimitConfig();
             }
             input.ReadMessage(FairnessKeysRateLimitDefault);
+            break;
+          }
+          case 26: {
+            fairnessWeightOverrides_.AddEntriesFrom(ref input, _map_fairnessWeightOverrides_codec);
             break;
           }
         }

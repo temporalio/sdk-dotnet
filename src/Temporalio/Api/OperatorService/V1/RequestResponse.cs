@@ -56,42 +56,43 @@ namespace Temporalio.Api.OperatorService.V1 {
             "FAoMbmFtZXNwYWNlX2lkGAIgASgJEjkKFm5hbWVzcGFjZV9kZWxldGVfZGVs",
             "YXkYAyABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24iNAoXRGVsZXRl",
             "TmFtZXNwYWNlUmVzcG9uc2USGQoRZGVsZXRlZF9uYW1lc3BhY2UYASABKAki",
-            "hAEKH0FkZE9yVXBkYXRlUmVtb3RlQ2x1c3RlclJlcXVlc3QSGAoQZnJvbnRl",
+            "oAEKH0FkZE9yVXBkYXRlUmVtb3RlQ2x1c3RlclJlcXVlc3QSGAoQZnJvbnRl",
             "bmRfYWRkcmVzcxgBIAEoCRIoCiBlbmFibGVfcmVtb3RlX2NsdXN0ZXJfY29u",
-            "bmVjdGlvbhgCIAEoCBIdChVmcm9udGVuZF9odHRwX2FkZHJlc3MYAyABKAki",
-            "IgogQWRkT3JVcGRhdGVSZW1vdGVDbHVzdGVyUmVzcG9uc2UiMgoaUmVtb3Zl",
-            "UmVtb3RlQ2x1c3RlclJlcXVlc3QSFAoMY2x1c3Rlcl9uYW1lGAEgASgJIh0K",
-            "G1JlbW92ZVJlbW90ZUNsdXN0ZXJSZXNwb25zZSJBChNMaXN0Q2x1c3RlcnNS",
-            "ZXF1ZXN0EhEKCXBhZ2Vfc2l6ZRgBIAEoBRIXCg9uZXh0X3BhZ2VfdG9rZW4Y",
-            "AiABKAwicwoUTGlzdENsdXN0ZXJzUmVzcG9uc2USQgoIY2x1c3RlcnMYASAD",
-            "KAsyMC50ZW1wb3JhbC5hcGkub3BlcmF0b3JzZXJ2aWNlLnYxLkNsdXN0ZXJN",
-            "ZXRhZGF0YRIXCg9uZXh0X3BhZ2VfdG9rZW4YBCABKAwiwAEKD0NsdXN0ZXJN",
-            "ZXRhZGF0YRIUCgxjbHVzdGVyX25hbWUYASABKAkSEgoKY2x1c3Rlcl9pZBgC",
-            "IAEoCRIPCgdhZGRyZXNzGAMgASgJEhQKDGh0dHBfYWRkcmVzcxgHIAEoCRIg",
-            "Chhpbml0aWFsX2ZhaWxvdmVyX3ZlcnNpb24YBCABKAMSGwoTaGlzdG9yeV9z",
-            "aGFyZF9jb3VudBgFIAEoBRIdChVpc19jb25uZWN0aW9uX2VuYWJsZWQYBiAB",
-            "KAgiJQoXR2V0TmV4dXNFbmRwb2ludFJlcXVlc3QSCgoCaWQYASABKAkiTQoY",
-            "R2V0TmV4dXNFbmRwb2ludFJlc3BvbnNlEjEKCGVuZHBvaW50GAEgASgLMh8u",
-            "dGVtcG9yYWwuYXBpLm5leHVzLnYxLkVuZHBvaW50Ik8KGkNyZWF0ZU5leHVz",
-            "RW5kcG9pbnRSZXF1ZXN0EjEKBHNwZWMYASABKAsyIy50ZW1wb3JhbC5hcGku",
-            "bmV4dXMudjEuRW5kcG9pbnRTcGVjIlAKG0NyZWF0ZU5leHVzRW5kcG9pbnRS",
-            "ZXNwb25zZRIxCghlbmRwb2ludBgBIAEoCzIfLnRlbXBvcmFsLmFwaS5uZXh1",
-            "cy52MS5FbmRwb2ludCJsChpVcGRhdGVOZXh1c0VuZHBvaW50UmVxdWVzdBIK",
-            "CgJpZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgDEjEKBHNwZWMYAyABKAsyIy50",
-            "ZW1wb3JhbC5hcGkubmV4dXMudjEuRW5kcG9pbnRTcGVjIlAKG1VwZGF0ZU5l",
-            "eHVzRW5kcG9pbnRSZXNwb25zZRIxCghlbmRwb2ludBgBIAEoCzIfLnRlbXBv",
-            "cmFsLmFwaS5uZXh1cy52MS5FbmRwb2ludCI5ChpEZWxldGVOZXh1c0VuZHBv",
-            "aW50UmVxdWVzdBIKCgJpZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgDIh0KG0Rl",
-            "bGV0ZU5leHVzRW5kcG9pbnRSZXNwb25zZSJVChlMaXN0TmV4dXNFbmRwb2lu",
-            "dHNSZXF1ZXN0EhEKCXBhZ2Vfc2l6ZRgBIAEoBRIXCg9uZXh0X3BhZ2VfdG9r",
-            "ZW4YAiABKAwSDAoEbmFtZRgDIAEoCSJpChpMaXN0TmV4dXNFbmRwb2ludHNS",
-            "ZXNwb25zZRIXCg9uZXh0X3BhZ2VfdG9rZW4YASABKAwSMgoJZW5kcG9pbnRz",
-            "GAIgAygLMh8udGVtcG9yYWwuYXBpLm5leHVzLnYxLkVuZHBvaW50Qr4BCiJp",
-            "by50ZW1wb3JhbC5hcGkub3BlcmF0b3JzZXJ2aWNlLnYxQhRSZXF1ZXN0UmVz",
-            "cG9uc2VQcm90b1ABWjVnby50ZW1wb3JhbC5pby9hcGkvb3BlcmF0b3JzZXJ2",
-            "aWNlL3YxO29wZXJhdG9yc2VydmljZaoCIVRlbXBvcmFsaW8uQXBpLk9wZXJh",
-            "dG9yU2VydmljZS5WMeoCJFRlbXBvcmFsaW86OkFwaTo6T3BlcmF0b3JTZXJ2",
-            "aWNlOjpWMWIGcHJvdG8z"));
+            "bmVjdGlvbhgCIAEoCBIdChVmcm9udGVuZF9odHRwX2FkZHJlc3MYAyABKAkS",
+            "GgoSZW5hYmxlX3JlcGxpY2F0aW9uGAQgASgIIiIKIEFkZE9yVXBkYXRlUmVt",
+            "b3RlQ2x1c3RlclJlc3BvbnNlIjIKGlJlbW92ZVJlbW90ZUNsdXN0ZXJSZXF1",
+            "ZXN0EhQKDGNsdXN0ZXJfbmFtZRgBIAEoCSIdChtSZW1vdmVSZW1vdGVDbHVz",
+            "dGVyUmVzcG9uc2UiQQoTTGlzdENsdXN0ZXJzUmVxdWVzdBIRCglwYWdlX3Np",
+            "emUYASABKAUSFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgMInMKFExpc3RDbHVz",
+            "dGVyc1Jlc3BvbnNlEkIKCGNsdXN0ZXJzGAEgAygLMjAudGVtcG9yYWwuYXBp",
+            "Lm9wZXJhdG9yc2VydmljZS52MS5DbHVzdGVyTWV0YWRhdGESFwoPbmV4dF9w",
+            "YWdlX3Rva2VuGAQgASgMIuABCg9DbHVzdGVyTWV0YWRhdGESFAoMY2x1c3Rl",
+            "cl9uYW1lGAEgASgJEhIKCmNsdXN0ZXJfaWQYAiABKAkSDwoHYWRkcmVzcxgD",
+            "IAEoCRIUCgxodHRwX2FkZHJlc3MYByABKAkSIAoYaW5pdGlhbF9mYWlsb3Zl",
+            "cl92ZXJzaW9uGAQgASgDEhsKE2hpc3Rvcnlfc2hhcmRfY291bnQYBSABKAUS",
+            "HQoVaXNfY29ubmVjdGlvbl9lbmFibGVkGAYgASgIEh4KFmlzX3JlcGxpY2F0",
+            "aW9uX2VuYWJsZWQYCCABKAgiJQoXR2V0TmV4dXNFbmRwb2ludFJlcXVlc3QS",
+            "CgoCaWQYASABKAkiTQoYR2V0TmV4dXNFbmRwb2ludFJlc3BvbnNlEjEKCGVu",
+            "ZHBvaW50GAEgASgLMh8udGVtcG9yYWwuYXBpLm5leHVzLnYxLkVuZHBvaW50",
+            "Ik8KGkNyZWF0ZU5leHVzRW5kcG9pbnRSZXF1ZXN0EjEKBHNwZWMYASABKAsy",
+            "Iy50ZW1wb3JhbC5hcGkubmV4dXMudjEuRW5kcG9pbnRTcGVjIlAKG0NyZWF0",
+            "ZU5leHVzRW5kcG9pbnRSZXNwb25zZRIxCghlbmRwb2ludBgBIAEoCzIfLnRl",
+            "bXBvcmFsLmFwaS5uZXh1cy52MS5FbmRwb2ludCJsChpVcGRhdGVOZXh1c0Vu",
+            "ZHBvaW50UmVxdWVzdBIKCgJpZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgDEjEK",
+            "BHNwZWMYAyABKAsyIy50ZW1wb3JhbC5hcGkubmV4dXMudjEuRW5kcG9pbnRT",
+            "cGVjIlAKG1VwZGF0ZU5leHVzRW5kcG9pbnRSZXNwb25zZRIxCghlbmRwb2lu",
+            "dBgBIAEoCzIfLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5FbmRwb2ludCI5ChpE",
+            "ZWxldGVOZXh1c0VuZHBvaW50UmVxdWVzdBIKCgJpZBgBIAEoCRIPCgd2ZXJz",
+            "aW9uGAIgASgDIh0KG0RlbGV0ZU5leHVzRW5kcG9pbnRSZXNwb25zZSJVChlM",
+            "aXN0TmV4dXNFbmRwb2ludHNSZXF1ZXN0EhEKCXBhZ2Vfc2l6ZRgBIAEoBRIX",
+            "Cg9uZXh0X3BhZ2VfdG9rZW4YAiABKAwSDAoEbmFtZRgDIAEoCSJpChpMaXN0",
+            "TmV4dXNFbmRwb2ludHNSZXNwb25zZRIXCg9uZXh0X3BhZ2VfdG9rZW4YASAB",
+            "KAwSMgoJZW5kcG9pbnRzGAIgAygLMh8udGVtcG9yYWwuYXBpLm5leHVzLnYx",
+            "LkVuZHBvaW50Qr4BCiJpby50ZW1wb3JhbC5hcGkub3BlcmF0b3JzZXJ2aWNl",
+            "LnYxQhRSZXF1ZXN0UmVzcG9uc2VQcm90b1ABWjVnby50ZW1wb3JhbC5pby9h",
+            "cGkvb3BlcmF0b3JzZXJ2aWNlL3YxO29wZXJhdG9yc2VydmljZaoCIVRlbXBv",
+            "cmFsaW8uQXBpLk9wZXJhdG9yU2VydmljZS5WMeoCJFRlbXBvcmFsaW86OkFw",
+            "aTo6T3BlcmF0b3JTZXJ2aWNlOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -103,13 +104,13 @@ namespace Temporalio.Api.OperatorService.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListSearchAttributesResponse), global::Temporalio.Api.OperatorService.V1.ListSearchAttributesResponse.Parser, new[]{ "CustomAttributes", "SystemAttributes", "StorageSchema" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest), global::Temporalio.Api.OperatorService.V1.DeleteNamespaceRequest.Parser, new[]{ "Namespace", "NamespaceId", "NamespaceDeleteDelay" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.DeleteNamespaceResponse), global::Temporalio.Api.OperatorService.V1.DeleteNamespaceResponse.Parser, new[]{ "DeletedNamespace" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest), global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest.Parser, new[]{ "FrontendAddress", "EnableRemoteClusterConnection", "FrontendHttpAddress" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest), global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterRequest.Parser, new[]{ "FrontendAddress", "EnableRemoteClusterConnection", "FrontendHttpAddress", "EnableReplication" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse), global::Temporalio.Api.OperatorService.V1.AddOrUpdateRemoteClusterResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.RemoveRemoteClusterRequest), global::Temporalio.Api.OperatorService.V1.RemoveRemoteClusterRequest.Parser, new[]{ "ClusterName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.RemoveRemoteClusterResponse), global::Temporalio.Api.OperatorService.V1.RemoveRemoteClusterResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListClustersRequest), global::Temporalio.Api.OperatorService.V1.ListClustersRequest.Parser, new[]{ "PageSize", "NextPageToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ListClustersResponse), global::Temporalio.Api.OperatorService.V1.ListClustersResponse.Parser, new[]{ "Clusters", "NextPageToken" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ClusterMetadata), global::Temporalio.Api.OperatorService.V1.ClusterMetadata.Parser, new[]{ "ClusterName", "ClusterId", "Address", "HttpAddress", "InitialFailoverVersion", "HistoryShardCount", "IsConnectionEnabled" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.ClusterMetadata), global::Temporalio.Api.OperatorService.V1.ClusterMetadata.Parser, new[]{ "ClusterName", "ClusterId", "Address", "HttpAddress", "InitialFailoverVersion", "HistoryShardCount", "IsConnectionEnabled", "IsReplicationEnabled" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.GetNexusEndpointRequest), global::Temporalio.Api.OperatorService.V1.GetNexusEndpointRequest.Parser, new[]{ "Id" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.GetNexusEndpointResponse), global::Temporalio.Api.OperatorService.V1.GetNexusEndpointResponse.Parser, new[]{ "Endpoint" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.OperatorService.V1.CreateNexusEndpointRequest), global::Temporalio.Api.OperatorService.V1.CreateNexusEndpointRequest.Parser, new[]{ "Spec" }, null, null, null, null),
@@ -1802,6 +1803,7 @@ namespace Temporalio.Api.OperatorService.V1 {
       frontendAddress_ = other.frontendAddress_;
       enableRemoteClusterConnection_ = other.enableRemoteClusterConnection_;
       frontendHttpAddress_ = other.frontendHttpAddress_;
+      enableReplication_ = other.enableReplication_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1857,6 +1859,21 @@ namespace Temporalio.Api.OperatorService.V1 {
       }
     }
 
+    /// <summary>Field number for the "enable_replication" field.</summary>
+    public const int EnableReplicationFieldNumber = 4;
+    private bool enableReplication_;
+    /// <summary>
+    /// Controls whether replication streams are active.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool EnableReplication {
+      get { return enableReplication_; }
+      set {
+        enableReplication_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1875,6 +1892,7 @@ namespace Temporalio.Api.OperatorService.V1 {
       if (FrontendAddress != other.FrontendAddress) return false;
       if (EnableRemoteClusterConnection != other.EnableRemoteClusterConnection) return false;
       if (FrontendHttpAddress != other.FrontendHttpAddress) return false;
+      if (EnableReplication != other.EnableReplication) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1885,6 +1903,7 @@ namespace Temporalio.Api.OperatorService.V1 {
       if (FrontendAddress.Length != 0) hash ^= FrontendAddress.GetHashCode();
       if (EnableRemoteClusterConnection != false) hash ^= EnableRemoteClusterConnection.GetHashCode();
       if (FrontendHttpAddress.Length != 0) hash ^= FrontendHttpAddress.GetHashCode();
+      if (EnableReplication != false) hash ^= EnableReplication.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1915,6 +1934,10 @@ namespace Temporalio.Api.OperatorService.V1 {
         output.WriteRawTag(26);
         output.WriteString(FrontendHttpAddress);
       }
+      if (EnableReplication != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(EnableReplication);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1937,6 +1960,10 @@ namespace Temporalio.Api.OperatorService.V1 {
         output.WriteRawTag(26);
         output.WriteString(FrontendHttpAddress);
       }
+      if (EnableReplication != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(EnableReplication);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1955,6 +1982,9 @@ namespace Temporalio.Api.OperatorService.V1 {
       }
       if (FrontendHttpAddress.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(FrontendHttpAddress);
+      }
+      if (EnableReplication != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1976,6 +2006,9 @@ namespace Temporalio.Api.OperatorService.V1 {
       }
       if (other.FrontendHttpAddress.Length != 0) {
         FrontendHttpAddress = other.FrontendHttpAddress;
+      }
+      if (other.EnableReplication != false) {
+        EnableReplication = other.EnableReplication;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2004,6 +2037,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             FrontendHttpAddress = input.ReadString();
             break;
           }
+          case 32: {
+            EnableReplication = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -2029,6 +2066,10 @@ namespace Temporalio.Api.OperatorService.V1 {
           }
           case 26: {
             FrontendHttpAddress = input.ReadString();
+            break;
+          }
+          case 32: {
+            EnableReplication = input.ReadBool();
             break;
           }
         }
@@ -3019,6 +3060,7 @@ namespace Temporalio.Api.OperatorService.V1 {
       initialFailoverVersion_ = other.initialFailoverVersion_;
       historyShardCount_ = other.historyShardCount_;
       isConnectionEnabled_ = other.isConnectionEnabled_;
+      isReplicationEnabled_ = other.isReplicationEnabled_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3133,6 +3175,21 @@ namespace Temporalio.Api.OperatorService.V1 {
       }
     }
 
+    /// <summary>Field number for the "is_replication_enabled" field.</summary>
+    public const int IsReplicationEnabledFieldNumber = 8;
+    private bool isReplicationEnabled_;
+    /// <summary>
+    /// A flag to indicate if replication is enabled.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IsReplicationEnabled {
+      get { return isReplicationEnabled_; }
+      set {
+        isReplicationEnabled_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -3155,6 +3212,7 @@ namespace Temporalio.Api.OperatorService.V1 {
       if (InitialFailoverVersion != other.InitialFailoverVersion) return false;
       if (HistoryShardCount != other.HistoryShardCount) return false;
       if (IsConnectionEnabled != other.IsConnectionEnabled) return false;
+      if (IsReplicationEnabled != other.IsReplicationEnabled) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3169,6 +3227,7 @@ namespace Temporalio.Api.OperatorService.V1 {
       if (InitialFailoverVersion != 0L) hash ^= InitialFailoverVersion.GetHashCode();
       if (HistoryShardCount != 0) hash ^= HistoryShardCount.GetHashCode();
       if (IsConnectionEnabled != false) hash ^= IsConnectionEnabled.GetHashCode();
+      if (IsReplicationEnabled != false) hash ^= IsReplicationEnabled.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3215,6 +3274,10 @@ namespace Temporalio.Api.OperatorService.V1 {
         output.WriteRawTag(58);
         output.WriteString(HttpAddress);
       }
+      if (IsReplicationEnabled != false) {
+        output.WriteRawTag(64);
+        output.WriteBool(IsReplicationEnabled);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3253,6 +3316,10 @@ namespace Temporalio.Api.OperatorService.V1 {
         output.WriteRawTag(58);
         output.WriteString(HttpAddress);
       }
+      if (IsReplicationEnabled != false) {
+        output.WriteRawTag(64);
+        output.WriteBool(IsReplicationEnabled);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3282,6 +3349,9 @@ namespace Temporalio.Api.OperatorService.V1 {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(HistoryShardCount);
       }
       if (IsConnectionEnabled != false) {
+        size += 1 + 1;
+      }
+      if (IsReplicationEnabled != false) {
         size += 1 + 1;
       }
       if (_unknownFields != null) {
@@ -3316,6 +3386,9 @@ namespace Temporalio.Api.OperatorService.V1 {
       }
       if (other.IsConnectionEnabled != false) {
         IsConnectionEnabled = other.IsConnectionEnabled;
+      }
+      if (other.IsReplicationEnabled != false) {
+        IsReplicationEnabled = other.IsReplicationEnabled;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3360,6 +3433,10 @@ namespace Temporalio.Api.OperatorService.V1 {
             HttpAddress = input.ReadString();
             break;
           }
+          case 64: {
+            IsReplicationEnabled = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -3401,6 +3478,10 @@ namespace Temporalio.Api.OperatorService.V1 {
           }
           case 58: {
             HttpAddress = input.ReadString();
+            break;
+          }
+          case 64: {
+            IsReplicationEnabled = input.ReadBool();
             break;
           }
         }

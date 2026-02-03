@@ -204,7 +204,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
             "ASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5SAASNAoIcmVqZWN0ZWQYAyAB",
             "KAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlSAASNAoJY29t",
             "cGxldGVkGAQgASgLMh8udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2Fk",
-            "SABCCgoIcmVzcG9uc2UioQMKFlNjaGVkdWxlTmV4dXNPcGVyYXRpb24SCwoD",
+            "SABCCgoIcmVzcG9uc2UimgQKFlNjaGVkdWxlTmV4dXNPcGVyYXRpb24SCwoD",
             "c2VxGAEgASgNEhAKCGVuZHBvaW50GAIgASgJEg8KB3NlcnZpY2UYAyABKAkS",
             "EQoJb3BlcmF0aW9uGAQgASgJEi4KBWlucHV0GAUgASgLMh8udGVtcG9yYWwu",
             "YXBpLmNvbW1vbi52MS5QYXlsb2FkEjwKGXNjaGVkdWxlX3RvX2Nsb3NlX3Rp",
@@ -212,13 +212,15 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
             "dXNfaGVhZGVyGAcgAygLMkIuY29yZXNkay53b3JrZmxvd19jb21tYW5kcy5T",
             "Y2hlZHVsZU5leHVzT3BlcmF0aW9uLk5leHVzSGVhZGVyRW50cnkSSAoRY2Fu",
             "Y2VsbGF0aW9uX3R5cGUYCCABKA4yLS5jb3Jlc2RrLm5leHVzLk5leHVzT3Bl",
-            "cmF0aW9uQ2FuY2VsbGF0aW9uVHlwZRoyChBOZXh1c0hlYWRlckVudHJ5EgsK",
-            "A2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEiKgobUmVxdWVzdENhbmNl",
-            "bE5leHVzT3BlcmF0aW9uEgsKA3NlcRgBIAEoDSpYChhBY3Rpdml0eUNhbmNl",
-            "bGxhdGlvblR5cGUSDgoKVFJZX0NBTkNFTBAAEh8KG1dBSVRfQ0FOQ0VMTEFU",
-            "SU9OX0NPTVBMRVRFRBABEgsKB0FCQU5ET04QAkI26gIzVGVtcG9yYWxpbzo6",
-            "SW50ZXJuYWw6OkJyaWRnZTo6QXBpOjpXb3JrZmxvd0NvbW1hbmRzYgZwcm90",
-            "bzM="));
+            "cmF0aW9uQ2FuY2VsbGF0aW9uVHlwZRI8ChlzY2hlZHVsZV90b19zdGFydF90",
+            "aW1lb3V0GAkgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjkKFnN0",
+            "YXJ0X3RvX2Nsb3NlX3RpbWVvdXQYCiABKAsyGS5nb29nbGUucHJvdG9idWYu",
+            "RHVyYXRpb24aMgoQTmV4dXNIZWFkZXJFbnRyeRILCgNrZXkYASABKAkSDQoF",
+            "dmFsdWUYAiABKAk6AjgBIioKG1JlcXVlc3RDYW5jZWxOZXh1c09wZXJhdGlv",
+            "bhILCgNzZXEYASABKA0qWAoYQWN0aXZpdHlDYW5jZWxsYXRpb25UeXBlEg4K",
+            "ClRSWV9DQU5DRUwQABIfChtXQUlUX0NBTkNFTExBVElPTl9DT01QTEVURUQQ",
+            "ARILCgdBQkFORE9OEAJCNuoCM1RlbXBvcmFsaW86OkludGVybmFsOjpCcmlk",
+            "Z2U6OkFwaTo6V29ya2Zsb3dDb21tYW5kc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, global::Temporalio.Bridge.Api.ChildWorkflow.ChildWorkflowReflection.Descriptor, global::Temporalio.Bridge.Api.Nexus.NexusReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.WorkflowCommands.ActivityCancellationType), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -244,7 +246,7 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCommands.UpsertWorkflowSearchAttributes), global::Temporalio.Bridge.Api.WorkflowCommands.UpsertWorkflowSearchAttributes.Parser, new[]{ "SearchAttributes" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCommands.ModifyWorkflowProperties), global::Temporalio.Bridge.Api.WorkflowCommands.ModifyWorkflowProperties.Parser, new[]{ "UpsertedMemo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCommands.UpdateResponse), global::Temporalio.Bridge.Api.WorkflowCommands.UpdateResponse.Parser, new[]{ "ProtocolInstanceId", "Accepted", "Rejected", "Completed" }, new[]{ "Response" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCommands.ScheduleNexusOperation), global::Temporalio.Bridge.Api.WorkflowCommands.ScheduleNexusOperation.Parser, new[]{ "Seq", "Endpoint", "Service", "Operation", "Input", "ScheduleToCloseTimeout", "NexusHeader", "CancellationType" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCommands.ScheduleNexusOperation), global::Temporalio.Bridge.Api.WorkflowCommands.ScheduleNexusOperation.Parser, new[]{ "Seq", "Endpoint", "Service", "Operation", "Input", "ScheduleToCloseTimeout", "NexusHeader", "CancellationType", "ScheduleToStartTimeout", "StartToCloseTimeout" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowCommands.RequestCancelNexusOperation), global::Temporalio.Bridge.Api.WorkflowCommands.RequestCancelNexusOperation.Parser, new[]{ "Seq" }, null, null, null, null)
           }));
     }
@@ -8715,6 +8717,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
       scheduleToCloseTimeout_ = other.scheduleToCloseTimeout_ != null ? other.scheduleToCloseTimeout_.Clone() : null;
       nexusHeader_ = other.nexusHeader_.Clone();
       cancellationType_ = other.cancellationType_;
+      scheduleToStartTimeout_ = other.scheduleToStartTimeout_ != null ? other.scheduleToStartTimeout_.Clone() : null;
+      startToCloseTimeout_ = other.startToCloseTimeout_ != null ? other.startToCloseTimeout_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -8853,6 +8857,45 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
       }
     }
 
+    /// <summary>Field number for the "schedule_to_start_timeout" field.</summary>
+    public const int ScheduleToStartTimeoutFieldNumber = 9;
+    private global::Google.Protobuf.WellKnownTypes.Duration scheduleToStartTimeout_;
+    /// <summary>
+    /// Schedule-to-start timeout for this operation.
+    /// Indicates how long the caller is willing to wait for the operation to be started (or completed if synchronous)
+    /// by the handler. If the operation is not started within this timeout, it will fail with
+    /// TIMEOUT_TYPE_SCHEDULE_TO_START.
+    /// If not set or zero, no schedule-to-start timeout is enforced.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration ScheduleToStartTimeout {
+      get { return scheduleToStartTimeout_; }
+      set {
+        scheduleToStartTimeout_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "start_to_close_timeout" field.</summary>
+    public const int StartToCloseTimeoutFieldNumber = 10;
+    private global::Google.Protobuf.WellKnownTypes.Duration startToCloseTimeout_;
+    /// <summary>
+    /// Start-to-close timeout for this operation.
+    /// Indicates how long the caller is willing to wait for an asynchronous operation to complete after it has been
+    /// started. If the operation does not complete within this timeout after starting, it will fail with
+    /// TIMEOUT_TYPE_START_TO_CLOSE.
+    /// Only applies to asynchronous operations. Synchronous operations ignore this timeout.
+    /// If not set or zero, no start-to-close timeout is enforced.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration StartToCloseTimeout {
+      get { return startToCloseTimeout_; }
+      set {
+        startToCloseTimeout_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -8876,6 +8919,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
       if (!object.Equals(ScheduleToCloseTimeout, other.ScheduleToCloseTimeout)) return false;
       if (!NexusHeader.Equals(other.NexusHeader)) return false;
       if (CancellationType != other.CancellationType) return false;
+      if (!object.Equals(ScheduleToStartTimeout, other.ScheduleToStartTimeout)) return false;
+      if (!object.Equals(StartToCloseTimeout, other.StartToCloseTimeout)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -8891,6 +8936,8 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
       if (scheduleToCloseTimeout_ != null) hash ^= ScheduleToCloseTimeout.GetHashCode();
       hash ^= NexusHeader.GetHashCode();
       if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) hash ^= CancellationType.GetHashCode();
+      if (scheduleToStartTimeout_ != null) hash ^= ScheduleToStartTimeout.GetHashCode();
+      if (startToCloseTimeout_ != null) hash ^= StartToCloseTimeout.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -8938,6 +8985,14 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         output.WriteRawTag(64);
         output.WriteEnum((int) CancellationType);
       }
+      if (scheduleToStartTimeout_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(ScheduleToStartTimeout);
+      }
+      if (startToCloseTimeout_ != null) {
+        output.WriteRawTag(82);
+        output.WriteMessage(StartToCloseTimeout);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -8977,6 +9032,14 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
         output.WriteRawTag(64);
         output.WriteEnum((int) CancellationType);
       }
+      if (scheduleToStartTimeout_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(ScheduleToStartTimeout);
+      }
+      if (startToCloseTimeout_ != null) {
+        output.WriteRawTag(82);
+        output.WriteMessage(StartToCloseTimeout);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -9008,6 +9071,12 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
       size += nexusHeader_.CalculateSize(_map_nexusHeader_codec);
       if (CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) CancellationType);
+      }
+      if (scheduleToStartTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ScheduleToStartTimeout);
+      }
+      if (startToCloseTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(StartToCloseTimeout);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -9048,6 +9117,18 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
       nexusHeader_.MergeFrom(other.nexusHeader_);
       if (other.CancellationType != global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType.WaitCancellationCompleted) {
         CancellationType = other.CancellationType;
+      }
+      if (other.scheduleToStartTimeout_ != null) {
+        if (scheduleToStartTimeout_ == null) {
+          ScheduleToStartTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        ScheduleToStartTimeout.MergeFrom(other.ScheduleToStartTimeout);
+      }
+      if (other.startToCloseTimeout_ != null) {
+        if (startToCloseTimeout_ == null) {
+          StartToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        StartToCloseTimeout.MergeFrom(other.StartToCloseTimeout);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -9102,6 +9183,20 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
             CancellationType = (global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType) input.ReadEnum();
             break;
           }
+          case 74: {
+            if (scheduleToStartTimeout_ == null) {
+              ScheduleToStartTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ScheduleToStartTimeout);
+            break;
+          }
+          case 82: {
+            if (startToCloseTimeout_ == null) {
+              StartToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(StartToCloseTimeout);
+            break;
+          }
         }
       }
     #endif
@@ -9153,6 +9248,20 @@ namespace Temporalio.Bridge.Api.WorkflowCommands {
           }
           case 64: {
             CancellationType = (global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType) input.ReadEnum();
+            break;
+          }
+          case 74: {
+            if (scheduleToStartTimeout_ == null) {
+              ScheduleToStartTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ScheduleToStartTimeout);
+            break;
+          }
+          case 82: {
+            if (startToCloseTimeout_ == null) {
+              StartToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(StartToCloseTimeout);
             break;
           }
         }

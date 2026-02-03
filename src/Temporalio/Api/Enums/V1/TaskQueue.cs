@@ -45,19 +45,30 @@ namespace Temporalio.Api.Enums.V1 {
             "RV9UQVNLX1FVRVVFX01PREVfRU5IQU5DRUQQASqLAQoPUmF0ZUxpbWl0U291",
             "cmNlEiEKHVJBVEVfTElNSVRfU09VUkNFX1VOU1BFQ0lGSUVEEAASGQoVUkFU",
             "RV9MSU1JVF9TT1VSQ0VfQVBJEAESHAoYUkFURV9MSU1JVF9TT1VSQ0VfV09S",
-            "S0VSEAISHAoYUkFURV9MSU1JVF9TT1VSQ0VfU1lTVEVNEANChgEKGGlvLnRl",
-            "bXBvcmFsLmFwaS5lbnVtcy52MUIOVGFza1F1ZXVlUHJvdG9QAVohZ28udGVt",
-            "cG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGku",
-            "RW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "S0VSEAISHAoYUkFURV9MSU1JVF9TT1VSQ0VfU1lTVEVNEAMqnwEKGFJvdXRp",
+            "bmdDb25maWdVcGRhdGVTdGF0ZRIrCidST1VUSU5HX0NPTkZJR19VUERBVEVf",
+            "U1RBVEVfVU5TUEVDSUZJRUQQABIrCidST1VUSU5HX0NPTkZJR19VUERBVEVf",
+            "U1RBVEVfSU5fUFJPR1JFU1MQARIpCiVST1VUSU5HX0NPTkZJR19VUERBVEVf",
+            "U1RBVEVfQ09NUExFVEVEEAJChgEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52",
+            "MUIOVGFza1F1ZXVlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1z",
+            "L3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3Jh",
+            "bGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), typeof(global::Temporalio.Api.Enums.V1.BuildIdTaskReachability), typeof(global::Temporalio.Api.Enums.V1.DescribeTaskQueueMode), typeof(global::Temporalio.Api.Enums.V1.RateLimitSource), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), typeof(global::Temporalio.Api.Enums.V1.BuildIdTaskReachability), typeof(global::Temporalio.Api.Enums.V1.DescribeTaskQueueMode), typeof(global::Temporalio.Api.Enums.V1.RateLimitSource), typeof(global::Temporalio.Api.Enums.V1.RoutingConfigUpdateState), }, null, null));
     }
     #endregion
 
   }
   #region Enums
   public enum TaskQueueKind {
+    /// <summary>
+    /// Tasks from any non workflow task may be unspecified.
+    ///
+    /// Task queue kind is used to differentiate whether a workflow task queue is sticky or 
+    /// normal. If a task is not a workflow task, Task queue kind will sometimes be 
+    /// unspecified.
+    /// </summary>
     [pbr::OriginalName("TASK_QUEUE_KIND_UNSPECIFIED")] Unspecified = 0,
     /// <summary>
     /// Tasks from a normal workflow task queue always include complete workflow history
@@ -189,6 +200,22 @@ namespace Temporalio.Api.Enums.V1 {
     /// The value was set as the system default.
     /// </summary>
     [pbr::OriginalName("RATE_LIMIT_SOURCE_SYSTEM")] System = 3,
+  }
+
+  /// <summary>
+  /// Indicates whether a change to the Routing Config has been
+  /// propagated to all relevant Task Queues and their partitions.
+  /// </summary>
+  public enum RoutingConfigUpdateState {
+    [pbr::OriginalName("ROUTING_CONFIG_UPDATE_STATE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Update to the RoutingConfig is currently in progress.
+    /// </summary>
+    [pbr::OriginalName("ROUTING_CONFIG_UPDATE_STATE_IN_PROGRESS")] InProgress = 1,
+    /// <summary>
+    /// Update to the RoutingConfig has completed successfully.
+    /// </summary>
+    [pbr::OriginalName("ROUTING_CONFIG_UPDATE_STATE_COMPLETED")] Completed = 2,
   }
 
   #endregion
