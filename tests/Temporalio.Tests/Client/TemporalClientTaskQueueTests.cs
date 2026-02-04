@@ -1,3 +1,4 @@
+#pragma warning disable CS0618 // Testing obsolete APIs
 using Temporalio.Client;
 using Xunit;
 using Xunit.Abstractions;

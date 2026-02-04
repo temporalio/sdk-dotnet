@@ -53,7 +53,9 @@ public abstract class WorkflowEnvironmentTestBase : TestBase
         var tq = $"tq-test-worker-ver-{Guid.NewGuid()}";
         try
         {
+#pragma warning disable CS0618 // Testing obsolete APIs
             await Client.UpdateWorkerBuildIdCompatibilityAsync(tq, new BuildIdOp.AddNewDefault("yoyoyo"));
+#pragma warning restore CS0618
         }
         catch (RpcException e) when (e.Code == RpcException.StatusCode.PermissionDenied ||
                                      e.Code == RpcException.StatusCode.Unimplemented)
