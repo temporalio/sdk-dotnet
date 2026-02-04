@@ -8,7 +8,6 @@ namespace Temporalio.Worker
     ///
     /// <see cref="Version"/> must be set.
     /// </summary>
-    /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may change.</remarks>
     public class WorkerDeploymentOptions : ICloneable
     {
         /// <summary>

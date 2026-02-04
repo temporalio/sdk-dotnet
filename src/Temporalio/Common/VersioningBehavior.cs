@@ -3,7 +3,6 @@ namespace Temporalio.Common
     /// <summary>
     /// Specifies when a workflow might move from a worker of one Build ID to another.
     /// </summary>
-    /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may change.</remarks>
     public enum VersioningBehavior
     {
         /// <summary>
