@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporalio.Api.Enums.V1;
@@ -15,6 +16,7 @@ namespace Temporalio.Client
         /// <param name="buildIdOp">The operation to perform.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>Completion task.</returns>
+        [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
         Task UpdateWorkerBuildIdCompatibilityAsync(
             string taskQueue,
             BuildIdOp buildIdOp,
@@ -29,6 +31,7 @@ namespace Temporalio.Client
         ///     returned.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>The sets, if the Task Queue is versioned, otherwise null.</returns>
+        [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
         Task<WorkerBuildIdVersionSets?> GetWorkerBuildIdCompatibilityAsync(
             string taskQueue,
             int maxSets = 0,
@@ -50,6 +53,7 @@ namespace Temporalio.Client
         /// <param name="reachability">The kind of reachability this request is concerned with.</param>
         /// <param name="rpcOptions">RPC options.</param>
         /// <returns>The reachability information.</returns>
+        [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
         Task<WorkerTaskReachability> GetWorkerTaskReachabilityAsync(
             IReadOnlyCollection<string> buildIds,
             IReadOnlyCollection<string> taskQueues,

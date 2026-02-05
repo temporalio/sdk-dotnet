@@ -35,8 +35,6 @@ namespace Temporalio.Workflows
         /// If set to a non-unspecified value, overrides any value set on
         /// <see cref="WorkflowAttribute.VersioningBehavior"/>.
         /// </remarks>
-        /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
-        /// change.</remarks>
         public VersioningBehavior VersioningBehavior { get; set; }
 
         /// <summary>

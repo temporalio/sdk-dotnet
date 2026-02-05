@@ -5,7 +5,6 @@ namespace Temporalio.Common
     /// <summary>
     /// Represents the version of a specific worker deployment.
     /// </summary>
-    /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may change.</remarks>
     public sealed record WorkerDeploymentVersion(string DeploymentName, string BuildId)
     {
         private static readonly char[] Separator = new char[] { '.' };

@@ -140,9 +140,7 @@ namespace Temporalio.Worker
         /// <summary>
         /// Gets or sets the deployment options for this worker.
         /// </summary>
-        /// <remarks>Exclusive with <see cref="DeploymentOptions"/> and <see cref="UseWorkerVersioning"/>.</remarks>
-        /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
-        /// change.</remarks>
+        /// <remarks>Exclusive with <see cref="BuildId"/> and <see cref="UseWorkerVersioning"/>.</remarks>
         public WorkerDeploymentOptions? DeploymentOptions { get; set; }
 
         /// <summary>

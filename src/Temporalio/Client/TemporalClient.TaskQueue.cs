@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporalio.Api.Enums.V1;
@@ -9,6 +10,8 @@ namespace Temporalio.Client
     public partial class TemporalClient
     {
         /// <inheritdoc />
+        [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
+#pragma warning disable CS0618 // Using obsolete types internally
         public Task UpdateWorkerBuildIdCompatibilityAsync(
             string taskQueue,
             BuildIdOp buildIdOp,
@@ -17,8 +20,11 @@ namespace Temporalio.Client
                 TaskQueue: taskQueue,
                 BuildIdOp: buildIdOp,
                 RpcOptions: rpcOptions));
+#pragma warning restore CS0618
 
         /// <inheritdoc />
+        [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
+#pragma warning disable CS0618 // Using obsolete types internally
         public Task<WorkerBuildIdVersionSets?> GetWorkerBuildIdCompatibilityAsync(
             string taskQueue,
             int maxSets,
@@ -27,8 +33,11 @@ namespace Temporalio.Client
                 TaskQueue: taskQueue,
                 MaxSets: maxSets,
                 RpcOptions: rpcOptions));
+#pragma warning restore CS0618
 
         /// <inheritdoc />
+        [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
+#pragma warning disable CS0618 // Using obsolete types internally
         public Task<WorkerTaskReachability> GetWorkerTaskReachabilityAsync(
             IReadOnlyCollection<string> buildIds,
             IReadOnlyCollection<string> taskQueues,
@@ -39,10 +48,13 @@ namespace Temporalio.Client
                 TaskQueues: taskQueues,
                 Reachability: reachability,
                 RpcOptions: rpcOptions));
+#pragma warning restore CS0618
 
         internal partial class Impl
         {
+#pragma warning disable CS0618, CS0672 // Using obsolete types internally
             /// <inheritdoc />
+            [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
             public override async Task UpdateWorkerBuildIdCompatibilityAsync(
                 UpdateWorkerBuildIdCompatibilityInput input)
             {
@@ -86,6 +98,7 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
+            [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
             public override async Task<WorkerBuildIdVersionSets?> GetWorkerBuildIdCompatibilityAsync(
                 GetWorkerBuildIdCompatibilityInput input)
             {
@@ -102,6 +115,7 @@ namespace Temporalio.Client
             }
 
             /// <inheritdoc />
+            [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
             public override async Task<WorkerTaskReachability> GetWorkerTaskReachabilityAsync(
                 GetWorkerTaskReachabilityInput input)
             {
@@ -117,6 +131,7 @@ namespace Temporalio.Client
                     .ConfigureAwait(false);
                 return WorkerTaskReachability.FromProto(resp);
             }
+#pragma warning restore CS0618, CS0672
         }
     }
 }
