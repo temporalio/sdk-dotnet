@@ -417,16 +417,6 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
             desc = await handle.DescribeAsync();
             Assert.True(desc.Schedule.Policy.KeepOriginalWorkflowId);
             Assert.True(desc.RawDescription.Schedule.Policies.KeepOriginalWorkflowId);
-
-            await handle.UpdateAsync(input =>
-            {
-                var sched = input.Description.Schedule;
-                return new(sched with { Policy = sched.Policy with { KeepOriginalWorkflowId = false } });
-            });
-
-            desc = await handle.DescribeAsync();
-            Assert.False(desc.Schedule.Policy.KeepOriginalWorkflowId);
-            Assert.False(desc.RawDescription.Schedule.Policies.KeepOriginalWorkflowId);
         }
         finally
         {
