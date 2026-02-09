@@ -2733,6 +2733,48 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class PatchSearchAttributeWorkflow
+    {
+        [Activity]
+        public static string SomeActivity() => "done";
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            if (Workflow.Patched("my-patch"))
+            {
+                await Workflow.ExecuteActivityAsync(
+                    () => SomeActivity(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchSearchAttribute_ReturnsProperly()
+    {
+        await EnsureSearchAttributesPresentAsync();
+        await ExecuteWorkerAsync<PatchSearchAttributeWorkflow>(
+            async worker =>
+            {
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (PatchSearchAttributeWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        TypedSearchAttributes = new SearchAttributeCollection.Builder().
+                        Set(AttrKeywordList, new[] { "SomeKeywordA", "SomeKeywordB" }).
+                        ToSearchAttributeCollection(),
+                    });
+                await handle.GetResultAsync();
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(
+                    ["my-patch"],
+                    desc.TypedSearchAttributes.Get(SearchAttributeKey.CreateKeywordList("TemporalChangeVersion")));
+            },
+            new TemporalWorkerOptions().AddActivity(PatchSearchAttributeWorkflow.SomeActivity));
+    }
+
+    [Workflow]
     public class HeadersWithCodecWorkflow
     {
         public enum Kind

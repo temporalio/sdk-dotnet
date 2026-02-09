@@ -312,14 +312,13 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // Build with two workers on same queue but different versions
         var bld = Host.CreateApplicationBuilder();
         bld.Services.AddSingleton(Client);
-#pragma warning disable 0618
+#pragma warning disable CS0618 // Testing obsolete APIs
         bld.Services.
             AddHostedTemporalWorker(taskQueue, "1.0").
             AddWorkflow<WorkflowV1>();
         bld.Services.
             AddHostedTemporalWorker(taskQueue, "2.0").
             AddWorkflow<WorkflowV2>();
-#pragma warning restore 0618
 
         // Start the host
         using var tokenSource = new CancellationTokenSource();
@@ -341,6 +340,7 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
             (WorkflowV1 wf) => wf.RunAsync(),
             new($"wf-{Guid.NewGuid()}", taskQueue));
         Assert.Equal("done-v2", res);
+#pragma warning restore CS0618
     }
 
     [Fact]

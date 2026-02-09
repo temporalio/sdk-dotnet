@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Temporalio.Api.Enums.V1;
@@ -11,6 +12,7 @@ namespace Temporalio.Client
     /// queue. If the value is an empty list, the Build ID is not reachable on that queue.</param>
     /// <param name="UnretrievedTaskQueues">If any Task Queues could not be retrieved because the server limits the
     /// number that can be queried at once, they will be listed here.</param>
+    [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
     public record BuildIdReachability(
         IReadOnlyDictionary<string, IReadOnlyCollection<TaskReachability>> TaskQueueReachability,
         IReadOnlyCollection<string> UnretrievedTaskQueues)

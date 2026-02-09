@@ -66,8 +66,6 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets or sets the versioning behavior to use for this workflow.
         /// </summary>
-        /// <remarks>WARNING: Deployment-based versioning is experimental and APIs may
-        /// change.</remarks>
         public VersioningBehavior VersioningBehavior { get; set; }
     }
 }

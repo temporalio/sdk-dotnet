@@ -32,6 +32,14 @@ namespace Temporalio.Common
                 t => ByteString.CopyFromUtf8(Enum.GetName(typeof(IndexedValueType), t)),
                 t => t);
 
+        // Older code sometimes uses QUALIFIED_ENUM_NAME instead of EnumName in the search attribute
+        // metadata "type" field
+        private static readonly Dictionary<ByteString, IndexedValueType> LegacyNameToIndexType =
+            Temporalio.Api.Enums.V1.CommonReflection.Descriptor.EnumTypes
+                .Single(e => e.ClrType == typeof(IndexedValueType))
+                .Values
+                .ToDictionary(v => ByteString.CopyFromUtf8(v.Name), v => (IndexedValueType)v.Number);
+
         private static readonly Dictionary<IndexedValueType, ByteString> IndexedTypeToName =
             NameToIndexType.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
 
@@ -188,7 +196,9 @@ namespace Temporalio.Common
             {
                 throw new ArgumentException("Metadata type missing");
             }
-            if (!NameToIndexType.TryGetValue(typeName, out var valueType))
+            IndexedValueType valueType;
+            if (!NameToIndexType.TryGetValue(typeName, out valueType) &&
+                !LegacyNameToIndexType.TryGetValue(typeName, out valueType))
             {
                 throw new ArgumentException($"Unrecognized metadata type {typeName.ToStringUtf8()}");
             }

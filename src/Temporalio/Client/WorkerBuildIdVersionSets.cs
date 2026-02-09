@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,7 @@ namespace Temporalio.Client
     /// fetched by <see cref="ITemporalClient.GetWorkerBuildIdCompatibilityAsync"/>.
     /// </summary>
     /// <param name="VersionSets">The sets of compatible versions in the Task Queue.</param>
+    [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
     public record WorkerBuildIdVersionSets(IReadOnlyCollection<BuildIdVersionSet> VersionSets)
     {
         /// <summary>
@@ -44,6 +46,7 @@ namespace Temporalio.Client
     /// A set of Build IDs which are compatible with each other.
     /// </summary>
     /// <param name="BuildIds">The Build IDs.</param>
+    [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
     public record BuildIdVersionSet(IReadOnlyCollection<string> BuildIds)
     {
         /// <summary>Gets the default Build ID for this set.</summary>

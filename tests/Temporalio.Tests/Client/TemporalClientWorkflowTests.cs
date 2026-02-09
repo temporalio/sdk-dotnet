@@ -218,8 +218,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
                     Set(AttrDateTime, dateTime).
                     Set(AttrDouble, 123.45).
                     Set(AttrKeyword, "SomeKeyword").
-                    // TODO(cretz): Fix after Temporal dev server upgraded
-                    // Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
+                    Set(AttrKeywordList, new[] { "SomeKeyword1", "SomeKeyword2" }).
                     Set(AttrLong, 678).
                     Set(AttrText, "SomeText").
                     ToSearchAttributeCollection(),
@@ -236,8 +235,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
         Assert.Equal(dateTime, desc.TypedSearchAttributes.Get(AttrDateTime));
         Assert.Equal(123.45, desc.TypedSearchAttributes.Get(AttrDouble));
         Assert.Equal("SomeKeyword", desc.TypedSearchAttributes.Get(AttrKeyword));
-        // TODO(cretz): Fix after Temporal dev server upgraded
-        // Assert.Equal(new[] { "SomeKeyword1", "SomeKeyword2" }, desc.TypedSearchAttributes.Get(AttrKeywordList));
+        Assert.Equal(new[] { "SomeKeyword1", "SomeKeyword2" }, desc.TypedSearchAttributes.Get(AttrKeywordList));
         Assert.Equal(678, desc.TypedSearchAttributes.Get(AttrLong));
         Assert.Equal("SomeText", desc.TypedSearchAttributes.Get(AttrText));
         Assert.Equal(memoVals, await desc.Memo["MemoKey"].ToValueAsync<List<string>>());
