@@ -27,6 +27,12 @@ namespace Temporalio.Client.Schedules
         public bool PauseOnFailure { get; init; }
 
         /// <summary>
+        /// Gets a value indicating whether scheduled workflow IDs should be kept as-is without a
+        /// timestamp suffix.
+        /// </summary>
+        public bool KeepOriginalWorkflowId { get; init; }
+
+        /// <summary>
         /// Convert from proto.
         /// </summary>
         /// <param name="proto">Proto.</param>
@@ -36,6 +42,7 @@ namespace Temporalio.Client.Schedules
             Overlap = proto.OverlapPolicy,
             CatchupWindow = proto.CatchupWindow.ToTimeSpan(),
             PauseOnFailure = proto.PauseOnFailure,
+            KeepOriginalWorkflowId = proto.KeepOriginalWorkflowId,
         };
 
         /// <summary>
@@ -47,6 +54,7 @@ namespace Temporalio.Client.Schedules
             OverlapPolicy = Overlap,
             CatchupWindow = Duration.FromTimeSpan(CatchupWindow),
             PauseOnFailure = PauseOnFailure,
+            KeepOriginalWorkflowId = KeepOriginalWorkflowId,
         };
     }
 }
