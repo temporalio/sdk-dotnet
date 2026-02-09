@@ -46,7 +46,7 @@ namespace Temporalio.Worker
             public override void Add(
                 T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
             {
-                if (!Workflows.Workflow.Unsafe.IsReplaying)
+                if (!Workflows.Workflow.Unsafe.IsReplayingHistoryEvents)
                 {
                     underlying.Add(value, extraTags);
                 }
@@ -68,7 +68,7 @@ namespace Temporalio.Worker
             public override void Record(
                 T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
             {
-                if (!Workflows.Workflow.Unsafe.IsReplaying)
+                if (!Workflows.Workflow.Unsafe.IsReplayingHistoryEvents)
                 {
                     underlying.Record(value, extraTags);
                 }
@@ -90,7 +90,7 @@ namespace Temporalio.Worker
             public override void Set(
                 T value, IEnumerable<KeyValuePair<string, object>>? extraTags = null)
             {
-                if (!Workflows.Workflow.Unsafe.IsReplaying)
+                if (!Workflows.Workflow.Unsafe.IsReplayingHistoryEvents)
                 {
                     underlying.Set(value, extraTags);
                 }
