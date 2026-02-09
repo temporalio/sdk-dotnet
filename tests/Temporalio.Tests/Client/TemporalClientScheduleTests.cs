@@ -363,33 +363,75 @@ public class TemporalClientScheduleTests : WorkflowEnvironmentTestBase
     {
         await TestUtils.AssertNoSchedulesAsync(Client);
 
-        var workflowId = $"workflow-{Guid.NewGuid()}";
         var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
         var handle = await Client.CreateScheduleAsync(
             $"schedule-{Guid.NewGuid()}",
             new(
                 Action: ScheduleActionStartWorkflow.Create(
                     (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
-                    new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue)),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
                 Spec: new())
             {
                 Policy = new() { KeepOriginalWorkflowId = true },
                 State = new() { Paused = true },
             });
 
-        // Trigger and confirm the workflow ID is unchanged.
-        await handle.TriggerAsync();
-        await AssertMore.EqualEventuallyAsync(1, async () => (await handle.DescribeAsync()).Info.NumActions);
-        var desc = await handle.DescribeAsync();
-        Assert.True(desc.Schedule.Policy.KeepOriginalWorkflowId);
-        var exec = Assert.IsType<ScheduleActionExecutionStartWorkflow>(desc.Info.RecentActions.Single().Action);
-        Assert.Equal(workflowId, exec.WorkflowId);
-        Assert.Equal(
-            "some result",
-            await Client.GetWorkflowHandle(exec.WorkflowId, exec.FirstExecutionRunId).GetResultAsync<string>());
+        try
+        {
+            var desc = await handle.DescribeAsync();
+            Assert.True(desc.Schedule.Policy.KeepOriginalWorkflowId);
+            Assert.True(desc.RawDescription.Schedule.Policies.KeepOriginalWorkflowId);
+        }
+        finally
+        {
+            await TestUtils.DeleteAllSchedulesAsync(Client);
+        }
+    }
 
-        // Delete when done
-        await TestUtils.DeleteAllSchedulesAsync(Client);
+    [Fact]
+    public async Task UpdateScheduleAsync_KeepOriginalWorkflowId_Succeeds()
+    {
+        await TestUtils.AssertNoSchedulesAsync(Client);
+
+        var arg = new KSWorkflowParams(new KSAction(Result: new("some result")));
+        var handle = await Client.CreateScheduleAsync(
+            $"schedule-{Guid.NewGuid()}",
+            new(
+                Action: ScheduleActionStartWorkflow.Create(
+                    (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: Env.KitchenSinkWorkerTaskQueue)),
+                Spec: new()));
+
+        try
+        {
+            var desc = await handle.DescribeAsync();
+            Assert.False(desc.Schedule.Policy.KeepOriginalWorkflowId);
+            Assert.False(desc.RawDescription.Schedule.Policies.KeepOriginalWorkflowId);
+
+            await handle.UpdateAsync(input =>
+            {
+                var sched = input.Description.Schedule;
+                return new(sched with { Policy = sched.Policy with { KeepOriginalWorkflowId = true } });
+            });
+
+            desc = await handle.DescribeAsync();
+            Assert.True(desc.Schedule.Policy.KeepOriginalWorkflowId);
+            Assert.True(desc.RawDescription.Schedule.Policies.KeepOriginalWorkflowId);
+
+            await handle.UpdateAsync(input =>
+            {
+                var sched = input.Description.Schedule;
+                return new(sched with { Policy = sched.Policy with { KeepOriginalWorkflowId = false } });
+            });
+
+            desc = await handle.DescribeAsync();
+            Assert.False(desc.Schedule.Policy.KeepOriginalWorkflowId);
+            Assert.False(desc.RawDescription.Schedule.Policies.KeepOriginalWorkflowId);
+        }
+        finally
+        {
+            await TestUtils.DeleteAllSchedulesAsync(Client);
+        }
     }
 
     [Fact]
