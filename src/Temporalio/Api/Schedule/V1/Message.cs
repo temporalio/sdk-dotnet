@@ -922,8 +922,8 @@ namespace Temporalio.Api.Schedule.V1 {
   /// corresponding fields of the timestamp, except for year: if year is missing,
   /// that means all years match. For all fields besides year, at least one Range
   /// must be present to match anything.
-  /// TODO: add relative-to-end-of-month
-  /// TODO: add nth day-of-week in month
+  /// Relative expressions such as "last day of the month" or "third Monday" are not currently
+  /// representable; callers must enumerate the concrete days they require.
   /// </summary>
   public sealed partial class StructuredCalendarSpec : pb::IMessage<StructuredCalendarSpec>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE

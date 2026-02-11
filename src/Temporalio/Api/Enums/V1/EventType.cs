@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZXZlbnRfdHlwZS5wcm90bxIVdGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxKooVCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
+            "cG9yYWwuYXBpLmVudW1zLnYxKuAVCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
             "RV9VTlNQRUNJRklFRBAAEikKJUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VU",
             "SU9OX1NUQVJURUQQARIrCidFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
             "Tl9DT01QTEVURUQQAhIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
@@ -85,10 +85,12 @@ namespace Temporalio.Api.Enums.V1 {
             "VF9UWVBFX1dPUktGTE9XX0VYRUNVVElPTl9PUFRJT05TX1VQREFURUQQNxI3",
             "CjNFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DQU5DRUxfUkVRVUVTVF9D",
             "T01QTEVURUQQOBI0CjBFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DQU5D",
-            "RUxfUkVRVUVTVF9GQUlMRUQQOUKGAQoYaW8udGVtcG9yYWwuYXBpLmVudW1z",
-            "LnYxQg5FdmVudFR5cGVQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51",
-            "bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBv",
-            "cmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "RUxfUkVRVUVTVF9GQUlMRUQQORIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VY",
+            "RUNVVElPTl9QQVVTRUQQOhIqCiZFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNV",
+            "VElPTl9VTlBBVVNFRBA7QoYBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFC",
+            "DkV2ZW50VHlwZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92",
+            "MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxp",
+            "bzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EventType), }, null, null));
@@ -375,6 +377,14 @@ namespace Temporalio.Api.Enums.V1 {
     /// A cancellation request for a Nexus operation resulted in an error.
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_NEXUS_OPERATION_CANCEL_REQUEST_FAILED")] NexusOperationCancelRequestFailed = 57,
+    /// <summary>
+    /// An event that indicates that the workflow execution has been paused.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_PAUSED")] WorkflowExecutionPaused = 58,
+    /// <summary>
+    /// An event that indicates that the previously paused workflow execution has been unpaused.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UNPAUSED")] WorkflowExecutionUnpaused = 59,
   }
 
   #endregion
