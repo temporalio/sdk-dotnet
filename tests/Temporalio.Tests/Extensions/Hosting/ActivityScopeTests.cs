@@ -114,25 +114,31 @@ public class ActivityScopeTests : WorkflowEnvironmentTestBase
 
         // Start the host
         using var tokenSource = new CancellationTokenSource();
-        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
+        await host.StartAsync(tokenSource.Token);
+        try
+        {
+            // Execute the workflow successfully. confirming no scope leak
+            Assert.Null(ActivityScope.ServiceScope);
+            Assert.Null(ActivityScope.ScopedInstance);
+            await Client.ExecuteWorkflowAsync(
+                (MyWorkflow wf) => wf.RunAsync("should-succeed"),
+                new($"wf-{Guid.NewGuid()}", taskQueue));
+            Assert.Null(ActivityScope.ServiceScope);
+            Assert.Null(ActivityScope.ScopedInstance);
 
-        // Execute the workflow successfully. confirming no scope leak
-        Assert.Null(ActivityScope.ServiceScope);
-        Assert.Null(ActivityScope.ScopedInstance);
-        await Client.ExecuteWorkflowAsync(
-            (MyWorkflow wf) => wf.RunAsync("should-succeed"),
-            new($"wf-{Guid.NewGuid()}", taskQueue));
-        Assert.Null(ActivityScope.ServiceScope);
-        Assert.Null(ActivityScope.ScopedInstance);
-
-        // Now execute a workflow with state that the interceptor will see set on the activity and
-        // fail
-        var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
-            Client.ExecuteWorkflowAsync(
-                (MyWorkflow wf) => wf.RunAsync("should-fail"),
-                new($"wf-{Guid.NewGuid()}", taskQueue)));
-        var exc2 = Assert.IsType<ActivityFailureException>(exc.InnerException);
-        var exc3 = Assert.IsType<ApplicationFailureException>(exc2.InnerException);
-        Assert.Equal("Intentional failure", exc3.Message);
+            // Now execute a workflow with state that the interceptor will see set on the activity and
+            // fail
+            var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                Client.ExecuteWorkflowAsync(
+                    (MyWorkflow wf) => wf.RunAsync("should-fail"),
+                    new($"wf-{Guid.NewGuid()}", taskQueue)));
+            var exc2 = Assert.IsType<ActivityFailureException>(exc.InnerException);
+            var exc3 = Assert.IsType<ApplicationFailureException>(exc2.InnerException);
+            Assert.Equal("Intentional failure", exc3.Message);
+        }
+        finally
+        {
+            await host.StopAsync(tokenSource.Token);
+        }
     }
 }
