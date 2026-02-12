@@ -48,45 +48,46 @@ namespace Temporalio.Api.Nexus.V1 {
             "ASABKAkSDQoFdmFsdWUYAiABKAk6AjgBIm8KFkNhbmNlbE9wZXJhdGlvblJl",
             "cXVlc3QSDwoHc2VydmljZRgBIAEoCRIRCglvcGVyYXRpb24YAiABKAkSGAoM",
             "b3BlcmF0aW9uX2lkGAMgASgJQgIYARIXCg9vcGVyYXRpb25fdG9rZW4YBCAB",
-            "KAkixwIKB1JlcXVlc3QSOgoGaGVhZGVyGAEgAygLMioudGVtcG9yYWwuYXBp",
+            "KAki2QIKB1JlcXVlc3QSOgoGaGVhZGVyGAEgAygLMioudGVtcG9yYWwuYXBp",
             "Lm5leHVzLnYxLlJlcXVlc3QuSGVhZGVyRW50cnkSMgoOc2NoZWR1bGVkX3Rp",
             "bWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEkcKD3N0YXJ0",
             "X29wZXJhdGlvbhgDIAEoCzIsLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5TdGFy",
             "dE9wZXJhdGlvblJlcXVlc3RIABJJChBjYW5jZWxfb3BlcmF0aW9uGAQgASgL",
             "Mi0udGVtcG9yYWwuYXBpLm5leHVzLnYxLkNhbmNlbE9wZXJhdGlvblJlcXVl",
-            "c3RIABotCgtIZWFkZXJFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiAB",
-            "KAk6AjgBQgkKB3ZhcmlhbnQi2QMKFlN0YXJ0T3BlcmF0aW9uUmVzcG9uc2US",
-            "SgoMc3luY19zdWNjZXNzGAEgASgLMjIudGVtcG9yYWwuYXBpLm5leHVzLnYx",
-            "LlN0YXJ0T3BlcmF0aW9uUmVzcG9uc2UuU3luY0gAEkwKDWFzeW5jX3N1Y2Nl",
-            "c3MYAiABKAsyMy50ZW1wb3JhbC5hcGkubmV4dXMudjEuU3RhcnRPcGVyYXRp",
-            "b25SZXNwb25zZS5Bc3luY0gAEkwKD29wZXJhdGlvbl9lcnJvchgDIAEoCzIx",
-            "LnRlbXBvcmFsLmFwaS5uZXh1cy52MS5VbnN1Y2Nlc3NmdWxPcGVyYXRpb25F",
-            "cnJvckgAGmQKBFN5bmMSMAoHcGF5bG9hZBgBIAEoCzIfLnRlbXBvcmFsLmFw",
-            "aS5jb21tb24udjEuUGF5bG9hZBIqCgVsaW5rcxgCIAMoCzIbLnRlbXBvcmFs",
-            "LmFwaS5uZXh1cy52MS5MaW5rGmYKBUFzeW5jEhgKDG9wZXJhdGlvbl9pZBgB",
-            "IAEoCUICGAESKgoFbGlua3MYAiADKAsyGy50ZW1wb3JhbC5hcGkubmV4dXMu",
-            "djEuTGluaxIXCg9vcGVyYXRpb25fdG9rZW4YAyABKAlCCQoHdmFyaWFudCIZ",
-            "ChdDYW5jZWxPcGVyYXRpb25SZXNwb25zZSKrAQoIUmVzcG9uc2USSAoPc3Rh",
-            "cnRfb3BlcmF0aW9uGAEgASgLMi0udGVtcG9yYWwuYXBpLm5leHVzLnYxLlN0",
-            "YXJ0T3BlcmF0aW9uUmVzcG9uc2VIABJKChBjYW5jZWxfb3BlcmF0aW9uGAIg",
-            "ASgLMi4udGVtcG9yYWwuYXBpLm5leHVzLnYxLkNhbmNlbE9wZXJhdGlvblJl",
-            "c3BvbnNlSABCCQoHdmFyaWFudCLYAQoIRW5kcG9pbnQSDwoHdmVyc2lvbhgB",
-            "IAEoAxIKCgJpZBgCIAEoCRIxCgRzcGVjGAMgASgLMiMudGVtcG9yYWwuYXBp",
-            "Lm5leHVzLnYxLkVuZHBvaW50U3BlYxIwCgxjcmVhdGVkX3RpbWUYBCABKAsy",
-            "Gi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKEmxhc3RfbW9kaWZpZWRf",
-            "dGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEgoKdXJs",
-            "X3ByZWZpeBgGIAEoCSKJAQoMRW5kcG9pbnRTcGVjEgwKBG5hbWUYASABKAkS",
-            "NAoLZGVzY3JpcHRpb24YAiABKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
-            "LlBheWxvYWQSNQoGdGFyZ2V0GAMgASgLMiUudGVtcG9yYWwuYXBpLm5leHVz",
-            "LnYxLkVuZHBvaW50VGFyZ2V0IukBCg5FbmRwb2ludFRhcmdldBI+CgZ3b3Jr",
-            "ZXIYASABKAsyLC50ZW1wb3JhbC5hcGkubmV4dXMudjEuRW5kcG9pbnRUYXJn",
-            "ZXQuV29ya2VySAASQgoIZXh0ZXJuYWwYAiABKAsyLi50ZW1wb3JhbC5hcGku",
-            "bmV4dXMudjEuRW5kcG9pbnRUYXJnZXQuRXh0ZXJuYWxIABovCgZXb3JrZXIS",
-            "EQoJbmFtZXNwYWNlGAEgASgJEhIKCnRhc2tfcXVldWUYAiABKAkaFwoIRXh0",
-            "ZXJuYWwSCwoDdXJsGAEgASgJQgkKB3ZhcmlhbnRChAEKGGlvLnRlbXBvcmFs",
-            "LmFwaS5uZXh1cy52MUIMTWVzc2FnZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlv",
-            "L2FwaS9uZXh1cy92MTtuZXh1c6oCF1RlbXBvcmFsaW8uQXBpLk5leHVzLlYx",
-            "6gIaVGVtcG9yYWxpbzo6QXBpOjpOZXh1czo6VjFiBnByb3RvMw=="));
+            "c3RIABIQCghlbmRwb2ludBgKIAEoCRotCgtIZWFkZXJFbnRyeRILCgNrZXkY",
+            "ASABKAkSDQoFdmFsdWUYAiABKAk6AjgBQgkKB3ZhcmlhbnQi2QMKFlN0YXJ0",
+            "T3BlcmF0aW9uUmVzcG9uc2USSgoMc3luY19zdWNjZXNzGAEgASgLMjIudGVt",
+            "cG9yYWwuYXBpLm5leHVzLnYxLlN0YXJ0T3BlcmF0aW9uUmVzcG9uc2UuU3lu",
+            "Y0gAEkwKDWFzeW5jX3N1Y2Nlc3MYAiABKAsyMy50ZW1wb3JhbC5hcGkubmV4",
+            "dXMudjEuU3RhcnRPcGVyYXRpb25SZXNwb25zZS5Bc3luY0gAEkwKD29wZXJh",
+            "dGlvbl9lcnJvchgDIAEoCzIxLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5VbnN1",
+            "Y2Nlc3NmdWxPcGVyYXRpb25FcnJvckgAGmQKBFN5bmMSMAoHcGF5bG9hZBgB",
+            "IAEoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZBIqCgVsaW5r",
+            "cxgCIAMoCzIbLnRlbXBvcmFsLmFwaS5uZXh1cy52MS5MaW5rGmYKBUFzeW5j",
+            "EhgKDG9wZXJhdGlvbl9pZBgBIAEoCUICGAESKgoFbGlua3MYAiADKAsyGy50",
+            "ZW1wb3JhbC5hcGkubmV4dXMudjEuTGluaxIXCg9vcGVyYXRpb25fdG9rZW4Y",
+            "AyABKAlCCQoHdmFyaWFudCIZChdDYW5jZWxPcGVyYXRpb25SZXNwb25zZSKr",
+            "AQoIUmVzcG9uc2USSAoPc3RhcnRfb3BlcmF0aW9uGAEgASgLMi0udGVtcG9y",
+            "YWwuYXBpLm5leHVzLnYxLlN0YXJ0T3BlcmF0aW9uUmVzcG9uc2VIABJKChBj",
+            "YW5jZWxfb3BlcmF0aW9uGAIgASgLMi4udGVtcG9yYWwuYXBpLm5leHVzLnYx",
+            "LkNhbmNlbE9wZXJhdGlvblJlc3BvbnNlSABCCQoHdmFyaWFudCLYAQoIRW5k",
+            "cG9pbnQSDwoHdmVyc2lvbhgBIAEoAxIKCgJpZBgCIAEoCRIxCgRzcGVjGAMg",
+            "ASgLMiMudGVtcG9yYWwuYXBpLm5leHVzLnYxLkVuZHBvaW50U3BlYxIwCgxj",
+            "cmVhdGVkX3RpbWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
+            "EjYKEmxhc3RfbW9kaWZpZWRfdGltZRgFIAEoCzIaLmdvb2dsZS5wcm90b2J1",
+            "Zi5UaW1lc3RhbXASEgoKdXJsX3ByZWZpeBgGIAEoCSKJAQoMRW5kcG9pbnRT",
+            "cGVjEgwKBG5hbWUYASABKAkSNAoLZGVzY3JpcHRpb24YAiABKAsyHy50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQSNQoGdGFyZ2V0GAMgASgLMiUu",
+            "dGVtcG9yYWwuYXBpLm5leHVzLnYxLkVuZHBvaW50VGFyZ2V0IukBCg5FbmRw",
+            "b2ludFRhcmdldBI+CgZ3b3JrZXIYASABKAsyLC50ZW1wb3JhbC5hcGkubmV4",
+            "dXMudjEuRW5kcG9pbnRUYXJnZXQuV29ya2VySAASQgoIZXh0ZXJuYWwYAiAB",
+            "KAsyLi50ZW1wb3JhbC5hcGkubmV4dXMudjEuRW5kcG9pbnRUYXJnZXQuRXh0",
+            "ZXJuYWxIABovCgZXb3JrZXISEQoJbmFtZXNwYWNlGAEgASgJEhIKCnRhc2tf",
+            "cXVldWUYAiABKAkaFwoIRXh0ZXJuYWwSCwoDdXJsGAEgASgJQgkKB3Zhcmlh",
+            "bnRChAEKGGlvLnRlbXBvcmFsLmFwaS5uZXh1cy52MUIMTWVzc2FnZVByb3Rv",
+            "UAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9uZXh1cy92MTtuZXh1c6oCF1RlbXBv",
+            "cmFsaW8uQXBpLk5leHVzLlYx6gIaVGVtcG9yYWxpbzo6QXBpOjpOZXh1czo6",
+            "VjFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.NexusReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -96,7 +97,7 @@ namespace Temporalio.Api.Nexus.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Link), global::Temporalio.Api.Nexus.V1.Link.Parser, new[]{ "Url", "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationRequest), global::Temporalio.Api.Nexus.V1.StartOperationRequest.Parser, new[]{ "Service", "Operation", "RequestId", "Callback", "Payload", "CallbackHeader", "Links" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.CancelOperationRequest), global::Temporalio.Api.Nexus.V1.CancelOperationRequest.Parser, new[]{ "Service", "Operation", "OperationId", "OperationToken" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Request), global::Temporalio.Api.Nexus.V1.Request.Parser, new[]{ "Header", "ScheduledTime", "StartOperation", "CancelOperation" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.Request), global::Temporalio.Api.Nexus.V1.Request.Parser, new[]{ "Header", "ScheduledTime", "StartOperation", "CancelOperation", "Endpoint" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationResponse), global::Temporalio.Api.Nexus.V1.StartOperationResponse.Parser, new[]{ "SyncSuccess", "AsyncSuccess", "OperationError" }, new[]{ "Variant" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Sync), global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Sync.Parser, new[]{ "Payload", "Links" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Async), global::Temporalio.Api.Nexus.V1.StartOperationResponse.Types.Async.Parser, new[]{ "OperationId", "Links", "OperationToken" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Nexus.V1.CancelOperationResponse), global::Temporalio.Api.Nexus.V1.CancelOperationResponse.Parser, null, null, null, null, null),
@@ -1894,6 +1895,7 @@ namespace Temporalio.Api.Nexus.V1 {
     public Request(Request other) : this() {
       header_ = other.header_.Clone();
       scheduledTime_ = other.scheduledTime_ != null ? other.scheduledTime_.Clone() : null;
+      endpoint_ = other.endpoint_;
       switch (other.VariantCase) {
         case VariantOneofCase.StartOperation:
           StartOperation = other.StartOperation.Clone();
@@ -1968,6 +1970,22 @@ namespace Temporalio.Api.Nexus.V1 {
       }
     }
 
+    /// <summary>Field number for the "endpoint" field.</summary>
+    public const int EndpointFieldNumber = 10;
+    private string endpoint_ = "";
+    /// <summary>
+    /// The endpoint this request was addressed to before forwarding to the worker.
+    /// Supported from server version 1.30.0.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Endpoint {
+      get { return endpoint_; }
+      set {
+        endpoint_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     private object variant_;
     /// <summary>Enum of possible cases for the "variant" oneof.</summary>
     public enum VariantOneofCase {
@@ -2008,6 +2026,7 @@ namespace Temporalio.Api.Nexus.V1 {
       if (!object.Equals(ScheduledTime, other.ScheduledTime)) return false;
       if (!object.Equals(StartOperation, other.StartOperation)) return false;
       if (!object.Equals(CancelOperation, other.CancelOperation)) return false;
+      if (Endpoint != other.Endpoint) return false;
       if (VariantCase != other.VariantCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -2020,6 +2039,7 @@ namespace Temporalio.Api.Nexus.V1 {
       if (scheduledTime_ != null) hash ^= ScheduledTime.GetHashCode();
       if (variantCase_ == VariantOneofCase.StartOperation) hash ^= StartOperation.GetHashCode();
       if (variantCase_ == VariantOneofCase.CancelOperation) hash ^= CancelOperation.GetHashCode();
+      if (Endpoint.Length != 0) hash ^= Endpoint.GetHashCode();
       hash ^= (int) variantCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -2052,6 +2072,10 @@ namespace Temporalio.Api.Nexus.V1 {
         output.WriteRawTag(34);
         output.WriteMessage(CancelOperation);
       }
+      if (Endpoint.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(Endpoint);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2075,6 +2099,10 @@ namespace Temporalio.Api.Nexus.V1 {
         output.WriteRawTag(34);
         output.WriteMessage(CancelOperation);
       }
+      if (Endpoint.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(Endpoint);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2095,6 +2123,9 @@ namespace Temporalio.Api.Nexus.V1 {
       if (variantCase_ == VariantOneofCase.CancelOperation) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(CancelOperation);
       }
+      if (Endpoint.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Endpoint);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -2113,6 +2144,9 @@ namespace Temporalio.Api.Nexus.V1 {
           ScheduledTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         ScheduledTime.MergeFrom(other.ScheduledTime);
+      }
+      if (other.Endpoint.Length != 0) {
+        Endpoint = other.Endpoint;
       }
       switch (other.VariantCase) {
         case VariantOneofCase.StartOperation:
@@ -2173,6 +2207,10 @@ namespace Temporalio.Api.Nexus.V1 {
             CancelOperation = subBuilder;
             break;
           }
+          case 82: {
+            Endpoint = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -2215,6 +2253,10 @@ namespace Temporalio.Api.Nexus.V1 {
             }
             input.ReadMessage(subBuilder);
             CancelOperation = subBuilder;
+            break;
+          }
+          case 82: {
+            Endpoint = input.ReadString();
             break;
           }
         }
