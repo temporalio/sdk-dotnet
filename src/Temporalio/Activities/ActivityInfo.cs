@@ -19,6 +19,7 @@ namespace Temporalio.Activities
     /// <param name="HeartbeatDetails">Details from the last heartbeat of the last attempt.</param>
     /// <param name="HeartbeatTimeout">Heartbeat timeout set by the caller.</param>
     /// <param name="IsLocal">Whether the activity is a local activity or not.</param>
+    /// <param name="Namespace">Namespace this activity is on.</param>
     /// <param name="Priority">The Priority of this activity.</param>
     /// <param name="RetryPolicy">
     /// The retry policy of this activity.
@@ -34,10 +35,14 @@ namespace Temporalio.Activities
     /// <param name="StartedTime">When the activity started.</param>
     /// <param name="TaskQueue">Task queue this activity is on.</param>
     /// <param name="TaskToken">Task token uniquely identifying this activity.</param>
-    /// <param name="WorkflowId">Workflow ID that started this activity.</param>
-    /// <param name="WorkflowNamespace">Namespace this activity is on.</param>
-    /// <param name="WorkflowRunId">Workflow run ID that started this activity.</param>
-    /// <param name="WorkflowType">Workflow type name that started this activity.</param>
+    /// <param name="WorkflowId">Workflow ID that started this activity, or null for standalone
+    /// activities.</param>
+    /// <param name="WorkflowNamespace">Namespace of the workflow that started this activity, or
+    /// null for standalone activities.</param>
+    /// <param name="WorkflowRunId">Workflow run ID that started this activity, or null for
+    /// standalone activities.</param>
+    /// <param name="WorkflowType">Workflow type name that started this activity, or null for
+    /// standalone activities.</param>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
@@ -51,6 +56,7 @@ namespace Temporalio.Activities
         IReadOnlyCollection<Payload> HeartbeatDetails,
         TimeSpan? HeartbeatTimeout,
         bool IsLocal,
+        string Namespace,
         Temporalio.Common.Priority Priority,
         Temporalio.Common.RetryPolicy? RetryPolicy,
         TimeSpan? ScheduleToCloseTimeout,
@@ -59,11 +65,17 @@ namespace Temporalio.Activities
         DateTime StartedTime,
         string TaskQueue,
         byte[] TaskToken,
-        string WorkflowId,
-        string WorkflowNamespace,
-        string WorkflowRunId,
-        string WorkflowType)
+        string? WorkflowId,
+        string? WorkflowNamespace,
+        string? WorkflowRunId,
+        string? WorkflowType)
     {
+        /// <summary>
+        /// Gets a value indicating whether this activity was started by a workflow.
+        /// </summary>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public bool IsWorkflowActivity => WorkflowId != null;
+
         /// <summary>
         /// Gets the value that is set on
         /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this activity is
@@ -74,10 +86,10 @@ namespace Temporalio.Activities
             ["ActivityId"] = ActivityId,
             ["ActivityType"] = ActivityType,
             ["Attempt"] = Attempt,
-            ["WorkflowNamespace"] = WorkflowNamespace,
-            ["WorkflowId"] = WorkflowId,
-            ["WorkflowRunId"] = WorkflowRunId,
-            ["WorkflowType"] = WorkflowType,
+            ["Namespace"] = Namespace,
+            ["WorkflowId"] = WorkflowId ?? string.Empty,
+            ["WorkflowRunId"] = WorkflowRunId ?? string.Empty,
+            ["WorkflowType"] = WorkflowType ?? string.Empty,
         };
 
         /// <summary>

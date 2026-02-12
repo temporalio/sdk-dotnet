@@ -851,7 +851,7 @@ public class ActivityWorkerTests : WorkflowEnvironmentTestBase
     public static async Task<string> UseTemporalClientActivity()
     {
         var desc = await ActivityExecutionContext.Current.TemporalClient.GetWorkflowHandle(
-            ActivityExecutionContext.Current.Info.WorkflowId).DescribeAsync();
+            ActivityExecutionContext.Current.Info.WorkflowId!).DescribeAsync();
         return desc.RawDescription.PendingActivities.First().ActivityType.Name;
     }
 

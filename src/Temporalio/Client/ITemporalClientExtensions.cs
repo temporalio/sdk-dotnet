@@ -261,6 +261,124 @@ namespace Temporalio.Client
             return await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="ITemporalClient.StartActivityAsync{TResult}(Expression{Func{Task{TResult}}}, StartActivityOptions)" />
+        /// +
+        /// <see cref="ActivityHandle{TResult}.GetResultAsync(RpcOptions?)" />.
+        /// </summary>
+        /// <typeparam name="TResult">Activity result type.</typeparam>
+        /// <param name="client">Client to use.</param>
+        /// <param name="activityCall">Invocation of activity method with a result.</param>
+        /// <param name="options">Activity options. ID and TaskQueue are required.</param>
+        /// <returns>Activity result.</returns>
+        /// <exception cref="ArgumentException">Invalid activity call or options.</exception>
+        /// <exception cref="Exceptions.ActivityAlreadyStartedException">
+        /// Activity was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.ActivityFailedException">
+        /// Activity did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public static async Task<TResult> ExecuteActivityAsync<TResult>(
+            this ITemporalClient client,
+            Expression<Func<Task<TResult>>> activityCall,
+            StartActivityOptions options)
+        {
+            var handle = await client.StartActivityAsync(activityCall, options).ConfigureAwait(false);
+            return await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="ITemporalClient.StartActivityAsync(Expression{Func{Task}}, StartActivityOptions)" />
+        /// +
+        /// <see cref="ActivityHandle.GetResultAsync(RpcOptions?)" />.
+        /// </summary>
+        /// <param name="client">Client to use.</param>
+        /// <param name="activityCall">Invocation of activity method with no result.</param>
+        /// <param name="options">Activity options. ID and TaskQueue are required.</param>
+        /// <returns>Activity completion task.</returns>
+        /// <exception cref="ArgumentException">Invalid activity call or options.</exception>
+        /// <exception cref="Exceptions.ActivityAlreadyStartedException">
+        /// Activity was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.ActivityFailedException">
+        /// Activity did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public static async Task ExecuteActivityAsync(
+            this ITemporalClient client,
+            Expression<Func<Task>> activityCall,
+            StartActivityOptions options)
+        {
+            var handle = await client.StartActivityAsync(activityCall, options).ConfigureAwait(false);
+            await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="ITemporalClient.StartActivityAsync(string, IReadOnlyCollection{object?}, StartActivityOptions)" />
+        /// +
+        /// <see cref="ActivityHandle.GetResultAsync(RpcOptions?)" />.
+        /// </summary>
+        /// <param name="client">Client to use.</param>
+        /// <param name="activity">Activity type name.</param>
+        /// <param name="args">Arguments for the activity.</param>
+        /// <param name="options">Activity options. ID and TaskQueue are required.</param>
+        /// <returns>Activity completion task.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.ActivityAlreadyStartedException">
+        /// Activity was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.ActivityFailedException">
+        /// Activity did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public static async Task ExecuteActivityAsync(
+            this ITemporalClient client,
+            string activity,
+            IReadOnlyCollection<object?> args,
+            StartActivityOptions options)
+        {
+            var handle = await client.StartActivityAsync(activity, args, options).ConfigureAwait(false);
+            await handle.GetResultAsync(rpcOptions: options.Rpc).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Shortcut for
+        /// <see cref="ITemporalClient.StartActivityAsync(string, IReadOnlyCollection{object?}, StartActivityOptions)" />
+        /// +
+        /// <see cref="ActivityHandle.GetResultAsync{TResult}(RpcOptions?)" />.
+        /// </summary>
+        /// <typeparam name="TResult">Result type to deserialize result into.</typeparam>
+        /// <param name="client">Client to use.</param>
+        /// <param name="activity">Activity type name.</param>
+        /// <param name="args">Arguments for the activity.</param>
+        /// <param name="options">Activity options. ID and TaskQueue are required.</param>
+        /// <returns>Activity result.</returns>
+        /// <exception cref="ArgumentException">Invalid options.</exception>
+        /// <exception cref="Exceptions.ActivityAlreadyStartedException">
+        /// Activity was already started according to ID reuse and conflict policy.
+        /// </exception>
+        /// <exception cref="Exceptions.ActivityFailedException">
+        /// Activity did not complete successfully.
+        /// </exception>
+        /// <exception cref="Exceptions.RpcException">Server-side error.</exception>
+        /// <remarks>WARNING: Standalone activities are experimental.</remarks>
+        public static async Task<TResult> ExecuteActivityAsync<TResult>(
+            this ITemporalClient client,
+            string activity,
+            IReadOnlyCollection<object?> args,
+            StartActivityOptions options)
+        {
+            var handle = await client.StartActivityAsync(activity, args, options).ConfigureAwait(false);
+            return await handle.GetResultAsync<TResult>(rpcOptions: options.Rpc).ConfigureAwait(false);
+        }
+
 #if NETCOREAPP3_0_OR_GREATER
         /// <summary>
         /// List workflow histories. This is just a helper combining

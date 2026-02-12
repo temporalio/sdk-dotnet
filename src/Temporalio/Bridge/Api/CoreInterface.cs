@@ -45,9 +45,12 @@ namespace Temporalio.Bridge.Api {
             "dHlwZRgBIAEoCRIRCglpc19zdGlja3kYAiABKAgiKQoQQWN0aXZpdHlTbG90",
             "SW5mbxIVCg1hY3Rpdml0eV90eXBlGAEgASgJIi4KFUxvY2FsQWN0aXZpdHlT",
             "bG90SW5mbxIVCg1hY3Rpdml0eV90eXBlGAEgASgJIjMKDU5leHVzU2xvdElu",
-            "Zm8SDwoHc2VydmljZRgBIAEoCRIRCglvcGVyYXRpb24YAiABKAlCM+oCMFRl",
-            "bXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6OkFwaTo6Q29yZUludGVyZmFj",
-            "ZWIGcHJvdG8z"));
+            "Zm8SDwoHc2VydmljZRgBIAEoCRIRCglvcGVyYXRpb24YAiABKAkihgEKDU5h",
+            "bWVzcGFjZUluZm8SLQoGbGltaXRzGAEgASgLMh0uY29yZXNkay5OYW1lc3Bh",
+            "Y2VJbmZvLkxpbWl0cxpGCgZMaW1pdHMSHQoVYmxvYl9zaXplX2xpbWl0X2Vy",
+            "cm9yGAEgASgDEh0KFW1lbW9fc2l6ZV9saW1pdF9lcnJvchgCIAEoA0Iz6gIw",
+            "VGVtcG9yYWxpbzo6SW50ZXJuYWw6OkJyaWRnZTo6QXBpOjpDb3JlSW50ZXJm",
+            "YWNlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Bridge.Api.ActivityResult.ActivityResultReflection.Descriptor, global::Temporalio.Bridge.Api.ActivityTask.ActivityTaskReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, global::Temporalio.Bridge.Api.ExternalData.ExternalDataReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowActivation.WorkflowActivationReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCommands.WorkflowCommandsReflection.Descriptor, global::Temporalio.Bridge.Api.WorkflowCompletion.WorkflowCompletionReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -56,7 +59,8 @@ namespace Temporalio.Bridge.Api {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.WorkflowSlotInfo), global::Temporalio.Bridge.Api.WorkflowSlotInfo.Parser, new[]{ "WorkflowType", "IsSticky" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.ActivitySlotInfo), global::Temporalio.Bridge.Api.ActivitySlotInfo.Parser, new[]{ "ActivityType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.LocalActivitySlotInfo), global::Temporalio.Bridge.Api.LocalActivitySlotInfo.Parser, new[]{ "ActivityType" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.NexusSlotInfo), global::Temporalio.Bridge.Api.NexusSlotInfo.Parser, new[]{ "Service", "Operation" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.NexusSlotInfo), global::Temporalio.Bridge.Api.NexusSlotInfo.Parser, new[]{ "Service", "Operation" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.NamespaceInfo), global::Temporalio.Bridge.Api.NamespaceInfo.Parser, new[]{ "Limits" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.NamespaceInfo.Types.Limits), global::Temporalio.Bridge.Api.NamespaceInfo.Types.Limits.Parser, new[]{ "BlobSizeLimitError", "MemoSizeLimitError" }, null, null, null, null)})
           }));
     }
     #endregion
@@ -1358,6 +1362,452 @@ namespace Temporalio.Bridge.Api {
       }
     }
     #endif
+
+  }
+
+  /// <summary>
+  /// Info about a namespace
+  /// </summary>
+  internal sealed partial class NamespaceInfo : pb::IMessage<NamespaceInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<NamespaceInfo> _parser = new pb::MessageParser<NamespaceInfo>(() => new NamespaceInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<NamespaceInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Bridge.Api.CoreInterfaceReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NamespaceInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NamespaceInfo(NamespaceInfo other) : this() {
+      limits_ = other.limits_ != null ? other.limits_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NamespaceInfo Clone() {
+      return new NamespaceInfo(this);
+    }
+
+    /// <summary>Field number for the "limits" field.</summary>
+    public const int LimitsFieldNumber = 1;
+    private global::Temporalio.Bridge.Api.NamespaceInfo.Types.Limits limits_;
+    /// <summary>
+    /// Namespace configured limits
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Bridge.Api.NamespaceInfo.Types.Limits Limits {
+      get { return limits_; }
+      set {
+        limits_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as NamespaceInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(NamespaceInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(Limits, other.Limits)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (limits_ != null) hash ^= Limits.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (limits_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Limits);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (limits_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Limits);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (limits_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Limits);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(NamespaceInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.limits_ != null) {
+        if (limits_ == null) {
+          Limits = new global::Temporalio.Bridge.Api.NamespaceInfo.Types.Limits();
+        }
+        Limits.MergeFrom(other.Limits);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (limits_ == null) {
+              Limits = new global::Temporalio.Bridge.Api.NamespaceInfo.Types.Limits();
+            }
+            input.ReadMessage(Limits);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (limits_ == null) {
+              Limits = new global::Temporalio.Bridge.Api.NamespaceInfo.Types.Limits();
+            }
+            input.ReadMessage(Limits);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the NamespaceInfo message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      internal sealed partial class Limits : pb::IMessage<Limits>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<Limits> _parser = new pb::MessageParser<Limits>(() => new Limits());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<Limits> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Bridge.Api.NamespaceInfo.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Limits() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Limits(Limits other) : this() {
+          blobSizeLimitError_ = other.blobSizeLimitError_;
+          memoSizeLimitError_ = other.memoSizeLimitError_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public Limits Clone() {
+          return new Limits(this);
+        }
+
+        /// <summary>Field number for the "blob_size_limit_error" field.</summary>
+        public const int BlobSizeLimitErrorFieldNumber = 1;
+        private long blobSizeLimitError_;
+        /// <summary>
+        /// Maximum size in bytes for payload fields in workflow history events
+        /// (e.g., workflow/activity inputs and results, failure details, signal payloads).
+        /// When exceeded, the server will reject the operation with an error.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long BlobSizeLimitError {
+          get { return blobSizeLimitError_; }
+          set {
+            blobSizeLimitError_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "memo_size_limit_error" field.</summary>
+        public const int MemoSizeLimitErrorFieldNumber = 2;
+        private long memoSizeLimitError_;
+        /// <summary>
+        /// Maximum total memo size in bytes per workflow execution.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long MemoSizeLimitError {
+          get { return memoSizeLimitError_; }
+          set {
+            memoSizeLimitError_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as Limits);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(Limits other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if (BlobSizeLimitError != other.BlobSizeLimitError) return false;
+          if (MemoSizeLimitError != other.MemoSizeLimitError) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          if (BlobSizeLimitError != 0L) hash ^= BlobSizeLimitError.GetHashCode();
+          if (MemoSizeLimitError != 0L) hash ^= MemoSizeLimitError.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          if (BlobSizeLimitError != 0L) {
+            output.WriteRawTag(8);
+            output.WriteInt64(BlobSizeLimitError);
+          }
+          if (MemoSizeLimitError != 0L) {
+            output.WriteRawTag(16);
+            output.WriteInt64(MemoSizeLimitError);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          if (BlobSizeLimitError != 0L) {
+            output.WriteRawTag(8);
+            output.WriteInt64(BlobSizeLimitError);
+          }
+          if (MemoSizeLimitError != 0L) {
+            output.WriteRawTag(16);
+            output.WriteInt64(MemoSizeLimitError);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          if (BlobSizeLimitError != 0L) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(BlobSizeLimitError);
+          }
+          if (MemoSizeLimitError != 0L) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(MemoSizeLimitError);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(Limits other) {
+          if (other == null) {
+            return;
+          }
+          if (other.BlobSizeLimitError != 0L) {
+            BlobSizeLimitError = other.BlobSizeLimitError;
+          }
+          if (other.MemoSizeLimitError != 0L) {
+            MemoSizeLimitError = other.MemoSizeLimitError;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 8: {
+                BlobSizeLimitError = input.ReadInt64();
+                break;
+              }
+              case 16: {
+                MemoSizeLimitError = input.ReadInt64();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 8: {
+                BlobSizeLimitError = input.ReadInt64();
+                break;
+              }
+              case 16: {
+                MemoSizeLimitError = input.ReadInt64();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+    }
+    #endregion
 
   }
 
