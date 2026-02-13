@@ -2114,6 +2114,7 @@ namespace Temporalio.Worker
                 // Get payload converter with context
                 var serializationContext = new ISerializationContext.Activity(
                     Namespace: instance.Info.Namespace,
+                    ActivityId: input.Options.ActivityId,
                     WorkflowId: instance.Info.WorkflowId,
                     WorkflowType: instance.Info.WorkflowType,
                     ActivityType: input.Activity,
@@ -2201,6 +2202,7 @@ namespace Temporalio.Worker
                 // Get payload converter with context
                 var serializationContext = new ISerializationContext.Activity(
                     Namespace: instance.Info.Namespace,
+                    ActivityId: input.Options.ActivityId,
                     WorkflowId: instance.Info.WorkflowId,
                     WorkflowType: instance.Info.WorkflowType,
                     ActivityType: input.Activity,

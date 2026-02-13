@@ -1,5 +1,7 @@
 #pragma warning disable CA1724 // We don't care that Workflow/Activity clash with API namespace
 
+using System;
+
 namespace Temporalio.Converters
 {
     /// <summary>
@@ -22,13 +24,13 @@ namespace Temporalio.Converters
 #pragma warning restore CA1716
 
             /// <summary>
-            /// Gets the ID for the workflow.
+            /// Gets the ID for the workflow, or null if not applicable (e.g. standalone activities).
             /// </summary>
             /// <remarks>
             /// Note, when creating/describing schedules, this may be the workflow ID prefix as
             /// configured, not the final workflow ID when the workflow is created by the schedule.
             /// </remarks>
-            string WorkflowId { get; }
+            string? WorkflowId { get; }
         }
 
         /// <summary>
@@ -41,19 +43,23 @@ namespace Temporalio.Converters
         /// remain compatible from one version to the next.
         /// </remarks>
         /// <param name="Namespace">Workflow/activity namespace.</param>
-        /// <param name="WorkflowId">Workflow ID. Note, when creating/describing schedules, this may
-        /// be the workflow ID prefix as configured, not the final workflow ID when the workflow is
-        /// created by the schedule.</param>
-        /// <param name="WorkflowType">Workflow Type.</param>
-        /// <param name="ActivityType">Activity Type.</param>
-        /// <param name="ActivityTaskQueue">ActivityTaskQueue.</param>
+        /// <param name="ActivityId">Activity ID. Only set for standalone activities.</param>
+        /// <param name="WorkflowId">Workflow ID. Only set for workflow activities. Note, when
+        /// creating/describing schedules, this may be the workflow ID prefix as configured, not
+        /// the final workflow ID when the workflow is created by the schedule.</param>
+        /// <param name="WorkflowType">Workflow type. Only set for workflow activities.</param>
+        /// <param name="ActivityType">Activity type.</param>
+        /// <param name="ActivityTaskQueue">Activity task queue.</param>
         /// <param name="IsLocal">Whether the activity is a local activity.</param>
         public sealed record Activity(
             string Namespace,
-            string WorkflowId,
-            string WorkflowType,
-            string ActivityType,
-            string ActivityTaskQueue,
+            string? ActivityId,
+            string? WorkflowId,
+            string? WorkflowType,
+            [property: Obsolete("This value may not be set in some situations and should not be relied on.")]
+            string? ActivityType,
+            [property: Obsolete("This value may not be set in some situations and should not be relied on.")]
+            string? ActivityTaskQueue,
             bool IsLocal) : IHasWorkflow
         {
             /// <summary>
@@ -62,7 +68,8 @@ namespace Temporalio.Converters
             /// <param name="info">Info available within an activity.</param>
             public Activity(Activities.ActivityInfo info)
                 : this(
-                    Namespace: info.WorkflowNamespace,
+                    Namespace: info.Namespace,
+                    ActivityId: info.ActivityId,
                     WorkflowId: info.WorkflowId,
                     WorkflowType: info.WorkflowType,
                     ActivityType: info.ActivityType,

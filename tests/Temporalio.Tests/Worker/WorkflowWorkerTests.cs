@@ -5725,7 +5725,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
             [Activity]
             public Task CancelWorkflowAsync() =>
-                client.GetWorkflowHandle(ActivityExecutionContext.Current.Info.WorkflowId).CancelAsync();
+                client.GetWorkflowHandle(ActivityExecutionContext.Current.Info.WorkflowId!).CancelAsync();
         }
     }
 
@@ -6689,7 +6689,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public async Task SendTwoSignalsAsync()
         {
             var handle = client.GetWorkflowHandle<MultiSignalOrderWorkflow>(
-                ActivityExecutionContext.Current.Info.WorkflowId);
+                ActivityExecutionContext.Current.Info.WorkflowId!);
             await handle.SignalAsync(wf => wf.SignalAsync("one"));
             await handle.SignalAsync(wf => wf.SignalAsync("two"));
         }
@@ -6890,7 +6890,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new(
                 Activity: context is ISerializationContext.Activity,
                 Workflow: context is ISerializationContext.Workflow,
-                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId);
+                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId!);
     }
 
     public class ContextJsonPlainConverter : JsonPlainConverter, IWithSerializationContext<IEncodingConverter>
@@ -7123,7 +7123,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             value.AssertWorkflowEqual(
                 "activity-input",
-                ActivityExecutionContext.Current.Info.WorkflowId,
+                ActivityExecutionContext.Current.Info.WorkflowId!,
                 activity: true);
             return new("activity-result", new());
         }

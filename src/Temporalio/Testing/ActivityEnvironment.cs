@@ -30,6 +30,7 @@ namespace Temporalio.Testing
             HeartbeatDetails: Array.Empty<Payload>(),
             HeartbeatTimeout: null,
             IsLocal: false,
+            Namespace: "default",
             Priority: new(),
             RetryPolicy: new(),
             ScheduleToCloseTimeout: TimeSpan.FromSeconds(1),

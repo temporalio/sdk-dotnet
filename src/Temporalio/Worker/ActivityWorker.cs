@@ -90,7 +90,29 @@ namespace Temporalio.Worker
                     switch (task?.VariantCase)
                     {
                         case Bridge.Api.ActivityTask.ActivityTask.VariantOneofCase.Start:
-                            StartActivity(task);
+                            try
+                            {
+                                StartActivity(task);
+                            }
+                            catch (Exception e)
+                            {
+                                logger.LogError(e, "Failed starting activity task");
+                                await worker.BridgeWorker.CompleteActivityTaskAsync(new()
+                                {
+                                    TaskToken = task.TaskToken,
+                                    Result = new()
+                                    {
+                                        Failed = new()
+                                        {
+                                            Failure_ = new()
+                                            {
+                                                Message = $"Failed starting activity task: {e}",
+                                                ApplicationFailureInfo = new() { Type = e.GetType().Name },
+                                            },
+                                        },
+                                    },
+                                }).ConfigureAwait(false);
+                            }
                             break;
                         case Bridge.Api.ActivityTask.ActivityTask.VariantOneofCase.Cancel:
                             if (!runningActivities.TryGetValue(task.TaskToken, out var act))
@@ -191,23 +213,28 @@ namespace Temporalio.Worker
             var start = tsk.Start;
             var dataConverter = worker.Client.Options.DataConverter.WithSerializationContext(
                 new ISerializationContext.Activity(
-                    Namespace: start.WorkflowNamespace,
-                    WorkflowId: start.WorkflowExecution.WorkflowId,
-                    WorkflowType: start.WorkflowType,
+                    Namespace: string.IsNullOrEmpty(start.WorkflowNamespace) ? worker.Client.Options.Namespace : start.WorkflowNamespace,
+                    ActivityId: start.ActivityId,
+                    WorkflowId: string.IsNullOrEmpty(start.WorkflowExecution?.WorkflowId) ? null : start.WorkflowExecution!.WorkflowId,
+                    WorkflowType: string.IsNullOrEmpty(start.WorkflowType) ? null : start.WorkflowType,
                     ActivityType: start.ActivityType,
                     ActivityTaskQueue: worker.Options.TaskQueue!,
                     IsLocal: start.IsLocal));
 
-            // Create info
+            // Create info. Workflow fields are null for standalone activities.
+            var workflowId = string.IsNullOrEmpty(start.WorkflowExecution?.WorkflowId) ? null : start.WorkflowExecution!.WorkflowId;
             var info = new ActivityInfo(
                 ActivityId: start.ActivityId,
                 ActivityType: start.ActivityType,
                 Attempt: (int)start.Attempt,
-                CurrentAttemptScheduledTime: start.CurrentAttemptScheduledTime.ToDateTime(),
+                // TODO(cretz): CurrentAttemptScheduledTime is not set for standalone
+                // activities. Use zero time as fallback until server populates this.
+                CurrentAttemptScheduledTime: start.CurrentAttemptScheduledTime?.ToDateTime() ?? DateTime.MinValue,
                 DataConverter: dataConverter,
                 HeartbeatDetails: start.HeartbeatDetails,
                 HeartbeatTimeout: OptionalTimeSpan(start.HeartbeatTimeout),
                 IsLocal: start.IsLocal,
+                Namespace: string.IsNullOrEmpty(start.WorkflowNamespace) ? worker.Client.Options.Namespace : start.WorkflowNamespace,
                 Priority: start.Priority is { } p ? new(p) : Priority.Default,
                 RetryPolicy: start.RetryPolicy is { } rp ? RetryPolicy.FromProto(rp) : null,
                 ScheduleToCloseTimeout: OptionalTimeSpan(start.ScheduleToCloseTimeout),
@@ -216,10 +243,10 @@ namespace Temporalio.Worker
                 StartedTime: start.StartedTime.ToDateTime(),
                 TaskQueue: worker.Options.TaskQueue!,
                 TaskToken: tsk.TaskToken.ToByteArray(),
-                WorkflowId: start.WorkflowExecution.WorkflowId,
-                WorkflowNamespace: start.WorkflowNamespace,
-                WorkflowRunId: start.WorkflowExecution.RunId,
-                WorkflowType: start.WorkflowType);
+                WorkflowId: workflowId,
+                WorkflowNamespace: workflowId != null ? start.WorkflowNamespace : null,
+                WorkflowRunId: workflowId != null ? start.WorkflowExecution!.RunId : null,
+                WorkflowType: workflowId != null ? start.WorkflowType : null);
             // Create context
             var cancelTokenSource = new CancellationTokenSource();
             var context = new ActivityExecutionContext(

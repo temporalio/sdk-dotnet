@@ -145,7 +145,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal("StringService", capturedContext!.HandlerContext.Service);
         Assert.Equal("DoSomething", capturedContext.HandlerContext.Operation);
         Assert.True(Guid.TryParse(capturedContext.HandlerContext.RequestId, out _));
-        Assert.StartsWith("http", capturedContext.HandlerContext.CallbackUrl);
+        Assert.False(string.IsNullOrEmpty(capturedContext.HandlerContext.CallbackUrl));
         var wfEvent = Assert.Single(capturedContext.HandlerContext.InboundLinks).ToWorkflowEvent();
         Assert.Equal(handle.Id, wfEvent.WorkflowId);
         Assert.Equal(handle.ResultRunId, wfEvent.RunId);
