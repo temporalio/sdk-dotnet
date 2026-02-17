@@ -2929,6 +2929,79 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             client);
     }
 
+    [Workflow]
+    public class LocalActivityBackoffHeadersWithCodecWorkflow
+    {
+        [Activity]
+        public static string FailOnceActivity()
+        {
+            if (ActivityExecutionContext.Current.Info.Attempt < 2)
+            {
+                throw new ApplicationFailureException("Intentional first-attempt failure");
+            }
+            return "done";
+        }
+
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            return await Workflow.ExecuteLocalActivityAsync(
+                () => FailOnceActivity(),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromMinutes(1),
+                    // Force durable backoff by setting threshold below retry interval
+                    LocalRetryThreshold = TimeSpan.FromMilliseconds(1),
+                    RetryPolicy = new()
+                    {
+                        InitialInterval = TimeSpan.FromMilliseconds(200),
+                        MaximumAttempts = 2,
+                    },
+                });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityBackoffWithCodecHeaders_Succeeds()
+    {
+        // Create interceptor that attaches/reads headers on local activities
+        var intercept = new HeaderCallbackInterceptor()
+        {
+            OnOutbound = name => new Dictionary<string, Payload>()
+            {
+                ["operation"] = DataConverter.Default.PayloadConverter.ToPayload(name),
+            },
+            OnInbound = (name, headers) =>
+            {
+                // If this is an activity execution, verify the header is decodable.
+                // Without the fix, double-encoded headers would make this throw.
+                if (name == "Activity:ExecuteActivity" && headers != null)
+                {
+                    DataConverter.Default.PayloadConverter.ToValue<string>(headers["operation"]);
+                }
+            },
+        };
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Interceptors = new[] { intercept };
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Converters.Base64PayloadCodec(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        await ExecuteWorkerAsync<LocalActivityBackoffHeadersWithCodecWorkflow>(
+            async worker =>
+            {
+                var result = await client.ExecuteWorkflowAsync(
+                    (LocalActivityBackoffHeadersWithCodecWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                Assert.Equal("done", result);
+            },
+            new TemporalWorkerOptions().AddActivity(
+                LocalActivityBackoffHeadersWithCodecWorkflow.FailOnceActivity),
+            client);
+    }
+
     public record SimpleValue(string SomeString);
 
     [Workflow]
