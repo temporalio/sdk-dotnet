@@ -81,16 +81,42 @@ namespace Temporalio.Activities
         /// <see cref="Microsoft.Extensions.Logging.ILogger.BeginScope" /> before this activity is
         /// started.
         /// </summary>
-        internal Dictionary<string, object> LoggerScope { get; } = new()
+        internal Dictionary<string, object> LoggerScope { get; } = CreateLoggerScope(
+            ActivityId,
+            ActivityType,
+            Attempt,
+            Namespace,
+            WorkflowId,
+            WorkflowNamespace,
+            WorkflowRunId,
+            WorkflowType);
+
+        private static Dictionary<string, object> CreateLoggerScope(
+            string activityId,
+            string activityType,
+            int attempt,
+            string ns,
+            string? workflowId,
+            string? workflowNamespace,
+            string? workflowRunId,
+            string? workflowType)
         {
-            ["ActivityId"] = ActivityId,
-            ["ActivityType"] = ActivityType,
-            ["Attempt"] = Attempt,
-            ["Namespace"] = Namespace,
-            ["WorkflowId"] = WorkflowId ?? string.Empty,
-            ["WorkflowRunId"] = WorkflowRunId ?? string.Empty,
-            ["WorkflowType"] = WorkflowType ?? string.Empty,
-        };
+            var scope = new Dictionary<string, object>
+            {
+                ["ActivityId"] = activityId,
+                ["ActivityType"] = activityType,
+                ["Attempt"] = attempt,
+                ["Namespace"] = ns,
+            };
+            if (workflowId != null)
+            {
+                scope["WorkflowId"] = workflowId;
+                scope["WorkflowNamespace"] = workflowNamespace!;
+                scope["WorkflowRunId"] = workflowRunId!;
+                scope["WorkflowType"] = workflowType!;
+            }
+            return scope;
+        }
 
         /// <summary>
         /// Convert a heartbeat detail at the given index.
