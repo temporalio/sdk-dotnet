@@ -2231,7 +2231,14 @@ namespace Temporalio.Worker
                         };
                         if (input.Headers is IDictionary<string, Payload> headers)
                         {
-                            cmd.Headers.Add(headers);
+                            // Clone each header payload to avoid in-place codec
+                            // encoding from mutating the originals, which would
+                            // cause double-encoding on local activity backoff
+                            // retries.
+                            foreach (var kvp in headers)
+                            {
+                                cmd.Headers.Add(kvp.Key, kvp.Value.Clone());
+                            }
                         }
                         if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToClose)
                         {
