@@ -273,6 +273,7 @@ namespace Temporalio.Worker
                         codec = withAct.WithSerializationContext(
                             new ISerializationContext.Activity(
                                 Namespace: context.Namespace,
+                                ActivityId: cmd.ScheduleActivity.ActivityId,
                                 WorkflowId: context.WorkflowId,
                                 WorkflowType: context.WorkflowType,
                                 ActivityType: cmd.ScheduleActivity.ActivityType,
@@ -293,6 +294,7 @@ namespace Temporalio.Worker
                         codec = withLocalAct.WithSerializationContext(
                             new ISerializationContext.Activity(
                                 Namespace: context.Namespace,
+                                ActivityId: cmd.ScheduleLocalActivity.ActivityId,
                                 WorkflowId: context.WorkflowId,
                                 WorkflowType: context.WorkflowType,
                                 ActivityType: cmd.ScheduleLocalActivity.ActivityType,
