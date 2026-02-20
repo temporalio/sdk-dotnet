@@ -2733,6 +2733,48 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class PatchSearchAttributeWorkflow
+    {
+        [Activity]
+        public static string SomeActivity() => "done";
+
+        [WorkflowRun]
+        public async Task RunAsync()
+        {
+            if (Workflow.Patched("my-patch"))
+            {
+                await Workflow.ExecuteActivityAsync(
+                    () => SomeActivity(),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            }
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_PatchSearchAttribute_ReturnsProperly()
+    {
+        await EnsureSearchAttributesPresentAsync();
+        await ExecuteWorkerAsync<PatchSearchAttributeWorkflow>(
+            async worker =>
+            {
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (PatchSearchAttributeWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        TypedSearchAttributes = new SearchAttributeCollection.Builder().
+                        Set(AttrKeywordList, new[] { "SomeKeywordA", "SomeKeywordB" }).
+                        ToSearchAttributeCollection(),
+                    });
+                await handle.GetResultAsync();
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(
+                    ["my-patch"],
+                    desc.TypedSearchAttributes.Get(SearchAttributeKey.CreateKeywordList("TemporalChangeVersion")));
+            },
+            new TemporalWorkerOptions().AddActivity(PatchSearchAttributeWorkflow.SomeActivity));
+    }
+
+    [Workflow]
     public class HeadersWithCodecWorkflow
     {
         public enum Kind
@@ -2884,6 +2926,79 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 Assert.Equal(expectedDecodedHeaderOperations, decodedHeaderOperations);
             },
             new TemporalWorkerOptions().AddActivity(HeadersWithCodecWorkflow.DoThing),
+            client);
+    }
+
+    [Workflow]
+    public class LocalActivityBackoffHeadersWithCodecWorkflow
+    {
+        [Activity]
+        public static string FailOnceActivity()
+        {
+            if (ActivityExecutionContext.Current.Info.Attempt < 2)
+            {
+                throw new ApplicationFailureException("Intentional first-attempt failure");
+            }
+            return "done";
+        }
+
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            return await Workflow.ExecuteLocalActivityAsync(
+                () => FailOnceActivity(),
+                new()
+                {
+                    StartToCloseTimeout = TimeSpan.FromMinutes(1),
+                    // Force durable backoff by setting threshold below retry interval
+                    LocalRetryThreshold = TimeSpan.FromMilliseconds(1),
+                    RetryPolicy = new()
+                    {
+                        InitialInterval = TimeSpan.FromMilliseconds(200),
+                        MaximumAttempts = 2,
+                    },
+                });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_LocalActivityBackoffWithCodecHeaders_Succeeds()
+    {
+        // Create interceptor that attaches/reads headers on local activities
+        var intercept = new HeaderCallbackInterceptor()
+        {
+            OnOutbound = name => new Dictionary<string, Payload>()
+            {
+                ["operation"] = DataConverter.Default.PayloadConverter.ToPayload(name),
+            },
+            OnInbound = (name, headers) =>
+            {
+                // If this is an activity execution, verify the header is decodable.
+                // Without the fix, double-encoded headers would make this throw.
+                if (name == "Activity:ExecuteActivity" && headers != null)
+                {
+                    DataConverter.Default.PayloadConverter.ToValue<string>(headers["operation"]);
+                }
+            },
+        };
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Interceptors = new[] { intercept };
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Converters.Base64PayloadCodec(),
+        };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        await ExecuteWorkerAsync<LocalActivityBackoffHeadersWithCodecWorkflow>(
+            async worker =>
+            {
+                var result = await client.ExecuteWorkflowAsync(
+                    (LocalActivityBackoffHeadersWithCodecWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                Assert.Equal("done", result);
+            },
+            new TemporalWorkerOptions().AddActivity(
+                LocalActivityBackoffHeadersWithCodecWorkflow.FailOnceActivity),
             client);
     }
 
@@ -5683,7 +5798,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 
             [Activity]
             public Task CancelWorkflowAsync() =>
-                client.GetWorkflowHandle(ActivityExecutionContext.Current.Info.WorkflowId).CancelAsync();
+                client.GetWorkflowHandle(ActivityExecutionContext.Current.Info.WorkflowId!).CancelAsync();
         }
     }
 
@@ -6010,6 +6125,13 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             Workflow.Logger.LogInformation("In update");
             complete.SetResult();
         }
+
+        [WorkflowQuery]
+        public string QueryWithLogging()
+        {
+            Workflow.Logger.LogInformation("In query");
+            return "query-result";
+        }
     }
 
     [Fact]
@@ -6024,6 +6146,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                 var handle = await Client.StartWorkflowAsync(
                     (UpdateLogWorkflow wf) => wf.RunAsync(),
                     new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!));
+                // Execute query to confirm it logs
+                Assert.Equal("query-result", await handle.QueryAsync(wf => wf.QueryWithLogging()));
                 await handle.ExecuteUpdateAsync(
                     wf => wf.UpdateAsync(), new() { Id = "my-update-id" });
                 await handle.GetResultAsync();
@@ -6042,6 +6166,10 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal("UpdateLogWorkflow", updateLog.ScopeValues["WorkflowType"]);
         Assert.Equal("my-update-id", updateLog.ScopeValues["UpdateId"]);
         Assert.Equal("Update", updateLog.ScopeValues["UpdateName"]);
+        // Check query log - should be present now with IsReplayingHistoryEvents
+        var queryLog = Assert.Single(loggerFactory.Logs, l => l.Formatted == "In query");
+        Assert.Equal("UpdateLogWorkflow", queryLog.ScopeValues["WorkflowType"]);
+        Assert.False(queryLog.ScopeValues.ContainsKey("UpdateId"));
     }
 
     [Workflow]
@@ -6634,7 +6762,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public async Task SendTwoSignalsAsync()
         {
             var handle = client.GetWorkflowHandle<MultiSignalOrderWorkflow>(
-                ActivityExecutionContext.Current.Info.WorkflowId);
+                ActivityExecutionContext.Current.Info.WorkflowId!);
             await handle.SignalAsync(wf => wf.SignalAsync("one"));
             await handle.SignalAsync(wf => wf.SignalAsync("two"));
         }
@@ -6835,7 +6963,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             new(
                 Activity: context is ISerializationContext.Activity,
                 Workflow: context is ISerializationContext.Workflow,
-                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId);
+                WorkflowId: ((ISerializationContext.IHasWorkflow)context).WorkflowId!);
     }
 
     public class ContextJsonPlainConverter : JsonPlainConverter, IWithSerializationContext<IEncodingConverter>
@@ -7068,7 +7196,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             value.AssertWorkflowEqual(
                 "activity-input",
-                ActivityExecutionContext.Current.Info.WorkflowId,
+                ActivityExecutionContext.Current.Info.WorkflowId!,
                 activity: true);
             return new("activity-result", new());
         }

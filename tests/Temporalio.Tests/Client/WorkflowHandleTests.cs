@@ -79,10 +79,14 @@ public class WorkflowHandleTests : WorkflowEnvironmentTestBase
         Assert.Equal(Exceptions.RpcException.StatusCode.NotFound, err.Code);
     }
 
-    [Fact]
+    [SkippableFact]
     public async Task GetResultAsync_Timeout_Throws()
     {
+        throw new SkipException(
+            "Bug in server on respecting deadline: https://github.com/temporalio/temporal/issues/8970");
+#pragma warning disable CS0162 // Skipping because the above
         var arg = new KSWorkflowParams(new KSAction(Sleep: new(Millis: 50000)));
+#pragma warning restore CS0162
         var err = await Assert.ThrowsAsync<Exceptions.RpcException>(async () =>
             await Client.ExecuteWorkflowAsync(
                 (IKitchenSinkWorkflow wf) => wf.RunAsync(arg),

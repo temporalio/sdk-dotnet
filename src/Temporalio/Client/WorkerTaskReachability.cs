@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,7 @@ namespace Temporalio.Client
     /// Contains information about the reachability of some Build IDs.
     /// </summary>
     /// <param name="BuildIdReachability">Maps Build IDs to information about their reachability.</param>
+    [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
     public record WorkerTaskReachability(IReadOnlyDictionary<string, BuildIdReachability> BuildIdReachability)
     {
         /// <summary>

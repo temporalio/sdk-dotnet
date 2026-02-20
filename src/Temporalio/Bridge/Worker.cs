@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
@@ -10,13 +9,15 @@ namespace Temporalio.Bridge
     /// <summary>
     /// Core-owned Temporal worker.
     /// </summary>
-    internal class Worker : SafeHandle
+    internal class Worker : IDisposable
     {
+        private readonly SafeHandleReference<SafeWorkerHandle> handleRef;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Worker"/> class.
         /// </summary>
         /// <param name="client">Client for the worker.</param>
-        /// <param name="namespace_">Namespace for the worker.</param>
+        /// <param name="namespace">Namespace for the worker.</param>
         /// <param name="options">Options for the worker.</param>
         /// <param name="loggerFactory">Logger factory, used instead of the one in options by
         ///   anything in the bridge that needs it, since it's guaranteed to be set.</param>
@@ -26,33 +27,12 @@ namespace Temporalio.Bridge
         /// </exception>
         public Worker(
             Client client,
-            string namespace_,
+            string @namespace,
             Temporalio.Worker.TemporalWorkerOptions options,
             ILoggerFactory loggerFactory,
             IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins = null)
-            : base(IntPtr.Zero, true)
+            : this(client.Runtime, CreateWorkerHandle(client, @namespace, options, loggerFactory, clientPlugins))
         {
-            Runtime = client.Runtime;
-            using (var scope = new Scope())
-            {
-                unsafe
-                {
-                    var workerOrFail = Interop.Methods.temporal_core_worker_new(
-                        client.Ptr,
-                        scope.Pointer(options.ToInteropOptions(scope, namespace_, loggerFactory, clientPlugins)));
-                    if (workerOrFail.fail != null)
-                    {
-                        string failStr;
-                        using (var byteArray = new ByteArray(Runtime, workerOrFail.fail))
-                        {
-                            failStr = byteArray.ToUTF8();
-                        }
-                        throw new InvalidOperationException(failStr);
-                    }
-                    Ptr = workerOrFail.worker;
-                    SetHandle((IntPtr)Ptr);
-                }
-            }
         }
 
         /// <summary>
@@ -60,43 +40,27 @@ namespace Temporalio.Bridge
         /// pointer already exists (like for replayer).
         /// </summary>
         /// <param name="runtime">Runtime.</param>
-        /// <param name="ptr">Pointer.</param>
-        internal unsafe Worker(Runtime runtime, Interop.TemporalCoreWorker* ptr)
-            : base(IntPtr.Zero, true)
+        /// <param name="handle">Pointer.</param>
+        internal Worker(Runtime runtime, SafeWorkerHandle handle)
+            : this(runtime, SafeHandleReference<SafeWorkerHandle>.AddRef(handle))
+        {
+        }
+
+        private Worker(Runtime runtime, SafeHandleReference<SafeWorkerHandle> handleRef)
         {
             Runtime = runtime;
-            Ptr = ptr;
-            SetHandle((IntPtr)ptr);
+            this.handleRef = handleRef;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Worker"/> class from another. Only for
-        /// testing.
+        /// Gets the worker handle.
         /// </summary>
-        /// <param name="other">Other worker to reference.</param>
-        internal Worker(Worker other)
-            : base(IntPtr.Zero, true)
-        {
-            unsafe
-            {
-                Runtime = other.Runtime;
-                Ptr = other.Ptr;
-                SetHandle((IntPtr)Ptr);
-            }
-        }
-
-        /// <inheritdoc />
-        public override unsafe bool IsInvalid => Ptr == null;
+        internal SafeWorkerHandle Handle => handleRef.Handle;
 
         /// <summary>
         /// Gets the runtime associated with this worker.
         /// </summary>
         internal Runtime Runtime { get; private init; }
-
-        /// <summary>
-        /// Gets a pointer to the worker.
-        /// </summary>
-        internal unsafe Interop.TemporalCoreWorker* Ptr { get; private set; }
 
         /// <summary>
         /// Validate the worker.
@@ -111,7 +75,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_validate(
-                        Ptr,
+                        scope.Pointer(Handle),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
@@ -137,9 +101,14 @@ namespace Temporalio.Bridge
         /// <param name="client">New client.</param>
         public void ReplaceClient(Client client)
         {
-            unsafe
+            using (var scope = new Scope())
             {
-                Interop.Methods.temporal_core_worker_replace_client(Ptr, client.Ptr);
+                unsafe
+                {
+                    Interop.Methods.temporal_core_worker_replace_client(
+                        scope.Pointer(Handle),
+                        scope.Pointer(client.Handle));
+                }
             }
         }
 
@@ -157,7 +126,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_poll_workflow_activation(
-                        Ptr,
+                        scope.Pointer(Handle),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
@@ -196,7 +165,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_poll_activity_task(
-                        Ptr,
+                        scope.Pointer(Handle),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
@@ -235,7 +204,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_poll_nexus_task(
-                        Ptr,
+                        scope.Pointer(Handle),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerPollCallback>(
                             (userData, success, fail) =>
@@ -275,7 +244,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_complete_workflow_activation(
-                        Ptr,
+                        scope.Pointer(Handle),
                         scope.ByteArray(comp.ToByteArray()),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
@@ -310,7 +279,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_complete_activity_task(
-                        Ptr,
+                        scope.Pointer(Handle),
                         scope.ByteArray(comp.ToByteArray()),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
@@ -345,7 +314,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_complete_nexus_task(
-                        Ptr,
+                        scope.Pointer(Handle),
                         scope.ByteArray(comp.ToByteArray()),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
@@ -377,7 +346,8 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     var fail = Interop.Methods.temporal_core_worker_record_activity_heartbeat(
-                        Ptr, scope.ByteArray(heartbeat.ToByteArray()));
+                        scope.Pointer(Handle),
+                        scope.ByteArray(heartbeat.ToByteArray()));
                     if (fail != null)
                     {
                         string failStr;
@@ -402,7 +372,8 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_request_workflow_eviction(
-                        Ptr, scope.ByteArray(runId));
+                        scope.Pointer(Handle),
+                        scope.ByteArray(runId));
                 }
             }
         }
@@ -412,9 +383,12 @@ namespace Temporalio.Bridge
         /// </summary>
         public void InitiateShutdown()
         {
-            unsafe
+            using (var scope = new Scope())
             {
-                Interop.Methods.temporal_core_worker_initiate_shutdown(Ptr);
+                unsafe
+                {
+                    Interop.Methods.temporal_core_worker_initiate_shutdown(scope.Pointer(Handle));
+                }
             }
         }
 
@@ -432,7 +406,7 @@ namespace Temporalio.Bridge
                 unsafe
                 {
                     Interop.Methods.temporal_core_worker_finalize_shutdown(
-                        Ptr,
+                        scope.Pointer(Handle),
                         null,
                         scope.FunctionPointer<Interop.TemporalCoreWorkerCallback>(
                             (userData, fail) =>
@@ -452,11 +426,38 @@ namespace Temporalio.Bridge
             }
         }
 
-        /// <inheritdoc />
-        protected override unsafe bool ReleaseHandle()
+        /// <inheritdoc/>
+        public void Dispose()
         {
-            Interop.Methods.temporal_core_worker_free(Ptr);
-            return true;
+            // The handle reference understands whether to dispose or release the handle
+            handleRef.Dispose();
+        }
+
+        private static unsafe SafeHandleReference<SafeWorkerHandle> CreateWorkerHandle(
+            Client client,
+            string @namespace,
+            Temporalio.Worker.TemporalWorkerOptions options,
+            ILoggerFactory loggerFactory,
+            IReadOnlyCollection<Temporalio.Client.ITemporalClientPlugin>? clientPlugins)
+        {
+            using Scope scope = new();
+
+            var workerOrFail = Interop.Methods.temporal_core_worker_new(
+                scope.Pointer(client.Handle),
+                scope.Pointer(options.ToInteropOptions(scope, @namespace, loggerFactory, clientPlugins)));
+
+            if (workerOrFail.fail != null)
+            {
+                string failStr;
+                using (var byteArray = new ByteArray(client.Runtime, workerOrFail.fail))
+                {
+                    failStr = byteArray.ToUTF8();
+                }
+                throw new InvalidOperationException(failStr);
+            }
+
+            return SafeHandleReference<SafeWorkerHandle>.Owned(
+                new SafeWorkerHandle(workerOrFail.worker));
         }
     }
 }

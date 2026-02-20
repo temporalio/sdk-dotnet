@@ -66,6 +66,7 @@ Extensions:
     - [Activity Execution Context](#activity-execution-context)
     - [Activity Heartbeating and Cancellation](#activity-heartbeating-and-cancellation)
     - [Activity Worker Shutdown](#activity-worker-shutdown)
+    - [Invoking Standalone Activities](#invoking-standalone-activities)
     - [Activity Testing](#activity-testing)
   - [Nexus](#nexus)
     - [Nexus Operations Backed by Workflows](#nexus-operations-backed-by-workflows)
@@ -1126,6 +1127,41 @@ still-running activities via `ActivityExecutionContext.CancellationToken`.
 Worker shutdown will wait on all activities to complete, so if a long-running activity does not respect cancellation,
 the shutdown may never complete.
 
+#### Invoking Standalone Activities
+
+Activities can also be started directly from a client, independent of a workflow. These are called "standalone
+activities". For example:
+
+```csharp
+using Temporalio.Client;
+
+// Start a standalone activity via lambda
+var handle = await client.StartActivityAsync(
+    () => MyActivities.MyActivityAsync("some-arg"),
+    new(id: "my-activity-id", taskQueue: "my-task-queue")
+    {
+        ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+    });
+
+// Wait for the result
+var result = await handle.GetResultAsync();
+```
+
+Notes about the above code:
+
+* `StartActivityAsync` accepts a lambda expression that invokes the activity method, similar to
+  `Workflow.ExecuteActivityAsync`.
+* `Id` and `TaskQueue` are required on `StartActivityOptions`. Either `ScheduleToCloseTimeout` or
+  `StartToCloseTimeout` must also be set.
+* Non-type-safe forms of `StartActivityAsync` exist that accept a string activity name and an object array for
+  arguments.
+* A shortcut extension `ExecuteActivityAsync` is available that is just `StartActivityAsync` + `GetResultAsync`.
+* The `handle` is an `ActivityHandle` which has `GetResultAsync`, `DescribeAsync`, `CancelAsync`, and `TerminateAsync`
+  methods. For existing activities, handles can be obtained via `client.GetActivityHandle`.
+* If the activity fails, `GetResultAsync` throws `ActivityFailedException`.
+* If the activity already exists according to the ID reuse/conflict policy, `StartActivityAsync` throws
+  `ActivityAlreadyStartedException`.
+
 #### Activity Testing
 
 Unit testing an activity or any code that could run in an activity is done via the
@@ -1210,7 +1246,7 @@ on a common platform. If you are using .NET framework, you may have to explicitl
 because `AnyCPU` will not choose the proper library.
 
 Currently we only support [RIDs](https://learn.microsoft.com/en-us/dotnet/core/rid-catalog)
-`linux-arm64`, `linux-x64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, `win-arm64`, and `win-x64`.
+`linux-arm64`, `linux-x64`, `linux-musl-arm64`, `linux-musl-x64`, `osx-arm64`, `osx-x64`, `win-arm64`, and `win-x64`.
 Any other platforms needed will require a custom build.
 
 The native shared library on Windows does require a Visual C++ runtime. Some containers, such as Windows Nano Server, do

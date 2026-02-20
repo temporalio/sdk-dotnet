@@ -40,6 +40,9 @@ dotnet_diagnostic.CA1847.severity = none
 # We accept logging performance can improve later
 dotnet_diagnostic.CA1848.severity = none
 
+# We accept logging performance can improve later
+dotnet_diagnostic.CA1873.severity = none
+
 # Do not want to make all exceptions [Serializable], we don't support
 # cross-AppDomain currently
 dotnet_diagnostic.CA2237.severity = none

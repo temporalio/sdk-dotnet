@@ -93,18 +93,24 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
 
         // Start the host
         using var tokenSource = new CancellationTokenSource();
-        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
-
-        // Execute the workflow
-        var result = await Client.ExecuteWorkflowAsync(
-            (DatabaseWorkflow wf) => wf.RunAsync(),
-            new($"wf-{Guid.NewGuid()}", taskQueue));
-        // Single activity calls use the same client but different calls use different clients
-        Assert.Equal(
-            new List<string> { "something-6", "something-7", "something-6", "something-7", "something-static" },
-            result);
-        // Confirm the log appeared
-        Assert.Contains(loggerFactory.Logs, e => e.Formatted == "Running database workflow");
+        await host.StartAsync(tokenSource.Token);
+        try
+        {
+            // Execute the workflow
+            var result = await Client.ExecuteWorkflowAsync(
+                (DatabaseWorkflow wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", taskQueue));
+            // Single activity calls use the same client but different calls use different clients
+            Assert.Equal(
+                new List<string> { "something-6", "something-7", "something-6", "something-7", "something-static" },
+                result);
+            // Confirm the log appeared
+            Assert.Contains(loggerFactory.Logs, e => e.Formatted == "Running database workflow");
+        }
+        finally
+        {
+            await host.StopAsync(tokenSource.Token);
+        }
     }
 
     public class SingletonCounter
@@ -186,27 +192,33 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // Start the host
         using var tokenSource = new CancellationTokenSource();
         using var host = bld.Build();
-        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
-
-        // Execute the workflow
-        var result = await Client.ExecuteWorkflowAsync(
-            (MultiTaskQueueWorkflow wf) => wf.RunAsync(taskQueue2),
-            new($"wf-{Guid.NewGuid()}", taskQueue1));
-        Assert.Equal(
-            new Dictionary<string, string>()
-            {
-                // Singletons share
-                ["singleton1"] = $"tq: {taskQueue1}, counter: 6",
-                ["singleton2"] = $"tq: {taskQueue1}, counter: 7",
-                ["singleton-other1"] = $"tq: {taskQueue2}, counter: 8",
-                ["singleton-other2"] = $"tq: {taskQueue2}, counter: 9",
-                // Scoped do not share
-                ["scoped1"] = $"tq: {taskQueue1}, counter: 6",
-                ["scoped2"] = $"tq: {taskQueue1}, counter: 6",
-                ["scoped-other1"] = $"tq: {taskQueue2}, counter: 6",
-                ["scoped-other2"] = $"tq: {taskQueue2}, counter: 6",
-            },
-            result);
+        await host.StartAsync(tokenSource.Token);
+        try
+        {
+            // Execute the workflow
+            var result = await Client.ExecuteWorkflowAsync(
+                (MultiTaskQueueWorkflow wf) => wf.RunAsync(taskQueue2),
+                new($"wf-{Guid.NewGuid()}", taskQueue1));
+            Assert.Equal(
+                new Dictionary<string, string>()
+                {
+                    // Singletons share
+                    ["singleton1"] = $"tq: {taskQueue1}, counter: 6",
+                    ["singleton2"] = $"tq: {taskQueue1}, counter: 7",
+                    ["singleton-other1"] = $"tq: {taskQueue2}, counter: 8",
+                    ["singleton-other2"] = $"tq: {taskQueue2}, counter: 9",
+                    // Scoped do not share
+                    ["scoped1"] = $"tq: {taskQueue1}, counter: 6",
+                    ["scoped2"] = $"tq: {taskQueue1}, counter: 6",
+                    ["scoped-other1"] = $"tq: {taskQueue2}, counter: 6",
+                    ["scoped-other2"] = $"tq: {taskQueue2}, counter: 6",
+                },
+                result);
+        }
+        finally
+        {
+            await host.StopAsync(tokenSource.Token);
+        }
     }
 
     [Workflow]
@@ -266,25 +278,31 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // Start the host
         using var tokenSource = new CancellationTokenSource();
         using var host = bld.Build();
-        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
-
-        // Confirm the first ticking workflow has completed a task but not the second workflow
-        await AssertMore.HasEventEventuallyAsync(handle1, e => e.WorkflowTaskCompletedEventAttributes != null);
-        await foreach (var evt in handle2.FetchHistoryEventsAsync())
+        await host.StartAsync(tokenSource.Token);
+        try
         {
-            Assert.Null(evt.WorkflowTaskCompletedEventAttributes);
+            // Confirm the first ticking workflow has completed a task but not the second workflow
+            await AssertMore.HasEventEventuallyAsync(handle1, e => e.WorkflowTaskCompletedEventAttributes != null);
+            await foreach (var evt in handle2.FetchHistoryEventsAsync())
+            {
+                Assert.Null(evt.WorkflowTaskCompletedEventAttributes);
+            }
+
+            // Now replace the client, which should be used fairly quickly because we should have
+            // timer-done poll completions every 100ms
+            workerClientUpdater.UpdateClient(otherEnv.Client);
+
+            // Now confirm the other workflow has started
+            await AssertMore.HasEventEventuallyAsync(handle2, e => e.WorkflowTaskCompletedEventAttributes != null);
+
+            // Terminate both
+            await handle1.TerminateAsync();
+            await handle2.TerminateAsync();
         }
-
-        // Now replace the client, which should be used fairly quickly because we should have
-        // timer-done poll completions every 100ms
-        workerClientUpdater.UpdateClient(otherEnv.Client);
-
-        // Now confirm the other workflow has started
-        await AssertMore.HasEventEventuallyAsync(handle2, e => e.WorkflowTaskCompletedEventAttributes != null);
-
-        // Terminate both
-        await handle1.TerminateAsync();
-        await handle2.TerminateAsync();
+        finally
+        {
+            await host.StopAsync(tokenSource.Token);
+        }
     }
 
     [Workflow("DeploymentVersioningWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
@@ -312,35 +330,41 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // Build with two workers on same queue but different versions
         var bld = Host.CreateApplicationBuilder();
         bld.Services.AddSingleton(Client);
-#pragma warning disable 0618
+#pragma warning disable CS0618 // Testing obsolete APIs
         bld.Services.
             AddHostedTemporalWorker(taskQueue, "1.0").
             AddWorkflow<WorkflowV1>();
         bld.Services.
             AddHostedTemporalWorker(taskQueue, "2.0").
             AddWorkflow<WorkflowV2>();
-#pragma warning restore 0618
 
         // Start the host
         using var tokenSource = new CancellationTokenSource();
         using var host = bld.Build();
-        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
+        await host.StartAsync(tokenSource.Token);
+        try
+        {
+            // Set 1.0 as default and run
+            await Env.Client.UpdateWorkerBuildIdCompatibilityAsync(
+                taskQueue, new BuildIdOp.AddNewDefault("1.0"));
+            var res = await Client.ExecuteWorkflowAsync(
+                (WorkflowV1 wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", taskQueue));
+            Assert.Equal("done-v1", res);
 
-        // Set 1.0 as default and run
-        await Env.Client.UpdateWorkerBuildIdCompatibilityAsync(
-            taskQueue, new BuildIdOp.AddNewDefault("1.0"));
-        var res = await Client.ExecuteWorkflowAsync(
-            (WorkflowV1 wf) => wf.RunAsync(),
-            new($"wf-{Guid.NewGuid()}", taskQueue));
-        Assert.Equal("done-v1", res);
-
-        // Update default and run again
-        await Env.Client.UpdateWorkerBuildIdCompatibilityAsync(
-            taskQueue, new BuildIdOp.AddNewDefault("2.0"));
-        res = await Client.ExecuteWorkflowAsync(
-            (WorkflowV1 wf) => wf.RunAsync(),
-            new($"wf-{Guid.NewGuid()}", taskQueue));
-        Assert.Equal("done-v2", res);
+            // Update default and run again
+            await Env.Client.UpdateWorkerBuildIdCompatibilityAsync(
+                taskQueue, new BuildIdOp.AddNewDefault("2.0"));
+            res = await Client.ExecuteWorkflowAsync(
+                (WorkflowV1 wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", taskQueue));
+            Assert.Equal("done-v2", res);
+        }
+        finally
+        {
+            await host.StopAsync(tokenSource.Token);
+        }
+#pragma warning restore CS0618
     }
 
     [Fact]
@@ -362,23 +386,29 @@ public class TemporalWorkerServiceTests : WorkflowEnvironmentTestBase
         // Start the host
         using var tokenSource = new CancellationTokenSource();
         using var host = bld.Build();
-        var hostTask = Task.Run(() => host.RunAsync(tokenSource.Token));
+        await host.StartAsync(tokenSource.Token);
+        try
+        {
+            // Set 1.0 as default and run
+            var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, workerV1);
+            var res = await Client.ExecuteWorkflowAsync(
+                (WorkflowV1 wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", taskQueue));
+            Assert.Equal("done-v1", res);
 
-        // Set 1.0 as default and run
-        var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
-        await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, workerV1);
-        var res = await Client.ExecuteWorkflowAsync(
-            (WorkflowV1 wf) => wf.RunAsync(),
-            new($"wf-{Guid.NewGuid()}", taskQueue));
-        Assert.Equal("done-v1", res);
-
-        // Update default and run again
-        var describe2 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV2);
-        await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, workerV2);
-        res = await Client.ExecuteWorkflowAsync(
-            (WorkflowV1 wf) => wf.RunAsync(),
-            new($"wf-{Guid.NewGuid()}", taskQueue));
-        Assert.Equal("done-v2", res);
+            // Update default and run again
+            var describe2 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV2);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, workerV2);
+            res = await Client.ExecuteWorkflowAsync(
+                (WorkflowV1 wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", taskQueue));
+            Assert.Equal("done-v2", res);
+        }
+        finally
+        {
+            await host.StopAsync(tokenSource.Token);
+        }
     }
 
     [Fact]

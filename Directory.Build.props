@@ -10,6 +10,7 @@
     -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/temporalio/sdk-dotnet</RepositoryUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -17,7 +18,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.9.0</Version>
+    <Version>1.11.1</Version>
     <!--
       .NET does not allow the above version format for AssemblyVersion, and this
       is the version used in gRPC headers. The format is
@@ -32,11 +33,15 @@
       and 0.2.0 then is 0.2.0.5. But if there is no prerelease version, just
       leave revision off.
     -->
-    <AssemblyVersion>1.9.0</AssemblyVersion>
+    <AssemblyVersion>1.11.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.4.33" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)src\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

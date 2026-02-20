@@ -51,7 +51,7 @@ namespace Temporalio.Activities
             {
                 return runtimeMetricMeter.Value.WithTags(new Dictionary<string, object>()
                 {
-                    { "namespace", info.WorkflowNamespace },
+                    { "namespace", info.Namespace },
                     { "task_queue", info.TaskQueue },
                     { "activity_type", info.ActivityType },
                 });

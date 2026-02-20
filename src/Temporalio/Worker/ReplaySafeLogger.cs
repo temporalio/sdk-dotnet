@@ -30,7 +30,7 @@ namespace Temporalio.Worker
             Exception exception,
             Func<TState, Exception, string> formatter)
         {
-            if (!Workflows.Workflow.Unsafe.IsReplaying)
+            if (!Workflows.Workflow.Unsafe.IsReplayingHistoryEvents)
             {
                 underlying.Log<TState>(logLevel, eventId, state, exception, formatter);
             }

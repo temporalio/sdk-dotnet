@@ -105,13 +105,13 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
                 DeploymentOptions = new(workerV3, true),
             }.AddWorkflow<DeploymentVersioningWorkflowV3AutoUpgrade>());
 
-        var testTask = ExecuteTest(worker1, worker2, worker3);
+        var testTask = ExecuteTest();
         await Task.WhenAll(
             worker1.ExecuteAsync(() => testTask),
             worker2.ExecuteAsync(() => testTask),
             worker3.ExecuteAsync(() => testTask));
 
-        async Task ExecuteTest(TemporalWorker w1, TemporalWorker w2, TemporalWorker w3)
+        async Task ExecuteTest()
         {
             // Wait for deployment version to be registered and make it current
             var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, workerV1);
@@ -181,12 +181,12 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
                 DeploymentOptions = new(v2, true),
             }.AddWorkflow<DeploymentVersioningWorkflowV2Pinned>());
 
-        var testTask = ExecuteRampTest(worker1, worker2);
+        var testTask = ExecuteRampTest();
         await Task.WhenAll(
             worker1.ExecuteAsync(() => testTask),
             worker2.ExecuteAsync(() => testTask));
 
-        async Task ExecuteRampTest(TemporalWorker w1, TemporalWorker w2)
+        async Task ExecuteRampTest()
         {
             await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
             var describeResp = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v2);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Temporalio.Client;
@@ -211,9 +212,9 @@ namespace Temporalio.Common.EnvConfig
                 return new TlsOptions
                 {
                     Domain = ServerName,
-                    ServerRootCACert = ServerRootCACert?.Data,
-                    ClientCert = ClientCert?.Data,
-                    ClientPrivateKey = ClientPrivateKey?.Data,
+                    ServerRootCACert = ServerRootCACert?.GetBytes(),
+                    ClientCert = ClientCert?.GetBytes(),
+                    ClientPrivateKey = ClientPrivateKey?.GetBytes(),
                 };
             }
 
@@ -421,6 +422,25 @@ namespace Temporalio.Common.EnvConfig
             if (dictionary.ContainsKey("path"))
             {
                 return DataSource.FromPath(dictionary["path"]);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the bytes for this data source, reading from file if necessary.
+        /// </summary>
+        /// <returns>The raw bytes, or null if neither Data nor Path is set.</returns>
+        public byte[]? GetBytes()
+        {
+            if (Data != null)
+            {
+                return Data;
+            }
+
+            if (!string.IsNullOrEmpty(Path))
+            {
+                return File.ReadAllBytes(Path);
             }
 
             return null;

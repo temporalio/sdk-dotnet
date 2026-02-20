@@ -6,6 +6,7 @@ using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Threading;
 using Temporalio.Runtime;
+using Temporalio.Workflows;
 
 namespace Temporalio.Extensions.DiagnosticSource
 {
@@ -21,11 +22,28 @@ namespace Temporalio.Extensions.DiagnosticSource
     /// </remarks>
     public class CustomMetricMeter : ICustomMetricMeter
     {
+        private readonly bool disableWorkflowTracingEventListener;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomMetricMeter" /> class.
         /// </summary>
         /// <param name="meter">Meter to back this custom meter implementation with.</param>
-        public CustomMetricMeter(Meter meter) => Meter = meter;
+        /// <param name="disableWorkflowTracingEventListener">
+        /// When false, the default, calls to .NET meter from inside a workflow are subject to the
+        /// event listener which catch non-deterministic thread, timer, and/or default task
+        /// scheduler use. Some .NET meter adapter implementations, such as
+        /// https://github.com/prometheus-net/prometheus-net with its "managed lease handles", do
+        /// non-deterministic things. So setting this to true will surround in-workflow meter calls
+        /// with
+        /// <see cref="Workflow.Unsafe.WithTracingEventListenerDisabled{T}(Func{T})"/>.
+        /// </param>
+        public CustomMetricMeter(
+            Meter meter,
+            bool disableWorkflowTracingEventListener = false)
+        {
+            Meter = meter;
+            this.disableWorkflowTracingEventListener = disableWorkflowTracingEventListener;
+        }
 
         /// <summary>
         /// Gets the underlying meter for this custom meter.
@@ -36,7 +54,9 @@ namespace Temporalio.Extensions.DiagnosticSource
         public ICustomMetricCounter<T> CreateCounter<T>(
             string name, string? unit, string? description)
             where T : struct =>
-            new CustomMetricCounter<T>(Meter.CreateCounter<T>(name, unit, description));
+            new CustomMetricCounter<T>(
+                WithUnderlyingMeter(m => m.CreateCounter<T>(name, unit, description)),
+                disableWorkflowTracingEventListener);
 
         /// <inheritdoc />
         public ICustomMetricHistogram<T> CreateHistogram<T>(
@@ -53,9 +73,12 @@ namespace Temporalio.Extensions.DiagnosticSource
                     unit = "ms";
                 }
                 return (new CustomMetricHistogramTimeSpan(
-                    Meter.CreateHistogram<long>(name, unit, description)) as ICustomMetricHistogram<T>)!;
+                    WithUnderlyingMeter(m => m.CreateHistogram<long>(name, unit, description)),
+                    disableWorkflowTracingEventListener) as ICustomMetricHistogram<T>)!;
             }
-            return new CustomMetricHistogram<T>(Meter.CreateHistogram<T>(name, unit, description));
+            return new CustomMetricHistogram<T>(
+                WithUnderlyingMeter(m => m.CreateHistogram<T>(name, unit, description)),
+                disableWorkflowTracingEventListener);
         }
 
         /// <inheritdoc />
@@ -64,7 +87,7 @@ namespace Temporalio.Extensions.DiagnosticSource
             where T : struct
         {
             var gauge = new CustomMetricGauge<T>(name);
-            Meter.CreateObservableGauge(name, gauge.Snapshot, unit, description);
+            WithUnderlyingMeter(m => m.CreateObservableGauge(name, gauge.Snapshot, unit, description));
             return gauge;
         }
 
@@ -73,37 +96,74 @@ namespace Temporalio.Extensions.DiagnosticSource
             object? appendFrom, IReadOnlyCollection<KeyValuePair<string, object>> tags) =>
             new Tags(tags, appendFrom);
 
-        private sealed class CustomMetricCounter<T> : ICustomMetricCounter<T>
+        private T WithUnderlyingMeter<T>(Func<Meter, T> fn)
+        {
+            // If we're in a workflow and they have disabled tracing event listener, run under that
+            if (Workflow.InWorkflow && disableWorkflowTracingEventListener)
+            {
+                return Workflow.Unsafe.WithTracingEventListenerDisabled(() => fn(Meter));
+            }
+            return fn(Meter);
+        }
+
+        private abstract class CustomMetric<T>
+        {
+            private readonly T underlying;
+            private readonly bool disableWorkflowTracingEventListener;
+
+            protected CustomMetric(T underlying, bool disableWorkflowTracingEventListener)
+            {
+                this.underlying = underlying;
+                this.disableWorkflowTracingEventListener = disableWorkflowTracingEventListener;
+            }
+
+            protected void WithUnderlyingMetric(Action<T> fn)
+            {
+                // If we're in a workflow and they have disabled tracing event listener, run under that
+                if (Workflow.InWorkflow && disableWorkflowTracingEventListener)
+                {
+                    Workflow.Unsafe.WithTracingEventListenerDisabled(() => fn(underlying));
+                }
+                else
+                {
+                    fn(underlying);
+                }
+            }
+        }
+
+        private sealed class CustomMetricCounter<T> : CustomMetric<Counter<T>>, ICustomMetricCounter<T>
             where T : struct
         {
-            private readonly Counter<T> underlying;
-
-            internal CustomMetricCounter(Counter<T> underlying) => this.underlying = underlying;
+            internal CustomMetricCounter(Counter<T> underlying, bool disableWorkflowTracingEventListener)
+                : base(underlying, disableWorkflowTracingEventListener)
+            {
+            }
 
             public void Add(T value, object tags) =>
-                underlying.Add(value, ((Tags)tags).TagList);
+                WithUnderlyingMetric(m => m.Add(value, ((Tags)tags).TagList));
         }
 
-        private sealed class CustomMetricHistogram<T> : ICustomMetricHistogram<T>
+        private sealed class CustomMetricHistogram<T> : CustomMetric<Histogram<T>>, ICustomMetricHistogram<T>
             where T : struct
         {
-            private readonly Histogram<T> underlying;
-
-            internal CustomMetricHistogram(Histogram<T> underlying) => this.underlying = underlying;
+            internal CustomMetricHistogram(Histogram<T> underlying, bool disableWorkflowTracingEventListener)
+                : base(underlying, disableWorkflowTracingEventListener)
+            {
+            }
 
             public void Record(T value, object tags) =>
-                underlying.Record(value, ((Tags)tags).TagList);
+                WithUnderlyingMetric(m => m.Record(value, ((Tags)tags).TagList));
         }
 
-        private sealed class CustomMetricHistogramTimeSpan : ICustomMetricHistogram<TimeSpan>
+        private sealed class CustomMetricHistogramTimeSpan : CustomMetric<Histogram<long>>, ICustomMetricHistogram<TimeSpan>
         {
-            private readonly Histogram<long> underlying;
-
-            internal CustomMetricHistogramTimeSpan(Histogram<long> underlying) =>
-                this.underlying = underlying;
+            internal CustomMetricHistogramTimeSpan(Histogram<long> underlying, bool disableWorkflowTracingEventListener)
+                : base(underlying, disableWorkflowTracingEventListener)
+            {
+            }
 
             public void Record(TimeSpan value, object tags) =>
-                underlying.Record((long)value.TotalMilliseconds, ((Tags)tags).TagList);
+                WithUnderlyingMetric(m => m.Record((long)value.TotalMilliseconds, ((Tags)tags).TagList));
         }
 
 #pragma warning disable CA1001 // We are disposing the lock on destruction since this can't be disposable

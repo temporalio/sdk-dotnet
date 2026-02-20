@@ -1,3 +1,5 @@
+using System;
+
 namespace Temporalio.Client.Interceptors
 {
     /// <summary>
@@ -10,6 +12,7 @@ namespace Temporalio.Client.Interceptors
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
     /// constructor, only use "with" clauses.
     /// </remarks>
+    [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
     public record UpdateWorkerBuildIdCompatibilityInput(
         string TaskQueue,
         BuildIdOp BuildIdOp,

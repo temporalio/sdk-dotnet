@@ -1,8 +1,11 @@
+using System;
+
 namespace Temporalio.Client
 {
     /// <summary>
     /// A supertype for all operations that may be performed by <see cref="ITemporalClient.UpdateWorkerBuildIdCompatibilityAsync"/>.
     /// </summary>
+    [Obsolete("Use the Worker Deployment API instead. See https://docs.temporal.io/worker-deployments")]
     public abstract record BuildIdOp
     {
         private BuildIdOp()
