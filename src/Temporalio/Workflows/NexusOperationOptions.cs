@@ -11,27 +11,27 @@ namespace Temporalio.Workflows
     {
         /// <summary>
         /// Gets or sets the schedule to close timeout.
-        /// Indicates how long the caller is willing to wait for operation completion.
-        /// Calls are retried internally by the server.
+        /// <remarks>Indicates how long the caller is willing to wait for operation completion.
+        /// Calls are retried internally by the server.</remarks>
         /// </summary>
         public TimeSpan? ScheduleToCloseTimeout { get; set; }
 
         /// <summary>
         /// Gets or sets the schedule to start timeout.
-        /// Indicates how long the caller is willing to wait for the operation to be started (or completed if synchronous)
+        /// <remarks>Indicates how long the caller is willing to wait for the operation to be started (or completed if synchronous)
         /// by the handler. If the operation is not started within this timeout, it will fail with TIMEOUT_TYPE_SCHEDULE_TO_START.
         /// If not set or zero, no schedule-to-start timeout is enforced.
-        /// Requires server version 1.31.0 or later.
+        /// Requires server version 1.31.0 or later.</remarks>
         /// </summary>
         public TimeSpan? ScheduleToStartTimeout { get; set; }
 
         /// <summary>
         /// Gets or sets the start to close timeout.
-        /// Indicates how long the caller is willing to wait for an asynchronous operation to complete after it has been
+        /// <remarks>Indicates how long the caller is willing to wait for an asynchronous operation to complete after it has been
         /// started. If the operation does not complete within this timeout after starting, it will fail with TIMEOUT_TYPE_START_TO_CLOSE.
         /// Only applies to asynchronous operations. Synchronous operations ignore this timeout.
         /// If not set or zero, no start-to-close timeout is enforced.
-        /// Requires server version 1.31.0 or later.
+        /// Requires server version 1.31.0 or later.</remarks>
         /// </summary>
         public TimeSpan? StartToCloseTimeout { get; set; }
 
