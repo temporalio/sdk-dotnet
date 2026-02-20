@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
 
@@ -9,17 +8,15 @@ namespace Temporalio.Bridge
     /// <summary>
     /// Core-owned Temporal client.
     /// </summary>
-    internal class Client : SafeHandle
+    internal class Client : IDisposable
     {
+        private readonly SafeClientHandle handle;
+
         private unsafe Client(Runtime runtime, Interop.TemporalCoreClient* ptr)
-            : base((IntPtr)ptr, true)
         {
             Runtime = runtime;
-            Handle = new SafeClientHandle(ptr);
+            handle = new SafeClientHandle(ptr);
         }
-
-        /// <inheritdoc />
-        public override bool IsInvalid => Handle.IsInvalid;
 
         /// <summary>
         /// Gets the runtime associated with this client.
@@ -29,7 +26,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets the safe handle for the client.
         /// </summary>
-        internal SafeClientHandle Handle { get; private init; }
+        internal SafeClientHandle Handle => handle;
 
         /// <summary>
         /// Connect to Temporal.
@@ -211,10 +208,9 @@ namespace Temporalio.Bridge
         }
 
         /// <inheritdoc />
-        protected override unsafe bool ReleaseHandle()
+        public void Dispose()
         {
-            Handle.Dispose();
-            return true;
+            handle.Dispose();
         }
     }
 }

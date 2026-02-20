@@ -18,7 +18,7 @@ namespace Temporalio.Client
     /// <remarks>
     /// Connections are thread-safe and are encouraged to be reused.
     /// </remarks>
-    public sealed class TemporalConnection : ITemporalConnection
+    public sealed class TemporalConnection : ITemporalConnection, IBridgeClientProviderInternal
     {
         // Not set if not lazy
         private readonly SemaphoreSlim? semaphoreForLazyClient;
@@ -177,7 +177,13 @@ namespace Temporalio.Client
         public bool IsConnected => client != null;
 
         /// <inheritdoc />
-        public SafeHandle? BridgeClient => client;
+        public SafeHandle? BridgeClient => client?.Handle;
+
+        /// <inheritdoc />
+        Bridge.SafeClientHandle? IBridgeClientProviderInternal.ClientHandle => client?.Handle;
+
+        /// <inheritdoc />
+        Bridge.Runtime? IBridgeClientProviderInternal.Runtime => client?.Runtime;
 
         /// <summary>
         /// Connect to Temporal.
