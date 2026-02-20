@@ -85,28 +85,6 @@ jobs:
 
       - name: Build
         run: dotnet build
-      
-      - name: Upload native symbols
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: symbols-native-${{ matrix.os }}
-          if-no-files-found: error
-          path: |
-            src/Temporalio/Bridge/sdk-core/target/debug/*.dll
-            src/Temporalio/Bridge/sdk-core/target/debug/*.dylib
-            src/Temporalio/Bridge/sdk-core/target/debug/*.pdb
-            src/Temporalio/Bridge/sdk-core/target/debug/*.so
-      
-      - name: Upload managed symbols
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: symbols-managed-${{ matrix.os }}
-          if-no-files-found: error
-          path: |
-            src/**/bin/Debug/**/*.dll
-            src/**/bin/Debug/**/*.pdb
 
       - name: Test
         run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n --blame-hang-timeout 10m
@@ -149,6 +127,28 @@ jobs:
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
           TEMPORAL_CLIENT_CLOUD_API_VERSION: 2024-05-13-00
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.TemporalCloudOperationsClientTests.*"
+
+      - name: Upload native symbols
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: symbols-native-${{ matrix.os }}
+          if-no-files-found: error
+          path: |
+            src/Temporalio/Bridge/sdk-core/target/debug/*.dll
+            src/Temporalio/Bridge/sdk-core/target/debug/*.dylib
+            src/Temporalio/Bridge/sdk-core/target/debug/*.pdb
+            src/Temporalio/Bridge/sdk-core/target/debug/*.so
+      
+      - name: Upload managed symbols
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: symbols-managed-${{ matrix.os }}
+          if-no-files-found: error
+          path: |
+            src/**/bin/Debug/**/*.dll
+            src/**/bin/Debug/**/*.pdb
 
       - name: Build docs
         if: ${{ matrix.docsTarget }}
