@@ -297,8 +297,9 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                         svc => svc.DoSomething("some-name"),
                         new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(2) });
             }));
-        Assert.IsType<TimeoutFailureException>(
+        var timeoutExc = Assert.IsType<TimeoutFailureException>(
             Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
+        Assert.Equal(TimeoutType.ScheduleToClose, timeoutExc.TimeoutType);
         // Also check that our cancel token is canceled for the proper reason
         var ctx = await contextSource.Task;
         Assert.True(await Task.Run(() => ctx.CancellationToken.WaitHandle.WaitOne(2000)));
@@ -336,6 +337,75 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         string actualSummary = Client.Options.DataConverter.PayloadConverter.ToValue<string>(
             nexusOperationScheduledEvent.UserMetadata.Summary);
         Assert.Equal(expectedSummary, actualSummary);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ScheduleToStartTimeout_FailsAsExpected()
+    {
+        var contextSource = new TaskCompletionSource<OperationStartContext>();
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (ctx, name) =>
+                {
+                    contextSource.SetResult(ctx);
+                    try
+                    {
+                        await Task.Delay(40000, ctx.CancellationToken);
+                        return "done";
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return "canceled";
+                    }
+                })));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // Confirm the workflow fails with the timeout
+        var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, async () =>
+            {
+                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(
+                        svc => svc.DoSomething("some-name"),
+                        new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(2) });
+            }));
+        var timeoutExc = Assert.IsType<TimeoutFailureException>(
+            Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
+        Assert.Equal(TimeoutType.ScheduleToStart, timeoutExc.TimeoutType);
+        // Also check that our cancel token is canceled for the proper reason
+        var ctx = await contextSource.Task;
+        Assert.True(await Task.Run(() => ctx.CancellationToken.WaitHandle.WaitOne(2000)));
+        Assert.Equal("timed out", ctx.CancellationReason);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_StartToCloseTimeout_FailsAsExpected()
+    {
+        // Build a workflow-backed async operation that will never complete
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                WorkflowRunOperationHandler.FromHandleFactory(
+                    (WorkflowRunOperationContext context, string input) =>
+                        context.StartWorkflowAsync(
+                            (WaitForeverWorkflow wf) => wf.RunAsync(input),
+                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddWorkflow<WaitForeverWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // Confirm the workflow fails with the timeout
+        var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, async () =>
+            {
+                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(
+                        svc => svc.DoSomething("some-name"),
+                        new()
+                        {
+                            ScheduleToStartTimeout = TimeSpan.FromSeconds(30),
+                            StartToCloseTimeout = TimeSpan.FromSeconds(2),
+                        });
+            }));
+        var timeoutExc = Assert.IsType<TimeoutFailureException>(
+            Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
+        Assert.Equal(TimeoutType.StartToClose, timeoutExc.TimeoutType);
     }
 
     [Workflow]
