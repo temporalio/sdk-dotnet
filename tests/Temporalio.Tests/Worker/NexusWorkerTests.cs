@@ -297,8 +297,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                         svc => svc.DoSomething("some-name"),
                         new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(2) });
             }));
-        Assert.IsType<TimeoutFailureException>(
-            Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
         var timeoutExc = Assert.IsType<TimeoutFailureException>(
             Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
         Assert.Equal(TimeoutType.ScheduleToClose, timeoutExc.TimeoutType);
@@ -352,7 +350,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                     contextSource.SetResult(ctx);
                     try
                     {
-                        await Task.Delay(4000, ctx.CancellationToken);
+                        await Task.Delay(40000, ctx.CancellationToken);
                         return "done";
                     }
                     catch (TaskCanceledException)
@@ -368,7 +366,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 await Workflow.CreateNexusClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
-                        new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(1) });
+                        new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(2) });
             }));
         var timeoutExc = Assert.IsType<TimeoutFailureException>(
             Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
