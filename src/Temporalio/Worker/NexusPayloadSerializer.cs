@@ -6,6 +6,7 @@ using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
+using Temporalio.Exceptions;
 
 namespace Temporalio.Worker
 {
@@ -62,6 +63,10 @@ namespace Temporalio.Worker
                         new Payload[] { payload }).ConfigureAwait(false);
                     payload = decoded.First();
                 }
+                catch (ApplicationFailureException)
+                {
+                    throw;
+                }
                 catch (Exception e)
                 {
                     throw new HandlerException(
@@ -78,6 +83,10 @@ namespace Temporalio.Worker
             try
             {
                 result = dataConverter.PayloadConverter.ToValue(payload, type);
+            }
+            catch (ApplicationFailureException)
+            {
+                throw;
             }
             catch (Exception e)
             {
