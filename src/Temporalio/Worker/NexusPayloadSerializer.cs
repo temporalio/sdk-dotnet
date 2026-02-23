@@ -61,13 +61,13 @@ namespace Temporalio.Worker
                 {
                     var decoded = await dataConverter.PayloadCodec.DecodeAsync(
                         new Payload[] { payload }).ConfigureAwait(false);
+                    if (decoded.Count != 1)
+                    {
+                        throw new ArgumentException($"Expected 1 payload, found {decoded.Count}");
+                    }
                     payload = decoded.First();
                 }
-                catch (ApplicationFailureException)
-                {
-                    throw;
-                }
-                catch (Exception e)
+                catch (Exception e) when (e is not ApplicationFailureException)
                 {
                     throw new HandlerException(
                         HandlerErrorType.Internal,
@@ -84,11 +84,7 @@ namespace Temporalio.Worker
             {
                 result = dataConverter.PayloadConverter.ToValue(payload, type);
             }
-            catch (ApplicationFailureException)
-            {
-                throw;
-            }
-            catch (Exception e)
+            catch (Exception e) when (e is not ApplicationFailureException)
             {
                 throw new HandlerException(
                     HandlerErrorType.BadRequest,
