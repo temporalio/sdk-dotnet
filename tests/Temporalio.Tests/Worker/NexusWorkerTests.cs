@@ -1212,7 +1212,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             NexusHandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
         Assert.Contains(
             "Payload converter failed to decode Nexus operation input",
-            exc3.Failure.Message);
+            exc3.Failure.Cause.Message);
     }
 
     private async Task<string> CreateNexusEndpointAsync(string taskQueue)
