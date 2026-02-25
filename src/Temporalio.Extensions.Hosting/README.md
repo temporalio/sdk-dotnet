@@ -115,11 +115,17 @@ can be added to the `TemporalWorkerOptions` directly.
 
 ## Worker Client Refresh
 
-Some users may need to update the worker's connection to Temporal. It's desirable to do this without stopping the worker entirely, as that will evict the sticky workflow cache.
+Some users may need to update the worker's underlying Temporal client, for example when mTLS client certificates need
+rotation. It's desirable to do this without stopping the worker entirely, as that will evict the sticky workflow cache.
 
-This can be done by using the `IWorkerClientUpdater`.
+This can be done by using `TemporalWorkerClientUpdater`. Call `UpdateClient` with a new client and all workers configured
+with the updater will swap to it.
+
+The following example uses a `BackgroundService` to watch for mTLS certificate file changes on disk and reconnect when
+the certificate is rotated:
 
 ```csharp
+using Temporalio.Client;
 using Temporalio.Extensions.Hosting;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -127,7 +133,11 @@ var builder = Host.CreateApplicationBuilder(args);
 // Register a worker client updater.
 builder.Services.AddSingleton<TemporalWorkerClientUpdater>();
 
-// Add a hosted Temporal worker which returns a builder to add activities and workflows, along with the worker client updater.
+// Background service that watches for mTLS certificate rotation and
+// reconnects the worker's Temporal client.
+builder.Services.AddHostedService<CertRotationService>();
+
+// Add a hosted Temporal worker with the worker client updater.
 builder.Services.
     AddHostedTemporalWorker(
         "my-temporal-host:7233",
@@ -136,23 +146,54 @@ builder.Services.
     AddScopedActivities<MyActivityClass>().
     AddWorkflow<MyWorkflow>().
     ConfigureOptions().
-    Configure<TemporalWorkerClientUpdater>((options, workerClientUpdater) => options.WorkerClientUpdater = workerClientUpdater);
+    Configure<TemporalWorkerClientUpdater>((options, updater) =>
+        options.WorkerClientUpdater = updater);
 
 var host = builder.Build();
-
-// You can have a BackgroundService periodically refresh the worker client like this.
-TemporalWorkerClientUpdater workerClientUpdater = host.Services.GetRequiredService<TemporalWorkerClientUpdater>();
-
-// Can update the TLS options if you need.
-TemporalClientConnectOptions clientConnectOptions = new("my-other-temporal-host:7233")
-{
-    Namespace = "default"
-};
-
-ITemporalClient updatedClient = await TemporalClient.ConnectAsync(clientConnectOptions).ConfigureAwait(false);
-
-workerClientUpdater.UpdateClient(updatedClient);
-
-// Make sure you use RunAsync and not Run, see https://github.com/temporalio/sdk-dotnet/issues/220
 await host.RunAsync();
+
+// Background service that watches for mTLS certificate changes on disk
+// and pushes an updated Temporal client to the worker.
+public class CertRotationService(TemporalWorkerClientUpdater updater) : BackgroundService
+{
+    private const string CertPath = "/certs/temporal.pem";
+    private const string KeyPath = "/certs/temporal.key";
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        using var watcher = new FileSystemWatcher(Path.GetDirectoryName(CertPath)!)
+        {
+            EnableRaisingEvents = true,
+        };
+        watcher.Changed += OnCertChanged;
+        watcher.Created += OnCertChanged;
+
+        // Keep the watcher alive until the service is stopped.
+        await Task.Delay(Timeout.InfiniteTimeSpan, stoppingToken);
+    }
+
+    private async void OnCertChanged(object sender, FileSystemEventArgs e)
+    {
+        // NOTE: This is intentionally naive for this sample. A failure to
+        // read the cert files or connect the client will crash the process,
+        // and events that fire during the backoff delay will also run
+        // concurrently. Production use should add error handling and
+        // debouncing.
+
+        // Wait a few seconds for both cert and key files to be written.
+        await Task.Delay(TimeSpan.FromSeconds(5));
+
+        var client = await TemporalClient.ConnectAsync(
+            new("my-temporal-host:7233")
+            {
+                Namespace = "my-namespace",
+                Tls = new()
+                {
+                    ClientCert = await File.ReadAllBytesAsync(CertPath),
+                    ClientPrivateKey = await File.ReadAllBytesAsync(KeyPath),
+                },
+            });
+        updater.UpdateClient(client);
+    }
+}
 ```
