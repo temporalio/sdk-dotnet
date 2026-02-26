@@ -798,7 +798,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 try
                 {
                     using (var activity = NexusSource.StartActivity(
-                        $"RunStartNexusWorkflowOperationHandler:{input.Context.Service}/{input.Context.Operation}",
+                        $"RunStartNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
                         kind: ActivityKind.Server,
                         parentContext: parentContext))
                     {
@@ -832,7 +832,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 try
                 {
                     using (var activity = NexusSource.StartActivity(
-                        $"RunCancelNexusWorkflowOperationHandler:{input.Context.Service}/{input.Context.Operation}",
+                        $"RunCancelNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
                         kind: ActivityKind.Server,
                         parentContext: parentContext))
                     {
