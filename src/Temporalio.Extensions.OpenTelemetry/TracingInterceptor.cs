@@ -700,7 +700,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 return base.StartChildWorkflowAsync<TWorkflow, TResult>(input);
             }
 
-            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+            public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 StartNexusOperationInput input)
             {
                 var headers = StartWorkflowActivityOnHeaders(
@@ -798,7 +798,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 try
                 {
                     using (var activity = NexusSource.StartActivity(
-                        $"RunStartNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
+                        $"RunStartNexusWorkflowOperationHandler:{input.Context.Service}/{input.Context.Operation}",
                         kind: ActivityKind.Server,
                         parentContext: parentContext))
                     {
@@ -832,7 +832,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 try
                 {
                     using (var activity = NexusSource.StartActivity(
-                        $"RunCancelNexusOperationHandler:{input.Context.Service}/{input.Context.Operation}",
+                        $"RunCancelNexusWorkflowOperationHandler:{input.Context.Service}/{input.Context.Operation}",
                         kind: ActivityKind.Server,
                         parentContext: parentContext))
                     {

@@ -1060,7 +1060,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 }
                 if (action.CallNexusEndpoint is { } nexusEndpoint)
                 {
-                    await Workflow.CreateNexusClient<INexusTracingService>(nexusEndpoint).
+                    await Workflow.CreateNexusWorkflowClient<INexusTracingService>(nexusEndpoint).
                         ExecuteNexusOperationAsync(svc => svc.DoSomething());
                 }
             }

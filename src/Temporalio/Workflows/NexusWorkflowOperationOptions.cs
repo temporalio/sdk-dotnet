@@ -7,7 +7,7 @@ namespace Temporalio.Workflows
     /// Options for starting a Nexus operation.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public class NexusOperationOptions : ICloneable
+    public class NexusWorkflowOperationOptions : ICloneable
     {
         /// <summary>
         /// Gets or sets the schedule to close timeout.

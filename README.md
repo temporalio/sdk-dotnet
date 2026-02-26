@@ -588,12 +588,12 @@ Some things to note about the above code:
 
 #### Invoking Nexus Operations
 
-* Nexus operations are started by first obtaining a Nexus client for a service via `Workflow.CreateNexusClient`, then
+* Nexus operations are started by first obtaining a Nexus client for a service via `Workflow.CreateNexusWorkflowClient`, then
   invoking `StartNexusOperationAsync` on it which accepts a lambda expression for the call on the service.
-* Non-type-safe forms of `Workflow.CreateNexusClient` and `StartNexusOperationAsync` exist that just accept string
+* Non-type-safe forms of `Workflow.CreateNexusWorkflowClient` and `StartNexusOperationAsync` exist that just accept string
   service and operation names.
 * Nexus client and operation options are simple classes optionally provided as the last parameter.
-* Result of a Nexus operation starting is a `NexusOperationHandle` which has the operation token and `GetResultAsync`
+* Result of a Nexus operation starting is a `NexusWorkflowOperationHandle` which has the operation token and `GetResultAsync`
   for getting the result.
 * The task for starting a Nexus operation does not complete until the operation has actually started.
 * A shortcut of `ExecuteNexusOperationAsync` is available which is `StartNexusOperationAsync` + `GetResultAsync` for
@@ -1208,7 +1208,7 @@ using Temporalio.Nexus;
 [NexusServiceHandler(typeof(IGreetingService))]
 public class GreetingService
 {
-    [NexusOperationHandler]
+    [NexusWorkflowOperationHandler]
     public IOperationHandler<string, string> SayHello() =>
         // Creates an operation handler backed by a workflow handle factory
         WorkflowRunOperationHandler.FromHandleFactory<string, string>((context, name) =>

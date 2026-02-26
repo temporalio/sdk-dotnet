@@ -7272,7 +7272,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         {
             // Call Nexus and confirm no events are on the value because Nexus doesn't go through
             // context converters at this time
-            var res = await Workflow.CreateNexusClient<INexusService>(endpoint).
+            var res = await Workflow.CreateNexusWorkflowClient<INexusService>(endpoint).
                 ExecuteNexusOperationAsync(svc => svc.DoSomething(new("nexus-input", new())));
             Assert.Equal("nexus-result", res.Name);
             Assert.Empty(res.Events);

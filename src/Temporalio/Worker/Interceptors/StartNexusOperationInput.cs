@@ -20,9 +20,9 @@ namespace Temporalio.Worker.Interceptors
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
     public record StartNexusOperationInput(
         string Service,
-        NexusClientOptions ClientOptions,
+        NexusWorkflowClientOptions ClientOptions,
         string OperationName,
         object? Arg,
-        NexusOperationOptions Options,
+        NexusWorkflowOperationOptions Options,
         IDictionary<string, string>? Headers);
 }

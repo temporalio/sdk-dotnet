@@ -234,14 +234,14 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
     private async Task<int> ExecuteHostedNexusWithWorkflow(
         Action<IServiceCollection> configureServices,
         Action<ITemporalWorkerServiceOptionsBuilder> configureBuilder,
-        Func<NexusClient<ITestNexusService>, Task<int>> workflowFunc)
+        Func<NexusWorkflowClient<ITestNexusService>, Task<int>> workflowFunc)
     {
         var taskQueue = $"tq-{Guid.NewGuid()}";
         var endpointName = $"nexus-endpoint-{taskQueue}";
 
         Func<Task<int>> outerWorkflowFunc = async () =>
         {
-            var client = Workflow.CreateNexusClient<ITestNexusService>(endpointName);
+            var client = Workflow.CreateNexusWorkflowClient<ITestNexusService>(endpointName);
 
             return await workflowFunc(client);
         };
