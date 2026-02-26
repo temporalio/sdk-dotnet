@@ -1208,7 +1208,7 @@ using Temporalio.Nexus;
 [NexusServiceHandler(typeof(IGreetingService))]
 public class GreetingService
 {
-    [NexusWorkflowOperationHandler]
+    [NexusOperationHandler]
     public IOperationHandler<string, string> SayHello() =>
         // Creates an operation handler backed by a workflow handle factory
         WorkflowRunOperationHandler.FromHandleFactory<string, string>((context, name) =>
