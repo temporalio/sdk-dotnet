@@ -9,10 +9,10 @@ execute asynchronous, long-running business logic in a scalable and resilient wa
 operations. It wraps the shared Rust `sdk-core` engine via a C FFI bridge, providing fully asynchronous coroutine-based
 APIs.
 
-> **Status: Functionally Complete** -- The SDK builds on MSVC 2022 (Windows) with 676/682 unit tests passing.
+> **Status: Functionally Complete** -- The SDK builds on MSVC 2022 (Windows) with **715/715 unit tests passing**.
 > All 3 self-contained examples run end-to-end against a live Temporal server with clean shutdown (exit code 0).
 > Workflows execute activities, handle signals/queries/updates, use timers, and return results correctly.
-> The API is not yet stable.
+> The public API uses typed arguments via variadic templates and DataConverter -- no raw JSON strings.
 
 ## Features
 
@@ -20,7 +20,8 @@ APIs.
 - **Lazy `Task<T>`** with symmetric transfer for efficient coroutine chaining
 - **Deterministic `CoroutineScheduler`** for workflow replay (single-threaded FIFO, matching the Temporal execution model)
 - **Full Temporal API coverage** -- workflows, activities (with `execute_activity()`), signals, queries, updates, child workflows, Nexus operations
-- **Type-safe workflow invocation** via template deduction on member function pointers
+- **Type-safe workflow/activity signatures** via variadic template deduction -- no `std::any` in user code
+- **DataConverter integration** -- transparent serialization for all client and worker APIs
 - **Interceptor chains** for both client-side and worker-side operations
 - **Protobuf integration** -- 74 Temporal API proto files auto-generated at build time
 - **OpenTelemetry extension** -- tracing interceptor for workflow/activity spans
@@ -104,25 +105,24 @@ User-local overrides (e.g., different Ninja path, different compiler) can be pla
 using namespace temporalio;
 
 // Activity: takes a name, returns a greeting
-temporalio::async_::Task<std::string> greet(std::string name) {
+coro::Task<std::string> greet(std::string name) {
     co_return "Hello, " + name + "!";
 }
 
 // Workflow: calls the greet activity and returns its result
 class GreetingWorkflow {
 public:
-    async_::Task<std::any> run(std::vector<std::any> args) {
-        auto name = std::any_cast<std::string>(args[0]);
+    coro::Task<std::string> run(std::string name) {
         workflows::ActivityOptions opts;
         opts.start_to_close_timeout = std::chrono::seconds(30);
-        co_return co_await workflows::Workflow::execute_activity(
-            "greet", std::any(name), opts);
+        co_return co_await workflows::Workflow::execute_activity<std::string>(
+            "greet", name, opts);
     }
 };
 
 int main() {
     // Connect to Temporal
-    auto tc = async_::run_task_sync(client::TemporalClient::connect(
+    auto tc = coro::run_task_sync(client::TemporalClient::connect(
         {.connection = {.target_host = "localhost:7233"}}));
 
     // Register activity and workflow
@@ -139,14 +139,16 @@ int main() {
 
     std::stop_source stop;
     std::jthread worker_thread([&w, token = stop.get_token()]() {
-        async_::run_task_sync(w.execute_async(token));
+        coro::run_task_sync(w.execute_async(token));
     });
 
-    // Start workflow and get result
-    auto handle = async_::run_task_sync(tc->start_workflow(
-        "GreetingWorkflow", "\"World\"",
-        {.id = "my-workflow", .task_queue = "greeting-queue"}));
-    auto result = async_::run_task_sync(handle.get_result());
+    // Start workflow and get result (type-safe, no raw JSON)
+    client::WorkflowOptions wf_opts;
+    wf_opts.id = "my-workflow";
+    wf_opts.task_queue = "greeting-queue";
+    auto handle = coro::run_task_sync(tc->start_workflow(
+        "GreetingWorkflow", wf_opts, std::string("World")));
+    auto result = coro::run_task_sync(handle.get_result<std::string>());
     std::cout << "Result: " << result << "\n";
 
     // Clean shutdown on main thread
@@ -160,14 +162,17 @@ int main() {
 ```
 cpp/
   CMakeLists.txt                    # Top-level CMake build
+  CMakePresets.json                 # Ninja Multi-Config presets (windows/linux)
   vcpkg.json                       # Dependency manifest
   cmake/
     Platform.cmake                 # Platform detection, Rust cargo build
     CompilerWarnings.cmake         # Warning flags
     ProtobufGenerate.cmake         # Proto code generation
+    temporalioConfig.cmake.in      # CMake config template for find_package()
 
-  include/temporalio/              # Public headers (34 files)
-    async_/                        # Task<T>, CancellationToken, CoroutineScheduler, TaskCompletionSource
+  include/temporalio/              # Public headers (35+ files)
+    export.h                       # TEMPORALIO_EXPORT macro (GenerateExportHeader)
+    coro/                          # Task<T>, CancellationToken, CoroutineScheduler, TaskCompletionSource
     client/                        # TemporalClient, TemporalConnection, WorkflowHandle
       interceptors/                # IClientInterceptor, ClientOutboundInterceptor
     common/                        # RetryPolicy, SearchAttributes, MetricMeter, enums
@@ -181,15 +186,19 @@ cpp/
       internal/                    # ActivityWorker, WorkflowWorker, NexusWorker
     workflows/                     # Workflow ambient API, WorkflowDefinition builder, ActivityOptions
 
-  src/temporalio/                  # Private implementation (25 .cpp + 8 .h)
+  src/temporalio/                  # Private implementation (27 .cpp + 8 .h)
     bridge/                        # Rust FFI wrappers (SafeHandle, CallScope, interop)
 
   extensions/
     opentelemetry/                 # TracingInterceptor
     diagnostics/                   # CustomMetricMeter
 
-  tests/                           # Google Test suite (37 files, 682 tests)
+  tests/                           # Google Test suite (37 files, 715 tests)
   examples/                        # 6 examples (see Examples section below)
+
+vcpkg-port/                        # vcpkg port files for registry submission
+vcpkg-overlay/                     # Local development overlay port
+test-consumer/                     # Consumer integration test (find_package)
 ```
 
 ## Examples
@@ -274,7 +283,7 @@ ctest --test-dir cpp/build --output-on-failure
 ctest --test-dir cpp/build --output-on-failure --verbose
 ```
 
-682 unit tests (676 passing) cover:
+715 unit tests (all passing) cover:
 - Async primitives (Task, CancellationToken, CoroutineScheduler, TaskCompletionSource)
 - Bridge layer (CallScope, SafeHandle)
 - Client (connection options, interceptors, workflow handle)
@@ -292,6 +301,31 @@ Set environment variables to test against an external Temporal server:
 ```bash
 export TEMPORAL_TEST_CLIENT_TARGET_HOST="localhost:7233"
 export TEMPORAL_TEST_CLIENT_NAMESPACE="default"
+```
+
+## vcpkg Packaging
+
+The SDK supports installation via vcpkg with `find_package()` integration.
+
+### Install from local overlay
+
+```bash
+vcpkg install temporalio --overlay-ports=./vcpkg-overlay
+```
+
+### Use in your CMake project
+
+```cmake
+find_package(temporalio CONFIG REQUIRED)
+target_link_libraries(my_app PRIVATE temporalio::temporalio)
+```
+
+### Shared library support
+
+Build as a shared library (DLL/SO) with proper symbol export via `TEMPORALIO_EXPORT`:
+
+```bash
+cmake -B cpp/build -S cpp -DBUILD_SHARED_LIBS=ON
 ```
 
 ## Extensions
