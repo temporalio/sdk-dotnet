@@ -4,7 +4,8 @@
 /// @brief Nexus RPC operation handlers and context types.
 /// WARNING: Nexus support is experimental.
 
-#include <temporalio/async_/task.h>
+#include <temporalio/export.h>
+#include <temporalio/coro/task.h>
 
 #include <any>
 #include <functional>
@@ -172,7 +173,7 @@ private:
 /// Provides access to operation info, the Temporal client, and metrics.
 ///
 /// Use current() to access the context during operation execution.
-class NexusOperationExecutionContext {
+class TEMPORALIO_EXPORT NexusOperationExecutionContext {
 public:
     NexusOperationExecutionContext(OperationContext handler_context,
                                   NexusOperationInfo info,
@@ -240,7 +241,7 @@ private:
 
 /// Handle referencing a workflow run backing a Nexus async operation.
 /// Used to produce and parse operation tokens.
-class NexusWorkflowRunHandle {
+class TEMPORALIO_EXPORT NexusWorkflowRunHandle {
 public:
     NexusWorkflowRunHandle(std::string ns, std::string workflow_id,
                            int version = 0);
@@ -276,19 +277,19 @@ public:
     virtual ~INexusOperationHandler() = default;
 
     /// Handle an operation start request.
-    virtual async_::Task<OperationStartResult> start_async(
+    virtual coro::Task<OperationStartResult> start_async(
         OperationStartContext context, std::any input) = 0;
 
     /// Fetch the result of a previously started async operation.
-    virtual async_::Task<std::any> fetch_result_async(
+    virtual coro::Task<std::any> fetch_result_async(
         OperationFetchResultContext context) = 0;
 
     /// Fetch info about a previously started async operation.
-    virtual async_::Task<NexusOperationState> fetch_info_async(
+    virtual coro::Task<NexusOperationState> fetch_info_async(
         OperationFetchInfoContext context) = 0;
 
     /// Handle an operation cancel request.
-    virtual async_::Task<void> cancel_async(
+    virtual coro::Task<void> cancel_async(
         OperationCancelContext context) = 0;
 
     /// Get the operation name.
@@ -299,7 +300,7 @@ public:
 
 /// Context used to create workflow run handles from within Nexus operation
 /// start handlers. Passed to handle factory functions.
-class WorkflowRunOperationContext {
+class TEMPORALIO_EXPORT WorkflowRunOperationContext {
 public:
     explicit WorkflowRunOperationContext(OperationStartContext context);
 
@@ -313,7 +314,7 @@ public:
     /// @param args Serialized workflow arguments.
     /// @param task_queue Task queue (empty to use the current task queue).
     /// @param workflow_id Workflow ID (required).
-    async_::Task<NexusWorkflowRunHandle> start_workflow(
+    coro::Task<NexusWorkflowRunHandle> start_workflow(
         const std::string& workflow, const std::string& args,
         const std::string& task_queue, const std::string& workflow_id);
 
@@ -329,30 +330,30 @@ private:
 ///   auto handler = WorkflowRunOperationHandler::from_handle_factory(
 ///       "my-operation",
 ///       [](WorkflowRunOperationContext& ctx, const std::string& input)
-///           -> async_::Task<NexusWorkflowRunHandle> {
+///           -> coro::Task<NexusWorkflowRunHandle> {
 ///           co_return co_await ctx.start_workflow(
 ///               "MyWorkflow", input, "", "my-workflow-id");
 ///       });
-class WorkflowRunOperationHandler : public INexusOperationHandler {
+class TEMPORALIO_EXPORT WorkflowRunOperationHandler : public INexusOperationHandler {
 public:
     /// Factory function type: (context, input) -> Task<NexusWorkflowRunHandle>.
-    using HandleFactory = std::function<async_::Task<NexusWorkflowRunHandle>(
+    using HandleFactory = std::function<coro::Task<NexusWorkflowRunHandle>(
         WorkflowRunOperationContext&, const std::string&)>;
 
     /// Create an operation handler from the given handle factory.
     static std::unique_ptr<WorkflowRunOperationHandler> from_handle_factory(
         std::string name, HandleFactory factory);
 
-    async_::Task<OperationStartResult> start_async(
+    coro::Task<OperationStartResult> start_async(
         OperationStartContext context, std::any input) override;
 
-    async_::Task<std::any> fetch_result_async(
+    coro::Task<std::any> fetch_result_async(
         OperationFetchResultContext context) override;
 
-    async_::Task<NexusOperationState> fetch_info_async(
+    coro::Task<NexusOperationState> fetch_info_async(
         OperationFetchInfoContext context) override;
 
-    async_::Task<void> cancel_async(OperationCancelContext context) override;
+    coro::Task<void> cancel_async(OperationCancelContext context) override;
 
     const std::string& name() const override { return name_; }
 

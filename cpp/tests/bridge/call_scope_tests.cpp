@@ -32,7 +32,9 @@ TEST(CallScopeTest, ByteArrayFromEmptyStringView) {
     CallScope scope;
     auto ref = scope.byte_array("");
 
-    EXPECT_EQ(ref.data, nullptr);
+    // empty_byte_array_ref() returns a non-null sentinel pointer
+    // because Rust's slice::from_raw_parts requires non-null even for size 0
+    EXPECT_NE(ref.data, nullptr);
     EXPECT_EQ(ref.size, 0u);
 }
 
@@ -84,7 +86,7 @@ TEST(CallScopeTest, ByteArrayFromEmptyByteSpan) {
     std::span<const uint8_t> empty;
     auto ref = scope.byte_array(empty);
 
-    EXPECT_EQ(ref.data, nullptr);
+    EXPECT_NE(ref.data, nullptr);
     EXPECT_EQ(ref.size, 0u);
 }
 
@@ -153,7 +155,7 @@ TEST(CallScopeTest, NewlineDelimitedEmpty) {
     CallScope scope;
     auto ref = scope.newline_delimited({});
 
-    EXPECT_EQ(ref.data, nullptr);
+    EXPECT_NE(ref.data, nullptr);
     EXPECT_EQ(ref.size, 0u);
 }
 
@@ -184,7 +186,7 @@ TEST(CallScopeTest, ByteArrayArrayEmpty) {
     CallScope scope;
     auto arr = scope.byte_array_array({});
 
-    EXPECT_EQ(arr.data, nullptr);
+    EXPECT_NE(arr.data, nullptr);
     EXPECT_EQ(arr.size, 0u);
 }
 
@@ -252,13 +254,14 @@ TEST(CallScopeTest, AllocMultiple) {
 
 TEST(CallScopeTest, EmptyByteArrayRef) {
     auto ref = CallScope::empty_byte_array_ref();
-    EXPECT_EQ(ref.data, nullptr);
+    // Sentinel non-null pointer required by Rust's slice::from_raw_parts
+    EXPECT_NE(ref.data, nullptr);
     EXPECT_EQ(ref.size, 0u);
 }
 
 TEST(CallScopeTest, EmptyByteArrayRefArray) {
     auto arr = CallScope::empty_byte_array_ref_array();
-    EXPECT_EQ(arr.data, nullptr);
+    EXPECT_NE(arr.data, nullptr);
     EXPECT_EQ(arr.size, 0u);
 }
 

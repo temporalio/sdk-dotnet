@@ -1,0 +1,23 @@
+{
+  "name": "temporalio",
+  "version": "0.1.0",
+  "description": "Temporal C++ SDK - durable execution framework",
+  "homepage": "https://temporal.io",
+  "license": "MIT",
+  "supports": "!uwp & !(arm & windows)",
+  "dependencies": [
+    "protobuf",
+    "nlohmann-json",
+    { "name": "vcpkg-cmake", "host": true },
+    { "name": "vcpkg-cmake-config", "host": true }
+  ],
+  "features": {
+    "opentelemetry": {
+      "description": "OpenTelemetry tracing extension",
+      "dependencies": ["opentelemetry-cpp"]
+    },
+    "diagnostics": {
+      "description": "Diagnostics metrics extension (pure abstraction layer, no external dependencies)"
+    }
+  }
+}

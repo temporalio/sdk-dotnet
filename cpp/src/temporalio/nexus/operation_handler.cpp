@@ -164,7 +164,7 @@ WorkflowRunOperationContext::WorkflowRunOperationContext(
     OperationStartContext context)
     : context_(std::move(context)) {}
 
-async_::Task<NexusWorkflowRunHandle>
+coro::Task<NexusWorkflowRunHandle>
 WorkflowRunOperationContext::start_workflow(const std::string& workflow,
                                            const std::string& args,
                                            const std::string& task_queue,
@@ -192,7 +192,7 @@ WorkflowRunOperationContext::start_workflow(const std::string& workflow,
 
     // TODO: Start the workflow via the client and set up outbound links,
     // callbacks, etc. when the full client integration is wired up.
-    co_await client.start_workflow(workflow, args, options);
+    co_await client.start_workflow(workflow, options, args);
 
     co_return handle;
 }
@@ -210,7 +210,7 @@ WorkflowRunOperationHandler::from_handle_factory(std::string name,
         new WorkflowRunOperationHandler(std::move(name), std::move(factory)));
 }
 
-async_::Task<OperationStartResult> WorkflowRunOperationHandler::start_async(
+coro::Task<OperationStartResult> WorkflowRunOperationHandler::start_async(
     OperationStartContext context, std::any input) {
     // Extract input as string if possible
     std::string input_str;
@@ -228,14 +228,14 @@ async_::Task<OperationStartResult> WorkflowRunOperationHandler::start_async(
 #pragma warning(disable : 4702) // unreachable code (co_return after throw in coroutine stubs)
 #endif
 
-async_::Task<std::any> WorkflowRunOperationHandler::fetch_result_async(
+coro::Task<std::any> WorkflowRunOperationHandler::fetch_result_async(
     OperationFetchResultContext /*context*/) {
     // TODO: Implement result fetching by polling/waiting on the workflow
     throw std::logic_error("fetch_result_async not implemented");
     co_return std::any{};  // makes this a coroutine
 }
 
-async_::Task<NexusOperationState>
+coro::Task<NexusOperationState>
 WorkflowRunOperationHandler::fetch_info_async(
     OperationFetchInfoContext /*context*/) {
     // TODO: Implement by describing the workflow
@@ -247,7 +247,7 @@ WorkflowRunOperationHandler::fetch_info_async(
 #pragma warning(pop)
 #endif
 
-async_::Task<void> WorkflowRunOperationHandler::cancel_async(
+coro::Task<void> WorkflowRunOperationHandler::cancel_async(
     OperationCancelContext context) {
     // Parse the token to get the workflow handle
     NexusWorkflowRunHandle handle =

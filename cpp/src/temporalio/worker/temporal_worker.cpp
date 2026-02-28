@@ -6,7 +6,7 @@
 #include <thread>
 #include <utility>
 
-#include "temporalio/async_/run_sync.h"
+#include "temporalio/coro/run_sync.h"
 #include "temporalio/client/temporal_client.h"
 #include "temporalio/client/temporal_connection.h"
 #include "temporalio/exceptions/temporal_exception.h"
@@ -184,7 +184,7 @@ TemporalWorker::TemporalWorker(std::shared_ptr<client::TemporalClient> client,
 
 TemporalWorker::~TemporalWorker() = default;
 
-async_::Task<void> TemporalWorker::execute_async(
+coro::Task<void> TemporalWorker::execute_async(
     std::stop_token shutdown_token) {
     // Prevent double-start
     bool expected = false;
@@ -195,7 +195,7 @@ async_::Task<void> TemporalWorker::execute_async(
     // Validate the bridge worker if available. C# calls
     // BridgeWorker.ValidateAsync() before starting poll loops.
     if (bridge_worker_) {
-        auto tcs = std::make_shared<async_::TaskCompletionSource<void>>();
+        auto tcs = std::make_shared<coro::TaskCompletionSource<void>>();
         bridge_worker_->validate_async([tcs](std::string error) {
             if (error.empty()) {
                 tcs->try_set_result();
@@ -280,19 +280,19 @@ async_::Task<void> TemporalWorker::execute_async(
     // shared state outlives the threads.
 
     auto all_done_tcs =
-        std::make_shared<async_::TaskCompletionSource<void>>();
+        std::make_shared<coro::TaskCompletionSource<void>>();
     auto remaining = std::make_shared<std::atomic<size_t>>(0);
     auto first_exception = std::make_shared<std::exception_ptr>(nullptr);
     auto exception_mutex = std::make_shared<std::mutex>();
 
     // Helper: launch a detached thread to drive a poll task.
-    auto launch_poll = [&](async_::Task<void> task) {
+    auto launch_poll = [&](coro::Task<void> task) {
         remaining->fetch_add(1, std::memory_order_relaxed);
         std::thread([all_done_tcs, remaining, first_exception,
                      exception_mutex,
                      t = std::move(task)]() mutable {
             try {
-                async_::run_task_sync(std::move(t));
+                coro::run_task_sync(std::move(t));
             } catch (...) {
                 std::lock_guard lock(*exception_mutex);
                 if (!*first_exception) {
@@ -346,7 +346,7 @@ async_::Task<void> TemporalWorker::execute_async(
 
     // Finalize shutdown on the bridge
     if (bridge_worker_) {
-        auto tcs = std::make_shared<async_::TaskCompletionSource<void>>();
+        auto tcs = std::make_shared<coro::TaskCompletionSource<void>>();
         bridge_worker_->finalize_shutdown_async([tcs](std::string error) {
             if (error.empty()) {
                 tcs->try_set_result();

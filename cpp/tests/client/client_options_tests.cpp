@@ -13,6 +13,7 @@
 #include "temporalio/client/workflow_options.h"
 #include "temporalio/common/enums.h"
 #include "temporalio/common/retry_policy.h"
+#include "temporalio/converters/data_converter.h"
 
 using namespace temporalio::client;
 using namespace temporalio::common;
@@ -171,6 +172,15 @@ TEST(TemporalClientOptionsTest, DefaultValues) {
     TemporalClientOptions opts;
     EXPECT_EQ(opts.ns, "default");
     EXPECT_TRUE(opts.interceptors.empty());
+    EXPECT_FALSE(opts.data_converter.has_value());
+}
+
+TEST(TemporalClientOptionsTest, CustomDataConverter) {
+    TemporalClientOptions opts;
+    opts.data_converter = temporalio::converters::DataConverter::default_instance();
+    EXPECT_TRUE(opts.data_converter.has_value());
+    EXPECT_NE(opts.data_converter->payload_converter, nullptr);
+    EXPECT_NE(opts.data_converter->failure_converter, nullptr);
 }
 
 TEST(TemporalClientOptionsTest, CustomNamespace) {

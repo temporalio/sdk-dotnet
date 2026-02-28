@@ -8,13 +8,90 @@
 #include <optional>
 #include <stdexcept>
 #include <string>
+#include <tuple>
+#include <type_traits>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/task.h>
 
 namespace temporalio::workflows {
+
+namespace detail {
+
+/// Extract arguments from a vector<std::any> into a tuple via index_sequence.
+template <typename Tuple, std::size_t... I>
+Tuple extract_args(const std::vector<std::any>& args,
+                   std::index_sequence<I...>) {
+    return Tuple{
+        std::any_cast<std::tuple_element_t<I, Tuple>>(args.at(I))...};
+}
+
+/// Call a member function with arguments extracted from vector<std::any>.
+/// Returns Task<std::any> wrapping the result.
+template <typename T, typename R, typename... Args, std::size_t... I>
+coro::Task<std::any> invoke_run(
+    coro::Task<R> (T::*method)(Args...),
+    T* self,
+    const std::vector<std::any>& args,
+    std::index_sequence<I...>) {
+    if constexpr (std::is_void_v<R>) {
+        co_await (self->*method)(
+            std::any_cast<std::decay_t<Args>>(args.at(I))...);
+        co_return std::any{};
+    } else {
+        auto result = co_await (self->*method)(
+            std::any_cast<std::decay_t<Args>>(args.at(I))...);
+        co_return std::any(std::move(result));
+    }
+}
+
+/// Call a void-returning async member function with extracted args.
+template <typename T, typename... Args, std::size_t... I>
+coro::Task<void> invoke_signal(
+    coro::Task<void> (T::*method)(Args...),
+    T* self,
+    const std::vector<std::any>& args,
+    std::index_sequence<I...>) {
+    co_await (self->*method)(
+        std::any_cast<std::decay_t<Args>>(args.at(I))...);
+}
+
+/// Call a synchronous member function (const) with extracted args.
+template <typename T, typename R, typename... Args, std::size_t... I>
+std::any invoke_query(
+    R (T::*method)(Args...) const,
+    const T* self,
+    const std::vector<std::any>& args,
+    std::index_sequence<I...>) {
+    return std::any((self->*method)(
+        std::any_cast<std::decay_t<Args>>(args.at(I))...));
+}
+
+/// Call a synchronous member function (non-const) with extracted args.
+template <typename T, typename R, typename... Args, std::size_t... I>
+std::any invoke_query_nc(
+    R (T::*method)(Args...),
+    T* self,
+    const std::vector<std::any>& args,
+    std::index_sequence<I...>) {
+    return std::any((self->*method)(
+        std::any_cast<std::decay_t<Args>>(args.at(I))...));
+}
+
+/// Call a synchronous void member function (validator) with extracted args.
+template <typename T, typename... Args, std::size_t... I>
+void invoke_validator(
+    void (T::*method)(Args...),
+    T* self,
+    const std::vector<std::any>& args,
+    std::index_sequence<I...>) {
+    (self->*method)(
+        std::any_cast<std::decay_t<Args>>(args.at(I))...);
+}
+
+}  // namespace detail
 
 /// Policy for handling unfinished signal/update handlers.
 enum class HandlerUnfinishedPolicy {
@@ -29,7 +106,7 @@ struct WorkflowSignalDefinition {
     /// Optional description.
     std::string description;
     /// Handler function: (instance, args_payload) -> Task<void>
-    std::function<async_::Task<void>(void*, std::vector<std::any>)> handler;
+    std::function<coro::Task<void>(void*, std::vector<std::any>)> handler;
     /// Policy for unfinished handlers.
     HandlerUnfinishedPolicy unfinished_policy =
         HandlerUnfinishedPolicy::kWarnAndAbandon;
@@ -52,7 +129,7 @@ struct WorkflowUpdateDefinition {
     /// Optional description.
     std::string description;
     /// Handler function: (instance, args_payload) -> Task<any>
-    std::function<async_::Task<std::any>(void*, std::vector<std::any>)>
+    std::function<coro::Task<std::any>(void*, std::vector<std::any>)>
         handler;
     /// Optional validator: (instance, args_payload) -> void (throws on
     /// invalid)
@@ -97,7 +174,7 @@ public:
     }
 
     /// The run function: (instance, args) -> Task<any>.
-    const std::function<async_::Task<std::any>(void*, std::vector<std::any>)>&
+    const std::function<coro::Task<std::any>(void*, std::vector<std::any>)>&
     run_func() const noexcept {
         return run_func_;
     }
@@ -143,7 +220,7 @@ private:
 
     std::string name_;
     std::function<std::shared_ptr<void>()> factory_;
-    std::function<async_::Task<std::any>(void*, std::vector<std::any>)>
+    std::function<coro::Task<std::any>(void*, std::vector<std::any>)>
         run_func_;
     std::unordered_map<std::string, WorkflowSignalDefinition> signals_;
     std::optional<WorkflowSignalDefinition> dynamic_signal_;
@@ -167,13 +244,12 @@ public:
     }
 
     /// Set the run method (member function returning Task<R>).
+    /// Supports zero, one, or multiple arguments.
     template <typename R, typename... Args>
-    Builder& run(async_::Task<R> (T::*method)(Args...)) {
-        static_assert(sizeof...(Args) <= 1,
-            "Multiple arguments not yet supported; use a single struct parameter");
+    Builder& run(coro::Task<R> (T::*method)(Args...)) {
         def_.run_func_ = [method](void* instance,
                                   std::vector<std::any> args)
-            -> async_::Task<std::any> {
+            -> coro::Task<std::any> {
             auto* self = static_cast<T*>(instance);
             if constexpr (sizeof...(Args) == 0) {
                 if constexpr (std::is_void_v<R>) {
@@ -197,42 +273,39 @@ public:
                         co_return std::any(std::move(result));
                     }
                 } else {
-                    auto arg0 = std::any_cast<Arg0>(args.at(0));
-                    if constexpr (std::is_void_v<R>) {
-                        co_await (self->*method)(std::move(arg0));
-                        co_return std::any{};
-                    } else {
-                        auto result =
-                            co_await (self->*method)(std::move(arg0));
-                        co_return std::any(std::move(result));
-                    }
+                    co_return co_await detail::invoke_run(
+                        method, self, args,
+                        std::index_sequence_for<Args...>{});
                 }
+            } else {
+                co_return co_await detail::invoke_run(
+                    method, self, args,
+                    std::index_sequence_for<Args...>{});
             }
         };
         return *this;
     }
 
     /// Add a signal handler (member function returning Task<void>).
+    /// Supports zero, one, or multiple arguments.
     template <typename... Args>
     Builder& signal(const std::string& name,
-                    async_::Task<void> (T::*method)(Args...),
+                    coro::Task<void> (T::*method)(Args...),
                     HandlerUnfinishedPolicy policy =
                         HandlerUnfinishedPolicy::kWarnAndAbandon) {
-        static_assert(sizeof...(Args) <= 1,
-            "Multiple arguments not yet supported; use a single struct parameter");
         WorkflowSignalDefinition sig;
         sig.name = name;
         sig.unfinished_policy = policy;
         sig.handler = [method](void* instance,
                                std::vector<std::any> args)
-            -> async_::Task<void> {
+            -> coro::Task<void> {
             auto* self = static_cast<T*>(instance);
             if constexpr (sizeof...(Args) == 0) {
                 co_await (self->*method)();
-            } else if constexpr (sizeof...(Args) == 1) {
-                using Arg0 = std::tuple_element_t<0, std::tuple<Args...>>;
-                auto arg0 = std::any_cast<Arg0>(args.at(0));
-                co_await (self->*method)(std::move(arg0));
+            } else {
+                co_await detail::invoke_signal(
+                    method, self, args,
+                    std::index_sequence_for<Args...>{});
             }
         };
         def_.signals_[name] = std::move(sig);
@@ -240,21 +313,20 @@ public:
     }
 
     /// Add a query handler (member function returning a value).
+    /// Supports zero, one, or multiple arguments.
     template <typename R, typename... Args>
     Builder& query(const std::string& name, R (T::*method)(Args...) const) {
-        static_assert(sizeof...(Args) <= 1,
-            "Multiple arguments not yet supported; use a single struct parameter");
         WorkflowQueryDefinition qry;
         qry.name = name;
         qry.handler = [method](void* instance,
                                [[maybe_unused]] std::vector<std::any> args) -> std::any {
-            auto* self = static_cast<T*>(instance);
+            auto* self = static_cast<const T*>(instance);
             if constexpr (sizeof...(Args) == 0) {
                 return std::any((self->*method)());
-            } else if constexpr (sizeof...(Args) == 1) {
-                using Arg0 = std::tuple_element_t<0, std::tuple<Args...>>;
-                auto arg0 = std::any_cast<Arg0>(args.at(0));
-                return std::any((self->*method)(std::move(arg0)));
+            } else {
+                return detail::invoke_query(
+                    method, self, args,
+                    std::index_sequence_for<Args...>{});
             }
         };
         def_.queries_[name] = std::move(qry);
@@ -262,10 +334,9 @@ public:
     }
 
     /// Add a query handler (non-const member function).
+    /// Supports zero, one, or multiple arguments.
     template <typename R, typename... Args>
     Builder& query(const std::string& name, R (T::*method)(Args...)) {
-        static_assert(sizeof...(Args) <= 1,
-            "Multiple arguments not yet supported; use a single struct parameter");
         WorkflowQueryDefinition qry;
         qry.name = name;
         qry.handler = [method](void* instance,
@@ -273,10 +344,10 @@ public:
             auto* self = static_cast<T*>(instance);
             if constexpr (sizeof...(Args) == 0) {
                 return std::any((self->*method)());
-            } else if constexpr (sizeof...(Args) == 1) {
-                using Arg0 = std::tuple_element_t<0, std::tuple<Args...>>;
-                auto arg0 = std::any_cast<Arg0>(args.at(0));
-                return std::any((self->*method)(std::move(arg0)));
+            } else {
+                return detail::invoke_query_nc(
+                    method, self, args,
+                    std::index_sequence_for<Args...>{});
             }
         };
         def_.queries_[name] = std::move(qry);
@@ -284,20 +355,19 @@ public:
     }
 
     /// Add an update handler.
+    /// Supports zero, one, or multiple arguments.
     template <typename R, typename... Args>
     Builder& update(const std::string& name,
-                    async_::Task<R> (T::*method)(Args...),
+                    coro::Task<R> (T::*method)(Args...),
                     void (T::*validator)(Args...) = nullptr,
                     HandlerUnfinishedPolicy policy =
                         HandlerUnfinishedPolicy::kWarnAndAbandon) {
-        static_assert(sizeof...(Args) <= 1,
-            "Multiple arguments not yet supported; use a single struct parameter");
         WorkflowUpdateDefinition upd;
         upd.name = name;
         upd.unfinished_policy = policy;
         upd.handler = [method](void* instance,
                                std::vector<std::any> args)
-            -> async_::Task<std::any> {
+            -> coro::Task<std::any> {
             auto* self = static_cast<T*>(instance);
             if constexpr (sizeof...(Args) == 0) {
                 if constexpr (std::is_void_v<R>) {
@@ -307,17 +377,10 @@ public:
                     auto result = co_await (self->*method)();
                     co_return std::any(std::move(result));
                 }
-            } else if constexpr (sizeof...(Args) == 1) {
-                using Arg0 = std::tuple_element_t<0, std::tuple<Args...>>;
-                auto arg0 = std::any_cast<Arg0>(args.at(0));
-                if constexpr (std::is_void_v<R>) {
-                    co_await (self->*method)(std::move(arg0));
-                    co_return std::any{};
-                } else {
-                    auto result =
-                        co_await (self->*method)(std::move(arg0));
-                    co_return std::any(std::move(result));
-                }
+            } else {
+                co_return co_await detail::invoke_run(
+                    method, self, args,
+                    std::index_sequence_for<Args...>{});
             }
         };
         if (validator) {
@@ -326,11 +389,10 @@ public:
                 auto* self = static_cast<T*>(instance);
                 if constexpr (sizeof...(Args) == 0) {
                     (self->*validator)();
-                } else if constexpr (sizeof...(Args) == 1) {
-                    using Arg0 =
-                        std::tuple_element_t<0, std::tuple<Args...>>;
-                    auto arg0 = std::any_cast<Arg0>(args.at(0));
-                    (self->*validator)(std::move(arg0));
+                } else {
+                    detail::invoke_validator(
+                        validator, self, args,
+                        std::index_sequence_for<Args...>{});
                 }
             };
         }

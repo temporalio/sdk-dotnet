@@ -5,14 +5,14 @@
 #include <vector>
 
 #include "temporalio/activities/activity.h"
-#include "temporalio/async_/task.h"
+#include "temporalio/coro/task.h"
 #include "temporalio/worker/temporal_worker.h"
 #include "temporalio/workflows/workflow_definition.h"
 
 using namespace temporalio::worker;
 using namespace temporalio::workflows;
 using namespace temporalio::activities;
-using namespace temporalio::async_;
+using namespace temporalio::coro;
 
 // ===========================================================================
 // Sample types for testing

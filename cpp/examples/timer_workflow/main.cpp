@@ -11,8 +11,8 @@
 ///
 /// Requires a running Temporal server at localhost:7233.
 
-#include <temporalio/async_/run_sync.h>
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/run_sync.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/workflow_options.h>
 #include <temporalio/version.h>
@@ -27,7 +27,7 @@
 #include <stop_token>
 #include <thread>
 
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 // ---------------------------------------------------------------------------
 // Workflow definition
@@ -44,7 +44,7 @@ using temporalio::async_::run_task_sync;
 class TimerWorkflow {
 public:
     /// Main workflow entry point.
-    temporalio::async_::Task<std::string> run() {
+    temporalio::coro::Task<std::string> run() {
         using namespace std::chrono_literals;
         namespace wf = temporalio::workflows;
 
@@ -83,7 +83,7 @@ public:
     }
 
     /// Signal handler: approve the workflow with a reason string.
-    temporalio::async_::Task<void> approve(std::string reason) {
+    temporalio::coro::Task<void> approve(std::string reason) {
         approval_reason_ = std::move(reason);
         approved_ = true;
         co_return;

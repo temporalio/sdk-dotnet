@@ -12,8 +12,11 @@
 #include <string>
 #include <vector>
 
-#include <temporalio/async_/cancellation_token.h>
-#include <temporalio/async_/task.h>
+#include <type_traits>
+#include <utility>
+
+#include <temporalio/coro/cancellation_token.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/workflows/activity_options.h>
 #include <temporalio/workflows/workflow_info.h>
 
@@ -60,13 +63,13 @@ public:
     static bool is_replaying();
 
     /// Create a timer that resolves after the given duration.
-    static async_::Task<void> delay(
+    static coro::Task<void> delay(
         std::chrono::milliseconds duration,
         std::stop_token ct = {});
 
     /// Wait for a condition to become true.
     /// Optionally with a timeout. Returns false if the timeout expired.
-    static async_::Task<bool> wait_condition(
+    static coro::Task<bool> wait_condition(
         std::function<bool()> condition,
         std::optional<std::chrono::milliseconds> timeout = std::nullopt,
         std::stop_token ct = {});
@@ -82,21 +85,42 @@ public:
 
     /// Execute an activity by name with multiple arguments.
     /// Returns the activity result as std::any.
-    static async_::Task<std::any> execute_activity(
+    static coro::Task<std::any> execute_activity(
         const std::string& activity_type,
         std::vector<std::any> args,
         const ActivityOptions& options);
 
     /// Execute an activity by name with a single argument.
-    static async_::Task<std::any> execute_activity(
+    static coro::Task<std::any> execute_activity(
         const std::string& activity_type,
         std::any arg,
         const ActivityOptions& options);
 
     /// Execute an activity by name with no arguments.
-    static async_::Task<std::any> execute_activity(
+    static coro::Task<std::any> execute_activity(
         const std::string& activity_type,
         const ActivityOptions& options);
+
+    /// Type-safe execute_activity: converts typed arguments to std::any,
+    /// invokes the activity, and casts the result back to R.
+    /// Usage: auto result = co_await Workflow::execute_activity<int>(
+    ///     "add", options, 1, 2);
+    template <typename R, typename... Args>
+    static coro::Task<R> execute_activity(
+        const std::string& activity_type,
+        const ActivityOptions& options,
+        Args&&... args) {
+        std::vector<std::any> any_args;
+        any_args.reserve(sizeof...(Args));
+        (any_args.push_back(std::any(std::forward<Args>(args))), ...);
+        auto result_any = co_await execute_activity(
+            activity_type, std::move(any_args), options);
+        if constexpr (std::is_void_v<R>) {
+            co_return;
+        } else {
+            co_return std::any_cast<R>(std::move(result_any));
+        }
+    }
 
     // Workflow cannot be instantiated.
     Workflow() = delete;
@@ -124,14 +148,14 @@ public:
     /// Create a timer that resolves after the given duration.
     /// Returns a Task<void> that completes when the timer fires.
     /// The optional stop_token allows cancellation of the timer.
-    virtual async_::Task<void> start_timer(
+    virtual coro::Task<void> start_timer(
         std::chrono::milliseconds duration,
         std::stop_token ct) = 0;
 
     /// Register a condition predicate and return a Task<bool> that completes
     /// when the condition becomes true or the optional timeout expires.
     /// Returns true if the condition was met, false if timeout expired.
-    virtual async_::Task<bool> register_condition(
+    virtual coro::Task<bool> register_condition(
         std::function<bool()> condition,
         std::optional<std::chrono::milliseconds> timeout,
         std::stop_token ct) = 0;
@@ -140,7 +164,7 @@ public:
     /// finishes. The returned std::any holds the activity result on success.
     /// Throws ActivityFailureException on failure or CanceledFailureException
     /// on cancellation.
-    virtual async_::Task<std::any> schedule_activity(
+    virtual coro::Task<std::any> schedule_activity(
         const std::string& activity_type,
         std::vector<std::any> args,
         const ActivityOptions& options) = 0;

@@ -6,6 +6,7 @@
 
 #include "temporalio/client/temporal_client.h"
 #include "temporalio/client/workflow_handle.h"
+#include "temporalio/client/workflow_options.h"
 
 using namespace temporalio::client;
 
@@ -124,4 +125,60 @@ TEST(WorkflowExecutionTest, WithoutWorkflowType) {
         .run_id = "run-1",
     };
     EXPECT_FALSE(exec.workflow_type.has_value());
+}
+
+// ===========================================================================
+// WorkflowUpdateOptions tests
+// ===========================================================================
+
+TEST(WorkflowUpdateOptionsTest, DefaultOptions) {
+    WorkflowUpdateOptions opts;
+    EXPECT_FALSE(opts.update_id.has_value());
+    EXPECT_EQ(opts.wait_stage,
+              WorkflowUpdateOptions::WaitStage::kCompleted);
+}
+
+TEST(WorkflowUpdateOptionsTest, CustomUpdateId) {
+    WorkflowUpdateOptions opts;
+    opts.update_id = "my-update-123";
+    EXPECT_EQ(opts.update_id.value(), "my-update-123");
+}
+
+TEST(WorkflowUpdateOptionsTest, WaitStageAccepted) {
+    WorkflowUpdateOptions opts;
+    opts.wait_stage = WorkflowUpdateOptions::WaitStage::kAccepted;
+    EXPECT_EQ(static_cast<int>(opts.wait_stage), 2);
+}
+
+TEST(WorkflowUpdateOptionsTest, WaitStageAdmitted) {
+    WorkflowUpdateOptions opts;
+    opts.wait_stage = WorkflowUpdateOptions::WaitStage::kAdmitted;
+    EXPECT_EQ(static_cast<int>(opts.wait_stage), 1);
+}
+
+TEST(WorkflowUpdateOptionsTest, WaitStageCompleted) {
+    WorkflowUpdateOptions opts;
+    opts.wait_stage = WorkflowUpdateOptions::WaitStage::kCompleted;
+    EXPECT_EQ(static_cast<int>(opts.wait_stage), 3);
+}
+
+// ===========================================================================
+// WorkflowHandle::update() method existence / signature tests
+// ===========================================================================
+
+// Note: We can't test the full RPC flow without a live Temporal server,
+// but we can verify the update() method exists and has the right signature
+// by observing that the handle has the method declared.
+
+TEST(WorkflowHandleTest, UpdateMethodExists) {
+    // Verifies that WorkflowHandle::update() compiles with expected
+    // parameter types. The actual call would require a connected client.
+    WorkflowHandle handle(nullptr, "wf-update-test");
+
+    // Verify the method signature compiles - we take a pointer to member
+    using UpdateMethod = temporalio::coro::Task<std::string>
+        (WorkflowHandle::*)(const std::string&, const std::string&,
+                            const WorkflowUpdateOptions&);
+    UpdateMethod method = &WorkflowHandle::update;
+    EXPECT_NE(method, nullptr);
 }

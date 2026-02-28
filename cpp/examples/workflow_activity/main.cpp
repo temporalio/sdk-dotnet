@@ -10,8 +10,8 @@
 /// at localhost:7233 (e.g., via `temporal server start-dev`).
 
 #include <temporalio/activities/activity.h>
-#include <temporalio/async_/run_sync.h>
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/run_sync.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/workflow_options.h>
 #include <temporalio/version.h>
@@ -29,12 +29,12 @@
 #include <thread>
 #include <vector>
 
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 // -- Activity definition --
 
 // A simple greeting activity: takes a name, returns "Hello, <name>!".
-temporalio::async_::Task<std::string> greet(std::string name) {
+temporalio::coro::Task<std::string> greet(std::string name) {
     std::cout << "  [activity] greet(\"" << name << "\") executing\n";
     co_return "Hello, " + name + "!";
 }
@@ -44,7 +44,7 @@ temporalio::async_::Task<std::string> greet(std::string name) {
 // A workflow that calls the greet activity and returns its result.
 class GreetingWorkflow {
 public:
-    temporalio::async_::Task<std::any> run(std::vector<std::any> args) {
+    temporalio::coro::Task<std::any> run(std::vector<std::any> args) {
         // Extract the name argument (passed as string).
         std::string name = "World";
         if (!args.empty()) {

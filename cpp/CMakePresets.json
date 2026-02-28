@@ -7,6 +7,12 @@
   },
   "configurePresets": [
     {
+      "name": "ninja-base",
+      "hidden": true,
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build"
+    },
+    {
       "name": "vcpkg-base",
       "hidden": true,
       "cacheVariables": {
@@ -17,8 +23,42 @@
       }
     },
     {
+      "name": "windows-debug",
+      "displayName": "Windows Debug (Ninja)",
+      "inherits": "ninja-base",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_MAKE_PROGRAM": "C:/ninja/ninja.exe"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "windows-release",
+      "displayName": "Windows Release (Ninja)",
+      "inherits": "windows-debug"
+    },
+    {
+      "name": "linux-debug",
+      "displayName": "Linux Debug (Ninja)",
+      "inherits": "ninja-base",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+      }
+    },
+    {
+      "name": "linux-release",
+      "displayName": "Linux Release (Ninja)",
+      "inherits": "linux-debug"
+    },
+    {
       "name": "debug",
-      "displayName": "Debug",
+      "displayName": "Debug (vcpkg)",
       "inherits": "vcpkg-base",
       "binaryDir": "${sourceDir}/build/debug",
       "cacheVariables": {
@@ -27,7 +67,7 @@
     },
     {
       "name": "release",
-      "displayName": "Release",
+      "displayName": "Release (vcpkg)",
       "inherits": "vcpkg-base",
       "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {
@@ -36,7 +76,7 @@
     },
     {
       "name": "msvc-debug",
-      "displayName": "MSVC Debug",
+      "displayName": "MSVC Debug (Visual Studio)",
       "inherits": "vcpkg-base",
       "binaryDir": "${sourceDir}/build/msvc-debug",
       "generator": "Visual Studio 17 2022",
@@ -55,7 +95,7 @@
     },
     {
       "name": "msvc-release",
-      "displayName": "MSVC Release",
+      "displayName": "MSVC Release (Visual Studio)",
       "inherits": "vcpkg-base",
       "binaryDir": "${sourceDir}/build/msvc-release",
       "generator": "Visual Studio 17 2022",
@@ -74,6 +114,26 @@
     }
   ],
   "buildPresets": [
+    {
+      "name": "windows-debug",
+      "configurePreset": "windows-debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "windows-release",
+      "configurePreset": "windows-release",
+      "configuration": "Release"
+    },
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release",
+      "configuration": "Release"
+    },
     {
       "name": "debug",
       "configurePreset": "debug"
@@ -94,6 +154,38 @@
     }
   ],
   "testPresets": [
+    {
+      "name": "windows-debug",
+      "configurePreset": "windows-debug",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "windows-release",
+      "configurePreset": "windows-release",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "linux-debug",
+      "configurePreset": "linux-debug",
+      "configuration": "Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "linux-release",
+      "configurePreset": "linux-release",
+      "configuration": "Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
     {
       "name": "debug",
       "configurePreset": "debug",

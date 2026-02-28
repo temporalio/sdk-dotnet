@@ -13,8 +13,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include <temporalio/async_/task.h>
-#include <temporalio/async_/task_completion_source.h>
+#include <temporalio/coro/task.h>
+#include <temporalio/coro/task_completion_source.h>
 #include <temporalio/nexus/operation_handler.h>
 
 namespace temporalio::bridge {
@@ -77,14 +77,14 @@ public:
 
     /// Run the poll loop until the bridge signals shutdown.
     /// @return Task that completes when polling stops.
-    async_::Task<void> execute_async();
+    coro::Task<void> execute_async();
 
 private:
     /// Poll for the next Nexus task from the bridge.
-    async_::Task<std::optional<std::vector<uint8_t>>> poll_nexus_task();
+    coro::Task<std::optional<std::vector<uint8_t>>> poll_nexus_task();
 
     /// Complete a Nexus task via the bridge.
-    async_::Task<void> complete_nexus_task(
+    coro::Task<void> complete_nexus_task(
         const std::vector<uint8_t>& completion_bytes);
 
     /// Handle a Nexus start operation task.

@@ -6,6 +6,7 @@
 # imported targets:
 #
 #   temporalio::temporalio               - Core SDK library (always available)
+#   temporalio::temporalio_proto         - Generated Temporal API protobuf types (if installed)
 #   temporalio::temporalio_diagnostics   - Diagnostics metrics extension (optional)
 #   temporalio::temporalio_opentelemetry - OpenTelemetry tracing extension (optional)
 #
@@ -16,12 +17,96 @@
 include(CMakeFindDependencyMacro)
 
 # The core library requires protobuf and nlohmann_json.
-find_dependency(Protobuf)
-find_dependency(nlohmann_json)
+# Try CONFIG mode first (vcpkg/system installs), fall back to module mode for Protobuf.
+find_dependency(Protobuf CONFIG)
+if(NOT Protobuf_FOUND)
+    find_dependency(Protobuf)
+endif()
+find_dependency(nlohmann_json CONFIG)
 
-# If the OpenTelemetry extension was installed, its consumers need the SDK.
+# Include the generated targets file.
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/temporalioTargets.cmake")
     include("${CMAKE_CURRENT_LIST_DIR}/temporalioTargets.cmake")
+endif()
+
+# Locate the Rust bridge shared library that was installed alongside the SDK.
+# The bridge is always a shared library (Rust cdylib) and must be linked by
+# consumers when using the static temporalio library. For shared library builds,
+# it is a runtime-only dependency.
+if(TARGET temporalio::temporalio AND NOT TARGET temporalio::temporalio_rust_bridge)
+    set(_temporalio_bridge_found FALSE)
+    if(WIN32)
+        set(_bridge_dll_name "temporalio_sdk_core_c_bridge.dll")
+        set(_bridge_implib_name "temporalio_sdk_core_c_bridge.dll.lib")
+        find_file(_bridge_dll "${_bridge_dll_name}"
+            PATHS "${PACKAGE_PREFIX_DIR}/bin" "${PACKAGE_PREFIX_DIR}/lib"
+            NO_DEFAULT_PATH)
+        find_file(_bridge_implib "${_bridge_implib_name}"
+            PATHS "${PACKAGE_PREFIX_DIR}/lib"
+            NO_DEFAULT_PATH)
+        if(_bridge_dll)
+            add_library(temporalio::temporalio_rust_bridge SHARED IMPORTED)
+            set_target_properties(temporalio::temporalio_rust_bridge PROPERTIES
+                IMPORTED_LOCATION "${_bridge_dll}"
+            )
+            if(_bridge_implib)
+                set_target_properties(temporalio::temporalio_rust_bridge PROPERTIES
+                    IMPORTED_IMPLIB "${_bridge_implib}"
+                )
+            endif()
+            # Platform link dependencies for the Rust runtime.
+            set_property(TARGET temporalio::temporalio_rust_bridge APPEND PROPERTY
+                INTERFACE_LINK_LIBRARIES ws2_32 userenv ntdll bcrypt advapi32
+            )
+            set(_temporalio_bridge_found TRUE)
+        endif()
+        unset(_bridge_dll CACHE)
+        unset(_bridge_implib CACHE)
+    elseif(APPLE)
+        set(_bridge_lib_name "libtemporalio_sdk_core_c_bridge.dylib")
+        find_file(_bridge_lib "${_bridge_lib_name}"
+            PATHS "${PACKAGE_PREFIX_DIR}/lib"
+            NO_DEFAULT_PATH)
+        if(_bridge_lib)
+            add_library(temporalio::temporalio_rust_bridge SHARED IMPORTED)
+            set_target_properties(temporalio::temporalio_rust_bridge PROPERTIES
+                IMPORTED_LOCATION "${_bridge_lib}"
+            )
+            set_property(TARGET temporalio::temporalio_rust_bridge APPEND PROPERTY
+                INTERFACE_LINK_LIBRARIES "-framework Security" "-framework CoreFoundation" pthread dl m
+            )
+            set(_temporalio_bridge_found TRUE)
+        endif()
+        unset(_bridge_lib CACHE)
+    else()
+        set(_bridge_lib_name "libtemporalio_sdk_core_c_bridge.so")
+        find_file(_bridge_lib "${_bridge_lib_name}"
+            PATHS "${PACKAGE_PREFIX_DIR}/lib"
+            NO_DEFAULT_PATH)
+        if(_bridge_lib)
+            add_library(temporalio::temporalio_rust_bridge SHARED IMPORTED)
+            set_target_properties(temporalio::temporalio_rust_bridge PROPERTIES
+                IMPORTED_LOCATION "${_bridge_lib}"
+            )
+            set_property(TARGET temporalio::temporalio_rust_bridge APPEND PROPERTY
+                INTERFACE_LINK_LIBRARIES pthread dl m rt
+            )
+            set(_temporalio_bridge_found TRUE)
+        endif()
+        unset(_bridge_lib CACHE)
+    endif()
+
+    # Add the Rust bridge to temporalio's link interface so consumers
+    # automatically get it when linking against temporalio::temporalio.
+    if(_temporalio_bridge_found)
+        set_property(TARGET temporalio::temporalio APPEND PROPERTY
+            INTERFACE_LINK_LIBRARIES temporalio::temporalio_rust_bridge
+        )
+    else()
+        message(WARNING "temporalio: Rust bridge shared library not found in "
+            "${PACKAGE_PREFIX_DIR}. Runtime linking may fail.")
+    endif()
+    unset(_temporalio_bridge_found)
 endif()
 
 # Check that the opentelemetry target's dependency is available, if that

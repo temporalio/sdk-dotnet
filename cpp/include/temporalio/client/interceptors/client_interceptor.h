@@ -3,7 +3,7 @@
 /// @file client_interceptor.h
 /// @brief Client-side interceptor chain (IClientInterceptor, ClientOutboundInterceptor).
 
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/client/workflow_options.h>
 
 #include <memory>
@@ -252,50 +252,50 @@ public:
         default;
 
     /// Intercept start workflow calls.
-    virtual async_::Task<WorkflowHandle> start_workflow(
+    virtual coro::Task<WorkflowHandle> start_workflow(
         StartWorkflowInput input);
 
     /// Intercept signal workflow calls.
-    virtual async_::Task<void> signal_workflow(SignalWorkflowInput input);
+    virtual coro::Task<void> signal_workflow(SignalWorkflowInput input);
 
     /// Intercept query workflow calls.
-    virtual async_::Task<std::string> query_workflow(
+    virtual coro::Task<std::string> query_workflow(
         QueryWorkflowInput input);
 
     /// Intercept start workflow update calls.
-    virtual async_::Task<std::string> start_workflow_update(
+    virtual coro::Task<std::string> start_workflow_update(
         StartWorkflowUpdateInput input);
 
     /// Intercept start update with start workflow calls.
-    virtual async_::Task<std::string> start_update_with_start_workflow(
+    virtual coro::Task<std::string> start_update_with_start_workflow(
         StartUpdateWithStartWorkflowInput input);
 
     /// Intercept describe workflow calls.
-    virtual async_::Task<std::string> describe_workflow(
+    virtual coro::Task<std::string> describe_workflow(
         DescribeWorkflowInput input);
 
     /// Intercept cancel workflow calls.
-    virtual async_::Task<void> cancel_workflow(CancelWorkflowInput input);
+    virtual coro::Task<void> cancel_workflow(CancelWorkflowInput input);
 
     /// Intercept terminate workflow calls.
-    virtual async_::Task<void> terminate_workflow(
+    virtual coro::Task<void> terminate_workflow(
         TerminateWorkflowInput input);
 
     /// Intercept a history event page fetch.
-    virtual async_::Task<WorkflowHistoryEventPage>
+    virtual coro::Task<WorkflowHistoryEventPage>
     fetch_workflow_history_event_page(
         FetchWorkflowHistoryEventPageInput input);
 
     /// Intercept listing workflows.
-    virtual async_::Task<WorkflowListPage> list_workflows(
+    virtual coro::Task<WorkflowListPage> list_workflows(
         ListWorkflowsInput input);
 
     /// Intercept page fetch for list workflows calls.
-    virtual async_::Task<WorkflowListPage> list_workflows_paginated(
+    virtual coro::Task<WorkflowListPage> list_workflows_paginated(
         ListWorkflowsPaginatedInput input);
 
     /// Intercept counting workflows.
-    virtual async_::Task<WorkflowExecutionCount> count_workflows(
+    virtual coro::Task<WorkflowExecutionCount> count_workflows(
         CountWorkflowsInput input);
 
 protected:

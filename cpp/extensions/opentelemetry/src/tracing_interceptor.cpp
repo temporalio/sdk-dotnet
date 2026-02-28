@@ -27,7 +27,7 @@ public:
         next().init(outbound);
     }
 
-    async_::Task<std::any> execute_workflow_async(
+    coro::Task<std::any> execute_workflow_async(
         worker::interceptors::ExecuteWorkflowInput input) override {
         // TODO(otel): Create a span for "RunWorkflow:<type>"
         // - Extract parent context from headers
@@ -36,7 +36,7 @@ public:
         co_return co_await next().execute_workflow_async(std::move(input));
     }
 
-    async_::Task<void> handle_signal_async(
+    coro::Task<void> handle_signal_async(
         worker::interceptors::HandleSignalInput input) override {
         // TODO(otel): Create a span for "HandleSignal:<name>"
         co_await next().handle_signal_async(std::move(input));
@@ -54,7 +54,7 @@ public:
         next().validate_update(std::move(input));
     }
 
-    async_::Task<std::any> handle_update_async(
+    coro::Task<std::any> handle_update_async(
         worker::interceptors::HandleUpdateInput input) override {
         // TODO(otel): Create a span for "HandleUpdate:<name>"
         co_return co_await next().handle_update_async(std::move(input));
@@ -81,7 +81,7 @@ public:
         next().init(outbound);
     }
 
-    async_::Task<std::any> execute_activity_async(
+    coro::Task<std::any> execute_activity_async(
         worker::interceptors::ExecuteActivityInput input) override {
         // TODO(otel): Create a span for "RunActivity:<name>"
         // - Extract parent context from headers

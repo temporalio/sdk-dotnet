@@ -2,6 +2,8 @@
 
 /// @file Activity execution context with heartbeat and cancellation support.
 
+#include <temporalio/export.h>
+
 #include <any>
 #include <chrono>
 #include <cstdint>
@@ -62,7 +64,7 @@ struct ActivityInfo {
 ///
 /// This replaces the C# ActivityExecutionContext with its AsyncLocal<T>.
 /// Since C++ activities run on a thread pool, we use thread_local storage.
-class ActivityExecutionContext {
+class TEMPORALIO_EXPORT ActivityExecutionContext {
 public:
     ActivityExecutionContext(ActivityInfo info,
                             std::stop_token cancellation_token,

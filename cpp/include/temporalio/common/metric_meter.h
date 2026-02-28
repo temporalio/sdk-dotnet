@@ -3,6 +3,8 @@
 /// @file metric_meter.h
 /// @brief Metric primitives: MetricMeter, counters, histograms, gauges.
 
+#include <temporalio/export.h>
+
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -105,7 +107,7 @@ public:
 };
 
 /// No-op metric meter implementation.
-class NoopMetricMeter : public MetricMeter {
+class TEMPORALIO_EXPORT NoopMetricMeter : public MetricMeter {
 public:
     std::unique_ptr<MetricCounter<std::uint64_t>> create_counter(
         const std::string& name,

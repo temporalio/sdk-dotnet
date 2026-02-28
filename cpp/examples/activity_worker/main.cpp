@@ -10,8 +10,8 @@
 /// Requires a running Temporal server at localhost:7233.
 
 #include <temporalio/activities/activity.h>
-#include <temporalio/async_/run_sync.h>
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/run_sync.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/version.h>
 #include <temporalio/worker/temporal_worker.h>
@@ -23,17 +23,17 @@
 #include <stop_token>
 #include <string>
 
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 // -- Activity definitions --
 
 // A simple greeting activity that returns a formatted string.
-temporalio::async_::Task<std::string> greet(std::string name) {
+temporalio::coro::Task<std::string> greet(std::string name) {
     co_return "Hello, " + name + "!";
 }
 
 // A no-arg activity that returns a fixed identifier string.
-temporalio::async_::Task<std::string> get_worker_info() {
+temporalio::coro::Task<std::string> get_worker_info() {
     co_return "activity-worker-example";
 }
 
@@ -44,7 +44,7 @@ temporalio::async_::Task<std::string> get_worker_info() {
 // real worker; this demonstrates the definition pattern).
 class GreetingWorkflow {
 public:
-    temporalio::async_::Task<std::string> run(std::string name) {
+    temporalio::coro::Task<std::string> run(std::string name) {
         // In a real workflow, you would use:
         //   co_return co_await Workflow::execute_activity("greet", name);
         // For this example, we just show the definition wiring.
@@ -53,7 +53,7 @@ public:
 };
 
 // The async entry point.
-temporalio::async_::Task<void> run(std::stop_token shutdown_token) {
+temporalio::coro::Task<void> run(std::stop_token shutdown_token) {
     namespace client = temporalio::client;
     namespace worker = temporalio::worker;
 

@@ -4,12 +4,15 @@
 /// @brief WorkflowReplayer - replay workflows from existing history for
 ///        testing determinism and debugging.
 
+#include <temporalio/export.h>
+
 #include <exception>
 #include <memory>
 #include <string>
 #include <vector>
 
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/task.h>
+#include <temporalio/common/workflow_history.h>
 #include <temporalio/workflows/workflow_definition.h>
 
 namespace temporalio::converters {
@@ -20,28 +23,16 @@ namespace temporalio::worker::interceptors {
 class IWorkerInterceptor;
 }
 
+namespace temporalio::runtime {
+class TemporalRuntime;
+}
+
 namespace temporalio::worker {
-
-/// A recorded workflow history event for replay.
-struct WorkflowHistoryEvent {
-    // Placeholder for the protobuf HistoryEvent type.
-    // Will be replaced with the actual proto type when bridge is wired up.
-    std::string serialized_data;
-};
-
-/// A workflow history to replay.
-struct WorkflowHistory {
-    /// Workflow ID from the original execution.
-    std::string id;
-
-    /// The recorded history events.
-    std::vector<WorkflowHistoryEvent> events;
-};
 
 /// Result of a single workflow replay.
 struct WorkflowReplayResult {
-    /// The history that was replayed.
-    WorkflowHistory history;
+    /// The workflow ID that was replayed.
+    std::string workflow_id;
 
     /// Workflow task failure during replay (e.g. nondeterminism).
     /// Null if replay succeeded. Note: normal workflow failures
@@ -72,6 +63,9 @@ struct WorkflowReplayerOptions {
     std::vector<std::shared_ptr<interceptors::IWorkerInterceptor>>
         interceptors;
 
+    /// Runtime to use. If null, a default runtime is created.
+    std::shared_ptr<runtime::TemporalRuntime> runtime;
+
     /// Whether to run in debug mode (disables deadlock detection).
     bool debug_mode{false};
 };
@@ -83,8 +77,11 @@ struct WorkflowReplayerOptions {
 ///   WorkflowReplayerOptions opts;
 ///   opts.workflows.push_back(my_workflow_def);
 ///   WorkflowReplayer replayer(opts);
-///   auto result = co_await replayer.replay_workflow_async(history);
-class WorkflowReplayer {
+///   auto result = co_await replayer.replay_workflow(history);
+///
+/// Histories can be constructed from JSON using
+/// common::WorkflowHistory::from_json().
+class TEMPORALIO_EXPORT WorkflowReplayer {
 public:
     /// Create a replayer with the given options.
     /// @throws std::invalid_argument if no workflows are provided.
@@ -97,12 +94,12 @@ public:
     WorkflowReplayer& operator=(const WorkflowReplayer&) = delete;
 
     /// Replay a single workflow from the given history.
-    /// @param history The history to replay.
+    /// @param history The workflow history to replay (binary protobuf).
     /// @param throw_on_replay_failure If true (default), throws on workflow
     ///        task failure (e.g. nondeterminism).
     /// @return The replay result.
-    async_::Task<WorkflowReplayResult> replay_workflow_async(
-        WorkflowHistory history,
+    coro::Task<WorkflowReplayResult> replay_workflow(
+        const common::WorkflowHistory& history,
         bool throw_on_replay_failure = true);
 
     /// Replay multiple workflows from the given histories.
@@ -110,8 +107,8 @@ public:
     /// @param throw_on_replay_failure If true, throws on the first workflow
     ///        task failure encountered.
     /// @return The replay results.
-    async_::Task<std::vector<WorkflowReplayResult>> replay_workflows_async(
-        std::vector<WorkflowHistory> histories,
+    coro::Task<std::vector<WorkflowReplayResult>> replay_workflows(
+        const std::vector<common::WorkflowHistory>& histories,
         bool throw_on_replay_failure = false);
 
     /// Get the replayer options.
@@ -124,4 +121,3 @@ private:
 };
 
 }  // namespace temporalio::worker
-

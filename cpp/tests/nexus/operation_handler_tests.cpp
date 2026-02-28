@@ -10,7 +10,7 @@
 #include "temporalio/nexus/operation_handler.h"
 
 using namespace temporalio::nexus;
-using namespace temporalio::async_;
+using namespace temporalio::coro;
 
 // ===========================================================================
 // NexusOperationInfo tests

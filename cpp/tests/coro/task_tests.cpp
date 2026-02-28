@@ -6,9 +6,9 @@
 #include <string>
 #include <vector>
 
-#include "temporalio/async_/task.h"
+#include "temporalio/coro/task.h"
 
-using namespace temporalio::async_;
+using namespace temporalio::coro;
 
 // ---------------------------------------------------------------------------
 // Helper: synchronously run a lazy Task<T> to completion.

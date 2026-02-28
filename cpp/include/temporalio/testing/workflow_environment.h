@@ -4,7 +4,8 @@
 /// @brief Test environment for running workflows against a local or remote
 /// Temporal server.
 
-#include <temporalio/async_/task.h>
+#include <temporalio/export.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/temporal_connection.h>
 #include <temporalio/runtime/temporal_runtime.h>
@@ -65,7 +66,7 @@ struct WorkflowEnvironmentStartTimeSkippingOptions {
 /// This class is NOT thread safe and not safe for use by concurrent tests.
 /// Time skipping is locked/unlocked at an environment level, so while reuse
 /// is supported, independent concurrent use can have side effects.
-class WorkflowEnvironment {
+class TEMPORALIO_EXPORT WorkflowEnvironment {
 public:
     /// Create an environment wrapping an existing client (no time skipping).
     explicit WorkflowEnvironment(
@@ -83,13 +84,13 @@ public:
 
     /// Start a local dev server with full Temporal capabilities but no time
     /// skipping. By default this lazily downloads the server if not present.
-    static async_::Task<std::unique_ptr<WorkflowEnvironment>> start_local(
+    static coro::Task<std::unique_ptr<WorkflowEnvironment>> start_local(
         WorkflowEnvironmentStartLocalOptions options = {});
 
     /// Start a local test server with time skipping but limited Temporal
     /// capabilities. By default this lazily downloads the server if not
     /// present.
-    static async_::Task<std::unique_ptr<WorkflowEnvironment>>
+    static coro::Task<std::unique_ptr<WorkflowEnvironment>>
     start_time_skipping(
         WorkflowEnvironmentStartTimeSkippingOptions options = {});
 
@@ -103,16 +104,16 @@ public:
 
     /// Sleep in this environment. In time-skipping environments this may
     /// fast forward time instead of actually sleeping.
-    virtual async_::Task<void> delay(std::chrono::milliseconds duration);
+    virtual coro::Task<void> delay(std::chrono::milliseconds duration);
 
     /// Get the current time for the environment. For time-skipping
     /// environments this may return a different (fast-forwarded) time.
-    virtual async_::Task<std::chrono::system_clock::time_point>
+    virtual coro::Task<std::chrono::system_clock::time_point>
     get_current_time();
 
     /// Shutdown this environment. No-op for environments created with a
     /// simple client.
-    virtual async_::Task<void> shutdown();
+    virtual coro::Task<void> shutdown();
 
 protected:
     std::shared_ptr<client::TemporalClient> client_;

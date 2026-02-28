@@ -15,7 +15,7 @@
 #include <temporal/api/common/v1/message.pb.h>
 #include <temporal/api/failure/v1/message.pb.h>
 
-#include "temporalio/async_/run_sync.h"
+#include "temporalio/coro/run_sync.h"
 #include "temporalio/bridge/worker.h"
 #include "temporalio/converters/data_converter.h"
 #include "temporalio/converters/payload_conversion.h"
@@ -43,7 +43,7 @@ std::chrono::milliseconds to_millis(const google::protobuf::Duration& d) {
 
 // Bring the shared run_task_sync into this translation unit's anonymous
 // namespace so existing call sites (e.g., execute_activity) work unchanged.
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 }  // namespace
 
@@ -78,14 +78,14 @@ ActivityWorker::~ActivityWorker() {
     }
 }
 
-async_::Task<std::optional<std::vector<uint8_t>>>
+coro::Task<std::optional<std::vector<uint8_t>>>
 ActivityWorker::poll_activity_task() {
     if (!options_.bridge_worker) {
         co_return std::nullopt;
     }
 
     auto tcs = std::make_shared<
-        async_::TaskCompletionSource<std::optional<std::vector<uint8_t>>>>();
+        coro::TaskCompletionSource<std::optional<std::vector<uint8_t>>>>();
 
     options_.bridge_worker->poll_activity_task_async(
         [tcs](std::optional<std::vector<uint8_t>> result,
@@ -102,13 +102,13 @@ ActivityWorker::poll_activity_task() {
     co_return co_await tcs->task();
 }
 
-async_::Task<void> ActivityWorker::complete_activity_task(
+coro::Task<void> ActivityWorker::complete_activity_task(
     const std::vector<uint8_t>& completion_bytes) {
     if (!options_.bridge_worker) {
         co_return;
     }
 
-    auto tcs = std::make_shared<async_::TaskCompletionSource<void>>();
+    auto tcs = std::make_shared<coro::TaskCompletionSource<void>>();
 
     options_.bridge_worker->complete_activity_task_async(
         std::span<const uint8_t>(completion_bytes),
@@ -125,7 +125,7 @@ async_::Task<void> ActivityWorker::complete_activity_task(
     co_await tcs->task();
 }
 
-async_::Task<void> ActivityWorker::execute_async() {
+coro::Task<void> ActivityWorker::execute_async() {
     // Poll loop: continuously poll for activity tasks from the bridge.
     // Each task is either a Start (new activity) or Cancel (cancel running).
     //

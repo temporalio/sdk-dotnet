@@ -3,6 +3,8 @@
 /// @file temporal_runtime.h
 /// @brief TemporalRuntime - holds Rust runtime handle and telemetry configuration.
 
+#include <temporalio/export.h>
+
 #include <chrono>
 #include <cstdint>
 #include <functional>
@@ -167,7 +169,7 @@ struct TemporalRuntimeOptions {
 /// them, will be associated with the runtime.
 ///
 /// This is internally reference-counted via std::shared_ptr.
-class TemporalRuntime {
+class TEMPORALIO_EXPORT TemporalRuntime {
 public:
     /// Create a new runtime with the given options.
     /// This creates an entirely new thread pool and runtime in the Core backend.

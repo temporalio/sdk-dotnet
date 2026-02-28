@@ -1,6 +1,6 @@
 #include "workflow_environment_fixture.h"
 
-#include <temporalio/async_/run_sync.h>
+#include <temporalio/coro/run_sync.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/temporal_connection.h>
 #include <temporalio/testing/workflow_environment.h>
@@ -29,7 +29,7 @@ std::string safe_getenv(const char* name) {
 }
 }  // namespace
 
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 namespace temporalio::testing {
 

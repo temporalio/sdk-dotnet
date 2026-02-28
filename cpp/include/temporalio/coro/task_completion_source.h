@@ -11,9 +11,9 @@
 #include <type_traits>
 #include <utility>
 
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/task.h>
 
-namespace temporalio::async_ {
+namespace temporalio::coro {
 
 /// Callback type for routing coroutine resumption to the correct thread.
 /// When set on a TaskCompletionSource, the resume is routed through this
@@ -379,5 +379,5 @@ private:
     std::shared_ptr<detail::CompletionState<void>> state_;
 };
 
-}  // namespace temporalio::async_
+}  // namespace temporalio::coro
 

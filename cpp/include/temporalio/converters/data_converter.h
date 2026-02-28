@@ -2,6 +2,8 @@
 
 /// @file Data conversion between user types and Temporal payloads.
 
+#include <temporalio/export.h>
+
 #include <any>
 #include <cstdint>
 #include <exception>
@@ -182,7 +184,7 @@ public:
 /// Default payload converter that iterates over encoding converters.
 /// Tries each converter in order for to_payload; looks up by encoding for
 /// to_value.
-class DefaultPayloadConverter : public IPayloadConverter {
+class TEMPORALIO_EXPORT DefaultPayloadConverter : public IPayloadConverter {
 public:
     /// Constructs with the standard encoding converter set:
     /// BinaryNull, BinaryPlain, JsonPlain.
@@ -217,7 +219,7 @@ struct DefaultFailureConverterOptions {
 
 /// Default failure converter implementation.
 /// Maps the full C++ exception hierarchy to/from Failure structs.
-class DefaultFailureConverter : public IFailureConverter {
+class TEMPORALIO_EXPORT DefaultFailureConverter : public IFailureConverter {
 public:
     DefaultFailureConverter();
     explicit DefaultFailureConverter(DefaultFailureConverterOptions options);
@@ -239,7 +241,7 @@ private:
 
 /// Data converter which combines a payload converter, a failure converter,
 /// and an optional payload codec.
-struct DataConverter {
+struct TEMPORALIO_EXPORT DataConverter {
     std::shared_ptr<IPayloadConverter> payload_converter;
     std::shared_ptr<IFailureConverter> failure_converter;
     std::shared_ptr<IPayloadCodec> payload_codec;  // may be null
@@ -251,7 +253,7 @@ struct DataConverter {
 // -- Built-in encoding converters --
 
 /// Handles null/empty values with "binary/null" encoding.
-class BinaryNullConverter : public IEncodingConverter {
+class TEMPORALIO_EXPORT BinaryNullConverter : public IEncodingConverter {
 public:
     std::string_view encoding() const override;
     std::optional<Payload> try_to_payload(const std::any& value) const override;
@@ -260,7 +262,7 @@ public:
 };
 
 /// Handles raw byte vectors with "binary/plain" encoding.
-class BinaryPlainConverter : public IEncodingConverter {
+class TEMPORALIO_EXPORT BinaryPlainConverter : public IEncodingConverter {
 public:
     std::string_view encoding() const override;
     std::optional<Payload> try_to_payload(const std::any& value) const override;
@@ -274,7 +276,7 @@ public:
 /// Built-in types: std::string, bool, int, int64_t, uint64_t, float, double,
 /// and nlohmann::json. Custom types can be registered with register_type()
 /// or by providing nlohmann/json ADL to_json/from_json hooks.
-class JsonPlainConverter : public IEncodingConverter {
+class TEMPORALIO_EXPORT JsonPlainConverter : public IEncodingConverter {
 public:
     std::string_view encoding() const override;
     std::optional<Payload> try_to_payload(const std::any& value) const override;

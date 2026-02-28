@@ -259,6 +259,7 @@ function(temporalio_generate_protos)
     target_include_directories(${ARG_TARGET}
         PUBLIC
             $<BUILD_INTERFACE:${GEN_DIR}>
+            $<INSTALL_INTERFACE:include>
     )
 
     if(TEMPORALIO_PROTOBUF_TARGET)

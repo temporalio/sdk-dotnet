@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-#include "temporalio/async_/task.h"
+#include "temporalio/coro/task.h"
 #include "temporalio/exceptions/temporal_exception.h"
 #include "temporalio/worker/workflow_instance.h"
 #include "temporalio/workflows/activity_options.h"
@@ -17,7 +17,7 @@
 
 using namespace temporalio::worker;
 using namespace temporalio::workflows;
-using namespace temporalio::async_;
+using namespace temporalio::coro;
 
 // ===========================================================================
 // Sample workflows for testing WorkflowInstance

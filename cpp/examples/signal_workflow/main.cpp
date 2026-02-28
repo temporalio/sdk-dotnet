@@ -10,8 +10,8 @@
 ///
 /// Requires a running Temporal server at localhost:7233.
 
-#include <temporalio/async_/run_sync.h>
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/run_sync.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/workflow_options.h>
 #include <temporalio/version.h>
@@ -23,7 +23,7 @@
 #include <iostream>
 #include <string>
 
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 // -- Workflow definition --
 // A workflow that accumulates messages via signals and returns them
@@ -32,7 +32,7 @@ class AccumulatorWorkflow {
 public:
     // The main workflow run method. Waits until done_ is set, then
     // returns all accumulated messages as a single string.
-    temporalio::async_::Task<std::string> run() {
+    temporalio::coro::Task<std::string> run() {
         co_await temporalio::workflows::Workflow::wait_condition(
             [this]() { return done_; });
         co_return result_;
@@ -40,7 +40,7 @@ public:
 
     // Signal handler: appends a message. If the message is "done",
     // sets the done flag so the workflow completes.
-    temporalio::async_::Task<void> add_message(std::string msg) {
+    temporalio::coro::Task<void> add_message(std::string msg) {
         if (msg == "done") {
             done_ = true;
         } else {
@@ -72,7 +72,7 @@ make_accumulator_definition() {
 }
 
 // The async entry point.
-temporalio::async_::Task<void> run() {
+temporalio::coro::Task<void> run() {
     namespace client = temporalio::client;
 
     // Step 1: Connect to Temporal.

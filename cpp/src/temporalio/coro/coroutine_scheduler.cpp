@@ -1,6 +1,6 @@
-#include "temporalio/async_/coroutine_scheduler.h"
+#include "temporalio/coro/coroutine_scheduler.h"
 
-namespace temporalio::async_ {
+namespace temporalio::coro {
 
 void CoroutineScheduler::schedule(std::coroutine_handle<> handle) {
     ready_queue_.push_back(handle);
@@ -53,4 +53,4 @@ bool CoroutineScheduler::drain() {
     return true;
 }
 
-}  // namespace temporalio::async_
+}  // namespace temporalio::coro

@@ -17,8 +17,8 @@
 
 #include <temporalio/activities/activity.h>
 #include <temporalio/activities/activity_context.h>
-#include <temporalio/async_/task.h>
-#include <temporalio/async_/task_completion_source.h>
+#include <temporalio/coro/task.h>
+#include <temporalio/coro/task_completion_source.h>
 
 namespace temporalio::bridge {
 class Worker;
@@ -109,7 +109,7 @@ public:
 
     /// Run the poll loop until the bridge signals shutdown.
     /// @return Task that completes when polling stops.
-    async_::Task<void> execute_async();
+    coro::Task<void> execute_async();
 
     /// Notify the worker that shutdown is in progress.
     /// This cancels all running activity contexts.
@@ -117,10 +117,10 @@ public:
 
 private:
     /// Poll for the next activity task from the bridge.
-    async_::Task<std::optional<std::vector<uint8_t>>> poll_activity_task();
+    coro::Task<std::optional<std::vector<uint8_t>>> poll_activity_task();
 
     /// Complete an activity task via the bridge.
-    async_::Task<void> complete_activity_task(
+    coro::Task<void> complete_activity_task(
         const std::vector<uint8_t>& completion_bytes);
 
     /// Start executing an activity from a task start message.

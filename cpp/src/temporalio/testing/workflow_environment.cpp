@@ -1,6 +1,6 @@
 #include "temporalio/testing/workflow_environment.h"
 
-#include <temporalio/async_/task_completion_source.h>
+#include <temporalio/coro/task_completion_source.h>
 
 #include <chrono>
 #include <memory>
@@ -41,7 +41,7 @@ struct EphemeralServerResult {
     std::string target;
 };
 
-async_::Task<std::unique_ptr<WorkflowEnvironment>>
+coro::Task<std::unique_ptr<WorkflowEnvironment>>
 WorkflowEnvironment::start_local(
     WorkflowEnvironmentStartLocalOptions options) {
     // Get or create the runtime
@@ -74,7 +74,7 @@ WorkflowEnvironment::start_local(
 
     // Start the dev server via the bridge, bridging callback to coroutine
     auto tcs =
-        std::make_shared<async_::TaskCompletionSource<EphemeralServerResult>>();
+        std::make_shared<coro::TaskCompletionSource<EphemeralServerResult>>();
 
     bridge::EphemeralServer::start_dev_server_async(
         *bridge_rt, dev_opts,
@@ -111,7 +111,7 @@ WorkflowEnvironment::start_local(
     co_return std::move(env);
 }
 
-async_::Task<std::unique_ptr<WorkflowEnvironment>>
+coro::Task<std::unique_ptr<WorkflowEnvironment>>
 WorkflowEnvironment::start_time_skipping(
     WorkflowEnvironmentStartTimeSkippingOptions options) {
     // Get or create the runtime
@@ -142,7 +142,7 @@ WorkflowEnvironment::start_time_skipping(
 
     // Start the test server via the bridge, bridging callback to coroutine
     auto tcs =
-        std::make_shared<async_::TaskCompletionSource<EphemeralServerResult>>();
+        std::make_shared<coro::TaskCompletionSource<EphemeralServerResult>>();
 
     bridge::EphemeralServer::start_test_server_async(
         *bridge_rt, test_opts,
@@ -179,7 +179,7 @@ WorkflowEnvironment::start_time_skipping(
     co_return std::move(env);
 }
 
-async_::Task<void> WorkflowEnvironment::delay(
+coro::Task<void> WorkflowEnvironment::delay(
     std::chrono::milliseconds duration) {
     // Non-time-skipping: actual sleep
     // TODO: Use async sleep when async runtime is wired up
@@ -187,17 +187,17 @@ async_::Task<void> WorkflowEnvironment::delay(
     co_return;
 }
 
-async_::Task<std::chrono::system_clock::time_point>
+coro::Task<std::chrono::system_clock::time_point>
 WorkflowEnvironment::get_current_time() {
     co_return std::chrono::system_clock::now();
 }
 
-async_::Task<void> WorkflowEnvironment::shutdown() {
+coro::Task<void> WorkflowEnvironment::shutdown() {
     if (!impl_->owns_server || !impl_->ephemeral_server) {
         co_return;
     }
 
-    auto tcs = std::make_shared<async_::TaskCompletionSource<void>>();
+    auto tcs = std::make_shared<coro::TaskCompletionSource<void>>();
 
     impl_->ephemeral_server->shutdown_async(
         [tcs](std::string error) {

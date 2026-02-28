@@ -5,9 +5,9 @@
 #include <thread>
 #include <vector>
 
-#include "temporalio/async_/cancellation_token.h"
+#include "temporalio/coro/cancellation_token.h"
 
-using namespace temporalio::async_;
+using namespace temporalio::coro;
 
 // ===========================================================================
 // Basic CancellationTokenSource functionality

@@ -2,6 +2,8 @@
 
 /// @file TemporalWorker that polls task queues and dispatches to workflows/activities.
 
+#include <temporalio/export.h>
+
 #include <atomic>
 #include <chrono>
 #include <cstdint>
@@ -13,7 +15,7 @@
 #include <vector>
 
 #include <temporalio/activities/activity.h>
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/workflows/workflow_definition.h>
 
 namespace temporalio::bridge {
@@ -164,7 +166,7 @@ struct TemporalWorkerOptions {
 ///   opts.activities.push_back(my_activity_def);
 ///   TemporalWorker worker(client, opts);
 ///   co_await worker.execute_async(shutdown_token);
-class TemporalWorker {
+class TEMPORALIO_EXPORT TemporalWorker {
 public:
     TemporalWorker(std::shared_ptr<client::TemporalClient> client,
                    TemporalWorkerOptions options);
@@ -177,7 +179,7 @@ public:
 
     /// Run the worker until the shutdown token is triggered.
     /// This polls for workflow and activity tasks and dispatches them.
-    async_::Task<void> execute_async(std::stop_token shutdown_token);
+    coro::Task<void> execute_async(std::stop_token shutdown_token);
 
     /// Get the worker options.
     const TemporalWorkerOptions& options() const noexcept { return options_; }

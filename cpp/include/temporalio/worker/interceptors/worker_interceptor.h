@@ -15,7 +15,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/task.h>
 
 namespace temporalio::activities {
 class ActivityDefinition;
@@ -179,42 +179,42 @@ public:
     virtual ~WorkflowOutboundInterceptor() = default;
 
     /// Intercept timer creation (Workflow::delay).
-    virtual async_::Task<void> delay_async(DelayAsyncInput input) {
+    virtual coro::Task<void> delay_async(DelayAsyncInput input) {
         return next().delay_async(std::move(input));
     }
 
     /// Intercept scheduling a remote activity.
-    virtual async_::Task<std::any> schedule_activity_async(
+    virtual coro::Task<std::any> schedule_activity_async(
         ScheduleActivityInput input) {
         return next().schedule_activity_async(std::move(input));
     }
 
     /// Intercept scheduling a local activity.
-    virtual async_::Task<std::any> schedule_local_activity_async(
+    virtual coro::Task<std::any> schedule_local_activity_async(
         ScheduleLocalActivityInput input) {
         return next().schedule_local_activity_async(std::move(input));
     }
 
     /// Intercept starting a child workflow.
-    virtual async_::Task<std::any> start_child_workflow_async(
+    virtual coro::Task<std::any> start_child_workflow_async(
         StartChildWorkflowInput input) {
         return next().start_child_workflow_async(std::move(input));
     }
 
     /// Intercept signalling a child workflow.
-    virtual async_::Task<void> signal_child_workflow_async(
+    virtual coro::Task<void> signal_child_workflow_async(
         SignalChildWorkflowInput input) {
         return next().signal_child_workflow_async(std::move(input));
     }
 
     /// Intercept signalling an external workflow.
-    virtual async_::Task<void> signal_external_workflow_async(
+    virtual coro::Task<void> signal_external_workflow_async(
         SignalExternalWorkflowInput input) {
         return next().signal_external_workflow_async(std::move(input));
     }
 
     /// Intercept cancelling an external workflow.
-    virtual async_::Task<void> cancel_external_workflow_async(
+    virtual coro::Task<void> cancel_external_workflow_async(
         CancelExternalWorkflowInput input) {
         return next().cancel_external_workflow_async(std::move(input));
     }
@@ -286,13 +286,13 @@ public:
     }
 
     /// Intercept workflow execution (the run function).
-    virtual async_::Task<std::any> execute_workflow_async(
+    virtual coro::Task<std::any> execute_workflow_async(
         ExecuteWorkflowInput input) {
         return next().execute_workflow_async(std::move(input));
     }
 
     /// Intercept signal handling.
-    virtual async_::Task<void> handle_signal_async(HandleSignalInput input) {
+    virtual coro::Task<void> handle_signal_async(HandleSignalInput input) {
         return next().handle_signal_async(std::move(input));
     }
 
@@ -307,7 +307,7 @@ public:
     }
 
     /// Intercept update handling.
-    virtual async_::Task<std::any> handle_update_async(
+    virtual coro::Task<std::any> handle_update_async(
         HandleUpdateInput input) {
         return next().handle_update_async(std::move(input));
     }
@@ -344,7 +344,7 @@ public:
     }
 
     /// Intercept activity execution.
-    virtual async_::Task<std::any> execute_activity_async(
+    virtual coro::Task<std::any> execute_activity_async(
         ExecuteActivityInput input) {
         return next().execute_activity_async(std::move(input));
     }
@@ -401,13 +401,13 @@ public:
     virtual ~NexusOperationInboundInterceptor() = default;
 
     /// Intercept Nexus operation start.
-    virtual async_::Task<std::any> execute_start_async(
+    virtual coro::Task<std::any> execute_start_async(
         ExecuteNexusOperationStartInput input) {
         return next().execute_start_async(std::move(input));
     }
 
     /// Intercept Nexus operation cancel.
-    virtual async_::Task<void> execute_cancel_async(
+    virtual coro::Task<void> execute_cancel_async(
         ExecuteNexusOperationCancelInput input) {
         return next().execute_cancel_async(std::move(input));
     }

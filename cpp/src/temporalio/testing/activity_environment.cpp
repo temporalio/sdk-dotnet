@@ -20,9 +20,7 @@ void ActivityEnvironment::set_heartbeater(
 }
 
 void ActivityEnvironment::cancel() {
-    cancelled_ = true;
-    // TODO: Trigger cancellation token when CancellationToken integration
-    // is wired up with the activity execution context.
+    cancel_source_.request_stop();
 }
 
 } // namespace temporalio::testing

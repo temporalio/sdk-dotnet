@@ -8,10 +8,10 @@
 #include <thread>
 #include <vector>
 
-#include "temporalio/async_/coroutine_scheduler.h"
-#include "temporalio/async_/task.h"
+#include "temporalio/coro/coroutine_scheduler.h"
+#include "temporalio/coro/task.h"
 
-using namespace temporalio::async_;
+using namespace temporalio::coro;
 
 // ===========================================================================
 // Basic scheduler tests

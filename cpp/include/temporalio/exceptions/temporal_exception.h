@@ -2,6 +2,8 @@
 
 /// @file Temporal SDK exception hierarchy for workflow and activity failures.
 
+#include <temporalio/export.h>
+
 #include <chrono>
 #include <cstdint>
 #include <exception>
@@ -14,7 +16,7 @@
 namespace temporalio::exceptions {
 
 /// Base exception for all custom exceptions thrown by the Temporal library.
-class TemporalException : public std::runtime_error {
+class TEMPORALIO_EXPORT TemporalException : public std::runtime_error {
 public:
     /// Check whether the given exception is a cancellation (Temporal or
     /// standard).
@@ -33,7 +35,7 @@ private:
 };
 
 /// Exception representing a gRPC failure.
-class RpcException : public TemporalException {
+class TEMPORALIO_EXPORT RpcException : public TemporalException {
 public:
     /// gRPC status codes.
     enum class StatusCode : int {
@@ -73,14 +75,14 @@ private:
 };
 
 /// Exception representing timeout or cancellation on some client calls.
-class RpcTimeoutOrCanceledException : public TemporalException {
+class TEMPORALIO_EXPORT RpcTimeoutOrCanceledException : public TemporalException {
 public:
     RpcTimeoutOrCanceledException(const std::string& message,
                                   std::exception_ptr inner = nullptr);
 };
 
 /// Specialization for workflow update RPC timeout/cancellation.
-class WorkflowUpdateRpcTimeoutOrCanceledException
+class TEMPORALIO_EXPORT WorkflowUpdateRpcTimeoutOrCanceledException
     : public RpcTimeoutOrCanceledException {
 public:
     explicit WorkflowUpdateRpcTimeoutOrCanceledException(
@@ -89,7 +91,7 @@ public:
 
 /// Base exception for all Temporal-failure-based exceptions.
 /// All exceptions of this type fail a workflow.
-class FailureException : public TemporalException {
+class TEMPORALIO_EXPORT FailureException : public TemporalException {
 public:
     /// The stack trace from the failure, if any.
     const std::string& failure_stack_trace() const noexcept {
@@ -111,7 +113,7 @@ private:
 /// Exception representing an error in user code.
 /// In workflows, users should throw this to signal a workflow failure.
 /// In activities, non-Temporal exceptions are translated to this.
-class ApplicationFailureException : public FailureException {
+class TEMPORALIO_EXPORT ApplicationFailureException : public FailureException {
 public:
     ApplicationFailureException(
         const std::string& message,
@@ -141,21 +143,21 @@ private:
 };
 
 /// Exception representing a cancellation.
-class CanceledFailureException : public FailureException {
+class TEMPORALIO_EXPORT CanceledFailureException : public FailureException {
 public:
     explicit CanceledFailureException(const std::string& message,
                                       std::exception_ptr inner = nullptr);
 };
 
 /// Exception representing a terminated workflow.
-class TerminatedFailureException : public FailureException {
+class TEMPORALIO_EXPORT TerminatedFailureException : public FailureException {
 public:
     explicit TerminatedFailureException(const std::string& message,
                                         std::exception_ptr inner = nullptr);
 };
 
 /// Exception representing a timeout.
-class TimeoutFailureException : public FailureException {
+class TEMPORALIO_EXPORT TimeoutFailureException : public FailureException {
 public:
     /// Timeout types matching the protobuf TimeoutType enum.
     enum class TimeoutType : int {
@@ -178,7 +180,7 @@ private:
 };
 
 /// Exception representing a server failure.
-class ServerFailureException : public FailureException {
+class TEMPORALIO_EXPORT ServerFailureException : public FailureException {
 public:
     ServerFailureException(const std::string& message, bool non_retryable,
                            std::exception_ptr inner = nullptr);
@@ -191,7 +193,7 @@ private:
 };
 
 /// Exception thrown to workflows when an activity fails.
-class ActivityFailureException : public FailureException {
+class TEMPORALIO_EXPORT ActivityFailureException : public FailureException {
 public:
     ActivityFailureException(const std::string& message,
                              std::string activity_type,
@@ -224,7 +226,7 @@ private:
 };
 
 /// Exception representing a child workflow failure.
-class ChildWorkflowFailureException : public FailureException {
+class TEMPORALIO_EXPORT ChildWorkflowFailureException : public FailureException {
 public:
     ChildWorkflowFailureException(const std::string& message,
                                   std::string ns,
@@ -260,7 +262,7 @@ private:
 };
 
 /// Exception thrown to workflows when a Nexus operation fails.
-class NexusOperationFailureException : public FailureException {
+class TEMPORALIO_EXPORT NexusOperationFailureException : public FailureException {
 public:
     NexusOperationFailureException(const std::string& message,
                                    std::string endpoint,
@@ -284,7 +286,7 @@ private:
 };
 
 /// Failure from a Nexus handler.
-class NexusHandlerFailureException : public FailureException {
+class TEMPORALIO_EXPORT NexusHandlerFailureException : public FailureException {
 public:
     NexusHandlerFailureException(const std::string& message,
                                  std::string raw_error_type,
@@ -305,7 +307,7 @@ private:
 
 /// Exception thrown when attempting to start a workflow that was already
 /// started.
-class WorkflowAlreadyStartedException : public FailureException {
+class TEMPORALIO_EXPORT WorkflowAlreadyStartedException : public FailureException {
 public:
     WorkflowAlreadyStartedException(const std::string& message,
                                     std::string workflow_id,
@@ -326,7 +328,7 @@ private:
 
 /// Exception thrown when attempting to start a standalone activity that was
 /// already started.
-class ActivityAlreadyStartedException : public FailureException {
+class TEMPORALIO_EXPORT ActivityAlreadyStartedException : public FailureException {
 public:
     ActivityAlreadyStartedException(const std::string& message,
                                     std::string activity_id,
@@ -348,20 +350,20 @@ private:
 };
 
 /// Exception thrown when a schedule is already running.
-class ScheduleAlreadyRunningException : public FailureException {
+class TEMPORALIO_EXPORT ScheduleAlreadyRunningException : public FailureException {
 public:
     ScheduleAlreadyRunningException();
 };
 
 /// Exception thrown when a workflow has failed while waiting for the result.
-class WorkflowFailedException : public TemporalException {
+class TEMPORALIO_EXPORT WorkflowFailedException : public TemporalException {
 public:
     explicit WorkflowFailedException(std::exception_ptr inner = nullptr);
 };
 
 /// Exception thrown when a standalone activity has failed while waiting for
 /// the result.
-class ActivityFailedException : public TemporalException {
+class TEMPORALIO_EXPORT ActivityFailedException : public TemporalException {
 public:
     explicit ActivityFailedException(std::exception_ptr inner = nullptr);
 };
@@ -369,7 +371,7 @@ public:
 /// Exception thrown from within a workflow to trigger continue-as-new.
 /// This is caught by the WorkflowInstance's RunTopLevel wrapper and
 /// converted into a kContinueAsNew command.
-class ContinueAsNewException : public TemporalException {
+class TEMPORALIO_EXPORT ContinueAsNewException : public TemporalException {
 public:
     explicit ContinueAsNewException(
         std::string workflow_type = {},
@@ -387,7 +389,7 @@ private:
 
 /// Thrown when a workflow continues as new and the caller is not following
 /// runs.
-class WorkflowContinuedAsNewException : public TemporalException {
+class TEMPORALIO_EXPORT WorkflowContinuedAsNewException : public TemporalException {
 public:
     explicit WorkflowContinuedAsNewException(std::string new_run_id);
 
@@ -398,13 +400,13 @@ private:
 };
 
 /// Thrown when a query fails on the worker.
-class WorkflowQueryFailedException : public TemporalException {
+class TEMPORALIO_EXPORT WorkflowQueryFailedException : public TemporalException {
 public:
     explicit WorkflowQueryFailedException(const std::string& message);
 };
 
 /// Thrown when a query is rejected by the server due to bad workflow status.
-class WorkflowQueryRejectedException : public TemporalException {
+class TEMPORALIO_EXPORT WorkflowQueryRejectedException : public TemporalException {
 public:
     explicit WorkflowQueryRejectedException(int workflow_status);
 
@@ -417,32 +419,32 @@ private:
 };
 
 /// Exception thrown when a workflow update has failed.
-class WorkflowUpdateFailedException : public TemporalException {
+class TEMPORALIO_EXPORT WorkflowUpdateFailedException : public TemporalException {
 public:
     explicit WorkflowUpdateFailedException(std::exception_ptr inner = nullptr);
 };
 
 /// Thrown from async activity heartbeat when cancellation is requested.
-class AsyncActivityCanceledException : public TemporalException {
+class TEMPORALIO_EXPORT AsyncActivityCanceledException : public TemporalException {
 public:
     AsyncActivityCanceledException();
 };
 
 /// Occurs when the workflow has done something invalid.
-class InvalidWorkflowOperationException : public TemporalException {
+class TEMPORALIO_EXPORT InvalidWorkflowOperationException : public TemporalException {
 public:
     explicit InvalidWorkflowOperationException(const std::string& message);
 };
 
 /// Occurs when the workflow does something non-deterministic.
-class WorkflowNondeterminismException
+class TEMPORALIO_EXPORT WorkflowNondeterminismException
     : public InvalidWorkflowOperationException {
 public:
     explicit WorkflowNondeterminismException(const std::string& message);
 };
 
 /// Occurs when the workflow does something outside of the workflow scheduler.
-class InvalidWorkflowSchedulerException
+class TEMPORALIO_EXPORT InvalidWorkflowSchedulerException
     : public InvalidWorkflowOperationException {
 public:
     InvalidWorkflowSchedulerException(

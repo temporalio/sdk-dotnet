@@ -12,8 +12,8 @@
 ///
 /// Requires a running Temporal server at localhost:7233.
 
-#include <temporalio/async_/run_sync.h>
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/run_sync.h>
+#include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/workflow_options.h>
 #include <temporalio/version.h>
@@ -29,7 +29,7 @@
 #include <thread>
 #include <vector>
 
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 // -- Workflow definition --
 // A shopping cart workflow that demonstrates update handlers with validators,
@@ -38,7 +38,7 @@ class ShoppingCartWorkflow {
 public:
     // The main workflow run method. Waits for checkout signal, then
     // waits for all handlers to finish before returning the final items.
-    temporalio::async_::Task<std::string> run() {
+    temporalio::coro::Task<std::string> run() {
         // Wait until checkout is signaled.
         co_await temporalio::workflows::Workflow::wait_condition(
             [this]() { return checked_out_; });
@@ -73,7 +73,7 @@ public:
 
     // Update handler: adds an item to the cart and returns the new count.
     // Only called if the validator passes.
-    temporalio::async_::Task<int> add_item(std::string item) {
+    temporalio::coro::Task<int> add_item(std::string item) {
         items_.push_back(std::move(item));
         co_return static_cast<int>(items_.size());
     }
@@ -82,7 +82,7 @@ public:
     int get_item_count() const { return static_cast<int>(items_.size()); }
 
     // Signal handler: triggers checkout.
-    temporalio::async_::Task<void> checkout() {
+    temporalio::coro::Task<void> checkout() {
         checked_out_ = true;
         co_return;
     }
@@ -167,15 +167,16 @@ int main() {
             tc->start_workflow("ShoppingCart", "{}", wf_opts));
         std::cout << "\nStarted workflow: " << handle.id() << "\n";
 
-        // Step 6: Send updates to add items.
-        // NOTE: When WorkflowHandle::update() is available, you would use:
-        //   auto count = run_task_sync(handle.update("add_item", "\"apple\""));
-        // For now, we demonstrate the workflow definition pattern and use
-        // queries to observe state changes from signals.
+        // Step 6: Send updates to add items via WorkflowHandle::update().
+        auto count1 = run_task_sync(handle.update("add_item", "\"apple\""));
+        std::cout << "Added apple, item count: " << count1 << "\n";
 
-        // Step 7: Query the item count.
+        auto count2 = run_task_sync(handle.update("add_item", "\"banana\""));
+        std::cout << "Added banana, item count: " << count2 << "\n";
+
+        // Step 7: Query the item count to verify.
         auto count = run_task_sync(handle.query("get_item_count"));
-        std::cout << "Item count (before adds): " << count << "\n";
+        std::cout << "Queried item count: " << count << "\n";
 
         // Step 8: Signal checkout to complete the workflow.
         run_task_sync(handle.signal("checkout"));

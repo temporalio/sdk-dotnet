@@ -7,7 +7,7 @@
 #include <thread>
 #include <utility>
 
-#include <temporalio/async_/run_sync.h>
+#include <temporalio/coro/run_sync.h>
 
 #include <temporal/sdk/core/nexus/nexus.pb.h>
 #include <temporal/api/common/v1/message.pb.h>
@@ -16,7 +16,7 @@
 
 #include "temporalio/bridge/worker.h"
 
-using temporalio::async_::run_task_sync;
+using temporalio::coro::run_task_sync;
 
 namespace temporalio::worker::internal {
 
@@ -75,14 +75,14 @@ NexusWorker::~NexusWorker() {
     }
 }
 
-async_::Task<std::optional<std::vector<uint8_t>>>
+coro::Task<std::optional<std::vector<uint8_t>>>
 NexusWorker::poll_nexus_task() {
     if (!options_.bridge_worker) {
         co_return std::nullopt;
     }
 
     auto tcs = std::make_shared<
-        async_::TaskCompletionSource<std::optional<std::vector<uint8_t>>>>();
+        coro::TaskCompletionSource<std::optional<std::vector<uint8_t>>>>();
 
     options_.bridge_worker->poll_nexus_task_async(
         [tcs](std::optional<std::vector<uint8_t>> result,
@@ -99,13 +99,13 @@ NexusWorker::poll_nexus_task() {
     co_return co_await tcs->task();
 }
 
-async_::Task<void> NexusWorker::complete_nexus_task(
+coro::Task<void> NexusWorker::complete_nexus_task(
     const std::vector<uint8_t>& completion_bytes) {
     if (!options_.bridge_worker) {
         co_return;
     }
 
-    auto tcs = std::make_shared<async_::TaskCompletionSource<void>>();
+    auto tcs = std::make_shared<coro::TaskCompletionSource<void>>();
 
     options_.bridge_worker->complete_nexus_task_async(
         std::span<const uint8_t>(completion_bytes),
@@ -122,7 +122,7 @@ async_::Task<void> NexusWorker::complete_nexus_task(
     co_await tcs->task();
 }
 
-async_::Task<void> NexusWorker::execute_async() {
+coro::Task<void> NexusWorker::execute_async() {
     // Poll loop: continuously poll for Nexus tasks from the bridge.
     // Each task is either a Task (with a PollNexusTaskQueueResponse containing
     // a Request) or CancelTask (cancel a running operation).

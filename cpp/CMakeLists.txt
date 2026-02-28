@@ -6,11 +6,26 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# MSVC: enable /FS (force synchronous PDB writes) to prevent C1041 errors
-# when parallel builds compile multiple source files into the same PDB.
-# This is needed for FetchContent dependencies (abseil, protobuf) and our code.
+# ── Symbol visibility ─────────────────────────────────────────────────────
+# Hide symbols by default on all platforms. Only symbols explicitly marked
+# with TEMPORALIO_EXPORT are visible in shared library builds.
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
+
+# MSVC: generator-conditional debug info and parallelism flags.
+# Ninja handles parallelism itself, so /MP (MSBuild multi-process compilation)
+# must NOT be used. /Zi (shared PDB) causes lock contention with Ninja's
+# parallel compilation; /Z7 (embedded debug info) avoids this entirely.
+# For MSBuild generators, /FS (force synchronous PDB writes) prevents C1041
+# errors when parallel projects compile into the same PDB.
 if(MSVC)
-    add_compile_options(/FS)
+    if(CMAKE_GENERATOR MATCHES "Ninja")
+        # Ninja handles parallelism; /Z7 embeds debug info to avoid PDB contention
+        add_compile_options(/Z7)
+    else()
+        # MSBuild needs /FS for parallel PDB writes
+        add_compile_options(/FS)
+    endif()
 endif()
 
 # ── Options ─────────────────────────────────────────────────────────────────
@@ -145,9 +160,19 @@ endif()
 # ── Main library target ────────────────────────────────────────────────────
 add_library(temporalio ${TEMPORALIO_SOURCES})
 
+# Generate export header for shared library symbol visibility.
+# Produces temporalio/export.h with TEMPORALIO_EXPORT and TEMPORALIO_NO_EXPORT macros.
+include(GenerateExportHeader)
+generate_export_header(temporalio
+    EXPORT_FILE_NAME "${CMAKE_CURRENT_BINARY_DIR}/include/temporalio/export.h"
+    EXPORT_MACRO_NAME TEMPORALIO_EXPORT
+    STATIC_DEFINE TEMPORALIO_STATIC
+)
+
 target_include_directories(temporalio
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -157,7 +182,7 @@ target_link_libraries(temporalio
     PUBLIC
         ${TEMPORALIO_PROTOBUF_TARGET}
         nlohmann_json::nlohmann_json
-        temporalio_rust_bridge
+        $<BUILD_INTERFACE:temporalio_rust_bridge>
 )
 
 # Link generated proto types if available
@@ -217,8 +242,14 @@ if(NOT Protobuf_FOUND OR NOT nlohmann_json_FOUND)
     set(TEMPORALIO_CAN_EXPORT FALSE)
 endif()
 
+# Collect all installable library targets.
+set(_temporalio_install_targets temporalio)
+if(TEMPORALIO_HAS_PROTOS AND TARGET temporalio_proto)
+    list(APPEND _temporalio_install_targets temporalio_proto)
+endif()
+
 if(TEMPORALIO_CAN_EXPORT)
-    install(TARGETS temporalio
+    install(TARGETS ${_temporalio_install_targets}
         EXPORT temporalioTargets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -226,7 +257,7 @@ if(TEMPORALIO_CAN_EXPORT)
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 else()
-    install(TARGETS temporalio
+    install(TARGETS ${_temporalio_install_targets}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -238,6 +269,39 @@ install(DIRECTORY include/temporalio
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     FILES_MATCHING PATTERN "*.h"
 )
+
+# Install the generated export.h header.
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/temporalio/export.h"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/temporalio
+)
+
+# Install generated protobuf headers so consumers can use Temporal API types.
+if(TEMPORALIO_HAS_PROTOS AND DEFINED TEMPORALIO_PROTO_GEN_DIR)
+    install(DIRECTORY "${TEMPORALIO_PROTO_GEN_DIR}/"
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        FILES_MATCHING PATTERN "*.pb.h"
+    )
+endif()
+
+# Install the Rust bridge shared library (DLL/SO/dylib) alongside the SDK.
+# The Rust bridge is always a shared library (cdylib crate type) even when the
+# C++ SDK itself is built as a static library. Consumers need it at runtime.
+if(CARGO_EXECUTABLE AND TARGET temporalio_rust_bridge)
+    get_target_property(_bridge_location temporalio_rust_bridge IMPORTED_LOCATION)
+    if(_bridge_location)
+        if(WIN32)
+            # On Windows: DLL goes to bin/, import lib (.dll.lib) goes to lib/.
+            install(FILES "${_bridge_location}" DESTINATION ${CMAKE_INSTALL_BINDIR})
+            get_target_property(_bridge_implib temporalio_rust_bridge IMPORTED_IMPLIB)
+            if(_bridge_implib)
+                install(FILES "${_bridge_implib}" DESTINATION ${CMAKE_INSTALL_LIBDIR})
+            endif()
+        else()
+            # On Unix: shared library (.so/.dylib) goes to lib/.
+            install(FILES "${_bridge_location}" DESTINATION ${CMAKE_INSTALL_LIBDIR})
+        endif()
+    endif()
+endif()
 
 # Install extension targets if they were built.
 if(TARGET temporalio_diagnostics)

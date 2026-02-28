@@ -9,8 +9,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include <temporalio/async_/task.h>
-#include <temporalio/async_/task_completion_source.h>
+#include <temporalio/coro/task.h>
+#include <temporalio/coro/task_completion_source.h>
 #include <temporalio/worker/workflow_instance.h>
 #include <temporalio/workflows/workflow_definition.h>
 
@@ -77,17 +77,17 @@ public:
 
     /// Run the poll loop until the bridge signals shutdown.
     /// @return Task that completes when polling stops.
-    async_::Task<void> execute_async();
+    coro::Task<void> execute_async();
 
 private:
     /// Handle a single workflow activation (poll result).
     /// Looks up or creates the WorkflowInstance, dispatches, and sends
     /// the completion to the bridge.
-    async_::Task<void> handle_activation(
+    coro::Task<void> handle_activation(
         const std::vector<uint8_t>& activation_bytes);
 
     /// Handle a cache eviction job and send the completion.
-    async_::Task<void> handle_cache_eviction(const std::string& run_id,
+    coro::Task<void> handle_cache_eviction(const std::string& run_id,
                                               const std::string& message);
 
     /// Create a new workflow instance for the given workflow type (basic).
@@ -101,10 +101,10 @@ private:
 
     /// Poll the bridge for a workflow activation and return the result.
     /// Returns nullopt on shutdown (no error, no data).
-    async_::Task<std::optional<std::vector<uint8_t>>> poll_activation();
+    coro::Task<std::optional<std::vector<uint8_t>>> poll_activation();
 
     /// Complete a workflow activation via the bridge.
-    async_::Task<void> complete_activation(
+    coro::Task<void> complete_activation(
         const std::vector<uint8_t>& completion_bytes);
 
     WorkflowWorkerOptions options_;

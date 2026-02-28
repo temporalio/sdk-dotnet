@@ -84,6 +84,26 @@ struct WorkflowTerminateOptions {
     std::optional<std::string> reason{};
 };
 
+/// Options for updating a workflow.
+struct WorkflowUpdateOptions {
+    /// Update ID. If not set, server will generate one.
+    std::optional<std::string> update_id{};
+
+    /// Wait stage. Default is kCompleted (wait for update to finish).
+    /// Use kAccepted to return as soon as the update is accepted.
+    enum class WaitStage {
+        /// Wait for update to complete (default).
+        kCompleted = 3,
+        /// Wait only for update to be accepted.
+        kAccepted = 2,
+        /// Wait only for update to be admitted.
+        kAdmitted = 1,
+    };
+
+    /// How far to wait for the update lifecycle. Default: kCompleted.
+    WaitStage wait_stage{WaitStage::kCompleted};
+};
+
 /// Options for describing a workflow.
 struct WorkflowDescribeOptions {};
 

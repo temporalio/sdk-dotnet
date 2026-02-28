@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace temporalio::async_ {
+namespace temporalio::coro {
 
 // Forward declarations
 template <typename T>
@@ -258,5 +258,5 @@ Task<WhenAnyResult<T>> when_any(std::vector<Task<T>> tasks) {
     throw std::logic_error("when_any called with empty task vector");
 }
 
-}  // namespace temporalio::async_
+}  // namespace temporalio::coro
 

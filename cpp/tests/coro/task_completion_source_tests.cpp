@@ -6,10 +6,10 @@
 #include <string>
 #include <thread>
 
-#include "temporalio/async_/task.h"
-#include "temporalio/async_/task_completion_source.h"
+#include "temporalio/coro/task.h"
+#include "temporalio/coro/task_completion_source.h"
 
-using namespace temporalio::async_;
+using namespace temporalio::coro;
 
 // ---------------------------------------------------------------------------
 // Helper: synchronously run a Task that may suspend on a TCS.

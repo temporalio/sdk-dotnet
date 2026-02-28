@@ -3,7 +3,8 @@
 /// @file temporal_connection.h
 /// @brief gRPC connection to a Temporal server.
 
-#include <temporalio/async_/task.h>
+#include <temporalio/export.h>
+#include <temporalio/coro/task.h>
 
 #include <chrono>
 #include <memory>
@@ -113,10 +114,10 @@ struct TemporalConnectionOptions {
 };
 
 /// gRPC connection to a Temporal server. Thread-safe and reusable.
-class TemporalConnection : public std::enable_shared_from_this<TemporalConnection> {
+class TEMPORALIO_EXPORT TemporalConnection : public std::enable_shared_from_this<TemporalConnection> {
 public:
     /// Connect to Temporal asynchronously.
-    static async_::Task<std::shared_ptr<TemporalConnection>> connect(
+    static coro::Task<std::shared_ptr<TemporalConnection>> connect(
         TemporalConnectionOptions options);
 
     /// Create a lazy connection that connects on first use.
@@ -130,7 +131,7 @@ public:
     TemporalConnection& operator=(const TemporalConnection&) = delete;
 
     /// Check health of the server.
-    async_::Task<bool> check_health();
+    coro::Task<bool> check_health();
 
     /// Whether the connection is currently established.
     bool is_connected() const noexcept;

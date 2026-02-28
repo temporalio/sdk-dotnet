@@ -8,7 +8,7 @@
 #include <stop_token>
 #include <string>
 
-#include "temporalio/async_/task.h"
+#include "temporalio/coro/task.h"
 #include "temporalio/workflows/workflow.h"
 #include "temporalio/workflows/workflow_info.h"
 
@@ -68,14 +68,14 @@ public:
         deprecated_calls_.push_back(patch_id);
     }
 
-    temporalio::async_::Task<void> start_timer(
+    temporalio::coro::Task<void> start_timer(
         std::chrono::milliseconds /*duration*/,
         std::stop_token /*ct*/) override {
         start_timer_called_ = true;
         co_return;
     }
 
-    temporalio::async_::Task<bool> register_condition(
+    temporalio::coro::Task<bool> register_condition(
         std::function<bool()> condition,
         std::optional<std::chrono::milliseconds> /*timeout*/,
         std::stop_token /*ct*/) override {
@@ -86,7 +86,7 @@ public:
         co_return false;
     }
 
-    temporalio::async_::Task<std::any> schedule_activity(
+    temporalio::coro::Task<std::any> schedule_activity(
         const std::string& /*activity_type*/,
         std::vector<std::any> /*args*/,
         const ActivityOptions& /*options*/) override {

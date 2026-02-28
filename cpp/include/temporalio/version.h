@@ -3,6 +3,8 @@
 /// @file version.h
 /// @brief Library version information.
 
+#include <temporalio/export.h>
+
 #define TEMPORALIO_VERSION_MAJOR 0
 #define TEMPORALIO_VERSION_MINOR 1
 #define TEMPORALIO_VERSION_PATCH 0
@@ -11,6 +13,6 @@
 namespace temporalio {
 
 /// Returns the library version string.
-const char* version() noexcept;
+TEMPORALIO_EXPORT const char* version() noexcept;
 
 } // namespace temporalio

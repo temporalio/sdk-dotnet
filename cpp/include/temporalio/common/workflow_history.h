@@ -3,12 +3,14 @@
 /// @file workflow_history.h
 /// @brief WorkflowHistory for replay support.
 
+#include <temporalio/export.h>
+
 #include <string>
 
 namespace temporalio::common {
 
 /// History for a workflow, used for replay and determinism testing.
-class WorkflowHistory {
+class TEMPORALIO_EXPORT WorkflowHistory {
 public:
     /// Construct with workflow ID and serialized history bytes.
     WorkflowHistory(std::string id, std::string serialized_history)

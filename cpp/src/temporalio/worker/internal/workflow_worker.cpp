@@ -475,7 +475,7 @@ WorkflowWorker::WorkflowWorker(WorkflowWorkerOptions options)
 
 WorkflowWorker::~WorkflowWorker() = default;
 
-async_::Task<std::optional<std::vector<uint8_t>>>
+coro::Task<std::optional<std::vector<uint8_t>>>
 WorkflowWorker::poll_activation() {
     if (!options_.bridge_worker) {
         // No bridge worker available -- return shutdown signal
@@ -483,7 +483,7 @@ WorkflowWorker::poll_activation() {
     }
 
     auto tcs = std::make_shared<
-        async_::TaskCompletionSource<std::optional<std::vector<uint8_t>>>>();
+        coro::TaskCompletionSource<std::optional<std::vector<uint8_t>>>>();
 
     options_.bridge_worker->poll_workflow_activation_async(
         [tcs](std::optional<std::vector<uint8_t>> result,
@@ -500,13 +500,13 @@ WorkflowWorker::poll_activation() {
     co_return co_await tcs->task();
 }
 
-async_::Task<void> WorkflowWorker::complete_activation(
+coro::Task<void> WorkflowWorker::complete_activation(
     const std::vector<uint8_t>& completion_bytes) {
     if (!options_.bridge_worker) {
         co_return;
     }
 
-    auto tcs = std::make_shared<async_::TaskCompletionSource<void>>();
+    auto tcs = std::make_shared<coro::TaskCompletionSource<void>>();
 
     options_.bridge_worker->complete_workflow_activation_async(
         std::span<const uint8_t>(completion_bytes),
@@ -523,7 +523,7 @@ async_::Task<void> WorkflowWorker::complete_activation(
     co_await tcs->task();
 }
 
-async_::Task<void> WorkflowWorker::execute_async() {
+coro::Task<void> WorkflowWorker::execute_async() {
     // Poll loop: continuously poll for workflow activations from the bridge.
     // Each activation contains one or more jobs (start, signal, timer fire,
     // activity resolve, etc.) for a specific workflow run.
@@ -554,7 +554,7 @@ async_::Task<void> WorkflowWorker::execute_async() {
     // model, there are no outstanding activations at this point.
 }
 
-async_::Task<void> WorkflowWorker::handle_activation(
+coro::Task<void> WorkflowWorker::handle_activation(
     const std::vector<uint8_t>& activation_bytes) {
     // Deserialize the protobuf activation from the bridge bytes.
     coresdk::workflow_activation::WorkflowActivation activation;
@@ -682,7 +682,7 @@ async_::Task<void> WorkflowWorker::handle_activation(
     }
 }
 
-async_::Task<void> WorkflowWorker::handle_cache_eviction(
+coro::Task<void> WorkflowWorker::handle_cache_eviction(
     const std::string& run_id, const std::string& /*message*/) {
     running_workflows_.erase(run_id);
 

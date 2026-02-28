@@ -2,12 +2,14 @@
 
 /// @file Deterministic single-threaded coroutine scheduler for workflow replay.
 
+#include <temporalio/export.h>
+
 #include <coroutine>
 #include <deque>
 #include <mutex>
 #include <vector>
 
-namespace temporalio::async_ {
+namespace temporalio::coro {
 
 /// Deterministic single-threaded executor for workflow replay.
 ///
@@ -27,7 +29,7 @@ namespace temporalio::async_ {
 ///   while (scheduler.drain()) {
 ///       // process results, schedule more work
 ///   }
-class CoroutineScheduler {
+class TEMPORALIO_EXPORT CoroutineScheduler {
 public:
     CoroutineScheduler() = default;
 
@@ -76,5 +78,5 @@ private:
     std::vector<std::coroutine_handle<>> external_queue_;
 };
 
-}  // namespace temporalio::async_
+}  // namespace temporalio::coro
 

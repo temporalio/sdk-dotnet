@@ -46,6 +46,28 @@ cd temporal-sdk-cpp
 
 Dependencies (abseil, protobuf, nlohmann/json, Google Test) are fetched automatically via CMake FetchContent.
 
+**Fast build with Ninja (recommended):**
+
+```bash
+# Windows (uses C:\ninja\ninja.exe automatically)
+cmake --preset windows-debug
+cmake --build --preset windows-debug
+
+# Linux
+cmake --preset linux-debug
+cmake --build --preset linux-debug
+
+# Or manually specify Ninja
+cmake -B cpp/build -S cpp -G "Ninja Multi-Config" -DCMAKE_MAKE_PROGRAM=C:/ninja/ninja.exe
+cmake --build cpp/build --config Debug
+
+# If Ninja is on PATH, no -DCMAKE_MAKE_PROGRAM needed
+cmake -B cpp/build -S cpp -G "Ninja Multi-Config"
+cmake --build cpp/build --config Debug
+```
+
+**Standard build (without Ninja):**
+
 ```bash
 # Configure
 cmake -B cpp/build -S cpp
@@ -66,6 +88,9 @@ cmake -B cpp/build -S cpp \
   -DTEMPORALIO_BUILD_EXAMPLES=OFF \
   -DTEMPORALIO_BUILD_TESTS=OFF
 ```
+
+User-local overrides (e.g., different Ninja path, different compiler) can be placed in
+`cpp/CMakeUserPresets.json`, which is `.gitignore`'d.
 
 ### Usage Example
 

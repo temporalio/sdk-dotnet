@@ -1,4 +1,4 @@
-#include <temporalio/async_/task_completion_source.h>
+#include <temporalio/coro/task_completion_source.h>
 #include <temporalio/client/temporal_connection.h>
 #include <temporalio/runtime/temporal_runtime.h>
 
@@ -102,7 +102,7 @@ bridge::ClientOptions to_bridge_options(
 
 }  // namespace
 
-async_::Task<std::shared_ptr<TemporalConnection>>
+coro::Task<std::shared_ptr<TemporalConnection>>
 TemporalConnection::connect(TemporalConnectionOptions options) {
     auto conn = std::shared_ptr<TemporalConnection>(
         new TemporalConnection(std::move(options)));
@@ -126,7 +126,7 @@ TemporalConnection::connect(TemporalConnectionOptions options) {
 
     // Bridge the async FFI callback to a coroutine via TaskCompletionSource
     auto tcs =
-        std::make_shared<async_::TaskCompletionSource<bridge::ClientHandle>>();
+        std::make_shared<coro::TaskCompletionSource<bridge::ClientHandle>>();
 
     bridge::Client::connect_async(
         *bridge_rt, bridge_opts,
@@ -157,7 +157,7 @@ std::shared_ptr<TemporalConnection> TemporalConnection::create_lazy(
         new TemporalConnection(std::move(options)));
 }
 
-async_::Task<bool> TemporalConnection::check_health() {
+coro::Task<bool> TemporalConnection::check_health() {
     co_return impl_->connected;
 }
 

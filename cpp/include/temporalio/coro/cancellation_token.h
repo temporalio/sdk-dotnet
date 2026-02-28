@@ -4,7 +4,7 @@
 
 #include <stop_token>
 
-namespace temporalio::async_ {
+namespace temporalio::coro {
 
 /// Wraps std::stop_source / std::stop_token to provide a familiar
 /// CancellationTokenSource API matching the C# pattern.
@@ -39,5 +39,5 @@ private:
     std::stop_source source_;
 };
 
-}  // namespace temporalio::async_
+}  // namespace temporalio::coro
 

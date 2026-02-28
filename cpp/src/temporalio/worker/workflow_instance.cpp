@@ -204,14 +204,14 @@ void WorkflowInstance::deprecate_patch(const std::string& patch_id) {
     patches_memoized_[patch_id] = true;
 }
 
-async_::Task<void> WorkflowInstance::start_timer(
+coro::Task<void> WorkflowInstance::start_timer(
     std::chrono::milliseconds duration,
     std::stop_token ct) {
     // Allocate a sequence number for this timer.
     uint32_t seq = ++timer_counter_;
 
     // Create a TCS with resume callback routed through the scheduler.
-    auto tcs = std::make_shared<async_::TaskCompletionSource<std::any>>(
+    auto tcs = std::make_shared<coro::TaskCompletionSource<std::any>>(
         make_resume_callback());
     pending_timers_[seq] = tcs;
 
@@ -246,7 +246,7 @@ async_::Task<void> WorkflowInstance::start_timer(
     co_await tcs->task();
 }
 
-async_::Task<std::any> WorkflowInstance::schedule_activity(
+coro::Task<std::any> WorkflowInstance::schedule_activity(
     const std::string& activity_type,
     std::vector<std::any> args,
     const workflows::ActivityOptions& options) {
@@ -254,7 +254,7 @@ async_::Task<std::any> WorkflowInstance::schedule_activity(
     uint32_t seq = ++activity_counter_;
 
     // Create a TCS with resume callback routed through the scheduler.
-    auto tcs = std::make_shared<async_::TaskCompletionSource<std::any>>(
+    auto tcs = std::make_shared<coro::TaskCompletionSource<std::any>>(
         make_resume_callback());
     pending_activities_[seq] = tcs;
 
@@ -323,7 +323,7 @@ async_::Task<std::any> WorkflowInstance::schedule_activity(
     throw std::runtime_error("Unknown activity resolution status");
 }
 
-async_::Task<bool> WorkflowInstance::register_condition(
+coro::Task<bool> WorkflowInstance::register_condition(
     std::function<bool()> condition,
     std::optional<std::chrono::milliseconds> timeout,
     std::stop_token ct) {
@@ -334,7 +334,7 @@ async_::Task<bool> WorkflowInstance::register_condition(
 
     // Create a TCS for the condition with resume callback routed through
     // the scheduler to maintain deterministic execution order.
-    auto cond_tcs = std::make_shared<async_::TaskCompletionSource<bool>>(
+    auto cond_tcs = std::make_shared<coro::TaskCompletionSource<bool>>(
         make_resume_callback());
 
     // Register the condition in the conditions list. The run_once() loop
@@ -352,7 +352,7 @@ async_::Task<bool> WorkflowInstance::register_condition(
         // Create a timer TCS. Nobody co_awaits this directly; it exists
         // so handle_fire_timer() can find and resolve it, which triggers
         // the timeout_to_condition_ lookup to resolve the condition TCS.
-        auto timer_tcs = std::make_shared<async_::TaskCompletionSource<std::any>>(
+        auto timer_tcs = std::make_shared<coro::TaskCompletionSource<std::any>>(
             make_resume_callback());
         pending_timers_[seq] = timer_tcs;
 
@@ -530,11 +530,11 @@ void WorkflowInstance::handle_signal_workflow(const Job& job) {
 
     // Adapter: wraps a Task<void> handler as Task<any> for run_top_level
     auto wrap_void_handler =
-        [](std::function<async_::Task<void>(void*, std::vector<std::any>)> fn)
-        -> std::function<async_::Task<std::any>(void*, std::vector<std::any>)> {
+        [](std::function<coro::Task<void>(void*, std::vector<std::any>)> fn)
+        -> std::function<coro::Task<std::any>(void*, std::vector<std::any>)> {
         return [fn = std::move(fn)](void* inst,
                                     std::vector<std::any> a)
-            -> async_::Task<std::any> {
+            -> coro::Task<std::any> {
             co_await fn(inst, std::move(a));
             co_return std::any{};
         };
@@ -742,7 +742,7 @@ void WorkflowInstance::handle_do_update(const Job& job) {
     auto update_wrapper =
         [this, handler_func, proto_id = std::move(proto_id),
          uname = std::move(uname)](
-            void* inst, std::vector<std::any> a) -> async_::Task<std::any> {
+            void* inst, std::vector<std::any> a) -> coro::Task<std::any> {
         try {
             auto result = co_await handler_func(inst, std::move(a));
             // Success -- emit completed response
@@ -810,7 +810,7 @@ void WorkflowInstance::handle_resolve_nexus_operation(const Job& job) {
     }
 }
 
-async_::ResumeCallback WorkflowInstance::make_resume_callback() {
+coro::ResumeCallback WorkflowInstance::make_resume_callback() {
     // Capture a pointer to the scheduler. This is safe because the
     // WorkflowInstance (and thus the scheduler) outlives all TCS objects
     // created through this callback.
@@ -824,8 +824,8 @@ async_::ResumeCallback WorkflowInstance::make_resume_callback() {
     };
 }
 
-async_::Task<std::any> WorkflowInstance::run_top_level(
-    std::function<async_::Task<std::any>(void*, std::vector<std::any>)> func,
+coro::Task<std::any> WorkflowInstance::run_top_level(
+    std::function<coro::Task<std::any>(void*, std::vector<std::any>)> func,
     void* instance, std::vector<std::any> args, bool is_handler) {
     // Mirrors C# WorkflowInstance.RunTopLevelAsync().
     // Catches workflow-level exceptions and converts them to commands

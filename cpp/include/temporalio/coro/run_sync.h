@@ -8,7 +8,7 @@
 /// coroutine suspends on a TaskCompletionSource that is completed from
 /// another thread (e.g., a Rust FFI callback).
 
-#include <temporalio/async_/task.h>
+#include <temporalio/coro/task.h>
 
 #include <condition_variable>
 #include <coroutine>
@@ -17,7 +17,7 @@
 #include <optional>
 #include <utility>
 
-namespace temporalio::async_ {
+namespace temporalio::coro {
 
 namespace detail {
 
@@ -173,4 +173,4 @@ inline void run_task_sync(Task<void> task) {
     }
 }
 
-}  // namespace temporalio::async_
+}  // namespace temporalio::coro

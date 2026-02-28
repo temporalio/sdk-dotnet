@@ -69,12 +69,12 @@ const WorkflowUpdateInfo* Workflow::current_update_info() {
     return require_context().current_update_info();
 }
 
-async_::Task<void> Workflow::delay(std::chrono::milliseconds duration,
+coro::Task<void> Workflow::delay(std::chrono::milliseconds duration,
                                    std::stop_token ct) {
     co_await require_context().start_timer(duration, std::move(ct));
 }
 
-async_::Task<bool> Workflow::wait_condition(
+coro::Task<bool> Workflow::wait_condition(
     std::function<bool()> condition,
     std::optional<std::chrono::milliseconds> timeout,
     std::stop_token ct) {
@@ -82,7 +82,7 @@ async_::Task<bool> Workflow::wait_condition(
         std::move(condition), timeout, std::move(ct));
 }
 
-async_::Task<std::any> Workflow::execute_activity(
+coro::Task<std::any> Workflow::execute_activity(
     const std::string& activity_type,
     std::vector<std::any> args,
     const ActivityOptions& options) {
@@ -90,7 +90,7 @@ async_::Task<std::any> Workflow::execute_activity(
         activity_type, std::move(args), options);
 }
 
-async_::Task<std::any> Workflow::execute_activity(
+coro::Task<std::any> Workflow::execute_activity(
     const std::string& activity_type,
     std::any arg,
     const ActivityOptions& options) {
@@ -100,7 +100,7 @@ async_::Task<std::any> Workflow::execute_activity(
         activity_type, std::move(args), options);
 }
 
-async_::Task<std::any> Workflow::execute_activity(
+coro::Task<std::any> Workflow::execute_activity(
     const std::string& activity_type,
     const ActivityOptions& options) {
     co_return co_await require_context().schedule_activity(

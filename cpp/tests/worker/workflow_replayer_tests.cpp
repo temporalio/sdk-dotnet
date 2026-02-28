@@ -6,13 +6,16 @@
 #include <string>
 #include <vector>
 
-#include "temporalio/async_/task.h"
+#include "temporalio/coro/run_sync.h"
+#include "temporalio/coro/task.h"
+#include "temporalio/common/workflow_history.h"
 #include "temporalio/worker/workflow_replayer.h"
 #include "temporalio/workflows/workflow_definition.h"
 
 using namespace temporalio::worker;
 using namespace temporalio::workflows;
-using namespace temporalio::async_;
+using namespace temporalio::coro;
+using namespace temporalio::common;
 
 // ===========================================================================
 // Sample workflow for testing
@@ -40,6 +43,7 @@ TEST(WorkflowReplayerOptionsTest, DefaultValues) {
     EXPECT_EQ(opts.data_converter, nullptr);
     EXPECT_TRUE(opts.interceptors.empty());
     EXPECT_FALSE(opts.debug_mode);
+    EXPECT_EQ(opts.runtime, nullptr);
 }
 
 TEST(WorkflowReplayerOptionsTest, CustomNamespace) {
@@ -54,7 +58,7 @@ TEST(WorkflowReplayerOptionsTest, CustomTaskQueue) {
 
 TEST(WorkflowReplayerOptionsTest, DebugMode) {
     WorkflowReplayerOptions opts{.debug_mode = true};
-    EXPECT_TRUE(opts.debug_mode);
+    EXPECT_EQ(opts.debug_mode, true);
 }
 
 TEST(WorkflowReplayerOptionsTest, WithWorkflow) {
@@ -92,52 +96,34 @@ TEST(WorkflowReplayResultTest, WithFailure) {
     }
 }
 
-TEST(WorkflowReplayResultTest, HistoryPreserved) {
+TEST(WorkflowReplayResultTest, WorkflowIdPreserved) {
     WorkflowReplayResult result;
-    result.history.id = "wf-123";
-    result.history.events.push_back(
-        WorkflowHistoryEvent{.serialized_data = "event-1"});
+    result.workflow_id = "wf-123";
+    EXPECT_EQ(result.workflow_id, "wf-123");
+}
 
-    EXPECT_EQ(result.history.id, "wf-123");
-    EXPECT_EQ(result.history.events.size(), 1u);
-    EXPECT_EQ(result.history.events[0].serialized_data, "event-1");
+TEST(WorkflowReplayResultTest, DefaultEmpty) {
+    WorkflowReplayResult result;
+    EXPECT_TRUE(result.workflow_id.empty());
+    EXPECT_FALSE(result.has_failure());
 }
 
 // ===========================================================================
-// WorkflowHistoryEvent tests
+// WorkflowHistory (common namespace) integration tests
 // ===========================================================================
 
-TEST(WorkflowHistoryEventTest, DefaultEmpty) {
-    WorkflowHistoryEvent event;
-    EXPECT_TRUE(event.serialized_data.empty());
+TEST(WorkflowHistoryReplayTest, ConstructWithIdAndBinaryHistory) {
+    WorkflowHistory history("wf-abc", "binary-proto-bytes");
+    EXPECT_EQ(history.id(), "wf-abc");
+    EXPECT_EQ(history.serialized_history(), "binary-proto-bytes");
 }
 
-TEST(WorkflowHistoryEventTest, WithData) {
-    WorkflowHistoryEvent event{.serialized_data = "proto-bytes"};
-    EXPECT_EQ(event.serialized_data, "proto-bytes");
-}
-
-// ===========================================================================
-// WorkflowHistory (worker namespace) tests
-// ===========================================================================
-
-TEST(WorkerWorkflowHistoryTest, DefaultValues) {
-    WorkflowHistory history;
-    EXPECT_TRUE(history.id.empty());
-    EXPECT_TRUE(history.events.empty());
-}
-
-TEST(WorkerWorkflowHistoryTest, WithIdAndEvents) {
-    WorkflowHistory history{
-        .id = "wf-abc",
-        .events =
-            {
-                WorkflowHistoryEvent{.serialized_data = "e1"},
-                WorkflowHistoryEvent{.serialized_data = "e2"},
-            },
-    };
-    EXPECT_EQ(history.id, "wf-abc");
-    EXPECT_EQ(history.events.size(), 2u);
+TEST(WorkflowHistoryReplayTest, FromJsonForReplay) {
+    // Verify that from_json produces a WorkflowHistory suitable for replay
+    auto history =
+        WorkflowHistory::from_json("wf-replay", "{\"events\": []}");
+    EXPECT_EQ(history.id(), "wf-replay");
+    // Binary protobuf for empty History is empty in proto3
 }
 
 // ===========================================================================
@@ -211,4 +197,51 @@ TEST(WorkflowReplayerTest, ConstructPreservesOptions) {
     EXPECT_EQ(replayer.options().ns, "custom-ns");
     EXPECT_EQ(replayer.options().task_queue, "custom-queue");
     EXPECT_TRUE(replayer.options().debug_mode);
+}
+
+// ===========================================================================
+// WorkflowReplayer replay tests (no runtime - structural only)
+// ===========================================================================
+
+TEST(WorkflowReplayerTest, ReplayWithoutRuntimeSucceeds) {
+    auto def = WorkflowDefinition::create<SayHelloWorkflow>("SayHelloWorkflow")
+                   .run(&SayHelloWorkflow::run)
+                   .build();
+
+    WorkflowReplayerOptions opts;
+    opts.workflows.push_back(def);
+
+    WorkflowReplayer replayer(std::move(opts));
+
+    // Without a runtime, replay should succeed without errors
+    // (no bridge to detect nondeterminism)
+    WorkflowHistory history("wf-test", "");
+    auto result = run_task_sync(replayer.replay_workflow(history));
+    EXPECT_EQ(result.workflow_id, "wf-test");
+    EXPECT_FALSE(result.has_failure());
+}
+
+TEST(WorkflowReplayerTest, ReplayMultipleWithoutRuntime) {
+    auto def = WorkflowDefinition::create<SayHelloWorkflow>("SayHelloWorkflow")
+                   .run(&SayHelloWorkflow::run)
+                   .build();
+
+    WorkflowReplayerOptions opts;
+    opts.workflows.push_back(def);
+
+    WorkflowReplayer replayer(std::move(opts));
+
+    std::vector<WorkflowHistory> histories;
+    histories.emplace_back("wf-1", "");
+    histories.emplace_back("wf-2", "");
+    histories.emplace_back("wf-3", "");
+
+    auto results = run_task_sync(replayer.replay_workflows(histories));
+    EXPECT_EQ(results.size(), 3u);
+    EXPECT_EQ(results[0].workflow_id, "wf-1");
+    EXPECT_EQ(results[1].workflow_id, "wf-2");
+    EXPECT_EQ(results[2].workflow_id, "wf-3");
+    for (const auto& r : results) {
+        EXPECT_FALSE(r.has_failure());
+    }
 }

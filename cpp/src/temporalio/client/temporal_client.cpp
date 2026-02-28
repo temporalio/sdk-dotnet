@@ -1,24 +1,26 @@
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/temporal_connection.h>
-
-#include <temporalio/async_/task_completion_source.h>
-#include <temporalio/exceptions/temporal_exception.h>
+#include <temporalio/converters/data_converter.h>
 
 #include <cstdint>
+#include <iomanip>
 #include <memory>
+#include <random>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "temporalio/bridge/client.h"
-
 #include <temporal/api/workflowservice/v1/request_response.pb.h>
-#include <temporal/api/common/v1/message.pb.h>
 #include <temporal/api/taskqueue/v1/message.pb.h>
 #include <temporal/api/workflow/v1/message.pb.h>
 #include <temporal/api/enums/v1/workflow.pb.h>
+#include <temporal/api/failure/v1/message.pb.h>
+#include <temporal/api/update/v1/message.pb.h>
 #include <google/protobuf/duration.pb.h>
+
+#include "temporalio/client/rpc_helpers.h"
 
 namespace temporalio::client {
 
@@ -39,54 +41,27 @@ void set_duration(google::protobuf::Duration* d, std::chrono::milliseconds ms) {
 struct TemporalClient::Impl {
     std::shared_ptr<TemporalConnection> connection;
     TemporalClientOptions options;
+    converters::DataConverter data_converter;
 };
 
 TemporalClient::TemporalClient(std::shared_ptr<TemporalConnection> connection,
                                TemporalClientOptions options)
     : impl_(std::make_unique<Impl>()) {
     impl_->connection = std::move(connection);
+    impl_->data_converter = options.data_converter.has_value()
+        ? std::move(*options.data_converter)
+        : converters::DataConverter::default_instance();
+    options.data_converter.reset();
     impl_->options = std::move(options);
 }
 
 TemporalClient::~TemporalClient() = default;
 
-// ── Private RPC helper ──────────────────────────────────────────────────────
-
-namespace {
-
-/// Bridge the callback-based rpc_call_async to a coroutine.
-/// Returns the raw response bytes on success, throws RpcException on failure.
-async_::Task<std::vector<uint8_t>> rpc_call(
-    bridge::Client& client, bridge::RpcCallOptions opts) {
-    auto tcs =
-        std::make_shared<async_::TaskCompletionSource<std::vector<uint8_t>>>();
-
-    client.rpc_call_async(
-        opts,
-        [tcs](std::optional<bridge::RpcCallResult> result,
-              std::optional<bridge::RpcCallError> error) {
-            if (error) {
-                tcs->try_set_exception(std::make_exception_ptr(
-                    exceptions::RpcException(
-                        static_cast<exceptions::RpcException::StatusCode>(
-                            error->status_code),
-                        error->message, error->details)));
-            } else if (result) {
-                tcs->try_set_result(std::move(result->response));
-            } else {
-                tcs->try_set_exception(std::make_exception_ptr(
-                    std::runtime_error("RPC call returned no result")));
-            }
-        });
-
-    co_return co_await tcs->task();
-}
-
-}  // namespace
+// rpc_call() and payload conversion helpers are in rpc_helpers.h
 
 // ── Factory methods ─────────────────────────────────────────────────────────
 
-async_::Task<std::shared_ptr<TemporalClient>> TemporalClient::connect(
+coro::Task<std::shared_ptr<TemporalClient>> TemporalClient::connect(
     TemporalClientConnectOptions options) {
     auto conn =
         co_await TemporalConnection::connect(std::move(options.connection));
@@ -116,10 +91,16 @@ bridge::Client* TemporalClient::bridge_client() const noexcept {
     return impl_->connection ? impl_->connection->bridge_client() : nullptr;
 }
 
+const converters::DataConverter& TemporalClient::data_converter()
+    const noexcept {
+    return impl_->data_converter;
+}
+
 // ── Workflow operations ─────────────────────────────────────────────────────
 
-async_::Task<WorkflowHandle> TemporalClient::start_workflow(
-    const std::string& workflow_type, const std::string& args,
+coro::Task<WorkflowHandle> TemporalClient::start_workflow_impl(
+    const std::string& workflow_type,
+    std::vector<converters::Payload> args,
     const WorkflowOptions& options) {
     if (options.id.empty()) {
         throw std::invalid_argument("Workflow ID is required");
@@ -140,11 +121,9 @@ async_::Task<WorkflowHandle> TemporalClient::start_workflow(
     req.mutable_workflow_type()->set_name(workflow_type);
     req.mutable_task_queue()->set_name(options.task_queue);
 
-    // Input payload
+    // Input payloads from DataConverter
     if (!args.empty()) {
-        auto* payload = req.mutable_input()->add_payloads();
-        (*payload->mutable_metadata())["encoding"] = "json/plain";
-        payload->set_data(args);
+        internal::set_proto_payloads(req.mutable_input(), args);
     }
 
     // Timeouts
@@ -189,7 +168,7 @@ async_::Task<WorkflowHandle> TemporalClient::start_workflow(
     rpc_opts.request = std::vector<uint8_t>(serialized.begin(), serialized.end());
     rpc_opts.retry = true;
 
-    auto response = co_await rpc_call(*client, std::move(rpc_opts));
+    auto response = co_await internal::rpc_call(*client, std::move(rpc_opts));
 
     // Parse response
     temporal::api::workflowservice::v1::StartWorkflowExecutionResponse resp;
@@ -209,9 +188,10 @@ WorkflowHandle TemporalClient::get_workflow_handle(
     return WorkflowHandle(shared_from_this(), workflow_id, std::move(run_id));
 }
 
-async_::Task<void> TemporalClient::signal_workflow(
+coro::Task<void> TemporalClient::signal_workflow_impl(
     const std::string& workflow_id, const std::string& signal_name,
-    const std::string& args, std::optional<std::string> run_id) {
+    std::vector<converters::Payload> args,
+    std::optional<std::string> run_id) {
     auto* client = bridge_client();
     if (!client) {
         throw std::runtime_error("Not connected to Temporal server");
@@ -226,9 +206,7 @@ async_::Task<void> TemporalClient::signal_workflow(
     }
     req.set_signal_name(signal_name);
     if (!args.empty()) {
-        auto* payload = req.mutable_input()->add_payloads();
-        (*payload->mutable_metadata())["encoding"] = "json/plain";
-        payload->set_data(args);
+        internal::set_proto_payloads(req.mutable_input(), args);
     }
     req.set_identity(impl_->connection->options().identity.value_or("cpp-sdk"));
 
@@ -239,12 +217,13 @@ async_::Task<void> TemporalClient::signal_workflow(
     rpc_opts.request = std::vector<uint8_t>(serialized.begin(), serialized.end());
     rpc_opts.retry = true;
 
-    co_await rpc_call(*client, std::move(rpc_opts));
+    co_await internal::rpc_call(*client, std::move(rpc_opts));
 }
 
-async_::Task<std::string> TemporalClient::query_workflow(
+coro::Task<std::string> TemporalClient::query_workflow(
     const std::string& workflow_id, const std::string& query_type,
-    const std::string& args, std::optional<std::string> run_id) {
+    std::vector<converters::Payload> args,
+    std::optional<std::string> run_id) {
     auto* client = bridge_client();
     if (!client) {
         throw std::runtime_error("Not connected to Temporal server");
@@ -258,6 +237,9 @@ async_::Task<std::string> TemporalClient::query_workflow(
         req.mutable_execution()->set_run_id(*run_id);
     }
     req.mutable_query()->set_query_type(query_type);
+    if (!args.empty()) {
+        internal::set_proto_payloads(req.mutable_query()->mutable_query_args(), args);
+    }
 
     bridge::RpcCallOptions rpc_opts;
     rpc_opts.service = TemporalCoreRpcService::Workflow;
@@ -266,7 +248,7 @@ async_::Task<std::string> TemporalClient::query_workflow(
     rpc_opts.request = std::vector<uint8_t>(serialized.begin(), serialized.end());
     rpc_opts.retry = true;
 
-    auto response = co_await rpc_call(*client, std::move(rpc_opts));
+    auto response = co_await internal::rpc_call(*client, std::move(rpc_opts));
 
     // Parse response and extract result
     temporal::api::workflowservice::v1::QueryWorkflowResponse resp;
@@ -278,7 +260,7 @@ async_::Task<std::string> TemporalClient::query_workflow(
     co_return std::string(response.begin(), response.end());
 }
 
-async_::Task<void> TemporalClient::cancel_workflow(
+coro::Task<void> TemporalClient::cancel_workflow(
     const std::string& workflow_id, std::optional<std::string> run_id) {
     auto* client = bridge_client();
     if (!client) {
@@ -301,10 +283,10 @@ async_::Task<void> TemporalClient::cancel_workflow(
     rpc_opts.request = std::vector<uint8_t>(serialized.begin(), serialized.end());
     rpc_opts.retry = true;
 
-    co_await rpc_call(*client, std::move(rpc_opts));
+    co_await internal::rpc_call(*client, std::move(rpc_opts));
 }
 
-async_::Task<void> TemporalClient::terminate_workflow(
+coro::Task<void> TemporalClient::terminate_workflow(
     const std::string& workflow_id, std::optional<std::string> reason,
     std::optional<std::string> run_id) {
     auto* client = bridge_client();
@@ -331,10 +313,10 @@ async_::Task<void> TemporalClient::terminate_workflow(
     rpc_opts.request = std::vector<uint8_t>(serialized.begin(), serialized.end());
     rpc_opts.retry = true;
 
-    co_await rpc_call(*client, std::move(rpc_opts));
+    co_await internal::rpc_call(*client, std::move(rpc_opts));
 }
 
-async_::Task<std::vector<WorkflowExecution>> TemporalClient::list_workflows(
+coro::Task<std::vector<WorkflowExecution>> TemporalClient::list_workflows(
     const WorkflowListOptions& options) {
     auto* client = bridge_client();
     if (!client) {
@@ -358,7 +340,7 @@ async_::Task<std::vector<WorkflowExecution>> TemporalClient::list_workflows(
     rpc_opts.request = std::vector<uint8_t>(serialized.begin(), serialized.end());
     rpc_opts.retry = true;
 
-    auto response = co_await rpc_call(*client, std::move(rpc_opts));
+    auto response = co_await internal::rpc_call(*client, std::move(rpc_opts));
 
     temporal::api::workflowservice::v1::ListWorkflowExecutionsResponse resp;
     resp.ParseFromArray(response.data(), static_cast<int>(response.size()));
@@ -378,7 +360,7 @@ async_::Task<std::vector<WorkflowExecution>> TemporalClient::list_workflows(
     co_return results;
 }
 
-async_::Task<WorkflowExecutionCount> TemporalClient::count_workflows(
+coro::Task<WorkflowExecutionCount> TemporalClient::count_workflows(
     const WorkflowCountOptions& options) {
     auto* client = bridge_client();
     if (!client) {
@@ -399,7 +381,7 @@ async_::Task<WorkflowExecutionCount> TemporalClient::count_workflows(
     rpc_opts.request = std::vector<uint8_t>(serialized.begin(), serialized.end());
     rpc_opts.retry = true;
 
-    auto response = co_await rpc_call(*client, std::move(rpc_opts));
+    auto response = co_await internal::rpc_call(*client, std::move(rpc_opts));
 
     temporal::api::workflowservice::v1::CountWorkflowExecutionsResponse resp;
     resp.ParseFromArray(response.data(), static_cast<int>(response.size()));
