@@ -403,6 +403,128 @@ jobs:
           path: cpp/build/debug/Testing/
           if-no-files-found: ignore
 
+  # ── macOS (Apple Clang, ARM / Apple Silicon) ───────────────────────────────
+  macos-arm:
+    runs-on: macos-14
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Ninja
+        run: brew install ninja
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/Temporalio/Bridge/sdk-core
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          version: ${{ env.PROTOC_VERSION }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache CMake FetchContent dependencies
+        uses: actions/cache@v4
+        with:
+          path: cpp/build/_deps
+          key: fetchcontent-macos-arm-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-macos-arm-
+
+      - name: Configure CMake (Ninja)
+        run: >
+          cmake -B cpp/build -S cpp
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTEMPORALIO_BUILD_EXTENSIONS=OFF
+          -DTEMPORALIO_BUILD_EXAMPLES=ON
+
+      - name: Build library
+        run: cmake --build cpp/build --target temporalio
+
+      - name: Build tests
+        run: cmake --build cpp/build --target temporalio_tests
+
+      - name: Build examples
+        run: cmake --build cpp/build
+
+      - name: Run tests
+        run: ctest --test-dir cpp/build --output-on-failure --timeout 120
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-macos-arm
+          path: cpp/build/Testing/
+          if-no-files-found: ignore
+
+  # ── macOS (Apple Clang, Intel x86_64) ─────────────────────────────────────
+  macos-intel:
+    runs-on: macos-15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Ninja
+        run: brew install ninja
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/Temporalio/Bridge/sdk-core
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          version: ${{ env.PROTOC_VERSION }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache CMake FetchContent dependencies
+        uses: actions/cache@v4
+        with:
+          path: cpp/build/_deps
+          key: fetchcontent-macos-intel-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-macos-intel-
+
+      - name: Configure CMake (Ninja)
+        run: >
+          cmake -B cpp/build -S cpp
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DTEMPORALIO_BUILD_EXTENSIONS=OFF
+          -DTEMPORALIO_BUILD_EXAMPLES=ON
+
+      - name: Build library
+        run: cmake --build cpp/build --target temporalio
+
+      - name: Build tests
+        run: cmake --build cpp/build --target temporalio_tests
+
+      - name: Build examples
+        run: cmake --build cpp/build
+
+      - name: Run tests
+        run: ctest --test-dir cpp/build --output-on-failure --timeout 120
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-macos-intel
+          path: cpp/build/Testing/
+          if-no-files-found: ignore
+
   # ── CMake Install + find_package Verification (Linux) ──────────────────────
   install-verify:
     runs-on: ubuntu-22.04
