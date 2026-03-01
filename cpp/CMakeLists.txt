@@ -101,6 +101,22 @@ else()
     set(TEMPORALIO_PROTOBUF_TARGET protobuf::libprotobuf)
 endif()
 
+# Mark protobuf library includes as SYSTEM so GCC/Clang suppress warnings
+# from protobuf headers (e.g. -Wconversion in map.h template instantiations).
+# FetchContent creates ALIAS targets, so resolve to the real target first.
+set(_pb_real_target ${TEMPORALIO_PROTOBUF_TARGET})
+if(TARGET ${_pb_real_target})
+    get_target_property(_pb_aliased ${_pb_real_target} ALIASED_TARGET)
+    if(_pb_aliased)
+        set(_pb_real_target ${_pb_aliased})
+    endif()
+    get_target_property(_pb_iid ${_pb_real_target} INTERFACE_INCLUDE_DIRECTORIES)
+    if(_pb_iid)
+        set_target_properties(${_pb_real_target} PROPERTIES
+            INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "${_pb_iid}")
+    endif()
+endif()
+
 # ── Rust bridge custom build (must be before library target) ────────────────
 temporalio_build_rust_bridge(
     TARGET temporalio_rust_bridge

@@ -107,7 +107,7 @@ WorkflowInstance::ChildWorkflowResolution convert_child_workflow_resolution(
 std::vector<WorkflowInstance::Job> convert_jobs(
     const coresdk::workflow_activation::WorkflowActivation& activation) {
     std::vector<WorkflowInstance::Job> jobs;
-    jobs.reserve(activation.jobs_size());
+    jobs.reserve(static_cast<size_t>(activation.jobs_size()));
 
     for (const auto& proto_job : activation.jobs()) {
         WorkflowInstance::Job job;
@@ -119,7 +119,7 @@ std::vector<WorkflowInstance::Job> convert_jobs(
             // handled separately via create_instance().
             const auto& init = proto_job.initialize_workflow();
             std::vector<std::any> args;
-            args.reserve(init.arguments_size());
+            args.reserve(static_cast<size_t>(init.arguments_size()));
             for (const auto& payload : init.arguments()) {
                 args.push_back(payload_to_any(payload));
             }
@@ -141,7 +141,7 @@ std::vector<WorkflowInstance::Job> convert_jobs(
             job.type = WorkflowInstance::JobType::kSignalWorkflow;
             const auto& sig = proto_job.signal_workflow();
             std::vector<std::any> args;
-            args.reserve(sig.input_size());
+            args.reserve(static_cast<size_t>(sig.input_size()));
             for (const auto& payload : sig.input()) {
                 args.push_back(payload_to_any(payload));
             }
@@ -153,7 +153,7 @@ std::vector<WorkflowInstance::Job> convert_jobs(
             WorkflowInstance::QueryWorkflowData qd;
             qd.query_id = q.query_id();
             qd.query_name = q.query_type();
-            qd.args.reserve(q.arguments_size());
+            qd.args.reserve(static_cast<size_t>(q.arguments_size()));
             for (const auto& payload : q.arguments()) {
                 qd.args.push_back(payload_to_any(payload));
             }
@@ -169,7 +169,7 @@ std::vector<WorkflowInstance::Job> convert_jobs(
             ud.name = u.name();
             ud.protocol_instance_id = u.protocol_instance_id();
             ud.run_validator = u.run_validator();
-            ud.args.reserve(u.input_size());
+            ud.args.reserve(static_cast<size_t>(u.input_size()));
             for (const auto& payload : u.input()) {
                 ud.args.push_back(payload_to_any(payload));
             }

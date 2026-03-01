@@ -57,7 +57,7 @@ inline temporal::api::common::v1::Payloads to_proto_payloads(
 inline std::vector<Payload> from_proto_payloads(
     const temporal::api::common::v1::Payloads& proto) {
     std::vector<Payload> payloads;
-    payloads.reserve(proto.payloads_size());
+    payloads.reserve(static_cast<size_t>(proto.payloads_size()));
     for (const auto& p : proto.payloads()) {
         payloads.push_back(from_proto_payload(p));
     }

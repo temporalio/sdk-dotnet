@@ -23,7 +23,8 @@ function(temporalio_set_compiler_warnings target)
             -Wold-style-cast
             -Wcast-align
             -Woverloaded-virtual
-            -Wno-unused-parameter   # Common during early development
+            -Wno-unused-parameter         # Common during early development
+            -Wno-missing-field-initializers  # C++20 designated initializers intentionally omit fields
         )
 
         # Coroutine support flags (compiler-specific)

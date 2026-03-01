@@ -20,7 +20,7 @@ using namespace temporalio::coro;
 namespace {
 
 // Simple driver that resumes a coroutine once and returns whether it finished.
-bool try_resume(std::coroutine_handle<> h) {
+[[maybe_unused]] bool try_resume(std::coroutine_handle<> h) {
     if (h && !h.done()) {
         h.resume();
         return h.done();

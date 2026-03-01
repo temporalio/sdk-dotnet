@@ -257,7 +257,7 @@ function(temporalio_generate_protos)
     add_library(${ARG_TARGET} STATIC ${GEN_SOURCES})
 
     target_include_directories(${ARG_TARGET}
-        PUBLIC
+        SYSTEM PUBLIC
             $<BUILD_INTERFACE:${GEN_DIR}>
             $<INSTALL_INTERFACE:include>
     )

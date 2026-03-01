@@ -323,7 +323,7 @@ void ActivityWorker::start_activity(
     // encoding metadata). The typed activity handlers will use
     // decode_payload_value to properly decode to the target type.
     std::vector<std::any> input_args;
-    input_args.reserve(start.input_size());
+    input_args.reserve(static_cast<size_t>(start.input_size()));
     for (const auto& proto_payload : start.input()) {
         input_args.push_back(
             std::any(converters::from_proto_payload(proto_payload)));

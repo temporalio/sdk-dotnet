@@ -21,7 +21,7 @@ Task<std::string> greet(std::string name) {
     co_return "Hello, " + name;
 }
 
-Task<int> add_one(int x) { co_return x + 1; }
+[[maybe_unused]] Task<int> add_one(int x) { co_return x + 1; }
 
 Task<void> noop() { co_return; }
 

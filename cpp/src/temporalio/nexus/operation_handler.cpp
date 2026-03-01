@@ -18,7 +18,8 @@ std::string base64_encode(const std::string& input) {
     result.reserve(((input.size() + 2) / 3) * 4);
     int val = 0;
     int valb = -6;
-    for (unsigned char c : input) {
+    for (char ch : input) {
+        auto c = static_cast<unsigned char>(ch);
         val = (val << 8) + c;
         valb += 8;
         while (valb >= 0) {
@@ -45,7 +46,8 @@ std::string base64_decode(const std::string& input) {
     std::string result;
     int val = 0;
     int valb = -8;
-    for (unsigned char c : input) {
+    for (char ch : input) {
+        auto c = static_cast<unsigned char>(ch);
         if (c == '=') {
             break;
         }

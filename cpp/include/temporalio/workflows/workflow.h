@@ -107,16 +107,9 @@ public:
     /// (from the inbound protobuf pipeline) or a direct typed value
     /// (from tests or internal usage). Uses the DataConverter from the
     /// current WorkflowContext if available.
+    /// Defined after WorkflowContext to avoid incomplete-type errors on GCC.
     template <typename T>
-    static T decode_value(const std::any& val) {
-        auto* ctx = WorkflowContext::current();
-        const converters::IPayloadConverter* converter = nullptr;
-        if (ctx && ctx->data_converter() &&
-            ctx->data_converter()->payload_converter) {
-            converter = ctx->data_converter()->payload_converter.get();
-        }
-        return converters::decode_payload_value<T>(val, converter);
-    }
+    static T decode_value(const std::any& val);
 
     /// Type-safe execute_activity: converts typed arguments to std::any,
     /// invokes the activity, and casts the result back to R.
@@ -221,6 +214,18 @@ public:
 private:
     WorkflowContext* previous_;
 };
+
+// Out-of-line definition now that WorkflowContext is complete.
+template <typename T>
+T Workflow::decode_value(const std::any& val) {
+    auto* ctx = WorkflowContext::current();
+    const converters::IPayloadConverter* converter = nullptr;
+    if (ctx && ctx->data_converter() &&
+        ctx->data_converter()->payload_converter) {
+        converter = ctx->data_converter()->payload_converter.get();
+    }
+    return converters::decode_payload_value<T>(val, converter);
+}
 
 }  // namespace temporalio::workflows
 
