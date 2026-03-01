@@ -73,7 +73,10 @@
       "Bash(timeout 12 cpp/build/examples/Debug/example_workflow_activity.exe:*)",
       "Bash(timeout 45 cpp/build/examples/Debug/example_timer_workflow.exe:*)",
       "Bash(timeout 30 cpp/build/examples/Debug/example_update_workflow.exe:*)",
-      "Bash(cpp/build/Debug/temporalio_tests.exe:*)"
+      "Bash(cpp/build/Debug/temporalio_tests.exe:*)",
+      "Bash(/c/ninja/ninja.exe:*)",
+      "Bash(pip show:*)",
+      "WebSearch"
     ]
   }
 }

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"C:/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe\":*)",
+      "Bash(curl:*)",
+      "Bash(\"/c/Program Files/CMake/bin/cmake.exe\":*)",
+      "Bash(\"C:/Program Files/CMake/bin/cmake.exe\":*)",
+      "Bash(\"$CMAKE\":*)",
+      "Bash(PATH=\"/c/git/temporal-sdk-cpp/src/Temporalio/Bridge/sdk-core/target/debug:$PATH\" ./tests/Debug/temporalio_tests.exe:*)",
+      "Bash(\"/c/Program Files/Microsoft Visual Studio/2022/Professional/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/msbuild.exe\":*)",
+      "Bash(\"/c/Program Files/Microsoft Visual Studio/2022/Professional/MSBuild/Current/Bin/amd64/MSBuild.exe\":*)",
+      "Bash(do echo:*)",
+      "Bash(timeout 30 ./example_timer_workflow.exe:*)",
+      "Bash(timeout 30 ./example_signal_workflow.exe:*)",
+      "Bash(timeout 30 ./example_update_workflow.exe:*)",
+      "Bash(rm:*)"
+    ]
+  }
+}
