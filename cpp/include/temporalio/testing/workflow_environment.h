@@ -26,15 +26,29 @@ struct WorkflowEnvironmentStartLocalOptions {
     /// Client options.
     client::TemporalClientOptions client{};
 
+    /// Path to an existing dev server binary (skip download).
+    std::optional<std::string> existing_path{};
+
     /// Download directory for the dev server binary.
     /// Default is the OS temporary directory.
     std::optional<std::string> download_directory{};
+
+    /// Version of the dev server to download.
+    /// Can be a semantic version, "latest", or "default".
+    /// Default is "default" (best for this SDK version).
+    std::string download_version{"default"};
 
     /// Whether to start the UI with the server.
     bool ui{false};
 
     /// UI port if ui is true.
     int ui_port{0};
+
+    /// Log format for the dev server (e.g., "pretty", "json").
+    std::string log_format{"pretty"};
+
+    /// Log level for the dev server (e.g., "warn", "info", "debug").
+    std::string log_level{"warn"};
 
     /// Runtime to use. Uses default if not set.
     std::shared_ptr<runtime::TemporalRuntime> runtime{};
@@ -51,8 +65,16 @@ struct WorkflowEnvironmentStartTimeSkippingOptions {
     /// Client options.
     client::TemporalClientOptions client{};
 
+    /// Path to an existing test server binary (skip download).
+    std::optional<std::string> existing_path{};
+
     /// Download directory for the test server binary.
     std::optional<std::string> download_directory{};
+
+    /// Version of the test server to download.
+    /// Can be a semantic version, "latest", or "default".
+    /// Default is "default" (best for this SDK version).
+    std::string download_version{"default"};
 
     /// Runtime to use. Uses default if not set.
     std::shared_ptr<runtime::TemporalRuntime> runtime{};

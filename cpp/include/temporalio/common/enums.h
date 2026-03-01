@@ -41,6 +41,19 @@ enum class WorkflowIdReusePolicy : int {
     kTerminateIfRunning = 4,
 };
 
+/// Status of a workflow execution.
+enum class WorkflowExecutionStatus : int {
+    kUnspecified = 0,
+    kRunning = 1,
+    kCompleted = 2,
+    kFailed = 3,
+    kCanceled = 4,
+    kTerminated = 5,
+    kContinuedAsNew = 6,
+    kTimedOut = 7,
+    kPaused = 8,
+};
+
 /// Task reachability for a worker build ID.
 enum class TaskReachability : int {
     kUnspecified = 0,

@@ -1,6 +1,7 @@
 #include "temporalio/testing/workflow_environment.h"
 
 #include <temporalio/coro/task_completion_source.h>
+#include <temporalio/version.h>
 
 #include <chrono>
 #include <memory>
@@ -58,8 +59,15 @@ WorkflowEnvironment::start_local(
 
     // Build dev server options
     bridge::DevServerOptions dev_opts;
+    dev_opts.sdk_version = TEMPORALIO_VERSION_STRING;
+    dev_opts.download_version = options.download_version;
     dev_opts.ui = options.ui;
     dev_opts.ui_port = static_cast<uint16_t>(options.ui_port);
+    dev_opts.log_format = options.log_format;
+    dev_opts.log_level = options.log_level;
+    if (options.existing_path) {
+        dev_opts.existing_path = *options.existing_path;
+    }
     if (options.download_directory) {
         dev_opts.download_dest_dir = *options.download_directory;
     }
@@ -128,6 +136,11 @@ WorkflowEnvironment::start_time_skipping(
 
     // Build test server options
     bridge::TestServerOptions test_opts;
+    test_opts.sdk_version = TEMPORALIO_VERSION_STRING;
+    test_opts.download_version = options.download_version;
+    if (options.existing_path) {
+        test_opts.existing_path = *options.existing_path;
+    }
     if (options.download_directory) {
         test_opts.download_dest_dir = *options.download_directory;
     }
@@ -181,10 +194,15 @@ WorkflowEnvironment::start_time_skipping(
 
 coro::Task<void> WorkflowEnvironment::delay(
     std::chrono::milliseconds duration) {
-    // Non-time-skipping: actual sleep
-    // TODO: Use async sleep when async runtime is wired up
-    std::this_thread::sleep_for(duration);
-    co_return;
+    // Non-time-skipping: async sleep using a background thread + TCS
+    auto tcs = std::make_shared<coro::TaskCompletionSource<void>>();
+
+    std::thread([tcs, duration]() {
+        std::this_thread::sleep_for(duration);
+        tcs->try_set_result();
+    }).detach();
+
+    co_await tcs->task();
 }
 
 coro::Task<std::chrono::system_clock::time_point>

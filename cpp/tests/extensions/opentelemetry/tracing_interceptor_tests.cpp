@@ -6,10 +6,12 @@
 
 #include "temporalio/extensions/opentelemetry/tracing_interceptor.h"
 #include "temporalio/extensions/opentelemetry/tracing_options.h"
+#include "temporalio/client/interceptors/client_interceptor.h"
 #include "temporalio/worker/interceptors/worker_interceptor.h"
 
 using namespace temporalio::extensions::opentelemetry;
 using namespace temporalio::worker::interceptors;
+using namespace temporalio::client::interceptors;
 
 // ===========================================================================
 // TracingInterceptor construction tests
@@ -82,24 +84,33 @@ TEST(TracingInterceptorTest, InjectContextEmptyHeaders) {
     // Should not crash with empty headers
 }
 
-TEST(TracingInterceptorTest, ExtractContextMissingHeaderReturnsFalse) {
+TEST(TracingInterceptorTest, ExtractContextReturnsContext) {
+    TracingInterceptor interceptor;
+    std::unordered_map<std::string, std::string> headers;
+
+    // extract_context should return a context even with empty headers
+    auto ctx = interceptor.extract_context(headers);
+    // No crash; returns a valid context
+    (void)ctx;
+}
+
+TEST(TracingInterceptorTest, HasContextMissingHeaderReturnsFalse) {
     TracingInterceptor interceptor;
     std::unordered_map<std::string, std::string> headers;
 
     // No trace header present
-    EXPECT_FALSE(interceptor.extract_context(headers));
+    EXPECT_FALSE(interceptor.has_context(headers));
 }
 
-TEST(TracingInterceptorTest, ExtractContextPresentHeaderReturnsTrue) {
+TEST(TracingInterceptorTest, HasContextPresentHeaderReturnsTrue) {
     TracingInterceptor interceptor;
     std::unordered_map<std::string, std::string> headers;
     headers["_tracer-data"] = "some-trace-context";
 
-    // Header found (placeholder implementation returns true)
-    EXPECT_TRUE(interceptor.extract_context(headers));
+    EXPECT_TRUE(interceptor.has_context(headers));
 }
 
-TEST(TracingInterceptorTest, ExtractContextUsesCustomHeaderKey) {
+TEST(TracingInterceptorTest, HasContextUsesCustomHeaderKey) {
     TracingInterceptorOptions opts{.header_key = "my-trace-key"};
     TracingInterceptor interceptor(std::move(opts));
 
@@ -107,10 +118,10 @@ TEST(TracingInterceptorTest, ExtractContextUsesCustomHeaderKey) {
     headers["_tracer-data"] = "wrong-key";
 
     // Should look for "my-trace-key", not "_tracer-data"
-    EXPECT_FALSE(interceptor.extract_context(headers));
+    EXPECT_FALSE(interceptor.has_context(headers));
 
     headers["my-trace-key"] = "trace-data";
-    EXPECT_TRUE(interceptor.extract_context(headers));
+    EXPECT_TRUE(interceptor.has_context(headers));
 }
 
 // ===========================================================================
@@ -185,11 +196,29 @@ TEST(TracingInterceptorTest, IsIWorkerInterceptor) {
     EXPECT_NE(base, nullptr);
 }
 
+TEST(TracingInterceptorTest, IsIClientInterceptor) {
+    auto interceptor = std::make_shared<TracingInterceptor>();
+    // Should be assignable to IClientInterceptor pointer
+    IClientInterceptor* base = interceptor.get();
+    EXPECT_NE(base, nullptr);
+}
+
 TEST(TracingInterceptorTest, VirtualDestructor) {
     // Should be safely deletable through base pointer
     std::unique_ptr<IWorkerInterceptor> ptr =
         std::make_unique<TracingInterceptor>();
     EXPECT_NO_THROW(ptr.reset());
+}
+
+// ===========================================================================
+// Tracer accessor tests
+// ===========================================================================
+
+TEST(TracingInterceptorTest, TracersAreNonNull) {
+    TracingInterceptor interceptor;
+    EXPECT_NE(interceptor.client_tracer(), nullptr);
+    EXPECT_NE(interceptor.workflow_tracer(), nullptr);
+    EXPECT_NE(interceptor.activity_tracer(), nullptr);
 }
 
 // ===========================================================================

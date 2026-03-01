@@ -6,9 +6,11 @@
 #include <temporalio/export.h>
 #include <temporalio/coro/task.h>
 #include <temporalio/client/workflow_options.h>
+#include <temporalio/common/enums.h>
 #include <temporalio/converters/data_converter.h>
 
 #include <any>
+#include <chrono>
 #include <memory>
 #include <optional>
 #include <string>
@@ -18,6 +20,49 @@
 namespace temporalio::client {
 
 class TemporalClient;
+
+/// Description of a workflow execution returned by describe().
+struct WorkflowExecutionDescription {
+    /// Workflow ID.
+    std::string workflow_id{};
+
+    /// Run ID.
+    std::string run_id{};
+
+    /// Workflow type name.
+    std::string workflow_type{};
+
+    /// Current status of the workflow execution.
+    common::WorkflowExecutionStatus status{
+        common::WorkflowExecutionStatus::kUnspecified};
+
+    /// Task queue the workflow is running on.
+    std::string task_queue{};
+
+    /// When the workflow was started.
+    std::optional<std::chrono::system_clock::time_point> start_time{};
+
+    /// When the workflow was closed (if closed).
+    std::optional<std::chrono::system_clock::time_point> close_time{};
+
+    /// When the workflow run started or should start.
+    std::optional<std::chrono::system_clock::time_point> execution_time{};
+
+    /// Number of events in the workflow history.
+    int64_t history_length{0};
+
+    /// Size of the workflow history in bytes.
+    int64_t history_size_bytes{0};
+
+    /// Parent workflow ID, if this is a child workflow.
+    std::optional<std::string> parent_workflow_id{};
+
+    /// Parent run ID, if this is a child workflow.
+    std::optional<std::string> parent_run_id{};
+
+    /// Number of state transitions.
+    int64_t state_transition_count{0};
+};
 
 /// Handle to a workflow execution, used for signaling, querying, etc.
 /// This is a lightweight value type that holds a reference to the client.
@@ -156,8 +201,10 @@ public:
     /// Terminate this workflow.
     coro::Task<void> terminate(const WorkflowTerminateOptions& options = {});
 
-    /// Describe this workflow.
-    coro::Task<std::string> describe(
+    /// Describe this workflow execution.
+    /// Returns detailed information about the workflow including status,
+    /// type, start/close times, and history length.
+    coro::Task<WorkflowExecutionDescription> describe(
         const WorkflowDescribeOptions& options = {});
 
 private:

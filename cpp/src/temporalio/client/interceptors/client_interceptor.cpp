@@ -49,8 +49,8 @@ ClientOutboundInterceptor::start_update_with_start_workflow(
         std::move(input));
 }
 
-coro::Task<std::string> ClientOutboundInterceptor::describe_workflow(
-    DescribeWorkflowInput input) {
+coro::Task<WorkflowExecutionDescription>
+ClientOutboundInterceptor::describe_workflow(DescribeWorkflowInput input) {
     co_return co_await next().describe_workflow(std::move(input));
 }
 

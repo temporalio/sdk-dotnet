@@ -5,6 +5,9 @@ on:
     branches:
       - main
       - cpp-conversion
+    paths:
+      - "cpp/**"
+      - ".github/workflows/cpp-ci.yml"
   pull_request:
     paths:
       - "cpp/**"
@@ -14,8 +17,12 @@ permissions:
   actions: read
   contents: read
 
+env:
+  # Shared protoc version across all jobs
+  PROTOC_VERSION: "23.x"
+
 jobs:
-  # ── Windows (MSVC 2022) ──────────────────────────────────────────────────
+  # ── Windows (MSVC 2022 + Ninja) ────────────────────────────────────────────
   windows-msvc:
     runs-on: windows-latest
     steps:
@@ -23,6 +30,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Install Ninja
+        run: choco install ninja -y
+
+      - name: Setup MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -35,33 +48,35 @@ jobs:
       - name: Install protoc
         uses: arduino/setup-protoc@v3
         with:
-          version: "23.x"
+          version: ${{ env.PROTOC_VERSION }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache CMake FetchContent dependencies
         uses: actions/cache@v4
         with:
           path: cpp/build/_deps
-          key: fetchcontent-msvc-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-msvc-
+          key: fetchcontent-msvc-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-msvc-ninja-
 
-      - name: Configure CMake
+      - name: Configure CMake (Ninja)
         run: >
           cmake -B cpp/build -S cpp
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
           -DTEMPORALIO_BUILD_EXTENSIONS=OFF
           -DTEMPORALIO_BUILD_EXAMPLES=ON
 
       - name: Build library
-        run: cmake --build cpp/build --config Debug --target temporalio
+        run: cmake --build cpp/build --target temporalio
 
       - name: Build tests
-        run: cmake --build cpp/build --config Debug --target temporalio_tests
+        run: cmake --build cpp/build --target temporalio_tests
 
       - name: Build examples
-        run: cmake --build cpp/build --config Debug
+        run: cmake --build cpp/build
 
       - name: Run tests
-        run: ctest --test-dir cpp/build --config Debug --output-on-failure --timeout 120
+        run: ctest --test-dir cpp/build --output-on-failure --timeout 120
 
       - name: Upload test results on failure
         if: failure()
@@ -71,7 +86,7 @@ jobs:
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
-  # ── Linux (GCC 11) ──────────────────────────────────────────────────────
+  # ── Linux (GCC 12 + Ninja) ─────────────────────────────────────────────────
   linux-gcc:
     runs-on: ubuntu-22.04
     steps:
@@ -83,14 +98,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-11 g++-11 lcov
-
-      - name: Cache CMake FetchContent dependencies
-        uses: actions/cache@v4
-        with:
-          path: cpp/build/_deps
-          key: fetchcontent-gcc11-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-gcc11-
+          sudo apt-get install -y gcc-12 g++-12 ninja-build
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -103,27 +111,35 @@ jobs:
       - name: Install protoc
         uses: arduino/setup-protoc@v3
         with:
-          version: "23.x"
+          version: ${{ env.PROTOC_VERSION }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure CMake
+      - name: Cache CMake FetchContent dependencies
+        uses: actions/cache@v4
+        with:
+          path: cpp/build/_deps
+          key: fetchcontent-gcc12-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-gcc12-ninja-
+
+      - name: Configure CMake (Ninja)
         env:
-          CC: gcc-11
-          CXX: g++-11
+          CC: gcc-12
+          CXX: g++-12
         run: >
           cmake -B cpp/build -S cpp
+          -G Ninja
           -DCMAKE_BUILD_TYPE=Debug
           -DTEMPORALIO_BUILD_EXTENSIONS=OFF
           -DTEMPORALIO_BUILD_EXAMPLES=ON
 
       - name: Build library
-        run: cmake --build cpp/build --target temporalio -j$(nproc)
+        run: cmake --build cpp/build --target temporalio
 
       - name: Build tests
-        run: cmake --build cpp/build --target temporalio_tests -j$(nproc)
+        run: cmake --build cpp/build --target temporalio_tests
 
       - name: Build examples
-        run: cmake --build cpp/build -j$(nproc)
+        run: cmake --build cpp/build
 
       - name: Run tests
         run: ctest --test-dir cpp/build --output-on-failure --timeout 120
@@ -136,7 +152,7 @@ jobs:
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
-  # ── Linux (GCC 11 + Coverage) ──────────────────────────────────────────
+  # ── Linux (GCC 12 + Coverage) ──────────────────────────────────────────────
   linux-coverage:
     runs-on: ubuntu-22.04
     steps:
@@ -148,14 +164,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-11 g++-11 lcov
-
-      - name: Cache CMake FetchContent dependencies
-        uses: actions/cache@v4
-        with:
-          path: cpp/build/_deps
-          key: fetchcontent-gcc11-cov-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-gcc11-cov-
+          sudo apt-get install -y gcc-12 g++-12 ninja-build lcov
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -168,15 +177,23 @@ jobs:
       - name: Install protoc
         uses: arduino/setup-protoc@v3
         with:
-          version: "23.x"
+          version: ${{ env.PROTOC_VERSION }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure CMake with coverage
+      - name: Cache CMake FetchContent dependencies
+        uses: actions/cache@v4
+        with:
+          path: cpp/build/_deps
+          key: fetchcontent-gcc12-cov-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-gcc12-cov-
+
+      - name: Configure CMake with coverage (Ninja)
         env:
-          CC: gcc-11
-          CXX: g++-11
+          CC: gcc-12
+          CXX: g++-12
         run: >
           cmake -B cpp/build -S cpp
+          -G Ninja
           -DCMAKE_BUILD_TYPE=Debug
           -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage"
           -DCMAKE_EXE_LINKER_FLAGS="--coverage"
@@ -184,7 +201,7 @@ jobs:
           -DTEMPORALIO_BUILD_EXAMPLES=OFF
 
       - name: Build
-        run: cmake --build cpp/build -j$(nproc)
+        run: cmake --build cpp/build
 
       - name: Run tests
         run: ctest --test-dir cpp/build --output-on-failure --timeout 120
@@ -192,7 +209,7 @@ jobs:
       - name: Collect coverage
         run: |
           lcov --capture --directory cpp/build --output-file coverage.info \
-               --gcov-tool gcov-11 --ignore-errors mismatch
+               --gcov-tool gcov-12 --ignore-errors mismatch
           # Remove system headers and third-party code from coverage
           lcov --remove coverage.info \
                '/usr/*' \
@@ -208,7 +225,7 @@ jobs:
           name: coverage-report
           path: coverage_filtered.info
 
-  # ── Linux (Clang 14) ───────────────────────────────────────────────────
+  # ── Linux (Clang 14 + Ninja) ───────────────────────────────────────────────
   linux-clang:
     runs-on: ubuntu-22.04
     steps:
@@ -220,14 +237,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-14
-
-      - name: Cache CMake FetchContent dependencies
-        uses: actions/cache@v4
-        with:
-          path: cpp/build/_deps
-          key: fetchcontent-clang14-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-clang14-
+          sudo apt-get install -y clang-14 ninja-build
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -240,27 +250,35 @@ jobs:
       - name: Install protoc
         uses: arduino/setup-protoc@v3
         with:
-          version: "23.x"
+          version: ${{ env.PROTOC_VERSION }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure CMake
+      - name: Cache CMake FetchContent dependencies
+        uses: actions/cache@v4
+        with:
+          path: cpp/build/_deps
+          key: fetchcontent-clang14-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-clang14-ninja-
+
+      - name: Configure CMake (Ninja)
         env:
           CC: clang-14
           CXX: clang++-14
         run: >
           cmake -B cpp/build -S cpp
+          -G Ninja
           -DCMAKE_BUILD_TYPE=Debug
           -DTEMPORALIO_BUILD_EXTENSIONS=OFF
           -DTEMPORALIO_BUILD_EXAMPLES=ON
 
       - name: Build library
-        run: cmake --build cpp/build --target temporalio -j$(nproc)
+        run: cmake --build cpp/build --target temporalio
 
       - name: Build tests
-        run: cmake --build cpp/build --target temporalio_tests -j$(nproc)
+        run: cmake --build cpp/build --target temporalio_tests
 
       - name: Build examples
-        run: cmake --build cpp/build -j$(nproc)
+        run: cmake --build cpp/build
 
       - name: Run tests
         run: ctest --test-dir cpp/build --output-on-failure --timeout 120
@@ -273,7 +291,7 @@ jobs:
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
-  # ── Linux (Clang 14 + ASan + UBSan) ───────────────────────────────────
+  # ── Linux (Clang 14 + ASan + UBSan) ───────────────────────────────────────
   linux-sanitizers:
     runs-on: ubuntu-22.04
     steps:
@@ -285,14 +303,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-14
-
-      - name: Cache CMake FetchContent dependencies
-        uses: actions/cache@v4
-        with:
-          path: cpp/build/_deps
-          key: fetchcontent-clang14-san-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-clang14-san-
+          sudo apt-get install -y clang-14 ninja-build
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -305,15 +316,23 @@ jobs:
       - name: Install protoc
         uses: arduino/setup-protoc@v3
         with:
-          version: "23.x"
+          version: ${{ env.PROTOC_VERSION }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure CMake with sanitizers
+      - name: Cache CMake FetchContent dependencies
+        uses: actions/cache@v4
+        with:
+          path: cpp/build/_deps
+          key: fetchcontent-clang14-san-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-clang14-san-ninja-
+
+      - name: Configure CMake with sanitizers (Ninja)
         env:
           CC: clang-14
           CXX: clang++-14
         run: >
           cmake -B cpp/build -S cpp
+          -G Ninja
           -DCMAKE_BUILD_TYPE=Debug
           -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"
           -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
@@ -321,7 +340,7 @@ jobs:
           -DTEMPORALIO_BUILD_EXAMPLES=OFF
 
       - name: Build
-        run: cmake --build cpp/build -j$(nproc)
+        run: cmake --build cpp/build
 
       - name: Run tests under sanitizers
         env:
@@ -336,3 +355,67 @@ jobs:
           name: test-results-linux-sanitizers
           path: cpp/build/Testing/
           if-no-files-found: ignore
+
+  # ── CMake Install + find_package Verification (Linux) ──────────────────────
+  install-verify:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-12 g++-12 ninja-build
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/Temporalio/Bridge/sdk-core
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          version: ${{ env.PROTOC_VERSION }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache CMake FetchContent dependencies
+        uses: actions/cache@v4
+        with:
+          path: cpp/build/_deps
+          key: fetchcontent-gcc12-install-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-gcc12-install-
+
+      - name: Configure CMake
+        env:
+          CC: gcc-12
+          CXX: g++-12
+        run: >
+          cmake -B cpp/build -S cpp
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/install
+          -DTEMPORALIO_BUILD_TESTS=OFF
+          -DTEMPORALIO_BUILD_EXTENSIONS=OFF
+          -DTEMPORALIO_BUILD_EXAMPLES=OFF
+
+      - name: Build and install
+        run: |
+          cmake --build cpp/build
+          cmake --install cpp/build
+
+      - name: Verify installed files
+        run: |
+          echo "=== Installed headers ==="
+          ls -R ${{ github.workspace }}/install/include/temporalio/ | head -30
+          echo "=== Installed libraries ==="
+          ls -la ${{ github.workspace }}/install/lib/
+          echo "=== Installed cmake config ==="
+          ls -la ${{ github.workspace }}/install/lib/cmake/temporalio/ 2>/dev/null || echo "No cmake config (expected when deps from FetchContent)"
+          echo "=== Installed pkgconfig ==="
+          ls -la ${{ github.workspace }}/install/lib/pkgconfig/

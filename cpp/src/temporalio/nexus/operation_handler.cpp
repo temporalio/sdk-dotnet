@@ -1,5 +1,6 @@
 #include "temporalio/nexus/operation_handler.h"
 #include "temporalio/client/temporal_client.h"
+#include "temporalio/client/workflow_handle.h"
 
 #include <nlohmann/json.hpp>
 #include <stdexcept>
@@ -223,29 +224,79 @@ coro::Task<OperationStartResult> WorkflowRunOperationHandler::start_async(
     co_return OperationStartResult::async_result(handle.to_token());
 }
 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4702) // unreachable code (co_return after throw in coroutine stubs)
-#endif
-
 coro::Task<std::any> WorkflowRunOperationHandler::fetch_result_async(
-    OperationFetchResultContext /*context*/) {
-    // TODO: Implement result fetching by polling/waiting on the workflow
-    throw std::logic_error("fetch_result_async not implemented");
-    co_return std::any{};  // makes this a coroutine
+    OperationFetchResultContext context) {
+    // Parse the token to get the workflow handle
+    NexusWorkflowRunHandle run_handle =
+        NexusWorkflowRunHandle::from_token(context.operation_token);
+
+    auto& exec_ctx = NexusOperationExecutionContext::current();
+
+    // Verify namespace matches
+    if (run_handle.ns() != exec_ctx.info().ns) {
+        throw std::invalid_argument("Invalid namespace in operation token");
+    }
+
+    // Get the workflow handle and wait for result
+    auto wf_handle = exec_ctx.temporal_client().get_workflow_handle(
+        run_handle.workflow_id());
+    auto result_payload = co_await wf_handle.get_result_payload();
+
+    // Return the raw payload data as the result
+    co_return std::any(
+        std::string(result_payload.data.begin(), result_payload.data.end()));
 }
 
 coro::Task<NexusOperationState>
 WorkflowRunOperationHandler::fetch_info_async(
-    OperationFetchInfoContext /*context*/) {
-    // TODO: Implement by describing the workflow
-    throw std::logic_error("fetch_info_async not implemented");
-    co_return NexusOperationState{};  // makes this a coroutine
-}
+    OperationFetchInfoContext context) {
+    // Parse the token to get the workflow handle
+    NexusWorkflowRunHandle run_handle =
+        NexusWorkflowRunHandle::from_token(context.operation_token);
 
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+    auto& exec_ctx = NexusOperationExecutionContext::current();
+
+    // Verify namespace matches
+    if (run_handle.ns() != exec_ctx.info().ns) {
+        throw std::invalid_argument("Invalid namespace in operation token");
+    }
+
+    // Describe the workflow to get its current status
+    auto wf_handle = exec_ctx.temporal_client().get_workflow_handle(
+        run_handle.workflow_id());
+    auto desc = co_await wf_handle.describe();
+
+    // Map workflow execution status to a Nexus operation state string
+    std::string state;
+    switch (desc.status) {
+        case common::WorkflowExecutionStatus::kRunning:
+            state = "RUNNING";
+            break;
+        case common::WorkflowExecutionStatus::kCompleted:
+            state = "SUCCEEDED";
+            break;
+        case common::WorkflowExecutionStatus::kFailed:
+            state = "FAILED";
+            break;
+        case common::WorkflowExecutionStatus::kCanceled:
+            state = "CANCELED";
+            break;
+        case common::WorkflowExecutionStatus::kTerminated:
+            state = "FAILED";
+            break;
+        case common::WorkflowExecutionStatus::kTimedOut:
+            state = "FAILED";
+            break;
+        case common::WorkflowExecutionStatus::kContinuedAsNew:
+            state = "RUNNING";
+            break;
+        default:
+            state = "UNKNOWN";
+            break;
+    }
+
+    co_return NexusOperationState{std::move(state)};
+}
 
 coro::Task<void> WorkflowRunOperationHandler::cancel_async(
     OperationCancelContext context) {

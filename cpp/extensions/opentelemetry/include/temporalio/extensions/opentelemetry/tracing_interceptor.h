@@ -19,15 +19,13 @@
 #include <unordered_map>
 #include <vector>
 
-#include "temporalio/extensions/opentelemetry/tracing_options.h"
-#include "temporalio/worker/interceptors/worker_interceptor.h"
+#include <opentelemetry/context/propagation/text_map_propagator.h>
+#include <opentelemetry/nostd/shared_ptr.h>
+#include <opentelemetry/trace/tracer.h>
 
-// Include the actual client interceptor interface
-// (located in the cpp/ relocated tree or include/)
-namespace temporalio::client::interceptors {
-class IClientInterceptor;
-class ClientOutboundInterceptor;
-}  // namespace temporalio::client::interceptors
+#include "temporalio/extensions/opentelemetry/tracing_options.h"
+#include "temporalio/client/interceptors/client_interceptor.h"
+#include "temporalio/worker/interceptors/worker_interceptor.h"
 
 namespace temporalio::extensions::opentelemetry {
 
@@ -42,7 +40,8 @@ namespace temporalio::extensions::opentelemetry {
 /// Propagates trace context via Temporal headers using the configured
 /// header key.
 class TracingInterceptor
-    : public worker::interceptors::IWorkerInterceptor,
+    : public client::interceptors::IClientInterceptor,
+      public worker::interceptors::IWorkerInterceptor,
       public std::enable_shared_from_this<TracingInterceptor> {
 public:
     /// Source names used for span creation.
@@ -68,6 +67,32 @@ public:
         return options_;
     }
 
+    /// Get the workflow tracer.
+    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    workflow_tracer() const noexcept {
+        return workflow_tracer_;
+    }
+
+    /// Get the activity tracer.
+    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    activity_tracer() const noexcept {
+        return activity_tracer_;
+    }
+
+    /// Get the client tracer.
+    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    client_tracer() const noexcept {
+        return client_tracer_;
+    }
+
+    // -- IClientInterceptor --
+
+    /// Create a client outbound interceptor that wraps the given next.
+    std::unique_ptr<client::interceptors::ClientOutboundInterceptor>
+    intercept_client(
+        std::unique_ptr<client::interceptors::ClientOutboundInterceptor> next)
+        override;
+
     // -- IWorkerInterceptor --
 
     /// Create a workflow inbound interceptor that wraps the given next.
@@ -78,20 +103,45 @@ public:
     worker::interceptors::ActivityInboundInterceptor* intercept_activity(
         worker::interceptors::ActivityInboundInterceptor* next) override;
 
-    /// Serialize trace context into Temporal headers.
+    /// Inject current OTel context into Temporal headers using the
+    /// configured propagator.
+    /// @param headers Existing headers (may be empty).
+    /// @param context The OTel context to inject. If empty, uses current
+    ///   context.
+    /// @return Updated headers with trace context injected.
+    std::unordered_map<std::string, std::string> inject_context(
+        std::unordered_map<std::string, std::string> headers,
+        const opentelemetry::context::Context& context) const;
+
+    /// Inject current OTel context into Temporal headers.
+    /// Uses the currently active OTel context.
     /// @param headers Existing headers (may be empty).
     /// @return Updated headers with trace context injected.
     std::unordered_map<std::string, std::string> inject_context(
         std::unordered_map<std::string, std::string> headers) const;
 
-    /// Extract trace context from Temporal headers.
+    /// Extract trace context from Temporal headers into an OTel context.
     /// @param headers Headers to extract from.
-    /// @return True if trace context was found and extracted.
-    bool extract_context(
+    /// @return The extracted context, or an empty context if not found.
+    opentelemetry::context::Context extract_context(
+        const std::unordered_map<std::string, std::string>& headers) const;
+
+    /// Check whether headers contain trace context.
+    /// @param headers Headers to check.
+    /// @return True if trace context was found.
+    bool has_context(
         const std::unordered_map<std::string, std::string>& headers) const;
 
 private:
     TracingInterceptorOptions options_;
+
+    // Tracers for each domain
+    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+        client_tracer_;
+    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+        workflow_tracer_;
+    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+        activity_tracer_;
 
     // Owned interceptor instances (kept alive for the interceptor chain)
     std::vector<
@@ -100,6 +150,9 @@ private:
     std::vector<
         std::unique_ptr<worker::interceptors::ActivityInboundInterceptor>>
         activity_interceptors_;
+    std::vector<
+        std::unique_ptr<worker::interceptors::WorkflowOutboundInterceptor>>
+        workflow_outbound_interceptors_;
 };
 
 }  // namespace temporalio::extensions::opentelemetry

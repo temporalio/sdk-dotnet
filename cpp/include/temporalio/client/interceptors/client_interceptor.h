@@ -16,6 +16,7 @@ namespace temporalio::client {
 class WorkflowHandle;
 struct WorkflowExecution;
 struct WorkflowExecutionCount;
+struct WorkflowExecutionDescription;
 } // namespace temporalio::client
 
 namespace temporalio::client::interceptors {
@@ -271,7 +272,7 @@ public:
         StartUpdateWithStartWorkflowInput input);
 
     /// Intercept describe workflow calls.
-    virtual coro::Task<std::string> describe_workflow(
+    virtual coro::Task<WorkflowExecutionDescription> describe_workflow(
         DescribeWorkflowInput input);
 
     /// Intercept cancel workflow calls.

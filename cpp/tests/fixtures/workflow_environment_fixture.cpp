@@ -42,6 +42,7 @@ void WorkflowEnvironmentFixture::SetUp() {
     // Check if an external server is specified via environment variables.
     std::string target_host_env = safe_getenv("TEMPORAL_TEST_CLIENT_TARGET_HOST");
     std::string namespace_env = safe_getenv("TEMPORAL_TEST_CLIENT_NAMESPACE");
+    std::string dev_server_path_env = safe_getenv("TEMPORAL_DEV_SERVER_PATH");
 
     try {
         if (!target_host_env.empty()) {
@@ -70,11 +71,19 @@ void WorkflowEnvironmentFixture::SetUp() {
             std::cout << "[WorkflowEnvironmentFixture] Connected to external server."
                       << std::endl;
         } else {
-            // Start a local dev server.
-            std::cout << "[WorkflowEnvironmentFixture] Starting local dev server..."
-                      << std::endl;
-
+            // Start a local dev server (auto-downloads if not present).
             WorkflowEnvironmentStartLocalOptions local_opts;
+
+            // Allow overriding the dev server binary path via env var.
+            if (!dev_server_path_env.empty()) {
+                local_opts.existing_path = dev_server_path_env;
+                std::cout << "[WorkflowEnvironmentFixture] Using dev server at: "
+                          << dev_server_path_env << std::endl;
+            } else {
+                std::cout << "[WorkflowEnvironmentFixture] Starting local dev server "
+                          << "(will auto-download if not cached)..." << std::endl;
+            }
+
             local_opts.extra_args = {
                 "--dynamic-config-value",
                 "system.forceSearchAttributesCacheRefreshOnRead=true",
@@ -90,6 +99,10 @@ void WorkflowEnvironmentFixture::SetUp() {
     } catch (const std::exception& e) {
         std::cerr << "[WorkflowEnvironmentFixture] WARNING: Failed to initialize "
                   << "workflow environment: " << e.what() << std::endl;
+        std::cerr << "[WorkflowEnvironmentFixture] Set TEMPORAL_TEST_CLIENT_TARGET_HOST "
+                  << "to connect to an existing server, or TEMPORAL_DEV_SERVER_PATH to "
+                  << "use a local binary. Otherwise, the bridge will auto-download."
+                  << std::endl;
         std::cerr << "[WorkflowEnvironmentFixture] Integration tests will be skipped."
                   << std::endl;
         available_ = false;

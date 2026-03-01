@@ -48,6 +48,9 @@ Release/
 RelWithDebInfo/
 MinSizeRel/
 
+# Doxygen generated documentation
+cpp/docs/
+
 # OS files
 .DS_Store
 Thumbs.db

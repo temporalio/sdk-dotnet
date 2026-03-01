@@ -11,8 +11,10 @@
 #include <temporal/api/common/v1/message.pb.h>
 #include <temporal/api/history/v1/message.pb.h>
 #include <temporal/api/enums/v1/workflow.pb.h>
+#include <temporal/api/workflow/v1/message.pb.h>
 #include <temporal/api/update/v1/message.pb.h>
 #include <temporal/api/enums/v1/update.pb.h>
+#include <google/protobuf/timestamp.pb.h>
 
 #include "temporalio/client/rpc_helpers.h"
 
@@ -77,6 +79,16 @@ PollResult process_history_response(const std::vector<uint8_t>& response_bytes) 
     PollResult pr;
     pr.next_page_token = resp.next_page_token();
     return pr;
+}
+
+/// Convert a protobuf Timestamp to a system_clock time_point.
+std::chrono::system_clock::time_point timestamp_to_time_point(
+    const google::protobuf::Timestamp& ts) {
+    auto secs = std::chrono::seconds(ts.seconds());
+    auto nanos = std::chrono::nanoseconds(ts.nanos());
+    return std::chrono::system_clock::time_point(
+        std::chrono::duration_cast<std::chrono::system_clock::duration>(
+            secs + nanos));
 }
 
 }  // namespace
@@ -328,10 +340,77 @@ coro::Task<void> WorkflowHandle::terminate(
     co_await client_->terminate_workflow(id_, options.reason, run_id_);
 }
 
-coro::Task<std::string> WorkflowHandle::describe(
+coro::Task<WorkflowExecutionDescription> WorkflowHandle::describe(
     const WorkflowDescribeOptions& options) {
-    // TODO: Implement via client RPC
-    co_return std::string{};
+    auto* bridge = client_->bridge_client();
+    if (!bridge) {
+        throw std::runtime_error("Not connected to Temporal server");
+    }
+
+    // Build DescribeWorkflowExecutionRequest
+    temporal::api::workflowservice::v1::DescribeWorkflowExecutionRequest req;
+    req.set_namespace_(client_->ns());
+    req.mutable_execution()->set_workflow_id(id_);
+    if (run_id_) {
+        req.mutable_execution()->set_run_id(*run_id_);
+    }
+
+    bridge::RpcCallOptions rpc_opts;
+    rpc_opts.service = TemporalCoreRpcService::Workflow;
+    rpc_opts.rpc = "DescribeWorkflowExecution";
+    std::string serialized = req.SerializeAsString();
+    rpc_opts.request = std::vector<uint8_t>(serialized.begin(),
+                                             serialized.end());
+    rpc_opts.retry = true;
+
+    auto response = co_await internal::rpc_call(*bridge, std::move(rpc_opts));
+
+    // Parse response
+    temporal::api::workflowservice::v1::DescribeWorkflowExecutionResponse resp;
+    if (!resp.ParseFromArray(response.data(),
+                              static_cast<int>(response.size()))) {
+        throw std::runtime_error(
+            "Failed to parse DescribeWorkflowExecution response");
+    }
+
+    WorkflowExecutionDescription desc;
+
+    if (resp.has_workflow_execution_info()) {
+        const auto& info = resp.workflow_execution_info();
+
+        if (info.has_execution()) {
+            desc.workflow_id = info.execution().workflow_id();
+            desc.run_id = info.execution().run_id();
+        }
+        if (info.has_type()) {
+            desc.workflow_type = info.type().name();
+        }
+
+        desc.status = static_cast<common::WorkflowExecutionStatus>(
+            static_cast<int>(info.status()));
+        desc.task_queue = info.task_queue();
+        desc.history_length = info.history_length();
+        desc.history_size_bytes = info.history_size_bytes();
+        desc.state_transition_count = info.state_transition_count();
+
+        if (info.has_start_time()) {
+            desc.start_time = timestamp_to_time_point(info.start_time());
+        }
+        if (info.has_close_time()) {
+            desc.close_time = timestamp_to_time_point(info.close_time());
+        }
+        if (info.has_execution_time()) {
+            desc.execution_time =
+                timestamp_to_time_point(info.execution_time());
+        }
+        if (info.has_parent_execution()) {
+            desc.parent_workflow_id =
+                info.parent_execution().workflow_id();
+            desc.parent_run_id = info.parent_execution().run_id();
+        }
+    }
+
+    co_return desc;
 }
 
 } // namespace temporalio::client

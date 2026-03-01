@@ -4,7 +4,7 @@
 PROJECT_NAME           = "Temporal C++ SDK"
 PROJECT_NUMBER         = 0.1.0
 PROJECT_BRIEF          = "C++20 client library for Temporal durable execution"
-OUTPUT_DIRECTORY       = docs
+OUTPUT_DIRECTORY       = docs/api
 
 # ── Input sources ─────────────────────────────────────────────────────────────
 # Scan only public headers (include/) and extension public headers.
@@ -12,14 +12,24 @@ INPUT                  = include/temporalio \
                          extensions/opentelemetry/include \
                          extensions/diagnostics/include
 RECURSIVE              = YES
-FILE_PATTERNS          = *.h
+FILE_PATTERNS          = *.h *.md
 EXCLUDE_PATTERNS       = */internal/* */bridge/*
+
+# ── Markdown support ─────────────────────────────────────────────────────────
+USE_MDFILE_AS_MAINPAGE =
+MARKDOWN_SUPPORT       = YES
+AUTOLINK_SUPPORT       = YES
 
 # ── Extraction settings ──────────────────────────────────────────────────────
 EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = NO
+EXTRACT_ANON_NSPACES   = NO
+
+# ── C++ specific ─────────────────────────────────────────────────────────────
+BUILTIN_STL_SUPPORT    = YES
+CPP_CLI_SUPPORT        = NO
 
 # ── Source browsing ──────────────────────────────────────────────────────────
 SOURCE_BROWSER         = NO
@@ -39,7 +49,8 @@ HTML_COLORSTYLE        = LIGHT
 # ── Preprocessing ────────────────────────────────────────────────────────────
 ENABLE_PREPROCESSING   = YES
 MACRO_EXPANSION        = YES
-PREDEFINED             = TEMPORALIO_HAS_PROTOBUF
+PREDEFINED             = TEMPORALIO_HAS_PROTOBUF \
+                         TEMPORALIO_EXPORT=
 
 # ── Diagrams ─────────────────────────────────────────────────────────────────
 HAVE_DOT               = NO
