@@ -13,17 +13,44 @@ The Temporal C# SDK (`src/Temporalio/`) is a mature library (~469 source files, 
 
 ## Current Status
 
-> **Last updated:** 2026-02-28 (TO_DO.md implementation session complete)
+> **Last updated:** 2026-02-28 (End-to-end validation session complete)
 
 ### Summary
 
 All implementation phases (1-10) plus API stabilization (7), build system improvements (8),
 packaging (9), and TO_DO.md items are complete. The project **builds successfully on MSVC 2022**
-with the Rust `sdk-core-c-bridge` linked. **791+ unit tests pass** (0 failures, 76 new tests
-added). All 3 self-contained examples run **end-to-end against a live Temporal server** and
+with the Rust `sdk-core-c-bridge` linked. **742 unit tests pass** (0 failures, ctest verified).
+All **6 self-contained examples** run **end-to-end against a live Temporal Docker server** and
 exit cleanly (exit code 0).
 
-**Latest highlights (TO_DO.md implementation session):**
+**Latest highlights (End-to-end validation session):**
+- **All 6 examples fully functional**: Each example is self-contained with its own worker,
+  connects to a live Temporal server, starts workflows, gets results, and shuts down cleanly.
+- **Examples verified against Docker Temporal**: Tested against `temporalio/auto-setup:1.29.1`
+  with PostgreSQL backend and Elasticsearch.
+- **742 tests pass (0 failures)**: Full ctest run with `TEMPORAL_TEST_CLIENT_TARGET_HOST=localhost:7233`
+  against a live Docker Temporal server. All tests complete in ~36 seconds.
+- **3 example bugs fixed**:
+  - `hello_world`: Was client-only (no worker) — hung on `get_result()`. Fixed to include a
+    `GreetingWorkflow` worker that executes the workflow end-to-end.
+  - `signal_workflow`: Was client-only (no worker) — hung on signals/result. Fixed to include
+    a worker with the `AccumulatorWorkflow` definition.
+  - `activity_worker`: Workflow was a placeholder returning "Would greet:" instead of actually
+    calling the activity. Fixed to use `Workflow::execute_activity()` with two activities
+    (greet + get_worker_info).
+
+**Example results (all exit code 0):**
+
+| Example | Workflow Type | Features Demonstrated | Result |
+|---------|--------------|----------------------|--------|
+| hello_world | Greeting | Client connect, workflow start/result, worker lifecycle | "Hello, World!" |
+| workflow_activity | GreetingWorkflow | Activity definition, execute_activity, typed args | "Hello, Temporal!" |
+| signal_workflow | Accumulator | Signal handlers, query handlers, wait_condition | "hello, world" |
+| activity_worker | GreetingWorkflow | Multiple activities, worker config, typed results | "Hello, Temporal! (worker: activity-worker-example-v1)" |
+| timer_workflow | TimerWorkflow | Deterministic timers, delay(), wait_condition with timeout, signals | "approved after 2059ms delay" |
+| update_workflow | ShoppingCart | Update handlers with validators, queries, signals, all_handlers_finished | "apple, banana" |
+
+**Previous highlights (TO_DO.md implementation session):**
 - **OpenTelemetry TracingInterceptor**: Full span creation for all worker-side and client-side
   operations. Real `TextMapPropagator` context injection/extraction. Outbound interceptor wrapping
   for trace context propagation to child operations.
@@ -80,7 +107,7 @@ TEMPORALIO_EXPORT restoration). Two OTel signature issues found and fixed in TO_
 | Implementation files (`cpp/src/`) | 26 `.cpp` + 8 `.h` | Complete |
 | Extension implementations | 2 `.cpp` | Complete (TracingInterceptor fully implemented) |
 | Test files (`cpp/tests/`) | 39 (incl. `main.cpp`) | Complete (added payload_roundtrip, otel_span_creation) |
-| Example programs | 6 | Complete — all 3 self-contained examples work E2E with clean shutdown |
+| Example programs | 6 | Complete — all 6 self-contained examples work E2E against Docker Temporal |
 | CMake build files | 6 | Complete (added `CMakePresets.json`, `temporalioConfig.cmake.in`) |
 | Build config (`vcpkg.json`, `.cmake`) | 3 | Complete |
 | Packaging files | 5 | Complete (`vcpkg-port/`, `vcpkg-overlay/`, `test-consumer/`) |
@@ -88,8 +115,8 @@ TEMPORALIO_EXPORT restoration). Two OTel signature issues found and fixed in TO_
 | Documentation | 1 | Complete (`cpp/Doxyfile`) |
 | FFI stub file (`ffi_stubs.cpp`) | 1 | For test builds without Rust bridge |
 | **Total C++ files** | **135+** | |
-| **Total test cases (TEST/TEST_F)** | **791+ passing** | 76 new tests added; OTel tests conditionally compiled |
-| **Bugs found & fixed** | **48 total** | Including 2 from TO_DO implementation session |
+| **Total test cases (TEST/TEST_F)** | **742 passing (ctest verified)** | All pass against live Docker Temporal server |
+| **Bugs found & fixed** | **51 total** | Including 3 example bugs from E2E validation session |
 
 ### Phase Completion Status
 
@@ -101,9 +128,9 @@ TEMPORALIO_EXPORT restoration). Two OTel signature issues found and fixed in TO_
 | Phase 4 | Workflows & Activities | **COMPLETE** | Type-safe WorkflowDefinition builder (multi-arg), ActivityDefinition (variadic), WorkflowInstance, ActivityWorker, TemporalWorker |
 | Phase 5 | Nexus & Testing | **COMPLETE** | NexusServiceDefinition, OperationHandler, WorkflowEnvironment, ActivityEnvironment (real context scope) |
 | Phase 6 | Extensions | **COMPLETE** | TracingInterceptor fully implemented (spans, context propagation, client+worker), CustomMetricMeter (Diagnostics) |
-| Phase 7 | Tests | **COMPLETE — 791+ PASSING** | All tests pass on MSVC. 76 new tests added (payload round-trip, OTel spans). |
-| Phase 8 | Execute Activity API + Examples | **COMPLETE** | `Workflow::execute_activity<R>()` typed API, `ActivityOptions`, 6 examples. |
-| Phase 9 | Integration Testing (Live Server) | **COMPLETE** | Rust bridge linked, 8 FFI bugs fixed, all 3 E2E examples work. |
+| Phase 7 | Tests | **COMPLETE — 742 PASSING** | All tests pass on MSVC against Docker Temporal. 76 new tests added (payload round-trip, OTel spans). |
+| Phase 8 | Execute Activity API + Examples | **COMPLETE** | `Workflow::execute_activity<R>()` typed API, `ActivityOptions`, 6 self-contained examples. |
+| Phase 9 | Integration Testing (Live Server) | **COMPLETE** | Rust bridge linked, 8 FFI bugs fixed, all 6 E2E examples work against Docker. |
 | Phase 10 | End-to-End Workflows + Clean Shutdown | **COMPLETE** | G1-G5 gap fixes, shutdown hang fix, all examples exit cleanly (code 0). |
 
 ### Bugs Found and Fixed (Full List)
@@ -950,6 +977,11 @@ RPCs, testing, CI/CD, documentation, and packaging):
 **Bugs found and fixed (2 new, #47-#48):**
 47. **OTel `extract_context` signature mismatch (MEDIUM)** — Header declared return type `opentelemetry::context::Context` but implementation returned `bool`. Fixed by aligning implementation to return Context. File: `tracing_interceptor.cpp`.
 48. **OTel missing `inject_context` overload (MEDIUM)** — Header declared two-parameter overload `inject_context(headers, context)` but only single-parameter version was implemented. Fixed by adding the missing overload. File: `tracing_interceptor.cpp`.
+
+**From E2E validation session:**
+49. **hello_world example missing worker (MEDIUM)** — Example was client-only: started a "Greeting" workflow and called `get_result()` but had no worker to execute it, causing it to hang forever. Fixed by adding a `GreetingWorkflow` class, WorkflowDefinition, and a background worker thread with clean shutdown. File: `examples/hello_world/main.cpp`.
+50. **signal_workflow example missing worker (MEDIUM)** — Example was client-only: started an "Accumulator" workflow and sent signals but had no worker, causing it to hang. Fixed by adding a worker with the AccumulatorWorkflow definition, running in a background thread. File: `examples/signal_workflow/main.cpp`.
+51. **activity_worker example placeholder workflow (LOW)** — Workflow returned `"Would greet: " + name` instead of actually calling the activity via `Workflow::execute_activity()`. Fixed to properly invoke both `greet` and `get_worker_info` activities with `ActivityOptions` and return combined result. File: `examples/activity_worker/main.cpp`.
 
 ---
 

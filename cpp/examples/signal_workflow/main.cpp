@@ -1,12 +1,12 @@
 /// @file signal_workflow/main.cpp
-/// @brief Example: start a workflow and send it a signal.
+/// @brief Example: start a workflow and send it signals.
 ///
 /// This example demonstrates:
-///   1. Defining a workflow class with a signal handler.
+///   1. Defining a workflow class with signal and query handlers.
 ///   2. Building a WorkflowDefinition using the builder API.
-///   3. Connecting to Temporal and starting a workflow.
-///   4. Sending a signal to the running workflow.
-///   5. Retrieving the final result.
+///   3. Starting a worker, connecting to Temporal, and starting a workflow.
+///   4. Sending signals to the running workflow.
+///   5. Retrieving the final result after signaling "done".
 ///
 /// Requires a running Temporal server at localhost:7233.
 
@@ -15,13 +15,15 @@
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/workflow_options.h>
 #include <temporalio/version.h>
+#include <temporalio/worker/temporal_worker.h>
 #include <temporalio/workflows/workflow.h>
 #include <temporalio/workflows/workflow_definition.h>
 
-#include <coroutine>
 #include <exception>
 #include <iostream>
+#include <stop_token>
 #include <string>
+#include <thread>
 
 using temporalio::coro::run_task_sync;
 
@@ -71,43 +73,12 @@ make_accumulator_definition() {
         .build();
 }
 
-// The async entry point.
-temporalio::coro::Task<void> run() {
-    namespace client = temporalio::client;
-
-    // Step 1: Connect to Temporal.
-    auto tc = co_await client::TemporalClient::connect(
-        client::TemporalClientConnectOptions{
-            .connection = {.target_host = "localhost:7233"},
-        });
-
-    // Step 2: Start the Accumulator workflow.
-    client::WorkflowOptions opts;
-    opts.id = "signal-example-workflow";
-    opts.task_queue = "signal-example-queue";
-
-    auto handle = co_await tc->start_workflow("Accumulator", opts);
-    std::cout << "Started workflow: " << handle.id() << "\n";
-
-    // Step 3: Send signals with messages.
-    co_await handle.signal("add_message", std::string("hello"));
-    std::cout << "Sent signal: hello\n";
-
-    co_await handle.signal("add_message", std::string("world"));
-    std::cout << "Sent signal: world\n";
-
-    // Step 4: Send the "done" signal to complete the workflow.
-    co_await handle.signal("add_message", std::string("done"));
-    std::cout << "Sent signal: done\n";
-
-    // Step 5: Get the final result.
-    auto result = co_await handle.get_result<std::string>();
-    std::cout << "Workflow result: " << result << "\n";
-}
-
 int main() {
     std::cout << "Temporal C++ SDK v" << temporalio::version() << "\n";
     std::cout << "Signal Workflow example\n\n";
+
+    namespace client = temporalio::client;
+    namespace worker = temporalio::worker;
 
     // Show the workflow definition (local validation).
     auto def = make_accumulator_definition();
@@ -116,7 +87,63 @@ int main() {
               << ", queries: " << def->queries().size() << ")\n\n";
 
     try {
-        run_task_sync(run());
+        // Step 1: Connect to Temporal.
+        auto tc = run_task_sync(client::TemporalClient::connect(
+            client::TemporalClientConnectOptions{
+                .connection = {.target_host = "localhost:7233"},
+                .client = {.ns = "default"},
+            }));
+
+        std::cout << "Connected to Temporal server.\n";
+
+        // Step 2: Build the workflow definition and configure worker.
+        auto accumulator_workflow = make_accumulator_definition();
+
+        worker::TemporalWorkerOptions worker_opts;
+        worker_opts.task_queue = "signal-example-queue";
+        worker_opts.workflows.push_back(accumulator_workflow);
+
+        std::stop_source worker_stop;
+        worker::TemporalWorker w(tc, worker_opts);
+
+        std::jthread worker_thread([&w, token = worker_stop.get_token()]() {
+            try {
+                run_task_sync(w.execute_async(token));
+            } catch (const std::exception& e) {
+                std::cerr << "Worker error: " << e.what() << "\n";
+            }
+        });
+
+        std::cout << "Worker started on task queue: signal-example-queue\n";
+
+        // Step 3: Start the Accumulator workflow.
+        client::WorkflowOptions opts;
+        opts.id = "signal-example-workflow";
+        opts.task_queue = "signal-example-queue";
+
+        auto handle = run_task_sync(tc->start_workflow("Accumulator", opts));
+        std::cout << "Started workflow: " << handle.id() << "\n";
+
+        // Step 4: Send signals with messages.
+        run_task_sync(handle.signal("add_message", std::string("hello")));
+        std::cout << "Sent signal: hello\n";
+
+        run_task_sync(handle.signal("add_message", std::string("world")));
+        std::cout << "Sent signal: world\n";
+
+        // Step 5: Send the "done" signal to complete the workflow.
+        run_task_sync(handle.signal("add_message", std::string("done")));
+        std::cout << "Sent signal: done\n";
+
+        // Step 6: Get the final result.
+        auto result = run_task_sync(handle.get_result<std::string>());
+        std::cout << "Workflow result: " << result << "\n";
+
+        // Step 7: Shut down the worker.
+        worker_stop.request_stop();
+        worker_thread.join();
+        std::cout << "Worker shut down.\n";
+
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
