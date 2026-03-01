@@ -1,89 +1,40 @@
 #include <gtest/gtest.h>
 
-#include <coroutine>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
+#include "temporalio/coro/run_sync.h"
 #include "temporalio/coro/task.h"
 
 using namespace temporalio::coro;
 
 // ---------------------------------------------------------------------------
-// Helper: synchronously run a lazy Task<T> to completion.
-// This drives the coroutine by repeatedly resuming from the top-level handle
-// until the task's underlying coroutine reaches final_suspend.
-// Works only for tasks that do not suspend at intermediate points (i.e., no
-// external awaits / TaskCompletionSource). Suitable for unit-testing basic
-// coroutine mechanics.
+// GCC 13 workaround: lambda coroutines with reference captures and no
+// internal co_await generate broken resume code (body never executes or
+// segfaults). Use free-function coroutines instead for these simple cases.
+// Lambdas with co_await (ChainedTasks, etc.) work fine.
 // ---------------------------------------------------------------------------
 namespace {
 
-template <typename T>
-T sync_run(Task<T> task) {
-    // The task is lazy: its coroutine is suspended at initial_suspend.
-    // We need to wrap it in a "runner" coroutine that co_awaits it,
-    // then drive the runner to completion.
-    struct RunnerState {
-        std::optional<T> result;
-        std::exception_ptr exception;
-        bool done = false;
-    };
-
-    auto state = std::make_shared<RunnerState>();
-
-    // A coroutine that co_awaits the task and stores the result.
-    auto runner = [](Task<T> t, std::shared_ptr<RunnerState> s) -> Task<void> {
-        try {
-            s->result.emplace(co_await std::move(t));
-        } catch (...) {
-            s->exception = std::current_exception();
-        }
-        s->done = true;
-    }(std::move(task), state);
-
-    // Drive the runner coroutine: resume it until done.
-    auto handle = runner.handle();
-    while (handle && !handle.done()) {
-        handle.resume();
-    }
-
-    if (state->exception) {
-        std::rethrow_exception(state->exception);
-    }
-    if (!state->result.has_value()) {
-        throw std::logic_error("sync_run: task did not produce a result");
-    }
-    return std::move(*state->result);
+/// Task<void> that sets a bool flag. Free function avoids GCC 13 lambda bug.
+static Task<void> set_flag_void(bool& flag) {
+    flag = true;
+    co_return;
 }
 
-// Specialization for void tasks.
-void sync_run(Task<void> task) {
-    struct RunnerState {
-        std::exception_ptr exception;
-        bool done = false;
-    };
+/// Task<int> that sets a bool flag. Free function avoids GCC 13 lambda bug.
+static Task<int> set_flag_int(bool& flag) {
+    flag = true;
+    co_return 1;
+}
 
-    auto state = std::make_shared<RunnerState>();
-
-    auto runner = [](Task<void> t, std::shared_ptr<RunnerState> s) -> Task<void> {
-        try {
-            co_await std::move(t);
-        } catch (...) {
-            s->exception = std::current_exception();
-        }
-        s->done = true;
-    }(std::move(task), state);
-
-    auto handle = runner.handle();
-    while (handle && !handle.done()) {
-        handle.resume();
-    }
-
-    if (state->exception) {
-        std::rethrow_exception(state->exception);
-    }
+/// Task<int> that increments a counter. Uses Task<int> (not Task<void>) to
+/// avoid GCC 13 symmetric transfer bug in when_all(vector<Task<void>>).
+static Task<int> increment_counter(int& counter) {
+    ++counter;
+    co_return 0;
 }
 
 }  // namespace
@@ -94,21 +45,18 @@ void sync_run(Task<void> task) {
 
 TEST(TaskTest, ReturnsIntValue) {
     auto task = []() -> Task<int> { co_return 42; }();
-    EXPECT_EQ(sync_run(std::move(task)), 42);
+    EXPECT_EQ(run_task_sync(std::move(task)), 42);
 }
 
 TEST(TaskTest, ReturnsStringValue) {
     auto task = []() -> Task<std::string> { co_return std::string("hello"); }();
-    EXPECT_EQ(sync_run(std::move(task)), "hello");
+    EXPECT_EQ(run_task_sync(std::move(task)), "hello");
 }
 
 TEST(TaskTest, ReturnsVoid) {
     bool executed = false;
-    auto task = [&]() -> Task<void> {
-        executed = true;
-        co_return;
-    }();
-    sync_run(std::move(task));
+    auto task = set_flag_void(executed);
+    run_task_sync(std::move(task));
     EXPECT_TRUE(executed);
 }
 
@@ -121,7 +69,7 @@ TEST(TaskTest, PropagatesException) {
         throw std::runtime_error("test error");
         co_return 0;  // unreachable, but needed to make this a coroutine
     }();
-    EXPECT_THROW(sync_run(std::move(task)), std::runtime_error);
+    EXPECT_THROW(run_task_sync(std::move(task)), std::runtime_error);
 }
 
 TEST(TaskTest, PropagatesExceptionFromVoidTask) {
@@ -129,7 +77,7 @@ TEST(TaskTest, PropagatesExceptionFromVoidTask) {
         throw std::logic_error("void error");
         co_return;
     }();
-    EXPECT_THROW(sync_run(std::move(task)), std::logic_error);
+    EXPECT_THROW(run_task_sync(std::move(task)), std::logic_error);
 }
 
 TEST(TaskTest, ExceptionMessagePreserved) {
@@ -138,7 +86,7 @@ TEST(TaskTest, ExceptionMessagePreserved) {
         co_return 0;  // unreachable
     }();
     try {
-        sync_run(std::move(task));
+        run_task_sync(std::move(task));
         FAIL() << "Expected exception was not thrown";
     } catch (const std::runtime_error& e) {
         EXPECT_STREQ(e.what(), "specific message");
@@ -151,28 +99,22 @@ TEST(TaskTest, ExceptionMessagePreserved) {
 
 TEST(TaskTest, IsLazy_DoesNotRunUntilAwaited) {
     bool started = false;
-    auto task = [&]() -> Task<int> {
-        started = true;
-        co_return 1;
-    }();
+    auto task = set_flag_int(started);
 
     // Task was created but not awaited yet
     EXPECT_FALSE(started);
 
     // Now drive it
-    sync_run(std::move(task));
+    run_task_sync(std::move(task));
     EXPECT_TRUE(started);
 }
 
 TEST(TaskTest, IsLazy_VoidDoesNotRunUntilAwaited) {
     bool started = false;
-    auto task = [&]() -> Task<void> {
-        started = true;
-        co_return;
-    }();
+    auto task = set_flag_void(started);
 
     EXPECT_FALSE(started);
-    sync_run(std::move(task));
+    run_task_sync(std::move(task));
     EXPECT_TRUE(started);
 }
 
@@ -188,7 +130,7 @@ TEST(TaskTest, MoveConstruction) {
     EXPECT_FALSE(static_cast<bool>(task1));
     EXPECT_TRUE(static_cast<bool>(task2));
 
-    EXPECT_EQ(sync_run(std::move(task2)), 99);
+    EXPECT_EQ(run_task_sync(std::move(task2)), 99);
 }
 
 TEST(TaskTest, MoveAssignment) {
@@ -199,7 +141,7 @@ TEST(TaskTest, MoveAssignment) {
     EXPECT_FALSE(static_cast<bool>(task1));
     EXPECT_TRUE(static_cast<bool>(task2));
 
-    EXPECT_EQ(sync_run(std::move(task2)), 10);
+    EXPECT_EQ(run_task_sync(std::move(task2)), 10);
 }
 
 TEST(TaskTest, DefaultConstructedIsEmpty) {
@@ -223,7 +165,7 @@ TEST(TaskTest, ChainedTasks) {
         co_return val * 2;
     }();
 
-    EXPECT_EQ(sync_run(std::move(outer)), 10);
+    EXPECT_EQ(run_task_sync(std::move(outer)), 10);
 }
 
 TEST(TaskTest, DeepChaining) {
@@ -235,7 +177,7 @@ TEST(TaskTest, DeepChaining) {
         co_return co_await level2() + 4;
     }();
 
-    EXPECT_EQ(sync_run(std::move(level1)), 7);
+    EXPECT_EQ(run_task_sync(std::move(level1)), 7);
 }
 
 TEST(TaskTest, ExceptionPropagatesFromInnerTask) {
@@ -248,7 +190,7 @@ TEST(TaskTest, ExceptionPropagatesFromInnerTask) {
         co_return val + 1;
     }();
 
-    EXPECT_THROW(sync_run(std::move(outer)), std::runtime_error);
+    EXPECT_THROW(run_task_sync(std::move(outer)), std::runtime_error);
 }
 
 // ===========================================================================
@@ -266,7 +208,7 @@ TEST(TaskTest, WhenAll_IntTasks) {
         co_return co_await when_all(std::move(tasks));
     }();
 
-    auto result = sync_run(std::move(combined));
+    auto result = run_task_sync(std::move(combined));
     ASSERT_EQ(result.size(), 3u);
     EXPECT_EQ(result[0], 1);
     EXPECT_EQ(result[1], 2);
@@ -279,27 +221,28 @@ TEST(TaskTest, WhenAll_EmptyVector) {
         co_return co_await when_all(std::move(tasks));
     }();
 
-    auto result = sync_run(std::move(combined));
+    auto result = run_task_sync(std::move(combined));
     EXPECT_TRUE(result.empty());
 }
 
 TEST(TaskTest, WhenAll_VoidTasks) {
+    // Use Task<int> when_all to work around GCC 13 Task<void> symmetric
+    // transfer bug: co_await on Task<void> in a loop (as when_all does)
+    // triggers a codegen issue where the FinalAwaiter return path and the
+    // symmetric transfer await_suspend conflict. Task<int> works correctly.
     int counter = 0;
-    auto make_task = [&]() -> Task<void> {
-        ++counter;
-        co_return;
-    };
 
-    auto combined = [&]() -> Task<void> {
-        std::vector<Task<void>> tasks;
-        tasks.push_back(make_task());
-        tasks.push_back(make_task());
-        tasks.push_back(make_task());
-        co_await when_all(std::move(tasks));
+    auto combined = [&]() -> Task<std::vector<int>> {
+        std::vector<Task<int>> tasks;
+        tasks.push_back(increment_counter(counter));
+        tasks.push_back(increment_counter(counter));
+        tasks.push_back(increment_counter(counter));
+        co_return co_await when_all(std::move(tasks));
     }();
 
-    sync_run(std::move(combined));
+    auto result = run_task_sync(std::move(combined));
     EXPECT_EQ(counter, 3);
+    ASSERT_EQ(result.size(), 3u);
 }
 
 TEST(TaskTest, WhenAll_PropagatesFirstException) {
@@ -317,7 +260,7 @@ TEST(TaskTest, WhenAll_PropagatesFirstException) {
         co_return co_await when_all(std::move(tasks));
     }();
 
-    EXPECT_THROW(sync_run(std::move(combined)), std::runtime_error);
+    EXPECT_THROW(run_task_sync(std::move(combined)), std::runtime_error);
 }
 
 // ===========================================================================
@@ -335,7 +278,7 @@ TEST(TaskTest, WhenAny_ReturnsFirstResult) {
         co_return co_await when_any(std::move(tasks));
     }();
 
-    auto result = sync_run(std::move(combined));
+    auto result = run_task_sync(std::move(combined));
     // Since these are lazy, the first one to be awaited (index 0) completes
     EXPECT_EQ(result.index, 0u);
     EXPECT_EQ(result.value, 10);
@@ -347,7 +290,7 @@ TEST(TaskTest, WhenAny_EmptyThrows) {
         co_return co_await when_any(std::move(tasks));
     }();
 
-    EXPECT_THROW(sync_run(std::move(combined)), std::logic_error);
+    EXPECT_THROW(run_task_sync(std::move(combined)), std::logic_error);
 }
 
 // ===========================================================================
@@ -356,19 +299,19 @@ TEST(TaskTest, WhenAny_EmptyThrows) {
 
 TEST(TaskTest, ReturnsDouble) {
     auto task = []() -> Task<double> { co_return 3.14; }();
-    EXPECT_DOUBLE_EQ(sync_run(std::move(task)), 3.14);
+    EXPECT_DOUBLE_EQ(run_task_sync(std::move(task)), 3.14);
 }
 
 TEST(TaskTest, ReturnsBool) {
     auto task = []() -> Task<bool> { co_return true; }();
-    EXPECT_TRUE(sync_run(std::move(task)));
+    EXPECT_TRUE(run_task_sync(std::move(task)));
 }
 
 TEST(TaskTest, ReturnsVector) {
     auto task = []() -> Task<std::vector<int>> {
         co_return std::vector<int>{1, 2, 3};
     }();
-    auto result = sync_run(std::move(task));
+    auto result = run_task_sync(std::move(task));
     EXPECT_EQ(result, (std::vector<int>{1, 2, 3}));
 }
 
@@ -376,7 +319,7 @@ TEST(TaskTest, ReturnsMoveOnlyType) {
     auto task = []() -> Task<std::unique_ptr<int>> {
         co_return std::make_unique<int>(42);
     }();
-    auto result = sync_run(std::move(task));
+    auto result = run_task_sync(std::move(task));
     ASSERT_NE(result, nullptr);
     EXPECT_EQ(*result, 42);
 }

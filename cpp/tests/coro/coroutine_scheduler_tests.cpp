@@ -13,6 +13,62 @@
 
 using namespace temporalio::coro;
 
+// ---------------------------------------------------------------------------
+// Minimal coroutine type for scheduler tests.
+// Uses suspend_never for final_suspend so the coroutine frame self-destructs
+// after completion, avoiding Task's symmetric transfer (FinalAwaiter returns
+// noop_coroutine()) which triggers a GCC 13 codegen bug.
+// ---------------------------------------------------------------------------
+namespace {
+
+struct SimpleCoroutine {
+    struct promise_type {
+        SimpleCoroutine get_return_object() {
+            return SimpleCoroutine{
+                std::coroutine_handle<promise_type>::from_promise(*this)};
+        }
+        std::suspend_always initial_suspend() noexcept { return {}; }
+        std::suspend_never final_suspend() noexcept { return {}; }
+        void return_void() noexcept {}
+        void unhandled_exception() noexcept {}
+    };
+    std::coroutine_handle<> handle_;
+};
+
+// -----------------------------------------------------------------------
+// GCC 13 workaround: lambda coroutines with reference captures and no
+// internal co_await generate broken resume code (body never executes).
+// Free-function coroutines work correctly. See FIFOOrdering test which
+// uses record_and_return() and passes on GCC 13.
+// -----------------------------------------------------------------------
+
+/// SimpleCoroutine that sets a bool flag.
+static SimpleCoroutine set_flag(bool& flag) {
+    flag = true;
+    co_return;
+}
+
+/// SimpleCoroutine that pushes a value to a vector.
+static SimpleCoroutine push_value(std::vector<int>& order, int value) {
+    order.push_back(value);
+    co_return;
+}
+
+/// SimpleCoroutine that pushes a string to a vector.
+static SimpleCoroutine push_string(std::vector<std::string>& log,
+                                   std::string value) {
+    log.push_back(std::move(value));
+    co_return;
+}
+
+/// SimpleCoroutine that atomically increments a counter.
+static SimpleCoroutine atomic_increment(std::atomic<int>& count) {
+    count.fetch_add(1, std::memory_order_relaxed);
+    co_return;
+}
+
+}  // namespace
+
 // ===========================================================================
 // Basic scheduler tests
 // ===========================================================================
@@ -31,8 +87,8 @@ TEST(CoroutineSchedulerTest, DrainEmptyReturnsFalse) {
 TEST(CoroutineSchedulerTest, ScheduleIncrementsSize) {
     CoroutineScheduler scheduler;
 
-    auto task = []() -> Task<void> { co_return; }();
-    scheduler.schedule(task.handle());
+    auto coro = []() -> SimpleCoroutine { co_return; }();
+    scheduler.schedule(coro.handle_);
 
     EXPECT_FALSE(scheduler.empty());
     EXPECT_EQ(scheduler.size(), 1u);
@@ -42,15 +98,12 @@ TEST(CoroutineSchedulerTest, DrainRunsScheduledCoroutine) {
     CoroutineScheduler scheduler;
 
     bool executed = false;
-    auto task = [&]() -> Task<void> {
-        executed = true;
-        co_return;
-    }();
+    auto coro = set_flag(executed);
 
-    // Task is lazy, suspended at initial_suspend
+    // Coroutine is lazy, suspended at initial_suspend
     EXPECT_FALSE(executed);
 
-    scheduler.schedule(task.handle());
+    scheduler.schedule(coro.handle_);
     bool ran = scheduler.drain();
 
     EXPECT_TRUE(ran);
@@ -63,24 +116,13 @@ TEST(CoroutineSchedulerTest, DrainRunsMultipleCoroutines) {
 
     std::vector<int> order;
 
-    auto task1 = [&]() -> Task<void> {
-        order.push_back(1);
-        co_return;
-    }();
+    auto coro1 = push_value(order, 1);
+    auto coro2 = push_value(order, 2);
+    auto coro3 = push_value(order, 3);
 
-    auto task2 = [&]() -> Task<void> {
-        order.push_back(2);
-        co_return;
-    }();
-
-    auto task3 = [&]() -> Task<void> {
-        order.push_back(3);
-        co_return;
-    }();
-
-    scheduler.schedule(task1.handle());
-    scheduler.schedule(task2.handle());
-    scheduler.schedule(task3.handle());
+    scheduler.schedule(coro1.handle_);
+    scheduler.schedule(coro2.handle_);
+    scheduler.schedule(coro3.handle_);
 
     EXPECT_EQ(scheduler.size(), 3u);
 
@@ -143,8 +185,8 @@ TEST(CoroutineSchedulerTest, CoroutineCanScheduleMoreWork) {
 TEST(CoroutineSchedulerTest, SecondDrainReturnsFalseWhenEmpty) {
     CoroutineScheduler scheduler;
 
-    auto task = []() -> Task<void> { co_return; }();
-    scheduler.schedule(task.handle());
+    auto coro = []() -> SimpleCoroutine { co_return; }();
+    scheduler.schedule(coro.handle_);
 
     EXPECT_TRUE(scheduler.drain());
     EXPECT_FALSE(scheduler.drain());  // Nothing left
@@ -157,11 +199,11 @@ TEST(CoroutineSchedulerTest, SecondDrainReturnsFalseWhenEmpty) {
 TEST(CoroutineSchedulerTest, SizeDecreasesAfterDrain) {
     CoroutineScheduler scheduler;
 
-    auto t1 = []() -> Task<void> { co_return; }();
-    auto t2 = []() -> Task<void> { co_return; }();
+    auto c1 = []() -> SimpleCoroutine { co_return; }();
+    auto c2 = []() -> SimpleCoroutine { co_return; }();
 
-    scheduler.schedule(t1.handle());
-    scheduler.schedule(t2.handle());
+    scheduler.schedule(c1.handle_);
+    scheduler.schedule(c2.handle_);
     EXPECT_EQ(scheduler.size(), 2u);
 
     scheduler.drain();
@@ -188,7 +230,7 @@ TEST(CoroutineSchedulerTest, IsNonMovable) {
 
 // Helper coroutine that takes parameters by value so they are safely
 // captured in the coroutine frame (avoids dangling-lambda-capture pitfall).
-static Task<void> record_and_return(std::vector<int>& order, int value) {
+static SimpleCoroutine record_and_return(std::vector<int>& order, int value) {
     order.push_back(value);
     co_return;
 }
@@ -198,14 +240,14 @@ TEST(CoroutineSchedulerTest, FIFOOrdering) {
 
     constexpr int N = 10;
     std::vector<int> execution_order;
-    std::vector<Task<void>> tasks;
+    std::vector<SimpleCoroutine> coros;
 
     for (int i = 0; i < N; ++i) {
-        tasks.push_back(record_and_return(execution_order, i));
+        coros.push_back(record_and_return(execution_order, i));
     }
 
-    for (auto& t : tasks) {
-        scheduler.schedule(t.handle());
+    for (auto& c : coros) {
+        scheduler.schedule(c.handle_);
     }
 
     scheduler.drain();
@@ -276,13 +318,10 @@ TEST(CoroutineSchedulerTest, ScheduleFromExternalDrainsInNextDrain) {
     CoroutineScheduler scheduler;
 
     bool executed = false;
-    auto task = [&]() -> Task<void> {
-        executed = true;
-        co_return;
-    }();
+    auto coro = set_flag(executed);
 
     // Enqueue from "external" (could be any thread)
-    scheduler.schedule_from_external(task.handle());
+    scheduler.schedule_from_external(coro.handle_);
 
     // External queue items are not visible in size()/empty()
     // because those only check the ready queue (not thread-safe)
@@ -299,22 +338,13 @@ TEST(CoroutineSchedulerTest, ScheduleFromExternalMultipleHandles) {
 
     std::vector<int> order;
 
-    auto t1 = [&]() -> Task<void> {
-        order.push_back(1);
-        co_return;
-    }();
-    auto t2 = [&]() -> Task<void> {
-        order.push_back(2);
-        co_return;
-    }();
-    auto t3 = [&]() -> Task<void> {
-        order.push_back(3);
-        co_return;
-    }();
+    auto c1 = push_value(order, 1);
+    auto c2 = push_value(order, 2);
+    auto c3 = push_value(order, 3);
 
-    scheduler.schedule_from_external(t1.handle());
-    scheduler.schedule_from_external(t2.handle());
-    scheduler.schedule_from_external(t3.handle());
+    scheduler.schedule_from_external(c1.handle_);
+    scheduler.schedule_from_external(c2.handle_);
+    scheduler.schedule_from_external(c3.handle_);
 
     scheduler.drain();
 
@@ -330,22 +360,16 @@ TEST(CoroutineSchedulerTest, MixedScheduleAndScheduleFromExternal) {
 
     std::vector<std::string> log;
 
-    auto t_internal = [&]() -> Task<void> {
-        log.push_back("internal");
-        co_return;
-    }();
-    auto t_external = [&]() -> Task<void> {
-        log.push_back("external");
-        co_return;
-    }();
+    auto c_internal = push_string(log, "internal");
+    auto c_external = push_string(log, "external");
 
-    scheduler.schedule(t_internal.handle());
-    scheduler.schedule_from_external(t_external.handle());
+    scheduler.schedule(c_internal.handle_);
+    scheduler.schedule_from_external(c_external.handle_);
 
     scheduler.drain();
 
     // Both should have run. drain_external_queue() appends to ready_queue_:
-    // ready_queue_ = [t_internal, t_external] -> FIFO pops internal first
+    // ready_queue_ = [c_internal, c_external] -> FIFO pops internal first
     ASSERT_EQ(log.size(), 2u);
     EXPECT_EQ(log[0], "internal");
     EXPECT_EQ(log[1], "external");
@@ -355,21 +379,18 @@ TEST(CoroutineSchedulerTest, ScheduleFromExternalThreadSafety) {
     CoroutineScheduler scheduler;
 
     constexpr int N = 100;
-    std::vector<Task<void>> tasks;
+    std::vector<SimpleCoroutine> coros;
     std::atomic<int> count{0};
 
     for (int i = 0; i < N; ++i) {
-        tasks.push_back([&count]() -> Task<void> {
-            count.fetch_add(1, std::memory_order_relaxed);
-            co_return;
-        }());
+        coros.push_back(atomic_increment(count));
     }
 
     // Schedule from multiple threads concurrently
     std::vector<std::thread> threads;
     for (int i = 0; i < N; ++i) {
-        threads.emplace_back([&scheduler, &tasks, i]() {
-            scheduler.schedule_from_external(tasks[static_cast<size_t>(i)].handle());
+        threads.emplace_back([&scheduler, &coros, i]() {
+            scheduler.schedule_from_external(coros[static_cast<size_t>(i)].handle_);
         });
     }
     for (auto& t : threads) {

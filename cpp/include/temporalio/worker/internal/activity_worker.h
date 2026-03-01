@@ -145,6 +145,11 @@ private:
         running_activities_;
     std::mutex running_activities_mutex_;
 
+    /// TCS signaled when the last activity thread completes.
+    /// Used by execute_async() to co_await activity completion without
+    /// thread.join() (which would deadlock if called from a poll thread).
+    std::shared_ptr<coro::TaskCompletionSource<void>> all_activities_done_tcs_;
+
     /// Timer thread for delayed cancellation after graceful shutdown timeout.
     /// Using a jthread member ensures it is joined in the destructor,
     /// preventing dangling pointer access to running_activities_mutex_

@@ -174,17 +174,21 @@ coro::Task<void> ActivityWorker::execute_async() {
     }
 
     // Wait for all running activity threads to complete after shutdown.
-    std::vector<std::shared_ptr<RunningActivity>> to_join;
+    // Use a TCS-based co_await instead of thread.join() to avoid deadlock:
+    // this coroutine runs on a detached poll thread, and joining an activity
+    // thread from the poll thread can self-join on Linux (EDEADLK).
+    //
+    // Hold the mutex while creating the TCS and checking the map to
+    // eliminate TOCTOU races with execute_activity() finishing concurrently.
     {
         std::lock_guard lock(running_activities_mutex_);
-        for (auto& [_, running] : running_activities_) {
-            to_join.push_back(running);
+        if (!running_activities_.empty()) {
+            all_activities_done_tcs_ =
+                std::make_shared<coro::TaskCompletionSource<void>>();
         }
     }
-    for (auto& running : to_join) {
-        if (running->thread.joinable()) {
-            running->thread.join();
-        }
+    if (all_activities_done_tcs_) {
+        co_await all_activities_done_tcs_->task();
     }
 }
 
@@ -336,9 +340,10 @@ void ActivityWorker::start_activity(
         running_activities_[token_key] = running;
     }
 
-    // Execute the activity on a joinable thread stored in the RunningActivity.
-    // This prevents use-after-free: the thread is joined before the worker
-    // is destroyed (via notify_shutdown -> destructor join_all_running).
+    // Execute the activity on a separate thread.
+    // Track the active count so execute_async() can co_await completion
+    // without calling thread.join() (which would deadlock if called from
+    // the same poll thread that spawned the activity thread on Linux).
     auto token_key = std::string(task_token.begin(), task_token.end());
 
     running->thread = std::jthread([this, running, defn, task_token,
@@ -416,11 +421,29 @@ void ActivityWorker::execute_activity(
             [](std::string) {});
     }
 
-    // Mark done and remove from running activities
+    // Mark done and remove from running activities.
+    // If this was the last running activity and execute_async() is waiting,
+    // signal the TCS to unblock it. Both the map check and TCS signal are
+    // under the mutex to synchronize with execute_async()'s check.
+    //
+    // Detach our own thread BEFORE erasing from the map. After the erase,
+    // this lambda's captured shared_ptr<RunningActivity> may be the last
+    // reference. When the lambda finishes and the capture is destroyed,
+    // ~RunningActivity() would call ~jthread() which attempts to join the
+    // current thread. On Linux, pthread_join(self) returns EDEADLK (abort).
+    // Detaching makes ~jthread() a no-op (joinable() returns false).
+    // The destructor's join loop already guards with joinable().
+    if (running->thread.joinable()) {
+        running->thread.detach();
+    }
+
     running->mark_done();
     {
         std::lock_guard lock(running_activities_mutex_);
         running_activities_.erase(token_key);
+        if (running_activities_.empty() && all_activities_done_tcs_) {
+            all_activities_done_tcs_->try_set_result();
+        }
     }
 }
 

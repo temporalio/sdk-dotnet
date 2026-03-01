@@ -1,6 +1,14 @@
 #pragma once
 
-/// @file Lazy coroutine Task<T> type with symmetric transfer.
+/// @file Lazy coroutine Task<T> type.
+///
+/// FinalAwaiter uses direct resume (void await_suspend) rather than
+/// symmetric transfer (returning coroutine_handle<>). This trades
+/// tail-call optimization for portability: GCC 13 has a coroutine
+/// codegen bug where symmetric transfer produces broken code for
+/// certain coroutine frame layouts. Direct resume adds ~2 stack
+/// frames per co_await level, which is negligible for this SDK's
+/// shallow coroutine chains.
 
 #include <coroutine>
 #include <exception>
@@ -27,16 +35,16 @@ public:
     struct FinalAwaiter {
         bool await_ready() const noexcept { return false; }
 
-        // Templated await_suspend so we receive the concrete promise handle
-        // rather than relying on from_address with a base class.
+        // Direct resume: resumes the caller coroutine from within
+        // await_suspend. This avoids symmetric transfer (returning
+        // coroutine_handle<>) which triggers a GCC 13 codegen bug.
         template <typename Promise>
-        std::coroutine_handle<> await_suspend(
+        void await_suspend(
             std::coroutine_handle<Promise> h) noexcept {
             auto& base = static_cast<PromiseBase&>(h.promise());
             if (base.caller_) {
-                return base.caller_;
+                base.caller_.resume();
             }
-            return std::noop_coroutine();
         }
 
         void await_resume() noexcept {}

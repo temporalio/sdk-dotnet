@@ -13,30 +13,32 @@ The Temporal C# SDK (`src/Temporalio/`) is a mature library (~469 source files, 
 
 ## Current Status
 
-> **Last updated:** 2026-02-28 (Linux build validation complete)
+> **Last updated:** 2026-03-01 (Full cross-platform parity achieved)
 
 ### Summary
 
 All implementation phases (1-10) plus API stabilization (7), build system improvements (8),
-packaging (9), and TO_DO.md items are complete. The project builds successfully on both
-**MSVC 2022 (Windows)** and **GCC 13.3.0 (Linux/Ubuntu 24.04)**. **742 unit tests pass on
-Windows** (0 failures); **735/742 pass on Linux** (7 GCC coroutine symmetric transfer failures).
-All **6 self-contained examples** run end-to-end against a live Temporal Docker server on Windows
-(exit code 0); **4/6 pass on Linux** (2 activity-related threading deadlocks).
+packaging (9), and TO_DO.md items are complete. The project builds and passes **742/742 tests**
+on both **MSVC 2022 (Windows)** and **GCC 13.3.0 (Linux/Ubuntu 24.04)**. All **6 self-contained
+examples** run end-to-end against a live Temporal Docker server on both platforms (exit code 0).
 
-**Latest highlights (Linux build validation):**
+**Latest highlights (Cross-platform parity):**
+- **742/742 tests pass on both platforms**: Fixed 7 GCC coroutine failures by using free-function
+  coroutines in tests (GCC 13 has a codegen bug with lambda coroutines that have reference
+  captures and no internal co_await) and using direct resume in Task FinalAwaiter (avoids
+  GCC 13 symmetric transfer codegen bug). The same code path is used on all compilers.
+- **6/6 examples pass on both platforms**: Fixed activity worker shutdown deadlock caused by
+  jthread self-join when the last shared_ptr<RunningActivity> is destroyed within the activity
+  thread itself. Fix: detach the thread before erasing from the map, plus TCS-based co_await
+  in execute_async() for non-blocking shutdown synchronization.
+- **12 GCC-specific fixes** applied across 11 files (bugs #52-#63): missing includes, sign
+  conversions, template definition ordering, base64 char casts, unused function warnings,
+  SYSTEM includes for proto/protobuf headers, designated initializer warnings.
+
+**Previous highlights (Linux build validation):**
 - **Cross-platform build verified**: 822/822 targets compile on GCC 13.3.0 (Ubuntu 24.04 via WSL2)
   with Ninja 1.11.1. Requires `-DCMAKE_DISABLE_FIND_PACKAGE_Protobuf=TRUE` to avoid system
   protobuf 3.x `namespace` keyword collision.
-- **735/742 tests pass on Linux (99%)**: 7 failures are all GCC coroutine symmetric transfer
-  bugs (SEGFAULT/timeout in test helpers using direct `handle.resume()` loops). The real SDK
-  `run_task_sync()` with mutex/CV works correctly.
-- **4/6 examples pass on Linux**: hello_world, signal_workflow, timer_workflow, update_workflow
-  all work against Docker Temporal. 2 examples (workflow_activity, activity_worker) hit
-  `std::system_error: Resource deadlock avoided` during jthread shutdown with activity execution.
-- **12 GCC-specific fixes applied** across 11 files (bugs #52-#63): missing includes, sign
-  conversions, template definition ordering, base64 char casts, unused function warnings,
-  SYSTEM includes for proto/protobuf headers, designated initializer warnings.
 
 **Previous highlights (End-to-end validation session):**
 - **All 6 examples fully functional**: Each example is self-contained with its own worker,
@@ -131,7 +133,7 @@ Twelve GCC/Linux compatibility fixes applied during Linux build validation (#52-
 | Documentation | 1 | Complete (`cpp/Doxyfile`) |
 | FFI stub file (`ffi_stubs.cpp`) | 1 | For test builds without Rust bridge |
 | **Total C++ files** | **135+** | |
-| **Total test cases (TEST/TEST_F)** | **742 passing on Windows, 735 on Linux** | All pass on MSVC; 7 GCC coroutine failures |
+| **Total test cases (TEST/TEST_F)** | **742 passing on both platforms** | All pass on MSVC and GCC 13.3.0 |
 | **Bugs found & fixed** | **63 total** | Including 12 GCC/Linux compatibility fixes |
 
 ### Phase Completion Status
@@ -1034,8 +1036,8 @@ RPCs, testing, CI/CD, documentation, and packaging):
 
 ### Known Linux Issues (Not Fixed)
 
-- **7 GCC coroutine test failures**: `CoroutineSchedulerTest.DrainRuns*` (3 tests), `TaskTest.ReturnsVoid`, `TaskTest.IsLazy_*` (2 tests), `TaskTest.WhenAll_VoidTasks`. All use direct `handle.resume()` loops or test-local `sync_run` helper. GCC 13's symmetric transfer implementation appears broken for these patterns. The real SDK uses `run_task_sync()` with mutex/CV which works correctly. These are GCC bugs, not SDK bugs.
-- **2 example deadlocks**: `workflow_activity` and `activity_worker` examples hit `std::system_error: Resource deadlock avoided` during jthread shutdown with activity execution on Linux. This is a threading interaction issue between `std::jthread` lifecycle and the Rust bridge's tokio runtime on Linux. The same examples work correctly on Windows.
+- **~~7 GCC coroutine test failures~~** (RESOLVED): Fixed by using free-function coroutines in tests (avoiding GCC 13 lambda coroutine codegen bug) and using direct resume in Task FinalAwaiter on all compilers (avoiding GCC 13 symmetric transfer codegen bug). 742/742 tests now pass on both platforms.
+- **~~2 example deadlocks~~** (RESOLVED): Fixed by detaching activity threads before erasing from the running activities map (preventing jthread self-join when the last shared_ptr is destroyed within the activity thread) and using TCS-based co_await in execute_async() for non-blocking shutdown synchronization. All 6 examples now pass on both platforms.
 
 ---
 
@@ -1074,7 +1076,7 @@ temporal-sdk-cpp/
         cancellation_token.h                    # Wraps std::stop_token/std::stop_source
         coroutine_scheduler.h                   # Deterministic FIFO workflow executor
         run_sync.h                              # run_task_sync() blocking helper
-        task.h                                  # Lazy coroutine Task<T> with symmetric transfer
+        task.h                                  # Lazy coroutine Task<T> with direct resume
         task_completion_source.h                # Callback-to-coroutine bridge
       client/
         temporal_client.h                       # Workflow CRUD, schedules
@@ -1277,7 +1279,7 @@ temporal-sdk-cpp/
 **Status: COMPLETE**
 
 **Files created:**
-- `task.h` — `Task<T>` lazy coroutine type with symmetric transfer via `FinalAwaiter`
+- `task.h` — `Task<T>` lazy coroutine type with direct resume via `FinalAwaiter`
 - `cancellation_token.h` — Wraps `std::stop_token` / `std::stop_source`
 - `task_completion_source.h` — Bridges callbacks to coroutines, thread-safe
 - `coroutine_scheduler.h` + `.cpp` — Deterministic single-threaded workflow executor with FIFO deque
