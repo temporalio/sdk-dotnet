@@ -319,18 +319,14 @@ void ActivityWorker::start_activity(
         });
 
     // Extract input arguments from the protobuf Start message.
-    // Convert each Payload to internal Payload format and use the
-    // DataConverter to deserialize. Falls back to extracting raw data
-    // as a string if no converter is available.
+    // Convert each protobuf Payload to a converters::Payload (preserving
+    // encoding metadata). The typed activity handlers will use
+    // decode_payload_value to properly decode to the target type.
     std::vector<std::any> input_args;
     input_args.reserve(start.input_size());
     for (const auto& proto_payload : start.input()) {
-        // Extract the payload data as a string. For json/plain encoding,
-        // this gives the JSON string that the activity can cast to its
-        // expected type.
         input_args.push_back(
-            std::any(std::string(proto_payload.data().begin(),
-                                 proto_payload.data().end())));
+            std::any(converters::from_proto_payload(proto_payload)));
     }
 
     // Track the running activity

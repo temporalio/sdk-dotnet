@@ -317,4 +317,25 @@ private:
     std::set<std::type_index> registered_types_;
 };
 
+/// Decode a std::any that may contain either a Payload (from protobuf
+/// deserialization) or a direct typed value (from tests or internal usage).
+/// If it contains a Payload, uses the given converter (or a default
+/// DefaultPayloadConverter) to decode to the target type T.
+/// If it already contains T, returns via std::any_cast.
+template <typename T>
+T decode_payload_value(const std::any& val,
+                       const IPayloadConverter* converter = nullptr) {
+    if (val.type() == typeid(Payload)) {
+        const auto& payload = std::any_cast<const Payload&>(val);
+        if (converter) {
+            return std::any_cast<T>(
+                converter->to_value(payload, std::type_index(typeid(T))));
+        }
+        DefaultPayloadConverter dc;
+        return std::any_cast<T>(
+            dc.to_value(payload, std::type_index(typeid(T))));
+    }
+    return std::any_cast<T>(val);
+}
+
 }  // namespace temporalio::converters

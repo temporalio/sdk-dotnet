@@ -86,22 +86,22 @@ temporalio::coro::Task<void> run() {
     opts.id = "signal-example-workflow";
     opts.task_queue = "signal-example-queue";
 
-    auto handle = co_await tc->start_workflow("Accumulator", "{}", opts);
+    auto handle = co_await tc->start_workflow("Accumulator", opts);
     std::cout << "Started workflow: " << handle.id() << "\n";
 
     // Step 3: Send signals with messages.
-    co_await handle.signal("add_message", "\"hello\"");
+    co_await handle.signal("add_message", std::string("hello"));
     std::cout << "Sent signal: hello\n";
 
-    co_await handle.signal("add_message", "\"world\"");
+    co_await handle.signal("add_message", std::string("world"));
     std::cout << "Sent signal: world\n";
 
     // Step 4: Send the "done" signal to complete the workflow.
-    co_await handle.signal("add_message", "\"done\"");
+    co_await handle.signal("add_message", std::string("done"));
     std::cout << "Sent signal: done\n";
 
     // Step 5: Get the final result.
-    auto result = co_await handle.get_result();
+    auto result = co_await handle.get_result<std::string>();
     std::cout << "Workflow result: " << result << "\n";
 }
 

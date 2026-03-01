@@ -171,14 +171,16 @@ TEST(WorkflowUpdateOptionsTest, WaitStageCompleted) {
 // by observing that the handle has the method declared.
 
 TEST(WorkflowHandleTest, UpdateMethodExists) {
-    // Verifies that WorkflowHandle::update() compiles with expected
+    // Verifies that WorkflowHandle::update<T>() compiles with expected
     // parameter types. The actual call would require a connected client.
     WorkflowHandle handle(nullptr, "wf-update-test");
 
-    // Verify the method signature compiles - we take a pointer to member
+    // Verify the template method signature compiles - take a pointer to
+    // the explicit instantiation with the options overload
     using UpdateMethod = temporalio::coro::Task<std::string>
-        (WorkflowHandle::*)(const std::string&, const std::string&,
-                            const WorkflowUpdateOptions&);
-    UpdateMethod method = &WorkflowHandle::update;
+        (WorkflowHandle::*)(const std::string&,
+                            const WorkflowUpdateOptions&,
+                            const std::string&);
+    UpdateMethod method = &WorkflowHandle::update<std::string, const std::string&>;
     EXPECT_NE(method, nullptr);
 }

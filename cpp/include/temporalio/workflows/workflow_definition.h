@@ -15,21 +15,24 @@
 #include <vector>
 
 #include <temporalio/coro/task.h>
+#include <temporalio/workflows/workflow.h>
 
 namespace temporalio::workflows {
 
 namespace detail {
 
 /// Extract arguments from a vector<std::any> into a tuple via index_sequence.
+/// Uses Workflow::decode_value to handle converters::Payload decoding.
 template <typename Tuple, std::size_t... I>
 Tuple extract_args(const std::vector<std::any>& args,
                    std::index_sequence<I...>) {
     return Tuple{
-        std::any_cast<std::tuple_element_t<I, Tuple>>(args.at(I))...};
+        Workflow::decode_value<std::tuple_element_t<I, Tuple>>(args.at(I))...};
 }
 
 /// Call a member function with arguments extracted from vector<std::any>.
 /// Returns Task<std::any> wrapping the result.
+/// Uses Workflow::decode_value to properly decode converters::Payload args.
 template <typename T, typename R, typename... Args, std::size_t... I>
 coro::Task<std::any> invoke_run(
     coro::Task<R> (T::*method)(Args...),
@@ -38,11 +41,11 @@ coro::Task<std::any> invoke_run(
     std::index_sequence<I...>) {
     if constexpr (std::is_void_v<R>) {
         co_await (self->*method)(
-            std::any_cast<std::decay_t<Args>>(args.at(I))...);
+            Workflow::decode_value<std::decay_t<Args>>(args.at(I))...);
         co_return std::any{};
     } else {
         auto result = co_await (self->*method)(
-            std::any_cast<std::decay_t<Args>>(args.at(I))...);
+            Workflow::decode_value<std::decay_t<Args>>(args.at(I))...);
         co_return std::any(std::move(result));
     }
 }
@@ -55,7 +58,7 @@ coro::Task<void> invoke_signal(
     const std::vector<std::any>& args,
     std::index_sequence<I...>) {
     co_await (self->*method)(
-        std::any_cast<std::decay_t<Args>>(args.at(I))...);
+        Workflow::decode_value<std::decay_t<Args>>(args.at(I))...);
 }
 
 /// Call a synchronous member function (const) with extracted args.
@@ -66,7 +69,7 @@ std::any invoke_query(
     const std::vector<std::any>& args,
     std::index_sequence<I...>) {
     return std::any((self->*method)(
-        std::any_cast<std::decay_t<Args>>(args.at(I))...));
+        Workflow::decode_value<std::decay_t<Args>>(args.at(I))...));
 }
 
 /// Call a synchronous member function (non-const) with extracted args.
@@ -77,7 +80,7 @@ std::any invoke_query_nc(
     const std::vector<std::any>& args,
     std::index_sequence<I...>) {
     return std::any((self->*method)(
-        std::any_cast<std::decay_t<Args>>(args.at(I))...));
+        Workflow::decode_value<std::decay_t<Args>>(args.at(I))...));
 }
 
 /// Call a synchronous void member function (validator) with extracted args.
@@ -88,7 +91,7 @@ void invoke_validator(
     const std::vector<std::any>& args,
     std::index_sequence<I...>) {
     (self->*method)(
-        std::any_cast<std::decay_t<Args>>(args.at(I))...);
+        Workflow::decode_value<std::decay_t<Args>>(args.at(I))...);
 }
 
 }  // namespace detail

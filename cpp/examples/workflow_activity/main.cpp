@@ -20,14 +20,12 @@
 #include <temporalio/workflows/workflow.h>
 #include <temporalio/workflows/workflow_definition.h>
 
-#include <any>
 #include <chrono>
 #include <exception>
 #include <iostream>
 #include <stop_token>
 #include <string>
 #include <thread>
-#include <vector>
 
 using temporalio::coro::run_task_sync;
 
@@ -44,26 +42,14 @@ temporalio::coro::Task<std::string> greet(std::string name) {
 // A workflow that calls the greet activity and returns its result.
 class GreetingWorkflow {
 public:
-    temporalio::coro::Task<std::any> run(std::vector<std::any> args) {
-        // Extract the name argument (passed as string).
-        std::string name = "World";
-        if (!args.empty()) {
-            try {
-                name = std::any_cast<std::string>(args[0]);
-            } catch (const std::bad_any_cast&) {
-                // Use default
-            }
-        }
-
+    temporalio::coro::Task<std::string> run(std::string name) {
         // Call the activity with a 30-second start-to-close timeout.
         namespace wf = temporalio::workflows;
         wf::ActivityOptions opts;
         opts.start_to_close_timeout = std::chrono::seconds(30);
 
-        auto result = co_await wf::Workflow::execute_activity(
-            "greet",
-            std::any(name),
-            opts);
+        auto result = co_await wf::Workflow::execute_activity<std::string>(
+            "greet", opts, name);
 
         co_return result;
     }
@@ -123,14 +109,14 @@ int main() {
 
         auto handle = run_task_sync(tc->start_workflow(
             "GreetingWorkflow",
-            "\"Temporal\"",  // JSON-encoded string argument
-            wf_opts));
+            wf_opts,
+            std::string("Temporal")));  // typed argument
 
         std::cout << "Started workflow: " << handle.id()
                   << " (run " << handle.run_id().value_or("") << ")\n";
 
         // Step 5: Wait for the workflow result.
-        auto result = run_task_sync(handle.get_result());
+        auto result = run_task_sync(handle.get_result<std::string>());
         std::cout << "Workflow result: " << result << "\n";
 
         // Step 6: Shut down the worker.

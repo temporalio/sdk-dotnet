@@ -110,6 +110,46 @@ public:
         std::vector<converters::Payload> args = {},
         const WorkflowQueryOptions& options = {});
 
+    /// Send an update to this workflow and deserialize the result to type T.
+    /// The update name must match a registered update handler on the workflow.
+    template <typename T, typename... Args>
+    coro::Task<T> update(const std::string& update_name,
+                         const WorkflowUpdateOptions& options,
+                         Args&&... args) {
+        std::vector<converters::Payload> payloads;
+        if constexpr (sizeof...(args) > 0) {
+            auto& dc = get_data_converter();
+            (payloads.push_back(
+                 dc.payload_converter->to_payload(
+                     std::any(std::forward<Args>(args)))),
+             ...);
+        }
+        auto payload = co_await update_impl(
+            update_name, std::move(payloads), options);
+        co_return std::any_cast<T>(
+            get_data_converter().payload_converter->to_value(
+                payload, std::type_index(typeid(T))));
+    }
+
+    /// Send an update to this workflow with default options.
+    template <typename T, typename... Args>
+    coro::Task<T> update(const std::string& update_name,
+                         Args&&... args) {
+        std::vector<converters::Payload> payloads;
+        if constexpr (sizeof...(args) > 0) {
+            auto& dc = get_data_converter();
+            (payloads.push_back(
+                 dc.payload_converter->to_payload(
+                     std::any(std::forward<Args>(args)))),
+             ...);
+        }
+        auto payload = co_await update_impl(
+            update_name, std::move(payloads), WorkflowUpdateOptions{});
+        co_return std::any_cast<T>(
+            get_data_converter().payload_converter->to_value(
+                payload, std::type_index(typeid(T))));
+    }
+
     /// Cancel this workflow.
     coro::Task<void> cancel(const WorkflowCancelOptions& options = {});
 
@@ -126,6 +166,12 @@ private:
         const std::string& signal_name,
         std::vector<converters::Payload> args,
         const WorkflowSignalOptions& options = {});
+
+    /// Internal update implementation with pre-serialized payloads.
+    coro::Task<converters::Payload> update_impl(
+        const std::string& update_name,
+        std::vector<converters::Payload> args,
+        const WorkflowUpdateOptions& options);
 
     /// Get the data converter from the client.
     const converters::DataConverter& get_data_converter() const;

@@ -798,7 +798,33 @@ and vcpkg packaging work correctly.
 - [ ] Example programs verified in CI
 - [ ] vcpkg install verification in CI (see section 9.5)
 
-### 11. Documentation & Packaging — **PENDING (LOWER PRIORITY)**
+### 11. Test Coverage Gaps — **TODO**
+
+These are test gaps identified during E2E example verification (2026-02-28).
+The double-encoding bug (payload_to_any storing raw JSON bytes instead of
+converters::Payload) was only caught by running examples against a live server.
+
+- [ ] **Payload round-trip tests**: Unit tests that verify `payload_to_any()` →
+  typed wrapper → `decode_payload_value<T>()` correctly decodes json/plain,
+  binary/null, and binary/plain payloads for std::string, int, double, bool
+- [ ] **Activity arg decoding tests**: Tests that create ActivityDefinition with
+  typed parameters (string, int), pass converters::Payload args (simulating
+  server-side delivery), and verify the activity receives decoded values
+- [ ] **Workflow arg decoding tests**: Tests that create WorkflowDefinition with
+  typed run(std::string) method, pass converters::Payload args through
+  WorkflowInstance activation, and verify the workflow receives decoded values
+- [ ] **Signal arg decoding tests**: Same pattern for signal handlers with
+  typed parameters receiving converters::Payload args
+- [ ] **Query arg decoding tests**: Same pattern for query handlers with
+  typed parameters receiving converters::Payload args
+- [ ] **Activity result decoding tests**: Tests that verify execute_activity<T>()
+  properly decodes converters::Payload results (simulating activity completion
+  with json/plain encoded return values)
+- [ ] **End-to-end example smoke tests**: Integration tests that start a worker,
+  run a workflow with activities, and verify the final result string matches
+  expected output (requires local dev server)
+
+### 12. Documentation & Packaging — **PENDING (LOWER PRIORITY)**
 
 - [ ] Doxygen generation from `@file` / `///` doc comments
 - [ ] Install targets (`cmake --install`) produce correct header + lib layout (see section 9.1)

@@ -159,21 +159,21 @@ int main() {
         wo.id = "timer-example-workflow";
         wo.task_queue = "timer-example-queue";
 
-        auto handle = run_task_sync(tc->start_workflow("TimerWorkflow", "{}", wo));
+        auto handle = run_task_sync(tc->start_workflow("TimerWorkflow", wo));
         std::cout << "Started workflow: " << handle.id()
                   << " (run " << handle.run_id().value_or("") << ")\n";
 
         // Step 6: Query the status (should be "waiting").
-        auto status = run_task_sync(handle.query("status"));
+        auto status = run_task_sync(handle.query<std::string>("status"));
         std::cout << "Workflow status: " << status << "\n";
 
         // Step 7: Send the approval signal after a short pause.
         std::cout << "Sending approval signal...\n";
-        run_task_sync(handle.signal("approve", "\"manager-override\""));
+        run_task_sync(handle.signal("approve", std::string("manager-override")));
         std::cout << "Signal sent.\n";
 
         // Step 8: Get the final result.
-        auto result = run_task_sync(handle.get_result());
+        auto result = run_task_sync(handle.get_result<std::string>());
         std::cout << "Workflow result: " << result << "\n";
 
         // Step 9: Shut down the worker.

@@ -11,6 +11,7 @@ namespace temporalio::worker {
 WorkflowInstance::WorkflowInstance(Config config)
     : definition_(std::move(config.definition)),
       info_(std::move(config.info)),
+      data_converter_(std::move(config.data_converter)),
       random_(static_cast<std::mt19937::result_type>(config.randomness_seed)) {}
 
 WorkflowInstance::~WorkflowInstance() = default;

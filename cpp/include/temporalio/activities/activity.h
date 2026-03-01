@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+#include <temporalio/converters/data_converter.h>
 #include <temporalio/coro/task.h>
 
 namespace temporalio::activities {
@@ -18,12 +19,13 @@ namespace temporalio::activities {
 namespace detail {
 
 /// Helper: invoke a callable with arguments extracted from a vector<std::any>.
-/// Uses std::index_sequence to unpack each argument via std::any_cast.
+/// Uses decode_payload_value to properly decode converters::Payload args.
 template <typename Tuple, std::size_t... I>
 Tuple extract_args(const std::vector<std::any>& args,
                    std::index_sequence<I...>) {
     return Tuple{
-        std::any_cast<std::tuple_element_t<I, Tuple>>(args.at(I))...};
+        converters::decode_payload_value<std::tuple_element_t<I, Tuple>>(
+            args.at(I))...};
 }
 
 /// Call a free function with arguments extracted from vector<std::any>.
@@ -126,11 +128,13 @@ struct callable_traits<R (C::*)(Args...) const> {
 };
 
 /// Call a callable with arguments extracted from vector<std::any>.
+/// Uses decode_payload_value to properly decode converters::Payload args.
 template <typename Callable, typename ArgTuple, std::size_t... I>
 auto apply_callable(Callable& callable, const std::vector<std::any>& args,
                     std::index_sequence<I...>) {
     return callable(
-        std::any_cast<std::tuple_element_t<I, ArgTuple>>(args.at(I))...);
+        converters::decode_payload_value<std::tuple_element_t<I, ArgTuple>>(
+            args.at(I))...);
 }
 
 }  // namespace detail

@@ -41,14 +41,14 @@ temporalio::coro::Task<void> run() {
 
     auto handle = co_await tc->start_workflow(
         "Greeting",   // workflow type name
-        "\"World\"",  // JSON-encoded argument
-        opts);
+        opts,
+        std::string("World"));  // typed argument
 
     std::cout << "Started workflow: " << handle.id()
               << " (run " << handle.run_id().value_or("") << ")\n";
 
     // Step 3: Wait for the workflow result.
-    auto result = co_await handle.get_result();
+    auto result = co_await handle.get_result<std::string>();
     std::cout << "Workflow result: " << result << "\n";
 }
 

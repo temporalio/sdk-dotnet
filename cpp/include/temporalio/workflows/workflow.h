@@ -10,11 +10,13 @@
 #include <random>
 #include <stop_token>
 #include <string>
+#include <typeindex>
 #include <vector>
 
 #include <type_traits>
 #include <utility>
 
+#include <temporalio/converters/data_converter.h>
 #include <temporalio/coro/cancellation_token.h>
 #include <temporalio/coro/task.h>
 #include <temporalio/workflows/activity_options.h>
@@ -101,6 +103,21 @@ public:
         const std::string& activity_type,
         const ActivityOptions& options);
 
+    /// Decode a std::any value that may contain either a converters::Payload
+    /// (from the inbound protobuf pipeline) or a direct typed value
+    /// (from tests or internal usage). Uses the DataConverter from the
+    /// current WorkflowContext if available.
+    template <typename T>
+    static T decode_value(const std::any& val) {
+        auto* ctx = WorkflowContext::current();
+        const converters::IPayloadConverter* converter = nullptr;
+        if (ctx && ctx->data_converter() &&
+            ctx->data_converter()->payload_converter) {
+            converter = ctx->data_converter()->payload_converter.get();
+        }
+        return converters::decode_payload_value<T>(val, converter);
+    }
+
     /// Type-safe execute_activity: converts typed arguments to std::any,
     /// invokes the activity, and casts the result back to R.
     /// Usage: auto result = co_await Workflow::execute_activity<int>(
@@ -118,7 +135,7 @@ public:
         if constexpr (std::is_void_v<R>) {
             co_return;
         } else {
-            co_return std::any_cast<R>(std::move(result_any));
+            co_return decode_value<R>(result_any);
         }
     }
 
@@ -168,6 +185,13 @@ public:
         const std::string& activity_type,
         std::vector<std::any> args,
         const ActivityOptions& options) = 0;
+
+    /// Get the DataConverter for this workflow. Used to decode inbound
+    /// payloads (workflow args, signal args, activity results, etc.).
+    /// Returns nullptr if no DataConverter is set (tests may not set one).
+    virtual const converters::DataConverter* data_converter() const {
+        return nullptr;
+    }
 
     /// Get the current workflow context. Returns nullptr if not in workflow.
     static WorkflowContext* current() noexcept { return current_; }

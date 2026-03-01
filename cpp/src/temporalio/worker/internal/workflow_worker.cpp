@@ -53,12 +53,11 @@ void set_duration_millis(google::protobuf::Duration* d,
     d->set_nanos(static_cast<int32_t>(nanos.count()));
 }
 
-/// Extract payload data as a std::any-wrapped string.
-/// For json/plain encoding the data is a JSON value; for other encodings
-/// it's raw bytes represented as a string. This allows downstream handlers
-/// to std::any_cast<std::string> to get the value.
+/// Convert a protobuf Payload to a converters::Payload wrapped in std::any.
+/// Preserves the encoding metadata so that downstream typed handlers can
+/// use the DataConverter to properly decode to the target type.
 std::any payload_to_any(const temporal::api::common::v1::Payload& payload) {
-    return std::any(std::string(payload.data().begin(), payload.data().end()));
+    return std::any(converters::from_proto_payload(payload));
 }
 
 /// Convert protobuf activity result to WorkflowInstance::ActivityResolution.
@@ -719,6 +718,7 @@ std::unique_ptr<WorkflowInstance> WorkflowWorker::create_instance(
 
     WorkflowInstance::Config config;
     config.definition = defn;
+    config.data_converter = options_.data_converter;
     config.info.workflow_type = workflow_type;
     config.info.run_id = run_id;
     config.info.task_queue = options_.task_queue;
@@ -744,6 +744,7 @@ std::unique_ptr<WorkflowInstance> WorkflowWorker::create_instance(
 
     WorkflowInstance::Config config;
     config.definition = defn;
+    config.data_converter = options_.data_converter;
     config.randomness_seed = init.randomness_seed();
 
     // Populate full WorkflowInfo from the InitializeWorkflow protobuf.

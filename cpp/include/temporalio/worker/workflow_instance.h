@@ -191,6 +191,8 @@ public:
         std::shared_ptr<workflows::WorkflowDefinition> definition;
         workflows::WorkflowInfo info;
         uint64_t randomness_seed{0};
+        /// Data converter for decoding inbound payloads.
+        std::shared_ptr<converters::DataConverter> data_converter;
     };
 
     /// Metadata from the activation envelope (set before processing jobs).
@@ -219,6 +221,9 @@ public:
 
     // -- WorkflowContext interface --
     const workflows::WorkflowInfo& info() const override { return info_; }
+    const converters::DataConverter* data_converter() const override {
+        return data_converter_.get();
+    }
     std::stop_token cancellation_token() const override;
     bool continue_as_new_suggested() const override {
         return continue_as_new_suggested_;
@@ -299,6 +304,7 @@ private:
     // -- State --
     std::shared_ptr<workflows::WorkflowDefinition> definition_;
     workflows::WorkflowInfo info_;
+    std::shared_ptr<converters::DataConverter> data_converter_;
     coro::CoroutineScheduler scheduler_;
     coro::CancellationTokenSource cancellation_source_;
     std::mt19937 random_;

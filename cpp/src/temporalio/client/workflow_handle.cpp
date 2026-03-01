@@ -11,6 +11,8 @@
 #include <temporal/api/common/v1/message.pb.h>
 #include <temporal/api/history/v1/message.pb.h>
 #include <temporal/api/enums/v1/workflow.pb.h>
+#include <temporal/api/update/v1/message.pb.h>
+#include <temporal/api/enums/v1/update.pb.h>
 
 #include "temporalio/client/rpc_helpers.h"
 
@@ -185,6 +187,132 @@ coro::Task<converters::Payload> WorkflowHandle::query_payload(
     }
 
     // No result payload - return empty payload with binary/null encoding
+    converters::Payload empty_payload;
+    empty_payload.metadata["encoding"] = "binary/null";
+    co_return empty_payload;
+}
+
+coro::Task<converters::Payload> WorkflowHandle::update_impl(
+    const std::string& update_name,
+    std::vector<converters::Payload> args,
+    const WorkflowUpdateOptions& options) {
+    auto* bridge = client_->bridge_client();
+    if (!bridge) {
+        throw std::runtime_error("Not connected to Temporal server");
+    }
+
+    // Build UpdateWorkflowExecutionRequest
+    temporal::api::workflowservice::v1::UpdateWorkflowExecutionRequest req;
+    req.set_namespace_(client_->ns());
+    req.mutable_workflow_execution()->set_workflow_id(id_);
+    if (run_id_) {
+        req.mutable_workflow_execution()->set_run_id(*run_id_);
+    }
+
+    // Set wait policy
+    auto* wait_policy = req.mutable_wait_policy();
+    wait_policy->set_lifecycle_stage(
+        static_cast<temporal::api::enums::v1::
+            UpdateWorkflowExecutionLifecycleStage>(
+            static_cast<int>(options.wait_stage)));
+
+    // Build the update request
+    auto* update_req = req.mutable_request();
+    auto* meta = update_req->mutable_meta();
+    meta->set_update_id(options.update_id.value_or(""));
+    auto* input = update_req->mutable_input();
+    input->set_name(update_name);
+    if (!args.empty()) {
+        internal::set_proto_payloads(input->mutable_args(), args);
+    }
+
+    bridge::RpcCallOptions rpc_opts;
+    rpc_opts.service = TemporalCoreRpcService::Workflow;
+    rpc_opts.rpc = "UpdateWorkflowExecution";
+    std::string serialized = req.SerializeAsString();
+    rpc_opts.request = std::vector<uint8_t>(serialized.begin(),
+                                             serialized.end());
+    rpc_opts.retry = true;
+
+    auto response = co_await internal::rpc_call(*bridge, std::move(rpc_opts));
+
+    // Parse response
+    temporal::api::workflowservice::v1::UpdateWorkflowExecutionResponse resp;
+    if (!resp.ParseFromArray(response.data(),
+                              static_cast<int>(response.size()))) {
+        throw std::runtime_error(
+            "Failed to parse UpdateWorkflowExecution response");
+    }
+
+    // Extract outcome
+    if (resp.has_outcome()) {
+        const auto& outcome = resp.outcome();
+        if (outcome.has_success() &&
+            outcome.success().payloads_size() > 0) {
+            co_return internal::from_proto_payload(
+                outcome.success().payloads(0));
+        }
+        if (outcome.has_failure()) {
+            throw std::runtime_error(
+                "Update failed: " + outcome.failure().message());
+        }
+        // Success with no payload
+        converters::Payload empty_payload;
+        empty_payload.metadata["encoding"] = "binary/null";
+        co_return empty_payload;
+    }
+
+    // No outcome yet - need to poll
+    if (!resp.has_update_ref()) {
+        throw std::runtime_error(
+            "UpdateWorkflowExecution returned neither outcome nor update_ref");
+    }
+
+    // Poll for the update result
+    temporal::api::workflowservice::v1::
+        PollWorkflowExecutionUpdateRequest poll_req;
+    poll_req.set_namespace_(client_->ns());
+    auto* poll_ref = poll_req.mutable_update_ref();
+    poll_ref->mutable_workflow_execution()->set_workflow_id(id_);
+    if (run_id_) {
+        poll_ref->mutable_workflow_execution()->set_run_id(*run_id_);
+    }
+    poll_ref->set_update_id(resp.update_ref().update_id());
+
+    bridge::RpcCallOptions poll_rpc_opts;
+    poll_rpc_opts.service = TemporalCoreRpcService::Workflow;
+    poll_rpc_opts.rpc = "PollWorkflowExecutionUpdate";
+    std::string poll_serialized = poll_req.SerializeAsString();
+    poll_rpc_opts.request = std::vector<uint8_t>(
+        poll_serialized.begin(), poll_serialized.end());
+    poll_rpc_opts.retry = true;
+
+    auto poll_response =
+        co_await internal::rpc_call(*bridge, std::move(poll_rpc_opts));
+
+    temporal::api::workflowservice::v1::
+        PollWorkflowExecutionUpdateResponse poll_resp;
+    if (!poll_resp.ParseFromArray(
+            poll_response.data(),
+            static_cast<int>(poll_response.size()))) {
+        throw std::runtime_error(
+            "Failed to parse PollWorkflowExecutionUpdate response");
+    }
+
+    if (poll_resp.has_outcome()) {
+        const auto& outcome = poll_resp.outcome();
+        if (outcome.has_success() &&
+            outcome.success().payloads_size() > 0) {
+            co_return internal::from_proto_payload(
+                outcome.success().payloads(0));
+        }
+        if (outcome.has_failure()) {
+            throw std::runtime_error(
+                "Update failed: " + outcome.failure().message());
+        }
+    }
+
+    // No result payload
     converters::Payload empty_payload;
     empty_payload.metadata["encoding"] = "binary/null";
     co_return empty_payload;

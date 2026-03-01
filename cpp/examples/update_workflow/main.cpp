@@ -164,18 +164,21 @@ int main() {
         wf_opts.task_queue = "update-example-queue";
 
         auto handle = run_task_sync(
-            tc->start_workflow("ShoppingCart", "{}", wf_opts));
+            tc->start_workflow("ShoppingCart", wf_opts));
         std::cout << "\nStarted workflow: " << handle.id() << "\n";
 
-        // Step 6: Send updates to add items via WorkflowHandle::update().
-        auto count1 = run_task_sync(handle.update("add_item", "\"apple\""));
+        // Step 6: Send updates to add items via WorkflowHandle::update<T>().
+        auto count1 = run_task_sync(
+            handle.update<int>("add_item", std::string("apple")));
         std::cout << "Added apple, item count: " << count1 << "\n";
 
-        auto count2 = run_task_sync(handle.update("add_item", "\"banana\""));
+        auto count2 = run_task_sync(
+            handle.update<int>("add_item", std::string("banana")));
         std::cout << "Added banana, item count: " << count2 << "\n";
 
         // Step 7: Query the item count to verify.
-        auto count = run_task_sync(handle.query("get_item_count"));
+        auto count = run_task_sync(
+            handle.query<int>("get_item_count"));
         std::cout << "Queried item count: " << count << "\n";
 
         // Step 8: Signal checkout to complete the workflow.
@@ -183,7 +186,7 @@ int main() {
         std::cout << "Sent checkout signal.\n";
 
         // Step 9: Get the final result.
-        auto result = run_task_sync(handle.get_result());
+        auto result = run_task_sync(handle.get_result<std::string>());
         std::cout << "Workflow result: " << result << "\n";
 
         // Step 10: Shut down the worker.
