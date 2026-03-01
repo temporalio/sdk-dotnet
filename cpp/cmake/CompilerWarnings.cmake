@@ -41,6 +41,9 @@ function(temporalio_set_compiler_warnings target)
             # structs inside anonymous unions — a valid C idiom that Clang
             # treats as a C++ extension under -Wpedantic.
             target_compile_options(${target} PRIVATE -Wno-nested-anon-types)
+            # Some private fields are declared for future use (e.g. counters
+            # in WorkflowInstance). GCC does not warn on these but Clang does.
+            target_compile_options(${target} PRIVATE -Wno-unused-private-field)
         endif()
     else()
         message(WARNING "Temporalio: Unknown compiler '${CMAKE_CXX_COMPILER_ID}' - no extra warnings set")

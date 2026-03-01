@@ -20,6 +20,7 @@
 #include <opentelemetry/trace/span_startoptions.h>
 #include <opentelemetry/trace/tracer.h>
 
+#include "temporalio/activities/activity.h"
 #include "temporalio/activities/activity_context.h"
 #include "temporalio/workflows/workflow.h"
 #include "temporalio/workflows/workflow_info.h"
@@ -788,7 +789,8 @@ TracingInterceptor::inject_context(
     }
 
     ConstHeaderCarrier carrier(headers);
-    return propagator->Extract(carrier, context_api::RuntimeContext::GetCurrent());
+    auto current_ctx = context_api::RuntimeContext::GetCurrent();
+    return propagator->Extract(carrier, current_ctx);
 }
 
 bool TracingInterceptor::has_context(

@@ -209,14 +209,13 @@ jobs:
       - name: Collect coverage
         run: |
           lcov --capture --directory cpp/build --output-file coverage.info \
-               --gcov-tool gcov-12 --ignore-errors mismatch
+               --gcov-tool gcov-12
           # Remove system headers and third-party code from coverage
           lcov --remove coverage.info \
                '/usr/*' \
                '*/build/_deps/*' \
                '*/tests/*' \
-               --output-file coverage_filtered.info \
-               --ignore-errors unused
+               --output-file coverage_filtered.info
           lcov --list coverage_filtered.info
 
       - name: Upload coverage artifact
@@ -225,7 +224,7 @@ jobs:
           name: coverage-report
           path: coverage_filtered.info
 
-  # ── Linux (Clang 14 + Ninja) ───────────────────────────────────────────────
+  # ── Linux (Clang 15 + Ninja) ───────────────────────────────────────────────
   linux-clang:
     runs-on: ubuntu-22.04
     steps:
@@ -237,7 +236,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-14 ninja-build
+          sudo apt-get install -y clang-15 ninja-build
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -257,13 +256,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: cpp/build/_deps
-          key: fetchcontent-clang14-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-clang14-ninja-
+          key: fetchcontent-clang15-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-clang15-ninja-
 
       - name: Configure CMake (Ninja)
         env:
-          CC: clang-14
-          CXX: clang++-14
+          CC: clang-15
+          CXX: clang++-15
         run: >
           cmake -B cpp/build -S cpp
           -G Ninja
@@ -291,7 +290,7 @@ jobs:
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
-  # ── Linux (Clang 14 + ASan + UBSan) ───────────────────────────────────────
+  # ── Linux (Clang 15 + ASan + UBSan) ───────────────────────────────────────
   linux-sanitizers:
     runs-on: ubuntu-22.04
     steps:
@@ -303,7 +302,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-14 ninja-build
+          sudo apt-get install -y clang-15 ninja-build
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -323,13 +322,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: cpp/build/_deps
-          key: fetchcontent-clang14-san-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-clang14-san-ninja-
+          key: fetchcontent-clang15-san-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-clang15-san-ninja-
 
       - name: Configure CMake with sanitizers (Ninja)
         env:
-          CC: clang-14
-          CXX: clang++-14
+          CC: clang-15
+          CXX: clang++-15
         run: >
           cmake -B cpp/build -S cpp
           -G Ninja
