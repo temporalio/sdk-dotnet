@@ -351,6 +351,48 @@ auto meter = std::make_shared<extensions::diagnostics::CustomMetricMeter>(otel_m
 runtime_opts.metrics.custom_meter = meter;
 ```
 
+## Syncing Upstream C# Changes
+
+This SDK is a fork of the [Temporal .NET SDK](https://github.com/temporalio/sdk-dotnet).
+The `main` branch tracks upstream C# releases; the `cpp-conversion` branch contains the C++ port.
+
+A Claude Code slash command automates porting new upstream C# changes to C++:
+
+### Setup
+
+Ensure the upstream remote is configured:
+
+```bash
+git remote add upstream https://github.com/temporalio/sdk-dotnet.git
+```
+
+### Usage
+
+From the `cpp-conversion` branch with a clean working tree:
+
+```bash
+# Preview what upstream changes exist (no modifications)
+/update-cpp --dry-run
+
+# Port all new upstream changes to C++
+/update-cpp
+```
+
+The command will:
+1. Fetch latest upstream C# changes
+2. Identify new/modified/deleted files since the last sync
+3. Categorize changes and present a summary for approval
+4. Merge upstream into your local branches
+5. Port each C# change to the corresponding C++ code
+6. Build and run the test suite
+7. Update `.claude/sync-state.json` with the new sync point
+
+### Sync State
+
+The file `.claude/sync-state.json` tracks the last upstream commit that was synced.
+On the first run, it uses the initial port baseline (`589c7c3`) as the starting point.
+Each sync appends to the history, recording what was ported and what was skipped.
+
 ## Ported From
 
 This SDK is a C++20 port of the [Temporal .NET SDK](https://github.com/temporalio/sdk-dotnet). The original C# SDK
