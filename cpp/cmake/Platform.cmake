@@ -97,10 +97,31 @@ function(temporalio_build_rust_bridge)
     endif()
     set(RUST_LIB_PATH "${RUST_OUTPUT_DIR}/${RUST_LIB_NAME}")
 
+    # Resolve protoc for Rust bridge (prost/tonic need PROTOC env var).
+    set(_cargo_env_prefix "")
+    if(TARGET protobuf::protoc)
+        get_target_property(_bridge_protoc protobuf::protoc IMPORTED_LOCATION)
+        if(NOT _bridge_protoc)
+            get_target_property(_bridge_protoc protobuf::protoc IMPORTED_LOCATION_RELEASE)
+        endif()
+    endif()
+    if(NOT _bridge_protoc)
+        find_program(_bridge_protoc protoc)
+    endif()
+    if(_bridge_protoc)
+        set(_cargo_env_prefix ${CMAKE_COMMAND} -E env "PROTOC=${_bridge_protoc}")
+        # Also set PROTOC_INCLUDE for well-known type .proto imports
+        get_filename_component(_protoc_dir "${_bridge_protoc}" DIRECTORY)
+        get_filename_component(_protoc_prefix "${_protoc_dir}" DIRECTORY)
+        if(EXISTS "${_protoc_prefix}/include/google/protobuf/any.proto")
+            list(APPEND _cargo_env_prefix "PROTOC_INCLUDE=${_protoc_prefix}/include")
+        endif()
+    endif()
+
     # Custom command to build the Rust crate
     add_custom_command(
         OUTPUT "${RUST_LIB_PATH}"
-        COMMAND ${CARGO_EXECUTABLE} build ${_cargo_flags} -p ${ARG_PACKAGE_NAME}
+        COMMAND ${_cargo_env_prefix} ${CARGO_EXECUTABLE} build ${_cargo_flags} -p ${ARG_PACKAGE_NAME}
         WORKING_DIRECTORY "${ARG_CARGO_DIR}"
         COMMENT "Building Rust crate: ${ARG_CRATE_NAME} (${_rust_profile})"
         VERBATIM

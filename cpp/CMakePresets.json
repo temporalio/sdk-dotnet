@@ -58,8 +58,9 @@
     },
     {
       "name": "debug",
-      "displayName": "Debug (vcpkg)",
+      "displayName": "Debug (vcpkg + Ninja)",
       "inherits": "vcpkg-base",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/debug",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
@@ -67,8 +68,9 @@
     },
     {
       "name": "release",
-      "displayName": "Release (vcpkg)",
+      "displayName": "Release (vcpkg + Ninja)",
       "inherits": "vcpkg-base",
+      "generator": "Ninja",
       "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"

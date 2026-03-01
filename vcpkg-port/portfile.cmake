@@ -17,6 +17,12 @@ if(PROTOC_PROGRAM)
     set(ENV{PROTOC} "${PROTOC_PROGRAM}")
 endif()
 
+# Set PROTOC_INCLUDE for well-known type .proto imports.
+set(_protoc_include "${CURRENT_HOST_INSTALLED_DIR}/include")
+if(EXISTS "${_protoc_include}/google/protobuf/any.proto")
+    set(ENV{PROTOC_INCLUDE} "${_protoc_include}")
+endif()
+
 # Determine extension build options based on features.
 set(EXTENSIONS_OPTION OFF)
 if("opentelemetry" IN_LIST FEATURES OR "diagnostics" IN_LIST FEATURES)

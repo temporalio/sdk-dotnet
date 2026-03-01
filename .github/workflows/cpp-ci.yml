@@ -356,6 +356,53 @@ jobs:
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
+  # ── Linux (GCC 12 + vcpkg) ─────────────────────────────────────────────────
+  linux-vcpkg:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-12 g++-12 ninja-build
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src/Temporalio/Bridge/sdk-core
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 66c0373dc7fca549e5803087b9487edfe3aca0a1
+
+      - name: Configure CMake (vcpkg preset)
+        env:
+          CC: gcc-12
+          CXX: g++-12
+        run: cmake --preset debug -S cpp
+
+      - name: Build
+        run: cmake --build cpp/build/debug
+
+      - name: Run tests
+        run: ctest --test-dir cpp/build/debug --output-on-failure --timeout 120
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-linux-vcpkg
+          path: cpp/build/debug/Testing/
+          if-no-files-found: ignore
+
   # ── CMake Install + find_package Verification (Linux) ──────────────────────
   install-verify:
     runs-on: ubuntu-22.04
