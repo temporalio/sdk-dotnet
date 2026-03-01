@@ -30,9 +30,9 @@ namespace temporalio::extensions::opentelemetry {
 
 namespace {
 
-namespace trace_api = opentelemetry::trace;
-namespace context_api = opentelemetry::context;
-namespace propagation_api = opentelemetry::context::propagation;
+namespace trace_api = ::opentelemetry::trace;
+namespace context_api = ::opentelemetry::context;
+namespace propagation_api = ::opentelemetry::context::propagation;
 
 /// Helper to add workflow ID tag to span attributes if configured.
 void add_workflow_tags(
@@ -68,7 +68,7 @@ void record_exception_on_span(
 /// Record an exception_ptr on a span and set error status.
 /// Used in coroutine methods where we catch with `catch (...)`.
 void record_exception_on_span_ptr(
-    opentelemetry::nostd::shared_ptr<trace_api::Span>& span,
+    ::opentelemetry::nostd::shared_ptr<trace_api::Span>& span,
     const std::exception_ptr& eptr) {
     if (!span || !eptr) {
         return;
@@ -90,11 +90,11 @@ void record_exception_on_span_ptr(
 }
 
 /// Build an OTel attribute vector from a string map.
-std::vector<std::pair<opentelemetry::nostd::string_view,
-                      opentelemetry::common::AttributeValue>>
+std::vector<std::pair<::opentelemetry::nostd::string_view,
+                      ::opentelemetry::common::AttributeValue>>
 attrs_from_map(const std::map<std::string, std::string>& m) {
-    std::vector<std::pair<opentelemetry::nostd::string_view,
-                          opentelemetry::common::AttributeValue>> kv;
+    std::vector<std::pair<::opentelemetry::nostd::string_view,
+                          ::opentelemetry::common::AttributeValue>> kv;
     kv.reserve(m.size());
     for (const auto& [key, value] : m) {
         kv.emplace_back(key, value);
@@ -103,7 +103,7 @@ attrs_from_map(const std::map<std::string, std::string>& m) {
 }
 
 /// Start a span on the given tracer with string-map attributes.
-opentelemetry::nostd::shared_ptr<trace_api::Span> start_span_with_attrs(
+::opentelemetry::nostd::shared_ptr<trace_api::Span> start_span_with_attrs(
     trace_api::Tracer& tracer,
     const std::string& name,
     const std::map<std::string, std::string>& attrs,
@@ -117,9 +117,9 @@ opentelemetry::nostd::shared_ptr<trace_api::Span> start_span_with_attrs(
     auto kv = attrs_from_map(attrs);
     return tracer.StartSpan(
         name,
-        opentelemetry::common::KeyValueIterableView<
-            std::vector<std::pair<opentelemetry::nostd::string_view,
-                                  opentelemetry::common::AttributeValue>>>(kv),
+        ::opentelemetry::common::KeyValueIterableView<
+            std::vector<std::pair<::opentelemetry::nostd::string_view,
+                                  ::opentelemetry::common::AttributeValue>>>(kv),
         opts);
 }
 
@@ -304,15 +304,15 @@ public:
 
 private:
     /// Start a client span with the given name and attributes.
-    opentelemetry::nostd::shared_ptr<trace_api::Span> start_client_span(
+    ::opentelemetry::nostd::shared_ptr<trace_api::Span> start_client_span(
         const std::string& name,
         const std::map<std::string, std::string>& attrs) {
         trace_api::StartSpanOptions opts;
         opts.kind = trace_api::SpanKind::kClient;
 
         // Build attributes from the map
-        std::vector<std::pair<opentelemetry::nostd::string_view,
-                              opentelemetry::common::AttributeValue>> kv_attrs;
+        std::vector<std::pair<::opentelemetry::nostd::string_view,
+                              ::opentelemetry::common::AttributeValue>> kv_attrs;
         kv_attrs.reserve(attrs.size());
         for (const auto& [key, value] : attrs) {
             kv_attrs.emplace_back(key, value);
@@ -320,9 +320,9 @@ private:
 
         return root_->client_tracer()->StartSpan(
             name,
-            opentelemetry::common::KeyValueIterableView<
-                std::vector<std::pair<opentelemetry::nostd::string_view,
-                                      opentelemetry::common::AttributeValue>>>(
+            ::opentelemetry::common::KeyValueIterableView<
+                std::vector<std::pair<::opentelemetry::nostd::string_view,
+                                      ::opentelemetry::common::AttributeValue>>>(
                 kv_attrs),
             opts);
     }
@@ -395,7 +395,7 @@ public:
     }
 
 private:
-    opentelemetry::nostd::shared_ptr<trace_api::Span> start_outbound_span(
+    ::opentelemetry::nostd::shared_ptr<trace_api::Span> start_outbound_span(
         const std::string& name) {
         trace_api::StartSpanOptions opts;
         opts.kind = trace_api::SpanKind::kClient;
@@ -721,16 +721,16 @@ struct HeaderCarrier : propagation_api::TextMapCarrier {
     explicit HeaderCarrier(
         std::unordered_map<std::string, std::string>& h)
         : hdrs(h) {}
-    opentelemetry::nostd::string_view Get(
-        opentelemetry::nostd::string_view key) const noexcept override {
+    ::opentelemetry::nostd::string_view Get(
+        ::opentelemetry::nostd::string_view key) const noexcept override {
         auto it = hdrs.find(std::string(key));
         if (it != hdrs.end()) {
             return it->second;
         }
         return "";
     }
-    void Set(opentelemetry::nostd::string_view key,
-             opentelemetry::nostd::string_view value) noexcept override {
+    void Set(::opentelemetry::nostd::string_view key,
+             ::opentelemetry::nostd::string_view value) noexcept override {
         hdrs[std::string(key)] = std::string(value);
     }
 };
@@ -741,16 +741,16 @@ struct ConstHeaderCarrier : propagation_api::TextMapCarrier {
     explicit ConstHeaderCarrier(
         const std::unordered_map<std::string, std::string>& h)
         : hdrs(h) {}
-    opentelemetry::nostd::string_view Get(
-        opentelemetry::nostd::string_view key) const noexcept override {
+    ::opentelemetry::nostd::string_view Get(
+        ::opentelemetry::nostd::string_view key) const noexcept override {
         auto it = hdrs.find(std::string(key));
         if (it != hdrs.end()) {
             return it->second;
         }
         return "";
     }
-    void Set(opentelemetry::nostd::string_view /*key*/,
-             opentelemetry::nostd::string_view /*value*/) noexcept override {
+    void Set(::opentelemetry::nostd::string_view /*key*/,
+             ::opentelemetry::nostd::string_view /*value*/) noexcept override {
         // Read-only carrier, Set is a no-op
     }
 };
@@ -760,7 +760,7 @@ struct ConstHeaderCarrier : propagation_api::TextMapCarrier {
 std::unordered_map<std::string, std::string>
 TracingInterceptor::inject_context(
     std::unordered_map<std::string, std::string> headers,
-    const opentelemetry::context::Context& context) const {
+    const ::opentelemetry::context::Context& context) const {
     auto propagator =
         propagation_api::GlobalTextMapPropagator::GetGlobalPropagator();
     if (!propagator) {
@@ -779,7 +779,7 @@ TracingInterceptor::inject_context(
         std::move(headers), context_api::RuntimeContext::GetCurrent());
 }
 
-opentelemetry::context::Context TracingInterceptor::extract_context(
+::opentelemetry::context::Context TracingInterceptor::extract_context(
     const std::unordered_map<std::string, std::string>& headers) const {
     auto propagator =
         propagation_api::GlobalTextMapPropagator::GetGlobalPropagator();

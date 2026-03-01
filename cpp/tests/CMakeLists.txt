@@ -86,8 +86,14 @@ if(WIN32 AND TARGET temporalio_rust_bridge)
 endif()
 
 # ── Register tests with CTest ──────────────────────────────────────────────
-gtest_discover_tests(temporalio_tests
+# Run all tests in a single process rather than per-test processes.
+# The WorkflowEnvironmentFixture is a Google Test global environment that
+# starts a dev server once in SetUp() and shuts it down in TearDown().
+# gtest_discover_tests() would run each of 742 tests as a separate process,
+# each starting/stopping the dev server via Rust FFI — causing process-exit
+# race conditions that manifest as heap corruption on Linux/GCC.
+add_test(NAME temporalio_tests COMMAND temporalio_tests)
+set_tests_properties(temporalio_tests PROPERTIES
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    PROPERTIES
-        TIMEOUT 120
+    TIMEOUT 300
 )

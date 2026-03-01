@@ -37,6 +37,10 @@ function(temporalio_set_compiler_warnings target)
             if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS "16.0")
                 target_compile_options(${target} PRIVATE -fcoroutines-ts)
             endif()
+            # interop.h (auto-generated from Rust cbindgen) uses anonymous
+            # structs inside anonymous unions — a valid C idiom that Clang
+            # treats as a C++ extension under -Wpedantic.
+            target_compile_options(${target} PRIVATE -Wno-nested-anon-types)
         endif()
     else()
         message(WARNING "Temporalio: Unknown compiler '${CMAKE_CXX_COMPILER_ID}' - no extra warnings set")

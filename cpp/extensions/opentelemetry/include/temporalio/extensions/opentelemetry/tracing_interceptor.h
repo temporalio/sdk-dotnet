@@ -68,19 +68,19 @@ public:
     }
 
     /// Get the workflow tracer.
-    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    ::opentelemetry::nostd::shared_ptr<::opentelemetry::trace::Tracer>
     workflow_tracer() const noexcept {
         return workflow_tracer_;
     }
 
     /// Get the activity tracer.
-    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    ::opentelemetry::nostd::shared_ptr<::opentelemetry::trace::Tracer>
     activity_tracer() const noexcept {
         return activity_tracer_;
     }
 
     /// Get the client tracer.
-    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    ::opentelemetry::nostd::shared_ptr<::opentelemetry::trace::Tracer>
     client_tracer() const noexcept {
         return client_tracer_;
     }
@@ -111,7 +111,7 @@ public:
     /// @return Updated headers with trace context injected.
     std::unordered_map<std::string, std::string> inject_context(
         std::unordered_map<std::string, std::string> headers,
-        const opentelemetry::context::Context& context) const;
+        const ::opentelemetry::context::Context& context) const;
 
     /// Inject current OTel context into Temporal headers.
     /// Uses the currently active OTel context.
@@ -123,7 +123,7 @@ public:
     /// Extract trace context from Temporal headers into an OTel context.
     /// @param headers Headers to extract from.
     /// @return The extracted context, or an empty context if not found.
-    opentelemetry::context::Context extract_context(
+    ::opentelemetry::context::Context extract_context(
         const std::unordered_map<std::string, std::string>& headers) const;
 
     /// Check whether headers contain trace context.
@@ -136,11 +136,11 @@ private:
     TracingInterceptorOptions options_;
 
     // Tracers for each domain
-    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    ::opentelemetry::nostd::shared_ptr<::opentelemetry::trace::Tracer>
         client_tracer_;
-    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    ::opentelemetry::nostd::shared_ptr<::opentelemetry::trace::Tracer>
         workflow_tracer_;
-    opentelemetry::nostd::shared_ptr<opentelemetry::trace::Tracer>
+    ::opentelemetry::nostd::shared_ptr<::opentelemetry::trace::Tracer>
         activity_tracer_;
 
     // Owned interceptor instances (kept alive for the interceptor chain)
