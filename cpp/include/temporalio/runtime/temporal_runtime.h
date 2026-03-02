@@ -186,6 +186,11 @@ public:
     /// Get or create the default runtime (lazily initialized).
     static std::shared_ptr<TemporalRuntime> default_instance();
 
+    /// Explicitly destroy the default runtime singleton.
+    /// Call this before process exit to avoid races between static destruction
+    /// and coverage/sanitizer atexit handlers.
+    static void reset_default();
+
     /// Get the metric meter associated with this runtime.
     common::MetricMeter& metric_meter();
 

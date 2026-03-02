@@ -84,7 +84,11 @@ function(temporalio_build_rust_bridge)
         set(_cargo_flags  "")
     endif()
 
-    set(RUST_OUTPUT_DIR "${ARG_CARGO_DIR}/target/${_rust_profile}")
+    # Place Rust build artifacts inside the CMake build directory rather than
+    # the source tree. This avoids cross-filesystem issues (e.g., NTFS via WSL2)
+    # that cause heap corruption when the cdylib is built on a foreign FS.
+    set(RUST_TARGET_DIR "${CMAKE_CURRENT_BINARY_DIR}/rust-target")
+    set(RUST_OUTPUT_DIR "${RUST_TARGET_DIR}/${_rust_profile}")
     # The Rust crate is a cdylib. On Windows, cargo produces a .dll and a
     # .dll.lib import library.  On Unix it produces a .so / .dylib.
     # We link the import library on Windows; on Unix we link the shared lib.
@@ -98,31 +102,61 @@ function(temporalio_build_rust_bridge)
     set(RUST_LIB_PATH "${RUST_OUTPUT_DIR}/${RUST_LIB_NAME}")
 
     # Resolve protoc for Rust bridge (prost/tonic need PROTOC env var).
+    # Three strategies, in priority order:
+    #   1. Imported protoc target (from find_package)
+    #   2. FetchContent-built protoc (build target — use generator expression)
+    #   3. System protoc on PATH
     set(_cargo_env_prefix "")
+    set(_protoc_depends "")
+
     if(TARGET protobuf::protoc)
-        get_target_property(_bridge_protoc protobuf::protoc IMPORTED_LOCATION)
-        if(NOT _bridge_protoc)
-            get_target_property(_bridge_protoc protobuf::protoc IMPORTED_LOCATION_RELEASE)
+        get_target_property(_protoc_type protobuf::protoc TYPE)
+        if(_protoc_type STREQUAL "EXECUTABLE")
+            # FetchContent-built protoc: use generator expression at build time.
+            # We also need to ensure protoc is built before cargo runs.
+            set(_cargo_env_prefix ${CMAKE_COMMAND} -E env "PROTOC=$<TARGET_FILE:protobuf::protoc>")
+            set(_protoc_depends protobuf::protoc)
+            # FetchContent protobuf ships well-known .proto files in its source tree
+            if(EXISTS "${protobuf_SOURCE_DIR}/src/google/protobuf/any.proto")
+                list(APPEND _cargo_env_prefix "PROTOC_INCLUDE=${protobuf_SOURCE_DIR}/src")
+            endif()
+        else()
+            # Imported target from find_package
+            get_target_property(_bridge_protoc protobuf::protoc IMPORTED_LOCATION)
+            if(NOT _bridge_protoc)
+                get_target_property(_bridge_protoc protobuf::protoc IMPORTED_LOCATION_RELEASE)
+            endif()
+            if(_bridge_protoc)
+                set(_cargo_env_prefix ${CMAKE_COMMAND} -E env "PROTOC=${_bridge_protoc}")
+                get_filename_component(_protoc_dir "${_bridge_protoc}" DIRECTORY)
+                get_filename_component(_protoc_prefix "${_protoc_dir}" DIRECTORY)
+                if(EXISTS "${_protoc_prefix}/include/google/protobuf/any.proto")
+                    list(APPEND _cargo_env_prefix "PROTOC_INCLUDE=${_protoc_prefix}/include")
+                endif()
+            endif()
         endif()
     endif()
-    if(NOT _bridge_protoc)
+    if(NOT _cargo_env_prefix)
         find_program(_bridge_protoc protoc)
-    endif()
-    if(_bridge_protoc)
-        set(_cargo_env_prefix ${CMAKE_COMMAND} -E env "PROTOC=${_bridge_protoc}")
-        # Also set PROTOC_INCLUDE for well-known type .proto imports
-        get_filename_component(_protoc_dir "${_bridge_protoc}" DIRECTORY)
-        get_filename_component(_protoc_prefix "${_protoc_dir}" DIRECTORY)
-        if(EXISTS "${_protoc_prefix}/include/google/protobuf/any.proto")
-            list(APPEND _cargo_env_prefix "PROTOC_INCLUDE=${_protoc_prefix}/include")
+        if(_bridge_protoc)
+            set(_cargo_env_prefix ${CMAKE_COMMAND} -E env "PROTOC=${_bridge_protoc}")
+            get_filename_component(_protoc_dir "${_bridge_protoc}" DIRECTORY)
+            get_filename_component(_protoc_prefix "${_protoc_dir}" DIRECTORY)
+            if(EXISTS "${_protoc_prefix}/include/google/protobuf/any.proto")
+                list(APPEND _cargo_env_prefix "PROTOC_INCLUDE=${_protoc_prefix}/include")
+            endif()
         endif()
     endif()
 
-    # Custom command to build the Rust crate
+    # Custom command to build the Rust crate.
+    # CARGO_TARGET_DIR redirects all build artifacts to the CMake build directory,
+    # ensuring the cdylib is built on the native filesystem.
     add_custom_command(
         OUTPUT "${RUST_LIB_PATH}"
-        COMMAND ${_cargo_env_prefix} ${CARGO_EXECUTABLE} build ${_cargo_flags} -p ${ARG_PACKAGE_NAME}
+        COMMAND ${_cargo_env_prefix} ${CMAKE_COMMAND} -E env "CARGO_TARGET_DIR=${RUST_TARGET_DIR}"
+                ${CARGO_EXECUTABLE} build ${_cargo_flags} -p ${ARG_PACKAGE_NAME}
         WORKING_DIRECTORY "${ARG_CARGO_DIR}"
+        DEPENDS ${_protoc_depends}
         COMMENT "Building Rust crate: ${ARG_CRATE_NAME} (${_rust_profile})"
         VERBATIM
     )
@@ -144,9 +178,14 @@ function(temporalio_build_rust_bridge)
         )
     else()
         # On Unix, cdylib produces a .so / .dylib.
+        # Rust cdylibs don't set a SONAME in ELF headers, so without
+        # IMPORTED_NO_SONAME the linker embeds the full path as the DT_NEEDED
+        # entry — which breaks LD_LIBRARY_PATH resolution at runtime.
+        # IMPORTED_NO_SONAME tells CMake to link via -L<dir> -l<name> instead.
         add_library(${ARG_TARGET} SHARED IMPORTED GLOBAL)
         set_target_properties(${ARG_TARGET} PROPERTIES
             IMPORTED_LOCATION "${RUST_LIB_PATH}"
+            IMPORTED_NO_SONAME TRUE
         )
     endif()
     add_dependencies(${ARG_TARGET} ${ARG_TARGET}_build)
@@ -155,8 +194,8 @@ function(temporalio_build_rust_bridge)
     # that Debug configs use the debug Rust build and Release configs use release.
     get_property(_is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
     if(_is_multi_config)
-        set(_release_dir "${ARG_CARGO_DIR}/target/release")
-        set(_debug_dir   "${ARG_CARGO_DIR}/target/debug")
+        set(_release_dir "${RUST_TARGET_DIR}/release")
+        set(_debug_dir   "${RUST_TARGET_DIR}/debug")
         if(WIN32)
             set_target_properties(${ARG_TARGET} PROPERTIES
                 IMPORTED_LOCATION_DEBUG           "${_debug_dir}/${RUST_DLL_NAME}"

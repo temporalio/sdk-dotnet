@@ -141,11 +141,25 @@ TemporalRuntime::TemporalRuntime(TemporalRuntime&&) noexcept = default;
 TemporalRuntime& TemporalRuntime::operator=(TemporalRuntime&&) noexcept =
     default;
 
-std::shared_ptr<TemporalRuntime> TemporalRuntime::default_instance() {
+namespace {
+
+/// Accessor for the function-local static that backs default_instance().
+/// Separated so reset_default() can clear it before static destruction.
+std::shared_ptr<TemporalRuntime>& default_instance_ref() {
     static std::shared_ptr<TemporalRuntime> instance = [] {
         return std::make_shared<TemporalRuntime>(TemporalRuntimeOptions{});
     }();
     return instance;
+}
+
+}  // namespace
+
+std::shared_ptr<TemporalRuntime> TemporalRuntime::default_instance() {
+    return default_instance_ref();
+}
+
+void TemporalRuntime::reset_default() {
+    default_instance_ref().reset();
 }
 
 common::MetricMeter& TemporalRuntime::metric_meter() {

@@ -9,7 +9,6 @@
 #include <vector>
 
 #include "temporalio/coro/coroutine_scheduler.h"
-#include "temporalio/coro/task.h"
 
 using namespace temporalio::coro;
 
@@ -78,21 +77,24 @@ struct YieldAwaiter {
     void await_resume() noexcept {}
 };
 
-/// Task<void> coroutine that yields once via the scheduler, pushing to log
+/// SimpleCoroutine that yields once via the scheduler, pushing to log
 /// before and after. Free function avoids lambda coroutine capture issues
-/// that ASan detects as stack-use-after-scope.
-static Task<void> yield_and_log(CoroutineScheduler& sched,
-                                std::vector<std::string>& log,
-                                std::string step1, std::string step2) {
+/// that ASan detects as stack-use-after-scope. Uses SimpleCoroutine instead
+/// of Task<void> to avoid GCC 12/13 symmetric-transfer codegen bugs.
+static SimpleCoroutine yield_and_log(CoroutineScheduler& sched,
+                                     std::vector<std::string>& log,
+                                     std::string step1, std::string step2) {
     log.push_back(std::move(step1));
     co_await YieldAwaiter{sched};
     log.push_back(std::move(step2));
 }
 
-/// Task<void> coroutine that yields N times, pushing a label each time.
-static Task<void> yield_n_times(CoroutineScheduler& sched,
-                                std::vector<std::string>& log,
-                                std::vector<std::string> labels) {
+/// SimpleCoroutine that yields N times, pushing a label each time.
+/// Uses SimpleCoroutine instead of Task<void> to avoid GCC 12/13
+/// symmetric-transfer codegen bugs.
+static SimpleCoroutine yield_n_times(CoroutineScheduler& sched,
+                                     std::vector<std::string>& log,
+                                     std::vector<std::string> labels) {
     for (size_t i = 0; i < labels.size(); ++i) {
         log.push_back(std::move(labels[i]));
         if (i + 1 < labels.size()) {
@@ -183,9 +185,9 @@ TEST(CoroutineSchedulerTest, CoroutineCanScheduleMoreWork) {
     // Free-function coroutine that yields once via the scheduler.
     // Lambda coroutines with reference captures trigger ASan
     // stack-use-after-scope when the lambda temporary is destroyed.
-    auto task = yield_and_log(scheduler, log, "step1", "step2");
+    auto coro = yield_and_log(scheduler, log, "step1", "step2");
 
-    scheduler.schedule(task.handle());
+    scheduler.schedule(coro.handle_);
 
     // First drain: executes step1, which suspends and re-enqueues,
     // then the scheduler picks up the re-enqueued handle and executes step2.
@@ -289,11 +291,11 @@ TEST(CoroutineSchedulerTest, InterleavedExecution) {
     std::vector<std::string> log;
 
     // Free-function coroutines avoid lambda capture ASan issues.
-    auto task_a = yield_n_times(scheduler, log, {"A1", "A2", "A3"});
-    auto task_b = yield_n_times(scheduler, log, {"B1", "B2"});
+    auto coro_a = yield_n_times(scheduler, log, {"A1", "A2", "A3"});
+    auto coro_b = yield_n_times(scheduler, log, {"B1", "B2"});
 
-    scheduler.schedule(task_a.handle());
-    scheduler.schedule(task_b.handle());
+    scheduler.schedule(coro_a.handle_);
+    scheduler.schedule(coro_b.handle_);
 
     scheduler.drain();
 

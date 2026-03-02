@@ -86,9 +86,30 @@ jobs:
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
-  # ── Linux (GCC 12 + Ninja) ─────────────────────────────────────────────────
-  linux-gcc:
+  # ── Linux (GCC + coverage, Clang + ASan/UBSan) ────────────────────────────
+  linux:
     runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: gcc
+            cc: gcc-12
+            cxx: g++-12
+            packages: "gcc-12 g++-12 ninja-build lcov"
+            cmake_cxx_flags: "--coverage -fprofile-arcs -ftest-coverage"
+            cmake_linker_flags: "--coverage"
+            test_timeout: 120
+            collect_coverage: true
+          - name: clang-asan
+            cc: clang-15
+            cxx: clang++-15
+            packages: "clang-15 ninja-build"
+            cmake_cxx_flags: "-fsanitize=address,undefined -fno-omit-frame-pointer"
+            cmake_linker_flags: "-fsanitize=address,undefined"
+            test_timeout: 180
+            collect_coverage: false
+    name: linux (${{ matrix.name }})
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -98,7 +119,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-12 g++-12 ninja-build
+          sudo apt-get install -y ${{ matrix.packages }}
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -107,6 +128,7 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src/Temporalio/Bridge/sdk-core
+          key: ${{ matrix.name }}
 
       - name: Install protoc
         uses: arduino/setup-protoc@v3
@@ -118,100 +140,33 @@ jobs:
         uses: actions/cache@v4
         with:
           path: cpp/build/_deps
-          key: fetchcontent-gcc12-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-gcc12-ninja-
+          key: fetchcontent-${{ matrix.name }}-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-${{ matrix.name }}-
 
-      - name: Configure CMake (Ninja)
+      - name: Configure CMake
         env:
-          CC: gcc-12
-          CXX: g++-12
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
         run: >
           cmake -B cpp/build -S cpp
           -G Ninja
           -DCMAKE_BUILD_TYPE=Debug
+          -DCMAKE_CXX_FLAGS="${{ matrix.cmake_cxx_flags }}"
+          -DCMAKE_EXE_LINKER_FLAGS="${{ matrix.cmake_linker_flags }}"
           -DTEMPORALIO_BUILD_EXTENSIONS=OFF
           -DTEMPORALIO_BUILD_EXAMPLES=ON
-
-      - name: Build library
-        run: cmake --build cpp/build --target temporalio
-
-      - name: Build tests
-        run: cmake --build cpp/build --target temporalio_tests
-
-      - name: Build examples
-        run: cmake --build cpp/build
-
-      - name: Run tests
-        run: ctest --test-dir cpp/build --output-on-failure --timeout 120
-
-      - name: Upload test results on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-linux-gcc
-          path: cpp/build/Testing/
-          if-no-files-found: ignore
-
-  # ── Linux (GCC 12 + Coverage) ──────────────────────────────────────────────
-  linux-coverage:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-12 g++-12 ninja-build lcov
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src/Temporalio/Bridge/sdk-core
-
-      - name: Install protoc
-        uses: arduino/setup-protoc@v3
-        with:
-          version: ${{ env.PROTOC_VERSION }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache CMake FetchContent dependencies
-        uses: actions/cache@v4
-        with:
-          path: cpp/build/_deps
-          key: fetchcontent-gcc12-cov-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-gcc12-cov-
-
-      - name: Configure CMake with coverage (Ninja)
-        env:
-          CC: gcc-12
-          CXX: g++-12
-        run: >
-          cmake -B cpp/build -S cpp
-          -G Ninja
-          -DCMAKE_BUILD_TYPE=Debug
-          -DCMAKE_CXX_FLAGS="--coverage -fprofile-arcs -ftest-coverage"
-          -DCMAKE_EXE_LINKER_FLAGS="--coverage"
-          -DTEMPORALIO_BUILD_EXTENSIONS=OFF
-          -DTEMPORALIO_BUILD_EXAMPLES=OFF
 
       - name: Build
         run: cmake --build cpp/build
 
       - name: Run tests
-        # Coverage instrumentation adds atexit() handlers that write .gcda
-        # files. These can race with Rust bridge background thread cleanup,
-        # causing a SEGFAULT after all tests pass. Test correctness is
-        # validated by the linux-gcc job; this job only needs gcda output.
-        continue-on-error: true
-        run: ctest --test-dir cpp/build --output-on-failure --timeout 120
+        env:
+          ASAN_OPTIONS: ${{ !matrix.collect_coverage && 'detect_leaks=1:halt_on_error=1' || '' }}
+          UBSAN_OPTIONS: ${{ !matrix.collect_coverage && 'print_stacktrace=1:halt_on_error=1' || '' }}
+        run: ctest --test-dir cpp/build --output-on-failure --timeout ${{ matrix.test_timeout }}
 
       - name: Collect coverage
+        if: matrix.collect_coverage
         run: |
           lcov --capture --directory cpp/build --output-file coverage.info \
                --gcov-tool gcov-12
@@ -224,139 +179,17 @@ jobs:
           lcov --list coverage_filtered.info
 
       - name: Upload coverage artifact
+        if: matrix.collect_coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage_filtered.info
 
-  # ── Linux (Clang 15 + Ninja) ───────────────────────────────────────────────
-  linux-clang:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang-15 ninja-build
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src/Temporalio/Bridge/sdk-core
-
-      - name: Install protoc
-        uses: arduino/setup-protoc@v3
-        with:
-          version: ${{ env.PROTOC_VERSION }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache CMake FetchContent dependencies
-        uses: actions/cache@v4
-        with:
-          path: cpp/build/_deps
-          key: fetchcontent-clang15-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-clang15-ninja-
-
-      - name: Configure CMake (Ninja)
-        env:
-          CC: clang-15
-          CXX: clang++-15
-        run: >
-          cmake -B cpp/build -S cpp
-          -G Ninja
-          -DCMAKE_BUILD_TYPE=Debug
-          -DTEMPORALIO_BUILD_EXTENSIONS=OFF
-          -DTEMPORALIO_BUILD_EXAMPLES=ON
-
-      - name: Build library
-        run: cmake --build cpp/build --target temporalio
-
-      - name: Build tests
-        run: cmake --build cpp/build --target temporalio_tests
-
-      - name: Build examples
-        run: cmake --build cpp/build
-
-      - name: Run tests
-        run: ctest --test-dir cpp/build --output-on-failure --timeout 120
-
       - name: Upload test results on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results-linux-clang
-          path: cpp/build/Testing/
-          if-no-files-found: ignore
-
-  # ── Linux (Clang 15 + ASan + UBSan) ───────────────────────────────────────
-  linux-sanitizers:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang-15 ninja-build
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Setup Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: src/Temporalio/Bridge/sdk-core
-
-      - name: Install protoc
-        uses: arduino/setup-protoc@v3
-        with:
-          version: ${{ env.PROTOC_VERSION }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Cache CMake FetchContent dependencies
-        uses: actions/cache@v4
-        with:
-          path: cpp/build/_deps
-          key: fetchcontent-clang15-san-ninja-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-clang15-san-ninja-
-
-      - name: Configure CMake with sanitizers (Ninja)
-        env:
-          CC: clang-15
-          CXX: clang++-15
-        run: >
-          cmake -B cpp/build -S cpp
-          -G Ninja
-          -DCMAKE_BUILD_TYPE=Debug
-          -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"
-          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
-          -DTEMPORALIO_BUILD_EXTENSIONS=OFF
-          -DTEMPORALIO_BUILD_EXAMPLES=OFF
-
-      - name: Build
-        run: cmake --build cpp/build
-
-      - name: Run tests under sanitizers
-        env:
-          ASAN_OPTIONS: detect_leaks=1:halt_on_error=1
-          UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
-        run: ctest --test-dir cpp/build --output-on-failure --timeout 180
-
-      - name: Upload test results on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-linux-sanitizers
+          name: test-results-linux-${{ matrix.name }}
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
