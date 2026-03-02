@@ -67,6 +67,40 @@ static SimpleCoroutine atomic_increment(std::atomic<int>& count) {
     co_return;
 }
 
+/// Awaiter that re-enqueues the coroutine on the scheduler (yields).
+/// Used by free-function coroutines below to avoid lambda capture issues.
+struct YieldAwaiter {
+    CoroutineScheduler& sched;
+    bool await_ready() const noexcept { return false; }
+    void await_suspend(std::coroutine_handle<> h) {
+        sched.schedule(h);
+    }
+    void await_resume() noexcept {}
+};
+
+/// Task<void> coroutine that yields once via the scheduler, pushing to log
+/// before and after. Free function avoids lambda coroutine capture issues
+/// that ASan detects as stack-use-after-scope.
+static Task<void> yield_and_log(CoroutineScheduler& sched,
+                                std::vector<std::string>& log,
+                                std::string step1, std::string step2) {
+    log.push_back(std::move(step1));
+    co_await YieldAwaiter{sched};
+    log.push_back(std::move(step2));
+}
+
+/// Task<void> coroutine that yields N times, pushing a label each time.
+static Task<void> yield_n_times(CoroutineScheduler& sched,
+                                std::vector<std::string>& log,
+                                std::vector<std::string> labels) {
+    for (size_t i = 0; i < labels.size(); ++i) {
+        log.push_back(std::move(labels[i]));
+        if (i + 1 < labels.size()) {
+            co_await YieldAwaiter{sched};
+        }
+    }
+}
+
 }  // namespace
 
 // ===========================================================================
@@ -146,24 +180,10 @@ TEST(CoroutineSchedulerTest, CoroutineCanScheduleMoreWork) {
 
     std::vector<std::string> log;
 
-    // This task, when resumed, will schedule another task.
-    // We need a custom awaiter that enqueues to the scheduler.
-    struct ScheduleAwaiter {
-        CoroutineScheduler& sched;
-        bool await_ready() const noexcept { return false; }
-        void await_suspend(std::coroutine_handle<> h) {
-            // Re-enqueue ourselves
-            sched.schedule(h);
-        }
-        void await_resume() noexcept {}
-    };
-
-    // A coroutine that yields once via the scheduler
-    auto task = [&](CoroutineScheduler& sched) -> Task<void> {
-        log.push_back("step1");
-        co_await ScheduleAwaiter{sched};
-        log.push_back("step2");
-    }(scheduler);
+    // Free-function coroutine that yields once via the scheduler.
+    // Lambda coroutines with reference captures trigger ASan
+    // stack-use-after-scope when the lambda temporary is destroyed.
+    auto task = yield_and_log(scheduler, log, "step1", "step2");
 
     scheduler.schedule(task.handle());
 
@@ -268,28 +288,9 @@ TEST(CoroutineSchedulerTest, InterleavedExecution) {
 
     std::vector<std::string> log;
 
-    struct YieldAwaiter {
-        CoroutineScheduler& sched;
-        bool await_ready() const noexcept { return false; }
-        void await_suspend(std::coroutine_handle<> h) {
-            sched.schedule(h);
-        }
-        void await_resume() noexcept {}
-    };
-
-    auto task_a = [&](CoroutineScheduler& sched) -> Task<void> {
-        log.push_back("A1");
-        co_await YieldAwaiter{sched};
-        log.push_back("A2");
-        co_await YieldAwaiter{sched};
-        log.push_back("A3");
-    }(scheduler);
-
-    auto task_b = [&](CoroutineScheduler& sched) -> Task<void> {
-        log.push_back("B1");
-        co_await YieldAwaiter{sched};
-        log.push_back("B2");
-    }(scheduler);
+    // Free-function coroutines avoid lambda capture ASan issues.
+    auto task_a = yield_n_times(scheduler, log, {"A1", "A2", "A3"});
+    auto task_b = yield_n_times(scheduler, log, {"B1", "B2"});
 
     scheduler.schedule(task_a.handle());
     scheduler.schedule(task_b.handle());
