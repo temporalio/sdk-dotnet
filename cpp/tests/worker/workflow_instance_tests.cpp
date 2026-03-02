@@ -81,6 +81,38 @@ public:
 private:
 };
 
+/// Workflow that waits on a condition that is never true (for cancellation tests).
+class WaitConditionWorkflow {
+public:
+    Task<std::string> run() {
+        co_await Workflow::wait_condition([] { return false; });
+        co_return "done";
+    }
+};
+
+/// Workflow that delays for a long time (for cancellation tests).
+class TimerCancelWorkflow {
+public:
+    Task<std::string> run() {
+        co_await Workflow::delay(std::chrono::milliseconds{999999});
+        co_return "done";
+    }
+};
+
+/// Workflow that schedules an activity with no explicit cancellation token
+/// (for cancellation tests).
+class ActivityCancelWorkflow {
+public:
+    Task<std::string> run() {
+        ActivityOptions opts;
+        opts.start_to_close_timeout = std::chrono::milliseconds{30000};
+        opts.task_queue = "activity-queue";
+        auto result = co_await Workflow::execute_activity(
+            "greet", std::any(std::string("world")), opts);
+        co_return std::any_cast<std::string>(result);
+    }
+};
+
 WorkflowInfo make_test_info(const std::string& wf_type = "SimpleWorkflow") {
     WorkflowInfo info;
     info.workflow_id = "test-wf-1";
@@ -1134,4 +1166,140 @@ TEST(WorkflowInstanceTest, ResolveActivityCancelledCausesWorkflowFailure) {
         }
     }
     EXPECT_TRUE(found_fail);
+}
+
+// ===========================================================================
+// Cancellation propagation tests
+// ===========================================================================
+
+TEST(WorkflowInstanceTest, CancelWorkflow_WaitConditionThrowsCanceled) {
+    auto def = WorkflowDefinition::create<WaitConditionWorkflow>(
+                   "WaitConditionWorkflow")
+                   .run(&WaitConditionWorkflow::run)
+                   .build();
+
+    auto [inst, start_cmds] = create_started_instance(def);
+
+    // The workflow is now suspended in wait_condition([] { return false; }).
+    // No kCompleteWorkflow or kFailWorkflow should have been emitted yet.
+    for (const auto& cmd : start_cmds) {
+        EXPECT_NE(cmd.type, WorkflowInstance::CommandType::kCompleteWorkflow);
+        EXPECT_NE(cmd.type, WorkflowInstance::CommandType::kFailWorkflow);
+    }
+
+    // Send cancel job.
+    std::vector<WorkflowInstance::Job> cancel_jobs = {
+        {.type = WorkflowInstance::JobType::kCancelWorkflow, .data = {}},
+    };
+    auto cmds = inst->activate(cancel_jobs);
+
+    // Should emit kCancelWorkflow (not kFailWorkflow).
+    bool found_cancel = false;
+    bool found_fail = false;
+    for (const auto& cmd : cmds) {
+        if (cmd.type == WorkflowInstance::CommandType::kCancelWorkflow) {
+            found_cancel = true;
+        }
+        if (cmd.type == WorkflowInstance::CommandType::kFailWorkflow) {
+            found_fail = true;
+        }
+    }
+    EXPECT_TRUE(found_cancel)
+        << "Expected kCancelWorkflow command after cancelling wait_condition";
+    EXPECT_FALSE(found_fail)
+        << "Should not emit kFailWorkflow on cancellation";
+}
+
+TEST(WorkflowInstanceTest, CancelWorkflow_TimerThrowsCanceled) {
+    auto def = WorkflowDefinition::create<TimerCancelWorkflow>(
+                   "TimerCancelWorkflow")
+                   .run(&TimerCancelWorkflow::run)
+                   .build();
+
+    auto [inst, start_cmds] = create_started_instance(def);
+
+    // The workflow is now suspended in delay(999999ms).
+    // Should have emitted a kStartTimer command.
+    bool found_start_timer = false;
+    for (const auto& cmd : start_cmds) {
+        if (cmd.type == WorkflowInstance::CommandType::kStartTimer) {
+            found_start_timer = true;
+        }
+    }
+    EXPECT_TRUE(found_start_timer);
+
+    // Send cancel job.
+    std::vector<WorkflowInstance::Job> cancel_jobs = {
+        {.type = WorkflowInstance::JobType::kCancelWorkflow, .data = {}},
+    };
+    auto cmds = inst->activate(cancel_jobs);
+
+    // Should emit kCancelTimer and kCancelWorkflow (not kFailWorkflow).
+    bool found_cancel_timer = false;
+    bool found_cancel_wf = false;
+    bool found_fail = false;
+    for (const auto& cmd : cmds) {
+        if (cmd.type == WorkflowInstance::CommandType::kCancelTimer) {
+            found_cancel_timer = true;
+        }
+        if (cmd.type == WorkflowInstance::CommandType::kCancelWorkflow) {
+            found_cancel_wf = true;
+        }
+        if (cmd.type == WorkflowInstance::CommandType::kFailWorkflow) {
+            found_fail = true;
+        }
+    }
+    EXPECT_TRUE(found_cancel_timer)
+        << "Expected kCancelTimer command when workflow is cancelled mid-timer";
+    EXPECT_TRUE(found_cancel_wf)
+        << "Expected kCancelWorkflow command after cancelling timer workflow";
+    EXPECT_FALSE(found_fail)
+        << "Should not emit kFailWorkflow on cancellation";
+}
+
+TEST(WorkflowInstanceTest, CancelWorkflow_ActivityThrowsCanceled) {
+    auto def = WorkflowDefinition::create<ActivityCancelWorkflow>(
+                   "ActivityCancelWorkflow")
+                   .run(&ActivityCancelWorkflow::run)
+                   .build();
+
+    auto [inst, start_cmds] = create_started_instance(def);
+
+    // The workflow is now suspended waiting for the activity to complete.
+    // Should have emitted a kScheduleActivity command.
+    bool found_schedule = false;
+    for (const auto& cmd : start_cmds) {
+        if (cmd.type == WorkflowInstance::CommandType::kScheduleActivity) {
+            found_schedule = true;
+        }
+    }
+    EXPECT_TRUE(found_schedule);
+
+    // Send cancel job.
+    std::vector<WorkflowInstance::Job> cancel_jobs = {
+        {.type = WorkflowInstance::JobType::kCancelWorkflow, .data = {}},
+    };
+    auto cmds = inst->activate(cancel_jobs);
+
+    // Should emit kRequestCancelActivity and kCancelWorkflow (not kFailWorkflow).
+    bool found_cancel_activity = false;
+    bool found_cancel_wf = false;
+    bool found_fail = false;
+    for (const auto& cmd : cmds) {
+        if (cmd.type == WorkflowInstance::CommandType::kRequestCancelActivity) {
+            found_cancel_activity = true;
+        }
+        if (cmd.type == WorkflowInstance::CommandType::kCancelWorkflow) {
+            found_cancel_wf = true;
+        }
+        if (cmd.type == WorkflowInstance::CommandType::kFailWorkflow) {
+            found_fail = true;
+        }
+    }
+    EXPECT_TRUE(found_cancel_activity)
+        << "Expected kRequestCancelActivity when workflow is cancelled mid-activity";
+    EXPECT_TRUE(found_cancel_wf)
+        << "Expected kCancelWorkflow command after cancelling activity workflow";
+    EXPECT_FALSE(found_fail)
+        << "Should not emit kFailWorkflow on cancellation";
 }

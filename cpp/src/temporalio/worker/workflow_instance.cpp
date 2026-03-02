@@ -208,6 +208,11 @@ void WorkflowInstance::deprecate_patch(const std::string& patch_id) {
 coro::Task<void> WorkflowInstance::start_timer(
     std::chrono::milliseconds duration,
     std::stop_token ct) {
+    // Default to the workflow's cancellation token if none provided.
+    if (!ct.stop_possible()) {
+        ct = cancellation_source_.token();
+    }
+
     // Allocate a sequence number for this timer.
     uint32_t seq = ++timer_counter_;
 
@@ -231,7 +236,7 @@ coro::Task<void> WorkflowInstance::start_timer(
             // Remove from pending and cancel the TCS.
             pending_timers_.erase(seq);
             tcs->try_set_exception(std::make_exception_ptr(
-                std::runtime_error("Timer cancelled")));
+                exceptions::CanceledFailureException("Timer cancelled")));
 
             // Emit a CancelTimer command so the server knows.
             Command cancel_cmd;
@@ -282,7 +287,7 @@ coro::Task<std::any> WorkflowInstance::schedule_activity(
 
     // If a cancellation token was provided, register a callback to cancel
     // the activity when cancellation is requested.
-    std::stop_token ct = options.cancellation_token.value_or(std::stop_token{});
+    std::stop_token ct = options.cancellation_token.value_or(cancellation_source_.token());
     std::optional<std::stop_callback<std::function<void()>>> cancel_cb;
     if (ct.stop_possible()) {
         cancel_cb.emplace(ct, std::function<void()>([this, seq, tcs]() {
@@ -328,6 +333,11 @@ coro::Task<bool> WorkflowInstance::register_condition(
     std::function<bool()> condition,
     std::optional<std::chrono::milliseconds> timeout,
     std::stop_token ct) {
+    // Default to the workflow's cancellation token if none provided.
+    if (!ct.stop_possible()) {
+        ct = cancellation_source_.token();
+    }
+
     // If the condition is already true, return immediately.
     if (condition && condition()) {
         co_return true;
@@ -394,7 +404,7 @@ coro::Task<bool> WorkflowInstance::register_condition(
                 commands_.push_back(std::move(cancel_cmd));
             }
             cond_tcs->try_set_exception(std::make_exception_ptr(
-                std::runtime_error("Wait condition cancelled")));
+                exceptions::CanceledFailureException("Wait condition cancelled")));
         }));
     }
 

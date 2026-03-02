@@ -72,6 +72,15 @@ if(NOT Protobuf_FOUND)
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE
     )
     FetchContent_MakeAvailable(protobuf)
+
+    # Suppress all warnings from FetchContent-built protobuf library targets.
+    # These targets compile protobuf .cc files which emit -Wmissing-requires
+    # and -Wdeprecated warnings we don't control.
+    foreach(_pb_target libprotobuf libprotobuf-lite libprotoc)
+        if(TARGET ${_pb_target})
+            target_compile_options(${_pb_target} PRIVATE -w)
+        endif()
+    endforeach()
 else()
     message(STATUS "Temporalio: Found Protobuf via find_package")
 endif()

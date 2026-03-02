@@ -160,10 +160,11 @@ TEST(TaskTest, DefaultConstructedVoidIsEmpty) {
 
 TEST(TaskTest, ChainedTasks) {
     auto inner = []() -> Task<int> { co_return 5; };
-    auto outer = [&]() -> Task<int> {
+    auto outer_fn = [&]() -> Task<int> {
         auto val = co_await inner();
         co_return val * 2;
-    }();
+    };
+    auto outer = outer_fn();
 
     EXPECT_EQ(run_task_sync(std::move(outer)), 10);
 }
@@ -173,9 +174,10 @@ TEST(TaskTest, DeepChaining) {
     auto level2 = [&]() -> Task<int> {
         co_return co_await level3() + 2;
     };
-    auto level1 = [&]() -> Task<int> {
+    auto level1_fn = [&]() -> Task<int> {
         co_return co_await level2() + 4;
-    }();
+    };
+    auto level1 = level1_fn();
 
     EXPECT_EQ(run_task_sync(std::move(level1)), 7);
 }
@@ -185,10 +187,11 @@ TEST(TaskTest, ExceptionPropagatesFromInnerTask) {
         throw std::runtime_error("inner failure");
         co_return 0;  // unreachable
     };
-    auto outer = [&]() -> Task<int> {
+    auto outer_fn = [&]() -> Task<int> {
         auto val = co_await inner();
         co_return val + 1;
-    }();
+    };
+    auto outer = outer_fn();
 
     EXPECT_THROW(run_task_sync(std::move(outer)), std::runtime_error);
 }
@@ -200,13 +203,14 @@ TEST(TaskTest, ExceptionPropagatesFromInnerTask) {
 TEST(TaskTest, WhenAll_IntTasks) {
     auto make_task = [](int v) -> Task<int> { co_return v; };
 
-    auto combined = [&]() -> Task<std::vector<int>> {
+    auto combined_fn = [&]() -> Task<std::vector<int>> {
         std::vector<Task<int>> tasks;
         tasks.push_back(make_task(1));
         tasks.push_back(make_task(2));
         tasks.push_back(make_task(3));
         co_return co_await when_all(std::move(tasks));
-    }();
+    };
+    auto combined = combined_fn();
 
     auto result = run_task_sync(std::move(combined));
     ASSERT_EQ(result.size(), 3u);
@@ -232,13 +236,14 @@ TEST(TaskTest, WhenAll_VoidTasks) {
     // symmetric transfer await_suspend conflict. Task<int> works correctly.
     int counter = 0;
 
-    auto combined = [&]() -> Task<std::vector<int>> {
+    auto combined_fn = [&]() -> Task<std::vector<int>> {
         std::vector<Task<int>> tasks;
         tasks.push_back(increment_counter(counter));
         tasks.push_back(increment_counter(counter));
         tasks.push_back(increment_counter(counter));
         co_return co_await when_all(std::move(tasks));
-    }();
+    };
+    auto combined = combined_fn();
 
     auto result = run_task_sync(std::move(combined));
     EXPECT_EQ(counter, 3);
@@ -252,13 +257,14 @@ TEST(TaskTest, WhenAll_PropagatesFirstException) {
         co_return 0;  // unreachable
     };
 
-    auto combined = [&]() -> Task<std::vector<int>> {
+    auto combined_fn = [&]() -> Task<std::vector<int>> {
         std::vector<Task<int>> tasks;
         tasks.push_back(good_task());
         tasks.push_back(bad_task());
         tasks.push_back(good_task());
         co_return co_await when_all(std::move(tasks));
-    }();
+    };
+    auto combined = combined_fn();
 
     EXPECT_THROW(run_task_sync(std::move(combined)), std::runtime_error);
 }
@@ -270,13 +276,14 @@ TEST(TaskTest, WhenAll_PropagatesFirstException) {
 TEST(TaskTest, WhenAny_ReturnsFirstResult) {
     auto make_task = [](int v) -> Task<int> { co_return v; };
 
-    auto combined = [&]() -> Task<WhenAnyResult<int>> {
+    auto combined_fn = [&]() -> Task<WhenAnyResult<int>> {
         std::vector<Task<int>> tasks;
         tasks.push_back(make_task(10));
         tasks.push_back(make_task(20));
         tasks.push_back(make_task(30));
         co_return co_await when_any(std::move(tasks));
-    }();
+    };
+    auto combined = combined_fn();
 
     auto result = run_task_sync(std::move(combined));
     // Since these are lazy, the first one to be awaited (index 0) completes
