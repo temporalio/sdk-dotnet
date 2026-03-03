@@ -391,7 +391,7 @@ TEST_F(IntegrationTest, ConcurrentWorkflows) {
 
         // Wait for all results and verify.
         for (int i = 0; i < kNumWorkflows; ++i) {
-            auto result = run_task_sync(handles[i].get_result<int>());
+            auto result = run_task_sync(handles[static_cast<size_t>(i)].get_result<int>());
             EXPECT_EQ(result, i * 2) << "Workflow " << i << " returned wrong result";
         }
     });
