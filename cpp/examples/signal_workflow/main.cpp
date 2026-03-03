@@ -14,6 +14,7 @@
 #include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/workflow_options.h>
+#include <temporalio/runtime/temporal_runtime.h>
 #include <temporalio/version.h>
 #include <temporalio/worker/temporal_worker.h>
 #include <temporalio/workflows/workflow.h>
@@ -148,5 +149,10 @@ int main() {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
+
+    // Explicitly tear down the Rust runtime before process exit to avoid
+    // races between static destruction and glibc TLS cleanup on Linux.
+    temporalio::runtime::TemporalRuntime::reset_default();
+
     return 0;
 }

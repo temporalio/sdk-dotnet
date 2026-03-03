@@ -87,24 +87,26 @@ jobs:
           if-no-files-found: ignore
 
   # ── Linux (GCC + coverage, Clang + ASan/UBSan) ────────────────────────────
+  # NOTE: GCC 13+ is required — GCC 12 has coroutine codegen bugs that cause
+  # heap corruption during normal workflow execution (timers, signals, activities).
   linux:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: gcc
-            cc: gcc-12
-            cxx: g++-12
-            packages: "gcc-12 g++-12 ninja-build lcov"
+            cc: gcc-13
+            cxx: g++-13
+            packages: "gcc-13 g++-13 ninja-build lcov"
             cmake_cxx_flags: "--coverage -fprofile-arcs -ftest-coverage"
             cmake_linker_flags: "--coverage"
             test_timeout: 120
             collect_coverage: true
           - name: clang-asan
-            cc: clang-15
-            cxx: clang++-15
-            packages: "clang-15 ninja-build"
+            cc: clang-18
+            cxx: clang++-18
+            packages: "clang-18 ninja-build"
             cmake_cxx_flags: "-fsanitize=address,undefined -fno-omit-frame-pointer"
             cmake_linker_flags: "-fsanitize=address,undefined"
             test_timeout: 180
@@ -169,7 +171,7 @@ jobs:
         if: matrix.collect_coverage
         run: |
           lcov --capture --directory cpp/build --output-file coverage.info \
-               --gcov-tool gcov-12
+               --gcov-tool gcov-13
           # Remove system headers and third-party code from coverage
           lcov --remove coverage.info \
                '/usr/*' \
@@ -193,9 +195,9 @@ jobs:
           path: cpp/build/Testing/
           if-no-files-found: ignore
 
-  # ── Linux (GCC 12 + vcpkg) ─────────────────────────────────────────────────
+  # ── Linux (GCC 13 + vcpkg) ─────────────────────────────────────────────────
   linux-vcpkg:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -205,7 +207,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-12 g++-12 ninja-build
+          sudo apt-get install -y gcc-13 g++-13 ninja-build
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -222,8 +224,8 @@ jobs:
 
       - name: Configure CMake (vcpkg preset)
         env:
-          CC: gcc-12
-          CXX: g++-12
+          CC: gcc-13
+          CXX: g++-13
         run: >
           cmake --preset debug -S cpp
           -DTEMPORALIO_BUILD_EXTENSIONS=OFF
@@ -244,7 +246,7 @@ jobs:
 
   # ── CMake Install + find_package Verification (Linux) ──────────────────────
   install-verify:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -254,7 +256,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc-12 g++-12 ninja-build
+          sudo apt-get install -y gcc-13 g++-13 ninja-build
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -274,13 +276,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: cpp/build/_deps
-          key: fetchcontent-gcc12-install-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
-          restore-keys: fetchcontent-gcc12-install-
+          key: fetchcontent-gcc13-install-${{ hashFiles('cpp/CMakeLists.txt', 'cpp/tests/CMakeLists.txt') }}
+          restore-keys: fetchcontent-gcc13-install-
 
       - name: Configure CMake
         env:
-          CC: gcc-12
-          CXX: g++-12
+          CC: gcc-13
+          CXX: g++-13
         run: >
           cmake -B cpp/build -S cpp
           -G Ninja

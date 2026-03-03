@@ -15,6 +15,7 @@
 #include <temporalio/coro/task.h>
 #include <temporalio/client/temporal_client.h>
 #include <temporalio/client/workflow_options.h>
+#include <temporalio/runtime/temporal_runtime.h>
 #include <temporalio/version.h>
 #include <temporalio/worker/temporal_worker.h>
 #include <temporalio/workflows/workflow.h>
@@ -122,29 +123,22 @@ int main() {
     namespace worker = temporalio::worker;
 
     try {
-        // Step 1: Connect to Temporal.
-        // Each run_task_sync call drives a coroutine to completion, blocking
-        // the main thread. Between calls, the main thread is free.
         auto tc = run_task_sync(client::TemporalClient::connect(
             client::TemporalClientConnectOptions{
                 .connection = {.target_host = "localhost:7233"},
             }));
+
         std::cout << "Connected to Temporal server.\n";
 
-        // Step 2: Build the workflow definition.
         auto timer_workflow = make_timer_definition();
 
-        // Step 3: Configure and create the worker.
         worker::TemporalWorkerOptions opts;
         opts.task_queue = "timer-example-queue";
         opts.workflows.push_back(timer_workflow);
         opts.max_concurrent_workflow_tasks = 10;
 
-        std::cout << "Starting worker on task queue: " << opts.task_queue << "\n";
-
         worker::TemporalWorker w(tc, opts);
 
-        // Step 4: Run the worker in a background thread.
         std::stop_source worker_stop;
         std::jthread worker_thread([&w, token = worker_stop.get_token()]() {
             try {
@@ -154,32 +148,24 @@ int main() {
             }
         });
 
-        // Step 5: Start the TimerWorkflow.
+        std::cout << "Worker started on task queue: timer-example-queue\n";
+
         client::WorkflowOptions wo;
         wo.id = "timer-example-workflow";
         wo.task_queue = "timer-example-queue";
 
         auto handle = run_task_sync(tc->start_workflow("TimerWorkflow", wo));
-        std::cout << "Started workflow: " << handle.id()
-                  << " (run " << handle.run_id().value_or("") << ")\n";
+        std::cout << "Started workflow: " << handle.id() << "\n";
 
-        // Step 6: Query the status (should be "waiting").
         auto status = run_task_sync(handle.query<std::string>("status"));
-        std::cout << "Workflow status: " << status << "\n";
+        std::cout << "Query status: " << status << "\n";
 
-        // Step 7: Send the approval signal after a short pause.
-        std::cout << "Sending approval signal...\n";
         run_task_sync(handle.signal("approve", std::string("manager-override")));
-        std::cout << "Signal sent.\n";
+        std::cout << "Sent approval signal.\n";
 
-        // Step 8: Get the final result.
         auto result = run_task_sync(handle.get_result<std::string>());
         std::cout << "Workflow result: " << result << "\n";
 
-        // Step 9: Shut down the worker.
-        // IMPORTANT: request_stop and join are called on the main thread
-        // (not on a Rust callback thread), so they don't starve the tokio
-        // runtime that the bridge uses for poll cancellation callbacks.
         worker_stop.request_stop();
         worker_thread.join();
         std::cout << "Worker shut down.\n";
@@ -188,5 +174,10 @@ int main() {
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
+
+    // Explicitly tear down the Rust runtime before process exit to avoid
+    // races between static destruction and glibc TLS cleanup on Linux.
+    temporalio::runtime::TemporalRuntime::reset_default();
+
     return 0;
 }
