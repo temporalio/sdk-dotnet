@@ -171,13 +171,15 @@ jobs:
         if: matrix.collect_coverage
         run: |
           lcov --capture --directory cpp/build --output-file coverage.info \
-               --gcov-tool gcov-13
+               --gcov-tool gcov-13 \
+               --ignore-errors mismatch
           # Remove system headers and third-party code from coverage
           lcov --remove coverage.info \
                '/usr/*' \
                '*/build/_deps/*' \
                '*/tests/*' \
-               --output-file coverage_filtered.info
+               --output-file coverage_filtered.info \
+               --ignore-errors unused
           lcov --list coverage_filtered.info
 
       - name: Upload coverage artifact
