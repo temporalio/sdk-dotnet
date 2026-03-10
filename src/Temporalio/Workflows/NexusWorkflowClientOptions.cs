@@ -6,20 +6,20 @@ namespace Temporalio.Workflows
     /// Options for creating a Nexus client.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public class NexusClientOptions : ICloneable
+    public class NexusWorkflowClientOptions : ICloneable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NexusClientOptions"/> class.
+        /// Initializes a new instance of the <see cref="NexusWorkflowClientOptions"/> class.
         /// </summary>
-        public NexusClientOptions()
+        public NexusWorkflowClientOptions()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NexusClientOptions"/> class.
+        /// Initializes a new instance of the <see cref="NexusWorkflowClientOptions"/> class.
         /// </summary>
         /// <param name="endpoint">Endpoint.</param>
-        public NexusClientOptions(string endpoint) => Endpoint = endpoint;
+        public NexusWorkflowClientOptions(string endpoint) => Endpoint = endpoint;
 
         /// <summary>
         /// Gets or sets the endpoint.

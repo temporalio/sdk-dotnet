@@ -109,7 +109,7 @@ namespace Temporalio.Worker.Interceptors
         /// <param name="input">Input details of the call.</param>
         /// <returns>Operation handle.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
-        public virtual Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+        public virtual Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
             StartNexusOperationInput input) => Next.StartNexusOperationAsync<TResult>(input);
     }
 }

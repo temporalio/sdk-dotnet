@@ -700,7 +700,7 @@ namespace Temporalio.Extensions.OpenTelemetry
                 return base.StartChildWorkflowAsync<TWorkflow, TResult>(input);
             }
 
-            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+            public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 StartNexusOperationInput input)
             {
                 var headers = StartWorkflowActivityOnHeaders(

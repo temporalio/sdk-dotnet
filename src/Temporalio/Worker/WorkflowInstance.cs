@@ -406,12 +406,12 @@ namespace Temporalio.Worker
                 Headers: null));
 
         /// <inheritdoc/>
-        public NexusClient CreateNexusClient(string service, NexusClientOptions options) =>
-            new NexusClientImpl(this, service, options);
+        public NexusWorkflowClient CreateNexusWorkflowClient(string service, NexusWorkflowClientOptions options) =>
+            new NexusWorkflowClientImpl(this, service, options);
 
         /// <inheritdoc/>
-        public NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
-            new NexusClientImpl<TService>(this, options);
+        public NexusWorkflowClient<TService> CreateNexusWorkflowClient<TService>(NexusWorkflowClientOptions options) =>
+            new NexusWorkflowClientImpl<TService>(this, options);
 
         /// <inheritdoc/>
         public Task DelayWithOptionsAsync(DelayOptions options) =>
@@ -2540,7 +2540,7 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc/>
-            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+            public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 StartNexusOperationInput input)
             {
                 var token = input.Options.CancellationToken ?? instance.CancellationToken;
@@ -2551,7 +2551,7 @@ namespace Temporalio.Worker
                 // TemporalException.IsCanceledException helper).
                 if (token.IsCancellationRequested)
                 {
-                    return Task.FromException<NexusOperationHandle<TResult>>(
+                    return Task.FromException<NexusWorkflowOperationHandle<TResult>>(
                         new CanceledFailureException("Nexus operation cancelled before scheduled"));
                 }
 
@@ -2591,7 +2591,7 @@ namespace Temporalio.Worker
                 }
                 instance.AddCommand(workflowCommand);
 
-                var handleSource = new TaskCompletionSource<NexusOperationHandle<TResult>>();
+                var handleSource = new TaskCompletionSource<NexusWorkflowOperationHandle<TResult>>();
                 var pending = new PendingNexusOperationInfo(
                     StartCompletionSource: new(),
                     ResultCompletionSource: new());
@@ -2619,7 +2619,7 @@ namespace Temporalio.Worker
 
                             // If there is a start sync fail, we have to fail the handle task and
                             // there's nothing more we can do here
-                            var handle = new NexusOperationHandleImpl<TResult>(
+                            var handle = new NexusWorkflowOperationHandleImpl<TResult>(
                                 payloadConverter,
                                 // TODO(cretz): Support Nexus serialization context, ideally not
                                 // creating failure converter with context until actually needed
@@ -2925,11 +2925,11 @@ namespace Temporalio.Worker
                 instance.outbound.Value.CancelExternalWorkflowAsync(new(Id: Id, RunId: RunId));
         }
 
-        private class NexusClientImpl : NexusClient
+        private class NexusWorkflowClientImpl : NexusWorkflowClient
         {
             private readonly WorkflowInstance instance;
 
-            public NexusClientImpl(WorkflowInstance instance, string service, NexusClientOptions options)
+            public NexusWorkflowClientImpl(WorkflowInstance instance, string service, NexusWorkflowClientOptions options)
             {
                 this.instance = instance;
                 Service = service;
@@ -2938,10 +2938,10 @@ namespace Temporalio.Worker
 
             public override string Service { get; }
 
-            public override NexusClientOptions Options { get; }
+            public override NexusWorkflowClientOptions Options { get; }
 
-            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
-                string operationName, object? arg, NexusOperationOptions? options = null) =>
+            public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+                string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
                 instance.outbound.Value.StartNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
@@ -2951,11 +2951,11 @@ namespace Temporalio.Worker
                     Headers: null));
         }
 
-        private class NexusClientImpl<TService> : NexusClient<TService>
+        private class NexusWorkflowClientImpl<TService> : NexusWorkflowClient<TService>
         {
             private readonly WorkflowInstance instance;
 
-            public NexusClientImpl(WorkflowInstance instance, NexusClientOptions options)
+            public NexusWorkflowClientImpl(WorkflowInstance instance, NexusWorkflowClientOptions options)
             {
                 this.instance = instance;
                 ServiceDefinition = ServiceDefinition.FromType<TService>();
@@ -2964,10 +2964,10 @@ namespace Temporalio.Worker
 
             public override ServiceDefinition ServiceDefinition { get; }
 
-            public override NexusClientOptions Options { get; }
+            public override NexusWorkflowClientOptions Options { get; }
 
-            public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
-                string operationName, object? arg, NexusOperationOptions? options = null) =>
+            public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+                string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
                 instance.outbound.Value.StartNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
@@ -2977,12 +2977,12 @@ namespace Temporalio.Worker
                     Headers: null));
         }
 
-        private class NexusOperationHandleImpl<TResult> : NexusOperationHandle<TResult>
+        private class NexusWorkflowOperationHandleImpl<TResult> : NexusWorkflowOperationHandle<TResult>
         {
             private readonly IPayloadConverter payloadConverter;
             private readonly IFailureConverter failureConverter;
 
-            public NexusOperationHandleImpl(
+            public NexusWorkflowOperationHandleImpl(
                 IPayloadConverter payloadConverter,
                 IFailureConverter failureConverter,
                 string? operationToken)

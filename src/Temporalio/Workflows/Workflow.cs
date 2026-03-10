@@ -317,14 +317,14 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Create an untyped Nexus client with a string service name and endpoint. This is a
-        /// shortcut for <see cref="CreateNexusClient(string, NexusClientOptions)"/>.
+        /// shortcut for <see cref="CreateNexusWorkflowClient(string, NexusWorkflowClientOptions)"/>.
         /// </summary>
         /// <param name="service">Service name.</param>
         /// <param name="endpoint">Endpoint.</param>
         /// <returns>Nexus client.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
-        public static NexusClient CreateNexusClient(string service, string endpoint) =>
-            CreateNexusClient(service, new NexusClientOptions(endpoint));
+        public static NexusWorkflowClient CreateNexusWorkflowClient(string service, string endpoint) =>
+            CreateNexusWorkflowClient(service, new NexusWorkflowClientOptions(endpoint));
 
         /// <summary>
         /// Create an untyped Nexus client with a string service name and client options.
@@ -333,20 +333,20 @@ namespace Temporalio.Workflows
         /// <param name="options">Client options.</param>
         /// <returns>Nexus client.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
-        public static NexusClient CreateNexusClient(string service, NexusClientOptions options) =>
-            Context.CreateNexusClient(service, options);
+        public static NexusWorkflowClient CreateNexusWorkflowClient(string service, NexusWorkflowClientOptions options) =>
+            Context.CreateNexusWorkflowClient(service, options);
 
         /// <summary>
         /// Create a typed Nexus client from a service interface and endpoint. This is a shortcut
-        /// for <see cref="CreateNexusClient{TService}(NexusClientOptions)"/>.
+        /// for <see cref="CreateNexusWorkflowClient{TService}(NexusWorkflowClientOptions)"/>.
         /// </summary>
         /// <typeparam name="TService">Service interface type with the
         /// <see cref="NexusRpc.NexusServiceAttribute"/> attribute.</typeparam>
         /// <param name="endpoint">Endpoint.</param>
         /// <returns>Nexus client.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
-        public static NexusClient<TService> CreateNexusClient<TService>(string endpoint) =>
-            CreateNexusClient<TService>(new NexusClientOptions(endpoint));
+        public static NexusWorkflowClient<TService> CreateNexusWorkflowClient<TService>(string endpoint) =>
+            CreateNexusWorkflowClient<TService>(new NexusWorkflowClientOptions(endpoint));
 
         /// <summary>
         /// Create a typed Nexus client from a service interface and endpoint.
@@ -356,8 +356,8 @@ namespace Temporalio.Workflows
         /// <param name="options">Client options.</param>
         /// <returns>Nexus client.</returns>
         /// <remarks>WARNING: Nexus support is experimental.</remarks>
-        public static NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
-            Context.CreateNexusClient<TService>(options);
+        public static NexusWorkflowClient<TService> CreateNexusWorkflowClient<TService>(NexusWorkflowClientOptions options) =>
+            Context.CreateNexusWorkflowClient<TService>(options);
 
         /// <summary>
         /// Sleep in a workflow for the given time. See documentation of

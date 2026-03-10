@@ -9,7 +9,7 @@ namespace Temporalio.Workflows
     /// Handle representing a started Nexus operation.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public abstract class NexusOperationHandle
+    public abstract class NexusWorkflowOperationHandle
     {
         /// <summary>
         /// Gets the operation token.
@@ -35,7 +35,7 @@ namespace Temporalio.Workflows
     }
 
     /// <inheritdoc />
-    public abstract class NexusOperationHandle<TResult> : NexusOperationHandle
+    public abstract class NexusWorkflowOperationHandle<TResult> : NexusWorkflowOperationHandle
     {
         /// <summary>
         /// Wait for result of the operation.

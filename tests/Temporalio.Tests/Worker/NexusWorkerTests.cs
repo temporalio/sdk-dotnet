@@ -95,7 +95,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         {
             await RunInWorkflowAsync(workerOptions, async () =>
             {
-                var result = await Workflow.CreateNexusClient<IStringService>(endpointName).
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpointName).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
                 Assert.Equal("Hello, some-name", result);
             });
@@ -137,7 +137,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Run the Nexus client code in workflow
         var handle = await RunInWorkflowAsync(workerOptions, async () =>
         {
-            var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                 ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
             Assert.Equal("Hello from workflow, some-name", result);
         });
@@ -193,7 +193,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             workerOptions,
             async () =>
             {
-                var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
                 Assert.Equal("Hello from workflow, some-name", result);
             },
@@ -215,7 +215,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start with cancel token
                 using var cancelSource = new CancellationTokenSource();
-                var handle = await Workflow.CreateNexusClient<IStringService>(endpoint).
+                var handle = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     StartNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
                         new() { CancellationToken = cancelSource.Token });
@@ -293,7 +293,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, async () =>
             {
-                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
                         new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(2) });
@@ -319,7 +319,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
 
         var handle = await RunInWorkflowAsync(workerOptions, async () =>
             {
-                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
                         new() { Summary = expectedSummary });
@@ -364,7 +364,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, async () =>
             {
-                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
                         new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(2) });
@@ -395,7 +395,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, async () =>
             {
-                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
                         new()
@@ -447,7 +447,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start one Nexus operation which will succeed and another which will fail because
                 // the second tries to start with the same ID
-                var client = Workflow.CreateNexusClient<IStringService>(endpoint);
+                var client = Workflow.CreateNexusWorkflowClient<IStringService>(endpoint);
                 await client.StartNexusOperationAsync(svc => svc.DoSomething("some-name1"));
                 await client.StartNexusOperationAsync(svc => svc.DoSomething("some-name2"));
             }));
@@ -482,7 +482,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             {
                 // Start both Nexus operations which will both succeed and be backed by the same
                 // operation
-                var client = Workflow.CreateNexusClient<IStringService>(endpoint);
+                var client = Workflow.CreateNexusWorkflowClient<IStringService>(endpoint);
                 var handle1 = await client.StartNexusOperationAsync(svc => svc.DoSomething("some-name1"));
                 var handle2 = await client.StartNexusOperationAsync(svc => svc.DoSomething("some-name2"));
 
@@ -510,7 +510,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             RunInWorkflowAsync(
                 workerOptions,
                 // Use int as arg
-                async () => await Workflow.CreateNexusClient("StringService", endpoint).
+                async () => await Workflow.CreateNexusWorkflowClient("StringService", endpoint).
                     ExecuteNexusOperationAsync<string>("DoSomething", 1234)));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
         var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
@@ -528,7 +528,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
         await RunInWorkflowAsync(
             workerOptions,
-            async () => await Workflow.CreateNexusClient("StringService", endpoint).
+            async () => await Workflow.CreateNexusWorkflowClient("StringService", endpoint).
                 ExecuteNexusOperationAsync<string>("DoSomething", "some-name"),
             checkResultFunc: async handle =>
                 Assert.Equal("Hello, some-name", await handle.GetResultAsync()));
@@ -548,7 +548,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
         await RunInWorkflowAsync(workerOptions, async () =>
         {
-            var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                 ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
             Assert.Equal("Hello from workflow, some-name-suffixed", result);
         });
@@ -571,7 +571,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // ---------------- Temporalio.Exceptions.ApplicationFailureException : Intentional failure
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
-                Workflow.CreateNexusClient<IStringService>(endpoint).
+                Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
         var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
@@ -596,7 +596,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // -------- Temporalio.Exceptions.ApplicationFailureException : Intentional failure
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
-                Workflow.CreateNexusClient<IStringService>(endpoint).
+                Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
         var exc3 = Assert.IsType<ApplicationFailureException>(exc2.InnerException);
@@ -620,7 +620,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // ------------ Temporalio.Exceptions.ApplicationFailureException : Intentional failure
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
-                Workflow.CreateNexusClient<IStringService>(endpoint).
+                Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
         var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
@@ -655,7 +655,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
         await RunInWorkflowAsync(workerOptions, async () =>
         {
-            var result = await Workflow.CreateNexusClient("my-service", endpoint).
+            var result = await Workflow.CreateNexusWorkflowClient("my-service", endpoint).
                 ExecuteNexusOperationAsync<string>("my-operation", "some-param");
             Assert.Equal("manual-handler, param: some-param", result);
         });
@@ -709,7 +709,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(
                 workerOptions,
-                () => Workflow.CreateNexusClient<IStringService>(endpoint).
+                () => Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name")),
                 beforeGetResultFunc: async handle =>
                 {
@@ -740,7 +740,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // ------------ Temporalio.Exceptions.ApplicationFailureException : Unrecognized service missing-service or operation unknown-operation
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
-                Workflow.CreateNexusClient("missing-service", endpoint).
+                Workflow.CreateNexusWorkflowClient("missing-service", endpoint).
                     ExecuteNexusOperationAsync("unknown-operation", "some-param")));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
         var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
@@ -762,7 +762,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // ------------ Temporalio.Exceptions.ApplicationFailureException : Unrecognized service StringService or operation unknown-operation
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
-                Workflow.CreateNexusClient("StringService", endpoint).
+                Workflow.CreateNexusWorkflowClient("StringService", endpoint).
                     ExecuteNexusOperationAsync("unknown-operation", "some-param")));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
         var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
@@ -846,7 +846,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
 
         var handle = await RunInWorkflowAsync(workerOptions, async () =>
         {
-            var client = Workflow.CreateNexusClient<IVoidService>(endpoint);
+            var client = Workflow.CreateNexusWorkflowClient<IVoidService>(endpoint);
             await client.ExecuteNexusOperationAsync(svc => svc.NoReturn("some-param"));
             var result = await client.ExecuteNexusOperationAsync(svc => svc.NoParam());
             Assert.Equal("done", result);
@@ -1049,7 +1049,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             workerOptions,
             inWorkflowFunc: async () =>
             {
-                var client = Workflow.CreateNexusClient<ICancelTypeService>(endpoint);
+                var client = Workflow.CreateNexusWorkflowClient<ICancelTypeService>(endpoint);
                 try
                 {
                     await client.ExecuteNexusOperationAsync(
@@ -1135,7 +1135,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             null,
             _args => new CustomFuncWorkflow(async () =>
             {
-                var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
                 Assert.Equal("Hello, some-name", result);
                 return null;
@@ -1189,7 +1189,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             null,
             _args => new CustomFuncWorkflow(async () =>
             {
-                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
                 return null;
             })));

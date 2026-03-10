@@ -277,7 +277,7 @@ public class WorkerTuningTests : WorkflowEnvironmentTestBase
         [WorkflowRun]
         public async Task<string> RunAsync(NexusCallingWorkflowInput input)
         {
-            return await Workflow.CreateNexusClient<ISimpleService>(input.EndpointName).
+            return await Workflow.CreateNexusWorkflowClient<ISimpleService>(input.EndpointName).
                 ExecuteNexusOperationAsync(svc => svc.Simple(input.Name));
         }
     }

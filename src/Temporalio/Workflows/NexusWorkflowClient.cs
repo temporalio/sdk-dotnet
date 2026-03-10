@@ -13,7 +13,7 @@ namespace Temporalio.Workflows
     /// Client for making Nexus service calls from a workflow.
     /// </summary>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public abstract class NexusClient
+    public abstract class NexusWorkflowClient
     {
         /// <summary>
         /// Gets the service name.
@@ -23,20 +23,20 @@ namespace Temporalio.Workflows
         /// <summary>
         /// Gets the client options. Should not be mutated.
         /// </summary>
-        public abstract NexusClientOptions Options { get; }
+        public abstract NexusWorkflowClientOptions Options { get; }
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="StartNexusOperationAsync(string, object?, NexusOperationOptions?)"/>
+        /// <see cref="StartNexusOperationAsync(string, object?, NexusWorkflowOperationOptions?)"/>
         /// +
-        /// <see cref="NexusOperationHandle.GetResultAsync"/>.
+        /// <see cref="NexusWorkflowOperationHandle.GetResultAsync"/>.
         /// </summary>
         /// <param name="operationName">Operation name to start.</param>
         /// <param name="arg">Operation argument.</param>
         /// <param name="options">Operation options.</param>
         /// <returns>Task representing completion of the Nexus operation.</returns>
         public async Task ExecuteNexusOperationAsync(
-            string operationName, object? arg, NexusOperationOptions? options = null)
+            string operationName, object? arg, NexusWorkflowOperationOptions? options = null)
         {
             var handle = await StartNexusOperationAsync(operationName, arg, options).ConfigureAwait(true);
             await handle.GetResultAsync().ConfigureAwait(true);
@@ -44,9 +44,9 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="StartNexusOperationAsync{TResult}(string, object?, NexusOperationOptions?)"/>
+        /// <see cref="StartNexusOperationAsync{TResult}(string, object?, NexusWorkflowOperationOptions?)"/>
         /// +
-        /// <see cref="NexusOperationHandle{TResult}.GetResultAsync"/>.
+        /// <see cref="NexusWorkflowOperationHandle{TResult}.GetResultAsync"/>.
         /// </summary>
         /// <typeparam name="TResult">Operation result type.</typeparam>
         /// <param name="operationName">Operation name to start.</param>
@@ -54,7 +54,7 @@ namespace Temporalio.Workflows
         /// <param name="options">Operation options.</param>
         /// <returns>Task with the result of the Nexus operation.</returns>
         public async Task<TResult> ExecuteNexusOperationAsync<TResult>(
-            string operationName, object? arg, NexusOperationOptions? options = null)
+            string operationName, object? arg, NexusWorkflowOperationOptions? options = null)
         {
             var handle = await StartNexusOperationAsync<TResult>(operationName, arg, options).ConfigureAwait(true);
             return await handle.GetResultAsync().ConfigureAwait(true);
@@ -67,8 +67,8 @@ namespace Temporalio.Workflows
         /// <param name="arg">Operation argument.</param>
         /// <param name="options">Operation options.</param>
         /// <returns>Handle to the started operation once started.</returns>
-        public async Task<NexusOperationHandle> StartNexusOperationAsync(
-            string operationName, object? arg, NexusOperationOptions? options = null) =>
+        public async Task<NexusWorkflowOperationHandle> StartNexusOperationAsync(
+            string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
             await StartNexusOperationAsync<ValueTuple>(operationName, arg, options).ConfigureAwait(true);
 
         /// <summary>
@@ -79,12 +79,12 @@ namespace Temporalio.Workflows
         /// <param name="arg">Operation argument.</param>
         /// <param name="options">Operation options.</param>
         /// <returns>Handle to the started operation once started.</returns>
-        public abstract Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
-            string operationName, object? arg, NexusOperationOptions? options = null);
+        public abstract Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+            string operationName, object? arg, NexusWorkflowOperationOptions? options = null);
     }
 
     /// <inheritdoc />
-    public abstract class NexusClient<TService> : NexusClient
+    public abstract class NexusWorkflowClient<TService> : NexusWorkflowClient
     {
         /// <summary>
         /// Gets the service name.
@@ -98,16 +98,16 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="StartNexusOperationAsync(Expression{Action{TService}}, NexusOperationOptions?)"/>
+        /// <see cref="StartNexusOperationAsync(Expression{Action{TService}}, NexusWorkflowOperationOptions?)"/>
         /// +
-        /// <see cref="NexusOperationHandle.GetResultAsync"/>.
+        /// <see cref="NexusWorkflowOperationHandle.GetResultAsync"/>.
         /// </summary>
         /// <param name="operationStartCall">Invocation of operation without a result.</param>
         /// <param name="options">Operation options.</param>
         /// <returns>Task with the result of the Nexus operation.</returns>
         public async Task ExecuteNexusOperationAsync(
             Expression<Action<TService>> operationStartCall,
-            NexusOperationOptions? options = null)
+            NexusWorkflowOperationOptions? options = null)
         {
             var handle = await StartNexusOperationAsync(operationStartCall, options).ConfigureAwait(true);
             await handle.GetResultAsync().ConfigureAwait(true);
@@ -115,9 +115,9 @@ namespace Temporalio.Workflows
 
         /// <summary>
         /// Shortcut for
-        /// <see cref="StartNexusOperationAsync{TResult}(Expression{Func{TService, TResult}}, NexusOperationOptions?)"/>
+        /// <see cref="StartNexusOperationAsync{TResult}(Expression{Func{TService, TResult}}, NexusWorkflowOperationOptions?)"/>
         /// +
-        /// <see cref="NexusOperationHandle{TResult}.GetResultAsync"/>.
+        /// <see cref="NexusWorkflowOperationHandle{TResult}.GetResultAsync"/>.
         /// </summary>
         /// <typeparam name="TResult">Operation result type.</typeparam>
         /// <param name="operationStartCall">Invocation of operation with a result.</param>
@@ -125,7 +125,7 @@ namespace Temporalio.Workflows
         /// <returns>Task with the result of the Nexus operation.</returns>
         public async Task<TResult> ExecuteNexusOperationAsync<TResult>(
             Expression<Func<TService, TResult>> operationStartCall,
-            NexusOperationOptions? options = null)
+            NexusWorkflowOperationOptions? options = null)
         {
             var handle = await StartNexusOperationAsync(operationStartCall, options).ConfigureAwait(true);
             return await handle.GetResultAsync().ConfigureAwait(true);
@@ -137,9 +137,9 @@ namespace Temporalio.Workflows
         /// <param name="operationStartCall">Invocation of operation without a result.</param>
         /// <param name="options">Operation options.</param>
         /// <returns>Handle to the started operation once started.</returns>
-        public Task<NexusOperationHandle> StartNexusOperationAsync(
+        public Task<NexusWorkflowOperationHandle> StartNexusOperationAsync(
             Expression<Action<TService>> operationStartCall,
-            NexusOperationOptions? options = null)
+            NexusWorkflowOperationOptions? options = null)
         {
             var (method, args) = ExpressionUtil.ExtractCall(operationStartCall);
             // Find name from method
@@ -163,9 +163,9 @@ namespace Temporalio.Workflows
         /// <param name="operationStartCall">Invocation of operation with a result.</param>
         /// <param name="options">Operation options.</param>
         /// <returns>Handle to the started operation once started.</returns>
-        public Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
+        public Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
             Expression<Func<TService, TResult>> operationStartCall,
-            NexusOperationOptions? options = null)
+            NexusWorkflowOperationOptions? options = null)
         {
             var (method, args) = ExpressionUtil.ExtractCall(operationStartCall);
             // Find name from method
