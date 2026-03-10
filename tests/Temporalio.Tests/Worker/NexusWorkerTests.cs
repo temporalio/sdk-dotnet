@@ -2,6 +2,7 @@ namespace Temporalio.Tests.Worker;
 
 using NexusRpc;
 using NexusRpc.Handlers;
+using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
@@ -504,17 +505,18 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (ctx, name) => "never reached")));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-        await RunInWorkflowAsync(
-            workerOptions,
-            // Use int as arg
-            async () => await Workflow.CreateNexusWorkflowClient("StringService", endpoint).
-                ExecuteNexusOperationAsync<string>("DoSomething", 1234),
-            // Wait for one Nexus op to be failing
-            checkResultFunc: async handle =>
-                await AssertMore.EventuallyAsync(async () => Assert.Equal(
-                    1,
-                    (await handle.DescribeAsync()).RawDescription.
-                        PendingNexusOperations.Count(op => op.LastAttemptFailure != null))));
+        // Converter failure is non-retryable BAD_REQUEST, so workflow should fail
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(
+                workerOptions,
+                // Use int as arg
+                async () => await Workflow.CreateNexusClient("StringService", endpoint).
+                    ExecuteNexusOperationAsync<string>("DoSomething", 1234)));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.BadRequest, exc3.ErrorType);
+        Assert.Equal(
+            NexusHandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
     }
 
     [Fact]
@@ -1092,6 +1094,125 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         return (
             CallerHistory: callerHistory,
             TargetHandle: Client.GetWorkflowHandle(nexusStartEvent.Links.Single().WorkflowEvent.WorkflowId));
+    }
+
+    private class FailOnceCodec : IPayloadCodec
+    {
+        private int decodeCallCount;
+
+        public int DecodeCallCount => decodeCallCount;
+
+        public Task<IReadOnlyCollection<Payload>> EncodeAsync(IReadOnlyCollection<Payload> payloads) =>
+            Task.FromResult(payloads);
+
+        public Task<IReadOnlyCollection<Payload>> DecodeAsync(IReadOnlyCollection<Payload> payloads)
+        {
+            if (Interlocked.Increment(ref decodeCallCount) == 1)
+            {
+                throw new InvalidOperationException("Simulated codec failure");
+            }
+            return Task.FromResult(payloads);
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_CodecFailure_IsRetried()
+    {
+        var codec = new FailOnceCodec();
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with { PayloadCodec = codec };
+        var codecClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) => $"Hello, {name}")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("Hello, some-name", result);
+                return null;
+            })));
+
+        using var worker = new TemporalWorker(codecClient, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await codecClient.StartWorkflowAsync(
+                (CustomFuncWorkflow wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+            await handle.GetResultAsync();
+        });
+
+        // Decode is called once for the Nexus input (fails), once for the retry (succeeds),
+        // and once for the Nexus result on the workflow side.
+        Assert.True(
+            codec.DecodeCallCount >= 2,
+            $"Expected at least 2 decode calls (confirming retry), got {codec.DecodeCallCount}");
+    }
+
+    private class AlwaysFailPayloadConverter : IPayloadConverter
+    {
+        private readonly IPayloadConverter inner = DataConverter.Default.PayloadConverter;
+
+        public Payload ToPayload(object? value) => inner.ToPayload(value);
+
+        public object? ToValue(Payload payload, Type type) =>
+            throw new InvalidOperationException("Simulated converter failure");
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ConverterFailure_IsNotRetried()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadConverter = new AlwaysFailPayloadConverter(),
+        };
+        var converterClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) => $"Hello, {name}")));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                return null;
+            })));
+
+        // Use converterClient for the worker (Nexus handler uses failing converter)
+        // but regular Client for starting the workflow (args serialize correctly)
+        using var worker = new TemporalWorker(converterClient, workerOptions);
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(
+            () => worker.ExecuteAsync(async () =>
+            {
+                var handle = await Client.StartWorkflowAsync(
+                    (CustomFuncWorkflow wf) => wf.RunAsync(),
+                    new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+                await handle.GetResultAsync();
+            }));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        Assert.Equal(HandlerErrorType.BadRequest, exc3.ErrorType);
+        Assert.Equal(
+            NexusHandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
+        Assert.Contains(
+            "Payload converter failed to decode Nexus operation input",
+            exc3.Failure.Cause.Message);
     }
 
     private async Task<string> CreateNexusEndpointAsync(string taskQueue)

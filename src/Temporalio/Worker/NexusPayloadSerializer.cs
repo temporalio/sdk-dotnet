@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
 using Temporalio.Converters;
+using Temporalio.Exceptions;
 
 namespace Temporalio.Worker
 {
@@ -49,7 +51,47 @@ namespace Temporalio.Worker
             }
 
             var payload = Payload.Parser.ParseFrom(content.Data);
-            var result = await dataConverter.ToValueAsync(payload, type).ConfigureAwait(false);
+
+            // Decode with payload codec if configured. Codec failures are treated as
+            // retryable INTERNAL errors since they are typically transient (e.g. a remote
+            // decryption service is temporarily down).
+            if (dataConverter.PayloadCodec != null)
+            {
+                try
+                {
+                    var decoded = await dataConverter.PayloadCodec.DecodeAsync(
+                        new Payload[] { payload }).ConfigureAwait(false);
+                    if (decoded.Count != 1)
+                    {
+                        throw new ArgumentException($"Expected 1 payload, found {decoded.Count}");
+                    }
+                    payload = decoded.First();
+                }
+                catch (Exception e) when (e is not ApplicationFailureException)
+                {
+                    throw new HandlerException(
+                        HandlerErrorType.Internal,
+                        "Payload codec failed to decode Nexus operation input",
+                        e);
+                }
+            }
+
+            // Convert with payload converter. Converter failures are non-retryable
+            // BAD_REQUEST errors since the payload data doesn't match the expected type/format
+            // and retrying with the same input will never succeed.
+            object? result;
+            try
+            {
+                result = dataConverter.PayloadConverter.ToValue(payload, type);
+            }
+            catch (Exception e) when (e is not ApplicationFailureException)
+            {
+                throw new HandlerException(
+                    HandlerErrorType.BadRequest,
+                    "Payload converter failed to decode Nexus operation input",
+                    e,
+                    HandlerErrorRetryBehavior.NonRetryable);
+            }
 
             // Ignore result if type is NoValue. We choose to still go through the data converter
             // machinations (it will be for null value) in case user has expectations of _all_
