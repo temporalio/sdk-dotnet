@@ -510,7 +510,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             RunInWorkflowAsync(
                 workerOptions,
                 // Use int as arg
-                async () => await Workflow.CreateNexusClient("StringService", endpoint).
+                async () => await Workflow.CreateNexusWorkflowClient("StringService", endpoint).
                     ExecuteNexusOperationAsync<string>("DoSomething", 1234)));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
         var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
@@ -1135,7 +1135,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             null,
             _args => new CustomFuncWorkflow(async () =>
             {
-                var result = await Workflow.CreateNexusClient<IStringService>(endpoint).
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
                 Assert.Equal("Hello, some-name", result);
                 return null;
@@ -1189,7 +1189,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             null,
             _args => new CustomFuncWorkflow(async () =>
             {
-                await Workflow.CreateNexusClient<IStringService>(endpoint).
+                await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
                 return null;
             })));
