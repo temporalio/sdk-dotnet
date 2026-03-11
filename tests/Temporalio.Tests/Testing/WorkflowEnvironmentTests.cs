@@ -284,7 +284,7 @@ public class WorkflowEnvironmentTests : TestBase
         [WorkflowRun]
         public async Task<string> RunAsync(string input)
         {
-            return await Workflow.CreateNexusClient<INexusLongRunningService>(endpoint).
+            return await Workflow.CreateNexusWorkflowClient<INexusLongRunningService>(endpoint).
                 ExecuteNexusOperationAsync(svc => svc.RunLongOperation(input));
         }
     }
@@ -373,7 +373,7 @@ public class WorkflowEnvironmentTests : TestBase
         [WorkflowRun]
         public async Task<string> RunAsync(string input)
         {
-            return await Workflow.CreateNexusClient<INexusLongRunningService>(endpoint).
+            return await Workflow.CreateNexusWorkflowClient<INexusLongRunningService>(endpoint).
                 ExecuteNexusOperationAsync(
                     svc => svc.RunLongOperation(input),
                     new() { ScheduleToCloseTimeout = TimeSpan.FromDays(1) });
