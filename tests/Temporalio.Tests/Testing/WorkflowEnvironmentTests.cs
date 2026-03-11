@@ -2,11 +2,14 @@ namespace Temporalio.Tests.Testing;
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using NexusRpc;
+using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Api.Enums.V1;
 using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Exceptions;
+using Temporalio.Nexus;
 using Temporalio.Testing;
 using Temporalio.Worker;
 using Temporalio.Workflows;
@@ -238,6 +241,178 @@ public class WorkflowEnvironmentTests : TestBase
             // Wait for result
             await handle.GetResultAsync();
             Assert.True(watch.Elapsed < TimeSpan.FromSeconds(5));
+        });
+    }
+
+    [NexusService]
+    public interface INexusLongRunningService
+    {
+        [NexusOperation]
+        string RunLongOperation(string input);
+    }
+
+    [Workflow]
+    public class NexusLongRunningWorkflow
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input)
+        {
+            await Workflow.DelayAsync(TimeSpan.FromDays(2));
+            return $"done: {input}";
+        }
+    }
+
+    [NexusServiceHandler(typeof(INexusLongRunningService))]
+    public class NexusLongRunningServiceHandler
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<string, string> RunLongOperation() =>
+            WorkflowRunOperationHandler.FromHandleFactory(
+                (WorkflowRunOperationContext context, string input) =>
+                    context.StartWorkflowAsync(
+                        (NexusLongRunningWorkflow wf) => wf.RunAsync(input),
+                        new() { Id = $"nexus-wf-{Guid.NewGuid()}" }));
+    }
+
+    [Workflow]
+    public class NexusCallerWorkflow
+    {
+        private readonly string endpoint;
+
+        public NexusCallerWorkflow(string endpoint) => this.endpoint = endpoint;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input)
+        {
+            return await Workflow.CreateNexusClient<INexusLongRunningService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.RunLongOperation(input));
+        }
+    }
+
+    [OnlyIntelFact]
+    public async Task StartTimeSkippingAsync_NexusLongRunningWorkflow_ProperlySkips()
+    {
+        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await env.CreateNexusEndpointAsync(endpointName, taskQueue);
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions(taskQueue).
+                AddNexusService(new NexusLongRunningServiceHandler()).
+                AddWorkflow<NexusLongRunningWorkflow>().
+                AddWorkflow(WorkflowDefinition.Create(
+                    typeof(NexusCallerWorkflow),
+                    null,
+                    _args => new NexusCallerWorkflow(endpointName))));
+        await worker.ExecuteAsync(async () =>
+        {
+            // Check that timestamp is around now
+            AssertMore.DateTimeFromUtcNow(await env.GetCurrentTimeAsync(), TimeSpan.Zero);
+
+            // Run the caller workflow which invokes the Nexus operation that starts a
+            // long-running workflow with a 2-day delay
+            var watch = Stopwatch.StartNew();
+            var result = await env.Client.ExecuteWorkflowAsync(
+                (NexusCallerWorkflow wf) => wf.RunAsync("test-input"),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: taskQueue));
+            Assert.Equal("done: test-input", result);
+
+            // Verify time was skipped (should complete much faster than 2 days)
+            Assert.True(watch.Elapsed < TimeSpan.FromSeconds(30));
+
+            // Check that the server time advanced ~2 days
+            AssertMore.DateTimeFromUtcNow(await env.GetCurrentTimeAsync(), TimeSpan.FromDays(2));
+        });
+    }
+
+    [OnlyIntelFact]
+    public async Task StartTimeSkippingAsync_NexusLongRunningWorkflow_ManualSkipAndCancel()
+    {
+        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await env.CreateNexusEndpointAsync(endpointName, taskQueue);
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions(taskQueue).
+                AddNexusService(new NexusLongRunningServiceHandler()).
+                AddWorkflow<NexusLongRunningWorkflow>().
+                AddWorkflow(WorkflowDefinition.Create(
+                    typeof(NexusCallerWorkflow),
+                    null,
+                    _args => new NexusCallerWorkflow(endpointName))));
+        await worker.ExecuteAsync(async () =>
+        {
+            // Start the caller workflow
+            var handle = await env.Client.StartWorkflowAsync(
+                (NexusCallerWorkflow wf) => wf.RunAsync("test-input"),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: taskQueue));
+
+            // Manually skip time by 1 day (less than the 2-day delay) and confirm
+            // the workflow is still running
+            await env.DelayAsync(TimeSpan.FromDays(1));
+            var desc = await handle.DescribeAsync();
+            Assert.Equal(WorkflowExecutionStatus.Running, desc.Status);
+
+            // Cancel the caller workflow
+            await handle.CancelAsync();
+            var exc = await Assert.ThrowsAsync<WorkflowFailedException>(
+                () => handle.GetResultAsync());
+            Assert.IsType<CanceledFailureException>(exc.InnerException);
+        });
+    }
+
+    [Workflow]
+    public class NexusCallerWithTimeoutWorkflow
+    {
+        private readonly string endpoint;
+
+        public NexusCallerWithTimeoutWorkflow(string endpoint) => this.endpoint = endpoint;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(string input)
+        {
+            return await Workflow.CreateNexusClient<INexusLongRunningService>(endpoint).
+                ExecuteNexusOperationAsync(
+                    svc => svc.RunLongOperation(input),
+                    new() { ScheduleToCloseTimeout = TimeSpan.FromDays(1) });
+        }
+    }
+
+    [OnlyIntelFact]
+    public async Task StartTimeSkippingAsync_NexusScheduleToCloseTimeout_TimesOut()
+    {
+        await using var env = await WorkflowEnvironment.StartTimeSkippingAsync();
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        var endpointName = $"nexus-endpoint-{taskQueue}";
+        await env.CreateNexusEndpointAsync(endpointName, taskQueue);
+        using var worker = new TemporalWorker(
+            env.Client,
+            new TemporalWorkerOptions(taskQueue).
+                AddNexusService(new NexusLongRunningServiceHandler()).
+                AddWorkflow<NexusLongRunningWorkflow>().
+                AddWorkflow(WorkflowDefinition.Create(
+                    typeof(NexusCallerWithTimeoutWorkflow),
+                    null,
+                    _args => new NexusCallerWithTimeoutWorkflow(endpointName))));
+        await worker.ExecuteAsync(async () =>
+        {
+            // The backing workflow has a 2-day delay but the Nexus operation has a 1-day
+            // schedule-to-close timeout, so the timeout should fire via time skipping
+            var watch = Stopwatch.StartNew();
+            var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                env.Client.ExecuteWorkflowAsync(
+                    (NexusCallerWithTimeoutWorkflow wf) => wf.RunAsync("test-input"),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: taskQueue)));
+
+            // Verify time was skipped (should complete much faster than 1 day)
+            Assert.True(watch.Elapsed < TimeSpan.FromSeconds(30));
+
+            // Verify the failure chain
+            var nexusExc = Assert.IsType<NexusOperationFailureException>(exc.InnerException);
+            var timeoutExc = Assert.IsType<TimeoutFailureException>(nexusExc.InnerException);
+            Assert.Equal(TimeoutType.ScheduleToClose, timeoutExc.TimeoutType);
         });
     }
 
