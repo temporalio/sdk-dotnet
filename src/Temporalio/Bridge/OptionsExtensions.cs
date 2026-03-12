@@ -495,6 +495,12 @@ namespace Temporalio.Bridge
                     throw new ArgumentException("DeploymentOptions and BuildId cannot be used together in worker options");
                 }
 #pragma warning restore 0618
+                if (!options.DeploymentOptions.UseWorkerVersioning
+                    && options.DeploymentOptions.DefaultVersioningBehavior != Common.VersioningBehavior.Unspecified)
+                {
+                    throw new ArgumentException(
+                        "DefaultVersioningBehavior must be Unspecified when UseWorkerVersioning is false");
+                }
                 // Assign default build ID if not provided
                 versioningStrategy = new()
                 {

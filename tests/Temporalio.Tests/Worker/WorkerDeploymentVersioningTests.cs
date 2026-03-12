@@ -402,6 +402,57 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task WorkerWithDeploymentOptions_VersioningOff_CanRunWorkflows()
+    {
+        var buildId = "my-custom-build-id-1.0";
+        var deploymentName = $"deployment-no-versioning-{Guid.NewGuid()}";
+        var version = new WorkerDeploymentVersion(deploymentName, buildId);
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+
+        using var worker = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(version, false),
+            }.AddWorkflow<NoVersioningAnnotationWorkflow>());
+
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await Client.StartWorkflowAsync(
+                (NoVersioningAnnotationWorkflow wf) => wf.RunAsync(),
+                new(id: $"no-versioning-build-id-{Guid.NewGuid()}", taskQueue: taskQueue));
+
+            var result = await handle.GetResultAsync();
+            Assert.Equal("whee", result);
+
+            var history = await handle.FetchHistoryAsync();
+#pragma warning disable CS0612
+            Assert.Contains(history.Events, evt =>
+                evt.WorkflowTaskCompletedEventAttributes?.WorkerVersion?.BuildId == buildId);
+#pragma warning restore CS0612
+        });
+    }
+
+    [Fact]
+    public void RejectsVersioningBehavior_WhenVersioningOff()
+    {
+        var deploymentName = $"deployment-{Guid.NewGuid()}";
+        var version = new WorkerDeploymentVersion(deploymentName, "1.0");
+
+        var ex = Assert.Throws<ArgumentException>(() =>
+        {
+            var unused = new TemporalWorker(
+                Client,
+                new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
+                {
+                    DeploymentOptions = new(version, false)
+                    { DefaultVersioningBehavior = VersioningBehavior.AutoUpgrade },
+                }.AddWorkflow<NoVersioningAnnotationWorkflow>());
+        });
+        Assert.Contains("DefaultVersioningBehavior must be Unspecified", ex.Message);
+    }
+
+    [Fact]
     public void CannotUseOldAndNewVersioningOptionsTogether()
     {
 #pragma warning disable 0618
