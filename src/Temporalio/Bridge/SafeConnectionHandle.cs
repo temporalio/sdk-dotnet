@@ -3,22 +3,22 @@ using Temporalio.Bridge.Interop;
 namespace Temporalio.Bridge
 {
     /// <summary>
-    /// Safe handle for a Temporal client.
+    /// Safe handle for a Temporal connection.
     /// </summary>
-    internal sealed class SafeClientHandle :
-        SafeUnmanagedHandle<TemporalCoreClient>
+    internal sealed class SafeConnectionHandle :
+        SafeUnmanagedHandle<TemporalCoreConnection>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SafeClientHandle" /> class.
+        /// Initializes a new instance of the <see cref="SafeConnectionHandle" /> class.
         /// </summary>
-        /// <param name="ptr">Worker pointer.</param>
-        public unsafe SafeClientHandle(TemporalCoreClient* ptr)
+        /// <param name="ptr">Connection pointer.</param>
+        public unsafe SafeConnectionHandle(TemporalCoreConnection* ptr)
             : base(ptr)
         {
         }
 
         /// <summary>
-        /// Free the client.
+        /// Free the connection.
         /// </summary>
         /// <returns>Always returns <c>true</c>.</returns>
         protected override unsafe bool ReleaseHandle()
