@@ -233,6 +233,7 @@ namespace Temporalio.Worker
             }
             catch (OperationException e)
             {
+#pragma warning disable CS0612 // OperationError deprecated, use Failure
                 return new()
                 {
                     OperationError = new()
@@ -241,6 +242,7 @@ namespace Temporalio.Worker
                         Failure = await ExceptionToNexusFailureAsync(e).ConfigureAwait(false),
                     },
                 };
+#pragma warning restore CS0612
             }
             catch (Exception e)
             {
@@ -317,6 +319,7 @@ namespace Temporalio.Worker
 #pragma warning restore CA1031
             {
                 logger.LogWarning(e, "Completing Nexus {OperationType} task as failed", task.Request.VariantCase);
+#pragma warning disable CS0612 // Error deprecated, use Failure
                 return new()
                 {
                     TaskToken = task.TaskToken,
@@ -328,6 +331,7 @@ namespace Temporalio.Worker
                             (e as HandlerException)?.ErrorRetryBehavior ?? HandlerErrorRetryBehavior.Unspecified),
                     },
                 };
+#pragma warning restore CS0612
             }
         }
 

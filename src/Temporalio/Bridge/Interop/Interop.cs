@@ -63,11 +63,11 @@ namespace Temporalio.Bridge.Interop
     {
     }
 
-    internal partial struct TemporalCoreClient
+    internal partial struct TemporalCoreClientGrpcOverrideRequest
     {
     }
 
-    internal partial struct TemporalCoreClientGrpcOverrideRequest
+    internal partial struct TemporalCoreConnection
     {
     }
 
@@ -187,7 +187,7 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void TemporalCoreClientGrpcOverrideCallback([NativeTypeName("struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* request, void* user_data);
 
-    internal unsafe partial struct TemporalCoreClientOptions
+    internal unsafe partial struct TemporalCoreConnectionOptions
     {
         [NativeTypeName("struct TemporalCoreByteArrayRef")]
         public TemporalCoreByteArrayRef target_url;
@@ -244,7 +244,7 @@ namespace Temporalio.Bridge.Interop
     }
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    internal unsafe delegate void TemporalCoreClientConnectCallback(void* user_data, [NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* success, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
+    internal unsafe delegate void TemporalCoreClientConnectCallback(void* user_data, [NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* success, [NativeTypeName("const struct TemporalCoreByteArray *")] TemporalCoreByteArray* fail);
 
     internal partial struct TemporalCoreClientGrpcOverrideResponse
     {
@@ -1236,19 +1236,19 @@ namespace Temporalio.Bridge.Interop
         public static extern void temporal_core_cancellation_token_free([NativeTypeName("struct TemporalCoreCancellationToken *")] TemporalCoreCancellationToken* token);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_connect([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreClientOptions *")] TemporalCoreClientOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientConnectCallback")] IntPtr callback);
+        public static extern void temporal_core_client_connect([NativeTypeName("struct TemporalCoreRuntime *")] TemporalCoreRuntime* runtime, [NativeTypeName("const struct TemporalCoreConnectionOptions *")] TemporalCoreConnectionOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientConnectCallback")] IntPtr callback);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_free([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client);
+        public static extern void temporal_core_client_free([NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* client);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_update_metadata([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("TemporalCoreMetadataRef")] TemporalCoreByteArrayRefArray metadata);
+        public static extern void temporal_core_client_update_metadata([NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* client, [NativeTypeName("TemporalCoreMetadataRef")] TemporalCoreByteArrayRefArray metadata);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_update_binary_metadata([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("TemporalCoreMetadataRef")] TemporalCoreByteArrayRefArray metadata);
+        public static extern void temporal_core_client_update_binary_metadata([NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* client, [NativeTypeName("TemporalCoreMetadataRef")] TemporalCoreByteArrayRefArray metadata);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_update_api_key([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef api_key);
+        public static extern void temporal_core_client_update_api_key([NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* client, [NativeTypeName("struct TemporalCoreByteArrayRef")] TemporalCoreByteArrayRef api_key);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreByteArrayRef")]
@@ -1270,7 +1270,7 @@ namespace Temporalio.Bridge.Interop
         public static extern void temporal_core_client_grpc_override_request_respond([NativeTypeName("struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* req, [NativeTypeName("struct TemporalCoreClientGrpcOverrideResponse")] TemporalCoreClientGrpcOverrideResponse resp);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        public static extern void temporal_core_client_rpc_call([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreRpcCallOptions *")] TemporalCoreRpcCallOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientRpcCallCallback")] IntPtr callback);
+        public static extern void temporal_core_client_rpc_call([NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* client, [NativeTypeName("const struct TemporalCoreRpcCallOptions *")] TemporalCoreRpcCallOptions* options, void* user_data, [NativeTypeName("TemporalCoreClientRpcCallCallback")] IntPtr callback);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreClientEnvConfigOrFail")]
@@ -1371,7 +1371,7 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("struct TemporalCoreWorkerOrFail")]
-        public static extern TemporalCoreWorkerOrFail temporal_core_worker_new([NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* client, [NativeTypeName("const struct TemporalCoreWorkerOptions *")] TemporalCoreWorkerOptions* options);
+        public static extern TemporalCoreWorkerOrFail temporal_core_worker_new([NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* connection, [NativeTypeName("const struct TemporalCoreWorkerOptions *")] TemporalCoreWorkerOptions* options);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_free([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker);
@@ -1381,7 +1381,7 @@ namespace Temporalio.Bridge.Interop
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: NativeTypeName("const struct TemporalCoreByteArray *")]
-        public static extern TemporalCoreByteArray* temporal_core_worker_replace_client([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreClient *")] TemporalCoreClient* new_client);
+        public static extern TemporalCoreByteArray* temporal_core_worker_replace_client([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, [NativeTypeName("struct TemporalCoreConnection *")] TemporalCoreConnection* new_connection);
 
         [DllImport("temporalio_sdk_core_c_bridge", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         public static extern void temporal_core_worker_poll_workflow_activation([NativeTypeName("struct TemporalCoreWorker *")] TemporalCoreWorker* worker, void* user_data, [NativeTypeName("TemporalCoreWorkerPollCallback")] IntPtr callback);

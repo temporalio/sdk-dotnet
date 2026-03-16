@@ -227,7 +227,7 @@ namespace Temporalio.Bridge
         /// <param name="options">Options to convert.</param>
         /// <param name="scope">Scope to use.</param>
         /// <returns>Converted options.</returns>
-        public static unsafe Interop.TemporalCoreClientOptions ToInteropOptions(
+        public static unsafe Interop.TemporalCoreConnectionOptions ToInteropOptions(
             this Temporalio.Client.TemporalConnectionOptions options,
             Scope scope)
         {
@@ -256,7 +256,7 @@ namespace Temporalio.Bridge
             }
 
             var scheme = tls == null ? "http" : "https";
-            return new Interop.TemporalCoreClientOptions()
+            return new Interop.TemporalCoreConnectionOptions()
             {
                 target_url = scope.ByteArray($"{scheme}://{options.TargetHost}"),
                 client_name = ClientName.Ref,

@@ -521,11 +521,14 @@ namespace Temporalio.Worker
             {
                 UpsertWorkflowSearchAttributes = new()
                 {
-                    SearchAttributes =
+                    SearchAttributes = new()
                     {
-                        updates.Select(u =>
-                            new KeyValuePair<string, Payload>(u.UntypedKey.Name, u.ToUpsertPayload())).
-                                ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                        IndexedFields =
+                        {
+                            updates.Select(u =>
+                                new KeyValuePair<string, Payload>(u.UntypedKey.Name, u.ToUpsertPayload())).
+                                    ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
+                        },
                     },
                 },
             });
@@ -1000,7 +1003,7 @@ namespace Temporalio.Worker
                     }
                     if (e.Input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
                     {
-                        cmd.SearchAttributes.Add(attrs.ToProto().IndexedFields);
+                        cmd.SearchAttributes.IndexedFields.Add(attrs.ToProto().IndexedFields);
                     }
                     if (e.Input.Headers is IDictionary<string, Payload> headers)
                     {
@@ -2401,7 +2404,7 @@ namespace Temporalio.Worker
                 }
                 if (input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
                 {
-                    cmd.SearchAttributes.Add(attrs.ToProto().IndexedFields);
+                    cmd.SearchAttributes.IndexedFields.Add(attrs.ToProto().IndexedFields);
                 }
                 if (input.Headers is IDictionary<string, Payload> headers)
                 {

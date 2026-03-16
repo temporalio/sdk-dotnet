@@ -11,11 +11,11 @@ namespace Temporalio.Bridge
     /// </summary>
     internal class Client : SafeHandle
     {
-        private unsafe Client(Runtime runtime, Interop.TemporalCoreClient* ptr)
+        private unsafe Client(Runtime runtime, Interop.TemporalCoreConnection* ptr)
             : base((IntPtr)ptr, true)
         {
             Runtime = runtime;
-            Handle = new SafeClientHandle(ptr);
+            Handle = new SafeConnectionHandle(ptr);
         }
 
         /// <inheritdoc />
@@ -29,7 +29,7 @@ namespace Temporalio.Bridge
         /// <summary>
         /// Gets the safe handle for the client.
         /// </summary>
-        internal SafeClientHandle Handle { get; private init; }
+        internal SafeConnectionHandle Handle { get; private init; }
 
         /// <summary>
         /// Connect to Temporal.
