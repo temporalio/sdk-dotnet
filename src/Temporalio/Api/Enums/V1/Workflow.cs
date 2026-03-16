@@ -82,17 +82,17 @@ namespace Temporalio.Api.Enums.V1 {
             "KowBCh9Db250aW51ZUFzTmV3VmVyc2lvbmluZ0JlaGF2aW9yEjMKL0NPTlRJ",
             "TlVFX0FTX05FV19WRVJTSU9OSU5HX0JFSEFWSU9SX1VOU1BFQ0lGSUVEEAAS",
             "NAowQ09OVElOVUVfQVNfTkVXX1ZFUlNJT05JTkdfQkVIQVZJT1JfQVVUT19V",
-            "UEdSQURFEAEqxQIKGlN1Z2dlc3RDb250aW51ZUFzTmV3UmVhc29uEi4KKlNV",
+            "UEdSQURFEAEqxwIKGlN1Z2dlc3RDb250aW51ZUFzTmV3UmVhc29uEi4KKlNV",
             "R0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9VTlNQRUNJRklFRBAAEjkK",
             "NVNVR0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9ISVNUT1JZX1NJWkVf",
             "VE9PX0xBUkdFEAESOgo2U1VHR0VTVF9DT05USU5VRV9BU19ORVdfUkVBU09O",
             "X1RPT19NQU5ZX0hJU1RPUllfRVZFTlRTEAISMwovU1VHR0VTVF9DT05USU5V",
-            "RV9BU19ORVdfUkVBU09OX1RPT19NQU5ZX1VQREFURVMQAxJLCkdTVUdHRVNU",
-            "X0NPTlRJTlVFX0FTX05FV19SRUFTT05fVEFSR0VUX1dPUktFUl9ERVBMT1lN",
-            "RU5UX1ZFUlNJT05fQ0hBTkdFRBAEQoUBChhpby50ZW1wb3JhbC5hcGkuZW51",
-            "bXMudjFCDVdvcmtmbG93UHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2Vu",
-            "dW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1w",
-            "b3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "RV9BU19ORVdfUkVBU09OX1RPT19NQU5ZX1VQREFURVMQAyIECAQQBCpHU1VH",
+            "R0VTVF9DT05USU5VRV9BU19ORVdfUkVBU09OX1RBUkdFVF9XT1JLRVJfREVQ",
+            "TE9ZTUVOVF9WRVJTSU9OX0NIQU5HRURChQEKGGlvLnRlbXBvcmFsLmFwaS5l",
+            "bnVtcy52MUINV29ya2Zsb3dQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkv",
+            "ZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRl",
+            "bXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.WorkflowIdConflictPolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), typeof(global::Temporalio.Api.Enums.V1.VersioningBehavior), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior), typeof(global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason), }, null, null));
@@ -352,11 +352,6 @@ namespace Temporalio.Api.Enums.V1 {
     /// Workflow's count of completed plus in-flight updates is too large.
     /// </summary>
     [pbr::OriginalName("SUGGEST_CONTINUE_AS_NEW_REASON_TOO_MANY_UPDATES")] TooManyUpdates = 3,
-    /// <summary>
-    /// Workflow's Target Worker Deployment Version is different from its
-    /// Current Version and the workflow is versioned.
-    /// </summary>
-    [pbr::OriginalName("SUGGEST_CONTINUE_AS_NEW_REASON_TARGET_WORKER_DEPLOYMENT_VERSION_CHANGED")] TargetWorkerDeploymentVersionChanged = 4,
   }
 
   #endregion

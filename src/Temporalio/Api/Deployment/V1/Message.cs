@@ -205,7 +205,7 @@ namespace Temporalio.Api.Deployment.V1 {
     public const int DeploymentNameFieldNumber = 1;
     private string deploymentName_ = "";
     /// <summary>
-    /// Required. Worker Deployment name.
+    /// Required when `worker_versioning_mode==VERSIONED`.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

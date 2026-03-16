@@ -44,7 +44,7 @@ public class WorkflowCodecHelperTests : TestBase
         await CreateAndVisitPayload(new(), comp, async (ctx, payload) =>
         {
             // We don't check search attributes on purpose
-            if (ctx.PropertyPath.Last().Item2 == "SearchAttributes")
+            if (ctx.PropertyPath.Any(t => t.Item2 == "SearchAttributes"))
             {
                 return;
             }

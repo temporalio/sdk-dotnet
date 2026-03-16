@@ -36,28 +36,29 @@ namespace Temporalio.Bridge.Api.Nexus {
             "ZmFpbHVyZS52MS5GYWlsdXJlSAASNQoJY2FuY2VsbGVkGAMgASgLMiAudGVt",
             "cG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZUgAEjUKCXRpbWVkX291dBgE",
             "IAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmVIAEIICgZz",
-            "dGF0dXMitQEKE05leHVzVGFza0NvbXBsZXRpb24SEgoKdGFza190b2tlbhgB",
+            "dGF0dXMi7gEKE05leHVzVGFza0NvbXBsZXRpb24SEgoKdGFza190b2tlbhgB",
             "IAEoDBI0Cgljb21wbGV0ZWQYAiABKAsyHy50ZW1wb3JhbC5hcGkubmV4dXMu",
-            "djEuUmVzcG9uc2VIABI0CgVlcnJvchgDIAEoCzIjLnRlbXBvcmFsLmFwaS5u",
-            "ZXh1cy52MS5IYW5kbGVyRXJyb3JIABIUCgphY2tfY2FuY2VsGAQgASgISABC",
-            "CAoGc3RhdHVzItABCglOZXh1c1Rhc2sSSwoEdGFzaxgBIAEoCzI7LnRlbXBv",
-            "cmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuUG9sbE5leHVzVGFza1F1ZXVl",
-            "UmVzcG9uc2VIABI1CgtjYW5jZWxfdGFzaxgCIAEoCzIeLmNvcmVzZGsubmV4",
-            "dXMuQ2FuY2VsTmV4dXNUYXNrSAASNAoQcmVxdWVzdF9kZWFkbGluZRgDIAEo",
-            "CzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCCQoHdmFyaWFudCJbCg9D",
-            "YW5jZWxOZXh1c1Rhc2sSEgoKdGFza190b2tlbhgBIAEoDBI0CgZyZWFzb24Y",
-            "AiABKA4yJC5jb3Jlc2RrLm5leHVzLk5leHVzVGFza0NhbmNlbFJlYXNvbio7",
-            "ChVOZXh1c1Rhc2tDYW5jZWxSZWFzb24SDQoJVElNRURfT1VUEAASEwoPV09S",
-            "S0VSX1NIVVRET1dOEAEqfwoeTmV4dXNPcGVyYXRpb25DYW5jZWxsYXRpb25U",
-            "eXBlEh8KG1dBSVRfQ0FOQ0VMTEFUSU9OX0NPTVBMRVRFRBAAEgsKB0FCQU5E",
-            "T04QARIOCgpUUllfQ0FOQ0VMEAISHwobV0FJVF9DQU5DRUxMQVRJT05fUkVR",
-            "VUVTVEVEEANCK+oCKFRlbXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6OkFw",
-            "aTo6TmV4dXNiBnByb3RvMw=="));
+            "djEuUmVzcG9uc2VIABI4CgVlcnJvchgDIAEoCzIjLnRlbXBvcmFsLmFwaS5u",
+            "ZXh1cy52MS5IYW5kbGVyRXJyb3JCAhgBSAASFAoKYWNrX2NhbmNlbBgEIAEo",
+            "CEgAEjMKB2ZhaWx1cmUYBSABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52",
+            "MS5GYWlsdXJlSABCCAoGc3RhdHVzItABCglOZXh1c1Rhc2sSSwoEdGFzaxgB",
+            "IAEoCzI7LnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuUG9sbE5l",
+            "eHVzVGFza1F1ZXVlUmVzcG9uc2VIABI1CgtjYW5jZWxfdGFzaxgCIAEoCzIe",
+            "LmNvcmVzZGsubmV4dXMuQ2FuY2VsTmV4dXNUYXNrSAASNAoQcmVxdWVzdF9k",
+            "ZWFkbGluZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCCQoH",
+            "dmFyaWFudCJbCg9DYW5jZWxOZXh1c1Rhc2sSEgoKdGFza190b2tlbhgBIAEo",
+            "DBI0CgZyZWFzb24YAiABKA4yJC5jb3Jlc2RrLm5leHVzLk5leHVzVGFza0Nh",
+            "bmNlbFJlYXNvbio7ChVOZXh1c1Rhc2tDYW5jZWxSZWFzb24SDQoJVElNRURf",
+            "T1VUEAASEwoPV09SS0VSX1NIVVRET1dOEAEqfwoeTmV4dXNPcGVyYXRpb25D",
+            "YW5jZWxsYXRpb25UeXBlEh8KG1dBSVRfQ0FOQ0VMTEFUSU9OX0NPTVBMRVRF",
+            "RBAAEgsKB0FCQU5ET04QARIOCgpUUllfQ0FOQ0VMEAISHwobV0FJVF9DQU5D",
+            "RUxMQVRJT05fUkVRVUVTVEVEEANCK+oCKFRlbXBvcmFsaW86OkludGVybmFs",
+            "OjpCcmlkZ2U6OkFwaTo6TmV4dXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCancelReason), typeof(global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusOperationResult), global::Temporalio.Bridge.Api.Nexus.NexusOperationResult.Parser, new[]{ "Completed", "Failed", "Cancelled", "TimedOut" }, new[]{ "Status" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion), global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion.Parser, new[]{ "TaskToken", "Completed", "Error", "AckCancel" }, new[]{ "Status" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion), global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion.Parser, new[]{ "TaskToken", "Completed", "Error", "AckCancel", "Failure" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTask), global::Temporalio.Bridge.Api.Nexus.NexusTask.Parser, new[]{ "Task", "CancelTask", "RequestDeadline" }, new[]{ "Variant" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.CancelNexusTask), global::Temporalio.Bridge.Api.Nexus.CancelNexusTask.Parser, new[]{ "TaskToken", "Reason" }, null, null, null, null)
           }));
@@ -546,6 +547,9 @@ namespace Temporalio.Bridge.Api.Nexus {
         case StatusOneofCase.AckCancel:
           AckCancel = other.AckCancel;
           break;
+        case StatusOneofCase.Failure:
+          Failure = other.Failure.Clone();
+          break;
       }
 
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -591,8 +595,9 @@ namespace Temporalio.Bridge.Api.Nexus {
     /// <summary>Field number for the "error" field.</summary>
     public const int ErrorFieldNumber = 3;
     /// <summary>
-    /// The handler could not complete the request for some reason.
+    /// The handler could not complete the request for some reason. Deprecated, use failure.
     /// </summary>
+    [global::System.ObsoleteAttribute]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Temporalio.Api.Nexus.V1.HandlerError Error {
@@ -635,6 +640,21 @@ namespace Temporalio.Bridge.Api.Nexus {
       }
     }
 
+    /// <summary>Field number for the "failure" field.</summary>
+    public const int FailureFieldNumber = 5;
+    /// <summary>
+    /// The handler could not complete the request for some reason.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Failure.V1.Failure Failure {
+      get { return statusCase_ == StatusOneofCase.Failure ? (global::Temporalio.Api.Failure.V1.Failure) status_ : null; }
+      set {
+        status_ = value;
+        statusCase_ = value == null ? StatusOneofCase.None : StatusOneofCase.Failure;
+      }
+    }
+
     private object status_;
     /// <summary>Enum of possible cases for the "status" oneof.</summary>
     public enum StatusOneofCase {
@@ -642,6 +662,7 @@ namespace Temporalio.Bridge.Api.Nexus {
       Completed = 2,
       Error = 3,
       AckCancel = 4,
+      Failure = 5,
     }
     private StatusOneofCase statusCase_ = StatusOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -676,6 +697,7 @@ namespace Temporalio.Bridge.Api.Nexus {
       if (!object.Equals(Completed, other.Completed)) return false;
       if (!object.Equals(Error, other.Error)) return false;
       if (AckCancel != other.AckCancel) return false;
+      if (!object.Equals(Failure, other.Failure)) return false;
       if (StatusCase != other.StatusCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -688,6 +710,7 @@ namespace Temporalio.Bridge.Api.Nexus {
       if (statusCase_ == StatusOneofCase.Completed) hash ^= Completed.GetHashCode();
       if (statusCase_ == StatusOneofCase.Error) hash ^= Error.GetHashCode();
       if (HasAckCancel) hash ^= AckCancel.GetHashCode();
+      if (statusCase_ == StatusOneofCase.Failure) hash ^= Failure.GetHashCode();
       hash ^= (int) statusCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -723,6 +746,10 @@ namespace Temporalio.Bridge.Api.Nexus {
         output.WriteRawTag(32);
         output.WriteBool(AckCancel);
       }
+      if (statusCase_ == StatusOneofCase.Failure) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Failure);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -749,6 +776,10 @@ namespace Temporalio.Bridge.Api.Nexus {
         output.WriteRawTag(32);
         output.WriteBool(AckCancel);
       }
+      if (statusCase_ == StatusOneofCase.Failure) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Failure);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -770,6 +801,9 @@ namespace Temporalio.Bridge.Api.Nexus {
       }
       if (HasAckCancel) {
         size += 1 + 1;
+      }
+      if (statusCase_ == StatusOneofCase.Failure) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failure);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -801,6 +835,12 @@ namespace Temporalio.Bridge.Api.Nexus {
           break;
         case StatusOneofCase.AckCancel:
           AckCancel = other.AckCancel;
+          break;
+        case StatusOneofCase.Failure:
+          if (Failure == null) {
+            Failure = new global::Temporalio.Api.Failure.V1.Failure();
+          }
+          Failure.MergeFrom(other.Failure);
           break;
       }
 
@@ -845,6 +885,15 @@ namespace Temporalio.Bridge.Api.Nexus {
             AckCancel = input.ReadBool();
             break;
           }
+          case 42: {
+            global::Temporalio.Api.Failure.V1.Failure subBuilder = new global::Temporalio.Api.Failure.V1.Failure();
+            if (statusCase_ == StatusOneofCase.Failure) {
+              subBuilder.MergeFrom(Failure);
+            }
+            input.ReadMessage(subBuilder);
+            Failure = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -884,6 +933,15 @@ namespace Temporalio.Bridge.Api.Nexus {
           }
           case 32: {
             AckCancel = input.ReadBool();
+            break;
+          }
+          case 42: {
+            global::Temporalio.Api.Failure.V1.Failure subBuilder = new global::Temporalio.Api.Failure.V1.Failure();
+            if (statusCase_ == StatusOneofCase.Failure) {
+              subBuilder.MergeFrom(Failure);
+            }
+            input.ReadMessage(subBuilder);
+            Failure = subBuilder;
             break;
           }
         }

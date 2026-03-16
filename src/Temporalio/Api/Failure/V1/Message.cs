@@ -2218,6 +2218,9 @@ namespace Temporalio.Api.Failure.V1 {
 
   }
 
+  /// <summary>
+  /// Representation of the Temporal SDK NexusOperationError object that is returned to workflow callers.
+  /// </summary>
   public sealed partial class NexusOperationFailureInfo : pb::IMessage<NexusOperationFailureInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
