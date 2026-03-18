@@ -267,6 +267,13 @@ namespace Temporalio.Worker
         public int CurrentHistorySize { get; private set; }
 
         /// <inheritdoc />
+        public IReadOnlyCollection<Workflows.SuggestContinueAsNewReason> SuggestedContinueAsNewReasons { get; private set; } =
+            Array.Empty<Workflows.SuggestContinueAsNewReason>();
+
+        /// <inheritdoc />
+        public bool TargetWorkerDeploymentVersionChanged { get; private set; }
+
+        /// <inheritdoc />
         public WorkflowUpdateInfo? CurrentUpdateInfo => CurrentUpdateInfoLocal.Value;
 
         /// <inheritdoc />
@@ -627,6 +634,11 @@ namespace Temporalio.Worker
                 ContinueAsNewSuggested = act.ContinueAsNewSuggested;
                 CurrentHistoryLength = checked((int)act.HistoryLength);
                 CurrentHistorySize = checked((int)act.HistorySizeBytes);
+                SuggestedContinueAsNewReasons = act.SuggestContinueAsNewReasons
+                    .Select(r => (Workflows.SuggestContinueAsNewReason)(int)r)
+                    .Where(r => r != Workflows.SuggestContinueAsNewReason.Unspecified)
+                    .ToList();
+                TargetWorkerDeploymentVersionChanged = act.TargetWorkerDeploymentVersionChanged;
                 if (act.DeploymentVersionForCurrentTask != null)
                 {
                     CurrentDeploymentVersion = WorkerDeploymentVersion.FromBridge(act.DeploymentVersionForCurrentTask);
@@ -1015,6 +1027,10 @@ namespace Temporalio.Worker
                         cmd.VersioningIntent = (Bridge.Api.Common.VersioningIntent)(int)vi;
                     }
 #pragma warning restore CS0618
+                    if (e.Input.Options?.InitialVersioningBehavior is { } ivb)
+                    {
+                        cmd.InitialVersioningBehavior = (Api.Enums.V1.ContinueAsNewVersioningBehavior)(int)ivb;
+                    }
                     AddCommand(new() { ContinueAsNewWorkflowExecution = cmd });
                 }
                 catch (Exception e) when (

@@ -102,6 +102,27 @@ namespace Temporalio.Workflows
         public static int CurrentHistorySize => Context.CurrentHistorySize;
 
         /// <summary>
+        /// Gets the reasons why continue-as-new is suggested.
+        /// </summary>
+        /// <remarks>WARNING: May be removed or changed in the future.</remarks>
+        public static IReadOnlyCollection<SuggestContinueAsNewReason> SuggestedContinueAsNewReasons =>
+            Context.SuggestedContinueAsNewReasons;
+
+        /// <summary>
+        /// Gets a value indicating whether the target worker deployment version has changed for
+        /// this workflow since the last workflow task.
+        /// </summary>
+        /// <remarks>
+        /// This is only relevant for workflows using the PINNED versioning behavior with worker
+        /// deployment versioning. When true, the workflow's target version has changed, and the
+        /// workflow may want to continue-as-new with
+        /// <see cref="InitialVersioningBehavior.AutoUpgrade" /> to move to the new version.
+        /// <para>WARNING: Worker deployment based versioning is currently experimental.</para>
+        /// </remarks>
+        public static bool TargetWorkerDeploymentVersionChanged =>
+            Context.TargetWorkerDeploymentVersionChanged;
+
+        /// <summary>
         /// Gets the current workflow update handler for the caller if any.
         /// </summary>
         /// <remarks>

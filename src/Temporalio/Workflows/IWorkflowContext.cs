@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -32,6 +33,16 @@ namespace Temporalio.Workflows
         /// Gets value for <see cref="Workflow.CurrentBuildId" />.
         /// </summary>
         string CurrentBuildId { get; }
+
+        /// <summary>
+        /// Gets value for <see cref="Workflow.SuggestedContinueAsNewReasons" />.
+        /// </summary>
+        IReadOnlyCollection<SuggestContinueAsNewReason> SuggestedContinueAsNewReasons { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether <see cref="Workflow.TargetWorkerDeploymentVersionChanged" /> is true.
+        /// </summary>
+        bool TargetWorkerDeploymentVersionChanged { get; }
 
         /// <summary>
         /// Gets value for <see cref="Workflow.CurrentDeploymentVersion" />.

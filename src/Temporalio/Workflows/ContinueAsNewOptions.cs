@@ -53,6 +53,15 @@ namespace Temporalio.Workflows
         public VersioningIntent VersioningIntent { get; set; } = VersioningIntent.Unspecified;
 
         /// <summary>
+        /// Gets or sets the versioning behavior for the first task of the new workflow run.
+        /// For example, set to <see cref="Workflows.InitialVersioningBehavior.AutoUpgrade" /> to
+        /// upgrade to the latest version on continue-as-new instead of inheriting the pinned
+        /// version from the previous run.
+        /// </summary>
+        /// <remarks>WARNING: Worker deployment based versioning is currently experimental.</remarks>
+        public InitialVersioningBehavior? InitialVersioningBehavior { get; set; }
+
+        /// <summary>
         /// Create a shallow copy of these options.
         /// </summary>
         /// <returns>A shallow copy of these options.</returns>
