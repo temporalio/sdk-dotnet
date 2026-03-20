@@ -63,7 +63,7 @@ namespace Temporalio.Nexus
             byte[] bytes;
             try
             {
-                bytes = Convert.FromBase64String(token);
+                bytes = Base64UrlDecode(token);
             }
             catch (FormatException)
             {
@@ -82,9 +82,26 @@ namespace Temporalio.Nexus
         /// Create a string token based on this handle.
         /// </summary>
         /// <returns>Operation token.</returns>
-        internal string ToToken() => Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(
+        internal string ToToken() => Base64UrlEncode(JsonSerializer.SerializeToUtf8Bytes(
             new Token(Namespace, WorkflowId, Version == 0 ? null : Version),
             TokenSerializerOptions));
+
+        private static string Base64UrlEncode(byte[] data) =>
+            Convert.ToBase64String(data)
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .TrimEnd('=');
+
+        private static byte[] Base64UrlDecode(string s)
+        {
+            s = s.Replace('-', '+').Replace('_', '/');
+            switch (s.Length % 4)
+            {
+                case 2: s += "=="; break;
+                case 3: s += "="; break;
+            }
+            return Convert.FromBase64String(s);
+        }
 
         private record Token(
             [property: JsonPropertyName("ns")]
@@ -93,7 +110,7 @@ namespace Temporalio.Nexus
             string WorkflowId,
             [property: JsonPropertyName("v")]
             int? Version,
-            [property: JsonPropertyName("t'")]
+            [property: JsonPropertyName("t")]
             int Type = 1);
     }
 
