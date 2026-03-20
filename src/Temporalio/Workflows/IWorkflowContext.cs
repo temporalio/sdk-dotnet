@@ -34,6 +34,16 @@ namespace Temporalio.Workflows
         string CurrentBuildId { get; }
 
         /// <summary>
+        /// Gets value for <see cref="Workflow.SuggestedContinueAsNewReasons" />.
+        /// </summary>
+        IReadOnlyCollection<SuggestContinueAsNewReason> SuggestedContinueAsNewReasons { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether <see cref="Workflow.TargetWorkerDeploymentVersionChanged" /> is true.
+        /// </summary>
+        bool TargetWorkerDeploymentVersionChanged { get; }
+
+        /// <summary>
         /// Gets value for <see cref="Workflow.CurrentDeploymentVersion" />.
         /// </summary>
         WorkerDeploymentVersion? CurrentDeploymentVersion { get; }

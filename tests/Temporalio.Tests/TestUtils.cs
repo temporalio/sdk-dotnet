@@ -287,4 +287,55 @@ public static class TestUtils
                 ConflictToken = conflictToken,
             });
     }
+
+    public static async Task WaitForRoutingConfigPropagationAsync(
+        ITemporalClient client,
+        string deploymentName,
+        string expectedCurrentBuildId)
+    {
+        await AssertMore.EventuallyAsync(async () =>
+        {
+            var response = await client.WorkflowService.DescribeWorkerDeploymentAsync(
+                new()
+                {
+                    Namespace = client.Options.Namespace,
+                    DeploymentName = deploymentName,
+                });
+
+            var info = response.WorkerDeploymentInfo;
+            Assert.NotNull(info.RoutingConfig);
+            Assert.NotNull(info.RoutingConfig.CurrentDeploymentVersion);
+            Assert.Equal(expectedCurrentBuildId, info.RoutingConfig.CurrentDeploymentVersion.BuildId);
+            Assert.NotEqual(
+                Temporalio.Api.Enums.V1.RoutingConfigUpdateState.InProgress,
+                info.RoutingConfigUpdateState);
+        });
+    }
+
+    public static async Task WaitForWorkflowRunningOnVersionAsync(
+        ITemporalClient client,
+        string workflowId,
+        string expectedBuildId)
+    {
+        await AssertMore.EventuallyAsync(async () =>
+        {
+            var response = await client.WorkflowService.DescribeWorkflowExecutionAsync(
+                new()
+                {
+                    Namespace = client.Options.Namespace,
+                    Execution = new Temporalio.Api.Common.V1.WorkflowExecution
+                    {
+                        WorkflowId = workflowId,
+                    },
+                });
+
+            var execInfo = response.WorkflowExecutionInfo;
+            Assert.Equal(
+                Temporalio.Api.Enums.V1.WorkflowExecutionStatus.Running,
+                execInfo.Status);
+            Assert.NotNull(execInfo.VersioningInfo);
+            Assert.NotNull(execInfo.VersioningInfo.DeploymentVersion);
+            Assert.Equal(expectedBuildId, execInfo.VersioningInfo.DeploymentVersion.BuildId);
+        });
+    }
 }

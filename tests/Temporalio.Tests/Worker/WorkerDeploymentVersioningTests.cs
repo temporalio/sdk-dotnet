@@ -525,4 +525,94 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
                    Temporalio.Api.Workflow.V1.VersioningOverride.OverrideOneofCase.Pinned));
         });
     }
+
+    [Workflow("CanVersionUpgradeWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
+    public class CanVersionUpgradeWorkflowV1
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(int attempt)
+        {
+            if (attempt > 0)
+            {
+                return "v1.0";
+            }
+
+            // Sleep in a loop to trigger new WFTs that refresh the flag
+            while (!Workflow.TargetWorkerDeploymentVersionChanged)
+            {
+                await Workflow.DelayAsync(TimeSpan.FromMilliseconds(10));
+            }
+
+            // Continue-as-new with AUTO_UPGRADE to move to the new version
+            throw Workflow.CreateContinueAsNewException(
+                (CanVersionUpgradeWorkflowV1 wf) => wf.RunAsync(attempt + 1),
+                new ContinueAsNewOptions
+                {
+                    InitialVersioningBehavior = InitialVersioningBehavior.AutoUpgrade,
+                });
+        }
+    }
+
+    [Workflow("CanVersionUpgradeWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
+    public class CanVersionUpgradeWorkflowV2
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(int attempt)
+        {
+            return "v2.0";
+        }
+    }
+
+    [Fact]
+    public async Task ContinueAsNew_WithVersionUpgrade_MovesToNewVersion()
+    {
+        var deploymentName = $"deployment-can-{Guid.NewGuid()}";
+        var v1 = new WorkerDeploymentVersion(deploymentName, "1.0");
+        var v2 = new WorkerDeploymentVersion(deploymentName, "2.0");
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+
+        using var worker1 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v1, true),
+            }.AddWorkflow<CanVersionUpgradeWorkflowV1>());
+
+        using var worker2 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v2, true),
+            }.AddWorkflow<CanVersionUpgradeWorkflowV2>());
+
+        var testTask = ExecuteTest();
+        await Task.WhenAll(
+            worker1.ExecuteAsync(() => testTask),
+            worker2.ExecuteAsync(() => testTask));
+
+        async Task ExecuteTest()
+        {
+            // Wait for v1 to be visible and set as current
+            var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe1.ConflictToken, v1);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v1.BuildId);
+
+            // Start workflow on v1
+            var handle = await Client.StartWorkflowAsync(
+                (CanVersionUpgradeWorkflowV1 wf) => wf.RunAsync(0),
+                new(id: $"can-upgrade-{Guid.NewGuid()}", taskQueue: taskQueue));
+
+            await TestUtils.WaitForWorkflowRunningOnVersionAsync(Client, handle.Id, v1.BuildId);
+
+            // Wait for v2 to be visible and set as current (this changes the target version)
+            var describe2 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v2);
+            await TestUtils.SetCurrentDeploymentVersionAsync(Client, describe2.ConflictToken, v2);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v2.BuildId);
+
+            // The v1 workflow should detect the version change, CAN with AUTO_UPGRADE,
+            // and the new run should execute on v2
+            var result = await handle.GetResultAsync();
+            Assert.Equal("v2.0", result);
+        }
+    }
 }
