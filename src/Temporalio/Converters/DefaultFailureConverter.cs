@@ -196,7 +196,7 @@ namespace Temporalio.Converters
             {
                 // Non-Temporal Nexus failure: wrap as ApplicationFailureInfo with type
                 // "NexusFailure" and serialize the remaining failure fields as a JSON payload
-                // in the details, matching Python's _nexus_failure_to_temporal_failure.
+                // in the details.
                 var detailsPayload = new Payload()
                 {
                     Metadata = { ["encoding"] = ByteString.CopyFromUtf8("json/plain") },
@@ -232,14 +232,14 @@ namespace Temporalio.Converters
         /// Convert a Temporal Failure proto to a NexusRpc.Failure. This is the reverse of
         /// <see cref="NexusFailureToTemporalFailure"/>. Used when deserializing
         /// NexusHandlerFailureInfo to set OriginalFailure on HandlerException for
-        /// round-tripping. Mirrors Python's _temporal_failure_to_nexus_failure.
+        /// round-tripping.
         /// </summary>
         /// <param name="failure">The Temporal Failure proto to convert.</param>
         /// <returns>The NexusRpc Failure for round-tripping.</returns>
         internal static NexusRpc.Failure TemporalFailureToNexusFailure(Failure failure)
         {
             // Temporarily zero out message and stack trace, serialize the rest as a
-            // JSON dict, then restore. This matches Python's approach.
+            // JSON dict, then restore.
             var message = failure.Message;
             var stackTrace = failure.StackTrace;
             failure.Message = string.Empty;
@@ -327,11 +327,9 @@ namespace Temporalio.Converters
         {
             // If OriginalFailure is set, this is a round-trip case where an upstream
             // Temporal failure was converted to a NexusRpc Failure and needs to be restored.
-            // This mirrors Python's _nexus_failure_to_temporal_failure.
             // IMPORTANT: Do NOT set NexusHandlerFailureInfo here — the restored proto already
             // has the correct failure_info type (e.g. ApplicationFailureInfo). Setting
-            // NexusHandlerFailureInfo would clear it (protobuf oneof). Python also does not
-            // set nexus_handler_failure_info in this path.
+            // NexusHandlerFailureInfo would clear it (protobuf oneof).
             if (exc.OriginalFailure is { } originalFailure)
             {
                 return NexusFailureToTemporalFailure(originalFailure, !exc.IsRetryable);
@@ -346,7 +344,12 @@ namespace Temporalio.Converters
                 NexusHandlerFailureInfo = new()
                 {
                     Type = exc.RawErrorType,
-                    RetryBehavior = (NexusHandlerErrorRetryBehavior)(int)exc.ErrorRetryBehavior,
+                    RetryBehavior = exc.ErrorRetryBehavior switch
+                    {
+                        HandlerErrorRetryBehavior.Retryable => NexusHandlerErrorRetryBehavior.Retryable,
+                        HandlerErrorRetryBehavior.NonRetryable => NexusHandlerErrorRetryBehavior.NonRetryable,
+                        _ => NexusHandlerErrorRetryBehavior.Unspecified,
+                    },
                 },
             };
         }

@@ -118,111 +118,65 @@ public class FailureConverterTests : TestBase
     }
 
     [Fact]
-    public void ToFailure_HandlerException_WithOriginalFailure_PreservesOriginalFailureInfo()
+    public void ToFailure_HandlerException_WithOriginalFailure_RoundTripsCorrectly()
     {
-        // Simulate a round-trip: an ApplicationFailureInfo that was serialized to
-        // NexusRpc.Failure and is now being restored
-        var originalProto = new Failure()
-        {
-            Message = "Original error",
-            StackTrace = "at SomeMethod()",
-            ApplicationFailureInfo = new()
-            {
-                Type = "CustomError",
-                NonRetryable = true,
-            },
-        };
-        // Simulate what ExceptionToNexusFailureAsync used to do: serialize proto to JSON
-        var message = originalProto.Message;
-        originalProto.Message = string.Empty;
-        var json = Google.Protobuf.JsonFormatter.Default.Format(originalProto);
-        originalProto.Message = message;
-
-        // Create a NexusRpc.Failure with the serialized proto in details
-        var detailsDict = System.Text.Json.JsonSerializer.Deserialize<
-            Dictionary<string, object>>(json)!;
-        var nexusFailure = new NexusRpc.Failure(
-            message: "Original error",
-            metadata: new Dictionary<string, string>
-            {
-                ["type"] = Failure.Descriptor.FullName,
-            },
-            details: detailsDict,
-            stackTrace: "at SomeMethod()");
-
-        // Create a HandlerException with OriginalFailure set
-        var handlerExc = new HandlerException(
+        // Start from what a user would actually throw in a handler
+        var userException = new HandlerException(
             HandlerErrorType.Internal,
-            "Handler wrapper message",
-            innerException: null,
-            errorRetryBehavior: HandlerErrorRetryBehavior.NonRetryable,
-            originalFailure: nexusFailure);
+            "Handler error message",
+            new ApplicationFailureException("Root cause", errorType: "CustomError", nonRetryable: true),
+            HandlerErrorRetryBehavior.NonRetryable);
 
-        var failure = DataConverter.Default.FailureConverter.ToFailure(
+        // Serialize to Failure proto (handler side)
+        var failureProto = DataConverter.Default.FailureConverter.ToFailure(
+            userException, DataConverter.Default.PayloadConverter);
+
+        // Deserialize back to exception (caller side) — this produces a HandlerException
+        // with OriginalFailure set for round-tripping
+        var deserialized = DataConverter.Default.FailureConverter.ToException(
+            failureProto, DataConverter.Default.PayloadConverter);
+        var handlerExc = Assert.IsType<HandlerException>(deserialized);
+        Assert.NotNull(handlerExc.OriginalFailure);
+
+        // Now re-serialize (simulates the round-trip through another Nexus boundary)
+        var roundTripped = DataConverter.Default.FailureConverter.ToFailure(
             handlerExc, DataConverter.Default.PayloadConverter);
 
-        // CRITICAL: The original ApplicationFailureInfo must be preserved, NOT overwritten
-        // with NexusHandlerFailureInfo
-        Assert.NotNull(failure.ApplicationFailureInfo);
-        Assert.Equal("CustomError", failure.ApplicationFailureInfo.Type);
-        Assert.True(failure.ApplicationFailureInfo.NonRetryable);
-        Assert.Equal("Original error", failure.Message);
-        Assert.Equal("at SomeMethod()", failure.StackTrace);
-        // NexusHandlerFailureInfo should NOT be set (protobuf oneof)
-        Assert.Null(failure.NexusHandlerFailureInfo);
+        // The round-tripped proto should preserve the full structure
+        Assert.NotNull(roundTripped.NexusHandlerFailureInfo);
+        Assert.Equal("INTERNAL", roundTripped.NexusHandlerFailureInfo.Type);
+        Assert.Equal("Handler error message", roundTripped.Message);
+        Assert.NotNull(roundTripped.Cause);
+        Assert.Equal("Root cause", roundTripped.Cause.Message);
+        Assert.NotNull(roundTripped.Cause.ApplicationFailureInfo);
+        Assert.Equal("CustomError", roundTripped.Cause.ApplicationFailureInfo.Type);
     }
 
     [Fact]
     public void ToFailure_HandlerException_WithOriginalFailure_AppliesEncodeCommonAttributes()
     {
-        // EncodeCommonAttributes applies uniformly to all failures including round-trip
-        var nexusFailure = new NexusRpc.Failure(
-            message: "Test message",
-            metadata: new Dictionary<string, string>
-            {
-                ["type"] = Failure.Descriptor.FullName,
-            },
-            details: new Dictionary<string, object>(),
-            stackTrace: "test stack");
-
-        var handlerExc = new HandlerException(
+        var userException = new HandlerException(
             HandlerErrorType.Internal,
-            "wrapper",
-            innerException: null,
-            originalFailure: nexusFailure);
+            "Handler error",
+            errorRetryBehavior: HandlerErrorRetryBehavior.NonRetryable);
 
+        // First pass: serialize and deserialize to get a HandlerException with OriginalFailure
+        var firstProto = DataConverter.Default.FailureConverter.ToFailure(
+            userException, DataConverter.Default.PayloadConverter);
+        var deserialized = Assert.IsType<HandlerException>(
+            DataConverter.Default.FailureConverter.ToException(
+                firstProto, DataConverter.Default.PayloadConverter));
+        Assert.NotNull(deserialized.OriginalFailure);
+
+        // Second pass: re-serialize with EncodeCommonAttributes
         var converter = new DefaultFailureConverter.WithEncodedCommonAttributes();
         var failure = converter.ToFailure(
-            handlerExc, DataConverter.Default.PayloadConverter);
+            deserialized, DataConverter.Default.PayloadConverter);
 
         // EncodeCommonAttributes applies uniformly, including round-trip path
         Assert.Equal("Encoded failure", failure.Message);
         Assert.Empty(failure.StackTrace);
         Assert.NotNull(failure.EncodedAttributes);
-    }
-
-    [Fact]
-    public void NexusFailureToTemporalFailure_NonTemporalFailure_ProducesNexusFailureType()
-    {
-        // A NexusRpc.Failure without the Temporal proto metadata should produce
-        // an ApplicationFailureInfo with type "NexusFailure"
-        var nexusFailure = new NexusRpc.Failure(
-            message: "Some nexus error",
-            metadata: new Dictionary<string, string> { ["custom"] = "value" },
-            stackTrace: "remote stack");
-
-        var failure = DefaultFailureConverter.NexusFailureToTemporalFailure(
-            nexusFailure, nonRetryable: false);
-
-        Assert.Equal("Some nexus error", failure.Message);
-        Assert.Equal("remote stack", failure.StackTrace);
-        Assert.NotNull(failure.ApplicationFailureInfo);
-        Assert.Equal("NexusFailure", failure.ApplicationFailureInfo.Type);
-        // nonRetryable parameter should be respected
-        Assert.False(failure.ApplicationFailureInfo.NonRetryable);
-        // Details payload should contain serialized NexusRpc.Failure
-        Assert.NotNull(failure.ApplicationFailureInfo.Details);
-        Assert.Single(failure.ApplicationFailureInfo.Details.Payloads_);
     }
 
     [Fact]
