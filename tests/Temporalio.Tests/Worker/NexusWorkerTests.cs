@@ -73,12 +73,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
 
             public Task CancelAsync(OperationCancelContext context) =>
                 cancel is { } cancelFunc ? cancelFunc(context) : throw new NotImplementedException();
-
-            public Task<string> FetchResultAsync(OperationFetchResultContext context) =>
-                throw new NotImplementedException();
-
-            public Task<OperationInfo> FetchInfoAsync(OperationFetchInfoContext context) =>
-                throw new NotImplementedException();
         }
     }
 
@@ -455,9 +449,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         exc = exc.InnerException;
         Assert.IsType<NexusOperationFailureException>(exc);
         exc = exc.InnerException;
-        Assert.IsType<NexusHandlerFailureException>(exc);
-        exc = exc.InnerException;
-        Assert.IsType<ApplicationFailureException>(exc);
+        Assert.IsType<HandlerException>(exc);
         exc = exc.InnerException;
         Assert.IsType<ApplicationFailureException>(exc);
         Assert.StartsWith("Workflow execution is already running", exc!.Message);
@@ -513,10 +505,10 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 async () => await Workflow.CreateNexusWorkflowClient("StringService", endpoint).
                     ExecuteNexusOperationAsync<string>("DoSomething", 1234)));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
-        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.BadRequest, exc3.ErrorType);
         Assert.Equal(
-            NexusHandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
+            HandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
     }
 
     [Fact]
@@ -563,22 +555,20 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                     throw new ApplicationFailureException("Intentional failure", nonRetryable: true)))).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-        // How the exceptions come out:
+        // How the exceptions come out with the new Temporal Failure proto format:
         // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
         // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
-        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (INTERNAL): Handler failed with non-retryable application error
-        // ------------ Temporalio.Exceptions.ApplicationFailureException : Handler failed with non-retryable application error
-        // ---------------- Temporalio.Exceptions.ApplicationFailureException : Intentional failure
+        // -------- NexusRpc.Handlers.HandlerException : handler error (INTERNAL): Handler failed with non-retryable application error
+        // ------------ Temporalio.Exceptions.ApplicationFailureException : Intentional failure
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
                 Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
-        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.Internal, exc3.ErrorType);
         var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
-        var exc5 = Assert.IsType<ApplicationFailureException>(exc4.InnerException);
-        Assert.Equal("Intentional failure", exc5.Message);
+        Assert.Equal("Intentional failure", exc4.Message);
     }
 
     [Fact]
@@ -587,7 +577,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (context, input) =>
-                    throw OperationException.CreateFailure("Intentional failure")))).
+                    throw OperationException.CreateFailed("Intentional failure")))).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
         // How the exceptions come out:
@@ -604,6 +594,58 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ExecuteNexusOperationAsync_OperationExceptionWithCause_PreservesCauseChain()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) =>
+                    throw OperationException.CreateFailed(
+                        "Operation failed",
+                        new ApplicationFailureException("Root cause", errorType: "CustomError"))))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.ApplicationFailureException : Operation failed
+        // ------------ Temporalio.Exceptions.ApplicationFailureException : Root cause
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<ApplicationFailureException>(exc2.InnerException);
+        Assert.Equal("Operation failed", exc3.Message);
+        Assert.Equal("OperationError", exc3.ErrorType);
+        Assert.True(exc3.NonRetryable);
+        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
+        Assert.Equal("Root cause", exc4.Message);
+        Assert.Equal("CustomError", exc4.ErrorType);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_OperationExceptionCanceled_ProperlyFails()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) =>
+                    throw OperationException.CreateCanceled("Operation was canceled")))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.CanceledFailureException : Operation was canceled
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<CanceledFailureException>(exc2.InnerException);
+        Assert.Equal("Operation was canceled", exc3.Message);
+    }
+
+    [Fact]
     public async Task ExecuteNexusOperationAsync_HandlerException_ProperlyFails()
     {
         // Non-retryable
@@ -613,20 +655,18 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                     throw new HandlerException(HandlerErrorType.BadRequest, "Intentional failure")))).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-        // How the exceptions come out:
+        // How the exceptions come out with Temporal Failure proto format:
         // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
         // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
-        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (BAD_REQUEST): Intentional failure
-        // ------------ Temporalio.Exceptions.ApplicationFailureException : Intentional failure
+        // -------- NexusRpc.Handlers.HandlerException : handler error (BAD_REQUEST): Intentional failure
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
                 Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
-        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.BadRequest, exc3.ErrorType);
-        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
-        Assert.Equal("Intentional failure", exc4.Message);
+        Assert.Equal("Intentional failure", exc3.Message);
     }
 
     [Fact]
@@ -736,14 +776,14 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // How the exceptions come out:
         // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
         // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
-        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (NOT_FOUND): Unrecognized service missing-service or operation unknown-operation
+        // -------- NexusRpc.Handlers.HandlerException : handler error (NOT_FOUND): Unrecognized service missing-service or operation unknown-operation
         // ------------ Temporalio.Exceptions.ApplicationFailureException : Unrecognized service missing-service or operation unknown-operation
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
                 Workflow.CreateNexusWorkflowClient("missing-service", endpoint).
                     ExecuteNexusOperationAsync("unknown-operation", "some-param")));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
-        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.NotFound, exc3.ErrorType);
     }
 
@@ -758,14 +798,14 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // How the exceptions come out:
         // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
         // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
-        // -------- Temporalio.Exceptions.NexusHandlerFailureException : handler error (NOT_FOUND): Unrecognized service StringService or operation unknown-operation
+        // -------- NexusRpc.Handlers.HandlerException : handler error (NOT_FOUND): Unrecognized service StringService or operation unknown-operation
         // ------------ Temporalio.Exceptions.ApplicationFailureException : Unrecognized service StringService or operation unknown-operation
         var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunInWorkflowAsync(workerOptions, () =>
                 Workflow.CreateNexusWorkflowClient("StringService", endpoint).
                     ExecuteNexusOperationAsync("unknown-operation", "some-param")));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
-        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.NotFound, exc3.ErrorType);
     }
 
@@ -909,12 +949,6 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 OperationStartContext context, NoValue input) =>
                 Underlying.StartAsync(context, input);
 
-            public Task<NoValue> FetchResultAsync(OperationFetchResultContext context) =>
-                Underlying.FetchResultAsync(context);
-
-            public Task<OperationInfo> FetchInfoAsync(OperationFetchInfoContext context) =>
-                Underlying.FetchInfoAsync(context);
-
             public Task CancelAsync(OperationCancelContext context) =>
                 throw new HandlerException(HandlerErrorType.NotImplemented, "Intentional failure");
         }
@@ -993,10 +1027,9 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var exc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
             RunCancelOperationScenarioAsync(ICancelTypeService.Scenario.WaitRequestedHandlerFail));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc.InnerException);
-        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.NotImplemented, exc3.ErrorType);
-        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
-        Assert.Equal("Intentional failure", exc4.Message);
+        Assert.Equal("Intentional failure", exc3.Message);
     }
 
     [Fact]
@@ -1206,13 +1239,13 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 await handle.GetResultAsync();
             }));
         var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
-        var exc3 = Assert.IsType<NexusHandlerFailureException>(exc2.InnerException);
+        var exc3 = Assert.IsType<HandlerException>(exc2.InnerException);
         Assert.Equal(HandlerErrorType.BadRequest, exc3.ErrorType);
         Assert.Equal(
-            NexusHandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
+            HandlerErrorRetryBehavior.NonRetryable, exc3.ErrorRetryBehavior);
         Assert.Contains(
             "Payload converter failed to decode Nexus operation input",
-            exc3.Failure.Cause.Message);
+            exc3.Message);
     }
 
     private async Task<string> CreateNexusEndpointAsync(string taskQueue)

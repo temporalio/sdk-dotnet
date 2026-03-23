@@ -27,6 +27,7 @@ using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
+using Failure = Temporalio.Api.Failure.V1.Failure;
 
 public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 {

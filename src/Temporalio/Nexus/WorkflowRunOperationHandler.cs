@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading.Tasks;
-using NexusRpc;
 using NexusRpc.Handlers;
 
 namespace Temporalio.Nexus
@@ -90,14 +89,6 @@ namespace Temporalio.Nexus
             var handle = await handleFactory(new(context), input).ConfigureAwait(false);
             return OperationStartResult.AsyncResult<TResult>(handle.ToToken());
         }
-
-        /// <inheritdoc/>
-        public Task<TResult> FetchResultAsync(OperationFetchResultContext context) =>
-            throw new NotImplementedException();
-
-        /// <inheritdoc/>
-        public Task<OperationInfo> FetchInfoAsync(OperationFetchInfoContext context) =>
-            throw new NotImplementedException();
 
         /// <inheritdoc/>
         public Task CancelAsync(OperationCancelContext context)
