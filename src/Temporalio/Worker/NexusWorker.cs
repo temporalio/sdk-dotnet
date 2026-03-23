@@ -233,8 +233,7 @@ namespace Temporalio.Worker
             catch (OperationException e)
             {
                 // Convert OperationException to the appropriate FailureException and encode
-                // via the failure converter, matching Python SDK behavior exactly.
-                // Python: CANCELED -> CancelledError, FAILED -> ApplicationError("OperationError")
+                // via the failure converter.
                 Exception convertedException = e.State == OperationState.Canceled
                     ? new CanceledFailureException(e.Message)
                     : new ApplicationFailureException(
