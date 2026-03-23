@@ -41,9 +41,9 @@ namespace Temporalio.Nexus
                 return runtimeMetricMeter.Value.WithTags(new Dictionary<string, object>()
                 {
                     { "namespace", info.Namespace },
+                    { "nexus_service", handlerContext.Service },
+                    { "nexus_operation", handlerContext.Operation },
                     { "task_queue", info.TaskQueue },
-                    { "service", handlerContext.Service },
-                    { "operation", handlerContext.Operation },
                 });
             });
             this.temporalClient = temporalClient;
