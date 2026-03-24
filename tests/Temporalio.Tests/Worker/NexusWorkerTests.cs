@@ -555,7 +555,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                     throw new ApplicationFailureException("Intentional failure", nonRetryable: true)))).
             AddWorkflow<SimpleWorkflow>();
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
-        // How the exceptions come out with the new Temporal Failure proto format:
+        // How the exceptions come out with the Temporal Failure proto format:
         // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
         // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
         // -------- NexusRpc.Handlers.HandlerException : handler error (INTERNAL): Handler failed with non-retryable application error
