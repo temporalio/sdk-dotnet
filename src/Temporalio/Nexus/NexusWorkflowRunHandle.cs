@@ -53,6 +53,33 @@ namespace Temporalio.Nexus
         internal int Version { get; private init; }
 
         /// <summary>
+        /// Encode bytes to a base64url string with no padding.
+        /// </summary>
+        /// <param name="data">Bytes to encode.</param>
+        /// <returns>Base64url encoded string.</returns>
+        internal static string Base64UrlEncode(byte[] data) =>
+            Convert.ToBase64String(data)
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .TrimEnd('=');
+
+        /// <summary>
+        /// Decode a base64url string to bytes.
+        /// </summary>
+        /// <param name="s">Base64url encoded string.</param>
+        /// <returns>Decoded bytes.</returns>
+        internal static byte[] Base64UrlDecode(string s)
+        {
+            s = s.Replace('-', '+').Replace('_', '/');
+            switch (s.Length % 4)
+            {
+                case 2: s += "=="; break;
+                case 3: s += "="; break;
+            }
+            return Convert.FromBase64String(s);
+        }
+
+        /// <summary>
         /// Create a handle based on the string token.
         /// </summary>
         /// <param name="token">Operation token.</param>
@@ -63,14 +90,25 @@ namespace Temporalio.Nexus
             byte[] bytes;
             try
             {
-                bytes = Convert.FromBase64String(token);
+                bytes = Base64UrlDecode(token);
             }
             catch (FormatException)
             {
                 throw new ArgumentException("Token invalid");
             }
-            var tokenObj = JsonSerializer.Deserialize<Token>(bytes, TokenSerializerOptions) ??
+            Token? tokenObj;
+            try
+            {
+                tokenObj = JsonSerializer.Deserialize<Token>(bytes, TokenSerializerOptions);
+            }
+            catch (JsonException e)
+            {
+                throw new ArgumentException("Token invalid", e);
+            }
+            if (tokenObj == null)
+            {
                 throw new ArgumentException("Token invalid");
+            }
             if (tokenObj.Version != null && tokenObj.Version != 0)
             {
                 throw new ArgumentException($"Unsupported token version: {tokenObj.Version}");
@@ -82,7 +120,7 @@ namespace Temporalio.Nexus
         /// Create a string token based on this handle.
         /// </summary>
         /// <returns>Operation token.</returns>
-        internal string ToToken() => Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(
+        internal string ToToken() => Base64UrlEncode(JsonSerializer.SerializeToUtf8Bytes(
             new Token(Namespace, WorkflowId, Version == 0 ? null : Version),
             TokenSerializerOptions));
 
@@ -93,7 +131,7 @@ namespace Temporalio.Nexus
             string WorkflowId,
             [property: JsonPropertyName("v")]
             int? Version,
-            [property: JsonPropertyName("t'")]
+            [property: JsonPropertyName("t")]
             int Type = 1);
     }
 
