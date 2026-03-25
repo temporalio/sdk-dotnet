@@ -1,6 +1,5 @@
 namespace Temporalio.Tests.Nexus;
 
-using System;
 using System.Text;
 using System.Text.Json;
 using Temporalio.Nexus;
@@ -39,13 +38,7 @@ public class NexusWorkflowRunHandleTests
         var token = handle.ToToken();
 
         // Decode manually to inspect JSON
-        var base64 = token.Replace('-', '+').Replace('_', '/');
-        switch (base64.Length % 4)
-        {
-            case 2: base64 += "=="; break;
-            case 3: base64 += "="; break;
-        }
-        var json = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+        var json = Encoding.UTF8.GetString(NexusWorkflowRunHandle.Base64UrlDecode(token));
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
@@ -59,7 +52,7 @@ public class NexusWorkflowRunHandleTests
     public void FromToken_AcceptsVersionNull()
     {
         var json = """{"t":1,"ns":"ns","wid":"wid","v":null}""";
-        var token = ToBase64Url(json);
+        var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
 
         var handle = NexusWorkflowRunHandle.FromToken(token);
 
@@ -72,7 +65,7 @@ public class NexusWorkflowRunHandleTests
     public void FromToken_AcceptsVersionZero()
     {
         var json = """{"t":1,"ns":"ns","wid":"wid","v":0}""";
-        var token = ToBase64Url(json);
+        var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
 
         var handle = NexusWorkflowRunHandle.FromToken(token);
 
@@ -82,8 +75,8 @@ public class NexusWorkflowRunHandleTests
     [Fact]
     public void FromToken_RejectsUnsupportedVersion()
     {
-        var json = """{"t":1,"ns":"ns","wid":"wid","v":2}""";
-        var token = ToBase64Url(json);
+        var json = """{"t":1,"ns":"ns","wid":"wid","v":1}""";
+        var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
 
         Assert.Throws<ArgumentException>(() => NexusWorkflowRunHandle.FromToken(token));
     }
@@ -92,6 +85,13 @@ public class NexusWorkflowRunHandleTests
     public void FromToken_RejectsInvalidBase64()
     {
         Assert.Throws<ArgumentException>(() => NexusWorkflowRunHandle.FromToken("!!!invalid!!!"));
+    }
+
+    [Fact]
+    public void FromToken_RejectsInvalidJson()
+    {
+        var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes("not valid json"));
+        Assert.Throws<ArgumentException>(() => NexusWorkflowRunHandle.FromToken(token));
     }
 
     [Fact]
@@ -104,6 +104,7 @@ public class NexusWorkflowRunHandleTests
 
         Assert.Equal("default", handle.Namespace);
         Assert.Equal("my-wf", handle.WorkflowId);
+        Assert.Equal(0, handle.Version);
     }
 
     [Fact]
@@ -117,10 +118,4 @@ public class NexusWorkflowRunHandleTests
         Assert.Equal("ns/with+special", decoded.Namespace);
         Assert.Equal("wf?id=1&foo=bar", decoded.WorkflowId);
     }
-
-    private static string ToBase64Url(string json) =>
-        Convert.ToBase64String(Encoding.UTF8.GetBytes(json))
-            .Replace('+', '-')
-            .Replace('/', '_')
-            .TrimEnd('=');
 }
