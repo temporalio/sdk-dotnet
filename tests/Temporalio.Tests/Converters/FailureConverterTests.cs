@@ -1,9 +1,7 @@
 namespace Temporalio.Tests.Converters;
 
-using System.Collections.Generic;
 using NexusRpc.Handlers;
 using Temporalio.Api.Enums.V1;
-using Temporalio.Api.Failure.V1;
 using Temporalio.Converters;
 using Temporalio.Exceptions;
 using Xunit;

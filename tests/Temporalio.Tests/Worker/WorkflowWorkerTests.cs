@@ -13,7 +13,6 @@ using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
-using Temporalio.Api.Failure.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
 using Temporalio.Client.Schedules;

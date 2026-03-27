@@ -17,6 +17,9 @@ namespace Temporalio.Converters
     /// </summary>
     public class DefaultFailureConverter : IFailureConverter
     {
+        private static readonly JsonParser ProtoJsonParser =
+            new(JsonParser.Settings.Default.WithIgnoreUnknownFields(true));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultFailureConverter"/> class.
         /// </summary>
@@ -163,99 +166,123 @@ namespace Temporalio.Converters
         }
 
         /// <summary>
-        /// Convert a NexusRpc.Failure back to a Temporal Failure proto. This handles
+        /// Convert a NexusRpc.FailureInfo back to a Temporal Failure proto. This handles
         /// round-tripping failures that were originally Temporal Failure protos serialized
-        /// as NexusRpc Failures.
+        /// as NexusRpc FailureInfos.
         /// </summary>
-        /// <param name="nexusFailure">The NexusRpc failure to convert.</param>
+        /// <param name="failureInfo">The NexusRpc FailureInfo to convert.</param>
         /// <param name="nonRetryable">Whether the failure is non-retryable (used for
         /// non-Temporal fallback path).</param>
         /// <returns>The reconstructed Temporal Failure proto.</returns>
         internal static Failure NexusFailureToTemporalFailure(
-            NexusRpc.Failure nexusFailure, bool nonRetryable = true)
+            NexusRpc.FailureInfo failureInfo, bool nonRetryable = true)
         {
-            Failure failure;
+            var apiFailure = new Failure();
 
             // Check if this was originally a Temporal Failure proto
-            if (nexusFailure.Metadata != null &&
-                nexusFailure.Metadata.TryGetValue("type", out var metadataType) &&
+            if (failureInfo.Metadata != null &&
+                failureInfo.Metadata.TryGetValue("type", out var metadataType) &&
                 metadataType == Failure.Descriptor.FullName)
             {
-                // Round-trip: details contain the serialized proto fields as JSON-compatible dict
-                if (nexusFailure.Details != null)
+                // Details contains a JSON-serialized Temporal failure
+                if (!string.IsNullOrEmpty(failureInfo.Details))
                 {
-                    var json = JsonSerializer.Serialize(nexusFailure.Details);
-                    failure = JsonParser.Default.Parse<Failure>(json);
-                }
-                else
-                {
-                    failure = new Failure();
+                    apiFailure = ProtoJsonParser.Parse<Failure>(failureInfo.Details);
                 }
             }
             else
             {
-                // Non-Temporal Nexus failure: wrap as ApplicationFailureInfo with type
-                // "NexusFailure" and serialize the remaining failure fields as a JSON payload
-                // in the details.
-                var detailsPayload = new Payload()
+                // Create an ApplicationFailure with the Nexus failure data
+                var appFailureInfo = new ApplicationFailureInfo()
                 {
-                    Metadata = { ["encoding"] = ByteString.CopyFromUtf8("json/plain") },
+                    Type = "NexusFailure",
+                    NonRetryable = nonRetryable,
                 };
-                // Serialize the NexusRpc Failure (with message cleared) as JSON
-                var failureForDetails = new NexusRpc.Failure(
-                    string.Empty,
-                    nexusFailure.Metadata,
-                    nexusFailure.Details,
-                    nexusFailure.StackTrace,
-                    nexusFailure.Cause);
-                detailsPayload.Data = ByteString.CopyFromUtf8(
-                    JsonSerializer.Serialize(failureForDetails));
-                failure = new Failure()
+                var payloads = NexusFailureInfoToPayloads(failureInfo);
+                if (payloads != null)
                 {
-                    ApplicationFailureInfo = new()
-                    {
-                        Type = "NexusFailure",
-                        NonRetryable = nonRetryable,
-                        Details = new() { Payloads_ = { detailsPayload } },
-                    },
-                };
+                    appFailureInfo.Details = payloads;
+                }
+
+                apiFailure.ApplicationFailureInfo = appFailureInfo;
             }
 
-            // Restore message and stack trace from the NexusRpc Failure
-            failure.Message = nexusFailure.Message;
-            failure.StackTrace = nexusFailure.StackTrace ?? string.Empty;
+            // Ensure these always get written
+            apiFailure.Message = failureInfo.Message;
+            if (!string.IsNullOrEmpty(failureInfo.StackTrace))
+            {
+                apiFailure.StackTrace = failureInfo.StackTrace;
+            }
 
-            return failure;
+            return apiFailure;
         }
 
         /// <summary>
-        /// Convert a Temporal Failure proto to a NexusRpc.Failure. This is the reverse of
+        /// Convert a Temporal Failure proto to a NexusRpc.FailureInfo. This is the reverse of
         /// <see cref="NexusFailureToTemporalFailure"/>. Used when deserializing
         /// NexusHandlerFailureInfo to set OriginalFailure on HandlerException for
         /// round-tripping.
         /// </summary>
         /// <param name="failure">The Temporal Failure proto to convert.</param>
-        /// <returns>The NexusRpc Failure for round-tripping.</returns>
-        internal static NexusRpc.Failure TemporalFailureToNexusFailure(Failure failure)
+        /// <returns>The NexusRpc FailureInfo for round-tripping.</returns>
+        internal static NexusRpc.FailureInfo TemporalFailureToNexusFailure(Failure failure)
         {
-            // Temporarily zero out message and stack trace, serialize the rest as a
-            // JSON dict, then restore.
-            var message = failure.Message;
-            var stackTrace = failure.StackTrace;
-            failure.Message = string.Empty;
-            failure.StackTrace = string.Empty;
-            var failureDict = JsonSerializer.Deserialize<Dictionary<string, object>>(
-                JsonFormatter.Default.Format(failure));
-            failure.Message = message;
-            failure.StackTrace = stackTrace;
-            return new NexusRpc.Failure(
-                message: message,
+            string detailsJson;
+            try
+            {
+                var stripped = failure.Clone();
+                stripped.Message = string.Empty;
+                stripped.StackTrace = string.Empty;
+                detailsJson = JsonFormatter.Default.Format(stripped);
+            }
+            catch (InvalidProtocolBufferException e)
+            {
+                return new NexusRpc.FailureInfo(
+                    message: "Failed to serialize failure details",
+                    details: e.Message);
+            }
+
+            return new NexusRpc.FailureInfo(
+                message: failure.Message,
                 metadata: new Dictionary<string, string>
                 {
                     ["type"] = Failure.Descriptor.FullName,
                 },
-                details: failureDict,
-                stackTrace: string.IsNullOrEmpty(stackTrace) ? null : stackTrace);
+                details: detailsJson,
+                stackTrace: string.IsNullOrEmpty(failure.StackTrace) ? null : failure.StackTrace);
+        }
+
+        /// <summary>
+        /// Convert a NexusRpc.FailureInfo to Payloads for the non-Temporal failure path.
+        /// Serializes the entire FailureInfo (with message cleared) as a JSON payload.
+        /// </summary>
+        private static Payloads? NexusFailureInfoToPayloads(NexusRpc.FailureInfo failureInfo)
+        {
+            if ((failureInfo.Metadata == null || failureInfo.Metadata.Count == 0) &&
+                string.IsNullOrEmpty(failureInfo.Details))
+            {
+                return null;
+            }
+
+            // Create a copy without the message before serializing
+            var copy = new NexusRpc.FailureInfo(
+                string.Empty,
+                failureInfo.Metadata,
+                failureInfo.Details,
+                failureInfo.StackTrace,
+                failureInfo.Cause);
+            var json = JsonSerializer.Serialize(copy);
+            return new Payloads
+            {
+                Payloads_ =
+                {
+                    new Payload()
+                    {
+                        Metadata = { ["encoding"] = ByteString.CopyFromUtf8("json/plain") },
+                        Data = ByteString.CopyFromUtf8(json),
+                    },
+                },
+            };
         }
 
         private Failure CreateFailureFromException(
