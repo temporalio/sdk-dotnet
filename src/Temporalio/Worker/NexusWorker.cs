@@ -235,7 +235,7 @@ namespace Temporalio.Worker
                 // Convert OperationException to the appropriate FailureException and encode
                 // via the failure converter.
                 Exception convertedException = e.State == OperationState.Canceled
-                    ? new CanceledFailureException(e.Message)
+                    ? new CanceledFailureException(e.Message, e.InnerException)
                     : new ApplicationFailureException(
                         e.Message, e.InnerException, "OperationError", nonRetryable: true);
                 var opFailure = await worker.Client.Options.DataConverter

@@ -646,6 +646,34 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task ExecuteNexusOperationAsync_OperationExceptionCanceledWithCause_PreservesCauseChain()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>(async (context, input) =>
+                    throw OperationException.CreateCanceled(
+                        "Operation was canceled",
+                        new ApplicationFailureException("Root cause", errorType: "CustomError"))))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        // How the exceptions come out:
+        // Temporalio.Exceptions.WorkflowFailedException : Workflow failed
+        // ---- Temporalio.Exceptions.NexusOperationFailureException : nexus operation completed unsuccessfully
+        // -------- Temporalio.Exceptions.CanceledFailureException : Operation was canceled
+        // ------------ Temporalio.Exceptions.ApplicationFailureException : Root cause
+        var exc1 = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, () =>
+                Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"))));
+        var exc2 = Assert.IsType<NexusOperationFailureException>(exc1.InnerException);
+        var exc3 = Assert.IsType<CanceledFailureException>(exc2.InnerException);
+        Assert.Equal("Operation was canceled", exc3.Message);
+        var exc4 = Assert.IsType<ApplicationFailureException>(exc3.InnerException);
+        Assert.Equal("Root cause", exc4.Message);
+        Assert.Equal("CustomError", exc4.ErrorType);
+    }
+
+    [Fact]
     public async Task ExecuteNexusOperationAsync_HandlerException_ProperlyFails()
     {
         // Non-retryable
