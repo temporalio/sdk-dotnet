@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Activities;
 
@@ -192,12 +191,6 @@ namespace Temporalio.Extensions.Hosting
                     default,
                     TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion,
                     TaskScheduler.Current)).ConfigureAwait(false);
-
-            public async Task<OperationInfo> FetchInfoAsync(OperationFetchInfoContext context) =>
-                await InvokeWithScopeAsync(handler => handler.FetchInfoAsync(context)).ConfigureAwait(false);
-
-            public async Task<object?> FetchResultAsync(OperationFetchResultContext context) =>
-                await InvokeWithScopeAsync(handler => handler.FetchResultAsync(context)).ConfigureAwait(false);
 
             private async Task<T> InvokeWithScopeAsync<T>(Func<IOperationHandler<object?, object?>, Task<T>> handlerInvoker)
             {
