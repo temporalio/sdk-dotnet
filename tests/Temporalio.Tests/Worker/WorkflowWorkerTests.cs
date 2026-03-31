@@ -13,7 +13,6 @@ using NexusRpc.Handlers;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
-using Temporalio.Api.Failure.V1;
 using Temporalio.Api.History.V1;
 using Temporalio.Client;
 using Temporalio.Client.Schedules;
@@ -27,6 +26,7 @@ using Temporalio.Worker.Tuning;
 using Temporalio.Workflows;
 using Xunit;
 using Xunit.Abstractions;
+using Failure = Temporalio.Api.Failure.V1.Failure;
 
 public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
 {

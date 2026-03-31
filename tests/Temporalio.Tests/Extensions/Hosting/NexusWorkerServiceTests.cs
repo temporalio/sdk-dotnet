@@ -78,12 +78,6 @@ public class NexusWorkerServiceTests : WorkflowEnvironmentTestBase
 
             public Task CancelAsync(OperationCancelContext context) =>
                 throw new NotImplementedException();
-
-            public Task<int> FetchResultAsync(OperationFetchResultContext context) =>
-                throw new NotImplementedException();
-
-            public Task<OperationInfo> FetchInfoAsync(OperationFetchInfoContext context) =>
-                throw new NotImplementedException();
         }
     }
 

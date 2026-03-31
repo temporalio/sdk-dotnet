@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Api.Common.V1;
-using Temporalio.Api.Enums.V1;
 using Temporalio.Api.Nexus.V1;
 using Temporalio.Api.WorkflowService.V1;
 using Temporalio.Bridge.Api.Nexus;
@@ -233,16 +232,15 @@ namespace Temporalio.Worker
             }
             catch (OperationException e)
             {
-#pragma warning disable CS0612 // OperationError deprecated, use Failure
-                return new()
-                {
-                    OperationError = new()
-                    {
-                        OperationState = e.State.ToString().ToLower(),
-                        Failure = await ExceptionToNexusFailureAsync(e).ConfigureAwait(false),
-                    },
-                };
-#pragma warning restore CS0612
+                // Convert OperationException to the appropriate FailureException and encode
+                // via the failure converter.
+                Exception convertedException = e.State == OperationState.Canceled
+                    ? new CanceledFailureException(e.Message, e.InnerException)
+                    : new ApplicationFailureException(
+                        e.Message, e.InnerException, "OperationError", nonRetryable: true);
+                var opFailure = await worker.Client.Options.DataConverter
+                    .ToFailureAsync(convertedException).ConfigureAwait(false);
+                return new() { Failure = opFailure };
             }
             catch (Exception e)
             {
@@ -319,19 +317,13 @@ namespace Temporalio.Worker
 #pragma warning restore CA1031
             {
                 logger.LogWarning(e, "Completing Nexus {OperationType} task as failed", task.Request.VariantCase);
-#pragma warning disable CS0612 // Error deprecated, use Failure
+                var handlerException = e as HandlerException ?? ConvertToHandlerException(e);
+                var failure = await worker.Client.Options.DataConverter.ToFailureAsync(handlerException).ConfigureAwait(false);
                 return new()
                 {
                     TaskToken = task.TaskToken,
-                    Error = new()
-                    {
-                        ErrorType = (e as HandlerException)?.RawErrorType ?? "INTERNAL",
-                        Failure = await ExceptionToNexusFailureAsync(e).ConfigureAwait(false),
-                        RetryBehavior = (NexusHandlerErrorRetryBehavior)(int)(
-                            (e as HandlerException)?.ErrorRetryBehavior ?? HandlerErrorRetryBehavior.Unspecified),
-                    },
+                    Failure = failure,
                 };
-#pragma warning restore CS0612
             }
         }
 
@@ -342,33 +334,6 @@ namespace Temporalio.Worker
                 logger: worker.LoggerFactory.CreateLogger($"Temporalio.Nexus:{handlerContext.Operation}"),
                 runtimeMetricMeter: worker.MetricMeter,
                 temporalClient: worker.Client as ITemporalClient);
-
-        private async Task<Failure> ExceptionToNexusFailureAsync(Exception exc)
-        {
-            // Convert to failure, then capture message, then remove message and capture rest of
-            // failure as proto JSON
-            Api.Failure.V1.Failure failureProto;
-            try
-            {
-                failureProto = await worker.Client.Options.DataConverter.ToFailureAsync(exc).ConfigureAwait(false);
-            }
-#pragma warning disable CA1031 // We're ok catching all exceptions here
-            catch (Exception e)
-#pragma warning restore CA1031
-            {
-                logger.LogError(e, "Failure converting existing failure");
-                failureProto = new() { Message = $"Failure converting existing failure: {e.Message}" };
-            }
-            // Capture message, then remove and serialize rest of failure as proto JSON
-            var message = failureProto.Message;
-            failureProto.Message = string.Empty;
-            return new()
-            {
-                Message = message,
-                Details = ByteString.CopyFromUtf8(JsonFormatter.Default.Format(failureProto)),
-                Metadata = { ["type"] = Api.Failure.V1.Failure.Descriptor.FullName },
-            };
-        }
 
         private HandlerException ConvertToHandlerException(Exception exc)
         {

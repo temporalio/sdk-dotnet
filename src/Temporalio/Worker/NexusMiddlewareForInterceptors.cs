@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NexusRpc;
 using NexusRpc.Handlers;
 using Temporalio.Worker.Interceptors;
 
@@ -42,12 +41,6 @@ namespace Temporalio.Worker
             public Task<OperationStartResult<object?>> StartAsync(
                 OperationStartContext context, object? input) =>
                 nextInterceptor.ExecuteNexusOperationStartAsync(new(context, input));
-
-            public Task<object?> FetchResultAsync(OperationFetchResultContext context) =>
-                throw new System.NotImplementedException();
-
-            public Task<OperationInfo> FetchInfoAsync(OperationFetchInfoContext context) =>
-                throw new System.NotImplementedException();
 
             public Task CancelAsync(OperationCancelContext context) =>
                 nextInterceptor.ExecuteNexusOperationCancelAsync(new(context));
