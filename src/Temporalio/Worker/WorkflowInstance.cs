@@ -1015,7 +1015,7 @@ namespace Temporalio.Worker
                     }
                     if (e.Input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
                     {
-                        cmd.SearchAttributes.IndexedFields.Add(attrs.ToProto().IndexedFields);
+                        cmd.SearchAttributes = attrs.ToProto();
                     }
                     if (e.Input.Headers is IDictionary<string, Payload> headers)
                     {
@@ -2420,7 +2420,7 @@ namespace Temporalio.Worker
                 }
                 if (input.Options?.TypedSearchAttributes is SearchAttributeCollection attrs)
                 {
-                    cmd.SearchAttributes.IndexedFields.Add(attrs.ToProto().IndexedFields);
+                    cmd.SearchAttributes = attrs.ToProto();
                 }
                 if (input.Headers is IDictionary<string, Payload> headers)
                 {

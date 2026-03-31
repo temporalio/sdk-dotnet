@@ -1519,6 +1519,52 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Workflow]
+    public class ChildWorkflowSearchAttributesWorkflow
+    {
+        [Workflow]
+        public class ChildWorkflow
+        {
+            [WorkflowRun]
+            public Task RunAsync() => Workflow.DelayAsync(Timeout.Infinite);
+        }
+
+        [WorkflowRun]
+        public async Task<string> RunAsync()
+        {
+            var attrs = new SearchAttributeCollection.Builder()
+                .Set(AttrKeyword, "child-keyword")
+                .ToSearchAttributeCollection();
+
+            var childHandle = await Workflow.StartChildWorkflowAsync(
+                (ChildWorkflow wf) => wf.RunAsync(),
+                new() { TypedSearchAttributes = attrs });
+
+            return childHandle.Id;
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ChildWorkflowSearchAttributes_SetProperly()
+    {
+        await EnsureSearchAttributesPresentAsync();
+        await ExecuteWorkerAsync<ChildWorkflowSearchAttributesWorkflow>(
+            async worker =>
+            {
+                var handle = await Env.Client.StartWorkflowAsync(
+                    (ChildWorkflowSearchAttributesWorkflow wf) => wf.RunAsync(),
+                    new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                    {
+                        ExecutionTimeout = TimeSpan.FromSeconds(5),
+                    });
+                var childId = await handle.GetResultAsync();
+                var childDesc = await Env.Client.GetWorkflowHandle(childId).DescribeAsync();
+                Assert.Equal("child-keyword", childDesc.TypedSearchAttributes.Get(AttrKeyword));
+            },
+            new TemporalWorkerOptions()
+                .AddWorkflow<ChildWorkflowSearchAttributesWorkflow.ChildWorkflow>());
+    }
+
+    [Workflow]
     public class MemoWorkflow
     {
         public static readonly Dictionary<string, object> MemoInitial = new()
@@ -1640,6 +1686,45 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
             var result = await handle.GetResultAsync();
             Assert.Equal(5, result.Count);
             Assert.Equal(handle.FirstExecutionRunId, result[0]);
+        });
+    }
+
+    [Workflow]
+    public class ContinueAsNewSearchAttributesWorkflow
+    {
+        [WorkflowRun]
+        public async Task RunAsync(bool continued)
+        {
+            if (continued)
+            {
+                return;
+            }
+            throw Workflow.CreateContinueAsNewException(
+                (ContinueAsNewSearchAttributesWorkflow wf) => wf.RunAsync(true),
+                new()
+                {
+                    TypedSearchAttributes = new SearchAttributeCollection.Builder()
+                        .Set(AttrKeyword, "can-keyword")
+                        .ToSearchAttributeCollection(),
+                });
+        }
+    }
+
+    [Fact]
+    public async Task ExecuteWorkflowAsync_ContinueAsNewSearchAttributes_SetProperly()
+    {
+        await EnsureSearchAttributesPresentAsync();
+        await ExecuteWorkerAsync<ContinueAsNewSearchAttributesWorkflow>(async worker =>
+        {
+            var handle = await Env.Client.StartWorkflowAsync(
+                (ContinueAsNewSearchAttributesWorkflow wf) => wf.RunAsync(false),
+                new(id: $"workflow-{Guid.NewGuid()}", taskQueue: worker.Options.TaskQueue!)
+                {
+                    ExecutionTimeout = TimeSpan.FromSeconds(5),
+                });
+            await handle.GetResultAsync();
+            var desc = await handle.DescribeAsync();
+            Assert.Equal("can-keyword", desc.TypedSearchAttributes.Get(AttrKeyword));
         });
     }
 
