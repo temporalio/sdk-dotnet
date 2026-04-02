@@ -9,10 +9,12 @@ var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var apiCloudProtoDir = Path.Join(protoDir, "api_cloud_upstream");
 var testSrvProtoDir = Path.Join(protoDir, "testsrv_upstream");
 var bridgeProtoDir = Path.Join(protoDir, "local");
+var openApiV2ProtoDir = Path.Join(protoDir, "protoc-gen-openapiv2");
 
 // Remove/recreate entire api dir
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api")).Delete(true);
 new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies/Google")).Create();
+new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Api/Dependencies/GrpcGateway")).Create();
 // Do not delete the .editorconfig from Bridge/Api
 foreach (var fi in new DirectoryInfo(Path.Join(projectDir, "src/Temporalio/Bridge/Api")).GetFileSystemInfos())
 {
@@ -45,9 +47,18 @@ foreach (var fi in new DirectoryInfo(apiProtoDir).GetFiles("*.proto", SearchOpti
         Protoc(fi.FullName, Path.Join(projectDir, "src/Temporalio"), "Temporalio", apiProtoDir);
     }
 }
+foreach (var fi in new DirectoryInfo(openApiV2ProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
+{
+    Protoc(
+        fi.FullName,
+        Path.Join(projectDir, "src/Temporalio/Api/Dependencies/GrpcGateway"),
+        string.Empty,
+        protoDir,
+        apiProtoDir);
+}
 foreach (var fi in new DirectoryInfo(apiCloudProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
 {
-    Protoc(fi.FullName, Path.Join(projectDir, "src/Temporalio"), "Temporalio", apiCloudProtoDir, apiProtoDir);
+    Protoc(fi.FullName, Path.Join(projectDir, "src/Temporalio"), "Temporalio", apiCloudProtoDir, apiProtoDir, protoDir);
 }
 foreach (
     var fi in new DirectoryInfo(testSrvProtoDir).GetFiles("*.proto", SearchOption.AllDirectories))
