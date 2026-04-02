@@ -99,9 +99,10 @@ namespace Temporalio.Worker
                             // we're late-binding it here.
                             var running = new RunningTask();
                             runningTasks[task.Task.TaskToken] = running;
+                            var requestDeadline = task.RequestDeadline?.ToDateTime();
 #pragma warning disable CA2008 // We don't have to pass a scheduler, factory already implies one
                             running.Task = worker.Options.NexusTaskFactory.StartNew(
-                                () => HandlePollTaskAsync(running, task.Task)).Unwrap();
+                                () => HandlePollTaskAsync(running, task.Task, requestDeadline)).Unwrap();
 #pragma warning restore CA2008
                             break;
                         case NexusTask.VariantOneofCase.CancelTask:
@@ -141,12 +142,12 @@ namespace Temporalio.Worker
             headers.Remove("Request-Timeout");
         }
 
-        private async Task HandlePollTaskAsync(RunningTask running, PollNexusTaskQueueResponse task)
+        private async Task HandlePollTaskAsync(RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline)
         {
             try
             {
                 // Handle poll and post back to Core
-                var completion = await HandlePollTaskInternalAsync(running, task).ConfigureAwait(false);
+                var completion = await HandlePollTaskInternalAsync(running, task, requestDeadline).ConfigureAwait(false);
                 logger.LogTrace("Sending Nexus completion: {Completion}", completion);
                 await worker.BridgeWorker.CompleteNexusTaskAsync(completion).ConfigureAwait(false);
             }
@@ -165,7 +166,7 @@ namespace Temporalio.Worker
         }
 
         private async Task<StartOperationResponse> HandleStartOperationAsync(
-            RunningTask running, PollNexusTaskQueueResponse task)
+            RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline)
         {
             // Create context
             RemoveInvalidHeaders(task.Request.Header);
@@ -195,6 +196,7 @@ namespace Temporalio.Worker
                             e);
                     }
                 }).ToList(),
+                RequestDeadline = requestDeadline,
             };
             running.OnCancelReason = reason => context.CancellationReason = reason;
 
@@ -253,7 +255,7 @@ namespace Temporalio.Worker
         }
 
         private async Task<CancelOperationResponse> HandleCancelOperationAsync(
-            RunningTask running, PollNexusTaskQueueResponse task)
+            RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline)
         {
             // Create context
             RemoveInvalidHeaders(task.Request.Header);
@@ -266,6 +268,7 @@ namespace Temporalio.Worker
             {
                 Headers = task.Request.Header.Count == 0 ? null :
                     new Dictionary<string, string>(task.Request.Header, StringComparer.OrdinalIgnoreCase),
+                RequestDeadline = requestDeadline,
             };
             running.OnCancelReason = reason => context.CancellationReason = reason;
 
@@ -287,7 +290,7 @@ namespace Temporalio.Worker
         }
 
         private async Task<NexusTaskCompletion> HandlePollTaskInternalAsync(
-            RunningTask running, PollNexusTaskQueueResponse task)
+            RunningTask running, PollNexusTaskQueueResponse task, DateTime? requestDeadline)
         {
             try
             {
@@ -295,14 +298,14 @@ namespace Temporalio.Worker
                 switch (task.Request.VariantCase)
                 {
                     case Request.VariantOneofCase.StartOperation:
-                        var startResp = await HandleStartOperationAsync(running, task).ConfigureAwait(false);
+                        var startResp = await HandleStartOperationAsync(running, task, requestDeadline).ConfigureAwait(false);
                         return new()
                         {
                             TaskToken = task.TaskToken,
                             Completed = new() { StartOperation = startResp },
                         };
                     case Request.VariantOneofCase.CancelOperation:
-                        var cancelResp = await HandleCancelOperationAsync(running, task).ConfigureAwait(false);
+                        var cancelResp = await HandleCancelOperationAsync(running, task, requestDeadline).ConfigureAwait(false);
                         return new()
                         {
                             TaskToken = task.TaskToken,
