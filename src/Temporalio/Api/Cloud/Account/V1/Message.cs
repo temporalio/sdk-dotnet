@@ -27,32 +27,44 @@ namespace Temporalio.Api.Cloud.Account.V1 {
             "Cit0ZW1wb3JhbC9hcGkvY2xvdWQvYWNjb3VudC92MS9tZXNzYWdlLnByb3Rv",
             "Eh10ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3VudC52MRosdGVtcG9yYWwvYXBp",
             "L2Nsb3VkL3Jlc291cmNlL3YxL21lc3NhZ2UucHJvdG8aKHRlbXBvcmFsL2Fw",
-            "aS9jbG91ZC9zaW5rL3YxL21lc3NhZ2UucHJvdG8iKQoLTWV0cmljc1NwZWMS",
-            "GgoSYWNjZXB0ZWRfY2xpZW50X2NhGAIgASgMIkoKC0FjY291bnRTcGVjEjsK",
-            "B21ldHJpY3MYASABKAsyKi50ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3VudC52",
-            "MS5NZXRyaWNzU3BlYyIWCgdNZXRyaWNzEgsKA3VyaRgBIAEoCSL8AQoHQWNj",
-            "b3VudBIKCgJpZBgBIAEoCRI4CgRzcGVjGAIgASgLMioudGVtcG9yYWwuYXBp",
-            "LmNsb3VkLmFjY291bnQudjEuQWNjb3VudFNwZWMSGAoQcmVzb3VyY2VfdmVy",
-            "c2lvbhgDIAEoCRI8CgVzdGF0ZRgEIAEoDjItLnRlbXBvcmFsLmFwaS5jbG91",
-            "ZC5yZXNvdXJjZS52MS5SZXNvdXJjZVN0YXRlEhoKEmFzeW5jX29wZXJhdGlv",
-            "bl9pZBgFIAEoCRI3CgdtZXRyaWNzGAYgASgLMiYudGVtcG9yYWwuYXBpLmNs",
-            "b3VkLmFjY291bnQudjEuTWV0cmljcyK/AQoQQXVkaXRMb2dTaW5rU3BlYxIM",
-            "CgRuYW1lGAEgASgJEj8KDGtpbmVzaXNfc2luaxgCIAEoCzInLnRlbXBvcmFs",
-            "LmFwaS5jbG91ZC5zaW5rLnYxLktpbmVzaXNTcGVjSAASPgoMcHViX3N1Yl9z",
-            "aW5rGAMgASgLMiYudGVtcG9yYWwuYXBpLmNsb3VkLnNpbmsudjEuUHViU3Vi",
-            "U3BlY0gAEg8KB2VuYWJsZWQYBCABKAhCCwoJc2lua190eXBlQqcBCiBpby50",
-            "ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3VudC52MUIMTWVzc2FnZVByb3RvUAFa",
-            "K2dvLnRlbXBvcmFsLmlvL2FwaS9jbG91ZC9hY2NvdW50L3YxO2FjY291bnSq",
-            "Ah9UZW1wb3JhbGlvLkFwaS5DbG91ZC5BY2NvdW50LlYx6gIjVGVtcG9yYWxp",
-            "bzo6QXBpOjpDbG91ZDo6QWNjb3VudDo6VjFiBnByb3RvMw=="));
+            "aS9jbG91ZC9zaW5rL3YxL21lc3NhZ2UucHJvdG8aH2dvb2dsZS9wcm90b2J1",
+            "Zi90aW1lc3RhbXAucHJvdG8iKQoLTWV0cmljc1NwZWMSGgoSYWNjZXB0ZWRf",
+            "Y2xpZW50X2NhGAIgASgMIkoKC0FjY291bnRTcGVjEjsKB21ldHJpY3MYASAB",
+            "KAsyKi50ZW1wb3JhbC5hcGkuY2xvdWQuYWNjb3VudC52MS5NZXRyaWNzU3Bl",
+            "YyIWCgdNZXRyaWNzEgsKA3VyaRgBIAEoCSL8AQoHQWNjb3VudBIKCgJpZBgB",
+            "IAEoCRI4CgRzcGVjGAIgASgLMioudGVtcG9yYWwuYXBpLmNsb3VkLmFjY291",
+            "bnQudjEuQWNjb3VudFNwZWMSGAoQcmVzb3VyY2VfdmVyc2lvbhgDIAEoCRI8",
+            "CgVzdGF0ZRgEIAEoDjItLnRlbXBvcmFsLmFwaS5jbG91ZC5yZXNvdXJjZS52",
+            "MS5SZXNvdXJjZVN0YXRlEhoKEmFzeW5jX29wZXJhdGlvbl9pZBgFIAEoCRI3",
+            "CgdtZXRyaWNzGAYgASgLMiYudGVtcG9yYWwuYXBpLmNsb3VkLmFjY291bnQu",
+            "djEuTWV0cmljcyK/AQoQQXVkaXRMb2dTaW5rU3BlYxIMCgRuYW1lGAEgASgJ",
+            "Ej8KDGtpbmVzaXNfc2luaxgCIAEoCzInLnRlbXBvcmFsLmFwaS5jbG91ZC5z",
+            "aW5rLnYxLktpbmVzaXNTcGVjSAASPgoMcHViX3N1Yl9zaW5rGAMgASgLMiYu",
+            "dGVtcG9yYWwuYXBpLmNsb3VkLnNpbmsudjEuUHViU3ViU3BlY0gAEg8KB2Vu",
+            "YWJsZWQYBCABKAhCCwoJc2lua190eXBlIrgDCgxBdWRpdExvZ1NpbmsSDAoE",
+            "bmFtZRgBIAEoCRIYChByZXNvdXJjZV92ZXJzaW9uGAIgASgJEjwKBXN0YXRl",
+            "GAMgASgOMi0udGVtcG9yYWwuYXBpLmNsb3VkLnJlc291cmNlLnYxLlJlc291",
+            "cmNlU3RhdGUSPQoEc3BlYxgEIAEoCzIvLnRlbXBvcmFsLmFwaS5jbG91ZC5h",
+            "Y2NvdW50LnYxLkF1ZGl0TG9nU2lua1NwZWMSQgoGaGVhbHRoGAUgASgOMjIu",
+            "dGVtcG9yYWwuYXBpLmNsb3VkLmFjY291bnQudjEuQXVkaXRMb2dTaW5rLkhl",
+            "YWx0aBIVCg1lcnJvcl9tZXNzYWdlGAYgASgJEjcKE2xhc3Rfc3VjY2VlZGVk",
+            "X3RpbWUYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIm8KBkhl",
+            "YWx0aBIWChJIRUFMVEhfVU5TUEVDSUZJRUQQABINCglIRUFMVEhfT0sQARIZ",
+            "ChVIRUFMVEhfRVJST1JfSU5URVJOQUwQAhIjCh9IRUFMVEhfRVJST1JfVVNF",
+            "Ul9DT05GSUdVUkFUSU9OEANCpwEKIGlvLnRlbXBvcmFsLmFwaS5jbG91ZC5h",
+            "Y2NvdW50LnYxQgxNZXNzYWdlUHJvdG9QAVorZ28udGVtcG9yYWwuaW8vYXBp",
+            "L2Nsb3VkL2FjY291bnQvdjE7YWNjb3VudKoCH1RlbXBvcmFsaW8uQXBpLkNs",
+            "b3VkLkFjY291bnQuVjHqAiNUZW1wb3JhbGlvOjpBcGk6OkNsb3VkOjpBY2Nv",
+            "dW50OjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Temporalio.Api.Cloud.Sink.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.MetricsSpec), global::Temporalio.Api.Cloud.Account.V1.MetricsSpec.Parser, new[]{ "AcceptedClientCa" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.AccountSpec), global::Temporalio.Api.Cloud.Account.V1.AccountSpec.Parser, new[]{ "Metrics" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.Metrics), global::Temporalio.Api.Cloud.Account.V1.Metrics.Parser, new[]{ "Uri" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.Account), global::Temporalio.Api.Cloud.Account.V1.Account.Parser, new[]{ "Id", "Spec", "ResourceVersion", "State", "AsyncOperationId", "Metrics" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec), global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec.Parser, new[]{ "Name", "KinesisSink", "PubSubSink", "Enabled" }, new[]{ "SinkType" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec), global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec.Parser, new[]{ "Name", "KinesisSink", "PubSubSink", "Enabled" }, new[]{ "SinkType" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.Account.V1.AuditLogSink), global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Parser, new[]{ "Name", "ResourceVersion", "State", "Spec", "Health", "ErrorMessage", "LastSucceededTime" }, null, new[]{ typeof(global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health) }, null, null)
           }));
     }
     #endregion
@@ -1429,6 +1441,486 @@ namespace Temporalio.Api.Cloud.Account.V1 {
       }
     }
     #endif
+
+  }
+
+  /// <summary>
+  /// AuditLogSink is only used by Audit Log
+  /// </summary>
+  public sealed partial class AuditLogSink : pb::IMessage<AuditLogSink>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<AuditLogSink> _parser = new pb::MessageParser<AuditLogSink>(() => new AuditLogSink());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<AuditLogSink> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Cloud.Account.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AuditLogSink() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AuditLogSink(AuditLogSink other) : this() {
+      name_ = other.name_;
+      resourceVersion_ = other.resourceVersion_;
+      state_ = other.state_;
+      spec_ = other.spec_ != null ? other.spec_.Clone() : null;
+      health_ = other.health_;
+      errorMessage_ = other.errorMessage_;
+      lastSucceededTime_ = other.lastSucceededTime_ != null ? other.lastSucceededTime_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public AuditLogSink Clone() {
+      return new AuditLogSink(this);
+    }
+
+    /// <summary>Field number for the "name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
+    /// <summary>
+    /// Name of the sink e.g. "audit_log_01"
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "resource_version" field.</summary>
+    public const int ResourceVersionFieldNumber = 2;
+    private string resourceVersion_ = "";
+    /// <summary>
+    /// The version of the audit log sink resource.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ResourceVersion {
+      get { return resourceVersion_; }
+      set {
+        resourceVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 3;
+    private global::Temporalio.Api.Cloud.Resource.V1.ResourceState state_ = global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified;
+    /// <summary>
+    /// The current state of the audit log sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Resource.V1.ResourceState State {
+      get { return state_; }
+      set {
+        state_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "spec" field.</summary>
+    public const int SpecFieldNumber = 4;
+    private global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec spec_;
+    /// <summary>
+    /// The specification details of the audit log sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec Spec {
+      get { return spec_; }
+      set {
+        spec_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "health" field.</summary>
+    public const int HealthFieldNumber = 5;
+    private global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health health_ = global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health.Unspecified;
+    /// <summary>
+    /// The health status of the audit log sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health Health {
+      get { return health_; }
+      set {
+        health_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "error_message" field.</summary>
+    public const int ErrorMessageFieldNumber = 6;
+    private string errorMessage_ = "";
+    /// <summary>
+    /// An error message describing any issues with the audit log sink, if applicable.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ErrorMessage {
+      get { return errorMessage_; }
+      set {
+        errorMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "last_succeeded_time" field.</summary>
+    public const int LastSucceededTimeFieldNumber = 7;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp lastSucceededTime_;
+    /// <summary>
+    /// The last succeeded timestamp for the internal workflow responsible for adding data to the sink.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp LastSucceededTime {
+      get { return lastSucceededTime_; }
+      set {
+        lastSucceededTime_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as AuditLogSink);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(AuditLogSink other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Name != other.Name) return false;
+      if (ResourceVersion != other.ResourceVersion) return false;
+      if (State != other.State) return false;
+      if (!object.Equals(Spec, other.Spec)) return false;
+      if (Health != other.Health) return false;
+      if (ErrorMessage != other.ErrorMessage) return false;
+      if (!object.Equals(LastSucceededTime, other.LastSucceededTime)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (ResourceVersion.Length != 0) hash ^= ResourceVersion.GetHashCode();
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) hash ^= State.GetHashCode();
+      if (spec_ != null) hash ^= Spec.GetHashCode();
+      if (Health != global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health.Unspecified) hash ^= Health.GetHashCode();
+      if (ErrorMessage.Length != 0) hash ^= ErrorMessage.GetHashCode();
+      if (lastSucceededTime_ != null) hash ^= LastSucceededTime.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ResourceVersion);
+      }
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) State);
+      }
+      if (spec_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Spec);
+      }
+      if (Health != global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) Health);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorMessage);
+      }
+      if (lastSucceededTime_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(LastSucceededTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (ResourceVersion.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ResourceVersion);
+      }
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) State);
+      }
+      if (spec_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Spec);
+      }
+      if (Health != global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health.Unspecified) {
+        output.WriteRawTag(40);
+        output.WriteEnum((int) Health);
+      }
+      if (ErrorMessage.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(ErrorMessage);
+      }
+      if (lastSucceededTime_ != null) {
+        output.WriteRawTag(58);
+        output.WriteMessage(LastSucceededTime);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (ResourceVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ResourceVersion);
+      }
+      if (State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
+      }
+      if (spec_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Spec);
+      }
+      if (Health != global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Health);
+      }
+      if (ErrorMessage.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ErrorMessage);
+      }
+      if (lastSucceededTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(LastSucceededTime);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(AuditLogSink other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.ResourceVersion.Length != 0) {
+        ResourceVersion = other.ResourceVersion;
+      }
+      if (other.State != global::Temporalio.Api.Cloud.Resource.V1.ResourceState.Unspecified) {
+        State = other.State;
+      }
+      if (other.spec_ != null) {
+        if (spec_ == null) {
+          Spec = new global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec();
+        }
+        Spec.MergeFrom(other.Spec);
+      }
+      if (other.Health != global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health.Unspecified) {
+        Health = other.Health;
+      }
+      if (other.ErrorMessage.Length != 0) {
+        ErrorMessage = other.ErrorMessage;
+      }
+      if (other.lastSucceededTime_ != null) {
+        if (lastSucceededTime_ == null) {
+          LastSucceededTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        LastSucceededTime.MergeFrom(other.LastSucceededTime);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+          case 24: {
+            State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
+            break;
+          }
+          case 34: {
+            if (spec_ == null) {
+              Spec = new global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec();
+            }
+            input.ReadMessage(Spec);
+            break;
+          }
+          case 40: {
+            Health = (global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health) input.ReadEnum();
+            break;
+          }
+          case 50: {
+            ErrorMessage = input.ReadString();
+            break;
+          }
+          case 58: {
+            if (lastSucceededTime_ == null) {
+              LastSucceededTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastSucceededTime);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 18: {
+            ResourceVersion = input.ReadString();
+            break;
+          }
+          case 24: {
+            State = (global::Temporalio.Api.Cloud.Resource.V1.ResourceState) input.ReadEnum();
+            break;
+          }
+          case 34: {
+            if (spec_ == null) {
+              Spec = new global::Temporalio.Api.Cloud.Account.V1.AuditLogSinkSpec();
+            }
+            input.ReadMessage(Spec);
+            break;
+          }
+          case 40: {
+            Health = (global::Temporalio.Api.Cloud.Account.V1.AuditLogSink.Types.Health) input.ReadEnum();
+            break;
+          }
+          case 50: {
+            ErrorMessage = input.ReadString();
+            break;
+          }
+          case 58: {
+            if (lastSucceededTime_ == null) {
+              LastSucceededTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(LastSucceededTime);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the AuditLogSink message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      /// <summary>
+      /// The health status of the audit log sink.
+      /// </summary>
+      public enum Health {
+        [pbr::OriginalName("HEALTH_UNSPECIFIED")] Unspecified = 0,
+        /// <summary>
+        /// The audit log sink is healthy and functioning correctly.
+        /// </summary>
+        [pbr::OriginalName("HEALTH_OK")] Ok = 1,
+        /// <summary>
+        /// The audit log sink has an internal error.
+        /// </summary>
+        [pbr::OriginalName("HEALTH_ERROR_INTERNAL")] ErrorInternal = 2,
+        /// <summary>
+        /// The audit log sink has a configuration error.
+        /// </summary>
+        [pbr::OriginalName("HEALTH_ERROR_USER_CONFIGURATION")] ErrorUserConfiguration = 3,
+      }
+
+    }
+    #endregion
 
   }
 

@@ -40,7 +40,7 @@ namespace Temporalio.Api.Worker.V1 {
             "Cg5Xb3JrZXJIb3N0SW5mbxIRCglob3N0X25hbWUYASABKAkSGwoTd29ya2Vy",
             "X2dyb3VwaW5nX2tleRgFIAEoCRISCgpwcm9jZXNzX2lkGAIgASgJEh4KFmN1",
             "cnJlbnRfaG9zdF9jcHVfdXNhZ2UYAyABKAISHgoWY3VycmVudF9ob3N0X21l",
-            "bV91c2FnZRgEIAEoAiLPCQoPV29ya2VySGVhcnRiZWF0EhsKE3dvcmtlcl9p",
+            "bV91c2FnZRgEIAEoAiKLCgoPV29ya2VySGVhcnRiZWF0EhsKE3dvcmtlcl9p",
             "bnN0YW5jZV9rZXkYASABKAkSFwoPd29ya2VyX2lkZW50aXR5GAIgASgJEjkK",
             "CWhvc3RfaW5mbxgDIAEoCzImLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuV29y",
             "a2VySG9zdEluZm8SEgoKdGFza19xdWV1ZRgEIAEoCRJPChJkZXBsb3ltZW50",
@@ -67,22 +67,37 @@ namespace Temporalio.Api.Worker.V1 {
             "cmtlclBvbGxlckluZm8SHgoWdG90YWxfc3RpY2t5X2NhY2hlX2hpdBgUIAEo",
             "BRIfChd0b3RhbF9zdGlja3lfY2FjaGVfbWlzcxgVIAEoBRIhChljdXJyZW50",
             "X3N0aWNreV9jYWNoZV9zaXplGBYgASgFEjMKB3BsdWdpbnMYFyADKAsyIi50",
-            "ZW1wb3JhbC5hcGkud29ya2VyLnYxLlBsdWdpbkluZm8iTwoKV29ya2VySW5m",
-            "bxJBChB3b3JrZXJfaGVhcnRiZWF0GAEgASgLMicudGVtcG9yYWwuYXBpLndv",
-            "cmtlci52MS5Xb3JrZXJIZWFydGJlYXQiKwoKUGx1Z2luSW5mbxIMCgRuYW1l",
-            "GAEgASgJEg8KB3ZlcnNpb24YAiABKAlCiQEKGWlvLnRlbXBvcmFsLmFwaS53",
-            "b3JrZXIudjFCDE1lc3NhZ2VQcm90b1ABWiNnby50ZW1wb3JhbC5pby9hcGkv",
-            "d29ya2VyL3YxO3dvcmtlcqoCGFRlbXBvcmFsaW8uQXBpLldvcmtlci5WMeoC",
-            "G1RlbXBvcmFsaW86OkFwaTo6V29ya2VyOjpWMWIGcHJvdG8z"));
+            "ZW1wb3JhbC5hcGkud29ya2VyLnYxLlBsdWdpbkluZm8SOgoHZHJpdmVycxgY",
+            "IAMoCzIpLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuU3RvcmFnZURyaXZlcklu",
+            "Zm8iTwoKV29ya2VySW5mbxJBChB3b3JrZXJfaGVhcnRiZWF0GAEgASgLMicu",
+            "dGVtcG9yYWwuYXBpLndvcmtlci52MS5Xb3JrZXJIZWFydGJlYXQi7AMKDldv",
+            "cmtlckxpc3RJbmZvEhsKE3dvcmtlcl9pbnN0YW5jZV9rZXkYASABKAkSFwoP",
+            "d29ya2VyX2lkZW50aXR5GAIgASgJEhIKCnRhc2tfcXVldWUYAyABKAkSTwoS",
+            "ZGVwbG95bWVudF92ZXJzaW9uGAQgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxv",
+            "eW1lbnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb24SEAoIc2RrX25hbWUY",
+            "BSABKAkSEwoLc2RrX3ZlcnNpb24YBiABKAkSMwoGc3RhdHVzGAcgASgOMiMu",
+            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtlclN0YXR1cxIuCgpzdGFydF90",
+            "aW1lGAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIRCglob3N0",
+            "X25hbWUYCSABKAkSGwoTd29ya2VyX2dyb3VwaW5nX2tleRgKIAEoCRISCgpw",
+            "cm9jZXNzX2lkGAsgASgJEjMKB3BsdWdpbnMYDCADKAsyIi50ZW1wb3JhbC5h",
+            "cGkud29ya2VyLnYxLlBsdWdpbkluZm8SOgoHZHJpdmVycxgNIAMoCzIpLnRl",
+            "bXBvcmFsLmFwaS53b3JrZXIudjEuU3RvcmFnZURyaXZlckluZm8iKwoKUGx1",
+            "Z2luSW5mbxIMCgRuYW1lGAEgASgJEg8KB3ZlcnNpb24YAiABKAkiIQoRU3Rv",
+            "cmFnZURyaXZlckluZm8SDAoEdHlwZRgBIAEoCUKJAQoZaW8udGVtcG9yYWwu",
+            "YXBpLndvcmtlci52MUIMTWVzc2FnZVByb3RvUAFaI2dvLnRlbXBvcmFsLmlv",
+            "L2FwaS93b3JrZXIvdjE7d29ya2VyqgIYVGVtcG9yYWxpby5BcGkuV29ya2Vy",
+            "LlYx6gIbVGVtcG9yYWxpbzo6QXBpOjpXb3JrZXI6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerPollerInfo), global::Temporalio.Api.Worker.V1.WorkerPollerInfo.Parser, new[]{ "CurrentPollers", "LastSuccessfulPollTime", "IsAutoscaling" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerSlotsInfo), global::Temporalio.Api.Worker.V1.WorkerSlotsInfo.Parser, new[]{ "CurrentAvailableSlots", "CurrentUsedSlots", "SlotSupplierKind", "TotalProcessedTasks", "TotalFailedTasks", "LastIntervalProcessedTasks", "LastIntervalFailureTasks" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHostInfo), global::Temporalio.Api.Worker.V1.WorkerHostInfo.Parser, new[]{ "HostName", "WorkerGroupingKey", "ProcessId", "CurrentHostCpuUsage", "CurrentHostMemUsage" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHeartbeat), global::Temporalio.Api.Worker.V1.WorkerHeartbeat.Parser, new[]{ "WorkerInstanceKey", "WorkerIdentity", "HostInfo", "TaskQueue", "DeploymentVersion", "SdkName", "SdkVersion", "Status", "StartTime", "HeartbeatTime", "ElapsedSinceLastHeartbeat", "WorkflowTaskSlotsInfo", "ActivityTaskSlotsInfo", "NexusTaskSlotsInfo", "LocalActivitySlotsInfo", "WorkflowPollerInfo", "WorkflowStickyPollerInfo", "ActivityPollerInfo", "NexusPollerInfo", "TotalStickyCacheHit", "TotalStickyCacheMiss", "CurrentStickyCacheSize", "Plugins" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerHeartbeat), global::Temporalio.Api.Worker.V1.WorkerHeartbeat.Parser, new[]{ "WorkerInstanceKey", "WorkerIdentity", "HostInfo", "TaskQueue", "DeploymentVersion", "SdkName", "SdkVersion", "Status", "StartTime", "HeartbeatTime", "ElapsedSinceLastHeartbeat", "WorkflowTaskSlotsInfo", "ActivityTaskSlotsInfo", "NexusTaskSlotsInfo", "LocalActivitySlotsInfo", "WorkflowPollerInfo", "WorkflowStickyPollerInfo", "ActivityPollerInfo", "NexusPollerInfo", "TotalStickyCacheHit", "TotalStickyCacheMiss", "CurrentStickyCacheSize", "Plugins", "Drivers" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerInfo), global::Temporalio.Api.Worker.V1.WorkerInfo.Parser, new[]{ "WorkerHeartbeat" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.PluginInfo), global::Temporalio.Api.Worker.V1.PluginInfo.Parser, new[]{ "Name", "Version" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.WorkerListInfo), global::Temporalio.Api.Worker.V1.WorkerListInfo.Parser, new[]{ "WorkerInstanceKey", "WorkerIdentity", "TaskQueue", "DeploymentVersion", "SdkName", "SdkVersion", "Status", "StartTime", "HostName", "WorkerGroupingKey", "ProcessId", "Plugins", "Drivers" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.PluginInfo), global::Temporalio.Api.Worker.V1.PluginInfo.Parser, new[]{ "Name", "Version" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Worker.V1.StorageDriverInfo), global::Temporalio.Api.Worker.V1.StorageDriverInfo.Parser, new[]{ "Type" }, null, null, null, null)
           }));
     }
     #endregion
@@ -1227,6 +1242,7 @@ namespace Temporalio.Api.Worker.V1 {
       totalStickyCacheMiss_ = other.totalStickyCacheMiss_;
       currentStickyCacheSize_ = other.currentStickyCacheSize_;
       plugins_ = other.plugins_.Clone();
+      drivers_ = other.drivers_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1551,6 +1567,20 @@ namespace Temporalio.Api.Worker.V1 {
       get { return plugins_; }
     }
 
+    /// <summary>Field number for the "drivers" field.</summary>
+    public const int DriversFieldNumber = 24;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Worker.V1.StorageDriverInfo> _repeated_drivers_codec
+        = pb::FieldCodec.ForMessage(194, global::Temporalio.Api.Worker.V1.StorageDriverInfo.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Worker.V1.StorageDriverInfo> drivers_ = new pbc::RepeatedField<global::Temporalio.Api.Worker.V1.StorageDriverInfo>();
+    /// <summary>
+    /// Storage drivers in use by this SDK.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Worker.V1.StorageDriverInfo> Drivers {
+      get { return drivers_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1589,6 +1619,7 @@ namespace Temporalio.Api.Worker.V1 {
       if (TotalStickyCacheMiss != other.TotalStickyCacheMiss) return false;
       if (CurrentStickyCacheSize != other.CurrentStickyCacheSize) return false;
       if(!plugins_.Equals(other.plugins_)) return false;
+      if(!drivers_.Equals(other.drivers_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1619,6 +1650,7 @@ namespace Temporalio.Api.Worker.V1 {
       if (TotalStickyCacheMiss != 0) hash ^= TotalStickyCacheMiss.GetHashCode();
       if (CurrentStickyCacheSize != 0) hash ^= CurrentStickyCacheSize.GetHashCode();
       hash ^= plugins_.GetHashCode();
+      hash ^= drivers_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1726,6 +1758,7 @@ namespace Temporalio.Api.Worker.V1 {
         output.WriteInt32(CurrentStickyCacheSize);
       }
       plugins_.WriteTo(output, _repeated_plugins_codec);
+      drivers_.WriteTo(output, _repeated_drivers_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1825,6 +1858,7 @@ namespace Temporalio.Api.Worker.V1 {
         output.WriteInt32(CurrentStickyCacheSize);
       }
       plugins_.WriteTo(ref output, _repeated_plugins_codec);
+      drivers_.WriteTo(ref output, _repeated_drivers_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1902,6 +1936,7 @@ namespace Temporalio.Api.Worker.V1 {
         size += 2 + pb::CodedOutputStream.ComputeInt32Size(CurrentStickyCacheSize);
       }
       size += plugins_.CalculateSize(_repeated_plugins_codec);
+      size += drivers_.CalculateSize(_repeated_drivers_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -2020,6 +2055,7 @@ namespace Temporalio.Api.Worker.V1 {
         CurrentStickyCacheSize = other.CurrentStickyCacheSize;
       }
       plugins_.Add(other.plugins_);
+      drivers_.Add(other.drivers_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -2164,6 +2200,10 @@ namespace Temporalio.Api.Worker.V1 {
           }
           case 186: {
             plugins_.AddEntriesFrom(input, _repeated_plugins_codec);
+            break;
+          }
+          case 194: {
+            drivers_.AddEntriesFrom(input, _repeated_drivers_codec);
             break;
           }
         }
@@ -2312,6 +2352,10 @@ namespace Temporalio.Api.Worker.V1 {
             plugins_.AddEntriesFrom(ref input, _repeated_plugins_codec);
             break;
           }
+          case 194: {
+            drivers_.AddEntriesFrom(ref input, _repeated_drivers_codec);
+            break;
+          }
         }
       }
     }
@@ -2319,6 +2363,9 @@ namespace Temporalio.Api.Worker.V1 {
 
   }
 
+  /// <summary>
+  /// Detailed worker information.
+  /// </summary>
   public sealed partial class WorkerInfo : pb::IMessage<WorkerInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2517,6 +2564,675 @@ namespace Temporalio.Api.Worker.V1 {
 
   }
 
+  /// <summary>
+  /// Limited worker information returned in the list response.
+  /// When adding fields here, ensure that it is also added to WorkerInfo (as it carries the full worker information).
+  /// </summary>
+  public sealed partial class WorkerListInfo : pb::IMessage<WorkerListInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WorkerListInfo> _parser = new pb::MessageParser<WorkerListInfo>(() => new WorkerListInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WorkerListInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerListInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerListInfo(WorkerListInfo other) : this() {
+      workerInstanceKey_ = other.workerInstanceKey_;
+      workerIdentity_ = other.workerIdentity_;
+      taskQueue_ = other.taskQueue_;
+      deploymentVersion_ = other.deploymentVersion_ != null ? other.deploymentVersion_.Clone() : null;
+      sdkName_ = other.sdkName_;
+      sdkVersion_ = other.sdkVersion_;
+      status_ = other.status_;
+      startTime_ = other.startTime_ != null ? other.startTime_.Clone() : null;
+      hostName_ = other.hostName_;
+      workerGroupingKey_ = other.workerGroupingKey_;
+      processId_ = other.processId_;
+      plugins_ = other.plugins_.Clone();
+      drivers_ = other.drivers_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WorkerListInfo Clone() {
+      return new WorkerListInfo(this);
+    }
+
+    /// <summary>Field number for the "worker_instance_key" field.</summary>
+    public const int WorkerInstanceKeyFieldNumber = 1;
+    private string workerInstanceKey_ = "";
+    /// <summary>
+    /// Worker identifier, should be unique for the namespace.
+    /// It is distinct from worker identity, which is not necessarily namespace-unique.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string WorkerInstanceKey {
+      get { return workerInstanceKey_; }
+      set {
+        workerInstanceKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "worker_identity" field.</summary>
+    public const int WorkerIdentityFieldNumber = 2;
+    private string workerIdentity_ = "";
+    /// <summary>
+    /// Worker identity, set by the client, may not be unique.
+    /// Usually host_name+(user group name)+process_id, but can be overwritten by the user.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string WorkerIdentity {
+      get { return workerIdentity_; }
+      set {
+        workerIdentity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "task_queue" field.</summary>
+    public const int TaskQueueFieldNumber = 3;
+    private string taskQueue_ = "";
+    /// <summary>
+    /// Task queue this worker is polling for tasks.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string TaskQueue {
+      get { return taskQueue_; }
+      set {
+        taskQueue_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deployment_version" field.</summary>
+    public const int DeploymentVersionFieldNumber = 4;
+    private global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion deploymentVersion_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion DeploymentVersion {
+      get { return deploymentVersion_; }
+      set {
+        deploymentVersion_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "sdk_name" field.</summary>
+    public const int SdkNameFieldNumber = 5;
+    private string sdkName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string SdkName {
+      get { return sdkName_; }
+      set {
+        sdkName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "sdk_version" field.</summary>
+    public const int SdkVersionFieldNumber = 6;
+    private string sdkVersion_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string SdkVersion {
+      get { return sdkVersion_; }
+      set {
+        sdkVersion_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 7;
+    private global::Temporalio.Api.Enums.V1.WorkerStatus status_ = global::Temporalio.Api.Enums.V1.WorkerStatus.Unspecified;
+    /// <summary>
+    /// Worker status. Defined by SDK.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.WorkerStatus Status {
+      get { return status_; }
+      set {
+        status_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "start_time" field.</summary>
+    public const int StartTimeFieldNumber = 8;
+    private global::Google.Protobuf.WellKnownTypes.Timestamp startTime_;
+    /// <summary>
+    /// Worker start time.
+    /// It can be used to determine worker uptime. (current time - start time)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Timestamp StartTime {
+      get { return startTime_; }
+      set {
+        startTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "host_name" field.</summary>
+    public const int HostNameFieldNumber = 9;
+    private string hostName_ = "";
+    /// <summary>
+    /// Worker host identifier.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string HostName {
+      get { return hostName_; }
+      set {
+        hostName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "worker_grouping_key" field.</summary>
+    public const int WorkerGroupingKeyFieldNumber = 10;
+    private string workerGroupingKey_ = "";
+    /// <summary>
+    /// Worker grouping identifier. A key to group workers that share the same client+namespace+process.
+    /// This will be used to build the worker command nexus task queue name:
+    /// "temporal-sys/worker-commands/{worker_grouping_key}"
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string WorkerGroupingKey {
+      get { return workerGroupingKey_; }
+      set {
+        workerGroupingKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "process_id" field.</summary>
+    public const int ProcessIdFieldNumber = 11;
+    private string processId_ = "";
+    /// <summary>
+    /// Worker process identifier. This id only needs to be unique
+    /// within one host (so using e.g. a unix pid would be appropriate).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ProcessId {
+      get { return processId_; }
+      set {
+        processId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "plugins" field.</summary>
+    public const int PluginsFieldNumber = 12;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Worker.V1.PluginInfo> _repeated_plugins_codec
+        = pb::FieldCodec.ForMessage(98, global::Temporalio.Api.Worker.V1.PluginInfo.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Worker.V1.PluginInfo> plugins_ = new pbc::RepeatedField<global::Temporalio.Api.Worker.V1.PluginInfo>();
+    /// <summary>
+    /// Plugins currently in use by this SDK.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Worker.V1.PluginInfo> Plugins {
+      get { return plugins_; }
+    }
+
+    /// <summary>Field number for the "drivers" field.</summary>
+    public const int DriversFieldNumber = 13;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Worker.V1.StorageDriverInfo> _repeated_drivers_codec
+        = pb::FieldCodec.ForMessage(106, global::Temporalio.Api.Worker.V1.StorageDriverInfo.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Worker.V1.StorageDriverInfo> drivers_ = new pbc::RepeatedField<global::Temporalio.Api.Worker.V1.StorageDriverInfo>();
+    /// <summary>
+    /// Storage drivers in use by this SDK.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Worker.V1.StorageDriverInfo> Drivers {
+      get { return drivers_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WorkerListInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WorkerListInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (WorkerInstanceKey != other.WorkerInstanceKey) return false;
+      if (WorkerIdentity != other.WorkerIdentity) return false;
+      if (TaskQueue != other.TaskQueue) return false;
+      if (!object.Equals(DeploymentVersion, other.DeploymentVersion)) return false;
+      if (SdkName != other.SdkName) return false;
+      if (SdkVersion != other.SdkVersion) return false;
+      if (Status != other.Status) return false;
+      if (!object.Equals(StartTime, other.StartTime)) return false;
+      if (HostName != other.HostName) return false;
+      if (WorkerGroupingKey != other.WorkerGroupingKey) return false;
+      if (ProcessId != other.ProcessId) return false;
+      if(!plugins_.Equals(other.plugins_)) return false;
+      if(!drivers_.Equals(other.drivers_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (WorkerInstanceKey.Length != 0) hash ^= WorkerInstanceKey.GetHashCode();
+      if (WorkerIdentity.Length != 0) hash ^= WorkerIdentity.GetHashCode();
+      if (TaskQueue.Length != 0) hash ^= TaskQueue.GetHashCode();
+      if (deploymentVersion_ != null) hash ^= DeploymentVersion.GetHashCode();
+      if (SdkName.Length != 0) hash ^= SdkName.GetHashCode();
+      if (SdkVersion.Length != 0) hash ^= SdkVersion.GetHashCode();
+      if (Status != global::Temporalio.Api.Enums.V1.WorkerStatus.Unspecified) hash ^= Status.GetHashCode();
+      if (startTime_ != null) hash ^= StartTime.GetHashCode();
+      if (HostName.Length != 0) hash ^= HostName.GetHashCode();
+      if (WorkerGroupingKey.Length != 0) hash ^= WorkerGroupingKey.GetHashCode();
+      if (ProcessId.Length != 0) hash ^= ProcessId.GetHashCode();
+      hash ^= plugins_.GetHashCode();
+      hash ^= drivers_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (WorkerInstanceKey.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(WorkerInstanceKey);
+      }
+      if (WorkerIdentity.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(WorkerIdentity);
+      }
+      if (TaskQueue.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(TaskQueue);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (SdkName.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(SdkName);
+      }
+      if (SdkVersion.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(SdkVersion);
+      }
+      if (Status != global::Temporalio.Api.Enums.V1.WorkerStatus.Unspecified) {
+        output.WriteRawTag(56);
+        output.WriteEnum((int) Status);
+      }
+      if (startTime_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(StartTime);
+      }
+      if (HostName.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(HostName);
+      }
+      if (WorkerGroupingKey.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(WorkerGroupingKey);
+      }
+      if (ProcessId.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(ProcessId);
+      }
+      plugins_.WriteTo(output, _repeated_plugins_codec);
+      drivers_.WriteTo(output, _repeated_drivers_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (WorkerInstanceKey.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(WorkerInstanceKey);
+      }
+      if (WorkerIdentity.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(WorkerIdentity);
+      }
+      if (TaskQueue.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(TaskQueue);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (SdkName.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(SdkName);
+      }
+      if (SdkVersion.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(SdkVersion);
+      }
+      if (Status != global::Temporalio.Api.Enums.V1.WorkerStatus.Unspecified) {
+        output.WriteRawTag(56);
+        output.WriteEnum((int) Status);
+      }
+      if (startTime_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(StartTime);
+      }
+      if (HostName.Length != 0) {
+        output.WriteRawTag(74);
+        output.WriteString(HostName);
+      }
+      if (WorkerGroupingKey.Length != 0) {
+        output.WriteRawTag(82);
+        output.WriteString(WorkerGroupingKey);
+      }
+      if (ProcessId.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(ProcessId);
+      }
+      plugins_.WriteTo(ref output, _repeated_plugins_codec);
+      drivers_.WriteTo(ref output, _repeated_drivers_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (WorkerInstanceKey.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(WorkerInstanceKey);
+      }
+      if (WorkerIdentity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(WorkerIdentity);
+      }
+      if (TaskQueue.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(TaskQueue);
+      }
+      if (deploymentVersion_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeploymentVersion);
+      }
+      if (SdkName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SdkName);
+      }
+      if (SdkVersion.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SdkVersion);
+      }
+      if (Status != global::Temporalio.Api.Enums.V1.WorkerStatus.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Status);
+      }
+      if (startTime_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(StartTime);
+      }
+      if (HostName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(HostName);
+      }
+      if (WorkerGroupingKey.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(WorkerGroupingKey);
+      }
+      if (ProcessId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ProcessId);
+      }
+      size += plugins_.CalculateSize(_repeated_plugins_codec);
+      size += drivers_.CalculateSize(_repeated_drivers_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WorkerListInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.WorkerInstanceKey.Length != 0) {
+        WorkerInstanceKey = other.WorkerInstanceKey;
+      }
+      if (other.WorkerIdentity.Length != 0) {
+        WorkerIdentity = other.WorkerIdentity;
+      }
+      if (other.TaskQueue.Length != 0) {
+        TaskQueue = other.TaskQueue;
+      }
+      if (other.deploymentVersion_ != null) {
+        if (deploymentVersion_ == null) {
+          DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+        }
+        DeploymentVersion.MergeFrom(other.DeploymentVersion);
+      }
+      if (other.SdkName.Length != 0) {
+        SdkName = other.SdkName;
+      }
+      if (other.SdkVersion.Length != 0) {
+        SdkVersion = other.SdkVersion;
+      }
+      if (other.Status != global::Temporalio.Api.Enums.V1.WorkerStatus.Unspecified) {
+        Status = other.Status;
+      }
+      if (other.startTime_ != null) {
+        if (startTime_ == null) {
+          StartTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+        }
+        StartTime.MergeFrom(other.StartTime);
+      }
+      if (other.HostName.Length != 0) {
+        HostName = other.HostName;
+      }
+      if (other.WorkerGroupingKey.Length != 0) {
+        WorkerGroupingKey = other.WorkerGroupingKey;
+      }
+      if (other.ProcessId.Length != 0) {
+        ProcessId = other.ProcessId;
+      }
+      plugins_.Add(other.plugins_);
+      drivers_.Add(other.drivers_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            WorkerInstanceKey = input.ReadString();
+            break;
+          }
+          case 18: {
+            WorkerIdentity = input.ReadString();
+            break;
+          }
+          case 26: {
+            TaskQueue = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 42: {
+            SdkName = input.ReadString();
+            break;
+          }
+          case 50: {
+            SdkVersion = input.ReadString();
+            break;
+          }
+          case 56: {
+            Status = (global::Temporalio.Api.Enums.V1.WorkerStatus) input.ReadEnum();
+            break;
+          }
+          case 66: {
+            if (startTime_ == null) {
+              StartTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(StartTime);
+            break;
+          }
+          case 74: {
+            HostName = input.ReadString();
+            break;
+          }
+          case 82: {
+            WorkerGroupingKey = input.ReadString();
+            break;
+          }
+          case 90: {
+            ProcessId = input.ReadString();
+            break;
+          }
+          case 98: {
+            plugins_.AddEntriesFrom(input, _repeated_plugins_codec);
+            break;
+          }
+          case 106: {
+            drivers_.AddEntriesFrom(input, _repeated_drivers_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            WorkerInstanceKey = input.ReadString();
+            break;
+          }
+          case 18: {
+            WorkerIdentity = input.ReadString();
+            break;
+          }
+          case 26: {
+            TaskQueue = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 42: {
+            SdkName = input.ReadString();
+            break;
+          }
+          case 50: {
+            SdkVersion = input.ReadString();
+            break;
+          }
+          case 56: {
+            Status = (global::Temporalio.Api.Enums.V1.WorkerStatus) input.ReadEnum();
+            break;
+          }
+          case 66: {
+            if (startTime_ == null) {
+              StartTime = new global::Google.Protobuf.WellKnownTypes.Timestamp();
+            }
+            input.ReadMessage(StartTime);
+            break;
+          }
+          case 74: {
+            HostName = input.ReadString();
+            break;
+          }
+          case 82: {
+            WorkerGroupingKey = input.ReadString();
+            break;
+          }
+          case 90: {
+            ProcessId = input.ReadString();
+            break;
+          }
+          case 98: {
+            plugins_.AddEntriesFrom(ref input, _repeated_plugins_codec);
+            break;
+          }
+          case 106: {
+            drivers_.AddEntriesFrom(ref input, _repeated_drivers_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class PluginInfo : pb::IMessage<PluginInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2531,7 +3247,7 @@ namespace Temporalio.Api.Worker.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2740,6 +3456,198 @@ namespace Temporalio.Api.Worker.V1 {
           }
           case 18: {
             Version = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class StorageDriverInfo : pb::IMessage<StorageDriverInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<StorageDriverInfo> _parser = new pb::MessageParser<StorageDriverInfo>(() => new StorageDriverInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<StorageDriverInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StorageDriverInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StorageDriverInfo(StorageDriverInfo other) : this() {
+      type_ = other.type_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StorageDriverInfo Clone() {
+      return new StorageDriverInfo(this);
+    }
+
+    /// <summary>Field number for the "type" field.</summary>
+    public const int TypeFieldNumber = 1;
+    private string type_ = "";
+    /// <summary>
+    /// The type of the driver, required.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Type {
+      get { return type_; }
+      set {
+        type_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as StorageDriverInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(StorageDriverInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Type != other.Type) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Type.Length != 0) hash ^= Type.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Type.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Type);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Type.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Type);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Type.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Type);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(StorageDriverInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Type.Length != 0) {
+        Type = other.Type;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Type = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Type = input.ReadString();
             break;
           }
         }
