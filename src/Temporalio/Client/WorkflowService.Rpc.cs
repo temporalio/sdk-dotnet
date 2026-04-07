@@ -21,6 +21,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CountSchedules.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CountSchedulesResponse> CountSchedulesAsync(CountSchedulesRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CountSchedules", req, CountSchedulesResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CountWorkflowExecutions.
         /// </summary>
         /// <param name="req">Request for the call.</param>
