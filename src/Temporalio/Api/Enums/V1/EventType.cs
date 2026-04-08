@@ -25,7 +25,7 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvZXZlbnRfdHlwZS5wcm90bxIVdGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxKuAVCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
+            "cG9yYWwuYXBpLmVudW1zLnYxKp4WCglFdmVudFR5cGUSGgoWRVZFTlRfVFlQ",
             "RV9VTlNQRUNJRklFRBAAEikKJUVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VU",
             "SU9OX1NUQVJURUQQARIrCidFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
             "Tl9DT01QTEVURUQQAhIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNVVElP",
@@ -87,10 +87,11 @@ namespace Temporalio.Api.Enums.V1 {
             "T01QTEVURUQQOBI0CjBFVkVOVF9UWVBFX05FWFVTX09QRVJBVElPTl9DQU5D",
             "RUxfUkVRVUVTVF9GQUlMRUQQORIoCiRFVkVOVF9UWVBFX1dPUktGTE9XX0VY",
             "RUNVVElPTl9QQVVTRUQQOhIqCiZFVkVOVF9UWVBFX1dPUktGTE9XX0VYRUNV",
-            "VElPTl9VTlBBVVNFRBA7QoYBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFC",
-            "DkV2ZW50VHlwZVByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92",
-            "MTtlbnVtc6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxp",
-            "bzo6QXBpOjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "VElPTl9VTlBBVVNFRBA7EjwKOEVWRU5UX1RZUEVfV09SS0ZMT1dfRVhFQ1VU",
+            "SU9OX1RJTUVfU0tJUFBJTkdfVFJBTlNJVElPTkVEEDxChgEKGGlvLnRlbXBv",
+            "cmFsLmFwaS5lbnVtcy52MUIORXZlbnRUeXBlUHJvdG9QAVohZ28udGVtcG9y",
+            "YWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51",
+            "bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.EventType), }, null, null));
@@ -385,6 +386,10 @@ namespace Temporalio.Api.Enums.V1 {
     /// An event that indicates that the previously paused workflow execution has been unpaused.
     /// </summary>
     [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_UNPAUSED")] WorkflowExecutionUnpaused = 59,
+    /// <summary>
+    /// An event that indicates time skipping advanced time or was disabled automatically after a bound was reached.
+    /// </summary>
+    [pbr::OriginalName("EVENT_TYPE_WORKFLOW_EXECUTION_TIME_SKIPPING_TRANSITIONED")] WorkflowExecutionTimeSkippingTransitioned = 60,
   }
 
   #endregion

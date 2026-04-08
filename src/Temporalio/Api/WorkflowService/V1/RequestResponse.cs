@@ -35,350 +35,355 @@ namespace Temporalio.Api.WorkflowService.V1 {
             "JnRlbXBvcmFsL2FwaS9lbnVtcy92MS90YXNrX3F1ZXVlLnByb3RvGiZ0ZW1w",
             "b3JhbC9hcGkvZW51bXMvdjEvZGVwbG95bWVudC5wcm90bxoidGVtcG9yYWwv",
             "YXBpL2VudW1zL3YxL3VwZGF0ZS5wcm90bxokdGVtcG9yYWwvYXBpL2VudW1z",
-            "L3YxL2FjdGl2aXR5LnByb3RvGiZ0ZW1wb3JhbC9hcGkvYWN0aXZpdHkvdjEv",
-            "bWVzc2FnZS5wcm90bxokdGVtcG9yYWwvYXBpL2NvbW1vbi92MS9tZXNzYWdl",
-            "LnByb3RvGiV0ZW1wb3JhbC9hcGkvaGlzdG9yeS92MS9tZXNzYWdlLnByb3Rv",
-            "GiZ0ZW1wb3JhbC9hcGkvd29ya2Zsb3cvdjEvbWVzc2FnZS5wcm90bxoldGVt",
-            "cG9yYWwvYXBpL2NvbW1hbmQvdjEvbWVzc2FnZS5wcm90bxoodGVtcG9yYWwv",
-            "YXBpL2RlcGxveW1lbnQvdjEvbWVzc2FnZS5wcm90bxoldGVtcG9yYWwvYXBp",
-            "L2ZhaWx1cmUvdjEvbWVzc2FnZS5wcm90bxokdGVtcG9yYWwvYXBpL2ZpbHRl",
-            "ci92MS9tZXNzYWdlLnByb3RvGiZ0ZW1wb3JhbC9hcGkvcHJvdG9jb2wvdjEv",
-            "bWVzc2FnZS5wcm90bxondGVtcG9yYWwvYXBpL25hbWVzcGFjZS92MS9tZXNz",
-            "YWdlLnByb3RvGiN0ZW1wb3JhbC9hcGkvcXVlcnkvdjEvbWVzc2FnZS5wcm90",
-            "bxopdGVtcG9yYWwvYXBpL3JlcGxpY2F0aW9uL3YxL21lc3NhZ2UucHJvdG8a",
-            "I3RlbXBvcmFsL2FwaS9ydWxlcy92MS9tZXNzYWdlLnByb3RvGid0ZW1wb3Jh",
-            "bC9hcGkvc2RrL3YxL3dvcmtlcl9jb25maWcucHJvdG8aJnRlbXBvcmFsL2Fw",
-            "aS9zY2hlZHVsZS92MS9tZXNzYWdlLnByb3RvGid0ZW1wb3JhbC9hcGkvdGFz",
-            "a3F1ZXVlL3YxL21lc3NhZ2UucHJvdG8aJHRlbXBvcmFsL2FwaS91cGRhdGUv",
-            "djEvbWVzc2FnZS5wcm90bxoldGVtcG9yYWwvYXBpL3ZlcnNpb24vdjEvbWVz",
-            "c2FnZS5wcm90bxojdGVtcG9yYWwvYXBpL2JhdGNoL3YxL21lc3NhZ2UucHJv",
-            "dG8aMHRlbXBvcmFsL2FwaS9zZGsvdjEvdGFza19jb21wbGV0ZV9tZXRhZGF0",
-            "YS5wcm90bxondGVtcG9yYWwvYXBpL3Nkay92MS91c2VyX21ldGFkYXRhLnBy",
-            "b3RvGiN0ZW1wb3JhbC9hcGkvbmV4dXMvdjEvbWVzc2FnZS5wcm90bxokdGVt",
-            "cG9yYWwvYXBpL3dvcmtlci92MS9tZXNzYWdlLnByb3RvGh5nb29nbGUvcHJv",
-            "dG9idWYvZHVyYXRpb24ucHJvdG8aIGdvb2dsZS9wcm90b2J1Zi9maWVsZF9t",
-            "YXNrLnByb3RvGh9nb29nbGUvcHJvdG9idWYvdGltZXN0YW1wLnByb3RvIogF",
-            "ChhSZWdpc3Rlck5hbWVzcGFjZVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJ",
-            "EhMKC2Rlc2NyaXB0aW9uGAIgASgJEhMKC293bmVyX2VtYWlsGAMgASgJEkYK",
-            "I3dvcmtmbG93X2V4ZWN1dGlvbl9yZXRlbnRpb25fcGVyaW9kGAQgASgLMhku",
-            "Z29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEkcKCGNsdXN0ZXJzGAUgAygLMjUu",
-            "dGVtcG9yYWwuYXBpLnJlcGxpY2F0aW9uLnYxLkNsdXN0ZXJSZXBsaWNhdGlv",
-            "bkNvbmZpZxIbChNhY3RpdmVfY2x1c3Rlcl9uYW1lGAYgASgJElEKBGRhdGEY",
-            "ByADKAsyQy50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLlJlZ2lz",
-            "dGVyTmFtZXNwYWNlUmVxdWVzdC5EYXRhRW50cnkSFgoOc2VjdXJpdHlfdG9r",
-            "ZW4YCCABKAkSGwoTaXNfZ2xvYmFsX25hbWVzcGFjZRgJIAEoCBJEChZoaXN0",
-            "b3J5X2FyY2hpdmFsX3N0YXRlGAogASgOMiQudGVtcG9yYWwuYXBpLmVudW1z",
-            "LnYxLkFyY2hpdmFsU3RhdGUSHAoUaGlzdG9yeV9hcmNoaXZhbF91cmkYCyAB",
-            "KAkSRwoZdmlzaWJpbGl0eV9hcmNoaXZhbF9zdGF0ZRgMIAEoDjIkLnRlbXBv",
-            "cmFsLmFwaS5lbnVtcy52MS5BcmNoaXZhbFN0YXRlEh8KF3Zpc2liaWxpdHlf",
-            "YXJjaGl2YWxfdXJpGA0gASgJGisKCURhdGFFbnRyeRILCgNrZXkYASABKAkS",
-            "DQoFdmFsdWUYAiABKAk6AjgBIhsKGVJlZ2lzdGVyTmFtZXNwYWNlUmVzcG9u",
-            "c2UiiQEKFUxpc3ROYW1lc3BhY2VzUmVxdWVzdBIRCglwYWdlX3NpemUYASAB",
-            "KAUSFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgMEkQKEG5hbWVzcGFjZV9maWx0",
-            "ZXIYAyABKAsyKi50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLk5hbWVzcGFj",
-            "ZUZpbHRlciKBAQoWTGlzdE5hbWVzcGFjZXNSZXNwb25zZRJOCgpuYW1lc3Bh",
-            "Y2VzGAEgAygLMjoudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5E",
-            "ZXNjcmliZU5hbWVzcGFjZVJlc3BvbnNlEhcKD25leHRfcGFnZV90b2tlbhgC",
-            "IAEoDCI5ChhEZXNjcmliZU5hbWVzcGFjZVJlcXVlc3QSEQoJbmFtZXNwYWNl",
-            "GAEgASgJEgoKAmlkGAIgASgJIuwCChlEZXNjcmliZU5hbWVzcGFjZVJlc3Bv",
-            "bnNlEkAKDm5hbWVzcGFjZV9pbmZvGAEgASgLMigudGVtcG9yYWwuYXBpLm5h",
-            "bWVzcGFjZS52MS5OYW1lc3BhY2VJbmZvEjoKBmNvbmZpZxgCIAEoCzIqLnRl",
-            "bXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuTmFtZXNwYWNlQ29uZmlnElMKEnJl",
-            "cGxpY2F0aW9uX2NvbmZpZxgDIAEoCzI3LnRlbXBvcmFsLmFwaS5yZXBsaWNh",
-            "dGlvbi52MS5OYW1lc3BhY2VSZXBsaWNhdGlvbkNvbmZpZxIYChBmYWlsb3Zl",
-            "cl92ZXJzaW9uGAQgASgDEhsKE2lzX2dsb2JhbF9uYW1lc3BhY2UYBSABKAgS",
-            "RQoQZmFpbG92ZXJfaGlzdG9yeRgGIAMoCzIrLnRlbXBvcmFsLmFwaS5yZXBs",
-            "aWNhdGlvbi52MS5GYWlsb3ZlclN0YXR1cyLPAgoWVXBkYXRlTmFtZXNwYWNl",
-            "UmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSQwoLdXBkYXRlX2luZm8YAiAB",
-            "KAsyLi50ZW1wb3JhbC5hcGkubmFtZXNwYWNlLnYxLlVwZGF0ZU5hbWVzcGFj",
-            "ZUluZm8SOgoGY29uZmlnGAMgASgLMioudGVtcG9yYWwuYXBpLm5hbWVzcGFj",
-            "ZS52MS5OYW1lc3BhY2VDb25maWcSUwoScmVwbGljYXRpb25fY29uZmlnGAQg",
-            "ASgLMjcudGVtcG9yYWwuYXBpLnJlcGxpY2F0aW9uLnYxLk5hbWVzcGFjZVJl",
-            "cGxpY2F0aW9uQ29uZmlnEhYKDnNlY3VyaXR5X3Rva2VuGAUgASgJEhkKEWRl",
-            "bGV0ZV9iYWRfYmluYXJ5GAYgASgJEhkKEXByb21vdGVfbmFtZXNwYWNlGAcg",
-            "ASgIIqMCChdVcGRhdGVOYW1lc3BhY2VSZXNwb25zZRJACg5uYW1lc3BhY2Vf",
+            "L3YxL2FjdGl2aXR5LnByb3RvGiF0ZW1wb3JhbC9hcGkvZW51bXMvdjEvbmV4",
+            "dXMucHJvdG8aJnRlbXBvcmFsL2FwaS9hY3Rpdml0eS92MS9tZXNzYWdlLnBy",
+            "b3RvGiR0ZW1wb3JhbC9hcGkvY29tbW9uL3YxL21lc3NhZ2UucHJvdG8aJXRl",
+            "bXBvcmFsL2FwaS9oaXN0b3J5L3YxL21lc3NhZ2UucHJvdG8aJnRlbXBvcmFs",
+            "L2FwaS93b3JrZmxvdy92MS9tZXNzYWdlLnByb3RvGiV0ZW1wb3JhbC9hcGkv",
+            "Y29tbWFuZC92MS9tZXNzYWdlLnByb3RvGiR0ZW1wb3JhbC9hcGkvY29tcHV0",
+            "ZS92MS9jb25maWcucHJvdG8aKHRlbXBvcmFsL2FwaS9kZXBsb3ltZW50L3Yx",
+            "L21lc3NhZ2UucHJvdG8aJXRlbXBvcmFsL2FwaS9mYWlsdXJlL3YxL21lc3Nh",
+            "Z2UucHJvdG8aJHRlbXBvcmFsL2FwaS9maWx0ZXIvdjEvbWVzc2FnZS5wcm90",
+            "bxomdGVtcG9yYWwvYXBpL3Byb3RvY29sL3YxL21lc3NhZ2UucHJvdG8aJ3Rl",
+            "bXBvcmFsL2FwaS9uYW1lc3BhY2UvdjEvbWVzc2FnZS5wcm90bxojdGVtcG9y",
+            "YWwvYXBpL3F1ZXJ5L3YxL21lc3NhZ2UucHJvdG8aKXRlbXBvcmFsL2FwaS9y",
+            "ZXBsaWNhdGlvbi92MS9tZXNzYWdlLnByb3RvGiN0ZW1wb3JhbC9hcGkvcnVs",
+            "ZXMvdjEvbWVzc2FnZS5wcm90bxondGVtcG9yYWwvYXBpL3Nkay92MS93b3Jr",
+            "ZXJfY29uZmlnLnByb3RvGiZ0ZW1wb3JhbC9hcGkvc2NoZWR1bGUvdjEvbWVz",
+            "c2FnZS5wcm90bxondGVtcG9yYWwvYXBpL3Rhc2txdWV1ZS92MS9tZXNzYWdl",
+            "LnByb3RvGiR0ZW1wb3JhbC9hcGkvdXBkYXRlL3YxL21lc3NhZ2UucHJvdG8a",
+            "JXRlbXBvcmFsL2FwaS92ZXJzaW9uL3YxL21lc3NhZ2UucHJvdG8aI3RlbXBv",
+            "cmFsL2FwaS9iYXRjaC92MS9tZXNzYWdlLnByb3RvGjB0ZW1wb3JhbC9hcGkv",
+            "c2RrL3YxL3Rhc2tfY29tcGxldGVfbWV0YWRhdGEucHJvdG8aJ3RlbXBvcmFs",
+            "L2FwaS9zZGsvdjEvdXNlcl9tZXRhZGF0YS5wcm90bxojdGVtcG9yYWwvYXBp",
+            "L25leHVzL3YxL21lc3NhZ2UucHJvdG8aJHRlbXBvcmFsL2FwaS93b3JrZXIv",
+            "djEvbWVzc2FnZS5wcm90bxoeZ29vZ2xlL3Byb3RvYnVmL2R1cmF0aW9uLnBy",
+            "b3RvGiBnb29nbGUvcHJvdG9idWYvZmllbGRfbWFzay5wcm90bxofZ29vZ2xl",
+            "L3Byb3RvYnVmL3RpbWVzdGFtcC5wcm90byKIBQoYUmVnaXN0ZXJOYW1lc3Bh",
+            "Y2VSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgC",
+            "IAEoCRITCgtvd25lcl9lbWFpbBgDIAEoCRJGCiN3b3JrZmxvd19leGVjdXRp",
+            "b25fcmV0ZW50aW9uX3BlcmlvZBgEIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5E",
+            "dXJhdGlvbhJHCghjbHVzdGVycxgFIAMoCzI1LnRlbXBvcmFsLmFwaS5yZXBs",
+            "aWNhdGlvbi52MS5DbHVzdGVyUmVwbGljYXRpb25Db25maWcSGwoTYWN0aXZl",
+            "X2NsdXN0ZXJfbmFtZRgGIAEoCRJRCgRkYXRhGAcgAygLMkMudGVtcG9yYWwu",
+            "YXBpLndvcmtmbG93c2VydmljZS52MS5SZWdpc3Rlck5hbWVzcGFjZVJlcXVl",
+            "c3QuRGF0YUVudHJ5EhYKDnNlY3VyaXR5X3Rva2VuGAggASgJEhsKE2lzX2ds",
+            "b2JhbF9uYW1lc3BhY2UYCSABKAgSRAoWaGlzdG9yeV9hcmNoaXZhbF9zdGF0",
+            "ZRgKIAEoDjIkLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5BcmNoaXZhbFN0YXRl",
+            "EhwKFGhpc3RvcnlfYXJjaGl2YWxfdXJpGAsgASgJEkcKGXZpc2liaWxpdHlf",
+            "YXJjaGl2YWxfc3RhdGUYDCABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEu",
+            "QXJjaGl2YWxTdGF0ZRIfChd2aXNpYmlsaXR5X2FyY2hpdmFsX3VyaRgNIAEo",
+            "CRorCglEYXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4",
+            "ASIbChlSZWdpc3Rlck5hbWVzcGFjZVJlc3BvbnNlIokBChVMaXN0TmFtZXNw",
+            "YWNlc1JlcXVlc3QSEQoJcGFnZV9zaXplGAEgASgFEhcKD25leHRfcGFnZV90",
+            "b2tlbhgCIAEoDBJEChBuYW1lc3BhY2VfZmlsdGVyGAMgASgLMioudGVtcG9y",
+            "YWwuYXBpLm5hbWVzcGFjZS52MS5OYW1lc3BhY2VGaWx0ZXIigQEKFkxpc3RO",
+            "YW1lc3BhY2VzUmVzcG9uc2USTgoKbmFtZXNwYWNlcxgBIAMoCzI6LnRlbXBv",
+            "cmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuRGVzY3JpYmVOYW1lc3BhY2VS",
+            "ZXNwb25zZRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAwiOQoYRGVzY3JpYmVO",
+            "YW1lc3BhY2VSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIKCgJpZBgCIAEo",
+            "CSLsAgoZRGVzY3JpYmVOYW1lc3BhY2VSZXNwb25zZRJACg5uYW1lc3BhY2Vf",
             "aW5mbxgBIAEoCzIoLnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuTmFtZXNw",
             "YWNlSW5mbxI6CgZjb25maWcYAiABKAsyKi50ZW1wb3JhbC5hcGkubmFtZXNw",
             "YWNlLnYxLk5hbWVzcGFjZUNvbmZpZxJTChJyZXBsaWNhdGlvbl9jb25maWcY",
             "AyABKAsyNy50ZW1wb3JhbC5hcGkucmVwbGljYXRpb24udjEuTmFtZXNwYWNl",
             "UmVwbGljYXRpb25Db25maWcSGAoQZmFpbG92ZXJfdmVyc2lvbhgEIAEoAxIb",
-            "ChNpc19nbG9iYWxfbmFtZXNwYWNlGAUgASgIIkYKGURlcHJlY2F0ZU5hbWVz",
-            "cGFjZVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhYKDnNlY3VyaXR5X3Rv",
-            "a2VuGAIgASgJIhwKGkRlcHJlY2F0ZU5hbWVzcGFjZVJlc3BvbnNlIocMCh1T",
-            "dGFydFdvcmtmbG93RXhlY3V0aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASAB",
-            "KAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSOwoNd29ya2Zsb3dfdHlwZRgDIAEo",
-            "CzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEjgKCnRh",
-            "c2tfcXVldWUYBCABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRh",
-            "c2tRdWV1ZRIvCgVpbnB1dBgFIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24u",
-            "djEuUGF5bG9hZHMSPQoad29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVvdXQYBiAB",
-            "KAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SNwoUd29ya2Zsb3dfcnVu",
-            "X3RpbWVvdXQYByABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SOAoV",
-            "d29ya2Zsb3dfdGFza190aW1lb3V0GAggASgLMhkuZ29vZ2xlLnByb3RvYnVm",
-            "LkR1cmF0aW9uEhAKCGlkZW50aXR5GAkgASgJEhIKCnJlcXVlc3RfaWQYCiAB",
-            "KAkSTgoYd29ya2Zsb3dfaWRfcmV1c2VfcG9saWN5GAsgASgOMiwudGVtcG9y",
-            "YWwuYXBpLmVudW1zLnYxLldvcmtmbG93SWRSZXVzZVBvbGljeRJUCht3b3Jr",
-            "Zmxvd19pZF9jb25mbGljdF9wb2xpY3kYFiABKA4yLy50ZW1wb3JhbC5hcGku",
-            "ZW51bXMudjEuV29ya2Zsb3dJZENvbmZsaWN0UG9saWN5EjkKDHJldHJ5X3Bv",
-            "bGljeRgMIAEoCzIjLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUmV0cnlQb2xp",
-            "Y3kSFQoNY3Jvbl9zY2hlZHVsZRgNIAEoCRIqCgRtZW1vGA4gASgLMhwudGVt",
-            "cG9yYWwuYXBpLmNvbW1vbi52MS5NZW1vEkMKEXNlYXJjaF9hdHRyaWJ1dGVz",
-            "GA8gASgLMigudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5TZWFyY2hBdHRyaWJ1",
-            "dGVzEi4KBmhlYWRlchgQIAEoCzIeLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
-            "SGVhZGVyEh8KF3JlcXVlc3RfZWFnZXJfZXhlY3V0aW9uGBEgASgIEjsKEWNv",
-            "bnRpbnVlZF9mYWlsdXJlGBIgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUu",
-            "djEuRmFpbHVyZRJAChZsYXN0X2NvbXBsZXRpb25fcmVzdWx0GBMgASgLMiAu",
-            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxI3ChR3b3JrZmxvd19z",
-            "dGFydF9kZWxheRgUIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI+",
-            "ChRjb21wbGV0aW9uX2NhbGxiYWNrcxgVIAMoCzIgLnRlbXBvcmFsLmFwaS5j",
-            "b21tb24udjEuQ2FsbGJhY2sSOAoNdXNlcl9tZXRhZGF0YRgXIAEoCzIhLnRl",
-            "bXBvcmFsLmFwaS5zZGsudjEuVXNlck1ldGFkYXRhEisKBWxpbmtzGBggAygL",
-            "MhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5MaW5rEkkKE3ZlcnNpb25pbmdf",
-            "b3ZlcnJpZGUYGSABKAsyLC50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuVmVy",
-            "c2lvbmluZ092ZXJyaWRlEkgKE29uX2NvbmZsaWN0X29wdGlvbnMYGiABKAsy",
-            "Ky50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuT25Db25mbGljdE9wdGlvbnMS",
-            "MgoIcHJpb3JpdHkYGyABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBy",
-            "aW9yaXR5ElwKH2VhZ2VyX3dvcmtlcl9kZXBsb3ltZW50X29wdGlvbnMYHCAB",
-            "KAsyMy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3lt",
-            "ZW50T3B0aW9ucyKKAgoeU3RhcnRXb3JrZmxvd0V4ZWN1dGlvblJlc3BvbnNl",
-            "Eg4KBnJ1bl9pZBgBIAEoCRIPCgdzdGFydGVkGAMgASgIEj4KBnN0YXR1cxgF",
-            "IAEoDjIuLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5Xb3JrZmxvd0V4ZWN1dGlv",
-            "blN0YXR1cxJbChNlYWdlcl93b3JrZmxvd190YXNrGAIgASgLMj4udGVtcG9y",
-            "YWwuYXBpLndvcmtmbG93c2VydmljZS52MS5Qb2xsV29ya2Zsb3dUYXNrUXVl",
-            "dWVSZXNwb25zZRIqCgRsaW5rGAQgASgLMhwudGVtcG9yYWwuYXBpLmNvbW1v",
-            "bi52MS5MaW5rIqoCCiJHZXRXb3JrZmxvd0V4ZWN1dGlvbkhpc3RvcnlSZXF1",
-            "ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRI8CglleGVjdXRpb24YAiABKAsyKS50",
-            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEhkKEW1h",
-            "eGltdW1fcGFnZV9zaXplGAMgASgFEhcKD25leHRfcGFnZV90b2tlbhgEIAEo",
-            "DBIWCg53YWl0X25ld19ldmVudBgFIAEoCBJQChloaXN0b3J5X2V2ZW50X2Zp",
-            "bHRlcl90eXBlGAYgASgOMi0udGVtcG9yYWwuYXBpLmVudW1zLnYxLkhpc3Rv",
-            "cnlFdmVudEZpbHRlclR5cGUSFQoNc2tpcF9hcmNoaXZhbBgHIAEoCCK6AQoj",
-            "R2V0V29ya2Zsb3dFeGVjdXRpb25IaXN0b3J5UmVzcG9uc2USMQoHaGlzdG9y",
-            "eRgBIAEoCzIgLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLkhpc3RvcnkSNQoL",
-            "cmF3X2hpc3RvcnkYAiADKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkRh",
-            "dGFCbG9iEhcKD25leHRfcGFnZV90b2tlbhgDIAEoDBIQCghhcmNoaXZlZBgE",
-            "IAEoCCKwAQopR2V0V29ya2Zsb3dFeGVjdXRpb25IaXN0b3J5UmV2ZXJzZVJl",
-            "cXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEjwKCWV4ZWN1dGlvbhgCIAEoCzIp",
-            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SGQoR",
-            "bWF4aW11bV9wYWdlX3NpemUYAyABKAUSFwoPbmV4dF9wYWdlX3Rva2VuGAQg",
-            "ASgMIngKKkdldFdvcmtmbG93RXhlY3V0aW9uSGlzdG9yeVJldmVyc2VSZXNw",
+            "ChNpc19nbG9iYWxfbmFtZXNwYWNlGAUgASgIEkUKEGZhaWxvdmVyX2hpc3Rv",
+            "cnkYBiADKAsyKy50ZW1wb3JhbC5hcGkucmVwbGljYXRpb24udjEuRmFpbG92",
+            "ZXJTdGF0dXMizwIKFlVwZGF0ZU5hbWVzcGFjZVJlcXVlc3QSEQoJbmFtZXNw",
+            "YWNlGAEgASgJEkMKC3VwZGF0ZV9pbmZvGAIgASgLMi4udGVtcG9yYWwuYXBp",
+            "Lm5hbWVzcGFjZS52MS5VcGRhdGVOYW1lc3BhY2VJbmZvEjoKBmNvbmZpZxgD",
+            "IAEoCzIqLnRlbXBvcmFsLmFwaS5uYW1lc3BhY2UudjEuTmFtZXNwYWNlQ29u",
+            "ZmlnElMKEnJlcGxpY2F0aW9uX2NvbmZpZxgEIAEoCzI3LnRlbXBvcmFsLmFw",
+            "aS5yZXBsaWNhdGlvbi52MS5OYW1lc3BhY2VSZXBsaWNhdGlvbkNvbmZpZxIW",
+            "Cg5zZWN1cml0eV90b2tlbhgFIAEoCRIZChFkZWxldGVfYmFkX2JpbmFyeRgG",
+            "IAEoCRIZChFwcm9tb3RlX25hbWVzcGFjZRgHIAEoCCKjAgoXVXBkYXRlTmFt",
+            "ZXNwYWNlUmVzcG9uc2USQAoObmFtZXNwYWNlX2luZm8YASABKAsyKC50ZW1w",
+            "b3JhbC5hcGkubmFtZXNwYWNlLnYxLk5hbWVzcGFjZUluZm8SOgoGY29uZmln",
+            "GAIgASgLMioudGVtcG9yYWwuYXBpLm5hbWVzcGFjZS52MS5OYW1lc3BhY2VD",
+            "b25maWcSUwoScmVwbGljYXRpb25fY29uZmlnGAMgASgLMjcudGVtcG9yYWwu",
+            "YXBpLnJlcGxpY2F0aW9uLnYxLk5hbWVzcGFjZVJlcGxpY2F0aW9uQ29uZmln",
+            "EhgKEGZhaWxvdmVyX3ZlcnNpb24YBCABKAMSGwoTaXNfZ2xvYmFsX25hbWVz",
+            "cGFjZRgFIAEoCCJGChlEZXByZWNhdGVOYW1lc3BhY2VSZXF1ZXN0EhEKCW5h",
+            "bWVzcGFjZRgBIAEoCRIWCg5zZWN1cml0eV90b2tlbhgCIAEoCSIcChpEZXBy",
+            "ZWNhdGVOYW1lc3BhY2VSZXNwb25zZSLTDAodU3RhcnRXb3JrZmxvd0V4ZWN1",
+            "dGlvblJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC3dvcmtmbG93X2lk",
+            "GAIgASgJEjsKDXdvcmtmbG93X3R5cGUYAyABKAsyJC50ZW1wb3JhbC5hcGku",
+            "Y29tbW9uLnYxLldvcmtmbG93VHlwZRI4Cgp0YXNrX3F1ZXVlGAQgASgLMiQu",
+            "dGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUSLwoFaW5wdXQY",
+            "BSABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEj0KGndv",
+            "cmtmbG93X2V4ZWN1dGlvbl90aW1lb3V0GAYgASgLMhkuZ29vZ2xlLnByb3Rv",
+            "YnVmLkR1cmF0aW9uEjcKFHdvcmtmbG93X3J1bl90aW1lb3V0GAcgASgLMhku",
+            "Z29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjgKFXdvcmtmbG93X3Rhc2tfdGlt",
+            "ZW91dBgIIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhIQCghpZGVu",
+            "dGl0eRgJIAEoCRISCgpyZXF1ZXN0X2lkGAogASgJEk4KGHdvcmtmbG93X2lk",
+            "X3JldXNlX3BvbGljeRgLIAEoDjIsLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5X",
+            "b3JrZmxvd0lkUmV1c2VQb2xpY3kSVAobd29ya2Zsb3dfaWRfY29uZmxpY3Rf",
+            "cG9saWN5GBYgASgOMi8udGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtmbG93",
+            "SWRDb25mbGljdFBvbGljeRI5CgxyZXRyeV9wb2xpY3kYDCABKAsyIy50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5EhUKDWNyb25fc2NoZWR1",
+            "bGUYDSABKAkSKgoEbWVtbxgOIAEoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24u",
+            "djEuTWVtbxJDChFzZWFyY2hfYXR0cmlidXRlcxgPIAEoCzIoLnRlbXBvcmFs",
+            "LmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmlidXRlcxIuCgZoZWFkZXIYECAB",
+            "KAsyHi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkhlYWRlchIfChdyZXF1ZXN0",
+            "X2VhZ2VyX2V4ZWN1dGlvbhgRIAEoCBI7ChFjb250aW51ZWRfZmFpbHVyZRgS",
+            "IAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSQAoWbGFz",
+            "dF9jb21wbGV0aW9uX3Jlc3VsdBgTIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21t",
+            "b24udjEuUGF5bG9hZHMSNwoUd29ya2Zsb3dfc3RhcnRfZGVsYXkYFCABKAsy",
+            "GS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SPgoUY29tcGxldGlvbl9jYWxs",
+            "YmFja3MYFSADKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkNhbGxiYWNr",
+            "EjgKDXVzZXJfbWV0YWRhdGEYFyABKAsyIS50ZW1wb3JhbC5hcGkuc2RrLnYx",
+            "LlVzZXJNZXRhZGF0YRIrCgVsaW5rcxgYIAMoCzIcLnRlbXBvcmFsLmFwaS5j",
+            "b21tb24udjEuTGluaxJJChN2ZXJzaW9uaW5nX292ZXJyaWRlGBkgASgLMiwu",
+            "dGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLlZlcnNpb25pbmdPdmVycmlkZRJI",
+            "ChNvbl9jb25mbGljdF9vcHRpb25zGBogASgLMisudGVtcG9yYWwuYXBpLndv",
+            "cmtmbG93LnYxLk9uQ29uZmxpY3RPcHRpb25zEjIKCHByaW9yaXR5GBsgASgL",
+            "MiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Qcmlvcml0eRJcCh9lYWdlcl93",
+            "b3JrZXJfZGVwbG95bWVudF9vcHRpb25zGBwgASgLMjMudGVtcG9yYWwuYXBp",
+            "LmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudE9wdGlvbnMSSgoUdGlt",
+            "ZV9za2lwcGluZ19jb25maWcYHSABKAsyLC50ZW1wb3JhbC5hcGkud29ya2Zs",
+            "b3cudjEuVGltZVNraXBwaW5nQ29uZmlnIooCCh5TdGFydFdvcmtmbG93RXhl",
+            "Y3V0aW9uUmVzcG9uc2USDgoGcnVuX2lkGAEgASgJEg8KB3N0YXJ0ZWQYAyAB",
+            "KAgSPgoGc3RhdHVzGAUgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLldv",
+            "cmtmbG93RXhlY3V0aW9uU3RhdHVzElsKE2VhZ2VyX3dvcmtmbG93X3Rhc2sY",
+            "AiABKAsyPi50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLlBvbGxX",
+            "b3JrZmxvd1Rhc2tRdWV1ZVJlc3BvbnNlEioKBGxpbmsYBCABKAsyHC50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLkxpbmsiqgIKIkdldFdvcmtmbG93RXhlY3V0",
+            "aW9uSGlzdG9yeVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEjwKCWV4ZWN1",
+            "dGlvbhgCIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dF",
+            "eGVjdXRpb24SGQoRbWF4aW11bV9wYWdlX3NpemUYAyABKAUSFwoPbmV4dF9w",
+            "YWdlX3Rva2VuGAQgASgMEhYKDndhaXRfbmV3X2V2ZW50GAUgASgIElAKGWhp",
+            "c3RvcnlfZXZlbnRfZmlsdGVyX3R5cGUYBiABKA4yLS50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuSGlzdG9yeUV2ZW50RmlsdGVyVHlwZRIVCg1za2lwX2FyY2hp",
+            "dmFsGAcgASgIIroBCiNHZXRXb3JrZmxvd0V4ZWN1dGlvbkhpc3RvcnlSZXNw",
             "b25zZRIxCgdoaXN0b3J5GAEgASgLMiAudGVtcG9yYWwuYXBpLmhpc3Rvcnku",
-            "djEuSGlzdG9yeRIXCg9uZXh0X3BhZ2VfdG9rZW4YAyABKAwi/AIKHFBvbGxX",
-            "b3JrZmxvd1Rhc2tRdWV1ZVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEjgK",
-            "CnRhc2tfcXVldWUYAiABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYx",
-            "LlRhc2tRdWV1ZRIQCghpZGVudGl0eRgDIAEoCRIbChN3b3JrZXJfaW5zdGFu",
-            "Y2Vfa2V5GAggASgJEhsKD2JpbmFyeV9jaGVja3N1bRgEIAEoCUICGAESWgob",
-            "d29ya2VyX3ZlcnNpb25fY2FwYWJpbGl0aWVzGAUgASgLMjEudGVtcG9yYWwu",
-            "YXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9uQ2FwYWJpbGl0aWVzQgIYARJP",
-            "ChJkZXBsb3ltZW50X29wdGlvbnMYBiABKAsyMy50ZW1wb3JhbC5hcGkuZGVw",
-            "bG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50T3B0aW9uc0oECAcQCFIQd29y",
-            "a2VyX2hlYXJ0YmVhdCKRBwodUG9sbFdvcmtmbG93VGFza1F1ZXVlUmVzcG9u",
-            "c2USEgoKdGFza190b2tlbhgBIAEoDBJFChJ3b3JrZmxvd19leGVjdXRpb24Y",
-            "AiABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0",
-            "aW9uEjsKDXdvcmtmbG93X3R5cGUYAyABKAsyJC50ZW1wb3JhbC5hcGkuY29t",
-            "bW9uLnYxLldvcmtmbG93VHlwZRIhChlwcmV2aW91c19zdGFydGVkX2V2ZW50",
-            "X2lkGAQgASgDEhgKEHN0YXJ0ZWRfZXZlbnRfaWQYBSABKAMSDwoHYXR0ZW1w",
-            "dBgGIAEoBRIaChJiYWNrbG9nX2NvdW50X2hpbnQYByABKAMSMQoHaGlzdG9y",
-            "eRgIIAEoCzIgLnRlbXBvcmFsLmFwaS5oaXN0b3J5LnYxLkhpc3RvcnkSFwoP",
-            "bmV4dF9wYWdlX3Rva2VuGAkgASgMEjMKBXF1ZXJ5GAogASgLMiQudGVtcG9y",
-            "YWwuYXBpLnF1ZXJ5LnYxLldvcmtmbG93UXVlcnkSSwodd29ya2Zsb3dfZXhl",
-            "Y3V0aW9uX3Rhc2tfcXVldWUYCyABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1",
-            "ZXVlLnYxLlRhc2tRdWV1ZRIyCg5zY2hlZHVsZWRfdGltZRgMIAEoCzIaLmdv",
-            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMc3RhcnRlZF90aW1lGA0gASgL",
-            "MhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBJcCgdxdWVyaWVzGA4gAygL",
-            "MksudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5Qb2xsV29ya2Zs",
-            "b3dUYXNrUXVldWVSZXNwb25zZS5RdWVyaWVzRW50cnkSMwoIbWVzc2FnZXMY",
-            "DyADKAsyIS50ZW1wb3JhbC5hcGkucHJvdG9jb2wudjEuTWVzc2FnZRJRChdw",
-            "b2xsZXJfc2NhbGluZ19kZWNpc2lvbhgQIAEoCzIwLnRlbXBvcmFsLmFwaS50",
-            "YXNrcXVldWUudjEuUG9sbGVyU2NhbGluZ0RlY2lzaW9uGlQKDFF1ZXJpZXNF",
-            "bnRyeRILCgNrZXkYASABKAkSMwoFdmFsdWUYAiABKAsyJC50ZW1wb3JhbC5h",
-            "cGkucXVlcnkudjEuV29ya2Zsb3dRdWVyeToCOAEiygkKI1Jlc3BvbmRXb3Jr",
-            "Zmxvd1Rhc2tDb21wbGV0ZWRSZXF1ZXN0EhIKCnRhc2tfdG9rZW4YASABKAwS",
-            "MgoIY29tbWFuZHMYAiADKAsyIC50ZW1wb3JhbC5hcGkuY29tbWFuZC52MS5D",
-            "b21tYW5kEhAKCGlkZW50aXR5GAMgASgJEk8KEXN0aWNreV9hdHRyaWJ1dGVz",
-            "GAQgASgLMjQudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5TdGlja3lFeGVj",
-            "dXRpb25BdHRyaWJ1dGVzEiAKGHJldHVybl9uZXdfd29ya2Zsb3dfdGFzaxgF",
-            "IAEoCBImCh5mb3JjZV9jcmVhdGVfbmV3X3dvcmtmbG93X3Rhc2sYBiABKAgS",
-            "GwoPYmluYXJ5X2NoZWNrc3VtGAcgASgJQgIYARJtCg1xdWVyeV9yZXN1bHRz",
-            "GAggAygLMlYudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5SZXNw",
-            "b25kV29ya2Zsb3dUYXNrQ29tcGxldGVkUmVxdWVzdC5RdWVyeVJlc3VsdHNF",
-            "bnRyeRIRCgluYW1lc3BhY2UYCSABKAkSEwoLcmVzb3VyY2VfaWQYEiABKAkS",
-            "TAoUd29ya2VyX3ZlcnNpb25fc3RhbXAYCiABKAsyKi50ZW1wb3JhbC5hcGku",
-            "Y29tbW9uLnYxLldvcmtlclZlcnNpb25TdGFtcEICGAESMwoIbWVzc2FnZXMY",
-            "CyADKAsyIS50ZW1wb3JhbC5hcGkucHJvdG9jb2wudjEuTWVzc2FnZRJICgxz",
-            "ZGtfbWV0YWRhdGEYDCABKAsyMi50ZW1wb3JhbC5hcGkuc2RrLnYxLldvcmtm",
-            "bG93VGFza0NvbXBsZXRlZE1ldGFkYXRhEkMKEW1ldGVyaW5nX21ldGFkYXRh",
-            "GA0gASgLMigudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5NZXRlcmluZ01ldGFk",
-            "YXRhEmcKDGNhcGFiaWxpdGllcxgOIAEoCzJRLnRlbXBvcmFsLmFwaS53b3Jr",
-            "Zmxvd3NlcnZpY2UudjEuUmVzcG9uZFdvcmtmbG93VGFza0NvbXBsZXRlZFJl",
-            "cXVlc3QuQ2FwYWJpbGl0aWVzEj4KCmRlcGxveW1lbnQYDyABKAsyJi50ZW1w",
-            "b3JhbC5hcGkuZGVwbG95bWVudC52MS5EZXBsb3ltZW50QgIYARJGChN2ZXJz",
-            "aW9uaW5nX2JlaGF2aW9yGBAgASgOMikudGVtcG9yYWwuYXBpLmVudW1zLnYx",
-            "LlZlcnNpb25pbmdCZWhhdmlvchJPChJkZXBsb3ltZW50X29wdGlvbnMYESAB",
-            "KAsyMy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3lt",
-            "ZW50T3B0aW9ucxpfChFRdWVyeVJlc3VsdHNFbnRyeRILCgNrZXkYASABKAkS",
-            "OQoFdmFsdWUYAiABKAsyKi50ZW1wb3JhbC5hcGkucXVlcnkudjEuV29ya2Zs",
-            "b3dRdWVyeVJlc3VsdDoCOAEaRQoMQ2FwYWJpbGl0aWVzEjUKLWRpc2NhcmRf",
-            "c3BlY3VsYXRpdmVfd29ya2Zsb3dfdGFza193aXRoX2V2ZW50cxgBIAEoCCL1",
-            "AQokUmVzcG9uZFdvcmtmbG93VGFza0NvbXBsZXRlZFJlc3BvbnNlElUKDXdv",
-            "cmtmbG93X3Rhc2sYASABKAsyPi50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2",
-            "aWNlLnYxLlBvbGxXb3JrZmxvd1Rhc2tRdWV1ZVJlc3BvbnNlElYKDmFjdGl2",
-            "aXR5X3Rhc2tzGAIgAygLMj4udGVtcG9yYWwuYXBpLndvcmtmbG93c2Vydmlj",
-            "ZS52MS5Qb2xsQWN0aXZpdHlUYXNrUXVldWVSZXNwb25zZRIeChZyZXNldF9o",
-            "aXN0b3J5X2V2ZW50X2lkGAMgASgDIo0ECiBSZXNwb25kV29ya2Zsb3dUYXNr",
-            "RmFpbGVkUmVxdWVzdBISCgp0YXNrX3Rva2VuGAEgASgMEj0KBWNhdXNlGAIg",
-            "ASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLldvcmtmbG93VGFza0ZhaWxl",
-            "ZENhdXNlEjEKB2ZhaWx1cmUYAyABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVy",
-            "ZS52MS5GYWlsdXJlEhAKCGlkZW50aXR5GAQgASgJEhsKD2JpbmFyeV9jaGVj",
-            "a3N1bRgFIAEoCUICGAESEQoJbmFtZXNwYWNlGAYgASgJEhMKC3Jlc291cmNl",
-            "X2lkGAsgASgJEjMKCG1lc3NhZ2VzGAcgAygLMiEudGVtcG9yYWwuYXBpLnBy",
-            "b3RvY29sLnYxLk1lc3NhZ2USRgoOd29ya2VyX3ZlcnNpb24YCCABKAsyKi50",
-            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25TdGFtcEICGAES",
-            "PgoKZGVwbG95bWVudBgJIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50",
-            "LnYxLkRlcGxveW1lbnRCAhgBEk8KEmRlcGxveW1lbnRfb3B0aW9ucxgKIAEo",
-            "CzIzLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1l",
-            "bnRPcHRpb25zIiMKIVJlc3BvbmRXb3JrZmxvd1Rhc2tGYWlsZWRSZXNwb25z",
-            "ZSKqAwocUG9sbEFjdGl2aXR5VGFza1F1ZXVlUmVxdWVzdBIRCgluYW1lc3Bh",
-            "Y2UYASABKAkSOAoKdGFza19xdWV1ZRgCIAEoCzIkLnRlbXBvcmFsLmFwaS50",
-            "YXNrcXVldWUudjEuVGFza1F1ZXVlEhAKCGlkZW50aXR5GAMgASgJEhsKE3dv",
-            "cmtlcl9pbnN0YW5jZV9rZXkYCCABKAkSSQoTdGFza19xdWV1ZV9tZXRhZGF0",
-            "YRgEIAEoCzIsLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVl",
-            "TWV0YWRhdGESWgobd29ya2VyX3ZlcnNpb25fY2FwYWJpbGl0aWVzGAUgASgL",
-            "MjEudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9uQ2FwYWJp",
-            "bGl0aWVzQgIYARJPChJkZXBsb3ltZW50X29wdGlvbnMYBiABKAsyMy50ZW1w",
-            "b3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50T3B0aW9u",
-            "c0oECAcQCFIQd29ya2VyX2hlYXJ0YmVhdCKICAodUG9sbEFjdGl2aXR5VGFz",
-            "a1F1ZXVlUmVzcG9uc2USEgoKdGFza190b2tlbhgBIAEoDBIaChJ3b3JrZmxv",
-            "d19uYW1lc3BhY2UYAiABKAkSOwoNd29ya2Zsb3dfdHlwZRgDIAEoCzIkLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEkUKEndvcmtmbG93",
-            "X2V4ZWN1dGlvbhgEIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29y",
-            "a2Zsb3dFeGVjdXRpb24SOwoNYWN0aXZpdHlfdHlwZRgFIAEoCzIkLnRlbXBv",
-            "cmFsLmFwaS5jb21tb24udjEuQWN0aXZpdHlUeXBlEhMKC2FjdGl2aXR5X2lk",
-            "GAYgASgJEi4KBmhlYWRlchgHIAEoCzIeLnRlbXBvcmFsLmFwaS5jb21tb24u",
-            "djEuSGVhZGVyEi8KBWlucHV0GAggASgLMiAudGVtcG9yYWwuYXBpLmNvbW1v",
-            "bi52MS5QYXlsb2FkcxI7ChFoZWFydGJlYXRfZGV0YWlscxgJIAEoCzIgLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSMgoOc2NoZWR1bGVkX3Rp",
-            "bWUYCiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEkIKHmN1cnJl",
-            "bnRfYXR0ZW1wdF9zY2hlZHVsZWRfdGltZRgLIAEoCzIaLmdvb2dsZS5wcm90",
-            "b2J1Zi5UaW1lc3RhbXASMAoMc3RhcnRlZF90aW1lGAwgASgLMhouZ29vZ2xl",
-            "LnByb3RvYnVmLlRpbWVzdGFtcBIPCgdhdHRlbXB0GA0gASgFEjwKGXNjaGVk",
-            "dWxlX3RvX2Nsb3NlX3RpbWVvdXQYDiABKAsyGS5nb29nbGUucHJvdG9idWYu",
-            "RHVyYXRpb24SOQoWc3RhcnRfdG9fY2xvc2VfdGltZW91dBgPIAEoCzIZLmdv",
-            "b2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI0ChFoZWFydGJlYXRfdGltZW91dBgQ",
-            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI5CgxyZXRyeV9wb2xp",
-            "Y3kYESABKAsyIy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5",
-            "ElEKF3BvbGxlcl9zY2FsaW5nX2RlY2lzaW9uGBIgASgLMjAudGVtcG9yYWwu",
-            "YXBpLnRhc2txdWV1ZS52MS5Qb2xsZXJTY2FsaW5nRGVjaXNpb24SMgoIcHJp",
-            "b3JpdHkYEyABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5",
-            "EhcKD2FjdGl2aXR5X3J1bl9pZBgUIAEoCSKlAQoiUmVjb3JkQWN0aXZpdHlU",
-            "YXNrSGVhcnRiZWF0UmVxdWVzdBISCgp0YXNrX3Rva2VuGAEgASgMEjEKB2Rl",
-            "dGFpbHMYAiABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRz",
-            "EhAKCGlkZW50aXR5GAMgASgJEhEKCW5hbWVzcGFjZRgEIAEoCRITCgtyZXNv",
-            "dXJjZV9pZBgFIAEoCSJwCiNSZWNvcmRBY3Rpdml0eVRhc2tIZWFydGJlYXRS",
-            "ZXNwb25zZRIYChBjYW5jZWxfcmVxdWVzdGVkGAEgASgIEhcKD2FjdGl2aXR5",
-            "X3BhdXNlZBgCIAEoCBIWCg5hY3Rpdml0eV9yZXNldBgDIAEoCCLPAQomUmVj",
-            "b3JkQWN0aXZpdHlUYXNrSGVhcnRiZWF0QnlJZFJlcXVlc3QSEQoJbmFtZXNw",
-            "YWNlGAEgASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEg4KBnJ1bl9pZBgDIAEo",
-            "CRITCgthY3Rpdml0eV9pZBgEIAEoCRIxCgdkZXRhaWxzGAUgASgLMiAudGVt",
-            "cG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxIQCghpZGVudGl0eRgGIAEo",
-            "CRITCgtyZXNvdXJjZV9pZBgHIAEoCSJ0CidSZWNvcmRBY3Rpdml0eVRhc2tI",
-            "ZWFydGJlYXRCeUlkUmVzcG9uc2USGAoQY2FuY2VsX3JlcXVlc3RlZBgBIAEo",
-            "CBIXCg9hY3Rpdml0eV9wYXVzZWQYAiABKAgSFgoOYWN0aXZpdHlfcmVzZXQY",
-            "AyABKAgi/gIKI1Jlc3BvbmRBY3Rpdml0eVRhc2tDb21wbGV0ZWRSZXF1ZXN0",
-            "EhIKCnRhc2tfdG9rZW4YASABKAwSMAoGcmVzdWx0GAIgASgLMiAudGVtcG9y",
-            "YWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxIQCghpZGVudGl0eRgDIAEoCRIR",
-            "CgluYW1lc3BhY2UYBCABKAkSEwoLcmVzb3VyY2VfaWQYCCABKAkSRgoOd29y",
-            "a2VyX3ZlcnNpb24YBSABKAsyKi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldv",
-            "cmtlclZlcnNpb25TdGFtcEICGAESPgoKZGVwbG95bWVudBgGIAEoCzImLnRl",
-            "bXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnRCAhgBEk8KEmRl",
-            "cGxveW1lbnRfb3B0aW9ucxgHIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBsb3lt",
-            "ZW50LnYxLldvcmtlckRlcGxveW1lbnRPcHRpb25zIiYKJFJlc3BvbmRBY3Rp",
-            "dml0eVRhc2tDb21wbGV0ZWRSZXNwb25zZSLPAQonUmVzcG9uZEFjdGl2aXR5",
-            "VGFza0NvbXBsZXRlZEJ5SWRSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIT",
-            "Cgt3b3JrZmxvd19pZBgCIAEoCRIOCgZydW5faWQYAyABKAkSEwoLYWN0aXZp",
-            "dHlfaWQYBCABKAkSMAoGcmVzdWx0GAUgASgLMiAudGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5QYXlsb2FkcxIQCghpZGVudGl0eRgGIAEoCRITCgtyZXNvdXJj",
-            "ZV9pZBgHIAEoCSIqCihSZXNwb25kQWN0aXZpdHlUYXNrQ29tcGxldGVkQnlJ",
-            "ZFJlc3BvbnNlIr4DCiBSZXNwb25kQWN0aXZpdHlUYXNrRmFpbGVkUmVxdWVz",
-            "dBISCgp0YXNrX3Rva2VuGAEgASgMEjEKB2ZhaWx1cmUYAiABKAsyIC50ZW1w",
-            "b3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEhAKCGlkZW50aXR5GAMgASgJ",
-            "EhEKCW5hbWVzcGFjZRgEIAEoCRITCgtyZXNvdXJjZV9pZBgJIAEoCRJAChZs",
-            "YXN0X2hlYXJ0YmVhdF9kZXRhaWxzGAUgASgLMiAudGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5QYXlsb2FkcxJGCg53b3JrZXJfdmVyc2lvbhgGIAEoCzIqLnRl",
+            "djEuSGlzdG9yeRI1CgtyYXdfaGlzdG9yeRgCIAMoCzIgLnRlbXBvcmFsLmFw",
+            "aS5jb21tb24udjEuRGF0YUJsb2ISFwoPbmV4dF9wYWdlX3Rva2VuGAMgASgM",
+            "EhAKCGFyY2hpdmVkGAQgASgIIrABCilHZXRXb3JrZmxvd0V4ZWN1dGlvbkhp",
+            "c3RvcnlSZXZlcnNlUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSPAoJZXhl",
+            "Y3V0aW9uGAIgASgLMikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxv",
+            "d0V4ZWN1dGlvbhIZChFtYXhpbXVtX3BhZ2Vfc2l6ZRgDIAEoBRIXCg9uZXh0",
+            "X3BhZ2VfdG9rZW4YBCABKAwieAoqR2V0V29ya2Zsb3dFeGVjdXRpb25IaXN0",
+            "b3J5UmV2ZXJzZVJlc3BvbnNlEjEKB2hpc3RvcnkYASABKAsyIC50ZW1wb3Jh",
+            "bC5hcGkuaGlzdG9yeS52MS5IaXN0b3J5EhcKD25leHRfcGFnZV90b2tlbhgD",
+            "IAEoDCL8AgocUG9sbFdvcmtmbG93VGFza1F1ZXVlUmVxdWVzdBIRCgluYW1l",
+            "c3BhY2UYASABKAkSOAoKdGFza19xdWV1ZRgCIAEoCzIkLnRlbXBvcmFsLmFw",
+            "aS50YXNrcXVldWUudjEuVGFza1F1ZXVlEhAKCGlkZW50aXR5GAMgASgJEhsK",
+            "E3dvcmtlcl9pbnN0YW5jZV9rZXkYCCABKAkSGwoPYmluYXJ5X2NoZWNrc3Vt",
+            "GAQgASgJQgIYARJaCht3b3JrZXJfdmVyc2lvbl9jYXBhYmlsaXRpZXMYBSAB",
+            "KAsyMS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtlclZlcnNpb25DYXBh",
+            "YmlsaXRpZXNCAhgBEk8KEmRlcGxveW1lbnRfb3B0aW9ucxgGIAEoCzIzLnRl",
+            "bXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRPcHRp",
+            "b25zSgQIBxAIUhB3b3JrZXJfaGVhcnRiZWF0IpEHCh1Qb2xsV29ya2Zsb3dU",
+            "YXNrUXVldWVSZXNwb25zZRISCgp0YXNrX3Rva2VuGAEgASgMEkUKEndvcmtm",
+            "bG93X2V4ZWN1dGlvbhgCIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "V29ya2Zsb3dFeGVjdXRpb24SOwoNd29ya2Zsb3dfdHlwZRgDIAEoCzIkLnRl",
+            "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEiEKGXByZXZpb3Vz",
+            "X3N0YXJ0ZWRfZXZlbnRfaWQYBCABKAMSGAoQc3RhcnRlZF9ldmVudF9pZBgF",
+            "IAEoAxIPCgdhdHRlbXB0GAYgASgFEhoKEmJhY2tsb2dfY291bnRfaGludBgH",
+            "IAEoAxIxCgdoaXN0b3J5GAggASgLMiAudGVtcG9yYWwuYXBpLmhpc3Rvcnku",
+            "djEuSGlzdG9yeRIXCg9uZXh0X3BhZ2VfdG9rZW4YCSABKAwSMwoFcXVlcnkY",
+            "CiABKAsyJC50ZW1wb3JhbC5hcGkucXVlcnkudjEuV29ya2Zsb3dRdWVyeRJL",
+            "Ch13b3JrZmxvd19leGVjdXRpb25fdGFza19xdWV1ZRgLIAEoCzIkLnRlbXBv",
+            "cmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlEjIKDnNjaGVkdWxlZF90",
+            "aW1lGAwgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIwCgxzdGFy",
+            "dGVkX3RpbWUYDSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wElwK",
+            "B3F1ZXJpZXMYDiADKAsySy50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNl",
+            "LnYxLlBvbGxXb3JrZmxvd1Rhc2tRdWV1ZVJlc3BvbnNlLlF1ZXJpZXNFbnRy",
+            "eRIzCghtZXNzYWdlcxgPIAMoCzIhLnRlbXBvcmFsLmFwaS5wcm90b2NvbC52",
+            "MS5NZXNzYWdlElEKF3BvbGxlcl9zY2FsaW5nX2RlY2lzaW9uGBAgASgLMjAu",
+            "dGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Qb2xsZXJTY2FsaW5nRGVjaXNp",
+            "b24aVAoMUXVlcmllc0VudHJ5EgsKA2tleRgBIAEoCRIzCgV2YWx1ZRgCIAEo",
+            "CzIkLnRlbXBvcmFsLmFwaS5xdWVyeS52MS5Xb3JrZmxvd1F1ZXJ5OgI4ASLK",
+            "CQojUmVzcG9uZFdvcmtmbG93VGFza0NvbXBsZXRlZFJlcXVlc3QSEgoKdGFz",
+            "a190b2tlbhgBIAEoDBIyCghjb21tYW5kcxgCIAMoCzIgLnRlbXBvcmFsLmFw",
+            "aS5jb21tYW5kLnYxLkNvbW1hbmQSEAoIaWRlbnRpdHkYAyABKAkSTwoRc3Rp",
+            "Y2t5X2F0dHJpYnV0ZXMYBCABKAsyNC50ZW1wb3JhbC5hcGkudGFza3F1ZXVl",
+            "LnYxLlN0aWNreUV4ZWN1dGlvbkF0dHJpYnV0ZXMSIAoYcmV0dXJuX25ld193",
+            "b3JrZmxvd190YXNrGAUgASgIEiYKHmZvcmNlX2NyZWF0ZV9uZXdfd29ya2Zs",
+            "b3dfdGFzaxgGIAEoCBIbCg9iaW5hcnlfY2hlY2tzdW0YByABKAlCAhgBEm0K",
+            "DXF1ZXJ5X3Jlc3VsdHMYCCADKAsyVi50ZW1wb3JhbC5hcGkud29ya2Zsb3dz",
+            "ZXJ2aWNlLnYxLlJlc3BvbmRXb3JrZmxvd1Rhc2tDb21wbGV0ZWRSZXF1ZXN0",
+            "LlF1ZXJ5UmVzdWx0c0VudHJ5EhEKCW5hbWVzcGFjZRgJIAEoCRITCgtyZXNv",
+            "dXJjZV9pZBgSIAEoCRJMChR3b3JrZXJfdmVyc2lvbl9zdGFtcBgKIAEoCzIq",
+            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyVmVyc2lvblN0YW1wQgIY",
+            "ARIzCghtZXNzYWdlcxgLIAMoCzIhLnRlbXBvcmFsLmFwaS5wcm90b2NvbC52",
+            "MS5NZXNzYWdlEkgKDHNka19tZXRhZGF0YRgMIAEoCzIyLnRlbXBvcmFsLmFw",
+            "aS5zZGsudjEuV29ya2Zsb3dUYXNrQ29tcGxldGVkTWV0YWRhdGESQwoRbWV0",
+            "ZXJpbmdfbWV0YWRhdGEYDSABKAsyKC50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
+            "Lk1ldGVyaW5nTWV0YWRhdGESZwoMY2FwYWJpbGl0aWVzGA4gASgLMlEudGVt",
+            "cG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5SZXNwb25kV29ya2Zsb3dU",
+            "YXNrQ29tcGxldGVkUmVxdWVzdC5DYXBhYmlsaXRpZXMSPgoKZGVwbG95bWVu",
+            "dBgPIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1l",
+            "bnRCAhgBEkYKE3ZlcnNpb25pbmdfYmVoYXZpb3IYECABKA4yKS50ZW1wb3Jh",
+            "bC5hcGkuZW51bXMudjEuVmVyc2lvbmluZ0JlaGF2aW9yEk8KEmRlcGxveW1l",
+            "bnRfb3B0aW9ucxgRIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYx",
+            "LldvcmtlckRlcGxveW1lbnRPcHRpb25zGl8KEVF1ZXJ5UmVzdWx0c0VudHJ5",
+            "EgsKA2tleRgBIAEoCRI5CgV2YWx1ZRgCIAEoCzIqLnRlbXBvcmFsLmFwaS5x",
+            "dWVyeS52MS5Xb3JrZmxvd1F1ZXJ5UmVzdWx0OgI4ARpFCgxDYXBhYmlsaXRp",
+            "ZXMSNQotZGlzY2FyZF9zcGVjdWxhdGl2ZV93b3JrZmxvd190YXNrX3dpdGhf",
+            "ZXZlbnRzGAEgASgIIvUBCiRSZXNwb25kV29ya2Zsb3dUYXNrQ29tcGxldGVk",
+            "UmVzcG9uc2USVQoNd29ya2Zsb3dfdGFzaxgBIAEoCzI+LnRlbXBvcmFsLmFw",
+            "aS53b3JrZmxvd3NlcnZpY2UudjEuUG9sbFdvcmtmbG93VGFza1F1ZXVlUmVz",
+            "cG9uc2USVgoOYWN0aXZpdHlfdGFza3MYAiADKAsyPi50ZW1wb3JhbC5hcGku",
+            "d29ya2Zsb3dzZXJ2aWNlLnYxLlBvbGxBY3Rpdml0eVRhc2tRdWV1ZVJlc3Bv",
+            "bnNlEh4KFnJlc2V0X2hpc3RvcnlfZXZlbnRfaWQYAyABKAMijQQKIFJlc3Bv",
+            "bmRXb3JrZmxvd1Rhc2tGYWlsZWRSZXF1ZXN0EhIKCnRhc2tfdG9rZW4YASAB",
+            "KAwSPQoFY2F1c2UYAiABKA4yLi50ZW1wb3JhbC5hcGkuZW51bXMudjEuV29y",
+            "a2Zsb3dUYXNrRmFpbGVkQ2F1c2USMQoHZmFpbHVyZRgDIAEoCzIgLnRlbXBv",
+            "cmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSEAoIaWRlbnRpdHkYBCABKAkS",
+            "GwoPYmluYXJ5X2NoZWNrc3VtGAUgASgJQgIYARIRCgluYW1lc3BhY2UYBiAB",
+            "KAkSEwoLcmVzb3VyY2VfaWQYCyABKAkSMwoIbWVzc2FnZXMYByADKAsyIS50",
+            "ZW1wb3JhbC5hcGkucHJvdG9jb2wudjEuTWVzc2FnZRJGCg53b3JrZXJfdmVy",
+            "c2lvbhgIIAEoCzIqLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyVmVy",
+            "c2lvblN0YW1wQgIYARI+CgpkZXBsb3ltZW50GAkgASgLMiYudGVtcG9yYWwu",
+            "YXBpLmRlcGxveW1lbnQudjEuRGVwbG95bWVudEICGAESTwoSZGVwbG95bWVu",
+            "dF9vcHRpb25zGAogASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEu",
+            "V29ya2VyRGVwbG95bWVudE9wdGlvbnMiIwohUmVzcG9uZFdvcmtmbG93VGFz",
+            "a0ZhaWxlZFJlc3BvbnNlIqoDChxQb2xsQWN0aXZpdHlUYXNrUXVldWVSZXF1",
+            "ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRI4Cgp0YXNrX3F1ZXVlGAIgASgLMiQu",
+            "dGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUSEAoIaWRlbnRp",
+            "dHkYAyABKAkSGwoTd29ya2VyX2luc3RhbmNlX2tleRgIIAEoCRJJChN0YXNr",
+            "X3F1ZXVlX21ldGFkYXRhGAQgASgLMiwudGVtcG9yYWwuYXBpLnRhc2txdWV1",
+            "ZS52MS5UYXNrUXVldWVNZXRhZGF0YRJaCht3b3JrZXJfdmVyc2lvbl9jYXBh",
+            "YmlsaXRpZXMYBSABKAsyMS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtl",
+            "clZlcnNpb25DYXBhYmlsaXRpZXNCAhgBEk8KEmRlcGxveW1lbnRfb3B0aW9u",
+            "cxgGIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLldvcmtlckRl",
+            "cGxveW1lbnRPcHRpb25zSgQIBxAIUhB3b3JrZXJfaGVhcnRiZWF0IogICh1Q",
+            "b2xsQWN0aXZpdHlUYXNrUXVldWVSZXNwb25zZRISCgp0YXNrX3Rva2VuGAEg",
+            "ASgMEhoKEndvcmtmbG93X25hbWVzcGFjZRgCIAEoCRI7Cg13b3JrZmxvd190",
+            "eXBlGAMgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd1R5",
+            "cGUSRQoSd29ya2Zsb3dfZXhlY3V0aW9uGAQgASgLMikudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhI7Cg1hY3Rpdml0eV90eXBl",
+            "GAUgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5BY3Rpdml0eVR5cGUS",
+            "EwoLYWN0aXZpdHlfaWQYBiABKAkSLgoGaGVhZGVyGAcgASgLMh4udGVtcG9y",
+            "YWwuYXBpLmNvbW1vbi52MS5IZWFkZXISLwoFaW5wdXQYCCABKAsyIC50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEjsKEWhlYXJ0YmVhdF9kZXRh",
+            "aWxzGAkgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxIy",
+            "Cg5zY2hlZHVsZWRfdGltZRgKIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
+            "c3RhbXASQgoeY3VycmVudF9hdHRlbXB0X3NjaGVkdWxlZF90aW1lGAsgASgL",
+            "MhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIwCgxzdGFydGVkX3RpbWUY",
+            "DCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB2F0dGVtcHQY",
+            "DSABKAUSPAoZc2NoZWR1bGVfdG9fY2xvc2VfdGltZW91dBgOIAEoCzIZLmdv",
+            "b2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI5ChZzdGFydF90b19jbG9zZV90aW1l",
+            "b3V0GA8gASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjQKEWhlYXJ0",
+            "YmVhdF90aW1lb3V0GBAgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9u",
+            "EjkKDHJldHJ5X3BvbGljeRgRIAEoCzIjLnRlbXBvcmFsLmFwaS5jb21tb24u",
+            "djEuUmV0cnlQb2xpY3kSUQoXcG9sbGVyX3NjYWxpbmdfZGVjaXNpb24YEiAB",
+            "KAsyMC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlBvbGxlclNjYWxpbmdE",
+            "ZWNpc2lvbhIyCghwcmlvcml0eRgTIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21t",
+            "b24udjEuUHJpb3JpdHkSFwoPYWN0aXZpdHlfcnVuX2lkGBQgASgJIqUBCiJS",
+            "ZWNvcmRBY3Rpdml0eVRhc2tIZWFydGJlYXRSZXF1ZXN0EhIKCnRhc2tfdG9r",
+            "ZW4YASABKAwSMQoHZGV0YWlscxgCIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21t",
+            "b24udjEuUGF5bG9hZHMSEAoIaWRlbnRpdHkYAyABKAkSEQoJbmFtZXNwYWNl",
+            "GAQgASgJEhMKC3Jlc291cmNlX2lkGAUgASgJInAKI1JlY29yZEFjdGl2aXR5",
+            "VGFza0hlYXJ0YmVhdFJlc3BvbnNlEhgKEGNhbmNlbF9yZXF1ZXN0ZWQYASAB",
+            "KAgSFwoPYWN0aXZpdHlfcGF1c2VkGAIgASgIEhYKDmFjdGl2aXR5X3Jlc2V0",
+            "GAMgASgIIs8BCiZSZWNvcmRBY3Rpdml0eVRhc2tIZWFydGJlYXRCeUlkUmVx",
+            "dWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoLd29ya2Zsb3dfaWQYAiABKAkS",
+            "DgoGcnVuX2lkGAMgASgJEhMKC2FjdGl2aXR5X2lkGAQgASgJEjEKB2RldGFp",
+            "bHMYBSABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEhAK",
+            "CGlkZW50aXR5GAYgASgJEhMKC3Jlc291cmNlX2lkGAcgASgJInQKJ1JlY29y",
+            "ZEFjdGl2aXR5VGFza0hlYXJ0YmVhdEJ5SWRSZXNwb25zZRIYChBjYW5jZWxf",
+            "cmVxdWVzdGVkGAEgASgIEhcKD2FjdGl2aXR5X3BhdXNlZBgCIAEoCBIWCg5h",
+            "Y3Rpdml0eV9yZXNldBgDIAEoCCL+AgojUmVzcG9uZEFjdGl2aXR5VGFza0Nv",
+            "bXBsZXRlZFJlcXVlc3QSEgoKdGFza190b2tlbhgBIAEoDBIwCgZyZXN1bHQY",
+            "AiABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEhAKCGlk",
+            "ZW50aXR5GAMgASgJEhEKCW5hbWVzcGFjZRgEIAEoCRITCgtyZXNvdXJjZV9p",
+            "ZBgIIAEoCRJGCg53b3JrZXJfdmVyc2lvbhgFIAEoCzIqLnRlbXBvcmFsLmFw",
+            "aS5jb21tb24udjEuV29ya2VyVmVyc2lvblN0YW1wQgIYARI+CgpkZXBsb3lt",
+            "ZW50GAYgASgLMiYudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuRGVwbG95",
+            "bWVudEICGAESTwoSZGVwbG95bWVudF9vcHRpb25zGAcgASgLMjMudGVtcG9y",
+            "YWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudE9wdGlvbnMi",
+            "JgokUmVzcG9uZEFjdGl2aXR5VGFza0NvbXBsZXRlZFJlc3BvbnNlIs8BCidS",
+            "ZXNwb25kQWN0aXZpdHlUYXNrQ29tcGxldGVkQnlJZFJlcXVlc3QSEQoJbmFt",
+            "ZXNwYWNlGAEgASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEg4KBnJ1bl9pZBgD",
+            "IAEoCRITCgthY3Rpdml0eV9pZBgEIAEoCRIwCgZyZXN1bHQYBSABKAsyIC50",
+            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEhAKCGlkZW50aXR5GAYg",
+            "ASgJEhMKC3Jlc291cmNlX2lkGAcgASgJIioKKFJlc3BvbmRBY3Rpdml0eVRh",
+            "c2tDb21wbGV0ZWRCeUlkUmVzcG9uc2UivgMKIFJlc3BvbmRBY3Rpdml0eVRh",
+            "c2tGYWlsZWRSZXF1ZXN0EhIKCnRhc2tfdG9rZW4YASABKAwSMQoHZmFpbHVy",
+            "ZRgCIAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSEAoI",
+            "aWRlbnRpdHkYAyABKAkSEQoJbmFtZXNwYWNlGAQgASgJEhMKC3Jlc291cmNl",
+            "X2lkGAkgASgJEkAKFmxhc3RfaGVhcnRiZWF0X2RldGFpbHMYBSABKAsyIC50",
+            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEkYKDndvcmtlcl92ZXJz",
+            "aW9uGAYgASgLMioudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJz",
+            "aW9uU3RhbXBCAhgBEj4KCmRlcGxveW1lbnQYByABKAsyJi50ZW1wb3JhbC5h",
+            "cGkuZGVwbG95bWVudC52MS5EZXBsb3ltZW50QgIYARJPChJkZXBsb3ltZW50",
+            "X29wdGlvbnMYCCABKAsyMy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5X",
+            "b3JrZXJEZXBsb3ltZW50T3B0aW9ucyJXCiFSZXNwb25kQWN0aXZpdHlUYXNr",
+            "RmFpbGVkUmVzcG9uc2USMgoIZmFpbHVyZXMYASADKAsyIC50ZW1wb3JhbC5h",
+            "cGkuZmFpbHVyZS52MS5GYWlsdXJlIo8CCiRSZXNwb25kQWN0aXZpdHlUYXNr",
+            "RmFpbGVkQnlJZFJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC3dvcmtm",
+            "bG93X2lkGAIgASgJEg4KBnJ1bl9pZBgDIAEoCRITCgthY3Rpdml0eV9pZBgE",
+            "IAEoCRIxCgdmYWlsdXJlGAUgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUu",
+            "djEuRmFpbHVyZRIQCghpZGVudGl0eRgGIAEoCRJAChZsYXN0X2hlYXJ0YmVh",
+            "dF9kZXRhaWxzGAcgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXls",
+            "b2FkcxITCgtyZXNvdXJjZV9pZBgIIAEoCSJbCiVSZXNwb25kQWN0aXZpdHlU",
+            "YXNrRmFpbGVkQnlJZFJlc3BvbnNlEjIKCGZhaWx1cmVzGAEgAygLMiAudGVt",
+            "cG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZSL+AgoiUmVzcG9uZEFjdGl2",
+            "aXR5VGFza0NhbmNlbGVkUmVxdWVzdBISCgp0YXNrX3Rva2VuGAEgASgMEjEK",
+            "B2RldGFpbHMYAiABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxv",
+            "YWRzEhAKCGlkZW50aXR5GAMgASgJEhEKCW5hbWVzcGFjZRgEIAEoCRITCgty",
+            "ZXNvdXJjZV9pZBgIIAEoCRJGCg53b3JrZXJfdmVyc2lvbhgFIAEoCzIqLnRl",
             "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyVmVyc2lvblN0YW1wQgIYARI+",
-            "CgpkZXBsb3ltZW50GAcgASgLMiYudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQu",
-            "djEuRGVwbG95bWVudEICGAESTwoSZGVwbG95bWVudF9vcHRpb25zGAggASgL",
+            "CgpkZXBsb3ltZW50GAYgASgLMiYudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQu",
+            "djEuRGVwbG95bWVudEICGAESTwoSZGVwbG95bWVudF9vcHRpb25zGAcgASgL",
             "MjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVu",
-            "dE9wdGlvbnMiVwohUmVzcG9uZEFjdGl2aXR5VGFza0ZhaWxlZFJlc3BvbnNl",
-            "EjIKCGZhaWx1cmVzGAEgAygLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEu",
-            "RmFpbHVyZSKPAgokUmVzcG9uZEFjdGl2aXR5VGFza0ZhaWxlZEJ5SWRSZXF1",
-            "ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRITCgt3b3JrZmxvd19pZBgCIAEoCRIO",
-            "CgZydW5faWQYAyABKAkSEwoLYWN0aXZpdHlfaWQYBCABKAkSMQoHZmFpbHVy",
-            "ZRgFIAEoCzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSEAoI",
-            "aWRlbnRpdHkYBiABKAkSQAoWbGFzdF9oZWFydGJlYXRfZGV0YWlscxgHIAEo",
-            "CzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSEwoLcmVzb3Vy",
-            "Y2VfaWQYCCABKAkiWwolUmVzcG9uZEFjdGl2aXR5VGFza0ZhaWxlZEJ5SWRS",
-            "ZXNwb25zZRIyCghmYWlsdXJlcxgBIAMoCzIgLnRlbXBvcmFsLmFwaS5mYWls",
-            "dXJlLnYxLkZhaWx1cmUi/gIKIlJlc3BvbmRBY3Rpdml0eVRhc2tDYW5jZWxl",
-            "ZFJlcXVlc3QSEgoKdGFza190b2tlbhgBIAEoDBIxCgdkZXRhaWxzGAIgASgL",
-            "MiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxIQCghpZGVudGl0",
-            "eRgDIAEoCRIRCgluYW1lc3BhY2UYBCABKAkSEwoLcmVzb3VyY2VfaWQYCCAB",
-            "KAkSRgoOd29ya2VyX3ZlcnNpb24YBSABKAsyKi50ZW1wb3JhbC5hcGkuY29t",
-            "bW9uLnYxLldvcmtlclZlcnNpb25TdGFtcEICGAESPgoKZGVwbG95bWVudBgG",
-            "IAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnRC",
-            "AhgBEk8KEmRlcGxveW1lbnRfb3B0aW9ucxgHIAEoCzIzLnRlbXBvcmFsLmFw",
-            "aS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRPcHRpb25zIiUKI1Jl",
-            "c3BvbmRBY3Rpdml0eVRhc2tDYW5jZWxlZFJlc3BvbnNlIqACCiZSZXNwb25k",
-            "QWN0aXZpdHlUYXNrQ2FuY2VsZWRCeUlkUmVxdWVzdBIRCgluYW1lc3BhY2UY",
-            "ASABKAkSEwoLd29ya2Zsb3dfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJEhMK",
-            "C2FjdGl2aXR5X2lkGAQgASgJEjEKB2RldGFpbHMYBSABKAsyIC50ZW1wb3Jh",
-            "bC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEhAKCGlkZW50aXR5GAYgASgJEk8K",
-            "EmRlcGxveW1lbnRfb3B0aW9ucxgHIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBs",
-            "b3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRPcHRpb25zEhMKC3Jlc291cmNl",
-            "X2lkGAggASgJIikKJ1Jlc3BvbmRBY3Rpdml0eVRhc2tDYW5jZWxlZEJ5SWRS",
-            "ZXNwb25zZSKEAgolUmVxdWVzdENhbmNlbFdvcmtmbG93RXhlY3V0aW9uUmVx",
-            "dWVzdBIRCgluYW1lc3BhY2UYASABKAkSRQoSd29ya2Zsb3dfZXhlY3V0aW9u",
-            "GAIgASgLMikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1",
-            "dGlvbhIQCghpZGVudGl0eRgDIAEoCRISCgpyZXF1ZXN0X2lkGAQgASgJEh4K",
-            "FmZpcnN0X2V4ZWN1dGlvbl9ydW5faWQYBSABKAkSDgoGcmVhc29uGAYgASgJ",
-            "EisKBWxpbmtzGAcgAygLMhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5MaW5r",
-            "IigKJlJlcXVlc3RDYW5jZWxXb3JrZmxvd0V4ZWN1dGlvblJlc3BvbnNlIt4C",
-            "Ch5TaWduYWxXb3JrZmxvd0V4ZWN1dGlvblJlcXVlc3QSEQoJbmFtZXNwYWNl",
-            "GAEgASgJEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgCIAEoCzIpLnRlbXBvcmFs",
-            "LmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SEwoLc2lnbmFsX25h",
-            "bWUYAyABKAkSLwoFaW5wdXQYBCABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9u",
-            "LnYxLlBheWxvYWRzEhAKCGlkZW50aXR5GAUgASgJEhIKCnJlcXVlc3RfaWQY",
-            "BiABKAkSEwoHY29udHJvbBgHIAEoCUICGAESLgoGaGVhZGVyGAggASgLMh4u",
-            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5IZWFkZXISKwoFbGlua3MYCiADKAsy",
-            "HC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkxpbmtKBAgJEAoiIQofU2lnbmFs",
-            "V29ya2Zsb3dFeGVjdXRpb25SZXNwb25zZSLxCQonU2lnbmFsV2l0aFN0YXJ0",
-            "V29ya2Zsb3dFeGVjdXRpb25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIT",
-            "Cgt3b3JrZmxvd19pZBgCIAEoCRI7Cg13b3JrZmxvd190eXBlGAMgASgLMiQu",
-            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd1R5cGUSOAoKdGFza19x",
-            "dWV1ZRgEIAEoCzIkLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1",
-            "ZXVlEi8KBWlucHV0GAUgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Q",
-            "YXlsb2FkcxI9Chp3b3JrZmxvd19leGVjdXRpb25fdGltZW91dBgGIAEoCzIZ",
-            "Lmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI3ChR3b3JrZmxvd19ydW5fdGlt",
-            "ZW91dBgHIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI4ChV3b3Jr",
-            "Zmxvd190YXNrX3RpbWVvdXQYCCABKAsyGS5nb29nbGUucHJvdG9idWYuRHVy",
-            "YXRpb24SEAoIaWRlbnRpdHkYCSABKAkSEgoKcmVxdWVzdF9pZBgKIAEoCRJO",
-            "Chh3b3JrZmxvd19pZF9yZXVzZV9wb2xpY3kYCyABKA4yLC50ZW1wb3JhbC5h",
-            "cGkuZW51bXMudjEuV29ya2Zsb3dJZFJldXNlUG9saWN5ElQKG3dvcmtmbG93",
-            "X2lkX2NvbmZsaWN0X3BvbGljeRgWIAEoDjIvLnRlbXBvcmFsLmFwaS5lbnVt",
-            "cy52MS5Xb3JrZmxvd0lkQ29uZmxpY3RQb2xpY3kSEwoLc2lnbmFsX25hbWUY",
-            "DCABKAkSNgoMc2lnbmFsX2lucHV0GA0gASgLMiAudGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5QYXlsb2FkcxITCgdjb250cm9sGA4gASgJQgIYARI5CgxyZXRy",
-            "eV9wb2xpY3kYDyABKAsyIy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5",
-            "UG9saWN5EhUKDWNyb25fc2NoZWR1bGUYECABKAkSKgoEbWVtbxgRIAEoCzIc",
-            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmli",
-            "dXRlcxgSIAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0",
-            "cmlidXRlcxIuCgZoZWFkZXIYEyABKAsyHi50ZW1wb3JhbC5hcGkuY29tbW9u",
-            "LnYxLkhlYWRlchI3ChR3b3JrZmxvd19zdGFydF9kZWxheRgUIAEoCzIZLmdv",
-            "b2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI4Cg11c2VyX21ldGFkYXRhGBcgASgL",
-            "MiEudGVtcG9yYWwuYXBpLnNkay52MS5Vc2VyTWV0YWRhdGESKwoFbGlua3MY",
-            "GCADKAsyHC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkxpbmsSSQoTdmVyc2lv",
-            "bmluZ19vdmVycmlkZRgZIAEoCzIsLnRlbXBvcmFsLmFwaS53b3JrZmxvdy52",
-            "MS5WZXJzaW9uaW5nT3ZlcnJpZGUSMgoIcHJpb3JpdHkYGiABKAsyIC50ZW1w",
-            "b3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5SgQIFRAWIksKKFNpZ25hbFdp",
+            "dE9wdGlvbnMiJQojUmVzcG9uZEFjdGl2aXR5VGFza0NhbmNlbGVkUmVzcG9u",
+            "c2UioAIKJlJlc3BvbmRBY3Rpdml0eVRhc2tDYW5jZWxlZEJ5SWRSZXF1ZXN0",
+            "EhEKCW5hbWVzcGFjZRgBIAEoCRITCgt3b3JrZmxvd19pZBgCIAEoCRIOCgZy",
+            "dW5faWQYAyABKAkSEwoLYWN0aXZpdHlfaWQYBCABKAkSMQoHZGV0YWlscxgF",
+            "IAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSEAoIaWRl",
+            "bnRpdHkYBiABKAkSTwoSZGVwbG95bWVudF9vcHRpb25zGAcgASgLMjMudGVt",
+            "cG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudE9wdGlv",
+            "bnMSEwoLcmVzb3VyY2VfaWQYCCABKAkiKQonUmVzcG9uZEFjdGl2aXR5VGFz",
+            "a0NhbmNlbGVkQnlJZFJlc3BvbnNlIoQCCiVSZXF1ZXN0Q2FuY2VsV29ya2Zs",
+            "b3dFeGVjdXRpb25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRJFChJ3b3Jr",
+            "Zmxvd19leGVjdXRpb24YAiABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
+            "LldvcmtmbG93RXhlY3V0aW9uEhAKCGlkZW50aXR5GAMgASgJEhIKCnJlcXVl",
+            "c3RfaWQYBCABKAkSHgoWZmlyc3RfZXhlY3V0aW9uX3J1bl9pZBgFIAEoCRIO",
+            "CgZyZWFzb24YBiABKAkSKwoFbGlua3MYByADKAsyHC50ZW1wb3JhbC5hcGku",
+            "Y29tbW9uLnYxLkxpbmsiKAomUmVxdWVzdENhbmNlbFdvcmtmbG93RXhlY3V0",
+            "aW9uUmVzcG9uc2Ui3gIKHlNpZ25hbFdvcmtmbG93RXhlY3V0aW9uUmVxdWVz",
+            "dBIRCgluYW1lc3BhY2UYASABKAkSRQoSd29ya2Zsb3dfZXhlY3V0aW9uGAIg",
+            "ASgLMikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlv",
+            "bhITCgtzaWduYWxfbmFtZRgDIAEoCRIvCgVpbnB1dBgEIAEoCzIgLnRlbXBv",
+            "cmFsLmFwaS5jb21tb24udjEuUGF5bG9hZHMSEAoIaWRlbnRpdHkYBSABKAkS",
+            "EgoKcmVxdWVzdF9pZBgGIAEoCRITCgdjb250cm9sGAcgASgJQgIYARIuCgZo",
+            "ZWFkZXIYCCABKAsyHi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkhlYWRlchIr",
+            "CgVsaW5rcxgKIAMoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24udjEuTGlua0oE",
+            "CAkQCiIhCh9TaWduYWxXb3JrZmxvd0V4ZWN1dGlvblJlc3BvbnNlIr0KCidT",
+            "aWduYWxXaXRoU3RhcnRXb3JrZmxvd0V4ZWN1dGlvblJlcXVlc3QSEQoJbmFt",
+            "ZXNwYWNlGAEgASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEjsKDXdvcmtmbG93",
+            "X3R5cGUYAyABKAsyJC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93",
+            "VHlwZRI4Cgp0YXNrX3F1ZXVlGAQgASgLMiQudGVtcG9yYWwuYXBpLnRhc2tx",
+            "dWV1ZS52MS5UYXNrUXVldWUSLwoFaW5wdXQYBSABKAsyIC50ZW1wb3JhbC5h",
+            "cGkuY29tbW9uLnYxLlBheWxvYWRzEj0KGndvcmtmbG93X2V4ZWN1dGlvbl90",
+            "aW1lb3V0GAYgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjcKFHdv",
+            "cmtmbG93X3J1bl90aW1lb3V0GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1",
+            "cmF0aW9uEjgKFXdvcmtmbG93X3Rhc2tfdGltZW91dBgIIAEoCzIZLmdvb2ds",
+            "ZS5wcm90b2J1Zi5EdXJhdGlvbhIQCghpZGVudGl0eRgJIAEoCRISCgpyZXF1",
+            "ZXN0X2lkGAogASgJEk4KGHdvcmtmbG93X2lkX3JldXNlX3BvbGljeRgLIAEo",
+            "DjIsLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5Xb3JrZmxvd0lkUmV1c2VQb2xp",
+            "Y3kSVAobd29ya2Zsb3dfaWRfY29uZmxpY3RfcG9saWN5GBYgASgOMi8udGVt",
+            "cG9yYWwuYXBpLmVudW1zLnYxLldvcmtmbG93SWRDb25mbGljdFBvbGljeRIT",
+            "CgtzaWduYWxfbmFtZRgMIAEoCRI2CgxzaWduYWxfaW5wdXQYDSABKAsyIC50",
+            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWRzEhMKB2NvbnRyb2wYDiAB",
+            "KAlCAhgBEjkKDHJldHJ5X3BvbGljeRgPIAEoCzIjLnRlbXBvcmFsLmFwaS5j",
+            "b21tb24udjEuUmV0cnlQb2xpY3kSFQoNY3Jvbl9zY2hlZHVsZRgQIAEoCRIq",
+            "CgRtZW1vGBEgASgLMhwudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5NZW1vEkMK",
+            "EXNlYXJjaF9hdHRyaWJ1dGVzGBIgASgLMigudGVtcG9yYWwuYXBpLmNvbW1v",
+            "bi52MS5TZWFyY2hBdHRyaWJ1dGVzEi4KBmhlYWRlchgTIAEoCzIeLnRlbXBv",
+            "cmFsLmFwaS5jb21tb24udjEuSGVhZGVyEjcKFHdvcmtmbG93X3N0YXJ0X2Rl",
+            "bGF5GBQgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjgKDXVzZXJf",
+            "bWV0YWRhdGEYFyABKAsyIS50ZW1wb3JhbC5hcGkuc2RrLnYxLlVzZXJNZXRh",
+            "ZGF0YRIrCgVsaW5rcxgYIAMoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "TGluaxJJChN2ZXJzaW9uaW5nX292ZXJyaWRlGBkgASgLMiwudGVtcG9yYWwu",
+            "YXBpLndvcmtmbG93LnYxLlZlcnNpb25pbmdPdmVycmlkZRIyCghwcmlvcml0",
+            "eRgaIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUHJpb3JpdHkSSgoU",
+            "dGltZV9za2lwcGluZ19jb25maWcYGyABKAsyLC50ZW1wb3JhbC5hcGkud29y",
+            "a2Zsb3cudjEuVGltZVNraXBwaW5nQ29uZmlnSgQIFRAWIksKKFNpZ25hbFdp",
             "dGhTdGFydFdvcmtmbG93RXhlY3V0aW9uUmVzcG9uc2USDgoGcnVuX2lkGAEg",
             "ASgJEg8KB3N0YXJ0ZWQYAiABKAgiwQMKHVJlc2V0V29ya2Zsb3dFeGVjdXRp",
             "b25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRJFChJ3b3JrZmxvd19leGVj",
@@ -543,10 +548,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
             "dmVyX3ZlcnNpb24YCSABKAMSIgoaZmFpbG92ZXJfdmVyc2lvbl9pbmNyZW1l",
             "bnQYCiABKAMaNwoVU3VwcG9ydGVkQ2xpZW50c0VudHJ5EgsKA2tleRgBIAEo",
             "CRINCgV2YWx1ZRgCIAEoCToCOAEiFgoUR2V0U3lzdGVtSW5mb1JlcXVlc3Qi",
-            "9AMKFUdldFN5c3RlbUluZm9SZXNwb25zZRIWCg5zZXJ2ZXJfdmVyc2lvbhgB",
+            "lwQKFUdldFN5c3RlbUluZm9SZXNwb25zZRIWCg5zZXJ2ZXJfdmVyc2lvbhgB",
             "IAEoCRJZCgxjYXBhYmlsaXRpZXMYAiABKAsyQy50ZW1wb3JhbC5hcGkud29y",
             "a2Zsb3dzZXJ2aWNlLnYxLkdldFN5c3RlbUluZm9SZXNwb25zZS5DYXBhYmls",
-            "aXRpZXMa5wIKDENhcGFiaWxpdGllcxIfChdzaWduYWxfYW5kX3F1ZXJ5X2hl",
+            "aXRpZXMaigMKDENhcGFiaWxpdGllcxIfChdzaWduYWxfYW5kX3F1ZXJ5X2hl",
             "YWRlchgBIAEoCBImCh5pbnRlcm5hbF9lcnJvcl9kaWZmZXJlbnRpYXRpb24Y",
             "AiABKAgSKgoiYWN0aXZpdHlfZmFpbHVyZV9pbmNsdWRlX2hlYXJ0YmVhdBgD",
             "IAEoCBIaChJzdXBwb3J0c19zY2hlZHVsZXMYBCABKAgSIgoaZW5jb2RlZF9m",
@@ -554,534 +559,635 @@ namespace Temporalio.Api.WorkflowService.V1 {
             "c2lvbmluZxgGIAEoCBITCgt1cHNlcnRfbWVtbxgHIAEoCBIcChRlYWdlcl93",
             "b3JrZmxvd19zdGFydBgIIAEoCBIUCgxzZGtfbWV0YWRhdGEYCSABKAgSJwof",
             "Y291bnRfZ3JvdXBfYnlfZXhlY3V0aW9uX3N0YXR1cxgKIAEoCBINCgVuZXh1",
-            "cxgLIAEoCCJtCh5MaXN0VGFza1F1ZXVlUGFydGl0aW9uc1JlcXVlc3QSEQoJ",
-            "bmFtZXNwYWNlGAEgASgJEjgKCnRhc2tfcXVldWUYAiABKAsyJC50ZW1wb3Jh",
-            "bC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZSLfAQofTGlzdFRhc2tRdWV1",
-            "ZVBhcnRpdGlvbnNSZXNwb25zZRJdCh5hY3Rpdml0eV90YXNrX3F1ZXVlX3Bh",
-            "cnRpdGlvbnMYASADKAsyNS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRh",
-            "c2tRdWV1ZVBhcnRpdGlvbk1ldGFkYXRhEl0KHndvcmtmbG93X3Rhc2tfcXVl",
-            "dWVfcGFydGl0aW9ucxgCIAMoCzI1LnRlbXBvcmFsLmFwaS50YXNrcXVldWUu",
-            "djEuVGFza1F1ZXVlUGFydGl0aW9uTWV0YWRhdGEizAIKFUNyZWF0ZVNjaGVk",
-            "dWxlUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoLc2NoZWR1bGVfaWQY",
-            "AiABKAkSNAoIc2NoZWR1bGUYAyABKAsyIi50ZW1wb3JhbC5hcGkuc2NoZWR1",
-            "bGUudjEuU2NoZWR1bGUSPgoNaW5pdGlhbF9wYXRjaBgEIAEoCzInLnRlbXBv",
-            "cmFsLmFwaS5zY2hlZHVsZS52MS5TY2hlZHVsZVBhdGNoEhAKCGlkZW50aXR5",
-            "GAUgASgJEhIKCnJlcXVlc3RfaWQYBiABKAkSKgoEbWVtbxgHIAEoCzIcLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmlidXRl",
-            "cxgIIAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmli",
-            "dXRlcyIwChZDcmVhdGVTY2hlZHVsZVJlc3BvbnNlEhYKDmNvbmZsaWN0X3Rv",
-            "a2VuGAEgASgMIkEKF0Rlc2NyaWJlU2NoZWR1bGVSZXF1ZXN0EhEKCW5hbWVz",
-            "cGFjZRgBIAEoCRITCgtzY2hlZHVsZV9pZBgCIAEoCSKPAgoYRGVzY3JpYmVT",
-            "Y2hlZHVsZVJlc3BvbnNlEjQKCHNjaGVkdWxlGAEgASgLMiIudGVtcG9yYWwu",
-            "YXBpLnNjaGVkdWxlLnYxLlNjaGVkdWxlEjQKBGluZm8YAiABKAsyJi50ZW1w",
-            "b3JhbC5hcGkuc2NoZWR1bGUudjEuU2NoZWR1bGVJbmZvEioKBG1lbW8YAyAB",
-            "KAsyHC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLk1lbW8SQwoRc2VhcmNoX2F0",
-            "dHJpYnV0ZXMYBCABKAsyKC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlNlYXJj",
-            "aEF0dHJpYnV0ZXMSFgoOY29uZmxpY3RfdG9rZW4YBSABKAwi+AEKFVVwZGF0",
-            "ZVNjaGVkdWxlUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoLc2NoZWR1",
-            "bGVfaWQYAiABKAkSNAoIc2NoZWR1bGUYAyABKAsyIi50ZW1wb3JhbC5hcGku",
-            "c2NoZWR1bGUudjEuU2NoZWR1bGUSFgoOY29uZmxpY3RfdG9rZW4YBCABKAwS",
-            "EAoIaWRlbnRpdHkYBSABKAkSEgoKcmVxdWVzdF9pZBgGIAEoCRJDChFzZWFy",
-            "Y2hfYXR0cmlidXRlcxgHIAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
-            "U2VhcmNoQXR0cmlidXRlcyIYChZVcGRhdGVTY2hlZHVsZVJlc3BvbnNlIpwB",
-            "ChRQYXRjaFNjaGVkdWxlUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoL",
-            "c2NoZWR1bGVfaWQYAiABKAkSNgoFcGF0Y2gYAyABKAsyJy50ZW1wb3JhbC5h",
-            "cGkuc2NoZWR1bGUudjEuU2NoZWR1bGVQYXRjaBIQCghpZGVudGl0eRgEIAEo",
-            "CRISCgpyZXF1ZXN0X2lkGAUgASgJIhcKFVBhdGNoU2NoZWR1bGVSZXNwb25z",
-            "ZSKoAQogTGlzdFNjaGVkdWxlTWF0Y2hpbmdUaW1lc1JlcXVlc3QSEQoJbmFt",
-            "ZXNwYWNlGAEgASgJEhMKC3NjaGVkdWxlX2lkGAIgASgJEi4KCnN0YXJ0X3Rp",
-            "bWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiwKCGVuZF90",
-            "aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJTCiFMaXN0",
-            "U2NoZWR1bGVNYXRjaGluZ1RpbWVzUmVzcG9uc2USLgoKc3RhcnRfdGltZRgB",
-            "IAMoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiUQoVRGVsZXRlU2No",
-            "ZWR1bGVSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRITCgtzY2hlZHVsZV9p",
-            "ZBgCIAEoCRIQCghpZGVudGl0eRgDIAEoCSIYChZEZWxldGVTY2hlZHVsZVJl",
-            "c3BvbnNlImwKFExpc3RTY2hlZHVsZXNSZXF1ZXN0EhEKCW5hbWVzcGFjZRgB",
-            "IAEoCRIZChFtYXhpbXVtX3BhZ2Vfc2l6ZRgCIAEoBRIXCg9uZXh0X3BhZ2Vf",
-            "dG9rZW4YAyABKAwSDQoFcXVlcnkYBCABKAkicAoVTGlzdFNjaGVkdWxlc1Jl",
-            "c3BvbnNlEj4KCXNjaGVkdWxlcxgBIAMoCzIrLnRlbXBvcmFsLmFwaS5zY2hl",
-            "ZHVsZS52MS5TY2hlZHVsZUxpc3RFbnRyeRIXCg9uZXh0X3BhZ2VfdG9rZW4Y",
-            "AiABKAwiOQoVQ291bnRTY2hlZHVsZXNSZXF1ZXN0EhEKCW5hbWVzcGFjZRgB",
-            "IAEoCRINCgVxdWVyeRgCIAEoCSLbAQoWQ291bnRTY2hlZHVsZXNSZXNwb25z",
-            "ZRINCgVjb3VudBgBIAEoAxJYCgZncm91cHMYAiADKAsySC50ZW1wb3JhbC5h",
-            "cGkud29ya2Zsb3dzZXJ2aWNlLnYxLkNvdW50U2NoZWR1bGVzUmVzcG9uc2Uu",
-            "QWdncmVnYXRpb25Hcm91cBpYChBBZ2dyZWdhdGlvbkdyb3VwEjUKDGdyb3Vw",
-            "X3ZhbHVlcxgBIAMoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9h",
-            "ZBINCgVjb3VudBgCIAEoAyKGBQonVXBkYXRlV29ya2VyQnVpbGRJZENvbXBh",
-            "dGliaWxpdHlSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRISCgp0YXNrX3F1",
-            "ZXVlGAIgASgJEi0KI2FkZF9uZXdfYnVpbGRfaWRfaW5fbmV3X2RlZmF1bHRf",
-            "c2V0GAMgASgJSAAShwEKG2FkZF9uZXdfY29tcGF0aWJsZV9idWlsZF9pZBgE",
-            "IAEoCzJgLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRl",
-            "V29ya2VyQnVpbGRJZENvbXBhdGliaWxpdHlSZXF1ZXN0LkFkZE5ld0NvbXBh",
-            "dGlibGVWZXJzaW9uSAASIQoXcHJvbW90ZV9zZXRfYnlfYnVpbGRfaWQYBSAB",
-            "KAlIABIlChtwcm9tb3RlX2J1aWxkX2lkX3dpdGhpbl9zZXQYBiABKAlIABJo",
-            "CgptZXJnZV9zZXRzGAcgASgLMlIudGVtcG9yYWwuYXBpLndvcmtmbG93c2Vy",
-            "dmljZS52MS5VcGRhdGVXb3JrZXJCdWlsZElkQ29tcGF0aWJpbGl0eVJlcXVl",
-            "c3QuTWVyZ2VTZXRzSAAabwoXQWRkTmV3Q29tcGF0aWJsZVZlcnNpb24SFAoM",
-            "bmV3X2J1aWxkX2lkGAEgASgJEiQKHGV4aXN0aW5nX2NvbXBhdGlibGVfYnVp",
-            "bGRfaWQYAiABKAkSGAoQbWFrZV9zZXRfZGVmYXVsdBgDIAEoCBpJCglNZXJn",
-            "ZVNldHMSHAoUcHJpbWFyeV9zZXRfYnVpbGRfaWQYASABKAkSHgoWc2Vjb25k",
-            "YXJ5X3NldF9idWlsZF9pZBgCIAEoCUILCglvcGVyYXRpb24iQAooVXBkYXRl",
-            "V29ya2VyQnVpbGRJZENvbXBhdGliaWxpdHlSZXNwb25zZUoECAEQAlIOdmVy",
-            "c2lvbl9zZXRfaWQiXwokR2V0V29ya2VyQnVpbGRJZENvbXBhdGliaWxpdHlS",
-            "ZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRISCgp0YXNrX3F1ZXVlGAIgASgJ",
-            "EhAKCG1heF9zZXRzGAMgASgFInQKJUdldFdvcmtlckJ1aWxkSWRDb21wYXRp",
-            "YmlsaXR5UmVzcG9uc2USSwoSbWFqb3JfdmVyc2lvbl9zZXRzGAEgAygLMi8u",
-            "dGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Db21wYXRpYmxlVmVyc2lvblNl",
-            "dCK1DQoiVXBkYXRlV29ya2VyVmVyc2lvbmluZ1J1bGVzUmVxdWVzdBIRCglu",
-            "YW1lc3BhY2UYASABKAkSEgoKdGFza19xdWV1ZRgCIAEoCRIWCg5jb25mbGlj",
-            "dF90b2tlbhgDIAEoDBKBAQoWaW5zZXJ0X2Fzc2lnbm1lbnRfcnVsZRgEIAEo",
-            "CzJfLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRlV29y",
-            "a2VyVmVyc2lvbmluZ1J1bGVzUmVxdWVzdC5JbnNlcnRCdWlsZElkQXNzaWdu",
-            "bWVudFJ1bGVIABKDAQoXcmVwbGFjZV9hc3NpZ25tZW50X3J1bGUYBSABKAsy",
-            "YC50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLlVwZGF0ZVdvcmtl",
-            "clZlcnNpb25pbmdSdWxlc1JlcXVlc3QuUmVwbGFjZUJ1aWxkSWRBc3NpZ25t",
-            "ZW50UnVsZUgAEoEBChZkZWxldGVfYXNzaWdubWVudF9ydWxlGAYgASgLMl8u",
-            "dGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5VcGRhdGVXb3JrZXJW",
-            "ZXJzaW9uaW5nUnVsZXNSZXF1ZXN0LkRlbGV0ZUJ1aWxkSWRBc3NpZ25tZW50",
-            "UnVsZUgAEowBChxhZGRfY29tcGF0aWJsZV9yZWRpcmVjdF9ydWxlGAcgASgL",
-            "MmQudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5VcGRhdGVXb3Jr",
-            "ZXJWZXJzaW9uaW5nUnVsZXNSZXF1ZXN0LkFkZENvbXBhdGlibGVCdWlsZElk",
-            "UmVkaXJlY3RSdWxlSAASlAEKIHJlcGxhY2VfY29tcGF0aWJsZV9yZWRpcmVj",
-            "dF9ydWxlGAggASgLMmgudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52",
-            "MS5VcGRhdGVXb3JrZXJWZXJzaW9uaW5nUnVsZXNSZXF1ZXN0LlJlcGxhY2VD",
-            "b21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZUgAEpIBCh9kZWxldGVfY29t",
-            "cGF0aWJsZV9yZWRpcmVjdF9ydWxlGAkgASgLMmcudGVtcG9yYWwuYXBpLndv",
-            "cmtmbG93c2VydmljZS52MS5VcGRhdGVXb3JrZXJWZXJzaW9uaW5nUnVsZXNS",
-            "ZXF1ZXN0LkRlbGV0ZUNvbXBhdGlibGVCdWlsZElkUmVkaXJlY3RSdWxlSAAS",
-            "bAoPY29tbWl0X2J1aWxkX2lkGAogASgLMlEudGVtcG9yYWwuYXBpLndvcmtm",
-            "bG93c2VydmljZS52MS5VcGRhdGVXb3JrZXJWZXJzaW9uaW5nUnVsZXNSZXF1",
-            "ZXN0LkNvbW1pdEJ1aWxkSWRIABpxChtJbnNlcnRCdWlsZElkQXNzaWdubWVu",
-            "dFJ1bGUSEgoKcnVsZV9pbmRleBgBIAEoBRI+CgRydWxlGAIgASgLMjAudGVt",
-            "cG9yYWwuYXBpLnRhc2txdWV1ZS52MS5CdWlsZElkQXNzaWdubWVudFJ1bGUa",
-            "gQEKHFJlcGxhY2VCdWlsZElkQXNzaWdubWVudFJ1bGUSEgoKcnVsZV9pbmRl",
-            "eBgBIAEoBRI+CgRydWxlGAIgASgLMjAudGVtcG9yYWwuYXBpLnRhc2txdWV1",
-            "ZS52MS5CdWlsZElkQXNzaWdubWVudFJ1bGUSDQoFZm9yY2UYAyABKAgaQAob",
-            "RGVsZXRlQnVpbGRJZEFzc2lnbm1lbnRSdWxlEhIKCnJ1bGVfaW5kZXgYASAB",
-            "KAUSDQoFZm9yY2UYAiABKAgaagogQWRkQ29tcGF0aWJsZUJ1aWxkSWRSZWRp",
-            "cmVjdFJ1bGUSRgoEcnVsZRgBIAEoCzI4LnRlbXBvcmFsLmFwaS50YXNrcXVl",
-            "dWUudjEuQ29tcGF0aWJsZUJ1aWxkSWRSZWRpcmVjdFJ1bGUabgokUmVwbGFj",
-            "ZUNvbXBhdGlibGVCdWlsZElkUmVkaXJlY3RSdWxlEkYKBHJ1bGUYASABKAsy",
-            "OC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLkNvbXBhdGlibGVCdWlsZElk",
-            "UmVkaXJlY3RSdWxlGj4KI0RlbGV0ZUNvbXBhdGlibGVCdWlsZElkUmVkaXJl",
-            "Y3RSdWxlEhcKD3NvdXJjZV9idWlsZF9pZBgBIAEoCRo3Cg1Db21taXRCdWls",
-            "ZElkEhcKD3RhcmdldF9idWlsZF9pZBgBIAEoCRINCgVmb3JjZRgCIAEoCEIL",
-            "CglvcGVyYXRpb24i/AEKI1VwZGF0ZVdvcmtlclZlcnNpb25pbmdSdWxlc1Jl",
+            "cxgLIAEoCBIhChlzZXJ2ZXJfc2NhbGVkX2RlcGxveW1lbnRzGAwgASgIIm0K",
+            "Hkxpc3RUYXNrUXVldWVQYXJ0aXRpb25zUmVxdWVzdBIRCgluYW1lc3BhY2UY",
+            "ASABKAkSOAoKdGFza19xdWV1ZRgCIAEoCzIkLnRlbXBvcmFsLmFwaS50YXNr",
+            "cXVldWUudjEuVGFza1F1ZXVlIt8BCh9MaXN0VGFza1F1ZXVlUGFydGl0aW9u",
+            "c1Jlc3BvbnNlEl0KHmFjdGl2aXR5X3Rhc2tfcXVldWVfcGFydGl0aW9ucxgB",
+            "IAMoCzI1LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlUGFy",
+            "dGl0aW9uTWV0YWRhdGESXQoed29ya2Zsb3dfdGFza19xdWV1ZV9wYXJ0aXRp",
+            "b25zGAIgAygLMjUudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVl",
+            "dWVQYXJ0aXRpb25NZXRhZGF0YSLMAgoVQ3JlYXRlU2NoZWR1bGVSZXF1ZXN0",
+            "EhEKCW5hbWVzcGFjZRgBIAEoCRITCgtzY2hlZHVsZV9pZBgCIAEoCRI0Cghz",
+            "Y2hlZHVsZRgDIAEoCzIiLnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52MS5TY2hl",
+            "ZHVsZRI+Cg1pbml0aWFsX3BhdGNoGAQgASgLMicudGVtcG9yYWwuYXBpLnNj",
+            "aGVkdWxlLnYxLlNjaGVkdWxlUGF0Y2gSEAoIaWRlbnRpdHkYBSABKAkSEgoK",
+            "cmVxdWVzdF9pZBgGIAEoCRIqCgRtZW1vGAcgASgLMhwudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5NZW1vEkMKEXNlYXJjaF9hdHRyaWJ1dGVzGAggASgLMigu",
+            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5TZWFyY2hBdHRyaWJ1dGVzIjAKFkNy",
+            "ZWF0ZVNjaGVkdWxlUmVzcG9uc2USFgoOY29uZmxpY3RfdG9rZW4YASABKAwi",
+            "QQoXRGVzY3JpYmVTY2hlZHVsZVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJ",
+            "EhMKC3NjaGVkdWxlX2lkGAIgASgJIo8CChhEZXNjcmliZVNjaGVkdWxlUmVz",
+            "cG9uc2USNAoIc2NoZWR1bGUYASABKAsyIi50ZW1wb3JhbC5hcGkuc2NoZWR1",
+            "bGUudjEuU2NoZWR1bGUSNAoEaW5mbxgCIAEoCzImLnRlbXBvcmFsLmFwaS5z",
+            "Y2hlZHVsZS52MS5TY2hlZHVsZUluZm8SKgoEbWVtbxgDIAEoCzIcLnRlbXBv",
+            "cmFsLmFwaS5jb21tb24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmlidXRlcxgE",
+            "IAEoCzIoLnRlbXBvcmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmlidXRl",
+            "cxIWCg5jb25mbGljdF90b2tlbhgFIAEoDCKkAgoVVXBkYXRlU2NoZWR1bGVS",
+            "ZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRITCgtzY2hlZHVsZV9pZBgCIAEo",
+            "CRI0CghzY2hlZHVsZRgDIAEoCzIiLnRlbXBvcmFsLmFwaS5zY2hlZHVsZS52",
+            "MS5TY2hlZHVsZRIWCg5jb25mbGljdF90b2tlbhgEIAEoDBIQCghpZGVudGl0",
+            "eRgFIAEoCRISCgpyZXF1ZXN0X2lkGAYgASgJEkMKEXNlYXJjaF9hdHRyaWJ1",
+            "dGVzGAcgASgLMigudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5TZWFyY2hBdHRy",
+            "aWJ1dGVzEioKBG1lbW8YCCABKAsyHC50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
+            "Lk1lbW8iGAoWVXBkYXRlU2NoZWR1bGVSZXNwb25zZSKcAQoUUGF0Y2hTY2hl",
+            "ZHVsZVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC3NjaGVkdWxlX2lk",
+            "GAIgASgJEjYKBXBhdGNoGAMgASgLMicudGVtcG9yYWwuYXBpLnNjaGVkdWxl",
+            "LnYxLlNjaGVkdWxlUGF0Y2gSEAoIaWRlbnRpdHkYBCABKAkSEgoKcmVxdWVz",
+            "dF9pZBgFIAEoCSIXChVQYXRjaFNjaGVkdWxlUmVzcG9uc2UiqAEKIExpc3RT",
+            "Y2hlZHVsZU1hdGNoaW5nVGltZXNSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEo",
+            "CRITCgtzY2hlZHVsZV9pZBgCIAEoCRIuCgpzdGFydF90aW1lGAMgASgLMhou",
+            "Z29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIsCghlbmRfdGltZRgEIAEoCzIa",
+            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiUwohTGlzdFNjaGVkdWxlTWF0",
+            "Y2hpbmdUaW1lc1Jlc3BvbnNlEi4KCnN0YXJ0X3RpbWUYASADKAsyGi5nb29n",
+            "bGUucHJvdG9idWYuVGltZXN0YW1wIlEKFURlbGV0ZVNjaGVkdWxlUmVxdWVz",
+            "dBIRCgluYW1lc3BhY2UYASABKAkSEwoLc2NoZWR1bGVfaWQYAiABKAkSEAoI",
+            "aWRlbnRpdHkYAyABKAkiGAoWRGVsZXRlU2NoZWR1bGVSZXNwb25zZSJsChRM",
+            "aXN0U2NoZWR1bGVzUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSGQoRbWF4",
+            "aW11bV9wYWdlX3NpemUYAiABKAUSFwoPbmV4dF9wYWdlX3Rva2VuGAMgASgM",
+            "Eg0KBXF1ZXJ5GAQgASgJInAKFUxpc3RTY2hlZHVsZXNSZXNwb25zZRI+Cglz",
+            "Y2hlZHVsZXMYASADKAsyKy50ZW1wb3JhbC5hcGkuc2NoZWR1bGUudjEuU2No",
+            "ZWR1bGVMaXN0RW50cnkSFwoPbmV4dF9wYWdlX3Rva2VuGAIgASgMIjkKFUNv",
+            "dW50U2NoZWR1bGVzUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSDQoFcXVl",
+            "cnkYAiABKAki2wEKFkNvdW50U2NoZWR1bGVzUmVzcG9uc2USDQoFY291bnQY",
+            "ASABKAMSWAoGZ3JvdXBzGAIgAygLMkgudGVtcG9yYWwuYXBpLndvcmtmbG93",
+            "c2VydmljZS52MS5Db3VudFNjaGVkdWxlc1Jlc3BvbnNlLkFnZ3JlZ2F0aW9u",
+            "R3JvdXAaWAoQQWdncmVnYXRpb25Hcm91cBI1Cgxncm91cF92YWx1ZXMYASAD",
+            "KAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQSDQoFY291bnQY",
+            "AiABKAMihgUKJ1VwZGF0ZVdvcmtlckJ1aWxkSWRDb21wYXRpYmlsaXR5UmVx",
+            "dWVzdBIRCgluYW1lc3BhY2UYASABKAkSEgoKdGFza19xdWV1ZRgCIAEoCRIt",
+            "CiNhZGRfbmV3X2J1aWxkX2lkX2luX25ld19kZWZhdWx0X3NldBgDIAEoCUgA",
+            "EocBChthZGRfbmV3X2NvbXBhdGlibGVfYnVpbGRfaWQYBCABKAsyYC50ZW1w",
+            "b3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLlVwZGF0ZVdvcmtlckJ1aWxk",
+            "SWRDb21wYXRpYmlsaXR5UmVxdWVzdC5BZGROZXdDb21wYXRpYmxlVmVyc2lv",
+            "bkgAEiEKF3Byb21vdGVfc2V0X2J5X2J1aWxkX2lkGAUgASgJSAASJQobcHJv",
+            "bW90ZV9idWlsZF9pZF93aXRoaW5fc2V0GAYgASgJSAASaAoKbWVyZ2Vfc2V0",
+            "cxgHIAEoCzJSLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBk",
+            "YXRlV29ya2VyQnVpbGRJZENvbXBhdGliaWxpdHlSZXF1ZXN0Lk1lcmdlU2V0",
+            "c0gAGm8KF0FkZE5ld0NvbXBhdGlibGVWZXJzaW9uEhQKDG5ld19idWlsZF9p",
+            "ZBgBIAEoCRIkChxleGlzdGluZ19jb21wYXRpYmxlX2J1aWxkX2lkGAIgASgJ",
+            "EhgKEG1ha2Vfc2V0X2RlZmF1bHQYAyABKAgaSQoJTWVyZ2VTZXRzEhwKFHBy",
+            "aW1hcnlfc2V0X2J1aWxkX2lkGAEgASgJEh4KFnNlY29uZGFyeV9zZXRfYnVp",
+            "bGRfaWQYAiABKAlCCwoJb3BlcmF0aW9uIkAKKFVwZGF0ZVdvcmtlckJ1aWxk",
+            "SWRDb21wYXRpYmlsaXR5UmVzcG9uc2VKBAgBEAJSDnZlcnNpb25fc2V0X2lk",
+            "Il8KJEdldFdvcmtlckJ1aWxkSWRDb21wYXRpYmlsaXR5UmVxdWVzdBIRCglu",
+            "YW1lc3BhY2UYASABKAkSEgoKdGFza19xdWV1ZRgCIAEoCRIQCghtYXhfc2V0",
+            "cxgDIAEoBSJ0CiVHZXRXb3JrZXJCdWlsZElkQ29tcGF0aWJpbGl0eVJlc3Bv",
+            "bnNlEksKEm1ham9yX3ZlcnNpb25fc2V0cxgBIAMoCzIvLnRlbXBvcmFsLmFw",
+            "aS50YXNrcXVldWUudjEuQ29tcGF0aWJsZVZlcnNpb25TZXQitQ0KIlVwZGF0",
+            "ZVdvcmtlclZlcnNpb25pbmdSdWxlc1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEg",
+            "ASgJEhIKCnRhc2tfcXVldWUYAiABKAkSFgoOY29uZmxpY3RfdG9rZW4YAyAB",
+            "KAwSgQEKFmluc2VydF9hc3NpZ25tZW50X3J1bGUYBCABKAsyXy50ZW1wb3Jh",
+            "bC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLlVwZGF0ZVdvcmtlclZlcnNpb25p",
+            "bmdSdWxlc1JlcXVlc3QuSW5zZXJ0QnVpbGRJZEFzc2lnbm1lbnRSdWxlSAAS",
+            "gwEKF3JlcGxhY2VfYXNzaWdubWVudF9ydWxlGAUgASgLMmAudGVtcG9yYWwu",
+            "YXBpLndvcmtmbG93c2VydmljZS52MS5VcGRhdGVXb3JrZXJWZXJzaW9uaW5n",
+            "UnVsZXNSZXF1ZXN0LlJlcGxhY2VCdWlsZElkQXNzaWdubWVudFJ1bGVIABKB",
+            "AQoWZGVsZXRlX2Fzc2lnbm1lbnRfcnVsZRgGIAEoCzJfLnRlbXBvcmFsLmFw",
+            "aS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRlV29ya2VyVmVyc2lvbmluZ1J1",
+            "bGVzUmVxdWVzdC5EZWxldGVCdWlsZElkQXNzaWdubWVudFJ1bGVIABKMAQoc",
+            "YWRkX2NvbXBhdGlibGVfcmVkaXJlY3RfcnVsZRgHIAEoCzJkLnRlbXBvcmFs",
+            "LmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRlV29ya2VyVmVyc2lvbmlu",
+            "Z1J1bGVzUmVxdWVzdC5BZGRDb21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVs",
+            "ZUgAEpQBCiByZXBsYWNlX2NvbXBhdGlibGVfcmVkaXJlY3RfcnVsZRgIIAEo",
+            "CzJoLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRlV29y",
+            "a2VyVmVyc2lvbmluZ1J1bGVzUmVxdWVzdC5SZXBsYWNlQ29tcGF0aWJsZUJ1",
+            "aWxkSWRSZWRpcmVjdFJ1bGVIABKSAQofZGVsZXRlX2NvbXBhdGlibGVfcmVk",
+            "aXJlY3RfcnVsZRgJIAEoCzJnLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZp",
+            "Y2UudjEuVXBkYXRlV29ya2VyVmVyc2lvbmluZ1J1bGVzUmVxdWVzdC5EZWxl",
+            "dGVDb21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZUgAEmwKD2NvbW1pdF9i",
+            "dWlsZF9pZBgKIAEoCzJRLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2Uu",
+            "djEuVXBkYXRlV29ya2VyVmVyc2lvbmluZ1J1bGVzUmVxdWVzdC5Db21taXRC",
+            "dWlsZElkSAAacQobSW5zZXJ0QnVpbGRJZEFzc2lnbm1lbnRSdWxlEhIKCnJ1",
+            "bGVfaW5kZXgYASABKAUSPgoEcnVsZRgCIAEoCzIwLnRlbXBvcmFsLmFwaS50",
+            "YXNrcXVldWUudjEuQnVpbGRJZEFzc2lnbm1lbnRSdWxlGoEBChxSZXBsYWNl",
+            "QnVpbGRJZEFzc2lnbm1lbnRSdWxlEhIKCnJ1bGVfaW5kZXgYASABKAUSPgoE",
+            "cnVsZRgCIAEoCzIwLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuQnVpbGRJ",
+            "ZEFzc2lnbm1lbnRSdWxlEg0KBWZvcmNlGAMgASgIGkAKG0RlbGV0ZUJ1aWxk",
+            "SWRBc3NpZ25tZW50UnVsZRISCgpydWxlX2luZGV4GAEgASgFEg0KBWZvcmNl",
+            "GAIgASgIGmoKIEFkZENvbXBhdGlibGVCdWlsZElkUmVkaXJlY3RSdWxlEkYK",
+            "BHJ1bGUYASABKAsyOC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLkNvbXBh",
+            "dGlibGVCdWlsZElkUmVkaXJlY3RSdWxlGm4KJFJlcGxhY2VDb21wYXRpYmxl",
+            "QnVpbGRJZFJlZGlyZWN0UnVsZRJGCgRydWxlGAEgASgLMjgudGVtcG9yYWwu",
+            "YXBpLnRhc2txdWV1ZS52MS5Db21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVs",
+            "ZRo+CiNEZWxldGVDb21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRIXCg9z",
+            "b3VyY2VfYnVpbGRfaWQYASABKAkaNwoNQ29tbWl0QnVpbGRJZBIXCg90YXJn",
+            "ZXRfYnVpbGRfaWQYASABKAkSDQoFZm9yY2UYAiABKAhCCwoJb3BlcmF0aW9u",
+            "IvwBCiNVcGRhdGVXb3JrZXJWZXJzaW9uaW5nUnVsZXNSZXNwb25zZRJVChBh",
+            "c3NpZ25tZW50X3J1bGVzGAEgAygLMjsudGVtcG9yYWwuYXBpLnRhc2txdWV1",
+            "ZS52MS5UaW1lc3RhbXBlZEJ1aWxkSWRBc3NpZ25tZW50UnVsZRJmChljb21w",
+            "YXRpYmxlX3JlZGlyZWN0X3J1bGVzGAIgAygLMkMudGVtcG9yYWwuYXBpLnRh",
+            "c2txdWV1ZS52MS5UaW1lc3RhbXBlZENvbXBhdGlibGVCdWlsZElkUmVkaXJl",
+            "Y3RSdWxlEhYKDmNvbmZsaWN0X3Rva2VuGAMgASgMIkgKH0dldFdvcmtlclZl",
+            "cnNpb25pbmdSdWxlc1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhIKCnRh",
+            "c2tfcXVldWUYAiABKAki+QEKIEdldFdvcmtlclZlcnNpb25pbmdSdWxlc1Jl",
             "c3BvbnNlElUKEGFzc2lnbm1lbnRfcnVsZXMYASADKAsyOy50ZW1wb3JhbC5h",
             "cGkudGFza3F1ZXVlLnYxLlRpbWVzdGFtcGVkQnVpbGRJZEFzc2lnbm1lbnRS",
             "dWxlEmYKGWNvbXBhdGlibGVfcmVkaXJlY3RfcnVsZXMYAiADKAsyQy50ZW1w",
             "b3JhbC5hcGkudGFza3F1ZXVlLnYxLlRpbWVzdGFtcGVkQ29tcGF0aWJsZUJ1",
-            "aWxkSWRSZWRpcmVjdFJ1bGUSFgoOY29uZmxpY3RfdG9rZW4YAyABKAwiSAof",
-            "R2V0V29ya2VyVmVyc2lvbmluZ1J1bGVzUmVxdWVzdBIRCgluYW1lc3BhY2UY",
-            "ASABKAkSEgoKdGFza19xdWV1ZRgCIAEoCSL5AQogR2V0V29ya2VyVmVyc2lv",
-            "bmluZ1J1bGVzUmVzcG9uc2USVQoQYXNzaWdubWVudF9ydWxlcxgBIAMoCzI7",
-            "LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGltZXN0YW1wZWRCdWlsZElk",
-            "QXNzaWdubWVudFJ1bGUSZgoZY29tcGF0aWJsZV9yZWRpcmVjdF9ydWxlcxgC",
-            "IAMoCzJDLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGltZXN0YW1wZWRD",
-            "b21wYXRpYmxlQnVpbGRJZFJlZGlyZWN0UnVsZRIWCg5jb25mbGljdF90b2tl",
-            "bhgDIAEoDCKcAQogR2V0V29ya2VyVGFza1JlYWNoYWJpbGl0eVJlcXVlc3QS",
-            "EQoJbmFtZXNwYWNlGAEgASgJEhEKCWJ1aWxkX2lkcxgCIAMoCRITCgt0YXNr",
-            "X3F1ZXVlcxgDIAMoCRI9CgxyZWFjaGFiaWxpdHkYBCABKA4yJy50ZW1wb3Jh",
-            "bC5hcGkuZW51bXMudjEuVGFza1JlYWNoYWJpbGl0eSJyCiFHZXRXb3JrZXJU",
-            "YXNrUmVhY2hhYmlsaXR5UmVzcG9uc2USTQoVYnVpbGRfaWRfcmVhY2hhYmls",
-            "aXR5GAEgAygLMi4udGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5CdWlsZElk",
-            "UmVhY2hhYmlsaXR5IoUCCh5VcGRhdGVXb3JrZmxvd0V4ZWN1dGlvblJlcXVl",
-            "c3QSEQoJbmFtZXNwYWNlGAEgASgJEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgC",
-            "IAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRp",
-            "b24SHgoWZmlyc3RfZXhlY3V0aW9uX3J1bl9pZBgDIAEoCRI3Cgt3YWl0X3Bv",
-            "bGljeRgEIAEoCzIiLnRlbXBvcmFsLmFwaS51cGRhdGUudjEuV2FpdFBvbGlj",
-            "eRIwCgdyZXF1ZXN0GAUgASgLMh8udGVtcG9yYWwuYXBpLnVwZGF0ZS52MS5S",
-            "ZXF1ZXN0ItcBCh9VcGRhdGVXb3JrZmxvd0V4ZWN1dGlvblJlc3BvbnNlEjUK",
-            "CnVwZGF0ZV9yZWYYASABKAsyIS50ZW1wb3JhbC5hcGkudXBkYXRlLnYxLlVw",
-            "ZGF0ZVJlZhIwCgdvdXRjb21lGAIgASgLMh8udGVtcG9yYWwuYXBpLnVwZGF0",
-            "ZS52MS5PdXRjb21lEksKBXN0YWdlGAMgASgOMjwudGVtcG9yYWwuYXBpLmVu",
-            "dW1zLnYxLlVwZGF0ZVdvcmtmbG93RXhlY3V0aW9uTGlmZWN5Y2xlU3RhZ2Ui",
-            "9AcKGlN0YXJ0QmF0Y2hPcGVyYXRpb25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgB",
-            "IAEoCRIYChB2aXNpYmlsaXR5X3F1ZXJ5GAIgASgJEg4KBmpvYl9pZBgDIAEo",
-            "CRIOCgZyZWFzb24YBCABKAkSPQoKZXhlY3V0aW9ucxgFIAMoCzIpLnRlbXBv",
-            "cmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SIQoZbWF4X29w",
-            "ZXJhdGlvbnNfcGVyX3NlY29uZBgGIAEoAhJRChV0ZXJtaW5hdGlvbl9vcGVy",
-            "YXRpb24YCiABKAsyMC50ZW1wb3JhbC5hcGkuYmF0Y2gudjEuQmF0Y2hPcGVy",
-            "YXRpb25UZXJtaW5hdGlvbkgAEkcKEHNpZ25hbF9vcGVyYXRpb24YCyABKAsy",
-            "Ky50ZW1wb3JhbC5hcGkuYmF0Y2gudjEuQmF0Y2hPcGVyYXRpb25TaWduYWxI",
-            "ABJTChZjYW5jZWxsYXRpb25fb3BlcmF0aW9uGAwgASgLMjEudGVtcG9yYWwu",
-            "YXBpLmJhdGNoLnYxLkJhdGNoT3BlcmF0aW9uQ2FuY2VsbGF0aW9uSAASSwoS",
-            "ZGVsZXRpb25fb3BlcmF0aW9uGA0gASgLMi0udGVtcG9yYWwuYXBpLmJhdGNo",
-            "LnYxLkJhdGNoT3BlcmF0aW9uRGVsZXRpb25IABJFCg9yZXNldF9vcGVyYXRp",
-            "b24YDiABKAsyKi50ZW1wb3JhbC5hcGkuYmF0Y2gudjEuQmF0Y2hPcGVyYXRp",
-            "b25SZXNldEgAEnAKIXVwZGF0ZV93b3JrZmxvd19vcHRpb25zX29wZXJhdGlv",
-            "bhgPIAEoCzJDLnRlbXBvcmFsLmFwaS5iYXRjaC52MS5CYXRjaE9wZXJhdGlv",
-            "blVwZGF0ZVdvcmtmbG93RXhlY3V0aW9uT3B0aW9uc0gAEl4KHHVucGF1c2Vf",
-            "YWN0aXZpdGllc19vcGVyYXRpb24YECABKAsyNi50ZW1wb3JhbC5hcGkuYmF0",
-            "Y2gudjEuQmF0Y2hPcGVyYXRpb25VbnBhdXNlQWN0aXZpdGllc0gAEloKGnJl",
-            "c2V0X2FjdGl2aXRpZXNfb3BlcmF0aW9uGBEgASgLMjQudGVtcG9yYWwuYXBp",
-            "LmJhdGNoLnYxLkJhdGNoT3BlcmF0aW9uUmVzZXRBY3Rpdml0aWVzSAASZwoh",
-            "dXBkYXRlX2FjdGl2aXR5X29wdGlvbnNfb3BlcmF0aW9uGBIgASgLMjoudGVt",
-            "cG9yYWwuYXBpLmJhdGNoLnYxLkJhdGNoT3BlcmF0aW9uVXBkYXRlQWN0aXZp",
-            "dHlPcHRpb25zSABCCwoJb3BlcmF0aW9uIh0KG1N0YXJ0QmF0Y2hPcGVyYXRp",
-            "b25SZXNwb25zZSJgChlTdG9wQmF0Y2hPcGVyYXRpb25SZXF1ZXN0EhEKCW5h",
-            "bWVzcGFjZRgBIAEoCRIOCgZqb2JfaWQYAiABKAkSDgoGcmVhc29uGAMgASgJ",
-            "EhAKCGlkZW50aXR5GAQgASgJIhwKGlN0b3BCYXRjaE9wZXJhdGlvblJlc3Bv",
-            "bnNlIkIKHURlc2NyaWJlQmF0Y2hPcGVyYXRpb25SZXF1ZXN0EhEKCW5hbWVz",
-            "cGFjZRgBIAEoCRIOCgZqb2JfaWQYAiABKAkikgMKHkRlc2NyaWJlQmF0Y2hP",
-            "cGVyYXRpb25SZXNwb25zZRJBCg5vcGVyYXRpb25fdHlwZRgBIAEoDjIpLnRl",
-            "bXBvcmFsLmFwaS5lbnVtcy52MS5CYXRjaE9wZXJhdGlvblR5cGUSDgoGam9i",
-            "X2lkGAIgASgJEjkKBXN0YXRlGAMgASgOMioudGVtcG9yYWwuYXBpLmVudW1z",
-            "LnYxLkJhdGNoT3BlcmF0aW9uU3RhdGUSLgoKc3RhcnRfdGltZRgEIAEoCzIa",
-            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKY2xvc2VfdGltZRgFIAEo",
-            "CzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASHQoVdG90YWxfb3BlcmF0",
-            "aW9uX2NvdW50GAYgASgDEiAKGGNvbXBsZXRlX29wZXJhdGlvbl9jb3VudBgH",
-            "IAEoAxIfChdmYWlsdXJlX29wZXJhdGlvbl9jb3VudBgIIAEoAxIQCghpZGVu",
-            "dGl0eRgJIAEoCRIOCgZyZWFzb24YCiABKAkiWwoaTGlzdEJhdGNoT3BlcmF0",
-            "aW9uc1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhEKCXBhZ2Vfc2l6ZRgC",
-            "IAEoBRIXCg9uZXh0X3BhZ2VfdG9rZW4YAyABKAwieQobTGlzdEJhdGNoT3Bl",
-            "cmF0aW9uc1Jlc3BvbnNlEkEKDm9wZXJhdGlvbl9pbmZvGAEgAygLMikudGVt",
-            "cG9yYWwuYXBpLmJhdGNoLnYxLkJhdGNoT3BlcmF0aW9uSW5mbxIXCg9uZXh0",
-            "X3BhZ2VfdG9rZW4YAiABKAwiuQEKIlBvbGxXb3JrZmxvd0V4ZWN1dGlvblVw",
-            "ZGF0ZVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEjUKCnVwZGF0ZV9yZWYY",
-            "AiABKAsyIS50ZW1wb3JhbC5hcGkudXBkYXRlLnYxLlVwZGF0ZVJlZhIQCghp",
-            "ZGVudGl0eRgDIAEoCRI3Cgt3YWl0X3BvbGljeRgEIAEoCzIiLnRlbXBvcmFs",
-            "LmFwaS51cGRhdGUudjEuV2FpdFBvbGljeSLbAQojUG9sbFdvcmtmbG93RXhl",
-            "Y3V0aW9uVXBkYXRlUmVzcG9uc2USMAoHb3V0Y29tZRgBIAEoCzIfLnRlbXBv",
-            "cmFsLmFwaS51cGRhdGUudjEuT3V0Y29tZRJLCgVzdGFnZRgCIAEoDjI8LnRl",
-            "bXBvcmFsLmFwaS5lbnVtcy52MS5VcGRhdGVXb3JrZmxvd0V4ZWN1dGlvbkxp",
-            "ZmVjeWNsZVN0YWdlEjUKCnVwZGF0ZV9yZWYYAyABKAsyIS50ZW1wb3JhbC5h",
-            "cGkudXBkYXRlLnYxLlVwZGF0ZVJlZiKHAwoZUG9sbE5leHVzVGFza1F1ZXVl",
-            "UmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEAoIaWRlbnRpdHkYAiABKAkS",
-            "GwoTd29ya2VyX2luc3RhbmNlX2tleRgIIAEoCRI4Cgp0YXNrX3F1ZXVlGAMg",
-            "ASgLMiQudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWUSWgob",
-            "d29ya2VyX3ZlcnNpb25fY2FwYWJpbGl0aWVzGAQgASgLMjEudGVtcG9yYWwu",
-            "YXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9uQ2FwYWJpbGl0aWVzQgIYARJP",
-            "ChJkZXBsb3ltZW50X29wdGlvbnMYBiABKAsyMy50ZW1wb3JhbC5hcGkuZGVw",
-            "bG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50T3B0aW9ucxJBChB3b3JrZXJf",
-            "aGVhcnRiZWF0GAcgAygLMicudGVtcG9yYWwuYXBpLndvcmtlci52MS5Xb3Jr",
-            "ZXJIZWFydGJlYXQitAEKGlBvbGxOZXh1c1Rhc2tRdWV1ZVJlc3BvbnNlEhIK",
-            "CnRhc2tfdG9rZW4YASABKAwSLwoHcmVxdWVzdBgCIAEoCzIeLnRlbXBvcmFs",
-            "LmFwaS5uZXh1cy52MS5SZXF1ZXN0ElEKF3BvbGxlcl9zY2FsaW5nX2RlY2lz",
-            "aW9uGAMgASgLMjAudGVtcG9yYWwuYXBpLnRhc2txdWV1ZS52MS5Qb2xsZXJT",
-            "Y2FsaW5nRGVjaXNpb24ijgEKIFJlc3BvbmROZXh1c1Rhc2tDb21wbGV0ZWRS",
-            "ZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIQCghpZGVudGl0eRgCIAEoCRIS",
-            "Cgp0YXNrX3Rva2VuGAMgASgMEjEKCHJlc3BvbnNlGAQgASgLMh8udGVtcG9y",
-            "YWwuYXBpLm5leHVzLnYxLlJlc3BvbnNlIiMKIVJlc3BvbmROZXh1c1Rhc2tD",
-            "b21wbGV0ZWRSZXNwb25zZSLDAQodUmVzcG9uZE5leHVzVGFza0ZhaWxlZFJl",
-            "cXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhAKCGlkZW50aXR5GAIgASgJEhIK",
-            "CnRhc2tfdG9rZW4YAyABKAwSNgoFZXJyb3IYBCABKAsyIy50ZW1wb3JhbC5h",
-            "cGkubmV4dXMudjEuSGFuZGxlckVycm9yQgIYARIxCgdmYWlsdXJlGAUgASgL",
-            "MiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVyZSIgCh5SZXNwb25k",
-            "TmV4dXNUYXNrRmFpbGVkUmVzcG9uc2Ui9AIKHEV4ZWN1dGVNdWx0aU9wZXJh",
-            "dGlvblJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJElsKCm9wZXJhdGlvbnMY",
-            "AiADKAsyRy50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLkV4ZWN1",
-            "dGVNdWx0aU9wZXJhdGlvblJlcXVlc3QuT3BlcmF0aW9uEhMKC3Jlc291cmNl",
-            "X2lkGAMgASgJGs4BCglPcGVyYXRpb24SWAoOc3RhcnRfd29ya2Zsb3cYASAB",
-            "KAsyPi50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLlN0YXJ0V29y",
-            "a2Zsb3dFeGVjdXRpb25SZXF1ZXN0SAASWgoPdXBkYXRlX3dvcmtmbG93GAIg",
-            "ASgLMj8udGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5VcGRhdGVX",
-            "b3JrZmxvd0V4ZWN1dGlvblJlcXVlc3RIAEILCglvcGVyYXRpb24izAIKHUV4",
-            "ZWN1dGVNdWx0aU9wZXJhdGlvblJlc3BvbnNlEloKCXJlc3BvbnNlcxgBIAMo",
-            "CzJHLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuRXhlY3V0ZU11",
-            "bHRpT3BlcmF0aW9uUmVzcG9uc2UuUmVzcG9uc2UazgEKCFJlc3BvbnNlElkK",
-            "DnN0YXJ0X3dvcmtmbG93GAEgASgLMj8udGVtcG9yYWwuYXBpLndvcmtmbG93",
-            "c2VydmljZS52MS5TdGFydFdvcmtmbG93RXhlY3V0aW9uUmVzcG9uc2VIABJb",
-            "Cg91cGRhdGVfd29ya2Zsb3cYAiABKAsyQC50ZW1wb3JhbC5hcGkud29ya2Zs",
-            "b3dzZXJ2aWNlLnYxLlVwZGF0ZVdvcmtmbG93RXhlY3V0aW9uUmVzcG9uc2VI",
-            "AEIKCghyZXNwb25zZSLQAgocVXBkYXRlQWN0aXZpdHlPcHRpb25zUmVxdWVz",
-            "dBIRCgluYW1lc3BhY2UYASABKAkSPAoJZXhlY3V0aW9uGAIgASgLMikudGVt",
-            "cG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhIQCghpZGVu",
-            "dGl0eRgDIAEoCRJDChBhY3Rpdml0eV9vcHRpb25zGAQgASgLMikudGVtcG9y",
-            "YWwuYXBpLmFjdGl2aXR5LnYxLkFjdGl2aXR5T3B0aW9ucxIvCgt1cGRhdGVf",
-            "bWFzaxgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5GaWVsZE1hc2sSDAoCaWQY",
-            "BiABKAlIABIOCgR0eXBlGAcgASgJSAASEwoJbWF0Y2hfYWxsGAkgASgISAAS",
-            "GAoQcmVzdG9yZV9vcmlnaW5hbBgIIAEoCEIKCghhY3Rpdml0eSJkCh1VcGRh",
-            "dGVBY3Rpdml0eU9wdGlvbnNSZXNwb25zZRJDChBhY3Rpdml0eV9vcHRpb25z",
-            "GAEgASgLMikudGVtcG9yYWwuYXBpLmFjdGl2aXR5LnYxLkFjdGl2aXR5T3B0",
-            "aW9ucyKzAQoUUGF1c2VBY3Rpdml0eVJlcXVlc3QSEQoJbmFtZXNwYWNlGAEg",
-            "ASgJEjwKCWV4ZWN1dGlvbhgCIAEoCzIpLnRlbXBvcmFsLmFwaS5jb21tb24u",
-            "djEuV29ya2Zsb3dFeGVjdXRpb24SEAoIaWRlbnRpdHkYAyABKAkSDAoCaWQY",
-            "BCABKAlIABIOCgR0eXBlGAUgASgJSAASDgoGcmVhc29uGAYgASgJQgoKCGFj",
-            "dGl2aXR5IhcKFVBhdXNlQWN0aXZpdHlSZXNwb25zZSKYAgoWVW5wYXVzZUFj",
-            "dGl2aXR5UmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSPAoJZXhlY3V0aW9u",
-            "GAIgASgLMikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1",
-            "dGlvbhIQCghpZGVudGl0eRgDIAEoCRIMCgJpZBgEIAEoCUgAEg4KBHR5cGUY",
-            "BSABKAlIABIVCgt1bnBhdXNlX2FsbBgGIAEoCEgAEhYKDnJlc2V0X2F0dGVt",
-            "cHRzGAcgASgIEhcKD3Jlc2V0X2hlYXJ0YmVhdBgIIAEoCBIpCgZqaXR0ZXIY",
-            "CSABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb25CCgoIYWN0aXZpdHki",
-            "GQoXVW5wYXVzZUFjdGl2aXR5UmVzcG9uc2UiswIKFFJlc2V0QWN0aXZpdHlS",
-            "ZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRI8CglleGVjdXRpb24YAiABKAsy",
-            "KS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEhAK",
-            "CGlkZW50aXR5GAMgASgJEgwKAmlkGAQgASgJSAASDgoEdHlwZRgFIAEoCUgA",
-            "EhMKCW1hdGNoX2FsbBgKIAEoCEgAEhcKD3Jlc2V0X2hlYXJ0YmVhdBgGIAEo",
-            "CBITCgtrZWVwX3BhdXNlZBgHIAEoCBIpCgZqaXR0ZXIYCCABKAsyGS5nb29n",
-            "bGUucHJvdG9idWYuRHVyYXRpb24SIAoYcmVzdG9yZV9vcmlnaW5hbF9vcHRp",
-            "b25zGAkgASgIQgoKCGFjdGl2aXR5IhcKFVJlc2V0QWN0aXZpdHlSZXNwb25z",
-            "ZSKcAgolVXBkYXRlV29ya2Zsb3dFeGVjdXRpb25PcHRpb25zUmVxdWVzdBIR",
-            "CgluYW1lc3BhY2UYASABKAkSRQoSd29ya2Zsb3dfZXhlY3V0aW9uGAIgASgL",
-            "MikudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhJW",
-            "Chp3b3JrZmxvd19leGVjdXRpb25fb3B0aW9ucxgDIAEoCzIyLnRlbXBvcmFs",
-            "LmFwaS53b3JrZmxvdy52MS5Xb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnMSLwoL",
-            "dXBkYXRlX21hc2sYBCABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNr",
-            "EhAKCGlkZW50aXR5GAUgASgJIoABCiZVcGRhdGVXb3JrZmxvd0V4ZWN1dGlv",
-            "bk9wdGlvbnNSZXNwb25zZRJWChp3b3JrZmxvd19leGVjdXRpb25fb3B0aW9u",
-            "cxgBIAEoCzIyLnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5Xb3JrZmxvd0V4",
-            "ZWN1dGlvbk9wdGlvbnMiagoZRGVzY3JpYmVEZXBsb3ltZW50UmVxdWVzdBIR",
-            "CgluYW1lc3BhY2UYASABKAkSOgoKZGVwbG95bWVudBgCIAEoCzImLnRlbXBv",
-            "cmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnQiYQoaRGVzY3JpYmVE",
-            "ZXBsb3ltZW50UmVzcG9uc2USQwoPZGVwbG95bWVudF9pbmZvGAEgASgLMiou",
-            "dGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuRGVwbG95bWVudEluZm8iwgEK",
-            "JkRlc2NyaWJlV29ya2VyRGVwbG95bWVudFZlcnNpb25SZXF1ZXN0EhEKCW5h",
-            "bWVzcGFjZRgBIAEoCRITCgd2ZXJzaW9uGAIgASgJQgIYARJPChJkZXBsb3lt",
-            "ZW50X3ZlcnNpb24YAyABKAsyMy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52",
-            "MS5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvbhIfChdyZXBvcnRfdGFza19xdWV1",
-            "ZV9zdGF0cxgEIAEoCCKMBQonRGVzY3JpYmVXb3JrZXJEZXBsb3ltZW50VmVy",
-            "c2lvblJlc3BvbnNlEl8KHndvcmtlcl9kZXBsb3ltZW50X3ZlcnNpb25faW5m",
-            "bxgBIAEoCzI3LnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLldvcmtlckRl",
-            "cGxveW1lbnRWZXJzaW9uSW5mbxJ2ChN2ZXJzaW9uX3Rhc2tfcXVldWVzGAIg",
-            "AygLMlkudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5EZXNjcmli",
-            "ZVdvcmtlckRlcGxveW1lbnRWZXJzaW9uUmVzcG9uc2UuVmVyc2lvblRhc2tR",
-            "dWV1ZRqHAwoQVmVyc2lvblRhc2tRdWV1ZRIMCgRuYW1lGAEgASgJEjIKBHR5",
-            "cGUYAiABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFza1F1ZXVlVHlw",
-            "ZRI4CgVzdGF0cxgDIAEoCzIpLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEu",
-            "VGFza1F1ZXVlU3RhdHMSkAEKFXN0YXRzX2J5X3ByaW9yaXR5X2tleRgEIAMo",
-            "CzJxLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuRGVzY3JpYmVX",
-            "b3JrZXJEZXBsb3ltZW50VmVyc2lvblJlc3BvbnNlLlZlcnNpb25UYXNrUXVl",
-            "dWUuU3RhdHNCeVByaW9yaXR5S2V5RW50cnkaZAoXU3RhdHNCeVByaW9yaXR5",
-            "S2V5RW50cnkSCwoDa2V5GAEgASgFEjgKBXZhbHVlGAIgASgLMikudGVtcG9y",
-            "YWwuYXBpLnRhc2txdWV1ZS52MS5UYXNrUXVldWVTdGF0czoCOAEiTQofRGVz",
-            "Y3JpYmVXb3JrZXJEZXBsb3ltZW50UmVxdWVzdBIRCgluYW1lc3BhY2UYASAB",
-            "KAkSFwoPZGVwbG95bWVudF9uYW1lGAIgASgJIowBCiBEZXNjcmliZVdvcmtl",
-            "ckRlcGxveW1lbnRSZXNwb25zZRIWCg5jb25mbGljdF90b2tlbhgBIAEoDBJQ",
-            "ChZ3b3JrZXJfZGVwbG95bWVudF9pbmZvGAIgASgLMjAudGVtcG9yYWwuYXBp",
-            "LmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudEluZm8ibAoWTGlzdERl",
-            "cGxveW1lbnRzUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEQoJcGFnZV9z",
-            "aXplGAIgASgFEhcKD25leHRfcGFnZV90b2tlbhgDIAEoDBITCgtzZXJpZXNf",
-            "bmFtZRgEIAEoCSJ3ChdMaXN0RGVwbG95bWVudHNSZXNwb25zZRIXCg9uZXh0",
-            "X3BhZ2VfdG9rZW4YASABKAwSQwoLZGVwbG95bWVudHMYAiADKAsyLi50ZW1w",
-            "b3JhbC5hcGkuZGVwbG95bWVudC52MS5EZXBsb3ltZW50TGlzdEluZm8izQEK",
-            "G1NldEN1cnJlbnREZXBsb3ltZW50UmVxdWVzdBIRCgluYW1lc3BhY2UYASAB",
-            "KAkSOgoKZGVwbG95bWVudBgCIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3lt",
-            "ZW50LnYxLkRlcGxveW1lbnQSEAoIaWRlbnRpdHkYAyABKAkSTQoPdXBkYXRl",
-            "X21ldGFkYXRhGAQgASgLMjQudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEu",
-            "VXBkYXRlRGVwbG95bWVudE1ldGFkYXRhIrkBChxTZXRDdXJyZW50RGVwbG95",
-            "bWVudFJlc3BvbnNlEksKF2N1cnJlbnRfZGVwbG95bWVudF9pbmZvGAEgASgL",
-            "MioudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuRGVwbG95bWVudEluZm8S",
-            "TAoYcHJldmlvdXNfZGVwbG95bWVudF9pbmZvGAIgASgLMioudGVtcG9yYWwu",
-            "YXBpLmRlcGxveW1lbnQudjEuRGVwbG95bWVudEluZm8i5QEKKFNldFdvcmtl",
-            "ckRlcGxveW1lbnRDdXJyZW50VmVyc2lvblJlcXVlc3QSEQoJbmFtZXNwYWNl",
-            "GAEgASgJEhcKD2RlcGxveW1lbnRfbmFtZRgCIAEoCRITCgd2ZXJzaW9uGAMg",
-            "ASgJQgIYARIQCghidWlsZF9pZBgHIAEoCRIWCg5jb25mbGljdF90b2tlbhgE",
-            "IAEoDBIQCghpZGVudGl0eRgFIAEoCRIiChppZ25vcmVfbWlzc2luZ190YXNr",
-            "X3F1ZXVlcxgGIAEoCBIYChBhbGxvd19ub19wb2xsZXJzGAkgASgIIr8BCilT",
-            "ZXRXb3JrZXJEZXBsb3ltZW50Q3VycmVudFZlcnNpb25SZXNwb25zZRIWCg5j",
-            "b25mbGljdF90b2tlbhgBIAEoDBIcChBwcmV2aW91c192ZXJzaW9uGAIgASgJ",
-            "QgIYARJcChtwcmV2aW91c19kZXBsb3ltZW50X3ZlcnNpb24YAyABKAsyMy50",
+            "aWxkSWRSZWRpcmVjdFJ1bGUSFgoOY29uZmxpY3RfdG9rZW4YAyABKAwinAEK",
+            "IEdldFdvcmtlclRhc2tSZWFjaGFiaWxpdHlSZXF1ZXN0EhEKCW5hbWVzcGFj",
+            "ZRgBIAEoCRIRCglidWlsZF9pZHMYAiADKAkSEwoLdGFza19xdWV1ZXMYAyAD",
+            "KAkSPQoMcmVhY2hhYmlsaXR5GAQgASgOMicudGVtcG9yYWwuYXBpLmVudW1z",
+            "LnYxLlRhc2tSZWFjaGFiaWxpdHkicgohR2V0V29ya2VyVGFza1JlYWNoYWJp",
+            "bGl0eVJlc3BvbnNlEk0KFWJ1aWxkX2lkX3JlYWNoYWJpbGl0eRgBIAMoCzIu",
+            "LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuQnVpbGRJZFJlYWNoYWJpbGl0",
+            "eSKFAgoeVXBkYXRlV29ya2Zsb3dFeGVjdXRpb25SZXF1ZXN0EhEKCW5hbWVz",
+            "cGFjZRgBIAEoCRJFChJ3b3JrZmxvd19leGVjdXRpb24YAiABKAsyKS50ZW1w",
+            "b3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEh4KFmZpcnN0",
+            "X2V4ZWN1dGlvbl9ydW5faWQYAyABKAkSNwoLd2FpdF9wb2xpY3kYBCABKAsy",
+            "Ii50ZW1wb3JhbC5hcGkudXBkYXRlLnYxLldhaXRQb2xpY3kSMAoHcmVxdWVz",
+            "dBgFIAEoCzIfLnRlbXBvcmFsLmFwaS51cGRhdGUudjEuUmVxdWVzdCLXAQof",
+            "VXBkYXRlV29ya2Zsb3dFeGVjdXRpb25SZXNwb25zZRI1Cgp1cGRhdGVfcmVm",
+            "GAEgASgLMiEudGVtcG9yYWwuYXBpLnVwZGF0ZS52MS5VcGRhdGVSZWYSMAoH",
+            "b3V0Y29tZRgCIAEoCzIfLnRlbXBvcmFsLmFwaS51cGRhdGUudjEuT3V0Y29t",
+            "ZRJLCgVzdGFnZRgDIAEoDjI8LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5VcGRh",
+            "dGVXb3JrZmxvd0V4ZWN1dGlvbkxpZmVjeWNsZVN0YWdlIvQHChpTdGFydEJh",
+            "dGNoT3BlcmF0aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSGAoQdmlz",
+            "aWJpbGl0eV9xdWVyeRgCIAEoCRIOCgZqb2JfaWQYAyABKAkSDgoGcmVhc29u",
+            "GAQgASgJEj0KCmV4ZWN1dGlvbnMYBSADKAsyKS50ZW1wb3JhbC5hcGkuY29t",
+            "bW9uLnYxLldvcmtmbG93RXhlY3V0aW9uEiEKGW1heF9vcGVyYXRpb25zX3Bl",
+            "cl9zZWNvbmQYBiABKAISUQoVdGVybWluYXRpb25fb3BlcmF0aW9uGAogASgL",
+            "MjAudGVtcG9yYWwuYXBpLmJhdGNoLnYxLkJhdGNoT3BlcmF0aW9uVGVybWlu",
+            "YXRpb25IABJHChBzaWduYWxfb3BlcmF0aW9uGAsgASgLMisudGVtcG9yYWwu",
+            "YXBpLmJhdGNoLnYxLkJhdGNoT3BlcmF0aW9uU2lnbmFsSAASUwoWY2FuY2Vs",
+            "bGF0aW9uX29wZXJhdGlvbhgMIAEoCzIxLnRlbXBvcmFsLmFwaS5iYXRjaC52",
+            "MS5CYXRjaE9wZXJhdGlvbkNhbmNlbGxhdGlvbkgAEksKEmRlbGV0aW9uX29w",
+            "ZXJhdGlvbhgNIAEoCzItLnRlbXBvcmFsLmFwaS5iYXRjaC52MS5CYXRjaE9w",
+            "ZXJhdGlvbkRlbGV0aW9uSAASRQoPcmVzZXRfb3BlcmF0aW9uGA4gASgLMiou",
+            "dGVtcG9yYWwuYXBpLmJhdGNoLnYxLkJhdGNoT3BlcmF0aW9uUmVzZXRIABJw",
+            "CiF1cGRhdGVfd29ya2Zsb3dfb3B0aW9uc19vcGVyYXRpb24YDyABKAsyQy50",
+            "ZW1wb3JhbC5hcGkuYmF0Y2gudjEuQmF0Y2hPcGVyYXRpb25VcGRhdGVXb3Jr",
+            "Zmxvd0V4ZWN1dGlvbk9wdGlvbnNIABJeChx1bnBhdXNlX2FjdGl2aXRpZXNf",
+            "b3BlcmF0aW9uGBAgASgLMjYudGVtcG9yYWwuYXBpLmJhdGNoLnYxLkJhdGNo",
+            "T3BlcmF0aW9uVW5wYXVzZUFjdGl2aXRpZXNIABJaChpyZXNldF9hY3Rpdml0",
+            "aWVzX29wZXJhdGlvbhgRIAEoCzI0LnRlbXBvcmFsLmFwaS5iYXRjaC52MS5C",
+            "YXRjaE9wZXJhdGlvblJlc2V0QWN0aXZpdGllc0gAEmcKIXVwZGF0ZV9hY3Rp",
+            "dml0eV9vcHRpb25zX29wZXJhdGlvbhgSIAEoCzI6LnRlbXBvcmFsLmFwaS5i",
+            "YXRjaC52MS5CYXRjaE9wZXJhdGlvblVwZGF0ZUFjdGl2aXR5T3B0aW9uc0gA",
+            "QgsKCW9wZXJhdGlvbiIdChtTdGFydEJhdGNoT3BlcmF0aW9uUmVzcG9uc2Ui",
+            "YAoZU3RvcEJhdGNoT3BlcmF0aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASAB",
+            "KAkSDgoGam9iX2lkGAIgASgJEg4KBnJlYXNvbhgDIAEoCRIQCghpZGVudGl0",
+            "eRgEIAEoCSIcChpTdG9wQmF0Y2hPcGVyYXRpb25SZXNwb25zZSJCCh1EZXNj",
+            "cmliZUJhdGNoT3BlcmF0aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkS",
+            "DgoGam9iX2lkGAIgASgJIpIDCh5EZXNjcmliZUJhdGNoT3BlcmF0aW9uUmVz",
+            "cG9uc2USQQoOb3BlcmF0aW9uX3R5cGUYASABKA4yKS50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuQmF0Y2hPcGVyYXRpb25UeXBlEg4KBmpvYl9pZBgCIAEoCRI5",
+            "CgVzdGF0ZRgDIAEoDjIqLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5CYXRjaE9w",
+            "ZXJhdGlvblN0YXRlEi4KCnN0YXJ0X3RpbWUYBCABKAsyGi5nb29nbGUucHJv",
+            "dG9idWYuVGltZXN0YW1wEi4KCmNsb3NlX3RpbWUYBSABKAsyGi5nb29nbGUu",
+            "cHJvdG9idWYuVGltZXN0YW1wEh0KFXRvdGFsX29wZXJhdGlvbl9jb3VudBgG",
+            "IAEoAxIgChhjb21wbGV0ZV9vcGVyYXRpb25fY291bnQYByABKAMSHwoXZmFp",
+            "bHVyZV9vcGVyYXRpb25fY291bnQYCCABKAMSEAoIaWRlbnRpdHkYCSABKAkS",
+            "DgoGcmVhc29uGAogASgJIlsKGkxpc3RCYXRjaE9wZXJhdGlvbnNSZXF1ZXN0",
+            "EhEKCW5hbWVzcGFjZRgBIAEoCRIRCglwYWdlX3NpemUYAiABKAUSFwoPbmV4",
+            "dF9wYWdlX3Rva2VuGAMgASgMInkKG0xpc3RCYXRjaE9wZXJhdGlvbnNSZXNw",
+            "b25zZRJBCg5vcGVyYXRpb25faW5mbxgBIAMoCzIpLnRlbXBvcmFsLmFwaS5i",
+            "YXRjaC52MS5CYXRjaE9wZXJhdGlvbkluZm8SFwoPbmV4dF9wYWdlX3Rva2Vu",
+            "GAIgASgMIrkBCiJQb2xsV29ya2Zsb3dFeGVjdXRpb25VcGRhdGVSZXF1ZXN0",
+            "EhEKCW5hbWVzcGFjZRgBIAEoCRI1Cgp1cGRhdGVfcmVmGAIgASgLMiEudGVt",
+            "cG9yYWwuYXBpLnVwZGF0ZS52MS5VcGRhdGVSZWYSEAoIaWRlbnRpdHkYAyAB",
+            "KAkSNwoLd2FpdF9wb2xpY3kYBCABKAsyIi50ZW1wb3JhbC5hcGkudXBkYXRl",
+            "LnYxLldhaXRQb2xpY3ki2wEKI1BvbGxXb3JrZmxvd0V4ZWN1dGlvblVwZGF0",
+            "ZVJlc3BvbnNlEjAKB291dGNvbWUYASABKAsyHy50ZW1wb3JhbC5hcGkudXBk",
+            "YXRlLnYxLk91dGNvbWUSSwoFc3RhZ2UYAiABKA4yPC50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuVXBkYXRlV29ya2Zsb3dFeGVjdXRpb25MaWZlY3ljbGVTdGFn",
+            "ZRI1Cgp1cGRhdGVfcmVmGAMgASgLMiEudGVtcG9yYWwuYXBpLnVwZGF0ZS52",
+            "MS5VcGRhdGVSZWYihwMKGVBvbGxOZXh1c1Rhc2tRdWV1ZVJlcXVlc3QSEQoJ",
+            "bmFtZXNwYWNlGAEgASgJEhAKCGlkZW50aXR5GAIgASgJEhsKE3dvcmtlcl9p",
+            "bnN0YW5jZV9rZXkYCCABKAkSOAoKdGFza19xdWV1ZRgDIAEoCzIkLnRlbXBv",
+            "cmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlEloKG3dvcmtlcl92ZXJz",
+            "aW9uX2NhcGFiaWxpdGllcxgEIAEoCzIxLnRlbXBvcmFsLmFwaS5jb21tb24u",
+            "djEuV29ya2VyVmVyc2lvbkNhcGFiaWxpdGllc0ICGAESTwoSZGVwbG95bWVu",
+            "dF9vcHRpb25zGAYgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEu",
+            "V29ya2VyRGVwbG95bWVudE9wdGlvbnMSQQoQd29ya2VyX2hlYXJ0YmVhdBgH",
+            "IAMoCzInLnRlbXBvcmFsLmFwaS53b3JrZXIudjEuV29ya2VySGVhcnRiZWF0",
+            "IrQBChpQb2xsTmV4dXNUYXNrUXVldWVSZXNwb25zZRISCgp0YXNrX3Rva2Vu",
+            "GAEgASgMEi8KB3JlcXVlc3QYAiABKAsyHi50ZW1wb3JhbC5hcGkubmV4dXMu",
+            "djEuUmVxdWVzdBJRChdwb2xsZXJfc2NhbGluZ19kZWNpc2lvbhgDIAEoCzIw",
+            "LnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuUG9sbGVyU2NhbGluZ0RlY2lz",
+            "aW9uIo4BCiBSZXNwb25kTmV4dXNUYXNrQ29tcGxldGVkUmVxdWVzdBIRCglu",
+            "YW1lc3BhY2UYASABKAkSEAoIaWRlbnRpdHkYAiABKAkSEgoKdGFza190b2tl",
+            "bhgDIAEoDBIxCghyZXNwb25zZRgEIAEoCzIfLnRlbXBvcmFsLmFwaS5uZXh1",
+            "cy52MS5SZXNwb25zZSIjCiFSZXNwb25kTmV4dXNUYXNrQ29tcGxldGVkUmVz",
+            "cG9uc2UiwwEKHVJlc3BvbmROZXh1c1Rhc2tGYWlsZWRSZXF1ZXN0EhEKCW5h",
+            "bWVzcGFjZRgBIAEoCRIQCghpZGVudGl0eRgCIAEoCRISCgp0YXNrX3Rva2Vu",
+            "GAMgASgMEjYKBWVycm9yGAQgASgLMiMudGVtcG9yYWwuYXBpLm5leHVzLnYx",
+            "LkhhbmRsZXJFcnJvckICGAESMQoHZmFpbHVyZRgFIAEoCzIgLnRlbXBvcmFs",
+            "LmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUiIAoeUmVzcG9uZE5leHVzVGFza0Zh",
+            "aWxlZFJlc3BvbnNlIvQCChxFeGVjdXRlTXVsdGlPcGVyYXRpb25SZXF1ZXN0",
+            "EhEKCW5hbWVzcGFjZRgBIAEoCRJbCgpvcGVyYXRpb25zGAIgAygLMkcudGVt",
+            "cG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5FeGVjdXRlTXVsdGlPcGVy",
+            "YXRpb25SZXF1ZXN0Lk9wZXJhdGlvbhITCgtyZXNvdXJjZV9pZBgDIAEoCRrO",
+            "AQoJT3BlcmF0aW9uElgKDnN0YXJ0X3dvcmtmbG93GAEgASgLMj4udGVtcG9y",
+            "YWwuYXBpLndvcmtmbG93c2VydmljZS52MS5TdGFydFdvcmtmbG93RXhlY3V0",
+            "aW9uUmVxdWVzdEgAEloKD3VwZGF0ZV93b3JrZmxvdxgCIAEoCzI/LnRlbXBv",
+            "cmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRlV29ya2Zsb3dFeGVj",
+            "dXRpb25SZXF1ZXN0SABCCwoJb3BlcmF0aW9uIswCCh1FeGVjdXRlTXVsdGlP",
+            "cGVyYXRpb25SZXNwb25zZRJaCglyZXNwb25zZXMYASADKAsyRy50ZW1wb3Jh",
+            "bC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLkV4ZWN1dGVNdWx0aU9wZXJhdGlv",
+            "blJlc3BvbnNlLlJlc3BvbnNlGs4BCghSZXNwb25zZRJZCg5zdGFydF93b3Jr",
+            "ZmxvdxgBIAEoCzI/LnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEu",
+            "U3RhcnRXb3JrZmxvd0V4ZWN1dGlvblJlc3BvbnNlSAASWwoPdXBkYXRlX3dv",
+            "cmtmbG93GAIgASgLMkAudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52",
+            "MS5VcGRhdGVXb3JrZmxvd0V4ZWN1dGlvblJlc3BvbnNlSABCCgoIcmVzcG9u",
+            "c2Ui0AIKHFVwZGF0ZUFjdGl2aXR5T3B0aW9uc1JlcXVlc3QSEQoJbmFtZXNw",
+            "YWNlGAEgASgJEjwKCWV4ZWN1dGlvbhgCIAEoCzIpLnRlbXBvcmFsLmFwaS5j",
+            "b21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SEAoIaWRlbnRpdHkYAyABKAkS",
+            "QwoQYWN0aXZpdHlfb3B0aW9ucxgEIAEoCzIpLnRlbXBvcmFsLmFwaS5hY3Rp",
+            "dml0eS52MS5BY3Rpdml0eU9wdGlvbnMSLwoLdXBkYXRlX21hc2sYBSABKAsy",
+            "Gi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrEgwKAmlkGAYgASgJSAASDgoE",
+            "dHlwZRgHIAEoCUgAEhMKCW1hdGNoX2FsbBgJIAEoCEgAEhgKEHJlc3RvcmVf",
+            "b3JpZ2luYWwYCCABKAhCCgoIYWN0aXZpdHkiZAodVXBkYXRlQWN0aXZpdHlP",
+            "cHRpb25zUmVzcG9uc2USQwoQYWN0aXZpdHlfb3B0aW9ucxgBIAEoCzIpLnRl",
+            "bXBvcmFsLmFwaS5hY3Rpdml0eS52MS5BY3Rpdml0eU9wdGlvbnMiswEKFFBh",
+            "dXNlQWN0aXZpdHlSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRI8CglleGVj",
+            "dXRpb24YAiABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtmbG93",
+            "RXhlY3V0aW9uEhAKCGlkZW50aXR5GAMgASgJEgwKAmlkGAQgASgJSAASDgoE",
+            "dHlwZRgFIAEoCUgAEg4KBnJlYXNvbhgGIAEoCUIKCghhY3Rpdml0eSIXChVQ",
+            "YXVzZUFjdGl2aXR5UmVzcG9uc2UimAIKFlVucGF1c2VBY3Rpdml0eVJlcXVl",
+            "c3QSEQoJbmFtZXNwYWNlGAEgASgJEjwKCWV4ZWN1dGlvbhgCIAEoCzIpLnRl",
+            "bXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SEAoIaWRl",
+            "bnRpdHkYAyABKAkSDAoCaWQYBCABKAlIABIOCgR0eXBlGAUgASgJSAASFQoL",
+            "dW5wYXVzZV9hbGwYBiABKAhIABIWCg5yZXNldF9hdHRlbXB0cxgHIAEoCBIX",
+            "Cg9yZXNldF9oZWFydGJlYXQYCCABKAgSKQoGaml0dGVyGAkgASgLMhkuZ29v",
+            "Z2xlLnByb3RvYnVmLkR1cmF0aW9uQgoKCGFjdGl2aXR5IhkKF1VucGF1c2VB",
+            "Y3Rpdml0eVJlc3BvbnNlIrMCChRSZXNldEFjdGl2aXR5UmVxdWVzdBIRCglu",
+            "YW1lc3BhY2UYASABKAkSPAoJZXhlY3V0aW9uGAIgASgLMikudGVtcG9yYWwu",
+            "YXBpLmNvbW1vbi52MS5Xb3JrZmxvd0V4ZWN1dGlvbhIQCghpZGVudGl0eRgD",
+            "IAEoCRIMCgJpZBgEIAEoCUgAEg4KBHR5cGUYBSABKAlIABITCgltYXRjaF9h",
+            "bGwYCiABKAhIABIXCg9yZXNldF9oZWFydGJlYXQYBiABKAgSEwoLa2VlcF9w",
+            "YXVzZWQYByABKAgSKQoGaml0dGVyGAggASgLMhkuZ29vZ2xlLnByb3RvYnVm",
+            "LkR1cmF0aW9uEiAKGHJlc3RvcmVfb3JpZ2luYWxfb3B0aW9ucxgJIAEoCEIK",
+            "CghhY3Rpdml0eSIXChVSZXNldEFjdGl2aXR5UmVzcG9uc2UinAIKJVVwZGF0",
+            "ZVdvcmtmbG93RXhlY3V0aW9uT3B0aW9uc1JlcXVlc3QSEQoJbmFtZXNwYWNl",
+            "GAEgASgJEkUKEndvcmtmbG93X2V4ZWN1dGlvbhgCIAEoCzIpLnRlbXBvcmFs",
+            "LmFwaS5jb21tb24udjEuV29ya2Zsb3dFeGVjdXRpb24SVgoad29ya2Zsb3df",
+            "ZXhlY3V0aW9uX29wdGlvbnMYAyABKAsyMi50ZW1wb3JhbC5hcGkud29ya2Zs",
+            "b3cudjEuV29ya2Zsb3dFeGVjdXRpb25PcHRpb25zEi8KC3VwZGF0ZV9tYXNr",
+            "GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLkZpZWxkTWFzaxIQCghpZGVudGl0",
+            "eRgFIAEoCSKAAQomVXBkYXRlV29ya2Zsb3dFeGVjdXRpb25PcHRpb25zUmVz",
+            "cG9uc2USVgoad29ya2Zsb3dfZXhlY3V0aW9uX29wdGlvbnMYASABKAsyMi50",
+            "ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuV29ya2Zsb3dFeGVjdXRpb25PcHRp",
+            "b25zImoKGURlc2NyaWJlRGVwbG95bWVudFJlcXVlc3QSEQoJbmFtZXNwYWNl",
+            "GAEgASgJEjoKCmRlcGxveW1lbnQYAiABKAsyJi50ZW1wb3JhbC5hcGkuZGVw",
+            "bG95bWVudC52MS5EZXBsb3ltZW50ImEKGkRlc2NyaWJlRGVwbG95bWVudFJl",
+            "c3BvbnNlEkMKD2RlcGxveW1lbnRfaW5mbxgBIAEoCzIqLnRlbXBvcmFsLmFw",
+            "aS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnRJbmZvIsIBCiZEZXNjcmliZVdv",
+            "cmtlckRlcGxveW1lbnRWZXJzaW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASAB",
+            "KAkSEwoHdmVyc2lvbhgCIAEoCUICGAESTwoSZGVwbG95bWVudF92ZXJzaW9u",
+            "GAMgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVw",
+            "bG95bWVudFZlcnNpb24SHwoXcmVwb3J0X3Rhc2tfcXVldWVfc3RhdHMYBCAB",
+            "KAgijAUKJ0Rlc2NyaWJlV29ya2VyRGVwbG95bWVudFZlcnNpb25SZXNwb25z",
+            "ZRJfCh53b3JrZXJfZGVwbG95bWVudF92ZXJzaW9uX2luZm8YASABKAsyNy50",
             "ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50VmVy",
-            "c2lvbkICGAEi+QEKKFNldFdvcmtlckRlcGxveW1lbnRSYW1waW5nVmVyc2lv",
-            "blJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhcKD2RlcGxveW1lbnRfbmFt",
-            "ZRgCIAEoCRITCgd2ZXJzaW9uGAMgASgJQgIYARIQCghidWlsZF9pZBgIIAEo",
-            "CRISCgpwZXJjZW50YWdlGAQgASgCEhYKDmNvbmZsaWN0X3Rva2VuGAUgASgM",
-            "EhAKCGlkZW50aXR5GAYgASgJEiIKGmlnbm9yZV9taXNzaW5nX3Rhc2tfcXVl",
-            "dWVzGAcgASgIEhgKEGFsbG93X25vX3BvbGxlcnMYCiABKAgi4AEKKVNldFdv",
-            "cmtlckRlcGxveW1lbnRSYW1waW5nVmVyc2lvblJlc3BvbnNlEhYKDmNvbmZs",
-            "aWN0X3Rva2VuGAEgASgMEhwKEHByZXZpb3VzX3ZlcnNpb24YAiABKAlCAhgB",
-            "ElwKG3ByZXZpb3VzX2RlcGxveW1lbnRfdmVyc2lvbhgEIAEoCzIzLnRlbXBv",
-            "cmFsLmFwaS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRWZXJzaW9u",
-            "QgIYARIfChNwcmV2aW91c19wZXJjZW50YWdlGAMgASgCQgIYASJdChxMaXN0",
-            "V29ya2VyRGVwbG95bWVudHNSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIR",
-            "CglwYWdlX3NpemUYAiABKAUSFwoPbmV4dF9wYWdlX3Rva2VuGAMgASgMIp8F",
-            "Ch1MaXN0V29ya2VyRGVwbG95bWVudHNSZXNwb25zZRIXCg9uZXh0X3BhZ2Vf",
-            "dG9rZW4YASABKAwScgoSd29ya2VyX2RlcGxveW1lbnRzGAIgAygLMlYudGVt",
-            "cG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5MaXN0V29ya2VyRGVwbG95",
-            "bWVudHNSZXNwb25zZS5Xb3JrZXJEZXBsb3ltZW50U3VtbWFyeRrwAwoXV29y",
-            "a2VyRGVwbG95bWVudFN1bW1hcnkSDAoEbmFtZRgBIAEoCRIvCgtjcmVhdGVf",
-            "dGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASQQoOcm91",
-            "dGluZ19jb25maWcYAyABKAsyKS50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52",
-            "MS5Sb3V0aW5nQ29uZmlnEm8KFmxhdGVzdF92ZXJzaW9uX3N1bW1hcnkYBCAB",
-            "KAsyTy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3lt",
-            "ZW50SW5mby5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvblN1bW1hcnkScAoXY3Vy",
-            "cmVudF92ZXJzaW9uX3N1bW1hcnkYBSABKAsyTy50ZW1wb3JhbC5hcGkuZGVw",
-            "bG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50SW5mby5Xb3JrZXJEZXBsb3lt",
-            "ZW50VmVyc2lvblN1bW1hcnkScAoXcmFtcGluZ192ZXJzaW9uX3N1bW1hcnkY",
-            "BiABKAsyTy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBs",
-            "b3ltZW50SW5mby5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvblN1bW1hcnkiyAEK",
-            "JERlbGV0ZVdvcmtlckRlcGxveW1lbnRWZXJzaW9uUmVxdWVzdBIRCgluYW1l",
-            "c3BhY2UYASABKAkSEwoHdmVyc2lvbhgCIAEoCUICGAESTwoSZGVwbG95bWVu",
-            "dF92ZXJzaW9uGAUgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEu",
-            "V29ya2VyRGVwbG95bWVudFZlcnNpb24SFQoNc2tpcF9kcmFpbmFnZRgDIAEo",
-            "CBIQCghpZGVudGl0eRgEIAEoCSInCiVEZWxldGVXb3JrZXJEZXBsb3ltZW50",
-            "VmVyc2lvblJlc3BvbnNlIl0KHURlbGV0ZVdvcmtlckRlcGxveW1lbnRSZXF1",
-            "ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIXCg9kZXBsb3ltZW50X25hbWUYAiAB",
-            "KAkSEAoIaWRlbnRpdHkYAyABKAkiIAoeRGVsZXRlV29ya2VyRGVwbG95bWVu",
-            "dFJlc3BvbnNlIqIDCixVcGRhdGVXb3JrZXJEZXBsb3ltZW50VmVyc2lvbk1l",
-            "dGFkYXRhUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoHdmVyc2lvbhgC",
-            "IAEoCUICGAESTwoSZGVwbG95bWVudF92ZXJzaW9uGAUgASgLMjMudGVtcG9y",
-            "YWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb24S",
-            "eAoOdXBzZXJ0X2VudHJpZXMYAyADKAsyYC50ZW1wb3JhbC5hcGkud29ya2Zs",
-            "b3dzZXJ2aWNlLnYxLlVwZGF0ZVdvcmtlckRlcGxveW1lbnRWZXJzaW9uTWV0",
-            "YWRhdGFSZXF1ZXN0LlVwc2VydEVudHJpZXNFbnRyeRIWCg5yZW1vdmVfZW50",
-            "cmllcxgEIAMoCRIQCghpZGVudGl0eRgGIAEoCRpVChJVcHNlcnRFbnRyaWVz",
-            "RW50cnkSCwoDa2V5GAEgASgJEi4KBXZhbHVlGAIgASgLMh8udGVtcG9yYWwu",
-            "YXBpLmNvbW1vbi52MS5QYXlsb2FkOgI4ASJuCi1VcGRhdGVXb3JrZXJEZXBs",
-            "b3ltZW50VmVyc2lvbk1ldGFkYXRhUmVzcG9uc2USPQoIbWV0YWRhdGEYASAB",
-            "KAsyKy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5WZXJzaW9uTWV0YWRh",
-            "dGEivQEKIVNldFdvcmtlckRlcGxveW1lbnRNYW5hZ2VyUmVxdWVzdBIRCglu",
-            "YW1lc3BhY2UYASABKAkSFwoPZGVwbG95bWVudF9uYW1lGAIgASgJEhoKEG1h",
-            "bmFnZXJfaWRlbnRpdHkYAyABKAlIABIOCgRzZWxmGAQgASgISAASFgoOY29u",
-            "ZmxpY3RfdG9rZW4YBSABKAwSEAoIaWRlbnRpdHkYBiABKAlCFgoUbmV3X21h",
-            "bmFnZXJfaWRlbnRpdHkiYwoiU2V0V29ya2VyRGVwbG95bWVudE1hbmFnZXJS",
-            "ZXNwb25zZRIWCg5jb25mbGljdF90b2tlbhgBIAEoDBIlChlwcmV2aW91c19t",
-            "YW5hZ2VyX2lkZW50aXR5GAIgASgJQgIYASJFChtHZXRDdXJyZW50RGVwbG95",
-            "bWVudFJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC3Nlcmllc19uYW1l",
-            "GAIgASgJImsKHEdldEN1cnJlbnREZXBsb3ltZW50UmVzcG9uc2USSwoXY3Vy",
-            "cmVudF9kZXBsb3ltZW50X2luZm8YASABKAsyKi50ZW1wb3JhbC5hcGkuZGVw",
-            "bG95bWVudC52MS5EZXBsb3ltZW50SW5mbyJxCiBHZXREZXBsb3ltZW50UmVh",
-            "Y2hhYmlsaXR5UmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSOgoKZGVwbG95",
-            "bWVudBgCIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxv",
-            "eW1lbnQi4wEKIUdldERlcGxveW1lbnRSZWFjaGFiaWxpdHlSZXNwb25zZRJD",
-            "Cg9kZXBsb3ltZW50X2luZm8YASABKAsyKi50ZW1wb3JhbC5hcGkuZGVwbG95",
-            "bWVudC52MS5EZXBsb3ltZW50SW5mbxJDCgxyZWFjaGFiaWxpdHkYAiABKA4y",
-            "LS50ZW1wb3JhbC5hcGkuZW51bXMudjEuRGVwbG95bWVudFJlYWNoYWJpbGl0",
-            "eRI0ChBsYXN0X3VwZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3RvYnVm",
-            "LlRpbWVzdGFtcCK0AQoZQ3JlYXRlV29ya2Zsb3dSdWxlUmVxdWVzdBIRCglu",
-            "YW1lc3BhY2UYASABKAkSNQoEc3BlYxgCIAEoCzInLnRlbXBvcmFsLmFwaS5y",
-            "dWxlcy52MS5Xb3JrZmxvd1J1bGVTcGVjEhIKCmZvcmNlX3NjYW4YAyABKAgS",
-            "EgoKcmVxdWVzdF9pZBgEIAEoCRIQCghpZGVudGl0eRgFIAEoCRITCgtkZXNj",
-            "cmlwdGlvbhgGIAEoCSJfChpDcmVhdGVXb3JrZmxvd1J1bGVSZXNwb25zZRIx",
-            "CgRydWxlGAEgASgLMiMudGVtcG9yYWwuYXBpLnJ1bGVzLnYxLldvcmtmbG93",
-            "UnVsZRIOCgZqb2JfaWQYAiABKAkiQQobRGVzY3JpYmVXb3JrZmxvd1J1bGVS",
-            "ZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIPCgdydWxlX2lkGAIgASgJIlEK",
-            "HERlc2NyaWJlV29ya2Zsb3dSdWxlUmVzcG9uc2USMQoEcnVsZRgBIAEoCzIj",
-            "LnRlbXBvcmFsLmFwaS5ydWxlcy52MS5Xb3JrZmxvd1J1bGUiPwoZRGVsZXRl",
-            "V29ya2Zsb3dSdWxlUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSDwoHcnVs",
-            "ZV9pZBgCIAEoCSIcChpEZWxldGVXb3JrZmxvd1J1bGVSZXNwb25zZSJGChhM",
-            "aXN0V29ya2Zsb3dSdWxlc1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhcK",
-            "D25leHRfcGFnZV90b2tlbhgCIAEoDCJoChlMaXN0V29ya2Zsb3dSdWxlc1Jl",
-            "c3BvbnNlEjIKBXJ1bGVzGAEgAygLMiMudGVtcG9yYWwuYXBpLnJ1bGVzLnYx",
-            "LldvcmtmbG93UnVsZRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAwizgEKGlRy",
-            "aWdnZXJXb3JrZmxvd1J1bGVSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRI8",
-            "CglleGVjdXRpb24YAiABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldv",
-            "cmtmbG93RXhlY3V0aW9uEgwKAmlkGAQgASgJSAASNwoEc3BlYxgFIAEoCzIn",
-            "LnRlbXBvcmFsLmFwaS5ydWxlcy52MS5Xb3JrZmxvd1J1bGVTcGVjSAASEAoI",
-            "aWRlbnRpdHkYAyABKAlCBgoEcnVsZSIuChtUcmlnZ2VyV29ya2Zsb3dSdWxl",
-            "UmVzcG9uc2USDwoHYXBwbGllZBgBIAEoCCKbAQocUmVjb3JkV29ya2VySGVh",
-            "cnRiZWF0UmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEAoIaWRlbnRpdHkY",
-            "AiABKAkSQQoQd29ya2VyX2hlYXJ0YmVhdBgDIAMoCzInLnRlbXBvcmFsLmFw",
-            "aS53b3JrZXIudjEuV29ya2VySGVhcnRiZWF0EhMKC3Jlc291cmNlX2lkGAQg",
-            "ASgJIh8KHVJlY29yZFdvcmtlckhlYXJ0YmVhdFJlc3BvbnNlImIKEkxpc3RX",
-            "b3JrZXJzUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEQoJcGFnZV9zaXpl",
-            "GAIgASgFEhcKD25leHRfcGFnZV90b2tlbhgDIAEoDBINCgVxdWVyeRgEIAEo",
-            "CSKlAQoTTGlzdFdvcmtlcnNSZXNwb25zZRI8Cgx3b3JrZXJzX2luZm8YASAD",
-            "KAsyIi50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtlckluZm9CAhgBEjcK",
-            "B3dvcmtlcnMYAyADKAsyJi50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtl",
-            "ckxpc3RJbmZvEhcKD25leHRfcGFnZV90b2tlbhgCIAEoDCLVBQocVXBkYXRl",
-            "VGFza1F1ZXVlQ29uZmlnUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEAoI",
-            "aWRlbnRpdHkYAiABKAkSEgoKdGFza19xdWV1ZRgDIAEoCRI9Cg90YXNrX3F1",
-            "ZXVlX3R5cGUYBCABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFza1F1",
-            "ZXVlVHlwZRJuChd1cGRhdGVfcXVldWVfcmF0ZV9saW1pdBgFIAEoCzJNLnRl",
-            "bXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRlVGFza1F1ZXVl",
-            "Q29uZmlnUmVxdWVzdC5SYXRlTGltaXRVcGRhdGUSfQomdXBkYXRlX2ZhaXJu",
-            "ZXNzX2tleV9yYXRlX2xpbWl0X2RlZmF1bHQYBiABKAsyTS50ZW1wb3JhbC5h",
-            "cGkud29ya2Zsb3dzZXJ2aWNlLnYxLlVwZGF0ZVRhc2tRdWV1ZUNvbmZpZ1Jl",
-            "cXVlc3QuUmF0ZUxpbWl0VXBkYXRlEoQBCh1zZXRfZmFpcm5lc3Nfd2VpZ2h0",
-            "X292ZXJyaWRlcxgHIAMoCzJdLnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZp",
-            "Y2UudjEuVXBkYXRlVGFza1F1ZXVlQ29uZmlnUmVxdWVzdC5TZXRGYWlybmVz",
-            "c1dlaWdodE92ZXJyaWRlc0VudHJ5EicKH3Vuc2V0X2ZhaXJuZXNzX3dlaWdo",
-            "dF9vdmVycmlkZXMYCCADKAkaWwoPUmF0ZUxpbWl0VXBkYXRlEjgKCnJhdGVf",
-            "bGltaXQYASABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlJhdGVM",
-            "aW1pdBIOCgZyZWFzb24YAiABKAkaQQofU2V0RmFpcm5lc3NXZWlnaHRPdmVy",
-            "cmlkZXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAI6AjgBIlsK",
-            "HVVwZGF0ZVRhc2tRdWV1ZUNvbmZpZ1Jlc3BvbnNlEjoKBmNvbmZpZxgBIAEo",
-            "CzIqLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlQ29uZmln",
-            "Ip4BChhGZXRjaFdvcmtlckNvbmZpZ1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEg",
-            "ASgJEhAKCGlkZW50aXR5GAIgASgJEg4KBnJlYXNvbhgDIAEoCRI4CghzZWxl",
-            "Y3RvchgGIAEoCzImLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2VyU2Vs",
-            "ZWN0b3ISEwoLcmVzb3VyY2VfaWQYByABKAkiVQoZRmV0Y2hXb3JrZXJDb25m",
-            "aWdSZXNwb25zZRI4Cg13b3JrZXJfY29uZmlnGAEgASgLMiEudGVtcG9yYWwu",
-            "YXBpLnNkay52MS5Xb3JrZXJDb25maWciigIKGVVwZGF0ZVdvcmtlckNvbmZp",
-            "Z1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhAKCGlkZW50aXR5GAIgASgJ",
-            "Eg4KBnJlYXNvbhgDIAEoCRI4Cg13b3JrZXJfY29uZmlnGAQgASgLMiEudGVt",
-            "cG9yYWwuYXBpLnNkay52MS5Xb3JrZXJDb25maWcSLwoLdXBkYXRlX21hc2sY",
-            "BSABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrEjgKCHNlbGVjdG9y",
-            "GAYgASgLMiYudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJTZWxlY3Rv",
-            "chITCgtyZXNvdXJjZV9pZBgHIAEoCSJkChpVcGRhdGVXb3JrZXJDb25maWdS",
-            "ZXNwb25zZRI6Cg13b3JrZXJfY29uZmlnGAEgASgLMiEudGVtcG9yYWwuYXBp",
-            "LnNkay52MS5Xb3JrZXJDb25maWdIAEIKCghyZXNwb25zZSJHChVEZXNjcmli",
-            "ZVdvcmtlclJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhsKE3dvcmtlcl9p",
-            "bnN0YW5jZV9rZXkYAiABKAkiUQoWRGVzY3JpYmVXb3JrZXJSZXNwb25zZRI3",
-            "Cgt3b3JrZXJfaW5mbxgBIAEoCzIiLnRlbXBvcmFsLmFwaS53b3JrZXIudjEu",
-            "V29ya2VySW5mbyKNAQodUGF1c2VXb3JrZmxvd0V4ZWN1dGlvblJlcXVlc3QS",
-            "EQoJbmFtZXNwYWNlGAEgASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEg4KBnJ1",
-            "bl9pZBgDIAEoCRIQCghpZGVudGl0eRgEIAEoCRIOCgZyZWFzb24YBSABKAkS",
-            "EgoKcmVxdWVzdF9pZBgGIAEoCSIgCh5QYXVzZVdvcmtmbG93RXhlY3V0aW9u",
-            "UmVzcG9uc2UijwEKH1VucGF1c2VXb3JrZmxvd0V4ZWN1dGlvblJlcXVlc3QS",
-            "EQoJbmFtZXNwYWNlGAEgASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEg4KBnJ1",
-            "bl9pZBgDIAEoCRIQCghpZGVudGl0eRgEIAEoCRIOCgZyZWFzb24YBSABKAkS",
-            "EgoKcmVxdWVzdF9pZBgGIAEoCSIiCiBVbnBhdXNlV29ya2Zsb3dFeGVjdXRp",
-            "b25SZXNwb25zZSK0BwodU3RhcnRBY3Rpdml0eUV4ZWN1dGlvblJlcXVlc3QS",
-            "EQoJbmFtZXNwYWNlGAEgASgJEhAKCGlkZW50aXR5GAIgASgJEhIKCnJlcXVl",
-            "c3RfaWQYAyABKAkSEwoLYWN0aXZpdHlfaWQYBCABKAkSOwoNYWN0aXZpdHlf",
-            "dHlwZRgFIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuQWN0aXZpdHlU",
-            "eXBlEjgKCnRhc2tfcXVldWUYBiABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1",
-            "ZXVlLnYxLlRhc2tRdWV1ZRI8ChlzY2hlZHVsZV90b19jbG9zZV90aW1lb3V0",
-            "GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjwKGXNjaGVkdWxl",
-            "X3RvX3N0YXJ0X3RpbWVvdXQYCCABKAsyGS5nb29nbGUucHJvdG9idWYuRHVy",
-            "YXRpb24SOQoWc3RhcnRfdG9fY2xvc2VfdGltZW91dBgJIAEoCzIZLmdvb2ds",
-            "ZS5wcm90b2J1Zi5EdXJhdGlvbhI0ChFoZWFydGJlYXRfdGltZW91dBgKIAEo",
-            "CzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI5CgxyZXRyeV9wb2xpY3kY",
-            "CyABKAsyIy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5Ei8K",
-            "BWlucHV0GAwgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2Fk",
-            "cxJFCg9pZF9yZXVzZV9wb2xpY3kYDSABKA4yLC50ZW1wb3JhbC5hcGkuZW51",
-            "bXMudjEuQWN0aXZpdHlJZFJldXNlUG9saWN5EksKEmlkX2NvbmZsaWN0X3Bv",
-            "bGljeRgOIAEoDjIvLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5BY3Rpdml0eUlk",
-            "Q29uZmxpY3RQb2xpY3kSQwoRc2VhcmNoX2F0dHJpYnV0ZXMYDyABKAsyKC50",
-            "ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlNlYXJjaEF0dHJpYnV0ZXMSLgoGaGVh",
-            "ZGVyGBAgASgLMh4udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5IZWFkZXISOAoN",
-            "dXNlcl9tZXRhZGF0YRgRIAEoCzIhLnRlbXBvcmFsLmFwaS5zZGsudjEuVXNl",
-            "ck1ldGFkYXRhEjIKCHByaW9yaXR5GBIgASgLMiAudGVtcG9yYWwuYXBpLmNv",
-            "bW1vbi52MS5Qcmlvcml0eSJBCh5TdGFydEFjdGl2aXR5RXhlY3V0aW9uUmVz",
-            "cG9uc2USDgoGcnVuX2lkGAEgASgJEg8KB3N0YXJ0ZWQYAiABKAgiowEKIERl",
-            "c2NyaWJlQWN0aXZpdHlFeGVjdXRpb25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgB",
-            "IAEoCRITCgthY3Rpdml0eV9pZBgCIAEoCRIOCgZydW5faWQYAyABKAkSFQoN",
-            "aW5jbHVkZV9pbnB1dBgEIAEoCBIXCg9pbmNsdWRlX291dGNvbWUYBSABKAgS",
-            "FwoPbG9uZ19wb2xsX3Rva2VuGAYgASgMIoECCiFEZXNjcmliZUFjdGl2aXR5",
-            "RXhlY3V0aW9uUmVzcG9uc2USDgoGcnVuX2lkGAEgASgJEj0KBGluZm8YAiAB",
-            "KAsyLy50ZW1wb3JhbC5hcGkuYWN0aXZpdHkudjEuQWN0aXZpdHlFeGVjdXRp",
-            "b25JbmZvEi8KBWlucHV0GAMgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52",
-            "MS5QYXlsb2FkcxJDCgdvdXRjb21lGAQgASgLMjIudGVtcG9yYWwuYXBpLmFj",
-            "dGl2aXR5LnYxLkFjdGl2aXR5RXhlY3V0aW9uT3V0Y29tZRIXCg9sb25nX3Bv",
-            "bGxfdG9rZW4YBSABKAwiVgocUG9sbEFjdGl2aXR5RXhlY3V0aW9uUmVxdWVz",
-            "dBIRCgluYW1lc3BhY2UYASABKAkSEwoLYWN0aXZpdHlfaWQYAiABKAkSDgoG",
-            "cnVuX2lkGAMgASgJInQKHVBvbGxBY3Rpdml0eUV4ZWN1dGlvblJlc3BvbnNl",
-            "Eg4KBnJ1bl9pZBgBIAEoCRJDCgdvdXRjb21lGAIgASgLMjIudGVtcG9yYWwu",
-            "YXBpLmFjdGl2aXR5LnYxLkFjdGl2aXR5RXhlY3V0aW9uT3V0Y29tZSJtCh1M",
-            "aXN0QWN0aXZpdHlFeGVjdXRpb25zUmVxdWVzdBIRCgluYW1lc3BhY2UYASAB",
-            "KAkSEQoJcGFnZV9zaXplGAIgASgFEhcKD25leHRfcGFnZV90b2tlbhgDIAEo",
-            "DBINCgVxdWVyeRgEIAEoCSKCAQoeTGlzdEFjdGl2aXR5RXhlY3V0aW9uc1Jl",
-            "c3BvbnNlEkcKCmV4ZWN1dGlvbnMYASADKAsyMy50ZW1wb3JhbC5hcGkuYWN0",
-            "aXZpdHkudjEuQWN0aXZpdHlFeGVjdXRpb25MaXN0SW5mbxIXCg9uZXh0X3Bh",
-            "Z2VfdG9rZW4YAiABKAwiQgoeQ291bnRBY3Rpdml0eUV4ZWN1dGlvbnNSZXF1",
-            "ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRINCgVxdWVyeRgCIAEoCSLtAQofQ291",
-            "bnRBY3Rpdml0eUV4ZWN1dGlvbnNSZXNwb25zZRINCgVjb3VudBgBIAEoAxJh",
-            "CgZncm91cHMYAiADKAsyUS50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNl",
-            "LnYxLkNvdW50QWN0aXZpdHlFeGVjdXRpb25zUmVzcG9uc2UuQWdncmVnYXRp",
-            "b25Hcm91cBpYChBBZ2dyZWdhdGlvbkdyb3VwEjUKDGdyb3VwX3ZhbHVlcxgB",
-            "IAMoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZBINCgVjb3Vu",
-            "dBgCIAEoAyKVAQolUmVxdWVzdENhbmNlbEFjdGl2aXR5RXhlY3V0aW9uUmVx",
+            "c2lvbkluZm8SdgoTdmVyc2lvbl90YXNrX3F1ZXVlcxgCIAMoCzJZLnRlbXBv",
+            "cmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuRGVzY3JpYmVXb3JrZXJEZXBs",
+            "b3ltZW50VmVyc2lvblJlc3BvbnNlLlZlcnNpb25UYXNrUXVldWUahwMKEFZl",
+            "cnNpb25UYXNrUXVldWUSDAoEbmFtZRgBIAEoCRIyCgR0eXBlGAIgASgOMiQu",
+            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLlRhc2tRdWV1ZVR5cGUSOAoFc3RhdHMY",
+            "AyABKAsyKS50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tRdWV1ZVN0",
+            "YXRzEpABChVzdGF0c19ieV9wcmlvcml0eV9rZXkYBCADKAsycS50ZW1wb3Jh",
+            "bC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLkRlc2NyaWJlV29ya2VyRGVwbG95",
+            "bWVudFZlcnNpb25SZXNwb25zZS5WZXJzaW9uVGFza1F1ZXVlLlN0YXRzQnlQ",
+            "cmlvcml0eUtleUVudHJ5GmQKF1N0YXRzQnlQcmlvcml0eUtleUVudHJ5EgsK",
+            "A2tleRgBIAEoBRI4CgV2YWx1ZRgCIAEoCzIpLnRlbXBvcmFsLmFwaS50YXNr",
+            "cXVldWUudjEuVGFza1F1ZXVlU3RhdHM6AjgBIk0KH0Rlc2NyaWJlV29ya2Vy",
+            "RGVwbG95bWVudFJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhcKD2RlcGxv",
+            "eW1lbnRfbmFtZRgCIAEoCSKMAQogRGVzY3JpYmVXb3JrZXJEZXBsb3ltZW50",
+            "UmVzcG9uc2USFgoOY29uZmxpY3RfdG9rZW4YASABKAwSUAoWd29ya2VyX2Rl",
+            "cGxveW1lbnRfaW5mbxgCIAEoCzIwLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50",
+            "LnYxLldvcmtlckRlcGxveW1lbnRJbmZvImwKFkxpc3REZXBsb3ltZW50c1Jl",
+            "cXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhEKCXBhZ2Vfc2l6ZRgCIAEoBRIX",
+            "Cg9uZXh0X3BhZ2VfdG9rZW4YAyABKAwSEwoLc2VyaWVzX25hbWUYBCABKAki",
+            "dwoXTGlzdERlcGxveW1lbnRzUmVzcG9uc2USFwoPbmV4dF9wYWdlX3Rva2Vu",
+            "GAEgASgMEkMKC2RlcGxveW1lbnRzGAIgAygLMi4udGVtcG9yYWwuYXBpLmRl",
+            "cGxveW1lbnQudjEuRGVwbG95bWVudExpc3RJbmZvIs0BChtTZXRDdXJyZW50",
+            "RGVwbG95bWVudFJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEjoKCmRlcGxv",
+            "eW1lbnQYAiABKAsyJi50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5EZXBs",
+            "b3ltZW50EhAKCGlkZW50aXR5GAMgASgJEk0KD3VwZGF0ZV9tZXRhZGF0YRgE",
+            "IAEoCzI0LnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLlVwZGF0ZURlcGxv",
+            "eW1lbnRNZXRhZGF0YSK5AQocU2V0Q3VycmVudERlcGxveW1lbnRSZXNwb25z",
+            "ZRJLChdjdXJyZW50X2RlcGxveW1lbnRfaW5mbxgBIAEoCzIqLnRlbXBvcmFs",
+            "LmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnRJbmZvEkwKGHByZXZpb3Vz",
+            "X2RlcGxveW1lbnRfaW5mbxgCIAEoCzIqLnRlbXBvcmFsLmFwaS5kZXBsb3lt",
+            "ZW50LnYxLkRlcGxveW1lbnRJbmZvIuUBCihTZXRXb3JrZXJEZXBsb3ltZW50",
+            "Q3VycmVudFZlcnNpb25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIXCg9k",
+            "ZXBsb3ltZW50X25hbWUYAiABKAkSEwoHdmVyc2lvbhgDIAEoCUICGAESEAoI",
+            "YnVpbGRfaWQYByABKAkSFgoOY29uZmxpY3RfdG9rZW4YBCABKAwSEAoIaWRl",
+            "bnRpdHkYBSABKAkSIgoaaWdub3JlX21pc3NpbmdfdGFza19xdWV1ZXMYBiAB",
+            "KAgSGAoQYWxsb3dfbm9fcG9sbGVycxgJIAEoCCK/AQopU2V0V29ya2VyRGVw",
+            "bG95bWVudEN1cnJlbnRWZXJzaW9uUmVzcG9uc2USFgoOY29uZmxpY3RfdG9r",
+            "ZW4YASABKAwSHAoQcHJldmlvdXNfdmVyc2lvbhgCIAEoCUICGAESXAobcHJl",
+            "dmlvdXNfZGVwbG95bWVudF92ZXJzaW9uGAMgASgLMjMudGVtcG9yYWwuYXBp",
+            "LmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb25CAhgBIvkB",
+            "CihTZXRXb3JrZXJEZXBsb3ltZW50UmFtcGluZ1ZlcnNpb25SZXF1ZXN0EhEK",
+            "CW5hbWVzcGFjZRgBIAEoCRIXCg9kZXBsb3ltZW50X25hbWUYAiABKAkSEwoH",
+            "dmVyc2lvbhgDIAEoCUICGAESEAoIYnVpbGRfaWQYCCABKAkSEgoKcGVyY2Vu",
+            "dGFnZRgEIAEoAhIWCg5jb25mbGljdF90b2tlbhgFIAEoDBIQCghpZGVudGl0",
+            "eRgGIAEoCRIiChppZ25vcmVfbWlzc2luZ190YXNrX3F1ZXVlcxgHIAEoCBIY",
+            "ChBhbGxvd19ub19wb2xsZXJzGAogASgIIuABCilTZXRXb3JrZXJEZXBsb3lt",
+            "ZW50UmFtcGluZ1ZlcnNpb25SZXNwb25zZRIWCg5jb25mbGljdF90b2tlbhgB",
+            "IAEoDBIcChBwcmV2aW91c192ZXJzaW9uGAIgASgJQgIYARJcChtwcmV2aW91",
+            "c19kZXBsb3ltZW50X3ZlcnNpb24YBCABKAsyMy50ZW1wb3JhbC5hcGkuZGVw",
+            "bG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvbkICGAESHwoTcHJl",
+            "dmlvdXNfcGVyY2VudGFnZRgDIAEoAkICGAEicQodQ3JlYXRlV29ya2VyRGVw",
+            "bG95bWVudFJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhcKD2RlcGxveW1l",
+            "bnRfbmFtZRgCIAEoCRIQCghpZGVudGl0eRgEIAEoCRISCgpyZXF1ZXN0X2lk",
+            "GAUgASgJIjgKHkNyZWF0ZVdvcmtlckRlcGxveW1lbnRSZXNwb25zZRIWCg5j",
+            "b25mbGljdF90b2tlbhgBIAEoDCJdChxMaXN0V29ya2VyRGVwbG95bWVudHNS",
+            "ZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIRCglwYWdlX3NpemUYAiABKAUS",
+            "FwoPbmV4dF9wYWdlX3Rva2VuGAMgASgMIp8FCh1MaXN0V29ya2VyRGVwbG95",
+            "bWVudHNSZXNwb25zZRIXCg9uZXh0X3BhZ2VfdG9rZW4YASABKAwScgoSd29y",
+            "a2VyX2RlcGxveW1lbnRzGAIgAygLMlYudGVtcG9yYWwuYXBpLndvcmtmbG93",
+            "c2VydmljZS52MS5MaXN0V29ya2VyRGVwbG95bWVudHNSZXNwb25zZS5Xb3Jr",
+            "ZXJEZXBsb3ltZW50U3VtbWFyeRrwAwoXV29ya2VyRGVwbG95bWVudFN1bW1h",
+            "cnkSDAoEbmFtZRgBIAEoCRIvCgtjcmVhdGVfdGltZRgCIAEoCzIaLmdvb2ds",
+            "ZS5wcm90b2J1Zi5UaW1lc3RhbXASQQoOcm91dGluZ19jb25maWcYAyABKAsy",
+            "KS50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Sb3V0aW5nQ29uZmlnEm8K",
+            "FmxhdGVzdF92ZXJzaW9uX3N1bW1hcnkYBCABKAsyTy50ZW1wb3JhbC5hcGku",
+            "ZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50SW5mby5Xb3JrZXJEZXBs",
+            "b3ltZW50VmVyc2lvblN1bW1hcnkScAoXY3VycmVudF92ZXJzaW9uX3N1bW1h",
+            "cnkYBSABKAsyTy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJE",
+            "ZXBsb3ltZW50SW5mby5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvblN1bW1hcnkS",
+            "cAoXcmFtcGluZ192ZXJzaW9uX3N1bW1hcnkYBiABKAsyTy50ZW1wb3JhbC5h",
+            "cGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50SW5mby5Xb3JrZXJE",
+            "ZXBsb3ltZW50VmVyc2lvblN1bW1hcnki8AEKJENyZWF0ZVdvcmtlckRlcGxv",
+            "eW1lbnRWZXJzaW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSTwoSZGVw",
+            "bG95bWVudF92ZXJzaW9uGAIgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1l",
+            "bnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNpb24SPgoOY29tcHV0ZV9jb25m",
+            "aWcYBCABKAsyJi50ZW1wb3JhbC5hcGkuY29tcHV0ZS52MS5Db21wdXRlQ29u",
+            "ZmlnEhAKCGlkZW50aXR5GAMgASgJEhIKCnJlcXVlc3RfaWQYBSABKAkiJwol",
+            "Q3JlYXRlV29ya2VyRGVwbG95bWVudFZlcnNpb25SZXNwb25zZSLIAQokRGVs",
+            "ZXRlV29ya2VyRGVwbG95bWVudFZlcnNpb25SZXF1ZXN0EhEKCW5hbWVzcGFj",
+            "ZRgBIAEoCRITCgd2ZXJzaW9uGAIgASgJQgIYARJPChJkZXBsb3ltZW50X3Zl",
+            "cnNpb24YBSABKAsyMy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5Xb3Jr",
+            "ZXJEZXBsb3ltZW50VmVyc2lvbhIVCg1za2lwX2RyYWluYWdlGAMgASgIEhAK",
+            "CGlkZW50aXR5GAQgASgJIicKJURlbGV0ZVdvcmtlckRlcGxveW1lbnRWZXJz",
+            "aW9uUmVzcG9uc2UiXQodRGVsZXRlV29ya2VyRGVwbG95bWVudFJlcXVlc3QS",
+            "EQoJbmFtZXNwYWNlGAEgASgJEhcKD2RlcGxveW1lbnRfbmFtZRgCIAEoCRIQ",
+            "CghpZGVudGl0eRgDIAEoCSIgCh5EZWxldGVXb3JrZXJEZXBsb3ltZW50UmVz",
+            "cG9uc2UihAQKMVVwZGF0ZVdvcmtlckRlcGxveW1lbnRWZXJzaW9uQ29tcHV0",
+            "ZUNvbmZpZ1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEk8KEmRlcGxveW1l",
+            "bnRfdmVyc2lvbhgCIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYx",
+            "LldvcmtlckRlcGxveW1lbnRWZXJzaW9uEpkBCh1jb21wdXRlX2NvbmZpZ19z",
+            "Y2FsaW5nX2dyb3VwcxgGIAMoCzJyLnRlbXBvcmFsLmFwaS53b3JrZmxvd3Nl",
+            "cnZpY2UudjEuVXBkYXRlV29ya2VyRGVwbG95bWVudFZlcnNpb25Db21wdXRl",
+            "Q29uZmlnUmVxdWVzdC5Db21wdXRlQ29uZmlnU2NhbGluZ0dyb3Vwc0VudHJ5",
+            "EiwKJHJlbW92ZV9jb21wdXRlX2NvbmZpZ19zY2FsaW5nX2dyb3VwcxgHIAMo",
+            "CRIQCghpZGVudGl0eRgDIAEoCRISCgpyZXF1ZXN0X2lkGAQgASgJGnsKH0Nv",
+            "bXB1dGVDb25maWdTY2FsaW5nR3JvdXBzRW50cnkSCwoDa2V5GAEgASgJEkcK",
+            "BXZhbHVlGAIgASgLMjgudGVtcG9yYWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0",
+            "ZUNvbmZpZ1NjYWxpbmdHcm91cFVwZGF0ZToCOAEiNAoyVXBkYXRlV29ya2Vy",
+            "RGVwbG95bWVudFZlcnNpb25Db21wdXRlQ29uZmlnUmVzcG9uc2Ui9AMKM1Zh",
+            "bGlkYXRlV29ya2VyRGVwbG95bWVudFZlcnNpb25Db21wdXRlQ29uZmlnUmVx",
+            "dWVzdBIRCgluYW1lc3BhY2UYASABKAkSTwoSZGVwbG95bWVudF92ZXJzaW9u",
+            "GAIgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVw",
+            "bG95bWVudFZlcnNpb24SmwEKHWNvbXB1dGVfY29uZmlnX3NjYWxpbmdfZ3Jv",
+            "dXBzGAYgAygLMnQudGVtcG9yYWwuYXBpLndvcmtmbG93c2VydmljZS52MS5W",
+            "YWxpZGF0ZVdvcmtlckRlcGxveW1lbnRWZXJzaW9uQ29tcHV0ZUNvbmZpZ1Jl",
+            "cXVlc3QuQ29tcHV0ZUNvbmZpZ1NjYWxpbmdHcm91cHNFbnRyeRIsCiRyZW1v",
+            "dmVfY29tcHV0ZV9jb25maWdfc2NhbGluZ19ncm91cHMYByADKAkSEAoIaWRl",
+            "bnRpdHkYAyABKAkaewofQ29tcHV0ZUNvbmZpZ1NjYWxpbmdHcm91cHNFbnRy",
+            "eRILCgNrZXkYASABKAkSRwoFdmFsdWUYAiABKAsyOC50ZW1wb3JhbC5hcGku",
+            "Y29tcHV0ZS52MS5Db21wdXRlQ29uZmlnU2NhbGluZ0dyb3VwVXBkYXRlOgI4",
+            "ASI2CjRWYWxpZGF0ZVdvcmtlckRlcGxveW1lbnRWZXJzaW9uQ29tcHV0ZUNv",
+            "bmZpZ1Jlc3BvbnNlIqIDCixVcGRhdGVXb3JrZXJEZXBsb3ltZW50VmVyc2lv",
+            "bk1ldGFkYXRhUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoHdmVyc2lv",
+            "bhgCIAEoCUICGAESTwoSZGVwbG95bWVudF92ZXJzaW9uGAUgASgLMjMudGVt",
+            "cG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVwbG95bWVudFZlcnNp",
+            "b24SeAoOdXBzZXJ0X2VudHJpZXMYAyADKAsyYC50ZW1wb3JhbC5hcGkud29y",
+            "a2Zsb3dzZXJ2aWNlLnYxLlVwZGF0ZVdvcmtlckRlcGxveW1lbnRWZXJzaW9u",
+            "TWV0YWRhdGFSZXF1ZXN0LlVwc2VydEVudHJpZXNFbnRyeRIWCg5yZW1vdmVf",
+            "ZW50cmllcxgEIAMoCRIQCghpZGVudGl0eRgGIAEoCRpVChJVcHNlcnRFbnRy",
+            "aWVzRW50cnkSCwoDa2V5GAEgASgJEi4KBXZhbHVlGAIgASgLMh8udGVtcG9y",
+            "YWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkOgI4ASJuCi1VcGRhdGVXb3JrZXJE",
+            "ZXBsb3ltZW50VmVyc2lvbk1ldGFkYXRhUmVzcG9uc2USPQoIbWV0YWRhdGEY",
+            "ASABKAsyKy50ZW1wb3JhbC5hcGkuZGVwbG95bWVudC52MS5WZXJzaW9uTWV0",
+            "YWRhdGEivQEKIVNldFdvcmtlckRlcGxveW1lbnRNYW5hZ2VyUmVxdWVzdBIR",
+            "CgluYW1lc3BhY2UYASABKAkSFwoPZGVwbG95bWVudF9uYW1lGAIgASgJEhoK",
+            "EG1hbmFnZXJfaWRlbnRpdHkYAyABKAlIABIOCgRzZWxmGAQgASgISAASFgoO",
+            "Y29uZmxpY3RfdG9rZW4YBSABKAwSEAoIaWRlbnRpdHkYBiABKAlCFgoUbmV3",
+            "X21hbmFnZXJfaWRlbnRpdHkiYwoiU2V0V29ya2VyRGVwbG95bWVudE1hbmFn",
+            "ZXJSZXNwb25zZRIWCg5jb25mbGljdF90b2tlbhgBIAEoDBIlChlwcmV2aW91",
+            "c19tYW5hZ2VyX2lkZW50aXR5GAIgASgJQgIYASJFChtHZXRDdXJyZW50RGVw",
+            "bG95bWVudFJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC3Nlcmllc19u",
+            "YW1lGAIgASgJImsKHEdldEN1cnJlbnREZXBsb3ltZW50UmVzcG9uc2USSwoX",
+            "Y3VycmVudF9kZXBsb3ltZW50X2luZm8YASABKAsyKi50ZW1wb3JhbC5hcGku",
+            "ZGVwbG95bWVudC52MS5EZXBsb3ltZW50SW5mbyJxCiBHZXREZXBsb3ltZW50",
+            "UmVhY2hhYmlsaXR5UmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSOgoKZGVw",
+            "bG95bWVudBgCIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRl",
+            "cGxveW1lbnQi4wEKIUdldERlcGxveW1lbnRSZWFjaGFiaWxpdHlSZXNwb25z",
+            "ZRJDCg9kZXBsb3ltZW50X2luZm8YASABKAsyKi50ZW1wb3JhbC5hcGkuZGVw",
+            "bG95bWVudC52MS5EZXBsb3ltZW50SW5mbxJDCgxyZWFjaGFiaWxpdHkYAiAB",
+            "KA4yLS50ZW1wb3JhbC5hcGkuZW51bXMudjEuRGVwbG95bWVudFJlYWNoYWJp",
+            "bGl0eRI0ChBsYXN0X3VwZGF0ZV90aW1lGAMgASgLMhouZ29vZ2xlLnByb3Rv",
+            "YnVmLlRpbWVzdGFtcCK0AQoZQ3JlYXRlV29ya2Zsb3dSdWxlUmVxdWVzdBIR",
+            "CgluYW1lc3BhY2UYASABKAkSNQoEc3BlYxgCIAEoCzInLnRlbXBvcmFsLmFw",
+            "aS5ydWxlcy52MS5Xb3JrZmxvd1J1bGVTcGVjEhIKCmZvcmNlX3NjYW4YAyAB",
+            "KAgSEgoKcmVxdWVzdF9pZBgEIAEoCRIQCghpZGVudGl0eRgFIAEoCRITCgtk",
+            "ZXNjcmlwdGlvbhgGIAEoCSJfChpDcmVhdGVXb3JrZmxvd1J1bGVSZXNwb25z",
+            "ZRIxCgRydWxlGAEgASgLMiMudGVtcG9yYWwuYXBpLnJ1bGVzLnYxLldvcmtm",
+            "bG93UnVsZRIOCgZqb2JfaWQYAiABKAkiQQobRGVzY3JpYmVXb3JrZmxvd1J1",
+            "bGVSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIPCgdydWxlX2lkGAIgASgJ",
+            "IlEKHERlc2NyaWJlV29ya2Zsb3dSdWxlUmVzcG9uc2USMQoEcnVsZRgBIAEo",
+            "CzIjLnRlbXBvcmFsLmFwaS5ydWxlcy52MS5Xb3JrZmxvd1J1bGUiPwoZRGVs",
+            "ZXRlV29ya2Zsb3dSdWxlUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSDwoH",
+            "cnVsZV9pZBgCIAEoCSIcChpEZWxldGVXb3JrZmxvd1J1bGVSZXNwb25zZSJG",
+            "ChhMaXN0V29ya2Zsb3dSdWxlc1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJ",
+            "EhcKD25leHRfcGFnZV90b2tlbhgCIAEoDCJoChlMaXN0V29ya2Zsb3dSdWxl",
+            "c1Jlc3BvbnNlEjIKBXJ1bGVzGAEgAygLMiMudGVtcG9yYWwuYXBpLnJ1bGVz",
+            "LnYxLldvcmtmbG93UnVsZRIXCg9uZXh0X3BhZ2VfdG9rZW4YAiABKAwizgEK",
+            "GlRyaWdnZXJXb3JrZmxvd1J1bGVSZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEo",
+            "CRI8CglleGVjdXRpb24YAiABKAsyKS50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
+            "LldvcmtmbG93RXhlY3V0aW9uEgwKAmlkGAQgASgJSAASNwoEc3BlYxgFIAEo",
+            "CzInLnRlbXBvcmFsLmFwaS5ydWxlcy52MS5Xb3JrZmxvd1J1bGVTcGVjSAAS",
+            "EAoIaWRlbnRpdHkYAyABKAlCBgoEcnVsZSIuChtUcmlnZ2VyV29ya2Zsb3dS",
+            "dWxlUmVzcG9uc2USDwoHYXBwbGllZBgBIAEoCCKbAQocUmVjb3JkV29ya2Vy",
+            "SGVhcnRiZWF0UmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEAoIaWRlbnRp",
+            "dHkYAiABKAkSQQoQd29ya2VyX2hlYXJ0YmVhdBgDIAMoCzInLnRlbXBvcmFs",
+            "LmFwaS53b3JrZXIudjEuV29ya2VySGVhcnRiZWF0EhMKC3Jlc291cmNlX2lk",
+            "GAQgASgJIh8KHVJlY29yZFdvcmtlckhlYXJ0YmVhdFJlc3BvbnNlImIKEkxp",
+            "c3RXb3JrZXJzUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEQoJcGFnZV9z",
+            "aXplGAIgASgFEhcKD25leHRfcGFnZV90b2tlbhgDIAEoDBINCgVxdWVyeRgE",
+            "IAEoCSKlAQoTTGlzdFdvcmtlcnNSZXNwb25zZRI8Cgx3b3JrZXJzX2luZm8Y",
+            "ASADKAsyIi50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldvcmtlckluZm9CAhgB",
+            "EjcKB3dvcmtlcnMYAyADKAsyJi50ZW1wb3JhbC5hcGkud29ya2VyLnYxLldv",
+            "cmtlckxpc3RJbmZvEhcKD25leHRfcGFnZV90b2tlbhgCIAEoDCLVBQocVXBk",
+            "YXRlVGFza1F1ZXVlQ29uZmlnUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkS",
+            "EAoIaWRlbnRpdHkYAiABKAkSEgoKdGFza19xdWV1ZRgDIAEoCRI9Cg90YXNr",
+            "X3F1ZXVlX3R5cGUYBCABKA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFz",
+            "a1F1ZXVlVHlwZRJuChd1cGRhdGVfcXVldWVfcmF0ZV9saW1pdBgFIAEoCzJN",
+            "LnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuVXBkYXRlVGFza1F1",
+            "ZXVlQ29uZmlnUmVxdWVzdC5SYXRlTGltaXRVcGRhdGUSfQomdXBkYXRlX2Zh",
+            "aXJuZXNzX2tleV9yYXRlX2xpbWl0X2RlZmF1bHQYBiABKAsyTS50ZW1wb3Jh",
+            "bC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxLlVwZGF0ZVRhc2tRdWV1ZUNvbmZp",
+            "Z1JlcXVlc3QuUmF0ZUxpbWl0VXBkYXRlEoQBCh1zZXRfZmFpcm5lc3Nfd2Vp",
+            "Z2h0X292ZXJyaWRlcxgHIAMoCzJdLnRlbXBvcmFsLmFwaS53b3JrZmxvd3Nl",
+            "cnZpY2UudjEuVXBkYXRlVGFza1F1ZXVlQ29uZmlnUmVxdWVzdC5TZXRGYWly",
+            "bmVzc1dlaWdodE92ZXJyaWRlc0VudHJ5EicKH3Vuc2V0X2ZhaXJuZXNzX3dl",
+            "aWdodF9vdmVycmlkZXMYCCADKAkaWwoPUmF0ZUxpbWl0VXBkYXRlEjgKCnJh",
+            "dGVfbGltaXQYASABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlJh",
+            "dGVMaW1pdBIOCgZyZWFzb24YAiABKAkaQQofU2V0RmFpcm5lc3NXZWlnaHRP",
+            "dmVycmlkZXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAI6AjgB",
+            "IlsKHVVwZGF0ZVRhc2tRdWV1ZUNvbmZpZ1Jlc3BvbnNlEjoKBmNvbmZpZxgB",
+            "IAEoCzIqLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlQ29u",
+            "ZmlnIp4BChhGZXRjaFdvcmtlckNvbmZpZ1JlcXVlc3QSEQoJbmFtZXNwYWNl",
+            "GAEgASgJEhAKCGlkZW50aXR5GAIgASgJEg4KBnJlYXNvbhgDIAEoCRI4Cghz",
+            "ZWxlY3RvchgGIAEoCzImLnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Vy",
+            "U2VsZWN0b3ISEwoLcmVzb3VyY2VfaWQYByABKAkiVQoZRmV0Y2hXb3JrZXJD",
+            "b25maWdSZXNwb25zZRI4Cg13b3JrZXJfY29uZmlnGAEgASgLMiEudGVtcG9y",
+            "YWwuYXBpLnNkay52MS5Xb3JrZXJDb25maWciigIKGVVwZGF0ZVdvcmtlckNv",
+            "bmZpZ1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhAKCGlkZW50aXR5GAIg",
+            "ASgJEg4KBnJlYXNvbhgDIAEoCRI4Cg13b3JrZXJfY29uZmlnGAQgASgLMiEu",
+            "dGVtcG9yYWwuYXBpLnNkay52MS5Xb3JrZXJDb25maWcSLwoLdXBkYXRlX21h",
+            "c2sYBSABKAsyGi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrEjgKCHNlbGVj",
+            "dG9yGAYgASgLMiYudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Xb3JrZXJTZWxl",
+            "Y3RvchITCgtyZXNvdXJjZV9pZBgHIAEoCSJkChpVcGRhdGVXb3JrZXJDb25m",
+            "aWdSZXNwb25zZRI6Cg13b3JrZXJfY29uZmlnGAEgASgLMiEudGVtcG9yYWwu",
+            "YXBpLnNkay52MS5Xb3JrZXJDb25maWdIAEIKCghyZXNwb25zZSJHChVEZXNj",
+            "cmliZVdvcmtlclJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhsKE3dvcmtl",
+            "cl9pbnN0YW5jZV9rZXkYAiABKAkiUQoWRGVzY3JpYmVXb3JrZXJSZXNwb25z",
+            "ZRI3Cgt3b3JrZXJfaW5mbxgBIAEoCzIiLnRlbXBvcmFsLmFwaS53b3JrZXIu",
+            "djEuV29ya2VySW5mbyKNAQodUGF1c2VXb3JrZmxvd0V4ZWN1dGlvblJlcXVl",
+            "c3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEg4K",
+            "BnJ1bl9pZBgDIAEoCRIQCghpZGVudGl0eRgEIAEoCRIOCgZyZWFzb24YBSAB",
+            "KAkSEgoKcmVxdWVzdF9pZBgGIAEoCSIgCh5QYXVzZVdvcmtmbG93RXhlY3V0",
+            "aW9uUmVzcG9uc2UijwEKH1VucGF1c2VXb3JrZmxvd0V4ZWN1dGlvblJlcXVl",
+            "c3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC3dvcmtmbG93X2lkGAIgASgJEg4K",
+            "BnJ1bl9pZBgDIAEoCRIQCghpZGVudGl0eRgEIAEoCRIOCgZyZWFzb24YBSAB",
+            "KAkSEgoKcmVxdWVzdF9pZBgGIAEoCSIiCiBVbnBhdXNlV29ya2Zsb3dFeGVj",
+            "dXRpb25SZXNwb25zZSK0BwodU3RhcnRBY3Rpdml0eUV4ZWN1dGlvblJlcXVl",
+            "c3QSEQoJbmFtZXNwYWNlGAEgASgJEhAKCGlkZW50aXR5GAIgASgJEhIKCnJl",
+            "cXVlc3RfaWQYAyABKAkSEwoLYWN0aXZpdHlfaWQYBCABKAkSOwoNYWN0aXZp",
+            "dHlfdHlwZRgFIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuQWN0aXZp",
+            "dHlUeXBlEjgKCnRhc2tfcXVldWUYBiABKAsyJC50ZW1wb3JhbC5hcGkudGFz",
+            "a3F1ZXVlLnYxLlRhc2tRdWV1ZRI8ChlzY2hlZHVsZV90b19jbG9zZV90aW1l",
+            "b3V0GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEjwKGXNjaGVk",
+            "dWxlX3RvX3N0YXJ0X3RpbWVvdXQYCCABKAsyGS5nb29nbGUucHJvdG9idWYu",
+            "RHVyYXRpb24SOQoWc3RhcnRfdG9fY2xvc2VfdGltZW91dBgJIAEoCzIZLmdv",
+            "b2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI0ChFoZWFydGJlYXRfdGltZW91dBgK",
+            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI5CgxyZXRyeV9wb2xp",
+            "Y3kYCyABKAsyIy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5",
+            "Ei8KBWlucHV0GAwgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXls",
+            "b2FkcxJFCg9pZF9yZXVzZV9wb2xpY3kYDSABKA4yLC50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuQWN0aXZpdHlJZFJldXNlUG9saWN5EksKEmlkX2NvbmZsaWN0",
+            "X3BvbGljeRgOIAEoDjIvLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5BY3Rpdml0",
+            "eUlkQ29uZmxpY3RQb2xpY3kSQwoRc2VhcmNoX2F0dHJpYnV0ZXMYDyABKAsy",
+            "KC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlNlYXJjaEF0dHJpYnV0ZXMSLgoG",
+            "aGVhZGVyGBAgASgLMh4udGVtcG9yYWwuYXBpLmNvbW1vbi52MS5IZWFkZXIS",
+            "OAoNdXNlcl9tZXRhZGF0YRgRIAEoCzIhLnRlbXBvcmFsLmFwaS5zZGsudjEu",
+            "VXNlck1ldGFkYXRhEjIKCHByaW9yaXR5GBIgASgLMiAudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5Qcmlvcml0eSJBCh5TdGFydEFjdGl2aXR5RXhlY3V0aW9u",
+            "UmVzcG9uc2USDgoGcnVuX2lkGAEgASgJEg8KB3N0YXJ0ZWQYAiABKAgiowEK",
+            "IERlc2NyaWJlQWN0aXZpdHlFeGVjdXRpb25SZXF1ZXN0EhEKCW5hbWVzcGFj",
+            "ZRgBIAEoCRITCgthY3Rpdml0eV9pZBgCIAEoCRIOCgZydW5faWQYAyABKAkS",
+            "FQoNaW5jbHVkZV9pbnB1dBgEIAEoCBIXCg9pbmNsdWRlX291dGNvbWUYBSAB",
+            "KAgSFwoPbG9uZ19wb2xsX3Rva2VuGAYgASgMIoECCiFEZXNjcmliZUFjdGl2",
+            "aXR5RXhlY3V0aW9uUmVzcG9uc2USDgoGcnVuX2lkGAEgASgJEj0KBGluZm8Y",
+            "AiABKAsyLy50ZW1wb3JhbC5hcGkuYWN0aXZpdHkudjEuQWN0aXZpdHlFeGVj",
+            "dXRpb25JbmZvEi8KBWlucHV0GAMgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1v",
+            "bi52MS5QYXlsb2FkcxJDCgdvdXRjb21lGAQgASgLMjIudGVtcG9yYWwuYXBp",
+            "LmFjdGl2aXR5LnYxLkFjdGl2aXR5RXhlY3V0aW9uT3V0Y29tZRIXCg9sb25n",
+            "X3BvbGxfdG9rZW4YBSABKAwiVgocUG9sbEFjdGl2aXR5RXhlY3V0aW9uUmVx",
             "dWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoLYWN0aXZpdHlfaWQYAiABKAkS",
-            "DgoGcnVuX2lkGAMgASgJEhAKCGlkZW50aXR5GAQgASgJEhIKCnJlcXVlc3Rf",
-            "aWQYBSABKAkSDgoGcmVhc29uGAYgASgJIigKJlJlcXVlc3RDYW5jZWxBY3Rp",
-            "dml0eUV4ZWN1dGlvblJlc3BvbnNlIpEBCiFUZXJtaW5hdGVBY3Rpdml0eUV4",
-            "ZWN1dGlvblJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhMKC2FjdGl2aXR5",
-            "X2lkGAIgASgJEg4KBnJ1bl9pZBgDIAEoCRIQCghpZGVudGl0eRgEIAEoCRIS",
-            "CgpyZXF1ZXN0X2lkGAUgASgJEg4KBnJlYXNvbhgGIAEoCSIkCiJUZXJtaW5h",
-            "dGVBY3Rpdml0eUV4ZWN1dGlvblJlc3BvbnNlIlgKHkRlbGV0ZUFjdGl2aXR5",
+            "DgoGcnVuX2lkGAMgASgJInQKHVBvbGxBY3Rpdml0eUV4ZWN1dGlvblJlc3Bv",
+            "bnNlEg4KBnJ1bl9pZBgBIAEoCRJDCgdvdXRjb21lGAIgASgLMjIudGVtcG9y",
+            "YWwuYXBpLmFjdGl2aXR5LnYxLkFjdGl2aXR5RXhlY3V0aW9uT3V0Y29tZSJt",
+            "Ch1MaXN0QWN0aXZpdHlFeGVjdXRpb25zUmVxdWVzdBIRCgluYW1lc3BhY2UY",
+            "ASABKAkSEQoJcGFnZV9zaXplGAIgASgFEhcKD25leHRfcGFnZV90b2tlbhgD",
+            "IAEoDBINCgVxdWVyeRgEIAEoCSKCAQoeTGlzdEFjdGl2aXR5RXhlY3V0aW9u",
+            "c1Jlc3BvbnNlEkcKCmV4ZWN1dGlvbnMYASADKAsyMy50ZW1wb3JhbC5hcGku",
+            "YWN0aXZpdHkudjEuQWN0aXZpdHlFeGVjdXRpb25MaXN0SW5mbxIXCg9uZXh0",
+            "X3BhZ2VfdG9rZW4YAiABKAwi2AUKI1N0YXJ0TmV4dXNPcGVyYXRpb25FeGVj",
+            "dXRpb25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIQCghpZGVudGl0eRgC",
+            "IAEoCRISCgpyZXF1ZXN0X2lkGAMgASgJEhQKDG9wZXJhdGlvbl9pZBgEIAEo",
+            "CRIQCghlbmRwb2ludBgFIAEoCRIPCgdzZXJ2aWNlGAYgASgJEhEKCW9wZXJh",
+            "dGlvbhgHIAEoCRI8ChlzY2hlZHVsZV90b19jbG9zZV90aW1lb3V0GAggASgL",
+            "MhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEi4KBWlucHV0GAkgASgLMh8u",
+            "dGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkEksKD2lkX3JldXNlX3Bv",
+            "bGljeRgKIAEoDjIyLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5OZXh1c09wZXJh",
+            "dGlvbklkUmV1c2VQb2xpY3kSUQoSaWRfY29uZmxpY3RfcG9saWN5GAsgASgO",
+            "MjUudGVtcG9yYWwuYXBpLmVudW1zLnYxLk5leHVzT3BlcmF0aW9uSWRDb25m",
+            "bGljdFBvbGljeRJDChFzZWFyY2hfYXR0cmlidXRlcxgMIAEoCzIoLnRlbXBv",
+            "cmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmlidXRlcxJrCgxuZXh1c19o",
+            "ZWFkZXIYDSADKAsyVS50ZW1wb3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYx",
+            "LlN0YXJ0TmV4dXNPcGVyYXRpb25FeGVjdXRpb25SZXF1ZXN0Lk5leHVzSGVh",
+            "ZGVyRW50cnkSOAoNdXNlcl9tZXRhZGF0YRgOIAEoCzIhLnRlbXBvcmFsLmFw",
+            "aS5zZGsudjEuVXNlck1ldGFkYXRhGjIKEE5leHVzSGVhZGVyRW50cnkSCwoD",
+            "a2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASJHCiRTdGFydE5leHVzT3Bl",
+            "cmF0aW9uRXhlY3V0aW9uUmVzcG9uc2USDgoGcnVuX2lkGAEgASgJEg8KB3N0",
+            "YXJ0ZWQYAiABKAgiqgEKJkRlc2NyaWJlTmV4dXNPcGVyYXRpb25FeGVjdXRp",
+            "b25SZXF1ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRIUCgxvcGVyYXRpb25faWQY",
+            "AiABKAkSDgoGcnVuX2lkGAMgASgJEhUKDWluY2x1ZGVfaW5wdXQYBCABKAgS",
+            "FwoPaW5jbHVkZV9vdXRjb21lGAUgASgIEhcKD2xvbmdfcG9sbF90b2tlbhgG",
+            "IAEoDCK3AgonRGVzY3JpYmVOZXh1c09wZXJhdGlvbkV4ZWN1dGlvblJlc3Bv",
+            "bnNlEg4KBnJ1bl9pZBgBIAEoCRJACgRpbmZvGAIgASgLMjIudGVtcG9yYWwu",
+            "YXBpLm5leHVzLnYxLk5leHVzT3BlcmF0aW9uRXhlY3V0aW9uSW5mbxIuCgVp",
+            "bnB1dBgDIAEoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5bG9hZBIx",
+            "CgZyZXN1bHQYBCABKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxv",
+            "YWRIABIzCgdmYWlsdXJlGAUgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUu",
+            "djEuRmFpbHVyZUgAEhcKD2xvbmdfcG9sbF90b2tlbhgGIAEoDEIJCgdvdXRj",
+            "b21lIqEBCiJQb2xsTmV4dXNPcGVyYXRpb25FeGVjdXRpb25SZXF1ZXN0EhEK",
+            "CW5hbWVzcGFjZRgBIAEoCRIUCgxvcGVyYXRpb25faWQYAiABKAkSDgoGcnVu",
+            "X2lkGAMgASgJEkIKCndhaXRfc3RhZ2UYBCABKA4yLi50ZW1wb3JhbC5hcGku",
+            "ZW51bXMudjEuTmV4dXNPcGVyYXRpb25XYWl0U3RhZ2UihQIKI1BvbGxOZXh1",
+            "c09wZXJhdGlvbkV4ZWN1dGlvblJlc3BvbnNlEg4KBnJ1bl9pZBgBIAEoCRJC",
+            "Cgp3YWl0X3N0YWdlGAIgASgOMi4udGVtcG9yYWwuYXBpLmVudW1zLnYxLk5l",
+            "eHVzT3BlcmF0aW9uV2FpdFN0YWdlEhcKD29wZXJhdGlvbl90b2tlbhgDIAEo",
+            "CRIxCgZyZXN1bHQYBCABKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBh",
+            "eWxvYWRIABIzCgdmYWlsdXJlGAUgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1",
+            "cmUudjEuRmFpbHVyZUgAQgkKB291dGNvbWUicwojTGlzdE5leHVzT3BlcmF0",
+            "aW9uRXhlY3V0aW9uc1JlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJEhEKCXBh",
+            "Z2Vfc2l6ZRgCIAEoBRIXCg9uZXh0X3BhZ2VfdG9rZW4YAyABKAwSDQoFcXVl",
+            "cnkYBCABKAkiiwEKJExpc3ROZXh1c09wZXJhdGlvbkV4ZWN1dGlvbnNSZXNw",
+            "b25zZRJKCgpvcGVyYXRpb25zGAEgAygLMjYudGVtcG9yYWwuYXBpLm5leHVz",
+            "LnYxLk5leHVzT3BlcmF0aW9uRXhlY3V0aW9uTGlzdEluZm8SFwoPbmV4dF9w",
+            "YWdlX3Rva2VuGAIgASgMIkIKHkNvdW50QWN0aXZpdHlFeGVjdXRpb25zUmVx",
+            "dWVzdBIRCgluYW1lc3BhY2UYASABKAkSDQoFcXVlcnkYAiABKAki7QEKH0Nv",
+            "dW50QWN0aXZpdHlFeGVjdXRpb25zUmVzcG9uc2USDQoFY291bnQYASABKAMS",
+            "YQoGZ3JvdXBzGAIgAygLMlEudGVtcG9yYWwuYXBpLndvcmtmbG93c2Vydmlj",
+            "ZS52MS5Db3VudEFjdGl2aXR5RXhlY3V0aW9uc1Jlc3BvbnNlLkFnZ3JlZ2F0",
+            "aW9uR3JvdXAaWAoQQWdncmVnYXRpb25Hcm91cBI1Cgxncm91cF92YWx1ZXMY",
+            "ASADKAsyHy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlBheWxvYWQSDQoFY291",
+            "bnQYAiABKAMiSAokQ291bnROZXh1c09wZXJhdGlvbkV4ZWN1dGlvbnNSZXF1",
+            "ZXN0EhEKCW5hbWVzcGFjZRgBIAEoCRINCgVxdWVyeRgCIAEoCSL5AQolQ291",
+            "bnROZXh1c09wZXJhdGlvbkV4ZWN1dGlvbnNSZXNwb25zZRINCgVjb3VudBgB",
+            "IAEoAxJnCgZncm91cHMYAiADKAsyVy50ZW1wb3JhbC5hcGkud29ya2Zsb3dz",
+            "ZXJ2aWNlLnYxLkNvdW50TmV4dXNPcGVyYXRpb25FeGVjdXRpb25zUmVzcG9u",
+            "c2UuQWdncmVnYXRpb25Hcm91cBpYChBBZ2dyZWdhdGlvbkdyb3VwEjUKDGdy",
+            "b3VwX3ZhbHVlcxgBIAMoCzIfLnRlbXBvcmFsLmFwaS5jb21tb24udjEuUGF5",
+            "bG9hZBINCgVjb3VudBgCIAEoAyKVAQolUmVxdWVzdENhbmNlbEFjdGl2aXR5",
             "RXhlY3V0aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSEwoLYWN0aXZp",
-            "dHlfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJIiEKH0RlbGV0ZUFjdGl2aXR5",
-            "RXhlY3V0aW9uUmVzcG9uc2VCvgEKImlvLnRlbXBvcmFsLmFwaS53b3JrZmxv",
-            "d3NlcnZpY2UudjFCFFJlcXVlc3RSZXNwb25zZVByb3RvUAFaNWdvLnRlbXBv",
-            "cmFsLmlvL2FwaS93b3JrZmxvd3NlcnZpY2UvdjE7d29ya2Zsb3dzZXJ2aWNl",
-            "qgIhVGVtcG9yYWxpby5BcGkuV29ya2Zsb3dTZXJ2aWNlLlYx6gIkVGVtcG9y",
-            "YWxpbzo6QXBpOjpXb3JrZmxvd1NlcnZpY2U6OlYxYgZwcm90bzM="));
+            "dHlfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJEhAKCGlkZW50aXR5GAQgASgJ",
+            "EhIKCnJlcXVlc3RfaWQYBSABKAkSDgoGcmVhc29uGAYgASgJIigKJlJlcXVl",
+            "c3RDYW5jZWxBY3Rpdml0eUV4ZWN1dGlvblJlc3BvbnNlIpEBCiFUZXJtaW5h",
+            "dGVBY3Rpdml0eUV4ZWN1dGlvblJlcXVlc3QSEQoJbmFtZXNwYWNlGAEgASgJ",
+            "EhMKC2FjdGl2aXR5X2lkGAIgASgJEg4KBnJ1bl9pZBgDIAEoCRIQCghpZGVu",
+            "dGl0eRgEIAEoCRISCgpyZXF1ZXN0X2lkGAUgASgJEg4KBnJlYXNvbhgGIAEo",
+            "CSIkCiJUZXJtaW5hdGVBY3Rpdml0eUV4ZWN1dGlvblJlc3BvbnNlIlgKHkRl",
+            "bGV0ZUFjdGl2aXR5RXhlY3V0aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASAB",
+            "KAkSEwoLYWN0aXZpdHlfaWQYAiABKAkSDgoGcnVuX2lkGAMgASgJIiEKH0Rl",
+            "bGV0ZUFjdGl2aXR5RXhlY3V0aW9uUmVzcG9uc2UinAEKK1JlcXVlc3RDYW5j",
+            "ZWxOZXh1c09wZXJhdGlvbkV4ZWN1dGlvblJlcXVlc3QSEQoJbmFtZXNwYWNl",
+            "GAEgASgJEhQKDG9wZXJhdGlvbl9pZBgCIAEoCRIOCgZydW5faWQYAyABKAkS",
+            "EAoIaWRlbnRpdHkYBCABKAkSEgoKcmVxdWVzdF9pZBgFIAEoCRIOCgZyZWFz",
+            "b24YBiABKAkiLgosUmVxdWVzdENhbmNlbE5leHVzT3BlcmF0aW9uRXhlY3V0",
+            "aW9uUmVzcG9uc2UimAEKJ1Rlcm1pbmF0ZU5leHVzT3BlcmF0aW9uRXhlY3V0",
+            "aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkSFAoMb3BlcmF0aW9uX2lk",
+            "GAIgASgJEg4KBnJ1bl9pZBgDIAEoCRIQCghpZGVudGl0eRgEIAEoCRISCgpy",
+            "ZXF1ZXN0X2lkGAUgASgJEg4KBnJlYXNvbhgGIAEoCSIqCihUZXJtaW5hdGVO",
+            "ZXh1c09wZXJhdGlvbkV4ZWN1dGlvblJlc3BvbnNlIl8KJERlbGV0ZU5leHVz",
+            "T3BlcmF0aW9uRXhlY3V0aW9uUmVxdWVzdBIRCgluYW1lc3BhY2UYASABKAkS",
+            "FAoMb3BlcmF0aW9uX2lkGAIgASgJEg4KBnJ1bl9pZBgDIAEoCSInCiVEZWxl",
+            "dGVOZXh1c09wZXJhdGlvbkV4ZWN1dGlvblJlc3BvbnNlQr4BCiJpby50ZW1w",
+            "b3JhbC5hcGkud29ya2Zsb3dzZXJ2aWNlLnYxQhRSZXF1ZXN0UmVzcG9uc2VQ",
+            "cm90b1ABWjVnby50ZW1wb3JhbC5pby9hcGkvd29ya2Zsb3dzZXJ2aWNlL3Yx",
+            "O3dvcmtmbG93c2VydmljZaoCIVRlbXBvcmFsaW8uQXBpLldvcmtmbG93U2Vy",
+            "dmljZS5WMeoCJFRlbXBvcmFsaW86OkFwaTo6V29ya2Zsb3dTZXJ2aWNlOjpW",
+            "MWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Api.Enums.V1.QueryReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Enums.V1.DeploymentReflection.Descriptor, global::Temporalio.Api.Enums.V1.UpdateReflection.Descriptor, global::Temporalio.Api.Enums.V1.ActivityReflection.Descriptor, global::Temporalio.Api.Activity.V1.MessageReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.History.V1.MessageReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, global::Temporalio.Api.Command.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Filter.V1.MessageReflection.Descriptor, global::Temporalio.Api.Protocol.V1.MessageReflection.Descriptor, global::Temporalio.Api.Namespace.V1.MessageReflection.Descriptor, global::Temporalio.Api.Query.V1.MessageReflection.Descriptor, global::Temporalio.Api.Replication.V1.MessageReflection.Descriptor, global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.WorkerConfigReflection.Descriptor, global::Temporalio.Api.Schedule.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Update.V1.MessageReflection.Descriptor, global::Temporalio.Api.Version.V1.MessageReflection.Descriptor, global::Temporalio.Api.Batch.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.TaskCompleteMetadataReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Temporalio.Api.Enums.V1.BatchOperationReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Enums.V1.NamespaceReflection.Descriptor, global::Temporalio.Api.Enums.V1.FailedCauseReflection.Descriptor, global::Temporalio.Api.Enums.V1.QueryReflection.Descriptor, global::Temporalio.Api.Enums.V1.ResetReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Temporalio.Api.Enums.V1.DeploymentReflection.Descriptor, global::Temporalio.Api.Enums.V1.UpdateReflection.Descriptor, global::Temporalio.Api.Enums.V1.ActivityReflection.Descriptor, global::Temporalio.Api.Enums.V1.NexusReflection.Descriptor, global::Temporalio.Api.Activity.V1.MessageReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.History.V1.MessageReflection.Descriptor, global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor, global::Temporalio.Api.Command.V1.MessageReflection.Descriptor, global::Temporalio.Api.Compute.V1.ConfigReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Filter.V1.MessageReflection.Descriptor, global::Temporalio.Api.Protocol.V1.MessageReflection.Descriptor, global::Temporalio.Api.Namespace.V1.MessageReflection.Descriptor, global::Temporalio.Api.Query.V1.MessageReflection.Descriptor, global::Temporalio.Api.Replication.V1.MessageReflection.Descriptor, global::Temporalio.Api.Rules.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.WorkerConfigReflection.Descriptor, global::Temporalio.Api.Schedule.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Update.V1.MessageReflection.Descriptor, global::Temporalio.Api.Version.V1.MessageReflection.Descriptor, global::Temporalio.Api.Batch.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.TaskCompleteMetadataReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Api.Worker.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceRequest), global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceRequest.Parser, new[]{ "Namespace", "Description", "OwnerEmail", "WorkflowExecutionRetentionPeriod", "Clusters", "ActiveClusterName", "Data", "SecurityToken", "IsGlobalNamespace", "HistoryArchivalState", "HistoryArchivalUri", "VisibilityArchivalState", "VisibilityArchivalUri" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceResponse), global::Temporalio.Api.WorkflowService.V1.RegisterNamespaceResponse.Parser, null, null, null, null, null),
@@ -1093,7 +1199,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateNamespaceResponse), global::Temporalio.Api.WorkflowService.V1.UpdateNamespaceResponse.Parser, new[]{ "NamespaceInfo", "Config", "ReplicationConfig", "FailoverVersion", "IsGlobalNamespace" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceRequest), global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceRequest.Parser, new[]{ "Namespace", "SecurityToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceResponse), global::Temporalio.Api.WorkflowService.V1.DeprecateNamespaceResponse.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionRequest), global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionRequest.Parser, new[]{ "Namespace", "WorkflowId", "WorkflowType", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "Identity", "RequestId", "WorkflowIdReusePolicy", "WorkflowIdConflictPolicy", "RetryPolicy", "CronSchedule", "Memo", "SearchAttributes", "Header", "RequestEagerExecution", "ContinuedFailure", "LastCompletionResult", "WorkflowStartDelay", "CompletionCallbacks", "UserMetadata", "Links", "VersioningOverride", "OnConflictOptions", "Priority", "EagerWorkerDeploymentOptions" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionRequest), global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionRequest.Parser, new[]{ "Namespace", "WorkflowId", "WorkflowType", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "Identity", "RequestId", "WorkflowIdReusePolicy", "WorkflowIdConflictPolicy", "RetryPolicy", "CronSchedule", "Memo", "SearchAttributes", "Header", "RequestEagerExecution", "ContinuedFailure", "LastCompletionResult", "WorkflowStartDelay", "CompletionCallbacks", "UserMetadata", "Links", "VersioningOverride", "OnConflictOptions", "Priority", "EagerWorkerDeploymentOptions", "TimeSkippingConfig" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionResponse), global::Temporalio.Api.WorkflowService.V1.StartWorkflowExecutionResponse.Parser, new[]{ "RunId", "Started", "Status", "EagerWorkflowTask", "Link" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryRequest), global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryRequest.Parser, new[]{ "Namespace", "Execution", "MaximumPageSize", "NextPageToken", "WaitNewEvent", "HistoryEventFilterType", "SkipArchival" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse), global::Temporalio.Api.WorkflowService.V1.GetWorkflowExecutionHistoryResponse.Parser, new[]{ "History", "RawHistory", "NextPageToken", "Archived" }, null, null, null, null),
@@ -1127,7 +1233,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.RequestCancelWorkflowExecutionResponse), global::Temporalio.Api.WorkflowService.V1.RequestCancelWorkflowExecutionResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionRequest), global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionRequest.Parser, new[]{ "Namespace", "WorkflowExecution", "SignalName", "Input", "Identity", "RequestId", "Control", "Header", "Links" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionResponse), global::Temporalio.Api.WorkflowService.V1.SignalWorkflowExecutionResponse.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest), global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest.Parser, new[]{ "Namespace", "WorkflowId", "WorkflowType", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "Identity", "RequestId", "WorkflowIdReusePolicy", "WorkflowIdConflictPolicy", "SignalName", "SignalInput", "Control", "RetryPolicy", "CronSchedule", "Memo", "SearchAttributes", "Header", "WorkflowStartDelay", "UserMetadata", "Links", "VersioningOverride", "Priority" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest), global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionRequest.Parser, new[]{ "Namespace", "WorkflowId", "WorkflowType", "TaskQueue", "Input", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "WorkflowTaskTimeout", "Identity", "RequestId", "WorkflowIdReusePolicy", "WorkflowIdConflictPolicy", "SignalName", "SignalInput", "Control", "RetryPolicy", "CronSchedule", "Memo", "SearchAttributes", "Header", "WorkflowStartDelay", "UserMetadata", "Links", "VersioningOverride", "Priority", "TimeSkippingConfig" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse), global::Temporalio.Api.WorkflowService.V1.SignalWithStartWorkflowExecutionResponse.Parser, new[]{ "RunId", "Started" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionRequest), global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionRequest.Parser, new[]{ "Namespace", "WorkflowExecution", "Reason", "WorkflowTaskFinishEventId", "RequestId", "ResetReapplyType", "ResetReapplyExcludeTypes", "PostResetOperations", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionResponse), global::Temporalio.Api.WorkflowService.V1.ResetWorkflowExecutionResponse.Parser, new[]{ "RunId" }, null, null, null, null),
@@ -1165,14 +1271,14 @@ namespace Temporalio.Api.WorkflowService.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetClusterInfoRequest), global::Temporalio.Api.WorkflowService.V1.GetClusterInfoRequest.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetClusterInfoResponse), global::Temporalio.Api.WorkflowService.V1.GetClusterInfoResponse.Parser, new[]{ "SupportedClients", "ServerVersion", "ClusterId", "VersionInfo", "ClusterName", "HistoryShardCount", "PersistenceStore", "VisibilityStore", "InitialFailoverVersion", "FailoverVersionIncrement" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetSystemInfoRequest), global::Temporalio.Api.WorkflowService.V1.GetSystemInfoRequest.Parser, null, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse), global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse.Parser, new[]{ "ServerVersion", "Capabilities" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse.Types.Capabilities), global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse.Types.Capabilities.Parser, new[]{ "SignalAndQueryHeader", "InternalErrorDifferentiation", "ActivityFailureIncludeHeartbeat", "SupportsSchedules", "EncodedFailureAttributes", "BuildIdBasedVersioning", "UpsertMemo", "EagerWorkflowStart", "SdkMetadata", "CountGroupByExecutionStatus", "Nexus" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse), global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse.Parser, new[]{ "ServerVersion", "Capabilities" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse.Types.Capabilities), global::Temporalio.Api.WorkflowService.V1.GetSystemInfoResponse.Types.Capabilities.Parser, new[]{ "SignalAndQueryHeader", "InternalErrorDifferentiation", "ActivityFailureIncludeHeartbeat", "SupportsSchedules", "EncodedFailureAttributes", "BuildIdBasedVersioning", "UpsertMemo", "EagerWorkflowStart", "SdkMetadata", "CountGroupByExecutionStatus", "Nexus", "ServerScaledDeployments" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest), global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsRequest.Parser, new[]{ "Namespace", "TaskQueue" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse), global::Temporalio.Api.WorkflowService.V1.ListTaskQueuePartitionsResponse.Parser, new[]{ "ActivityTaskQueuePartitions", "WorkflowTaskQueuePartitions" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CreateScheduleRequest), global::Temporalio.Api.WorkflowService.V1.CreateScheduleRequest.Parser, new[]{ "Namespace", "ScheduleId", "Schedule", "InitialPatch", "Identity", "RequestId", "Memo", "SearchAttributes" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CreateScheduleResponse), global::Temporalio.Api.WorkflowService.V1.CreateScheduleResponse.Parser, new[]{ "ConflictToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DescribeScheduleRequest), global::Temporalio.Api.WorkflowService.V1.DescribeScheduleRequest.Parser, new[]{ "Namespace", "ScheduleId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DescribeScheduleResponse), global::Temporalio.Api.WorkflowService.V1.DescribeScheduleResponse.Parser, new[]{ "Schedule", "Info", "Memo", "SearchAttributes", "ConflictToken" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateScheduleRequest), global::Temporalio.Api.WorkflowService.V1.UpdateScheduleRequest.Parser, new[]{ "Namespace", "ScheduleId", "Schedule", "ConflictToken", "Identity", "RequestId", "SearchAttributes" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateScheduleRequest), global::Temporalio.Api.WorkflowService.V1.UpdateScheduleRequest.Parser, new[]{ "Namespace", "ScheduleId", "Schedule", "ConflictToken", "Identity", "RequestId", "SearchAttributes", "Memo" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateScheduleResponse), global::Temporalio.Api.WorkflowService.V1.UpdateScheduleResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.PatchScheduleRequest), global::Temporalio.Api.WorkflowService.V1.PatchScheduleRequest.Parser, new[]{ "Namespace", "ScheduleId", "Patch", "Identity", "RequestId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.PatchScheduleResponse), global::Temporalio.Api.WorkflowService.V1.PatchScheduleResponse.Parser, null, null, null, null, null),
@@ -1245,12 +1351,20 @@ namespace Temporalio.Api.WorkflowService.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionResponse), global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentCurrentVersionResponse.Parser, new[]{ "ConflictToken", "PreviousVersion", "PreviousDeploymentVersion" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionRequest), global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionRequest.Parser, new[]{ "Namespace", "DeploymentName", "Version", "BuildId", "Percentage", "ConflictToken", "Identity", "IgnoreMissingTaskQueues", "AllowNoPollers" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionResponse), global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentRampingVersionResponse.Parser, new[]{ "ConflictToken", "PreviousVersion", "PreviousDeploymentVersion", "PreviousPercentage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentRequest), global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentRequest.Parser, new[]{ "Namespace", "DeploymentName", "Identity", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentResponse), global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentResponse.Parser, new[]{ "ConflictToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsRequest), global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsRequest.Parser, new[]{ "Namespace", "PageSize", "NextPageToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsResponse), global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsResponse.Parser, new[]{ "NextPageToken", "WorkerDeployments" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsResponse.Types.WorkerDeploymentSummary), global::Temporalio.Api.WorkflowService.V1.ListWorkerDeploymentsResponse.Types.WorkerDeploymentSummary.Parser, new[]{ "Name", "CreateTime", "RoutingConfig", "LatestVersionSummary", "CurrentVersionSummary", "RampingVersionSummary" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionRequest), global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionRequest.Parser, new[]{ "Namespace", "DeploymentVersion", "ComputeConfig", "Identity", "RequestId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionResponse), global::Temporalio.Api.WorkflowService.V1.CreateWorkerDeploymentVersionResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionRequest), global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionRequest.Parser, new[]{ "Namespace", "Version", "DeploymentVersion", "SkipDrainage", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionResponse), global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentVersionResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentRequest), global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentRequest.Parser, new[]{ "Namespace", "DeploymentName", "Identity" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentResponse), global::Temporalio.Api.WorkflowService.V1.DeleteWorkerDeploymentResponse.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigRequest), global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigRequest.Parser, new[]{ "Namespace", "DeploymentVersion", "ComputeConfigScalingGroups", "RemoveComputeConfigScalingGroups", "Identity", "RequestId" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigResponse), global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionComputeConfigResponse.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigRequest), global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigRequest.Parser, new[]{ "Namespace", "DeploymentVersion", "ComputeConfigScalingGroups", "RemoveComputeConfigScalingGroups", "Identity" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigResponse), global::Temporalio.Api.WorkflowService.V1.ValidateWorkerDeploymentVersionComputeConfigResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataRequest), global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataRequest.Parser, new[]{ "Namespace", "Version", "DeploymentVersion", "UpsertEntries", "RemoveEntries", "Identity" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataResponse), global::Temporalio.Api.WorkflowService.V1.UpdateWorkerDeploymentVersionMetadataResponse.Parser, new[]{ "Metadata" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentManagerRequest), global::Temporalio.Api.WorkflowService.V1.SetWorkerDeploymentManagerRequest.Parser, new[]{ "Namespace", "DeploymentName", "ManagerIdentity", "Self", "ConflictToken", "Identity" }, new[]{ "NewManagerIdentity" }, null, null, null),
@@ -1294,14 +1408,30 @@ namespace Temporalio.Api.WorkflowService.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.PollActivityExecutionResponse), global::Temporalio.Api.WorkflowService.V1.PollActivityExecutionResponse.Parser, new[]{ "RunId", "Outcome" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsRequest), global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsRequest.Parser, new[]{ "Namespace", "PageSize", "NextPageToken", "Query" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsResponse), global::Temporalio.Api.WorkflowService.V1.ListActivityExecutionsResponse.Parser, new[]{ "Executions", "NextPageToken" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionRequest), global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionRequest.Parser, new[]{ "Namespace", "Identity", "RequestId", "OperationId", "Endpoint", "Service", "Operation", "ScheduleToCloseTimeout", "Input", "IdReusePolicy", "IdConflictPolicy", "SearchAttributes", "NexusHeader", "UserMetadata" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionResponse), global::Temporalio.Api.WorkflowService.V1.StartNexusOperationExecutionResponse.Parser, new[]{ "RunId", "Started" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionRequest), global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionRequest.Parser, new[]{ "Namespace", "OperationId", "RunId", "IncludeInput", "IncludeOutcome", "LongPollToken" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionResponse), global::Temporalio.Api.WorkflowService.V1.DescribeNexusOperationExecutionResponse.Parser, new[]{ "RunId", "Info", "Input", "Result", "Failure", "LongPollToken" }, new[]{ "Outcome" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionRequest), global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionRequest.Parser, new[]{ "Namespace", "OperationId", "RunId", "WaitStage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionResponse), global::Temporalio.Api.WorkflowService.V1.PollNexusOperationExecutionResponse.Parser, new[]{ "RunId", "WaitStage", "OperationToken", "Result", "Failure" }, new[]{ "Outcome" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsRequest), global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsRequest.Parser, new[]{ "Namespace", "PageSize", "NextPageToken", "Query" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsResponse), global::Temporalio.Api.WorkflowService.V1.ListNexusOperationExecutionsResponse.Parser, new[]{ "Operations", "NextPageToken" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsRequest), global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsRequest.Parser, new[]{ "Namespace", "Query" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsResponse), global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsResponse.Parser, new[]{ "Count", "Groups" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsResponse.Types.AggregationGroup), global::Temporalio.Api.WorkflowService.V1.CountActivityExecutionsResponse.Types.AggregationGroup.Parser, new[]{ "GroupValues", "Count" }, null, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsRequest), global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsRequest.Parser, new[]{ "Namespace", "Query" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse), global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Parser, new[]{ "Count", "Groups" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup), global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup.Parser, new[]{ "GroupValues", "Count" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionRequest), global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionRequest.Parser, new[]{ "Namespace", "ActivityId", "RunId", "Identity", "RequestId", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionResponse), global::Temporalio.Api.WorkflowService.V1.RequestCancelActivityExecutionResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionRequest), global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionRequest.Parser, new[]{ "Namespace", "ActivityId", "RunId", "Identity", "RequestId", "Reason" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionResponse), global::Temporalio.Api.WorkflowService.V1.TerminateActivityExecutionResponse.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionRequest), global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionRequest.Parser, new[]{ "Namespace", "ActivityId", "RunId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionResponse), global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionResponse.Parser, null, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionResponse), global::Temporalio.Api.WorkflowService.V1.DeleteActivityExecutionResponse.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionRequest), global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionRequest.Parser, new[]{ "Namespace", "OperationId", "RunId", "Identity", "RequestId", "Reason" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionResponse), global::Temporalio.Api.WorkflowService.V1.RequestCancelNexusOperationExecutionResponse.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionRequest), global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionRequest.Parser, new[]{ "Namespace", "OperationId", "RunId", "Identity", "RequestId", "Reason" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionResponse), global::Temporalio.Api.WorkflowService.V1.TerminateNexusOperationExecutionResponse.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionRequest), global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionRequest.Parser, new[]{ "Namespace", "OperationId", "RunId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionResponse), global::Temporalio.Api.WorkflowService.V1.DeleteNexusOperationExecutionResponse.Parser, null, null, null, null, null)
           }));
     }
     #endregion
@@ -4447,6 +4577,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       onConflictOptions_ = other.onConflictOptions_ != null ? other.onConflictOptions_.Clone() : null;
       priority_ = other.priority_ != null ? other.priority_.Clone() : null;
       eagerWorkerDeploymentOptions_ = other.eagerWorkerDeploymentOptions_ != null ? other.eagerWorkerDeploymentOptions_.Clone() : null;
+      timeSkippingConfig_ = other.timeSkippingConfig_ != null ? other.timeSkippingConfig_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4872,6 +5003,21 @@ namespace Temporalio.Api.WorkflowService.V1 {
       }
     }
 
+    /// <summary>Field number for the "time_skipping_config" field.</summary>
+    public const int TimeSkippingConfigFieldNumber = 29;
+    private global::Temporalio.Api.Workflow.V1.TimeSkippingConfig timeSkippingConfig_;
+    /// <summary>
+    /// Time-skipping configuration. If not set, time skipping is disabled.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.TimeSkippingConfig TimeSkippingConfig {
+      get { return timeSkippingConfig_; }
+      set {
+        timeSkippingConfig_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -4915,6 +5061,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       if (!object.Equals(OnConflictOptions, other.OnConflictOptions)) return false;
       if (!object.Equals(Priority, other.Priority)) return false;
       if (!object.Equals(EagerWorkerDeploymentOptions, other.EagerWorkerDeploymentOptions)) return false;
+      if (!object.Equals(TimeSkippingConfig, other.TimeSkippingConfig)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4950,6 +5097,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       if (onConflictOptions_ != null) hash ^= OnConflictOptions.GetHashCode();
       if (priority_ != null) hash ^= Priority.GetHashCode();
       if (eagerWorkerDeploymentOptions_ != null) hash ^= EagerWorkerDeploymentOptions.GetHashCode();
+      if (timeSkippingConfig_ != null) hash ^= TimeSkippingConfig.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -5074,6 +5222,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
         output.WriteRawTag(226, 1);
         output.WriteMessage(EagerWorkerDeploymentOptions);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(234, 1);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -5190,6 +5342,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
         output.WriteRawTag(226, 1);
         output.WriteMessage(EagerWorkerDeploymentOptions);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(234, 1);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -5279,6 +5435,9 @@ namespace Temporalio.Api.WorkflowService.V1 {
       }
       if (eagerWorkerDeploymentOptions_ != null) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(EagerWorkerDeploymentOptions);
+      }
+      if (timeSkippingConfig_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(TimeSkippingConfig);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -5425,6 +5584,12 @@ namespace Temporalio.Api.WorkflowService.V1 {
           EagerWorkerDeploymentOptions = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentOptions();
         }
         EagerWorkerDeploymentOptions.MergeFrom(other.EagerWorkerDeploymentOptions);
+      }
+      if (other.timeSkippingConfig_ != null) {
+        if (timeSkippingConfig_ == null) {
+          TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+        }
+        TimeSkippingConfig.MergeFrom(other.TimeSkippingConfig);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -5607,6 +5772,13 @@ namespace Temporalio.Api.WorkflowService.V1 {
             input.ReadMessage(EagerWorkerDeploymentOptions);
             break;
           }
+          case 234: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
+            break;
+          }
         }
       }
     #endif
@@ -5786,6 +5958,13 @@ namespace Temporalio.Api.WorkflowService.V1 {
               EagerWorkerDeploymentOptions = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentOptions();
             }
             input.ReadMessage(EagerWorkerDeploymentOptions);
+            break;
+          }
+          case 234: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
             break;
           }
         }
@@ -19150,6 +19329,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       links_ = other.links_.Clone();
       versioningOverride_ = other.versioningOverride_ != null ? other.versioningOverride_.Clone() : null;
       priority_ = other.priority_ != null ? other.priority_.Clone() : null;
+      timeSkippingConfig_ = other.timeSkippingConfig_ != null ? other.timeSkippingConfig_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -19530,6 +19710,21 @@ namespace Temporalio.Api.WorkflowService.V1 {
       }
     }
 
+    /// <summary>Field number for the "time_skipping_config" field.</summary>
+    public const int TimeSkippingConfigFieldNumber = 27;
+    private global::Temporalio.Api.Workflow.V1.TimeSkippingConfig timeSkippingConfig_;
+    /// <summary>
+    /// Time-skipping configuration. If not set, time skipping is disabled.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.TimeSkippingConfig TimeSkippingConfig {
+      get { return timeSkippingConfig_; }
+      set {
+        timeSkippingConfig_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -19570,6 +19765,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       if(!links_.Equals(other.links_)) return false;
       if (!object.Equals(VersioningOverride, other.VersioningOverride)) return false;
       if (!object.Equals(Priority, other.Priority)) return false;
+      if (!object.Equals(TimeSkippingConfig, other.TimeSkippingConfig)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -19602,6 +19798,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       hash ^= links_.GetHashCode();
       if (versioningOverride_ != null) hash ^= VersioningOverride.GetHashCode();
       if (priority_ != null) hash ^= Priority.GetHashCode();
+      if (timeSkippingConfig_ != null) hash ^= TimeSkippingConfig.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -19717,6 +19914,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
         output.WriteRawTag(210, 1);
         output.WriteMessage(Priority);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(218, 1);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -19824,6 +20025,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
         output.WriteRawTag(210, 1);
         output.WriteMessage(Priority);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(218, 1);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -19906,6 +20111,9 @@ namespace Temporalio.Api.WorkflowService.V1 {
       }
       if (priority_ != null) {
         size += 2 + pb::CodedOutputStream.ComputeMessageSize(Priority);
+      }
+      if (timeSkippingConfig_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(TimeSkippingConfig);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -20036,6 +20244,12 @@ namespace Temporalio.Api.WorkflowService.V1 {
           Priority = new global::Temporalio.Api.Common.V1.Priority();
         }
         Priority.MergeFrom(other.Priority);
+      }
+      if (other.timeSkippingConfig_ != null) {
+        if (timeSkippingConfig_ == null) {
+          TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+        }
+        TimeSkippingConfig.MergeFrom(other.TimeSkippingConfig);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -20197,6 +20411,13 @@ namespace Temporalio.Api.WorkflowService.V1 {
             input.ReadMessage(Priority);
             break;
           }
+          case 218: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
+            break;
+          }
         }
       }
     #endif
@@ -20355,6 +20576,13 @@ namespace Temporalio.Api.WorkflowService.V1 {
               Priority = new global::Temporalio.Api.Common.V1.Priority();
             }
             input.ReadMessage(Priority);
+            break;
+          }
+          case 218: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
             break;
           }
         }
@@ -31516,6 +31744,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
           sdkMetadata_ = other.sdkMetadata_;
           countGroupByExecutionStatus_ = other.countGroupByExecutionStatus_;
           nexus_ = other.nexus_;
+          serverScaledDeployments_ = other.serverScaledDeployments_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -31699,6 +31928,23 @@ namespace Temporalio.Api.WorkflowService.V1 {
           }
         }
 
+        /// <summary>Field number for the "server_scaled_deployments" field.</summary>
+        public const int ServerScaledDeploymentsFieldNumber = 12;
+        private bool serverScaledDeployments_;
+        /// <summary>
+        /// True if the server supports server-scaled deployments.
+        /// This flag is dependent both on server version and for server-scaled deployments
+        /// to be enabled via server configuration.
+        /// </summary>
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool ServerScaledDeployments {
+          get { return serverScaledDeployments_; }
+          set {
+            serverScaledDeployments_ = value;
+          }
+        }
+
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
         public override bool Equals(object other) {
@@ -31725,6 +31971,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
           if (SdkMetadata != other.SdkMetadata) return false;
           if (CountGroupByExecutionStatus != other.CountGroupByExecutionStatus) return false;
           if (Nexus != other.Nexus) return false;
+          if (ServerScaledDeployments != other.ServerScaledDeployments) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
@@ -31743,6 +31990,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
           if (SdkMetadata != false) hash ^= SdkMetadata.GetHashCode();
           if (CountGroupByExecutionStatus != false) hash ^= CountGroupByExecutionStatus.GetHashCode();
           if (Nexus != false) hash ^= Nexus.GetHashCode();
+          if (ServerScaledDeployments != false) hash ^= ServerScaledDeployments.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -31805,6 +32053,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
             output.WriteRawTag(88);
             output.WriteBool(Nexus);
           }
+          if (ServerScaledDeployments != false) {
+            output.WriteRawTag(96);
+            output.WriteBool(ServerScaledDeployments);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
           }
@@ -31859,6 +32111,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
             output.WriteRawTag(88);
             output.WriteBool(Nexus);
           }
+          if (ServerScaledDeployments != false) {
+            output.WriteRawTag(96);
+            output.WriteBool(ServerScaledDeployments);
+          }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(ref output);
           }
@@ -31900,6 +32156,9 @@ namespace Temporalio.Api.WorkflowService.V1 {
             size += 1 + 1;
           }
           if (Nexus != false) {
+            size += 1 + 1;
+          }
+          if (ServerScaledDeployments != false) {
             size += 1 + 1;
           }
           if (_unknownFields != null) {
@@ -31946,6 +32205,9 @@ namespace Temporalio.Api.WorkflowService.V1 {
           }
           if (other.Nexus != false) {
             Nexus = other.Nexus;
+          }
+          if (other.ServerScaledDeployments != false) {
+            ServerScaledDeployments = other.ServerScaledDeployments;
           }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
@@ -32006,6 +32268,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
                 Nexus = input.ReadBool();
                 break;
               }
+              case 96: {
+                ServerScaledDeployments = input.ReadBool();
+                break;
+              }
             }
           }
         #endif
@@ -32063,6 +32329,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
               }
               case 88: {
                 Nexus = input.ReadBool();
+                break;
+              }
+              case 96: {
+                ServerScaledDeployments = input.ReadBool();
                 break;
               }
             }
@@ -33880,6 +34150,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       identity_ = other.identity_;
       requestId_ = other.requestId_;
       searchAttributes_ = other.searchAttributes_ != null ? other.searchAttributes_.Clone() : null;
+      memo_ = other.memo_ != null ? other.memo_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -34002,6 +34273,23 @@ namespace Temporalio.Api.WorkflowService.V1 {
       }
     }
 
+    /// <summary>Field number for the "memo" field.</summary>
+    public const int MemoFieldNumber = 8;
+    private global::Temporalio.Api.Common.V1.Memo memo_;
+    /// <summary>
+    /// Schedule memo to replace. If set, replaces the entire memo.
+    /// Do not set this field if you do not want to update the memo.
+    /// A non-null empty object will clear the memo.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.Memo Memo {
+      get { return memo_; }
+      set {
+        memo_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -34024,6 +34312,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       if (Identity != other.Identity) return false;
       if (RequestId != other.RequestId) return false;
       if (!object.Equals(SearchAttributes, other.SearchAttributes)) return false;
+      if (!object.Equals(Memo, other.Memo)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -34038,6 +34327,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
       if (Identity.Length != 0) hash ^= Identity.GetHashCode();
       if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
       if (searchAttributes_ != null) hash ^= SearchAttributes.GetHashCode();
+      if (memo_ != null) hash ^= Memo.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -34084,6 +34374,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(SearchAttributes);
       }
+      if (memo_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(Memo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -34122,6 +34416,10 @@ namespace Temporalio.Api.WorkflowService.V1 {
         output.WriteRawTag(58);
         output.WriteMessage(SearchAttributes);
       }
+      if (memo_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(Memo);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -34152,6 +34450,9 @@ namespace Temporalio.Api.WorkflowService.V1 {
       }
       if (searchAttributes_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(SearchAttributes);
+      }
+      if (memo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Memo);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -34191,6 +34492,12 @@ namespace Temporalio.Api.WorkflowService.V1 {
           SearchAttributes = new global::Temporalio.Api.Common.V1.SearchAttributes();
         }
         SearchAttributes.MergeFrom(other.SearchAttributes);
+      }
+      if (other.memo_ != null) {
+        if (memo_ == null) {
+          Memo = new global::Temporalio.Api.Common.V1.Memo();
+        }
+        Memo.MergeFrom(other.Memo);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -34241,6 +34548,13 @@ namespace Temporalio.Api.WorkflowService.V1 {
             input.ReadMessage(SearchAttributes);
             break;
           }
+          case 66: {
+            if (memo_ == null) {
+              Memo = new global::Temporalio.Api.Common.V1.Memo();
+            }
+            input.ReadMessage(Memo);
+            break;
+          }
         }
       }
     #endif
@@ -34288,6 +34602,13 @@ namespace Temporalio.Api.WorkflowService.V1 {
               SearchAttributes = new global::Temporalio.Api.Common.V1.SearchAttributes();
             }
             input.ReadMessage(SearchAttributes);
+            break;
+          }
+          case 66: {
+            if (memo_ == null) {
+              Memo = new global::Temporalio.Api.Common.V1.Memo();
+            }
+            input.ReadMessage(Memo);
             break;
           }
         }
@@ -57299,6 +57620,513 @@ namespace Temporalio.Api.WorkflowService.V1 {
 
   }
 
+  /// <summary>
+  /// Creates a new WorkerDeployment.
+  /// </summary>
+  public sealed partial class CreateWorkerDeploymentRequest : pb::IMessage<CreateWorkerDeploymentRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CreateWorkerDeploymentRequest> _parser = new pb::MessageParser<CreateWorkerDeploymentRequest>(() => new CreateWorkerDeploymentRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CreateWorkerDeploymentRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[154]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentRequest(CreateWorkerDeploymentRequest other) : this() {
+      namespace_ = other.namespace_;
+      deploymentName_ = other.deploymentName_;
+      identity_ = other.identity_;
+      requestId_ = other.requestId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentRequest Clone() {
+      return new CreateWorkerDeploymentRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deployment_name" field.</summary>
+    public const int DeploymentNameFieldNumber = 2;
+    private string deploymentName_ = "";
+    /// <summary>
+    /// The name of the Worker Deployment to create. If a Worker Deployment with
+    /// this name already exists, an error will be returned.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string DeploymentName {
+      get { return deploymentName_; }
+      set {
+        deploymentName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 4;
+    private string identity_ = "";
+    /// <summary>
+    /// Optional. The identity of the client who initiated this request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 5;
+    private string requestId_ = "";
+    /// <summary>
+    /// A unique identifier for this create request for idempotence. Typically UUIDv4.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CreateWorkerDeploymentRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CreateWorkerDeploymentRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (DeploymentName != other.DeploymentName) return false;
+      if (Identity != other.Identity) return false;
+      if (RequestId != other.RequestId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (DeploymentName.Length != 0) hash ^= DeploymentName.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (DeploymentName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DeploymentName);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (DeploymentName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(DeploymentName);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (DeploymentName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(DeploymentName);
+      }
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CreateWorkerDeploymentRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.DeploymentName.Length != 0) {
+        DeploymentName = other.DeploymentName;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            DeploymentName = input.ReadString();
+            break;
+          }
+          case 34: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            DeploymentName = input.ReadString();
+            break;
+          }
+          case 34: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class CreateWorkerDeploymentResponse : pb::IMessage<CreateWorkerDeploymentResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CreateWorkerDeploymentResponse> _parser = new pb::MessageParser<CreateWorkerDeploymentResponse>(() => new CreateWorkerDeploymentResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CreateWorkerDeploymentResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[155]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentResponse(CreateWorkerDeploymentResponse other) : this() {
+      conflictToken_ = other.conflictToken_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentResponse Clone() {
+      return new CreateWorkerDeploymentResponse(this);
+    }
+
+    /// <summary>Field number for the "conflict_token" field.</summary>
+    public const int ConflictTokenFieldNumber = 1;
+    private pb::ByteString conflictToken_ = pb::ByteString.Empty;
+    /// <summary>
+    /// This value is returned so that it can be optionally passed to APIs that
+    /// write to the WorkerDeployment state to ensure that the state did not
+    /// change between this API call and a future write.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString ConflictToken {
+      get { return conflictToken_; }
+      set {
+        conflictToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CreateWorkerDeploymentResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CreateWorkerDeploymentResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (ConflictToken != other.ConflictToken) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (ConflictToken.Length != 0) hash ^= ConflictToken.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (ConflictToken.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteBytes(ConflictToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (ConflictToken.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteBytes(ConflictToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (ConflictToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(ConflictToken);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CreateWorkerDeploymentResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.ConflictToken.Length != 0) {
+        ConflictToken = other.ConflictToken;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            ConflictToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            ConflictToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class ListWorkerDeploymentsRequest : pb::IMessage<ListWorkerDeploymentsRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -57313,7 +58141,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[154]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[156]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -57576,7 +58404,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[155]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[157]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -58221,6 +59049,531 @@ namespace Temporalio.Api.WorkflowService.V1 {
   }
 
   /// <summary>
+  /// Creates a new WorkerDeploymentVersion.
+  /// </summary>
+  public sealed partial class CreateWorkerDeploymentVersionRequest : pb::IMessage<CreateWorkerDeploymentVersionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CreateWorkerDeploymentVersionRequest> _parser = new pb::MessageParser<CreateWorkerDeploymentVersionRequest>(() => new CreateWorkerDeploymentVersionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CreateWorkerDeploymentVersionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[158]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentVersionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentVersionRequest(CreateWorkerDeploymentVersionRequest other) : this() {
+      namespace_ = other.namespace_;
+      deploymentVersion_ = other.deploymentVersion_ != null ? other.deploymentVersion_.Clone() : null;
+      computeConfig_ = other.computeConfig_ != null ? other.computeConfig_.Clone() : null;
+      identity_ = other.identity_;
+      requestId_ = other.requestId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentVersionRequest Clone() {
+      return new CreateWorkerDeploymentVersionRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deployment_version" field.</summary>
+    public const int DeploymentVersionFieldNumber = 2;
+    private global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion deploymentVersion_;
+    /// <summary>
+    /// Required.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion DeploymentVersion {
+      get { return deploymentVersion_; }
+      set {
+        deploymentVersion_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "compute_config" field.</summary>
+    public const int ComputeConfigFieldNumber = 4;
+    private global::Temporalio.Api.Compute.V1.ComputeConfig computeConfig_;
+    /// <summary>
+    /// Optional. Contains the new worker compute configuration for the Worker
+    /// Deployment. Used for worker scale management.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Compute.V1.ComputeConfig ComputeConfig {
+      get { return computeConfig_; }
+      set {
+        computeConfig_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 3;
+    private string identity_ = "";
+    /// <summary>
+    /// Optional. The identity of the client who initiated this request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 5;
+    private string requestId_ = "";
+    /// <summary>
+    /// A unique identifier for this create request for idempotence. Typically UUIDv4.
+    /// If a second request with the same ID is recieved, it is considered a successful no-op.
+    /// Retrying with a different request ID for the same deployment name + build ID is an error.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CreateWorkerDeploymentVersionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CreateWorkerDeploymentVersionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (!object.Equals(DeploymentVersion, other.DeploymentVersion)) return false;
+      if (!object.Equals(ComputeConfig, other.ComputeConfig)) return false;
+      if (Identity != other.Identity) return false;
+      if (RequestId != other.RequestId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (deploymentVersion_ != null) hash ^= DeploymentVersion.GetHashCode();
+      if (computeConfig_ != null) hash ^= ComputeConfig.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      if (computeConfig_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(ComputeConfig);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      if (computeConfig_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(ComputeConfig);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeploymentVersion);
+      }
+      if (computeConfig_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ComputeConfig);
+      }
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CreateWorkerDeploymentVersionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.deploymentVersion_ != null) {
+        if (deploymentVersion_ == null) {
+          DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+        }
+        DeploymentVersion.MergeFrom(other.DeploymentVersion);
+      }
+      if (other.computeConfig_ != null) {
+        if (computeConfig_ == null) {
+          ComputeConfig = new global::Temporalio.Api.Compute.V1.ComputeConfig();
+        }
+        ComputeConfig.MergeFrom(other.ComputeConfig);
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 26: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (computeConfig_ == null) {
+              ComputeConfig = new global::Temporalio.Api.Compute.V1.ComputeConfig();
+            }
+            input.ReadMessage(ComputeConfig);
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 26: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (computeConfig_ == null) {
+              ComputeConfig = new global::Temporalio.Api.Compute.V1.ComputeConfig();
+            }
+            input.ReadMessage(ComputeConfig);
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class CreateWorkerDeploymentVersionResponse : pb::IMessage<CreateWorkerDeploymentVersionResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CreateWorkerDeploymentVersionResponse> _parser = new pb::MessageParser<CreateWorkerDeploymentVersionResponse>(() => new CreateWorkerDeploymentVersionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CreateWorkerDeploymentVersionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[159]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentVersionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentVersionResponse(CreateWorkerDeploymentVersionResponse other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CreateWorkerDeploymentVersionResponse Clone() {
+      return new CreateWorkerDeploymentVersionResponse(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CreateWorkerDeploymentVersionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CreateWorkerDeploymentVersionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CreateWorkerDeploymentVersionResponse other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// Used for manual deletion of Versions. User can delete a Version only when all the
   /// following conditions are met:
   ///  - It is not the Current or Ramping Version of its Deployment.
@@ -58242,7 +59595,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[156]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[160]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -58602,7 +59955,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[157]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[161]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -58758,7 +60111,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[158]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[162]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -59024,7 +60377,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[159]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[163]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -59163,6 +60516,1032 @@ namespace Temporalio.Api.WorkflowService.V1 {
   }
 
   /// <summary>
+  /// Used to update the compute config of a Worker Deployment Version.
+  /// </summary>
+  public sealed partial class UpdateWorkerDeploymentVersionComputeConfigRequest : pb::IMessage<UpdateWorkerDeploymentVersionComputeConfigRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<UpdateWorkerDeploymentVersionComputeConfigRequest> _parser = new pb::MessageParser<UpdateWorkerDeploymentVersionComputeConfigRequest>(() => new UpdateWorkerDeploymentVersionComputeConfigRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<UpdateWorkerDeploymentVersionComputeConfigRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[164]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UpdateWorkerDeploymentVersionComputeConfigRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UpdateWorkerDeploymentVersionComputeConfigRequest(UpdateWorkerDeploymentVersionComputeConfigRequest other) : this() {
+      namespace_ = other.namespace_;
+      deploymentVersion_ = other.deploymentVersion_ != null ? other.deploymentVersion_.Clone() : null;
+      computeConfigScalingGroups_ = other.computeConfigScalingGroups_.Clone();
+      removeComputeConfigScalingGroups_ = other.removeComputeConfigScalingGroups_.Clone();
+      identity_ = other.identity_;
+      requestId_ = other.requestId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UpdateWorkerDeploymentVersionComputeConfigRequest Clone() {
+      return new UpdateWorkerDeploymentVersionComputeConfigRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deployment_version" field.</summary>
+    public const int DeploymentVersionFieldNumber = 2;
+    private global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion deploymentVersion_;
+    /// <summary>
+    /// Required.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion DeploymentVersion {
+      get { return deploymentVersion_; }
+      set {
+        deploymentVersion_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "compute_config_scaling_groups" field.</summary>
+    public const int ComputeConfigScalingGroupsFieldNumber = 6;
+    private static readonly pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate>.Codec _map_computeConfigScalingGroups_codec
+        = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate.Parser), 50);
+    private readonly pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate> computeConfigScalingGroups_ = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate>();
+    /// <summary>
+    /// Optional. Contains the compute config scaling groups to add or update for the Worker
+    /// Deployment.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate> ComputeConfigScalingGroups {
+      get { return computeConfigScalingGroups_; }
+    }
+
+    /// <summary>Field number for the "remove_compute_config_scaling_groups" field.</summary>
+    public const int RemoveComputeConfigScalingGroupsFieldNumber = 7;
+    private static readonly pb::FieldCodec<string> _repeated_removeComputeConfigScalingGroups_codec
+        = pb::FieldCodec.ForString(58);
+    private readonly pbc::RepeatedField<string> removeComputeConfigScalingGroups_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// Optional. Contains the compute config scaling groups to remove from the Worker Deployment.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> RemoveComputeConfigScalingGroups {
+      get { return removeComputeConfigScalingGroups_; }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 3;
+    private string identity_ = "";
+    /// <summary>
+    /// Optional. The identity of the client who initiated this request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 4;
+    private string requestId_ = "";
+    /// <summary>
+    /// A unique identifier for this create request for idempotence. Typically UUIDv4.
+    /// If a second request with the same ID is recieved, it is considered a successful no-op.
+    /// Retrying with a different request ID for the same deployment name + build ID is an error.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as UpdateWorkerDeploymentVersionComputeConfigRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(UpdateWorkerDeploymentVersionComputeConfigRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (!object.Equals(DeploymentVersion, other.DeploymentVersion)) return false;
+      if (!ComputeConfigScalingGroups.Equals(other.ComputeConfigScalingGroups)) return false;
+      if(!removeComputeConfigScalingGroups_.Equals(other.removeComputeConfigScalingGroups_)) return false;
+      if (Identity != other.Identity) return false;
+      if (RequestId != other.RequestId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (deploymentVersion_ != null) hash ^= DeploymentVersion.GetHashCode();
+      hash ^= ComputeConfigScalingGroups.GetHashCode();
+      hash ^= removeComputeConfigScalingGroups_.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(RequestId);
+      }
+      computeConfigScalingGroups_.WriteTo(output, _map_computeConfigScalingGroups_codec);
+      removeComputeConfigScalingGroups_.WriteTo(output, _repeated_removeComputeConfigScalingGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(RequestId);
+      }
+      computeConfigScalingGroups_.WriteTo(ref output, _map_computeConfigScalingGroups_codec);
+      removeComputeConfigScalingGroups_.WriteTo(ref output, _repeated_removeComputeConfigScalingGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeploymentVersion);
+      }
+      size += computeConfigScalingGroups_.CalculateSize(_map_computeConfigScalingGroups_codec);
+      size += removeComputeConfigScalingGroups_.CalculateSize(_repeated_removeComputeConfigScalingGroups_codec);
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(UpdateWorkerDeploymentVersionComputeConfigRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.deploymentVersion_ != null) {
+        if (deploymentVersion_ == null) {
+          DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+        }
+        DeploymentVersion.MergeFrom(other.DeploymentVersion);
+      }
+      computeConfigScalingGroups_.MergeFrom(other.computeConfigScalingGroups_);
+      removeComputeConfigScalingGroups_.Add(other.removeComputeConfigScalingGroups_);
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 26: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 34: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 50: {
+            computeConfigScalingGroups_.AddEntriesFrom(input, _map_computeConfigScalingGroups_codec);
+            break;
+          }
+          case 58: {
+            removeComputeConfigScalingGroups_.AddEntriesFrom(input, _repeated_removeComputeConfigScalingGroups_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 26: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 34: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 50: {
+            computeConfigScalingGroups_.AddEntriesFrom(ref input, _map_computeConfigScalingGroups_codec);
+            break;
+          }
+          case 58: {
+            removeComputeConfigScalingGroups_.AddEntriesFrom(ref input, _repeated_removeComputeConfigScalingGroups_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class UpdateWorkerDeploymentVersionComputeConfigResponse : pb::IMessage<UpdateWorkerDeploymentVersionComputeConfigResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<UpdateWorkerDeploymentVersionComputeConfigResponse> _parser = new pb::MessageParser<UpdateWorkerDeploymentVersionComputeConfigResponse>(() => new UpdateWorkerDeploymentVersionComputeConfigResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<UpdateWorkerDeploymentVersionComputeConfigResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[165]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UpdateWorkerDeploymentVersionComputeConfigResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UpdateWorkerDeploymentVersionComputeConfigResponse(UpdateWorkerDeploymentVersionComputeConfigResponse other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public UpdateWorkerDeploymentVersionComputeConfigResponse Clone() {
+      return new UpdateWorkerDeploymentVersionComputeConfigResponse(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as UpdateWorkerDeploymentVersionComputeConfigResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(UpdateWorkerDeploymentVersionComputeConfigResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(UpdateWorkerDeploymentVersionComputeConfigResponse other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Used to validate the compute config without attaching it to a Worker Deployment Version.
+  /// </summary>
+  public sealed partial class ValidateWorkerDeploymentVersionComputeConfigRequest : pb::IMessage<ValidateWorkerDeploymentVersionComputeConfigRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ValidateWorkerDeploymentVersionComputeConfigRequest> _parser = new pb::MessageParser<ValidateWorkerDeploymentVersionComputeConfigRequest>(() => new ValidateWorkerDeploymentVersionComputeConfigRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ValidateWorkerDeploymentVersionComputeConfigRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[166]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValidateWorkerDeploymentVersionComputeConfigRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValidateWorkerDeploymentVersionComputeConfigRequest(ValidateWorkerDeploymentVersionComputeConfigRequest other) : this() {
+      namespace_ = other.namespace_;
+      deploymentVersion_ = other.deploymentVersion_ != null ? other.deploymentVersion_.Clone() : null;
+      computeConfigScalingGroups_ = other.computeConfigScalingGroups_.Clone();
+      removeComputeConfigScalingGroups_ = other.removeComputeConfigScalingGroups_.Clone();
+      identity_ = other.identity_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValidateWorkerDeploymentVersionComputeConfigRequest Clone() {
+      return new ValidateWorkerDeploymentVersionComputeConfigRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "deployment_version" field.</summary>
+    public const int DeploymentVersionFieldNumber = 2;
+    private global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion deploymentVersion_;
+    /// <summary>
+    /// Required.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion DeploymentVersion {
+      get { return deploymentVersion_; }
+      set {
+        deploymentVersion_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "compute_config_scaling_groups" field.</summary>
+    public const int ComputeConfigScalingGroupsFieldNumber = 6;
+    private static readonly pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate>.Codec _map_computeConfigScalingGroups_codec
+        = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate.Parser), 50);
+    private readonly pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate> computeConfigScalingGroups_ = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate>();
+    /// <summary>
+    /// Optional. Contains the compute config scaling groups to add or update for the Worker
+    /// Deployment.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate> ComputeConfigScalingGroups {
+      get { return computeConfigScalingGroups_; }
+    }
+
+    /// <summary>Field number for the "remove_compute_config_scaling_groups" field.</summary>
+    public const int RemoveComputeConfigScalingGroupsFieldNumber = 7;
+    private static readonly pb::FieldCodec<string> _repeated_removeComputeConfigScalingGroups_codec
+        = pb::FieldCodec.ForString(58);
+    private readonly pbc::RepeatedField<string> removeComputeConfigScalingGroups_ = new pbc::RepeatedField<string>();
+    /// <summary>
+    /// Optional. Contains the compute config scaling groups to remove from the Worker Deployment.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> RemoveComputeConfigScalingGroups {
+      get { return removeComputeConfigScalingGroups_; }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 3;
+    private string identity_ = "";
+    /// <summary>
+    /// Optional. The identity of the client who initiated this request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ValidateWorkerDeploymentVersionComputeConfigRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ValidateWorkerDeploymentVersionComputeConfigRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (!object.Equals(DeploymentVersion, other.DeploymentVersion)) return false;
+      if (!ComputeConfigScalingGroups.Equals(other.ComputeConfigScalingGroups)) return false;
+      if(!removeComputeConfigScalingGroups_.Equals(other.removeComputeConfigScalingGroups_)) return false;
+      if (Identity != other.Identity) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (deploymentVersion_ != null) hash ^= DeploymentVersion.GetHashCode();
+      hash ^= ComputeConfigScalingGroups.GetHashCode();
+      hash ^= removeComputeConfigScalingGroups_.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      computeConfigScalingGroups_.WriteTo(output, _map_computeConfigScalingGroups_codec);
+      removeComputeConfigScalingGroups_.WriteTo(output, _repeated_removeComputeConfigScalingGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeploymentVersion);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Identity);
+      }
+      computeConfigScalingGroups_.WriteTo(ref output, _map_computeConfigScalingGroups_codec);
+      removeComputeConfigScalingGroups_.WriteTo(ref output, _repeated_removeComputeConfigScalingGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (deploymentVersion_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeploymentVersion);
+      }
+      size += computeConfigScalingGroups_.CalculateSize(_map_computeConfigScalingGroups_codec);
+      size += removeComputeConfigScalingGroups_.CalculateSize(_repeated_removeComputeConfigScalingGroups_codec);
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ValidateWorkerDeploymentVersionComputeConfigRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.deploymentVersion_ != null) {
+        if (deploymentVersion_ == null) {
+          DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+        }
+        DeploymentVersion.MergeFrom(other.DeploymentVersion);
+      }
+      computeConfigScalingGroups_.MergeFrom(other.computeConfigScalingGroups_);
+      removeComputeConfigScalingGroups_.Add(other.removeComputeConfigScalingGroups_);
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 26: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 50: {
+            computeConfigScalingGroups_.AddEntriesFrom(input, _map_computeConfigScalingGroups_codec);
+            break;
+          }
+          case 58: {
+            removeComputeConfigScalingGroups_.AddEntriesFrom(input, _repeated_removeComputeConfigScalingGroups_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (deploymentVersion_ == null) {
+              DeploymentVersion = new global::Temporalio.Api.Deployment.V1.WorkerDeploymentVersion();
+            }
+            input.ReadMessage(DeploymentVersion);
+            break;
+          }
+          case 26: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 50: {
+            computeConfigScalingGroups_.AddEntriesFrom(ref input, _map_computeConfigScalingGroups_codec);
+            break;
+          }
+          case 58: {
+            removeComputeConfigScalingGroups_.AddEntriesFrom(ref input, _repeated_removeComputeConfigScalingGroups_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ValidateWorkerDeploymentVersionComputeConfigResponse : pb::IMessage<ValidateWorkerDeploymentVersionComputeConfigResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ValidateWorkerDeploymentVersionComputeConfigResponse> _parser = new pb::MessageParser<ValidateWorkerDeploymentVersionComputeConfigResponse>(() => new ValidateWorkerDeploymentVersionComputeConfigResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ValidateWorkerDeploymentVersionComputeConfigResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[167]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValidateWorkerDeploymentVersionComputeConfigResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValidateWorkerDeploymentVersionComputeConfigResponse(ValidateWorkerDeploymentVersionComputeConfigResponse other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ValidateWorkerDeploymentVersionComputeConfigResponse Clone() {
+      return new ValidateWorkerDeploymentVersionComputeConfigResponse(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ValidateWorkerDeploymentVersionComputeConfigResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ValidateWorkerDeploymentVersionComputeConfigResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ValidateWorkerDeploymentVersionComputeConfigResponse other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
   /// Used to update the user-defined metadata of a Worker Deployment Version.
   /// </summary>
   public sealed partial class UpdateWorkerDeploymentVersionMetadataRequest : pb::IMessage<UpdateWorkerDeploymentVersionMetadataRequest>
@@ -59179,7 +61558,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[160]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[168]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -59553,7 +61932,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[161]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[169]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -59757,7 +62136,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[162]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[170]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -60208,7 +62587,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[163]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[171]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -60451,7 +62830,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[164]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[172]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -60680,7 +63059,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[165]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[173]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -60881,7 +63260,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[166]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[174]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -61119,7 +63498,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[167]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[175]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -61404,7 +63783,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[168]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[176]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -61804,7 +64183,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[169]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[177]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -62045,7 +64424,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[170]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[178]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -62274,7 +64653,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[171]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[179]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -62475,7 +64854,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[172]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[180]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -62704,7 +65083,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[173]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[181]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -62856,7 +65235,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[174]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[182]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -63082,7 +65461,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[175]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[183]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -63297,7 +65676,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[176]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[184]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -63712,7 +66091,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[177]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[185]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -63904,7 +66283,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[178]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[186]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -64202,7 +66581,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[179]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[187]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -64354,7 +66733,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[180]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[188]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -64668,7 +67047,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[181]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[189]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -64920,7 +67299,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[182]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[190]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -65636,7 +68015,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[183]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[191]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -65834,7 +68213,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[184]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[192]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -66196,7 +68575,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[185]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[193]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -66397,7 +68776,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[186]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[194]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -66857,7 +69236,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[187]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[195]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -67092,7 +69471,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[188]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[196]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -67324,7 +69703,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[189]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[197]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -67525,7 +69904,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[190]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[198]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -67920,7 +70299,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[191]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[199]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -68072,7 +70451,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[192]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[200]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -68467,7 +70846,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[193]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[201]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -68619,7 +70998,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[194]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[202]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -69614,7 +71993,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[195]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[203]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -69846,7 +72225,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[196]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[204]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -70237,7 +72616,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[197]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[205]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -70617,7 +72996,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[198]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[206]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -70883,7 +73262,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[199]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[207]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -71121,7 +73500,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[200]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[208]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -71430,7 +73809,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[201]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[209]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -71634,6 +74013,3103 @@ namespace Temporalio.Api.WorkflowService.V1 {
 
   }
 
+  public sealed partial class StartNexusOperationExecutionRequest : pb::IMessage<StartNexusOperationExecutionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<StartNexusOperationExecutionRequest> _parser = new pb::MessageParser<StartNexusOperationExecutionRequest>(() => new StartNexusOperationExecutionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<StartNexusOperationExecutionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[210]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StartNexusOperationExecutionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StartNexusOperationExecutionRequest(StartNexusOperationExecutionRequest other) : this() {
+      namespace_ = other.namespace_;
+      identity_ = other.identity_;
+      requestId_ = other.requestId_;
+      operationId_ = other.operationId_;
+      endpoint_ = other.endpoint_;
+      service_ = other.service_;
+      operation_ = other.operation_;
+      scheduleToCloseTimeout_ = other.scheduleToCloseTimeout_ != null ? other.scheduleToCloseTimeout_.Clone() : null;
+      input_ = other.input_ != null ? other.input_.Clone() : null;
+      idReusePolicy_ = other.idReusePolicy_;
+      idConflictPolicy_ = other.idConflictPolicy_;
+      searchAttributes_ = other.searchAttributes_ != null ? other.searchAttributes_.Clone() : null;
+      nexusHeader_ = other.nexusHeader_.Clone();
+      userMetadata_ = other.userMetadata_ != null ? other.userMetadata_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StartNexusOperationExecutionRequest Clone() {
+      return new StartNexusOperationExecutionRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 2;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the client who initiated this request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 3;
+    private string requestId_ = "";
+    /// <summary>
+    /// A unique identifier for this caller-side start request. Typically UUIDv4.
+    /// StartOperation requests sent to the handler will use a server-generated request ID.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation_id" field.</summary>
+    public const int OperationIdFieldNumber = 4;
+    private string operationId_ = "";
+    /// <summary>
+    /// Identifier for this operation. This is a caller-side ID, distinct from any internal
+    /// operation identifiers generated by the handler. Must be unique among operations in the
+    /// same namespace, subject to the rules imposed by id_reuse_policy and id_conflict_policy.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationId {
+      get { return operationId_; }
+      set {
+        operationId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "endpoint" field.</summary>
+    public const int EndpointFieldNumber = 5;
+    private string endpoint_ = "";
+    /// <summary>
+    /// Endpoint name, resolved to a URL via the cluster's endpoint registry.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Endpoint {
+      get { return endpoint_; }
+      set {
+        endpoint_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "service" field.</summary>
+    public const int ServiceFieldNumber = 6;
+    private string service_ = "";
+    /// <summary>
+    /// Service name.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Service {
+      get { return service_; }
+      set {
+        service_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation" field.</summary>
+    public const int OperationFieldNumber = 7;
+    private string operation_ = "";
+    /// <summary>
+    /// Operation name.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Operation {
+      get { return operation_; }
+      set {
+        operation_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "schedule_to_close_timeout" field.</summary>
+    public const int ScheduleToCloseTimeoutFieldNumber = 8;
+    private global::Google.Protobuf.WellKnownTypes.Duration scheduleToCloseTimeout_;
+    /// <summary>
+    /// Schedule-to-close timeout for this operation.
+    /// This is the only timeout settable for a Nexus operation.
+    /// (-- api-linter: core::0140::prepositions=disabled
+    ///     aip.dev/not-precedent: "to" is used to indicate interval. --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration ScheduleToCloseTimeout {
+      get { return scheduleToCloseTimeout_; }
+      set {
+        scheduleToCloseTimeout_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "input" field.</summary>
+    public const int InputFieldNumber = 9;
+    private global::Temporalio.Api.Common.V1.Payload input_;
+    /// <summary>
+    /// Serialized input to the operation. Passed as the request payload.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.Payload Input {
+      get { return input_; }
+      set {
+        input_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "id_reuse_policy" field.</summary>
+    public const int IdReusePolicyFieldNumber = 10;
+    private global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy idReusePolicy_ = global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy.Unspecified;
+    /// <summary>
+    /// Defines whether to allow re-using the operation id from a previously *closed* operation.
+    /// The default policy is NEXUS_OPERATION_ID_REUSE_POLICY_ALLOW_DUPLICATE.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy IdReusePolicy {
+      get { return idReusePolicy_; }
+      set {
+        idReusePolicy_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "id_conflict_policy" field.</summary>
+    public const int IdConflictPolicyFieldNumber = 11;
+    private global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy idConflictPolicy_ = global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy.Unspecified;
+    /// <summary>
+    /// Defines how to resolve an operation id conflict with a *running* operation.
+    /// The default policy is NEXUS_OPERATION_ID_CONFLICT_POLICY_FAIL.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy IdConflictPolicy {
+      get { return idConflictPolicy_; }
+      set {
+        idConflictPolicy_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "search_attributes" field.</summary>
+    public const int SearchAttributesFieldNumber = 12;
+    private global::Temporalio.Api.Common.V1.SearchAttributes searchAttributes_;
+    /// <summary>
+    /// Search attributes for indexing.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.SearchAttributes SearchAttributes {
+      get { return searchAttributes_; }
+      set {
+        searchAttributes_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "nexus_header" field.</summary>
+    public const int NexusHeaderFieldNumber = 13;
+    private static readonly pbc::MapField<string, string>.Codec _map_nexusHeader_codec
+        = new pbc::MapField<string, string>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForString(18, ""), 106);
+    private readonly pbc::MapField<string, string> nexusHeader_ = new pbc::MapField<string, string>();
+    /// <summary>
+    /// Header to attach to the Nexus request.
+    /// Users are responsible for encrypting sensitive data in this header as it is stored in workflow history and
+    /// transmitted to external services as-is.
+    /// This is useful for propagating tracing information.
+    /// Note these headers are not the same as Temporal headers on internal activities and child workflows, these are
+    /// transmitted to Nexus operations that may be external and are not traditional payloads.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, string> NexusHeader {
+      get { return nexusHeader_; }
+    }
+
+    /// <summary>Field number for the "user_metadata" field.</summary>
+    public const int UserMetadataFieldNumber = 14;
+    private global::Temporalio.Api.Sdk.V1.UserMetadata userMetadata_;
+    /// <summary>
+    /// Metadata for use by user interfaces to display the fixed as-of-start summary and details of the operation.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Sdk.V1.UserMetadata UserMetadata {
+      get { return userMetadata_; }
+      set {
+        userMetadata_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as StartNexusOperationExecutionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(StartNexusOperationExecutionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (Identity != other.Identity) return false;
+      if (RequestId != other.RequestId) return false;
+      if (OperationId != other.OperationId) return false;
+      if (Endpoint != other.Endpoint) return false;
+      if (Service != other.Service) return false;
+      if (Operation != other.Operation) return false;
+      if (!object.Equals(ScheduleToCloseTimeout, other.ScheduleToCloseTimeout)) return false;
+      if (!object.Equals(Input, other.Input)) return false;
+      if (IdReusePolicy != other.IdReusePolicy) return false;
+      if (IdConflictPolicy != other.IdConflictPolicy) return false;
+      if (!object.Equals(SearchAttributes, other.SearchAttributes)) return false;
+      if (!NexusHeader.Equals(other.NexusHeader)) return false;
+      if (!object.Equals(UserMetadata, other.UserMetadata)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
+      if (Endpoint.Length != 0) hash ^= Endpoint.GetHashCode();
+      if (Service.Length != 0) hash ^= Service.GetHashCode();
+      if (Operation.Length != 0) hash ^= Operation.GetHashCode();
+      if (scheduleToCloseTimeout_ != null) hash ^= ScheduleToCloseTimeout.GetHashCode();
+      if (input_ != null) hash ^= Input.GetHashCode();
+      if (IdReusePolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy.Unspecified) hash ^= IdReusePolicy.GetHashCode();
+      if (IdConflictPolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy.Unspecified) hash ^= IdConflictPolicy.GetHashCode();
+      if (searchAttributes_ != null) hash ^= SearchAttributes.GetHashCode();
+      hash ^= NexusHeader.GetHashCode();
+      if (userMetadata_ != null) hash ^= UserMetadata.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(OperationId);
+      }
+      if (Endpoint.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Endpoint);
+      }
+      if (Service.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Service);
+      }
+      if (Operation.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Operation);
+      }
+      if (scheduleToCloseTimeout_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(ScheduleToCloseTimeout);
+      }
+      if (input_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(Input);
+      }
+      if (IdReusePolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy.Unspecified) {
+        output.WriteRawTag(80);
+        output.WriteEnum((int) IdReusePolicy);
+      }
+      if (IdConflictPolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy.Unspecified) {
+        output.WriteRawTag(88);
+        output.WriteEnum((int) IdConflictPolicy);
+      }
+      if (searchAttributes_ != null) {
+        output.WriteRawTag(98);
+        output.WriteMessage(SearchAttributes);
+      }
+      nexusHeader_.WriteTo(output, _map_nexusHeader_codec);
+      if (userMetadata_ != null) {
+        output.WriteRawTag(114);
+        output.WriteMessage(UserMetadata);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RequestId);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(OperationId);
+      }
+      if (Endpoint.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(Endpoint);
+      }
+      if (Service.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Service);
+      }
+      if (Operation.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(Operation);
+      }
+      if (scheduleToCloseTimeout_ != null) {
+        output.WriteRawTag(66);
+        output.WriteMessage(ScheduleToCloseTimeout);
+      }
+      if (input_ != null) {
+        output.WriteRawTag(74);
+        output.WriteMessage(Input);
+      }
+      if (IdReusePolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy.Unspecified) {
+        output.WriteRawTag(80);
+        output.WriteEnum((int) IdReusePolicy);
+      }
+      if (IdConflictPolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy.Unspecified) {
+        output.WriteRawTag(88);
+        output.WriteEnum((int) IdConflictPolicy);
+      }
+      if (searchAttributes_ != null) {
+        output.WriteRawTag(98);
+        output.WriteMessage(SearchAttributes);
+      }
+      nexusHeader_.WriteTo(ref output, _map_nexusHeader_codec);
+      if (userMetadata_ != null) {
+        output.WriteRawTag(114);
+        output.WriteMessage(UserMetadata);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (OperationId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      }
+      if (Endpoint.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Endpoint);
+      }
+      if (Service.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Service);
+      }
+      if (Operation.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Operation);
+      }
+      if (scheduleToCloseTimeout_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ScheduleToCloseTimeout);
+      }
+      if (input_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Input);
+      }
+      if (IdReusePolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) IdReusePolicy);
+      }
+      if (IdConflictPolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) IdConflictPolicy);
+      }
+      if (searchAttributes_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(SearchAttributes);
+      }
+      size += nexusHeader_.CalculateSize(_map_nexusHeader_codec);
+      if (userMetadata_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UserMetadata);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(StartNexusOperationExecutionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      if (other.OperationId.Length != 0) {
+        OperationId = other.OperationId;
+      }
+      if (other.Endpoint.Length != 0) {
+        Endpoint = other.Endpoint;
+      }
+      if (other.Service.Length != 0) {
+        Service = other.Service;
+      }
+      if (other.Operation.Length != 0) {
+        Operation = other.Operation;
+      }
+      if (other.scheduleToCloseTimeout_ != null) {
+        if (scheduleToCloseTimeout_ == null) {
+          ScheduleToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+        }
+        ScheduleToCloseTimeout.MergeFrom(other.ScheduleToCloseTimeout);
+      }
+      if (other.input_ != null) {
+        if (input_ == null) {
+          Input = new global::Temporalio.Api.Common.V1.Payload();
+        }
+        Input.MergeFrom(other.Input);
+      }
+      if (other.IdReusePolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy.Unspecified) {
+        IdReusePolicy = other.IdReusePolicy;
+      }
+      if (other.IdConflictPolicy != global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy.Unspecified) {
+        IdConflictPolicy = other.IdConflictPolicy;
+      }
+      if (other.searchAttributes_ != null) {
+        if (searchAttributes_ == null) {
+          SearchAttributes = new global::Temporalio.Api.Common.V1.SearchAttributes();
+        }
+        SearchAttributes.MergeFrom(other.SearchAttributes);
+      }
+      nexusHeader_.MergeFrom(other.nexusHeader_);
+      if (other.userMetadata_ != null) {
+        if (userMetadata_ == null) {
+          UserMetadata = new global::Temporalio.Api.Sdk.V1.UserMetadata();
+        }
+        UserMetadata.MergeFrom(other.UserMetadata);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 34: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 42: {
+            Endpoint = input.ReadString();
+            break;
+          }
+          case 50: {
+            Service = input.ReadString();
+            break;
+          }
+          case 58: {
+            Operation = input.ReadString();
+            break;
+          }
+          case 66: {
+            if (scheduleToCloseTimeout_ == null) {
+              ScheduleToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ScheduleToCloseTimeout);
+            break;
+          }
+          case 74: {
+            if (input_ == null) {
+              Input = new global::Temporalio.Api.Common.V1.Payload();
+            }
+            input.ReadMessage(Input);
+            break;
+          }
+          case 80: {
+            IdReusePolicy = (global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy) input.ReadEnum();
+            break;
+          }
+          case 88: {
+            IdConflictPolicy = (global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy) input.ReadEnum();
+            break;
+          }
+          case 98: {
+            if (searchAttributes_ == null) {
+              SearchAttributes = new global::Temporalio.Api.Common.V1.SearchAttributes();
+            }
+            input.ReadMessage(SearchAttributes);
+            break;
+          }
+          case 106: {
+            nexusHeader_.AddEntriesFrom(input, _map_nexusHeader_codec);
+            break;
+          }
+          case 114: {
+            if (userMetadata_ == null) {
+              UserMetadata = new global::Temporalio.Api.Sdk.V1.UserMetadata();
+            }
+            input.ReadMessage(UserMetadata);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 26: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 34: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 42: {
+            Endpoint = input.ReadString();
+            break;
+          }
+          case 50: {
+            Service = input.ReadString();
+            break;
+          }
+          case 58: {
+            Operation = input.ReadString();
+            break;
+          }
+          case 66: {
+            if (scheduleToCloseTimeout_ == null) {
+              ScheduleToCloseTimeout = new global::Google.Protobuf.WellKnownTypes.Duration();
+            }
+            input.ReadMessage(ScheduleToCloseTimeout);
+            break;
+          }
+          case 74: {
+            if (input_ == null) {
+              Input = new global::Temporalio.Api.Common.V1.Payload();
+            }
+            input.ReadMessage(Input);
+            break;
+          }
+          case 80: {
+            IdReusePolicy = (global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy) input.ReadEnum();
+            break;
+          }
+          case 88: {
+            IdConflictPolicy = (global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy) input.ReadEnum();
+            break;
+          }
+          case 98: {
+            if (searchAttributes_ == null) {
+              SearchAttributes = new global::Temporalio.Api.Common.V1.SearchAttributes();
+            }
+            input.ReadMessage(SearchAttributes);
+            break;
+          }
+          case 106: {
+            nexusHeader_.AddEntriesFrom(ref input, _map_nexusHeader_codec);
+            break;
+          }
+          case 114: {
+            if (userMetadata_ == null) {
+              UserMetadata = new global::Temporalio.Api.Sdk.V1.UserMetadata();
+            }
+            input.ReadMessage(UserMetadata);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class StartNexusOperationExecutionResponse : pb::IMessage<StartNexusOperationExecutionResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<StartNexusOperationExecutionResponse> _parser = new pb::MessageParser<StartNexusOperationExecutionResponse>(() => new StartNexusOperationExecutionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<StartNexusOperationExecutionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[211]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StartNexusOperationExecutionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StartNexusOperationExecutionResponse(StartNexusOperationExecutionResponse other) : this() {
+      runId_ = other.runId_;
+      started_ = other.started_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public StartNexusOperationExecutionResponse Clone() {
+      return new StartNexusOperationExecutionResponse(this);
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 1;
+    private string runId_ = "";
+    /// <summary>
+    /// The run ID of the operation that was started - or used (via NEXUS_OPERATION_ID_CONFLICT_POLICY_USE_EXISTING).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "started" field.</summary>
+    public const int StartedFieldNumber = 2;
+    private bool started_;
+    /// <summary>
+    /// If true, a new operation was started.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Started {
+      get { return started_; }
+      set {
+        started_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as StartNexusOperationExecutionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(StartNexusOperationExecutionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RunId != other.RunId) return false;
+      if (Started != other.Started) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (Started != false) hash ^= Started.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RunId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RunId);
+      }
+      if (Started != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(Started);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RunId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RunId);
+      }
+      if (Started != false) {
+        output.WriteRawTag(16);
+        output.WriteBool(Started);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (Started != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(StartNexusOperationExecutionResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      if (other.Started != false) {
+        Started = other.Started;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 16: {
+            Started = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 16: {
+            Started = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class DescribeNexusOperationExecutionRequest : pb::IMessage<DescribeNexusOperationExecutionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DescribeNexusOperationExecutionRequest> _parser = new pb::MessageParser<DescribeNexusOperationExecutionRequest>(() => new DescribeNexusOperationExecutionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DescribeNexusOperationExecutionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[212]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DescribeNexusOperationExecutionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DescribeNexusOperationExecutionRequest(DescribeNexusOperationExecutionRequest other) : this() {
+      namespace_ = other.namespace_;
+      operationId_ = other.operationId_;
+      runId_ = other.runId_;
+      includeInput_ = other.includeInput_;
+      includeOutcome_ = other.includeOutcome_;
+      longPollToken_ = other.longPollToken_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DescribeNexusOperationExecutionRequest Clone() {
+      return new DescribeNexusOperationExecutionRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation_id" field.</summary>
+    public const int OperationIdFieldNumber = 2;
+    private string operationId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationId {
+      get { return operationId_; }
+      set {
+        operationId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 3;
+    private string runId_ = "";
+    /// <summary>
+    /// Operation run ID. If empty the request targets the latest run.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "include_input" field.</summary>
+    public const int IncludeInputFieldNumber = 4;
+    private bool includeInput_;
+    /// <summary>
+    /// Include the input field in the response.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IncludeInput {
+      get { return includeInput_; }
+      set {
+        includeInput_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "include_outcome" field.</summary>
+    public const int IncludeOutcomeFieldNumber = 5;
+    private bool includeOutcome_;
+    /// <summary>
+    /// Include the outcome (result/failure) in the response if the operation has completed.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool IncludeOutcome {
+      get { return includeOutcome_; }
+      set {
+        includeOutcome_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "long_poll_token" field.</summary>
+    public const int LongPollTokenFieldNumber = 6;
+    private pb::ByteString longPollToken_ = pb::ByteString.Empty;
+    /// <summary>
+    /// Token from a previous DescribeNexusOperationExecutionResponse. If present, long-poll until operation
+    /// state changes from the state encoded in this token. If absent, return current state immediately.
+    /// If present, run_id must also be present.
+    /// Note that operation state may change multiple times between requests, therefore it is not
+    /// guaranteed that a client making a sequence of long-poll requests will see a complete
+    /// sequence of state changes.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString LongPollToken {
+      get { return longPollToken_; }
+      set {
+        longPollToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DescribeNexusOperationExecutionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DescribeNexusOperationExecutionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (OperationId != other.OperationId) return false;
+      if (RunId != other.RunId) return false;
+      if (IncludeInput != other.IncludeInput) return false;
+      if (IncludeOutcome != other.IncludeOutcome) return false;
+      if (LongPollToken != other.LongPollToken) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (IncludeInput != false) hash ^= IncludeInput.GetHashCode();
+      if (IncludeOutcome != false) hash ^= IncludeOutcome.GetHashCode();
+      if (LongPollToken.Length != 0) hash ^= LongPollToken.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (IncludeInput != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(IncludeInput);
+      }
+      if (IncludeOutcome != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(IncludeOutcome);
+      }
+      if (LongPollToken.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteBytes(LongPollToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (IncludeInput != false) {
+        output.WriteRawTag(32);
+        output.WriteBool(IncludeInput);
+      }
+      if (IncludeOutcome != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(IncludeOutcome);
+      }
+      if (LongPollToken.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteBytes(LongPollToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      }
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (IncludeInput != false) {
+        size += 1 + 1;
+      }
+      if (IncludeOutcome != false) {
+        size += 1 + 1;
+      }
+      if (LongPollToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(LongPollToken);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DescribeNexusOperationExecutionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.OperationId.Length != 0) {
+        OperationId = other.OperationId;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      if (other.IncludeInput != false) {
+        IncludeInput = other.IncludeInput;
+      }
+      if (other.IncludeOutcome != false) {
+        IncludeOutcome = other.IncludeOutcome;
+      }
+      if (other.LongPollToken.Length != 0) {
+        LongPollToken = other.LongPollToken;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 32: {
+            IncludeInput = input.ReadBool();
+            break;
+          }
+          case 40: {
+            IncludeOutcome = input.ReadBool();
+            break;
+          }
+          case 50: {
+            LongPollToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 32: {
+            IncludeInput = input.ReadBool();
+            break;
+          }
+          case 40: {
+            IncludeOutcome = input.ReadBool();
+            break;
+          }
+          case 50: {
+            LongPollToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class DescribeNexusOperationExecutionResponse : pb::IMessage<DescribeNexusOperationExecutionResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DescribeNexusOperationExecutionResponse> _parser = new pb::MessageParser<DescribeNexusOperationExecutionResponse>(() => new DescribeNexusOperationExecutionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DescribeNexusOperationExecutionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[213]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DescribeNexusOperationExecutionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DescribeNexusOperationExecutionResponse(DescribeNexusOperationExecutionResponse other) : this() {
+      runId_ = other.runId_;
+      info_ = other.info_ != null ? other.info_.Clone() : null;
+      input_ = other.input_ != null ? other.input_.Clone() : null;
+      longPollToken_ = other.longPollToken_;
+      switch (other.OutcomeCase) {
+        case OutcomeOneofCase.Result:
+          Result = other.Result.Clone();
+          break;
+        case OutcomeOneofCase.Failure:
+          Failure = other.Failure.Clone();
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DescribeNexusOperationExecutionResponse Clone() {
+      return new DescribeNexusOperationExecutionResponse(this);
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 1;
+    private string runId_ = "";
+    /// <summary>
+    /// The run ID of the operation, useful when run_id was not specified in the request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "info" field.</summary>
+    public const int InfoFieldNumber = 2;
+    private global::Temporalio.Api.Nexus.V1.NexusOperationExecutionInfo info_;
+    /// <summary>
+    /// Information about the operation.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Nexus.V1.NexusOperationExecutionInfo Info {
+      get { return info_; }
+      set {
+        info_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "input" field.</summary>
+    public const int InputFieldNumber = 3;
+    private global::Temporalio.Api.Common.V1.Payload input_;
+    /// <summary>
+    /// Serialized operation input, passed as the request payload.
+    /// Only set if include_input was true in the request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.Payload Input {
+      get { return input_; }
+      set {
+        input_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "result" field.</summary>
+    public const int ResultFieldNumber = 4;
+    /// <summary>
+    /// The result if the operation completed successfully.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.Payload Result {
+      get { return outcomeCase_ == OutcomeOneofCase.Result ? (global::Temporalio.Api.Common.V1.Payload) outcome_ : null; }
+      set {
+        outcome_ = value;
+        outcomeCase_ = value == null ? OutcomeOneofCase.None : OutcomeOneofCase.Result;
+      }
+    }
+
+    /// <summary>Field number for the "failure" field.</summary>
+    public const int FailureFieldNumber = 5;
+    /// <summary>
+    /// The failure if the operation completed unsuccessfully.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Failure.V1.Failure Failure {
+      get { return outcomeCase_ == OutcomeOneofCase.Failure ? (global::Temporalio.Api.Failure.V1.Failure) outcome_ : null; }
+      set {
+        outcome_ = value;
+        outcomeCase_ = value == null ? OutcomeOneofCase.None : OutcomeOneofCase.Failure;
+      }
+    }
+
+    /// <summary>Field number for the "long_poll_token" field.</summary>
+    public const int LongPollTokenFieldNumber = 6;
+    private pb::ByteString longPollToken_ = pb::ByteString.Empty;
+    /// <summary>
+    /// Token for follow-on long-poll requests. Absent only if the operation is complete.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString LongPollToken {
+      get { return longPollToken_; }
+      set {
+        longPollToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    private object outcome_;
+    /// <summary>Enum of possible cases for the "outcome" oneof.</summary>
+    public enum OutcomeOneofCase {
+      None = 0,
+      Result = 4,
+      Failure = 5,
+    }
+    private OutcomeOneofCase outcomeCase_ = OutcomeOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OutcomeOneofCase OutcomeCase {
+      get { return outcomeCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearOutcome() {
+      outcomeCase_ = OutcomeOneofCase.None;
+      outcome_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DescribeNexusOperationExecutionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DescribeNexusOperationExecutionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RunId != other.RunId) return false;
+      if (!object.Equals(Info, other.Info)) return false;
+      if (!object.Equals(Input, other.Input)) return false;
+      if (!object.Equals(Result, other.Result)) return false;
+      if (!object.Equals(Failure, other.Failure)) return false;
+      if (LongPollToken != other.LongPollToken) return false;
+      if (OutcomeCase != other.OutcomeCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (info_ != null) hash ^= Info.GetHashCode();
+      if (input_ != null) hash ^= Input.GetHashCode();
+      if (outcomeCase_ == OutcomeOneofCase.Result) hash ^= Result.GetHashCode();
+      if (outcomeCase_ == OutcomeOneofCase.Failure) hash ^= Failure.GetHashCode();
+      if (LongPollToken.Length != 0) hash ^= LongPollToken.GetHashCode();
+      hash ^= (int) outcomeCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RunId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RunId);
+      }
+      if (info_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Info);
+      }
+      if (input_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Input);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Result) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Result);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Failure) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Failure);
+      }
+      if (LongPollToken.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteBytes(LongPollToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RunId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RunId);
+      }
+      if (info_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(Info);
+      }
+      if (input_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Input);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Result) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Result);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Failure) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Failure);
+      }
+      if (LongPollToken.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteBytes(LongPollToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (info_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Info);
+      }
+      if (input_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Input);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Result) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Result);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Failure) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failure);
+      }
+      if (LongPollToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(LongPollToken);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DescribeNexusOperationExecutionResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      if (other.info_ != null) {
+        if (info_ == null) {
+          Info = new global::Temporalio.Api.Nexus.V1.NexusOperationExecutionInfo();
+        }
+        Info.MergeFrom(other.Info);
+      }
+      if (other.input_ != null) {
+        if (input_ == null) {
+          Input = new global::Temporalio.Api.Common.V1.Payload();
+        }
+        Input.MergeFrom(other.Input);
+      }
+      if (other.LongPollToken.Length != 0) {
+        LongPollToken = other.LongPollToken;
+      }
+      switch (other.OutcomeCase) {
+        case OutcomeOneofCase.Result:
+          if (Result == null) {
+            Result = new global::Temporalio.Api.Common.V1.Payload();
+          }
+          Result.MergeFrom(other.Result);
+          break;
+        case OutcomeOneofCase.Failure:
+          if (Failure == null) {
+            Failure = new global::Temporalio.Api.Failure.V1.Failure();
+          }
+          Failure.MergeFrom(other.Failure);
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (info_ == null) {
+              Info = new global::Temporalio.Api.Nexus.V1.NexusOperationExecutionInfo();
+            }
+            input.ReadMessage(Info);
+            break;
+          }
+          case 26: {
+            if (input_ == null) {
+              Input = new global::Temporalio.Api.Common.V1.Payload();
+            }
+            input.ReadMessage(Input);
+            break;
+          }
+          case 34: {
+            global::Temporalio.Api.Common.V1.Payload subBuilder = new global::Temporalio.Api.Common.V1.Payload();
+            if (outcomeCase_ == OutcomeOneofCase.Result) {
+              subBuilder.MergeFrom(Result);
+            }
+            input.ReadMessage(subBuilder);
+            Result = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Temporalio.Api.Failure.V1.Failure subBuilder = new global::Temporalio.Api.Failure.V1.Failure();
+            if (outcomeCase_ == OutcomeOneofCase.Failure) {
+              subBuilder.MergeFrom(Failure);
+            }
+            input.ReadMessage(subBuilder);
+            Failure = subBuilder;
+            break;
+          }
+          case 50: {
+            LongPollToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 18: {
+            if (info_ == null) {
+              Info = new global::Temporalio.Api.Nexus.V1.NexusOperationExecutionInfo();
+            }
+            input.ReadMessage(Info);
+            break;
+          }
+          case 26: {
+            if (input_ == null) {
+              Input = new global::Temporalio.Api.Common.V1.Payload();
+            }
+            input.ReadMessage(Input);
+            break;
+          }
+          case 34: {
+            global::Temporalio.Api.Common.V1.Payload subBuilder = new global::Temporalio.Api.Common.V1.Payload();
+            if (outcomeCase_ == OutcomeOneofCase.Result) {
+              subBuilder.MergeFrom(Result);
+            }
+            input.ReadMessage(subBuilder);
+            Result = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Temporalio.Api.Failure.V1.Failure subBuilder = new global::Temporalio.Api.Failure.V1.Failure();
+            if (outcomeCase_ == OutcomeOneofCase.Failure) {
+              subBuilder.MergeFrom(Failure);
+            }
+            input.ReadMessage(subBuilder);
+            Failure = subBuilder;
+            break;
+          }
+          case 50: {
+            LongPollToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class PollNexusOperationExecutionRequest : pb::IMessage<PollNexusOperationExecutionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PollNexusOperationExecutionRequest> _parser = new pb::MessageParser<PollNexusOperationExecutionRequest>(() => new PollNexusOperationExecutionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PollNexusOperationExecutionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[214]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollNexusOperationExecutionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollNexusOperationExecutionRequest(PollNexusOperationExecutionRequest other) : this() {
+      namespace_ = other.namespace_;
+      operationId_ = other.operationId_;
+      runId_ = other.runId_;
+      waitStage_ = other.waitStage_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollNexusOperationExecutionRequest Clone() {
+      return new PollNexusOperationExecutionRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation_id" field.</summary>
+    public const int OperationIdFieldNumber = 2;
+    private string operationId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationId {
+      get { return operationId_; }
+      set {
+        operationId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 3;
+    private string runId_ = "";
+    /// <summary>
+    /// Operation run ID. If empty the request targets the latest run.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "wait_stage" field.</summary>
+    public const int WaitStageFieldNumber = 4;
+    private global::Temporalio.Api.Enums.V1.NexusOperationWaitStage waitStage_ = global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified;
+    /// <summary>
+    /// Stage to wait for. The operation may be in a more advanced stage when the poll is unblocked.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.NexusOperationWaitStage WaitStage {
+      get { return waitStage_; }
+      set {
+        waitStage_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PollNexusOperationExecutionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PollNexusOperationExecutionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (OperationId != other.OperationId) return false;
+      if (RunId != other.RunId) return false;
+      if (WaitStage != other.WaitStage) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) hash ^= WaitStage.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) WaitStage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        output.WriteRawTag(32);
+        output.WriteEnum((int) WaitStage);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      }
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) WaitStage);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PollNexusOperationExecutionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.OperationId.Length != 0) {
+        OperationId = other.OperationId;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      if (other.WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        WaitStage = other.WaitStage;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 32: {
+            WaitStage = (global::Temporalio.Api.Enums.V1.NexusOperationWaitStage) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 32: {
+            WaitStage = (global::Temporalio.Api.Enums.V1.NexusOperationWaitStage) input.ReadEnum();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class PollNexusOperationExecutionResponse : pb::IMessage<PollNexusOperationExecutionResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PollNexusOperationExecutionResponse> _parser = new pb::MessageParser<PollNexusOperationExecutionResponse>(() => new PollNexusOperationExecutionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<PollNexusOperationExecutionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[215]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollNexusOperationExecutionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollNexusOperationExecutionResponse(PollNexusOperationExecutionResponse other) : this() {
+      runId_ = other.runId_;
+      waitStage_ = other.waitStage_;
+      operationToken_ = other.operationToken_;
+      switch (other.OutcomeCase) {
+        case OutcomeOneofCase.Result:
+          Result = other.Result.Clone();
+          break;
+        case OutcomeOneofCase.Failure:
+          Failure = other.Failure.Clone();
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public PollNexusOperationExecutionResponse Clone() {
+      return new PollNexusOperationExecutionResponse(this);
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 1;
+    private string runId_ = "";
+    /// <summary>
+    /// The run ID of the operation, useful when run_id was not specified in the request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "wait_stage" field.</summary>
+    public const int WaitStageFieldNumber = 2;
+    private global::Temporalio.Api.Enums.V1.NexusOperationWaitStage waitStage_ = global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified;
+    /// <summary>
+    /// The current stage of the operation. May be more advanced than the stage requested in the poll.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.NexusOperationWaitStage WaitStage {
+      get { return waitStage_; }
+      set {
+        waitStage_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "operation_token" field.</summary>
+    public const int OperationTokenFieldNumber = 3;
+    private string operationToken_ = "";
+    /// <summary>
+    /// Operation token. Only populated for asynchronous operations after a successful StartOperation call.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationToken {
+      get { return operationToken_; }
+      set {
+        operationToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "result" field.</summary>
+    public const int ResultFieldNumber = 4;
+    /// <summary>
+    /// The result if the operation completed successfully.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Common.V1.Payload Result {
+      get { return outcomeCase_ == OutcomeOneofCase.Result ? (global::Temporalio.Api.Common.V1.Payload) outcome_ : null; }
+      set {
+        outcome_ = value;
+        outcomeCase_ = value == null ? OutcomeOneofCase.None : OutcomeOneofCase.Result;
+      }
+    }
+
+    /// <summary>Field number for the "failure" field.</summary>
+    public const int FailureFieldNumber = 5;
+    /// <summary>
+    /// The failure if the operation completed unsuccessfully.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Failure.V1.Failure Failure {
+      get { return outcomeCase_ == OutcomeOneofCase.Failure ? (global::Temporalio.Api.Failure.V1.Failure) outcome_ : null; }
+      set {
+        outcome_ = value;
+        outcomeCase_ = value == null ? OutcomeOneofCase.None : OutcomeOneofCase.Failure;
+      }
+    }
+
+    private object outcome_;
+    /// <summary>Enum of possible cases for the "outcome" oneof.</summary>
+    public enum OutcomeOneofCase {
+      None = 0,
+      Result = 4,
+      Failure = 5,
+    }
+    private OutcomeOneofCase outcomeCase_ = OutcomeOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public OutcomeOneofCase OutcomeCase {
+      get { return outcomeCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearOutcome() {
+      outcomeCase_ = OutcomeOneofCase.None;
+      outcome_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as PollNexusOperationExecutionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(PollNexusOperationExecutionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RunId != other.RunId) return false;
+      if (WaitStage != other.WaitStage) return false;
+      if (OperationToken != other.OperationToken) return false;
+      if (!object.Equals(Result, other.Result)) return false;
+      if (!object.Equals(Failure, other.Failure)) return false;
+      if (OutcomeCase != other.OutcomeCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) hash ^= WaitStage.GetHashCode();
+      if (OperationToken.Length != 0) hash ^= OperationToken.GetHashCode();
+      if (outcomeCase_ == OutcomeOneofCase.Result) hash ^= Result.GetHashCode();
+      if (outcomeCase_ == OutcomeOneofCase.Failure) hash ^= Failure.GetHashCode();
+      hash ^= (int) outcomeCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RunId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RunId);
+      }
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) WaitStage);
+      }
+      if (OperationToken.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(OperationToken);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Result) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Result);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Failure) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Failure);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RunId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(RunId);
+      }
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        output.WriteRawTag(16);
+        output.WriteEnum((int) WaitStage);
+      }
+      if (OperationToken.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(OperationToken);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Result) {
+        output.WriteRawTag(34);
+        output.WriteMessage(Result);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Failure) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Failure);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) WaitStage);
+      }
+      if (OperationToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationToken);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Result) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Result);
+      }
+      if (outcomeCase_ == OutcomeOneofCase.Failure) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Failure);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(PollNexusOperationExecutionResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      if (other.WaitStage != global::Temporalio.Api.Enums.V1.NexusOperationWaitStage.Unspecified) {
+        WaitStage = other.WaitStage;
+      }
+      if (other.OperationToken.Length != 0) {
+        OperationToken = other.OperationToken;
+      }
+      switch (other.OutcomeCase) {
+        case OutcomeOneofCase.Result:
+          if (Result == null) {
+            Result = new global::Temporalio.Api.Common.V1.Payload();
+          }
+          Result.MergeFrom(other.Result);
+          break;
+        case OutcomeOneofCase.Failure:
+          if (Failure == null) {
+            Failure = new global::Temporalio.Api.Failure.V1.Failure();
+          }
+          Failure.MergeFrom(other.Failure);
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 16: {
+            WaitStage = (global::Temporalio.Api.Enums.V1.NexusOperationWaitStage) input.ReadEnum();
+            break;
+          }
+          case 26: {
+            OperationToken = input.ReadString();
+            break;
+          }
+          case 34: {
+            global::Temporalio.Api.Common.V1.Payload subBuilder = new global::Temporalio.Api.Common.V1.Payload();
+            if (outcomeCase_ == OutcomeOneofCase.Result) {
+              subBuilder.MergeFrom(Result);
+            }
+            input.ReadMessage(subBuilder);
+            Result = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Temporalio.Api.Failure.V1.Failure subBuilder = new global::Temporalio.Api.Failure.V1.Failure();
+            if (outcomeCase_ == OutcomeOneofCase.Failure) {
+              subBuilder.MergeFrom(Failure);
+            }
+            input.ReadMessage(subBuilder);
+            Failure = subBuilder;
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 16: {
+            WaitStage = (global::Temporalio.Api.Enums.V1.NexusOperationWaitStage) input.ReadEnum();
+            break;
+          }
+          case 26: {
+            OperationToken = input.ReadString();
+            break;
+          }
+          case 34: {
+            global::Temporalio.Api.Common.V1.Payload subBuilder = new global::Temporalio.Api.Common.V1.Payload();
+            if (outcomeCase_ == OutcomeOneofCase.Result) {
+              subBuilder.MergeFrom(Result);
+            }
+            input.ReadMessage(subBuilder);
+            Result = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Temporalio.Api.Failure.V1.Failure subBuilder = new global::Temporalio.Api.Failure.V1.Failure();
+            if (outcomeCase_ == OutcomeOneofCase.Failure) {
+              subBuilder.MergeFrom(Failure);
+            }
+            input.ReadMessage(subBuilder);
+            Failure = subBuilder;
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ListNexusOperationExecutionsRequest : pb::IMessage<ListNexusOperationExecutionsRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ListNexusOperationExecutionsRequest> _parser = new pb::MessageParser<ListNexusOperationExecutionsRequest>(() => new ListNexusOperationExecutionsRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ListNexusOperationExecutionsRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[216]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ListNexusOperationExecutionsRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ListNexusOperationExecutionsRequest(ListNexusOperationExecutionsRequest other) : this() {
+      namespace_ = other.namespace_;
+      pageSize_ = other.pageSize_;
+      nextPageToken_ = other.nextPageToken_;
+      query_ = other.query_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ListNexusOperationExecutionsRequest Clone() {
+      return new ListNexusOperationExecutionsRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "page_size" field.</summary>
+    public const int PageSizeFieldNumber = 2;
+    private int pageSize_;
+    /// <summary>
+    /// Max number of operations to return per page.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int PageSize {
+      get { return pageSize_; }
+      set {
+        pageSize_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "next_page_token" field.</summary>
+    public const int NextPageTokenFieldNumber = 3;
+    private pb::ByteString nextPageToken_ = pb::ByteString.Empty;
+    /// <summary>
+    /// Token returned in ListNexusOperationExecutionsResponse.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString NextPageToken {
+      get { return nextPageToken_; }
+      set {
+        nextPageToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "query" field.</summary>
+    public const int QueryFieldNumber = 4;
+    private string query_ = "";
+    /// <summary>
+    /// Visibility query, see https://docs.temporal.io/list-filter for the syntax.
+    /// Search attributes that are avaialble for Nexus operations include:
+    /// - OperationId
+    /// - RunId
+    /// - Endpoint
+    /// - Service
+    /// - Operation
+    /// - RequestId
+    /// - StartTime
+    /// - ExecutionTime
+    /// - CloseTime
+    /// - ExecutionStatus
+    /// - ExecutionDuration
+    /// - StateTransitionCount
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Query {
+      get { return query_; }
+      set {
+        query_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ListNexusOperationExecutionsRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ListNexusOperationExecutionsRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (PageSize != other.PageSize) return false;
+      if (NextPageToken != other.NextPageToken) return false;
+      if (Query != other.Query) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (PageSize != 0) hash ^= PageSize.GetHashCode();
+      if (NextPageToken.Length != 0) hash ^= NextPageToken.GetHashCode();
+      if (Query.Length != 0) hash ^= Query.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (PageSize != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PageSize);
+      }
+      if (NextPageToken.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(NextPageToken);
+      }
+      if (Query.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Query);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (PageSize != 0) {
+        output.WriteRawTag(16);
+        output.WriteInt32(PageSize);
+      }
+      if (NextPageToken.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(NextPageToken);
+      }
+      if (Query.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Query);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (PageSize != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(PageSize);
+      }
+      if (NextPageToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(NextPageToken);
+      }
+      if (Query.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Query);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ListNexusOperationExecutionsRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.PageSize != 0) {
+        PageSize = other.PageSize;
+      }
+      if (other.NextPageToken.Length != 0) {
+        NextPageToken = other.NextPageToken;
+      }
+      if (other.Query.Length != 0) {
+        Query = other.Query;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 16: {
+            PageSize = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            NextPageToken = input.ReadBytes();
+            break;
+          }
+          case 34: {
+            Query = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 16: {
+            PageSize = input.ReadInt32();
+            break;
+          }
+          case 26: {
+            NextPageToken = input.ReadBytes();
+            break;
+          }
+          case 34: {
+            Query = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ListNexusOperationExecutionsResponse : pb::IMessage<ListNexusOperationExecutionsResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ListNexusOperationExecutionsResponse> _parser = new pb::MessageParser<ListNexusOperationExecutionsResponse>(() => new ListNexusOperationExecutionsResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ListNexusOperationExecutionsResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[217]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ListNexusOperationExecutionsResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ListNexusOperationExecutionsResponse(ListNexusOperationExecutionsResponse other) : this() {
+      operations_ = other.operations_.Clone();
+      nextPageToken_ = other.nextPageToken_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ListNexusOperationExecutionsResponse Clone() {
+      return new ListNexusOperationExecutionsResponse(this);
+    }
+
+    /// <summary>Field number for the "operations" field.</summary>
+    public const int OperationsFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Nexus.V1.NexusOperationExecutionListInfo> _repeated_operations_codec
+        = pb::FieldCodec.ForMessage(10, global::Temporalio.Api.Nexus.V1.NexusOperationExecutionListInfo.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Nexus.V1.NexusOperationExecutionListInfo> operations_ = new pbc::RepeatedField<global::Temporalio.Api.Nexus.V1.NexusOperationExecutionListInfo>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Nexus.V1.NexusOperationExecutionListInfo> Operations {
+      get { return operations_; }
+    }
+
+    /// <summary>Field number for the "next_page_token" field.</summary>
+    public const int NextPageTokenFieldNumber = 2;
+    private pb::ByteString nextPageToken_ = pb::ByteString.Empty;
+    /// <summary>
+    /// Token to use to fetch the next page. If empty, there is no next page.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pb::ByteString NextPageToken {
+      get { return nextPageToken_; }
+      set {
+        nextPageToken_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ListNexusOperationExecutionsResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ListNexusOperationExecutionsResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!operations_.Equals(other.operations_)) return false;
+      if (NextPageToken != other.NextPageToken) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= operations_.GetHashCode();
+      if (NextPageToken.Length != 0) hash ^= NextPageToken.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      operations_.WriteTo(output, _repeated_operations_codec);
+      if (NextPageToken.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(NextPageToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      operations_.WriteTo(ref output, _repeated_operations_codec);
+      if (NextPageToken.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(NextPageToken);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += operations_.CalculateSize(_repeated_operations_codec);
+      if (NextPageToken.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(NextPageToken);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ListNexusOperationExecutionsResponse other) {
+      if (other == null) {
+        return;
+      }
+      operations_.Add(other.operations_);
+      if (other.NextPageToken.Length != 0) {
+        NextPageToken = other.NextPageToken;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            operations_.AddEntriesFrom(input, _repeated_operations_codec);
+            break;
+          }
+          case 18: {
+            NextPageToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            operations_.AddEntriesFrom(ref input, _repeated_operations_codec);
+            break;
+          }
+          case 18: {
+            NextPageToken = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   public sealed partial class CountActivityExecutionsRequest : pb::IMessage<CountActivityExecutionsRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -71648,7 +77124,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[202]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[218]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -71877,7 +77353,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[203]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[219]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -72312,6 +77788,685 @@ namespace Temporalio.Api.WorkflowService.V1 {
 
   }
 
+  public sealed partial class CountNexusOperationExecutionsRequest : pb::IMessage<CountNexusOperationExecutionsRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CountNexusOperationExecutionsRequest> _parser = new pb::MessageParser<CountNexusOperationExecutionsRequest>(() => new CountNexusOperationExecutionsRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CountNexusOperationExecutionsRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[220]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CountNexusOperationExecutionsRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CountNexusOperationExecutionsRequest(CountNexusOperationExecutionsRequest other) : this() {
+      namespace_ = other.namespace_;
+      query_ = other.query_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CountNexusOperationExecutionsRequest Clone() {
+      return new CountNexusOperationExecutionsRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "query" field.</summary>
+    public const int QueryFieldNumber = 2;
+    private string query_ = "";
+    /// <summary>
+    /// Visibility query, see https://docs.temporal.io/list-filter for the syntax.
+    /// See also ListNexusOperationExecutionsRequest for search attributes available for Nexus operations.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Query {
+      get { return query_; }
+      set {
+        query_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CountNexusOperationExecutionsRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CountNexusOperationExecutionsRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (Query != other.Query) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (Query.Length != 0) hash ^= Query.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (Query.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Query);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (Query.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Query);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (Query.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Query);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CountNexusOperationExecutionsRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.Query.Length != 0) {
+        Query = other.Query;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            Query = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            Query = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class CountNexusOperationExecutionsResponse : pb::IMessage<CountNexusOperationExecutionsResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<CountNexusOperationExecutionsResponse> _parser = new pb::MessageParser<CountNexusOperationExecutionsResponse>(() => new CountNexusOperationExecutionsResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<CountNexusOperationExecutionsResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[221]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CountNexusOperationExecutionsResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CountNexusOperationExecutionsResponse(CountNexusOperationExecutionsResponse other) : this() {
+      count_ = other.count_;
+      groups_ = other.groups_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public CountNexusOperationExecutionsResponse Clone() {
+      return new CountNexusOperationExecutionsResponse(this);
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 1;
+    private long count_;
+    /// <summary>
+    /// If `query` is not grouping by any field, the count is an approximate number
+    /// of operations that match the query.
+    /// If `query` is grouping by a field, the count is simply the sum of the counts
+    /// of the groups returned in the response. This number can be smaller than the
+    /// total number of operations matching the query.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "groups" field.</summary>
+    public const int GroupsFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup> _repeated_groups_codec
+        = pb::FieldCodec.ForMessage(18, global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup.Parser);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup> groups_ = new pbc::RepeatedField<global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup>();
+    /// <summary>
+    /// Contains the groups if the request is grouping by a field.
+    /// The list might not be complete, and the counts of each group is approximate.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Types.AggregationGroup> Groups {
+      get { return groups_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as CountNexusOperationExecutionsResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(CountNexusOperationExecutionsResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Count != other.Count) return false;
+      if(!groups_.Equals(other.groups_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Count != 0L) hash ^= Count.GetHashCode();
+      hash ^= groups_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Count != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Count);
+      }
+      groups_.WriteTo(output, _repeated_groups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Count != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Count);
+      }
+      groups_.WriteTo(ref output, _repeated_groups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Count != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Count);
+      }
+      size += groups_.CalculateSize(_repeated_groups_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(CountNexusOperationExecutionsResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Count != 0L) {
+        Count = other.Count;
+      }
+      groups_.Add(other.groups_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Count = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            groups_.AddEntriesFrom(input, _repeated_groups_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Count = input.ReadInt64();
+            break;
+          }
+          case 18: {
+            groups_.AddEntriesFrom(ref input, _repeated_groups_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the CountNexusOperationExecutionsResponse message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static partial class Types {
+      public sealed partial class AggregationGroup : pb::IMessage<AggregationGroup>
+      #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          , pb::IBufferMessage
+      #endif
+      {
+        private static readonly pb::MessageParser<AggregationGroup> _parser = new pb::MessageParser<AggregationGroup>(() => new AggregationGroup());
+        private pb::UnknownFieldSet _unknownFields;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pb::MessageParser<AggregationGroup> Parser { get { return _parser; } }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public static pbr::MessageDescriptor Descriptor {
+          get { return global::Temporalio.Api.WorkflowService.V1.CountNexusOperationExecutionsResponse.Descriptor.NestedTypes[0]; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        pbr::MessageDescriptor pb::IMessage.Descriptor {
+          get { return Descriptor; }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public AggregationGroup() {
+          OnConstruction();
+        }
+
+        partial void OnConstruction();
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public AggregationGroup(AggregationGroup other) : this() {
+          groupValues_ = other.groupValues_.Clone();
+          count_ = other.count_;
+          _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public AggregationGroup Clone() {
+          return new AggregationGroup(this);
+        }
+
+        /// <summary>Field number for the "group_values" field.</summary>
+        public const int GroupValuesFieldNumber = 1;
+        private static readonly pb::FieldCodec<global::Temporalio.Api.Common.V1.Payload> _repeated_groupValues_codec
+            = pb::FieldCodec.ForMessage(10, global::Temporalio.Api.Common.V1.Payload.Parser);
+        private readonly pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload> groupValues_ = new pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload>();
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public pbc::RepeatedField<global::Temporalio.Api.Common.V1.Payload> GroupValues {
+          get { return groupValues_; }
+        }
+
+        /// <summary>Field number for the "count" field.</summary>
+        public const int CountFieldNumber = 2;
+        private long count_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public long Count {
+          get { return count_; }
+          set {
+            count_ = value;
+          }
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override bool Equals(object other) {
+          return Equals(other as AggregationGroup);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public bool Equals(AggregationGroup other) {
+          if (ReferenceEquals(other, null)) {
+            return false;
+          }
+          if (ReferenceEquals(other, this)) {
+            return true;
+          }
+          if(!groupValues_.Equals(other.groupValues_)) return false;
+          if (Count != other.Count) return false;
+          return Equals(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override int GetHashCode() {
+          int hash = 1;
+          hash ^= groupValues_.GetHashCode();
+          if (Count != 0L) hash ^= Count.GetHashCode();
+          if (_unknownFields != null) {
+            hash ^= _unknownFields.GetHashCode();
+          }
+          return hash;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public override string ToString() {
+          return pb::JsonFormatter.ToDiagnosticString(this);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void WriteTo(pb::CodedOutputStream output) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          output.WriteRawMessage(this);
+        #else
+          groupValues_.WriteTo(output, _repeated_groupValues_codec);
+          if (Count != 0L) {
+            output.WriteRawTag(16);
+            output.WriteInt64(Count);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(output);
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+          groupValues_.WriteTo(ref output, _repeated_groupValues_codec);
+          if (Count != 0L) {
+            output.WriteRawTag(16);
+            output.WriteInt64(Count);
+          }
+          if (_unknownFields != null) {
+            _unknownFields.WriteTo(ref output);
+          }
+        }
+        #endif
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public int CalculateSize() {
+          int size = 0;
+          size += groupValues_.CalculateSize(_repeated_groupValues_codec);
+          if (Count != 0L) {
+            size += 1 + pb::CodedOutputStream.ComputeInt64Size(Count);
+          }
+          if (_unknownFields != null) {
+            size += _unknownFields.CalculateSize();
+          }
+          return size;
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(AggregationGroup other) {
+          if (other == null) {
+            return;
+          }
+          groupValues_.Add(other.groupValues_);
+          if (other.Count != 0L) {
+            Count = other.Count;
+          }
+          _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+        }
+
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        public void MergeFrom(pb::CodedInputStream input) {
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+          input.ReadRawMessage(this);
+        #else
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+                break;
+              case 10: {
+                groupValues_.AddEntriesFrom(input, _repeated_groupValues_codec);
+                break;
+              }
+              case 16: {
+                Count = input.ReadInt64();
+                break;
+              }
+            }
+          }
+        #endif
+        }
+
+        #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+        void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+          uint tag;
+          while ((tag = input.ReadTag()) != 0) {
+            switch(tag) {
+              default:
+                _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+                break;
+              case 10: {
+                groupValues_.AddEntriesFrom(ref input, _repeated_groupValues_codec);
+                break;
+              }
+              case 16: {
+                Count = input.ReadInt64();
+                break;
+              }
+            }
+          }
+        }
+        #endif
+
+      }
+
+    }
+    #endregion
+
+  }
+
   public sealed partial class RequestCancelActivityExecutionRequest : pb::IMessage<RequestCancelActivityExecutionRequest>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -72326,7 +78481,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[204]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[222]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -72713,7 +78868,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[205]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[223]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -72865,7 +79020,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[206]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[224]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -73251,7 +79406,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[207]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[225]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -73403,7 +79558,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[208]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[226]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -73669,7 +79824,7 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[209]; }
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[227]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -73767,6 +79922,1500 @@ namespace Temporalio.Api.WorkflowService.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(DeleteActivityExecutionResponse other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class RequestCancelNexusOperationExecutionRequest : pb::IMessage<RequestCancelNexusOperationExecutionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RequestCancelNexusOperationExecutionRequest> _parser = new pb::MessageParser<RequestCancelNexusOperationExecutionRequest>(() => new RequestCancelNexusOperationExecutionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RequestCancelNexusOperationExecutionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[228]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RequestCancelNexusOperationExecutionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RequestCancelNexusOperationExecutionRequest(RequestCancelNexusOperationExecutionRequest other) : this() {
+      namespace_ = other.namespace_;
+      operationId_ = other.operationId_;
+      runId_ = other.runId_;
+      identity_ = other.identity_;
+      requestId_ = other.requestId_;
+      reason_ = other.reason_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RequestCancelNexusOperationExecutionRequest Clone() {
+      return new RequestCancelNexusOperationExecutionRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation_id" field.</summary>
+    public const int OperationIdFieldNumber = 2;
+    private string operationId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationId {
+      get { return operationId_; }
+      set {
+        operationId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 3;
+    private string runId_ = "";
+    /// <summary>
+    /// Operation run ID, targets the latest run if empty.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 4;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the client who initiated this request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 5;
+    private string requestId_ = "";
+    /// <summary>
+    /// Used to de-dupe cancellation requests.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "reason" field.</summary>
+    public const int ReasonFieldNumber = 6;
+    private string reason_ = "";
+    /// <summary>
+    /// Reason for requesting the cancellation, recorded and available via the DescribeNexusOperationExecution API.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Reason {
+      get { return reason_; }
+      set {
+        reason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RequestCancelNexusOperationExecutionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RequestCancelNexusOperationExecutionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (OperationId != other.OperationId) return false;
+      if (RunId != other.RunId) return false;
+      if (Identity != other.Identity) return false;
+      if (RequestId != other.RequestId) return false;
+      if (Reason != other.Reason) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (Reason.Length != 0) hash ^= Reason.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Reason);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Reason);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      }
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (Reason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Reason);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RequestCancelNexusOperationExecutionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.OperationId.Length != 0) {
+        OperationId = other.OperationId;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      if (other.Reason.Length != 0) {
+        Reason = other.Reason;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 34: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 50: {
+            Reason = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 34: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 50: {
+            Reason = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class RequestCancelNexusOperationExecutionResponse : pb::IMessage<RequestCancelNexusOperationExecutionResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RequestCancelNexusOperationExecutionResponse> _parser = new pb::MessageParser<RequestCancelNexusOperationExecutionResponse>(() => new RequestCancelNexusOperationExecutionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RequestCancelNexusOperationExecutionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[229]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RequestCancelNexusOperationExecutionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RequestCancelNexusOperationExecutionResponse(RequestCancelNexusOperationExecutionResponse other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RequestCancelNexusOperationExecutionResponse Clone() {
+      return new RequestCancelNexusOperationExecutionResponse(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RequestCancelNexusOperationExecutionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RequestCancelNexusOperationExecutionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RequestCancelNexusOperationExecutionResponse other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class TerminateNexusOperationExecutionRequest : pb::IMessage<TerminateNexusOperationExecutionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TerminateNexusOperationExecutionRequest> _parser = new pb::MessageParser<TerminateNexusOperationExecutionRequest>(() => new TerminateNexusOperationExecutionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TerminateNexusOperationExecutionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[230]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TerminateNexusOperationExecutionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TerminateNexusOperationExecutionRequest(TerminateNexusOperationExecutionRequest other) : this() {
+      namespace_ = other.namespace_;
+      operationId_ = other.operationId_;
+      runId_ = other.runId_;
+      identity_ = other.identity_;
+      requestId_ = other.requestId_;
+      reason_ = other.reason_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TerminateNexusOperationExecutionRequest Clone() {
+      return new TerminateNexusOperationExecutionRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation_id" field.</summary>
+    public const int OperationIdFieldNumber = 2;
+    private string operationId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationId {
+      get { return operationId_; }
+      set {
+        operationId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 3;
+    private string runId_ = "";
+    /// <summary>
+    /// Operation run ID, targets the latest run if empty.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "identity" field.</summary>
+    public const int IdentityFieldNumber = 4;
+    private string identity_ = "";
+    /// <summary>
+    /// The identity of the client who initiated this request.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Identity {
+      get { return identity_; }
+      set {
+        identity_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 5;
+    private string requestId_ = "";
+    /// <summary>
+    /// Used to de-dupe termination requests.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RequestId {
+      get { return requestId_; }
+      set {
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "reason" field.</summary>
+    public const int ReasonFieldNumber = 6;
+    private string reason_ = "";
+    /// <summary>
+    /// Reason for requesting the termination, recorded in the operation's result failure outcome.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Reason {
+      get { return reason_; }
+      set {
+        reason_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TerminateNexusOperationExecutionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TerminateNexusOperationExecutionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (OperationId != other.OperationId) return false;
+      if (RunId != other.RunId) return false;
+      if (Identity != other.Identity) return false;
+      if (RequestId != other.RequestId) return false;
+      if (Reason != other.Reason) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (Identity.Length != 0) hash ^= Identity.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (Reason.Length != 0) hash ^= Reason.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Reason);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (Identity.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Identity);
+      }
+      if (RequestId.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(RequestId);
+      }
+      if (Reason.Length != 0) {
+        output.WriteRawTag(50);
+        output.WriteString(Reason);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      }
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (Identity.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Identity);
+      }
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (Reason.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Reason);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TerminateNexusOperationExecutionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.OperationId.Length != 0) {
+        OperationId = other.OperationId;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      if (other.Identity.Length != 0) {
+        Identity = other.Identity;
+      }
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      if (other.Reason.Length != 0) {
+        Reason = other.Reason;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 34: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 50: {
+            Reason = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+          case 34: {
+            Identity = input.ReadString();
+            break;
+          }
+          case 42: {
+            RequestId = input.ReadString();
+            break;
+          }
+          case 50: {
+            Reason = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class TerminateNexusOperationExecutionResponse : pb::IMessage<TerminateNexusOperationExecutionResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TerminateNexusOperationExecutionResponse> _parser = new pb::MessageParser<TerminateNexusOperationExecutionResponse>(() => new TerminateNexusOperationExecutionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TerminateNexusOperationExecutionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[231]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TerminateNexusOperationExecutionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TerminateNexusOperationExecutionResponse(TerminateNexusOperationExecutionResponse other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TerminateNexusOperationExecutionResponse Clone() {
+      return new TerminateNexusOperationExecutionResponse(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TerminateNexusOperationExecutionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TerminateNexusOperationExecutionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TerminateNexusOperationExecutionResponse other) {
+      if (other == null) {
+        return;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class DeleteNexusOperationExecutionRequest : pb::IMessage<DeleteNexusOperationExecutionRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DeleteNexusOperationExecutionRequest> _parser = new pb::MessageParser<DeleteNexusOperationExecutionRequest>(() => new DeleteNexusOperationExecutionRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DeleteNexusOperationExecutionRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[232]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeleteNexusOperationExecutionRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeleteNexusOperationExecutionRequest(DeleteNexusOperationExecutionRequest other) : this() {
+      namespace_ = other.namespace_;
+      operationId_ = other.operationId_;
+      runId_ = other.runId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeleteNexusOperationExecutionRequest Clone() {
+      return new DeleteNexusOperationExecutionRequest(this);
+    }
+
+    /// <summary>Field number for the "namespace" field.</summary>
+    public const int NamespaceFieldNumber = 1;
+    private string namespace_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Namespace {
+      get { return namespace_; }
+      set {
+        namespace_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "operation_id" field.</summary>
+    public const int OperationIdFieldNumber = 2;
+    private string operationId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string OperationId {
+      get { return operationId_; }
+      set {
+        operationId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 3;
+    private string runId_ = "";
+    /// <summary>
+    /// Operation run ID, targets the latest run if empty.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DeleteNexusOperationExecutionRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DeleteNexusOperationExecutionRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Namespace != other.Namespace) return false;
+      if (OperationId != other.OperationId) return false;
+      if (RunId != other.RunId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Namespace.Length != 0) hash ^= Namespace.GetHashCode();
+      if (OperationId.Length != 0) hash ^= OperationId.GetHashCode();
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Namespace.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(OperationId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(RunId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Namespace.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Namespace);
+      }
+      if (OperationId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OperationId);
+      }
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DeleteNexusOperationExecutionRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Namespace.Length != 0) {
+        Namespace = other.Namespace;
+      }
+      if (other.OperationId.Length != 0) {
+        OperationId = other.OperationId;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Namespace = input.ReadString();
+            break;
+          }
+          case 18: {
+            OperationId = input.ReadString();
+            break;
+          }
+          case 26: {
+            RunId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class DeleteNexusOperationExecutionResponse : pb::IMessage<DeleteNexusOperationExecutionResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<DeleteNexusOperationExecutionResponse> _parser = new pb::MessageParser<DeleteNexusOperationExecutionResponse>(() => new DeleteNexusOperationExecutionResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<DeleteNexusOperationExecutionResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor.MessageTypes[233]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeleteNexusOperationExecutionResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeleteNexusOperationExecutionResponse(DeleteNexusOperationExecutionResponse other) : this() {
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public DeleteNexusOperationExecutionResponse Clone() {
+      return new DeleteNexusOperationExecutionResponse(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as DeleteNexusOperationExecutionResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(DeleteNexusOperationExecutionResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(DeleteNexusOperationExecutionResponse other) {
       if (other == null) {
         return;
       }
