@@ -64,6 +64,8 @@ namespace Temporalio.Api.ErrorDetails.V1 {
             "YXRpb25TdGF0dXMSDAoEY29kZRgBIAEoBRIPCgdtZXNzYWdlGAIgASgJEiUK",
             "B2RldGFpbHMYAyADKAsyFC5nb29nbGUucHJvdG9idWYuQW55IlIKJkFjdGl2",
             "aXR5RXhlY3V0aW9uQWxyZWFkeVN0YXJ0ZWRGYWlsdXJlEhgKEHN0YXJ0X3Jl",
+            "cXVlc3RfaWQYASABKAkSDgoGcnVuX2lkGAIgASgJIlgKLE5leHVzT3BlcmF0",
+            "aW9uRXhlY3V0aW9uQWxyZWFkeVN0YXJ0ZWRGYWlsdXJlEhgKEHN0YXJ0X3Jl",
             "cXVlc3RfaWQYASABKAkSDgoGcnVuX2lkGAIgASgJQqcBCh9pby50ZW1wb3Jh",
             "bC5hcGkuZXJyb3JkZXRhaWxzLnYxQgxNZXNzYWdlUHJvdG9QAVovZ28udGVt",
             "cG9yYWwuaW8vYXBpL2Vycm9yZGV0YWlscy92MTtlcnJvcmRldGFpbHOqAh5U",
@@ -89,7 +91,8 @@ namespace Temporalio.Api.ErrorDetails.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.WorkflowNotReadyFailure), global::Temporalio.Api.ErrorDetails.V1.WorkflowNotReadyFailure.Parser, null, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NewerBuildExistsFailure), global::Temporalio.Api.ErrorDetails.V1.NewerBuildExistsFailure.Parser, new[]{ "DefaultBuildId" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure), global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure.Parser, new[]{ "Statuses" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure.Types.OperationStatus), global::Temporalio.Api.ErrorDetails.V1.MultiOperationExecutionFailure.Types.OperationStatus.Parser, new[]{ "Code", "Message", "Details" }, null, null, null, null)}),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.ActivityExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.ActivityExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.ActivityExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.ActivityExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.ErrorDetails.V1.NexusOperationExecutionAlreadyStartedFailure), global::Temporalio.Api.ErrorDetails.V1.NexusOperationExecutionAlreadyStartedFailure.Parser, new[]{ "StartRequestId", "RunId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -4071,6 +4074,237 @@ namespace Temporalio.Api.ErrorDetails.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public void MergeFrom(ActivityExecutionAlreadyStartedFailure other) {
+      if (other == null) {
+        return;
+      }
+      if (other.StartRequestId.Length != 0) {
+        StartRequestId = other.StartRequestId;
+      }
+      if (other.RunId.Length != 0) {
+        RunId = other.RunId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            StartRequestId = input.ReadString();
+            break;
+          }
+          case 18: {
+            RunId = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            StartRequestId = input.ReadString();
+            break;
+          }
+          case 18: {
+            RunId = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// An error indicating that a Nexus operation failed to start. Returned when there is an existing operation with the
+  /// given operation ID, and the given ID reuse and conflict policies do not permit starting a new one or attaching to an
+  /// existing one.
+  /// </summary>
+  public sealed partial class NexusOperationExecutionAlreadyStartedFailure : pb::IMessage<NexusOperationExecutionAlreadyStartedFailure>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<NexusOperationExecutionAlreadyStartedFailure> _parser = new pb::MessageParser<NexusOperationExecutionAlreadyStartedFailure>(() => new NexusOperationExecutionAlreadyStartedFailure());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<NexusOperationExecutionAlreadyStartedFailure> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.ErrorDetails.V1.MessageReflection.Descriptor.MessageTypes[18]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NexusOperationExecutionAlreadyStartedFailure() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NexusOperationExecutionAlreadyStartedFailure(NexusOperationExecutionAlreadyStartedFailure other) : this() {
+      startRequestId_ = other.startRequestId_;
+      runId_ = other.runId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public NexusOperationExecutionAlreadyStartedFailure Clone() {
+      return new NexusOperationExecutionAlreadyStartedFailure(this);
+    }
+
+    /// <summary>Field number for the "start_request_id" field.</summary>
+    public const int StartRequestIdFieldNumber = 1;
+    private string startRequestId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string StartRequestId {
+      get { return startRequestId_; }
+      set {
+        startRequestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "run_id" field.</summary>
+    public const int RunIdFieldNumber = 2;
+    private string runId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RunId {
+      get { return runId_; }
+      set {
+        runId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as NexusOperationExecutionAlreadyStartedFailure);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(NexusOperationExecutionAlreadyStartedFailure other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (StartRequestId != other.StartRequestId) return false;
+      if (RunId != other.RunId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (StartRequestId.Length != 0) hash ^= StartRequestId.GetHashCode();
+      if (RunId.Length != 0) hash ^= RunId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (StartRequestId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(StartRequestId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RunId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (StartRequestId.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(StartRequestId);
+      }
+      if (RunId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RunId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (StartRequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(StartRequestId);
+      }
+      if (RunId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RunId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(NexusOperationExecutionAlreadyStartedFailure other) {
       if (other == null) {
         return;
       }
