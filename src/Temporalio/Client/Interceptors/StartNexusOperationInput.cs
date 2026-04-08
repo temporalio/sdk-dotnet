@@ -1,0 +1,28 @@
+using System.Collections.Generic;
+using Temporalio.Api.Common.V1;
+
+namespace Temporalio.Client.Interceptors
+{
+    /// <summary>
+    /// Input for <see cref="ClientOutboundInterceptor.StartNexusOperationAsync{TResult}" />.
+    /// </summary>
+    /// <param name="Service">Nexus service name.</param>
+    /// <param name="Endpoint">Endpoint name.</param>
+    /// <param name="Operation">Operation name to start.</param>
+    /// <param name="Arg">Argument for the operation.</param>
+    /// <param name="Options">Options passed in to start.</param>
+    /// <param name="Headers">Headers to include for operation start. These will be encoded using the
+    /// codec before sent to the server.</param>
+    /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
+    /// <remarks>
+    /// WARNING: This constructor may have required properties added. Do not rely on the exact
+    /// constructor, only use "with" clauses.
+    /// </remarks>
+    public record StartNexusOperationInput(
+        string Service,
+        string Endpoint,
+        string Operation,
+        object? Arg,
+        NexusOperationOptions Options,
+        IDictionary<string, Payload>? Headers);
+}
