@@ -700,7 +700,7 @@ namespace Temporalio.Extensions.OpenTelemetry
             }
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
-                StartNexusOperationInput input)
+                Temporalio.Worker.Interceptors.StartNexusOperationInput input)
             {
                 var headers = StartWorkflowActivityOnHeaders(
                     input.Headers, $"StartNexusOperation:{input.Service}/{input.OperationName}");
