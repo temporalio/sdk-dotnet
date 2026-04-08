@@ -99,10 +99,7 @@ namespace Temporalio.Client
                     }
                     if (input.Headers != null)
                     {
-                        req.NexusHeader.Add(
-                            input.Headers.ToDictionary(
-                                kvp => kvp.Key,
-                                kvp => System.Text.Encoding.UTF8.GetString(kvp.Value.Data.ToByteArray())));
+                        req.NexusHeader.Add(input.Headers);
                     }
 
                     var resp = await Client.Connection.WorkflowService.StartNexusOperationExecutionAsync(
