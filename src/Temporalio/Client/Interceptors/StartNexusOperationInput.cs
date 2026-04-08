@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Temporalio.Api.Common.V1;
 
 namespace Temporalio.Client.Interceptors
 {
@@ -11,8 +10,8 @@ namespace Temporalio.Client.Interceptors
     /// <param name="Operation">Operation name to start.</param>
     /// <param name="Arg">Argument for the operation.</param>
     /// <param name="Options">Options passed in to start.</param>
-    /// <param name="Headers">Headers to include for operation start. These will be encoded using the
-    /// codec before sent to the server.</param>
+    /// <param name="Headers">Headers if any. Nexus headers are string key-value pairs, not
+    /// Payloads.</param>
     /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
     /// <remarks>
     /// WARNING: This constructor may have required properties added. Do not rely on the exact
@@ -24,5 +23,5 @@ namespace Temporalio.Client.Interceptors
         string Operation,
         object? Arg,
         NexusOperationOptions Options,
-        IDictionary<string, Payload>? Headers);
+        IDictionary<string, string>? Headers);
 }
