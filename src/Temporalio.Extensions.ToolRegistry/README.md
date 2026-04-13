@@ -205,3 +205,23 @@ Recommended timeouts:
 |---|---|
 | Standard (Claude 3.x, GPT-4o) | 30 s |
 | Reasoning (o1, o3, extended thinking) | 300 s |
+
+## MCP integration
+
+`ToolRegistry.FromMcpTools` converts a sequence of `McpTool` records into a populated
+registry. Handlers default to no-ops that return an empty string; override them with
+`Register` after construction.
+
+```csharp
+// mcpTools is IEnumerable<McpTool> — populate from your MCP client.
+var registry = ToolRegistry.FromMcpTools(mcpTools);
+
+// Override specific handlers before running the loop.
+registry.Register(
+    new ToolDef("read_file", "Read a file", schema),
+    inp => ReadFile((string)inp["path"]!));
+```
+
+`McpTool` mirrors the MCP protocol's `Tool` object: `Name`, `Description`, and
+`InputSchema` (an `IReadOnlyDictionary<string, object?>` containing a JSON Schema
+object). A `null` `InputSchema` is treated as an empty object schema.

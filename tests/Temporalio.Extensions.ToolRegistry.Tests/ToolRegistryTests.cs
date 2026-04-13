@@ -212,6 +212,41 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             Assert.Equal("foo.cs", (string)issues[0]["file"]!);
         }
 
+        // ── FromMcpTools ─────────────────────────────────────────────────────────
+
+        [Fact]
+        public void FromMcpTools_PopulatesRegistry()
+        {
+            var tools = new[]
+            {
+                new McpTool(
+                    "read_file",
+                    "Read a file",
+                    new Dictionary<string, object?>
+                    {
+                        ["type"] = "object",
+                        ["properties"] = new Dictionary<string, object?>
+                        {
+                            ["path"] = new Dictionary<string, object?> { ["type"] = "string" },
+                        },
+                    }),
+                new McpTool("list_dir", null, null), // null schema → empty object schema
+            };
+
+            var reg = ToolRegistry.FromMcpTools(tools);
+            var defs = reg.Definitions();
+
+            Assert.Equal(2, defs.Count);
+            Assert.Equal("read_file", defs[0].Name);
+            Assert.Equal("Read a file", defs[0].Description);
+            Assert.Equal("list_dir", defs[1].Name);
+            Assert.Equal("object", defs[1].InputSchema["type"]); // null schema defaulted
+            // no-op handler returns empty string
+            Assert.Equal(
+                string.Empty,
+                reg.Dispatch("read_file", new Dictionary<string, object?> { ["path"] = "/etc/hosts" }));
+        }
+
         // ── Integration tests (skipped unless RUN_INTEGRATION_TESTS is set) ────
 
         [Fact]

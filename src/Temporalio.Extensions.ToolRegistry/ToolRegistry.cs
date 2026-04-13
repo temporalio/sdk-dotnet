@@ -69,6 +69,36 @@ namespace Temporalio.Extensions.ToolRegistry
         }
 
         /// <summary>
+        /// Creates a <see cref="ToolRegistry"/> from a list of MCP tool descriptors.
+        /// </summary>
+        /// <remarks>
+        /// Each tool is registered with a no-op handler (returning an empty string).
+        /// Override handlers by calling <see cref="Register"/> with the same name after
+        /// construction.
+        /// </remarks>
+        /// <param name="tools">MCP tool descriptors.</param>
+        /// <returns>A new registry populated from the MCP tool list.</returns>
+        public static ToolRegistry FromMcpTools(IEnumerable<McpTool> tools)
+        {
+            IReadOnlyDictionary<string, object?> emptySchema = new Dictionary<string, object?>
+            {
+                ["type"] = "object",
+                ["properties"] = new Dictionary<string, object?>(),
+            };
+            var registry = new ToolRegistry();
+            foreach (var tool in tools)
+            {
+                registry.Register(
+                    new ToolDef(
+                        Name: tool.Name,
+                        Description: tool.Description ?? string.Empty,
+                        InputSchema: tool.InputSchema ?? emptySchema),
+                    _ => string.Empty);
+            }
+            return registry;
+        }
+
+        /// <summary>
         /// Registers a tool definition and its handler.
         /// </summary>
         /// <param name="def">Tool definition.</param>
