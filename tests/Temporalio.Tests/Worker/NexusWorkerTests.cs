@@ -101,6 +101,22 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         }
     }
 
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ContextHasEndpoint()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) =>
+                    NexusOperationExecutionContext.Current.Info.Endpoint)));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal(endpoint, result);
+        });
+    }
+
     [Workflow]
     public class SimpleWorkflow
     {
