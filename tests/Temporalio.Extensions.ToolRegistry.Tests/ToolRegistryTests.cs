@@ -127,7 +127,7 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             }).WithRegistry(registry);
 
             var messages = await ToolRegistry.RunToolLoopAsync(
-                provider, registry, "system", "find issues");
+                provider, registry, "find issues");
 
             Assert.Single(flagged);
             Assert.Equal("broken", flagged[0]);
@@ -142,7 +142,7 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             var provider = new MockProvider(new[] { MockResponse.Done("no tools needed") });
 
             var messages = await ToolRegistry.RunToolLoopAsync(
-                provider, registry, "system", "hello");
+                provider, registry, "hello");
 
             Assert.True(messages.Count >= 2);
             Assert.Equal("user", (string)messages[0]["role"]!);
@@ -177,7 +177,7 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
                 ["role"] = "assistant",
                 ["tool_calls"] = toolCallsInMemory,
             };
-            var issueInMemory = new Dictionary<string, object?>
+            var resultInMemory = new Dictionary<string, object?>
             {
                 ["type"] = "smell",
                 ["file"] = "foo.cs",
@@ -185,14 +185,14 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             var cp = new SessionCheckpoint
             {
                 Messages = new() { assistantMsg },
-                Issues = new() { issueInMemory },
+                Results = new() { resultInMemory },
             };
 
             // Simulate Temporal heartbeat round-trip via JSON serialization.
             var json = JsonSerializer.Serialize(cp);
             var restored = JsonSerializer.Deserialize<SessionCheckpoint>(json)!;
             var messages = JsonElementConverter.MaterializeList(restored.Messages!);
-            var issues = JsonElementConverter.MaterializeList(restored.Issues!);
+            var results = JsonElementConverter.MaterializeList(restored.Results!);
 
             // Verify assistant message role survived.
             Assert.Equal("assistant", (string)messages[0]["role"]!);
@@ -209,10 +209,10 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             var fn = Assert.IsType<Dictionary<string, object?>>(toolCallsList[0]["function"]);
             Assert.Equal("my_tool", (string)fn["name"]!);
 
-            // Issues must survive the round-trip.
-            Assert.Single(issues);
-            Assert.Equal("smell", (string)issues[0]["type"]!);
-            Assert.Equal("foo.cs", (string)issues[0]["file"]!);
+            // Results must survive the round-trip.
+            Assert.Single(results);
+            Assert.Equal("smell", (string)results[0]["type"]!);
+            Assert.Equal("foo.cs", (string)results[0]["file"]!);
         }
 
         // ── FromMcpTools ─────────────────────────────────────────────────────────
@@ -342,7 +342,6 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             await ToolRegistry.RunToolLoopAsync(
                 provider,
                 registry,
-                string.Empty,
                 "Please call the record tool with value='hello'.");
 
             Assert.Contains("hello", collected);
@@ -370,7 +369,6 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             await ToolRegistry.RunToolLoopAsync(
                 provider,
                 registry,
-                string.Empty,
                 "Please call the record tool with value='hello'.");
 
             Assert.Contains("hello", collected);

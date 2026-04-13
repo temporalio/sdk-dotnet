@@ -35,7 +35,6 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
                 await session.RunToolLoopAsync(
                     provider,
                     registry,
-                    "sys",
                     "go",
                     ActivityExecutionContext.Current.CancellationToken);
             });
@@ -62,7 +61,6 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
                     await session.RunToolLoopAsync(
                         provider,
                         registry,
-                        "sys",
                         "go",
                         ActivityExecutionContext.Current.CancellationToken);
                 });
@@ -82,7 +80,7 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             {
                 var session = new AgenticSession();
                 session.Messages.Add(new() { ["role"] = "user", ["content"] = "hello" });
-                session.Issues.Add(new() { ["type"] = "bug" });
+                session.Results.Add(new() { ["type"] = "bug" });
                 session.Checkpoint();
                 await Task.CompletedTask;
             });
@@ -92,7 +90,7 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             var cp = capturedDetail![0] as SessionCheckpoint;
             Assert.NotNull(cp);
             Assert.Single(cp!.Messages!);
-            Assert.Single(cp.Issues!);
+            Assert.Single(cp.Results!);
         }
 
         [Fact]
@@ -109,7 +107,7 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             {
                 await AgenticSession.RunWithSessionAsync(async session =>
                 {
-                    await session.RunToolLoopAsync(provider, registry, "sys", "hello");
+                    await session.RunToolLoopAsync(provider, registry, "hello");
                     sessionMessages = new(session.Messages);
                 });
             });
@@ -135,7 +133,7 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
                     },
                 },
             };
-            var cp = new SessionCheckpoint { Messages = checkpointMessages, Issues = new() };
+            var cp = new SessionCheckpoint { Messages = checkpointMessages, Results = new() };
 
             // Serialize checkpoint via DataConverter so it can be seeded into heartbeat details.
             var payload = await DataConverter.Default.ToPayloadAsync(cp);

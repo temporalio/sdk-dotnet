@@ -35,7 +35,7 @@ using Temporalio.Extensions.ToolRegistry.Providers;
 [Activity]  // Remove for standalone use — no worker needed
 public async Task<List<string>> AnalyzeAsync(string prompt)
 {
-    var issues = new List<string>();
+    var results = new List<string>();
     var registry = new ToolRegistry();
 
     registry.Register(
@@ -53,7 +53,7 @@ public async Task<List<string>> AnalyzeAsync(string prompt)
             }),
         inp =>
         {
-            issues.Add((string)inp["description"]);
+            results.Add((string)inp["description"]);
             return Task.FromResult("recorded"); // this string is sent back to the LLM as the tool result
         });
 
@@ -62,8 +62,8 @@ public async Task<List<string>> AnalyzeAsync(string prompt)
         registry,
         "You are a code reviewer. Call flag_issue for each problem you find.");
 
-    await ToolRegistry.RunToolLoopAsync(provider, registry, "", prompt);
-    return issues;
+    await ToolRegistry.RunToolLoopAsync(provider, registry, prompt);
+    return results;
 }
 ```
 
@@ -86,7 +86,7 @@ Model IDs are defined by the provider — see Anthropic or OpenAI docs for curre
 ```csharp
 var cfg = new OpenAIConfig { ApiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") };
 var provider = new OpenAIProvider(cfg, registry, "your system prompt");
-await ToolRegistry.RunToolLoopAsync(provider, registry, "", prompt);
+await ToolRegistry.RunToolLoopAsync(provider, registry, prompt);
 ```
 
 ## Crash-safe agentic sessions
@@ -99,7 +99,7 @@ For multi-turn LLM conversations that must survive activity retries, use
 [Activity]  // Remove for standalone use — no worker needed
 public async Task<List<object>> LongAnalysisAsync(string prompt)
 {
-    var issues = new List<object>();
+    var results = new List<object>();
 
     await AgenticSession.RunWithSessionAsync(async session =>
     {
@@ -108,7 +108,7 @@ public async Task<List<object>> LongAnalysisAsync(string prompt)
             new ToolDefinition("flag", "...", new Dictionary<string, object> { ["type"] = "object" }),
             inp =>
             {
-                session.Issues.Add(inp);
+                session.Results.Add(inp);
                 return Task.FromResult("ok"); // this string is sent back to the LLM as the tool result
             });
 
@@ -116,11 +116,11 @@ public async Task<List<object>> LongAnalysisAsync(string prompt)
             new AnthropicConfig { ApiKey = Environment.GetEnvironmentVariable("ANTHROPIC_API_KEY") },
             registry, "your system prompt");
 
-        await session.RunToolLoopAsync(provider, registry, "your system prompt", prompt);
-        issues.AddRange(session.Issues.Cast<object>()); // capture after loop completes
+        await session.RunToolLoopAsync(provider, registry, prompt);
+        results.AddRange(session.Results.Cast<object>()); // capture after loop completes
     });
 
-    return issues;
+    return results;
 }
 ```
 
@@ -142,7 +142,7 @@ public async Task TestAnalyze()
         MockResponse.Done("analysis complete")
     ).WithRegistry(registry);
 
-    var msgs = await ToolRegistry.RunToolLoopAsync(provider, registry, "sys", "analyze");
+    var msgs = await ToolRegistry.RunToolLoopAsync(provider, registry, "analyze");
     Assert.True(msgs.Count > 2);
 }
 ```
@@ -163,25 +163,25 @@ incur billing — expect a few cents per full test run.
 
 ## Storing application results
 
-`session.Issues` accumulates application-level
+`session.Results` accumulates application-level
 results during the tool loop. Elements are serialized to JSON inside each heartbeat
-checkpoint — they must be plain maps/dicts with JSON-serializable values. A non-serializable
-value raises a non-retryable `ApplicationError` at heartbeat time rather than silently
-losing data on the next retry.
+checkpoint — they must be plain dicts with JSON-serializable values. A non-serializable
+value raises a non-retryable `ApplicationFailureException` at heartbeat time rather than
+silently losing data on the next retry.
 
 ### Storing typed results
 
 Convert your domain type to a plain dict at the tool-call site and back after the session:
 
 ```csharp
-record Issue(string Type, string File);
+record Finding(string Type, string File);
 
 // Inside tool handler:
-session.Issues.Add(new() { ["type"] = "smell", ["file"] = "Foo.cs" });
+session.Results.Add(new() { ["type"] = "smell", ["file"] = "Foo.cs" });
 
 // After session (using System.Text.Json):
-var issues = session.Issues
-    .Select(d => JsonSerializer.Deserialize<Issue>(JsonSerializer.Serialize(d))!)
+var findings = session.Results
+    .Select(d => JsonSerializer.Deserialize<Finding>(JsonSerializer.Serialize(d))!)
     .ToList();
 ```
 
@@ -207,6 +207,20 @@ Recommended timeouts:
 |---|---|
 | Standard (Claude 3.x, GPT-4o) | 30 s |
 | Reasoning (o1, o3, extended thinking) | 300 s |
+
+### Activity-level timeout
+
+Set `ScheduleToCloseTimeout` on the activity options to bound the entire conversation:
+
+```csharp
+await workflow.ExecuteActivityAsync(
+    (MyActivities a) => a.LongAnalysisAsync(prompt),
+    new ActivityOptions { ScheduleToCloseTimeout = TimeSpan.FromMinutes(10) });
+```
+
+The per-turn client timeout and `ScheduleToCloseTimeout` are complementary:
+- Per-turn timeout fires if one LLM call hangs (protects against a single stuck turn)
+- `ScheduleToCloseTimeout` bounds the entire conversation including all retries (protects against runaway multi-turn loops)
 
 ## MCP integration
 

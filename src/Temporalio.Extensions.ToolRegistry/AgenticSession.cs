@@ -10,7 +10,7 @@ using Temporalio.Exceptions;
 namespace Temporalio.Extensions.ToolRegistry
 {
     /// <summary>
-    /// Maintains conversation state (messages and issues) across multiple turns of a tool-calling
+    /// Maintains conversation state (messages and results) across multiple turns of a tool-calling
     /// loop, with heartbeat checkpointing for crash recovery.
     /// </summary>
     /// <remarks>
@@ -26,7 +26,7 @@ namespace Temporalio.Extensions.ToolRegistry
     public sealed class AgenticSession
     {
         private readonly List<Dictionary<string, object?>> messages = new();
-        private readonly List<Dictionary<string, object?>> issues = new();
+        private readonly List<Dictionary<string, object?>> results = new();
 
         /// <summary>
         /// Gets the full conversation history. Append-only during a session.
@@ -37,7 +37,7 @@ namespace Temporalio.Extensions.ToolRegistry
         /// Gets the accumulated application-level results from tool calls. Elements must be
         /// JSON-serializable for checkpoint storage.
         /// </summary>
-        public IList<Dictionary<string, object?>> Issues => issues;
+        public IList<Dictionary<string, object?>> Results => results;
 
         /// <summary>
         /// Runs <paramref name="fn"/> inside an <see cref="AgenticSession"/>, restoring from a
@@ -107,9 +107,9 @@ namespace Temporalio.Extensions.ToolRegistry
                             session.messages.AddRange(JsonElementConverter.MaterializeList(cp.Messages));
                         }
 
-                        if (cp?.Issues?.Count > 0)
+                        if (cp?.Results?.Count > 0)
                         {
-                            session.issues.AddRange(JsonElementConverter.MaterializeList(cp.Issues));
+                            session.results.AddRange(JsonElementConverter.MaterializeList(cp.Results));
                         }
                     }
                 }
@@ -140,14 +140,12 @@ namespace Temporalio.Extensions.ToolRegistry
         /// </remarks>
         /// <param name="provider">LLM provider adapter.</param>
         /// <param name="registry">Tool registry.</param>
-        /// <param name="system">System prompt (passed to provider at construction time).</param>
         /// <param name="prompt">Initial user prompt.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task RunToolLoopAsync(
             IProvider provider,
             ToolRegistry registry,
-            string system,
             string prompt,
             CancellationToken cancellationToken = default)
         {
@@ -188,17 +186,17 @@ namespace Temporalio.Extensions.ToolRegistry
         /// </exception>
         public void Checkpoint(CancellationToken cancellationToken = default)
         {
-            // T10: validate all issues are JSON-serializable before heartbeating.
-            for (int i = 0; i < issues.Count; i++)
+            // Validate all results are JSON-serializable before heartbeating.
+            for (int i = 0; i < results.Count; i++)
             {
                 try
                 {
-                    JsonSerializer.Serialize(issues[i]);
+                    JsonSerializer.Serialize(results[i]);
                 }
                 catch (JsonException e)
                 {
                     throw new ApplicationFailureException(
-                        $"AgenticSession: issues[{i}] is not JSON-serializable: {e.Message}. " +
+                        $"AgenticSession: results[{i}] is not JSON-serializable: {e.Message}. " +
                         "Store only Dictionary<string, object?> with JSON-serializable values.",
                         nonRetryable: true);
                 }
@@ -207,7 +205,7 @@ namespace Temporalio.Extensions.ToolRegistry
             var cp = new SessionCheckpoint
             {
                 Messages = new(messages),
-                Issues = new(issues),
+                Results = new(results),
             };
             ActivityExecutionContext.Current.Heartbeat(cp);
             cancellationToken.ThrowIfCancellationRequested();

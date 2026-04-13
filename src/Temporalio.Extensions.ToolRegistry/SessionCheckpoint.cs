@@ -22,9 +22,9 @@ namespace Temporalio.Extensions.ToolRegistry
         public List<Dictionary<string, object?>>? Messages { get; set; } = new();
 
         /// <summary>
-        /// Gets or sets accumulated application-level issues from tool calls.
+        /// Gets or sets accumulated application-level results from tool calls.
         /// </summary>
-        [JsonPropertyName("issues")]
-        public List<Dictionary<string, object?>>? Issues { get; set; } = new();
+        [JsonPropertyName("results")]
+        public List<Dictionary<string, object?>>? Results { get; set; } = new();
     }
 }

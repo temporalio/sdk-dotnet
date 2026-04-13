@@ -33,18 +33,12 @@ namespace Temporalio.Extensions.ToolRegistry
         /// </remarks>
         /// <param name="provider">LLM provider adapter.</param>
         /// <param name="registry">Tool registry.</param>
-        /// <param name="system">
-        /// System prompt. For API symmetry with other Temporal SDKs. The system prompt is
-        /// captured by the provider at construction time; this parameter is not forwarded. Pass
-        /// the same value you used when constructing the provider, or an empty string.
-        /// </param>
         /// <param name="prompt">Initial user prompt.</param>
         /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>Full message history on completion.</returns>
         public static async Task<IList<Dictionary<string, object?>>> RunToolLoopAsync(
             IProvider provider,
             ToolRegistry registry,
-            string system,
             string prompt,
             CancellationToken cancellationToken = default)
         {
