@@ -144,6 +144,7 @@ namespace Temporalio.Extensions.ToolRegistry.Providers
                 var id = (string)call["id"]!;
                 var input = (Dictionary<string, object?>)call["input"]!;
                 string result;
+                bool isError = false;
                 try
                 {
                     result = registry.Dispatch(name, input);
@@ -152,15 +153,21 @@ namespace Temporalio.Extensions.ToolRegistry.Providers
                 catch (Exception e)
                 {
                     result = $"error: {e.Message}";
+                    isError = true;
                 }
 #pragma warning restore CA1031
 
-                toolResults.Add(new()
+                var toolResult = new Dictionary<string, object?>
                 {
                     ["type"] = "tool_result",
                     ["tool_use_id"] = id,
                     ["content"] = result,
-                });
+                };
+                if (isError)
+                {
+                    toolResult["is_error"] = true;
+                }
+                toolResults.Add(toolResult);
             }
             newMessages.Add(new() { ["role"] = "user", ["content"] = toolResults });
             return new(newMessages, Done: false);

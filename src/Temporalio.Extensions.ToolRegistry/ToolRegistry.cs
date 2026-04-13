@@ -34,9 +34,9 @@ namespace Temporalio.Extensions.ToolRegistry
         /// <param name="provider">LLM provider adapter.</param>
         /// <param name="registry">Tool registry.</param>
         /// <param name="system">
-        /// System prompt. Accepted for API symmetry with other Temporal SDKs, but the system
-        /// prompt is captured by the provider at construction time and this parameter is not
-        /// forwarded to the provider. Pass the same value you used when constructing the provider.
+        /// System prompt. For API symmetry with other Temporal SDKs. The system prompt is
+        /// captured by the provider at construction time; this parameter is not forwarded. Pass
+        /// the same value you used when constructing the provider, or an empty string.
         /// </param>
         /// <param name="prompt">Initial user prompt.</param>
         /// <param name="cancellationToken">Cancellation token.</param>

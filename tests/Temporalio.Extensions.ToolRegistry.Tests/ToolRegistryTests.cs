@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Temporalio.Extensions.ToolRegistry;
@@ -245,6 +248,76 @@ namespace Temporalio.Extensions.ToolRegistry.Tests
             Assert.Equal(
                 string.Empty,
                 reg.Dispatch("read_file", new Dictionary<string, object?> { ["path"] = "/etc/hosts" }));
+        }
+
+        // ── AnthropicProvider is_error / handler error tests ────────────────────
+
+        /// <summary>
+        /// Verifies that when a tool handler throws, the Anthropic tool result carries
+        /// is_error = true and the turn does not propagate the exception.
+        /// </summary>
+        [Fact]
+        public async Task AnthropicProvider_HandlerError_SetsIsError()
+        {
+            // Find a free port, then start an HttpListener on it.
+            int port;
+            using (var tmp = new TcpListener(IPAddress.Loopback, 0))
+            {
+                tmp.Start();
+                port = ((IPEndPoint)tmp.LocalEndpoint).Port;
+            }
+
+            var prefix = $"http://localhost:{port}/";
+            using var listener = new HttpListener();
+            listener.Prefixes.Add(prefix);
+            listener.Start();
+
+            // Serve one request: the tool_use response.
+            var serverTask = Task.Run(async () =>
+            {
+                var ctx = await listener.GetContextAsync().ConfigureAwait(false);
+                ctx.Response.ContentType = "application/json";
+                const string body =
+                    "{\"id\":\"msg_1\",\"type\":\"message\",\"role\":\"assistant\","
+                    + "\"content\":[{\"type\":\"tool_use\",\"id\":\"c1\","
+                    + "\"name\":\"boom\",\"input\":{}}],"
+                    + "\"model\":\"claude-sonnet-4-6\",\"stop_reason\":\"tool_use\","
+                    + "\"usage\":{\"input_tokens\":10,\"output_tokens\":5}}";
+                var bytes = Encoding.UTF8.GetBytes(body);
+                ctx.Response.ContentLength64 = bytes.Length;
+                await ctx.Response.OutputStream.WriteAsync(bytes).ConfigureAwait(false);
+                ctx.Response.Close();
+            });
+
+            var registry = new ToolRegistry();
+            registry.Register(
+                new ToolDef("boom", "d", new Dictionary<string, object?>()),
+                _ => throw new InvalidOperationException("intentional failure"));
+
+            using var provider = new AnthropicProvider(
+                new AnthropicConfig { ApiKey = "test-key", BaseUrl = new Uri(prefix) },
+                registry,
+                "sys");
+
+            var messages = new List<Dictionary<string, object?>>
+            {
+                new() { ["role"] = "user", ["content"] = "go" },
+            };
+
+            var result = await provider.RunTurnAsync(messages, registry.Definitions());
+            await serverTask.ConfigureAwait(false);
+            listener.Stop();
+
+            Assert.False(result.Done);
+            Assert.Equal(2, result.NewMessages.Count);
+
+            var toolResultMsg = result.NewMessages[1];
+            Assert.Equal("user", (string)toolResultMsg["role"]!);
+            var toolResults = Assert.IsType<List<Dictionary<string, object?>>>(toolResultMsg["content"]);
+            Assert.Single(toolResults);
+            Assert.Equal("tool_result", (string)toolResults[0]["type"]!);
+            Assert.True(toolResults[0]["is_error"] is bool b && b, "is_error should be true");
+            Assert.Contains("intentional failure", (string)toolResults[0]["content"]!);
         }
 
         // ── Integration tests (skipped unless RUN_INTEGRATION_TESTS is set) ────
