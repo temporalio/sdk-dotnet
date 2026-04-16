@@ -55,6 +55,8 @@ env:
 
 jobs:
   throughput-stress:
+    env:
+      RestoreLockedMode: true
     runs-on: ubuntu-latest-4-cores
     timeout-minutes: ${{ fromJSON(inputs.job_timeout_minutes || vars.NIGHTLY_JOB_TIMEOUT_MINUTES || 360) }}
 
