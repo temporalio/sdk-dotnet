@@ -1315,6 +1315,82 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             exc3.Message);
     }
 
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_StartWorkflow_Succeeds()
+    {
+        // Build the worker options w/ the nexus service using the new generic handler
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalNexusOperationHandler.Create<string, string>(
+                    async (context, client, input) =>
+                        await client.StartWorkflowAsync(
+                            (SimpleWorkflow wf) => wf.RunAsync(input),
+                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        // Run the Nexus client code in workflow
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal("Hello from workflow, some-name", result);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_Cancel_Succeeds()
+    {
+        // Build the worker options w/ the nexus service using the new generic handler
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalNexusOperationHandler.Create<string, string>(
+                    async (context, client, input) =>
+                        await client.StartWorkflowAsync(
+                            (WaitForeverWorkflow wf) => wf.RunAsync(input),
+                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddWorkflow<WaitForeverWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        // Cancel the whole workflow and confirm it has expected exceptions
+        var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() => RunInWorkflowAsync(
+            workerOptions,
+            async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+                Assert.Equal("Hello from workflow, some-name", result);
+            },
+            beforeGetResultFunc: async handle =>
+            {
+                // Wait for Nexus operation to get started
+                await AssertMore.HasEventEventuallyAsync(
+                    handle, evt => evt.NexusOperationStartedEventAttributes != null);
+                // Now cancel entire workflow
+                await handle.CancelAsync();
+            }));
+        Assert.IsType<CanceledFailureException>(wfExc.InnerException);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_SyncResult_Succeeds()
+    {
+        // Build the worker options w/ a handler that returns a sync result
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalNexusOperationHandler.Create<string, string>(
+                    (context, client, input) =>
+                        Task.FromResult(TemporalOperationResult<string>.Sync($"Hello, {input}")))));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("world"));
+            Assert.Equal("Hello, world", result);
+        });
+    }
+
     private async Task<string> CreateNexusEndpointAsync(string taskQueue)
     {
         var name = $"nexus-endpoint-{taskQueue}";
