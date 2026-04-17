@@ -8,6 +8,8 @@ permissions:
 jobs:
   run-bench:
     runs-on: buildjet-4vcpu-ubuntu-2204
+    env:
+      RestoreLockedMode: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

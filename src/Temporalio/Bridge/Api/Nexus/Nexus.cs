@@ -41,25 +41,26 @@ namespace Temporalio.Bridge.Api.Nexus {
             "djEuUmVzcG9uc2VIABI4CgVlcnJvchgDIAEoCzIjLnRlbXBvcmFsLmFwaS5u",
             "ZXh1cy52MS5IYW5kbGVyRXJyb3JCAhgBSAASFAoKYWNrX2NhbmNlbBgEIAEo",
             "CEgAEjMKB2ZhaWx1cmUYBSABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52",
-            "MS5GYWlsdXJlSABCCAoGc3RhdHVzItABCglOZXh1c1Rhc2sSSwoEdGFzaxgB",
+            "MS5GYWlsdXJlSABCCAoGc3RhdHVzIuIBCglOZXh1c1Rhc2sSSwoEdGFzaxgB",
             "IAEoCzI7LnRlbXBvcmFsLmFwaS53b3JrZmxvd3NlcnZpY2UudjEuUG9sbE5l",
             "eHVzVGFza1F1ZXVlUmVzcG9uc2VIABI1CgtjYW5jZWxfdGFzaxgCIAEoCzIe",
             "LmNvcmVzZGsubmV4dXMuQ2FuY2VsTmV4dXNUYXNrSAASNAoQcmVxdWVzdF9k",
-            "ZWFkbGluZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCCQoH",
-            "dmFyaWFudCJbCg9DYW5jZWxOZXh1c1Rhc2sSEgoKdGFza190b2tlbhgBIAEo",
-            "DBI0CgZyZWFzb24YAiABKA4yJC5jb3Jlc2RrLm5leHVzLk5leHVzVGFza0Nh",
-            "bmNlbFJlYXNvbio7ChVOZXh1c1Rhc2tDYW5jZWxSZWFzb24SDQoJVElNRURf",
-            "T1VUEAASEwoPV09SS0VSX1NIVVRET1dOEAEqfwoeTmV4dXNPcGVyYXRpb25D",
-            "YW5jZWxsYXRpb25UeXBlEh8KG1dBSVRfQ0FOQ0VMTEFUSU9OX0NPTVBMRVRF",
-            "RBAAEgsKB0FCQU5ET04QARIOCgpUUllfQ0FOQ0VMEAISHwobV0FJVF9DQU5D",
-            "RUxMQVRJT05fUkVRVUVTVEVEEANCK+oCKFRlbXBvcmFsaW86OkludGVybmFs",
-            "OjpCcmlkZ2U6OkFwaTo6TmV4dXNiBnByb3RvMw=="));
+            "ZWFkbGluZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASEAoI",
+            "ZW5kcG9pbnQYBCABKAlCCQoHdmFyaWFudCJbCg9DYW5jZWxOZXh1c1Rhc2sS",
+            "EgoKdGFza190b2tlbhgBIAEoDBI0CgZyZWFzb24YAiABKA4yJC5jb3Jlc2Rr",
+            "Lm5leHVzLk5leHVzVGFza0NhbmNlbFJlYXNvbio7ChVOZXh1c1Rhc2tDYW5j",
+            "ZWxSZWFzb24SDQoJVElNRURfT1VUEAASEwoPV09SS0VSX1NIVVRET1dOEAEq",
+            "fwoeTmV4dXNPcGVyYXRpb25DYW5jZWxsYXRpb25UeXBlEh8KG1dBSVRfQ0FO",
+            "Q0VMTEFUSU9OX0NPTVBMRVRFRBAAEgsKB0FCQU5ET04QARIOCgpUUllfQ0FO",
+            "Q0VMEAISHwobV0FJVF9DQU5DRUxMQVRJT05fUkVRVUVTVEVEEANCK+oCKFRl",
+            "bXBvcmFsaW86OkludGVybmFsOjpCcmlkZ2U6OkFwaTo6TmV4dXNiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.Nexus.V1.MessageReflection.Descriptor, global::Temporalio.Api.WorkflowService.V1.RequestResponseReflection.Descriptor, global::Temporalio.Bridge.Api.Common.CommonReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCancelReason), typeof(global::Temporalio.Bridge.Api.Nexus.NexusOperationCancellationType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusOperationResult), global::Temporalio.Bridge.Api.Nexus.NexusOperationResult.Parser, new[]{ "Completed", "Failed", "Cancelled", "TimedOut" }, new[]{ "Status" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion), global::Temporalio.Bridge.Api.Nexus.NexusTaskCompletion.Parser, new[]{ "TaskToken", "Completed", "Error", "AckCancel", "Failure" }, new[]{ "Status" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTask), global::Temporalio.Bridge.Api.Nexus.NexusTask.Parser, new[]{ "Task", "CancelTask", "RequestDeadline" }, new[]{ "Variant" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.NexusTask), global::Temporalio.Bridge.Api.Nexus.NexusTask.Parser, new[]{ "Task", "CancelTask", "RequestDeadline", "Endpoint" }, new[]{ "Variant" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Bridge.Api.Nexus.CancelNexusTask), global::Temporalio.Bridge.Api.Nexus.CancelNexusTask.Parser, new[]{ "TaskToken", "Reason" }, null, null, null, null)
           }));
     }
@@ -986,6 +987,7 @@ namespace Temporalio.Bridge.Api.Nexus {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public NexusTask(NexusTask other) : this() {
       requestDeadline_ = other.requestDeadline_ != null ? other.requestDeadline_.Clone() : null;
+      endpoint_ = other.endpoint_;
       switch (other.VariantCase) {
         case VariantOneofCase.Task:
           Task = other.Task.Clone();
@@ -1061,6 +1063,22 @@ namespace Temporalio.Bridge.Api.Nexus {
       }
     }
 
+    /// <summary>Field number for the "endpoint" field.</summary>
+    public const int EndpointFieldNumber = 4;
+    private string endpoint_ = "";
+    /// <summary>
+    /// The endpoint this request was addressed to. Extracted from the request for convenient access.
+    /// Only set when variant is `task`.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Endpoint {
+      get { return endpoint_; }
+      set {
+        endpoint_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     private object variant_;
     /// <summary>Enum of possible cases for the "variant" oneof.</summary>
     public enum VariantOneofCase {
@@ -1100,6 +1118,7 @@ namespace Temporalio.Bridge.Api.Nexus {
       if (!object.Equals(Task, other.Task)) return false;
       if (!object.Equals(CancelTask, other.CancelTask)) return false;
       if (!object.Equals(RequestDeadline, other.RequestDeadline)) return false;
+      if (Endpoint != other.Endpoint) return false;
       if (VariantCase != other.VariantCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1111,6 +1130,7 @@ namespace Temporalio.Bridge.Api.Nexus {
       if (variantCase_ == VariantOneofCase.Task) hash ^= Task.GetHashCode();
       if (variantCase_ == VariantOneofCase.CancelTask) hash ^= CancelTask.GetHashCode();
       if (requestDeadline_ != null) hash ^= RequestDeadline.GetHashCode();
+      if (Endpoint.Length != 0) hash ^= Endpoint.GetHashCode();
       hash ^= (int) variantCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1142,6 +1162,10 @@ namespace Temporalio.Bridge.Api.Nexus {
         output.WriteRawTag(26);
         output.WriteMessage(RequestDeadline);
       }
+      if (Endpoint.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Endpoint);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1164,6 +1188,10 @@ namespace Temporalio.Bridge.Api.Nexus {
         output.WriteRawTag(26);
         output.WriteMessage(RequestDeadline);
       }
+      if (Endpoint.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(Endpoint);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1183,6 +1211,9 @@ namespace Temporalio.Bridge.Api.Nexus {
       if (requestDeadline_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(RequestDeadline);
       }
+      if (Endpoint.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Endpoint);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1200,6 +1231,9 @@ namespace Temporalio.Bridge.Api.Nexus {
           RequestDeadline = new global::Google.Protobuf.WellKnownTypes.Timestamp();
         }
         RequestDeadline.MergeFrom(other.RequestDeadline);
+      }
+      if (other.Endpoint.Length != 0) {
+        Endpoint = other.Endpoint;
       }
       switch (other.VariantCase) {
         case VariantOneofCase.Task:
@@ -1256,6 +1290,10 @@ namespace Temporalio.Bridge.Api.Nexus {
             input.ReadMessage(RequestDeadline);
             break;
           }
+          case 34: {
+            Endpoint = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -1294,6 +1332,10 @@ namespace Temporalio.Bridge.Api.Nexus {
               RequestDeadline = new global::Google.Protobuf.WellKnownTypes.Timestamp();
             }
             input.ReadMessage(RequestDeadline);
+            break;
+          }
+          case 34: {
+            Endpoint = input.ReadString();
             break;
           }
         }

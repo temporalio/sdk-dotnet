@@ -139,6 +139,8 @@ jobs:
     needs:
       - build-bridge-libraries
     runs-on: windows-latest
+    env:
+      RestoreLockedMode: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

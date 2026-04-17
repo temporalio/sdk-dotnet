@@ -11,6 +11,8 @@ permissions:
 
 jobs:
   build-lint-test:
+    env:
+      RestoreLockedMode: true
     strategy:
       fail-fast: false
       matrix:

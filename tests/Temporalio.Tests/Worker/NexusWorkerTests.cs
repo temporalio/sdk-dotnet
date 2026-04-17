@@ -101,6 +101,22 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         }
     }
 
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_ContextHasEndpoint()
+    {
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                OperationHandler.Sync<string, string>((ctx, name) =>
+                    NexusOperationExecutionContext.Current.Info.Endpoint)));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal(endpoint, result);
+        });
+    }
+
     [Workflow]
     public class SimpleWorkflow
     {
@@ -299,6 +315,29 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var ctx = await contextSource.Task;
         Assert.True(await Task.Run(() => ctx.CancellationToken.WaitHandle.WaitOne(2000)));
         Assert.Equal("timed out", ctx.CancellationReason);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_RequestDeadline_SetOnContext()
+    {
+        var contextSource = new TaskCompletionSource<OperationStartContext>();
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new AsyncFuncStringService(
+                start: (ctx, input) =>
+                {
+                    contextSource.SetResult(ctx);
+                    return Task.FromResult(OperationStartResult.SyncResult($"Hello, {input}"));
+                }));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal("Hello, some-name", result);
+        });
+        var ctx = await contextSource.Task;
+        // Server always sends a request timeout header, so the deadline should be set
+        Assert.NotNull(ctx.RequestDeadline);
     }
 
     [Fact]
