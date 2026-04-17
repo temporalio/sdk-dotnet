@@ -68,7 +68,7 @@ jobs:
           ClangSharpPInvokeGenerator @src/Temporalio/Bridge/GenerateInterop.rsp
           dotnet run --project src/Temporalio.Api.Generator
           npx doctoc README.md
-          git add src/Temporalio/Api src/Temporalio/Bridge/Api src/Temporalio/Bridge/Interop
+          git add src/Temporalio/Api src/Temporalio/Bridge/Api src/Temporalio/Bridge/Interop src/Temporalio/Client/*.Rpc.cs
           git config --global core.safecrlf false
           git diff --cached > generator.diff
           git diff --cached --exit-code
