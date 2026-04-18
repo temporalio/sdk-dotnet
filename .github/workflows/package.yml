@@ -70,27 +70,27 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: recursive
 
       - name: Install Rust
         if: ${{ !matrix.container }}
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
         with:
           toolchain: stable
 
       - name: Setup Rust cache
         if: ${{ !matrix.container }}
         # Fixed version due to https://github.com/Swatinem/rust-cache/issues/183#issuecomment-1893979126
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
           workspaces: src/Temporalio/Bridge
           key: ${{ matrix.os }}
 
       - name: Install protoc
         if: ${{ !matrix.container }}
-        uses: arduino/setup-protoc@v3
+        uses: arduino/setup-protoc@c65c819552d16ad3c9b72d9dfd5ba5237b9c906b # v3
         with:
           version: "23.x"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -129,7 +129,7 @@ jobs:
             '
 
       - name: Upload bridge library
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: ${{ matrix.out-prefix }}-bridge
           path: src/Temporalio/Bridge/sdk-core/target/release-lto/${{ matrix.out-file }}
@@ -143,17 +143,17 @@ jobs:
       RestoreLockedMode: true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: recursive
 
       - name: Download bridge libraries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           path: bridge-libraries
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
         with:
           dotnet-version: 10.x
 
@@ -161,7 +161,7 @@ jobs:
         run: dotnet pack -c Release /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
 
       - name: Upload NuGet artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: nuget-package
           path: |
@@ -208,18 +208,18 @@ jobs:
     runs-on: ${{ matrix.runsOn || matrix.os }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: recursive
 
       - name: Download NuGet artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: nuget-package
           path: ${{ github.workspace }}/nuget-package
 
       - name: Setup .NET (non-Alpine)
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
         if: ${{ !contains(matrix.os, 'alpine') }}
         with:
           # Specific .NET version required because GitHub macos ARM image has
@@ -251,7 +251,7 @@ jobs:
 
       - name: Setup msbuild (Windows x64 only)
         if: ${{ matrix.os == 'windows-latest' }}
-        uses: microsoft/setup-msbuild@v2
+        uses: microsoft/setup-msbuild@30375c66a4eea26614e0d39710365f22f8b0af57 # v3
 
       - name: Run .NET framework smoke test (Windows x64 only)
         if: ${{ matrix.os == 'windows-latest' }}
