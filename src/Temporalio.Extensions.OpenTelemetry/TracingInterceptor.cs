@@ -231,6 +231,21 @@ namespace Temporalio.Extensions.OpenTelemetry
             return ret;
         }
 
+        /// <summary>
+        /// Create tag collection for the given standalone activity ID.
+        /// </summary>
+        /// <param name="activityId">Standalone activity ID.</param>
+        /// <returns>Tags.</returns>
+        protected virtual IEnumerable<KeyValuePair<string, object?>> CreateStandaloneActivityTags(
+            string activityId)
+        {
+            if (Options.TagNameActivityId is string name)
+            {
+                return new KeyValuePair<string, object?>[] { new(name, activityId) };
+            }
+            return Enumerable.Empty<KeyValuePair<string, object?>>();
+        }
+
         private static void RecordExceptionWithStatus(Activity? activity, Exception exception)
         {
             // If the exception is a benign exception, we do not consider the status an error. Note,
@@ -385,6 +400,112 @@ namespace Temporalio.Extensions.OpenTelemetry
                     try
                     {
                         return await base.StartWorkflowUpdateAsync<TResult>(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
+                }
+            }
+
+            public override async Task<ActivityHandle<TResult>> StartActivityAsync<TResult>(
+                StartActivityInput input)
+            {
+                using (var activity = ClientSource.StartActivity(
+                    $"StartActivity:{input.Activity}",
+                    kind: ActivityKind.Client,
+                    parentContext: default,
+                    tags: input.Options.Id is string id ? root.CreateStandaloneActivityTags(id) : null))
+                {
+                    if (HeadersFromContext(input.Headers) is Dictionary<string, Payload> headers)
+                    {
+                        input = input with { Headers = headers };
+                    }
+                    try
+                    {
+                        return await base.StartActivityAsync<TResult>(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
+                }
+            }
+
+            public override async Task<ActivityExecutionDescription> DescribeActivityAsync(
+                DescribeActivityInput input)
+            {
+                using (var activity = ClientSource.StartActivity(
+                    $"DescribeActivity:{input.Id}",
+                    kind: ActivityKind.Client,
+                    parentContext: default,
+                    tags: root.CreateStandaloneActivityTags(input.Id)))
+                {
+                    try
+                    {
+                        return await base.DescribeActivityAsync(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
+                }
+            }
+
+            public override async Task CancelActivityAsync(CancelActivityInput input)
+            {
+                using (var activity = ClientSource.StartActivity(
+                    $"CancelActivity:{input.Id}",
+                    kind: ActivityKind.Client,
+                    parentContext: default,
+                    tags: root.CreateStandaloneActivityTags(input.Id)))
+                {
+                    try
+                    {
+                        await base.CancelActivityAsync(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
+                }
+            }
+
+            public override async Task TerminateActivityAsync(TerminateActivityInput input)
+            {
+                using (var activity = ClientSource.StartActivity(
+                    $"TerminateActivity:{input.Id}",
+                    kind: ActivityKind.Client,
+                    parentContext: default,
+                    tags: root.CreateStandaloneActivityTags(input.Id)))
+                {
+                    try
+                    {
+                        await base.TerminateActivityAsync(input).ConfigureAwait(false);
+                    }
+                    catch (Exception e)
+                    {
+                        RecordExceptionWithStatus(activity, e);
+                        throw;
+                    }
+                }
+            }
+
+            public override async Task<ActivityExecutionCount> CountActivitiesAsync(
+                CountActivitiesInput input)
+            {
+                using (var activity = ClientSource.StartActivity(
+                    "CountActivities",
+                    kind: ActivityKind.Client,
+                    parentContext: default))
+                {
+                    try
+                    {
+                        return await base.CountActivitiesAsync(input).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {
