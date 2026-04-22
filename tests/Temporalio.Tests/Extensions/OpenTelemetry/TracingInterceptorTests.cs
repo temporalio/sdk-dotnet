@@ -797,6 +797,36 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "RunWorkflow:TracingWorkflow"));
     }
 
+    [Fact]
+    public async Task TracingInterceptor_StandaloneActivity_HasProperSpans()
+    {
+        var activityId = $"act-{Guid.NewGuid()}";
+        var spans = await WithTracingWorkerAsync(async (client, _) =>
+        {
+            var taskQueue = $"standalone-tq-{Guid.NewGuid()}";
+            var handle = await client.StartActivityAsync(
+                "StandaloneActivity",
+                Array.Empty<object?>(),
+                new(activityId, taskQueue)
+                {
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                });
+            await handle.DescribeAsync();
+            await handle.CancelAsync();
+            await handle.TerminateAsync();
+            await client.CountActivitiesAsync($"ActivityId = '{activityId}'");
+        });
+
+        var activityTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", activityId) };
+        AssertActivities(
+            spans,
+            new("StartActivity:StandaloneActivity", Parent: null, Tags: activityTags),
+            new("DescribeActivity:" + activityId, Parent: null, Tags: activityTags),
+            new("CancelActivity:" + activityId, Parent: null, Tags: activityTags),
+            new("TerminateActivity:" + activityId, Parent: null, Tags: activityTags),
+            new(Name: "CountActivities", Parent: null, IgnoreTags: true));
+    }
+
     private static void AssertActivities(
         IReadOnlyCollection<Activity> activities, params ActivityAssertion[] assertions)
     {
