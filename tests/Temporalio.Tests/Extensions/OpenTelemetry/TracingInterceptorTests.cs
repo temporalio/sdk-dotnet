@@ -800,31 +800,38 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task TracingInterceptor_StandaloneActivity_HasProperSpans()
     {
-        var activityId = $"act-{Guid.NewGuid()}";
+        var cancelId = $"act-cancel-{Guid.NewGuid()}";
+        var terminateId = $"act-terminate-{Guid.NewGuid()}";
         var spans = await WithTracingWorkerAsync(async (client, _) =>
         {
             var taskQueue = $"standalone-tq-{Guid.NewGuid()}";
-            var handle = await client.StartActivityAsync(
+
+            var cancelHandle = await client.StartActivityAsync(
                 "StandaloneActivity",
                 Array.Empty<object?>(),
-                new(activityId, taskQueue)
-                {
-                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
-                });
-            await handle.DescribeAsync();
-            await handle.CancelAsync();
-            await handle.TerminateAsync();
-            await client.CountActivitiesAsync($"ActivityId = '{activityId}'");
+                new(cancelId, taskQueue) { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            await cancelHandle.DescribeAsync();
+            await cancelHandle.CancelAsync();
+
+            var terminateHandle = await client.StartActivityAsync(
+                "StandaloneActivity",
+                Array.Empty<object?>(),
+                new(terminateId, taskQueue) { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            await terminateHandle.TerminateAsync();
+
+            await client.CountActivitiesAsync($"TaskQueue = '{taskQueue}'");
         });
 
-        var activityTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", activityId) };
+        var cancelTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", cancelId) };
+        var terminateTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", terminateId) };
         AssertActivities(
             spans,
-            new("StartActivity:StandaloneActivity", Parent: null, Tags: activityTags),
-            new("DescribeActivity:" + activityId, Parent: null, Tags: activityTags),
-            new("CancelActivity:" + activityId, Parent: null, Tags: activityTags),
-            new("TerminateActivity:" + activityId, Parent: null, Tags: activityTags),
-            new(Name: "CountActivities", Parent: null, IgnoreTags: true));
+            new("StartActivity:StandaloneActivity", Parent: null, Tags: cancelTags),
+            new("DescribeActivity:" + cancelId, Parent: null, Tags: cancelTags),
+            new("CancelActivity:" + cancelId, Parent: null, Tags: cancelTags),
+            new("StartActivity:StandaloneActivity", Parent: null, Tags: terminateTags),
+            new("TerminateActivity:" + terminateId, Parent: null, Tags: terminateTags),
+            ActivityAssertion.NameAndParent("CountActivities", null));
     }
 
     private static void AssertActivities(
