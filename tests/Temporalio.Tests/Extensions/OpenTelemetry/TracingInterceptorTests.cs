@@ -916,7 +916,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         var activities = new List<Activity>();
 
         // Setup provider
-        using var tracerProvider = global::OpenTelemetry.Sdk.CreateTracerProviderBuilder().
+        using var _ = global::OpenTelemetry.Sdk.CreateTracerProviderBuilder().
             AddSource(
                 TracingInterceptor.ClientSource.Name,
                 TracingInterceptor.WorkflowsSource.Name,
