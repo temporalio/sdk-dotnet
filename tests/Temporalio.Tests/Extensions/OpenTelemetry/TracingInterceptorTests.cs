@@ -363,7 +363,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 Parent: "StartWorkflow:TracingWorkflow",
                 Tags: workflowRunTags));
 
-        // TODO(cretz): Fix when https://github.com/temporalio/sdk-core/issues/615 fixed
+        // TODO(cretz): Fix when https://github.com/temporalio/sdk-rust/issues/615 fixed
         // Fail task inside update
         (handle, activities) = await ExecuteTracingWorkflowAsync(
             new(new TracingWorkflowAction[] { new(WaitUntilSignalCount: 1) }),

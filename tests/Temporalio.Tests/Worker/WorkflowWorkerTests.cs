@@ -5757,7 +5757,7 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         if (useWorkflowCancellation)
         {
             throw new SkipException(
-                "Unable to cancel workflow for this test: https://github.com/temporalio/sdk-core/issues/772");
+                "Unable to cancel workflow for this test: https://github.com/temporalio/sdk-rust/issues/772");
         }
         // This tests that cancellation works. We will make a semaphore with 1 allowed and submit 2
         // updates. The second update will wait, and we will cancel the wait.
