@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    cooldown:
+      default-days: 14
+
+  - package-ecosystem: "nuget"
+    cooldown:
+      default-days: 14
