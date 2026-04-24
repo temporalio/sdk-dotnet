@@ -78,6 +78,12 @@
         "resolved": "17.4.33",
         "contentHash": "gpf500WFCqnhJmbIEDvVYgeNLpHZ6PAyhcewyqqpE8UoKNHoCDdMgogulYuJERbRaGqywqD1pRwPNplVteNZ8g=="
       },
+      "OpenTelemetry.Api": {
+        "type": "Direct",
+        "requested": "[1.15.3, )",
+        "resolved": "1.15.3",
+        "contentHash": "fX+fkCysfPut+qCcT3bKqyX4QN9Saf4CgX8HLOHywEVD+Xr7sULtfuypITpoDysjx8R59dn/3mWhgimMH8cm/g=="
+      },
       "OpenTelemetry.Exporter.InMemory": {
         "type": "Direct",
         "requested": "[1.4.0, )",
@@ -517,7 +523,7 @@
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
-          "OpenTelemetry.Api": "[1.4.0, )",
+          "OpenTelemetry.Api": "[1.15.3, )",
           "Temporalio": "[1.13.0, )"
         }
       },
@@ -552,12 +558,6 @@
         "requested": "[0.3.0, )",
         "resolved": "0.3.0",
         "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg=="
-      },
-      "OpenTelemetry.Api": {
-        "type": "CentralTransitive",
-        "requested": "[1.4.0, )",
-        "resolved": "1.4.0",
-        "contentHash": "754QKfiEZ3TNR3lOWS+u15qJYOVMWXhuUy8zjCXtgbaJihCFga3Wm3UZ9ggC5CJiUEjyeR6vw66NBZUxMOPTNQ=="
       }
     }
   }
