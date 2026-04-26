@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using NexusRpc.Handlers;
 using OpenTelemetry;
 using OpenTelemetry.Context.Propagation;
-using OpenTelemetry.Trace;
 using Temporalio.Activities;
 using Temporalio.Api.Common.V1;
 using Temporalio.Api.Enums.V1;
@@ -244,7 +243,7 @@ namespace Temporalio.Extensions.OpenTelemetry
             {
                 activity?.SetStatus(ActivityStatusCode.Error, exception.Message);
             }
-            activity?.RecordException(exception);
+            activity?.AddException(exception);
         }
 
         private sealed class ClientOutbound : ClientOutboundInterceptor
