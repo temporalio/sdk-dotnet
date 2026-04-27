@@ -21,6 +21,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CountNexusOperationExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CountNexusOperationExecutionsResponse> CountNexusOperationExecutionsAsync(CountNexusOperationExecutionsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CountNexusOperationExecutions", req, CountNexusOperationExecutionsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CountSchedules.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -54,6 +65,28 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateWorkerDeployment.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateWorkerDeploymentResponse> CreateWorkerDeploymentAsync(CreateWorkerDeploymentRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateWorkerDeployment", req, CreateWorkerDeploymentResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke CreateWorkerDeploymentVersion.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateWorkerDeploymentVersionResponse> CreateWorkerDeploymentVersionAsync(CreateWorkerDeploymentVersionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateWorkerDeploymentVersion", req, CreateWorkerDeploymentVersionResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CreateWorkflowRule.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -73,6 +106,17 @@ namespace Temporalio.Client
         public Task<DeleteActivityExecutionResponse> DeleteActivityExecutionAsync(DeleteActivityExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DeleteActivityExecution", req, DeleteActivityExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteNexusOperationExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteNexusOperationExecutionResponse> DeleteNexusOperationExecutionAsync(DeleteNexusOperationExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteNexusOperationExecution", req, DeleteNexusOperationExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -183,6 +227,17 @@ namespace Temporalio.Client
         public Task<DescribeNamespaceResponse> DescribeNamespaceAsync(DescribeNamespaceRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DescribeNamespace", req, DescribeNamespaceResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DescribeNexusOperationExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DescribeNexusOperationExecutionResponse> DescribeNexusOperationExecutionAsync(DescribeNexusOperationExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DescribeNexusOperationExecution", req, DescribeNexusOperationExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -461,6 +516,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke ListNexusOperationExecutions.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ListNexusOperationExecutionsResponse> ListNexusOperationExecutionsAsync(ListNexusOperationExecutionsRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ListNexusOperationExecutions", req, ListNexusOperationExecutionsResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke ListOpenWorkflowExecutions.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -604,6 +670,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke PollNexusOperationExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<PollNexusOperationExecutionResponse> PollNexusOperationExecutionAsync(PollNexusOperationExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("PollNexusOperationExecution", req, PollNexusOperationExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke PollNexusTaskQueue.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -700,6 +777,17 @@ namespace Temporalio.Client
         public Task<RequestCancelActivityExecutionResponse> RequestCancelActivityExecutionAsync(RequestCancelActivityExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("RequestCancelActivityExecution", req, RequestCancelActivityExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke RequestCancelNexusOperationExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<RequestCancelNexusOperationExecutionResponse> RequestCancelNexusOperationExecutionAsync(RequestCancelNexusOperationExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("RequestCancelNexusOperationExecution", req, RequestCancelNexusOperationExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -978,6 +1066,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke StartNexusOperationExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<StartNexusOperationExecutionResponse> StartNexusOperationExecutionAsync(StartNexusOperationExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("StartNexusOperationExecution", req, StartNexusOperationExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke StartWorkflowExecution.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -1008,6 +1107,17 @@ namespace Temporalio.Client
         public Task<TerminateActivityExecutionResponse> TerminateActivityExecutionAsync(TerminateActivityExecutionRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("TerminateActivityExecution", req, TerminateActivityExecutionResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke TerminateNexusOperationExecution.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<TerminateNexusOperationExecutionResponse> TerminateNexusOperationExecutionAsync(TerminateNexusOperationExecutionRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("TerminateNexusOperationExecution", req, TerminateNexusOperationExecutionResponse.Parser, options);
         }
 
         /// <summary>
@@ -1121,6 +1231,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke UpdateWorkerDeploymentVersionComputeConfig.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateWorkerDeploymentVersionComputeConfigResponse> UpdateWorkerDeploymentVersionComputeConfigAsync(UpdateWorkerDeploymentVersionComputeConfigRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateWorkerDeploymentVersionComputeConfig", req, UpdateWorkerDeploymentVersionComputeConfigResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke UpdateWorkerDeploymentVersionMetadata.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -1162,6 +1283,17 @@ namespace Temporalio.Client
         public Task<UpdateWorkflowExecutionOptionsResponse> UpdateWorkflowExecutionOptionsAsync(UpdateWorkflowExecutionOptionsRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateWorkflowExecutionOptions", req, UpdateWorkflowExecutionOptionsResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke ValidateWorkerDeploymentVersionComputeConfig.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<ValidateWorkerDeploymentVersionComputeConfigResponse> ValidateWorkerDeploymentVersionComputeConfigAsync(ValidateWorkerDeploymentVersionComputeConfigRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("ValidateWorkerDeploymentVersionComputeConfig", req, ValidateWorkerDeploymentVersionComputeConfigResponse.Parser, options);
         }
     }
 }
