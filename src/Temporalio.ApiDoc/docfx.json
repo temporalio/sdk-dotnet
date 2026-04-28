@@ -21,6 +21,9 @@
       "disableGitFeatures": false,
       "disableDefaultFilter": false,
       "noRestore": false,
+      "properties": {
+        "NuGetAudit": "false"
+      },
       "namespaceLayout": "nested",
       "memberLayout": "samePage",
       "allowCompilationErrors": false
