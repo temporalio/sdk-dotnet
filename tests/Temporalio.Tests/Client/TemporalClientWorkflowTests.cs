@@ -27,7 +27,7 @@ public class TemporalClientWorkflowTests : WorkflowEnvironmentTestBase
             new(id: workflowId, taskQueue: Env.KitchenSinkWorkerTaskQueue));
         Assert.Equal(workflowId, handle.Id);
         Assert.NotNull(handle.ResultRunId);
-        Assert.Equal("Some String", await handle.GetResultAsync<string>());
+        Assert.Equal("Some String that will fail", await handle.GetResultAsync<string>());
     }
 
     [Fact]

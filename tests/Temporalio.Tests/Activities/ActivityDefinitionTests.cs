@@ -122,7 +122,7 @@ public class ActivityDefinitionTests
             new Type[] { typeof(int) },
             1,
             parameters => ((int)parameters[0]!) + 5);
-        Assert.Equal(128, await defn.InvokeAsync(new object?[] { 123 }));
+        Assert.Equal(503, await defn.InvokeAsync(new object?[] { 123 }));
     }
 
     [Fact]
