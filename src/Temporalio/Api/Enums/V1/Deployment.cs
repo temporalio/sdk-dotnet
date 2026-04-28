@@ -36,17 +36,18 @@ namespace Temporalio.Api.Enums.V1 {
             "jAEKFFdvcmtlclZlcnNpb25pbmdNb2RlEiYKIldPUktFUl9WRVJTSU9OSU5H",
             "X01PREVfVU5TUEVDSUZJRUQQABImCiJXT1JLRVJfVkVSU0lPTklOR19NT0RF",
             "X1VOVkVSU0lPTkVEEAESJAogV09SS0VSX1ZFUlNJT05JTkdfTU9ERV9WRVJT",
-            "SU9ORUQQAiq5AgodV29ya2VyRGVwbG95bWVudFZlcnNpb25TdGF0dXMSMAos",
+            "SU9ORUQQAirnAgodV29ya2VyRGVwbG95bWVudFZlcnNpb25TdGF0dXMSMAos",
             "V09SS0VSX0RFUExPWU1FTlRfVkVSU0lPTl9TVEFUVVNfVU5TUEVDSUZJRUQQ",
             "ABItCilXT1JLRVJfREVQTE9ZTUVOVF9WRVJTSU9OX1NUQVRVU19JTkFDVElW",
             "RRABEiwKKFdPUktFUl9ERVBMT1lNRU5UX1ZFUlNJT05fU1RBVFVTX0NVUlJF",
             "TlQQAhIsCihXT1JLRVJfREVQTE9ZTUVOVF9WRVJTSU9OX1NUQVRVU19SQU1Q",
             "SU5HEAMSLQopV09SS0VSX0RFUExPWU1FTlRfVkVSU0lPTl9TVEFUVVNfRFJB",
             "SU5JTkcQBBIsCihXT1JLRVJfREVQTE9ZTUVOVF9WRVJTSU9OX1NUQVRVU19E",
-            "UkFJTkVEEAVChwEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52MUIPRGVwbG95",
-            "bWVudFByb3RvUAFaIWdvLnRlbXBvcmFsLmlvL2FwaS9lbnVtcy92MTtlbnVt",
-            "c6oCF1RlbXBvcmFsaW8uQXBpLkVudW1zLlYx6gIaVGVtcG9yYWxpbzo6QXBp",
-            "OjpFbnVtczo6VjFiBnByb3RvMw=="));
+            "UkFJTkVEEAUSLAooV09SS0VSX0RFUExPWU1FTlRfVkVSU0lPTl9TVEFUVVNf",
+            "Q1JFQVRFRBAGQocBChhpby50ZW1wb3JhbC5hcGkuZW51bXMudjFCD0RlcGxv",
+            "eW1lbnRQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51",
+            "bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFw",
+            "aTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.DeploymentReachability), typeof(global::Temporalio.Api.Enums.V1.VersionDrainageStatus), typeof(global::Temporalio.Api.Enums.V1.WorkerVersioningMode), typeof(global::Temporalio.Api.Enums.V1.WorkerDeploymentVersionStatus), }, null, null));
@@ -87,7 +88,6 @@ namespace Temporalio.Api.Enums.V1 {
   ///     aip.dev/not-precedent: Call this status because it is . --)
   /// Specify the drainage status for a Worker Deployment Version so users can decide whether they
   /// can safely decommission the version.
-  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
   /// </summary>
   public enum VersionDrainageStatus {
     /// <summary>
@@ -114,7 +114,6 @@ namespace Temporalio.Api.Enums.V1 {
   /// - Whether or not Temporal Server considers this worker's version (Build ID) when dispatching
   ///   tasks to it.
   /// - Whether or not the workflows processed by this worker are versioned using the worker's version.
-  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
   /// </summary>
   public enum WorkerVersioningMode {
     [pbr::OriginalName("WORKER_VERSIONING_MODE_UNSPECIFIED")] Unspecified = 0,
@@ -147,7 +146,6 @@ namespace Temporalio.Api.Enums.V1 {
   /// (-- api-linter: core::0216::synonyms=disabled
   ///     aip.dev/not-precedent: Call this status because it is . --)
   /// Specify the status of a Worker Deployment Version.
-  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
   /// </summary>
   public enum WorkerDeploymentVersionStatus {
     [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_UNSPECIFIED")] Unspecified = 0,
@@ -179,6 +177,11 @@ namespace Temporalio.Api.Enums.V1 {
     /// workflows are closed, they should decommission the version after it has been drained for that duration.
     /// </summary>
     [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_DRAINED")] Drained = 5,
+    /// <summary>
+    /// The Worker Deployment Version is created by user (via `CreateWorkerDeploymentVersion` API)
+    /// but server has not seen any poller for it yet.
+    /// </summary>
+    [pbr::OriginalName("WORKER_DEPLOYMENT_VERSION_STATUS_CREATED")] Created = 6,
   }
 
   #endregion

@@ -29,13 +29,34 @@ namespace Temporalio.Api.Enums.V1 {
             "aW9yEjIKLk5FWFVTX0hBTkRMRVJfRVJST1JfUkVUUllfQkVIQVZJT1JfVU5T",
             "UEVDSUZJRUQQABIwCixORVhVU19IQU5ETEVSX0VSUk9SX1JFVFJZX0JFSEFW",
             "SU9SX1JFVFJZQUJMRRABEjQKME5FWFVTX0hBTkRMRVJfRVJST1JfUkVUUllf",
-            "QkVIQVZJT1JfTk9OX1JFVFJZQUJMRRACQoIBChhpby50ZW1wb3JhbC5hcGku",
-            "ZW51bXMudjFCCk5leHVzUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2Vu",
-            "dW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1w",
-            "b3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "QkVIQVZJT1JfTk9OX1JFVFJZQUJMRRACKuwCCh1OZXh1c09wZXJhdGlvbkV4",
+            "ZWN1dGlvblN0YXR1cxIwCixORVhVU19PUEVSQVRJT05fRVhFQ1VUSU9OX1NU",
+            "QVRVU19VTlNQRUNJRklFRBAAEiwKKE5FWFVTX09QRVJBVElPTl9FWEVDVVRJ",
+            "T05fU1RBVFVTX1JVTk5JTkcQARIuCipORVhVU19PUEVSQVRJT05fRVhFQ1VU",
+            "SU9OX1NUQVRVU19DT01QTEVURUQQAhIrCidORVhVU19PUEVSQVRJT05fRVhF",
+            "Q1VUSU9OX1NUQVRVU19GQUlMRUQQAxItCilORVhVU19PUEVSQVRJT05fRVhF",
+            "Q1VUSU9OX1NUQVRVU19DQU5DRUxFRBAEEi8KK05FWFVTX09QRVJBVElPTl9F",
+            "WEVDVVRJT05fU1RBVFVTX1RFUk1JTkFURUQQBRIuCipORVhVU19PUEVSQVRJ",
+            "T05fRVhFQ1VUSU9OX1NUQVRVU19USU1FRF9PVVQQBiqUAQoXTmV4dXNPcGVy",
+            "YXRpb25XYWl0U3RhZ2USKgomTkVYVVNfT1BFUkFUSU9OX1dBSVRfU1RBR0Vf",
+            "VU5TUEVDSUZJRUQQABImCiJORVhVU19PUEVSQVRJT05fV0FJVF9TVEFHRV9T",
+            "VEFSVEVEEAESJQohTkVYVVNfT1BFUkFUSU9OX1dBSVRfU1RBR0VfQ0xPU0VE",
+            "EAIq+gEKG05leHVzT3BlcmF0aW9uSWRSZXVzZVBvbGljeRIvCitORVhVU19P",
+            "UEVSQVRJT05fSURfUkVVU0VfUE9MSUNZX1VOU1BFQ0lGSUVEEAASMwovTkVY",
+            "VVNfT1BFUkFUSU9OX0lEX1JFVVNFX1BPTElDWV9BTExPV19EVVBMSUNBVEUQ",
+            "ARI/CjtORVhVU19PUEVSQVRJT05fSURfUkVVU0VfUE9MSUNZX0FMTE9XX0RV",
+            "UExJQ0FURV9GQUlMRURfT05MWRACEjQKME5FWFVTX09QRVJBVElPTl9JRF9S",
+            "RVVTRV9QT0xJQ1lfUkVKRUNUX0RVUExJQ0FURRADKrYBCh5OZXh1c09wZXJh",
+            "dGlvbklkQ29uZmxpY3RQb2xpY3kSMgouTkVYVVNfT1BFUkFUSU9OX0lEX0NP",
+            "TkZMSUNUX1BPTElDWV9VTlNQRUNJRklFRBAAEisKJ05FWFVTX09QRVJBVElP",
+            "Tl9JRF9DT05GTElDVF9QT0xJQ1lfRkFJTBABEjMKL05FWFVTX09QRVJBVElP",
+            "Tl9JRF9DT05GTElDVF9QT0xJQ1lfVVNFX0VYSVNUSU5HEAJCggEKGGlvLnRl",
+            "bXBvcmFsLmFwaS5lbnVtcy52MUIKTmV4dXNQcm90b1ABWiFnby50ZW1wb3Jh",
+            "bC5pby9hcGkvZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVt",
+            "cy5WMeoCGlRlbXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior), }, null, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.NexusHandlerErrorRetryBehavior), typeof(global::Temporalio.Api.Enums.V1.NexusOperationExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.NexusOperationWaitStage), typeof(global::Temporalio.Api.Enums.V1.NexusOperationIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.NexusOperationIdConflictPolicy), }, null, null));
     }
     #endregion
 
@@ -56,6 +77,101 @@ namespace Temporalio.Api.Enums.V1 {
     /// A handler error is explicitly marked as non-retryable.
     /// </summary>
     [pbr::OriginalName("NEXUS_HANDLER_ERROR_RETRY_BEHAVIOR_NON_RETRYABLE")] NonRetryable = 2,
+  }
+
+  /// <summary>
+  /// Status of a standalone Nexus operation execution.
+  /// The status is updated once, when the operation is originally scheduled, and again when the
+  /// operation reaches a terminal status.
+  /// (-- api-linter: core::0216::synonyms=disabled
+  ///     aip.dev/not-precedent: Named consistently with WorkflowExecutionStatus. --)
+  /// </summary>
+  public enum NexusOperationExecutionStatus {
+    [pbr::OriginalName("NEXUS_OPERATION_EXECUTION_STATUS_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// The operation is not in a terminal status. The operation may be attempting to start,
+    /// backing off between attempts, or already started.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_EXECUTION_STATUS_RUNNING")] Running = 1,
+    /// <summary>
+    /// The operation completed successfully.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_EXECUTION_STATUS_COMPLETED")] Completed = 2,
+    /// <summary>
+    /// The operation completed with failure.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_EXECUTION_STATUS_FAILED")] Failed = 3,
+    /// <summary>
+    /// The operation completed as canceled.
+    /// Requesting to cancel an operation does not automatically transition the operation to canceled status, depending
+    /// on the current operation status and the cancelation type used.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_EXECUTION_STATUS_CANCELED")] Canceled = 4,
+    /// <summary>
+    /// The operation was terminated. Termination happens immediately without notifying the handler.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_EXECUTION_STATUS_TERMINATED")] Terminated = 5,
+    /// <summary>
+    /// The operation has timed out by reaching one of the specified timeouts.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_EXECUTION_STATUS_TIMED_OUT")] TimedOut = 6,
+  }
+
+  /// <summary>
+  /// Stage that can be specified when waiting on a nexus operation.
+  /// </summary>
+  public enum NexusOperationWaitStage {
+    [pbr::OriginalName("NEXUS_OPERATION_WAIT_STAGE_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Wait for the operation to be started.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_WAIT_STAGE_STARTED")] Started = 1,
+    /// <summary>
+    /// Wait for the operation to be in a terminal state, either successful or unsuccessful.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_WAIT_STAGE_CLOSED")] Closed = 2,
+  }
+
+  /// <summary>
+  /// Defines whether to allow re-using an operation ID from a previously *closed* Nexus operation.
+  /// If the request is denied, the server returns a `NexusOperationAlreadyStarted` error.
+  ///
+  /// See `NexusOperationIdConflictPolicy` for handling ID duplication with a *running* operation.
+  /// </summary>
+  public enum NexusOperationIdReusePolicy {
+    [pbr::OriginalName("NEXUS_OPERATION_ID_REUSE_POLICY_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Always allow starting an operation using the same operation ID.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_ID_REUSE_POLICY_ALLOW_DUPLICATE")] AllowDuplicate = 1,
+    /// <summary>
+    /// Allow starting an operation using the same ID only when the last operation's final state is one
+    /// of {failed, canceled, terminated, timed out}.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_ID_REUSE_POLICY_ALLOW_DUPLICATE_FAILED_ONLY")] AllowDuplicateFailedOnly = 2,
+    /// <summary>
+    /// Do not permit re-use of the ID for this operation. Future start requests could potentially change the policy,
+    /// allowing re-use of the ID.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_ID_REUSE_POLICY_REJECT_DUPLICATE")] RejectDuplicate = 3,
+  }
+
+  /// <summary>
+  /// Defines what to do when trying to start a Nexus operation with the same ID as a *running* operation.
+  /// Note that it is *never* valid to have two running instances of the same operation ID.
+  ///
+  /// See `NexusOperationIdReusePolicy` for handling operation ID duplication with a *closed* operation.
+  /// </summary>
+  public enum NexusOperationIdConflictPolicy {
+    [pbr::OriginalName("NEXUS_OPERATION_ID_CONFLICT_POLICY_UNSPECIFIED")] Unspecified = 0,
+    /// <summary>
+    /// Don't start a new operation; instead return `NexusOperationAlreadyStarted` error.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_ID_CONFLICT_POLICY_FAIL")] Fail = 1,
+    /// <summary>
+    /// Don't start a new operation; instead return a handle for the running operation.
+    /// </summary>
+    [pbr::OriginalName("NEXUS_OPERATION_ID_CONFLICT_POLICY_USE_EXISTING")] UseExisting = 2,
   }
 
   #endregion

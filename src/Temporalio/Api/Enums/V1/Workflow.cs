@@ -79,20 +79,22 @@ namespace Temporalio.Api.Enums.V1 {
             "QkVBVBAEKn8KElZlcnNpb25pbmdCZWhhdmlvchIjCh9WRVJTSU9OSU5HX0JF",
             "SEFWSU9SX1VOU1BFQ0lGSUVEEAASHgoaVkVSU0lPTklOR19CRUhBVklPUl9Q",
             "SU5ORUQQARIkCiBWRVJTSU9OSU5HX0JFSEFWSU9SX0FVVE9fVVBHUkFERRAC",
-            "KowBCh9Db250aW51ZUFzTmV3VmVyc2lvbmluZ0JlaGF2aW9yEjMKL0NPTlRJ",
+            "KskBCh9Db250aW51ZUFzTmV3VmVyc2lvbmluZ0JlaGF2aW9yEjMKL0NPTlRJ",
             "TlVFX0FTX05FV19WRVJTSU9OSU5HX0JFSEFWSU9SX1VOU1BFQ0lGSUVEEAAS",
             "NAowQ09OVElOVUVfQVNfTkVXX1ZFUlNJT05JTkdfQkVIQVZJT1JfQVVUT19V",
-            "UEdSQURFEAEqxwIKGlN1Z2dlc3RDb250aW51ZUFzTmV3UmVhc29uEi4KKlNV",
-            "R0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9VTlNQRUNJRklFRBAAEjkK",
-            "NVNVR0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9ISVNUT1JZX1NJWkVf",
-            "VE9PX0xBUkdFEAESOgo2U1VHR0VTVF9DT05USU5VRV9BU19ORVdfUkVBU09O",
-            "X1RPT19NQU5ZX0hJU1RPUllfRVZFTlRTEAISMwovU1VHR0VTVF9DT05USU5V",
-            "RV9BU19ORVdfUkVBU09OX1RPT19NQU5ZX1VQREFURVMQAyIECAQQBCpHU1VH",
-            "R0VTVF9DT05USU5VRV9BU19ORVdfUkVBU09OX1RBUkdFVF9XT1JLRVJfREVQ",
-            "TE9ZTUVOVF9WRVJTSU9OX0NIQU5HRURChQEKGGlvLnRlbXBvcmFsLmFwaS5l",
-            "bnVtcy52MUINV29ya2Zsb3dQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkv",
-            "ZW51bXMvdjE7ZW51bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRl",
-            "bXBvcmFsaW86OkFwaTo6RW51bXM6OlYxYgZwcm90bzM="));
+            "UEdSQURFEAESOwo3Q09OVElOVUVfQVNfTkVXX1ZFUlNJT05JTkdfQkVIQVZJ",
+            "T1JfVVNFX1JBTVBJTkdfVkVSU0lPThACKscCChpTdWdnZXN0Q29udGludWVB",
+            "c05ld1JlYXNvbhIuCipTVUdHRVNUX0NPTlRJTlVFX0FTX05FV19SRUFTT05f",
+            "VU5TUEVDSUZJRUQQABI5CjVTVUdHRVNUX0NPTlRJTlVFX0FTX05FV19SRUFT",
+            "T05fSElTVE9SWV9TSVpFX1RPT19MQVJHRRABEjoKNlNVR0dFU1RfQ09OVElO",
+            "VUVfQVNfTkVXX1JFQVNPTl9UT09fTUFOWV9ISVNUT1JZX0VWRU5UUxACEjMK",
+            "L1NVR0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9UT09fTUFOWV9VUERB",
+            "VEVTEAMiBAgEEAQqR1NVR0dFU1RfQ09OVElOVUVfQVNfTkVXX1JFQVNPTl9U",
+            "QVJHRVRfV09SS0VSX0RFUExPWU1FTlRfVkVSU0lPTl9DSEFOR0VEQoUBChhp",
+            "by50ZW1wb3JhbC5hcGkuZW51bXMudjFCDVdvcmtmbG93UHJvdG9QAVohZ28u",
+            "dGVtcG9yYWwuaW8vYXBpL2VudW1zL3YxO2VudW1zqgIXVGVtcG9yYWxpby5B",
+            "cGkuRW51bXMuVjHqAhpUZW1wb3JhbGlvOjpBcGk6OkVudW1zOjpWMWIGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.WorkflowIdReusePolicy), typeof(global::Temporalio.Api.Enums.V1.WorkflowIdConflictPolicy), typeof(global::Temporalio.Api.Enums.V1.ParentClosePolicy), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewInitiator), typeof(global::Temporalio.Api.Enums.V1.WorkflowExecutionStatus), typeof(global::Temporalio.Api.Enums.V1.PendingActivityState), typeof(global::Temporalio.Api.Enums.V1.PendingWorkflowTaskState), typeof(global::Temporalio.Api.Enums.V1.HistoryEventFilterType), typeof(global::Temporalio.Api.Enums.V1.RetryState), typeof(global::Temporalio.Api.Enums.V1.TimeoutType), typeof(global::Temporalio.Api.Enums.V1.VersioningBehavior), typeof(global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior), typeof(global::Temporalio.Api.Enums.V1.SuggestContinueAsNewReason), }, null, null));
@@ -262,7 +264,6 @@ namespace Temporalio.Api.Enums.V1 {
   /// Versions. The Versioning Behavior of a workflow execution is typically specified by the worker
   /// who completes the first task of the execution, but is also overridable manually for new and
   /// existing workflows (see VersioningOverride).
-  /// Experimental. Worker Deployments are experimental and might significantly change in the future.
   /// </summary>
   public enum VersioningBehavior {
     /// <summary>
@@ -322,17 +323,33 @@ namespace Temporalio.Api.Enums.V1 {
   public enum ContinueAsNewVersioningBehavior {
     [pbr::OriginalName("CONTINUE_AS_NEW_VERSIONING_BEHAVIOR_UNSPECIFIED")] Unspecified = 0,
     /// <summary>
+    /// Experimental.
     /// Start the new run with AutoUpgrade behavior. Use the Target Version of the workflow's task queue at
     /// start-time, as AutoUpgrade workflows do. After the first workflow task completes, use whatever
     /// Versioning Behavior the workflow is annotated with in the workflow code.
     ///
-    /// Note that if the previous workflow had a Pinned override, that override will be inherited by the
+    /// Note that if the workflow being continued has a Pinned override, that override will be inherited by the
     /// new workflow run regardless of the ContinueAsNewVersioningBehavior specified in the continue-as-new
-    /// command. If a Pinned override is inherited by the new run, and the new run starts with AutoUpgrade
-    /// behavior, the base version of the new run will be the Target Version as described above, but the
-    /// effective version will be whatever is specified by the Versioning Override until the override is removed.
+    /// command. Versioning Override always takes precedence until it's removed manually via UpdateWorkflowExecutionOptions.
     /// </summary>
     [pbr::OriginalName("CONTINUE_AS_NEW_VERSIONING_BEHAVIOR_AUTO_UPGRADE")] AutoUpgrade = 1,
+    /// <summary>
+    /// Experimental.
+    /// Use the Ramping Version of the workflow's task queue at start time, regardless of the workflow's
+    /// Target Version (according to f(workflow_id, ramp_percentage)). After the first workflow task completes,
+    /// the workflow will use whatever Versioning Behavior it is annotated with. If there is no Ramping
+    /// Version by the time that the first workflow task is dispatched, it will be sent to the Current Version.
+    ///
+    /// It is highly discouraged to use this if the workflow is annotated with AutoUpgrade behavior, because
+    /// this setting ONLY applies to the first task of the workflow. If, after the first task, the workflow
+    /// is AutoUpgrade, it will behave like a normal AutoUpgrade workflow and go to the Target Version, which
+    /// may be the Current Version instead of the Ramping Version.
+    ///
+    /// Note that if the workflow being continued has a Pinned override, that override will be inherited by the
+    /// new workflow run regardless of the ContinueAsNewVersioningBehavior specified in the continue-as-new
+    /// command. Versioning Override always takes precedence until it's removed manually via UpdateWorkflowExecutionOptions.
+    /// </summary>
+    [pbr::OriginalName("CONTINUE_AS_NEW_VERSIONING_BEHAVIOR_USE_RAMPING_VERSION")] UseRampingVersion = 2,
   }
 
   /// <summary>
