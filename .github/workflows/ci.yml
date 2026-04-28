@@ -115,7 +115,7 @@ jobs:
         # Uses API key auth to test auto-TLS feature (TLS auto-enabled when API key provided).
         if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
         env:
-          TEMPORAL_TEST_CLIENT_TARGET_HOST: us-west-2.aws.api.temporal.io:7233
+          TEMPORAL_TEST_CLIENT_TARGET_HOST: us-east-1.aws.api.temporal.io:7233
           TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
