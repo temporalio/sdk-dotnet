@@ -88,14 +88,18 @@ jobs:
         run: dotnet build
 
       - name: Test
-        run: dotnet test --logger "console;verbosity=detailed" --blame-crash -v n --blame-hang-timeout 10m
+        env:
+          TEMPORAL_TEST_LOG_LEVEL: error
+        run: |
+          dotnet test --logger "console;verbosity=verbose" --logger "trx;LogFilePrefix=test-results" --results-directory /tests/Temporalio.Tests/TestResults --blame-crash -v m --blame-hang-timeout 10m
 
-      - name: Upload test failure
-        if: ${{ failure() }}
+      - name: Upload test results
+        if: ${{ always() }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
-          name: test-fail-${{ matrix.os }}
-          path: tests/Temporalio.Tests/TestResults
+          name: test-results-${{ matrix.os }}
+          path: /tests/Temporalio.Tests/TestResults/**/*.trx
+          if-no-files-found: warn
 
       - name: Confirm bench works
         run: dotnet run --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 5 --max-cached-workflows 100 --max-concurrent 100
