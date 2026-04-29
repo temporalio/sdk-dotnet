@@ -225,8 +225,8 @@
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "Transitive",
-        "resolved": "10.0.0",
-        "contentHash": "L3AdmZ1WOK4XXT5YFPEwyt0ep6l8lGIPs7F5OOBZc77Zqeo01Of7XXICy47628sdVl0v/owxYJTe86DTgFwKCA=="
+        "resolved": "10.0.6",
+        "contentHash": "w+dX4SIr1X9yegX2yX2dU1XtP4JAUVNdvOG/Evn+H+ndn96YzfIPX52FALXChrRNWFR9l77FQyg1mB7WQo6iOA=="
       },
       "Microsoft.Extensions.Diagnostics": {
         "type": "Transitive",
@@ -498,28 +498,28 @@
         "type": "Project",
         "dependencies": {
           "Google.Protobuf": "[3.26.1, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[2.2.0, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.6, )",
           "NexusRpc": "[0.3.0, )"
         }
       },
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[8.0.1, )",
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "Google.Protobuf": {
@@ -541,11 +541,11 @@
       },
       "Microsoft.Extensions.Logging.Abstractions": {
         "type": "CentralTransitive",
-        "requested": "[2.2.0, )",
-        "resolved": "10.0.0",
-        "contentHash": "FU/IfjDfwaMuKr414SSQNTIti/69bHEMb+QKrskRb26oVqpx3lNFXMjs/RC9ZUuhBhcwDM2BwOgoMw+PZ+beqQ==",
+        "requested": "[10.0.6, )",
+        "resolved": "10.0.6",
+        "contentHash": "1YgBO3wAy0dlpQyVTKWBSPND/t0yZHsvd3shGpbeEwH8JSb2hnFI2pNFrOOUi/stsp+T/dqwqmRIGh47ibo9bw==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.6"
         }
       },
       "NexusRpc": {
