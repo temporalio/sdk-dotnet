@@ -10,13 +10,13 @@
       },
       "MartinCostello.Logging.XUnit": {
         "type": "Direct",
-        "requested": "[0.3.0, )",
-        "resolved": "0.3.0",
-        "contentHash": "p6SWKQRLXEqYqnzA7mulCPfdZraDXFc7gHCErj1uw9KTNi4agFZqFDCANIfwAJ7ivWlAUAFZDTDFxb4cAhkPlw==",
+        "requested": "[0.7.1, )",
+        "resolved": "0.7.1",
+        "contentHash": "ZAiCk1jfHK6KwfvBuy+36kdaRWV25qFz3iEFO0ETI6KYz0eyZE+LTT3jaOzOLp/GtUDTgFetGdO4AHITOxIGGw==",
         "dependencies": {
-          "Microsoft.Extensions.Logging": "2.0.0",
-          "xunit.abstractions": "2.0.2",
-          "xunit.extensibility.execution": "2.4.0"
+          "Microsoft.Extensions.Logging": "10.0.0",
+          "xunit.abstractions": "2.0.3",
+          "xunit.extensibility.execution": "2.6.6"
         }
       },
       "Microsoft.Extensions.Hosting": {
@@ -460,20 +460,18 @@
       },
       "xunit.extensibility.core": {
         "type": "Transitive",
-        "resolved": "2.4.2",
-        "contentHash": "W1BoXTIN1C6kpVSMw25huSet25ky6IAQUNovu3zGOGN/jWnbgSoTyCrlIhmXSg0tH5nEf8q7h3OjNHOjyu5PfA==",
+        "resolved": "2.6.6",
+        "contentHash": "ty6VKByzbx4Toj4/VGJLEnlmOawqZiMv0in/tLju+ftA+lbWuAWDERM+E52Jfhj4ZYHrAYVa14KHK5T+dq0XxA==",
         "dependencies": {
-          "NETStandard.Library": "1.6.1",
           "xunit.abstractions": "2.0.3"
         }
       },
       "xunit.extensibility.execution": {
         "type": "Transitive",
-        "resolved": "2.4.2",
-        "contentHash": "CZmgcKkwpyo8FlupZdWpJCryrAOWLh1FBPG6gmVZuPQkGQsim/oL4PcP4nfrC2hHgXUFtluvaJ0Sp9PQKUMNpg==",
+        "resolved": "2.6.6",
+        "contentHash": "UDjIVGj2TepVKN3n32/qXIdb3U6STwTb9L6YEwoQO2A8OxiJS5QAVv2l1aT6tDwwv/9WBmm8Khh/LyHALipcng==",
         "dependencies": {
-          "NETStandard.Library": "1.6.1",
-          "xunit.extensibility.core": "[2.4.2]"
+          "xunit.extensibility.core": "[2.6.6]"
         }
       },
       "xunit.runner.reporters": {
@@ -505,21 +503,21 @@
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[8.0.1, )",
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "Google.Protobuf": {
