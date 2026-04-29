@@ -25,34 +25,35 @@ namespace Temporalio.Api.Enums.V1 {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CiZ0ZW1wb3JhbC9hcGkvZW51bXMvdjEvdGFza19xdWV1ZS5wcm90bxIVdGVt",
-            "cG9yYWwuYXBpLmVudW1zLnYxKmgKDVRhc2tRdWV1ZUtpbmQSHwobVEFTS19R",
-            "VUVVRV9LSU5EX1VOU1BFQ0lGSUVEEAASGgoWVEFTS19RVUVVRV9LSU5EX05P",
-            "Uk1BTBABEhoKFlRBU0tfUVVFVUVfS0lORF9TVElDS1kQAiqHAQoNVGFza1F1",
-            "ZXVlVHlwZRIfChtUQVNLX1FVRVVFX1RZUEVfVU5TUEVDSUZJRUQQABIcChhU",
-            "QVNLX1FVRVVFX1RZUEVfV09SS0ZMT1cQARIcChhUQVNLX1FVRVVFX1RZUEVf",
-            "QUNUSVZJVFkQAhIZChVUQVNLX1FVRVVFX1RZUEVfTkVYVVMQAyrSAQoQVGFz",
-            "a1JlYWNoYWJpbGl0eRIhCh1UQVNLX1JFQUNIQUJJTElUWV9VTlNQRUNJRklF",
-            "RBAAEiMKH1RBU0tfUkVBQ0hBQklMSVRZX05FV19XT1JLRkxPV1MQARIoCiRU",
-            "QVNLX1JFQUNIQUJJTElUWV9FWElTVElOR19XT1JLRkxPV1MQAhIkCiBUQVNL",
-            "X1JFQUNIQUJJTElUWV9PUEVOX1dPUktGTE9XUxADEiYKIlRBU0tfUkVBQ0hB",
-            "QklMSVRZX0NMT1NFRF9XT1JLRkxPV1MQBCrRAQoXQnVpbGRJZFRhc2tSZWFj",
-            "aGFiaWxpdHkSKgomQlVJTERfSURfVEFTS19SRUFDSEFCSUxJVFlfVU5TUEVD",
-            "SUZJRUQQABIoCiRCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9SRUFDSEFC",
-            "TEUQARI0CjBCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9DTE9TRURfV09S",
-            "S0ZMT1dTX09OTFkQAhIqCiZCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9V",
-            "TlJFQUNIQUJMRRADKmgKFURlc2NyaWJlVGFza1F1ZXVlTW9kZRIoCiRERVND",
-            "UklCRV9UQVNLX1FVRVVFX01PREVfVU5TUEVDSUZJRUQQABIlCiFERVNDUklC",
-            "RV9UQVNLX1FVRVVFX01PREVfRU5IQU5DRUQQASqLAQoPUmF0ZUxpbWl0U291",
-            "cmNlEiEKHVJBVEVfTElNSVRfU09VUkNFX1VOU1BFQ0lGSUVEEAASGQoVUkFU",
-            "RV9MSU1JVF9TT1VSQ0VfQVBJEAESHAoYUkFURV9MSU1JVF9TT1VSQ0VfV09S",
-            "S0VSEAISHAoYUkFURV9MSU1JVF9TT1VSQ0VfU1lTVEVNEAMqnwEKGFJvdXRp",
-            "bmdDb25maWdVcGRhdGVTdGF0ZRIrCidST1VUSU5HX0NPTkZJR19VUERBVEVf",
-            "U1RBVEVfVU5TUEVDSUZJRUQQABIrCidST1VUSU5HX0NPTkZJR19VUERBVEVf",
-            "U1RBVEVfSU5fUFJPR1JFU1MQARIpCiVST1VUSU5HX0NPTkZJR19VUERBVEVf",
-            "U1RBVEVfQ09NUExFVEVEEAJChgEKGGlvLnRlbXBvcmFsLmFwaS5lbnVtcy52",
-            "MUIOVGFza1F1ZXVlUHJvdG9QAVohZ28udGVtcG9yYWwuaW8vYXBpL2VudW1z",
-            "L3YxO2VudW1zqgIXVGVtcG9yYWxpby5BcGkuRW51bXMuVjHqAhpUZW1wb3Jh",
-            "bGlvOjpBcGk6OkVudW1zOjpWMWIGcHJvdG8z"));
+            "cG9yYWwuYXBpLmVudW1zLnYxKo0BCg1UYXNrUXVldWVLaW5kEh8KG1RBU0tf",
+            "UVVFVUVfS0lORF9VTlNQRUNJRklFRBAAEhoKFlRBU0tfUVVFVUVfS0lORF9O",
+            "T1JNQUwQARIaChZUQVNLX1FVRVVFX0tJTkRfU1RJQ0tZEAISIwofVEFTS19R",
+            "VUVVRV9LSU5EX1dPUktFUl9DT01NQU5EUxADKocBCg1UYXNrUXVldWVUeXBl",
+            "Eh8KG1RBU0tfUVVFVUVfVFlQRV9VTlNQRUNJRklFRBAAEhwKGFRBU0tfUVVF",
+            "VUVfVFlQRV9XT1JLRkxPVxABEhwKGFRBU0tfUVVFVUVfVFlQRV9BQ1RJVklU",
+            "WRACEhkKFVRBU0tfUVVFVUVfVFlQRV9ORVhVUxADKtIBChBUYXNrUmVhY2hh",
+            "YmlsaXR5EiEKHVRBU0tfUkVBQ0hBQklMSVRZX1VOU1BFQ0lGSUVEEAASIwof",
+            "VEFTS19SRUFDSEFCSUxJVFlfTkVXX1dPUktGTE9XUxABEigKJFRBU0tfUkVB",
+            "Q0hBQklMSVRZX0VYSVNUSU5HX1dPUktGTE9XUxACEiQKIFRBU0tfUkVBQ0hB",
+            "QklMSVRZX09QRU5fV09SS0ZMT1dTEAMSJgoiVEFTS19SRUFDSEFCSUxJVFlf",
+            "Q0xPU0VEX1dPUktGTE9XUxAEKtEBChdCdWlsZElkVGFza1JlYWNoYWJpbGl0",
+            "eRIqCiZCVUlMRF9JRF9UQVNLX1JFQUNIQUJJTElUWV9VTlNQRUNJRklFRBAA",
+            "EigKJEJVSUxEX0lEX1RBU0tfUkVBQ0hBQklMSVRZX1JFQUNIQUJMRRABEjQK",
+            "MEJVSUxEX0lEX1RBU0tfUkVBQ0hBQklMSVRZX0NMT1NFRF9XT1JLRkxPV1Nf",
+            "T05MWRACEioKJkJVSUxEX0lEX1RBU0tfUkVBQ0hBQklMSVRZX1VOUkVBQ0hB",
+            "QkxFEAMqaAoVRGVzY3JpYmVUYXNrUXVldWVNb2RlEigKJERFU0NSSUJFX1RB",
+            "U0tfUVVFVUVfTU9ERV9VTlNQRUNJRklFRBAAEiUKIURFU0NSSUJFX1RBU0tf",
+            "UVVFVUVfTU9ERV9FTkhBTkNFRBABKosBCg9SYXRlTGltaXRTb3VyY2USIQod",
+            "UkFURV9MSU1JVF9TT1VSQ0VfVU5TUEVDSUZJRUQQABIZChVSQVRFX0xJTUlU",
+            "X1NPVVJDRV9BUEkQARIcChhSQVRFX0xJTUlUX1NPVVJDRV9XT1JLRVIQAhIc",
+            "ChhSQVRFX0xJTUlUX1NPVVJDRV9TWVNURU0QAyqfAQoYUm91dGluZ0NvbmZp",
+            "Z1VwZGF0ZVN0YXRlEisKJ1JPVVRJTkdfQ09ORklHX1VQREFURV9TVEFURV9V",
+            "TlNQRUNJRklFRBAAEisKJ1JPVVRJTkdfQ09ORklHX1VQREFURV9TVEFURV9J",
+            "Tl9QUk9HUkVTUxABEikKJVJPVVRJTkdfQ09ORklHX1VQREFURV9TVEFURV9D",
+            "T01QTEVURUQQAkKGAQoYaW8udGVtcG9yYWwuYXBpLmVudW1zLnYxQg5UYXNr",
+            "UXVldWVQcm90b1ABWiFnby50ZW1wb3JhbC5pby9hcGkvZW51bXMvdjE7ZW51",
+            "bXOqAhdUZW1wb3JhbGlvLkFwaS5FbnVtcy5WMeoCGlRlbXBvcmFsaW86OkFw",
+            "aTo6RW51bXM6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Temporalio.Api.Enums.V1.TaskQueueKind), typeof(global::Temporalio.Api.Enums.V1.TaskQueueType), typeof(global::Temporalio.Api.Enums.V1.TaskReachability), typeof(global::Temporalio.Api.Enums.V1.BuildIdTaskReachability), typeof(global::Temporalio.Api.Enums.V1.DescribeTaskQueueMode), typeof(global::Temporalio.Api.Enums.V1.RateLimitSource), typeof(global::Temporalio.Api.Enums.V1.RoutingConfigUpdateState), }, null, null));
@@ -89,6 +90,13 @@ namespace Temporalio.Api.Enums.V1 {
     /// Sticky queues are only for workflow tasks. There are no sticky task queues for activities.
     /// </summary>
     [pbr::OriginalName("TASK_QUEUE_KIND_STICKY")] Sticky = 2,
+    /// <summary>
+    /// A worker-commands task queue is used for server-to-worker communication (e.g. activity
+    /// cancellations). These queues are ephemeral and per-worker-process — they exist only for
+    /// the lifetime of the worker process. Used with TASK_QUEUE_TYPE_NEXUS and polled via
+    /// PollNexusTaskQueue.
+    /// </summary>
+    [pbr::OriginalName("TASK_QUEUE_KIND_WORKER_COMMANDS")] WorkerCommands = 3,
   }
 
   public enum TaskQueueType {

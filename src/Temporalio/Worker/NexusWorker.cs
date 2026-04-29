@@ -135,7 +135,7 @@ namespace Temporalio.Worker
         private static void RemoveInvalidHeaders(MapField<string, string> headers)
         {
             // TODO(cretz): Duplicate other-case headers for this key are sent by server for
-            // compatibility reasons. Remove when https://github.com/temporalio/sdk-core/issues/993
+            // compatibility reasons. Remove when https://github.com/temporalio/sdk-rust/issues/993
             // is available in Core.
             headers.Remove("Request-Timeout");
         }

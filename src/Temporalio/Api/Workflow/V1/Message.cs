@@ -77,7 +77,7 @@ namespace Temporalio.Api.Workflow.V1 {
             "CzI0LnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5Xb3JrZmxvd0V4ZWN1dGlv",
             "blBhdXNlSW5mbxpeChNSZXF1ZXN0SWRJbmZvc0VudHJ5EgsKA2tleRgBIAEo",
             "CRI2CgV2YWx1ZRgCIAEoCzInLnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5S",
-            "ZXF1ZXN0SWRJbmZvOgI4ASKOBAofV29ya2Zsb3dFeGVjdXRpb25WZXJzaW9u",
+            "ZXF1ZXN0SWRJbmZvOgI4ASL7BAofV29ya2Zsb3dFeGVjdXRpb25WZXJzaW9u",
             "aW5nSW5mbxI7CghiZWhhdmlvchgBIAEoDjIpLnRlbXBvcmFsLmFwaS5lbnVt",
             "cy52MS5WZXJzaW9uaW5nQmVoYXZpb3ISPgoKZGVwbG95bWVudBgCIAEoCzIm",
             "LnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnRCAhgBEhMK",
@@ -89,180 +89,188 @@ namespace Temporalio.Api.Workflow.V1 {
             "Zmxvdy52MS5EZXBsb3ltZW50VHJhbnNpdGlvbkICGAESUQoSdmVyc2lvbl90",
             "cmFuc2l0aW9uGAYgASgLMjUudGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLkRl",
             "cGxveW1lbnRWZXJzaW9uVHJhbnNpdGlvbhIXCg9yZXZpc2lvbl9udW1iZXIY",
-            "CCABKAMiUgoURGVwbG95bWVudFRyYW5zaXRpb24SOgoKZGVwbG95bWVudBgB",
-            "IAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50LnYxLkRlcGxveW1lbnQi",
-            "gwEKG0RlcGxveW1lbnRWZXJzaW9uVHJhbnNpdGlvbhITCgd2ZXJzaW9uGAEg",
-            "ASgJQgIYARJPChJkZXBsb3ltZW50X3ZlcnNpb24YAiABKAsyMy50ZW1wb3Jh",
-            "bC5hcGkuZGVwbG95bWVudC52MS5Xb3JrZXJEZXBsb3ltZW50VmVyc2lvbiLH",
-            "AgoXV29ya2Zsb3dFeGVjdXRpb25Db25maWcSOAoKdGFza19xdWV1ZRgBIAEo",
-            "CzIkLnRlbXBvcmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlEj0KGndv",
-            "cmtmbG93X2V4ZWN1dGlvbl90aW1lb3V0GAIgASgLMhkuZ29vZ2xlLnByb3Rv",
-            "YnVmLkR1cmF0aW9uEjcKFHdvcmtmbG93X3J1bl90aW1lb3V0GAMgASgLMhku",
-            "Z29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEkAKHWRlZmF1bHRfd29ya2Zsb3df",
-            "dGFza190aW1lb3V0GAQgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9u",
-            "EjgKDXVzZXJfbWV0YWRhdGEYBSABKAsyIS50ZW1wb3JhbC5hcGkuc2RrLnYx",
-            "LlVzZXJNZXRhZGF0YSK9DQoTUGVuZGluZ0FjdGl2aXR5SW5mbxITCgthY3Rp",
-            "dml0eV9pZBgBIAEoCRI7Cg1hY3Rpdml0eV90eXBlGAIgASgLMiQudGVtcG9y",
-            "YWwuYXBpLmNvbW1vbi52MS5BY3Rpdml0eVR5cGUSOgoFc3RhdGUYAyABKA4y",
-            "Ky50ZW1wb3JhbC5hcGkuZW51bXMudjEuUGVuZGluZ0FjdGl2aXR5U3RhdGUS",
-            "OwoRaGVhcnRiZWF0X2RldGFpbHMYBCABKAsyIC50ZW1wb3JhbC5hcGkuY29t",
-            "bW9uLnYxLlBheWxvYWRzEjcKE2xhc3RfaGVhcnRiZWF0X3RpbWUYBSABKAsy",
-            "Gi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjUKEWxhc3Rfc3RhcnRlZF90",
-            "aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdhdHRl",
-            "bXB0GAcgASgFEhgKEG1heGltdW1fYXR0ZW1wdHMYCCABKAUSMgoOc2NoZWR1",
-            "bGVkX3RpbWUYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEjMK",
-            "D2V4cGlyYXRpb25fdGltZRgKIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
-            "c3RhbXASNgoMbGFzdF9mYWlsdXJlGAsgASgLMiAudGVtcG9yYWwuYXBpLmZh",
-            "aWx1cmUudjEuRmFpbHVyZRIcChRsYXN0X3dvcmtlcl9pZGVudGl0eRgMIAEo",
-            "CRI7ChV1c2Vfd29ya2Zsb3dfYnVpbGRfaWQYDSABKAsyFi5nb29nbGUucHJv",
-            "dG9idWYuRW1wdHlCAhgBSAASMgokbGFzdF9pbmRlcGVuZGVudGx5X2Fzc2ln",
-            "bmVkX2J1aWxkX2lkGA4gASgJQgIYAUgAElEKGWxhc3Rfd29ya2VyX3ZlcnNp",
-            "b25fc3RhbXAYDyABKAsyKi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLldvcmtl",
-            "clZlcnNpb25TdGFtcEICGAESOQoWY3VycmVudF9yZXRyeV9pbnRlcnZhbBgQ",
-            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI+ChpsYXN0X2F0dGVt",
-            "cHRfY29tcGxldGVfdGltZRgRIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
-            "c3RhbXASPgoabmV4dF9hdHRlbXB0X3NjaGVkdWxlX3RpbWUYEiABKAsyGi5n",
-            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEg4KBnBhdXNlZBgTIAEoCBJDCg9s",
-            "YXN0X2RlcGxveW1lbnQYFCABKAsyJi50ZW1wb3JhbC5hcGkuZGVwbG95bWVu",
-            "dC52MS5EZXBsb3ltZW50QgIYARIqCh5sYXN0X3dvcmtlcl9kZXBsb3ltZW50",
-            "X3ZlcnNpb24YFSABKAlCAhgBElQKF2xhc3RfZGVwbG95bWVudF92ZXJzaW9u",
-            "GBkgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2VyRGVw",
-            "bG95bWVudFZlcnNpb24SMgoIcHJpb3JpdHkYFiABKAsyIC50ZW1wb3JhbC5h",
-            "cGkuY29tbW9uLnYxLlByaW9yaXR5EksKCnBhdXNlX2luZm8YFyABKAsyNy50",
-            "ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuUGVuZGluZ0FjdGl2aXR5SW5mby5Q",
-            "YXVzZUluZm8SQwoQYWN0aXZpdHlfb3B0aW9ucxgYIAEoCzIpLnRlbXBvcmFs",
-            "LmFwaS5hY3Rpdml0eS52MS5BY3Rpdml0eU9wdGlvbnMazwIKCVBhdXNlSW5m",
-            "bxIuCgpwYXVzZV90aW1lGAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVz",
-            "dGFtcBJQCgZtYW51YWwYAiABKAsyPi50ZW1wb3JhbC5hcGkud29ya2Zsb3cu",
-            "djEuUGVuZGluZ0FjdGl2aXR5SW5mby5QYXVzZUluZm8uTWFudWFsSAASTAoE",
-            "cnVsZRgEIAEoCzI8LnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5QZW5kaW5n",
-            "QWN0aXZpdHlJbmZvLlBhdXNlSW5mby5SdWxlSAAaKgoGTWFudWFsEhAKCGlk",
-            "ZW50aXR5GAEgASgJEg4KBnJlYXNvbhgCIAEoCRo5CgRSdWxlEg8KB3J1bGVf",
-            "aWQYASABKAkSEAoIaWRlbnRpdHkYAiABKAkSDgoGcmVhc29uGAMgASgJQgsK",
-            "CXBhdXNlZF9ieUITChFhc3NpZ25lZF9idWlsZF9pZCK5AQoZUGVuZGluZ0No",
-            "aWxkRXhlY3V0aW9uSW5mbxITCgt3b3JrZmxvd19pZBgBIAEoCRIOCgZydW5f",
-            "aWQYAiABKAkSGgoSd29ya2Zsb3dfdHlwZV9uYW1lGAMgASgJEhQKDGluaXRp",
-            "YXRlZF9pZBgEIAEoAxJFChNwYXJlbnRfY2xvc2VfcG9saWN5GAUgASgOMigu",
-            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLlBhcmVudENsb3NlUG9saWN5Io0CChdQ",
-            "ZW5kaW5nV29ya2Zsb3dUYXNrSW5mbxI+CgVzdGF0ZRgBIAEoDjIvLnRlbXBv",
-            "cmFsLmFwaS5lbnVtcy52MS5QZW5kaW5nV29ya2Zsb3dUYXNrU3RhdGUSMgoO",
-            "c2NoZWR1bGVkX3RpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0",
-            "YW1wEjsKF29yaWdpbmFsX3NjaGVkdWxlZF90aW1lGAMgASgLMhouZ29vZ2xl",
-            "LnByb3RvYnVmLlRpbWVzdGFtcBIwCgxzdGFydGVkX3RpbWUYBCABKAsyGi5n",
-            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEg8KB2F0dGVtcHQYBSABKAUiRwoL",
-            "UmVzZXRQb2ludHMSOAoGcG9pbnRzGAEgAygLMigudGVtcG9yYWwuYXBpLndv",
-            "cmtmbG93LnYxLlJlc2V0UG9pbnRJbmZvIu8BCg5SZXNldFBvaW50SW5mbxIQ",
-            "CghidWlsZF9pZBgHIAEoCRIbCg9iaW5hcnlfY2hlY2tzdW0YASABKAlCAhgB",
-            "Eg4KBnJ1bl9pZBgCIAEoCRIoCiBmaXJzdF93b3JrZmxvd190YXNrX2NvbXBs",
-            "ZXRlZF9pZBgDIAEoAxIvCgtjcmVhdGVfdGltZRgEIAEoCzIaLmdvb2dsZS5w",
-            "cm90b2J1Zi5UaW1lc3RhbXASLwoLZXhwaXJlX3RpbWUYBSABKAsyGi5nb29n",
-            "bGUucHJvdG9idWYuVGltZXN0YW1wEhIKCnJlc2V0dGFibGUYBiABKAgihQcK",
-            "GE5ld1dvcmtmbG93RXhlY3V0aW9uSW5mbxITCgt3b3JrZmxvd19pZBgBIAEo",
-            "CRI7Cg13b3JrZmxvd190eXBlGAIgASgLMiQudGVtcG9yYWwuYXBpLmNvbW1v",
-            "bi52MS5Xb3JrZmxvd1R5cGUSOAoKdGFza19xdWV1ZRgDIAEoCzIkLnRlbXBv",
-            "cmFsLmFwaS50YXNrcXVldWUudjEuVGFza1F1ZXVlEi8KBWlucHV0GAQgASgL",
-            "MiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxI9Chp3b3JrZmxv",
-            "d19leGVjdXRpb25fdGltZW91dBgFIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5E",
-            "dXJhdGlvbhI3ChR3b3JrZmxvd19ydW5fdGltZW91dBgGIAEoCzIZLmdvb2ds",
-            "ZS5wcm90b2J1Zi5EdXJhdGlvbhI4ChV3b3JrZmxvd190YXNrX3RpbWVvdXQY",
-            "ByABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24STgoYd29ya2Zsb3df",
-            "aWRfcmV1c2VfcG9saWN5GAggASgOMiwudGVtcG9yYWwuYXBpLmVudW1zLnYx",
-            "LldvcmtmbG93SWRSZXVzZVBvbGljeRI5CgxyZXRyeV9wb2xpY3kYCSABKAsy",
-            "Iy50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlJldHJ5UG9saWN5EhUKDWNyb25f",
-            "c2NoZWR1bGUYCiABKAkSKgoEbWVtbxgLIAEoCzIcLnRlbXBvcmFsLmFwaS5j",
-            "b21tb24udjEuTWVtbxJDChFzZWFyY2hfYXR0cmlidXRlcxgMIAEoCzIoLnRl",
-            "bXBvcmFsLmFwaS5jb21tb24udjEuU2VhcmNoQXR0cmlidXRlcxIuCgZoZWFk",
-            "ZXIYDSABKAsyHi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkhlYWRlchI4Cg11",
-            "c2VyX21ldGFkYXRhGA4gASgLMiEudGVtcG9yYWwuYXBpLnNkay52MS5Vc2Vy",
-            "TWV0YWRhdGESSQoTdmVyc2lvbmluZ19vdmVycmlkZRgPIAEoCzIsLnRlbXBv",
-            "cmFsLmFwaS53b3JrZmxvdy52MS5WZXJzaW9uaW5nT3ZlcnJpZGUSMgoIcHJp",
-            "b3JpdHkYECABKAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5",
-            "ItIECgxDYWxsYmFja0luZm8SMgoIY2FsbGJhY2sYASABKAsyIC50ZW1wb3Jh",
-            "bC5hcGkuY29tbW9uLnYxLkNhbGxiYWNrEj8KB3RyaWdnZXIYAiABKAsyLi50",
-            "ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuQ2FsbGJhY2tJbmZvLlRyaWdnZXIS",
-            "NQoRcmVnaXN0cmF0aW9uX3RpbWUYAyABKAsyGi5nb29nbGUucHJvdG9idWYu",
-            "VGltZXN0YW1wEjMKBXN0YXRlGAQgASgOMiQudGVtcG9yYWwuYXBpLmVudW1z",
-            "LnYxLkNhbGxiYWNrU3RhdGUSDwoHYXR0ZW1wdBgFIAEoBRI+ChpsYXN0X2F0",
-            "dGVtcHRfY29tcGxldGVfdGltZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5U",
-            "aW1lc3RhbXASPgoUbGFzdF9hdHRlbXB0X2ZhaWx1cmUYByABKAsyIC50ZW1w",
-            "b3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEj4KGm5leHRfYXR0ZW1wdF9z",
-            "Y2hlZHVsZV90aW1lGAggASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFt",
-            "cBIWCg5ibG9ja2VkX3JlYXNvbhgJIAEoCRoQCg5Xb3JrZmxvd0Nsb3NlZBpm",
-            "CgdUcmlnZ2VyElAKD3dvcmtmbG93X2Nsb3NlZBgBIAEoCzI1LnRlbXBvcmFs",
-            "LmFwaS53b3JrZmxvdy52MS5DYWxsYmFja0luZm8uV29ya2Zsb3dDbG9zZWRI",
-            "AEIJCgd2YXJpYW50IosGChlQZW5kaW5nTmV4dXNPcGVyYXRpb25JbmZvEhAK",
-            "CGVuZHBvaW50GAEgASgJEg8KB3NlcnZpY2UYAiABKAkSEQoJb3BlcmF0aW9u",
-            "GAMgASgJEhgKDG9wZXJhdGlvbl9pZBgEIAEoCUICGAESPAoZc2NoZWR1bGVf",
-            "dG9fY2xvc2VfdGltZW91dBgFIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJh",
-            "dGlvbhIyCg5zY2hlZHVsZWRfdGltZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1",
-            "Zi5UaW1lc3RhbXASQAoFc3RhdGUYByABKA4yMS50ZW1wb3JhbC5hcGkuZW51",
-            "bXMudjEuUGVuZGluZ05leHVzT3BlcmF0aW9uU3RhdGUSDwoHYXR0ZW1wdBgI",
-            "IAEoBRI+ChpsYXN0X2F0dGVtcHRfY29tcGxldGVfdGltZRgJIAEoCzIaLmdv",
-            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASPgoUbGFzdF9hdHRlbXB0X2ZhaWx1",
-            "cmUYCiABKAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEj4K",
-            "Gm5leHRfYXR0ZW1wdF9zY2hlZHVsZV90aW1lGAsgASgLMhouZ29vZ2xlLnBy",
-            "b3RvYnVmLlRpbWVzdGFtcBJTChFjYW5jZWxsYXRpb25faW5mbxgMIAEoCzI4",
-            "LnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5OZXh1c09wZXJhdGlvbkNhbmNl",
-            "bGxhdGlvbkluZm8SGgoSc2NoZWR1bGVkX2V2ZW50X2lkGA0gASgDEhYKDmJs",
-            "b2NrZWRfcmVhc29uGA4gASgJEhcKD29wZXJhdGlvbl90b2tlbhgPIAEoCRI8",
-            "ChlzY2hlZHVsZV90b19zdGFydF90aW1lb3V0GBAgASgLMhkuZ29vZ2xlLnBy",
-            "b3RvYnVmLkR1cmF0aW9uEjkKFnN0YXJ0X3RvX2Nsb3NlX3RpbWVvdXQYESAB",
-            "KAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24ihAMKHk5leHVzT3BlcmF0",
-            "aW9uQ2FuY2VsbGF0aW9uSW5mbxIyCg5yZXF1ZXN0ZWRfdGltZRgBIAEoCzIa",
-            "Lmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASRQoFc3RhdGUYAiABKA4yNi50",
-            "ZW1wb3JhbC5hcGkuZW51bXMudjEuTmV4dXNPcGVyYXRpb25DYW5jZWxsYXRp",
-            "b25TdGF0ZRIPCgdhdHRlbXB0GAMgASgFEj4KGmxhc3RfYXR0ZW1wdF9jb21w",
-            "bGV0ZV90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBI+",
-            "ChRsYXN0X2F0dGVtcHRfZmFpbHVyZRgFIAEoCzIgLnRlbXBvcmFsLmFwaS5m",
-            "YWlsdXJlLnYxLkZhaWx1cmUSPgoabmV4dF9hdHRlbXB0X3NjaGVkdWxlX3Rp",
-            "bWUYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhYKDmJsb2Nr",
-            "ZWRfcmVhc29uGAcgASgJIpkBChhXb3JrZmxvd0V4ZWN1dGlvbk9wdGlvbnMS",
-            "SQoTdmVyc2lvbmluZ19vdmVycmlkZRgBIAEoCzIsLnRlbXBvcmFsLmFwaS53",
-            "b3JrZmxvdy52MS5WZXJzaW9uaW5nT3ZlcnJpZGUSMgoIcHJpb3JpdHkYAiAB",
-            "KAsyIC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlByaW9yaXR5Ir0EChJWZXJz",
-            "aW9uaW5nT3ZlcnJpZGUSTQoGcGlubmVkGAMgASgLMjsudGVtcG9yYWwuYXBp",
-            "LndvcmtmbG93LnYxLlZlcnNpb25pbmdPdmVycmlkZS5QaW5uZWRPdmVycmlk",
-            "ZUgAEhYKDGF1dG9fdXBncmFkZRgEIAEoCEgAEj8KCGJlaGF2aW9yGAEgASgO",
-            "MikudGVtcG9yYWwuYXBpLmVudW1zLnYxLlZlcnNpb25pbmdCZWhhdmlvckIC",
-            "GAESPgoKZGVwbG95bWVudBgCIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3lt",
-            "ZW50LnYxLkRlcGxveW1lbnRCAhgBEhoKDnBpbm5lZF92ZXJzaW9uGAkgASgJ",
-            "QgIYARqtAQoOUGlubmVkT3ZlcnJpZGUSVQoIYmVoYXZpb3IYASABKA4yQy50",
-            "ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuVmVyc2lvbmluZ092ZXJyaWRlLlBp",
-            "bm5lZE92ZXJyaWRlQmVoYXZpb3ISRAoHdmVyc2lvbhgCIAEoCzIzLnRlbXBv",
-            "cmFsLmFwaS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRWZXJzaW9u",
-            "ImcKFlBpbm5lZE92ZXJyaWRlQmVoYXZpb3ISKAokUElOTkVEX09WRVJSSURF",
-            "X0JFSEFWSU9SX1VOU1BFQ0lGSUVEEAASIwofUElOTkVEX09WRVJSSURFX0JF",
-            "SEFWSU9SX1BJTk5FRBABQgoKCG92ZXJyaWRlImkKEU9uQ29uZmxpY3RPcHRp",
-            "b25zEhkKEWF0dGFjaF9yZXF1ZXN0X2lkGAEgASgIEiMKG2F0dGFjaF9jb21w",
-            "bGV0aW9uX2NhbGxiYWNrcxgCIAEoCBIUCgxhdHRhY2hfbGlua3MYAyABKAgi",
-            "aQoNUmVxdWVzdElkSW5mbxI0CgpldmVudF90eXBlGAEgASgOMiAudGVtcG9y",
-            "YWwuYXBpLmVudW1zLnYxLkV2ZW50VHlwZRIQCghldmVudF9pZBgCIAEoAxIQ",
-            "CghidWZmZXJlZBgDIAEoCCK3BAoSUG9zdFJlc2V0T3BlcmF0aW9uElYKD3Np",
-            "Z25hbF93b3JrZmxvdxgBIAEoCzI7LnRlbXBvcmFsLmFwaS53b3JrZmxvdy52",
-            "MS5Qb3N0UmVzZXRPcGVyYXRpb24uU2lnbmFsV29ya2Zsb3dIABJlChd1cGRh",
-            "dGVfd29ya2Zsb3dfb3B0aW9ucxgCIAEoCzJCLnRlbXBvcmFsLmFwaS53b3Jr",
-            "Zmxvdy52MS5Qb3N0UmVzZXRPcGVyYXRpb24uVXBkYXRlV29ya2Zsb3dPcHRp",
-            "b25zSAAaswEKDlNpZ25hbFdvcmtmbG93EhMKC3NpZ25hbF9uYW1lGAEgASgJ",
-            "Ei8KBWlucHV0GAIgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXls",
-            "b2FkcxIuCgZoZWFkZXIYAyABKAsyHi50ZW1wb3JhbC5hcGkuY29tbW9uLnYx",
-            "LkhlYWRlchIrCgVsaW5rcxgEIAMoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24u",
-            "djEuTGluaxqgAQoVVXBkYXRlV29ya2Zsb3dPcHRpb25zElYKGndvcmtmbG93",
-            "X2V4ZWN1dGlvbl9vcHRpb25zGAEgASgLMjIudGVtcG9yYWwuYXBpLndvcmtm",
-            "bG93LnYxLldvcmtmbG93RXhlY3V0aW9uT3B0aW9ucxIvCgt1cGRhdGVfbWFz",
-            "axgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5GaWVsZE1hc2tCCQoHdmFyaWFu",
-            "dCJvChpXb3JrZmxvd0V4ZWN1dGlvblBhdXNlSW5mbxIQCghpZGVudGl0eRgB",
-            "IAEoCRIvCgtwYXVzZWRfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5U",
-            "aW1lc3RhbXASDgoGcmVhc29uGAMgASgJQpMBChtpby50ZW1wb3JhbC5hcGku",
-            "d29ya2Zsb3cudjFCDE1lc3NhZ2VQcm90b1ABWidnby50ZW1wb3JhbC5pby9h",
-            "cGkvd29ya2Zsb3cvdjE7d29ya2Zsb3eqAhpUZW1wb3JhbGlvLkFwaS5Xb3Jr",
-            "Zmxvdy5WMeoCHVRlbXBvcmFsaW86OkFwaTo6V29ya2Zsb3c6OlYxYgZwcm90",
-            "bzM="));
+            "CCABKAMSaworY29udGludWVfYXNfbmV3X2luaXRpYWxfdmVyc2lvbmluZ19i",
+            "ZWhhdmlvchgJIAEoDjI2LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5Db250aW51",
+            "ZUFzTmV3VmVyc2lvbmluZ0JlaGF2aW9yIlIKFERlcGxveW1lbnRUcmFuc2l0",
+            "aW9uEjoKCmRlcGxveW1lbnQYASABKAsyJi50ZW1wb3JhbC5hcGkuZGVwbG95",
+            "bWVudC52MS5EZXBsb3ltZW50IoMBChtEZXBsb3ltZW50VmVyc2lvblRyYW5z",
+            "aXRpb24SEwoHdmVyc2lvbhgBIAEoCUICGAESTwoSZGVwbG95bWVudF92ZXJz",
+            "aW9uGAIgASgLMjMudGVtcG9yYWwuYXBpLmRlcGxveW1lbnQudjEuV29ya2Vy",
+            "RGVwbG95bWVudFZlcnNpb24ixwIKF1dvcmtmbG93RXhlY3V0aW9uQ29uZmln",
+            "EjgKCnRhc2tfcXVldWUYASABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVl",
+            "LnYxLlRhc2tRdWV1ZRI9Chp3b3JrZmxvd19leGVjdXRpb25fdGltZW91dBgC",
+            "IAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI3ChR3b3JrZmxvd19y",
+            "dW5fdGltZW91dBgDIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhJA",
+            "Ch1kZWZhdWx0X3dvcmtmbG93X3Rhc2tfdGltZW91dBgEIAEoCzIZLmdvb2ds",
+            "ZS5wcm90b2J1Zi5EdXJhdGlvbhI4Cg11c2VyX21ldGFkYXRhGAUgASgLMiEu",
+            "dGVtcG9yYWwuYXBpLnNkay52MS5Vc2VyTWV0YWRhdGEivQ0KE1BlbmRpbmdB",
+            "Y3Rpdml0eUluZm8SEwoLYWN0aXZpdHlfaWQYASABKAkSOwoNYWN0aXZpdHlf",
+            "dHlwZRgCIAEoCzIkLnRlbXBvcmFsLmFwaS5jb21tb24udjEuQWN0aXZpdHlU",
+            "eXBlEjoKBXN0YXRlGAMgASgOMisudGVtcG9yYWwuYXBpLmVudW1zLnYxLlBl",
+            "bmRpbmdBY3Rpdml0eVN0YXRlEjsKEWhlYXJ0YmVhdF9kZXRhaWxzGAQgASgL",
+            "MiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2FkcxI3ChNsYXN0X2hl",
+            "YXJ0YmVhdF90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFt",
+            "cBI1ChFsYXN0X3N0YXJ0ZWRfdGltZRgGIAEoCzIaLmdvb2dsZS5wcm90b2J1",
+            "Zi5UaW1lc3RhbXASDwoHYXR0ZW1wdBgHIAEoBRIYChBtYXhpbXVtX2F0dGVt",
+            "cHRzGAggASgFEjIKDnNjaGVkdWxlZF90aW1lGAkgASgLMhouZ29vZ2xlLnBy",
+            "b3RvYnVmLlRpbWVzdGFtcBIzCg9leHBpcmF0aW9uX3RpbWUYCiABKAsyGi5n",
+            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEjYKDGxhc3RfZmFpbHVyZRgLIAEo",
+            "CzIgLnRlbXBvcmFsLmFwaS5mYWlsdXJlLnYxLkZhaWx1cmUSHAoUbGFzdF93",
+            "b3JrZXJfaWRlbnRpdHkYDCABKAkSOwoVdXNlX3dvcmtmbG93X2J1aWxkX2lk",
+            "GA0gASgLMhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5QgIYAUgAEjIKJGxhc3Rf",
+            "aW5kZXBlbmRlbnRseV9hc3NpZ25lZF9idWlsZF9pZBgOIAEoCUICGAFIABJR",
+            "ChlsYXN0X3dvcmtlcl92ZXJzaW9uX3N0YW1wGA8gASgLMioudGVtcG9yYWwu",
+            "YXBpLmNvbW1vbi52MS5Xb3JrZXJWZXJzaW9uU3RhbXBCAhgBEjkKFmN1cnJl",
+            "bnRfcmV0cnlfaW50ZXJ2YWwYECABKAsyGS5nb29nbGUucHJvdG9idWYuRHVy",
+            "YXRpb24SPgoabGFzdF9hdHRlbXB0X2NvbXBsZXRlX3RpbWUYESABKAsyGi5n",
+            "b29nbGUucHJvdG9idWYuVGltZXN0YW1wEj4KGm5leHRfYXR0ZW1wdF9zY2hl",
+            "ZHVsZV90aW1lGBIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIO",
+            "CgZwYXVzZWQYEyABKAgSQwoPbGFzdF9kZXBsb3ltZW50GBQgASgLMiYudGVt",
+            "cG9yYWwuYXBpLmRlcGxveW1lbnQudjEuRGVwbG95bWVudEICGAESKgoebGFz",
+            "dF93b3JrZXJfZGVwbG95bWVudF92ZXJzaW9uGBUgASgJQgIYARJUChdsYXN0",
+            "X2RlcGxveW1lbnRfdmVyc2lvbhgZIAEoCzIzLnRlbXBvcmFsLmFwaS5kZXBs",
+            "b3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRWZXJzaW9uEjIKCHByaW9yaXR5",
+            "GBYgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5Qcmlvcml0eRJLCgpw",
+            "YXVzZV9pbmZvGBcgASgLMjcudGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLlBl",
+            "bmRpbmdBY3Rpdml0eUluZm8uUGF1c2VJbmZvEkMKEGFjdGl2aXR5X29wdGlv",
+            "bnMYGCABKAsyKS50ZW1wb3JhbC5hcGkuYWN0aXZpdHkudjEuQWN0aXZpdHlP",
+            "cHRpb25zGs8CCglQYXVzZUluZm8SLgoKcGF1c2VfdGltZRgBIAEoCzIaLmdv",
+            "b2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASUAoGbWFudWFsGAIgASgLMj4udGVt",
+            "cG9yYWwuYXBpLndvcmtmbG93LnYxLlBlbmRpbmdBY3Rpdml0eUluZm8uUGF1",
+            "c2VJbmZvLk1hbnVhbEgAEkwKBHJ1bGUYBCABKAsyPC50ZW1wb3JhbC5hcGku",
+            "d29ya2Zsb3cudjEuUGVuZGluZ0FjdGl2aXR5SW5mby5QYXVzZUluZm8uUnVs",
+            "ZUgAGioKBk1hbnVhbBIQCghpZGVudGl0eRgBIAEoCRIOCgZyZWFzb24YAiAB",
+            "KAkaOQoEUnVsZRIPCgdydWxlX2lkGAEgASgJEhAKCGlkZW50aXR5GAIgASgJ",
+            "Eg4KBnJlYXNvbhgDIAEoCUILCglwYXVzZWRfYnlCEwoRYXNzaWduZWRfYnVp",
+            "bGRfaWQiuQEKGVBlbmRpbmdDaGlsZEV4ZWN1dGlvbkluZm8SEwoLd29ya2Zs",
+            "b3dfaWQYASABKAkSDgoGcnVuX2lkGAIgASgJEhoKEndvcmtmbG93X3R5cGVf",
+            "bmFtZRgDIAEoCRIUCgxpbml0aWF0ZWRfaWQYBCABKAMSRQoTcGFyZW50X2Ns",
+            "b3NlX3BvbGljeRgFIAEoDjIoLnRlbXBvcmFsLmFwaS5lbnVtcy52MS5QYXJl",
+            "bnRDbG9zZVBvbGljeSKNAgoXUGVuZGluZ1dvcmtmbG93VGFza0luZm8SPgoF",
+            "c3RhdGUYASABKA4yLy50ZW1wb3JhbC5hcGkuZW51bXMudjEuUGVuZGluZ1dv",
+            "cmtmbG93VGFza1N0YXRlEjIKDnNjaGVkdWxlZF90aW1lGAIgASgLMhouZ29v",
+            "Z2xlLnByb3RvYnVmLlRpbWVzdGFtcBI7ChdvcmlnaW5hbF9zY2hlZHVsZWRf",
+            "dGltZRgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMAoMc3Rh",
+            "cnRlZF90aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIP",
+            "CgdhdHRlbXB0GAUgASgFIkcKC1Jlc2V0UG9pbnRzEjgKBnBvaW50cxgBIAMo",
+            "CzIoLnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5SZXNldFBvaW50SW5mbyLv",
+            "AQoOUmVzZXRQb2ludEluZm8SEAoIYnVpbGRfaWQYByABKAkSGwoPYmluYXJ5",
+            "X2NoZWNrc3VtGAEgASgJQgIYARIOCgZydW5faWQYAiABKAkSKAogZmlyc3Rf",
+            "d29ya2Zsb3dfdGFza19jb21wbGV0ZWRfaWQYAyABKAMSLwoLY3JlYXRlX3Rp",
+            "bWUYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi8KC2V4cGly",
+            "ZV90aW1lGAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBISCgpy",
+            "ZXNldHRhYmxlGAYgASgIIoUHChhOZXdXb3JrZmxvd0V4ZWN1dGlvbkluZm8S",
+            "EwoLd29ya2Zsb3dfaWQYASABKAkSOwoNd29ya2Zsb3dfdHlwZRgCIAEoCzIk",
+            "LnRlbXBvcmFsLmFwaS5jb21tb24udjEuV29ya2Zsb3dUeXBlEjgKCnRhc2tf",
+            "cXVldWUYAyABKAsyJC50ZW1wb3JhbC5hcGkudGFza3F1ZXVlLnYxLlRhc2tR",
+            "dWV1ZRIvCgVpbnB1dBgEIAEoCzIgLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "UGF5bG9hZHMSPQoad29ya2Zsb3dfZXhlY3V0aW9uX3RpbWVvdXQYBSABKAsy",
+            "GS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SNwoUd29ya2Zsb3dfcnVuX3Rp",
+            "bWVvdXQYBiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SOAoVd29y",
+            "a2Zsb3dfdGFza190aW1lb3V0GAcgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1",
+            "cmF0aW9uEk4KGHdvcmtmbG93X2lkX3JldXNlX3BvbGljeRgIIAEoDjIsLnRl",
+            "bXBvcmFsLmFwaS5lbnVtcy52MS5Xb3JrZmxvd0lkUmV1c2VQb2xpY3kSOQoM",
+            "cmV0cnlfcG9saWN5GAkgASgLMiMudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5S",
+            "ZXRyeVBvbGljeRIVCg1jcm9uX3NjaGVkdWxlGAogASgJEioKBG1lbW8YCyAB",
+            "KAsyHC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLk1lbW8SQwoRc2VhcmNoX2F0",
+            "dHJpYnV0ZXMYDCABKAsyKC50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLlNlYXJj",
+            "aEF0dHJpYnV0ZXMSLgoGaGVhZGVyGA0gASgLMh4udGVtcG9yYWwuYXBpLmNv",
+            "bW1vbi52MS5IZWFkZXISOAoNdXNlcl9tZXRhZGF0YRgOIAEoCzIhLnRlbXBv",
+            "cmFsLmFwaS5zZGsudjEuVXNlck1ldGFkYXRhEkkKE3ZlcnNpb25pbmdfb3Zl",
+            "cnJpZGUYDyABKAsyLC50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuVmVyc2lv",
+            "bmluZ092ZXJyaWRlEjIKCHByaW9yaXR5GBAgASgLMiAudGVtcG9yYWwuYXBp",
+            "LmNvbW1vbi52MS5Qcmlvcml0eSLSBAoMQ2FsbGJhY2tJbmZvEjIKCGNhbGxi",
+            "YWNrGAEgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5DYWxsYmFjaxI/",
+            "Cgd0cmlnZ2VyGAIgASgLMi4udGVtcG9yYWwuYXBpLndvcmtmbG93LnYxLkNh",
+            "bGxiYWNrSW5mby5UcmlnZ2VyEjUKEXJlZ2lzdHJhdGlvbl90aW1lGAMgASgL",
+            "MhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIzCgVzdGF0ZRgEIAEoDjIk",
+            "LnRlbXBvcmFsLmFwaS5lbnVtcy52MS5DYWxsYmFja1N0YXRlEg8KB2F0dGVt",
+            "cHQYBSABKAUSPgoabGFzdF9hdHRlbXB0X2NvbXBsZXRlX3RpbWUYBiABKAsy",
+            "Gi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEj4KFGxhc3RfYXR0ZW1wdF9m",
+            "YWlsdXJlGAcgASgLMiAudGVtcG9yYWwuYXBpLmZhaWx1cmUudjEuRmFpbHVy",
+            "ZRI+ChpuZXh0X2F0dGVtcHRfc2NoZWR1bGVfdGltZRgIIAEoCzIaLmdvb2ds",
+            "ZS5wcm90b2J1Zi5UaW1lc3RhbXASFgoOYmxvY2tlZF9yZWFzb24YCSABKAka",
+            "EAoOV29ya2Zsb3dDbG9zZWQaZgoHVHJpZ2dlchJQCg93b3JrZmxvd19jbG9z",
+            "ZWQYASABKAsyNS50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuQ2FsbGJhY2tJ",
+            "bmZvLldvcmtmbG93Q2xvc2VkSABCCQoHdmFyaWFudCKLBgoZUGVuZGluZ05l",
+            "eHVzT3BlcmF0aW9uSW5mbxIQCghlbmRwb2ludBgBIAEoCRIPCgdzZXJ2aWNl",
+            "GAIgASgJEhEKCW9wZXJhdGlvbhgDIAEoCRIYCgxvcGVyYXRpb25faWQYBCAB",
+            "KAlCAhgBEjwKGXNjaGVkdWxlX3RvX2Nsb3NlX3RpbWVvdXQYBSABKAsyGS5n",
+            "b29nbGUucHJvdG9idWYuRHVyYXRpb24SMgoOc2NoZWR1bGVkX3RpbWUYBiAB",
+            "KAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEkAKBXN0YXRlGAcgASgO",
+            "MjEudGVtcG9yYWwuYXBpLmVudW1zLnYxLlBlbmRpbmdOZXh1c09wZXJhdGlv",
+            "blN0YXRlEg8KB2F0dGVtcHQYCCABKAUSPgoabGFzdF9hdHRlbXB0X2NvbXBs",
+            "ZXRlX3RpbWUYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEj4K",
+            "FGxhc3RfYXR0ZW1wdF9mYWlsdXJlGAogASgLMiAudGVtcG9yYWwuYXBpLmZh",
+            "aWx1cmUudjEuRmFpbHVyZRI+ChpuZXh0X2F0dGVtcHRfc2NoZWR1bGVfdGlt",
+            "ZRgLIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASUwoRY2FuY2Vs",
+            "bGF0aW9uX2luZm8YDCABKAsyOC50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEu",
+            "TmV4dXNPcGVyYXRpb25DYW5jZWxsYXRpb25JbmZvEhoKEnNjaGVkdWxlZF9l",
+            "dmVudF9pZBgNIAEoAxIWCg5ibG9ja2VkX3JlYXNvbhgOIAEoCRIXCg9vcGVy",
+            "YXRpb25fdG9rZW4YDyABKAkSPAoZc2NoZWR1bGVfdG9fc3RhcnRfdGltZW91",
+            "dBgQIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI5ChZzdGFydF90",
+            "b19jbG9zZV90aW1lb3V0GBEgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0",
+            "aW9uIoQDCh5OZXh1c09wZXJhdGlvbkNhbmNlbGxhdGlvbkluZm8SMgoOcmVx",
+            "dWVzdGVkX3RpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
+            "EkUKBXN0YXRlGAIgASgOMjYudGVtcG9yYWwuYXBpLmVudW1zLnYxLk5leHVz",
+            "T3BlcmF0aW9uQ2FuY2VsbGF0aW9uU3RhdGUSDwoHYXR0ZW1wdBgDIAEoBRI+",
+            "ChpsYXN0X2F0dGVtcHRfY29tcGxldGVfdGltZRgEIAEoCzIaLmdvb2dsZS5w",
+            "cm90b2J1Zi5UaW1lc3RhbXASPgoUbGFzdF9hdHRlbXB0X2ZhaWx1cmUYBSAB",
+            "KAsyIC50ZW1wb3JhbC5hcGkuZmFpbHVyZS52MS5GYWlsdXJlEj4KGm5leHRf",
+            "YXR0ZW1wdF9zY2hlZHVsZV90aW1lGAYgASgLMhouZ29vZ2xlLnByb3RvYnVm",
+            "LlRpbWVzdGFtcBIWCg5ibG9ja2VkX3JlYXNvbhgHIAEoCSLlAQoYV29ya2Zs",
+            "b3dFeGVjdXRpb25PcHRpb25zEkkKE3ZlcnNpb25pbmdfb3ZlcnJpZGUYASAB",
+            "KAsyLC50ZW1wb3JhbC5hcGkud29ya2Zsb3cudjEuVmVyc2lvbmluZ092ZXJy",
+            "aWRlEjIKCHByaW9yaXR5GAIgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52",
+            "MS5Qcmlvcml0eRJKChR0aW1lX3NraXBwaW5nX2NvbmZpZxgDIAEoCzIsLnRl",
+            "bXBvcmFsLmFwaS53b3JrZmxvdy52MS5UaW1lU2tpcHBpbmdDb25maWci1gEK",
+            "ElRpbWVTa2lwcGluZ0NvbmZpZxIPCgdlbmFibGVkGAEgASgIEjkKFG1heF9z",
+            "a2lwcGVkX2R1cmF0aW9uGAQgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0",
+            "aW9uSAASOQoUbWF4X2VsYXBzZWRfZHVyYXRpb24YBSABKAsyGS5nb29nbGUu",
+            "cHJvdG9idWYuRHVyYXRpb25IAEIHCgVib3VuZEoECAIQA0oECAYQB1ITZGlz",
+            "YWJsZV9wcm9wYWdhdGlvblIPbWF4X3RhcmdldF90aW1lIr0EChJWZXJzaW9u",
+            "aW5nT3ZlcnJpZGUSTQoGcGlubmVkGAMgASgLMjsudGVtcG9yYWwuYXBpLndv",
+            "cmtmbG93LnYxLlZlcnNpb25pbmdPdmVycmlkZS5QaW5uZWRPdmVycmlkZUgA",
+            "EhYKDGF1dG9fdXBncmFkZRgEIAEoCEgAEj8KCGJlaGF2aW9yGAEgASgOMiku",
+            "dGVtcG9yYWwuYXBpLmVudW1zLnYxLlZlcnNpb25pbmdCZWhhdmlvckICGAES",
+            "PgoKZGVwbG95bWVudBgCIAEoCzImLnRlbXBvcmFsLmFwaS5kZXBsb3ltZW50",
+            "LnYxLkRlcGxveW1lbnRCAhgBEhoKDnBpbm5lZF92ZXJzaW9uGAkgASgJQgIY",
+            "ARqtAQoOUGlubmVkT3ZlcnJpZGUSVQoIYmVoYXZpb3IYASABKA4yQy50ZW1w",
+            "b3JhbC5hcGkud29ya2Zsb3cudjEuVmVyc2lvbmluZ092ZXJyaWRlLlBpbm5l",
+            "ZE92ZXJyaWRlQmVoYXZpb3ISRAoHdmVyc2lvbhgCIAEoCzIzLnRlbXBvcmFs",
+            "LmFwaS5kZXBsb3ltZW50LnYxLldvcmtlckRlcGxveW1lbnRWZXJzaW9uImcK",
+            "FlBpbm5lZE92ZXJyaWRlQmVoYXZpb3ISKAokUElOTkVEX09WRVJSSURFX0JF",
+            "SEFWSU9SX1VOU1BFQ0lGSUVEEAASIwofUElOTkVEX09WRVJSSURFX0JFSEFW",
+            "SU9SX1BJTk5FRBABQgoKCG92ZXJyaWRlImkKEU9uQ29uZmxpY3RPcHRpb25z",
+            "EhkKEWF0dGFjaF9yZXF1ZXN0X2lkGAEgASgIEiMKG2F0dGFjaF9jb21wbGV0",
+            "aW9uX2NhbGxiYWNrcxgCIAEoCBIUCgxhdHRhY2hfbGlua3MYAyABKAgiaQoN",
+            "UmVxdWVzdElkSW5mbxI0CgpldmVudF90eXBlGAEgASgOMiAudGVtcG9yYWwu",
+            "YXBpLmVudW1zLnYxLkV2ZW50VHlwZRIQCghldmVudF9pZBgCIAEoAxIQCghi",
+            "dWZmZXJlZBgDIAEoCCK3BAoSUG9zdFJlc2V0T3BlcmF0aW9uElYKD3NpZ25h",
+            "bF93b3JrZmxvdxgBIAEoCzI7LnRlbXBvcmFsLmFwaS53b3JrZmxvdy52MS5Q",
+            "b3N0UmVzZXRPcGVyYXRpb24uU2lnbmFsV29ya2Zsb3dIABJlChd1cGRhdGVf",
+            "d29ya2Zsb3dfb3B0aW9ucxgCIAEoCzJCLnRlbXBvcmFsLmFwaS53b3JrZmxv",
+            "dy52MS5Qb3N0UmVzZXRPcGVyYXRpb24uVXBkYXRlV29ya2Zsb3dPcHRpb25z",
+            "SAAaswEKDlNpZ25hbFdvcmtmbG93EhMKC3NpZ25hbF9uYW1lGAEgASgJEi8K",
+            "BWlucHV0GAIgASgLMiAudGVtcG9yYWwuYXBpLmNvbW1vbi52MS5QYXlsb2Fk",
+            "cxIuCgZoZWFkZXIYAyABKAsyHi50ZW1wb3JhbC5hcGkuY29tbW9uLnYxLkhl",
+            "YWRlchIrCgVsaW5rcxgEIAMoCzIcLnRlbXBvcmFsLmFwaS5jb21tb24udjEu",
+            "TGluaxqgAQoVVXBkYXRlV29ya2Zsb3dPcHRpb25zElYKGndvcmtmbG93X2V4",
+            "ZWN1dGlvbl9vcHRpb25zGAEgASgLMjIudGVtcG9yYWwuYXBpLndvcmtmbG93",
+            "LnYxLldvcmtmbG93RXhlY3V0aW9uT3B0aW9ucxIvCgt1cGRhdGVfbWFzaxgC",
+            "IAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5GaWVsZE1hc2tCCQoHdmFyaWFudCJv",
+            "ChpXb3JrZmxvd0V4ZWN1dGlvblBhdXNlSW5mbxIQCghpZGVudGl0eRgBIAEo",
+            "CRIvCgtwYXVzZWRfdGltZRgCIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1l",
+            "c3RhbXASDgoGcmVhc29uGAMgASgJQpMBChtpby50ZW1wb3JhbC5hcGkud29y",
+            "a2Zsb3cudjFCDE1lc3NhZ2VQcm90b1ABWidnby50ZW1wb3JhbC5pby9hcGkv",
+            "d29ya2Zsb3cvdjE7d29ya2Zsb3eqAhpUZW1wb3JhbGlvLkFwaS5Xb3JrZmxv",
+            "dy5WMeoCHVRlbXBvcmFsaW86OkFwaTo6V29ya2Zsb3c6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.DurationReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, global::Temporalio.Api.Activity.V1.MessageReflection.Descriptor, global::Temporalio.Api.Enums.V1.CommonReflection.Descriptor, global::Temporalio.Api.Enums.V1.EventTypeReflection.Descriptor, global::Temporalio.Api.Enums.V1.WorkflowReflection.Descriptor, global::Temporalio.Api.Common.V1.MessageReflection.Descriptor, global::Temporalio.Api.Deployment.V1.MessageReflection.Descriptor, global::Temporalio.Api.Failure.V1.MessageReflection.Descriptor, global::Temporalio.Api.TaskQueue.V1.MessageReflection.Descriptor, global::Temporalio.Api.Sdk.V1.UserMetadataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionInfo.Parser, new[]{ "Execution", "Type", "StartTime", "CloseTime", "Status", "HistoryLength", "ParentNamespaceId", "ParentExecution", "ExecutionTime", "Memo", "SearchAttributes", "AutoResetPoints", "TaskQueue", "StateTransitionCount", "HistorySizeBytes", "MostRecentWorkerVersionStamp", "ExecutionDuration", "RootExecution", "AssignedBuildId", "InheritedBuildId", "FirstRunId", "VersioningInfo", "WorkerDeploymentName", "Priority", "ExternalPayloadSizeBytes", "ExternalPayloadCount" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionExtendedInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionExtendedInfo.Parser, new[]{ "ExecutionExpirationTime", "RunExpirationTime", "CancelRequested", "LastResetTime", "OriginalStartTime", "ResetRunId", "RequestIdInfos", "PauseInfo" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo.Parser, new[]{ "Behavior", "Deployment", "Version", "DeploymentVersion", "VersioningOverride", "DeploymentTransition", "VersionTransition", "RevisionNumber" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo), global::Temporalio.Api.Workflow.V1.WorkflowExecutionVersioningInfo.Parser, new[]{ "Behavior", "Deployment", "Version", "DeploymentVersion", "VersioningOverride", "DeploymentTransition", "VersionTransition", "RevisionNumber", "ContinueAsNewInitialVersioningBehavior" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.DeploymentTransition), global::Temporalio.Api.Workflow.V1.DeploymentTransition.Parser, new[]{ "Deployment" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.DeploymentVersionTransition), global::Temporalio.Api.Workflow.V1.DeploymentVersionTransition.Parser, new[]{ "Version", "DeploymentVersion" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionConfig), global::Temporalio.Api.Workflow.V1.WorkflowExecutionConfig.Parser, new[]{ "TaskQueue", "WorkflowExecutionTimeout", "WorkflowRunTimeout", "DefaultWorkflowTaskTimeout", "UserMetadata" }, null, null, null, null),
@@ -277,7 +285,8 @@ namespace Temporalio.Api.Workflow.V1 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.Trigger), global::Temporalio.Api.Workflow.V1.CallbackInfo.Types.Trigger.Parser, new[]{ "WorkflowClosed" }, new[]{ "Variant" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.PendingNexusOperationInfo), global::Temporalio.Api.Workflow.V1.PendingNexusOperationInfo.Parser, new[]{ "Endpoint", "Service", "Operation", "OperationId", "ScheduleToCloseTimeout", "ScheduledTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "CancellationInfo", "ScheduledEventId", "BlockedReason", "OperationToken", "ScheduleToStartTimeout", "StartToCloseTimeout" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.NexusOperationCancellationInfo), global::Temporalio.Api.Workflow.V1.NexusOperationCancellationInfo.Parser, new[]{ "RequestedTime", "State", "Attempt", "LastAttemptCompleteTime", "LastAttemptFailure", "NextAttemptScheduleTime", "BlockedReason" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionOptions), global::Temporalio.Api.Workflow.V1.WorkflowExecutionOptions.Parser, new[]{ "VersioningOverride", "Priority" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.WorkflowExecutionOptions), global::Temporalio.Api.Workflow.V1.WorkflowExecutionOptions.Parser, new[]{ "VersioningOverride", "Priority", "TimeSkippingConfig" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.TimeSkippingConfig), global::Temporalio.Api.Workflow.V1.TimeSkippingConfig.Parser, new[]{ "Enabled", "MaxSkippedDuration", "MaxElapsedDuration" }, new[]{ "Bound" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.VersioningOverride), global::Temporalio.Api.Workflow.V1.VersioningOverride.Parser, new[]{ "Pinned", "AutoUpgrade", "Behavior", "Deployment", "PinnedVersion" }, new[]{ "Override" }, new[]{ typeof(global::Temporalio.Api.Workflow.V1.VersioningOverride.Types.PinnedOverrideBehavior) }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.VersioningOverride.Types.PinnedOverride), global::Temporalio.Api.Workflow.V1.VersioningOverride.Types.PinnedOverride.Parser, new[]{ "Behavior", "Version" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.OnConflictOptions), global::Temporalio.Api.Workflow.V1.OnConflictOptions.Parser, new[]{ "AttachRequestId", "AttachCompletionCallbacks", "AttachLinks" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Workflow.V1.RequestIdInfo), global::Temporalio.Api.Workflow.V1.RequestIdInfo.Parser, new[]{ "EventType", "EventId", "Buffered" }, null, null, null, null),
@@ -689,7 +698,6 @@ namespace Temporalio.Api.Workflow.V1 {
     private string workerDeploymentName_ = "";
     /// <summary>
     /// The name of Worker Deployment that completed the most recent workflow task.
-    /// Experimental. Worker Deployments are experimental and might change in the future.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -2163,6 +2171,7 @@ namespace Temporalio.Api.Workflow.V1 {
       deploymentTransition_ = other.deploymentTransition_ != null ? other.deploymentTransition_.Clone() : null;
       versionTransition_ = other.versionTransition_ != null ? other.versionTransition_.Clone() : null;
       revisionNumber_ = other.revisionNumber_;
+      continueAsNewInitialVersioningBehavior_ = other.continueAsNewInitialVersioningBehavior_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2371,6 +2380,30 @@ namespace Temporalio.Api.Workflow.V1 {
       }
     }
 
+    /// <summary>Field number for the "continue_as_new_initial_versioning_behavior" field.</summary>
+    public const int ContinueAsNewInitialVersioningBehaviorFieldNumber = 9;
+    private global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior continueAsNewInitialVersioningBehavior_ = global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified;
+    /// <summary>
+    /// Experimental.
+    /// If this workflow is the result of a continue-as-new, this field is set to the initial_versioning_behavior
+    /// specified in that command.
+    /// Only used for the initial task of this run and the initial task of any retries of this run.
+    /// Not passed to children or to future continue-as-new.
+    ///
+    /// Note: In the first release of Upgrade-on-CaN, when the only ContinueAsNewVersioningBehavior was AutoUpgrade,
+    /// a non-empty InheritedAutoUpgradeInfo meant that the workflow should start as AutoUpgrade. So for compatibility
+    /// with ContinueAsNew history commands generated during that time, know that an UNSPECIFIED value here is equivalent
+    /// to ContinueAsNewVersioningBehaviorAutoUpgrade if the behavior of the workflow is AutoUpgrade.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior ContinueAsNewInitialVersioningBehavior {
+      get { return continueAsNewInitialVersioningBehavior_; }
+      set {
+        continueAsNewInitialVersioningBehavior_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -2394,6 +2427,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (!object.Equals(DeploymentTransition, other.DeploymentTransition)) return false;
       if (!object.Equals(VersionTransition, other.VersionTransition)) return false;
       if (RevisionNumber != other.RevisionNumber) return false;
+      if (ContinueAsNewInitialVersioningBehavior != other.ContinueAsNewInitialVersioningBehavior) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2409,6 +2443,7 @@ namespace Temporalio.Api.Workflow.V1 {
       if (deploymentTransition_ != null) hash ^= DeploymentTransition.GetHashCode();
       if (versionTransition_ != null) hash ^= VersionTransition.GetHashCode();
       if (RevisionNumber != 0L) hash ^= RevisionNumber.GetHashCode();
+      if (ContinueAsNewInitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) hash ^= ContinueAsNewInitialVersioningBehavior.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2459,6 +2494,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(64);
         output.WriteInt64(RevisionNumber);
       }
+      if (ContinueAsNewInitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        output.WriteRawTag(72);
+        output.WriteEnum((int) ContinueAsNewInitialVersioningBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2501,6 +2540,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(64);
         output.WriteInt64(RevisionNumber);
       }
+      if (ContinueAsNewInitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        output.WriteRawTag(72);
+        output.WriteEnum((int) ContinueAsNewInitialVersioningBehavior);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2534,6 +2577,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (RevisionNumber != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(RevisionNumber);
+      }
+      if (ContinueAsNewInitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) ContinueAsNewInitialVersioningBehavior);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2585,6 +2631,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (other.RevisionNumber != 0L) {
         RevisionNumber = other.RevisionNumber;
+      }
+      if (other.ContinueAsNewInitialVersioningBehavior != global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.Unspecified) {
+        ContinueAsNewInitialVersioningBehavior = other.ContinueAsNewInitialVersioningBehavior;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2648,6 +2697,10 @@ namespace Temporalio.Api.Workflow.V1 {
             RevisionNumber = input.ReadInt64();
             break;
           }
+          case 72: {
+            ContinueAsNewInitialVersioningBehavior = (global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior) input.ReadEnum();
+            break;
+          }
         }
       }
     #endif
@@ -2708,6 +2761,10 @@ namespace Temporalio.Api.Workflow.V1 {
           }
           case 64: {
             RevisionNumber = input.ReadInt64();
+            break;
+          }
+          case 72: {
+            ContinueAsNewInitialVersioningBehavior = (global::Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior) input.ReadEnum();
             break;
           }
         }
@@ -9133,7 +9190,9 @@ namespace Temporalio.Api.Workflow.V1 {
     private int attempt_;
     /// <summary>
     /// The number of attempts made to deliver the start operation request.
-    /// This number represents a minimum bound since the attempt is incremented after the request completes.
+    /// This number is approximate, it is incremented when a task is added to the history queue.
+    /// In practice, there could be more attempts if a task is executed but fails to commit, or less attempts if a task
+    /// was never executed.
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -10375,6 +10434,7 @@ namespace Temporalio.Api.Workflow.V1 {
     public WorkflowExecutionOptions(WorkflowExecutionOptions other) : this() {
       versioningOverride_ = other.versioningOverride_ != null ? other.versioningOverride_.Clone() : null;
       priority_ = other.priority_ != null ? other.priority_.Clone() : null;
+      timeSkippingConfig_ = other.timeSkippingConfig_ != null ? other.timeSkippingConfig_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -10414,6 +10474,23 @@ namespace Temporalio.Api.Workflow.V1 {
       }
     }
 
+    /// <summary>Field number for the "time_skipping_config" field.</summary>
+    public const int TimeSkippingConfigFieldNumber = 3;
+    private global::Temporalio.Api.Workflow.V1.TimeSkippingConfig timeSkippingConfig_;
+    /// <summary>
+    /// Time-skipping configuration for this workflow execution.
+    /// If not set, the time-skipping configuration is not updated by this request;
+    /// the existing configuration is preserved.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Temporalio.Api.Workflow.V1.TimeSkippingConfig TimeSkippingConfig {
+      get { return timeSkippingConfig_; }
+      set {
+        timeSkippingConfig_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -10431,6 +10508,7 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (!object.Equals(VersioningOverride, other.VersioningOverride)) return false;
       if (!object.Equals(Priority, other.Priority)) return false;
+      if (!object.Equals(TimeSkippingConfig, other.TimeSkippingConfig)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -10440,6 +10518,7 @@ namespace Temporalio.Api.Workflow.V1 {
       int hash = 1;
       if (versioningOverride_ != null) hash ^= VersioningOverride.GetHashCode();
       if (priority_ != null) hash ^= Priority.GetHashCode();
+      if (timeSkippingConfig_ != null) hash ^= TimeSkippingConfig.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -10466,6 +10545,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Priority);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -10484,6 +10567,10 @@ namespace Temporalio.Api.Workflow.V1 {
         output.WriteRawTag(18);
         output.WriteMessage(Priority);
       }
+      if (timeSkippingConfig_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(TimeSkippingConfig);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -10499,6 +10586,9 @@ namespace Temporalio.Api.Workflow.V1 {
       }
       if (priority_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Priority);
+      }
+      if (timeSkippingConfig_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(TimeSkippingConfig);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -10523,6 +10613,12 @@ namespace Temporalio.Api.Workflow.V1 {
           Priority = new global::Temporalio.Api.Common.V1.Priority();
         }
         Priority.MergeFrom(other.Priority);
+      }
+      if (other.timeSkippingConfig_ != null) {
+        if (timeSkippingConfig_ == null) {
+          TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+        }
+        TimeSkippingConfig.MergeFrom(other.TimeSkippingConfig);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -10553,6 +10649,13 @@ namespace Temporalio.Api.Workflow.V1 {
             input.ReadMessage(Priority);
             break;
           }
+          case 26: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
+            break;
+          }
         }
       }
     #endif
@@ -10580,6 +10683,365 @@ namespace Temporalio.Api.Workflow.V1 {
               Priority = new global::Temporalio.Api.Common.V1.Priority();
             }
             input.ReadMessage(Priority);
+            break;
+          }
+          case 26: {
+            if (timeSkippingConfig_ == null) {
+              TimeSkippingConfig = new global::Temporalio.Api.Workflow.V1.TimeSkippingConfig();
+            }
+            input.ReadMessage(TimeSkippingConfig);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// Configuration for time skipping during a workflow execution.
+  /// When enabled, virtual time advances automatically whenever there is no in-flight work.
+  /// In-flight work includes activities, child workflows, Nexus operations, signal/cancel external workflow operations,
+  /// and possibly other features added in the future.
+  /// User timers are not classified as in-flight work and will be skipped over.
+  /// When time advances, it skips to the earlier of the next user timer or the configured bound, if either exists.
+  /// 
+  /// Propagation behavior of time skipping:
+  /// The enabled flag, bound fields, and accumulated skipped duration are propagated to related executions as follows:
+  /// (1) Child workflows and continue-as-new: both the configuration and the accumulated skipped duration are
+  ///     inherited from the current execution. The configured bound is shared between the inherited skipped
+  ///     duration and any additional duration skipped by the new run.
+  /// (2) Retry and cron: the configuration and accumulated skipped duration are inherited as recorded when the
+  ///     current workflow started; the accumulated skipped duration of the current run is not propagated.
+  /// (3) Reset: the new run retains the time-skipping configuration of the current execution. Because reset replays
+  ///     all events up to the reset point and re-applies any UpdateWorkflowExecutionOptions changes made after that
+  ///     point, the resulting run ends up with the same final time-skipping configuration as the previous run.
+  /// </summary>
+  public sealed partial class TimeSkippingConfig : pb::IMessage<TimeSkippingConfig>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<TimeSkippingConfig> _parser = new pb::MessageParser<TimeSkippingConfig>(() => new TimeSkippingConfig());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<TimeSkippingConfig> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[16]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimeSkippingConfig() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimeSkippingConfig(TimeSkippingConfig other) : this() {
+      enabled_ = other.enabled_;
+      switch (other.BoundCase) {
+        case BoundOneofCase.MaxSkippedDuration:
+          MaxSkippedDuration = other.MaxSkippedDuration.Clone();
+          break;
+        case BoundOneofCase.MaxElapsedDuration:
+          MaxElapsedDuration = other.MaxElapsedDuration.Clone();
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public TimeSkippingConfig Clone() {
+      return new TimeSkippingConfig(this);
+    }
+
+    /// <summary>Field number for the "enabled" field.</summary>
+    public const int EnabledFieldNumber = 1;
+    private bool enabled_;
+    /// <summary>
+    /// Enables or disables time skipping for this workflow execution.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Enabled {
+      get { return enabled_; }
+      set {
+        enabled_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "max_skipped_duration" field.</summary>
+    public const int MaxSkippedDurationFieldNumber = 4;
+    /// <summary>
+    /// Maximum total virtual time that can be skipped.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration MaxSkippedDuration {
+      get { return boundCase_ == BoundOneofCase.MaxSkippedDuration ? (global::Google.Protobuf.WellKnownTypes.Duration) bound_ : null; }
+      set {
+        bound_ = value;
+        boundCase_ = value == null ? BoundOneofCase.None : BoundOneofCase.MaxSkippedDuration;
+      }
+    }
+
+    /// <summary>Field number for the "max_elapsed_duration" field.</summary>
+    public const int MaxElapsedDurationFieldNumber = 5;
+    /// <summary>
+    /// Maximum elapsed time since time skipping was enabled.
+    /// This includes both skipped time and real time elapsing.
+    /// (-- api-linter: core::0142::time-field-names=disabled --)
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.WellKnownTypes.Duration MaxElapsedDuration {
+      get { return boundCase_ == BoundOneofCase.MaxElapsedDuration ? (global::Google.Protobuf.WellKnownTypes.Duration) bound_ : null; }
+      set {
+        bound_ = value;
+        boundCase_ = value == null ? BoundOneofCase.None : BoundOneofCase.MaxElapsedDuration;
+      }
+    }
+
+    private object bound_;
+    /// <summary>Enum of possible cases for the "bound" oneof.</summary>
+    public enum BoundOneofCase {
+      None = 0,
+      MaxSkippedDuration = 4,
+      MaxElapsedDuration = 5,
+    }
+    private BoundOneofCase boundCase_ = BoundOneofCase.None;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BoundOneofCase BoundCase {
+      get { return boundCase_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void ClearBound() {
+      boundCase_ = BoundOneofCase.None;
+      bound_ = null;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as TimeSkippingConfig);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(TimeSkippingConfig other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Enabled != other.Enabled) return false;
+      if (!object.Equals(MaxSkippedDuration, other.MaxSkippedDuration)) return false;
+      if (!object.Equals(MaxElapsedDuration, other.MaxElapsedDuration)) return false;
+      if (BoundCase != other.BoundCase) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Enabled != false) hash ^= Enabled.GetHashCode();
+      if (boundCase_ == BoundOneofCase.MaxSkippedDuration) hash ^= MaxSkippedDuration.GetHashCode();
+      if (boundCase_ == BoundOneofCase.MaxElapsedDuration) hash ^= MaxElapsedDuration.GetHashCode();
+      hash ^= (int) boundCase_;
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Enabled != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Enabled);
+      }
+      if (boundCase_ == BoundOneofCase.MaxSkippedDuration) {
+        output.WriteRawTag(34);
+        output.WriteMessage(MaxSkippedDuration);
+      }
+      if (boundCase_ == BoundOneofCase.MaxElapsedDuration) {
+        output.WriteRawTag(42);
+        output.WriteMessage(MaxElapsedDuration);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Enabled != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(Enabled);
+      }
+      if (boundCase_ == BoundOneofCase.MaxSkippedDuration) {
+        output.WriteRawTag(34);
+        output.WriteMessage(MaxSkippedDuration);
+      }
+      if (boundCase_ == BoundOneofCase.MaxElapsedDuration) {
+        output.WriteRawTag(42);
+        output.WriteMessage(MaxElapsedDuration);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Enabled != false) {
+        size += 1 + 1;
+      }
+      if (boundCase_ == BoundOneofCase.MaxSkippedDuration) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(MaxSkippedDuration);
+      }
+      if (boundCase_ == BoundOneofCase.MaxElapsedDuration) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(MaxElapsedDuration);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(TimeSkippingConfig other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Enabled != false) {
+        Enabled = other.Enabled;
+      }
+      switch (other.BoundCase) {
+        case BoundOneofCase.MaxSkippedDuration:
+          if (MaxSkippedDuration == null) {
+            MaxSkippedDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+          }
+          MaxSkippedDuration.MergeFrom(other.MaxSkippedDuration);
+          break;
+        case BoundOneofCase.MaxElapsedDuration:
+          if (MaxElapsedDuration == null) {
+            MaxElapsedDuration = new global::Google.Protobuf.WellKnownTypes.Duration();
+          }
+          MaxElapsedDuration.MergeFrom(other.MaxElapsedDuration);
+          break;
+      }
+
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Enabled = input.ReadBool();
+            break;
+          }
+          case 34: {
+            global::Google.Protobuf.WellKnownTypes.Duration subBuilder = new global::Google.Protobuf.WellKnownTypes.Duration();
+            if (boundCase_ == BoundOneofCase.MaxSkippedDuration) {
+              subBuilder.MergeFrom(MaxSkippedDuration);
+            }
+            input.ReadMessage(subBuilder);
+            MaxSkippedDuration = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Google.Protobuf.WellKnownTypes.Duration subBuilder = new global::Google.Protobuf.WellKnownTypes.Duration();
+            if (boundCase_ == BoundOneofCase.MaxElapsedDuration) {
+              subBuilder.MergeFrom(MaxElapsedDuration);
+            }
+            input.ReadMessage(subBuilder);
+            MaxElapsedDuration = subBuilder;
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Enabled = input.ReadBool();
+            break;
+          }
+          case 34: {
+            global::Google.Protobuf.WellKnownTypes.Duration subBuilder = new global::Google.Protobuf.WellKnownTypes.Duration();
+            if (boundCase_ == BoundOneofCase.MaxSkippedDuration) {
+              subBuilder.MergeFrom(MaxSkippedDuration);
+            }
+            input.ReadMessage(subBuilder);
+            MaxSkippedDuration = subBuilder;
+            break;
+          }
+          case 42: {
+            global::Google.Protobuf.WellKnownTypes.Duration subBuilder = new global::Google.Protobuf.WellKnownTypes.Duration();
+            if (boundCase_ == BoundOneofCase.MaxElapsedDuration) {
+              subBuilder.MergeFrom(MaxElapsedDuration);
+            }
+            input.ReadMessage(subBuilder);
+            MaxElapsedDuration = subBuilder;
             break;
           }
         }
@@ -10614,7 +11076,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[16]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11318,7 +11780,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[17]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11593,7 +12055,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[18]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -11871,7 +12333,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[19]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -12745,7 +13207,7 @@ namespace Temporalio.Api.Workflow.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[20]; }
+      get { return global::Temporalio.Api.Workflow.V1.MessageReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
