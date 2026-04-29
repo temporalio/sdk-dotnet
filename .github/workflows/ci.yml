@@ -101,8 +101,8 @@ jobs:
         run: dotnet run --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 5 --max-cached-workflows 100 --max-concurrent 100
 
       - name: Test cloud (mTLS)
-        # Only supported in non-fork runs, since secrets are not available in forks.
-        if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        # Only supported in non-fork, non-Dependabot runs since secrets are not available in those contexts.
+        if: ${{ matrix.cloudTestTarget && github.actor != 'dependabot[bot]' && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
         env:
           TEMPORAL_TEST_CLIENT_TARGET_HOST: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}.tmprl.cloud:7233
           TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
@@ -111,9 +111,9 @@ jobs:
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
 
       - name: Test cloud (API key)
-        # Only supported in non-fork runs, since secrets are not available in forks.
+        # Only supported in non-fork, non-Dependabot runs since secrets are not available in those contexts.
         # Uses API key auth to test auto-TLS feature (TLS auto-enabled when API key provided).
-        if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        if: ${{ matrix.cloudTestTarget && github.actor != 'dependabot[bot]' && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
         env:
           TEMPORAL_TEST_CLIENT_TARGET_HOST: us-east-1.aws.api.temporal.io:7233
           TEMPORAL_TEST_CLIENT_NAMESPACE: ${{ vars.TEMPORAL_CLIENT_NAMESPACE }}
@@ -121,8 +121,8 @@ jobs:
         run: dotnet run --project tests/Temporalio.Tests -- -verbose -method "*.ExecuteWorkflowAsync_Simple_Succeeds"
 
       - name: Test cloud operations client
-        # Only supported in non-fork runs, since secrets are not available in forks
-        if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        # Only supported in non-fork, non-Dependabot runs since secrets are not available in those contexts.
+        if: ${{ matrix.cloudTestTarget && github.actor != 'dependabot[bot]' && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
         env:
           TEMPORAL_CLIENT_CLOUD_NAMESPACE: sdk-ci.a2dd6
           TEMPORAL_CLIENT_CLOUD_API_KEY: ${{ secrets.TEMPORAL_CLIENT_CLOUD_API_KEY }}
