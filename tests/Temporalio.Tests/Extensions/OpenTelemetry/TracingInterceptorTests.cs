@@ -797,6 +797,43 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "RunWorkflow:TracingWorkflow"));
     }
 
+    [Fact]
+    public async Task TracingInterceptor_StandaloneActivity_HasProperSpans()
+    {
+        var cancelId = $"act-cancel-{Guid.NewGuid()}";
+        var terminateId = $"act-terminate-{Guid.NewGuid()}";
+        var spans = await WithTracingWorkerAsync(async (client, _) =>
+        {
+            var taskQueue = $"standalone-tq-{Guid.NewGuid()}";
+
+            var cancelHandle = await client.StartActivityAsync(
+                "StandaloneActivity",
+                Array.Empty<object?>(),
+                new(cancelId, taskQueue) { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            await cancelHandle.DescribeAsync();
+            await cancelHandle.CancelAsync();
+
+            var terminateHandle = await client.StartActivityAsync(
+                "StandaloneActivity",
+                Array.Empty<object?>(),
+                new(terminateId, taskQueue) { ScheduleToCloseTimeout = TimeSpan.FromMinutes(5) });
+            await terminateHandle.TerminateAsync();
+
+            await client.CountActivitiesAsync($"TaskQueue = '{taskQueue}'");
+        });
+
+        var cancelTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", cancelId) };
+        var terminateTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", terminateId) };
+        AssertActivities(
+            spans,
+            new("StartActivity:StandaloneActivity", Parent: null, Tags: cancelTags),
+            new("DescribeActivity:" + cancelId, Parent: null, Tags: cancelTags),
+            new("CancelActivity:" + cancelId, Parent: null, Tags: cancelTags),
+            new("StartActivity:StandaloneActivity", Parent: null, Tags: terminateTags),
+            new("TerminateActivity:" + terminateId, Parent: null, Tags: terminateTags),
+            ActivityAssertion.NameAndParent("CountActivities", null));
+    }
+
     private static void AssertActivities(
         IReadOnlyCollection<Activity> activities, params ActivityAssertion[] assertions)
     {
@@ -886,7 +923,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         var activities = new List<Activity>();
 
         // Setup provider
-        using var tracerProvider = global::OpenTelemetry.Sdk.CreateTracerProviderBuilder().
+        using var _ = global::OpenTelemetry.Sdk.CreateTracerProviderBuilder().
             AddSource(
                 TracingInterceptor.ClientSource.Name,
                 TracingInterceptor.WorkflowsSource.Name,
