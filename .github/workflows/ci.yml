@@ -100,6 +100,23 @@ jobs:
       - name: Confirm bench works
         run: dotnet run --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 5 --max-cached-workflows 100 --max-concurrent 100
 
+      - name: Validate cloud secrets
+        if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
+        env:
+          TEMPORAL_CLIENT_CERT: ${{ secrets.TEMPORAL_CLIENT_CERT }}
+          TEMPORAL_CLIENT_KEY: ${{ secrets.TEMPORAL_CLIENT_KEY }}
+        run: |
+          failed=0
+          if [ -z "$TEMPORAL_CLIENT_CERT" ]; then
+            echo "Error: TEMPORAL_CLIENT_CERT is empty"
+            failed=1
+          fi
+          if [ -z "$TEMPORAL_CLIENT_KEY" ]; then
+            echo "Error: TEMPORAL_CLIENT_KEY is empty"
+            failed=1
+          fi
+          exit $failed
+
       - name: Test cloud (mTLS)
         # Only supported in non-fork runs, since secrets are not available in forks.
         if: ${{ matrix.cloudTestTarget && (github.event.pull_request.head.repo.full_name == '' || github.event.pull_request.head.repo.full_name == 'temporalio/sdk-dotnet') }}
