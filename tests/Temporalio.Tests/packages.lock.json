@@ -4,9 +4,9 @@
     "net10.0": {
       "coverlet.collector": {
         "type": "Direct",
-        "requested": "[3.1.2, )",
-        "resolved": "3.1.2",
-        "contentHash": "wuLDIDKD5XMt0A7lE31JPenT7QQwZPFkP5rRpdJeblyXZ9MGLI8rYjvm5fvAKln+2/X+4IxxQDxBtwdrqKNLZw=="
+        "requested": "[8.0.1, )",
+        "resolved": "8.0.1",
+        "contentHash": "heVQl5tKYnnIDYlR1QMVGueYH6iriZTcZB6AjDczQNwZzxkjDIt9C84Pt4cCiZYrbo7jkZOYGWbs6Lo9wAtVLg=="
       },
       "MartinCostello.Logging.XUnit": {
         "type": "Direct",
@@ -505,21 +505,21 @@
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[8.0.1, )",
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
-          "Temporalio": "[1.13.0, )"
+          "Temporalio": "[1.14.0, )"
         }
       },
       "Google.Protobuf": {
