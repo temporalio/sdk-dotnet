@@ -166,7 +166,7 @@ jobs:
 
       - name: Configure AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@51635dbf418c2cdd8b3e1497529334d8db7e4063 # v6
+        uses: aws-actions/configure-aws-credentials@d4a9acd8d3a85678bd2eb9e0a2225949c8ce00f0 # v6
         with:
           role-to-assume: ${{ env.AWS_S3_METRICS_UPLOAD_ROLE_ARN }}
           aws-region: us-west-2
