@@ -92,7 +92,7 @@ jobs:
           dotnet test --logger "console;verbosity=detailed" --logger "trx;LogFilePrefix=test-results" --results-directory tests/Temporalio.Tests/TestResults --blame-crash -v m --blame-hang-timeout 10m
 
       - name: Upload test results
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: test-results-${{ matrix.os }}
