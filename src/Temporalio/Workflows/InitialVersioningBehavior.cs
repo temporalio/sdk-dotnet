@@ -19,5 +19,22 @@ namespace Temporalio.Workflows
         /// workflow code.
         /// </summary>
         AutoUpgrade = Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.AutoUpgrade,
+
+        /// <summary>
+        /// Use the Ramping Version of the workflow's task queue at start time, regardless of the
+        /// workflow's Target Version. After the first workflow task completes, use whatever
+        /// Versioning Behavior the workflow is annotated with in the workflow code. If there is no
+        /// Ramping Version when the first workflow task is dispatched, the task goes to the Current
+        /// Version.
+        /// <para>
+        /// This is discouraged for workflows annotated with AutoUpgrade behavior because this
+        /// setting only applies to the first task of the new run.
+        /// </para>
+        /// <para>
+        /// If the workflow being continued has a Pinned override, that override is inherited by the
+        /// new run regardless of this setting.
+        /// </para>
+        /// </summary>
+        UseRampingVersion = Temporalio.Api.Enums.V1.ContinueAsNewVersioningBehavior.UseRampingVersion,
     }
 }

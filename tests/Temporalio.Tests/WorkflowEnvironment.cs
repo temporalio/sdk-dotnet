@@ -67,7 +67,7 @@ public class WorkflowEnvironment : IAsyncLifetime
             {
                 DevServerOptions = new()
                 {
-                    DownloadVersion = "v1.6.2-server-1.31.0-151.6",
+                    DownloadVersion = "v1.7.0",
                     ExtraArgs = new List<string>
                     {
                         // Disable search attribute cache
