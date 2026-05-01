@@ -563,6 +563,43 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
         }
     }
 
+    [Workflow("CanRampingVersionWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
+    public class CanRampingVersionWorkflowV1
+    {
+        private bool continueAsNew;
+
+        [WorkflowRun]
+        public async Task<string> RunAsync(int attempt)
+        {
+            if (attempt > 0)
+            {
+                return "v1.0";
+            }
+
+            await Workflow.WaitConditionAsync(() => continueAsNew);
+
+            throw Workflow.CreateContinueAsNewException(
+                (CanRampingVersionWorkflowV1 wf) => wf.RunAsync(attempt + 1),
+                new ContinueAsNewOptions
+                {
+                    InitialVersioningBehavior = InitialVersioningBehavior.UseRampingVersion,
+                });
+        }
+
+        [WorkflowSignal]
+        public async Task ContinueAsNewAsync() => continueAsNew = true;
+    }
+
+    [Workflow("CanRampingVersionWorkflow", VersioningBehavior = VersioningBehavior.Pinned)]
+    public class CanRampingVersionWorkflowV2
+    {
+        [WorkflowRun]
+        public async Task<string> RunAsync(int attempt)
+        {
+            return "v2.0";
+        }
+    }
+
     [Fact]
     public async Task ContinueAsNew_WithVersionUpgrade_MovesToNewVersion()
     {
@@ -611,6 +648,58 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
 
             // The v1 workflow should detect the version change, CAN with AUTO_UPGRADE,
             // and the new run should execute on v2
+            var result = await handle.GetResultAsync();
+            Assert.Equal("v2.0", result);
+        }
+    }
+
+    [Fact]
+    public async Task ContinueAsNew_WithRampingVersion_MovesToRampingVersion()
+    {
+        var deploymentName = $"deployment-can-ramp-{Guid.NewGuid()}";
+        var v1 = new WorkerDeploymentVersion(deploymentName, "1.0");
+        var v2 = new WorkerDeploymentVersion(deploymentName, "2.0");
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+
+        using var worker1 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v1, true),
+            }.AddWorkflow<CanRampingVersionWorkflowV1>());
+
+        using var worker2 = new TemporalWorker(
+            Client,
+            new TemporalWorkerOptions(taskQueue)
+            {
+                DeploymentOptions = new(v2, true),
+            }.AddWorkflow<CanRampingVersionWorkflowV2>());
+
+        var testTask = ExecuteTest();
+        await Task.WhenAll(
+            worker1.ExecuteAsync(() => testTask),
+            worker2.ExecuteAsync(() => testTask));
+
+        async Task ExecuteTest()
+        {
+            var describe1 = await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v1);
+            var currentResponse = await TestUtils.SetCurrentDeploymentVersionAsync(
+                Client, describe1.ConflictToken, v1);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v1.BuildId);
+
+            var handle = await Client.StartWorkflowAsync(
+                (CanRampingVersionWorkflowV1 wf) => wf.RunAsync(0),
+                new(id: $"can-ramping-version-{Guid.NewGuid()}", taskQueue: taskQueue));
+
+            await TestUtils.WaitForWorkflowRunningOnVersionAsync(Client, handle.Id, v1.BuildId);
+
+            await TestUtils.WaitUntilWorkerDeploymentVisibleAsync(Client, v2);
+            await TestUtils.SetRampingVersionAsync(Client, currentResponse.ConflictToken, v2, 0);
+            await TestUtils.WaitForRoutingConfigPropagationAsync(
+                Client, deploymentName, v1.BuildId, v2.BuildId);
+
+            await handle.SignalAsync(wf => wf.ContinueAsNewAsync());
+
             var result = await handle.GetResultAsync();
             Assert.Equal("v2.0", result);
         }
