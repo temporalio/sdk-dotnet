@@ -188,6 +188,15 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void TemporalCoreClientGrpcOverrideCallback([NativeTypeName("struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* request, void* user_data);
 
+    internal partial struct TemporalCoreClientDnsLoadBalancingOptions
+    {
+        [NativeTypeName("bool")]
+        public byte enabled;
+
+        [NativeTypeName("uint64_t")]
+        public ulong resolution_interval_millis;
+    }
+
     internal unsafe partial struct TemporalCoreConnectionOptions
     {
         [NativeTypeName("struct TemporalCoreByteArrayRef")]
@@ -227,6 +236,9 @@ namespace Temporalio.Bridge.Interop
         public IntPtr grpc_override_callback;
 
         public void* grpc_override_callback_user_data;
+
+        [NativeTypeName("const struct TemporalCoreClientDnsLoadBalancingOptions *")]
+        public TemporalCoreClientDnsLoadBalancingOptions* dns_load_balancing_options;
     }
 
     internal unsafe partial struct TemporalCoreByteArray

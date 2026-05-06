@@ -67,6 +67,18 @@ namespace Temporalio.Client
         public HttpConnectProxyOptions? HttpConnectProxy { get; set; }
 
         /// <summary>
+        /// Gets or sets DNS-based load balancing options for this connection.
+        /// </summary>
+        /// <remarks>
+        /// Default null, which uses Core's defaults (enabled with a 30 second resolution
+        /// interval). To disable, set this to a <see cref="DnsLoadBalancingOptions"/>
+        /// with <see cref="DnsLoadBalancingOptions.Enabled"/> set to false. DNS load
+        /// balancing is automatically disabled when <see cref="HttpConnectProxy"/> is
+        /// configured.
+        /// </remarks>
+        public DnsLoadBalancingOptions? DnsLoadBalancing { get; set; }
+
+        /// <summary>
         /// Gets or sets the gRPC metadata for all calls (i.e. the headers).
         /// </summary>
         /// <remarks>
@@ -134,6 +146,10 @@ namespace Temporalio.Client
             if (KeepAlive != null)
             {
                 copy.KeepAlive = (KeepAliveOptions)KeepAlive.Clone();
+            }
+            if (DnsLoadBalancing != null)
+            {
+                copy.DnsLoadBalancing = (DnsLoadBalancingOptions)DnsLoadBalancing.Clone();
             }
             return copy;
         }

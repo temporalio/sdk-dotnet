@@ -279,6 +279,10 @@ namespace Temporalio.Bridge
                     options.HttpConnectProxy == null
                         ? null
                         : scope.Pointer(options.HttpConnectProxy.ToInteropOptions(scope)),
+                dns_load_balancing_options =
+                    options.DnsLoadBalancing == null
+                        ? null
+                        : scope.Pointer(options.DnsLoadBalancing.ToInteropOptions()),
             };
         }
 
@@ -342,6 +346,19 @@ namespace Temporalio.Bridge
             {
                 interval_millis = (ulong)options.Interval.TotalMilliseconds,
                 timeout_millis = (ulong)options.Timeout.TotalMilliseconds,
+            };
+
+        /// <summary>
+        /// Convert DNS load balancing options.
+        /// </summary>
+        /// <param name="options">Options to convert.</param>
+        /// <returns>Converted options.</returns>
+        public static Interop.TemporalCoreClientDnsLoadBalancingOptions ToInteropOptions(
+            this Temporalio.Client.DnsLoadBalancingOptions options) =>
+            new()
+            {
+                enabled = (byte)(options.Enabled ? 1 : 0),
+                resolution_interval_millis = (ulong)options.ResolutionInterval.TotalMilliseconds,
             };
 
         /// <summary>
