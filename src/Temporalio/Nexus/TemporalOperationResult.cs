@@ -7,7 +7,12 @@ namespace Temporalio.Nexus
     /// result value or an asynchronous operation token.
     /// </summary>
     /// <typeparam name="TResult">The result type.</typeparam>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>
+    /// <para>WARNING: Nexus support is experimental.</para>
+    /// <para>Use <see cref="Sync"/> for operations that complete immediately (e.g., signals).
+    /// Use <see cref="Async"/> for operations that return an operation token for async completion
+    /// (e.g., starting a workflow).</para>
+    /// </remarks>
     public sealed class TemporalOperationResult<TResult>
     {
         private TemporalOperationResult(bool isSyncResult, TResult? syncValue, string? asyncToken)
@@ -51,7 +56,7 @@ namespace Temporalio.Nexus
         /// <returns>An asynchronous operation result.</returns>
         /// <exception cref="ArgumentException">If the token is null or empty.</exception>
 #pragma warning disable CA1000, VSTHRD200 // Intentional: static factory on generic type; "Async" refers to the result kind, not the method signature
-        internal static TemporalOperationResult<TResult> Async(string token)
+        public static TemporalOperationResult<TResult> Async(string token)
 #pragma warning restore CA1000, VSTHRD200
         {
             if (string.IsNullOrEmpty(token))
