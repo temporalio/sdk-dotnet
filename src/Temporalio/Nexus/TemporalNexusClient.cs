@@ -34,6 +34,9 @@ namespace Temporalio.Nexus
             temporalClient = temporalContext.TemporalClient;
         }
 
+        /// <inheritdoc/>
+        public ITemporalClient TemporalClient => temporalClient;
+
         /// <summary>
         /// Start a workflow via a lambda invoking the run method. Always returns an async result
         /// with a workflow-run operation token.

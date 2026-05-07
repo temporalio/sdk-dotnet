@@ -1385,7 +1385,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Build the worker options w/ the nexus service using the new generic handler
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.Create<string, string>(
+                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                         await client.StartWorkflowAsync(
                             (SimpleWorkflow wf) => wf.RunAsync(input),
@@ -1408,7 +1408,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Build the worker options w/ the nexus service using the new generic handler
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.Create<string, string>(
+                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
                     async (context, client, input) =>
                         await client.StartWorkflowAsync(
                             (WaitForeverWorkflow wf) => wf.RunAsync(input),
@@ -1442,7 +1442,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         // Build the worker options w/ a handler that returns a sync result
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
-                TemporalNexusOperationHandler.Create<string, string>(
+                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
                     (context, client, input) =>
                         Task.FromResult(TemporalOperationResult<string>.Sync($"Hello, {input}")))));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);

@@ -8,12 +8,36 @@ using Temporalio.Client;
 namespace Temporalio.Nexus
 {
     /// <summary>
-    /// Interface for a Nexus-aware client wrapping the Temporal client. Provides methods for
-    /// starting workflows from within Nexus operation handlers.
+    /// Nexus-aware client wrapping the Temporal client. Provides methods for starting workflows
+    /// from within a Nexus operation handler.
     /// </summary>
-    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    /// <remarks>
+    /// <para>WARNING: Nexus support is experimental.</para>
+    /// <para>Obtained via the <see cref="TemporalNexusOperationHandler.FromHandleFactory{TInput, TResult}"/>
+    /// start function parameter.</para>
+    /// <para>Example usage — starting a workflow from an operation handler:</para>
+    /// <code>
+    /// await client.StartWorkflowAsync&lt;MyWorkflow, MyResult&gt;(
+    ///     wf => wf.RunAsync(input),
+    ///     new(id: "my-workflow-id", taskQueue: "my-task-queue"));
+    /// </code>
+    /// <para>To perform a synchronous operation (e.g., sending a signal), use the underlying
+    /// <see cref="TemporalClient"/> and return a sync result:</para>
+    /// <code>
+    /// await client.TemporalClient
+    ///     .GetWorkflowHandle($"order-{input.OrderId}")
+    ///     .SignalAsync("requestCancellation", new[] { input });
+    /// return TemporalOperationResult&lt;NoValue&gt;.Sync(default);
+    /// </code>
+    /// </remarks>
     public interface ITemporalNexusClient
     {
+        /// <summary>
+        /// Gets the underlying Temporal client for advanced use cases such as sending signals
+        /// or queries.
+        /// </summary>
+        ITemporalClient TemporalClient { get; }
+
         /// <summary>
         /// Start a workflow via a lambda invoking the run method. Always returns an async result
         /// with a workflow-run operation token.
