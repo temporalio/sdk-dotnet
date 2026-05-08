@@ -291,7 +291,8 @@ public static class TestUtils
     public static async Task WaitForRoutingConfigPropagationAsync(
         ITemporalClient client,
         string deploymentName,
-        string expectedCurrentBuildId)
+        string expectedCurrentBuildId,
+        string? expectedRampingBuildId = null)
     {
         await AssertMore.EventuallyAsync(async () =>
         {
@@ -306,6 +307,11 @@ public static class TestUtils
             Assert.NotNull(info.RoutingConfig);
             Assert.NotNull(info.RoutingConfig.CurrentDeploymentVersion);
             Assert.Equal(expectedCurrentBuildId, info.RoutingConfig.CurrentDeploymentVersion.BuildId);
+            if (expectedRampingBuildId != null)
+            {
+                Assert.NotNull(info.RoutingConfig.RampingDeploymentVersion);
+                Assert.Equal(expectedRampingBuildId, info.RoutingConfig.RampingDeploymentVersion.BuildId);
+            }
             Assert.NotEqual(
                 Temporalio.Api.Enums.V1.RoutingConfigUpdateState.InProgress,
                 info.RoutingConfigUpdateState);
