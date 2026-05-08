@@ -79,6 +79,7 @@ jobs:
           name: generator-diff
           path: generator.diff
           if-no-files-found: ignore
+          overwrite: true
 
       - name: Check format
         if: ${{ matrix.checkTarget }}
@@ -98,6 +99,7 @@ jobs:
           name: test-results-${{ matrix.os }}
           path: tests/Temporalio.Tests/TestResults/**/*.trx
           if-no-files-found: warn
+          overwrite: true
 
       - name: Confirm bench works
         run: dotnet run --project tests/Temporalio.SimpleBench/Temporalio.SimpleBench.csproj -- --workflow-count 5 --max-cached-workflows 100 --max-concurrent 100
@@ -137,18 +139,20 @@ jobs:
         with:
           name: symbols-native-${{ matrix.os }}
           if-no-files-found: error
+          overwrite: true
           path: |
             src/Temporalio/Bridge/sdk-core/target/debug/*.dll
             src/Temporalio/Bridge/sdk-core/target/debug/*.dylib
             src/Temporalio/Bridge/sdk-core/target/debug/*.pdb
             src/Temporalio/Bridge/sdk-core/target/debug/*.so
-      
+
       - name: Upload managed symbols
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: ${{ failure() }}
         with:
           name: symbols-managed-${{ matrix.os }}
           if-no-files-found: error
+          overwrite: true
           path: |
             src/**/bin/Debug/**/*.dll
             src/**/bin/Debug/**/*.pdb
