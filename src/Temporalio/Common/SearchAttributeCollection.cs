@@ -213,7 +213,11 @@ namespace Temporalio.Common
             static object JsonElementToObject(JsonElement elem, IndexedValueType valueType) => elem.ValueKind switch
             {
                 JsonValueKind.Array =>
-                    elem.EnumerateArray().Select(j => JsonElementToObject(j, valueType)).OfType<string>().ToList(),
+                    elem.EnumerateArray()
+                        .Where(j => j.ValueKind != JsonValueKind.Null)
+                        .Select(j => JsonElementToObject(j, valueType))
+                        .OfType<string>()
+                        .ToList(),
                 JsonValueKind.False or JsonValueKind.True =>
                     elem.GetBoolean(),
                 JsonValueKind.Number when valueType == IndexedValueType.Int =>
