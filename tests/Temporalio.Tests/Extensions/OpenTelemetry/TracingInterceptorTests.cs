@@ -804,7 +804,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         var spans = await WithTracingWorkerAsync(async (client, _) =>
         {
             await client.StartActivityAsync(
-                "StandaloneActivity",
+                "TestStandaloneActivitySpans",
                 Array.Empty<object?>(),
                 new(activityId, $"standalone-tq-{Guid.NewGuid()}")
                 {
@@ -815,7 +815,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         var activityTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", activityId) };
         AssertActivities(
             spans,
-            new ActivityAssertion("StartActivity:StandaloneActivity", Parent: null, Tags: activityTags));
+            new ActivityAssertion("StartActivity:TestStandaloneActivitySpans", Parent: null, Tags: activityTags));
     }
 
     private static void AssertActivities(
