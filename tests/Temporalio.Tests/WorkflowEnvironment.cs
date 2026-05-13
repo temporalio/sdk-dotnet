@@ -94,7 +94,6 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "--dynamic-config-value", "history.enableTransitionHistory=true",
                         // Enable standalone Nexus operations
                         "--dynamic-config-value", "nexusoperation.enableStandalone=true",
-                        "--dynamic-config-value", "nexusoperation.enableChasm=true",
                         "--dynamic-config-value", "history.enableChasmCallbacks=true",
                         // Enable Nexus cancellation types
                         "--dynamic-config-value",
