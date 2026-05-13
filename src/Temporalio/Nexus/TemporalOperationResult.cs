@@ -31,13 +31,13 @@ namespace Temporalio.Nexus
         /// Gets the synchronous result value. Only meaningful when <see cref="IsSyncResult"/> is
         /// true.
         /// </summary>
-        public TResult? SyncValue { get; }
+        internal TResult? SyncValue { get; }
 
         /// <summary>
         /// Gets the asynchronous operation token. Only meaningful when <see cref="IsSyncResult"/>
         /// is false.
         /// </summary>
-        public string? AsyncToken { get; }
+        internal string? AsyncToken { get; }
 
         /// <summary>
         /// Create a synchronous result with the given value.
