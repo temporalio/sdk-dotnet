@@ -110,4 +110,43 @@ public class NexusWorkflowStartHelperTests
         Assert.Equal("wf2", parsed.WorkflowId);
         Assert.Equal(1, parsed.Type);
     }
+
+    [Fact]
+    public void TemporalOperationResult_Sync_StoresValue()
+    {
+        var result = TemporalOperationResult<string>.Sync("hello");
+        Assert.True(result.IsSyncResult);
+        Assert.Equal("hello", result.SyncValue);
+        Assert.Null(result.AsyncToken);
+    }
+
+    [Fact]
+    public void TemporalOperationResult_Sync_AllowsDefault()
+    {
+        var result = TemporalOperationResult<string>.Sync(null);
+        Assert.True(result.IsSyncResult);
+        Assert.Null(result.SyncValue);
+        Assert.Null(result.AsyncToken);
+    }
+
+    [Fact]
+    public void TemporalOperationResult_Async_StoresToken()
+    {
+        var result = TemporalOperationResult<string>.Async("some-token");
+        Assert.False(result.IsSyncResult);
+        Assert.Equal("some-token", result.AsyncToken);
+        Assert.Null(result.SyncValue);
+    }
+
+    [Fact]
+    public void TemporalOperationResult_Async_RejectsNull()
+    {
+        Assert.Throws<ArgumentException>(() => TemporalOperationResult<string>.Async(null!));
+    }
+
+    [Fact]
+    public void TemporalOperationResult_Async_RejectsEmpty()
+    {
+        Assert.Throws<ArgumentException>(() => TemporalOperationResult<string>.Async(string.Empty));
+    }
 }
