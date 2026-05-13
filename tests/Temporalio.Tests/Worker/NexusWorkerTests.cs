@@ -1391,6 +1391,254 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         });
     }
 
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_LinksAndContext_Populated()
+    {
+        // Capture the context and client passed to the generic handler so we can assert plumbing
+        OperationStartContext? capturedContext = null;
+        ITemporalNexusClient? capturedClient = null;
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                    async (context, client, input) =>
+                    {
+                        capturedContext = context;
+                        capturedClient = client;
+                        return await client.StartWorkflowAsync(
+                            (SimpleWorkflow wf) => wf.RunAsync(input),
+                            new() { Id = $"wf-{Guid.NewGuid()}" });
+                    }))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var handle = await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
+            Assert.Equal("Hello from workflow, some-name", result);
+        });
+
+        // Context fields populated
+        Assert.NotNull(capturedContext);
+        Assert.Equal("StringService", capturedContext!.Service);
+        Assert.Equal("DoSomething", capturedContext.Operation);
+        Assert.True(Guid.TryParse(capturedContext.RequestId, out _));
+        Assert.False(string.IsNullOrEmpty(capturedContext.CallbackUrl));
+        // Inbound link points to the caller workflow's scheduled event
+        var wfEvent = Assert.Single(capturedContext.InboundLinks).ToWorkflowEvent();
+        Assert.Equal(handle.Id, wfEvent.WorkflowId);
+        Assert.Equal(Api.Enums.V1.EventType.NexusOperationScheduled, wfEvent.EventRef.EventType);
+
+        // Nexus client exposes the temporal client
+        Assert.NotNull(capturedClient);
+        Assert.Equal(Env.Client.Options.Namespace, capturedClient!.TemporalClient.Options.Namespace);
+
+        // Outbound link on the start event points to the workflow that the handler started
+        var startEvent = Assert.Single(
+            (await handle.FetchHistoryAsync()).Events,
+            evt => evt.NexusOperationStartedEventAttributes != null);
+        var link = Assert.Single(startEvent.Links);
+        Assert.Equal(1, link.WorkflowEvent.EventRef.EventId);
+        Assert.Equal(
+            Api.Enums.V1.EventType.WorkflowExecutionStarted,
+            link.WorkflowEvent.EventRef.EventType);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_CancelOperation_CancelsUnderlying()
+    {
+        // The default CancelWorkflowRunAsync should cancel the underlying workflow when the
+        // operation is canceled (as opposed to canceling the caller workflow itself).
+        var workflowId = $"wf-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                    async (context, client, input) =>
+                        await client.StartWorkflowAsync(
+                            (WaitForeverWorkflow wf) => wf.RunAsync(input),
+                            new() { Id = workflowId })))).
+            AddWorkflow<WaitForeverWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var wfExc = await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, async () =>
+            {
+                using var cancelSource = new CancellationTokenSource();
+                var handle = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    StartNexusOperationAsync(
+                        svc => svc.DoSomething("some-name"),
+                        new() { CancellationToken = cancelSource.Token });
+#pragma warning disable CA1849, VSTHRD103 // https://github.com/temporalio/sdk-dotnet/issues/327
+                cancelSource.Cancel();
+#pragma warning restore CA1849, VSTHRD103
+                await handle.GetResultAsync();
+            }));
+        var nexusExc = Assert.IsType<NexusOperationFailureException>(wfExc.InnerException);
+        Assert.IsType<CanceledFailureException>(nexusExc.InnerException);
+
+        // Underlying workflow was canceled too
+        Assert.IsType<CanceledFailureException>(
+            (await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+                Client.GetWorkflowHandle(workflowId).GetResultAsync())).InnerException);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_CancelOverride_Invoked()
+    {
+        // Subclass with a CancelWorkflowRunAsync override; verify the override is used and
+        // receives the right workflow ID.
+        var workflowId = $"wf-{Guid.NewGuid()}";
+        CancelOverrideHandler? capturedHandler = null;
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+            {
+                capturedHandler ??= new CancelOverrideHandler(
+                    async (context, client, input) =>
+                        await client.StartWorkflowAsync(
+                            (WaitForeverWorkflow wf) => wf.RunAsync(input),
+                            new() { Id = workflowId }));
+                return capturedHandler;
+            })).
+            AddWorkflow<WaitForeverWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        await Assert.ThrowsAsync<WorkflowFailedException>(() =>
+            RunInWorkflowAsync(workerOptions, async () =>
+            {
+                using var cancelSource = new CancellationTokenSource();
+                var handle = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                    StartNexusOperationAsync(
+                        svc => svc.DoSomething("some-name"),
+                        new() { CancellationToken = cancelSource.Token });
+#pragma warning disable CA1849, VSTHRD103
+                cancelSource.Cancel();
+#pragma warning restore CA1849, VSTHRD103
+                await handle.GetResultAsync();
+            }));
+
+        Assert.NotNull(capturedHandler);
+        Assert.True(capturedHandler!.CancelCallCount > 0);
+        Assert.Equal(workflowId, capturedHandler.CapturedWorkflowId);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_StartWorkflowByName_Succeeds()
+    {
+        // Use the by-name overload of TemporalNexusClient.StartWorkflowAsync
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                    async (context, client, input) =>
+                        await client.StartWorkflowAsync<string>(
+                            "SimpleWorkflow",
+                            new object?[] { input },
+                            new() { Id = $"wf-{Guid.NewGuid()}" })))).
+            AddWorkflow<SimpleWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoSomething("by-name"));
+            Assert.Equal("Hello from workflow, by-name", result);
+        });
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_ConflictPolicy_UseExisting()
+    {
+        // Two operations with the same workflow ID + UseExisting policy attach to the same
+        // workflow; both observe the first input. Exercises the OnConflictOptions plumbing in
+        // NexusWorkflowStartHelper.
+        var workflowId = $"wf-{Guid.NewGuid()}";
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryStringService(() =>
+                TemporalNexusOperationHandler.FromHandleFactory<string, string>(
+                    async (context, client, input) =>
+                        await client.StartWorkflowAsync(
+                            (WaitForSignalWorkflow wf) => wf.RunAsync(input),
+                            new()
+                            {
+                                Id = workflowId,
+                                IdConflictPolicy = WorkflowIdConflictPolicy.UseExisting,
+                            })))).
+            AddWorkflow<WaitForSignalWorkflow>();
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        var results = new List<string>();
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var client = Workflow.CreateNexusWorkflowClient<IStringService>(endpoint);
+            var handle1 = await client.StartNexusOperationAsync(svc => svc.DoSomething("name1"));
+            var handle2 = await client.StartNexusOperationAsync(svc => svc.DoSomething("name2"));
+            await Workflow.GetExternalWorkflowHandle<WaitForSignalWorkflow>(workflowId).
+                SignalAsync(wf => wf.SignalAsync());
+            results.Add(await handle1.GetResultAsync());
+            results.Add(await handle2.GetResultAsync());
+        });
+        Assert.Equal(new List<string> { "Hello, name1!", "Hello, name1!" }, results);
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_GenericHandler_NoInputOverload_Succeeds()
+    {
+        // Exercise the no-input FromHandleFactory<TResult> overload
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new HandlerFactoryNoInputService(() =>
+                TemporalNexusOperationHandler.FromHandleFactory<string>(
+                    (context, client) =>
+                        Task.FromResult(TemporalOperationResult<string>.Sync("hello-no-input")))));
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        await RunInWorkflowAsync(workerOptions, async () =>
+        {
+            var result = await Workflow.CreateNexusWorkflowClient<INoInputService>(endpoint).
+                ExecuteNexusOperationAsync(svc => svc.DoIt());
+            Assert.Equal("hello-no-input", result);
+        });
+    }
+
+    [NexusService]
+    public interface INoInputService
+    {
+        [NexusOperation]
+        string DoIt();
+    }
+
+    [NexusServiceHandler(typeof(INoInputService))]
+    public class HandlerFactoryNoInputService
+    {
+        private readonly Func<IOperationHandler<NoValue, string>> handlerFactory;
+
+        public HandlerFactoryNoInputService(Func<IOperationHandler<NoValue, string>> handlerFactory) =>
+            this.handlerFactory = handlerFactory;
+
+        [NexusOperationHandler]
+        public IOperationHandler<NoValue, string> DoIt() => handlerFactory();
+    }
+
+    private class CancelOverrideHandler : TemporalNexusOperationHandler<string, string>
+    {
+        public CancelOverrideHandler(
+            Func<OperationStartContext, ITemporalNexusClient, string,
+                Task<TemporalOperationResult<string>>> startFunc)
+            : base(startFunc)
+        {
+        }
+
+        public int CancelCallCount { get; private set; }
+
+        public string? CapturedWorkflowId { get; private set; }
+
+        protected override Task CancelWorkflowRunAsync(
+            OperationCancelContext context, string workflowId)
+        {
+            CancelCallCount++;
+            CapturedWorkflowId = workflowId;
+            return base.CancelWorkflowRunAsync(context, workflowId);
+        }
+    }
+
     private async Task<string> CreateNexusEndpointAsync(string taskQueue)
     {
         var name = $"nexus-endpoint-{taskQueue}";
