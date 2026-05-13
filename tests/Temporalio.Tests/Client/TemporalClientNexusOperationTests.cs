@@ -397,7 +397,7 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
         using var worker = new TemporalWorker(client, workerOptions);
         await worker.ExecuteAsync(async () =>
         {
-            var nexusClient = client.CreateNexusClient<ITestService>(new NexusClientOptions(endpointName));
+            var nexusClient = client.CreateNexusClient<ITestService>(endpointName);
             var operationId = $"op-{Guid.NewGuid()}";
             var handle = await nexusClient.StartNexusOperationAsync<string>(
                 svc => svc.Echo("hello"),
@@ -546,8 +546,7 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
         using var worker = new TemporalWorker(Client, workerOptions);
         await worker.ExecuteAsync(async () =>
         {
-            var typedClient = Client.CreateNexusClient<ITestService>(
-                new NexusClientOptions(endpointName));
+            var typedClient = Client.CreateNexusClient<ITestService>(endpointName);
             await testFunc(typedClient);
         });
     }
@@ -581,10 +580,8 @@ public class TemporalClientNexusOperationTests : WorkflowEnvironmentTestBase
         using var worker = new TemporalWorker(Client, workerOptions);
         await worker.ExecuteAsync(async () =>
         {
-            var typedClient = Client.CreateNexusClient<ITestService>(
-                new NexusClientOptions(endpointName));
-            var untypedClient = Client.CreateNexusClient(
-                "TestService", new NexusClientOptions(endpointName));
+            var typedClient = Client.CreateNexusClient<ITestService>(endpointName);
+            var untypedClient = Client.CreateNexusClient(endpointName, "TestService");
             await testFunc(typedClient, untypedClient, endpointName);
         });
     }

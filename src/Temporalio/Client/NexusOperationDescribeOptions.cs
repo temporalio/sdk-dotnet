@@ -9,12 +9,6 @@ namespace Temporalio.Client
     public class NexusOperationDescribeOptions : ICloneable
     {
         /// <summary>
-        /// Gets or sets a long-poll token from a previous describe response. When set, the
-        /// describe call will long-poll for state changes.
-        /// </summary>
-        public byte[]? LongPollToken { get; set; }
-
-        /// <summary>
         /// Gets or sets RPC options for describing the operation.
         /// </summary>
         public RpcOptions? Rpc { get; set; }

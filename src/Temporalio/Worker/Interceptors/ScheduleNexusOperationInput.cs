@@ -4,7 +4,7 @@ using Temporalio.Workflows;
 namespace Temporalio.Worker.Interceptors
 {
     /// <summary>
-    /// Input for <see cref="WorkflowOutboundInterceptor.StartNexusOperationAsync"/>.
+    /// Input for <see cref="WorkflowOutboundInterceptor.ScheduleNexusOperationAsync"/>.
     /// </summary>
     /// <param name="Service">Service name.</param>
     /// <param name="ClientOptions">Client options.</param>
@@ -18,7 +18,7 @@ namespace Temporalio.Worker.Interceptors
     /// constructor, only use "with" clauses.
     /// </remarks>
     /// <remarks>WARNING: Nexus support is experimental.</remarks>
-    public record StartNexusOperationInput(
+    public record ScheduleNexusOperationInput(
         string Service,
         NexusWorkflowClientOptions ClientOptions,
         string OperationName,

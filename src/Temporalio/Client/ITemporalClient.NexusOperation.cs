@@ -1,27 +1,21 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
+
+#if NETCOREAPP3_0_OR_GREATER
+using System.Collections.Generic;
+#endif
 
 namespace Temporalio.Client
 {
     public partial interface ITemporalClient
     {
         /// <summary>
-        /// Create a Nexus client for the given service name and options.
+        /// Create a Nexus client for the given endpoint and service name.
         /// </summary>
+        /// <param name="endpoint">Endpoint name.</param>
         /// <param name="service">Nexus service name.</param>
-        /// <param name="options">Client options including endpoint.</param>
         /// <returns>Nexus client for the service.</returns>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        NexusClient CreateNexusClient(string service, NexusClientOptions options);
-
-        /// <summary>
-        /// Create a typed Nexus client for the given service type.
-        /// </summary>
-        /// <typeparam name="TService">Nexus service type.</typeparam>
-        /// <param name="options">Client options including endpoint.</param>
-        /// <returns>Typed Nexus client for the service.</returns>
-        /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options);
+        NexusClient CreateNexusClient(string endpoint, string service);
 
         /// <summary>
         /// Create a typed Nexus client for the given service type and endpoint.

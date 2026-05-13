@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -11,6 +10,7 @@ using Temporalio.Converters;
 using Temporalio.Exceptions;
 
 #if NETCOREAPP3_0_OR_GREATER
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 #endif
@@ -20,17 +20,8 @@ namespace Temporalio.Client
     public partial class TemporalClient
     {
         /// <inheritdoc />
-        public NexusClient CreateNexusClient(string service, NexusClientOptions options) =>
-            new NexusClientImpl(
-                client: this,
-                service: service,
-                endpoint: options.Endpoint);
-
-        /// <inheritdoc />
-        public NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
-            new NexusClientImpl<TService>(
-                client: this,
-                endpoint: options.Endpoint);
+        public NexusClient CreateNexusClient(string endpoint, string service) =>
+            new NexusClientImpl(client: this, service: service, endpoint: endpoint);
 
         /// <inheritdoc />
         public NexusClient<TService> CreateNexusClient<TService>(string endpoint) =>
@@ -109,7 +100,7 @@ namespace Temporalio.Client
                     return new NexusOperationHandle<TResult>(
                         Client: Client,
                         Id: input.Options.Id!,
-                        RunId: resp.RunId);
+                        RunId: string.IsNullOrEmpty(resp.RunId) ? null : resp.RunId);
                 }
                 catch (RpcException e) when (
                     e.Code == RpcException.StatusCode.AlreadyExists)
@@ -122,7 +113,7 @@ namespace Temporalio.Client
                             throw new NexusOperationAlreadyStartedException(
                                 e.Message,
                                 operationId: input.Options.Id!,
-                                runId: failure.RunId);
+                                runId: string.IsNullOrEmpty(failure.RunId) ? null : failure.RunId);
                         }
                     }
                     throw;
@@ -139,10 +130,6 @@ namespace Temporalio.Client
                     OperationId = input.Id,
                     RunId = input.RunId ?? string.Empty,
                 };
-                if (input.Options?.LongPollToken is byte[] token)
-                {
-                    req.LongPollToken = ByteString.CopyFrom(token);
-                }
                 var resp = await Client.Connection.WorkflowService.DescribeNexusOperationExecutionAsync(
                     req, DefaultRetryOptions(input.Options?.Rpc)).ConfigureAwait(false);
                 return new(resp, Client.Options.Namespace, Client.Options.DataConverter);
@@ -293,28 +280,21 @@ namespace Temporalio.Client
 
         private sealed class NexusClientImpl<TService> : NexusClient<TService>
         {
-            private readonly TemporalClient client;
+            private readonly NexusClientImpl inner;
 
             internal NexusClientImpl(TemporalClient client, string endpoint)
             {
-                this.client = client;
-                Endpoint = endpoint;
                 ServiceDefinition = ServiceDefinition.FromType<TService>();
+                inner = new NexusClientImpl(client, ServiceDefinition.Name, endpoint);
             }
 
-            public override string Endpoint { get; }
+            public override string Endpoint => inner.Endpoint;
 
             public override ServiceDefinition ServiceDefinition { get; }
 
             public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusOperationOptions? options = null) =>
-                client.OutboundInterceptor.StartNexusOperationAsync<TResult>(new(
-                    Service: Service,
-                    Endpoint: Endpoint,
-                    Operation: operationName,
-                    Arg: arg,
-                    Options: options ?? new NexusOperationOptions(),
-                    Headers: null));
+                inner.StartNexusOperationAsync<TResult>(operationName, arg, options);
         }
     }
 }
