@@ -412,7 +412,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
-                        new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(2) });
+                        new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(5) });
             }));
         var timeoutExc = Assert.IsType<TimeoutFailureException>(
             Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);

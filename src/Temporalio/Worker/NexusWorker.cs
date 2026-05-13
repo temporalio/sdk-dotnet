@@ -396,6 +396,12 @@ namespace Temporalio.Worker
 
             public void Cancel(CancelNexusTask task)
             {
+                // Only honor the first cancel so the cancellation reason is stable when,
+                // e.g., a timeout-driven cancel and a worker-shutdown cancel both arrive.
+                if (CancellationTokenSource.IsCancellationRequested)
+                {
+                    return;
+                }
                 string cancellationReason;
                 switch (task.Reason)
                 {
