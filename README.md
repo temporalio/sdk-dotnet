@@ -1153,6 +1153,7 @@ Notes about the above code:
   `Workflow.ExecuteActivityAsync`.
 * `Id` and `TaskQueue` are required on `StartActivityOptions`. Either `ScheduleToCloseTimeout` or
   `StartToCloseTimeout` must also be set.
+* `StartDelay` can be set to delay dispatch of the first activity task.
 * Non-type-safe forms of `StartActivityAsync` exist that accept a string activity name and an object array for
   arguments.
 * A shortcut extension `ExecuteActivityAsync` is available that is just `StartActivityAsync` + `GetResultAsync`.

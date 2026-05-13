@@ -104,6 +104,12 @@ namespace Temporalio.Client
         public Priority? Priority { get; set; }
 
         /// <summary>
+        /// Gets or sets the time to wait before dispatching the first activity task. This delay
+        /// is not applied to retry attempts.
+        /// </summary>
+        public TimeSpan? StartDelay { get; set; }
+
+        /// <summary>
         /// Gets or sets RPC options for starting the activity.
         /// </summary>
         public RpcOptions? Rpc { get; set; }
