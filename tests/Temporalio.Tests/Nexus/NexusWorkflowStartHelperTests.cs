@@ -8,9 +8,9 @@ using Xunit;
 public class NexusWorkflowStartHelperTests
 {
     [Fact]
-    public void GenerateToken_ProducesValidBase64Url()
+    public void ToToken_ProducesValidBase64Url()
     {
-        var token = NexusWorkflowStartHelper.GenerateToken("my-ns", "my-wf");
+        var token = new NexusWorkflowRunHandle("my-ns", "my-wf", 0).ToToken();
 
         Assert.DoesNotContain("+", token);
         Assert.DoesNotContain("/", token);
@@ -18,10 +18,10 @@ public class NexusWorkflowStartHelperTests
     }
 
     [Fact]
-    public void GenerateToken_ContainsCorrectFields()
+    public void ToToken_ContainsCorrectFields()
     {
-        var token = NexusWorkflowStartHelper.GenerateToken("my-ns", "my-wf");
-        var json = Encoding.UTF8.GetString(NexusWorkflowStartHelper.Base64UrlDecode(token));
+        var token = new NexusWorkflowRunHandle("my-ns", "my-wf", 0).ToToken();
+        var json = Encoding.UTF8.GetString(NexusWorkflowRunHandle.Base64UrlDecode(token));
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
@@ -31,22 +31,10 @@ public class NexusWorkflowStartHelperTests
     }
 
     [Fact]
-    public void GenerateToken_CrossCompatibleWithNexusWorkflowRunHandle()
-    {
-        var token = NexusWorkflowStartHelper.GenerateToken("default", "test-wf");
-
-        // Verify existing NexusWorkflowRunHandle can decode tokens from the helper
-        var handle = NexusWorkflowRunHandle.FromToken(token);
-        Assert.Equal("default", handle.Namespace);
-        Assert.Equal("test-wf", handle.WorkflowId);
-        Assert.Equal(0, handle.Version);
-    }
-
-    [Fact]
     public void ParseToken_RoundTrips()
     {
-        var token = NexusWorkflowStartHelper.GenerateToken("my-ns", "my-wf");
-        var parsed = NexusWorkflowStartHelper.ParseToken(token);
+        var token = new NexusWorkflowRunHandle("my-ns", "my-wf", 0).ToToken();
+        var parsed = NexusWorkflowRunHandle.ParseToken(token);
 
         Assert.Equal("my-ns", parsed.Namespace);
         Assert.Equal("my-wf", parsed.WorkflowId);
@@ -56,22 +44,22 @@ public class NexusWorkflowStartHelperTests
     [Fact]
     public void ParseToken_RejectsInvalidBase64()
     {
-        Assert.Throws<ArgumentException>(() => NexusWorkflowStartHelper.ParseToken("!!!invalid!!!"));
+        Assert.Throws<ArgumentException>(() => NexusWorkflowRunHandle.ParseToken("!!!invalid!!!"));
     }
 
     [Fact]
     public void ParseToken_RejectsInvalidJson()
     {
-        var token = NexusWorkflowStartHelper.Base64UrlEncode(Encoding.UTF8.GetBytes("not json"));
-        Assert.Throws<ArgumentException>(() => NexusWorkflowStartHelper.ParseToken(token));
+        var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes("not json"));
+        Assert.Throws<ArgumentException>(() => NexusWorkflowRunHandle.ParseToken(token));
     }
 
     [Fact]
     public void ParseToken_RejectsUnsupportedVersion()
     {
         var json = """{"t":1,"ns":"ns","wid":"wid","v":99}""";
-        var token = NexusWorkflowStartHelper.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
-        Assert.Throws<ArgumentException>(() => NexusWorkflowStartHelper.ParseToken(token));
+        var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
+        Assert.Throws<ArgumentException>(() => NexusWorkflowRunHandle.ParseToken(token));
     }
 
     [Fact]
@@ -79,36 +67,19 @@ public class NexusWorkflowStartHelperTests
     {
         // ParseToken should not reject unknown token types — that's for the handler to decide
         var json = """{"t":99,"ns":"ns","wid":"wid"}""";
-        var token = NexusWorkflowStartHelper.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
-        var parsed = NexusWorkflowStartHelper.ParseToken(token);
+        var token = NexusWorkflowRunHandle.Base64UrlEncode(Encoding.UTF8.GetBytes(json));
+        var parsed = NexusWorkflowRunHandle.ParseToken(token);
         Assert.Equal(99, parsed.Type);
     }
 
     [Fact]
-    public void GenerateToken_SpecialCharactersRoundTrip()
+    public void ToToken_SpecialCharactersRoundTrip()
     {
-        var token = NexusWorkflowStartHelper.GenerateToken("ns/with+special", "wf?id=1&foo=bar");
-        var parsed = NexusWorkflowStartHelper.ParseToken(token);
+        var token = new NexusWorkflowRunHandle("ns/with+special", "wf?id=1&foo=bar", 0).ToToken();
+        var parsed = NexusWorkflowRunHandle.ParseToken(token);
 
         Assert.Equal("ns/with+special", parsed.Namespace);
         Assert.Equal("wf?id=1&foo=bar", parsed.WorkflowId);
-    }
-
-    [Fact]
-    public void NexusWorkflowRunHandle_CanDecodeHelperToken_AndViceVersa()
-    {
-        // Helper token -> NexusWorkflowRunHandle
-        var helperToken = NexusWorkflowStartHelper.GenerateToken("ns1", "wf1");
-        var handle = NexusWorkflowRunHandle.FromToken(helperToken);
-        Assert.Equal("ns1", handle.Namespace);
-        Assert.Equal("wf1", handle.WorkflowId);
-
-        // NexusWorkflowRunHandle token -> Helper parse
-        var handleToken = new NexusWorkflowRunHandle("ns2", "wf2", 0).ToToken();
-        var parsed = NexusWorkflowStartHelper.ParseToken(handleToken);
-        Assert.Equal("ns2", parsed.Namespace);
-        Assert.Equal("wf2", parsed.WorkflowId);
-        Assert.Equal(1, parsed.Type);
     }
 
     [Fact]

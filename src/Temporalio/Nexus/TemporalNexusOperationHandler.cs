@@ -110,10 +110,10 @@ namespace Temporalio.Nexus
         /// <inheritdoc/>
         public Task CancelAsync(OperationCancelContext context)
         {
-            NexusWorkflowStartHelper.OperationToken token;
+            NexusWorkflowRunHandle.OperationToken token;
             try
             {
-                token = NexusWorkflowStartHelper.ParseToken(context.OperationToken);
+                token = NexusWorkflowRunHandle.ParseToken(context.OperationToken);
             }
             catch (ArgumentException e)
             {
