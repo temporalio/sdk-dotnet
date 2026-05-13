@@ -24,21 +24,21 @@ namespace Temporalio.Client
         /// <summary>
         /// Wait for the result of the operation, discarding the return value.
         /// </summary>
-        /// <param name="options">Options for the call.</param>
+        /// <param name="rpcOptions">RPC options for the call.</param>
         /// <returns>Task that completes when the operation completes.</returns>
         /// <exception cref="NexusOperationFailedException">
         /// Exception thrown for unsuccessful operation result.
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public Task GetResultAsync(NexusOperationGetResultOptions? options = null) =>
-            GetResultAsync<ValueTuple>(options);
+        public Task GetResultAsync(RpcOptions? rpcOptions = null) =>
+            GetResultAsync<ValueTuple>(rpcOptions);
 
         /// <summary>
         /// Wait for the result of the operation, deserializing into the given type.
         /// </summary>
         /// <typeparam name="TResult">Return type to deserialize result into.</typeparam>
-        /// <param name="options">Options for the call.</param>
+        /// <param name="rpcOptions">RPC options for the call.</param>
         /// <returns>Result of the operation.</returns>
         /// <exception cref="NexusOperationFailedException">
         /// Exception thrown for unsuccessful operation result.
@@ -46,7 +46,7 @@ namespace Temporalio.Client
         /// <exception cref="RpcException">Server-side error.</exception>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
         public virtual async Task<TResult> GetResultAsync<TResult>(
-            NexusOperationGetResultOptions? options = null)
+            RpcOptions? rpcOptions = null)
         {
             var dataConverter = Client.Options.DataConverter;
 
@@ -58,7 +58,7 @@ namespace Temporalio.Client
                 RunId = RunId ?? string.Empty,
                 WaitStage = NexusOperationWaitStage.Closed,
             };
-            var rpc = TemporalClient.DefaultRetryOptions(options?.Rpc);
+            var rpc = TemporalClient.DefaultRetryOptions(rpcOptions);
             while (true)
             {
                 var resp = await Client.Connection.WorkflowService.PollNexusOperationExecutionAsync(
@@ -82,9 +82,9 @@ namespace Temporalio.Client
                         return await dataConverter.ToSingleValueAsync<TResult>(
                             new[] { resp.Result }).ConfigureAwait(false);
                     case PollNexusOperationExecutionResponse.OutcomeOneofCase.Failure:
-                        throw new NexusOperationFailedException(
-                            await dataConverter.ToExceptionAsync(
-                                resp.Failure).ConfigureAwait(false));
+                        var failure = await dataConverter.ToExceptionAsync(
+                            resp.Failure).ConfigureAwait(false);
+                        throw new NexusOperationFailedException(Id, RunId, failure);
                     default:
                         throw new InvalidOperationException(
                             $"Unexpected Nexus operation outcome type: {resp.OutcomeCase}");
@@ -150,14 +150,14 @@ namespace Temporalio.Client
         /// <summary>
         /// Wait for the result of the operation.
         /// </summary>
-        /// <param name="options">Options for the call.</param>
+        /// <param name="rpcOptions">RPC options for the call.</param>
         /// <returns>Result of the operation.</returns>
         /// <exception cref="NexusOperationFailedException">
         /// Exception thrown for unsuccessful operation result.
         /// </exception>
         /// <exception cref="RpcException">Server-side error.</exception>
         /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
-        public new Task<TResult> GetResultAsync(NexusOperationGetResultOptions? options = null) =>
-            GetResultAsync<TResult>(options);
+        public new Task<TResult> GetResultAsync(RpcOptions? rpcOptions = null) =>
+            GetResultAsync<TResult>(rpcOptions);
     }
 }

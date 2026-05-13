@@ -122,5 +122,14 @@ namespace Temporalio.Client
         /// <returns>Static summary.</returns>
         public async Task<string?> GetStaticSummaryAsync() =>
             (await userMetadata.Value.ConfigureAwait(false)).Summary;
+
+        /// <summary>
+        /// Gets the general fixed details for this operation that may appear in UI/CLI.
+        /// This can be in Temporal markdown format and can span multiple lines.
+        /// </summary>
+        /// <remarks>WARNING: Standalone Nexus operations are experimental.</remarks>
+        /// <returns>Static details.</returns>
+        public async Task<string?> GetStaticDetailsAsync() =>
+            (await userMetadata.Value.ConfigureAwait(false)).Details;
     }
 }

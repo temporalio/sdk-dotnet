@@ -28,12 +28,12 @@ namespace Temporalio.Client
         /// Gets the approximate number of operations matching the original query. If the query had a
         /// group-by clause, this is simply the sum of all the counts in <see cref="Groups" />.
         /// </summary>
-        public long Count { get; private init; }
+        public long Count { get; }
 
         /// <summary>
         /// Gets the groups if the query had a group-by clause, or empty if not.
         /// </summary>
-        public IReadOnlyCollection<AggregationGroup> Groups { get; private init; }
+        public IReadOnlyCollection<AggregationGroup> Groups { get; }
 
         /// <summary>
         /// Aggregation group if the operation count query had a group-by clause.
@@ -59,12 +59,12 @@ namespace Temporalio.Client
             /// <summary>
             /// Gets the approximate number of operations matching the original query for this group.
             /// </summary>
-            public long Count { get; private init; }
+            public long Count { get; }
 
             /// <summary>
             /// Gets the search attribute values for this group.
             /// </summary>
-            public IReadOnlyCollection<object> GroupValues { get; private init; }
+            public IReadOnlyCollection<object> GroupValues { get; }
         }
     }
 }

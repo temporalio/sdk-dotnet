@@ -24,13 +24,13 @@ namespace Temporalio.Client
             new NexusClientImpl(
                 client: this,
                 service: service,
-                endpoint: options.Endpoint ?? throw new ArgumentException("Endpoint is required"));
+                endpoint: options.Endpoint);
 
         /// <inheritdoc />
         public NexusClient<TService> CreateNexusClient<TService>(NexusClientOptions options) =>
             new NexusClientImpl<TService>(
                 client: this,
-                endpoint: options.Endpoint ?? throw new ArgumentException("Endpoint is required"));
+                endpoint: options.Endpoint);
 
         /// <inheritdoc />
         public NexusClient<TService> CreateNexusClient<TService>(string endpoint) =>
@@ -74,7 +74,9 @@ namespace Temporalio.Client
                     var req = new StartNexusOperationExecutionRequest()
                     {
                         Namespace = Client.Options.Namespace,
-                        OperationId = input.Options.Id ?? throw new ArgumentException("ID required to start Nexus operation"),
+                        OperationId = string.IsNullOrEmpty(input.Options.Id)
+                            ? throw new ArgumentException("ID required to start Nexus operation")
+                            : input.Options.Id,
                         Endpoint = input.Endpoint,
                         Service = input.Service,
                         Operation = input.Operation,
@@ -278,8 +280,6 @@ namespace Temporalio.Client
 
             public override string Endpoint { get; }
 
-            public override ITemporalClient Client => client;
-
             public override Task<NexusOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusOperationOptions? options = null) =>
                 client.OutboundInterceptor.StartNexusOperationAsync<TResult>(new(
@@ -303,8 +303,6 @@ namespace Temporalio.Client
             }
 
             public override string Endpoint { get; }
-
-            public override ITemporalClient Client => client;
 
             public override ServiceDefinition ServiceDefinition { get; }
 

@@ -76,6 +76,17 @@ namespace Temporalio.Client
         }
 
         /// <summary>
+        /// Invoke CreateCustomRole.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<CreateCustomRoleResponse> CreateCustomRoleAsync(CreateCustomRoleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("CreateCustomRole", req, CreateCustomRoleResponse.Parser, options);
+        }
+
+        /// <summary>
         /// Invoke CreateNamespace.
         /// </summary>
         /// <param name="req">Request for the call.</param>
@@ -172,6 +183,17 @@ namespace Temporalio.Client
         public Task<DeleteConnectivityRuleResponse> DeleteConnectivityRuleAsync(DeleteConnectivityRuleRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("DeleteConnectivityRule", req, DeleteConnectivityRuleResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke DeleteCustomRole.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<DeleteCustomRoleResponse> DeleteCustomRoleAsync(DeleteCustomRoleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("DeleteCustomRole", req, DeleteCustomRoleResponse.Parser, options);
         }
 
         /// <summary>
@@ -381,6 +403,28 @@ namespace Temporalio.Client
         public Task<GetCurrentIdentityResponse> GetCurrentIdentityAsync(GetCurrentIdentityRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("GetCurrentIdentity", req, GetCurrentIdentityResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetCustomRole.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetCustomRoleResponse> GetCustomRoleAsync(GetCustomRoleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetCustomRole", req, GetCustomRoleResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke GetCustomRoles.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<GetCustomRolesResponse> GetCustomRolesAsync(GetCustomRolesRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("GetCustomRoles", req, GetCustomRolesResponse.Parser, options);
         }
 
         /// <summary>
@@ -656,6 +700,17 @@ namespace Temporalio.Client
         public Task<UpdateApiKeyResponse> UpdateApiKeyAsync(UpdateApiKeyRequest req, RpcOptions? options = null)
         {
             return InvokeRpcAsync("UpdateApiKey", req, UpdateApiKeyResponse.Parser, options);
+        }
+
+        /// <summary>
+        /// Invoke UpdateCustomRole.
+        /// </summary>
+        /// <param name="req">Request for the call.</param>
+        /// <param name="options">Optional RPC options.</param>
+        /// <returns>RPC response</returns>
+        public Task<UpdateCustomRoleResponse> UpdateCustomRoleAsync(UpdateCustomRoleRequest req, RpcOptions? options = null)
+        {
+            return InvokeRpcAsync("UpdateCustomRole", req, UpdateCustomRoleResponse.Parser, options);
         }
 
         /// <summary>

@@ -11,13 +11,6 @@ namespace Temporalio.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="NexusClientOptions"/> class.
         /// </summary>
-        public NexusClientOptions()
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NexusClientOptions"/> class.
-        /// </summary>
         /// <param name="endpoint">Endpoint name.</param>
         public NexusClientOptions(string endpoint)
         {
@@ -27,7 +20,7 @@ namespace Temporalio.Client
         /// <summary>
         /// Gets or sets the endpoint name, resolved to a URL via the cluster's endpoint registry.
         /// </summary>
-        public string? Endpoint { get; set; }
+        public string Endpoint { get; set; }
 
         /// <summary>
         /// Create a shallow copy of these options.

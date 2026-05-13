@@ -41,16 +41,26 @@ namespace Temporalio.Api.Compute.V1 {
             "OAEinQEKH0NvbXB1dGVDb25maWdTY2FsaW5nR3JvdXBVcGRhdGUSSQoNc2Nh",
             "bGluZ19ncm91cBgBIAEoCzIyLnRlbXBvcmFsLmFwaS5jb21wdXRlLnYxLkNv",
             "bXB1dGVDb25maWdTY2FsaW5nR3JvdXASLwoLdXBkYXRlX21hc2sYAiABKAsy",
-            "Gi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrQo0BChppby50ZW1wb3JhbC5h",
-            "cGkuY29tcHV0ZS52MUILQ29uZmlnUHJvdG9QAVolZ28udGVtcG9yYWwuaW8v",
-            "YXBpL2NvbXB1dGUvdjE7Y29tcHV0ZaoCGVRlbXBvcmFsaW8uQXBpLkNvbXB1",
-            "dGUuVjHqAhxUZW1wb3JhbGlvOjpBcGk6OkNvbXB1dGU6OlYxYgZwcm90bzM="));
+            "Gi5nb29nbGUucHJvdG9idWYuRmllbGRNYXNrIuEBChRDb21wdXRlQ29uZmln",
+            "U3VtbWFyeRJYCg5zY2FsaW5nX2dyb3VwcxgBIAMoCzJALnRlbXBvcmFsLmFw",
+            "aS5jb21wdXRlLnYxLkNvbXB1dGVDb25maWdTdW1tYXJ5LlNjYWxpbmdHcm91",
+            "cHNFbnRyeRpvChJTY2FsaW5nR3JvdXBzRW50cnkSCwoDa2V5GAEgASgJEkgK",
+            "BXZhbHVlGAIgASgLMjkudGVtcG9yYWwuYXBpLmNvbXB1dGUudjEuQ29tcHV0",
+            "ZUNvbmZpZ1NjYWxpbmdHcm91cFN1bW1hcnk6AjgBInkKIENvbXB1dGVDb25m",
+            "aWdTY2FsaW5nR3JvdXBTdW1tYXJ5Ej4KEHRhc2tfcXVldWVfdHlwZXMYASAD",
+            "KA4yJC50ZW1wb3JhbC5hcGkuZW51bXMudjEuVGFza1F1ZXVlVHlwZRIVCg1w",
+            "cm92aWRlcl90eXBlGAIgASgJQo0BChppby50ZW1wb3JhbC5hcGkuY29tcHV0",
+            "ZS52MUILQ29uZmlnUHJvdG9QAVolZ28udGVtcG9yYWwuaW8vYXBpL2NvbXB1",
+            "dGUvdjE7Y29tcHV0ZaoCGVRlbXBvcmFsaW8uQXBpLkNvbXB1dGUuVjHqAhxU",
+            "ZW1wb3JhbGlvOjpBcGk6OkNvbXB1dGU6OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Compute.V1.ProviderReflection.Descriptor, global::Temporalio.Api.Compute.V1.ScalerReflection.Descriptor, global::Temporalio.Api.Enums.V1.TaskQueueReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.FieldMaskReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup.Parser, new[]{ "TaskQueueTypes", "Provider", "Scaler" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfig), global::Temporalio.Api.Compute.V1.ComputeConfig.Parser, new[]{ "ScalingGroups" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate.Parser, new[]{ "ScalingGroup", "UpdateMask" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupUpdate.Parser, new[]{ "ScalingGroup", "UpdateMask" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigSummary), global::Temporalio.Api.Compute.V1.ComputeConfigSummary.Parser, new[]{ "ScalingGroups" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary), global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary.Parser, new[]{ "TaskQueueTypes", "ProviderType" }, null, null, null, null)
           }));
     }
     #endregion
@@ -109,7 +119,7 @@ namespace Temporalio.Api.Compute.V1 {
         = pb::FieldCodec.ForEnum(10, x => (int) x, x => (global::Temporalio.Api.Enums.V1.TaskQueueType) x);
     private readonly pbc::RepeatedField<global::Temporalio.Api.Enums.V1.TaskQueueType> taskQueueTypes_ = new pbc::RepeatedField<global::Temporalio.Api.Enums.V1.TaskQueueType>();
     /// <summary>
-    /// Optional. The set of task queue types this scaling group serves. 
+    /// Optional. The set of task queue types this scaling group serves.
     /// If not provided, this scaling group serves all not otherwise defined
     /// task types.
     /// </summary>
@@ -397,7 +407,7 @@ namespace Temporalio.Api.Compute.V1 {
         = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup.Parser), 10);
     private readonly pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup> scalingGroups_ = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroup>();
     /// <summary>
-    /// Each scaling group describes a compute config for a specific subset of the worker 
+    /// Each scaling group describes a compute config for a specific subset of the worker
     /// deployment version: covering a specific set of task types and/or regions.
     /// Having different configurations for different task types, allows independent
     /// tuning of activity and workflow task processing (for example).
@@ -778,6 +788,404 @@ namespace Temporalio.Api.Compute.V1 {
               UpdateMask = new global::Google.Protobuf.WellKnownTypes.FieldMask();
             }
             input.ReadMessage(UpdateMask);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// A subset of information in ComputeConfig optimized for list views.
+  /// </summary>
+  public sealed partial class ComputeConfigSummary : pb::IMessage<ComputeConfigSummary>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ComputeConfigSummary> _parser = new pb::MessageParser<ComputeConfigSummary>(() => new ComputeConfigSummary());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ComputeConfigSummary> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Compute.V1.ConfigReflection.Descriptor.MessageTypes[3]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ComputeConfigSummary() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ComputeConfigSummary(ComputeConfigSummary other) : this() {
+      scalingGroups_ = other.scalingGroups_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ComputeConfigSummary Clone() {
+      return new ComputeConfigSummary(this);
+    }
+
+    /// <summary>Field number for the "scaling_groups" field.</summary>
+    public const int ScalingGroupsFieldNumber = 1;
+    private static readonly pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary>.Codec _map_scalingGroups_codec
+        = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForMessage(18, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary.Parser), 10);
+    private readonly pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary> scalingGroups_ = new pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, global::Temporalio.Api.Compute.V1.ComputeConfigScalingGroupSummary> ScalingGroups {
+      get { return scalingGroups_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ComputeConfigSummary);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ComputeConfigSummary other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!ScalingGroups.Equals(other.ScalingGroups)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= ScalingGroups.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      scalingGroups_.WriteTo(output, _map_scalingGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      scalingGroups_.WriteTo(ref output, _map_scalingGroups_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += scalingGroups_.CalculateSize(_map_scalingGroups_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ComputeConfigSummary other) {
+      if (other == null) {
+        return;
+      }
+      scalingGroups_.MergeFrom(other.scalingGroups_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            scalingGroups_.AddEntriesFrom(input, _map_scalingGroups_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            scalingGroups_.AddEntriesFrom(ref input, _map_scalingGroups_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class ComputeConfigScalingGroupSummary : pb::IMessage<ComputeConfigScalingGroupSummary>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ComputeConfigScalingGroupSummary> _parser = new pb::MessageParser<ComputeConfigScalingGroupSummary>(() => new ComputeConfigScalingGroupSummary());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ComputeConfigScalingGroupSummary> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Temporalio.Api.Compute.V1.ConfigReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ComputeConfigScalingGroupSummary() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ComputeConfigScalingGroupSummary(ComputeConfigScalingGroupSummary other) : this() {
+      taskQueueTypes_ = other.taskQueueTypes_.Clone();
+      providerType_ = other.providerType_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ComputeConfigScalingGroupSummary Clone() {
+      return new ComputeConfigScalingGroupSummary(this);
+    }
+
+    /// <summary>Field number for the "task_queue_types" field.</summary>
+    public const int TaskQueueTypesFieldNumber = 1;
+    private static readonly pb::FieldCodec<global::Temporalio.Api.Enums.V1.TaskQueueType> _repeated_taskQueueTypes_codec
+        = pb::FieldCodec.ForEnum(10, x => (int) x, x => (global::Temporalio.Api.Enums.V1.TaskQueueType) x);
+    private readonly pbc::RepeatedField<global::Temporalio.Api.Enums.V1.TaskQueueType> taskQueueTypes_ = new pbc::RepeatedField<global::Temporalio.Api.Enums.V1.TaskQueueType>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Temporalio.Api.Enums.V1.TaskQueueType> TaskQueueTypes {
+      get { return taskQueueTypes_; }
+    }
+
+    /// <summary>Field number for the "provider_type" field.</summary>
+    public const int ProviderTypeFieldNumber = 2;
+    private string providerType_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string ProviderType {
+      get { return providerType_; }
+      set {
+        providerType_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ComputeConfigScalingGroupSummary);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ComputeConfigScalingGroupSummary other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!taskQueueTypes_.Equals(other.taskQueueTypes_)) return false;
+      if (ProviderType != other.ProviderType) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= taskQueueTypes_.GetHashCode();
+      if (ProviderType.Length != 0) hash ^= ProviderType.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      taskQueueTypes_.WriteTo(output, _repeated_taskQueueTypes_codec);
+      if (ProviderType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ProviderType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      taskQueueTypes_.WriteTo(ref output, _repeated_taskQueueTypes_codec);
+      if (ProviderType.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ProviderType);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += taskQueueTypes_.CalculateSize(_repeated_taskQueueTypes_codec);
+      if (ProviderType.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ProviderType);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ComputeConfigScalingGroupSummary other) {
+      if (other == null) {
+        return;
+      }
+      taskQueueTypes_.Add(other.taskQueueTypes_);
+      if (other.ProviderType.Length != 0) {
+        ProviderType = other.ProviderType;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10:
+          case 8: {
+            taskQueueTypes_.AddEntriesFrom(input, _repeated_taskQueueTypes_codec);
+            break;
+          }
+          case 18: {
+            ProviderType = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10:
+          case 8: {
+            taskQueueTypes_.AddEntriesFrom(ref input, _repeated_taskQueueTypes_codec);
+            break;
+          }
+          case 18: {
+            ProviderType = input.ReadString();
             break;
           }
         }

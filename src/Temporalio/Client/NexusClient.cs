@@ -26,11 +26,6 @@ namespace Temporalio.Client
         public abstract string Endpoint { get; }
 
         /// <summary>
-        /// Gets the underlying Temporal client.
-        /// </summary>
-        public abstract ITemporalClient Client { get; }
-
-        /// <summary>
         /// Shortcut for
         /// <see cref="StartNexusOperationAsync(string, object?, NexusOperationOptions?)"/>
         /// +
@@ -46,7 +41,7 @@ namespace Temporalio.Client
         {
             var handle = await StartNexusOperationAsync(operationName, arg, options).ConfigureAwait(false);
             await handle.GetResultAsync(
-                options?.Rpc == null ? null : new NexusOperationGetResultOptions { Rpc = options.Rpc }).ConfigureAwait(false);
+                options?.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -66,7 +61,7 @@ namespace Temporalio.Client
         {
             var handle = await StartNexusOperationAsync<TResult>(operationName, arg, options).ConfigureAwait(false);
             return await handle.GetResultAsync(
-                options?.Rpc == null ? null : new NexusOperationGetResultOptions { Rpc = options.Rpc }).ConfigureAwait(false);
+                options?.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -124,7 +119,7 @@ namespace Temporalio.Client
         {
             var handle = await StartNexusOperationAsync(operationStartCall, options).ConfigureAwait(false);
             await handle.GetResultAsync(
-                options?.Rpc == null ? null : new NexusOperationGetResultOptions { Rpc = options.Rpc }).ConfigureAwait(false);
+                options?.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -144,7 +139,7 @@ namespace Temporalio.Client
         {
             var handle = await StartNexusOperationAsync(operationStartCall, options).ConfigureAwait(false);
             return await handle.GetResultAsync(
-                options?.Rpc == null ? null : new NexusOperationGetResultOptions { Rpc = options.Rpc }).ConfigureAwait(false);
+                options?.Rpc).ConfigureAwait(false);
         }
 
         /// <summary>
