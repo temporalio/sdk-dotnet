@@ -348,6 +348,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 new(activityId, taskQueue)
                 {
                     ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
                 });
 
             await AssertMore.EventuallyAsync(async () =>
@@ -357,7 +358,10 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             });
 
             await handle.CancelAsync();
-            await handle.TerminateAsync();
+
+            var err = await Assert.ThrowsAsync<ActivityFailedException>(
+                () => handle.GetResultAsync());
+            Assert.IsType<CanceledFailureException>(err.InnerException);
 
             Assert.Equal("StartActivity", interceptor.Events[0].Name);
             Assert.Equal(
@@ -369,15 +373,61 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 activityId,
                 ((DescribeActivityInput)interceptor.Events[1].Input).Id);
 
-            Assert.Equal("CancelActivity", interceptor.Events[^2].Name);
+            Assert.Equal("CancelActivity", interceptor.Events[2].Name);
             Assert.Equal(
                 activityId,
-                ((CancelActivityInput)interceptor.Events[^2].Input).Id);
+                ((CancelActivityInput)interceptor.Events[2].Input).Id);
+        });
+    }
 
-            Assert.Equal("TerminateActivity", interceptor.Events[^1].Name);
+    [Fact]
+    public async Task TerminateActivityAsync_Interceptor_IsCalledProperly()
+    {
+        var interceptor = new ActivityTracingInterceptor();
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.Interceptors = new IClientInterceptor[] { interceptor };
+        var client = new TemporalClient(Client.Connection, newOptions);
+
+        var taskQueue = $"tq-{Guid.NewGuid()}";
+        using var worker = new TemporalWorker(
+            client, new TemporalWorkerOptions(taskQueue).AddActivity(WaitForCancelAsync));
+        await worker.ExecuteAsync(async () =>
+        {
+            var activityId = $"act-{Guid.NewGuid()}";
+            var handle = await client.StartActivityAsync(
+                () => WaitForCancelAsync(),
+                new(activityId, taskQueue)
+                {
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
+                });
+
+            await AssertMore.EventuallyAsync(async () =>
+            {
+                var desc = await handle.DescribeAsync();
+                Assert.Equal(ActivityExecutionStatus.Running, desc.Status);
+            });
+
+            await handle.TerminateAsync();
+
+            var err = await Assert.ThrowsAsync<ActivityFailedException>(
+                () => handle.GetResultAsync());
+            Assert.IsType<TerminatedFailureException>(err.InnerException);
+
+            Assert.Equal("StartActivity", interceptor.Events[0].Name);
             Assert.Equal(
                 activityId,
-                ((TerminateActivityInput)interceptor.Events[^1].Input).Id);
+                ((StartActivityInput)interceptor.Events[0].Input).Options.Id);
+
+            Assert.Equal("DescribeActivity", interceptor.Events[1].Name);
+            Assert.Equal(
+                activityId,
+                ((DescribeActivityInput)interceptor.Events[1].Input).Id);
+
+            Assert.Equal("TerminateActivity", interceptor.Events[2].Name);
+            Assert.Equal(
+                activityId,
+                ((TerminateActivityInput)interceptor.Events[2].Input).Id);
         });
     }
 
