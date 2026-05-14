@@ -179,6 +179,59 @@ public unsafe class TemporalConnectionOptionsTests
         AssertKeyValue(data[1], "x-key1-bin", "client-binary-more");
     }
 
+    [Fact]
+    public void ToInteropOptions_DnsLoadBalancing_NotSet()
+    {
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+        };
+
+        using var scope = new Scope();
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.True(interopOptions.dns_load_balancing_options == null);
+    }
+
+    [Fact]
+    public void ToInteropOptions_DnsLoadBalancing_DefaultInterval()
+    {
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+            DnsLoadBalancing = new DnsLoadBalancingOptions(),
+        };
+
+        using var scope = new Scope();
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.True(interopOptions.dns_load_balancing_options != null);
+        Assert.Equal(
+            (ulong)TimeSpan.FromSeconds(30).TotalMilliseconds,
+            interopOptions.dns_load_balancing_options->resolution_interval_millis);
+    }
+
+    [Fact]
+    public void ToInteropOptions_DnsLoadBalancing_CustomInterval()
+    {
+        var options = new TemporalConnectionOptions("localhost:7233")
+        {
+            Identity = "test-identity",
+            DnsLoadBalancing = new DnsLoadBalancingOptions
+            {
+                ResolutionInterval = TimeSpan.FromSeconds(5),
+            },
+        };
+
+        using var scope = new Scope();
+        var interopOptions = options.ToInteropOptions(scope);
+
+        Assert.True(interopOptions.dns_load_balancing_options != null);
+        Assert.Equal(
+            5_000UL,
+            interopOptions.dns_load_balancing_options->resolution_interval_millis);
+    }
+
     private static void AssertKeyValue(Bridge.Interop.TemporalCoreByteArrayRef byteArrayRef, string expectedKey, string expectedValue)
     {
         byte[] expectedKeyBytes = Encoding.UTF8.GetBytes(expectedKey);
