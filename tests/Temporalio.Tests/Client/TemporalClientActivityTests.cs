@@ -12,8 +12,6 @@ using Xunit.Abstractions;
 
 public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
 {
-    private const string StartDelayTestCliVersion = "v1.7.1-standalone-nexus-operations";
-
     private static volatile TaskCompletionSource? waitForCancelReached;
 
     public TemporalClientActivityTests(ITestOutputHelper output, WorkflowEnvironment env)
@@ -160,37 +158,10 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task StartActivityAsync_StartDelay_WaitsProperly()
     {
-        await using var env = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync(new()
-        {
-            DevServerOptions = new()
-            {
-                DownloadVersion = StartDelayTestCliVersion,
-                ExtraArgs = new List<string>
-                {
-                    "--dynamic-config-value",
-                    "frontend.activityAPIsEnabled=true",
-                    "--dynamic-config-value",
-                    "activity.enableStandalone=true",
-                    "--dynamic-config-value",
-                    "history.enableChasm=true",
-                    "--dynamic-config-value",
-                    "history.enableTransitionHistory=true",
-                    "--dynamic-config-value",
-                    "activity.startDelayEnabled=true",
-                },
-            },
-        });
-        var newOptions = (TemporalClientOptions)env.Client.Options.Clone();
-        newOptions.LoggerFactory = LoggerFactory;
-        var client = new TemporalClient(env.Client.Connection, newOptions);
-
-        var taskQueue = $"tq-{Guid.NewGuid()}";
-        using var worker = new TemporalWorker(
-            client, new TemporalWorkerOptions(taskQueue).AddActivity(SimpleActivityAsync));
-        await worker.ExecuteAsync(async () =>
+        await ExecuteActivityWorkerAsync(SimpleActivityAsync, async taskQueue =>
         {
             var startDelay = TimeSpan.FromSeconds(2);
-            var handle = await client.StartActivityAsync(
+            var handle = await Client.StartActivityAsync(
                 () => SimpleActivityAsync("delayed"),
                 new($"act-{Guid.NewGuid()}", taskQueue)
                 {
