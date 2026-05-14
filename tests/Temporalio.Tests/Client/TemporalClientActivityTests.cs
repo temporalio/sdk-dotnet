@@ -348,6 +348,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 new(activityId, taskQueue)
                 {
                     ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
                 });
 
             await AssertMore.EventuallyAsync(async () =>
@@ -357,11 +358,10 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
             });
 
             await handle.CancelAsync();
-            await AssertMore.EventuallyAsync(async () =>
-            {
-                var desc = await handle.DescribeAsync();
-                Assert.Equal(ActivityExecutionStatus.Canceled, desc.Status);
-            });
+
+            var err = await Assert.ThrowsAsync<ActivityFailedException>(
+                () => handle.GetResultAsync());
+            Assert.IsType<CanceledFailureException>(err.InnerException);
 
             Assert.Equal("StartActivity", interceptor.Events[0].Name);
             Assert.Equal(
@@ -399,6 +399,7 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
                 new(activityId, taskQueue)
                 {
                     ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                    HeartbeatTimeout = TimeSpan.FromSeconds(10),
                 });
 
             await AssertMore.EventuallyAsync(async () =>
@@ -409,11 +410,9 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
 
             await handle.TerminateAsync();
 
-            await AssertMore.EventuallyAsync(async () =>
-            {
-                var desc = await handle.DescribeAsync();
-                Assert.Equal(ActivityExecutionStatus.Terminated, desc.Status);
-            });
+            var err = await Assert.ThrowsAsync<ActivityFailedException>(
+                () => handle.GetResultAsync());
+            Assert.IsType<TerminatedFailureException>(err.InnerException);
 
             Assert.Equal("StartActivity", interceptor.Events[0].Name);
             Assert.Equal(
