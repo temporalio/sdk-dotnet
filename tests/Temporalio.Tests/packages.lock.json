@@ -499,21 +499,21 @@
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
-          "Temporalio": "[1.14.0, )"
+          "Temporalio": "[1.14.1, )"
         }
       },
       "temporalio.extensions.hosting": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "[8.0.1, )",
-          "Temporalio": "[1.14.0, )"
+          "Temporalio": "[1.14.1, )"
         }
       },
       "temporalio.extensions.opentelemetry": {
         "type": "Project",
         "dependencies": {
           "OpenTelemetry.Api": "[1.15.3, )",
-          "Temporalio": "[1.14.0, )"
+          "Temporalio": "[1.14.1, )"
         }
       },
       "Google.Protobuf": {
