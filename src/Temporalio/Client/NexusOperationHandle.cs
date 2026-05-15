@@ -84,7 +84,7 @@ namespace Temporalio.Client
                     case PollNexusOperationExecutionResponse.OutcomeOneofCase.Failure:
                         var failure = await dataConverter.ToExceptionAsync(
                             resp.Failure).ConfigureAwait(false);
-                        throw new NexusOperationFailedException(Id, RunId, failure);
+                        throw new NexusOperationFailedException(Id, resp.RunId, failure);
                     default:
                         throw new InvalidOperationException(
                             $"Unexpected Nexus operation outcome type: {resp.OutcomeCase}");
