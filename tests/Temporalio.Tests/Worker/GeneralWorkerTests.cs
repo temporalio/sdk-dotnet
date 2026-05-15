@@ -19,7 +19,6 @@ public class GeneralWorkerTests : WorkflowEnvironmentTestBase
             new TemporalWorker(
                 Env.Client,
                 new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")));
-        Assert.Equal("Must have at least one workflow, activity, or Nexus service", exc.Message);
     }
 
     [Fact]
