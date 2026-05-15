@@ -45,6 +45,7 @@
     -->
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageValidationBaselineVersion>1.14.1</PackageValidationBaselineVersion>
+    <ApiCompatPermitUnnecessarySuppressions>false</ApiCompatPermitUnnecessarySuppressions>
   </PropertyGroup>
 
   <ItemGroup>
