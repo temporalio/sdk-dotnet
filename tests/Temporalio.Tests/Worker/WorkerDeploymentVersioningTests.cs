@@ -194,8 +194,14 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
             // Set current version to v1 and ramp v2 to 100%
             var conflictToken = (await TestUtils.SetCurrentDeploymentVersionAsync(
                 Client, describeResp.ConflictToken, v1)).ConflictToken;
+
+            await TestUtils.WaitForRoutingConfigPropagationAsync(Client, deploymentName, v1.BuildId);
+
             conflictToken = (await TestUtils.SetRampingVersionAsync(
                 Client, conflictToken, v2, 100)).ConflictToken;
+
+            await TestUtils.WaitForRoutingConfigPropagationAsync(
+                Client, deploymentName, v1.BuildId, v2.BuildId);
 
             // Run workflows and verify they run on v2
             for (int i = 0; i < 3; i++)
@@ -210,6 +216,10 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
 
             // Set ramp to 0, expecting workflows to run on v1
             conflictToken = (await TestUtils.SetRampingVersionAsync(Client, conflictToken, v2, 0)).ConflictToken;
+
+            await TestUtils.WaitForRoutingConfigPropagationAsync(
+                Client, deploymentName, v1.BuildId, v2.BuildId);
+
             for (int i = 0; i < 3; i++)
             {
                 var wfa = await Client.StartWorkflowAsync(
@@ -222,6 +232,9 @@ public class WorkerDeploymentVersioningTests : WorkflowEnvironmentTestBase
 
             // Set ramp to 50 and eventually verify workflows run on both versions
             await TestUtils.SetRampingVersionAsync(Client, conflictToken, v2, 50);
+
+            await TestUtils.WaitForRoutingConfigPropagationAsync(
+                Client, deploymentName, v1.BuildId, v2.BuildId);
 
             var seenResults = new HashSet<string>();
 
