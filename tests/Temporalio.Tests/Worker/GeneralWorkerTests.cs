@@ -13,6 +13,16 @@ public class GeneralWorkerTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public void Constructor_NoTaskTypes_Throws()
+    {
+        var exc = Assert.Throws<ArgumentException>(() =>
+            new TemporalWorker(
+                Env.Client,
+                new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")));
+        Assert.Equal("Must have at least one workflow, activity, or Nexus service", exc.Message);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_PropagatesException()
     {
         // This test verifies that ExecuteAsync(Func<Task>) properly propagates exceptions
