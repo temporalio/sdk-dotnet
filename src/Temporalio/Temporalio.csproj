@@ -3,7 +3,6 @@
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Description>Temporal SDK for .NET</Description>
-    <EnablePackageValidation Condition="'$(TargetFramework)' == 'netcoreapp3.1'">true</EnablePackageValidation>
     <IncludeSymbols>true</IncludeSymbols>
     <LangVersion>9.0</LangVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
