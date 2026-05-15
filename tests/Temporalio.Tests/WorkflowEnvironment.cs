@@ -67,7 +67,7 @@ public class WorkflowEnvironment : IAsyncLifetime
             {
                 DevServerOptions = new()
                 {
-                    DownloadVersion = "v1.7.0",
+                    DownloadVersion = "v1.7.1-standalone-nexus-operations",
                     ExtraArgs = new List<string>
                     {
                         // Disable search attribute cache
@@ -92,6 +92,9 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "--dynamic-config-value", "activity.enableStandalone=true",
                         "--dynamic-config-value", "history.enableChasm=true",
                         "--dynamic-config-value", "history.enableTransitionHistory=true",
+                        // Enable standalone Nexus operations
+                        "--dynamic-config-value", "nexusoperation.enableStandalone=true",
+                        "--dynamic-config-value", "history.enableChasmCallbacks=true",
                         // Enable Nexus cancellation types
                         "--dynamic-config-value",
                         "component.nexusoperations.recordCancelRequestCompletionEvents=true",
