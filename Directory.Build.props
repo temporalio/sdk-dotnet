@@ -37,6 +37,15 @@
       leave revision off.
     -->
     <AssemblyVersion>1.14.1</AssemblyVersion>
+
+    <!--
+      Validate the public API surface of every packable project against the
+      previously published version. Auto-skips for IsPackable=false projects.
+      Bump PackageValidationBaselineVersion when releasing.
+    -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>1.14.1</PackageValidationBaselineVersion>
+    <ApiCompatPermitUnnecessarySuppressions>false</ApiCompatPermitUnnecessarySuppressions>
   </PropertyGroup>
 
   <ItemGroup>
