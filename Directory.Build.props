@@ -42,6 +42,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-g94r-2vxg-569j" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)src\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>
