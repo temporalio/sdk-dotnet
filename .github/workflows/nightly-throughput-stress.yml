@@ -94,7 +94,8 @@ jobs:
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
-          workspaces: src/Temporalio/Bridge
+          workspaces: src/Temporalio/Bridge/sdk-core
+          cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
 
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
@@ -166,7 +167,7 @@ jobs:
 
       - name: Configure AWS credentials
         if: always()
-        uses: aws-actions/configure-aws-credentials@51635dbf418c2cdd8b3e1497529334d8db7e4063 # v6
+        uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885 # v6
         with:
           role-to-assume: ${{ env.AWS_S3_METRICS_UPLOAD_ROLE_ARN }}
           aws-region: us-west-2
@@ -194,7 +195,7 @@ jobs:
 
       - name: Notify Slack on failure
         if: failure() || cancelled()
-        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3
+        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3
         with:
           webhook-type: incoming-webhook
           payload: |

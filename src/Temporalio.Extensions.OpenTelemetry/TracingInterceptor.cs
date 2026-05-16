@@ -699,13 +699,13 @@ namespace Temporalio.Extensions.OpenTelemetry
                 return base.StartChildWorkflowAsync<TWorkflow, TResult>(input);
             }
 
-            public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
-                StartNexusOperationInput input)
+            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleNexusOperationAsync<TResult>(
+                ScheduleNexusOperationInput input)
             {
                 var headers = StartWorkflowActivityOnHeaders(
                     input.Headers, $"StartNexusOperation:{input.Service}/{input.OperationName}");
                 input = input with { Headers = headers };
-                return base.StartNexusOperationAsync<TResult>(input);
+                return base.ScheduleNexusOperationAsync<TResult>(input);
             }
 
             private IDictionary<string, Payload> StartWorkflowActivityOnHeaders(

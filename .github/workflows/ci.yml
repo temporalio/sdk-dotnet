@@ -44,7 +44,8 @@ jobs:
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
-          workspaces: src/Temporalio/Bridge
+          workspaces: src/Temporalio/Bridge/sdk-core
+          cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
 
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
@@ -91,6 +92,12 @@ jobs:
       - name: Test
         run: |
           dotnet test --logger "console;verbosity=detailed" --logger "trx;LogFilePrefix=test-results" --results-directory tests/Temporalio.Tests/TestResults --blame-crash -v n --blame-hang-timeout 10m
+
+      - name: Validate package API surface
+        # Package API validation runs only during the Pack target and is
+        # platform-independent so running on one OS is sufficient.
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: dotnet pack -c Debug --no-restore
 
       - name: Upload test results
         if: ${{ !cancelled() }}

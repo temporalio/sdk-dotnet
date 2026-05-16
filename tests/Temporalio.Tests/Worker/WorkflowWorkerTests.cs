@@ -4772,7 +4772,14 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         public override Task RunAsync(Scenario scenario) => ApplyScenario(scenario);
     }
 
-    [Fact]
+    // TODO(nexus-operations server fix): re-enable once the server stops writing the
+    // raw workflow type into gRPC response trailers via ContextMetadataInterceptor
+    // (common/rpc/interceptor/context_metadata_interceptor.go). A newline in the
+    // workflow type makes the HTTP/2 framer reject the response with
+    // "invalid header field value for \"workflow-type\"", which the frontend masks as
+    // Internal "something went wrong, please retry", and the SDK surfaces as RpcException
+    // before the workflow can ever reach the nondeterminism assertion.
+    [Fact(Skip = "Blocked on server-side ContextMetadataInterceptor rejecting workflow types with newlines")]
     public async Task ExecuteWorkflowAsync_FailureTypes_MultipleNonDetWithNewlines()
     {
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}")
