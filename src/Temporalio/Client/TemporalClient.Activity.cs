@@ -91,6 +91,10 @@ namespace Temporalio.Client
                     throw new ArgumentException(
                         "Activity must have ScheduleToCloseTimeout or StartToCloseTimeout");
                 }
+                if (input.Options.StartDelay is { } startDelay && startDelay < TimeSpan.Zero)
+                {
+                    throw new ArgumentException("StartDelay must be non-negative");
+                }
                 try
                 {
                     // Activity-specific data converter
@@ -144,6 +148,10 @@ namespace Temporalio.Client
                     if (input.Options.HeartbeatTimeout is TimeSpan hb)
                     {
                         req.HeartbeatTimeout = Duration.FromTimeSpan(hb);
+                    }
+                    if (input.Options.StartDelay is TimeSpan delay)
+                    {
+                        req.StartDelay = Duration.FromTimeSpan(delay);
                     }
                     if (input.Options.TypedSearchAttributes != null && input.Options.TypedSearchAttributes.Count > 0)
                     {
