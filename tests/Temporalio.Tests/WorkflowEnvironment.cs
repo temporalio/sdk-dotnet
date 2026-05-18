@@ -92,6 +92,7 @@ public class WorkflowEnvironment : IAsyncLifetime
                         "--dynamic-config-value", "activity.enableStandalone=true",
                         "--dynamic-config-value", "history.enableChasm=true",
                         "--dynamic-config-value", "history.enableTransitionHistory=true",
+                        "--dynamic-config-value", "activity.startDelayEnabled=true",
                         // Enable standalone Nexus operations
                         "--dynamic-config-value", "nexusoperation.enableStandalone=true",
                         "--dynamic-config-value", "history.enableChasmCallbacks=true",

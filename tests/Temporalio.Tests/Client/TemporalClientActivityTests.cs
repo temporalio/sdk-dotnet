@@ -142,6 +142,45 @@ public class TemporalClientActivityTests : WorkflowEnvironmentTestBase
     }
 
     [Fact]
+    public async Task StartActivityAsync_NegativeStartDelay_Throws()
+    {
+        var err = await Assert.ThrowsAsync<ArgumentException>(() =>
+            Client.StartActivityAsync(
+                () => SimpleActivityAsync("test"),
+                new($"act-{Guid.NewGuid()}", $"tq-{Guid.NewGuid()}")
+                {
+                    StartToCloseTimeout = TimeSpan.FromSeconds(5),
+                    StartDelay = TimeSpan.FromSeconds(-1),
+                }));
+        Assert.Contains("StartDelay must be non-negative", err.Message);
+    }
+
+    [Fact]
+    public async Task StartActivityAsync_StartDelay_WaitsProperly()
+    {
+        await ExecuteActivityWorkerAsync(SimpleActivityAsync, async taskQueue =>
+        {
+            var startDelay = TimeSpan.FromSeconds(2);
+            var handle = await Client.StartActivityAsync(
+                () => SimpleActivityAsync("delayed"),
+                new($"act-{Guid.NewGuid()}", taskQueue)
+                {
+                    StartToCloseTimeout = TimeSpan.FromSeconds(5),
+                    StartDelay = startDelay,
+                });
+
+            Assert.Equal("echo:delayed", await handle.GetResultAsync());
+
+            var desc = await handle.DescribeAsync();
+            Assert.Equal(ActivityExecutionStatus.Completed, desc.Status);
+            Assert.True(desc.ScheduledTime > DateTime.MinValue);
+            Assert.NotNull(desc.LastStartedTime);
+            Assert.True(
+                desc.LastStartedTime.Value - desc.ScheduledTime >= startDelay - TimeSpan.FromMilliseconds(500));
+        });
+    }
+
+    [Fact]
     public async Task GetActivityHandle_ExistingActivity_Succeeds()
     {
         await ExecuteActivityWorkerAsync(SimpleActivityAsync, async taskQueue =>
