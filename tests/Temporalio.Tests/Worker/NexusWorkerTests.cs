@@ -1269,6 +1269,58 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
             $"Expected at least 2 decode calls (confirming retry), got {codec.DecodeCallCount}");
     }
 
+    [NexusService]
+    public interface INoArgService
+    {
+        [NexusOperation]
+        string DoSomething();
+    }
+
+    [NexusServiceHandler(typeof(INoArgService))]
+    public class NoArgService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<NoValue, string> DoSomething() =>
+            OperationHandler.Sync<NoValue, string>((ctx, _) => "hello");
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_NoValueInputWithCodec_Succeeds()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Converters.Base64PayloadCodec(),
+        };
+        var codecClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new NoArgService());
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<INoArgService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething());
+                Assert.Equal("hello", result);
+                return null;
+            })));
+
+        using var worker = new TemporalWorker(codecClient, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await codecClient.StartWorkflowAsync(
+                (CustomFuncWorkflow wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+            await handle.GetResultAsync();
+        });
+    }
+
     private class AlwaysFailPayloadConverter : IPayloadConverter
     {
         private readonly IPayloadConverter inner = DataConverter.Default.PayloadConverter;
