@@ -1241,7 +1241,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
         workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
-        workerOptions.Interceptors =[new XunitExceptionInterceptor()];
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
         workerOptions.AddWorkflow(WorkflowDefinition.Create(
             typeof(CustomFuncWorkflow),
             null,
@@ -1347,7 +1347,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
 
         workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
-        workerOptions.Interceptors =[new XunitExceptionInterceptor()];
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
         workerOptions.AddWorkflow(WorkflowDefinition.Create(
             typeof(CustomFuncWorkflow),
             null,
