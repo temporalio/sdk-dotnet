@@ -2584,7 +2584,7 @@ namespace Temporalio.Worker
                     Endpoint = input.ClientOptions.Endpoint,
                     Service = input.Service,
                     Operation = input.OperationName,
-                    Input = input.Arg == null ? null : payloadConverter.ToPayload(input.Arg),
+                    Input = payloadConverter.ToPayload(input.Arg),
                     CancellationType = (Bridge.Api.Nexus.NexusOperationCancellationType)input.Options.CancellationType,
                 };
                 if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToCloseTimeout)
