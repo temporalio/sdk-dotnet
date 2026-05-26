@@ -4848,7 +4848,8 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
         // We are going to create a second ephemeral server and start a workflow on each server.
         // The worker will start with a client on the first, then we'll swap the clients, signal
         // both workflows, and confirm the second workflow completes as expected.
-        await using var otherEnv = await Temporalio.Testing.WorkflowEnvironment.StartLocalAsync();
+        await using var otherEnv = new WorkflowEnvironment();
+        await otherEnv.InitializeAsync();
 
         // Start both workflows on different servers
         var taskQueue = $"tq-{Guid.NewGuid()}";

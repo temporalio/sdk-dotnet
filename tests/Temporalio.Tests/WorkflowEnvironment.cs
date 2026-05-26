@@ -8,7 +8,7 @@ using Temporalio.Client;
 using Temporalio.Worker;
 using Xunit;
 
-public class WorkflowEnvironment : IAsyncLifetime
+public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
 {
     public const int ContinueAsNewSuggestedHistoryCount = 50;
 
@@ -108,7 +108,7 @@ public class WorkflowEnvironment : IAsyncLifetime
         }
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         try
         {
@@ -126,10 +126,12 @@ public class WorkflowEnvironment : IAsyncLifetime
             }
             if (env != null)
             {
-                await env.ShutdownAsync();
+                await env.DisposeAsync();
             }
         }
     }
+
+    Task IAsyncLifetime.DisposeAsync() => DisposeAsync().AsTask();
 
     private KitchenSinkWorker StartKitchenSinkWorker()
     {
