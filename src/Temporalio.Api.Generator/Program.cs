@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 var currFile = new StackTrace(true).GetFrame(0)?.GetFileName();
 var projectDir = Path.GetFullPath(Path.Join(currFile, "../../../"));
-var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/common/protos");
+var protoDir = Path.Join(projectDir, "src/Temporalio/Bridge/sdk-core/crates/protos/protos");
 var apiProtoDir = Path.Join(protoDir, "api_upstream");
 var apiCloudProtoDir = Path.Join(protoDir, "api_cloud_upstream");
 var testSrvProtoDir = Path.Join(protoDir, "testsrv_upstream");
