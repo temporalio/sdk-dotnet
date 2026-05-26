@@ -5434,9 +5434,16 @@ public class WorkflowWorkerTests : WorkflowEnvironmentTestBase
                     return "never-reached";
                 }))));
 
-            // Wait for deadlock, ignore the hanging worker
-            await AssertTaskFailureContainsEventuallyAsync(
-                await handleCompletion.Task, "deadlocked");
+            // Wait for deadlock, then terminate the workflow to avoid preventing the worker from shutting down.
+            var handle = await handleCompletion.Task;
+            try
+            {
+                await AssertTaskFailureContainsEventuallyAsync(handle, "deadlocked");
+            }
+            finally
+            {
+                await handle.TerminateAsync();
+            }
         }
 
         // Run the three deadlocking scenarios concurrently since they are slow
