@@ -63,16 +63,18 @@ namespace Temporalio.Worker
 
                 var bridgeClient = client.BridgeClientProvider.BridgeClient ??
                                    throw new InvalidOperationException("Cannot use unconnected lazy client for worker");
+
+                if (options.Activities.Count == 0 && options.Workflows.Count == 0 && options.NexusServices.Count == 0)
+                {
+                    throw new ArgumentException("Must have at least one workflow, activity, or Nexus service");
+                }
+
                 BridgeWorker = new(
                     (Bridge.Client)bridgeClient,
                     client.Options.Namespace,
                     options,
                     loggerFactory,
                     client.Options.Plugins);
-                if (options.Activities.Count == 0 && options.Workflows.Count == 0)
-                {
-                    throw new ArgumentException("Must have at least one workflow and/or activity");
-                }
 
                 MetricMeter = MetricMeterBridge.LazyFromRuntime(BridgeWorker.Runtime);
 
@@ -128,6 +130,11 @@ namespace Temporalio.Worker
                         DeploymentOptions: options.DeploymentOptions));
                 }
 
+                if (options.NexusServices.Count > 0)
+                {
+                    nexusWorker = new(this);
+                }
+
                 disposer = new Disposer(activityWorker, BridgeWorker, workflowTracingEventListenerEnabled);
             }
             catch (Exception)
@@ -139,10 +146,6 @@ namespace Temporalio.Worker
                     WorkflowTracingEventListener.Instance.Unregister();
                 }
                 throw;
-            }
-            if (options.NexusServices.Count > 0)
-            {
-                nexusWorker = new(this);
             }
         }
 

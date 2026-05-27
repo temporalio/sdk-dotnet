@@ -282,20 +282,26 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteNexusOperationAsync_SyncTimeout_FailsAsExpected()
     {
-        var contextSource = new TaskCompletionSource<OperationStartContext>();
+        var cancellationReasonSource = new TaskCompletionSource<string?>();
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (ctx, name) =>
                 {
-                    contextSource.SetResult(ctx);
                     try
                     {
                         await Task.Delay(40000, ctx.CancellationToken);
+                        cancellationReasonSource.SetResult("none");
                         return "done";
                     }
                     catch (TaskCanceledException)
                     {
+                        cancellationReasonSource.SetResult(ctx.CancellationReason);
                         return "canceled";
+                    }
+                    catch (Exception)
+                    {
+                        cancellationReasonSource.SetResult("other exception");
+                        throw;
                     }
                 })));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
@@ -306,26 +312,26 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
-                        new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(2) });
+                        new() { ScheduleToCloseTimeout = TimeSpan.FromSeconds(4) });
             }));
         var timeoutExc = Assert.IsType<TimeoutFailureException>(
             Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
         Assert.Equal(TimeoutType.ScheduleToClose, timeoutExc.TimeoutType);
-        // Also check that our cancel token is canceled for the proper reason
-        var ctx = await contextSource.Task;
-        Assert.True(await Task.Run(() => ctx.CancellationToken.WaitHandle.WaitOne(2000)));
-        Assert.Equal("timed out", ctx.CancellationReason);
+        // Check that it is cancelled for the proper reason
+        using CancellationTokenSource timeoutSource = new(TimeSpan.FromSeconds(5));
+        var reason = await cancellationReasonSource.Task.WaitAsync(timeoutSource.Token);
+        Assert.Equal("timed out", reason);
     }
 
     [Fact]
     public async Task ExecuteNexusOperationAsync_RequestDeadline_SetOnContext()
     {
-        var contextSource = new TaskCompletionSource<OperationStartContext>();
+        var requestDeadlineSource = new TaskCompletionSource<DateTime?>();
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new AsyncFuncStringService(
                 start: (ctx, input) =>
                 {
-                    contextSource.SetResult(ctx);
+                    requestDeadlineSource.SetResult(ctx.RequestDeadline);
                     return Task.FromResult(OperationStartResult.SyncResult($"Hello, {input}"));
                 }));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
@@ -335,9 +341,9 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 ExecuteNexusOperationAsync(svc => svc.DoSomething("some-name"));
             Assert.Equal("Hello, some-name", result);
         });
-        var ctx = await contextSource.Task;
         // Server always sends a request timeout header, so the deadline should be set
-        Assert.NotNull(ctx.RequestDeadline);
+        using CancellationTokenSource timeoutSource = new(TimeSpan.FromSeconds(5));
+        Assert.NotNull(await requestDeadlineSource.Task.WaitAsync(timeoutSource.Token));
     }
 
     [Fact]
@@ -376,20 +382,26 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     [Fact]
     public async Task ExecuteNexusOperationAsync_ScheduleToStartTimeout_FailsAsExpected()
     {
-        var contextSource = new TaskCompletionSource<OperationStartContext>();
+        var cancellationReasonSource = new TaskCompletionSource<string?>();
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
                 OperationHandler.Sync<string, string>(async (ctx, name) =>
                 {
-                    contextSource.SetResult(ctx);
                     try
                     {
                         await Task.Delay(40000, ctx.CancellationToken);
+                        cancellationReasonSource.SetResult("none");
                         return "done";
                     }
                     catch (TaskCanceledException)
                     {
+                        cancellationReasonSource.SetResult(ctx.CancellationReason);
                         return "canceled";
+                    }
+                    catch (Exception)
+                    {
+                        cancellationReasonSource.SetResult("other exception");
+                        throw;
                     }
                 })));
         var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
@@ -400,15 +412,15 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
                 await Workflow.CreateNexusWorkflowClient<IStringService>(endpoint).
                     ExecuteNexusOperationAsync(
                         svc => svc.DoSomething("some-name"),
-                        new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(2) });
+                        new() { ScheduleToStartTimeout = TimeSpan.FromSeconds(5) });
             }));
         var timeoutExc = Assert.IsType<TimeoutFailureException>(
             Assert.IsType<NexusOperationFailureException>(exc.InnerException).InnerException);
         Assert.Equal(TimeoutType.ScheduleToStart, timeoutExc.TimeoutType);
-        // Also check that our cancel token is canceled for the proper reason
-        var ctx = await contextSource.Task;
-        Assert.True(await Task.Run(() => ctx.CancellationToken.WaitHandle.WaitOne(2000)));
-        Assert.Equal("timed out", ctx.CancellationReason);
+        // Check that it is cancelled for the proper reason
+        using CancellationTokenSource timeoutSource = new(TimeSpan.FromSeconds(5));
+        var reason = await cancellationReasonSource.Task.WaitAsync(timeoutSource.Token);
+        Assert.Equal("timed out", reason);
     }
 
     [Fact]
@@ -1255,6 +1267,58 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         Assert.True(
             codec.DecodeCallCount >= 2,
             $"Expected at least 2 decode calls (confirming retry), got {codec.DecodeCallCount}");
+    }
+
+    [NexusService]
+    public interface INoArgService
+    {
+        [NexusOperation]
+        string DoSomething();
+    }
+
+    [NexusServiceHandler(typeof(INoArgService))]
+    public class NoArgService
+    {
+        [NexusOperationHandler]
+        public IOperationHandler<NoValue, string> DoSomething() =>
+            OperationHandler.Sync<NoValue, string>((ctx, _) => "hello");
+    }
+
+    [Fact]
+    public async Task ExecuteNexusOperationAsync_NoValueInputWithCodec_Succeeds()
+    {
+        var newOptions = (TemporalClientOptions)Client.Options.Clone();
+        newOptions.DataConverter = DataConverter.Default with
+        {
+            PayloadCodec = new Converters.Base64PayloadCodec(),
+        };
+        var codecClient = new TemporalClient(Client.Connection, newOptions);
+
+        var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
+            AddNexusService(new NoArgService());
+        var endpoint = await CreateNexusEndpointAsync(workerOptions.TaskQueue!);
+
+        workerOptions = (TemporalWorkerOptions)workerOptions.Clone();
+        workerOptions.Interceptors = new IWorkerInterceptor[] { new XunitExceptionInterceptor() };
+        workerOptions.AddWorkflow(WorkflowDefinition.Create(
+            typeof(CustomFuncWorkflow),
+            null,
+            _args => new CustomFuncWorkflow(async () =>
+            {
+                var result = await Workflow.CreateNexusWorkflowClient<INoArgService>(endpoint).
+                    ExecuteNexusOperationAsync(svc => svc.DoSomething());
+                Assert.Equal("hello", result);
+                return null;
+            })));
+
+        using var worker = new TemporalWorker(codecClient, workerOptions);
+        await worker.ExecuteAsync(async () =>
+        {
+            var handle = await codecClient.StartWorkflowAsync(
+                (CustomFuncWorkflow wf) => wf.RunAsync(),
+                new($"wf-{Guid.NewGuid()}", workerOptions.TaskQueue!));
+            await handle.GetResultAsync();
+        });
     }
 
     private class AlwaysFailPayloadConverter : IPayloadConverter

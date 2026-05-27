@@ -22,7 +22,8 @@ jobs:
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
-          workspaces: src/Temporalio/Bridge
+          workspaces: src/Temporalio/Bridge/sdk-core
+          cache-bin: false # https://github.com/Swatinem/rust-cache/issues/341
 
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5

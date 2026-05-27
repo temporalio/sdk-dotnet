@@ -2559,8 +2559,8 @@ namespace Temporalio.Worker
             }
 
             /// <inheritdoc/>
-            public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
-                StartNexusOperationInput input)
+            public override Task<NexusWorkflowOperationHandle<TResult>> ScheduleNexusOperationAsync<TResult>(
+                ScheduleNexusOperationInput input)
             {
                 var token = input.Options.CancellationToken ?? instance.CancellationToken;
                 // We do not even want to schedule if the cancellation token is already cancelled.
@@ -2584,7 +2584,7 @@ namespace Temporalio.Worker
                     Endpoint = input.ClientOptions.Endpoint,
                     Service = input.Service,
                     Operation = input.OperationName,
-                    Input = input.Arg == null ? null : payloadConverter.ToPayload(input.Arg),
+                    Input = payloadConverter.ToPayload(input.Arg),
                     CancellationType = (Bridge.Api.Nexus.NexusOperationCancellationType)input.Options.CancellationType,
                 };
                 if (input.Options.ScheduleToCloseTimeout is TimeSpan schedToCloseTimeout)
@@ -2961,7 +2961,7 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
-                instance.outbound.Value.StartNexusOperationAsync<TResult>(new(
+                instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
                     OperationName: operationName,
@@ -2987,7 +2987,7 @@ namespace Temporalio.Worker
 
             public override Task<NexusWorkflowOperationHandle<TResult>> StartNexusOperationAsync<TResult>(
                 string operationName, object? arg, NexusWorkflowOperationOptions? options = null) =>
-                instance.outbound.Value.StartNexusOperationAsync<TResult>(new(
+                instance.outbound.Value.ScheduleNexusOperationAsync<TResult>(new(
                     Service: Service,
                     ClientOptions: Options,
                     OperationName: operationName,

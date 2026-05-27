@@ -188,6 +188,12 @@ namespace Temporalio.Bridge.Interop
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     internal unsafe delegate void TemporalCoreClientGrpcOverrideCallback([NativeTypeName("struct TemporalCoreClientGrpcOverrideRequest *")] TemporalCoreClientGrpcOverrideRequest* request, void* user_data);
 
+    internal partial struct TemporalCoreClientDnsLoadBalancingOptions
+    {
+        [NativeTypeName("uint64_t")]
+        public ulong resolution_interval_millis;
+    }
+
     internal unsafe partial struct TemporalCoreConnectionOptions
     {
         [NativeTypeName("struct TemporalCoreByteArrayRef")]
@@ -227,6 +233,9 @@ namespace Temporalio.Bridge.Interop
         public IntPtr grpc_override_callback;
 
         public void* grpc_override_callback_user_data;
+
+        [NativeTypeName("const struct TemporalCoreClientDnsLoadBalancingOptions *")]
+        public TemporalCoreClientDnsLoadBalancingOptions* dns_load_balancing_options;
     }
 
     internal unsafe partial struct TemporalCoreByteArray
@@ -706,7 +715,7 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreWorkerVersioningStrategy_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L555_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L569_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreWorkerVersioningNone none
@@ -746,15 +755,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L556_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L570_C5")]
             public _Anonymous1_1_e__Struct Anonymous1_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L559_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L573_C5")]
             public _Anonymous2_1_e__Struct Anonymous2_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L562_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L576_C5")]
             public _Anonymous3_1_e__Struct Anonymous3_1;
 
             internal partial struct _Anonymous1_1_e__Struct
@@ -875,7 +884,7 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreSlotInfo_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L629_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L643_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreWorkflowSlotInfo_Body workflow_slot_info
@@ -1012,7 +1021,7 @@ namespace Temporalio.Bridge.Interop
     {
         public TemporalCoreSlotSupplier_Tag tag;
 
-        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L735_C3")]
+        [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L749_C3")]
         public _Anonymous_e__Union Anonymous;
 
         internal ref TemporalCoreFixedSizeSlotSupplier fixed_size
@@ -1052,15 +1061,15 @@ namespace Temporalio.Bridge.Interop
         internal unsafe partial struct _Anonymous_e__Union
         {
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L736_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L750_C5")]
             public _Anonymous1_1_e__Struct Anonymous1_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L739_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L753_C5")]
             public _Anonymous2_1_e__Struct Anonymous2_1;
 
             [FieldOffset(0)]
-            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L742_C5")]
+            [NativeTypeName("__AnonymousRecord_temporal-sdk-core-c-bridge_L756_C5")]
             public _Anonymous3_1_e__Struct Anonymous3_1;
 
             internal partial struct _Anonymous1_1_e__Struct
