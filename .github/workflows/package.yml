@@ -156,7 +156,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
         with:
-          dotnet-version: 10.x
+          global-json-file: global.json
 
       - name: Build package
         run: dotnet pack -c Release /p:BridgeLibraryRoot=${{ github.workspace }}/bridge-libraries
@@ -223,9 +223,9 @@ jobs:
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5
         if: ${{ !contains(matrix.os, 'alpine') }}
         with:
-          # Specific .NET version required because GitHub macos ARM image has
-          # bad pre-installed .NET version
-          dotnet-version: 10.x
+          # SDK version pinned in global.json — required because GitHub macos
+          # ARM image has bad pre-installed .NET version
+          global-json-file: global.json
 
       - name: Run smoke test (Alpine)
         if: ${{ contains(matrix.os, 'alpine') }}
