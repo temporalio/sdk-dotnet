@@ -17,7 +17,7 @@
     <PackageVersion Include="NexusRpc" Version="0.3.0" />
     <PackageVersion Include="OpenTelemetry.Api" Version="1.15.3" />
     <PackageVersion Include="OpenTelemetry.Exporter.InMemory" Version="1.15.3" />
-    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="System.CommandLine" Version="2.0.8" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="7.0.0" />
     <PackageVersion Include="System.Text.Json" Version="9.0.4" />
