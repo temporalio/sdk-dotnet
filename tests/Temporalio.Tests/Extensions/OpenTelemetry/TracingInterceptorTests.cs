@@ -797,6 +797,27 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
                 "RunWorkflow:TracingWorkflow"));
     }
 
+    [Fact]
+    public async Task TracingInterceptor_StandaloneActivity_HasProperSpans()
+    {
+        var activityId = $"act-{Guid.NewGuid()}";
+        var spans = await WithTracingWorkerAsync(async (client, _) =>
+        {
+            await client.StartActivityAsync(
+                "TestStandaloneActivitySpans",
+                Array.Empty<object?>(),
+                new(activityId, $"standalone-tq-{Guid.NewGuid()}")
+                {
+                    ScheduleToCloseTimeout = TimeSpan.FromMinutes(5),
+                });
+        });
+
+        var activityTags = new[] { ActivityAssertion.TagEqual("temporalActivityID", activityId) };
+        AssertActivities(
+            spans,
+            new ActivityAssertion("StartActivity:TestStandaloneActivitySpans", Parent: null, Tags: activityTags));
+    }
+
     private static void AssertActivities(
         IReadOnlyCollection<Activity> activities, params ActivityAssertion[] assertions)
     {
@@ -886,7 +907,7 @@ public class TracingInterceptorTests : WorkflowEnvironmentTestBase
         var activities = new List<Activity>();
 
         // Setup provider
-        using var tracerProvider = global::OpenTelemetry.Sdk.CreateTracerProviderBuilder().
+        using var _ = global::OpenTelemetry.Sdk.CreateTracerProviderBuilder().
             AddSource(
                 TracingInterceptor.ClientSource.Name,
                 TracingInterceptor.WorkflowsSource.Name,
