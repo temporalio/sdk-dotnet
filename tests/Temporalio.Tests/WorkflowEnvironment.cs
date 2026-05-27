@@ -8,7 +8,7 @@ using Temporalio.Client;
 using Temporalio.Worker;
 using Xunit;
 
-public class WorkflowEnvironment : IAsyncLifetime
+public sealed class WorkflowEnvironment : IAsyncLifetime, IAsyncDisposable
 {
     public const int ContinueAsNewSuggestedHistoryCount = 50;
 
@@ -99,13 +99,16 @@ public class WorkflowEnvironment : IAsyncLifetime
                         // Enable Nexus cancellation types
                         "--dynamic-config-value",
                         "component.nexusoperations.recordCancelRequestCompletionEvents=true",
+                        // Enable draining worker pollers on shutdown
+                        "--dynamic-config-value",
+                        "frontend.enableCancelWorkerPollsOnShutdown=true",
                     },
                 },
             });
         }
     }
 
-    public async Task DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         try
         {
@@ -123,10 +126,12 @@ public class WorkflowEnvironment : IAsyncLifetime
             }
             if (env != null)
             {
-                await env.ShutdownAsync();
+                await env.DisposeAsync();
             }
         }
     }
+
+    Task IAsyncLifetime.DisposeAsync() => DisposeAsync().AsTask();
 
     private KitchenSinkWorker StartKitchenSinkWorker()
     {

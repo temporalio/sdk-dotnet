@@ -39,20 +39,21 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
             "MS5QdWJsaWNDb25uZWN0aXZpdHlSdWxlSAASVwoMcHJpdmF0ZV9ydWxlGAIg",
             "ASgLMj8udGVtcG9yYWwuYXBpLmNsb3VkLmNvbm5lY3Rpdml0eXJ1bGUudjEu",
             "UHJpdmF0ZUNvbm5lY3Rpdml0eVJ1bGVIAEIRCg9jb25uZWN0aW9uX3R5cGUi",
-            "GAoWUHVibGljQ29ubmVjdGl2aXR5UnVsZSJeChdQcml2YXRlQ29ubmVjdGl2",
-            "aXR5UnVsZRIVCg1jb25uZWN0aW9uX2lkGAEgASgJEhYKDmdjcF9wcm9qZWN0",
-            "X2lkGAIgASgJEg4KBnJlZ2lvbhgDIAEoCUoECAQQBULUAQopaW8udGVtcG9y",
-            "YWwuYXBpLmNsb3VkLmNvbm5lY3Rpdml0eXJ1bGUudjFCDE1lc3NhZ2VQcm90",
-            "b1ABWj1nby50ZW1wb3JhbC5pby9hcGkvY2xvdWQvY29ubmVjdGl2aXR5cnVs",
-            "ZS92MTtjb25uZWN0aXZpdHlydWxlqgIoVGVtcG9yYWxpby5BcGkuQ2xvdWQu",
-            "Q29ubmVjdGl2aXR5UnVsZS5WMeoCLFRlbXBvcmFsaW86OkFwaTo6Q2xvdWQ6",
-            "OkNvbm5lY3Rpdml0eVJ1bGU6OlYxYgZwcm90bzM="));
+            "MwoWUHVibGljQ29ubmVjdGl2aXR5UnVsZRIZChFlbmFibGVfc3RhYmxlX2lw",
+            "cxgBIAEoCCJeChdQcml2YXRlQ29ubmVjdGl2aXR5UnVsZRIVCg1jb25uZWN0",
+            "aW9uX2lkGAEgASgJEhYKDmdjcF9wcm9qZWN0X2lkGAIgASgJEg4KBnJlZ2lv",
+            "bhgDIAEoCUoECAQQBULUAQopaW8udGVtcG9yYWwuYXBpLmNsb3VkLmNvbm5l",
+            "Y3Rpdml0eXJ1bGUudjFCDE1lc3NhZ2VQcm90b1ABWj1nby50ZW1wb3JhbC5p",
+            "by9hcGkvY2xvdWQvY29ubmVjdGl2aXR5cnVsZS92MTtjb25uZWN0aXZpdHly",
+            "dWxlqgIoVGVtcG9yYWxpby5BcGkuQ2xvdWQuQ29ubmVjdGl2aXR5UnVsZS5W",
+            "MeoCLFRlbXBvcmFsaW86OkFwaTo6Q2xvdWQ6OkNvbm5lY3Rpdml0eVJ1bGU6",
+            "OlYxYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Temporalio.Api.Cloud.Resource.V1.MessageReflection.Descriptor, global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRule.Parser, new[]{ "Id", "Spec", "ResourceVersion", "State", "AsyncOperationId", "CreatedTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRuleSpec), global::Temporalio.Api.Cloud.ConnectivityRule.V1.ConnectivityRuleSpec.Parser, new[]{ "PublicRule", "PrivateRule" }, new[]{ "ConnectionType" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.PublicConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.PublicConnectivityRule.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.PublicConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.PublicConnectivityRule.Parser, new[]{ "EnableStableIps" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Temporalio.Api.Cloud.ConnectivityRule.V1.PrivateConnectivityRule), global::Temporalio.Api.Cloud.ConnectivityRule.V1.PrivateConnectivityRule.Parser, new[]{ "ConnectionId", "GcpProjectId", "Region" }, null, null, null, null)
           }));
     }
@@ -799,6 +800,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public PublicConnectivityRule(PublicConnectivityRule other) : this() {
+      enableStableIps_ = other.enableStableIps_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -806,6 +808,22 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public PublicConnectivityRule Clone() {
       return new PublicConnectivityRule(this);
+    }
+
+    /// <summary>Field number for the "enable_stable_ips" field.</summary>
+    public const int EnableStableIpsFieldNumber = 1;
+    private bool enableStableIps_;
+    /// <summary>
+    /// Flag to determine namespace is connected via a predictable set of IPs on public internet
+    /// temporal:versioning:min_version=v0.15.0
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool EnableStableIps {
+      get { return enableStableIps_; }
+      set {
+        enableStableIps_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -823,6 +841,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (EnableStableIps != other.EnableStableIps) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -830,6 +849,7 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
+      if (EnableStableIps != false) hash ^= EnableStableIps.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -848,6 +868,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (EnableStableIps != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(EnableStableIps);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -858,6 +882,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (EnableStableIps != false) {
+        output.WriteRawTag(8);
+        output.WriteBool(EnableStableIps);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -868,6 +896,9 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
+      if (EnableStableIps != false) {
+        size += 1 + 1;
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -879,6 +910,9 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
     public void MergeFrom(PublicConnectivityRule other) {
       if (other == null) {
         return;
+      }
+      if (other.EnableStableIps != false) {
+        EnableStableIps = other.EnableStableIps;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -895,6 +929,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
+          case 8: {
+            EnableStableIps = input.ReadBool();
+            break;
+          }
         }
       }
     #endif
@@ -910,6 +948,10 @@ namespace Temporalio.Api.Cloud.ConnectivityRule.V1 {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
+          case 8: {
+            EnableStableIps = input.ReadBool();
+            break;
+          }
         }
       }
     }
