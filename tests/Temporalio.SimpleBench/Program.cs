@@ -9,31 +9,34 @@ using Temporalio.Workflows;
 
 // Build command
 var cmd = new RootCommand("Simple bench runner");
-var workflowCountOption = new Option<int>("--workflow-count", "Number of workflows")
+var workflowCountOption = new Option<int>("--workflow-count")
 {
-    IsRequired = true,
+    Description = "Number of workflows",
+    Required = true,
 };
-cmd.AddOption(workflowCountOption);
-var maxCachedWorkflowsOption = new Option<int>("--max-cached-workflows", "Number of workflows cached")
+cmd.Options.Add(workflowCountOption);
+var maxCachedWorkflowsOption = new Option<int>("--max-cached-workflows")
 {
-    IsRequired = true,
+    Description = "Number of workflows cached",
+    Required = true,
 };
-cmd.AddOption(maxCachedWorkflowsOption);
-var maxConcurrentOption = new Option<int>("--max-concurrent", "Number of concurrent workflows/activities")
+cmd.Options.Add(maxCachedWorkflowsOption);
+var maxConcurrentOption = new Option<int>("--max-concurrent")
 {
-    IsRequired = true,
+    Description = "Number of concurrent workflows/activities",
+    Required = true,
 };
-cmd.AddOption(maxConcurrentOption);
+cmd.Options.Add(maxConcurrentOption);
 using var loggerFactory = LoggerFactory.Create(builder =>
     builder.AddSimpleConsole().SetMinimumLevel(LogLevel.Information));
 var logger = loggerFactory.CreateLogger<Program>();
 
 // Set handler
-cmd.SetHandler(async ctx =>
+cmd.SetAction(async (parseResult, cancellationToken) =>
 {
-    var workflowCount = ctx.ParseResult.GetValueForOption(workflowCountOption);
-    var maxCachedWorkflows = ctx.ParseResult.GetValueForOption(maxCachedWorkflowsOption);
-    var maxConcurrent = ctx.ParseResult.GetValueForOption(maxConcurrentOption);
+    var workflowCount = parseResult.GetValue(workflowCountOption);
+    var maxCachedWorkflows = parseResult.GetValue(maxCachedWorkflowsOption);
+    var maxConcurrent = parseResult.GetValue(maxConcurrentOption);
 
     // Start server
     logger.LogInformation("Starting local environment");
@@ -63,12 +66,12 @@ cmd.SetHandler(async ctx =>
         }.
             AddActivity(BenchActivities.BenchActivity).
             AddWorkflow<BenchWorkflow>());
-    using var cancelSource = CancellationTokenSource.CreateLinkedTokenSource(ctx.GetCancellationToken());
-    var workerTask = Task.Run(() => worker.ExecuteAsync(cancelSource.Token));
+    using var cancelSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+    var workerTask = Task.Run(() => worker.ExecuteAsync(cancelSource.Token), cancelSource.Token);
 
     // Wait for all workflows
     var resultWatch = new Stopwatch();
-    var memoryTask = Task.Run(() => MemoryTracker.TrackMaxMemoryBytesAsync(cancelSource.Token));
+    var memoryTask = Task.Run(() => MemoryTracker.TrackMaxMemoryBytesAsync(cancelSource.Token), cancelSource.Token);
     resultWatch.Start();
     foreach (var handle in handles)
     {
@@ -99,7 +102,7 @@ cmd.SetHandler(async ctx =>
 });
 
 // Run command
-await cmd.InvokeAsync(args);
+await cmd.Parse(args).InvokeAsync();
 
 namespace Temporalio.SimpleBench
 {
