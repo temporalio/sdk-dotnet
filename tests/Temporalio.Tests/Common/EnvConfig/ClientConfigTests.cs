@@ -6,7 +6,7 @@ namespace Temporalio.Tests.Common.EnvConfig
 {
     /// <summary>
     /// Environment configuration tests following Python/TypeScript patterns for cross-SDK consistency.
-    /// Comprehensive 34-test suite covering all aspects of environment configuration.
+    /// Comprehensive test suite covering all aspects of environment configuration.
     /// </summary>
     public class ClientConfigTests : TestBase
     {
@@ -196,7 +196,7 @@ client_key_data = ""client-key-data""
             Assert.Equal("test-namespace", options.Namespace);
         }
 
-        // === ENVIRONMENT VARIABLES TESTS (4 tests) ===
+        // === ENVIRONMENT VARIABLES TESTS (5 tests) ===
         [Fact]
         public void Test_Load_Profile_Grpc_Meta_Env_Overrides()
         {
@@ -285,6 +285,32 @@ x-custom-header = ""custom-value""
             });
 
             Assert.Equal("default-address", profile.Address);
+        }
+
+        [Fact]
+        public void EmptyOverrideEnvVarsSuppressesSystemEnvironment()
+        {
+            var previousAddress = Environment.GetEnvironmentVariable("TEMPORAL_ADDRESS");
+            var previousNamespace = Environment.GetEnvironmentVariable("TEMPORAL_NAMESPACE");
+            try
+            {
+                Environment.SetEnvironmentVariable("TEMPORAL_ADDRESS", "system-address");
+                Environment.SetEnvironmentVariable("TEMPORAL_NAMESPACE", "system-namespace");
+
+                var profile = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
+                {
+                    DisableFile = true,
+                    OverrideEnvVars = new Dictionary<string, string>(),
+                });
+
+                Assert.Null(profile.Address);
+                Assert.Null(profile.Namespace);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("TEMPORAL_ADDRESS", previousAddress);
+                Environment.SetEnvironmentVariable("TEMPORAL_NAMESPACE", previousNamespace);
+            }
         }
 
         // === CONTROL FLAGS TESTS (3 tests) ===
@@ -465,7 +491,8 @@ api_key = ""my-api-key""
             Assert.True(profileDisabled.Tls.Disabled);
 
             var optionsDisabled = profileDisabled.ToClientConnectionOptions();
-            Assert.Null(optionsDisabled.Tls);
+            Assert.NotNull(optionsDisabled.Tls);
+            Assert.True(optionsDisabled.Tls.Disabled);
 
             // Test TLS with certs
             var profileCerts = ClientEnvConfig.Profile.Load(new ClientEnvConfig.ProfileLoadOptions
@@ -682,7 +709,9 @@ server_name = ""should-be-ignored""
                 ConfigSource = DataSource.FromUTF8String(tomlTrue),
             });
             Assert.True(profileTrue.Tls!.Disabled); // explicitly disabled=true
-            Assert.Null(profileTrue.ToClientConnectionOptions().Tls); // TLS disabled even with API key
+            var optionsTrue = profileTrue.ToClientConnectionOptions();
+            Assert.NotNull(optionsTrue.Tls);
+            Assert.True(optionsTrue.Tls.Disabled); // TLS disabled even with API key
         }
 
         // === ERROR HANDLING TESTS (4 tests) ===
