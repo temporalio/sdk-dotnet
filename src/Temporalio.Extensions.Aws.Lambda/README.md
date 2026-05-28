@@ -13,7 +13,6 @@ Create a static handler delegate and call it from the AWS Lambda handler method:
 
 ```csharp
 using Amazon.Lambda.Core;
-using Temporalio.Client;
 using Temporalio.Common;
 using Temporalio.Extensions.Aws.Lambda;
 
@@ -24,14 +23,6 @@ public class Function
             new WorkerDeploymentVersion("payments-worker", "2026-05-27"),
             config =>
             {
-                config.ClientOptions = new TemporalClientConnectOptions
-                {
-                    TargetHost = "my-namespace.a1b2c.tmprl.cloud:7233",
-                    Namespace = "my-namespace.a1b2c",
-                    ApiKey = Environment.GetEnvironmentVariable("TEMPORAL_API_KEY"),
-                    Tls = new TlsOptions(),
-                };
-
                 config.WorkerOptions.TaskQueue = "payments";
                 config.WorkerOptions.AddWorkflow<PaymentWorkflow>();
                 config.WorkerOptions.AddActivity(PaymentActivities.ChargeAsync);
@@ -48,13 +39,31 @@ configured shutdown hooks.
 
 ## Configuration
 
-Client configuration is explicit. This package does not load TOML profiles or environment-based client config for you:
+Client connection settings are pre-populated from a `temporal.toml` file and/or environment variables via
+`Temporalio.Common.EnvConfig`. The Lambda config file path is selected as follows:
+
+1. `TEMPORAL_CONFIG_FILE`, if set.
+2. Otherwise, `temporal.toml` in `$LAMBDA_TASK_ROOT`, typically `/var/task`, when `LAMBDA_TASK_ROOT` is set.
+3. Otherwise, `temporal.toml` in the current working directory.
+
+The file is optional. If it does not exist, only environment variables are used. You can also load Lambda-aware client
+options directly:
+
+```csharp
+using Temporalio.Common.EnvConfig;
+using Temporalio.Extensions.Aws.Lambda;
+
+config.ClientOptions = TemporalLambdaWorker.LoadClientConnectOptions(
+    new ClientEnvConfig.ProfileLoadOptions { Profile = "production" });
+```
+
+To bypass config loading, assign explicit client options in `configure`:
 
 ```csharp
 config.ClientOptions = new TemporalClientConnectOptions
 {
-    TargetHost = Environment.GetEnvironmentVariable("TEMPORAL_ADDRESS"),
-    Namespace = Environment.GetEnvironmentVariable("TEMPORAL_NAMESPACE") ?? "default",
+    TargetHost = "my-namespace.a1b2c.tmprl.cloud:7233",
+    Namespace = "my-namespace.a1b2c",
     ApiKey = Environment.GetEnvironmentVariable("TEMPORAL_API_KEY"),
     Tls = new TlsOptions(),
 };

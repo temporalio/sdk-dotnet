@@ -2,11 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Lambda.Core;
 using Temporalio.Client;
 using Temporalio.Common;
+using Temporalio.Common.EnvConfig;
 using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Aws.Lambda
@@ -16,6 +18,9 @@ namespace Temporalio.Extensions.Aws.Lambda
     /// </summary>
     public static class TemporalLambdaWorker
     {
+        private const string ConfigFileEnvironmentVariable = "TEMPORAL_CONFIG_FILE";
+        private const string DefaultConfigFileName = "temporal.toml";
+        private const string LambdaTaskRootEnvironmentVariable = "LAMBDA_TASK_ROOT";
         private const string TaskQueueEnvironmentVariable = "TEMPORAL_TASK_QUEUE";
         private static readonly TimeSpan LowWorkBudgetWarningThreshold = TimeSpan.FromSeconds(5);
 
@@ -28,7 +33,41 @@ namespace Temporalio.Extensions.Aws.Lambda
         public static Func<object?, ILambdaContext, Task> CreateHandler(
             WorkerDeploymentVersion version,
             Action<LambdaWorkerConfig> configure) =>
-            CreateHandler(version, configure, new TemporalLambdaWorkerHandlerOptions());
+            CreateHandler(
+                version,
+                configure,
+                new TemporalLambdaWorkerHandlerOptions
+                {
+                    LoadClientConnectOptions = options => LoadClientConnectOptions(options),
+                });
+
+        /// <summary>
+        /// Load Temporal client connection options using AWS Lambda-aware config file resolution.
+        /// </summary>
+        /// <param name="options">Options for loading the configuration profile.</param>
+        /// <returns>Client connection options.</returns>
+        public static TemporalClientConnectOptions LoadClientConnectOptions(
+            ClientEnvConfig.ProfileLoadOptions? options = null)
+        {
+            var loadOptions = options == null ?
+                new ClientEnvConfig.ProfileLoadOptions() :
+                (ClientEnvConfig.ProfileLoadOptions)options.Clone();
+            if (loadOptions.ConfigSource == null &&
+                !loadOptions.DisableFile &&
+                string.IsNullOrEmpty(GetEnvironmentVariable(
+                    loadOptions,
+                    ConfigFileEnvironmentVariable)))
+            {
+                var lambdaTaskRoot = GetEnvironmentVariable(
+                    loadOptions,
+                    LambdaTaskRootEnvironmentVariable);
+                var root = string.IsNullOrEmpty(lambdaTaskRoot) ? "." : lambdaTaskRoot;
+                loadOptions.ConfigSource = DataSource.FromPath(
+                    Path.Combine(root, DefaultConfigFileName));
+            }
+
+            return ClientEnvConfig.LoadClientConnectOptions(loadOptions);
+        }
 
         /// <summary>
         /// Create an AWS Lambda handler with overridable internals for tests.
@@ -63,7 +102,12 @@ namespace Temporalio.Extensions.Aws.Lambda
                 throw new ArgumentException("Build ID must be set", nameof(version));
             }
 
-            var config = new LambdaWorkerConfig();
+            var config = new LambdaWorkerConfig
+            {
+                ClientOptions = handlerOptions.LoadClientConnectOptions == null ?
+                    new TemporalClientConnectOptions() :
+                    handlerOptions.LoadClientConnectOptions(null),
+            };
             var environmentTaskQueue = handlerOptions.GetEnvironmentVariable(TaskQueueEnvironmentVariable);
             if (environmentTaskQueue != null)
             {
@@ -141,6 +185,18 @@ namespace Temporalio.Extensions.Aws.Lambda
                 return cts;
             }
             return new CancellationTokenSource(remainingTime);
+        }
+
+        private static string? GetEnvironmentVariable(
+            ClientEnvConfig.ProfileLoadOptions options,
+            string name)
+        {
+            if (options.OverrideEnvVars != null)
+            {
+                return options.OverrideEnvVars.TryGetValue(name, out var value) ? value : null;
+            }
+
+            return Environment.GetEnvironmentVariable(name);
         }
 
         private static void LogLine(ILambdaContext context, string message) =>

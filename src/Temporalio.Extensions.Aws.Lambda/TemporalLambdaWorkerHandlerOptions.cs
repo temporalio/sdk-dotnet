@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Temporalio.Client;
+using Temporalio.Common.EnvConfig;
 using Temporalio.Worker;
 
 namespace Temporalio.Extensions.Aws.Lambda
@@ -15,6 +16,12 @@ namespace Temporalio.Extensions.Aws.Lambda
         /// </summary>
         public Func<string, string?> GetEnvironmentVariable { get; set; } =
             Environment.GetEnvironmentVariable;
+
+        /// <summary>
+        /// Gets or sets the client configuration loader.
+        /// </summary>
+        public Func<ClientEnvConfig.ProfileLoadOptions?, TemporalClientConnectOptions>?
+            LoadClientConnectOptions { get; set; }
 
         /// <summary>
         /// Gets or sets the client connection factory.
