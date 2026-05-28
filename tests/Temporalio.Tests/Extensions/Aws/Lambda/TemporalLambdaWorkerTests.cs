@@ -4,6 +4,7 @@ using Amazon.Lambda.Core;
 using Temporalio.Activities;
 using Temporalio.Client;
 using Temporalio.Common;
+using Temporalio.Common.EnvConfig;
 using Temporalio.Extensions.Aws.Lambda;
 using Temporalio.Worker;
 using Temporalio.Worker.Tuning;
@@ -35,6 +36,8 @@ public class TemporalLambdaWorkerTests
                 Assert.Equal(1, SimpleMaximum(config.WorkerOptions.NexusTaskPollerBehavior));
                 Assert.True(config.WorkerOptions.DisableEagerActivityExecution);
                 Assert.Equal("env-task-queue", config.WorkerOptions.TaskQueue);
+                Assert.Equal("loaded-address", config.ClientOptions.TargetHost);
+                Assert.Equal("loaded-namespace", config.ClientOptions.Namespace);
 
                 config.ClientOptions.TargetHost = "localhost:7233";
                 config.WorkerOptions.TaskQueue = "configured-task-queue";
@@ -53,6 +56,11 @@ public class TemporalLambdaWorkerTests
             },
             new TemporalLambdaWorkerHandlerOptions
             {
+                LoadClientConnectOptions = _ => new TemporalClientConnectOptions
+                {
+                    TargetHost = "loaded-address",
+                    Namespace = "loaded-namespace",
+                },
                 GetEnvironmentVariable = name =>
                     name == "TEMPORAL_TASK_QUEUE" ? "env-task-queue" : null,
                 ConnectClientAsync = options =>
@@ -72,6 +80,8 @@ public class TemporalLambdaWorkerTests
 
         Assert.NotNull(capturedClientOptions);
         Assert.NotNull(capturedWorkerOptions);
+        Assert.Equal("localhost:7233", capturedClientOptions.TargetHost);
+        Assert.Equal("loaded-namespace", capturedClientOptions.Namespace);
         Assert.Equal("configured-task-queue", capturedWorkerOptions.TaskQueue);
         Assert.Equal(8, capturedWorkerOptions.MaxConcurrentActivities);
         Assert.Equal(10, capturedWorkerOptions.MaxConcurrentWorkflowTasks);
@@ -136,6 +146,153 @@ public class TemporalLambdaWorkerTests
         await handler(null, new FakeLambdaContext());
         Assert.NotNull(capturedWorkerOptions);
         Assert.Equal("env-task-queue", capturedWorkerOptions.TaskQueue);
+    }
+
+    [Fact]
+    public void LoadClientConnectOptions_ExplicitConfigSourceWins()
+    {
+        var tempDir = CreateTempDirectory();
+        try
+        {
+            var envConfigPath = Path.Combine(tempDir, "env.toml");
+            File.WriteAllText(envConfigPath, ConfigToml("env-address", "env-namespace"));
+
+            var options = TemporalLambdaWorker.LoadClientConnectOptions(
+                new ClientEnvConfig.ProfileLoadOptions
+                {
+                    ConfigSource = DataSource.FromUTF8String(
+                        ConfigToml("explicit-address", "explicit-namespace")),
+                    OverrideEnvVars = new Dictionary<string, string>
+                    {
+                        ["TEMPORAL_CONFIG_FILE"] = envConfigPath,
+                    },
+                });
+
+            Assert.Equal("explicit-address", options.TargetHost);
+            Assert.Equal("explicit-namespace", options.Namespace);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void LoadClientConnectOptions_TemporalConfigFileWinsOverLambdaTaskRoot()
+    {
+        var tempDir = CreateTempDirectory();
+        try
+        {
+            var envConfigPath = Path.Combine(tempDir, "env.toml");
+            File.WriteAllText(envConfigPath, ConfigToml("env-address", "env-namespace"));
+            var lambdaRoot = Path.Combine(tempDir, "lambda-root");
+            Directory.CreateDirectory(lambdaRoot);
+            File.WriteAllText(
+                Path.Combine(lambdaRoot, "temporal.toml"),
+                ConfigToml("lambda-address", "lambda-namespace"));
+
+            var options = TemporalLambdaWorker.LoadClientConnectOptions(
+                new ClientEnvConfig.ProfileLoadOptions
+                {
+                    OverrideEnvVars = new Dictionary<string, string>
+                    {
+                        ["TEMPORAL_CONFIG_FILE"] = envConfigPath,
+                        ["LAMBDA_TASK_ROOT"] = lambdaRoot,
+                    },
+                });
+
+            Assert.Equal("env-address", options.TargetHost);
+            Assert.Equal("env-namespace", options.Namespace);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void LoadClientConnectOptions_UsesLambdaTaskRootTemporalToml()
+    {
+        var tempDir = CreateTempDirectory();
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(tempDir, "temporal.toml"),
+                ConfigToml("lambda-address", "lambda-namespace"));
+
+            var options = TemporalLambdaWorker.LoadClientConnectOptions(
+                new ClientEnvConfig.ProfileLoadOptions
+                {
+                    OverrideEnvVars = new Dictionary<string, string>
+                    {
+                        ["LAMBDA_TASK_ROOT"] = tempDir,
+                    },
+                });
+
+            Assert.Equal("lambda-address", options.TargetHost);
+            Assert.Equal("lambda-namespace", options.Namespace);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void LoadClientConnectOptions_FallsBackToCurrentDirectoryTemporalToml()
+    {
+        var previousDirectory = Directory.GetCurrentDirectory();
+        var tempDir = CreateTempDirectory();
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(tempDir, "temporal.toml"),
+                ConfigToml("cwd-address", "cwd-namespace"));
+            Directory.SetCurrentDirectory(tempDir);
+
+            var options = TemporalLambdaWorker.LoadClientConnectOptions(
+                new ClientEnvConfig.ProfileLoadOptions
+                {
+                    OverrideEnvVars = new Dictionary<string, string>(),
+                });
+
+            Assert.Equal("cwd-address", options.TargetHost);
+            Assert.Equal("cwd-namespace", options.Namespace);
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(previousDirectory);
+            Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void LoadClientConnectOptions_MissingLambdaConfigAllowsEnvOnly()
+    {
+        var previousDirectory = Directory.GetCurrentDirectory();
+        var tempDir = CreateTempDirectory();
+        try
+        {
+            Directory.SetCurrentDirectory(tempDir);
+
+            var options = TemporalLambdaWorker.LoadClientConnectOptions(
+                new ClientEnvConfig.ProfileLoadOptions
+                {
+                    OverrideEnvVars = new Dictionary<string, string>
+                    {
+                        ["TEMPORAL_ADDRESS"] = "env-only-address",
+                        ["TEMPORAL_NAMESPACE"] = "env-only-namespace",
+                    },
+                });
+
+            Assert.Equal("env-only-address", options.TargetHost);
+            Assert.Equal("env-only-namespace", options.Namespace);
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(previousDirectory);
+            Directory.Delete(tempDir, recursive: true);
+        }
     }
 
     [Fact]
@@ -372,6 +529,21 @@ public class TemporalLambdaWorkerTests
 
     private static int SimpleMaximum(PollerBehavior? behavior) =>
         Assert.IsType<PollerBehavior.SimpleMaximum>(behavior).Maximum;
+
+    private static string ConfigToml(string address, string nameSpace) => $@"
+[profile.default]
+address = ""{address}""
+namespace = ""{nameSpace}""
+";
+
+    private static string CreateTempDirectory()
+    {
+        var tempDir = Path.Combine(
+            Path.GetTempPath(),
+            $"TemporalLambdaWorkerTests-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+        return tempDir;
+    }
 
     private static ActivityDefinition DummyActivity() =>
         ActivityDefinition.Create(
