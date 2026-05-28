@@ -378,16 +378,6 @@
         "resolved": "5.11.0",
         "contentHash": "eaiXkUjC4NPcquGWzAGMXjuxvLwc6XGKMptSyOGQeT0X70BUZObuybJFZLA0OfTdueLd3US23NBPTBb6iF3V1Q=="
       },
-      "OpenTelemetry": {
-        "type": "Transitive",
-        "resolved": "1.15.3",
-        "contentHash": "N0i6WjPoHPbZyms1ugbDIFAJFuGlpeExJMU/+XSL0lQRUkg/D0utFkDoLXf8Z1km5B+xVZ2GyMXXiX8qdeNmPg==",
-        "dependencies": {
-          "Microsoft.Extensions.Diagnostics.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Logging.Configuration": "10.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.15.3"
-        }
-      },
       "OpenTelemetry.Api.ProviderBuilderExtensions": {
         "type": "Transitive",
         "resolved": "1.15.3",
@@ -483,6 +473,17 @@
           "Temporalio": "[1.14.1, )"
         }
       },
+      "temporalio.extensions.aws.lambda.opentelemetry": {
+        "type": "Project",
+        "dependencies": {
+          "OpenTelemetry": "[1.15.3, )",
+          "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
+          "OpenTelemetry.Extensions.AWS": "[1.15.1, )",
+          "Temporalio": "[1.14.1, )",
+          "Temporalio.Extensions.Aws.Lambda": "[1.14.1, )",
+          "Temporalio.Extensions.OpenTelemetry": "[1.14.1, )"
+        }
+      },
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
@@ -541,11 +542,40 @@
         "resolved": "0.3.0",
         "contentHash": "Kr+NMSZ5428AvxpzShdJcQxc9w6HT8SM6FXQMekC4K9wGpmC1m/L2pQJydpvVTwRBu3qAIYKPI37KWexF4Gtcg=="
       },
+      "OpenTelemetry": {
+        "type": "CentralTransitive",
+        "requested": "[1.15.3, )",
+        "resolved": "1.15.3",
+        "contentHash": "N0i6WjPoHPbZyms1ugbDIFAJFuGlpeExJMU/+XSL0lQRUkg/D0utFkDoLXf8Z1km5B+xVZ2GyMXXiX8qdeNmPg==",
+        "dependencies": {
+          "Microsoft.Extensions.Diagnostics.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Logging.Configuration": "10.0.0",
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.15.3"
+        }
+      },
       "OpenTelemetry.Api": {
         "type": "CentralTransitive",
         "requested": "[1.15.3, )",
         "resolved": "1.15.3",
         "contentHash": "fX+fkCysfPut+qCcT3bKqyX4QN9Saf4CgX8HLOHywEVD+Xr7sULtfuypITpoDysjx8R59dn/3mWhgimMH8cm/g=="
+      },
+      "OpenTelemetry.Exporter.OpenTelemetryProtocol": {
+        "type": "CentralTransitive",
+        "requested": "[1.15.3, )",
+        "resolved": "1.15.3",
+        "contentHash": "FEXJepcseTGbATiCkUfP7ipoFEYYfl/0UmmUwi0KxCPg9PaUA8ab2P1LGopK+/HExasJ1ZutFhZrN6WvUIR23g==",
+        "dependencies": {
+          "OpenTelemetry": "1.15.3"
+        }
+      },
+      "OpenTelemetry.Extensions.AWS": {
+        "type": "CentralTransitive",
+        "requested": "[1.15.1, )",
+        "resolved": "1.15.1",
+        "contentHash": "T+Vrhlv79PyG+fK6XnEtdJW9VtYp5WxSsVajplnkbuY0Q3gTyFNiLPP8tyu1qmEL19bKc9i6Wgp4JqhvupqirA==",
+        "dependencies": {
+          "OpenTelemetry": "[1.15.3, 2.0.0)"
+        }
       }
     }
   }

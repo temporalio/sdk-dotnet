@@ -16,5 +16,7 @@ Commonly used namespaces:
 Extensions:
 
 * [Temporalio.Extensions.DiagnosticSource](/api/Temporalio.Extensions.DiagnosticSource.html)
+* [Temporalio.Extensions.Aws.Lambda](/api/Temporalio.Extensions.Aws.Lambda.html)
+* [Temporalio.Extensions.Aws.Lambda.OpenTelemetry](/api/Temporalio.Extensions.Aws.Lambda.OpenTelemetry.html)
 * [Temporalio.Extensions.Hosting](/api/Temporalio.Extensions.Hosting.html)
 * [Temporalio.Extensions.OpenTelemetry](/api/Temporalio.Extensions.OpenTelemetry.html)

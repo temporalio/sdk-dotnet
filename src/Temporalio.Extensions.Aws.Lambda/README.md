@@ -98,17 +98,24 @@ still run.
 
 ## Observability
 
-For tracing, add `Temporalio.Extensions.OpenTelemetry.TracingInterceptor` to `ClientOptions.Interceptors` and configure
-your OpenTelemetry provider in the Lambda function:
+For AWS Lambda OpenTelemetry defaults, add the `Temporalio.Extensions.Aws.Lambda.OpenTelemetry` package and call
+`LambdaWorkerOpenTelemetry.ApplyDefaults` in `configure`:
+
+```csharp
+using Temporalio.Extensions.Aws.Lambda.OpenTelemetry;
+
+LambdaWorkerOpenTelemetry.ApplyDefaults(config);
+```
+
+This configures Temporal tracing, Core SDK OTLP metrics, AWS X-Ray-compatible trace IDs, and a per-invocation trace
+flush shutdown hook. The OTLP endpoint defaults to `OTEL_EXPORTER_OTLP_ENDPOINT`, then `http://localhost:4317`, which is
+the endpoint expected by the ADOT collector Lambda layer.
+
+You can still configure tracing and metrics manually using `Temporalio.Extensions.OpenTelemetry.TracingInterceptor` and
+`TemporalRuntime`:
 
 ```csharp
 config.ClientOptions.Interceptors = new[] { new TracingInterceptor() };
-```
-
-For Core metrics, create a `TemporalRuntime` with `TelemetryOptions.Metrics.OpenTelemetry` and assign it to
-`ClientOptions.Runtime`:
-
-```csharp
 config.ClientOptions.Runtime = new TemporalRuntime(new TemporalRuntimeOptions
 {
     Telemetry = new TelemetryOptions
@@ -117,8 +124,6 @@ config.ClientOptions.Runtime = new TemporalRuntime(new TemporalRuntimeOptions
     },
 });
 ```
-
-This package does not add OpenTelemetry SDK or exporter dependencies.
 
 ## TLS/CA Notes
 
