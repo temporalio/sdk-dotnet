@@ -496,6 +496,13 @@
           "NexusRpc": "[0.3.0, )"
         }
       },
+      "temporalio.extensions.aws.lambda": {
+        "type": "Project",
+        "dependencies": {
+          "Amazon.Lambda.Core": "[3.1.0, )",
+          "Temporalio": "[1.14.1, )"
+        }
+      },
       "temporalio.extensions.diagnosticsource": {
         "type": "Project",
         "dependencies": {
@@ -515,6 +522,12 @@
           "OpenTelemetry.Api": "[1.15.3, )",
           "Temporalio": "[1.14.1, )"
         }
+      },
+      "Amazon.Lambda.Core": {
+        "type": "CentralTransitive",
+        "requested": "[3.1.0, )",
+        "resolved": "3.1.0",
+        "contentHash": "uZZ2k5lMoB9OzPTmKkkEKpyFcnLxcb7FxtxrA3+HBg/sooTzu402iCcSk5r+N62Qokhwr4Q9cbaVJSM6Dln3aA=="
       },
       "Google.Protobuf": {
         "type": "CentralTransitive",
