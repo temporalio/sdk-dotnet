@@ -1459,7 +1459,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     public async Task ExecuteNexusOperationAsync_GenericHandler_LinksAndContext_Populated()
     {
         // Capture the context and client passed to the generic handler so we can assert plumbing
-        OperationStartContext? capturedContext = null;
+        NexusOperationStartContext? capturedContext = null;
         ITemporalNexusClient? capturedClient = null;
         var workerOptions = new TemporalWorkerOptions($"tq-{Guid.NewGuid()}").
             AddNexusService(new HandlerFactoryStringService(() =>
@@ -1487,7 +1487,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         Assert.Equal("StringService", capturedContext!.Service);
         Assert.Equal("DoSomething", capturedContext.Operation);
         Assert.True(Guid.TryParse(capturedContext.RequestId, out _));
-        Assert.False(string.IsNullOrEmpty(capturedContext.CallbackUrl));
+        Assert.False(string.IsNullOrEmpty(capturedContext.Underlying.CallbackUrl));
         // Inbound link points to the caller workflow's scheduled event
         var wfEvent = Assert.Single(capturedContext.InboundLinks).ToWorkflowEvent();
         Assert.Equal(handle.Id, wfEvent.WorkflowId);
@@ -1684,7 +1684,7 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
     private class CancelOverrideHandler : TemporalNexusOperationHandler<string, string>
     {
         public CancelOverrideHandler(
-            Func<OperationStartContext, ITemporalNexusClient, string,
+            Func<NexusOperationStartContext, ITemporalNexusClient, string,
                 Task<TemporalOperationResult<string>>> startFunc)
             : base(startFunc)
         {
@@ -1695,11 +1695,11 @@ public class NexusWorkerTests : WorkflowEnvironmentTestBase
         public string? CapturedWorkflowId { get; private set; }
 
         protected override Task CancelWorkflowRunAsync(
-            OperationCancelContext context, string workflowId)
+            NexusOperationCancelContext context, CancelWorkflowRunInput input)
         {
             CancelCallCount++;
-            CapturedWorkflowId = workflowId;
-            return base.CancelWorkflowRunAsync(context, workflowId);
+            CapturedWorkflowId = input.WorkflowId;
+            return base.CancelWorkflowRunAsync(context, input);
         }
     }
 

@@ -1,7 +1,10 @@
 #pragma warning disable SA1402 // We allow multiple types of the same name
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using NexusRpc;
 using NexusRpc.Handlers;
 
 namespace Temporalio.Nexus
@@ -47,7 +50,7 @@ namespace Temporalio.Nexus
         /// Should return a <see cref="TemporalOperationResult{TResult}"/>.</param>
         /// <returns>Operation handler backed by Temporal.</returns>
         public static TemporalNexusOperationHandler<TInput, TResult> FromHandleFactory<TInput, TResult>(
-            Func<OperationStartContext, ITemporalNexusClient, TInput,
+            Func<NexusOperationStartContext, ITemporalNexusClient, TInput,
                 Task<TemporalOperationResult<TResult>>> startFunc) =>
             new(startFunc);
 
@@ -60,7 +63,7 @@ namespace Temporalio.Nexus
         /// <see cref="TemporalOperationResult{TResult}"/>.</param>
         /// <returns>Operation handler backed by Temporal.</returns>
         public static TemporalNexusOperationHandler<NoValue, TResult> FromHandleFactory<TResult>(
-            Func<OperationStartContext, ITemporalNexusClient,
+            Func<NexusOperationStartContext, ITemporalNexusClient,
                 Task<TemporalOperationResult<TResult>>> startFunc) =>
             new((context, client, _) => startFunc(context, client));
     }
@@ -79,7 +82,7 @@ namespace Temporalio.Nexus
     /// </remarks>
     public class TemporalNexusOperationHandler<TInput, TResult> : IOperationHandler<TInput, TResult>
     {
-        private readonly Func<OperationStartContext, ITemporalNexusClient, TInput,
+        private readonly Func<NexusOperationStartContext, ITemporalNexusClient, TInput,
             Task<TemporalOperationResult<TResult>>> startFunc;
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace Temporalio.Nexus
         /// </summary>
         /// <param name="startFunc">Start function delegate.</param>
         public TemporalNexusOperationHandler(
-            Func<OperationStartContext, ITemporalNexusClient, TInput,
+            Func<NexusOperationStartContext, ITemporalNexusClient, TInput,
                 Task<TemporalOperationResult<TResult>>> startFunc) =>
             this.startFunc = startFunc;
 
@@ -97,7 +100,8 @@ namespace Temporalio.Nexus
             OperationStartContext context, TInput input)
         {
             var client = new TemporalNexusClient(context, NexusOperationExecutionContext.Current);
-            var result = await startFunc(context, client, input).ConfigureAwait(false);
+            var result = await startFunc(
+                new NexusOperationStartContext(context), client, input).ConfigureAwait(false);
             if (result.IsSyncResult)
             {
                 return OperationStartResult.SyncResult(result.SyncValue!);
@@ -124,7 +128,9 @@ namespace Temporalio.Nexus
             return token.Type switch
             {
                 NexusWorkflowRunHandle.WorkflowRunOperationTokenType =>
-                    CancelWorkflowRunAsync(context, token.WorkflowId),
+                    CancelWorkflowRunAsync(
+                        new NexusOperationCancelContext(context),
+                        new CancelWorkflowRunInput(token.WorkflowId)),
                 _ => throw new HandlerException(
                     HandlerErrorType.BadRequest,
                     $"Unsupported token type: {token.Type}"),
@@ -137,11 +143,132 @@ namespace Temporalio.Nexus
         /// <para>Default behavior: cancels the underlying workflow.</para>
         /// </summary>
         /// <param name="context">The cancel context.</param>
-        /// <param name="workflowId">The workflow ID extracted from the operation token.</param>
+        /// <param name="input">Workflow-run cancel input.</param>
         /// <returns>Task for cancel completion.</returns>
         protected virtual Task CancelWorkflowRunAsync(
-            OperationCancelContext context, string workflowId) =>
+            NexusOperationCancelContext context, CancelWorkflowRunInput input) =>
             NexusOperationExecutionContext.Current.TemporalClient
-                .GetWorkflowHandle(workflowId).CancelAsync();
+                .GetWorkflowHandle(input.WorkflowId).CancelAsync();
+    }
+
+    /// <summary>
+    /// Input passed to
+    /// <see cref="TemporalNexusOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
+    /// </summary>
+    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    public class CancelWorkflowRunInput
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CancelWorkflowRunInput"/> class.
+        /// </summary>
+        /// <param name="workflowId">Workflow ID extracted from the operation token.</param>
+        public CancelWorkflowRunInput(string workflowId) => WorkflowId = workflowId;
+
+        /// <summary>
+        /// Gets the workflow ID extracted from the operation token.
+        /// </summary>
+        public string WorkflowId { get; }
+    }
+
+    /// <summary>
+    /// Context passed to the start function of a
+    /// <see cref="TemporalNexusOperationHandler{TInput, TResult}"/>.
+    /// </summary>
+    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    public class NexusOperationStartContext
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NexusOperationStartContext"/> class.
+        /// </summary>
+        /// <param name="underlying">Underlying Nexus start context.</param>
+        internal NexusOperationStartContext(OperationStartContext underlying) =>
+            Underlying = underlying;
+
+        /// <summary>
+        /// Gets the Nexus service name.
+        /// </summary>
+        public string Service => Underlying.Service;
+
+        /// <summary>
+        /// Gets the Nexus operation name.
+        /// </summary>
+        public string Operation => Underlying.Operation;
+
+        /// <summary>
+        /// Gets the unique identifier for this start call, used for deduplication.
+        /// </summary>
+        public string RequestId => Underlying.RequestId;
+
+        /// <summary>
+        /// Gets the cancellation token for this start call (not operation cancellation).
+        /// </summary>
+        public CancellationToken CancellationToken => Underlying.CancellationToken;
+
+        /// <summary>
+        /// Gets the request headers (case-insensitive keys).
+        /// </summary>
+        public IReadOnlyDictionary<string, string>? Headers => Underlying.Headers;
+
+        /// <summary>
+        /// Gets the deadline for the start call to complete, if any.
+        /// </summary>
+        public DateTime? RequestDeadline => Underlying.RequestDeadline;
+
+        /// <summary>
+        /// Gets the inbound links carrying caller information.
+        /// </summary>
+        public IReadOnlyCollection<NexusLink> InboundLinks => Underlying.InboundLinks;
+
+        /// <summary>
+        /// Gets the mutable outbound links collection. Handlers and middleware may add to this.
+        /// </summary>
+        public IList<NexusLink> OutboundLinks => Underlying.OutboundLinks;
+
+        /// <summary>
+        /// Gets the underlying Nexus start context. SDK-internal for callback wiring and tests.
+        /// </summary>
+        internal OperationStartContext Underlying { get; }
+    }
+
+    /// <summary>
+    /// Context passed to
+    /// <see cref="TemporalNexusOperationHandler{TInput, TResult}.CancelWorkflowRunAsync"/>.
+    /// </summary>
+    /// <remarks>WARNING: Nexus support is experimental.</remarks>
+    public class NexusOperationCancelContext
+    {
+        private readonly OperationCancelContext underlying;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NexusOperationCancelContext"/> class.
+        /// </summary>
+        /// <param name="underlying">Underlying Nexus cancel context.</param>
+        internal NexusOperationCancelContext(OperationCancelContext underlying) =>
+            this.underlying = underlying;
+
+        /// <summary>
+        /// Gets the Nexus service name.
+        /// </summary>
+        public string Service => underlying.Service;
+
+        /// <summary>
+        /// Gets the Nexus operation name.
+        /// </summary>
+        public string Operation => underlying.Operation;
+
+        /// <summary>
+        /// Gets the cancellation token for this cancel call (not operation cancellation).
+        /// </summary>
+        public CancellationToken CancellationToken => underlying.CancellationToken;
+
+        /// <summary>
+        /// Gets the request headers (case-insensitive keys).
+        /// </summary>
+        public IReadOnlyDictionary<string, string>? Headers => underlying.Headers;
+
+        /// <summary>
+        /// Gets the deadline for the cancel call to complete, if any.
+        /// </summary>
+        public DateTime? RequestDeadline => underlying.RequestDeadline;
     }
 }
